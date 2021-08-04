@@ -1,0 +1,12 @@
+overwrite: true
+schema: "https://vercel.saleor.cloud/graphql/"
+documents: "components/**/*.tsx"
+generates:
+  generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
