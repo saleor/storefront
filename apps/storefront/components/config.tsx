@@ -37,8 +37,8 @@ export const TShirtProducts = /* GraphQL */`
 `;
 
 export const FilterProducts = /* GraphQL */`
-  query FilterProducts($filter: ProductFilterInput) {
-    products(first: 12, channel: "default-channel", filter: $filter) {
+  query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
+    products(first: 12, channel: "default-channel", filter: $filter, sortBy: $sortBy) {
       edges {
         node {
           id

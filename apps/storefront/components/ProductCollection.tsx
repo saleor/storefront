@@ -1,8 +1,16 @@
-import { useLatestProductsQuery, useTShirtProductsQuery, useFilterProductsQuery } from '../generated/graphql';
+import { useLatestProductsQuery, useTShirtProductsQuery, useFilterProductsQuery, OrderDirection, ProductOrderField } from '../generated/graphql';
 
 function Products() {
   // const { loading, error, data } = useLatestProductsQuery();
-  const { loading, error, data } = useFilterProductsQuery({ variables: { filter: { search: 'T-Shirt' } } });
+  const { loading, error, data } = useFilterProductsQuery({
+    variables: {
+      filter: { search: 'T-Shirt' },
+      sortBy: {
+        field: ProductOrderField.Name,
+        direction: OrderDirection.Desc
+      }
+    }
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
