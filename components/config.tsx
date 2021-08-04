@@ -54,3 +54,18 @@ export const FilterProducts = /* GraphQL */`
     }
   }
 `;
+
+export const ProductByID = /* GraphQL */`
+  query ProductByID($id: ID!) {
+    product(id: $id, channel: "default-channel") {
+      id
+      name
+      thumbnail {
+        url
+      }
+      category {
+        name
+      }
+    }
+  }
+`;
