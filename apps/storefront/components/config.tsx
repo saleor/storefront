@@ -1,7 +1,8 @@
-export const LatestProducts = /* GraphQL */`
-  query LatestProducts {
-    products(first: 12, channel: "default-channel") {
+export const Products = /* GraphQL */`
+  query Products($before: String, $after: String) {
+    products(first: 4, channel: "default-channel", after: $after, before: $before) {
       edges {
+        cursor
         node {
           id
           name

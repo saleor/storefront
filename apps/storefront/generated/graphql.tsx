@@ -11855,10 +11855,13 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type LatestProductsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProductsQueryVariables = Exact<{
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+}>;
 
 
-export type LatestProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> } }> }> };
+export type ProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> } }> }> };
 
 export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -11881,10 +11884,11 @@ export type ProductByIdQueryVariables = Exact<{
 export type ProductByIdQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> }> };
 
 
-export const LatestProductsDocument = gql`
-    query LatestProducts {
-  products(first: 12, channel: "default-channel") {
+export const ProductsDocument = gql`
+    query Products($before: String, $after: String) {
+  products(first: 4, channel: "default-channel", after: $after, before: $before) {
     edges {
+      cursor
       node {
         id
         name
@@ -11901,31 +11905,33 @@ export const LatestProductsDocument = gql`
     `;
 
 /**
- * __useLatestProductsQuery__
+ * __useProductsQuery__
  *
- * To run a query within a React component, call `useLatestProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useLatestProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLatestProductsQuery({
+ * const { data, loading, error } = useProductsQuery({
  *   variables: {
+ *      before: // value for 'before'
+ *      after: // value for 'after'
  *   },
  * });
  */
-export function useLatestProductsQuery(baseOptions?: Apollo.QueryHookOptions<LatestProductsQuery, LatestProductsQueryVariables>) {
+export function useProductsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LatestProductsQuery, LatestProductsQueryVariables>(LatestProductsDocument, options);
+        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
       }
-export function useLatestProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestProductsQuery, LatestProductsQueryVariables>) {
+export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LatestProductsQuery, LatestProductsQueryVariables>(LatestProductsDocument, options);
+          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, options);
         }
-export type LatestProductsQueryHookResult = ReturnType<typeof useLatestProductsQuery>;
-export type LatestProductsLazyQueryHookResult = ReturnType<typeof useLatestProductsLazyQuery>;
-export type LatestProductsQueryResult = Apollo.QueryResult<LatestProductsQuery, LatestProductsQueryVariables>;
+export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
+export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
+export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
 export const TShirtProductsDocument = gql`
     query TShirtProducts {
   products(first: 12, channel: "default-channel", filter: {search: "t-shirt"}) {
