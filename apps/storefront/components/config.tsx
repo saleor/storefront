@@ -35,3 +35,22 @@ export const TShirtProducts = /* GraphQL */`
     }
   }
 `;
+
+export const FilterProducts = /* GraphQL */`
+  query FilterProducts($filter: ProductFilterInput) {
+    products(first: 12, channel: "default-channel", filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          thumbnail {
+            url
+          }
+          category {
+            name
+          }
+        }
+      }
+    }
+  }
+`;

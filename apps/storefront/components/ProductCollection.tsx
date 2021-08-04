@@ -1,8 +1,8 @@
-import { useLatestProductsQuery, useTShirtProductsQuery } from '../generated/graphql';
+import { useLatestProductsQuery, useTShirtProductsQuery, useFilterProductsQuery } from '../generated/graphql';
 
 function Products() {
   // const { loading, error, data } = useLatestProductsQuery();
-  const { loading, error, data } = useTShirtProductsQuery();
+  const { loading, error, data } = useFilterProductsQuery({ variables: { filter: { search: 'T-Shirt' } } });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
