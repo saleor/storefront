@@ -11866,7 +11866,8 @@ export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 export type TShirtProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> } }> }> };
 
 export type FilterProductsQueryVariables = Exact<{
-  filter?: Maybe<ProductFilterInput>;
+  filter: ProductFilterInput;
+  sortBy?: Maybe<ProductOrder>;
 }>;
 
 
@@ -11964,8 +11965,13 @@ export type TShirtProductsQueryHookResult = ReturnType<typeof useTShirtProductsQ
 export type TShirtProductsLazyQueryHookResult = ReturnType<typeof useTShirtProductsLazyQuery>;
 export type TShirtProductsQueryResult = Apollo.QueryResult<TShirtProductsQuery, TShirtProductsQueryVariables>;
 export const FilterProductsDocument = gql`
-    query FilterProducts($filter: ProductFilterInput) {
-  products(first: 12, channel: "default-channel", filter: $filter) {
+    query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
+  products(
+    first: 12
+    channel: "default-channel"
+    filter: $filter
+    sortBy: $sortBy
+  ) {
     edges {
       node {
         id
@@ -11995,10 +12001,11 @@ export const FilterProductsDocument = gql`
  * const { data, loading, error } = useFilterProductsQuery({
  *   variables: {
  *      filter: // value for 'filter'
+ *      sortBy: // value for 'sortBy'
  *   },
  * });
  */
-export function useFilterProductsQuery(baseOptions?: Apollo.QueryHookOptions<FilterProductsQuery, FilterProductsQueryVariables>) {
+export function useFilterProductsQuery(baseOptions: Apollo.QueryHookOptions<FilterProductsQuery, FilterProductsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<FilterProductsQuery, FilterProductsQueryVariables>(FilterProductsDocument, options);
       }
