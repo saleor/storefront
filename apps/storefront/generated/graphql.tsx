@@ -11860,6 +11860,11 @@ export type LatestProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type LatestProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> } }> }> };
 
+export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TShirtProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> } }> }> };
+
 
 export const LatestProductsDocument = gql`
     query LatestProducts {
@@ -11906,3 +11911,48 @@ export function useLatestProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type LatestProductsQueryHookResult = ReturnType<typeof useLatestProductsQuery>;
 export type LatestProductsLazyQueryHookResult = ReturnType<typeof useLatestProductsLazyQuery>;
 export type LatestProductsQueryResult = Apollo.QueryResult<LatestProductsQuery, LatestProductsQueryVariables>;
+export const TShirtProductsDocument = gql`
+    query TShirtProducts {
+  products(first: 12, channel: "default-channel", filter: {search: "t-shirt"}) {
+    edges {
+      node {
+        id
+        name
+        thumbnail {
+          url
+        }
+        category {
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useTShirtProductsQuery__
+ *
+ * To run a query within a React component, call `useTShirtProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTShirtProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTShirtProductsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTShirtProductsQuery(baseOptions?: Apollo.QueryHookOptions<TShirtProductsQuery, TShirtProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TShirtProductsQuery, TShirtProductsQueryVariables>(TShirtProductsDocument, options);
+      }
+export function useTShirtProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TShirtProductsQuery, TShirtProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TShirtProductsQuery, TShirtProductsQueryVariables>(TShirtProductsDocument, options);
+        }
+export type TShirtProductsQueryHookResult = ReturnType<typeof useTShirtProductsQuery>;
+export type TShirtProductsLazyQueryHookResult = ReturnType<typeof useTShirtProductsLazyQuery>;
+export type TShirtProductsQueryResult = Apollo.QueryResult<TShirtProductsQuery, TShirtProductsQueryVariables>;
