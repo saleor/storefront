@@ -12,6 +12,10 @@ export const Products = /* GraphQL */`
           category {
             name
           }
+          variants {
+            id
+            name
+          }
         }
       }
     }

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
-  useProductsQuery, useTShirtProductsQuery, useFilterProductsQuery, OrderDirection, ProductOrderField,
-  useProductByIdQuery,
+  useProductsQuery,
 } from '../generated/graphql';
 
 function Products() {
@@ -33,12 +32,15 @@ function Products() {
         <ul role="list" className="grid gap-4 grid-cols-4">
           {latestProducts?.length > 0 &&
             latestProducts.map(
-              ({ node: { id, name, thumbnail, category } }) => (
+              ({ node: { id, name, thumbnail, category, variants = [] } }) => (
                 <li key={id} className="relative bg-white">
                   <img src={thumbnail?.url} alt="" />
                   <div className="p-2 border-gray-100 border-t">
                     <p className="block text-lg text-gray-900 truncate">{name}</p>
                     <p className="block text-sm font-medium text-gray-500">{category?.name}</p>
+                  </div>
+                  <div className="p-2 border-gray-100 border-t">
+                    Variants: {variants?.map(variant => `${variant?.name} `)}
                   </div>
                 </li>
               ),
