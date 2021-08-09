@@ -32,7 +32,7 @@ function Products() {
         <ul role="list" className="grid gap-4 grid-cols-4">
           {latestProducts?.length > 0 &&
             latestProducts.map(
-              ({ node: { id, name, thumbnail, category, variants = [] } }) => (
+              ({ node: { id, name, thumbnail, category, variants = [], pricing } }) => (
                 <li key={id} className="relative bg-white">
                   <img src={thumbnail?.url} alt="" />
                   <div className="p-2 border-gray-100 border-t">
@@ -41,6 +41,9 @@ function Products() {
                   </div>
                   <div className="p-2 border-gray-100 border-t">
                     Variants: {variants?.map(variant => `${variant?.name} `)}
+                  </div>
+                  <div className="p-2 border-gray-100 border-t">
+                    Prices: {pricing?.priceRange?.start?.gross.amount} - {pricing?.priceRange?.stop?.gross.amount}
                   </div>
                 </li>
               ),
