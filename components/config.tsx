@@ -16,6 +16,20 @@ export const Products = /* GraphQL */`
             id
             name
           }
+          pricing {
+            priceRange {
+              start {
+                gross {
+                  amount
+                }
+              }
+              stop {
+                gross {
+                  amount
+                }
+              }
+            }
+          }
         }
       }
     }
