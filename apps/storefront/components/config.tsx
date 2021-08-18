@@ -79,6 +79,19 @@ export const ProductByID = /* GraphQL */`
     product(id: $id, channel: "default-channel") {
       id
       name
+      description
+      pricing {
+        priceRange {
+          start {
+            gross {
+              amount
+            }
+          }
+        }
+      }
+      media {
+        url
+      }
       thumbnail {
         url
       }

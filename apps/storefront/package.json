@@ -13,8 +13,12 @@
     "@apollo/client": "3.4.8",
     "@headlessui/react": "1.4.0",
     "@heroicons/react": "1.0.3",
+    "@tailwindcss/aspect-ratio": "^0.2.1",
+    "@tailwindcss/forms": "^0.3.3",
+    "@tailwindcss/typography": "^0.4.1",
     "clsx": "1.1.1",
     "graphql": "15.5.1",
+    "graphql-request": "^3.5.0",
     "next": "11.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
