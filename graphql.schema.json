@@ -4597,6 +4597,22 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "withChoices",
+            "description": "Flag indicating that attribute has predefined choices.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -5473,6 +5489,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -5523,6 +5551,30 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IntRangeInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateTime",
+            "description": "The date time range that the returned values should be in.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateTimeRangeInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "date",
+            "description": "The date range that the returned values should be in.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateRangeInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -5592,6 +5644,18 @@
           },
           {
             "name": "BOOLEAN",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DATE_TIME",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -6406,6 +6470,30 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "date",
+            "description": "Represents the date value of the attribute value.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateTime",
+            "description": "Represents the date time value of the attribute value.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -6945,6 +7033,30 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "date",
+            "description": "Represents the date value of the attribute value.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateTime",
+            "description": "Represents the date time value of the attribute value.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -6984,6 +7096,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "richText",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -7329,21 +7453,29 @@
             "name": "values",
             "description": "The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created.",
             "type": {
-              "kind": "NON_NULL",
+              "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "LIST",
+                "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "boolean",
+            "description": "The boolean value of an attribute to resolve.If the passed value is non-existent, it will be created.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -8601,6 +8733,18 @@
                 "name": "OrderDirection",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -13403,6 +13547,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -13733,6 +13889,18 @@
                 "name": "OrderDirection",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -18607,7 +18775,7 @@
           },
           {
             "name": "user",
-            "description": null,
+            "description": "Customer associated with the draft order.",
             "type": {
               "kind": "SCALAR",
               "name": "ID",
@@ -18825,7 +18993,7 @@
           },
           {
             "name": "user",
-            "description": null,
+            "description": "Customer associated with the draft order.",
             "type": {
               "kind": "SCALAR",
               "name": "ID",
@@ -44622,6 +44790,30 @@
             },
             "isDeprecated": true,
             "deprecationReason": "Will be removed in Saleor 4.0. Get model fields from the root level."
+          },
+          {
+            "name": "attributeValues",
+            "description": "List of page content attribute values that can be translated.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AttributeValueTranslatableContent",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -50839,6 +51031,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -51753,6 +51957,18 @@
             "deprecationReason": null
           },
           {
+            "name": "channel",
+            "description": "Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "attributeId",
             "description": "Sort product by the selected attribute's values.\nNote: this doesn't take translations into account yet.",
             "type": {
@@ -52174,6 +52390,30 @@
             },
             "isDeprecated": true,
             "deprecationReason": "Will be removed in Saleor 4.0. Get model fields from the root level."
+          },
+          {
+            "name": "attributeValues",
+            "description": "List of product attribute values that can be translated.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AttributeValueTranslatableContent",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -55524,6 +55764,30 @@
             },
             "isDeprecated": true,
             "deprecationReason": "Will be removed in Saleor 4.0. Get model fields from the root level."
+          },
+          {
+            "name": "attributeValues",
+            "description": "List of product variant attribute values that can be translated.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AttributeValueTranslatableContent",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -61474,6 +61738,18 @@
                 "name": "OrderDirection",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -71794,6 +72070,18 @@
             "deprecationReason": null
           },
           {
+            "name": "channel",
+            "description": "Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "field",
             "description": "Sort vouchers by the selected field.",
             "type": {
@@ -73851,6 +74139,18 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "TRANSLATION_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TRANSLATION_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -74045,6 +74345,18 @@
           },
           {
             "name": "PAYMENT_VOID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TRANSLATION_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TRANSLATION_UPDATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

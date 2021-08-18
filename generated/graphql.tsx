@@ -678,6 +678,8 @@ export type Attribute = Node & ObjectWithMetadata & {
   translation?: Maybe<AttributeTranslation>;
   /** The position of the attribute in the storefront navigation (0 by default). */
   storefrontSearchPosition: Scalars['Int'];
+  /** Flag indicating that attribute has predefined choices. */
+  withChoices: Scalars['Boolean'];
 };
 
 
@@ -844,6 +846,8 @@ export type AttributeFilterInput = {
   type?: Maybe<AttributeTypeEnum>;
   inCollection?: Maybe<Scalars['ID']>;
   inCategory?: Maybe<Scalars['ID']>;
+  /** Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
 };
 
 export type AttributeInput = {
@@ -853,6 +857,10 @@ export type AttributeInput = {
   values?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** The range that the returned values should be in. */
   valuesRange?: Maybe<IntRangeInput>;
+  /** The date time range that the returned values should be in. */
+  dateTime?: Maybe<DateTimeRangeInput>;
+  /** The date range that the returned values should be in. */
+  date?: Maybe<DateRangeInput>;
   /** The boolean value of the attribute. */
   boolean?: Maybe<Scalars['Boolean']>;
 };
@@ -865,7 +873,9 @@ export enum AttributeInputTypeEnum {
   Reference = 'REFERENCE',
   Numeric = 'NUMERIC',
   RichText = 'RICH_TEXT',
-  Boolean = 'BOOLEAN'
+  Boolean = 'BOOLEAN',
+  Date = 'DATE',
+  DateTime = 'DATE_TIME'
 }
 
 /** Reorder the values of an attribute. */
@@ -1008,6 +1018,10 @@ export type AttributeValue = Node & {
   richText?: Maybe<Scalars['JSONString']>;
   /** Represents the boolean value of the attribute value. */
   boolean?: Maybe<Scalars['Boolean']>;
+  /** Represents the date value of the attribute value. */
+  date?: Maybe<Scalars['Date']>;
+  /** Represents the date time value of the attribute value. */
+  dateTime?: Maybe<Scalars['DateTime']>;
 };
 
 
@@ -1093,6 +1107,10 @@ export type AttributeValueInput = {
   richText?: Maybe<Scalars['JSONString']>;
   /** Represents the boolean value of the attribute value. */
   boolean?: Maybe<Scalars['Boolean']>;
+  /** Represents the date value of the attribute value. */
+  date?: Maybe<Scalars['Date']>;
+  /** Represents the date time value of the attribute value. */
+  dateTime?: Maybe<Scalars['DateTime']>;
 };
 
 export type AttributeValueTranslatableContent = Node & {
@@ -1100,6 +1118,7 @@ export type AttributeValueTranslatableContent = Node & {
   /** The ID of the object. */
   id: Scalars['ID'];
   name: Scalars['String'];
+  richText?: Maybe<Scalars['JSONString']>;
   /** Returns translated attribute value fields for the given language code. */
   translation?: Maybe<AttributeValueTranslation>;
   /**
@@ -1153,7 +1172,9 @@ export type BulkAttributeValueInput = {
   /** ID of the selected attribute. */
   id?: Maybe<Scalars['ID']>;
   /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. */
-  values: Array<Scalars['String']>;
+  values?: Maybe<Array<Scalars['String']>>;
+  /** The boolean value of an attribute to resolve.If the passed value is non-existent, it will be created. */
+  boolean?: Maybe<Scalars['Boolean']>;
 };
 
 export type BulkProductError = {
@@ -1351,6 +1372,8 @@ export enum CategorySortField {
 export type CategorySortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
+  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
   /** Sort categories by the selected field. */
   field: CategorySortField;
 };
@@ -2052,6 +2075,8 @@ export type CollectionFilterInput = {
   search?: Maybe<Scalars['String']>;
   metadata?: Maybe<Array<Maybe<MetadataFilter>>>;
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
 };
 
 export type CollectionInput = {
@@ -2112,6 +2137,8 @@ export enum CollectionSortField {
 export type CollectionSortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
+  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
   /** Sort collections by the selected field. */
   field: CollectionSortField;
 };
@@ -2877,6 +2904,7 @@ export type DraftOrderCreate = {
 export type DraftOrderCreateInput = {
   /** Billing address of the customer. */
   billingAddress?: Maybe<AddressInput>;
+  /** Customer associated with the draft order. */
   user?: Maybe<Scalars['ID']>;
   /** Email address of the customer. */
   userEmail?: Maybe<Scalars['String']>;
@@ -2910,6 +2938,7 @@ export type DraftOrderDelete = {
 export type DraftOrderInput = {
   /** Billing address of the customer. */
   billingAddress?: Maybe<AddressInput>;
+  /** Customer associated with the draft order. */
   user?: Maybe<Scalars['ID']>;
   /** Email address of the customer. */
   userEmail?: Maybe<Scalars['String']>;
@@ -7189,6 +7218,8 @@ export type PageTranslatableContent = Node & {
    * @deprecated Will be removed in Saleor 4.0. Get model fields from the root level.
    */
   page?: Maybe<Page>;
+  /** List of page content attribute values that can be translated. */
+  attributeValues: Array<AttributeValueTranslatableContent>;
 };
 
 
@@ -8148,6 +8179,8 @@ export type ProductFilterInput = {
   minimalPrice?: Maybe<PriceRangeInput>;
   productTypes?: Maybe<Array<Maybe<Scalars['ID']>>>;
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
 };
 
 /** Represents a product image. */
@@ -8290,6 +8323,8 @@ export type ProductMediaUpdateInput = {
 export type ProductOrder = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
+  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
   /**
    * Sort product by the selected attribute's values.
    * Note: this doesn't take translations into account yet.
@@ -8374,6 +8409,8 @@ export type ProductTranslatableContent = Node & {
    * @deprecated Will be removed in Saleor 4.0. Get model fields from the root level.
    */
   product?: Maybe<Product>;
+  /** List of product attribute values that can be translated. */
+  attributeValues: Array<AttributeValueTranslatableContent>;
 };
 
 
@@ -8877,6 +8914,8 @@ export type ProductVariantTranslatableContent = Node & {
    * @deprecated Will be removed in Saleor 4.0. Get model fields from the root level.
    */
   productVariant?: Maybe<ProductVariant>;
+  /** List of product variant attribute values that can be translated. */
+  attributeValues: Array<AttributeValueTranslatableContent>;
 };
 
 
@@ -9824,6 +9863,8 @@ export enum SaleSortField {
 export type SaleSortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
+  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
   /** Sort sales by the selected field. */
   field: SaleSortField;
 };
@@ -11424,6 +11465,8 @@ export enum VoucherSortField {
 export type VoucherSortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
+  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  channel?: Maybe<Scalars['String']>;
   /** Sort vouchers by the selected field. */
   field: VoucherSortField;
 };
@@ -11766,7 +11809,9 @@ export enum WebhookEventTypeEnum {
   PaymentListGateways = 'PAYMENT_LIST_GATEWAYS',
   PaymentProcess = 'PAYMENT_PROCESS',
   PaymentRefund = 'PAYMENT_REFUND',
-  PaymentVoid = 'PAYMENT_VOID'
+  PaymentVoid = 'PAYMENT_VOID',
+  TranslationCreated = 'TRANSLATION_CREATED',
+  TranslationUpdated = 'TRANSLATION_UPDATED'
 }
 
 /** An enumeration. */
@@ -11801,7 +11846,9 @@ export enum WebhookSampleEventTypeEnum {
   PaymentListGateways = 'PAYMENT_LIST_GATEWAYS',
   PaymentProcess = 'PAYMENT_PROCESS',
   PaymentRefund = 'PAYMENT_REFUND',
-  PaymentVoid = 'PAYMENT_VOID'
+  PaymentVoid = 'PAYMENT_VOID',
+  TranslationCreated = 'TRANSLATION_CREATED',
+  TranslationUpdated = 'TRANSLATION_UPDATED'
 }
 
 /** Updates a webhook subscription. */
@@ -11881,7 +11928,7 @@ export type ProductByIdQueryVariables = Exact<{
 }>;
 
 
-export type ProductByIdQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> }> };
+export type ProductByIdQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', id: string, name: string, description?: Maybe<any>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> }>, media?: Maybe<Array<{ __typename?: 'ProductMedia', url: string }>>, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> }> };
 
 
 export const ProductsDocument = gql`
@@ -12052,6 +12099,19 @@ export const ProductByIdDocument = gql`
   product(id: $id, channel: "default-channel") {
     id
     name
+    description
+    pricing {
+      priceRange {
+        start {
+          gross {
+            amount
+          }
+        }
+      }
+    }
+    media {
+      url
+    }
     thumbnail {
       url
     }
