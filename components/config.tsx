@@ -1,6 +1,6 @@
 export const Products = /* GraphQL */`
   query Products($before: String, $after: String) {
-    products(first: 4, channel: "default-channel", after: $after, before: $before) {
+    products(first: 8, channel: "default-channel", after: $after, before: $before) {
       edges {
         cursor
         node {
@@ -80,6 +80,13 @@ export const ProductByID = /* GraphQL */`
       id
       name
       description
+      category {
+        name
+      }
+      variants {
+        id
+        name
+      }
       pricing {
         priceRange {
           start {
@@ -97,6 +104,72 @@ export const ProductByID = /* GraphQL */`
       }
       category {
         name
+      }
+    }
+  }
+`;
+
+export const CreateCheckout = /* GraphQL */`
+  mutation CreateCheckout {
+    checkoutCreate(
+      input: {
+        channel: "default-channel",
+        email: "customer@example.com"
+        lines: []
+      }
+    ) {
+      checkout {
+        id
+        token
+      }
+      errors {
+        field
+        code
+      }
+    }
+  }
+`;
+
+
+export const AddProductToCheckout = /* GraphQL */`
+  mutation AddProductToCheckout($checkoutId: UUID!, $variantId: ID!) {
+    checkoutLinesAdd(
+      token: $checkoutId,
+      lines: [{ quantity: 1, variantId: $variantId }]
+    ) {
+      checkout {
+        lines{
+          id
+          quantity
+        }
+        totalPrice {
+          gross {
+            currency
+            amount
+          }
+        }
+      }
+      errors {
+        message
+      }
+    }
+  }
+`;
+
+export const CheckoutByID = /* GraphQL */`
+  query CheckoutByID($checkoutId: UUID!) {
+    checkout(token: $checkoutId) {
+      lines {
+        id
+        variant {
+          product {
+            name
+            thumbnail {
+              url
+            }
+          }
+          name
+        }
       }
     }
   }
