@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import { ShoppingBagIcon } from '@heroicons/react/outline'
 
 const navigation = [
-  { name: 'Products', href: '#', current: true },
 ]
 
 export const Navbar: React.VFC = ({ }) => {
@@ -17,8 +16,8 @@ export const Navbar: React.VFC = ({ }) => {
             <Link href="/">
               <a><img className="block h-16 w-auto" src="/saleor.svg" alt="" /></a>
             </Link>
-            {navigation.map((item) => (
-              <Link href="/">
+            {navigation.map((item, idx) => (
+              <Link href="/" key={idx}>
                 <a
                   key={item.name}
                   href={item.href}
