@@ -171,6 +171,24 @@ export const CheckoutByID = /* GraphQL */`
           name
         }
       }
+      subtotalPrice {
+        net {
+          amount
+        }
+        tax {
+          amount
+        }
+      }
+      shippingPrice {
+        gross {
+          amount
+        }
+      }
+      totalPrice {
+        gross {
+          amount
+        }
+      }
     }
   }
 `;
