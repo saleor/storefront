@@ -156,6 +156,29 @@ export const AddProductToCheckout = /* GraphQL */`
   }
 `;
 
+export const RemoveProductFromCheckout = /* GraphQL */`
+  mutation RemoveProductFromCheckout($checkoutId: UUID!, $lineId: ID!) {
+    checkoutLineDelete(
+      token: $checkoutId,
+      lineId: $lineId
+    ){
+      checkout{
+        lines{
+          id
+          variant{
+            id
+          }
+          quantity
+        }
+      }
+      errors{
+        field
+        message
+      }
+    }
+  }
+`
+
 export const CheckoutByID = /* GraphQL */`
   query CheckoutByID($checkoutId: UUID!) {
     checkout(token: $checkoutId) {

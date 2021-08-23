@@ -3,8 +3,9 @@ import Link from 'next/link';
 
 import { CheckoutSummary } from '../components/CheckoutSummary';
 import { Navbar } from '../components/Navbar';
-import { useCheckoutByIdQuery } from '../generated/graphql';
+import { useCheckoutByIdQuery, useRemoveProductFromCheckoutMutation } from '../generated/graphql';
 import { useLocalStorage } from '../lib/hooks';
+import { CheckoutByID } from '../components/config';
 
 const Cart: React.VFC = ({}) => {
   const [token] = useLocalStorage('token', '');
@@ -13,12 +14,15 @@ const Cart: React.VFC = ({}) => {
     // skip:
     variables: { checkoutId: token }
   });
+  const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation({
+    refetchQueries: [CheckoutByID],
+   });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
 
   if (data) {
-    const products = (data.checkout?.lines || []).map(_ => _.variant.product);
+    const products = (data.checkout?.lines || []).map(_ => ({ ..._.variant.product, lineId: _.id }));
 
     return (
       <div className="min-h-screen bg-gray-100">
@@ -65,6 +69,9 @@ const Cart: React.VFC = ({}) => {
 
                                 <button
                                   type="button"
+                                  onClick={() => removeProductFromCheckout({
+                                    variables: { checkoutId: token, lineId: product.lineId }
+                                  })}
                                   className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
                                 >
                                   <span>Remove</span>
