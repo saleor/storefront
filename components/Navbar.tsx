@@ -11,7 +11,7 @@ export const Navbar: React.VFC = ({}) => {
     variables: { checkoutId: token },
   });
 
-  const counter = data ? data.checkout?.lines?.length : 0;
+  const counter = data ? data.checkout!.lines?.length : 0;
 
   return (
     <div className="bg-white shadow-sm">

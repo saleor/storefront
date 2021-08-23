@@ -12692,7 +12692,7 @@ export type CheckoutByIdQueryVariables = Exact<{
 }>;
 
 
-export type CheckoutByIdQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> } } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', amount: number }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> };
+export type CheckoutByIdQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', amount: number }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> };
 
 export const PageInfoFragmentDoc = gql`
     fragment PageInfoFragment on PageInfo {
@@ -13104,7 +13104,48 @@ export type RemoveProductFromCheckoutMutationOptions = Apollo.BaseMutationOption
 export const CheckoutByIdDocument = gql`
     query CheckoutByID($checkoutId: UUID!) {
   checkout(token: $checkoutId) {
+<<<<<<< HEAD:saleor/api.tsx
     ...CheckoutDetailsFragment
+=======
+    lines {
+      id
+      variant {
+        product {
+          id
+          name
+          thumbnail {
+            url
+          }
+        }
+        pricing {
+          price {
+            gross {
+              amount
+            }
+          }
+        }
+        name
+      }
+    }
+    subtotalPrice {
+      net {
+        amount
+      }
+      tax {
+        amount
+      }
+    }
+    shippingPrice {
+      gross {
+        amount
+      }
+    }
+    totalPrice {
+      gross {
+        amount
+      }
+    }
+>>>>>>> 0fca2c4 (pricing + ts cleanup):generated/graphql.tsx
   }
 }
     ${CheckoutDetailsFragmentDoc}`;

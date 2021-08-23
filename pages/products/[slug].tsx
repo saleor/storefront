@@ -5,11 +5,13 @@ import { Navbar } from "../../components/Navbar";
 import {
   useAddProductToCheckoutMutation,
   useProductByIdQuery,
+  Product
 } from "../../saleor/api";
 
 import { Products } from "../../components/config";
+import { GetStaticProps } from 'next';
 
-export default function ProductPage({ product, token }) {
+export default function ProductPage({ product, token }: { product: Product, token: string }) {
   const router = useRouter();
 
   const { loading, error, data } = useProductByIdQuery({ variables: product });
@@ -25,7 +27,7 @@ export default function ProductPage({ product, token }) {
       ? JSON.parse(product?.description).blocks[0].data.text
       : "";
     const price = product?.pricing?.priceRange?.start?.gross.amount || 0;
-    const variantId = product?.variants[0].id;
+    const variantId = product?.variants![0]!.id!;
 
     return (
       <div className="min-h-screen bg-gray-100">
@@ -35,7 +37,7 @@ export default function ProductPage({ product, token }) {
           <div className="grid grid-cols-2 gap-x-10 items-start">
             <div className="w-full aspect-w-1 aspect-h-1 bg-white rounded">
               <img
-                src={product?.media[0]?.url}
+                src={product?.media![0]?.url}
                 className="w-full h-full object-center object-cover"
               />
             </div>
@@ -64,12 +66,9 @@ export default function ProductPage({ product, token }) {
               />
 
               <div className="grid grid-cols-8 gap-2">
-                {product?.variants.map((variant) => {
+                {product?.variants?.map((variant) => {
                   return (
-                    <a
-                      href="#"
-                      className="flex justify-center border border-gray-300 rounded-md p-3 font-semibold hover:border-blue-300"
-                    >
+                    <a key={variant?.name} className="flex justify-center border border-gray-300 rounded-md p-3 font-semibold hover:border-blue-300">
                       {variant?.name}
                     </a>
                   );
@@ -110,7 +109,7 @@ export async function getStaticPaths() {
     `
   );
 
-  const paths = edges.map(({ node }) => ({ params: { slug: node.id } }));
+  const paths = edges.map(({ node }: { node: any }) => ({ params: { slug: node.id } }));
 
   return {
     paths,
@@ -118,8 +117,8 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
-  const product = { id: params.slug };
+export const getStaticProps: GetStaticProps<any> = async ({ params }) => {
+  const product = { id: params?.slug };
 
   return {
     props: {
