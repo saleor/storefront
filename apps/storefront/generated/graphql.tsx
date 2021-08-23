@@ -12673,6 +12673,14 @@ export type AddProductToCheckoutMutationVariables = Exact<{
 
 export type AddProductToCheckoutMutation = { __typename?: 'Mutation', checkoutLinesAdd?: Maybe<{ __typename?: 'CheckoutLinesAdd', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, quantity: number }>>>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', message?: Maybe<string> }> }> };
 
+export type RemoveProductFromCheckoutMutationVariables = Exact<{
+  checkoutId: Scalars['UUID'];
+  lineId: Scalars['ID'];
+}>;
+
+
+export type RemoveProductFromCheckoutMutation = { __typename?: 'Mutation', checkoutLineDelete?: Maybe<{ __typename?: 'CheckoutLineDelete', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, quantity: number, variant: { __typename?: 'ProductVariant', id: string } }>>> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string> }> }> };
+
 export type CheckoutByIdQueryVariables = Exact<{
   checkoutId: Scalars['UUID'];
 }>;
@@ -12998,6 +13006,52 @@ export function useAddProductToCheckoutMutation(baseOptions?: Apollo.MutationHoo
 export type AddProductToCheckoutMutationHookResult = ReturnType<typeof useAddProductToCheckoutMutation>;
 export type AddProductToCheckoutMutationResult = Apollo.MutationResult<AddProductToCheckoutMutation>;
 export type AddProductToCheckoutMutationOptions = Apollo.BaseMutationOptions<AddProductToCheckoutMutation, AddProductToCheckoutMutationVariables>;
+export const RemoveProductFromCheckoutDocument = gql`
+    mutation RemoveProductFromCheckout($checkoutId: UUID!, $lineId: ID!) {
+  checkoutLineDelete(token: $checkoutId, lineId: $lineId) {
+    checkout {
+      lines {
+        id
+        variant {
+          id
+        }
+        quantity
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type RemoveProductFromCheckoutMutationFn = Apollo.MutationFunction<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>;
+
+/**
+ * __useRemoveProductFromCheckoutMutation__
+ *
+ * To run a mutation, you first call `useRemoveProductFromCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProductFromCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeProductFromCheckoutMutation, { data, loading, error }] = useRemoveProductFromCheckoutMutation({
+ *   variables: {
+ *      checkoutId: // value for 'checkoutId'
+ *      lineId: // value for 'lineId'
+ *   },
+ * });
+ */
+export function useRemoveProductFromCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>(RemoveProductFromCheckoutDocument, options);
+      }
+export type RemoveProductFromCheckoutMutationHookResult = ReturnType<typeof useRemoveProductFromCheckoutMutation>;
+export type RemoveProductFromCheckoutMutationResult = Apollo.MutationResult<RemoveProductFromCheckoutMutation>;
+export type RemoveProductFromCheckoutMutationOptions = Apollo.BaseMutationOptions<RemoveProductFromCheckoutMutation, RemoveProductFromCheckoutMutationVariables>;
 export const CheckoutByIdDocument = gql`
     query CheckoutByID($checkoutId: UUID!) {
   checkout(token: $checkoutId) {
