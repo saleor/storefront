@@ -846,7 +846,7 @@ export type AttributeFilterInput = {
   type?: Maybe<AttributeTypeEnum>;
   inCollection?: Maybe<Scalars['ID']>;
   inCategory?: Maybe<Scalars['ID']>;
-  /** Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel by which the data should be filtered. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
 };
 
@@ -935,7 +935,7 @@ export type AttributeTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for attribute. */
+/** Creates/updates translations for an attribute. */
 export type AttributeTranslate = {
   __typename?: 'AttributeTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -1133,7 +1133,7 @@ export type AttributeValueTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for attribute value. */
+/** Creates/updates translations for an attribute value. */
 export type AttributeValueTranslate = {
   __typename?: 'AttributeValueTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -1173,7 +1173,7 @@ export type BulkAttributeValueInput = {
   id?: Maybe<Scalars['ID']>;
   /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. */
   values?: Maybe<Array<Scalars['String']>>;
-  /** The boolean value of an attribute to resolve.If the passed value is non-existent, it will be created. */
+  /** The boolean value of an attribute to resolve. If the passed value is non-existent, it will be created. */
   boolean?: Maybe<Scalars['Boolean']>;
 };
 
@@ -1372,7 +1372,7 @@ export enum CategorySortField {
 export type CategorySortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
-  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel in which to sort the data. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
   /** Sort categories by the selected field. */
   field: CategorySortField;
@@ -1405,7 +1405,7 @@ export type CategoryTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for Category. */
+/** Creates/updates translations for a category. */
 export type CategoryTranslate = {
   __typename?: 'CategoryTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -2075,7 +2075,7 @@ export type CollectionFilterInput = {
   search?: Maybe<Scalars['String']>;
   metadata?: Maybe<Array<Maybe<MetadataFilter>>>;
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  /** Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel by which the data should be filtered. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
 };
 
@@ -2137,7 +2137,7 @@ export enum CollectionSortField {
 export type CollectionSortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
-  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel in which to sort the data. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
   /** Sort collections by the selected field. */
   field: CollectionSortField;
@@ -2170,7 +2170,7 @@ export type CollectionTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for collection. */
+/** Creates/updates translations for a collection. */
 export type CollectionTranslate = {
   __typename?: 'CollectionTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -3639,55 +3639,785 @@ export enum JobStatusEnum {
 
 /** An enumeration. */
 export enum LanguageCodeEnum {
+  Af = 'AF',
+  AfNa = 'AF_NA',
+  AfZa = 'AF_ZA',
+  Agq = 'AGQ',
+  AgqCm = 'AGQ_CM',
+  Ak = 'AK',
+  AkGh = 'AK_GH',
+  Am = 'AM',
+  AmEt = 'AM_ET',
   Ar = 'AR',
+  ArAe = 'AR_AE',
+  ArBh = 'AR_BH',
+  ArDj = 'AR_DJ',
+  ArDz = 'AR_DZ',
+  ArEg = 'AR_EG',
+  ArEh = 'AR_EH',
+  ArEr = 'AR_ER',
+  ArIl = 'AR_IL',
+  ArIq = 'AR_IQ',
+  ArJo = 'AR_JO',
+  ArKm = 'AR_KM',
+  ArKw = 'AR_KW',
+  ArLb = 'AR_LB',
+  ArLy = 'AR_LY',
+  ArMa = 'AR_MA',
+  ArMr = 'AR_MR',
+  ArOm = 'AR_OM',
+  ArPs = 'AR_PS',
+  ArQa = 'AR_QA',
+  ArSa = 'AR_SA',
+  ArSd = 'AR_SD',
+  ArSo = 'AR_SO',
+  ArSs = 'AR_SS',
+  ArSy = 'AR_SY',
+  ArTd = 'AR_TD',
+  ArTn = 'AR_TN',
+  ArYe = 'AR_YE',
+  As = 'AS',
+  AsIn = 'AS_IN',
+  Asa = 'ASA',
+  AsaTz = 'ASA_TZ',
+  Ast = 'AST',
+  AstEs = 'AST_ES',
   Az = 'AZ',
+  AzCyrl = 'AZ_CYRL',
+  AzCyrlAz = 'AZ_CYRL_AZ',
+  AzLatn = 'AZ_LATN',
+  AzLatnAz = 'AZ_LATN_AZ',
+  Bas = 'BAS',
+  BasCm = 'BAS_CM',
+  Be = 'BE',
+  BeBy = 'BE_BY',
+  Bem = 'BEM',
+  BemZm = 'BEM_ZM',
+  Bez = 'BEZ',
+  BezTz = 'BEZ_TZ',
   Bg = 'BG',
+  BgBg = 'BG_BG',
+  Bm = 'BM',
+  BmMl = 'BM_ML',
   Bn = 'BN',
+  BnBd = 'BN_BD',
+  BnIn = 'BN_IN',
+  Bo = 'BO',
+  BoCn = 'BO_CN',
+  BoIn = 'BO_IN',
+  Br = 'BR',
+  BrFr = 'BR_FR',
+  Brx = 'BRX',
+  BrxIn = 'BRX_IN',
+  Bs = 'BS',
+  BsCyrl = 'BS_CYRL',
+  BsCyrlBa = 'BS_CYRL_BA',
+  BsLatn = 'BS_LATN',
+  BsLatnBa = 'BS_LATN_BA',
   Ca = 'CA',
+  CaAd = 'CA_AD',
+  CaEs = 'CA_ES',
+  CaEsValencia = 'CA_ES_VALENCIA',
+  CaFr = 'CA_FR',
+  CaIt = 'CA_IT',
+  Ccp = 'CCP',
+  CcpBd = 'CCP_BD',
+  CcpIn = 'CCP_IN',
+  Ce = 'CE',
+  CeRu = 'CE_RU',
+  Ceb = 'CEB',
+  CebPh = 'CEB_PH',
+  Cgg = 'CGG',
+  CggUg = 'CGG_UG',
+  Chr = 'CHR',
+  ChrUs = 'CHR_US',
+  Ckb = 'CKB',
+  CkbIq = 'CKB_IQ',
+  CkbIr = 'CKB_IR',
   Cs = 'CS',
+  CsCz = 'CS_CZ',
+  Cu = 'CU',
+  CuRu = 'CU_RU',
+  Cy = 'CY',
+  CyGb = 'CY_GB',
   Da = 'DA',
+  DaDk = 'DA_DK',
+  DaGl = 'DA_GL',
+  Dav = 'DAV',
+  DavKe = 'DAV_KE',
   De = 'DE',
+  DeAt = 'DE_AT',
+  DeBe = 'DE_BE',
+  DeCh = 'DE_CH',
+  DeDe = 'DE_DE',
+  DeIt = 'DE_IT',
+  DeLi = 'DE_LI',
+  DeLu = 'DE_LU',
+  Dje = 'DJE',
+  DjeNe = 'DJE_NE',
+  Dsb = 'DSB',
+  DsbDe = 'DSB_DE',
+  Dua = 'DUA',
+  DuaCm = 'DUA_CM',
+  Dyo = 'DYO',
+  DyoSn = 'DYO_SN',
+  Dz = 'DZ',
+  DzBt = 'DZ_BT',
+  Ebu = 'EBU',
+  EbuKe = 'EBU_KE',
+  Ee = 'EE',
+  EeGh = 'EE_GH',
+  EeTg = 'EE_TG',
   El = 'EL',
+  ElCy = 'EL_CY',
+  ElGr = 'EL_GR',
   En = 'EN',
+  EnAe = 'EN_AE',
+  EnAg = 'EN_AG',
+  EnAi = 'EN_AI',
+  EnAs = 'EN_AS',
+  EnAt = 'EN_AT',
+  EnAu = 'EN_AU',
+  EnBb = 'EN_BB',
+  EnBe = 'EN_BE',
+  EnBi = 'EN_BI',
+  EnBm = 'EN_BM',
+  EnBs = 'EN_BS',
+  EnBw = 'EN_BW',
+  EnBz = 'EN_BZ',
+  EnCa = 'EN_CA',
+  EnCc = 'EN_CC',
+  EnCh = 'EN_CH',
+  EnCk = 'EN_CK',
+  EnCm = 'EN_CM',
+  EnCx = 'EN_CX',
+  EnCy = 'EN_CY',
+  EnDe = 'EN_DE',
+  EnDg = 'EN_DG',
+  EnDk = 'EN_DK',
+  EnDm = 'EN_DM',
+  EnEr = 'EN_ER',
+  EnFi = 'EN_FI',
+  EnFj = 'EN_FJ',
+  EnFk = 'EN_FK',
+  EnFm = 'EN_FM',
+  EnGb = 'EN_GB',
+  EnGd = 'EN_GD',
+  EnGg = 'EN_GG',
+  EnGh = 'EN_GH',
+  EnGi = 'EN_GI',
+  EnGm = 'EN_GM',
+  EnGu = 'EN_GU',
+  EnGy = 'EN_GY',
+  EnHk = 'EN_HK',
+  EnIe = 'EN_IE',
+  EnIl = 'EN_IL',
+  EnIm = 'EN_IM',
+  EnIn = 'EN_IN',
+  EnIo = 'EN_IO',
+  EnJe = 'EN_JE',
+  EnJm = 'EN_JM',
+  EnKe = 'EN_KE',
+  EnKi = 'EN_KI',
+  EnKn = 'EN_KN',
+  EnKy = 'EN_KY',
+  EnLc = 'EN_LC',
+  EnLr = 'EN_LR',
+  EnLs = 'EN_LS',
+  EnMg = 'EN_MG',
+  EnMh = 'EN_MH',
+  EnMo = 'EN_MO',
+  EnMp = 'EN_MP',
+  EnMs = 'EN_MS',
+  EnMt = 'EN_MT',
+  EnMu = 'EN_MU',
+  EnMw = 'EN_MW',
+  EnMy = 'EN_MY',
+  EnNa = 'EN_NA',
+  EnNf = 'EN_NF',
+  EnNg = 'EN_NG',
+  EnNl = 'EN_NL',
+  EnNr = 'EN_NR',
+  EnNu = 'EN_NU',
+  EnNz = 'EN_NZ',
+  EnPg = 'EN_PG',
+  EnPh = 'EN_PH',
+  EnPk = 'EN_PK',
+  EnPn = 'EN_PN',
+  EnPr = 'EN_PR',
+  EnPw = 'EN_PW',
+  EnRw = 'EN_RW',
+  EnSb = 'EN_SB',
+  EnSc = 'EN_SC',
+  EnSd = 'EN_SD',
+  EnSe = 'EN_SE',
+  EnSg = 'EN_SG',
+  EnSh = 'EN_SH',
+  EnSi = 'EN_SI',
+  EnSl = 'EN_SL',
+  EnSs = 'EN_SS',
+  EnSx = 'EN_SX',
+  EnSz = 'EN_SZ',
+  EnTc = 'EN_TC',
+  EnTk = 'EN_TK',
+  EnTo = 'EN_TO',
+  EnTt = 'EN_TT',
+  EnTv = 'EN_TV',
+  EnTz = 'EN_TZ',
+  EnUg = 'EN_UG',
+  EnUm = 'EN_UM',
+  EnUs = 'EN_US',
+  EnVc = 'EN_VC',
+  EnVg = 'EN_VG',
+  EnVi = 'EN_VI',
+  EnVu = 'EN_VU',
+  EnWs = 'EN_WS',
+  EnZa = 'EN_ZA',
+  EnZm = 'EN_ZM',
+  EnZw = 'EN_ZW',
+  Eo = 'EO',
   Es = 'ES',
+  EsAr = 'ES_AR',
+  EsBo = 'ES_BO',
+  EsBr = 'ES_BR',
+  EsBz = 'ES_BZ',
+  EsCl = 'ES_CL',
   EsCo = 'ES_CO',
+  EsCr = 'ES_CR',
+  EsCu = 'ES_CU',
+  EsDo = 'ES_DO',
+  EsEa = 'ES_EA',
+  EsEc = 'ES_EC',
+  EsEs = 'ES_ES',
+  EsGq = 'ES_GQ',
+  EsGt = 'ES_GT',
+  EsHn = 'ES_HN',
+  EsIc = 'ES_IC',
+  EsMx = 'ES_MX',
+  EsNi = 'ES_NI',
+  EsPa = 'ES_PA',
+  EsPe = 'ES_PE',
+  EsPh = 'ES_PH',
+  EsPr = 'ES_PR',
+  EsPy = 'ES_PY',
+  EsSv = 'ES_SV',
+  EsUs = 'ES_US',
+  EsUy = 'ES_UY',
+  EsVe = 'ES_VE',
   Et = 'ET',
+  EtEe = 'ET_EE',
+  Eu = 'EU',
+  EuEs = 'EU_ES',
+  Ewo = 'EWO',
+  EwoCm = 'EWO_CM',
   Fa = 'FA',
+  FaAf = 'FA_AF',
+  FaIr = 'FA_IR',
+  Ff = 'FF',
+  FfAdlm = 'FF_ADLM',
+  FfAdlmBf = 'FF_ADLM_BF',
+  FfAdlmCm = 'FF_ADLM_CM',
+  FfAdlmGh = 'FF_ADLM_GH',
+  FfAdlmGm = 'FF_ADLM_GM',
+  FfAdlmGn = 'FF_ADLM_GN',
+  FfAdlmGw = 'FF_ADLM_GW',
+  FfAdlmLr = 'FF_ADLM_LR',
+  FfAdlmMr = 'FF_ADLM_MR',
+  FfAdlmNe = 'FF_ADLM_NE',
+  FfAdlmNg = 'FF_ADLM_NG',
+  FfAdlmSl = 'FF_ADLM_SL',
+  FfAdlmSn = 'FF_ADLM_SN',
+  FfLatn = 'FF_LATN',
+  FfLatnBf = 'FF_LATN_BF',
+  FfLatnCm = 'FF_LATN_CM',
+  FfLatnGh = 'FF_LATN_GH',
+  FfLatnGm = 'FF_LATN_GM',
+  FfLatnGn = 'FF_LATN_GN',
+  FfLatnGw = 'FF_LATN_GW',
+  FfLatnLr = 'FF_LATN_LR',
+  FfLatnMr = 'FF_LATN_MR',
+  FfLatnNe = 'FF_LATN_NE',
+  FfLatnNg = 'FF_LATN_NG',
+  FfLatnSl = 'FF_LATN_SL',
+  FfLatnSn = 'FF_LATN_SN',
   Fi = 'FI',
+  FiFi = 'FI_FI',
+  Fil = 'FIL',
+  FilPh = 'FIL_PH',
+  Fo = 'FO',
+  FoDk = 'FO_DK',
+  FoFo = 'FO_FO',
   Fr = 'FR',
+  FrBe = 'FR_BE',
+  FrBf = 'FR_BF',
+  FrBi = 'FR_BI',
+  FrBj = 'FR_BJ',
+  FrBl = 'FR_BL',
+  FrCa = 'FR_CA',
+  FrCd = 'FR_CD',
+  FrCf = 'FR_CF',
+  FrCg = 'FR_CG',
+  FrCh = 'FR_CH',
+  FrCi = 'FR_CI',
+  FrCm = 'FR_CM',
+  FrDj = 'FR_DJ',
+  FrDz = 'FR_DZ',
+  FrFr = 'FR_FR',
+  FrGa = 'FR_GA',
+  FrGf = 'FR_GF',
+  FrGn = 'FR_GN',
+  FrGp = 'FR_GP',
+  FrGq = 'FR_GQ',
+  FrHt = 'FR_HT',
+  FrKm = 'FR_KM',
+  FrLu = 'FR_LU',
+  FrMa = 'FR_MA',
+  FrMc = 'FR_MC',
+  FrMf = 'FR_MF',
+  FrMg = 'FR_MG',
+  FrMl = 'FR_ML',
+  FrMq = 'FR_MQ',
+  FrMr = 'FR_MR',
+  FrMu = 'FR_MU',
+  FrNc = 'FR_NC',
+  FrNe = 'FR_NE',
+  FrPf = 'FR_PF',
+  FrPm = 'FR_PM',
+  FrRe = 'FR_RE',
+  FrRw = 'FR_RW',
+  FrSc = 'FR_SC',
+  FrSn = 'FR_SN',
+  FrSy = 'FR_SY',
+  FrTd = 'FR_TD',
+  FrTg = 'FR_TG',
+  FrTn = 'FR_TN',
+  FrVu = 'FR_VU',
+  FrWf = 'FR_WF',
+  FrYt = 'FR_YT',
+  Fur = 'FUR',
+  FurIt = 'FUR_IT',
+  Fy = 'FY',
+  FyNl = 'FY_NL',
+  Ga = 'GA',
+  GaGb = 'GA_GB',
+  GaIe = 'GA_IE',
+  Gd = 'GD',
+  GdGb = 'GD_GB',
+  Gl = 'GL',
+  GlEs = 'GL_ES',
+  Gsw = 'GSW',
+  GswCh = 'GSW_CH',
+  GswFr = 'GSW_FR',
+  GswLi = 'GSW_LI',
+  Gu = 'GU',
+  GuIn = 'GU_IN',
+  Guz = 'GUZ',
+  GuzKe = 'GUZ_KE',
+  Gv = 'GV',
+  GvIm = 'GV_IM',
+  Ha = 'HA',
+  HaGh = 'HA_GH',
+  HaNe = 'HA_NE',
+  HaNg = 'HA_NG',
+  Haw = 'HAW',
+  HawUs = 'HAW_US',
+  He = 'HE',
+  HeIl = 'HE_IL',
   Hi = 'HI',
+  HiIn = 'HI_IN',
+  Hr = 'HR',
+  HrBa = 'HR_BA',
+  HrHr = 'HR_HR',
+  Hsb = 'HSB',
+  HsbDe = 'HSB_DE',
   Hu = 'HU',
+  HuHu = 'HU_HU',
   Hy = 'HY',
+  HyAm = 'HY_AM',
+  Ia = 'IA',
   Id = 'ID',
+  IdId = 'ID_ID',
+  Ig = 'IG',
+  IgNg = 'IG_NG',
+  Ii = 'II',
+  IiCn = 'II_CN',
   Is = 'IS',
+  IsIs = 'IS_IS',
   It = 'IT',
+  ItCh = 'IT_CH',
+  ItIt = 'IT_IT',
+  ItSm = 'IT_SM',
+  ItVa = 'IT_VA',
   Ja = 'JA',
+  JaJp = 'JA_JP',
+  Jgo = 'JGO',
+  JgoCm = 'JGO_CM',
+  Jmc = 'JMC',
+  JmcTz = 'JMC_TZ',
+  Jv = 'JV',
+  JvId = 'JV_ID',
   Ka = 'KA',
+  KaGe = 'KA_GE',
+  Kab = 'KAB',
+  KabDz = 'KAB_DZ',
+  Kam = 'KAM',
+  KamKe = 'KAM_KE',
+  Kde = 'KDE',
+  KdeTz = 'KDE_TZ',
+  Kea = 'KEA',
+  KeaCv = 'KEA_CV',
+  Khq = 'KHQ',
+  KhqMl = 'KHQ_ML',
+  Ki = 'KI',
+  KiKe = 'KI_KE',
+  Kk = 'KK',
+  KkKz = 'KK_KZ',
+  Kkj = 'KKJ',
+  KkjCm = 'KKJ_CM',
+  Kl = 'KL',
+  KlGl = 'KL_GL',
+  Kln = 'KLN',
+  KlnKe = 'KLN_KE',
   Km = 'KM',
+  KmKh = 'KM_KH',
+  Kn = 'KN',
+  KnIn = 'KN_IN',
   Ko = 'KO',
+  KoKp = 'KO_KP',
+  KoKr = 'KO_KR',
+  Kok = 'KOK',
+  KokIn = 'KOK_IN',
+  Ks = 'KS',
+  KsArab = 'KS_ARAB',
+  KsArabIn = 'KS_ARAB_IN',
+  Ksb = 'KSB',
+  KsbTz = 'KSB_TZ',
+  Ksf = 'KSF',
+  KsfCm = 'KSF_CM',
+  Ksh = 'KSH',
+  KshDe = 'KSH_DE',
+  Ku = 'KU',
+  KuTr = 'KU_TR',
+  Kw = 'KW',
+  KwGb = 'KW_GB',
+  Ky = 'KY',
+  KyKg = 'KY_KG',
+  Lag = 'LAG',
+  LagTz = 'LAG_TZ',
+  Lb = 'LB',
+  LbLu = 'LB_LU',
+  Lg = 'LG',
+  LgUg = 'LG_UG',
+  Lkt = 'LKT',
+  LktUs = 'LKT_US',
+  Ln = 'LN',
+  LnAo = 'LN_AO',
+  LnCd = 'LN_CD',
+  LnCf = 'LN_CF',
+  LnCg = 'LN_CG',
+  Lo = 'LO',
+  LoLa = 'LO_LA',
+  Lrc = 'LRC',
+  LrcIq = 'LRC_IQ',
+  LrcIr = 'LRC_IR',
   Lt = 'LT',
+  LtLt = 'LT_LT',
+  Lu = 'LU',
+  LuCd = 'LU_CD',
+  Luo = 'LUO',
+  LuoKe = 'LUO_KE',
+  Luy = 'LUY',
+  LuyKe = 'LUY_KE',
+  Lv = 'LV',
+  LvLv = 'LV_LV',
+  Mai = 'MAI',
+  MaiIn = 'MAI_IN',
+  Mas = 'MAS',
+  MasKe = 'MAS_KE',
+  MasTz = 'MAS_TZ',
+  Mer = 'MER',
+  MerKe = 'MER_KE',
+  Mfe = 'MFE',
+  MfeMu = 'MFE_MU',
+  Mg = 'MG',
+  MgMg = 'MG_MG',
+  Mgh = 'MGH',
+  MghMz = 'MGH_MZ',
+  Mgo = 'MGO',
+  MgoCm = 'MGO_CM',
+  Mi = 'MI',
+  MiNz = 'MI_NZ',
+  Mk = 'MK',
+  MkMk = 'MK_MK',
+  Ml = 'ML',
+  MlIn = 'ML_IN',
   Mn = 'MN',
+  MnMn = 'MN_MN',
+  Mni = 'MNI',
+  MniBeng = 'MNI_BENG',
+  MniBengIn = 'MNI_BENG_IN',
+  Mr = 'MR',
+  MrIn = 'MR_IN',
+  Ms = 'MS',
+  MsBn = 'MS_BN',
+  MsId = 'MS_ID',
+  MsMy = 'MS_MY',
+  MsSg = 'MS_SG',
+  Mt = 'MT',
+  MtMt = 'MT_MT',
+  Mua = 'MUA',
+  MuaCm = 'MUA_CM',
   My = 'MY',
+  MyMm = 'MY_MM',
+  Mzn = 'MZN',
+  MznIr = 'MZN_IR',
+  Naq = 'NAQ',
+  NaqNa = 'NAQ_NA',
   Nb = 'NB',
+  NbNo = 'NB_NO',
+  NbSj = 'NB_SJ',
+  Nd = 'ND',
+  NdZw = 'ND_ZW',
+  Nds = 'NDS',
+  NdsDe = 'NDS_DE',
+  NdsNl = 'NDS_NL',
+  Ne = 'NE',
+  NeIn = 'NE_IN',
+  NeNp = 'NE_NP',
   Nl = 'NL',
+  NlAw = 'NL_AW',
+  NlBe = 'NL_BE',
+  NlBq = 'NL_BQ',
+  NlCw = 'NL_CW',
+  NlNl = 'NL_NL',
+  NlSr = 'NL_SR',
+  NlSx = 'NL_SX',
+  Nmg = 'NMG',
+  NmgCm = 'NMG_CM',
+  Nn = 'NN',
+  NnNo = 'NN_NO',
+  Nnh = 'NNH',
+  NnhCm = 'NNH_CM',
+  Nus = 'NUS',
+  NusSs = 'NUS_SS',
+  Nyn = 'NYN',
+  NynUg = 'NYN_UG',
+  Om = 'OM',
+  OmEt = 'OM_ET',
+  OmKe = 'OM_KE',
+  Or = 'OR',
+  OrIn = 'OR_IN',
+  Os = 'OS',
+  OsGe = 'OS_GE',
+  OsRu = 'OS_RU',
+  Pa = 'PA',
+  PaArab = 'PA_ARAB',
+  PaArabPk = 'PA_ARAB_PK',
+  PaGuru = 'PA_GURU',
+  PaGuruIn = 'PA_GURU_IN',
+  Pcm = 'PCM',
+  PcmNg = 'PCM_NG',
   Pl = 'PL',
+  PlPl = 'PL_PL',
+  Prg = 'PRG',
+  Ps = 'PS',
+  PsAf = 'PS_AF',
+  PsPk = 'PS_PK',
   Pt = 'PT',
+  PtAo = 'PT_AO',
   PtBr = 'PT_BR',
+  PtCh = 'PT_CH',
+  PtCv = 'PT_CV',
+  PtGq = 'PT_GQ',
+  PtGw = 'PT_GW',
+  PtLu = 'PT_LU',
+  PtMo = 'PT_MO',
+  PtMz = 'PT_MZ',
+  PtPt = 'PT_PT',
+  PtSt = 'PT_ST',
+  PtTl = 'PT_TL',
+  Qu = 'QU',
+  QuBo = 'QU_BO',
+  QuEc = 'QU_EC',
+  QuPe = 'QU_PE',
+  Rm = 'RM',
+  RmCh = 'RM_CH',
+  Rn = 'RN',
+  RnBi = 'RN_BI',
   Ro = 'RO',
+  RoMd = 'RO_MD',
+  RoRo = 'RO_RO',
+  Rof = 'ROF',
+  RofTz = 'ROF_TZ',
   Ru = 'RU',
+  RuBy = 'RU_BY',
+  RuKg = 'RU_KG',
+  RuKz = 'RU_KZ',
+  RuMd = 'RU_MD',
+  RuRu = 'RU_RU',
+  RuUa = 'RU_UA',
+  Rw = 'RW',
+  RwRw = 'RW_RW',
+  Rwk = 'RWK',
+  RwkTz = 'RWK_TZ',
+  Sah = 'SAH',
+  SahRu = 'SAH_RU',
+  Saq = 'SAQ',
+  SaqKe = 'SAQ_KE',
+  Sat = 'SAT',
+  SatOlck = 'SAT_OLCK',
+  SatOlckIn = 'SAT_OLCK_IN',
+  Sbp = 'SBP',
+  SbpTz = 'SBP_TZ',
+  Sd = 'SD',
+  SdArab = 'SD_ARAB',
+  SdArabPk = 'SD_ARAB_PK',
+  SdDeva = 'SD_DEVA',
+  SdDevaIn = 'SD_DEVA_IN',
+  Se = 'SE',
+  SeFi = 'SE_FI',
+  SeNo = 'SE_NO',
+  SeSe = 'SE_SE',
+  Seh = 'SEH',
+  SehMz = 'SEH_MZ',
+  Ses = 'SES',
+  SesMl = 'SES_ML',
+  Sg = 'SG',
+  SgCf = 'SG_CF',
+  Shi = 'SHI',
+  ShiLatn = 'SHI_LATN',
+  ShiLatnMa = 'SHI_LATN_MA',
+  ShiTfng = 'SHI_TFNG',
+  ShiTfngMa = 'SHI_TFNG_MA',
+  Si = 'SI',
+  SiLk = 'SI_LK',
   Sk = 'SK',
+  SkSk = 'SK_SK',
   Sl = 'SL',
+  SlSi = 'SL_SI',
+  Smn = 'SMN',
+  SmnFi = 'SMN_FI',
+  Sn = 'SN',
+  SnZw = 'SN_ZW',
+  So = 'SO',
+  SoDj = 'SO_DJ',
+  SoEt = 'SO_ET',
+  SoKe = 'SO_KE',
+  SoSo = 'SO_SO',
   Sq = 'SQ',
+  SqAl = 'SQ_AL',
+  SqMk = 'SQ_MK',
+  SqXk = 'SQ_XK',
   Sr = 'SR',
+  SrCyrl = 'SR_CYRL',
+  SrCyrlBa = 'SR_CYRL_BA',
+  SrCyrlMe = 'SR_CYRL_ME',
+  SrCyrlRs = 'SR_CYRL_RS',
+  SrCyrlXk = 'SR_CYRL_XK',
+  SrLatn = 'SR_LATN',
+  SrLatnBa = 'SR_LATN_BA',
+  SrLatnMe = 'SR_LATN_ME',
+  SrLatnRs = 'SR_LATN_RS',
+  SrLatnXk = 'SR_LATN_XK',
+  Su = 'SU',
+  SuLatn = 'SU_LATN',
+  SuLatnId = 'SU_LATN_ID',
   Sv = 'SV',
+  SvAx = 'SV_AX',
+  SvFi = 'SV_FI',
+  SvSe = 'SV_SE',
   Sw = 'SW',
+  SwCd = 'SW_CD',
+  SwKe = 'SW_KE',
+  SwTz = 'SW_TZ',
+  SwUg = 'SW_UG',
   Ta = 'TA',
+  TaIn = 'TA_IN',
+  TaLk = 'TA_LK',
+  TaMy = 'TA_MY',
+  TaSg = 'TA_SG',
+  Te = 'TE',
+  TeIn = 'TE_IN',
+  Teo = 'TEO',
+  TeoKe = 'TEO_KE',
+  TeoUg = 'TEO_UG',
+  Tg = 'TG',
+  TgTj = 'TG_TJ',
   Th = 'TH',
+  ThTh = 'TH_TH',
+  Ti = 'TI',
+  TiEr = 'TI_ER',
+  TiEt = 'TI_ET',
+  Tk = 'TK',
+  TkTm = 'TK_TM',
+  To = 'TO',
+  ToTo = 'TO_TO',
   Tr = 'TR',
+  TrCy = 'TR_CY',
+  TrTr = 'TR_TR',
+  Tt = 'TT',
+  TtRu = 'TT_RU',
+  Twq = 'TWQ',
+  TwqNe = 'TWQ_NE',
+  Tzm = 'TZM',
+  TzmMa = 'TZM_MA',
+  Ug = 'UG',
+  UgCn = 'UG_CN',
   Uk = 'UK',
+  UkUa = 'UK_UA',
+  Ur = 'UR',
+  UrIn = 'UR_IN',
+  UrPk = 'UR_PK',
+  Uz = 'UZ',
+  UzArab = 'UZ_ARAB',
+  UzArabAf = 'UZ_ARAB_AF',
+  UzCyrl = 'UZ_CYRL',
+  UzCyrlUz = 'UZ_CYRL_UZ',
+  UzLatn = 'UZ_LATN',
+  UzLatnUz = 'UZ_LATN_UZ',
+  Vai = 'VAI',
+  VaiLatn = 'VAI_LATN',
+  VaiLatnLr = 'VAI_LATN_LR',
+  VaiVaii = 'VAI_VAII',
+  VaiVaiiLr = 'VAI_VAII_LR',
   Vi = 'VI',
+  ViVn = 'VI_VN',
+  Vo = 'VO',
+  Vun = 'VUN',
+  VunTz = 'VUN_TZ',
+  Wae = 'WAE',
+  WaeCh = 'WAE_CH',
+  Wo = 'WO',
+  WoSn = 'WO_SN',
+  Xh = 'XH',
+  XhZa = 'XH_ZA',
+  Xog = 'XOG',
+  XogUg = 'XOG_UG',
+  Yav = 'YAV',
+  YavCm = 'YAV_CM',
+  Yi = 'YI',
+  Yo = 'YO',
+  YoBj = 'YO_BJ',
+  YoNg = 'YO_NG',
+  Yue = 'YUE',
+  YueHans = 'YUE_HANS',
+  YueHansCn = 'YUE_HANS_CN',
+  YueHant = 'YUE_HANT',
+  YueHantHk = 'YUE_HANT_HK',
+  Zgh = 'ZGH',
+  ZghMa = 'ZGH_MA',
+  Zh = 'ZH',
   ZhHans = 'ZH_HANS',
-  ZhHant = 'ZH_HANT'
+  ZhHansCn = 'ZH_HANS_CN',
+  ZhHansHk = 'ZH_HANS_HK',
+  ZhHansMo = 'ZH_HANS_MO',
+  ZhHansSg = 'ZH_HANS_SG',
+  ZhHant = 'ZH_HANT',
+  ZhHantHk = 'ZH_HANT_HK',
+  ZhHantMo = 'ZH_HANT_MO',
+  ZhHantTw = 'ZH_HANT_TW',
+  Zu = 'ZU',
+  ZuZa = 'ZU_ZA'
 }
 
 export type LanguageDisplay = {
@@ -4030,7 +4760,7 @@ export type MenuItemTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for Menu Item. */
+/** Creates/updates translations for a menu item. */
 export type MenuItemTranslate = {
   __typename?: 'MenuItemTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -4180,7 +4910,7 @@ export type Mutation = {
   shopSettingsUpdate?: Maybe<ShopSettingsUpdate>;
   /** Fetch tax rates. */
   shopFetchTaxRates?: Maybe<ShopFetchTaxRates>;
-  /** Creates/Updates translations for Shop Settings. */
+  /** Creates/updates translations for shop settings. */
   shopSettingsTranslate?: Maybe<ShopSettingsTranslate>;
   /** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
   shopAddressUpdate?: Maybe<ShopAddressUpdate>;
@@ -4196,7 +4926,7 @@ export type Mutation = {
   shippingPriceBulkDelete?: Maybe<ShippingPriceBulkDelete>;
   /** Updates a new shipping price. */
   shippingPriceUpdate?: Maybe<ShippingPriceUpdate>;
-  /** Creates/Updates translations for shipping method. */
+  /** Creates/updates translations for a shipping method. */
   shippingPriceTranslate?: Maybe<ShippingPriceTranslate>;
   /** Exclude products from shipping price. */
   shippingPriceExcludeProducts?: Maybe<ShippingPriceExcludeProducts>;
@@ -4222,7 +4952,7 @@ export type Mutation = {
   categoryBulkDelete?: Maybe<CategoryBulkDelete>;
   /** Updates a category. */
   categoryUpdate?: Maybe<CategoryUpdate>;
-  /** Creates/Updates translations for Category. */
+  /** Creates/updates translations for a category. */
   categoryTranslate?: Maybe<CategoryTranslate>;
   /** Adds products to a collection. */
   collectionAddProducts?: Maybe<CollectionAddProducts>;
@@ -4238,7 +4968,7 @@ export type Mutation = {
   collectionRemoveProducts?: Maybe<CollectionRemoveProducts>;
   /** Updates a collection. */
   collectionUpdate?: Maybe<CollectionUpdate>;
-  /** Creates/Updates translations for collection. */
+  /** Creates/updates translations for a collection. */
   collectionTranslate?: Maybe<CollectionTranslate>;
   /** Manage collection's availability in channels. */
   collectionChannelListingUpdate?: Maybe<CollectionChannelListingUpdate>;
@@ -4250,7 +4980,7 @@ export type Mutation = {
   productBulkDelete?: Maybe<ProductBulkDelete>;
   /** Updates an existing product. */
   productUpdate?: Maybe<ProductUpdate>;
-  /** Creates/Updates translations for Product. */
+  /** Creates/updates translations for a product. */
   productTranslate?: Maybe<ProductTranslate>;
   /** Manage product's availability in channels. */
   productChannelListingUpdate?: Maybe<ProductChannelListingUpdate>;
@@ -4304,7 +5034,7 @@ export type Mutation = {
   productVariantUpdate?: Maybe<ProductVariantUpdate>;
   /** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
   productVariantSetDefault?: Maybe<ProductVariantSetDefault>;
-  /** Creates/Updates translations for Product Variant. */
+  /** Creates/updates translations for a product variant. */
   productVariantTranslate?: Maybe<ProductVariantTranslate>;
   /** Manage product variant prices in channels. */
   productVariantChannelListingUpdate?: Maybe<ProductVariantChannelListingUpdate>;
@@ -4332,7 +5062,7 @@ export type Mutation = {
   pageBulkPublish?: Maybe<PageBulkPublish>;
   /** Updates an existing page. */
   pageUpdate?: Maybe<PageUpdate>;
-  /** Creates/Updates translations for Page. */
+  /** Creates/updates translations for a page. */
   pageTranslate?: Maybe<PageTranslate>;
   /** Create a new page type. */
   pageTypeCreate?: Maybe<PageTypeCreate>;
@@ -4434,7 +5164,7 @@ export type Mutation = {
   menuItemBulkDelete?: Maybe<MenuItemBulkDelete>;
   /** Updates a menu item. */
   menuItemUpdate?: Maybe<MenuItemUpdate>;
-  /** Creates/Updates translations for Menu Item. */
+  /** Creates/updates translations for a menu item. */
   menuItemTranslate?: Maybe<MenuItemTranslate>;
   /** Moves items of menus. */
   menuItemMove?: Maybe<MenuItemMove>;
@@ -4488,7 +5218,7 @@ export type Mutation = {
   voucherCataloguesAdd?: Maybe<VoucherAddCatalogues>;
   /** Removes products, categories, collections from a voucher. */
   voucherCataloguesRemove?: Maybe<VoucherRemoveCatalogues>;
-  /** Creates/Updates translations for Voucher. */
+  /** Creates/updates translations for a voucher. */
   voucherTranslate?: Maybe<VoucherTranslate>;
   /** Manage voucher's availability in channels. */
   voucherChannelListingUpdate?: Maybe<VoucherChannelListingUpdate>;
@@ -4542,7 +5272,7 @@ export type Mutation = {
   attributeDelete?: Maybe<AttributeDelete>;
   /** Updates attribute. */
   attributeUpdate?: Maybe<AttributeUpdate>;
-  /** Creates/Updates translations for attribute. */
+  /** Creates/updates translations for an attribute. */
   attributeTranslate?: Maybe<AttributeTranslate>;
   /** Deletes attributes. */
   attributeBulkDelete?: Maybe<AttributeBulkDelete>;
@@ -4554,7 +5284,7 @@ export type Mutation = {
   attributeValueDelete?: Maybe<AttributeValueDelete>;
   /** Updates value of an attribute. */
   attributeValueUpdate?: Maybe<AttributeValueUpdate>;
-  /** Creates/Updates translations for attribute value. */
+  /** Creates/updates translations for an attribute value. */
   attributeValueTranslate?: Maybe<AttributeValueTranslate>;
   /** Reorder the values of an attribute. */
   attributeReorderValues?: Maybe<AttributeReorderValues>;
@@ -7227,7 +7957,7 @@ export type PageTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for Page. */
+/** Creates/updates translations for a page. */
 export type PageTranslate = {
   __typename?: 'PageTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -8179,7 +8909,7 @@ export type ProductFilterInput = {
   minimalPrice?: Maybe<PriceRangeInput>;
   productTypes?: Maybe<Array<Maybe<Scalars['ID']>>>;
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  /** Specifies the channel by which the data should be filtered.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel by which the data should be filtered. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
 };
 
@@ -8323,7 +9053,7 @@ export type ProductMediaUpdateInput = {
 export type ProductOrder = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
-  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel in which to sort the data. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
   /**
    * Sort product by the selected attribute's values.
@@ -8418,7 +9148,7 @@ export type ProductTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for Product. */
+/** Creates/updates translations for a product. */
 export type ProductTranslate = {
   __typename?: 'ProductTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -8923,7 +9653,7 @@ export type ProductVariantTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for Product Variant. */
+/** Creates/updates translations for a product variant. */
 export type ProductVariantTranslate = {
   __typename?: 'ProductVariantTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -9863,7 +10593,7 @@ export enum SaleSortField {
 export type SaleSortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
-  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel in which to sort the data. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
   /** Sort sales by the selected field. */
   field: SaleSortField;
@@ -10207,7 +10937,7 @@ export type ShippingPriceRemoveProductFromExclude = {
   errors: Array<ShippingError>;
 };
 
-/** Creates/Updates translations for shipping method. */
+/** Creates/updates translations for a shipping method. */
 export type ShippingPriceTranslate = {
   __typename?: 'ShippingPriceTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -10518,10 +11248,10 @@ export type ShopSettingsInput = {
   customerSetPasswordUrl?: Maybe<Scalars['String']>;
 };
 
-/** Creates/Updates translations for Shop Settings. */
+/** Creates/updates translations for shop settings. */
 export type ShopSettingsTranslate = {
   __typename?: 'ShopSettingsTranslate';
-  /** Updated shop. */
+  /** Updated shop settings. */
   shop?: Maybe<Shop>;
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
   translationErrors: Array<TranslationError>;
@@ -11465,7 +12195,7 @@ export enum VoucherSortField {
 export type VoucherSortingInput = {
   /** Specifies the direction in which to sort products. */
   direction: OrderDirection;
-  /** Specifies the channel in which to sort the data.DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
+  /** Specifies the channel in which to sort the data. DEPRECATED: Will be removed in Saleor 4.0.Use root-level channel argument instead. */
   channel?: Maybe<Scalars['String']>;
   /** Sort vouchers by the selected field. */
   field: VoucherSortField;
@@ -11490,7 +12220,7 @@ export type VoucherTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/Updates translations for Voucher. */
+/** Creates/updates translations for a voucher. */
 export type VoucherTranslate = {
   __typename?: 'VoucherTranslate';
   /** @deprecated Use errors field instead. This field will be removed in Saleor 4.0. */
@@ -11948,7 +12678,7 @@ export type CheckoutByIdQueryVariables = Exact<{
 }>;
 
 
-export type CheckoutByIdQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> } } }>>> }> };
+export type CheckoutByIdQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> } } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', amount: number }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> };
 
 
 export const ProductsDocument = gql`
@@ -12281,6 +13011,24 @@ export const CheckoutByIdDocument = gql`
           }
         }
         name
+      }
+    }
+    subtotalPrice {
+      net {
+        amount
+      }
+      tax {
+        amount
+      }
+    }
+    shippingPrice {
+      gross {
+        amount
+      }
+    }
+    totalPrice {
+      gross {
+        amount
       }
     }
   }

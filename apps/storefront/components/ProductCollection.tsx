@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {
-  useProductsQuery,
-} from '../generated/graphql';
+import { useProductsQuery } from '../generated/graphql';
 import { Pagination } from './Pagination';
 
 function Products() {

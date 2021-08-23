@@ -1,4 +1,5 @@
 import { request, gql } from 'graphql-request';
+import { useRouter } from 'next/router';
 
 import { Navbar } from '../../components/Navbar';
 import { useAddProductToCheckoutMutation, useProductByIdQuery } from '../../generated/graphql';
@@ -6,10 +7,9 @@ import { useAddProductToCheckoutMutation, useProductByIdQuery } from '../../gene
 import { Products } from '../../components/config'
 
 export default function ProductPage({ product, token }) {
-  const { loading, error, data } = useProductByIdQuery({
-    variables: product
-  });
+  const router = useRouter();
 
+  const { loading, error, data } = useProductByIdQuery({ variables: product });
   const [addProductToCheckout] = useAddProductToCheckoutMutation();
 
   if (loading) return <p>Loading...</p>;
@@ -41,8 +41,7 @@ export default function ProductPage({ product, token }) {
                 <p className="text-lg mt-2 font-medium text-gray-500">{product?.category?.name}</p>
               </div>
 
-              <p className="text-2xl text-gray-900">{new Intl.NumberFormat('en-US', {
-                minimumFractionDigits: 2,
+              <p className="text-2xl text-gray-900">{new Intl.NumberFormat('en-US', { minimumFractionDigits: 2,
                 style: 'currency',
                 currency: 'USD'
               }).format(price)}</p>
@@ -63,12 +62,10 @@ export default function ProductPage({ product, token }) {
               </div>
 
               <button
-                onClick={() => addProductToCheckout({
-                  variables: {
-                    checkoutId: token,
-                    variantId,
-                  }
-                })}
+                onClick={async () => {
+                  await addProductToCheckout({ variables: { checkoutId: token, variantId }});
+                  router.push('/cart');
+                }}
                 type="submit"
                 className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
               >
