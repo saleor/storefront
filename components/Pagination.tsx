@@ -18,5 +18,5 @@ export function Pagination({ before, after }) {
         </a>
       </div>
     </nav>
-  )
+  );
 }

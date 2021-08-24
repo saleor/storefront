@@ -6,7 +6,7 @@
     "dev": "PORT=3001 next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "prettier --write . && next lint",
     "generate": "graphql-codegen --config codegen.yml -w"
   },
   "dependencies": {
@@ -35,6 +35,7 @@
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
     "postcss": "8.3.6",
+    "prettier": "2.3.2",
     "tailwindcss": "2.2.7",
     "typescript": "4.3.5"
   }
