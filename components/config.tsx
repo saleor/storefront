@@ -179,10 +179,9 @@ export const RemoveProductFromCheckout = /* GraphQL */`
   }
 `
 
-export const CheckoutByID = /* GraphQL */`
-  query CheckoutByID($checkoutId: UUID!) {
-    checkout(token: $checkoutId) {
-      lines {
+export const CheckoutDetailsFragment = /* GraphQL */`
+  fragment CheckoutDetailsFragment on Checkout {
+    lines {
         id
         variant {
           product {
@@ -212,6 +211,14 @@ export const CheckoutByID = /* GraphQL */`
           amount
         }
       }
+  }
+`
+
+export const CheckoutByID = /* GraphQL */`
+  ${CheckoutDetailsFragment}
+  query CheckoutByID($checkoutId: UUID!) {
+    checkout(token: $checkoutId) {
+      ...CheckoutDetailsFragment
     }
   }
 `;

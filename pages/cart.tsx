@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { CheckoutSummary } from '../components/CheckoutSummary';
 import { Navbar } from '../components/Navbar';
-import { useCheckoutByIdQuery, useRemoveProductFromCheckoutMutation } from '../generated/graphql';
+import { useCheckoutByIdQuery, useRemoveProductFromCheckoutMutation } from '../saleor/api';
 import { useLocalStorage } from '../lib/hooks';
 import { CheckoutByID } from '../components/config';
 

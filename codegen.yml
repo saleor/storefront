@@ -2,11 +2,15 @@ overwrite: true
 schema: "https://vercel.saleor.cloud/graphql/"
 documents: "components/**/*.tsx"
 generates:
-  generated/graphql.tsx:
+  saleor/api.tsx:
     plugins:
+      - add:
+          content: '// THIS FILE IS GENERATED WITH `npm run generate`'
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+    config:
+      dedupeOperationSuffix: true  # Prevent suffix duplication in generated names
   ./graphql.schema.json:
     plugins:
       - "introspection"

@@ -5,7 +5,7 @@ import client from "../lib/graphql";
 import { useLocalStorage } from '../lib/hooks';
 
 import 'tailwindcss/tailwind.css'
-import { useCreateCheckoutMutation } from '../generated/graphql';
+import { useCreateCheckoutMutation } from '../saleor/api';
 
 const Provider = ({ Component, pageProps }: AppProps) => {
   const [token, setToken] = useLocalStorage('token', '');

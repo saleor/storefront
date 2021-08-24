@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useProductsQuery } from '../generated/graphql';
+import { useProductsQuery } from '../saleor/api';
 import { Pagination } from './Pagination';
 
 function Products() {
