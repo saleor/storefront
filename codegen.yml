@@ -9,6 +9,7 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+      - "typescript-apollo-client-helpers"
     config:
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
   ./graphql.schema.json:

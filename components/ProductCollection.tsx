@@ -4,11 +4,15 @@ import { useProductsQuery } from "../saleor/api";
 import { Pagination } from "./Pagination";
 
 function Products() {
-  const [before, setBefore] = useState("");
-  const [after, setAfter] = useState("");
-  const { loading, error, data } = useProductsQuery({
-    variables: { after, before },
-  });
+  const { loading, error, data, fetchMore } = useProductsQuery();
+
+  const onLoadMore = () => {
+    fetchMore({
+      variables: {
+        after: data?.products?.pageInfo.endCursor,
+      },
+    });
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
@@ -48,12 +52,9 @@ function Products() {
               )
             )}
         </ul>
-
         <Pagination
-          before={() => setBefore(latestProducts[0].cursor || "")}
-          after={() =>
-            setAfter(latestProducts[latestProducts.length - 1].cursor || "")
-          }
+          onLoadMore={onLoadMore}
+          pageInfo={data?.products?.pageInfo}
         />
       </div>
     );
