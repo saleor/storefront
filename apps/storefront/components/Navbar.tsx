@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { ShoppingBagIcon } from '@heroicons/react/outline'
 import { useLocalStorage } from '../lib/hooks';
-import { useCheckoutByIdQuery } from '../generated/graphql';
+import { useCheckoutByIdQuery } from '../saleor/api';
 
 export const Navbar: React.VFC = ({ }) => {
   const [token] = useLocalStorage('token', '');

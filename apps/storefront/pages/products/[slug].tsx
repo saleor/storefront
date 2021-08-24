@@ -2,7 +2,7 @@ import { request, gql } from 'graphql-request';
 import { useRouter } from 'next/router';
 
 import { Navbar } from '../../components/Navbar';
-import { useAddProductToCheckoutMutation, useProductByIdQuery } from '../../generated/graphql';
+import { useAddProductToCheckoutMutation, useProductByIdQuery } from '../../saleor/api';
 
 import { Products } from '../../components/config'
 

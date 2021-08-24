@@ -1,3 +1,4 @@
 {
-  "extends": ["next", "next/core-web-vitals"]
+  "extends": ["next", "next/core-web-vitals"],
+  "ignorePatterns": ["saleor/api.tsx"]
 }
