@@ -1,6 +1,6 @@
-import React from 'react';
-import Products from '../components/ProductCollection';
-import { Navbar } from '../components/Navbar';
+import React from "react";
+import Products from "../components/ProductCollection";
+import { Navbar } from "../components/Navbar";
 
 const Home: React.VFC = () => {
   return (
@@ -9,8 +9,7 @@ const Home: React.VFC = () => {
 
       <div className="py-10">
         <header className="mb-4">
-          <div className="max-w-7xl mx-auto px-8">
-          </div>
+          <div className="max-w-7xl mx-auto px-8"></div>
         </header>
         <main>
           <div className="max-w-7xl mx-auto px-8">
@@ -19,15 +18,7 @@ const Home: React.VFC = () => {
         </main>
       </div>
     </div>
-
-  )
-}
+  );
+};
 
 export default Home;
-
-
-
-
-
-
-

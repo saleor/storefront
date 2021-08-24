@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { formatAsMoney } from '../lib/utils';
+import { formatAsMoney } from "../lib/utils";
 
 export const CheckoutSummary = ({ checkout }) => {
   const { subtotalPrice, shippingPrice, totalPrice } = checkout || {};
@@ -12,19 +12,27 @@ export const CheckoutSummary = ({ checkout }) => {
           <dl className="-my-4 text-sm">
             <div className="py-2 flex items-center justify-between">
               <dt className="text-gray-600">Subtotal</dt>
-              <dd className="font-medium text-gray-900">{formatAsMoney(subtotalPrice?.net.amount)}</dd>
+              <dd className="font-medium text-gray-900">
+                {formatAsMoney(subtotalPrice?.net.amount)}
+              </dd>
             </div>
             <div className="py-2 flex items-center justify-between">
               <dt className="text-gray-600">Shipping</dt>
-              <dd className="font-medium text-gray-900">{formatAsMoney(shippingPrice?.gross.amount)}</dd>
+              <dd className="font-medium text-gray-900">
+                {formatAsMoney(shippingPrice?.gross.amount)}
+              </dd>
             </div>
             <div className="py-2 flex items-center justify-between">
               <dt className="text-gray-600">Tax</dt>
-              <dd className="font-medium text-gray-900">{formatAsMoney(subtotalPrice?.tax.amount)}</dd>
+              <dd className="font-medium text-gray-900">
+                {formatAsMoney(subtotalPrice?.tax.amount)}
+              </dd>
             </div>
             <div className="py-4 flex items-center justify-between border-t border-gray-300">
               <dt className="text-lg font-bold text-gray-900">Total</dt>
-              <dd className="text-lg text-gray-900">{formatAsMoney(totalPrice?.gross.amount)}</dd>
+              <dd className="text-lg text-gray-900">
+                {formatAsMoney(totalPrice?.gross.amount)}
+              </dd>
             </div>
           </dl>
         </div>
@@ -37,7 +45,6 @@ export const CheckoutSummary = ({ checkout }) => {
           Checkout
         </button>
       </div>
-
     </section>
   );
-}
+};

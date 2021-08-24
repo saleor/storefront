@@ -5,12 +5,12 @@ generates:
   saleor/api.tsx:
     plugins:
       - add:
-          content: '// THIS FILE IS GENERATED WITH `npm run generate`'
+          content: "// THIS FILE IS GENERATED WITH `npm run generate`"
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
     config:
-      dedupeOperationSuffix: true  # Prevent suffix duplication in generated names
+      dedupeOperationSuffix: true # Prevent suffix duplication in generated names
   ./graphql.schema.json:
     plugins:
       - "introspection"

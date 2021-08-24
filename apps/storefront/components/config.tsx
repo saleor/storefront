@@ -1,6 +1,11 @@
-export const Products = /* GraphQL */`
+export const Products = /* GraphQL */ `
   query Products($before: String, $after: String) {
-    products(first: 8, channel: "default-channel", after: $after, before: $before) {
+    products(
+      first: 8
+      channel: "default-channel"
+      after: $after
+      before: $before
+    ) {
       edges {
         cursor
         node {
@@ -36,9 +41,13 @@ export const Products = /* GraphQL */`
   }
 `;
 
-export const TShirtProducts = /* GraphQL */`
+export const TShirtProducts = /* GraphQL */ `
   query TShirtProducts {
-    products(first: 12, channel: "default-channel", filter: { search: "t-shirt" }) {
+    products(
+      first: 12
+      channel: "default-channel"
+      filter: { search: "t-shirt" }
+    ) {
       edges {
         node {
           id
@@ -55,9 +64,14 @@ export const TShirtProducts = /* GraphQL */`
   }
 `;
 
-export const FilterProducts = /* GraphQL */`
+export const FilterProducts = /* GraphQL */ `
   query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
-    products(first: 12, channel: "default-channel", filter: $filter, sortBy: $sortBy) {
+    products(
+      first: 12
+      channel: "default-channel"
+      filter: $filter
+      sortBy: $sortBy
+    ) {
       edges {
         node {
           id
@@ -74,7 +88,7 @@ export const FilterProducts = /* GraphQL */`
   }
 `;
 
-export const ProductByID = /* GraphQL */`
+export const ProductByID = /* GraphQL */ `
   query ProductByID($id: ID!) {
     product(id: $id, channel: "default-channel") {
       id
@@ -109,11 +123,11 @@ export const ProductByID = /* GraphQL */`
   }
 `;
 
-export const CreateCheckout = /* GraphQL */`
+export const CreateCheckout = /* GraphQL */ `
   mutation CreateCheckout {
     checkoutCreate(
       input: {
-        channel: "default-channel",
+        channel: "default-channel"
         email: "customer@example.com"
         lines: []
       }
@@ -130,15 +144,14 @@ export const CreateCheckout = /* GraphQL */`
   }
 `;
 
-
-export const AddProductToCheckout = /* GraphQL */`
+export const AddProductToCheckout = /* GraphQL */ `
   mutation AddProductToCheckout($checkoutId: UUID!, $variantId: ID!) {
     checkoutLinesAdd(
-      token: $checkoutId,
+      token: $checkoutId
       lines: [{ quantity: 1, variantId: $variantId }]
     ) {
       checkout {
-        lines{
+        lines {
           id
           quantity
         }
@@ -156,65 +169,62 @@ export const AddProductToCheckout = /* GraphQL */`
   }
 `;
 
-export const RemoveProductFromCheckout = /* GraphQL */`
+export const RemoveProductFromCheckout = /* GraphQL */ `
   mutation RemoveProductFromCheckout($checkoutId: UUID!, $lineId: ID!) {
-    checkoutLineDelete(
-      token: $checkoutId,
-      lineId: $lineId
-    ){
-      checkout{
-        lines{
+    checkoutLineDelete(token: $checkoutId, lineId: $lineId) {
+      checkout {
+        lines {
           id
-          variant{
+          variant {
             id
           }
           quantity
         }
       }
-      errors{
+      errors {
         field
         message
       }
     }
   }
-`
+`;
 
-export const CheckoutDetailsFragment = /* GraphQL */`
+export const CheckoutDetailsFragment = /* GraphQL */ `
   fragment CheckoutDetailsFragment on Checkout {
     lines {
-        id
-        variant {
-          product {
-            name
-            thumbnail {
-              url
-            }
-          }
+      id
+      variant {
+        product {
           name
+          thumbnail {
+            url
+          }
         }
+        name
       }
-      subtotalPrice {
-        net {
-          amount
-        }
-        tax {
-          amount
-        }
+    }
+    subtotalPrice {
+      net {
+        amount
       }
-      shippingPrice {
-        gross {
-          amount
-        }
+      tax {
+        amount
       }
-      totalPrice {
-        gross {
-          amount
-        }
+    }
+    shippingPrice {
+      gross {
+        amount
       }
+    }
+    totalPrice {
+      gross {
+        amount
+      }
+    }
   }
-`
+`;
 
-export const CheckoutByID = /* GraphQL */`
+export const CheckoutByID = /* GraphQL */ `
   ${CheckoutDetailsFragment}
   query CheckoutByID($checkoutId: UUID!) {
     checkout(token: $checkoutId) {
