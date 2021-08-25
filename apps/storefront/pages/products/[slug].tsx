@@ -1,17 +1,24 @@
-import { request, gql } from "graphql-request";
 import { useRouter } from "next/router";
+import Blocks from "editorjs-blocks-react-renderer";
 
 import { Navbar } from "../../components/Navbar";
 import {
   useAddProductToCheckoutMutation,
   useProductByIdQuery,
-  Product
+  Product,
 } from "../../saleor/api";
 
-import { Products } from "../../components/config";
-import { GetStaticProps } from 'next';
+import { GetStaticProps } from "next";
+import { ProductPaths } from "../../components/config";
+import apolloClient from "../../lib/graphql";
 
-export default function ProductPage({ product, token }: { product: Product, token: string }) {
+export default function ProductPage({
+  product,
+  token,
+}: {
+  product: Product;
+  token: string;
+}) {
   const router = useRouter();
 
   const { loading, error, data } = useProductByIdQuery({ variables: product });
@@ -22,10 +29,6 @@ export default function ProductPage({ product, token }: { product: Product, toke
 
   if (data) {
     const { product } = data;
-
-    const description = product?.description
-      ? JSON.parse(product?.description).blocks[0].data.text
-      : "";
     const price = product?.pricing?.priceRange?.start?.gross.amount || 0;
     const variantId = product?.variants![0]!.id!;
 
@@ -60,15 +63,19 @@ export default function ProductPage({ product, token }: { product: Product, toke
                 }).format(price)}
               </p>
 
-              <div
-                className="text-base text-gray-700 space-y-6"
-                dangerouslySetInnerHTML={{ __html: description }}
-              />
+              <div className="text-base text-gray-700 space-y-6">
+                <article className="prose lg:prose-s">
+                  <Blocks data={JSON.parse(product?.description)} />
+                </article>
+              </div>
 
               <div className="grid grid-cols-8 gap-2">
                 {product?.variants?.map((variant) => {
                   return (
-                    <a key={variant?.name} className="flex justify-center border border-gray-300 rounded-md p-3 font-semibold hover:border-blue-300">
+                    <a
+                      key={variant?.name}
+                      className="flex justify-center border border-gray-300 rounded-md p-3 font-semibold hover:border-blue-300"
+                    >
                       {variant?.name}
                     </a>
                   );
@@ -97,19 +104,14 @@ export default function ProductPage({ product, token }: { product: Product, toke
   return null;
 }
 
-const fetcher = (query: string) =>
-  request("https://vercel.saleor.cloud/graphql/", query);
-
 export async function getStaticPaths() {
-  const {
-    products: { edges },
-  } = await fetcher(
-    gql`
-      ${Products}
-    `
-  );
-
-  const paths = edges.map(({ node }: { node: any }) => ({ params: { slug: node.id } }));
+  const { data } = await apolloClient.query({
+    query: ProductPaths,
+    variables: {},
+  });
+  const paths = data.products.edges.map(({ node }) => ({
+    params: { slug: node.id },
+  }));
 
   return {
     paths,
@@ -125,4 +127,4 @@ export const getStaticProps: GetStaticProps<any> = async ({ params }) => {
       product,
     },
   };
-}
+};

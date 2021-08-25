@@ -8,6 +8,19 @@ export const PageInfoFragment = gql`
   }
 `;
 
+export const ProductPaths = gql`
+  query ProductPaths($after: String) {
+    products(first: 50, channel: "default-channel", after: $after) {
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const Products = gql`
   ${PageInfoFragment}
   query Products($before: String, $after: String) {
