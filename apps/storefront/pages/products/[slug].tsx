@@ -63,12 +63,13 @@ export default function ProductPage({
                 }).format(price)}
               </p>
 
-              <div className="text-base text-gray-700 space-y-6">
-                <article className="prose lg:prose-s">
-                  <Blocks data={JSON.parse(product?.description)} />
-                </article>
-              </div>
-
+              {!!product?.description && (
+                <div className="text-base text-gray-700 space-y-6">
+                  <article className="prose lg:prose-s">
+                    <Blocks data={JSON.parse(product?.description)} />
+                  </article>
+                </div>
+              )}
               <div className="grid grid-cols-8 gap-2">
                 {product?.variants?.map((variant) => {
                   return (
