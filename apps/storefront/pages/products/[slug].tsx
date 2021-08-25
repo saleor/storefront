@@ -11,6 +11,7 @@ import {
 import { GetStaticProps } from "next";
 import { ProductPaths } from "../../components/config";
 import apolloClient from "../../lib/graphql";
+import { formatAsMoney } from "../../lib/utils";
 
 export default function ProductPage({
   product,
@@ -55,13 +56,7 @@ export default function ProductPage({
                 </p>
               </div>
 
-              <p className="text-2xl text-gray-900">
-                {new Intl.NumberFormat("en-US", {
-                  minimumFractionDigits: 2,
-                  style: "currency",
-                  currency: "USD",
-                }).format(price)}
-              </p>
+              <p className="text-2xl text-gray-900">{formatAsMoney(price)}</p>
 
               {!!product?.description && (
                 <div className="text-base text-gray-700 space-y-6">
