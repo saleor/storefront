@@ -1,4 +1,15 @@
-export const Products = /* GraphQL */ `
+import { gql } from "@apollo/client";
+
+export const PageInfoFragment = gql`
+  fragment PageInfoFragment on PageInfo {
+    hasNextPage
+    startCursor
+    endCursor
+  }
+`;
+
+export const Products = gql`
+  ${PageInfoFragment}
   query Products($before: String, $after: String) {
     products(
       first: 8
@@ -37,11 +48,14 @@ export const Products = /* GraphQL */ `
           }
         }
       }
+      pageInfo {
+        ...PageInfoFragment
+      }
     }
   }
 `;
 
-export const TShirtProducts = /* GraphQL */ `
+export const TShirtProducts = gql`
   query TShirtProducts {
     products(
       first: 12
@@ -64,7 +78,7 @@ export const TShirtProducts = /* GraphQL */ `
   }
 `;
 
-export const FilterProducts = /* GraphQL */ `
+export const FilterProducts = gql`
   query FilterProducts($filter: ProductFilterInput!, $sortBy: ProductOrder) {
     products(
       first: 12
@@ -88,7 +102,7 @@ export const FilterProducts = /* GraphQL */ `
   }
 `;
 
-export const ProductByID = /* GraphQL */ `
+export const ProductByID = gql`
   query ProductByID($id: ID!) {
     product(id: $id, channel: "default-channel") {
       id
@@ -123,7 +137,7 @@ export const ProductByID = /* GraphQL */ `
   }
 `;
 
-export const CreateCheckout = /* GraphQL */ `
+export const CreateCheckout = gql`
   mutation CreateCheckout {
     checkoutCreate(
       input: {
@@ -144,7 +158,7 @@ export const CreateCheckout = /* GraphQL */ `
   }
 `;
 
-export const AddProductToCheckout = /* GraphQL */ `
+export const AddProductToCheckout = gql`
   mutation AddProductToCheckout($checkoutId: UUID!, $variantId: ID!) {
     checkoutLinesAdd(
       token: $checkoutId
@@ -169,7 +183,7 @@ export const AddProductToCheckout = /* GraphQL */ `
   }
 `;
 
-export const RemoveProductFromCheckout = /* GraphQL */ `
+export const RemoveProductFromCheckout = gql`
   mutation RemoveProductFromCheckout($checkoutId: UUID!, $lineId: ID!) {
     checkoutLineDelete(token: $checkoutId, lineId: $lineId) {
       checkout {
@@ -189,7 +203,7 @@ export const RemoveProductFromCheckout = /* GraphQL */ `
   }
 `;
 
-export const CheckoutDetailsFragment = /* GraphQL */ `
+export const CheckoutDetailsFragment = gql`
   fragment CheckoutDetailsFragment on Checkout {
     lines {
       id
@@ -224,7 +238,7 @@ export const CheckoutDetailsFragment = /* GraphQL */ `
   }
 `;
 
-export const CheckoutByID = /* GraphQL */ `
+export const CheckoutByID = gql`
   ${CheckoutDetailsFragment}
   query CheckoutByID($checkoutId: UUID!) {
     checkout(token: $checkoutId) {
