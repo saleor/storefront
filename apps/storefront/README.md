@@ -18,6 +18,18 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
+## Debugging using VS Code
+
+Repository contains ready to use VS Code debugger configuration (`.vscode/launch.json`).
+
+Start server in debug mode
+
+```bash
+npm run debug
+```
+
+Add [breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoints), and start debugging session in your editor.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
