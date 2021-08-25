@@ -9,6 +9,7 @@ import {
 } from "../saleor/api";
 import { useLocalStorage } from "../lib/hooks";
 import { CheckoutByID } from "../components/config";
+import { formatAsMoney } from '../lib/utils';
 
 const Cart: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");
@@ -25,9 +26,10 @@ const Cart: React.VFC = ({}) => {
   if (error) return <p>Error</p>;
 
   if (data) {
-    const products = (data.checkout?.lines || []).map((_) => ({
-      ..._.variant.product,
-      lineId: _.id,
+    const products = (data.checkout?.lines || []).map(_ => ({
+      ..._?.variant?.product,
+      lineId: _!.id,
+      price: _?.variant.pricing?.price?.gross.amount
     }));
 
     return (
@@ -60,7 +62,7 @@ const Cart: React.VFC = ({}) => {
                       <li key={idx} className="flex py-6">
                         <div className="flex-shrink-0 bg-white">
                           <img
-                            src={product.thumbnail.url}
+                            src={product?.thumbnail?.url}
                             className="w-48 h-48 border object-center object-cover"
                           />
                         </div>
@@ -70,12 +72,11 @@ const Cart: React.VFC = ({}) => {
                             <div className="flex justify-between">
                               <div className="pr-6">
                                 <h3 className="text-xl font-bold">
-                                  <a
-                                    href={product.href}
-                                    className="font-medium text-gray-700 hover:text-gray-800"
-                                  >
-                                    {product.name}
-                                  </a>
+                                  <Link href={`/products/${product.id}`}>
+                                    <a className="font-medium text-gray-700 hover:text-gray-800">
+                                      {product.name}
+                                    </a>
+                                  </Link>
                                 </h3>
 
                                 <button
@@ -94,9 +95,7 @@ const Cart: React.VFC = ({}) => {
                                 </button>
                               </div>
 
-                              <p className="text-sm font-medium text-gray-900 text-right">
-                                {product.price}
-                              </p>
+                              <p className="text-xl text-gray-900 text-right">{formatAsMoney(product.price)}</p>
                             </div>
 
                             <div className="mt-4 flex items-center sm:block sm:absolute sm:top-0 sm:left-1/2 sm:mt-0"></div>
