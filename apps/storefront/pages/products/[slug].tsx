@@ -1,4 +1,6 @@
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import { ApolloQueryResult } from "@apollo/client";
 import Blocks from "editorjs-blocks-react-renderer";
 
 import { Navbar } from "../../components/Navbar";
@@ -6,9 +8,8 @@ import {
   useAddProductToCheckoutMutation,
   useProductByIdQuery,
   Product,
+  ProductPathsQuery,
 } from "../../saleor/api";
-
-import { GetStaticProps } from "next";
 import { ProductPaths } from "../../components/config";
 import apolloClient from "../../lib/graphql";
 import { formatAsMoney } from "../../lib/utils";
@@ -101,13 +102,16 @@ export default function ProductPage({
 }
 
 export async function getStaticPaths() {
-  const { data } = await apolloClient.query({
-    query: ProductPaths,
-    variables: {},
-  });
-  const paths = data.products.edges.map(({ node }) => ({
-    params: { slug: node.id },
-  }));
+  const result: ApolloQueryResult<ProductPathsQuery | undefined> =
+    await apolloClient.query({
+      query: ProductPaths,
+      variables: {},
+    });
+  const paths = !!result
+    ? result.data?.products?.edges.map(({ node }) => ({
+        params: { slug: node.id },
+      }))
+    : [];
 
   return {
     paths,
