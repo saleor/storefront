@@ -28,9 +28,9 @@ const typePolicies: TypedTypePolicies = {
   },
 };
 
-const client = new ApolloClient({
+const apolloClient = new ApolloClient({
   uri: "https://vercel.saleor.cloud/graphql/",
   cache: new InMemoryCache({ typePolicies }),
 });
 
-export default client;
+export default apolloClient;

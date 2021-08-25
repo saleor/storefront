@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import client from "../lib/graphql";
+import apolloClient from "../lib/graphql";
 import { useLocalStorage } from "../lib/hooks";
 
 import "tailwindcss/tailwind.css";
@@ -27,7 +27,7 @@ const Provider = ({ Component, pageProps }: AppProps) => {
 
 function MyApp(props: AppProps) {
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={apolloClient}>
       <Provider {...props} />
     </ApolloProvider>
   );

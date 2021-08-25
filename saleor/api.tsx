@@ -1453,6 +1453,8 @@ export type Channel = Node & {
   currencyCode: Scalars['String'];
   /** Whether a channel has associated orders. */
   hasOrders: Scalars['Boolean'];
+  /** Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided. */
+  defaultCountry: CountryDisplay;
 };
 
 /** Activate a channel. */
@@ -1483,6 +1485,8 @@ export type ChannelCreateInput = {
   slug: Scalars['String'];
   /** Currency of the channel. */
   currencyCode: Scalars['String'];
+  /** Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided. */
+  defaultCountry: CountryCode;
   /** List of shipping zones to assign to the channel. */
   addShippingZones?: Maybe<Array<Scalars['ID']>>;
 };
@@ -1552,6 +1556,8 @@ export type ChannelUpdateInput = {
   name?: Maybe<Scalars['String']>;
   /** Slug of the channel. */
   slug?: Maybe<Scalars['String']>;
+  /** Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided. */
+  defaultCountry?: Maybe<CountryCode>;
   /** List of shipping zones to assign to the channel. */
   addShippingZones?: Maybe<Array<Scalars['ID']>>;
   /** List of shipping zones to unassign from the channel. */
@@ -12636,6 +12642,13 @@ export type _Service = {
 
 export type PageInfoFragment = { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> };
 
+export type ProductPathsQueryVariables = Exact<{
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type ProductPathsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string } }> }> };
+
 export type ProductsQueryVariables = Exact<{
   before?: Maybe<Scalars['String']>;
   after?: Maybe<Scalars['String']>;
@@ -12692,7 +12705,7 @@ export type CheckoutByIdQueryVariables = Exact<{
 }>;
 
 
-export type CheckoutByIdQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', amount: number }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> };
+export type CheckoutByIdQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> } } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', amount: number }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> };
 
 export const PageInfoFragmentDoc = gql`
     fragment PageInfoFragment on PageInfo {
@@ -12735,6 +12748,46 @@ export const CheckoutDetailsFragmentDoc = gql`
   }
 }
     `;
+export const ProductPathsDocument = gql`
+    query ProductPaths($after: String) {
+  products(first: 50, channel: "default-channel", after: $after) {
+    edges {
+      cursor
+      node {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductPathsQuery__
+ *
+ * To run a query within a React component, call `useProductPathsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductPathsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductPathsQuery({
+ *   variables: {
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useProductPathsQuery(baseOptions?: Apollo.QueryHookOptions<ProductPathsQuery, ProductPathsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductPathsQuery, ProductPathsQueryVariables>(ProductPathsDocument, options);
+      }
+export function useProductPathsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductPathsQuery, ProductPathsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductPathsQuery, ProductPathsQueryVariables>(ProductPathsDocument, options);
+        }
+export type ProductPathsQueryHookResult = ReturnType<typeof useProductPathsQuery>;
+export type ProductPathsLazyQueryHookResult = ReturnType<typeof useProductPathsLazyQuery>;
+export type ProductPathsQueryResult = Apollo.QueryResult<ProductPathsQuery, ProductPathsQueryVariables>;
 export const ProductsDocument = gql`
     query Products($before: String, $after: String) {
   products(first: 8, channel: "default-channel", after: $after, before: $before) {
@@ -13104,48 +13157,7 @@ export type RemoveProductFromCheckoutMutationOptions = Apollo.BaseMutationOption
 export const CheckoutByIdDocument = gql`
     query CheckoutByID($checkoutId: UUID!) {
   checkout(token: $checkoutId) {
-<<<<<<< HEAD:saleor/api.tsx
     ...CheckoutDetailsFragment
-=======
-    lines {
-      id
-      variant {
-        product {
-          id
-          name
-          thumbnail {
-            url
-          }
-        }
-        pricing {
-          price {
-            gross {
-              amount
-            }
-          }
-        }
-        name
-      }
-    }
-    subtotalPrice {
-      net {
-        amount
-      }
-      tax {
-        amount
-      }
-    }
-    shippingPrice {
-      gross {
-        amount
-      }
-    }
-    totalPrice {
-      gross {
-        amount
-      }
-    }
->>>>>>> 0fca2c4 (pricing + ts cleanup):generated/graphql.tsx
   }
 }
     ${CheckoutDetailsFragmentDoc}`;
@@ -13705,14 +13717,15 @@ export type CategoryUpdateFieldPolicy = {
 	errors?: FieldPolicy<any> | FieldReadFunction<any>,
 	category?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ChannelKeySpecifier = ('id' | 'name' | 'isActive' | 'slug' | 'currencyCode' | 'hasOrders' | ChannelKeySpecifier)[];
+export type ChannelKeySpecifier = ('id' | 'name' | 'isActive' | 'slug' | 'currencyCode' | 'hasOrders' | 'defaultCountry' | ChannelKeySpecifier)[];
 export type ChannelFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	isActive?: FieldPolicy<any> | FieldReadFunction<any>,
 	slug?: FieldPolicy<any> | FieldReadFunction<any>,
 	currencyCode?: FieldPolicy<any> | FieldReadFunction<any>,
-	hasOrders?: FieldPolicy<any> | FieldReadFunction<any>
+	hasOrders?: FieldPolicy<any> | FieldReadFunction<any>,
+	defaultCountry?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ChannelActivateKeySpecifier = ('channel' | 'channelErrors' | 'errors' | ChannelActivateKeySpecifier)[];
 export type ChannelActivateFieldPolicy = {
