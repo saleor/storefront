@@ -9,7 +9,7 @@ import {
 } from "../saleor/api";
 import { useLocalStorage } from "../lib/hooks";
 import { CheckoutByID } from "../components/config";
-import { formatAsMoney } from '../lib/utils';
+import { formatAsMoney } from "../lib/utils";
 
 const Cart: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");
@@ -26,10 +26,10 @@ const Cart: React.VFC = ({}) => {
   if (error) return <p>Error</p>;
 
   if (data) {
-    const products = (data.checkout?.lines || []).map(_ => ({
+    const products = (data.checkout?.lines || []).map((_) => ({
       ..._?.variant?.product,
       lineId: _!.id,
-      price: _?.variant.pricing?.price?.gross.amount
+      price: _?.variant.pricing?.price?.gross.amount,
     }));
 
     return (
@@ -95,7 +95,9 @@ const Cart: React.VFC = ({}) => {
                                 </button>
                               </div>
 
-                              <p className="text-xl text-gray-900 text-right">{formatAsMoney(product.price)}</p>
+                              <p className="text-xl text-gray-900 text-right">
+                                {formatAsMoney(product.price)}
+                              </p>
                             </div>
 
                             <div className="mt-4 flex items-center sm:block sm:absolute sm:top-0 sm:left-1/2 sm:mt-0"></div>
