@@ -1,17 +1,17 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
-import { ShoppingBagIcon } from '@heroicons/react/outline'
-import { useLocalStorage } from '../lib/hooks';
-import { useCheckoutByIdQuery } from '../generated/graphql';
+import { ShoppingBagIcon } from "@heroicons/react/outline";
+import { useLocalStorage } from "../lib/hooks";
+import { useCheckoutByIdQuery } from "../saleor/api";
 
-export const Navbar: React.VFC = ({ }) => {
-  const [token] = useLocalStorage('token', '');
+export const Navbar: React.VFC = ({}) => {
+  const [token] = useLocalStorage("token", "");
   const { data, loading, error } = useCheckoutByIdQuery({
-    variables: { checkoutId: token }
+    variables: { checkoutId: token },
   });
 
-  const counter = data ? data.checkout.lines?.length : 0;
+  const counter = data ? data.checkout?.lines?.length : 0;
 
   return (
     <div className="bg-white shadow-sm">
@@ -19,7 +19,9 @@ export const Navbar: React.VFC = ({ }) => {
         <div className="flex justify-between h-16">
           <div className="flex space-x-8">
             <Link href="/">
-              <a><img className="block h-16 w-auto" src="/saleor.svg" alt="" /></a>
+              <a>
+                <img className="block h-16 w-auto" src="/saleor.svg" alt="" />
+              </a>
             </Link>
           </div>
           <div className="flex space-x-8">
@@ -29,7 +31,9 @@ export const Navbar: React.VFC = ({ }) => {
                   className="flex-shink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
                   aria-hidden="true"
                 />
-                <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">{counter}</span>
+                <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                  {counter}
+                </span>
               </a>
             </Link>
           </div>
@@ -37,4 +41,4 @@ export const Navbar: React.VFC = ({ }) => {
       </div>
     </div>
   );
-}
+};
