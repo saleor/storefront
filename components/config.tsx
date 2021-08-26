@@ -222,9 +222,17 @@ export const CheckoutDetailsFragment = gql`
       id
       variant {
         product {
+          id
           name
           thumbnail {
             url
+          }
+        }
+        pricing {
+          price {
+            gross {
+              amount
+            }
           }
         }
         name
