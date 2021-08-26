@@ -1,0 +1,187 @@
+#import "./fragments.graphql"
+
+fragment CheckoutDetailsFragment on Checkout {
+  id
+  token
+  lines {
+    id
+    totalPrice {
+      gross {
+        ...PriceFragment
+      }
+    }
+    variant {
+      product {
+        id
+        name
+        slug
+        thumbnail {
+          url
+        }
+      }
+      name
+    }
+  }
+  subtotalPrice {
+    net {
+      ...PriceFragment
+    }
+    tax {
+      ...PriceFragment
+    }
+  }
+  shippingPrice {
+    gross {
+      ...PriceFragment
+    }
+  }
+  totalPrice {
+    gross {
+      ...PriceFragment
+    }
+  }
+}
+
+mutation RemoveProductFromCheckout($checkoutToken: UUID!, $lineId: ID!) {
+  checkoutLineDelete(token: $checkoutToken, lineId: $lineId) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation CreateCheckout {
+  checkoutCreate(
+    input: {
+      channel: "default-channel"
+      email: "customer@example.com"
+      lines: []
+    }
+  ) {
+    checkout {
+      id
+      token
+    }
+    errors {
+      field
+      code
+    }
+  }
+}
+
+mutation AddProductToCheckout($checkoutToken: UUID!, $variantId: ID!) {
+  checkoutLinesAdd(
+    token: $checkoutToken
+    lines: [{ quantity: 1, variantId: $variantId }]
+  ) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      message
+    }
+  }
+}
+
+query CheckoutByToken($checkoutToken: UUID!) {
+  checkout(token: $checkoutToken) {
+    ...CheckoutDetailsFragment
+  }
+}
+
+query ProductBySlug($slug: String!) {
+  product(slug: $slug, channel: "default-channel") {
+    id
+    name
+    description
+    category {
+      name
+    }
+    variants {
+      id
+      name
+    }
+    pricing {
+      priceRange {
+        start {
+          gross {
+            ...PriceFragment
+          }
+        }
+      }
+    }
+    media {
+      url
+    }
+    thumbnail {
+      url
+    }
+    category {
+      name
+    }
+  }
+}
+
+query ProductPaths($after: String) {
+  products(first: 50, channel: "default-channel", after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        slug
+      }
+    }
+  }
+}
+
+query ProductCollection($before: String, $after: String) {
+  products(
+    first: 8
+    channel: "default-channel"
+    after: $after
+    before: $before
+  ) {
+    edges {
+      cursor
+      node {
+        id
+        slug
+        name
+        thumbnail {
+          url
+        }
+        category {
+          name
+        }
+        variants {
+          id
+          name
+        }
+        pricing {
+          priceRange {
+            start {
+              gross {
+                ...PriceFragment
+              }
+            }
+            stop {
+              gross {
+                ...PriceFragment
+              }
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
