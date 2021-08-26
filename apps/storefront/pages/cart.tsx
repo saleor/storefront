@@ -2,71 +2,66 @@ import React from "react";
 import Link from "next/link";
 import { useLocalStorage } from "react-use";
 
-import {
-  Navbar,
-  CheckoutSummary,
-} from "@/components";
+import { Navbar, CheckoutSummary } from "@/components";
 
 import {
-  CheckoutByID
-} from '@/graphql';
-
-import {
-  useCheckoutByIdQuery,
-  useRemoveProductFromCheckoutMutation
-} from "@/saleor/api"
+  useCheckoutByTokenQuery,
+  useRemoveProductFromCheckoutMutation,
+} from "@/saleor/api";
 
 import { formatAsMoney } from "@/lib/util";
 
 const Cart: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");
-  const { data, loading, error } = useCheckoutByIdQuery({
+  const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
-    // skip:
-    variables: { checkoutId: token },
+    variables: { checkoutToken: token },
+    skip: !token,
   });
-  const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation({
-    refetchQueries: [CheckoutByID],
-  });
+  const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
 
-  if (data) {
-    const products = (data.checkout?.lines || []).map((_) => ({
-      ..._?.variant?.product,
-      lineId: _!.id,
-      price: _?.variant.pricing?.price?.gross.amount,
-    }));
+  if (!data) {
+    return null;
+  }
 
-    return (
-      <div className="min-h-screen bg-gray-100">
-        <Navbar />
+  const products = data.checkout?.lines || [];
 
-        <div className="py-10">
-          <header className="mb-4">
-            <div className="max-w-7xl mx-auto px-8">
-              <div className="flex justify-between">
-                <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-                  Your Cart
-                </h1>
-                <div>
-                  <Link href="/">
-                    <a className="text-sm text-blue-600 hover:text-blue-500">
-                      Continue Shopping
-                    </a>
-                  </Link>
-                </div>
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <Navbar />
+
+      <div className="py-10">
+        <header className="mb-4">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="flex justify-between">
+              <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                Your Cart
+              </h1>
+              <div>
+                <Link href="/">
+                  <a className="text-sm text-blue-600 hover:text-blue-500">
+                    Continue Shopping
+                  </a>
+                </Link>
               </div>
             </div>
-          </header>
-          <main>
-            <div className="max-w-7xl mx-auto px-8">
-              <div className="grid grid-cols-3 gap-8">
-                <section className="col-span-2">
-                  <ul role="list" className="divide-y divide-gray-200">
-                    {products.map((product, idx) => (
-                      <li key={idx} className="flex py-6">
+          </div>
+        </header>
+        <main>
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="grid grid-cols-3 gap-8">
+              <section className="col-span-2">
+                <ul role="list" className="divide-y divide-gray-200">
+                  {products.map((line) => {
+                    const lineID = line?.id || "";
+                    const variant = line?.variant;
+                    const product = line?.variant.product;
+                    const price = line?.totalPrice?.gross;
+                    return (
+                      <li key={line?.id} className="flex py-6">
                         <div className="flex-shrink-0 bg-white">
                           <img
                             src={product?.thumbnail?.url}
@@ -79,20 +74,25 @@ const Cart: React.VFC = ({}) => {
                             <div className="flex justify-between">
                               <div className="pr-6">
                                 <h3 className="text-xl font-bold">
-                                  <Link href={`/products/${product.id}`}>
+                                  <Link href={`/products/${product?.slug}`}>
                                     <a className="font-medium text-gray-700 hover:text-gray-800">
-                                      {product.name}
+                                      {product?.name}
                                     </a>
                                   </Link>
                                 </h3>
+                                <h4 className="text-m font-regular">
+                                  <a className="text-gray-700 hover:text-gray-800">
+                                    {variant?.name}
+                                  </a>
+                                </h4>
 
                                 <button
                                   type="button"
                                   onClick={() =>
                                     removeProductFromCheckout({
                                       variables: {
-                                        checkoutId: token,
-                                        lineId: product.lineId,
+                                        checkoutToken: token,
+                                        lineId: lineID,
                                       },
                                     })
                                   }
@@ -103,7 +103,7 @@ const Cart: React.VFC = ({}) => {
                               </div>
 
                               <p className="text-xl text-gray-900 text-right">
-                                {formatAsMoney(product.price)}
+                                {formatAsMoney(price?.amount, price?.currency)}
                               </p>
                             </div>
 
@@ -111,20 +111,18 @@ const Cart: React.VFC = ({}) => {
                           </div>
                         </div>
                       </li>
-                    ))}
-                  </ul>
-                </section>
+                    );
+                  })}
+                </ul>
+              </section>
 
-                <CheckoutSummary checkout={data.checkout} />
-              </div>
+              <CheckoutSummary checkout={data.checkout} />
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 };
 
 export default Cart;

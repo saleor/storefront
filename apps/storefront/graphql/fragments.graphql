@@ -1,0 +1,4 @@
+fragment PriceFragment on Money {
+  currency
+  amount
+}
