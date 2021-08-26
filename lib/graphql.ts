@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
-import { TypedTypePolicies } from "../saleor/api";
+
+import { TypedTypePolicies } from "@/saleor/api";
 
 const typePolicies: TypedTypePolicies = {
   Query: {

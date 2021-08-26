@@ -1,10 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { useProductsQuery } from "../saleor/api";
+
+import { useProductCollectionQuery } from "@/saleor/api";
 import { Pagination } from "./Pagination";
 
-function Products() {
-  const { loading, error, data, fetchMore } = useProductsQuery();
+export const ProductCollection: React.VFC = () => {
+  const { loading, error, data, fetchMore } = useProductCollectionQuery();
 
   const onLoadMore = () => {
     fetchMore({
@@ -71,4 +72,3 @@ function Products() {
   return null;
 }
 
-export default Products;

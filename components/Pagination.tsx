@@ -1,6 +1,6 @@
-import { PageInfoFragment } from "../saleor/api";
+import { PageInfo } from "@/saleor/api";
 export interface PaginationProps {
-  pageInfo?: PageInfoFragment;
+  pageInfo?: PageInfo
   onLoadMore: () => void;
 }
 
