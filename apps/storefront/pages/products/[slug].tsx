@@ -1,18 +1,23 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { ApolloQueryResult } from "@apollo/client";
 import Blocks from "editorjs-blocks-react-renderer";
 
-import { Navbar } from "../../components/Navbar";
+import {
+  Navbar
+} from "@/components";
+
 import {
   useAddProductToCheckoutMutation,
   ProductPathsQuery,
   useProductBySlugQuery,
-} from "../../saleor/api";
-import { ProductPaths } from "../../graphql";
-import apolloClient from "../../lib/graphql";
-import { formatAsMoney } from "../../lib/utils";
-import Link from "next/link";
+} from "@/saleor/api";
+
+import { ProductPaths } from "@/graphql";
+
+import apolloClient from "@/lib/graphql";
+import { formatAsMoney } from "@/lib/util";
 
 const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   productSlug,

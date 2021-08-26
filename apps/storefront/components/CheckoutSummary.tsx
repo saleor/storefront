@@ -1,6 +1,6 @@
 import React from "react";
 
-import { formatAsMoney } from "../lib/utils";
+import { formatAsMoney } from "@/lib/util";
 
 export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
   const { subtotalPrice, shippingPrice, totalPrice } = checkout || {};

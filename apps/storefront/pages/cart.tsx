@@ -2,11 +2,21 @@ import React from "react";
 import Link from "next/link";
 import { useLocalStorage } from "react-use";
 
-import { CheckoutSummary } from "../components/CheckoutSummary";
-import { Navbar } from "../components/Navbar";
-import { useCheckoutByIdQuery, useRemoveProductFromCheckoutMutation } from "../saleor/api";
-import { formatAsMoney } from "../lib/utils";
-import { CheckoutByID } from '../graphql';
+import {
+  Navbar,
+  CheckoutSummary,
+} from "@/components";
+
+import {
+  CheckoutByID
+} from '@/graphql';
+
+import {
+  useCheckoutByIdQuery,
+  useRemoveProductFromCheckoutMutation
+} from "@/saleor/api"
+
+import { formatAsMoney } from "@/lib/util";
 
 const Cart: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");

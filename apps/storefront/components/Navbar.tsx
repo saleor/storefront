@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
-
 import { ShoppingBagIcon } from "@heroicons/react/outline";
 import { useLocalStorage } from "react-use";
-import { useCheckoutByIdQuery } from "../saleor/api";
+
+import { useCheckoutByIdQuery } from "@/saleor/api";
 
 export const Navbar: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");

@@ -1,6 +1,8 @@
 import React from "react";
-import { ProductCollection } from "../components/ProductCollection";
-import { Navbar } from "../components/Navbar";
+import {
+  ProductCollection,
+  Navbar
+} from "@/components";
 
 const Home: React.VFC = () => {
   return (
