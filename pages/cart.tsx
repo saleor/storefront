@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useLocalStorage } from "react-use";
 
 import { CheckoutSummary } from "../components/CheckoutSummary";
 import { Navbar } from "../components/Navbar";
@@ -7,7 +8,6 @@ import {
   useCheckoutByIdQuery,
   useRemoveProductFromCheckoutMutation,
 } from "../saleor/api";
-import { useLocalStorage } from "../lib/hooks";
 import { CheckoutByID } from "../components/config";
 import { formatAsMoney } from "../lib/utils";
 
