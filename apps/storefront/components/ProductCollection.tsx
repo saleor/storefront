@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useProductsQuery } from "../saleor/api";
 import { Pagination } from "./Pagination";

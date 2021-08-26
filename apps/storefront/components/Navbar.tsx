@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 
 import { ShoppingBagIcon } from "@heroicons/react/outline";
-import { useLocalStorage } from "../lib/hooks";
+import { useLocalStorage } from "react-use";
 import { useCheckoutByIdQuery } from "../saleor/api";
 
 export const Navbar: React.VFC = ({}) => {
