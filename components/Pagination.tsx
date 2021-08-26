@@ -1,4 +1,4 @@
-import { PageInfo } from "../saleor/api";
+import { PageInfo } from "@/saleor/api";
 export interface PaginationProps {
   pageInfo?: PageInfo
   onLoadMore: () => void;

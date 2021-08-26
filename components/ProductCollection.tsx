@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { useProductCollectionQuery } from "../saleor/api";
+
+import { useProductCollectionQuery } from "@/saleor/api";
 import { Pagination } from "./Pagination";
 
 export const ProductCollection: React.VFC = () => {
