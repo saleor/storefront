@@ -1,33 +1,28 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { ApolloQueryResult } from "@apollo/client";
 import Blocks from "editorjs-blocks-react-renderer";
 
-import { Navbar } from "../../components/Navbar";
+import {
+  Navbar
+} from "@/components";
+
 import {
   useAddProductToCheckoutMutation,
-  Product,
   ProductPathsQuery,
   useProductBySlugQuery,
-} from "../../saleor/api";
-import { ProductPaths } from "../../components/config";
-import apolloClient from "../../lib/graphql";
-import { formatAsMoney } from "../../lib/utils";
-import Link from "next/link";
+} from "@/saleor/api";
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  return {
-    props: {
-      productSlug: context.params?.slug?.toString(),
-      token: "",
-    },
-  };
-};
+import { ProductPaths } from "@/graphql";
 
-export default function ProductPage({
+import apolloClient from "@/lib/graphql";
+import { formatAsMoney } from "@/lib/util";
+
+const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   productSlug,
   token,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}) => {
   const router = useRouter();
 
   const { loading, error, data } = useProductBySlugQuery({
@@ -126,6 +121,8 @@ export default function ProductPage({
   );
 }
 
+export default ProductPage;
+
 export async function getStaticPaths() {
   const result: ApolloQueryResult<ProductPathsQuery | undefined> =
     await apolloClient.query({
@@ -143,3 +140,12 @@ export async function getStaticPaths() {
     fallback: false,
   };
 }
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  return {
+    props: {
+      productSlug: context.params?.slug?.toString(),
+      token: "",
+    },
+  };
+};

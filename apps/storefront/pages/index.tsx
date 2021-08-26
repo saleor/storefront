@@ -1,6 +1,8 @@
 import React from "react";
-import Products from "../components/ProductCollection";
-import { Navbar } from "../components/Navbar";
+import {
+  ProductCollection,
+  Navbar
+} from "@/components";
 
 const Home: React.VFC = () => {
   return (
@@ -13,7 +15,7 @@ const Home: React.VFC = () => {
         </header>
         <main>
           <div className="max-w-7xl mx-auto px-8">
-            <Products />
+            <ProductCollection />
           </div>
         </main>
       </div>
