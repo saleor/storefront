@@ -12647,7 +12647,7 @@ export type ProductPathsQueryVariables = Exact<{
 }>;
 
 
-export type ProductPathsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string } }> }> };
+export type ProductPathsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, slug: string } }> }> };
 
 export type ProductsQueryVariables = Exact<{
   before?: Maybe<Scalars['String']>;
@@ -12655,7 +12655,7 @@ export type ProductsQueryVariables = Exact<{
 }>;
 
 
-export type ProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, name: string }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> }> } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> };
+export type ProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, slug: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, name: string }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> }> } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> };
 
 export type TShirtProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12670,12 +12670,12 @@ export type FilterProductsQueryVariables = Exact<{
 
 export type FilterProductsQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, category?: Maybe<{ __typename?: 'Category', name: string }> } }> }> };
 
-export type ProductByIdQueryVariables = Exact<{
-  id: Scalars['ID'];
+export type ProductBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
 }>;
 
 
-export type ProductByIdQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', id: string, name: string, description?: Maybe<any>, category?: Maybe<{ __typename?: 'Category', name: string }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, name: string }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> }>, media?: Maybe<Array<{ __typename?: 'ProductMedia', url: string }>>, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }> };
+export type ProductBySlugQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', id: string, name: string, description?: Maybe<any>, category?: Maybe<{ __typename?: 'Category', name: string }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, name: string }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> }>, media?: Maybe<Array<{ __typename?: 'ProductMedia', url: string }>>, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }> };
 
 export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -12763,6 +12763,7 @@ export const ProductPathsDocument = gql`
       cursor
       node {
         id
+        slug
       }
     }
   }
@@ -12803,6 +12804,7 @@ export const ProductsDocument = gql`
       cursor
       node {
         id
+        slug
         name
         thumbnail {
           url
@@ -12962,9 +12964,9 @@ export function useFilterProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FilterProductsQueryHookResult = ReturnType<typeof useFilterProductsQuery>;
 export type FilterProductsLazyQueryHookResult = ReturnType<typeof useFilterProductsLazyQuery>;
 export type FilterProductsQueryResult = Apollo.QueryResult<FilterProductsQuery, FilterProductsQueryVariables>;
-export const ProductByIdDocument = gql`
-    query ProductByID($id: ID!) {
-  product(id: $id, channel: "default-channel") {
+export const ProductBySlugDocument = gql`
+    query ProductBySlug($slug: String!) {
+  product(slug: $slug, channel: "default-channel") {
     id
     name
     description
@@ -12998,32 +13000,32 @@ export const ProductByIdDocument = gql`
     `;
 
 /**
- * __useProductByIdQuery__
+ * __useProductBySlugQuery__
  *
- * To run a query within a React component, call `useProductByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useProductByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProductBySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProductByIdQuery({
+ * const { data, loading, error } = useProductBySlugQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      slug: // value for 'slug'
  *   },
  * });
  */
-export function useProductByIdQuery(baseOptions: Apollo.QueryHookOptions<ProductByIdQuery, ProductByIdQueryVariables>) {
+export function useProductBySlugQuery(baseOptions: Apollo.QueryHookOptions<ProductBySlugQuery, ProductBySlugQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProductByIdQuery, ProductByIdQueryVariables>(ProductByIdDocument, options);
+        return Apollo.useQuery<ProductBySlugQuery, ProductBySlugQueryVariables>(ProductBySlugDocument, options);
       }
-export function useProductByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductByIdQuery, ProductByIdQueryVariables>) {
+export function useProductBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductBySlugQuery, ProductBySlugQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProductByIdQuery, ProductByIdQueryVariables>(ProductByIdDocument, options);
+          return Apollo.useLazyQuery<ProductBySlugQuery, ProductBySlugQueryVariables>(ProductBySlugDocument, options);
         }
-export type ProductByIdQueryHookResult = ReturnType<typeof useProductByIdQuery>;
-export type ProductByIdLazyQueryHookResult = ReturnType<typeof useProductByIdLazyQuery>;
-export type ProductByIdQueryResult = Apollo.QueryResult<ProductByIdQuery, ProductByIdQueryVariables>;
+export type ProductBySlugQueryHookResult = ReturnType<typeof useProductBySlugQuery>;
+export type ProductBySlugLazyQueryHookResult = ReturnType<typeof useProductBySlugLazyQuery>;
+export type ProductBySlugQueryResult = Apollo.QueryResult<ProductBySlugQuery, ProductBySlugQueryVariables>;
 export const CreateCheckoutDocument = gql`
     mutation CreateCheckout {
   checkoutCreate(

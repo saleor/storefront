@@ -15,6 +15,7 @@ export const ProductPaths = gql`
         cursor
         node {
           id
+          slug
         }
       }
     }
@@ -34,6 +35,7 @@ export const Products = gql`
         cursor
         node {
           id
+          slug
           name
           thumbnail {
             url
@@ -115,9 +117,9 @@ export const FilterProducts = gql`
   }
 `;
 
-export const ProductByID = gql`
-  query ProductByID($id: ID!) {
-    product(id: $id, channel: "default-channel") {
+export const ProductBySlug = gql`
+  query ProductBySlug($slug: String!) {
+    product(slug: $slug, channel: "default-channel") {
       id
       name
       description
