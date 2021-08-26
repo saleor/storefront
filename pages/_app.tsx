@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import apolloClient from "../lib/graphql";
-import { useLocalStorage } from "../lib/hooks";
-
+import { useLocalStorage } from "react-use";
 import "tailwindcss/tailwind.css";
 import { useCreateCheckoutMutation } from "../saleor/api";
+import apolloClient from "../lib/graphql";
 
 const Provider = ({ Component, pageProps }: AppProps) => {
   const [token, setToken] = useLocalStorage("token", "");
