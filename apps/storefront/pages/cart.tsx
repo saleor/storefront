@@ -4,12 +4,9 @@ import { useLocalStorage } from "react-use";
 
 import { CheckoutSummary } from "../components/CheckoutSummary";
 import { Navbar } from "../components/Navbar";
-import {
-  useCheckoutByIdQuery,
-  useRemoveProductFromCheckoutMutation,
-} from "../saleor/api";
-import { CheckoutByID } from "../components/config";
+import { useCheckoutByIdQuery, useRemoveProductFromCheckoutMutation } from "../saleor/api";
 import { formatAsMoney } from "../lib/utils";
+import { CheckoutByID } from '../graphql';
 
 const Cart: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");
