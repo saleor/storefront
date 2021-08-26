@@ -1,5 +1,5 @@
 import React from "react";
-import Products from "../components/ProductCollection";
+import { ProductCollection } from "../components/ProductCollection";
 import { Navbar } from "../components/Navbar";
 
 const Home: React.VFC = () => {
@@ -13,7 +13,7 @@ const Home: React.VFC = () => {
         </header>
         <main>
           <div className="max-w-7xl mx-auto px-8">
-            <Products />
+            <ProductCollection />
           </div>
         </main>
       </div>
