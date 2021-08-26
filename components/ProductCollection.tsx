@@ -26,10 +26,18 @@ function Products() {
           {latestProducts?.length > 0 &&
             latestProducts.map(
               ({
-                node: { id, name, thumbnail, category, variants = [], pricing },
+                node: {
+                  id,
+                  slug,
+                  name,
+                  thumbnail,
+                  category,
+                  variants = [],
+                  pricing,
+                },
               }) => (
                 <li key={id} className="relative bg-white border">
-                  <Link href={`/products/${id}`}>
+                  <Link href={`/products/${slug}`}>
                     <a>
                       <div className="aspect-h-1 aspect-w-1">
                         <img
