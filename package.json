@@ -17,13 +17,15 @@
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
+    "@twind/next": "^1.0.8",
     "clsx": "1.1.1",
     "editorjs-blocks-react-renderer": "^1.1.1",
     "graphql": "15.5.1",
     "next": "11.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "twind": "^0.16.16"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.0",
@@ -34,12 +36,12 @@
     "@graphql-codegen/typescript-operations": "2.1.2",
     "@graphql-codegen/typescript-react-apollo": "3.1.2",
     "@types/react": "17.0.19",
-    "autoprefixer": "10.3.2",
+    "autoprefixer": "10.3.3",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
     "postcss": "8.3.6",
     "prettier": "2.3.2",
-    "tailwindcss": "2.2.7",
-    "typescript": "4.3.5"
+    "tailwindcss": "2.2.8",
+    "typescript": "4.4.2"
   }
 }
