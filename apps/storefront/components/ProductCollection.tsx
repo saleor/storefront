@@ -1,8 +1,18 @@
 import React from "react";
 import Link from "next/link";
+import { tw } from 'twind'
 
 import { useProductCollectionQuery } from "@/saleor/api";
 import { Pagination } from "./Pagination";
+
+const styles = {
+  grid: tw`grid grid-cols-4 gap-4`,
+  product: {
+    name: tw`block text-lg text-gray-900 truncate`,
+    category: tw`block text-sm font-medium text-gray-500`,
+    details: tw`px-4 py-2 border-gray-100 bg-gray-50 border-t`,
+  }
+}
 
 export const ProductCollection: React.VFC = () => {
   const { loading, error, data, fetchMore } = useProductCollectionQuery();
@@ -23,7 +33,7 @@ export const ProductCollection: React.VFC = () => {
 
     return (
       <div>
-        <ul role="list" className="grid gap-4 grid-cols-4">
+        <ul role="list" className={styles.grid}>
           {latestProducts?.length > 0 &&
             latestProducts.map(
               ({
@@ -47,11 +57,11 @@ export const ProductCollection: React.VFC = () => {
                           className="object-center object-cover"
                         />
                       </div>
-                      <div className="px-4 py-2 border-gray-100 bg-gray-50 border-t">
-                        <p className="block text-lg text-gray-900 truncate">
+                      <div className={styles.product.details}>
+                        <p className={styles.product.name}>
                           {name}
                         </p>
-                        <p className="block text-sm font-medium text-gray-500">
+                        <p className={styles.product.category}>
                           {category?.name}
                         </p>
                       </div>
