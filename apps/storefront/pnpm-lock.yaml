@@ -14,6 +14,7 @@ specifiers:
   '@tailwindcss/aspect-ratio': ^0.2.1
   '@tailwindcss/forms': ^0.3.3
   '@tailwindcss/typography': ^0.4.1
+  '@twind/forms': ^0.1.4
   '@twind/next': ^1.0.8
   '@types/react': 17.0.19
   autoprefixer: 10.3.3
@@ -39,6 +40,7 @@ dependencies:
   '@tailwindcss/aspect-ratio': 0.2.1_tailwindcss@2.2.8
   '@tailwindcss/forms': 0.3.3_tailwindcss@2.2.8
   '@tailwindcss/typography': 0.4.1_tailwindcss@2.2.8
+  '@twind/forms': 0.1.4_twind@0.16.16+typescript@4.4.2
   '@twind/next': 1.0.8_28a6a46e96618e5b2d7ac9854b6c5fe4
   clsx: 1.1.1
   editorjs-blocks-react-renderer: 1.1.1
@@ -1394,6 +1396,20 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
+  /@twind/forms/0.1.4_twind@0.16.16+typescript@4.4.2:
+    resolution: {integrity: sha512-OwI3xd0NTDlQo2M9L3NDVnngBU/mGgHaIAif91taGfiN4zpbwvYLSpUFIeBlcD8XeGvdFQv07T5hxavFRsKa7Q==}
+    engines: {node: '>=10.13'}
+    peerDependencies:
+      twind: '>=0.14.4'
+      typescript: ^4.1.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      twind: 0.16.16_typescript@4.4.2
+      typescript: 4.4.2
+    dev: false
+
   /@twind/next/1.0.8_28a6a46e96618e5b2d7ac9854b6c5fe4:
     resolution: {integrity: sha512-rKQbEpk3yqlY/y37EwD+SWVfKWwE/qPjb6J9GFxsyYTCZKCOwXbnRXEzLGqPWd0F1pXfDfAs9mkA9WPBGwHH9A==}
     engines: {node: '>=10.13'}
@@ -1431,11 +1447,11 @@ packages:
   /@types/jsonwebtoken/8.5.5:
     resolution: {integrity: sha512-OGqtHQ7N5/Ap/TUwO6IgHDuLiAoTmHhGpNvgkCm/F4N6pKzx/RBSfr2OXZSwC6vkfnsEdb6+7DNZVtiXiwdwFw==}
     dependencies:
-      '@types/node': 16.7.2
+      '@types/node': 16.7.3
     dev: true
 
-  /@types/node/16.7.2:
-    resolution: {integrity: sha512-TbG4TOx9hng8FKxaVrCisdaxKxqEwJ3zwHoCWXZ0Jw6mnvTInpaB99/2Cy4+XxpXtjNv9/TgfGSvZFyfV/t8Fw==}
+  /@types/node/16.7.3:
+    resolution: {integrity: sha512-S6gm2sm9xIRWTxD7Ttj8N1ZrYfqdqZEU38Nwnrhd6krk7zf8vdgMgzz8hpAX9CfmXaJfP+Vqy2EhJpVavNEocg==}
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -1460,13 +1476,13 @@ packages:
   /@types/websocket/1.0.4:
     resolution: {integrity: sha512-qn1LkcFEKK8RPp459jkjzsfpbsx36BBt3oC3pITYtkoBw/aVX+EZFa5j3ThCRTNpLFvIMr5dSTD4RaMdilIOpA==}
     dependencies:
-      '@types/node': 16.7.2
+      '@types/node': 16.7.3
     dev: true
 
   /@types/ws/7.4.7:
     resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==}
     dependencies:
-      '@types/node': 16.7.2
+      '@types/node': 16.7.3
     dev: true
 
   /@types/zen-observable/0.8.3:
@@ -4049,7 +4065,7 @@ packages:
     resolution: {integrity: sha512-mk0umAQ5lT+CaOJ+Qp01N6kz48sJG2kr2n1rX0koqKf6FIygQV0qLOdN9SCYID4IVeSigDOcPeGLozdMLYfb5g==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      '@types/node': 16.7.2
+      '@types/node': 16.7.3
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false

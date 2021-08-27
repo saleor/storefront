@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import { useLocalStorage } from "react-use";
-//import "tailwindcss/tailwind.css";
+import "tailwindcss/tailwind.css";
 
 import withTwindApp from '@twind/next/shim/app'
 
@@ -13,7 +13,7 @@ import {
 import apolloClient from "@/lib/graphql";
 
 const Provider = ({ Component, pageProps }: AppProps) => {
-  const [token, setToken] = useLocalStorage("token", "");
+  const [token, setToken] = useLocalStorage("token");
   const [createCheckout, { data, loading }] = useCreateCheckoutMutation();
 
   useEffect(() => {
