@@ -1,6 +1,6 @@
 overwrite: true
 schema: "https://vercel.saleor.cloud/graphql/"
-documents: "graphql/**/*.ts"
+documents: "graphql/**/*.{ts,graphql}"
 generates:
   saleor/api.tsx:
     plugins:

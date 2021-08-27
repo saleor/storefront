@@ -3,12 +3,12 @@ import Link from "next/link";
 import { ShoppingBagIcon } from "@heroicons/react/outline";
 import { useLocalStorage } from "react-use";
 
-import { useCheckoutByIdQuery } from "@/saleor/api";
+import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 export const Navbar: React.VFC = ({}) => {
   const [token] = useLocalStorage("token", "");
-  const { data, loading, error } = useCheckoutByIdQuery({
-    variables: { checkoutId: token },
+  const { data, loading, error } = useCheckoutByTokenQuery({
+    variables: { checkoutToken: token },
   });
 
   const counter = data ? data.checkout!.lines?.length : 0;
