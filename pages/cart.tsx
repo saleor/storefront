@@ -2,7 +2,14 @@ import React from "react";
 import Link from "next/link";
 import { useLocalStorage } from "react-use";
 
-import { Navbar, CheckoutSummary } from "@/components";
+import {
+  Navbar,
+  CartSummary,
+} from "@/components";
+
+import {
+  CheckoutByID
+} from '@/graphql';
 
 import {
   useCheckoutByTokenQuery,
@@ -116,7 +123,7 @@ const Cart: React.VFC = ({}) => {
                 </ul>
               </section>
 
-              <CheckoutSummary checkout={data.checkout} />
+              <CartSummary checkout={data.checkout} />
             </div>
           </div>
         </main>

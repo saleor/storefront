@@ -1,50 +1,49 @@
-import React from "react";
+import React from 'react';
 
+import { CheckoutPriceEntry } from '@/components';
 import { formatAsMoney } from "@/lib/util";
 
 export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
   const { subtotalPrice, shippingPrice, totalPrice } = checkout || {};
 
   return (
-    <section>
-      <div className="bg-gray-50 rounded p-8 border">
-        <div className="flow-root">
-          <dl className="-my-4 text-sm">
-            <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">Subtotal</dt>
-              <dd className="font-medium text-gray-900">
-                {formatAsMoney(subtotalPrice?.net.amount)}
-              </dd>
-            </div>
-            <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">Shipping</dt>
-              <dd className="font-medium text-gray-900">
-                {formatAsMoney(shippingPrice?.gross.amount)}
-              </dd>
-            </div>
-            <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">Tax</dt>
-              <dd className="font-medium text-gray-900">
-                {formatAsMoney(subtotalPrice?.tax.amount)}
-              </dd>
-            </div>
-            <div className="py-4 flex items-center justify-between border-t border-gray-300">
-              <dt className="text-lg font-bold text-gray-900">Total</dt>
-              <dd className="text-lg text-gray-900">
-                {formatAsMoney(totalPrice?.gross.amount)}
-              </dd>
-            </div>
-          </dl>
+    <div className="bg-gray-50 border-t border-gray-200 p-6">
+      <form>
+        <label htmlFor="discount-code" className="block text-sm font-medium text-gray-700">
+          Discount code
+        </label>
+        <div className="flex space-x-4 mt-1">
+          <input
+            type="text"
+            id="discount-code"
+            className="block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+          />
+          <button
+            type="submit"
+            className="bg-gray-200 text-sm font-medium text-gray-600 rounded-md px-4 hover:bg-gray-300"
+          >
+            Apply
+          </button>
         </div>
-      </div>
-      <div className="mt-12">
-        <button
-          type="submit"
-          className="w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500"
-        >
-          Checkout
-        </button>
-      </div>
-    </section>
+      </form>
+
+      <dl className="text-gray-500 mt-8 space-y-4">
+        <CheckoutPriceEntry label="Subtotal" value={formatAsMoney(subtotalPrice?.net.amount)} />
+
+        {/* <div className="flex justify-between">
+          <dt className="flex">
+            Discount
+            <span className="ml-2 rounded-full bg-gray-200 text-xs text-gray-600 py-0.5 px-2 tracking-wide">
+              {discount.code}
+            </span>
+          </dt>
+          <dd className="text-gray-900">-{discount.amount}</dd>
+        </div> */}
+
+        <CheckoutPriceEntry label="Taxes" value={formatAsMoney(subtotalPrice?.tax.amount)} />
+        <CheckoutPriceEntry label="Shipping" value={formatAsMoney(shippingPrice?.gross.amount)} />
+        <CheckoutPriceEntry label="Total" value={formatAsMoney(totalPrice?.gross.amount)} />
+      </dl>
+    </div>
   );
-};
+}
