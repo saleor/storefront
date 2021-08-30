@@ -17,6 +17,7 @@
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
+    "@twind/forms": "^0.1.4",
     "@twind/next": "^1.0.8",
     "clsx": "1.1.1",
     "editorjs-blocks-react-renderer": "^1.1.1",
