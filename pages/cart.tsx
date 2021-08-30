@@ -8,10 +8,6 @@ import {
 } from "@/components";
 
 import {
-  CheckoutByID
-} from '@/graphql';
-
-import {
   useCheckoutByTokenQuery,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
