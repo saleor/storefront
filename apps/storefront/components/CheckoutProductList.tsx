@@ -1,9 +1,11 @@
-import React from 'react';
+import React from "react";
 
 export const CheckoutProductList = ({ products }: { products: any }) => {
-  console.log(products);
   return (
-    <ul role="list" className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4">
+    <ul
+      role="list"
+      className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4"
+    >
       {products.map((product: any, idx: number) => (
         <li key={idx} className="flex py-4 space-x-4">
           <img
@@ -18,7 +20,10 @@ export const CheckoutProductList = ({ products }: { products: any }) => {
               <p className="text-gray-500">{product.size}</p>
             </div>
             <div className="flex space-x-4">
-              <button type="button" className="text-sm font-medium text-blue-600 hover:text-blue-500">
+              <button
+                type="button"
+                className="text-sm font-medium text-blue-600 hover:text-blue-500"
+              >
                 Remove
               </button>
             </div>
@@ -27,4 +32,4 @@ export const CheckoutProductList = ({ products }: { products: any }) => {
       ))}
     </ul>
   );
-}
+};

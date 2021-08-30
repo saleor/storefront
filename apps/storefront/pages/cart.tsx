@@ -15,7 +15,7 @@ import {
 import { formatAsMoney } from "@/lib/util";
 
 const Cart: React.VFC = ({}) => {
-  const [token] = useLocalStorage("token", "");
+  const [token] = useLocalStorage("token");
   const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
     variables: { checkoutToken: token },
