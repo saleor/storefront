@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { CheckoutPriceEntry } from '@/components';
+import { CheckoutPriceEntry } from "@/components";
 import { formatAsMoney } from "@/lib/util";
+import Link from "next/link";
 
 export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
   const { subtotalPrice, shippingPrice, totalPrice } = checkout || {};
@@ -9,7 +10,10 @@ export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
   return (
     <div className="bg-gray-50 border-t border-gray-200 p-6">
       <form>
-        <label htmlFor="discount-code" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="discount-code"
+          className="block text-sm font-medium text-gray-700"
+        >
           Discount code
         </label>
         <div className="flex space-x-4 mt-1">
@@ -28,7 +32,10 @@ export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
       </form>
 
       <dl className="text-gray-500 mt-8 space-y-4">
-        <CheckoutPriceEntry label="Subtotal" value={formatAsMoney(subtotalPrice?.net.amount)} />
+        <CheckoutPriceEntry
+          label="Subtotal"
+          value={formatAsMoney(subtotalPrice?.net.amount)}
+        />
 
         {/* <div className="flex justify-between">
           <dt className="flex">
@@ -40,10 +47,19 @@ export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
           <dd className="text-gray-900">-{discount.amount}</dd>
         </div> */}
 
-        <CheckoutPriceEntry label="Taxes" value={formatAsMoney(subtotalPrice?.tax.amount)} />
-        <CheckoutPriceEntry label="Shipping" value={formatAsMoney(shippingPrice?.gross.amount)} />
-        <CheckoutPriceEntry label="Total" value={formatAsMoney(totalPrice?.gross.amount)} />
+        <CheckoutPriceEntry
+          label="Taxes"
+          value={formatAsMoney(subtotalPrice?.tax.amount)}
+        />
+        <CheckoutPriceEntry
+          label="Shipping"
+          value={formatAsMoney(shippingPrice?.gross.amount)}
+        />
+        <CheckoutPriceEntry
+          label="Total"
+          value={formatAsMoney(totalPrice?.gross.amount)}
+        />
       </dl>
     </div>
   );
-}
+};
