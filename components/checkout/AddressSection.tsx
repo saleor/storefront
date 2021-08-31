@@ -1,11 +1,6 @@
 import { formatAsMoney } from "@/lib/util";
-import {
-  Checkout,
-  CheckoutDetailsFragment,
-  useCheckoutEmailUpdateMutation,
-} from "@/saleor/api";
+import { CheckoutDetailsFragment } from "@/saleor/api";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import { AddressForm, AddressType } from "./AddressForm";
 
 export const AddressSection = ({
@@ -24,12 +19,12 @@ export const AddressSection = ({
     return <></>;
   }
   return (
-    <>
-      <div className="col-span-full">
-        <h2>Billing address</h2>
+    <div>
+      <div className="mt-8 mb-4">
+        <h2 className="text-lg font-medium text-gray-900 my-4">Billing address</h2>
       </div>
       {!modifyBillingAddress ? (
-        <section className="col-span-full">
+        <section>
           <p>{checkout.billingAddress?.firstName}</p>
           <p>{checkout.billingAddress?.lastName}</p>
           <p>{checkout.billingAddress?.phone}</p>
@@ -52,11 +47,11 @@ export const AddressSection = ({
           toggle={() => setModifyBillingAddress(false)}
         />
       )}
-      <div className="col-span-full">
-        <h2>Shipping address</h2>
+      <div className="mt-8 mb-4 ">
+        <h2 className="text-lg font-medium text-gray-900">Shipping address</h2>
       </div>
       {!modifyShippingAddress ? (
-        <section className="col-span-full">
+        <section>
           <p>{checkout.shippingAddress?.firstName}</p>
           <p>{checkout.shippingAddress?.lastName}</p>
           <p>{checkout.shippingAddress?.phone}</p>
@@ -79,6 +74,6 @@ export const AddressSection = ({
           toggle={() => setModifyShippingAddress(false)}
         />
       )}
-    </>
+    </div>
   );
 };
