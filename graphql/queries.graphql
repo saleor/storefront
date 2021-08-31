@@ -1,8 +1,29 @@
 #import "./fragments.graphql"
 
+fragment AddressFragment on Address {
+  phone
+  firstName
+  lastName
+  streetAddress1
+  city
+  postalCode
+  country {
+    code
+    country
+  }
+}
+
 fragment CheckoutDetailsFragment on Checkout {
   id
   token
+  email
+  billingAddress {
+    ...AddressFragment
+  }
+  shippingAddress {
+    ...AddressFragment
+  }
+  isShippingRequired
   lines {
     id
     totalPrice {
@@ -182,6 +203,44 @@ query ProductCollection($before: String, $after: String) {
       hasPreviousPage
       startCursor
       endCursor
+    }
+  }
+}
+
+mutation CheckoutEmailUpdate($token: UUID!, $email: String!) {
+  checkoutEmailUpdate(email: $email, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation CheckoutBillingAddressUpdate($token: UUID!, $address: AddressInput!) {
+  checkoutBillingAddressUpdate(billingAddress: $address, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation CheckoutShippingAddressUpdate($token: UUID!, $address: AddressInput!) {
+  checkoutShippingAddressUpdate(shippingAddress: $address, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
     }
   }
 }
