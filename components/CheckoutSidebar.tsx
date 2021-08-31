@@ -24,7 +24,7 @@ export const CheckoutSidebar: React.VFC = ({ }) => {
     const products = (data.checkout?.lines || []).map((_) => ({
       ..._?.variant?.product,
       lineId: _!.id,
-      price: _?.variant.pricing?.price?.gross.amount,
+      price: _?.variant?.pricing?.price?.gross.amount,
     }));
 
     return (

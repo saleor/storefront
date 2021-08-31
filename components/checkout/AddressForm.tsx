@@ -102,8 +102,8 @@ export const AddressForm = ({
     }
   );
   return (
-    <>
-      <form onSubmit={onAddressFormSubmit} className="col-span-full">
+    <form onSubmit={onAddressFormSubmit}>
+      <div className="grid grid-cols-12 gap-4 w-full">
         <div className="col-span-full">
           <label
             htmlFor="address"
@@ -192,7 +192,7 @@ export const AddressForm = ({
           </div>
         </div>
 
-        <div className="col-span-full sm:col-span-4">
+        <div className="col-span-full sm:col-span-6">
           <label
             htmlFor="city"
             className="block text-sm font-medium text-gray-700"
@@ -226,7 +226,7 @@ export const AddressForm = ({
         </div>
       </div> */}
 
-        <div className="col-span-full sm:col-span-4">
+        <div className="col-span-full sm:col-span-6">
           <label
             htmlFor="postal-code"
             className="block text-sm font-medium text-gray-700"
@@ -249,15 +249,15 @@ export const AddressForm = ({
           </div>
         </div>
 
-        <div className="col-span-full sm:col-span-full">
+        <div className="col-span-full">
           <button
-            className="w-full mt-6 bg-green-500 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700"
+            className="w-full bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200"
             onClick={() => onAddressFormSubmit}
           >
             Save
           </button>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
