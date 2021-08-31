@@ -6,7 +6,7 @@ import { useLocalStorage } from "react-use";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 export const Navbar: React.VFC = ({}) => {
-  const [token] = useLocalStorage("token", "");
+  const [token] = useLocalStorage("token");
   const { data, loading, error } = useCheckoutByTokenQuery({
     variables: { checkoutToken: token },
   });
