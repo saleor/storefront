@@ -2,7 +2,6 @@ import React from "react";
 
 import { CheckoutPriceEntry } from "@/components";
 import { formatAsMoney } from "@/lib/util";
-import Link from "next/link";
 
 export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
   const { subtotalPrice, shippingPrice, totalPrice } = checkout || {};
