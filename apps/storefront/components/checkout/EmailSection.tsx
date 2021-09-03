@@ -39,7 +39,7 @@ export const EmailSection = ({
   });
 
   return (
-    <div className="col-span-full">
+    <div className="py-4">
       {!modifyEmail ? (
         <div className="flex justify-between items-center">
           <div>
