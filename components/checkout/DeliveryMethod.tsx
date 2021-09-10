@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 
 import { RadioGroup } from '@headlessui/react'
+import { useCheckoutShippingMethodUpdateMutation } from '@/saleor/api';
+import { useLocalStorage } from 'react-use';
 
-const deliveryMethods = [
-  { id: 1, title: 'Standard', turnaround: '4–10 business days', price: '$5.00' },
-  { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
-]
+export const DeliveryMethod = ({ collection }: { collection: Array<any> }) => {
+  const [token] = useLocalStorage("token");
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState()
+  const [checkoutShippingMethodUpdate] = useCheckoutShippingMethodUpdateMutation({});
 
-export const DeliveryMethod = ({}) => {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(deliveryMethods[0])
+  const handleChange = async (method: any) => {
+    console.log('DeliveryMethod.handleChange', method);
+
+    const r = await checkoutShippingMethodUpdate({
+      variables: {
+        token,
+        shippingMethodId: method.id
+      }
+    });
+
+    setSelectedDeliveryMethod(method);
+  }
 
   return (
-    <RadioGroup value={selectedDeliveryMethod} onChange={setSelectedDeliveryMethod} className="py-8">
+    <RadioGroup value={selectedDeliveryMethod} onChange={handleChange} className="py-8">
       <RadioGroup.Label className="text-lg font-medium text-gray-900">Delivery method</RadioGroup.Label>
 
       <div className="mt-4 grid grid-cols-2 gap-2">
-        {deliveryMethods.map((deliveryMethod) => (
+        {collection.map((deliveryMethod) => (
           <RadioGroup.Option
             key={deliveryMethod.id}
             value={deliveryMethod}
@@ -33,16 +45,16 @@ export const DeliveryMethod = ({}) => {
                 <div className="flex-1 flex">
                   <div className="flex flex-col">
                     <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
-                      {deliveryMethod.title}
+                      {deliveryMethod.name}
                     </RadioGroup.Label>
                     <RadioGroup.Description
                       as="span"
                       className="mt-1 flex items-center text-sm text-gray-500"
                     >
-                      {deliveryMethod.turnaround}
+                      {deliveryMethod.minimumDeliveryDays || 2}-{deliveryMethod.maximumDeliveryDays || 14} business days
                     </RadioGroup.Description>
                     <RadioGroup.Description as="span" className="mt-6 text-sm font-medium text-gray-900">
-                      {deliveryMethod.price}
+                      {deliveryMethod.price.amount}
                     </RadioGroup.Description>
                   </div>
                 </div>

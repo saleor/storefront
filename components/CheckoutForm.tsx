@@ -33,7 +33,8 @@ export const CheckoutForm = ({
               <AddressSection type={AddressType.SHIPPING} address={checkout.shippingAddress} required={checkout.isShippingRequired} />
             </div>
 
-            <DeliveryMethod />
+            {checkout.availableShippingMethods?.length > 0 &&
+              <DeliveryMethod collection={checkout.availableShippingMethods} />}
 
             <BillingAddressSwitch />
           </div>
