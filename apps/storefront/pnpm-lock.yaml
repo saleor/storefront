@@ -22,6 +22,7 @@ specifiers:
   editorjs-blocks-react-renderer: ^1.1.1
   eslint: 7.32.0
   eslint-config-next: 11.1.2
+  eslint-config-prettier: ^8.3.0
   graphql: 15.5.3
   next: 11.1.2
   postcss: 8.3.6
@@ -65,6 +66,7 @@ devDependencies:
   autoprefixer: 10.3.4_postcss@8.3.6
   eslint: 7.32.0
   eslint-config-next: 11.1.2_1a4cc63bb962be0c1c6a016cd2486bf8
+  eslint-config-prettier: 8.3.0_eslint@7.32.0
   postcss: 8.3.6
   prettier: 2.4.0
   tailwindcss: 2.2.15_4dc2d3db2b138fb8fa7d5c7b0c803aba
@@ -3007,6 +3009,15 @@ packages:
       typescript: 4.4.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /eslint-config-prettier/8.3.0_eslint@7.32.0:
+    resolution: {integrity: sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+    dependencies:
+      eslint: 7.32.0
     dev: true
 
   /eslint-import-resolver-node/0.3.6:
