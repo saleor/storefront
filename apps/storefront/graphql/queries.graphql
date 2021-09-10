@@ -40,6 +40,13 @@ fragment CheckoutDetailsFragment on Checkout {
           url
         }
       }
+      pricing {
+        price {
+          gross {
+            amount
+          }
+        }
+      }
       name
     }
   }
