@@ -24,6 +24,16 @@ fragment CheckoutDetailsFragment on Checkout {
     ...AddressFragment
   }
   isShippingRequired
+  availableShippingMethods {
+    id
+    name
+    price {
+      currency
+      amount
+    }
+    minimumDeliveryDays
+    maximumDeliveryDays
+  }
   lines {
     id
     totalPrice {
@@ -241,6 +251,32 @@ mutation CheckoutBillingAddressUpdate($token: UUID!, $address: AddressInput!) {
 
 mutation CheckoutShippingAddressUpdate($token: UUID!, $address: AddressInput!) {
   checkoutShippingAddressUpdate(shippingAddress: $address, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+query AvailableShippingMethods {
+  shop {
+    availableShippingMethods(channel: "default-channel") {
+      id
+      name
+      price {
+        currency
+        amount
+      }
+    }
+  }
+}
+
+mutation CheckoutShippingMethodUpdate($token: UUID!, $shippingMethodId: ID!) {
+  checkoutShippingMethodUpdate(shippingMethodId: $shippingMethodId, token: $token) {
     checkout {
       ...CheckoutDetailsFragment
     }
