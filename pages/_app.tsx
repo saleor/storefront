@@ -4,8 +4,6 @@ import { ApolloProvider } from "@apollo/client";
 import { useLocalStorage } from "react-use";
 import "tailwindcss/tailwind.css";
 
-import withTwindApp from "@twind/next/shim/app";
-
 import { useCreateCheckoutMutation } from "@/saleor/api";
 
 import apolloClient from "@/lib/graphql";
@@ -36,4 +34,4 @@ function MyApp(props: AppProps) {
   );
 }
 
-export default withTwindApp(MyApp);
+export default MyApp;

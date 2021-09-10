@@ -17,8 +17,6 @@
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
-    "@twind/forms": "^0.1.4",
-    "@twind/next": "^1.0.8",
     "clsx": "1.1.1",
     "editorjs-blocks-react-renderer": "^1.1.1",
     "graphql": "15.5.3",
@@ -26,8 +24,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.15.2",
-    "react-use": "^17.3.1",
-    "twind": "^0.16.16"
+    "react-use": "^17.3.1"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.0",
