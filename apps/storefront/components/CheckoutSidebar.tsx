@@ -11,7 +11,7 @@ import {
 } from "@/saleor/api"
 
 export const CheckoutSidebar: React.VFC = ({ }) => {
-  const [token] = useLocalStorage("token", "");
+  const [token] = useLocalStorage("token");
   const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
     variables: { checkoutToken: token },

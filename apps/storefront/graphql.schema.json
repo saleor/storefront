@@ -38396,6 +38396,18 @@
                 "deprecationReason": null
               },
               {
+                "name": "customerId",
+                "description": "ID of customer to attach to checkout. Can be used to attach customer to checkout by staff or app. Requires IMPERSONATE_USER permission.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "token",
                 "description": "Checkout token.",
                 "type": {
@@ -51735,6 +51747,12 @@
           },
           {
             "name": "MANAGE_STAFF",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "IMPERSONATE_USER",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
