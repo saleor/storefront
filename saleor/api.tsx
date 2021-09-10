@@ -6402,6 +6402,7 @@ export type MutationCheckoutCreateArgs = {
 
 export type MutationCheckoutCustomerAttachArgs = {
   checkoutId?: Maybe<Scalars['ID']>;
+  customerId?: Maybe<Scalars['ID']>;
   token?: Maybe<Scalars['UUID']>;
 };
 
@@ -8338,6 +8339,7 @@ export type Permission = {
 export enum PermissionEnum {
   ManageUsers = 'MANAGE_USERS',
   ManageStaff = 'MANAGE_STAFF',
+  ImpersonateUser = 'IMPERSONATE_USER',
   ManageApps = 'MANAGE_APPS',
   ManageChannels = 'MANAGE_CHANNELS',
   ManageDiscounts = 'MANAGE_DISCOUNTS',

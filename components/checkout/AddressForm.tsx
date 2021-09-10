@@ -10,32 +10,33 @@ import {
 } from "@/saleor/api";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useLocalStorage } from "react-use";
 
 export enum AddressType {
   SHIPPING,
   BILLING,
 }
+interface AddressForm {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  country: CountryCode;
+  streetAddress1: string;
+  city: string;
+  postalCode: string;
+}
 
 export const AddressForm = ({
   addressType,
   existingAddressData,
-  checkout,
   toggle,
 }: {
   addressType: AddressType;
   existingAddressData?: AddressFragment;
-  checkout: CheckoutDetailsFragment;
   toggle: () => void;
 }) => {
-  interface AddressForm {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    country: CountryCode;
-    streetAddress1: string;
-    city: string;
-    postalCode: string;
-  }
+
+  const [token] = useLocalStorage("token");
 
   const {
     register: registerAddress,
@@ -70,7 +71,7 @@ export const AddressForm = ({
             address: {
               ...formData,
             },
-            token: checkout.token,
+            token,
           },
         });
         const mutationErrors =
@@ -82,13 +83,14 @@ export const AddressForm = ({
             address: {
               ...formData,
             },
-            token: checkout.token,
+            token,
           },
         });
         const mutationErrors =
           result.data?.checkoutShippingAddressUpdate?.errors || [];
         errors = errors.concat(mutationErrors);
       }
+
 
       if (errors.length > 0) {
         errors.forEach((e) =>

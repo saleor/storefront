@@ -6,6 +6,7 @@ import {
 } from "@/saleor/api";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "../Button";
 
 export const EmailSection = ({
   checkout,
@@ -38,23 +39,24 @@ export const EmailSection = ({
   });
 
   return (
-    <div className="col-span-full">
+    <div className="py-4">
       {!modifyEmail ? (
-        <>
-          <label
-            htmlFor="email-address"
-            className="block text-sm font-medium text-gray-800"
-          >
-            Email address
-          </label>
-          <p>{checkout?.email}</p>
-          <button
-            className="w-full mt-6 bg-gray-400 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700"
+        <div className="flex justify-between items-center">
+          <div>
+            <label
+              htmlFor="email-address"
+              className="block text-sm font-medium text-gray-800"
+            >
+              Email address
+            </label>
+            <p>{checkout?.email}</p>
+          </div>
+          <Button
             onClick={() => setModifyEmail(true)}
           >
             Change
-          </button>
-        </>
+          </Button>
+        </div>
       ) : (
         <>
           <form onSubmit={onEmailFormSubmit}>
@@ -76,12 +78,11 @@ export const EmailSection = ({
               />
               <p>{errors.email?.message}</p>
             </div>
-            <button
-              className="w-full mt-6 bg-green-500 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700"
+            <Button
               onClick={() => onEmailFormSubmit}
             >
               Save
-            </button>
+            </Button>
           </form>
         </>
       )}
