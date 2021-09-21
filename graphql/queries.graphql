@@ -1,5 +1,16 @@
 #import "./fragments.graphql"
 
+fragment ImageFragment on Image {
+  url
+  alt
+}
+
+fragment ProductMediaFragment on ProductMedia {
+  url
+  alt
+  type
+}
+
 fragment AddressFragment on Address {
   phone
   firstName
@@ -61,7 +72,7 @@ fragment CheckoutDetailsFragment on Checkout {
         name
         slug
         thumbnail {
-          url
+          ...ImageFragment
         }
       }
       pricing {
@@ -181,36 +192,42 @@ query CheckoutByToken($checkoutToken: UUID!) {
   }
 }
 
-query ProductBySlug($slug: String!) {
-  product(slug: $slug, channel: "default-channel") {
+fragment ProductDetailsFragment on Product {
+  id
+  name
+  description
+  seoDescription
+  seoTitle
+  category {
+    name
+  }
+  variants {
     id
     name
-    description
-    category {
-      name
-    }
-    variants {
-      id
-      name
-    }
-    pricing {
-      priceRange {
-        start {
-          gross {
-            ...PriceFragment
-          }
+  }
+  pricing {
+    priceRange {
+      start {
+        gross {
+          ...PriceFragment
         }
       }
     }
-    media {
-      url
-    }
-    thumbnail {
-      url
-    }
-    category {
-      name
-    }
+  }
+  media {
+    ...ProductMediaFragment
+  }
+  thumbnail {
+    ...ImageFragment
+  }
+  category {
+    name
+  }
+}
+
+query ProductBySlug($slug: String!) {
+  product(slug: $slug, channel: "default-channel") {
+    ...ProductDetailsFragment
   }
 }
 
@@ -240,7 +257,7 @@ query ProductCollection($before: String, $after: String) {
         slug
         name
         thumbnail {
-          url
+          ...ImageFragment
         }
         category {
           name
@@ -352,7 +369,7 @@ query OrderDetailsQuery($token: UUID!) {
     lines {
       id
       thumbnail {
-        url
+        ...ImageFragment
       }
       totalPrice {
         gross {
