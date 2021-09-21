@@ -12637,7 +12637,25 @@ export type PriceFragment = { __typename?: 'Money', currency: string, amount: nu
 
 export type AddressFragment = { __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } };
 
-export type CheckoutDetailsFragment = { __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> };
+export type DeliveryMethodFragment = { __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> };
+
+export type CheckoutDetailsFragment = { __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> };
+
+export type CheckoutPaymentCreateMutationVariables = Exact<{
+  checkoutToken: Scalars['UUID'];
+  paymentInput: PaymentInput;
+}>;
+
+
+export type CheckoutPaymentCreateMutation = { __typename?: 'Mutation', checkoutPaymentCreate?: Maybe<{ __typename?: 'CheckoutPaymentCreate', payment?: Maybe<{ __typename?: 'Payment', id: string, total?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, errors: Array<{ __typename?: 'PaymentError', field?: Maybe<string>, message?: Maybe<string> }> }> };
+
+export type CheckoutCompleteMutationVariables = Exact<{
+  checkoutToken: Scalars['UUID'];
+  paymentData?: Maybe<Scalars['JSONString']>;
+}>;
+
+
+export type CheckoutCompleteMutation = { __typename?: 'Mutation', checkoutComplete?: Maybe<{ __typename?: 'CheckoutComplete', confirmationNeeded: boolean, confirmationData?: Maybe<any>, order?: Maybe<{ __typename?: 'Order', id: string, status: OrderStatus, token: string }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, variants?: Maybe<Array<string>>, addressType?: Maybe<AddressTypeEnum> }> }> };
 
 export type RemoveProductFromCheckoutMutationVariables = Exact<{
   checkoutToken: Scalars['UUID'];
@@ -12645,7 +12663,7 @@ export type RemoveProductFromCheckoutMutationVariables = Exact<{
 }>;
 
 
-export type RemoveProductFromCheckoutMutation = { __typename?: 'Mutation', checkoutLineDelete?: Maybe<{ __typename?: 'CheckoutLineDelete', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string> }> }> };
+export type RemoveProductFromCheckoutMutation = { __typename?: 'Mutation', checkoutLineDelete?: Maybe<{ __typename?: 'CheckoutLineDelete', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string> }> }> };
 
 export type CreateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -12658,14 +12676,14 @@ export type AddProductToCheckoutMutationVariables = Exact<{
 }>;
 
 
-export type AddProductToCheckoutMutation = { __typename?: 'Mutation', checkoutLinesAdd?: Maybe<{ __typename?: 'CheckoutLinesAdd', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', message?: Maybe<string> }> }> };
+export type AddProductToCheckoutMutation = { __typename?: 'Mutation', checkoutLinesAdd?: Maybe<{ __typename?: 'CheckoutLinesAdd', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', message?: Maybe<string> }> }> };
 
 export type CheckoutByTokenQueryVariables = Exact<{
   checkoutToken: Scalars['UUID'];
 }>;
 
 
-export type CheckoutByTokenQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> };
+export type CheckoutByTokenQuery = { __typename?: 'Query', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> };
 
 export type ProductBySlugQueryVariables = Exact<{
   slug: Scalars['String'];
@@ -12695,7 +12713,7 @@ export type CheckoutEmailUpdateMutationVariables = Exact<{
 }>;
 
 
-export type CheckoutEmailUpdateMutation = { __typename?: 'Mutation', checkoutEmailUpdate?: Maybe<{ __typename?: 'CheckoutEmailUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string> }> }> };
+export type CheckoutEmailUpdateMutation = { __typename?: 'Mutation', checkoutEmailUpdate?: Maybe<{ __typename?: 'CheckoutEmailUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string> }> }> };
 
 export type CheckoutBillingAddressUpdateMutationVariables = Exact<{
   token: Scalars['UUID'];
@@ -12703,7 +12721,7 @@ export type CheckoutBillingAddressUpdateMutationVariables = Exact<{
 }>;
 
 
-export type CheckoutBillingAddressUpdateMutation = { __typename?: 'Mutation', checkoutBillingAddressUpdate?: Maybe<{ __typename?: 'CheckoutBillingAddressUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, code: CheckoutErrorCode }> }> };
+export type CheckoutBillingAddressUpdateMutation = { __typename?: 'Mutation', checkoutBillingAddressUpdate?: Maybe<{ __typename?: 'CheckoutBillingAddressUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, code: CheckoutErrorCode }> }> };
 
 export type CheckoutShippingAddressUpdateMutationVariables = Exact<{
   token: Scalars['UUID'];
@@ -12711,7 +12729,7 @@ export type CheckoutShippingAddressUpdateMutationVariables = Exact<{
 }>;
 
 
-export type CheckoutShippingAddressUpdateMutation = { __typename?: 'Mutation', checkoutShippingAddressUpdate?: Maybe<{ __typename?: 'CheckoutShippingAddressUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, code: CheckoutErrorCode }> }> };
+export type CheckoutShippingAddressUpdateMutation = { __typename?: 'Mutation', checkoutShippingAddressUpdate?: Maybe<{ __typename?: 'CheckoutShippingAddressUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, code: CheckoutErrorCode }> }> };
 
 export type AvailableShippingMethodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12724,7 +12742,14 @@ export type CheckoutShippingMethodUpdateMutationVariables = Exact<{
 }>;
 
 
-export type CheckoutShippingMethodUpdateMutation = { __typename?: 'Mutation', checkoutShippingMethodUpdate?: Maybe<{ __typename?: 'CheckoutShippingMethodUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, code: CheckoutErrorCode }> }> };
+export type CheckoutShippingMethodUpdateMutation = { __typename?: 'Mutation', checkoutShippingMethodUpdate?: Maybe<{ __typename?: 'CheckoutShippingMethodUpdate', checkout?: Maybe<{ __typename?: 'Checkout', id: string, token: any, email: string, isShippingRequired: boolean, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingMethod?: Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>, availableShippingMethods: Array<Maybe<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number }> }>>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: Maybe<string> }> }>, lines?: Maybe<Array<Maybe<{ __typename?: 'CheckoutLine', id: string, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, variant: { __typename?: 'ProductVariant', name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, thumbnail?: Maybe<{ __typename?: 'Image', url: string }> }, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }> } }>>>, subtotalPrice?: Maybe<{ __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, code: CheckoutErrorCode }> }> };
+
+export type OrderDetailsQueryVariables = Exact<{
+  token: Scalars['UUID'];
+}>;
+
+
+export type OrderDetailsQuery = { __typename?: 'Query', orderByToken?: Maybe<{ __typename?: 'Order', id: string, number?: Maybe<string>, created: any, statusDisplay?: Maybe<string>, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<Maybe<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, thumbnail?: Maybe<{ __typename?: 'Image', url: string }>, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } }>>, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } }> };
 
 export const AddressFragmentDoc = gql`
     fragment AddressFragment on Address {
@@ -12746,6 +12771,17 @@ export const PriceFragmentDoc = gql`
   amount
 }
     `;
+export const DeliveryMethodFragmentDoc = gql`
+    fragment DeliveryMethodFragment on ShippingMethod {
+  id
+  name
+  price {
+    ...PriceFragment
+  }
+  minimumDeliveryDays
+  maximumDeliveryDays
+}
+    ${PriceFragmentDoc}`;
 export const CheckoutDetailsFragmentDoc = gql`
     fragment CheckoutDetailsFragment on Checkout {
   id
@@ -12757,16 +12793,20 @@ export const CheckoutDetailsFragmentDoc = gql`
   shippingAddress {
     ...AddressFragment
   }
+  shippingMethod {
+    ...DeliveryMethodFragment
+  }
   isShippingRequired
   availableShippingMethods {
+    ...DeliveryMethodFragment
+  }
+  availablePaymentGateways {
     id
     name
-    price {
-      currency
-      amount
+    config {
+      field
+      value
     }
-    minimumDeliveryDays
-    maximumDeliveryDays
   }
   lines {
     id
@@ -12787,7 +12827,7 @@ export const CheckoutDetailsFragmentDoc = gql`
       pricing {
         price {
           gross {
-            amount
+            ...PriceFragment
           }
         }
       }
@@ -12814,7 +12854,97 @@ export const CheckoutDetailsFragmentDoc = gql`
   }
 }
     ${AddressFragmentDoc}
+${DeliveryMethodFragmentDoc}
 ${PriceFragmentDoc}`;
+export const CheckoutPaymentCreateDocument = gql`
+    mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
+  checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
+    payment {
+      id
+      total {
+        ...PriceFragment
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    ${PriceFragmentDoc}`;
+export type CheckoutPaymentCreateMutationFn = Apollo.MutationFunction<CheckoutPaymentCreateMutation, CheckoutPaymentCreateMutationVariables>;
+
+/**
+ * __useCheckoutPaymentCreateMutation__
+ *
+ * To run a mutation, you first call `useCheckoutPaymentCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutPaymentCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkoutPaymentCreateMutation, { data, loading, error }] = useCheckoutPaymentCreateMutation({
+ *   variables: {
+ *      checkoutToken: // value for 'checkoutToken'
+ *      paymentInput: // value for 'paymentInput'
+ *   },
+ * });
+ */
+export function useCheckoutPaymentCreateMutation(baseOptions?: Apollo.MutationHookOptions<CheckoutPaymentCreateMutation, CheckoutPaymentCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckoutPaymentCreateMutation, CheckoutPaymentCreateMutationVariables>(CheckoutPaymentCreateDocument, options);
+      }
+export type CheckoutPaymentCreateMutationHookResult = ReturnType<typeof useCheckoutPaymentCreateMutation>;
+export type CheckoutPaymentCreateMutationResult = Apollo.MutationResult<CheckoutPaymentCreateMutation>;
+export type CheckoutPaymentCreateMutationOptions = Apollo.BaseMutationOptions<CheckoutPaymentCreateMutation, CheckoutPaymentCreateMutationVariables>;
+export const CheckoutCompleteDocument = gql`
+    mutation checkoutComplete($checkoutToken: UUID!, $paymentData: JSONString) {
+  checkoutComplete(token: $checkoutToken, paymentData: $paymentData) {
+    order {
+      id
+      status
+      token
+    }
+    confirmationNeeded
+    confirmationData
+    errors {
+      field
+      message
+      variants
+      addressType
+    }
+  }
+}
+    `;
+export type CheckoutCompleteMutationFn = Apollo.MutationFunction<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>;
+
+/**
+ * __useCheckoutCompleteMutation__
+ *
+ * To run a mutation, you first call `useCheckoutCompleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutCompleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkoutCompleteMutation, { data, loading, error }] = useCheckoutCompleteMutation({
+ *   variables: {
+ *      checkoutToken: // value for 'checkoutToken'
+ *      paymentData: // value for 'paymentData'
+ *   },
+ * });
+ */
+export function useCheckoutCompleteMutation(baseOptions?: Apollo.MutationHookOptions<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>(CheckoutCompleteDocument, options);
+      }
+export type CheckoutCompleteMutationHookResult = ReturnType<typeof useCheckoutCompleteMutation>;
+export type CheckoutCompleteMutationResult = Apollo.MutationResult<CheckoutCompleteMutation>;
+export type CheckoutCompleteMutationOptions = Apollo.BaseMutationOptions<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>;
 export const RemoveProductFromCheckoutDocument = gql`
     mutation RemoveProductFromCheckout($checkoutToken: UUID!, $lineId: ID!) {
   checkoutLineDelete(token: $checkoutToken, lineId: $lineId) {
@@ -13278,13 +13408,12 @@ export const AvailableShippingMethodsDocument = gql`
       id
       name
       price {
-        currency
-        amount
+        ...PriceFragment
       }
     }
   }
 }
-    `;
+    ${PriceFragmentDoc}`;
 
 /**
  * __useAvailableShippingMethodsQuery__
@@ -13353,6 +13482,68 @@ export function useCheckoutShippingMethodUpdateMutation(baseOptions?: Apollo.Mut
 export type CheckoutShippingMethodUpdateMutationHookResult = ReturnType<typeof useCheckoutShippingMethodUpdateMutation>;
 export type CheckoutShippingMethodUpdateMutationResult = Apollo.MutationResult<CheckoutShippingMethodUpdateMutation>;
 export type CheckoutShippingMethodUpdateMutationOptions = Apollo.BaseMutationOptions<CheckoutShippingMethodUpdateMutation, CheckoutShippingMethodUpdateMutationVariables>;
+export const OrderDetailsQueryDocument = gql`
+    query OrderDetailsQuery($token: UUID!) {
+  orderByToken(token: $token) {
+    id
+    number
+    shippingPrice {
+      gross {
+        ...PriceFragment
+      }
+    }
+    created
+    lines {
+      id
+      thumbnail {
+        url
+      }
+      totalPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+      productName
+      variantName
+      quantity
+    }
+    total {
+      gross {
+        ...PriceFragment
+      }
+    }
+    statusDisplay
+  }
+}
+    ${PriceFragmentDoc}`;
+
+/**
+ * __useOrderDetailsQuery__
+ *
+ * To run a query within a React component, call `useOrderDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrderDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrderDetailsQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useOrderDetailsQuery(baseOptions: Apollo.QueryHookOptions<OrderDetailsQuery, OrderDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrderDetailsQuery, OrderDetailsQueryVariables>(OrderDetailsQueryDocument, options);
+      }
+export function useOrderDetailsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrderDetailsQuery, OrderDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrderDetailsQuery, OrderDetailsQueryVariables>(OrderDetailsQueryDocument, options);
+        }
+export type OrderDetailsQueryHookResult = ReturnType<typeof useOrderDetailsQuery>;
+export type OrderDetailsQueryLazyQueryHookResult = ReturnType<typeof useOrderDetailsQueryLazyQuery>;
+export type OrderDetailsQueryQueryResult = Apollo.QueryResult<OrderDetailsQuery, OrderDetailsQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
