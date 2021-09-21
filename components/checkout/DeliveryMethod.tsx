@@ -47,17 +47,14 @@ export const DeliveryMethod = ({
       {!changeDeliveryMethod ? (
         <div className="flex justify-between items-center">
           <div>
-            <div as="span" className="mt-6 text-sm font-medium text-gray-900">
+            <div className="mt-6 text-sm font-medium text-gray-900">
               {checkoutDeliveryMethod?.name}
             </div>
-            <div
-              as="span"
-              className="mt-1 flex items-center text-sm text-gray-500"
-            >
+            <div className="mt-1 flex items-center text-sm text-gray-500">
               {checkoutDeliveryMethod?.minimumDeliveryDays || 2}-
               {checkoutDeliveryMethod?.maximumDeliveryDays || 14} business days
             </div>
-            <div as="span" className="mt-6 text-sm font-medium text-gray-900">
+            <div className="mt-6 text-sm font-medium text-gray-900">
               {formatAsMoney(
                 checkoutDeliveryMethod?.price?.amount,
                 checkoutDeliveryMethod?.price?.currency
