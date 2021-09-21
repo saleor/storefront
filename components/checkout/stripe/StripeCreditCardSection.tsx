@@ -14,6 +14,7 @@ import {
 import { formatAsMoney } from "@/lib/util";
 import { useRouter } from "next/router";
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const STRIPE_GATEWAY = "saleor.payments.stripe";
 
@@ -38,7 +39,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
   }`;
   const redirectToOrderDetailsPage = (orderToken: string) => {
     // remove completed checkout
-    localStorage.removeItem("token");
+    localStorage.removeItem(CHECKOUT_TOKEN);
 
     // redirect to the order details page
     router.push({
