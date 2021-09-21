@@ -11,6 +11,8 @@ specifiers:
   '@graphql-codegen/typescript-react-apollo': 3.1.3
   '@headlessui/react': 1.4.1
   '@heroicons/react': 1.0.4
+  '@stripe/react-stripe-js': ^1.4.1
+  '@stripe/stripe-js': ^1.17.1
   '@tailwindcss/aspect-ratio': ^0.2.1
   '@tailwindcss/forms': ^0.3.3
   '@tailwindcss/typography': ^0.4.1
@@ -36,6 +38,8 @@ dependencies:
   '@apollo/client': 3.4.10_graphql@15.5.3+react@17.0.2
   '@headlessui/react': 1.4.1_react-dom@17.0.2+react@17.0.2
   '@heroicons/react': 1.0.4_react@17.0.2
+  '@stripe/react-stripe-js': 1.4.1_b29d292140dd4b2e94a183b1465fc763
+  '@stripe/stripe-js': 1.17.1
   '@tailwindcss/aspect-ratio': 0.2.1_tailwindcss@2.2.15
   '@tailwindcss/forms': 0.3.3_tailwindcss@2.2.15
   '@tailwindcss/typography': 0.4.1_tailwindcss@2.2.15
@@ -1429,6 +1433,23 @@ packages:
     resolution: {integrity: sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==}
     engines: {node: '>=6'}
     dev: true
+
+  /@stripe/react-stripe-js/1.4.1_b29d292140dd4b2e94a183b1465fc763:
+    resolution: {integrity: sha512-FjcVrhf72+9fUL3Lz3xi02ni9tzH1A1x6elXlr6tvBDgSD55oPJuodoP8eC7xTnBIKq0olF5uJvgtkJyDCdzjA==}
+    peerDependencies:
+      '@stripe/stripe-js': ^1.13.0
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    dependencies:
+      '@stripe/stripe-js': 1.17.1
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /@stripe/stripe-js/1.17.1:
+    resolution: {integrity: sha512-c9MyDvdi5Xou0j0JPNy86NebtTDfh9o62Ifuzx6GSm2YO0oedBpy51WSyOue2L8Fb+mqESS5gd6mGVEIPUnXsA==}
+    dev: false
 
   /@szmarczak/http-timer/1.1.2:
     resolution: {integrity: sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==}
