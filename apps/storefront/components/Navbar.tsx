@@ -4,9 +4,10 @@ import { ShoppingBagIcon } from "@heroicons/react/outline";
 import { useLocalStorage } from "react-use";
 
 import { useCheckoutByTokenQuery } from "@/saleor/api";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const Navbar: React.VFC = ({}) => {
-  const [token] = useLocalStorage("token");
+  const [token] = useLocalStorage(CHECKOUT_TOKEN);
   const { data, loading, error } = useCheckoutByTokenQuery({
     variables: { checkoutToken: token },
   });
