@@ -1,6 +1,7 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import { ApolloQueryResult } from "@apollo/client";
 import Blocks from "editorjs-blocks-react-renderer";
 
@@ -53,6 +54,8 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
       router.push("/cart");
     };
 
+    const productImage = product?.media![0];
+
     return (
       <div className="min-h-screen bg-gray-100">
         <Navbar />
@@ -60,10 +63,15 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
         <main className="max-w-7xl mx-auto pt-8 px-8">
           <div className="grid grid-cols-2 gap-x-10 items-start">
             <div className="w-full aspect-w-1 aspect-h-1 bg-white rounded">
-              <img
-                src={product?.media![0]?.url}
-                className="w-full h-full object-center object-cover"
-              />
+              {!!productImage && (
+                <Image
+                  src={productImage.url}
+                  alt="Product cover image"
+                  layout="fill"
+                  objectFit="cover"
+                  className="w-full h-full object-center object-cover"
+                />
+              )}
             </div>
 
             <div className="space-y-8">
