@@ -1,15 +1,6 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { relayStylePagination } from "@apollo/client/utilities";
 
-import { TypedTypePolicies } from "@/saleor/api";
-
-const typePolicies: TypedTypePolicies = {
-  Query: {
-    fields: {
-      products: relayStylePagination(),
-    },
-  },
-};
+import { typePolicies } from "./typePolicies";
 
 const apolloClient = new ApolloClient({
   uri: "https://vercel.saleor.cloud/graphql/",
