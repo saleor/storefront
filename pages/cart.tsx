@@ -3,13 +3,10 @@ import Link from "next/link";
 import { useLocalStorage } from "react-use";
 
 import { Navbar, CartSummary } from "@/components";
-
 import {
   useCheckoutByTokenQuery,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
-
-import { formatAsMoney } from "@/lib/util";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 
@@ -108,14 +105,9 @@ const Cart: React.VFC = ({}) => {
                                 </div>
 
                                 <p className="text-xl text-gray-900 text-right">
-                                  {formatAsMoney(
-                                    price?.amount,
-                                    price?.currency
-                                  )}
+                                  {price?.localizedAmount}
                                 </p>
                               </div>
-
-                              <div className="mt-4 flex items-center sm:block sm:absolute sm:top-0 sm:left-1/2 sm:mt-0"></div>
                             </div>
                           </div>
                         </li>

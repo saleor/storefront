@@ -1,7 +1,6 @@
 import React from "react";
 
 import { CheckoutPriceEntry } from "@/components";
-import { formatAsMoney } from "@/lib/util";
 
 export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
   const { subtotalPrice, shippingPrice, totalPrice } = checkout || {};
@@ -33,7 +32,7 @@ export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
       <dl className="text-gray-500 mt-8 space-y-4">
         <CheckoutPriceEntry
           label="Subtotal"
-          value={formatAsMoney(subtotalPrice?.net.amount)}
+          value={subtotalPrice?.net.localizedAmount}
         />
 
         {/* <div className="flex justify-between">
@@ -48,15 +47,15 @@ export const CheckoutSummary = ({ checkout }: { checkout: any }) => {
 
         <CheckoutPriceEntry
           label="Taxes"
-          value={formatAsMoney(subtotalPrice?.tax.amount)}
+          value={subtotalPrice?.tax.localizedAmount}
         />
         <CheckoutPriceEntry
           label="Shipping"
-          value={formatAsMoney(shippingPrice?.gross.amount)}
+          value={shippingPrice?.gross.localizedAmount}
         />
         <CheckoutPriceEntry
           label="Total"
-          value={formatAsMoney(totalPrice?.gross.amount)}
+          value={totalPrice?.gross.localizedAmount}
         />
       </dl>
     </div>

@@ -1,16 +1,23 @@
 overwrite: true
-schema: "https://vercel.saleor.cloud/graphql/"
+schema:
+  - "https://vercel.saleor.cloud/graphql/"
+  - local-schema.graphql
 documents: "graphql/**/*.{ts,graphql}"
 generates:
   saleor/api.tsx:
     plugins:
       - add:
-          content: "// THIS FILE IS GENERATED WITH `npm run generate`"
+          content:
+            - "// THIS FILE IS GENERATED WITH `npm run generate`"
+            - "import * as Scalar from '../scalars'"
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
       - "typescript-apollo-client-helpers"
     config:
+      scalars:
+        JSONString: string
+        # SampleScalar: Scalar.SampleScalar
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
   ./graphql.schema.json:
     plugins:
