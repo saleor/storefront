@@ -1,35 +1,32 @@
+import React, { useState } from "react";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import { ApolloQueryResult } from "@apollo/client";
 import Blocks from "editorjs-blocks-react-renderer";
-
 import { Navbar } from "@/components";
-
 import {
   useAddProductToCheckoutMutation,
   ProductPathsQuery,
   useProductBySlugQuery,
   ProductPathsDocument,
 } from "@/saleor/api";
-
 import apolloClient from "@/lib/graphql";
 
-import React from "react";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
     props: {
       productSlug: context.params?.slug?.toString(),
-      token: "",
+      checkoutToken: "",
     },
   };
 };
 
 const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ productSlug, token }) => {
+  ({ productSlug, checkoutToken }) => {
     const router = useRouter();
 
     const { loading, error, data } = useProductBySlugQuery({
@@ -37,9 +34,12 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
     });
     const [addProductToCheckout] = useAddProductToCheckoutMutation();
 
+    const [addToCartError, setAddToCartError] = useState("");
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error</p>;
     if (!data || !data.product) {
+      router.push("/404");
       return null;
     }
 
@@ -50,10 +50,35 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
       router.query.variant?.toString() || product?.variants![0]!.id!;
 
     const onAddToCart = async () => {
-      await addProductToCheckout({
-        variables: { checkoutToken: token, variantId: selectedVariantId },
-      });
-      router.push("/cart");
+      // Clear previous error messages
+      setAddToCartError("");
+
+      // Run mutation
+      const { errors: graphqlErrors, data: addToCartData } =
+        await addProductToCheckout({
+          variables: {
+            checkoutToken: checkoutToken,
+            variantId: selectedVariantId,
+          },
+        });
+
+      if (
+        !graphqlErrors?.length &&
+        !addToCartData?.checkoutLinesAdd?.errors.length
+      ) {
+        // Product successfully added, redirect to cart page
+        router.push("/cart");
+        return;
+      }
+
+      // Display error message
+      const errorMessages =
+        addToCartData?.checkoutLinesAdd?.errors
+          .filter((e) => !!e)
+          .map((e) => {
+            return e.message || "";
+          }) || [];
+      setAddToCartError(errorMessages.join("\n"));
     };
 
     const productImage = product?.media![0];
@@ -131,6 +156,7 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
                 >
                   Add to cart
                 </button>
+                {!!addToCartError && <p>{addToCartError}</p>}
               </div>
             </div>
           </main>
