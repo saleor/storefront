@@ -13,6 +13,16 @@ fragment AddressFragment on Address {
   }
 }
 
+fragment DeliveryMethodFragment on ShippingMethod {
+  id
+  name
+  price {
+    ...PriceFragment
+  }
+  minimumDeliveryDays
+  maximumDeliveryDays
+}
+
 fragment CheckoutDetailsFragment on Checkout {
   id
   token
@@ -23,16 +33,20 @@ fragment CheckoutDetailsFragment on Checkout {
   shippingAddress {
     ...AddressFragment
   }
+  shippingMethod {
+    ...DeliveryMethodFragment
+  }
   isShippingRequired
   availableShippingMethods {
+    ...DeliveryMethodFragment
+  }
+  availablePaymentGateways {
     id
     name
-    price {
-      currency
-      amount
+    config {
+      field
+      value
     }
-    minimumDeliveryDays
-    maximumDeliveryDays
   }
   lines {
     id
@@ -53,7 +67,7 @@ fragment CheckoutDetailsFragment on Checkout {
       pricing {
         price {
           gross {
-            amount
+            ...PriceFragment
           }
         }
       }
@@ -76,6 +90,42 @@ fragment CheckoutDetailsFragment on Checkout {
   totalPrice {
     gross {
       ...PriceFragment
+    }
+  }
+}
+
+mutation checkoutPaymentCreate(
+  $checkoutToken: UUID!
+  $paymentInput: PaymentInput!
+) {
+  checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
+    payment {
+      id
+      total {
+        ...PriceFragment
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation checkoutComplete($checkoutToken: UUID!, $paymentData: JSONString) {
+  checkoutComplete(token: $checkoutToken, paymentData: $paymentData) {
+    order {
+      id
+      status
+      token
+    }
+    confirmationNeeded
+    confirmationData
+    errors {
+      field
+      message
+      variants
+      addressType
     }
   }
 }
@@ -268,15 +318,17 @@ query AvailableShippingMethods {
       id
       name
       price {
-        currency
-        amount
+        ...PriceFragment
       }
     }
   }
 }
 
 mutation CheckoutShippingMethodUpdate($token: UUID!, $shippingMethodId: ID!) {
-  checkoutShippingMethodUpdate(shippingMethodId: $shippingMethodId, token: $token) {
+  checkoutShippingMethodUpdate(
+    shippingMethodId: $shippingMethodId
+    token: $token
+  ) {
     checkout {
       ...CheckoutDetailsFragment
     }
@@ -285,5 +337,37 @@ mutation CheckoutShippingMethodUpdate($token: UUID!, $shippingMethodId: ID!) {
       message
       code
     }
+  }
+}
+query OrderDetailsQuery($token: UUID!) {
+  orderByToken(token: $token) {
+    id
+    number
+    shippingPrice {
+      gross {
+        ...PriceFragment
+      }
+    }
+    created
+    lines {
+      id
+      thumbnail {
+        url
+      }
+      totalPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+      productName
+      variantName
+      quantity
+    }
+    total {
+      gross {
+        ...PriceFragment
+      }
+    }
+    statusDisplay
   }
 }

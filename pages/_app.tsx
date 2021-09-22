@@ -20,7 +20,9 @@ const Provider = ({ Component, pageProps }: AppProps) => {
       setToken(token);
     }
 
-    doCheckout();
+    if (!token) {
+      doCheckout();
+    }
   }, []);
 
   return <Component {...pageProps} token={token} />;
