@@ -90,10 +90,10 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
 
                 <p className="text-2xl text-gray-900">{price}</p>
 
-                {!!product?.description && (
+                {product?.description && (
                   <div className="text-base text-gray-700 space-y-6">
                     <article className="prose lg:prose-s">
-                      <Blocks data={product?.description} />
+                      <Blocks data={JSON.parse(product.description)} />
                     </article>
                   </div>
                 )}

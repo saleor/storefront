@@ -16,7 +16,8 @@ generates:
       - "typescript-apollo-client-helpers"
     config:
       scalars:
-        JSONString: Scalar.JSONString
+        JSONString: string
+        # SampleScalar: Scalar.SampleScalar
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
   ./graphql.schema.json:
     plugins:

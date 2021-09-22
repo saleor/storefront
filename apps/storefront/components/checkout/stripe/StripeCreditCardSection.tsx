@@ -126,7 +126,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
     if (completeData?.checkoutComplete?.confirmationNeeded) {
       // Parse data for the Stripe
       const confirmationData = JSON.parse(
-        completeData?.checkoutComplete?.confirmationData
+        completeData?.checkoutComplete?.confirmationData || ""
       );
 
       // Execute additional action at Stripe
