@@ -1,3 +1,4 @@
+import { CHECKOUT_TOKEN } from "@/lib/const";
 import { formatAsMoney } from "@/lib/util";
 import {
   AddressFragment,
@@ -35,8 +36,7 @@ export const AddressForm = ({
   existingAddressData?: AddressFragment;
   toggle: () => void;
 }) => {
-
-  const [token] = useLocalStorage("token");
+  const [token] = useLocalStorage(CHECKOUT_TOKEN);
 
   const {
     register: registerAddress,
@@ -90,7 +90,6 @@ export const AddressForm = ({
           result.data?.checkoutShippingAddressUpdate?.errors || [];
         errors = errors.concat(mutationErrors);
       }
-
 
       if (errors.length > 0) {
         errors.forEach((e) =>

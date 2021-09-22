@@ -9,6 +9,7 @@ import {
 import { useLocalStorage } from "react-use";
 import { Button } from "../Button";
 import { formatAsMoney } from "@/lib/util";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const DeliveryMethod = ({
   collection,
@@ -17,7 +18,7 @@ export const DeliveryMethod = ({
   collection: Array<any>;
   checkoutDeliveryMethod?: DeliveryMethodFragment;
 }) => {
-  const [token] = useLocalStorage("token");
+  const [token] = useLocalStorage(CHECKOUT_TOKEN);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     checkoutDeliveryMethod
   );
