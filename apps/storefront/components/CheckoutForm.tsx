@@ -1,9 +1,8 @@
-import { formatAsMoney } from "@/lib/util";
 import { CheckoutDetailsFragment } from "@/saleor/api";
-import React from "react";
+import React, { useState } from "react";
 import { AddressSection } from "./checkout/AddressSection";
 import { EmailSection } from "./checkout/EmailSection";
-import { CreditCardSection } from "./checkout/CreditCardSection";
+import { StripeCreditCardSection } from "./checkout/stripe/StripeCreditCardSection";
 import { AddressType } from "./checkout/AddressForm";
 import { DeliveryMethod } from "./checkout/DeliveryMethod";
 import { BillingAddressSwitch } from "./checkout/BillingAddressSwitch";
@@ -13,8 +12,6 @@ export const CheckoutForm = ({
 }: {
   checkout?: CheckoutDetailsFragment;
 }) => {
-  const totalPrice = checkout?.totalPrice?.gross;
-
   if (!checkout) {
     return <></>;
   }
@@ -25,29 +22,35 @@ export const CheckoutForm = ({
         <div>
           <div className="divide-y">
             <EmailSection checkout={checkout} />
-            <CreditCardSection />
             <div>
               <div className="mt-8 mb-4">
-                <h2 className="text-lg font-medium text-gray-900 my-4">Shipping Address</h2>
+                <h2 className="text-lg font-medium text-gray-900 my-4">
+                  Shipping Address
+                </h2>
               </div>
-              <AddressSection type={AddressType.SHIPPING} address={checkout.shippingAddress} required={checkout.isShippingRequired} />
+              <AddressSection
+                type={AddressType.SHIPPING}
+                address={checkout.shippingAddress}
+                required={checkout.isShippingRequired}
+              />
             </div>
 
-            {checkout.availableShippingMethods?.length > 0 &&
-              <DeliveryMethod collection={checkout.availableShippingMethods} />}
+            <div className="mt-8 mb-4">
+              <h2 className="text-lg font-medium text-gray-900 my-4">
+                Delivery Method
+              </h2>
+            </div>
+            {checkout.availableShippingMethods?.length > 0 && (
+              <DeliveryMethod
+                collection={checkout.availableShippingMethods}
+                checkoutDeliveryMethod={checkout.shippingMethod || undefined}
+              />
+            )}
 
             <BillingAddressSwitch />
           </div>
 
-          <button
-            type="submit"
-            className="w-full mt-6 bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Pay{" "}
-            {!!totalPrice
-              ? formatAsMoney(totalPrice.amount, totalPrice.currency)
-              : ""}
-          </button>
+          <StripeCreditCardSection checkout={checkout} />
         </div>
       </div>
     </section>
