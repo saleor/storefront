@@ -1,3 +1,3 @@
-import { DataProp } from "editorjs-blocks-react-renderer";
+// custom scalars
 
-export type JSONString = DataProp;
+export type SampleScalar = { sample: string; scalar: number };

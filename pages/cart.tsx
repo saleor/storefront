@@ -105,7 +105,7 @@ const Cart: React.VFC = ({}) => {
                                 </div>
 
                                 <p className="text-xl text-gray-900 text-right">
-                                  {price.localizedAmount}
+                                  {price?.localizedAmount}
                                 </p>
                               </div>
                             </div>
