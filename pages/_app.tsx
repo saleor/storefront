@@ -7,25 +7,25 @@ import "tailwindcss/tailwind.css";
 import { useCreateCheckoutMutation } from "@/saleor/api";
 
 import apolloClient from "@/lib/graphql";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 
 const Provider = ({ Component, pageProps }: AppProps) => {
-  const [token, setToken] = useLocalStorage("token");
+  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const [createCheckout, { data, loading }] = useCreateCheckoutMutation();
 
   useEffect(() => {
     async function doCheckout() {
       const { data } = await createCheckout();
       const token = data?.checkoutCreate?.checkout?.token;
-
-      setToken(token);
+      setCheckoutToken(token);
     }
 
-    if (!token) {
+    if (!checkoutToken) {
       doCheckout();
     }
   }, []);
 
-  return <Component {...pageProps} token={token} />;
+  return <Component {...pageProps} checkoutToken={checkoutToken} />;
 };
 
 function MyApp(props: AppProps) {

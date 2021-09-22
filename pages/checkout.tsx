@@ -1,9 +1,11 @@
 import { CheckoutSidebar, CheckoutForm } from "@/components";
+import BaseSeo from "@/components/seo/BaseSeo";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 import { useLocalStorage } from "react-use";
 
 export default function CheckoutPage() {
-  const [token] = useLocalStorage("token");
+  const [token] = useLocalStorage(CHECKOUT_TOKEN);
   const {
     data: checkoutData,
     loading,
@@ -15,15 +17,18 @@ export default function CheckoutPage() {
   });
   const checkout = checkoutData?.checkout;
   return (
-    <main className="min-h-screen overflow-hidden flex">
-      {!checkout ? (
-        <p>No checkout</p>
-      ) : (
-        <>
-          <CheckoutForm checkout={checkout} />
-          <CheckoutSidebar />
-        </>
-      )}
-    </main>
+    <>
+      <BaseSeo title="Checkout - Saleor Tutorial" />
+      <main className="min-h-screen overflow-hidden flex">
+        {!checkout ? (
+          <p>No checkout</p>
+        ) : (
+          <>
+            <CheckoutForm checkout={checkout} />
+            <CheckoutSidebar />
+          </>
+        )}
+      </main>
+    </>
   );
 }
