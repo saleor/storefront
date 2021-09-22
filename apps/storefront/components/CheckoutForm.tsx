@@ -49,7 +49,6 @@ export const CheckoutForm = ({
 
             <BillingAddressSwitch />
           </div>
-
           <StripeCreditCardSection checkout={checkout} />
         </div>
       </div>

@@ -1,4 +1,3 @@
-import { formatAsMoney } from "@/lib/util";
 import {
   Checkout,
   CheckoutDetailsFragment,
@@ -51,11 +50,7 @@ export const EmailSection = ({
             </label>
             <p>{checkout?.email}</p>
           </div>
-          <Button
-            onClick={() => setModifyEmail(true)}
-          >
-            Change
-          </Button>
+          <Button onClick={() => setModifyEmail(true)}>Change</Button>
         </div>
       ) : (
         <>
@@ -78,11 +73,7 @@ export const EmailSection = ({
               />
               <p>{errors.email?.message}</p>
             </div>
-            <Button
-              onClick={() => onEmailFormSubmit}
-            >
-              Save
-            </Button>
+            <Button onClick={() => onEmailFormSubmit}>Save</Button>
           </form>
         </>
       )}

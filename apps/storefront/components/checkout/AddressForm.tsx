@@ -1,5 +1,4 @@
 import { CHECKOUT_TOKEN } from "@/lib/const";
-import { formatAsMoney } from "@/lib/util";
 import {
   AddressFragment,
   Checkout,
