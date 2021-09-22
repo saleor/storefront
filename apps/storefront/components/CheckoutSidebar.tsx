@@ -2,7 +2,6 @@ import React from "react";
 import { useLocalStorage } from "react-use";
 
 import { CheckoutProductList, CheckoutSummary } from "@/components";
-
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 

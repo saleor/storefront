@@ -15,7 +15,7 @@ import {
 } from "@/saleor/api";
 
 import apolloClient from "@/lib/graphql";
-import { formatAsMoney } from "@/lib/util";
+
 import React from "react";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 
@@ -44,7 +44,7 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
     }
 
     const { product } = data;
-    const price = product?.pricing?.priceRange?.start?.gross.amount || 0;
+    const price = product?.pricing?.priceRange?.start?.gross.localizedAmount;
 
     const selectedVariantId =
       router.query.variant?.toString() || product?.variants![0]!.id!;
@@ -88,12 +88,12 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
                   </p>
                 </div>
 
-                <p className="text-2xl text-gray-900">{formatAsMoney(price)}</p>
+                <p className="text-2xl text-gray-900">{price}</p>
 
                 {!!product?.description && (
                   <div className="text-base text-gray-700 space-y-6">
                     <article className="prose lg:prose-s">
-                      <Blocks data={JSON.parse(product?.description)} />
+                      <Blocks data={product?.description} />
                     </article>
                   </div>
                 )}
