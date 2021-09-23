@@ -1,16 +1,24 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@layer components {
+  .btn-blue {
+    @apply py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+  }
 
-* {
-  box-sizing: border-box;
+  .checkout-section-container {
+    @apply bg-gray-50 rounded p-8 border;
+  }
+
+  .checkout-section-header-active {
+    @apply text-lg font-medium text-gray-900 my-4;
+  }
+  .checkout-section-header-disabled {
+    @apply text-lg font-medium text-gray-400 my-4;
+  }
+
+  .btn-checkout-section {
+    @apply w-full bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200;
+  }
 }
