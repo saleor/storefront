@@ -12263,6 +12263,18 @@
             "deprecationReason": null
           },
           {
+            "name": "channel",
+            "description": "Channel given to retrieve this collection. Also used by federation gateway to resolve this object in a federated query.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "channelListings",
             "description": "List of channels in which the collection is available.",
             "args": [],
@@ -45459,6 +45471,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "allowStockToBeExceeded",
+            "description": "If true, then allow proceed fulfillment when stock is exceeded.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": "false",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "lines",
             "description": "List of items informing how to fulfill the order.",
             "type": {
@@ -53251,6 +53275,18 @@
             "deprecationReason": null
           },
           {
+            "name": "channel",
+            "description": "Channel given to retrieve this product. Also used by federation gateway to resolve this object in a federated query.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "channelListings",
             "description": "List of availability in channels for the product.",
             "args": [],
@@ -58326,6 +58362,18 @@
                   }
                 }
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Channel given to retrieve this product variant. Also used by federation gateway to resolve this object in a federated query.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

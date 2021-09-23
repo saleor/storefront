@@ -5,6 +5,7 @@ import { Navbar } from "@/components";
 import { useOrderDetailsQuery } from "@/saleor/api";
 
 import { formatAsMoney } from "@/lib/util";
+import { useRouter } from "next/router";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -21,10 +22,11 @@ const OrderDetailsPage: React.VFC<
     variables: { token: orderToken || "" },
     skip: !orderToken,
   });
+  const router = useRouter();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
-  if (!data) {
+  if (!data || !data.orderByToken) {
     return null;
   }
 

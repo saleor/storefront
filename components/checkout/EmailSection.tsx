@@ -1,5 +1,4 @@
 import {
-  Checkout,
   CheckoutDetailsFragment,
   useCheckoutEmailUpdateMutation,
 } from "@/saleor/api";
@@ -7,11 +6,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../Button";
 
-export const EmailSection = ({
-  checkout,
-}: {
-  checkout?: CheckoutDetailsFragment;
-}) => {
+export interface EmailSectionProps {
+  checkout: CheckoutDetailsFragment;
+}
+
+export const EmailSection: React.VFC<EmailSectionProps> = ({ checkout }) => {
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
   const [checkoutEmailUpdate] = useCheckoutEmailUpdateMutation({});
@@ -38,45 +37,45 @@ export const EmailSection = ({
   });
 
   return (
-    <div className="py-4">
+    <>
+      <div className="mt-8 mb-4">
+        <h2 className="checkout-section-header-active">Email Address</h2>
+      </div>
       {!modifyEmail ? (
         <div className="flex justify-between items-center">
-          <div>
-            <label
-              htmlFor="email-address"
-              className="block text-sm font-medium text-gray-800"
-            >
-              Email address
-            </label>
-            <p>{checkout?.email}</p>
-          </div>
+          <p>{checkout?.email}</p>
           <Button onClick={() => setModifyEmail(true)}>Change</Button>
         </div>
       ) : (
         <>
           <form onSubmit={onEmailFormSubmit}>
-            <label
-              htmlFor="email-address"
-              className="block text-sm font-medium text-gray-800"
-            >
-              Email address
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                autoComplete="email"
-                className="w-full border-gray-300 rounded-lg shadow-sm"
-                {...register("email", {
-                  required: true,
-                  pattern: /^\S+\S+$/i,
-                })}
-              />
-              <p>{errors.email?.message}</p>
+            <div className="grid grid-cols-12 gap-4 w-full">
+              <div className="col-span-full">
+                <input
+                  type="text"
+                  autoComplete="email"
+                  className="w-full border-gray-300 rounded-lg shadow-sm"
+                  {...register("email", {
+                    required: true,
+                    pattern: /^\S+@\S+$/i,
+                  })}
+                />
+                <p>{errors.email?.message}</p>
+              </div>
+              <div className="col-span-full">
+                <button
+                  className="btn-checkout-section"
+                  onClick={() => onEmailFormSubmit}
+                >
+                  Save
+                </button>
+              </div>
             </div>
-            <Button onClick={() => onEmailFormSubmit}>Save</Button>
           </form>
         </>
       )}
-    </div>
+    </>
   );
 };
+
+export default EmailSection;
