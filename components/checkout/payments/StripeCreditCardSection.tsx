@@ -1,4 +1,4 @@
-import React, { FormEvent, useMemo, useRef, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js/pure";
 import {
   CardElement,
@@ -11,7 +11,6 @@ import {
   useCheckoutCompleteMutation,
   useCheckoutPaymentCreateMutation,
 } from "@/saleor/api";
-import { formatAsMoney } from "@/lib/util";
 import { useRouter } from "next/router";
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
 import { CHECKOUT_TOKEN } from "@/lib/const";
@@ -34,9 +33,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
-  const payLabel = `Pay ${
-    !!totalPrice ? formatAsMoney(totalPrice.amount, totalPrice.currency) : ""
-  }`;
+  const payLabel = `Pay ${!!totalPrice ? totalPrice.localizedAmount : ""}`;
   const redirectToOrderDetailsPage = (orderToken: string) => {
     // remove completed checkout
     localStorage.removeItem(CHECKOUT_TOKEN);
@@ -212,7 +209,6 @@ export const StripeCreditCardSection: React.VFC<StripeCreditCardSectionInterface
 
     return (
       <div className="py-8">
-        <h3 className="text-lg font-medium text-gray-900">Payment Details</h3>
         <Elements stripe={stripePromise}>
           <StripeCardForm checkout={checkout} />
         </Elements>
