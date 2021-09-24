@@ -4,7 +4,7 @@ import { ShippingMethodSection } from "./ShippingMethodSection";
 import BillingAddressSection from "./BillingAddressSection";
 import ShippingAddressSection from "./ShippingAddressSection";
 import { EmailSection } from "./EmailSection";
-import PaymentSection from "./paymentProviders/PaymentSection";
+import PaymentSection from "./payments/PaymentSection";
 
 interface CollapsedSections {
   billingAddress: boolean;
