@@ -21,7 +21,7 @@ export const ShippingMethodSection: React.VFC<ShippingMethodSectionProps> = ({
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     checkout.shippingMethod
   );
-  const [editing, setEditing] = useState(!checkout.shippingAddress);
+  const [editing, setEditing] = useState(!checkout.shippingMethod);
 
   const [checkoutShippingMethodUpdate] =
     useCheckoutShippingMethodUpdateMutation({});
@@ -35,7 +35,7 @@ export const ShippingMethodSection: React.VFC<ShippingMethodSectionProps> = ({
     });
     if (!!data?.checkoutShippingMethodUpdate?.errors.length) {
       // todo: handle errors
-      console.log(data?.checkoutShippingMethodUpdate?.errors);
+      console.error(data?.checkoutShippingMethodUpdate?.errors);
       return;
     }
     setSelectedDeliveryMethod(method);
@@ -47,7 +47,7 @@ export const ShippingMethodSection: React.VFC<ShippingMethodSectionProps> = ({
 
   return (
     <>
-      <div className="mt-8 mb-4">
+      <div className="mt-4 mb-4">
         <h2
           className={
             active

@@ -54,44 +54,38 @@ export const CheckoutForm = ({
   }
 
   return (
-    <section className="bg-gray-50 border-r flex-auto overflow-y-auto px-4 pt-12">
-      <div className="max-w-lg mx-auto">
-        <div>
-          <div className="divide-y">
-            <div className="checkout-section-container">
-              <EmailSection checkout={checkout} />
-            </div>
-            <div className="checkout-section-container">
-              <BillingAddressSection
-                active={!collapsedSections.billingAddress}
-                checkout={checkout}
-              />
-            </div>
+    <section className=" border-r flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
+      <div className="checkout-section-container">
+        <EmailSection checkout={checkout} />
+      </div>
+      <div className="checkout-section-container">
+        <BillingAddressSection
+          active={!collapsedSections.billingAddress}
+          checkout={checkout}
+        />
+      </div>
 
-            {checkout.isShippingRequired && (
-              <div className="checkout-section-container">
-                <ShippingAddressSection
-                  active={!collapsedSections.shippingAddress}
-                  checkout={checkout}
-                />
-              </div>
-            )}
-            {checkout.isShippingRequired && (
-              <div className="checkout-section-container">
-                <ShippingMethodSection
-                  active={!collapsedSections.shippingMethod}
-                  checkout={checkout}
-                />
-              </div>
-            )}
-            <div className="checkout-section-container">
-              <PaymentSection
-                active={!collapsedSections.payment}
-                checkout={checkout}
-              />
-            </div>
-          </div>
+      {checkout.isShippingRequired && (
+        <div className="checkout-section-container">
+          <ShippingAddressSection
+            active={!collapsedSections.shippingAddress}
+            checkout={checkout}
+          />
         </div>
+      )}
+      {checkout.isShippingRequired && (
+        <div className="checkout-section-container">
+          <ShippingMethodSection
+            active={!collapsedSections.shippingMethod}
+            checkout={checkout}
+          />
+        </div>
+      )}
+      <div className="checkout-section-container">
+        <PaymentSection
+          active={!collapsedSections.payment}
+          checkout={checkout}
+        />
       </div>
     </section>
   );

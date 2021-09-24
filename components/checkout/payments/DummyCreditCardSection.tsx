@@ -68,7 +68,7 @@ export const DummyCreditCardSection: React.VFC<DummyCreditCardSectionInterface> 
         });
 
       if (paymentCreateErrors) {
-        console.log(paymentCreateErrors);
+        console.error(paymentCreateErrors);
         setIsPaymentProcessing(false);
         return;
       }
@@ -81,7 +81,7 @@ export const DummyCreditCardSection: React.VFC<DummyCreditCardSectionInterface> 
           },
         });
       if (completeErrors) {
-        console.log("complete errors:", completeErrors);
+        console.error("complete errors:", completeErrors);
         setIsPaymentProcessing(false);
         return;
       }
@@ -93,7 +93,7 @@ export const DummyCreditCardSection: React.VFC<DummyCreditCardSectionInterface> 
 
         return;
       } else {
-        console.log("Order was not created");
+        console.error("Order was not created");
       }
     });
 
