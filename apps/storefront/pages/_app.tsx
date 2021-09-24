@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import { useLocalStorage } from "react-use";
-import "tailwindcss/tailwind.css";
+import "styles/globals.css";
 
 import { useCreateCheckoutMutation } from "@/saleor/api";
 

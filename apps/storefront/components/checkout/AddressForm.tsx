@@ -1,22 +1,8 @@
-import { CHECKOUT_TOKEN } from "@/lib/const";
-import {
-  AddressFragment,
-  Checkout,
-  CheckoutDetailsFragment,
-  CheckoutError,
-  CountryCode,
-  useCheckoutBillingAddressUpdateMutation,
-  useCheckoutShippingAddressUpdateMutation,
-} from "@/saleor/api";
+import { AddressFragment, CheckoutError, CountryCode } from "@/saleor/api";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useLocalStorage } from "react-use";
 
-export enum AddressType {
-  SHIPPING,
-  BILLING,
-}
-interface AddressForm {
+export interface AddressFormData {
   firstName: string;
   lastName: string;
   phone: string;
@@ -26,24 +12,24 @@ interface AddressForm {
   postalCode: string;
 }
 
-export const AddressForm = ({
-  addressType,
-  existingAddressData,
-  toggle,
-}: {
-  addressType: AddressType;
+export interface AddressFormProps {
   existingAddressData?: AddressFragment;
-  toggle: () => void;
-}) => {
-  const [token] = useLocalStorage(CHECKOUT_TOKEN);
+  toggleEdit: () => void;
+  updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
+}
 
+export const AddressForm: React.VFC<AddressFormProps> = ({
+  existingAddressData,
+  toggleEdit,
+  updateAddressMutation,
+}) => {
   const {
     register: registerAddress,
     handleSubmit: handleSubmitAddress,
     formState: { errors: errorsAddress },
     setError: setErrorAddress,
     getValues,
-  } = useForm<AddressForm>({
+  } = useForm<AddressFormData>({
     defaultValues: {
       firstName: existingAddressData?.firstName || "",
       lastName: existingAddressData?.lastName || "",
@@ -55,50 +41,22 @@ export const AddressForm = ({
     },
   });
 
-  const [checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation({});
-
-  const [checkoutShippingAddressUpdate] =
-    useCheckoutShippingAddressUpdateMutation({});
-
   const onAddressFormSubmit = handleSubmitAddress(
-    async (formData: AddressForm) => {
-      let errors: CheckoutError[] = [];
-      if (addressType === AddressType.BILLING) {
-        const result = await checkoutBillingAddressUpdate({
-          variables: {
-            address: {
-              ...formData,
-            },
-            token,
-          },
-        });
-        const mutationErrors =
-          result.data?.checkoutBillingAddressUpdate?.errors || [];
-        errors = errors.concat(mutationErrors);
-      } else {
-        const result = await checkoutShippingAddressUpdate({
-          variables: {
-            address: {
-              ...formData,
-            },
-            token,
-          },
-        });
-        const mutationErrors =
-          result.data?.checkoutShippingAddressUpdate?.errors || [];
-        errors = errors.concat(mutationErrors);
-      }
+    async (formData: AddressFormData) => {
+      const errors = await updateAddressMutation(formData);
 
+      // Assign errors to the form fields
       if (errors.length > 0) {
         errors.forEach((e) =>
-          setErrorAddress(e.field as keyof AddressForm, {
+          setErrorAddress(e.field as keyof AddressFormData, {
             message: e.message || "",
           })
         );
         return;
       }
-      toggle();
+
+      // Address updated, we can exit the edit mode
+      toggleEdit();
     }
   );
   return (
@@ -251,8 +209,8 @@ export const AddressForm = ({
 
         <div className="col-span-full">
           <button
-            className="w-full bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200"
-            onClick={() => onAddressFormSubmit}
+            className="btn-checkout-section"
+            onClick={onAddressFormSubmit}
           >
             Save
           </button>

@@ -1890,6 +1890,8 @@ export type ChoiceValue = {
 export type Collection = Node & ObjectWithMetadata & {
   __typename?: 'Collection';
   backgroundImage?: Maybe<Image>;
+  /** Channel given to retrieve this collection. Also used by federation gateway to resolve this object in a federated query. */
+  channel?: Maybe<Scalars['String']>;
   /** List of channels in which the collection is available. */
   channelListings?: Maybe<Array<CollectionChannelListing>>;
   description?: Maybe<Scalars['JSONString']>;
@@ -7367,6 +7369,8 @@ export type OrderFulfill = {
 };
 
 export type OrderFulfillInput = {
+  /** If true, then allow proceed fulfillment when stock is exceeded. */
+  allowStockToBeExceeded?: Maybe<Scalars['Boolean']>;
   /** List of items informing how to fulfill the order. */
   lines: Array<OrderFulfillLineInput>;
   /** If true, send an email notification to the customer. */
@@ -8575,6 +8579,8 @@ export type Product = Node & ObjectWithMetadata & {
   /** Date when product is available for purchase.  */
   availableForPurchase?: Maybe<Scalars['Date']>;
   category?: Maybe<Category>;
+  /** Channel given to retrieve this product. Also used by federation gateway to resolve this object in a federated query. */
+  channel?: Maybe<Scalars['String']>;
   /** List of availability in channels for the product. */
   channelListings?: Maybe<Array<ProductChannelListing>>;
   chargeTaxes: Scalars['Boolean'];
@@ -9369,6 +9375,8 @@ export type ProductVariant = Node & ObjectWithMetadata & {
   __typename?: 'ProductVariant';
   /** List of attributes assigned to this variant. */
   attributes: Array<SelectedAttribute>;
+  /** Channel given to retrieve this product variant. Also used by federation gateway to resolve this object in a federated query. */
+  channel?: Maybe<Scalars['String']>;
   /** List of price information in channels for the product. */
   channelListings?: Maybe<Array<ProductVariantChannelListing>>;
   /** Digital content for the product variant. */
@@ -14320,9 +14328,10 @@ export type ChoiceValueFieldPolicy = {
 	raw?: FieldPolicy<any> | FieldReadFunction<any>,
 	verbose?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CollectionKeySpecifier = ('backgroundImage' | 'channelListings' | 'description' | 'descriptionJson' | 'id' | 'metadata' | 'name' | 'privateMetadata' | 'products' | 'seoDescription' | 'seoTitle' | 'slug' | 'translation' | CollectionKeySpecifier)[];
+export type CollectionKeySpecifier = ('backgroundImage' | 'channel' | 'channelListings' | 'description' | 'descriptionJson' | 'id' | 'metadata' | 'name' | 'privateMetadata' | 'products' | 'seoDescription' | 'seoTitle' | 'slug' | 'translation' | CollectionKeySpecifier)[];
 export type CollectionFieldPolicy = {
 	backgroundImage?: FieldPolicy<any> | FieldReadFunction<any>,
+	channel?: FieldPolicy<any> | FieldReadFunction<any>,
 	channelListings?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
 	descriptionJson?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -16026,11 +16035,12 @@ export type PluginUpdateFieldPolicy = {
 	plugin?: FieldPolicy<any> | FieldReadFunction<any>,
 	pluginsErrors?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductKeySpecifier = ('attributes' | 'availableForPurchase' | 'category' | 'channelListings' | 'chargeTaxes' | 'collections' | 'defaultVariant' | 'description' | 'descriptionJson' | 'id' | 'imageById' | 'images' | 'isAvailable' | 'isAvailableForPurchase' | 'media' | 'mediaById' | 'metadata' | 'name' | 'pricing' | 'privateMetadata' | 'productType' | 'rating' | 'seoDescription' | 'seoTitle' | 'slug' | 'taxType' | 'thumbnail' | 'translation' | 'updatedAt' | 'variants' | 'weight' | ProductKeySpecifier)[];
+export type ProductKeySpecifier = ('attributes' | 'availableForPurchase' | 'category' | 'channel' | 'channelListings' | 'chargeTaxes' | 'collections' | 'defaultVariant' | 'description' | 'descriptionJson' | 'id' | 'imageById' | 'images' | 'isAvailable' | 'isAvailableForPurchase' | 'media' | 'mediaById' | 'metadata' | 'name' | 'pricing' | 'privateMetadata' | 'productType' | 'rating' | 'seoDescription' | 'seoTitle' | 'slug' | 'taxType' | 'thumbnail' | 'translation' | 'updatedAt' | 'variants' | 'weight' | ProductKeySpecifier)[];
 export type ProductFieldPolicy = {
 	attributes?: FieldPolicy<any> | FieldReadFunction<any>,
 	availableForPurchase?: FieldPolicy<any> | FieldReadFunction<any>,
 	category?: FieldPolicy<any> | FieldReadFunction<any>,
+	channel?: FieldPolicy<any> | FieldReadFunction<any>,
 	channelListings?: FieldPolicy<any> | FieldReadFunction<any>,
 	chargeTaxes?: FieldPolicy<any> | FieldReadFunction<any>,
 	collections?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -16296,9 +16306,10 @@ export type ProductUpdateFieldPolicy = {
 	product?: FieldPolicy<any> | FieldReadFunction<any>,
 	productErrors?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductVariantKeySpecifier = ('attributes' | 'channelListings' | 'digitalContent' | 'id' | 'images' | 'margin' | 'media' | 'metadata' | 'name' | 'pricing' | 'privateMetadata' | 'product' | 'quantityAvailable' | 'quantityOrdered' | 'revenue' | 'sku' | 'stocks' | 'trackInventory' | 'translation' | 'weight' | ProductVariantKeySpecifier)[];
+export type ProductVariantKeySpecifier = ('attributes' | 'channel' | 'channelListings' | 'digitalContent' | 'id' | 'images' | 'margin' | 'media' | 'metadata' | 'name' | 'pricing' | 'privateMetadata' | 'product' | 'quantityAvailable' | 'quantityOrdered' | 'revenue' | 'sku' | 'stocks' | 'trackInventory' | 'translation' | 'weight' | ProductVariantKeySpecifier)[];
 export type ProductVariantFieldPolicy = {
 	attributes?: FieldPolicy<any> | FieldReadFunction<any>,
+	channel?: FieldPolicy<any> | FieldReadFunction<any>,
 	channelListings?: FieldPolicy<any> | FieldReadFunction<any>,
 	digitalContent?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
