@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import { ApolloQueryResult } from "@apollo/client";
-import Blocks from "editorjs-blocks-react-renderer";
-import { Navbar } from "@/components";
 import {
   useAddProductToCheckoutMutation,
   ProductPathsQuery,
@@ -15,6 +13,9 @@ import {
 import apolloClient from "@/lib/graphql";
 
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
+import RichText from "@/components/RichText";
+import BaseTemplate from "@/components/BaseTemplate";
+import VariantSelector from "@/components/VariantSelector";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -33,10 +34,12 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
       variables: { slug: productSlug || "" },
     });
     const [addProductToCheckout] = useAddProductToCheckoutMutation();
-
+    const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
     const [addToCartError, setAddToCartError] = useState("");
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+      return <BaseTemplate isLoading={true} />;
+    }
     if (error) return <p>Error</p>;
     if (!data || !data.product) {
       router.push("/404");
@@ -46,21 +49,31 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
     const { product } = data;
     const price = product?.pricing?.priceRange?.start?.gross.localizedAmount;
 
-    const selectedVariantId =
+    const selectedVariantID =
       router.query.variant?.toString() || product?.variants![0]!.id!;
+
+    const selectedVariant = product?.variants?.find(
+      (v) => v?.id === selectedVariantID
+    );
 
     const onAddToCart = async () => {
       // Clear previous error messages
       setAddToCartError("");
+
+      // Block add to checkout button
+      setLoadingAddToCheckout(true);
 
       // Run mutation
       const { errors: graphqlErrors, data: addToCartData } =
         await addProductToCheckout({
           variables: {
             checkoutToken: checkoutToken,
-            variantId: selectedVariantId,
+            variantId: selectedVariantID,
           },
         });
+
+      // Enable button
+      setLoadingAddToCheckout(false);
 
       if (
         !graphqlErrors?.length &&
@@ -84,84 +97,61 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
     const productImage = product?.media![0];
 
     return (
-      <>
+      <BaseTemplate>
         <ProductPageSeo product={product} />
-        <div className="min-h-screen bg-gray-100">
-          <Navbar />
 
-          <main className="max-w-7xl mx-auto pt-8 px-8">
-            <div className="grid grid-cols-2 gap-x-10 items-start">
-              <div className="w-full aspect-w-1 aspect-h-1 bg-white rounded">
-                {!!productImage && (
-                  <Image
-                    src={productImage.url}
-                    alt="Product cover image"
-                    layout="fill"
-                    objectFit="cover"
-                    className="w-full h-full object-center object-cover"
-                  />
-                )}
-              </div>
+        <main className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-7xl mx-auto pt-8 px-8">
+          <div className="w-full aspect-w-1 aspect-h-1 ">
+            {!!productImage && (
+              <Image
+                src={productImage.url}
+                alt="Product cover image"
+                layout="fill"
+                objectFit="cover"
+                className="w-full h-full object-center object-cover"
+              />
+            )}
+          </div>
 
-              <div className="space-y-8">
-                <div>
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-800">
-                    {product?.name}
-                  </h1>
-                  <p className="text-lg mt-2 font-medium text-gray-500">
-                    {product?.category?.name}
-                  </p>
-                </div>
-
-                <p className="text-2xl text-gray-900">{price}</p>
-
-                {product?.description && (
-                  <div className="text-base text-gray-700 space-y-6">
-                    <article className="prose lg:prose-s">
-                      <Blocks data={JSON.parse(product.description)} />
-                    </article>
-                  </div>
-                )}
-                {(product?.variants?.length || 0) > 1 && (
-                  <div className="grid grid-cols-8 gap-2">
-                    {product?.variants?.map((variant) => {
-                      return (
-                        <Link
-                          key={variant?.name}
-                          href={{
-                            pathname: "/products/[slug]",
-                            query: { variant: variant?.id, slug: productSlug },
-                          }}
-                          replace
-                          shallow
-                        >
-                          <a
-                            className={`flex justify-center border rounded-md p-3 font-semibold hover:border-blue-400 ${
-                              variant?.id === selectedVariantId
-                                ? "border-blue-300"
-                                : "border-gray-300"
-                            }`}
-                          >
-                            {variant?.name}
-                          </a>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-                <button
-                  onClick={onAddToCart}
-                  type="submit"
-                  className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
-                >
-                  Add to cart
-                </button>
-                {!!addToCartError && <p>{addToCartError}</p>}
-              </div>
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-gray-800">
+                {product?.name}
+              </h1>
+              <Link href={`/category/${product?.category?.slug}`} passHref>
+                <p className="text-lg mt-2 font-medium text-gray-500 cursor-pointer">
+                  {product?.category?.name}
+                </p>
+              </Link>
             </div>
-          </main>
-        </div>
-      </>
+
+            <p className="text-2xl text-gray-900">{price}</p>
+
+            {product?.description && (
+              <div className="text-base text-gray-700 space-y-6">
+                <RichText jsonStringData={product.description} />
+              </div>
+            )}
+            <VariantSelector
+              product={product}
+              selectedVariantID={selectedVariantID}
+            />
+            {selectedVariant && selectedVariant?.quantityAvailable > 0 ? (
+              <button
+                onClick={onAddToCart}
+                type="submit"
+                disabled={loadingAddToCheckout}
+                className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
+              >
+                {loadingAddToCheckout ? "Adding..." : "Add to cart"}
+              </button>
+            ) : (
+              <p>Sold out!</p>
+            )}
+            {!!addToCartError && <p>{addToCartError}</p>}
+          </div>
+        </main>
+      </BaseTemplate>
     );
   };
 
@@ -173,11 +163,10 @@ export async function getStaticPaths() {
       query: ProductPathsDocument,
       variables: {},
     });
-  const paths = !!result
-    ? result.data?.products?.edges.map(({ node }) => ({
-        params: { slug: node.slug },
-      }))
-    : [];
+  const paths =
+    result.data?.products?.edges.map(({ node }) => ({
+      params: { slug: node.slug },
+    })) || [];
 
   return {
     paths,

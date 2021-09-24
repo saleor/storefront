@@ -23,7 +23,7 @@ const Provider = ({ Component, pageProps }: AppProps) => {
     if (!checkoutToken) {
       doCheckout();
     }
-  }, []);
+  }, [checkoutToken, createCheckout, setCheckoutToken]);
 
   return <Component {...pageProps} checkoutToken={checkoutToken} />;
 };

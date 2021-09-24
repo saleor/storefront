@@ -31,7 +31,7 @@ export const PaymentSection: React.VFC<PaymentSectionProps> = ({
 
   return (
     <>
-      <div className="mt-8 mb-4">
+      <div className="mt-4 mb-4">
         <h2
           className={
             active
