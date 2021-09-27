@@ -2,6 +2,7 @@ import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
 import Link from "next/link";
 import React from "react";
 import { ProductCollection } from ".";
+import RichText from "./RichText";
 
 export interface HomepageBlockProps {
   menuItem: MenuItemFragment;
@@ -9,6 +10,15 @@ export interface HomepageBlockProps {
 
 export const HomepageBlock: React.VFC<HomepageBlockProps> = ({ menuItem }) => {
   const filter: ProductFilterInput = {};
+  if (!!menuItem.page?.id) {
+    return (
+      <div className="pb-10">
+        {!!menuItem.page?.content && (
+          <RichText jsonStringData={menuItem.page?.content} />
+        )}
+      </div>
+    );
+  }
   let link = "";
   if (!!menuItem.category?.id) {
     filter.categories = [menuItem.category?.id];
