@@ -19,12 +19,14 @@ const LoginPage: React.VFC = () => {
     setError: setErrorForm,
     getValues,
   } = useForm<LoginFormData>({});
+
+  const redirectURL = router.query.next?.toString() || "/";
+
   const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
     const { data } = await login({
       email: formData.email,
       password: formData.password,
     });
-    console.log(data);
 
     if (data?.tokenCreate?.errors[0]) {
       // Unable to sign in.
@@ -33,9 +35,10 @@ const LoginPage: React.VFC = () => {
   });
   if (authenticated) {
     // User signed in successfully.
-    router.push("/");
+    router.push(redirectURL);
     return null;
   }
+
   return (
     <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-blue-500">
       <div className="flex justify-end">
