@@ -1,2 +1,2 @@
-schema: "https://vercel.saleor.cloud/graphql/"
+schema: "graphql.schema.json"
 documents: "graphql/**/*.{graphql,js,ts,jsx,tsx}"

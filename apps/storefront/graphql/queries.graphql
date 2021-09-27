@@ -138,6 +138,14 @@ mutation checkoutComplete($checkoutToken: UUID!, $paymentData: JSONString) {
       id
       status
       token
+      billingAddress {
+        id
+        ...AddressFragment
+      }
+      shippingAddress {
+        id
+        ...AddressFragment
+      }
     }
     confirmationNeeded
     confirmationData
@@ -457,5 +465,23 @@ query OrderDetailsQuery($token: UUID!) {
       }
     }
     statusDisplay
+  }
+}
+
+mutation addressSetDefaultMutation(
+  $addressID: ID!
+  $userID: ID!
+  $addressType: AddressTypeEnum!
+) {
+  addressSetDefault(
+    addressId: $addressID
+    type: $addressType
+    userId: $userID
+  ) {
+    errors {
+      field
+      message
+      code
+    }
   }
 }

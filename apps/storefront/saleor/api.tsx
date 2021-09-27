@@ -12671,7 +12671,7 @@ export type CheckoutCompleteMutationVariables = Exact<{
 }>;
 
 
-export type CheckoutCompleteMutation = { __typename?: 'Mutation', checkoutComplete?: Maybe<{ __typename?: 'CheckoutComplete', confirmationNeeded: boolean, confirmationData?: Maybe<string>, order?: Maybe<{ __typename?: 'Order', id: string, status: OrderStatus, token: string }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, variants?: Maybe<Array<string>>, addressType?: Maybe<AddressTypeEnum> }> }> };
+export type CheckoutCompleteMutation = { __typename?: 'Mutation', checkoutComplete?: Maybe<{ __typename?: 'CheckoutComplete', confirmationNeeded: boolean, confirmationData?: Maybe<string>, order?: Maybe<{ __typename?: 'Order', id: string, status: OrderStatus, token: string, billingAddress?: Maybe<{ __typename?: 'Address', id: string, phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, shippingAddress?: Maybe<{ __typename?: 'Address', id: string, phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }> }>, errors: Array<{ __typename?: 'CheckoutError', field?: Maybe<string>, message?: Maybe<string>, variants?: Maybe<Array<string>>, addressType?: Maybe<AddressTypeEnum> }> }> };
 
 export type RemoveProductFromCheckoutMutationVariables = Exact<{
   checkoutToken: Scalars['UUID'];
@@ -12798,6 +12798,15 @@ export type OrderDetailsQueryVariables = Exact<{
 
 
 export type OrderDetailsQuery = { __typename?: 'Query', orderByToken?: Maybe<{ __typename?: 'Order', id: string, number?: Maybe<string>, created: any, statusDisplay?: Maybe<string>, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } }, lines: Array<Maybe<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, thumbnail?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }>, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } }>>, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } }> };
+
+export type AddressSetDefaultMutationVariables = Exact<{
+  addressID: Scalars['ID'];
+  userID: Scalars['ID'];
+  addressType: AddressTypeEnum;
+}>;
+
+
+export type AddressSetDefaultMutation = { __typename?: 'Mutation', addressSetDefault?: Maybe<{ __typename?: 'AddressSetDefault', errors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }> }> };
 
 export const AddressFragmentDoc = gql`
     fragment AddressFragment on Address {
@@ -13076,6 +13085,14 @@ export const CheckoutCompleteDocument = gql`
       id
       status
       token
+      billingAddress {
+        id
+        ...AddressFragment
+      }
+      shippingAddress {
+        id
+        ...AddressFragment
+      }
     }
     confirmationNeeded
     confirmationData
@@ -13087,7 +13104,7 @@ export const CheckoutCompleteDocument = gql`
     }
   }
 }
-    `;
+    ${AddressFragmentDoc}`;
 export type CheckoutCompleteMutationFn = Apollo.MutationFunction<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>;
 
 /**
@@ -13789,6 +13806,45 @@ export function useOrderDetailsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type OrderDetailsQueryHookResult = ReturnType<typeof useOrderDetailsQuery>;
 export type OrderDetailsQueryLazyQueryHookResult = ReturnType<typeof useOrderDetailsQueryLazyQuery>;
 export type OrderDetailsQueryQueryResult = Apollo.QueryResult<OrderDetailsQuery, OrderDetailsQueryVariables>;
+export const AddressSetDefaultMutationDocument = gql`
+    mutation addressSetDefaultMutation($addressID: ID!, $userID: ID!, $addressType: AddressTypeEnum!) {
+  addressSetDefault(addressId: $addressID, type: $addressType, userId: $userID) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+    `;
+export type AddressSetDefaultMutationMutationFn = Apollo.MutationFunction<AddressSetDefaultMutation, AddressSetDefaultMutationVariables>;
+
+/**
+ * __useAddressSetDefaultMutation__
+ *
+ * To run a mutation, you first call `useAddressSetDefaultMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddressSetDefaultMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addressSetDefaultMutation, { data, loading, error }] = useAddressSetDefaultMutation({
+ *   variables: {
+ *      addressID: // value for 'addressID'
+ *      userID: // value for 'userID'
+ *      addressType: // value for 'addressType'
+ *   },
+ * });
+ */
+export function useAddressSetDefaultMutation(baseOptions?: Apollo.MutationHookOptions<AddressSetDefaultMutation, AddressSetDefaultMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddressSetDefaultMutation, AddressSetDefaultMutationVariables>(AddressSetDefaultMutationDocument, options);
+      }
+export type AddressSetDefaultMutationHookResult = ReturnType<typeof useAddressSetDefaultMutation>;
+export type AddressSetDefaultMutationMutationResult = Apollo.MutationResult<AddressSetDefaultMutation>;
+export type AddressSetDefaultMutationMutationOptions = Apollo.BaseMutationOptions<AddressSetDefaultMutation, AddressSetDefaultMutationVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
