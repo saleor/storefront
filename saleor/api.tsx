@@ -12808,6 +12808,11 @@ export type AddressSetDefaultMutationVariables = Exact<{
 
 export type AddressSetDefaultMutation = { __typename?: 'Mutation', addressSetDefault?: Maybe<{ __typename?: 'AddressSetDefault', errors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }> }> };
 
+export type MeDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeDetailsQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: string, lastLogin?: Maybe<any>, dateJoined: any, email: string, firstName: string, lastName: string, avatar?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }>, orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number> }> }> };
+
 export const AddressFragmentDoc = gql`
     fragment AddressFragment on Address {
   phone
@@ -13845,6 +13850,51 @@ export function useAddressSetDefaultMutation(baseOptions?: Apollo.MutationHookOp
 export type AddressSetDefaultMutationHookResult = ReturnType<typeof useAddressSetDefaultMutation>;
 export type AddressSetDefaultMutationMutationResult = Apollo.MutationResult<AddressSetDefaultMutation>;
 export type AddressSetDefaultMutationMutationOptions = Apollo.BaseMutationOptions<AddressSetDefaultMutation, AddressSetDefaultMutationVariables>;
+export const MeDetailsQueryDocument = gql`
+    query meDetailsQuery {
+  me {
+    id
+    lastLogin
+    dateJoined
+    email
+    firstName
+    lastName
+    avatar {
+      ...ImageFragment
+    }
+    orders {
+      totalCount
+    }
+  }
+}
+    ${ImageFragmentDoc}`;
+
+/**
+ * __useMeDetailsQuery__
+ *
+ * To run a query within a React component, call `useMeDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeDetailsQuery(baseOptions?: Apollo.QueryHookOptions<MeDetailsQuery, MeDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeDetailsQuery, MeDetailsQueryVariables>(MeDetailsQueryDocument, options);
+      }
+export function useMeDetailsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeDetailsQuery, MeDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeDetailsQuery, MeDetailsQueryVariables>(MeDetailsQueryDocument, options);
+        }
+export type MeDetailsQueryHookResult = ReturnType<typeof useMeDetailsQuery>;
+export type MeDetailsQueryLazyQueryHookResult = ReturnType<typeof useMeDetailsQueryLazyQuery>;
+export type MeDetailsQueryQueryResult = Apollo.QueryResult<MeDetailsQuery, MeDetailsQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,

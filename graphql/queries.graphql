@@ -485,3 +485,20 @@ mutation addressSetDefaultMutation(
     }
   }
 }
+
+query meDetailsQuery {
+  me {
+    id
+    lastLogin
+    dateJoined
+    email
+    firstName
+    lastName
+    avatar {
+      ...ImageFragment
+    }
+    orders {
+      totalCount
+    }
+  }
+}
