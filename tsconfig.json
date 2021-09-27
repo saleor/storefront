@@ -19,7 +19,7 @@
       "@/components/*": ["components/*"],
       "@/saleor/api": ["saleor/api"],
       "@/graphql": ["graphql"],
-      "@/lib/*": ["lib/*"],
+      "@/lib/*": ["lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

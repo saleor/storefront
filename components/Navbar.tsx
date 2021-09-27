@@ -8,7 +8,7 @@ import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const Navbar: React.VFC = ({}) => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);
-  const { data, loading, error } = useCheckoutByTokenQuery({
+  const { data } = useCheckoutByTokenQuery({
     variables: { checkoutToken: token },
   });
 
@@ -16,15 +16,13 @@ export const Navbar: React.VFC = ({}) => {
 
   return (
     <div className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto shadow-sm px-8">
+      <div className="max-w-7xl mx-auto px-8">
         <div className="flex justify-between h-16">
-          <div className="flex space-x-8">
-            <Link href="/">
-              <a>
-                <img className="block h-16 w-auto" src="/saleor.svg" alt="" />
-              </a>
-            </Link>
-          </div>
+          <Link href="/">
+            <a>
+              <img className="block h-16 w-auto" src="/saleor.svg" alt="" />
+            </a>
+          </Link>
           <div className="flex space-x-8">
             <Link href="/cart">
               <a className="group -m-2 p-2 flex items-center">

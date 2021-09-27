@@ -38,7 +38,7 @@ export const EmailSection: React.VFC<EmailSectionProps> = ({ checkout }) => {
 
   return (
     <>
-      <div className="mt-8 mb-4">
+      <div className="mt-4 mb-4">
         <h2 className="checkout-section-header-active">Email Address</h2>
       </div>
       {!modifyEmail ? (

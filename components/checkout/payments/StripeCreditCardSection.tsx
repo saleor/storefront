@@ -57,7 +57,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
 
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) {
-      console.log("Card element not initialized");
+      console.error("Card element not initialized");
       setIsPaymentProcessing(false);
       return;
     }
@@ -80,7 +80,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
     });
 
     if (pR.error || !pR.paymentMethod) {
-      console.log("[error]", pR.error);
+      console.error("[error]", pR.error);
       setIsPaymentProcessing(false);
       return;
     }
@@ -99,7 +99,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
       });
 
     if (paymentCreateErrors) {
-      console.log(paymentCreateErrors);
+      console.error(paymentCreateErrors);
       setIsPaymentProcessing(false);
       return;
     }
@@ -112,7 +112,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
         },
       });
     if (completeErrors) {
-      console.log("complete errors:", completeErrors);
+      console.error("complete errors:", completeErrors);
       setIsPaymentProcessing(false);
       return;
     }
@@ -135,7 +135,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
       );
 
       if (stripeConfirmationResponse.error) {
-        console.log(
+        console.error(
           "Stripe payment confirmation error: ",
           stripeConfirmationResponse.error
         );
@@ -152,7 +152,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
         });
 
       if (confirmedCompleteErrors) {
-        console.log(
+        console.error(
           "Errors during checkout completion after the confirmation: ",
           confirmedCompleteErrors
         );
@@ -167,7 +167,7 @@ const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
       redirectToOrderDetailsPage(order.token);
       return;
     } else {
-      console.log("Order was not created");
+      console.error("Order was not created");
     }
   };
 

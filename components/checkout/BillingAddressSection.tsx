@@ -34,7 +34,7 @@ export const BillingAddressSection: React.VFC<BillingAddressSection> = ({
 
   return (
     <>
-      <div className="mt-8 mb-4">
+      <div className="mt-4 mb-4">
         <h2
           className={
             active
