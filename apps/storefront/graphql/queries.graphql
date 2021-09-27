@@ -34,6 +34,34 @@ fragment DeliveryMethodFragment on ShippingMethod {
   maximumDeliveryDays
 }
 
+fragment CheckoutLineDetailsFragment on CheckoutLine {
+  id
+  totalPrice {
+    gross {
+      ...PriceFragment
+    }
+  }
+  variant {
+    id
+    product {
+      id
+      name
+      slug
+      thumbnail {
+        ...ImageFragment
+      }
+    }
+    pricing {
+      price {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    name
+  }
+}
+
 fragment CheckoutDetailsFragment on Checkout {
   id
   token
@@ -60,31 +88,12 @@ fragment CheckoutDetailsFragment on Checkout {
     }
   }
   lines {
-    id
-    totalPrice {
-      gross {
-        ...PriceFragment
-      }
-    }
-    variant {
-      product {
-        id
-        name
-        slug
-        thumbnail {
-          ...ImageFragment
-        }
-      }
-      pricing {
-        price {
-          gross {
-            ...PriceFragment
-          }
-        }
-      }
-      name
-    }
+    ...CheckoutLineDetailsFragment
   }
+  discount {
+    ...PriceFragment
+  }
+  discountName
   subtotalPrice {
     net {
       ...PriceFragment
@@ -195,15 +204,18 @@ query CheckoutByToken($checkoutToken: UUID!) {
 fragment ProductDetailsFragment on Product {
   id
   name
+  slug
   description
   seoDescription
   seoTitle
+  isAvailableForPurchase
   category {
-    name
+    ...CategoryBasicFragment
   }
   variants {
     id
     name
+    quantityAvailable
   }
   pricing {
     priceRange {
@@ -243,43 +255,50 @@ query ProductPaths($after: String) {
   }
 }
 
-query ProductCollection($before: String, $after: String) {
+fragment ProductCardFragment on Product {
+  id
+  slug
+  name
+  thumbnail {
+    ...ImageFragment
+  }
+  category {
+    name
+  }
+  pricing {
+    onSale
+    priceRange {
+      start {
+        gross {
+          ...PriceFragment
+        }
+      }
+      stop {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+}
+
+query ProductCollection(
+  $before: String
+  $after: String
+  $filter: ProductFilterInput
+) {
   products(
-    first: 8
+    first: 4
     channel: "default-channel"
     after: $after
     before: $before
+    filter: $filter
   ) {
+    totalCount
     edges {
       cursor
       node {
-        id
-        slug
-        name
-        thumbnail {
-          ...ImageFragment
-        }
-        category {
-          name
-        }
-        variants {
-          id
-          name
-        }
-        pricing {
-          priceRange {
-            start {
-              gross {
-                ...PriceFragment
-              }
-            }
-            stop {
-              gross {
-                ...PriceFragment
-              }
-            }
-          }
-        }
+        ...ProductCardFragment
       }
     }
     pageInfo {
@@ -287,6 +306,60 @@ query ProductCollection($before: String, $after: String) {
       hasPreviousPage
       startCursor
       endCursor
+    }
+  }
+}
+
+fragment CategoryBasicFragment on Category {
+  id
+  name
+  slug
+}
+
+fragment CategoryDetailsFragment on Category {
+  id
+  ...CategoryBasicFragment
+  seoTitle
+  seoDescription
+  description
+  backgroundImage {
+    ...ImageFragment
+  }
+  ancestors(first: 5) {
+    edges {
+      node {
+        ...CategoryBasicFragment
+      }
+    }
+  }
+}
+
+query CategoryBySlug($slug: String!) {
+  category(slug: $slug) {
+    ...CategoryDetailsFragment
+  }
+}
+
+query CategoryPaths {
+  categories(first: 20) {
+    edges {
+      cursor
+      node {
+        id
+        slug
+      }
+    }
+  }
+}
+
+mutation CheckoutAddPromoCode($token: UUID!, $promoCode: String!) {
+  checkoutAddPromoCode(token: $token, promoCode: $promoCode) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      message
+      field
     }
   }
 }

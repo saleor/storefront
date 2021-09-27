@@ -8,17 +8,21 @@
   }
 
   .checkout-section-container {
-    @apply bg-gray-50 rounded p-8 border;
+    @apply bg-white rounded p-4 border;
   }
 
   .checkout-section-header-active {
-    @apply text-lg font-medium text-gray-900 my-4;
+    @apply text-lg font-medium text-gray-900;
   }
   .checkout-section-header-disabled {
-    @apply text-lg font-medium text-gray-400 my-4;
+    @apply text-lg font-medium text-gray-400;
   }
 
   .btn-checkout-section {
     @apply w-full bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200;
+  }
+
+  a {
+    @apply text-blue-600 hover:text-blue-500;
   }
 }

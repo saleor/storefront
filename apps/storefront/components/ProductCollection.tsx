@@ -1,20 +1,20 @@
 import React from "react";
-import Link from "next/link";
 
-import { useProductCollectionQuery } from "@/saleor/api";
+import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 import { Pagination } from "./Pagination";
+import Spinner from "./Spinner";
+import { ProductCard } from "./ProductCard";
 
-const styles = {
-  grid: `grid grid-cols-4 gap-4`,
-  product: {
-    name: `block text-lg text-gray-900 truncate`,
-    category: `block text-sm font-medium text-gray-500`,
-    details: `px-4 py-2 border-gray-100 bg-gray-50 border-t`,
-  }
+export interface ProductCollectionProps {
+  filter?: ProductFilterInput;
 }
 
-export const ProductCollection: React.VFC = () => {
-  const { loading, error, data, fetchMore } = useProductCollectionQuery();
+export const ProductCollection: React.VFC<ProductCollectionProps> = ({
+  filter,
+}) => {
+  const { loading, error, data, fetchMore } = useProductCollectionQuery({
+    variables: { filter: filter },
+  });
 
   const onLoadMore = () => {
     fetchMore({
@@ -24,60 +24,31 @@ export const ProductCollection: React.VFC = () => {
     });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>Error</p>;
 
-  if (data) {
-    const latestProducts = data.products?.edges || [];
-
-    return (
-      <div>
-        <ul role="list" className={styles.grid}>
-          {latestProducts?.length > 0 &&
-            latestProducts.map(
-              ({
-                node: {
-                  id,
-                  slug,
-                  name,
-                  thumbnail,
-                  category,
-                  variants = [],
-                  pricing,
-                },
-              }) => (
-                <li key={id} className="relative bg-white border">
-                  <Link href={`/products/${slug}`}>
-                    <a>
-                      <div className="aspect-h-1 aspect-w-1">
-                        <img
-                          src={thumbnail?.url}
-                          alt=""
-                          className="object-center object-cover"
-                        />
-                      </div>
-                      <div className={styles.product.details}>
-                        <p className={styles.product.name}>
-                          {name}
-                        </p>
-                        <p className={styles.product.category}>
-                          {category?.name}
-                        </p>
-                      </div>
-                    </a>
-                  </Link>
-                </li>
-              )
-            )}
-        </ul>
-        <Pagination
-          onLoadMore={onLoadMore}
-          pageInfo={data?.products?.pageInfo}
-        />
-      </div>
-    );
+  const products = data?.products?.edges.map((edge) => edge.node) || [];
+  if (products.length === 0) {
+    return <p>No products.</p>;
   }
+  return (
+    <div>
+      <ul
+        role="list"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </ul>
+      <Pagination
+        onLoadMore={onLoadMore}
+        pageInfo={data?.products?.pageInfo}
+        itemCount={data?.products?.edges.length}
+        totalCount={data?.products?.totalCount || undefined}
+      />
+    </div>
+  );
+};
 
-  return null;
-}
-
+export default ProductCollection;
