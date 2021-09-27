@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+
 import { useAuthState } from "@saleor/sdk";
 import { ShoppingBagIcon, UserCircleIcon } from "@heroicons/react/outline";
 import { useLocalStorage } from "react-use";
@@ -36,7 +38,9 @@ export const Navbar: React.VFC = ({}) => {
         <div className="flex justify-between h-16">
           <Link href="/">
             <a>
-              <img className="block h-16 w-auto" src="/saleor.svg" alt="" />
+              <div className="block h-16 w-28 relative">
+                <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
+              </div>
             </a>
           </Link>
           <div className="flex space-x-8">
