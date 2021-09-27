@@ -162,13 +162,9 @@ mutation RemoveProductFromCheckout($checkoutToken: UUID!, $lineId: ID!) {
   }
 }
 
-mutation CreateCheckout {
+mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!) {
   checkoutCreate(
-    input: {
-      channel: "default-channel"
-      email: "customer@example.com"
-      lines: []
-    }
+    input: { channel: "default-channel", email: $email, lines: $lines }
   ) {
     checkout {
       id
@@ -176,6 +172,7 @@ mutation CreateCheckout {
     }
     errors {
       field
+      message
       code
     }
   }
@@ -191,6 +188,7 @@ mutation AddProductToCheckout($checkoutToken: UUID!, $variantId: ID!) {
     }
     errors {
       message
+      code
     }
   }
 }
