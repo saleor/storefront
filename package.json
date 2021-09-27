@@ -5,7 +5,7 @@
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' PORT=3001 next dev",
     "dev": "PORT=3001 next dev",
-    "build": "next build",
+    "build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "prettier --write . && next lint",
     "generate": "graphql-codegen --config codegen.yml -w"
@@ -14,9 +14,10 @@
     "@apollo/client": "3.4.13",
     "@headlessui/react": "1.4.1",
     "@heroicons/react": "1.0.4",
+    "@next/bundle-analyzer": "^11.1.2",
+    "@saleor/sdk": "^0.4.0-4",
     "@stripe/react-stripe-js": "^1.5.0",
     "@stripe/stripe-js": "^1.18.0",
-    "@saleor/sdk": "^0.4.0-4",
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
@@ -25,6 +26,7 @@
     "graphql": "15.6.0",
     "next": "11.1.2",
     "next-seo": "^4.28.1",
+    "preact": "^10.5.14",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.15.4",
