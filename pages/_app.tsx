@@ -2,14 +2,9 @@ import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import "styles/globals.css";
 
-import apolloClient from "@/lib/graphql";
+import apolloClient, { saleorClient } from "@/lib/graphql";
 
-import { SaleorProvider, createSaleorClient } from "@saleor/sdk";
-
-const saleorClient = createSaleorClient({
-  apiUrl: "https://vercel.saleor.cloud/graphql/",
-  channel: "default-channel",
-});
+import { SaleorProvider } from "@saleor/sdk";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

@@ -1,9 +1,11 @@
 import { typePolicies } from "./typePolicies";
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { createSaleorClient } from "@saleor/sdk";
+import { API_URI, DEFAULT_CHANNEL } from "./const";
 
 const httpLink = createHttpLink({
-  uri: "https://vercel.saleor.cloud/graphql/",
+  uri: API_URI,
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -27,6 +29,11 @@ const apolloClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({ typePolicies }),
   ssrMode: typeof window === "undefined",
+});
+
+export const saleorClient = createSaleorClient({
+  apiUrl: API_URI,
+  channel: DEFAULT_CHANNEL,
 });
 
 export default apolloClient;
