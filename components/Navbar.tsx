@@ -1,15 +1,18 @@
 import React from "react";
 import Link from "next/link";
-import { ShoppingBagIcon } from "@heroicons/react/outline";
+import { useAuthState } from "@saleor/sdk";
+import { ShoppingBagIcon, UserCircleIcon } from "@heroicons/react/outline";
 import { useLocalStorage } from "react-use";
 
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const Navbar: React.VFC = ({}) => {
-  const [token] = useLocalStorage(CHECKOUT_TOKEN);
+  const [checkoutToken] = useLocalStorage(CHECKOUT_TOKEN);
+  const { authenticated, user } = useAuthState();
   const { data } = useCheckoutByTokenQuery({
-    variables: { checkoutToken: token },
+    variables: { checkoutToken },
+    skip: !checkoutToken,
   });
 
   const counter = data ? data.checkout!.lines?.length : 0;
@@ -27,7 +30,7 @@ export const Navbar: React.VFC = ({}) => {
             <Link href="/cart">
               <a className="group -m-2 p-2 flex items-center">
                 <ShoppingBagIcon
-                  className="flex-shink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                  className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
                   aria-hidden="true"
                 />
                 <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
@@ -35,6 +38,32 @@ export const Navbar: React.VFC = ({}) => {
                 </span>
               </a>
             </Link>
+            {!authenticated && (
+              <Link href="/login">
+                <a className="group -m-2 p-2 flex items-center">
+                  <UserCircleIcon
+                    className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                    Log in
+                  </span>
+                </a>
+              </Link>
+            )}
+            {authenticated && (
+              <Link href="/account">
+                <a className="group -m-2 p-2 flex items-center">
+                  <UserCircleIcon
+                    className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                    {user?.email}
+                  </span>
+                </a>
+              </Link>
+            )}
           </div>
         </div>
       </div>
