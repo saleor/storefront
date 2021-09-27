@@ -52,7 +52,7 @@ export const Navbar: React.VFC = ({}) => {
               </a>
             </Link>
             {!authenticated && (
-              <Link href="/login">
+              <Link href="/account/login">
                 <a className="group -m-2 p-2 flex items-center">
                   <UserCircleIcon
                     className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
