@@ -12813,6 +12813,15 @@ export type MeDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeDetailsQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: string, lastLogin?: Maybe<any>, dateJoined: any, email: string, firstName: string, lastName: string, avatar?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }>, orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number> }> }> };
 
+export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: string, category?: Maybe<{ __typename?: 'Category', id: string, slug: string }>, collection?: Maybe<{ __typename?: 'Collection', id: string, slug: string }>, page?: Maybe<{ __typename?: 'Page', id: string, slug: string }> };
+
+export type MenuQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type MenuQuery = { __typename?: 'Query', menu?: Maybe<{ __typename?: 'Menu', id: string, name: string, slug: string, items?: Maybe<Array<Maybe<{ __typename?: 'MenuItem', id: string, name: string, category?: Maybe<{ __typename?: 'Category', id: string, slug: string }>, collection?: Maybe<{ __typename?: 'Collection', id: string, slug: string }>, page?: Maybe<{ __typename?: 'Page', id: string, slug: string }> }>>> }> };
+
 export const AddressFragmentDoc = gql`
     fragment AddressFragment on Address {
   phone
@@ -13040,6 +13049,24 @@ export const CategoryDetailsFragmentDoc = gql`
 }
     ${CategoryBasicFragmentDoc}
 ${ImageFragmentDoc}`;
+export const MenuItemFragmentDoc = gql`
+    fragment MenuItemFragment on MenuItem {
+  id
+  name
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+  }
+}
+    `;
 export const CheckoutPaymentCreateDocument = gql`
     mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
   checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
@@ -13895,6 +13922,46 @@ export function useMeDetailsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type MeDetailsQueryHookResult = ReturnType<typeof useMeDetailsQuery>;
 export type MeDetailsQueryLazyQueryHookResult = ReturnType<typeof useMeDetailsQueryLazyQuery>;
 export type MeDetailsQueryQueryResult = Apollo.QueryResult<MeDetailsQuery, MeDetailsQueryVariables>;
+export const MenuQueryDocument = gql`
+    query menuQuery($slug: String!) {
+  menu(channel: "default-channel", slug: $slug) {
+    id
+    name
+    slug
+    items {
+      ...MenuItemFragment
+    }
+  }
+}
+    ${MenuItemFragmentDoc}`;
+
+/**
+ * __useMenuQuery__
+ *
+ * To run a query within a React component, call `useMenuQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMenuQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMenuQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useMenuQuery(baseOptions: Apollo.QueryHookOptions<MenuQuery, MenuQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MenuQuery, MenuQueryVariables>(MenuQueryDocument, options);
+      }
+export function useMenuQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MenuQuery, MenuQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MenuQuery, MenuQueryVariables>(MenuQueryDocument, options);
+        }
+export type MenuQueryHookResult = ReturnType<typeof useMenuQuery>;
+export type MenuQueryLazyQueryHookResult = ReturnType<typeof useMenuQueryLazyQuery>;
+export type MenuQueryQueryResult = Apollo.QueryResult<MenuQuery, MenuQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,

@@ -16,7 +16,7 @@ export const typePolicies: TypedTypePolicies = {
   },
   Query: {
     fields: {
-      products: relayStylePagination(),
+      products: relayStylePagination(["filter"]),
     },
   },
 };
