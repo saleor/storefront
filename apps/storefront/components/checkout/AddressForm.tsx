@@ -1,4 +1,8 @@
-import { AddressFragment, CheckoutError, CountryCode } from "@/saleor/api";
+import {
+  AddressDetailsFragment,
+  CheckoutError,
+  CountryCode,
+} from "@/saleor/api";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -13,7 +17,7 @@ export interface AddressFormData {
 }
 
 export interface AddressFormProps {
-  existingAddressData?: AddressFragment;
+  existingAddressData?: AddressDetailsFragment;
   toggleEdit: () => void;
   updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
 }

@@ -12649,7 +12649,7 @@ export type ImageFragment = { __typename?: 'Image', url: string, alt?: Maybe<str
 
 export type ProductMediaFragment = { __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType };
 
-export type AddressFragment = { __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } };
+export type AddressDetailsFragment = { __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } };
 
 export type DeliveryMethodFragment = { __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: Maybe<number>, maximumDeliveryDays?: Maybe<number>, price?: Maybe<{ __typename?: 'Money', currency: string, amount: number, localizedAmount: string }> };
 
@@ -12829,8 +12829,8 @@ export type PageQueryVariables = Exact<{
 
 export type PageQuery = { __typename?: 'Query', page?: Maybe<{ __typename?: 'Page', id: string, title: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, slug: string, created: any, content?: Maybe<string> }> };
 
-export const AddressFragmentDoc = gql`
-    fragment AddressFragment on Address {
+export const AddressDetailsFragmentDoc = gql`
+    fragment AddressDetailsFragment on Address {
   phone
   firstName
   lastName
@@ -12903,10 +12903,10 @@ export const CheckoutDetailsFragmentDoc = gql`
   token
   email
   billingAddress {
-    ...AddressFragment
+    ...AddressDetailsFragment
   }
   shippingAddress {
-    ...AddressFragment
+    ...AddressDetailsFragment
   }
   shippingMethod {
     ...DeliveryMethodFragment
@@ -12949,7 +12949,7 @@ export const CheckoutDetailsFragmentDoc = gql`
     }
   }
 }
-    ${AddressFragmentDoc}
+    ${AddressDetailsFragmentDoc}
 ${DeliveryMethodFragmentDoc}
 ${CheckoutLineDetailsFragmentDoc}
 ${PriceFragmentDoc}`;
@@ -13127,11 +13127,11 @@ export const CheckoutCompleteDocument = gql`
       token
       billingAddress {
         id
-        ...AddressFragment
+        ...AddressDetailsFragment
       }
       shippingAddress {
         id
-        ...AddressFragment
+        ...AddressDetailsFragment
       }
     }
     confirmationNeeded
@@ -13144,7 +13144,7 @@ export const CheckoutCompleteDocument = gql`
     }
   }
 }
-    ${AddressFragmentDoc}`;
+    ${AddressDetailsFragmentDoc}`;
 export type CheckoutCompleteMutationFn = Apollo.MutationFunction<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>;
 
 /**
