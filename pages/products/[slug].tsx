@@ -4,11 +4,15 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import { ApolloQueryResult } from "@apollo/client";
+import { useAuthState } from "@saleor/sdk";
 import {
   useAddProductToCheckoutMutation,
   ProductPathsQuery,
   useProductBySlugQuery,
   ProductPathsDocument,
+  useCheckoutByTokenQuery,
+  CheckoutError,
+  useCreateCheckoutMutation,
 } from "@/saleor/api";
 import apolloClient from "@/lib/graphql";
 
@@ -16,20 +20,28 @@ import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import RichText from "@/components/RichText";
 import BaseTemplate from "@/components/BaseTemplate";
 import VariantSelector from "@/components/VariantSelector";
+import { useLocalStorage } from "react-use";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
     props: {
       productSlug: context.params?.slug?.toString(),
-      checkoutToken: "",
     },
   };
 };
 
 const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ productSlug, checkoutToken }) => {
+  ({ productSlug }) => {
     const router = useRouter();
+    const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
+    const [createCheckout] = useCreateCheckoutMutation();
+    const { user } = useAuthState();
 
+    const { data: checkoutData } = useCheckoutByTokenQuery({
+      variables: { checkoutToken },
+      skip: !checkoutToken,
+    });
     const { loading, error, data } = useProductBySlugQuery({
       variables: { slug: productSlug || "" },
     });
@@ -62,23 +74,47 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
 
       // Block add to checkout button
       setLoadingAddToCheckout(true);
+      const errors: CheckoutError[] = [];
 
-      // Run mutation
-      const { errors: graphqlErrors, data: addToCartData } =
-        await addProductToCheckout({
+      if (!!checkoutData?.checkout) {
+        // If checkout is already existing, add products
+        const { data: addToCartData } = await addProductToCheckout({
           variables: {
             checkoutToken: checkoutToken,
             variantId: selectedVariantID,
           },
         });
-
+        addToCartData?.checkoutLinesAdd?.errors.forEach((e) => {
+          if (!!e) {
+            errors.push(e);
+          }
+        });
+      } else {
+        // Theres no checkout, we have to create one
+        const { data: createCheckoutData } = await createCheckout({
+          variables: {
+            email: user?.email || "anonymous@example.com",
+            lines: [
+              {
+                quantity: 1,
+                variantId: selectedVariantID,
+              },
+            ],
+          },
+        });
+        createCheckoutData?.checkoutCreate?.errors.forEach((e) => {
+          if (!!e) {
+            errors.push(e);
+          }
+        });
+        if (createCheckoutData?.checkoutCreate?.checkout?.token) {
+          setCheckoutToken(createCheckoutData?.checkoutCreate?.checkout?.token);
+        }
+      }
       // Enable button
       setLoadingAddToCheckout(false);
 
-      if (
-        !graphqlErrors?.length &&
-        !addToCartData?.checkoutLinesAdd?.errors.length
-      ) {
+      if (errors.length === 0) {
         // Product successfully added, redirect to cart page
         router.push("/cart");
         return;
@@ -86,11 +122,9 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
 
       // Display error message
       const errorMessages =
-        addToCartData?.checkoutLinesAdd?.errors
-          .filter((e) => !!e)
-          .map((e) => {
-            return e.message || "";
-          }) || [];
+        errors.map((e) => {
+          return e.message || "";
+        }) || [];
       setAddToCartError(errorMessages.join("\n"));
     };
 
@@ -146,7 +180,7 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
                 {loadingAddToCheckout ? "Adding..." : "Add to cart"}
               </button>
             ) : (
-              <p>Sold out!</p>
+              <p className="text-lg- text-yellow-600">Sold out!</p>
             )}
             {!!addToCartError && <p>{addToCartError}</p>}
           </div>

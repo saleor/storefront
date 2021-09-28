@@ -1,37 +1,17 @@
-import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import { useLocalStorage } from "react-use";
 import "styles/globals.css";
 
-import { useCreateCheckoutMutation } from "@/saleor/api";
+import apolloClient, { saleorClient } from "@/lib/graphql";
 
-import apolloClient from "@/lib/graphql";
-import { CHECKOUT_TOKEN } from "@/lib/const";
+import { SaleorProvider } from "@saleor/sdk";
 
-const Provider = ({ Component, pageProps }: AppProps) => {
-  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
-  const [createCheckout, { data, loading }] = useCreateCheckoutMutation();
-
-  useEffect(() => {
-    async function doCheckout() {
-      const { data } = await createCheckout();
-      const token = data?.checkoutCreate?.checkout?.token;
-      setCheckoutToken(token);
-    }
-
-    if (!checkoutToken) {
-      doCheckout();
-    }
-  }, [checkoutToken, createCheckout, setCheckoutToken]);
-
-  return <Component {...pageProps} checkoutToken={checkoutToken} />;
-};
-
-function MyApp(props: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={apolloClient}>
-      <Provider {...props} />
+      <SaleorProvider client={saleorClient}>
+        <Component {...pageProps} />
+      </SaleorProvider>
     </ApolloProvider>
   );
 }

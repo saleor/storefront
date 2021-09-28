@@ -11,6 +11,7 @@ specifiers:
   '@graphql-codegen/typescript-react-apollo': 3.1.4
   '@headlessui/react': 1.4.1
   '@heroicons/react': 1.0.4
+  '@saleor/sdk': ^0.4.0-4
   '@stripe/react-stripe-js': ^1.5.0
   '@stripe/stripe-js': ^1.18.0
   '@tailwindcss/aspect-ratio': ^0.2.1
@@ -28,6 +29,7 @@ specifiers:
   next-seo: ^4.28.1
   postcss: 8.3.7
   prettier: 2.4.1
+  prettier-plugin-organize-imports: ^2.3.4
   react: 17.0.2
   react-dom: 17.0.2
   react-hook-form: ^7.15.4
@@ -40,6 +42,7 @@ dependencies:
   '@apollo/client': 3.4.13_graphql@15.6.0+react@17.0.2
   '@headlessui/react': 1.4.1_react-dom@17.0.2+react@17.0.2
   '@heroicons/react': 1.0.4_react@17.0.2
+  '@saleor/sdk': 0.4.0-4_c8f63c1aa5501e06c5c457e6db1b8725
   '@stripe/react-stripe-js': 1.5.0_09a5e2cb3e4031e28165171142e9312f
   '@stripe/stripe-js': 1.18.0
   '@tailwindcss/aspect-ratio': 0.2.1_tailwindcss@2.2.15
@@ -71,6 +74,7 @@ devDependencies:
   eslint-config-prettier: 8.3.0_eslint@7.32.0
   postcss: 8.3.7
   prettier: 2.4.1
+  prettier-plugin-organize-imports: 2.3.4_prettier@2.4.1+typescript@4.4.3
   tailwindcss: 2.2.15_dd4850c39760d2665af3f9e21d00faf4
   typescript: 4.4.3
 
@@ -1402,6 +1406,21 @@ packages:
     resolution: {integrity: sha512-3Zi2LGbCLDz4IIL7ir6wD0u/ggHotLkK5SlVzFzTcYaNgPR4MAt/9JYZqXWKcofPWEoptfpnCJU8Bq9sxw8QUg==}
     dev: true
 
+  /@saleor/sdk/0.4.0-4_c8f63c1aa5501e06c5c457e6db1b8725:
+    resolution: {integrity: sha512-HMM7jEvMO3fTItq9rB8wXFtP045CMvtoIaPBIo1zzvSdZlQcNRXRg3KTQ8xrx+VycsSqZoQHIgd0SBWbLxHNFA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      '@apollo/client': ^3.3.19
+      graphql: ^15.5.0
+      react: ^16.8.0 || ^17.0.0
+    dependencies:
+      '@apollo/client': 3.4.13_graphql@15.6.0+react@17.0.2
+      cross-fetch: 3.1.4
+      graphql: 15.6.0
+      jwt-decode: 3.1.2
+      react: 17.0.2
+    dev: false
+
   /@samverschueren/stream-to-observable/0.3.1_rxjs@6.6.7:
     resolution: {integrity: sha512-c/qwwcHyafOQuVQJj0IlBjf5yYgBI7YPJ77k4fOJYesb41jio65eaJODRUmfYKhTOFBrIZ66kgvGPlNbjuoRdQ==}
     engines: {node: '>=6'}
@@ -2529,7 +2548,6 @@ packages:
     resolution: {integrity: sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==}
     dependencies:
       node-fetch: 2.6.1
-    dev: true
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -4356,6 +4374,10 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
+  /jwt-decode/3.1.2:
+    resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
+    dev: false
+
   /keyv/3.1.0:
     resolution: {integrity: sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==}
     dependencies:
@@ -5448,6 +5470,16 @@ packages:
   /prepend-http/2.0.0:
     resolution: {integrity: sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=}
     engines: {node: '>=4'}
+    dev: true
+
+  /prettier-plugin-organize-imports/2.3.4_prettier@2.4.1+typescript@4.4.3:
+    resolution: {integrity: sha512-R8o23sf5iVL/U71h9SFUdhdOEPsi3nm42FD/oDYIZ2PQa4TNWWuWecxln6jlIQzpZTDMUeO1NicJP6lLn2TtRw==}
+    peerDependencies:
+      prettier: '>=2.0'
+      typescript: '>=2.9'
+    dependencies:
+      prettier: 2.4.1
+      typescript: 4.4.3
     dev: true
 
   /prettier/2.4.1:

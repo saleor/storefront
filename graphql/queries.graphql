@@ -138,6 +138,14 @@ mutation checkoutComplete($checkoutToken: UUID!, $paymentData: JSONString) {
       id
       status
       token
+      billingAddress {
+        id
+        ...AddressFragment
+      }
+      shippingAddress {
+        id
+        ...AddressFragment
+      }
     }
     confirmationNeeded
     confirmationData
@@ -162,13 +170,9 @@ mutation RemoveProductFromCheckout($checkoutToken: UUID!, $lineId: ID!) {
   }
 }
 
-mutation CreateCheckout {
+mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!) {
   checkoutCreate(
-    input: {
-      channel: "default-channel"
-      email: "customer@example.com"
-      lines: []
-    }
+    input: { channel: "default-channel", email: $email, lines: $lines }
   ) {
     checkout {
       id
@@ -176,6 +180,7 @@ mutation CreateCheckout {
     }
     errors {
       field
+      message
       code
     }
   }
@@ -191,6 +196,7 @@ mutation AddProductToCheckout($checkoutToken: UUID!, $variantId: ID!) {
     }
     errors {
       message
+      code
     }
   }
 }
@@ -459,5 +465,40 @@ query OrderDetailsQuery($token: UUID!) {
       }
     }
     statusDisplay
+  }
+}
+
+mutation addressSetDefaultMutation(
+  $addressID: ID!
+  $userID: ID!
+  $addressType: AddressTypeEnum!
+) {
+  addressSetDefault(
+    addressId: $addressID
+    type: $addressType
+    userId: $userID
+  ) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+query meDetailsQuery {
+  me {
+    id
+    lastLogin
+    dateJoined
+    email
+    firstName
+    lastName
+    avatar {
+      ...ImageFragment
+    }
+    orders {
+      totalCount
+    }
   }
 }

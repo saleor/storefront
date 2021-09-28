@@ -90,7 +90,6 @@ export const DummyCreditCardSection: React.VFC<DummyCreditCardSectionInterface> 
       // If there are no errors during payment and confirmation, order should be created
       if (order) {
         redirectToOrderDetailsPage(order.token);
-
         return;
       } else {
         console.error("Order was not created");
