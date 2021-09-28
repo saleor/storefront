@@ -20,7 +20,7 @@ export const Navbar: React.VFC = ({}) => {
   const { authenticated, user } = useAuthState();
   const { data } = useCheckoutByTokenQuery({
     variables: { checkoutToken },
-    skip: !checkoutToken,
+    skip: !checkoutToken || !process.browser,
   });
 
   const onLogout = async () => {
