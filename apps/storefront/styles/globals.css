@@ -23,6 +23,12 @@
   }
 
   a {
-    @apply text-blue-600 hover:text-blue-500;
+    @apply text-blue-600 hover:text-blue-500 cursor-pointer;
   }
+}
+
+.dropdown:focus-within .dropdown-menu {
+  opacity: 1;
+  transform: translate(0) scale(1);
+  visibility: visible;
 }
