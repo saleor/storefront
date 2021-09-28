@@ -37,7 +37,7 @@ export const HomepageBlock: React.VFC<HomepageBlockProps> = ({ menuItem }) => {
       <div className="flex flex-row-reverse p-4">
         <Link href={link}>
           <a>
-            <p>More 🠒</p>
+            <p>More →</p>
           </a>
         </Link>
       </div>
