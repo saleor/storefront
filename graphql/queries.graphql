@@ -11,7 +11,7 @@ fragment ProductMediaFragment on ProductMedia {
   type
 }
 
-fragment AddressFragment on Address {
+fragment AddressDetailsFragment on Address {
   phone
   firstName
   lastName
@@ -67,10 +67,10 @@ fragment CheckoutDetailsFragment on Checkout {
   token
   email
   billingAddress {
-    ...AddressFragment
+    ...AddressDetailsFragment
   }
   shippingAddress {
-    ...AddressFragment
+    ...AddressDetailsFragment
   }
   shippingMethod {
     ...DeliveryMethodFragment
@@ -140,11 +140,11 @@ mutation checkoutComplete($checkoutToken: UUID!, $paymentData: JSONString) {
       token
       billingAddress {
         id
-        ...AddressFragment
+        ...AddressDetailsFragment
       }
       shippingAddress {
         id
-        ...AddressFragment
+        ...AddressDetailsFragment
       }
     }
     confirmationNeeded
