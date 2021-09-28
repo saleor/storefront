@@ -502,3 +502,44 @@ query meDetailsQuery {
     }
   }
 }
+
+fragment MenuItemFragment on MenuItem {
+  id
+  name
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+    content
+  }
+}
+
+query MenuQuery($slug: String!) {
+  menu(channel: "default-channel", slug: $slug) {
+    id
+    name
+    slug
+    items {
+      ...MenuItemFragment
+    }
+  }
+}
+
+query PageQuery($slug: String!) {
+  page(slug: $slug) {
+    id
+    title
+    seoTitle
+    seoDescription
+    slug
+    created
+    content
+  }
+}

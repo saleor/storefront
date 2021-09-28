@@ -7,10 +7,12 @@ import { ProductCard } from "./ProductCard";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
+  allowMore?: boolean;
 }
 
 export const ProductCollection: React.VFC<ProductCollectionProps> = ({
   filter,
+  allowMore = true,
 }) => {
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
     variables: { filter: filter },
@@ -41,12 +43,14 @@ export const ProductCollection: React.VFC<ProductCollectionProps> = ({
           <ProductCard key={product.id} product={product} />
         ))}
       </ul>
-      <Pagination
-        onLoadMore={onLoadMore}
-        pageInfo={data?.products?.pageInfo}
-        itemCount={data?.products?.edges.length}
-        totalCount={data?.products?.totalCount || undefined}
-      />
+      {allowMore && (
+        <Pagination
+          onLoadMore={onLoadMore}
+          pageInfo={data?.products?.pageInfo}
+          itemCount={data?.products?.edges.length}
+          totalCount={data?.products?.totalCount || undefined}
+        />
+      )}
     </div>
   );
 };
