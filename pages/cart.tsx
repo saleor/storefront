@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+
 import { useLocalStorage } from "react-use";
 
 import { Navbar, CartSummary } from "@/components";
@@ -61,10 +63,11 @@ const Cart: React.VFC = ({}) => {
                   const price = line?.totalPrice?.gross;
                   return (
                     <li key={line?.id} className="flex py-6">
-                      <div className="flex-shrink-0 bg-white">
-                        <img
-                          src={product?.thumbnail?.url}
-                          className="w-48 h-48 border object-center object-cover"
+                      <div className="flex-shrink-0 bg-white w-48 h-48 border object-center object-cover relative">
+                        <Image
+                          src={product?.thumbnail?.url || ""}
+                          alt={product?.thumbnail?.alt || ""}
+                          layout="fill"
                         />
                       </div>
 
