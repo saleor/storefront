@@ -1,7 +1,7 @@
-import { AddressFragment } from "@/saleor/api";
+import { AddressDetailsFragment } from "@/saleor/api";
 
 export interface AddressDisplayProps {
-  address: AddressFragment;
+  address: AddressDetailsFragment;
 }
 
 export const AddressDisplay: React.VFC<AddressDisplayProps> = ({ address }) => {
