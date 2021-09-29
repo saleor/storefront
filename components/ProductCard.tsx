@@ -28,7 +28,9 @@ export const ProductCard: React.VFC<ProductCardProps> = ({ product }) => {
   const imageStyle: React.CSSProperties = {};
   if (!!product.thumbnail?.url) {
     imageStyle.backgroundImage = `url(${product.thumbnail?.url})`;
-    imageStyle.backgroundSize = "cover";
+    imageStyle.backgroundSize = "auto";
+    imageStyle.backgroundRepeat = "no-repeat";
+    imageStyle.backgroundPosition = "center";
   }
   return (
     <li

@@ -1,11 +1,13 @@
-import { typePolicies } from "./typePolicies";
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { createSaleorClient } from "@saleor/sdk";
+import { autoRefreshFetch } from "@saleor/sdk";
+import { typePolicies } from "./typePolicies";
 import { API_URI, DEFAULT_CHANNEL } from "./const";
 
 const httpLink = createHttpLink({
   uri: API_URI,
+  fetch: autoRefreshFetch,
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -28,7 +30,7 @@ const authLink = setContext((_, { headers }) => {
 const apolloClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({ typePolicies }),
-  ssrMode: typeof window === "undefined",
+  ssrMode: !process.browser,
 });
 
 export const saleorClient = createSaleorClient({

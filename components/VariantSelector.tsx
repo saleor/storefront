@@ -32,9 +32,9 @@ export const VariantSelector: React.VFC<VariantSelectorProps> = ({
           >
             <a
               className={clsx(
-                "flex justify-center border rounded-md p-3 font-semibold hover:border-blue-400 shadow-md",
-                isSelected && "border-blue-300",
-                !isSelected && "border-gray-300"
+                "flex justify-center  rounded-md p-3 font-semibold hover:border-blue-400 shadow-md",
+                isSelected && "border-2 border-blue-300 bg-blue-300",
+                !isSelected && "border-2 border-gray-300"
               )}
             >
               {variant?.name}
