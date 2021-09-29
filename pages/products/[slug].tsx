@@ -8,11 +8,12 @@ import { useAuthState } from "@saleor/sdk";
 import {
   useAddProductToCheckoutMutation,
   ProductPathsQuery,
-  useProductBySlugQuery,
   ProductPathsDocument,
   useCheckoutByTokenQuery,
   CheckoutError,
   useCreateCheckoutMutation,
+  ProductBySlugDocument,
+  ProductBySlugQuery,
 } from "@/saleor/api";
 import apolloClient from "@/lib/graphql";
 
@@ -22,17 +23,27 @@ import BaseTemplate from "@/components/BaseTemplate";
 import VariantSelector from "@/components/VariantSelector";
 import { useLocalStorage } from "react-use";
 import { CHECKOUT_TOKEN } from "@/lib/const";
+import Custom404 from "pages/404";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const productSlug = context.params?.slug?.toString();
+  const data: ApolloQueryResult<ProductBySlugQuery | undefined> =
+    await apolloClient.query({
+      query: ProductBySlugDocument,
+      variables: {
+        slug: productSlug,
+      },
+    });
   return {
     props: {
-      productSlug: context.params?.slug?.toString(),
+      productSSG: data,
     },
+    revalidate: 60, // value in seconds, how often ISR will trigger on the server
   };
 };
 
 const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ productSlug }) => {
+  ({ productSSG }) => {
     const router = useRouter();
     const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
     const [createCheckout] = useCreateCheckoutMutation();
@@ -40,29 +51,24 @@ const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
 
     const { data: checkoutData } = useCheckoutByTokenQuery({
       variables: { checkoutToken },
-      skip: !checkoutToken,
-    });
-    const { loading, error, data } = useProductBySlugQuery({
-      variables: { slug: productSlug || "" },
+      skip: !checkoutToken || !process.browser,
     });
     const [addProductToCheckout] = useAddProductToCheckoutMutation();
     const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
     const [addToCartError, setAddToCartError] = useState("");
 
-    if (loading) {
-      return <BaseTemplate isLoading={true} />;
+    const product = productSSG?.data?.product;
+    if (!product?.id) {
+      return <Custom404 />;
     }
-    if (error) return <p>Error</p>;
-    if (!data || !data.product) {
-      router.push("/404");
-      return null;
-    }
-
-    const { product } = data;
     const price = product?.pricing?.priceRange?.start?.gross.localizedAmount;
 
-    const selectedVariantID =
-      router.query.variant?.toString() || product?.variants![0]!.id!;
+    // We have to check if code is run on the browser
+    // before we can use the router
+    const queryVariant = process.browser
+      ? router.query.variant?.toString()
+      : undefined;
+    const selectedVariantID = queryVariant || product?.variants![0]!.id!;
 
     const selectedVariant = product?.variants?.find(
       (v) => v?.id === selectedVariantID
@@ -204,6 +210,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true,
+    fallback: "blocking",
   };
 }
