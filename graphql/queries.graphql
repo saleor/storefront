@@ -292,10 +292,11 @@ query ProductCollection(
   $before: String
   $after: String
   $filter: ProductFilterInput
+  $channel: String = "default-channel"
 ) {
   products(
     first: 4
-    channel: "default-channel"
+    channel: $channel
     after: $after
     before: $before
     filter: $filter

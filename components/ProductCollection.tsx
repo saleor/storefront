@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 import { Pagination } from "./Pagination";
 import Spinner from "./Spinner";
 import { ProductCard } from "./ProductCard";
+import { ChannelContext } from "pages/_app";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
@@ -14,8 +15,10 @@ export const ProductCollection: React.VFC<ProductCollectionProps> = ({
   filter,
   allowMore = true,
 }) => {
+  const { channel } = useContext(ChannelContext);
+  console.log(channel);
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
-    variables: { filter: filter },
+    variables: { filter: filter, channel },
   });
 
   const onLoadMore = () => {
