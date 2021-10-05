@@ -2,15 +2,28 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+pnpm i
+```
+
+Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
+
+If you modify graphql files and would like to update the hooks, run:
+
+```bash
+npm run generate
+```
+
+Script will start the [GraphQL Code Generator](https://www.graphql-code-generator.com/) in the watch mode, so changes in the querries will be automatically updated.
+
 
 ## Configuration
 
