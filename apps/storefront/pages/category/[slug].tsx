@@ -1,5 +1,4 @@
 import { ProductCollection, Navbar } from "@/components";
-import CategoryHero from "@/components/CategoryHero";
 import CategoryPageSeo from "@/components/seo/CategoryPageSeo";
 import {
   CategoryPathsDocument,
@@ -11,8 +10,8 @@ import React from "react";
 import Custom404 from "pages/404";
 import apolloClient from "@/lib/graphql";
 import { ApolloQueryResult } from "@apollo/client";
-import Spinner from "@/components/Spinner";
 import BaseTemplate from "@/components/BaseTemplate";
+import PageHero from "@/components/PageHero";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -49,7 +48,7 @@ const CategoryPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
         <CategoryPageSeo category={category} />
         <header className="mb-4 pt-4">
           <div className="max-w-7xl mx-auto px-8">
-            <CategoryHero category={category} />
+            <PageHero entity={category} />
           </div>
         </header>
         <main>
