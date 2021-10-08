@@ -1,7 +1,7 @@
 import BaseTemplate from "@/components/BaseTemplate";
 import { useMeDetailsQuery } from "@/saleor/api";
 import { useRouter } from "next/router";
-import { AccountPreferences } from "@/components/AccountPreferences";
+import { AccountPreferences } from "@/components/accountPreferences/AccountPreferences";
 
 const Account: React.VFC = () => {
   const router = useRouter();

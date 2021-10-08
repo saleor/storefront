@@ -1,6 +1,6 @@
 import React from "react";
-import { EmailPreferences } from "./accountPreferences/EmailPreferences";
-import { PasswordPreferences } from "./accountPreferences/PasswordPreferences";
+import { EmailPreferences } from "./EmailPreferences";
+import { PasswordPreferences } from "./PasswordPreferences";
 
 export const AccountPreferences: React.VFC<any> = ({}) => {
   return (
