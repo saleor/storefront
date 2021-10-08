@@ -564,3 +564,14 @@ mutation RequestEmailChange(
     }
   }
 }
+
+mutation PasswordChange($newPassword: String!, $oldPassword: String!) {
+  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {
+    user {
+      email
+    }
+    errors {
+      message
+    }
+  }
+}

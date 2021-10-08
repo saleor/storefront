@@ -1,30 +1,37 @@
 import React from "react";
 import { useRequestEmailChangeMutation } from "@/saleor/api";
 import { useForm } from "react-hook-form";
-
 export const EmailPreferences: React.VFC<any> = ({}) => {
   const [requestEmailChange] = useRequestEmailChangeMutation({});
+  const [successMessage, setSuccessMessage] = React.useState<String | null>(
+    null
+  );
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
   } = useForm();
-
   const onEmailPreferenceSubmit = handleSubmit(async (formData) => {
     const result = await requestEmailChange({
       variables: {
         channel: "default-channel",
         newEmail: formData.email,
         password: formData.password,
-        redirectUrl: `https://localhost:3001/account/confirm`,
+        redirectUrl: `https://localhost:3001/account`,
       },
     });
-    console.log(result);
     const errors = result?.data?.requestEmailChange?.errors || [];
     if (errors.length > 0) {
-      errors.forEach((e) => setError("email", { message: e.message || "" }));
+      errors.forEach((e) => setError("error", { message: e.message || "" }));
       return;
+    } else if (result.data?.requestEmailChange?.user) {
+      setSuccessMessage(
+        "Email changed succesfully. Check your mailbox for confirmation email."
+      );
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     }
   });
 
@@ -43,7 +50,6 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
                 pattern: /^\S+@\S+$/i,
               })}
             />
-            <p>{errors.email?.message}</p>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
@@ -56,12 +62,15 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
                 required: true,
               })}
             />
-            <p>{errors.password?.message}</p>
+            <p className="mt-2 text-sm text-red-600">{errors.error?.message}</p>
           </div>
         </div>
+        {successMessage !== null ? (
+          <p className="mt-2 text-sm text-green-600">{successMessage}</p>
+        ) : null}
         <div>
           <button
-            className="mt-4 w-40 bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
+            className="mt-2 w-40 bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
             onClick={() => onEmailPreferenceSubmit()}
           >
             Submit changes
