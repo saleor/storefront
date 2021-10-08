@@ -11,7 +11,7 @@ specifiers:
   "@graphql-codegen/typescript-react-apollo": 3.1.4
   "@headlessui/react": 1.4.1
   "@heroicons/react": 1.0.4
-  "@saleor/sdk": ^0.4.0-5
+  "@saleor/sdk": ^0.4.0-6
   "@stripe/react-stripe-js": ^1.5.0
   "@stripe/stripe-js": ^1.18.0
   "@tailwindcss/aspect-ratio": ^0.2.1
@@ -42,7 +42,7 @@ dependencies:
   "@apollo/client": 3.4.13_graphql@15.6.0+react@17.0.2
   "@headlessui/react": 1.4.1_react-dom@17.0.2+react@17.0.2
   "@heroicons/react": 1.0.4_react@17.0.2
-  "@saleor/sdk": 0.4.0-5_c8f63c1aa5501e06c5c457e6db1b8725
+  "@saleor/sdk": 0.4.0-6_c8f63c1aa5501e06c5c457e6db1b8725
   "@stripe/react-stripe-js": 1.6.0_02b0aafaeb8df084269af2860741c962
   "@stripe/stripe-js": 1.19.1
   "@tailwindcss/aspect-ratio": 0.2.2_tailwindcss@2.2.15
@@ -1769,10 +1769,10 @@ packages:
       }
     dev: true
 
-  /@saleor/sdk/0.4.0-5_c8f63c1aa5501e06c5c457e6db1b8725:
+  /@saleor/sdk/0.4.0-6_c8f63c1aa5501e06c5c457e6db1b8725:
     resolution:
       {
-        integrity: sha512-QXTKNxImCUptnvp1LtziumrdVHhUSaJimj6VIs4ZZk9MLaMXkOiC1GNWYru5xWJBqf7F8YGapwhos1WFzzZumg==,
+        integrity: sha512-CPbjZjsK91Cp+z8UXaaplEPWgnEe30RG1T3kpsM8UxuQMi/83M246mJ5C8ViW0VyHo4AsmRqJcwrQmAZlvmqMw==,
       }
     engines: { node: ">=10" }
     peerDependencies:
