@@ -16,7 +16,7 @@
     "@heroicons/react": "1.0.4",
     "@stripe/react-stripe-js": "^1.5.0",
     "@stripe/stripe-js": "^1.18.0",
-    "@saleor/sdk": "^0.4.0-6",
+    "@saleor/sdk": "^0.4.0-5",
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
