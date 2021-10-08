@@ -13,14 +13,14 @@ const Account: React.VFC = () => {
     router.push("/login");
     // todo: resolve issue with auth token not automatically added to the client
     // because application stuck in redirecting ATM
-    // router.push({ pathname: "/login", query: { next: "/account" } });
+    //router.push({ pathname: "/account/login", query: { next: "/account" } });
     return null;
   }
   const user = data.me;
   return (
     <BaseTemplate>
-      <div className="py-10">
-        <header className="mb-4">
+      <div>
+        <header className="mb-4 pt-5">
           <div className="max-w-7xl mx-auto px-8">Your account</div>
         </header>
         <main className="flex max-w-7xl mx-auto px-8">
