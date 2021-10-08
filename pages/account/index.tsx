@@ -1,6 +1,7 @@
 import BaseTemplate from "@/components/BaseTemplate";
 import { useMeDetailsQuery } from "@/saleor/api";
 import { useRouter } from "next/router";
+import { AccountPreferences } from "@/components/AccountPreferences";
 
 const Account: React.VFC = () => {
   const router = useRouter();
@@ -22,12 +23,18 @@ const Account: React.VFC = () => {
         <header className="mb-4">
           <div className="max-w-7xl mx-auto px-8">Your account</div>
         </header>
-        <main className="max-w-7xl mx-auto px-8">
-          <p>{user.email}</p>
-          <p>{user.firstName}</p>
-          <p>{user.lastName}</p>
-          <p>{user.dateJoined}</p>
-          <p>{user.lastLogin}</p>
+        <main className="flex max-w-7xl mx-auto px-8">
+          <div className="flex-1">
+            <p>{user.email}</p>
+            <p>{user.firstName}</p>
+            <p>{user.lastName}</p>
+            <p>{user.dateJoined}</p>
+            <p>{user.lastLogin}</p>
+          </div>
+
+          <div className="flex-1 justify-end">
+            <AccountPreferences />
+          </div>
         </main>
       </div>
     </BaseTemplate>
