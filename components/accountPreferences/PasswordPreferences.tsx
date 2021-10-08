@@ -43,6 +43,9 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
       <form onSubmit={onPasswordPreferenceSubmit}>
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
+            <label className="block pl-1 text-sm font-medium text-gray-700">
+              Old password
+            </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
@@ -55,10 +58,13 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
+            <label className="block pl-1 text-sm font-medium text-gray-700">
+              New password
+            </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
-              placeholder="New Password"
+              placeholder="New password"
               {...register("newPassword", {
                 required: true,
               })}
@@ -67,10 +73,13 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
+            <label className="block pl-1 text-sm font-medium text-gray-700">
+              Repeat new password
+            </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
-              placeholder="Repeat new Password"
+              placeholder="Repeat new password"
               {...register("newPasswordRepeat", {
                 required: true,
               })}

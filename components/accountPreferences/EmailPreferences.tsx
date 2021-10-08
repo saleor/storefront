@@ -41,6 +41,9 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
       <form onSubmit={onEmailPreferenceSubmit}>
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
+            <label className="block pl-1 text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="email"
@@ -54,6 +57,9 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
+            <label className="block pl-1 text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
