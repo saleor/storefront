@@ -1,5 +1,3 @@
-import { Button } from "../Button";
-
 interface CompleteCheckoutButtonProps {
   isDisabled: boolean;
   isProcessing: boolean;
@@ -18,7 +16,7 @@ export const CompleteCheckoutButton: React.VFC<CompleteCheckoutButtonProps> = ({
       {isProcessing ? (
         <button
           disabled={true}
-          className="w-full mt-6 bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white"
+          className="w-full mt-6 bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white flex items-center justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +45,7 @@ export const CompleteCheckoutButton: React.VFC<CompleteCheckoutButtonProps> = ({
           onClick={onClick}
           disabled={isDisabled}
           type="submit"
-          className="w-full mt-6 bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-blue-700"
+          className="w-full mt-6 bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 flex items-center justify-center"
         >
           {children}
         </button>

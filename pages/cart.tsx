@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { useLocalStorage } from "react-use";
 
-import { Navbar, CartSummary } from "@/components";
+import { CartSummary } from "@/components";
 import {
   useCheckoutByTokenQuery,
   useRemoveProductFromCheckoutMutation,
@@ -27,11 +27,7 @@ const Cart: React.VFC = ({}) => {
   }
   if (error) return <p>Error</p>;
 
-  if (!data || !data.checkout) {
-    return null;
-  }
-
-  const products = data.checkout?.lines || [];
+  const products = data?.checkout?.lines || [];
 
   return (
     <BaseTemplate>
@@ -116,16 +112,18 @@ const Cart: React.VFC = ({}) => {
               </ul>
             </section>
 
-            <div>
-              <CartSummary checkout={data.checkout} />
-              <div className="mt-12">
-                <Link href="/checkout">
-                  <a className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700">
-                    Checkout
-                  </a>
-                </Link>
+            {!!data?.checkout && (
+              <div>
+                <CartSummary checkout={data.checkout} />
+                <div className="mt-12">
+                  <Link href="/checkout">
+                    <a className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700">
+                      Checkout
+                    </a>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </main>
       </div>
