@@ -1,6 +1,8 @@
 import BaseTemplate from "@/components/BaseTemplate";
 import { useMeDetailsQuery } from "@/saleor/api";
 import { useRouter } from "next/router";
+import { NavigationPanel } from "@/components/NavigationPanel";
+import React from "react";
 
 const Account: React.VFC = () => {
   const router = useRouter();
@@ -20,14 +22,12 @@ const Account: React.VFC = () => {
     <BaseTemplate>
       <div className="py-10">
         <header className="mb-4">
-          <div className="max-w-7xl mx-auto px-8">Your account</div>
+          <h1 className="max-w-7xl text-2xl mx-auto px-8">Account</h1>
         </header>
-        <main className="max-w-7xl mx-auto px-8">
-          <p>{user.email}</p>
-          <p>{user.firstName}</p>
-          <p>{user.lastName}</p>
-          <p>{user.dateJoined}</p>
-          <p>{user.lastLogin}</p>
+        <main className="flex max-w-7xl mx-auto px-8">
+          <div className="flex-initial w-2/5">
+            <NavigationPanel active={""} />
+          </div>
         </main>
       </div>
     </BaseTemplate>
