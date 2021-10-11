@@ -3,6 +3,7 @@ import { useMeDetailsQuery } from "@/saleor/api";
 import { useRouter } from "next/router";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import React from "react";
+import { AccountPreferences } from "@/components/accountPreferences/AccountPreferences";
 
 const Account: React.VFC = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const Account: React.VFC = () => {
     router.push("/login");
     // todo: resolve issue with auth token not automatically added to the client
     // because application stuck in redirecting ATM
-    // router.push({ pathname: "/login", query: { next: "/account" } });
+    //router.push({ pathname: "/account/login", query: { next: "/account" } });
     return null;
   }
   const user = data.me;

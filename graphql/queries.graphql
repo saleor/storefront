@@ -543,3 +543,35 @@ query PageQuery($slug: String!) {
     content
   }
 }
+
+mutation RequestEmailChange(
+  $channel: String
+  $newEmail: String!
+  $password: String!
+  $redirectUrl: String!
+) {
+  requestEmailChange(
+    channel: $channel
+    newEmail: $newEmail
+    password: $password
+    redirectUrl: $redirectUrl
+  ) {
+    user {
+      email
+    }
+    errors {
+      message
+    }
+  }
+}
+
+mutation PasswordChange($newPassword: String!, $oldPassword: String!) {
+  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {
+    user {
+      email
+    }
+    errors {
+      message
+    }
+  }
+}
