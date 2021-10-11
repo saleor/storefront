@@ -3,7 +3,6 @@ import { useMeDetailsQuery } from "@/saleor/api";
 import { useRouter } from "next/router";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import React from "react";
-import { AccountPreferences } from "@/components/accountPreferences/AccountPreferences";
 
 const Account: React.VFC = () => {
   const router = useRouter();
@@ -28,6 +27,9 @@ const Account: React.VFC = () => {
         <main className="flex max-w-7xl mx-auto px-8">
           <div className="flex-initial w-2/5">
             <NavigationPanel active={""} />
+          </div>
+          <div className=" flex-initial w-3/5 text-center self-center italic">
+            Choose on the right where do you want to go.
           </div>
         </main>
       </div>
