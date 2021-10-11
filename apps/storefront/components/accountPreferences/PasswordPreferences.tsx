@@ -13,6 +13,7 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
     handleSubmit,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm();
 
   const onPasswordPreferenceSubmit = handleSubmit(async (formData) => {
@@ -28,12 +29,15 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
       const errors = result.data?.passwordChange?.errors || [];
       if (errors.length > 0) {
         errors.forEach((e) => setError("error", { message: e.message || "" }));
+        setTimeout(() => {
+          clearErrors();
+        }, 3000);
         return;
       } else if (result.data?.passwordChange?.user) {
         setSuccessMessage("Password changed succesfully.");
         setTimeout(() => {
           setSuccessMessage(null);
-        }, 5000);
+        }, 3000);
       }
     }
   });

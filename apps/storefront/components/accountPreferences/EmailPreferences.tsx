@@ -11,6 +11,7 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
     handleSubmit,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm();
   const onEmailPreferenceSubmit = handleSubmit(async (formData) => {
     const result = await requestEmailChange({
@@ -24,6 +25,9 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
     const errors = result?.data?.requestEmailChange?.errors || [];
     if (errors.length > 0) {
       errors.forEach((e) => setError("error", { message: e.message || "" }));
+      setTimeout(() => {
+        clearErrors();
+      }, 3000);
       return;
     } else if (result.data?.requestEmailChange?.user) {
       setSuccessMessage(
@@ -31,7 +35,7 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
       );
       setTimeout(() => {
         setSuccessMessage(null);
-      }, 5000);
+      }, 3000);
     }
   });
 
