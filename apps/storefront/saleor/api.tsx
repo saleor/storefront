@@ -7350,6 +7350,7 @@ export type OrderFilterInput = {
   channels?: Maybe<Array<Maybe<Scalars['ID']>>>;
   created?: Maybe<DateRangeInput>;
   customer?: Maybe<Scalars['String']>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
   metadata?: Maybe<Array<Maybe<MetadataFilter>>>;
   paymentStatus?: Maybe<Array<Maybe<PaymentChargeStatusEnum>>>;
   search?: Maybe<Scalars['String']>;
@@ -12506,6 +12507,9 @@ export enum WebhookEventTypeEnum {
   CustomerCreated = 'CUSTOMER_CREATED',
   /** A customer account is updated. */
   CustomerUpdated = 'CUSTOMER_UPDATED',
+  DraftOrderCreated = 'DRAFT_ORDER_CREATED',
+  DraftOrderDeleted = 'DRAFT_ORDER_DELETED',
+  DraftOrderUpdated = 'DRAFT_ORDER_UPDATED',
   /** A new fulfillment is created. */
   FulfillmentCreated = 'FULFILLMENT_CREATED',
   /** An invoice is deleted. */
@@ -12563,6 +12567,9 @@ export enum WebhookSampleEventTypeEnum {
   CheckoutUpdated = 'CHECKOUT_UPDATED',
   CustomerCreated = 'CUSTOMER_CREATED',
   CustomerUpdated = 'CUSTOMER_UPDATED',
+  DraftOrderCreated = 'DRAFT_ORDER_CREATED',
+  DraftOrderDeleted = 'DRAFT_ORDER_DELETED',
+  DraftOrderUpdated = 'DRAFT_ORDER_UPDATED',
   FulfillmentCreated = 'FULFILLMENT_CREATED',
   InvoiceDeleted = 'INVOICE_DELETED',
   InvoiceRequested = 'INVOICE_REQUESTED',
@@ -12840,6 +12847,24 @@ export type PageQueryVariables = Exact<{
 
 
 export type PageQuery = { __typename?: 'Query', page?: Maybe<{ __typename?: 'Page', id: string, title: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, slug: string, created: any, content?: Maybe<string> }> };
+
+export type RequestEmailChangeMutationVariables = Exact<{
+  channel?: Maybe<Scalars['String']>;
+  newEmail: Scalars['String'];
+  password: Scalars['String'];
+  redirectUrl: Scalars['String'];
+}>;
+
+
+export type RequestEmailChangeMutation = { __typename?: 'Mutation', requestEmailChange?: Maybe<{ __typename?: 'RequestEmailChange', user?: Maybe<{ __typename?: 'User', email: string }>, errors: Array<{ __typename?: 'AccountError', message?: Maybe<string> }> }> };
+
+export type PasswordChangeMutationVariables = Exact<{
+  newPassword: Scalars['String'];
+  oldPassword: Scalars['String'];
+}>;
+
+
+export type PasswordChangeMutation = { __typename?: 'Mutation', passwordChange?: Maybe<{ __typename?: 'PasswordChange', user?: Maybe<{ __typename?: 'User', email: string }>, errors: Array<{ __typename?: 'AccountError', message?: Maybe<string> }> }> };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -14098,6 +14123,91 @@ export function usePageQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type PageQueryHookResult = ReturnType<typeof usePageQuery>;
 export type PageQueryLazyQueryHookResult = ReturnType<typeof usePageQueryLazyQuery>;
 export type PageQueryQueryResult = Apollo.QueryResult<PageQuery, PageQueryVariables>;
+export const RequestEmailChangeDocument = gql`
+    mutation RequestEmailChange($channel: String, $newEmail: String!, $password: String!, $redirectUrl: String!) {
+  requestEmailChange(
+    channel: $channel
+    newEmail: $newEmail
+    password: $password
+    redirectUrl: $redirectUrl
+  ) {
+    user {
+      email
+    }
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type RequestEmailChangeMutationFn = Apollo.MutationFunction<RequestEmailChangeMutation, RequestEmailChangeMutationVariables>;
+
+/**
+ * __useRequestEmailChangeMutation__
+ *
+ * To run a mutation, you first call `useRequestEmailChangeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestEmailChangeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestEmailChangeMutation, { data, loading, error }] = useRequestEmailChangeMutation({
+ *   variables: {
+ *      channel: // value for 'channel'
+ *      newEmail: // value for 'newEmail'
+ *      password: // value for 'password'
+ *      redirectUrl: // value for 'redirectUrl'
+ *   },
+ * });
+ */
+export function useRequestEmailChangeMutation(baseOptions?: Apollo.MutationHookOptions<RequestEmailChangeMutation, RequestEmailChangeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RequestEmailChangeMutation, RequestEmailChangeMutationVariables>(RequestEmailChangeDocument, options);
+      }
+export type RequestEmailChangeMutationHookResult = ReturnType<typeof useRequestEmailChangeMutation>;
+export type RequestEmailChangeMutationResult = Apollo.MutationResult<RequestEmailChangeMutation>;
+export type RequestEmailChangeMutationOptions = Apollo.BaseMutationOptions<RequestEmailChangeMutation, RequestEmailChangeMutationVariables>;
+export const PasswordChangeDocument = gql`
+    mutation PasswordChange($newPassword: String!, $oldPassword: String!) {
+  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {
+    user {
+      email
+    }
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type PasswordChangeMutationFn = Apollo.MutationFunction<PasswordChangeMutation, PasswordChangeMutationVariables>;
+
+/**
+ * __usePasswordChangeMutation__
+ *
+ * To run a mutation, you first call `usePasswordChangeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePasswordChangeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [passwordChangeMutation, { data, loading, error }] = usePasswordChangeMutation({
+ *   variables: {
+ *      newPassword: // value for 'newPassword'
+ *      oldPassword: // value for 'oldPassword'
+ *   },
+ * });
+ */
+export function usePasswordChangeMutation(baseOptions?: Apollo.MutationHookOptions<PasswordChangeMutation, PasswordChangeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PasswordChangeMutation, PasswordChangeMutationVariables>(PasswordChangeDocument, options);
+      }
+export type PasswordChangeMutationHookResult = ReturnType<typeof usePasswordChangeMutation>;
+export type PasswordChangeMutationResult = Apollo.MutationResult<PasswordChangeMutation>;
+export type PasswordChangeMutationOptions = Apollo.BaseMutationOptions<PasswordChangeMutation, PasswordChangeMutationVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
