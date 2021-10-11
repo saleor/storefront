@@ -543,3 +543,15 @@ query PageQuery($slug: String!) {
     content
   }
 }
+
+query Orders {
+  me {
+    orders(first: 10) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+}

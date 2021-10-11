@@ -110,6 +110,7 @@ export type AccountError = {
 
 /** An enumeration. */
 export enum AccountErrorCode {
+  AccountNotConfirmed = 'ACCOUNT_NOT_CONFIRMED',
   ActivateOwnAccount = 'ACTIVATE_OWN_ACCOUNT',
   ActivateSuperuserAccount = 'ACTIVATE_SUPERUSER_ACCOUNT',
   ChannelInactive = 'CHANNEL_INACTIVE',
@@ -7350,6 +7351,7 @@ export type OrderFilterInput = {
   channels?: Maybe<Array<Maybe<Scalars['ID']>>>;
   created?: Maybe<DateRangeInput>;
   customer?: Maybe<Scalars['String']>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
   metadata?: Maybe<Array<Maybe<MetadataFilter>>>;
   paymentStatus?: Maybe<Array<Maybe<PaymentChargeStatusEnum>>>;
   search?: Maybe<Scalars['String']>;
@@ -12506,6 +12508,9 @@ export enum WebhookEventTypeEnum {
   CustomerCreated = 'CUSTOMER_CREATED',
   /** A customer account is updated. */
   CustomerUpdated = 'CUSTOMER_UPDATED',
+  DraftOrderCreated = 'DRAFT_ORDER_CREATED',
+  DraftOrderDeleted = 'DRAFT_ORDER_DELETED',
+  DraftOrderUpdated = 'DRAFT_ORDER_UPDATED',
   /** A new fulfillment is created. */
   FulfillmentCreated = 'FULFILLMENT_CREATED',
   /** An invoice is deleted. */
@@ -12563,6 +12568,9 @@ export enum WebhookSampleEventTypeEnum {
   CheckoutUpdated = 'CHECKOUT_UPDATED',
   CustomerCreated = 'CUSTOMER_CREATED',
   CustomerUpdated = 'CUSTOMER_UPDATED',
+  DraftOrderCreated = 'DRAFT_ORDER_CREATED',
+  DraftOrderDeleted = 'DRAFT_ORDER_DELETED',
+  DraftOrderUpdated = 'DRAFT_ORDER_UPDATED',
   FulfillmentCreated = 'FULFILLMENT_CREATED',
   InvoiceDeleted = 'INVOICE_DELETED',
   InvoiceRequested = 'INVOICE_REQUESTED',
@@ -12841,6 +12849,11 @@ export type PageQueryVariables = Exact<{
 
 export type PageQuery = { __typename?: 'Query', page?: Maybe<{ __typename?: 'Page', id: string, title: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, slug: string, created: any, content?: Maybe<string> }> };
 
+export type OrdersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', edges: Array<{ __typename?: 'OrderCountableEdge', node: { __typename?: 'Order', id: string } }> }> }> };
+
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
   phone
@@ -12973,13 +12986,13 @@ export const CategoryBasicFragmentDoc = gql`
 }
     `;
 
-export const CollectionBasicFragmentDoc = gql`
-fragment CollectionBasicFragment on Collection {
-id
-name
-slug
-}
-`;
+    export const CollectionBasicFragmentDoc = gql`
+    fragment CollectionBasicFragment on Collection {
+    id
+    name
+    slug
+    }
+    `;
 export const ProductMediaFragmentDoc = gql`
     fragment ProductMediaFragment on ProductMedia {
   url
@@ -13079,18 +13092,18 @@ ${ImageFragmentDoc}`;
 
 
 export const CollectionDetailsFragmentDoc = gql`
-    fragment CollectionDetailsFragment on Collection {
-  id
-  ...CollectionBasicFragment
-  seoTitle
-  seoDescription
-  description
-  backgroundImage {
-    ...ImageFragment
-  }
+fragment CollectionDetailsFragment on Collection {
+id
+...CollectionBasicFragment
+seoTitle
+seoDescription
+description
+backgroundImage {
+...ImageFragment
 }
-    ${CollectionBasicFragmentDoc}
-${ImageFragmentDoc}`;   
+}
+${CollectionBasicFragmentDoc}
+${ImageFragmentDoc}`;  
 
 export const MenuItemFragmentDoc = gql`
     fragment MenuItemFragment on MenuItem {
@@ -14098,6 +14111,46 @@ export function usePageQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type PageQueryHookResult = ReturnType<typeof usePageQuery>;
 export type PageQueryLazyQueryHookResult = ReturnType<typeof usePageQueryLazyQuery>;
 export type PageQueryQueryResult = Apollo.QueryResult<PageQuery, PageQueryVariables>;
+export const OrdersDocument = gql`
+    query Orders {
+  me {
+    orders(first: 10) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrdersQuery__
+ *
+ * To run a query within a React component, call `useOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrdersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOrdersQuery(baseOptions?: Apollo.QueryHookOptions<OrdersQuery, OrdersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrdersQuery, OrdersQueryVariables>(OrdersDocument, options);
+      }
+export function useOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrdersQuery, OrdersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrdersQuery, OrdersQueryVariables>(OrdersDocument, options);
+        }
+export type OrdersQueryHookResult = ReturnType<typeof useOrdersQuery>;
+export type OrdersLazyQueryHookResult = ReturnType<typeof useOrdersLazyQuery>;
+export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
