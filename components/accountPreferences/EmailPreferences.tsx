@@ -9,9 +9,7 @@ interface EmailChangeFormData {
 
 export const EmailPreferences: React.VFC<any> = ({}) => {
   const [requestEmailChange] = useRequestEmailChangeMutation({});
-  const [successMessage, setSuccessMessage] = React.useState<String | null>(
-    null
-  );
+  const [successMessage, setSuccessMessage] = React.useState<String>();
   const {
     register,
     handleSubmit,
@@ -24,7 +22,7 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
       variables: {
         newEmail: formData.newEmail,
         password: formData.password,
-        redirectUrl: `https://localhost:3001/account`,
+        redirectUrl: `https://${window.location.host}/account/preferences`,
       },
     });
     const errors = result?.data?.requestEmailChange?.errors || [];
@@ -40,7 +38,7 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
         "Email changed successfully. Check your mailbox for confirmation email."
       );
       setTimeout(() => {
-        setSuccessMessage(null);
+        setSuccessMessage("");
       }, 3000);
     }
   });
