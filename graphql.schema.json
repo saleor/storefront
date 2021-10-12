@@ -400,6 +400,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ACCOUNT_NOT_CONFIRMED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ACTIVATE_OWN_ACCOUNT",
             "description": null,
             "isDeprecated": false,
