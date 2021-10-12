@@ -1,6 +1,12 @@
 import React from "react";
 import { useRequestEmailChangeMutation } from "@/saleor/api";
 import { useForm } from "react-hook-form";
+interface EmailChangeFormData {
+  newEmail: string;
+  password: string;
+  redirectUrl: string;
+}
+
 export const EmailPreferences: React.VFC<any> = ({}) => {
   const [requestEmailChange] = useRequestEmailChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<String | null>(
@@ -11,27 +17,27 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
     handleSubmit,
     formState: { errors },
     setError,
-    clearErrors,
-  } = useForm();
+  } = useForm<EmailChangeFormData>();
+
   const onEmailPreferenceSubmit = handleSubmit(async (formData) => {
     const result = await requestEmailChange({
       variables: {
-        channel: "default-channel",
-        newEmail: formData.email,
+        newEmail: formData.newEmail,
         password: formData.password,
         redirectUrl: `https://localhost:3001/account`,
       },
     });
     const errors = result?.data?.requestEmailChange?.errors || [];
     if (errors.length > 0) {
-      errors.forEach((e) => setError("error", { message: e.message || "" }));
-      setTimeout(() => {
-        clearErrors();
-      }, 3000);
+      errors.forEach((e) =>
+        setError(e.field as keyof EmailChangeFormData, {
+          message: e.message || "",
+        })
+      );
       return;
     } else if (result.data?.requestEmailChange?.user) {
       setSuccessMessage(
-        "Email changed succesfully. Check your mailbox for confirmation email."
+        "Email changed successfully. Check your mailbox for confirmation email."
       );
       setTimeout(() => {
         setSuccessMessage(null);
@@ -52,11 +58,16 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="email"
               placeholder="Email"
-              {...register("email", {
+              {...register("newEmail", {
                 required: true,
                 pattern: /^\S+@\S+$/i,
               })}
             />
+            {!!errors.newEmail && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.newEmail.message}
+              </p>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
@@ -72,16 +83,21 @@ export const EmailPreferences: React.VFC<any> = ({}) => {
                 required: true,
               })}
             />
-            <p className="mt-2 text-sm text-red-600">{errors.error?.message}</p>
+            {!!errors.password && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.password.message}
+              </p>
+            )}
           </div>
         </div>
-        {successMessage !== null ? (
+        {!!successMessage && (
           <p className="mt-2 text-sm text-green-600">{successMessage}</p>
-        ) : null}
+        )}
         <div>
           <button
             className="mt-2 w-40 bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
             onClick={() => onEmailPreferenceSubmit()}
+            type="submit"
           >
             Submit changes
           </button>

@@ -1,6 +1,11 @@
 import { usePasswordChangeMutation } from "@/saleor/api";
 import React from "react";
 import { useForm } from "react-hook-form";
+interface PasswordChangeFormData {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordRepeat: string;
+}
 
 export const PasswordPreferences: React.VFC<any> = ({}) => {
   const [passwordChangeMutation] = usePasswordChangeMutation({});
@@ -13,12 +18,11 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
     handleSubmit,
     formState: { errors },
     setError,
-    clearErrors,
-  } = useForm();
+  } = useForm<PasswordChangeFormData>();
 
   const onPasswordPreferenceSubmit = handleSubmit(async (formData) => {
     if (formData.newPassword !== formData.newPasswordRepeat) {
-      setError("error", { message: "Passwords have to match." });
+      setError("newPasswordRepeat", { message: "Passwords have to match." });
     } else {
       const result = await passwordChangeMutation({
         variables: {
@@ -28,13 +32,14 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
       });
       const errors = result.data?.passwordChange?.errors || [];
       if (errors.length > 0) {
-        errors.forEach((e) => setError("error", { message: e.message || "" }));
-        setTimeout(() => {
-          clearErrors();
-        }, 3000);
+        errors.forEach((e) =>
+          setError(e.field as keyof PasswordChangeFormData, {
+            message: e.message || "",
+          })
+        );
         return;
       } else if (result.data?.passwordChange?.user) {
-        setSuccessMessage("Password changed succesfully.");
+        setSuccessMessage("Password changed successfully.");
         setTimeout(() => {
           setSuccessMessage(null);
         }, 3000);
@@ -58,6 +63,11 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
                 required: true,
               })}
             />
+            {!!errors.oldPassword && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.oldPassword.message}
+              </p>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
@@ -73,6 +83,11 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
                 required: true,
               })}
             />
+            {!!errors.newPassword && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.newPassword.message}
+              </p>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
@@ -88,16 +103,21 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
                 required: true,
               })}
             />
-            <p className="mt-2 text-sm text-red-600">{errors.error?.message}</p>
+            {!!errors.newPasswordRepeat && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.newPasswordRepeat.message}
+              </p>
+            )}
           </div>
         </div>
-        {successMessage !== null ? (
+        {!!successMessage && (
           <p className="mt-2 text-sm text-green-600">{successMessage}</p>
-        ) : null}
+        )}
         <div>
           <button
             className="mt-2 w-40 bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
             onClick={() => onPasswordPreferenceSubmit()}
+            type="submit"
           >
             Submit changes
           </button>

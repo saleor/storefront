@@ -110,6 +110,7 @@ export type AccountError = {
 
 /** An enumeration. */
 export enum AccountErrorCode {
+  AccountNotConfirmed = 'ACCOUNT_NOT_CONFIRMED',
   ActivateOwnAccount = 'ACTIVATE_OWN_ACCOUNT',
   ActivateSuperuserAccount = 'ACTIVATE_SUPERUSER_ACCOUNT',
   ChannelInactive = 'CHANNEL_INACTIVE',
@@ -12751,20 +12752,8 @@ export type CategoryBySlugQuery = { __typename?: 'Query', category?: Maybe<{ __t
 
 export type CategoryPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
+
 export type CategoryPathsQuery = { __typename?: 'Query', categories?: Maybe<{ __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', cursor: string, node: { __typename?: 'Category', id: string, slug: string } }> }> };
-
-export type CollectionDetailsFragment = { __typename?: 'Collection', id: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, description?: Maybe<string>, name: string, slug: string, backgroundImage?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }> };
-
-export type CollectionBySlugQueryVariables = Exact<{
-  slug: Scalars['String'];
-}>;
-
-export type CollectionBySlugQuery = { __typename?: 'Query', collection?: Maybe<{ __typename?: 'Collection', id: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, description?: Maybe<string>, name: string, slug: string, backgroundImage?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }> }> };
-
-export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
-
-export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', cursor: string, node: { __typename?: 'Collection', id: string, slug: string } }> }> };
-
 
 export type CheckoutAddPromoCodeMutationVariables = Exact<{
   token: Scalars['UUID'];
@@ -12849,14 +12838,13 @@ export type PageQueryVariables = Exact<{
 export type PageQuery = { __typename?: 'Query', page?: Maybe<{ __typename?: 'Page', id: string, title: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, slug: string, created: any, content?: Maybe<string> }> };
 
 export type RequestEmailChangeMutationVariables = Exact<{
-  channel?: Maybe<Scalars['String']>;
   newEmail: Scalars['String'];
   password: Scalars['String'];
   redirectUrl: Scalars['String'];
 }>;
 
 
-export type RequestEmailChangeMutation = { __typename?: 'Mutation', requestEmailChange?: Maybe<{ __typename?: 'RequestEmailChange', user?: Maybe<{ __typename?: 'User', email: string }>, errors: Array<{ __typename?: 'AccountError', message?: Maybe<string> }> }> };
+export type RequestEmailChangeMutation = { __typename?: 'Mutation', requestEmailChange?: Maybe<{ __typename?: 'RequestEmailChange', user?: Maybe<{ __typename?: 'User', email: string }>, errors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }> }> };
 
 export type PasswordChangeMutationVariables = Exact<{
   newPassword: Scalars['String'];
@@ -12864,7 +12852,23 @@ export type PasswordChangeMutationVariables = Exact<{
 }>;
 
 
-export type PasswordChangeMutation = { __typename?: 'Mutation', passwordChange?: Maybe<{ __typename?: 'PasswordChange', user?: Maybe<{ __typename?: 'User', email: string }>, errors: Array<{ __typename?: 'AccountError', message?: Maybe<string> }> }> };
+export type PasswordChangeMutation = { __typename?: 'Mutation', passwordChange?: Maybe<{ __typename?: 'PasswordChange', user?: Maybe<{ __typename?: 'User', email: string }>, errors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }> }> };
+
+export type CollectionBasicFragment = { __typename?: 'Collection', id: string, name: string, slug: string };
+
+export type CollectionDetailsFragment = { __typename?: 'Collection', id: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, description?: Maybe<string>, name: string, slug: string, backgroundImage?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }> };
+
+export type CollectionBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type CollectionBySlugQuery = { __typename?: 'Query', collection?: Maybe<{ __typename?: 'Collection', id: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, description?: Maybe<string>, name: string, slug: string, backgroundImage?: Maybe<{ __typename?: 'Image', url: string, alt?: Maybe<string> }> }> };
+
+export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> }> };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -12997,14 +13001,6 @@ export const CategoryBasicFragmentDoc = gql`
   slug
 }
     `;
-
-export const CollectionBasicFragmentDoc = gql`
-fragment CollectionBasicFragment on Collection {
-id
-name
-slug
-}
-`;
 export const ProductMediaFragmentDoc = gql`
     fragment ProductMediaFragment on ProductMedia {
   url
@@ -13101,22 +13097,6 @@ export const CategoryDetailsFragmentDoc = gql`
 }
     ${CategoryBasicFragmentDoc}
 ${ImageFragmentDoc}`;
-
-
-export const CollectionDetailsFragmentDoc = gql`
-    fragment CollectionDetailsFragment on Collection {
-  id
-  ...CollectionBasicFragment
-  seoTitle
-  seoDescription
-  description
-  backgroundImage {
-    ...ImageFragment
-  }
-}
-    ${CollectionBasicFragmentDoc}
-${ImageFragmentDoc}`;   
-
 export const MenuItemFragmentDoc = gql`
     fragment MenuItemFragment on MenuItem {
   id
@@ -13136,6 +13116,26 @@ export const MenuItemFragmentDoc = gql`
   }
 }
     `;
+export const CollectionBasicFragmentDoc = gql`
+    fragment CollectionBasicFragment on Collection {
+  id
+  name
+  slug
+}
+    `;
+export const CollectionDetailsFragmentDoc = gql`
+    fragment CollectionDetailsFragment on Collection {
+  id
+  ...CollectionBasicFragment
+  seoTitle
+  seoDescription
+  description
+  backgroundImage {
+    ...ImageFragment
+  }
+}
+    ${CollectionBasicFragmentDoc}
+${ImageFragmentDoc}`;
 export const CheckoutPaymentCreateDocument = gql`
     mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
   checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
@@ -13601,57 +13601,6 @@ export function useCategoryPathsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type CategoryPathsQueryHookResult = ReturnType<typeof useCategoryPathsQuery>;
 export type CategoryPathsLazyQueryHookResult = ReturnType<typeof useCategoryPathsLazyQuery>;
 export type CategoryPathsQueryResult = Apollo.QueryResult<CategoryPathsQuery, CategoryPathsQueryVariables>;
-
-export const CollectionBySlugDocument = gql`
-    query CollectionBySlug($slug: String!, ) {
-  collection(slug: $slug, channel: "default-channel") {
-    ...CollectionDetailsFragment
-  }
-}
-    ${CollectionDetailsFragmentDoc}`;
-/**
- * __useCollectionBySlugQuery__
- *
- * To run a query within a React component, call `useCollectionBySlugQuery` and pass it any options that fit your needs.
- * When your component renders, `useCollectionBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCollectionBySlugQuery({
- *   variables: {
- *      slug: // value for 'slug'
- *   },
- * });
- */
-
- export function useCollectionBySlugQuery(baseOptions: Apollo.QueryHookOptions<CollectionBySlugQuery, CollectionBySlugQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<CollectionBySlugQuery, CollectionBySlugQueryVariables>(CollectionBySlugDocument, options);
-}
-export function useCollectionBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionBySlugQuery, CollectionBySlugQueryVariables>) {
-    const options = {...defaultOptions, ...baseOptions}
-    return Apollo.useLazyQuery<CollectionBySlugQuery, CollectionBySlugQueryVariables>(CollectionBySlugDocument, options);
-}
-export type CollectionBySlugQueryHookResult = ReturnType<typeof useCollectionBySlugQuery>;
-export type CollectionBySlugLazyQueryHookResult = ReturnType<typeof useCollectionBySlugLazyQuery>;
-export type CollectionBySlugQueryResult = Apollo.QueryResult<CollectionBySlugQuery, CollectionBySlugQueryVariables>;
-
-export const CollectionPathsDocument = gql`
-    query CollectionPaths {
-  collections(first: 41, channel: "default-channel") {
-    edges {
-      cursor
-      node {
-        id
-        slug
-      }
-    }
-  }
-}
-`;
-
 export const CheckoutAddPromoCodeDocument = gql`
     mutation CheckoutAddPromoCode($token: UUID!, $promoCode: String!) {
   checkoutAddPromoCode(token: $token, promoCode: $promoCode) {
@@ -14124,9 +14073,9 @@ export type PageQueryHookResult = ReturnType<typeof usePageQuery>;
 export type PageQueryLazyQueryHookResult = ReturnType<typeof usePageQueryLazyQuery>;
 export type PageQueryQueryResult = Apollo.QueryResult<PageQuery, PageQueryVariables>;
 export const RequestEmailChangeDocument = gql`
-    mutation RequestEmailChange($channel: String, $newEmail: String!, $password: String!, $redirectUrl: String!) {
+    mutation RequestEmailChange($newEmail: String!, $password: String!, $redirectUrl: String!) {
   requestEmailChange(
-    channel: $channel
+    channel: "default-channel"
     newEmail: $newEmail
     password: $password
     redirectUrl: $redirectUrl
@@ -14135,7 +14084,9 @@ export const RequestEmailChangeDocument = gql`
       email
     }
     errors {
+      field
       message
+      code
     }
   }
 }
@@ -14155,7 +14106,6 @@ export type RequestEmailChangeMutationFn = Apollo.MutationFunction<RequestEmailC
  * @example
  * const [requestEmailChangeMutation, { data, loading, error }] = useRequestEmailChangeMutation({
  *   variables: {
- *      channel: // value for 'channel'
  *      newEmail: // value for 'newEmail'
  *      password: // value for 'password'
  *      redirectUrl: // value for 'redirectUrl'
@@ -14176,7 +14126,9 @@ export const PasswordChangeDocument = gql`
       email
     }
     errors {
+      field
       message
+      code
     }
   }
 }
@@ -14208,6 +14160,87 @@ export function usePasswordChangeMutation(baseOptions?: Apollo.MutationHookOptio
 export type PasswordChangeMutationHookResult = ReturnType<typeof usePasswordChangeMutation>;
 export type PasswordChangeMutationResult = Apollo.MutationResult<PasswordChangeMutation>;
 export type PasswordChangeMutationOptions = Apollo.BaseMutationOptions<PasswordChangeMutation, PasswordChangeMutationVariables>;
+export const CollectionBySlugDocument = gql`
+    query CollectionBySlug($slug: String!) {
+  collection(slug: $slug, channel: "default-channel") {
+    id
+    ...CollectionDetailsFragment
+    seoTitle
+    seoDescription
+    description
+    backgroundImage {
+      ...ImageFragment
+    }
+  }
+}
+    ${CollectionDetailsFragmentDoc}
+${ImageFragmentDoc}`;
+
+/**
+ * __useCollectionBySlugQuery__
+ *
+ * To run a query within a React component, call `useCollectionBySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionBySlugQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useCollectionBySlugQuery(baseOptions: Apollo.QueryHookOptions<CollectionBySlugQuery, CollectionBySlugQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CollectionBySlugQuery, CollectionBySlugQueryVariables>(CollectionBySlugDocument, options);
+      }
+export function useCollectionBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionBySlugQuery, CollectionBySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CollectionBySlugQuery, CollectionBySlugQueryVariables>(CollectionBySlugDocument, options);
+        }
+export type CollectionBySlugQueryHookResult = ReturnType<typeof useCollectionBySlugQuery>;
+export type CollectionBySlugLazyQueryHookResult = ReturnType<typeof useCollectionBySlugLazyQuery>;
+export type CollectionBySlugQueryResult = Apollo.QueryResult<CollectionBySlugQuery, CollectionBySlugQueryVariables>;
+export const CollectionPathsDocument = gql`
+    query CollectionPaths {
+  collections(channel: "default-channel", first: 20) {
+    edges {
+      node {
+        slug
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCollectionPathsQuery__
+ *
+ * To run a query within a React component, call `useCollectionPathsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionPathsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionPathsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCollectionPathsQuery(baseOptions?: Apollo.QueryHookOptions<CollectionPathsQuery, CollectionPathsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
+      }
+export function useCollectionPathsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionPathsQuery, CollectionPathsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
+        }
+export type CollectionPathsQueryHookResult = ReturnType<typeof useCollectionPathsQuery>;
+export type CollectionPathsLazyQueryHookResult = ReturnType<typeof useCollectionPathsLazyQuery>;
+export type CollectionPathsQueryResult = Apollo.QueryResult<CollectionPathsQuery, CollectionPathsQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
