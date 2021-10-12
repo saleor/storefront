@@ -9,9 +9,7 @@ interface PasswordChangeFormData {
 
 export const PasswordPreferences: React.VFC<any> = ({}) => {
   const [passwordChangeMutation] = usePasswordChangeMutation({});
-  const [successMessage, setSuccessMessage] = React.useState<String | null>(
-    null
-  );
+  const [successMessage, setSuccessMessage] = React.useState<String>("");
 
   const {
     register,
@@ -41,7 +39,7 @@ export const PasswordPreferences: React.VFC<any> = ({}) => {
       } else if (result.data?.passwordChange?.user) {
         setSuccessMessage("Password changed successfully.");
         setTimeout(() => {
-          setSuccessMessage(null);
+          setSuccessMessage("");
         }, 3000);
       }
     }
