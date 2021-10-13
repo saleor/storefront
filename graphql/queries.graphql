@@ -544,12 +544,28 @@ query PageQuery($slug: String!) {
   }
 }
 
+fragment OrderDetailsFragment on Order {
+  id
+  created
+  number
+  status
+  total {
+    currency
+    gross {
+      amount
+    }
+    net {
+      amount
+    }
+  }
+}
+
 query Orders {
   me {
     orders(first: 10) {
       edges {
         node {
-          id
+          ...OrderDetailsFragment
         }
       }
     }

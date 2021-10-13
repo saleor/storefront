@@ -1,9 +1,15 @@
 import BaseTemplate from "@/components/BaseTemplate";
 import { useOrdersQuery } from "@/saleor/api";
-//import { NavigationPanel } from "@/components/NavigationPanel";
+import { useAuthState } from "@saleor/sdk";
+import OrdersTable from "@/components/OrdersTable";
 
 const OrdersPage: React.VFC = () => {
-  const { data: ordersCollection, loading, error } = useOrdersQuery();
+  const { authenticated } = useAuthState();
+  const {
+    data: ordersCollection,
+    loading,
+    error,
+  } = useOrdersQuery({ skip: !authenticated });
 
   if (loading) {
     return <BaseTemplate isLoading={true} />;
@@ -11,7 +17,9 @@ const OrdersPage: React.VFC = () => {
 
   if (error) return <p>Error {error.message}</p>;
 
-  const orders = ordersCollection?.me?.orders;
+  const orders = ordersCollection?.me?.orders?.edges.map((order) => {
+    return order.node;
+  });
 
   return (
     <BaseTemplate>
@@ -25,8 +33,7 @@ const OrdersPage: React.VFC = () => {
             {/* <NavigationPanel active={"Orders"} /> */}
           </div>
           <div className="border-r flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
-            <div>Orders Component goes here</div>
-            {console.log(orders)}
+            <OrdersTable orders={orders} />
           </div>
         </main>
       </div>
