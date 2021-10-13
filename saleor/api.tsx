@@ -12839,10 +12839,13 @@ export type PageQuery = { __typename?: 'Query', page?: Maybe<{ __typename?: 'Pag
 
 export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } };
 
-export type OrdersQueryVariables = Exact<{ [key: string]: never; }>;
+export type OrdersQueryVariables = Exact<{
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+}>;
 
 
-export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', edges: Array<{ __typename?: 'OrderCountableEdge', node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } } }> }> }> };
+export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -14044,14 +14047,22 @@ export type PageQueryHookResult = ReturnType<typeof usePageQuery>;
 export type PageQueryLazyQueryHookResult = ReturnType<typeof usePageQueryLazyQuery>;
 export type PageQueryQueryResult = Apollo.QueryResult<PageQuery, PageQueryVariables>;
 export const OrdersDocument = gql`
-    query Orders {
+    query Orders($before: String, $after: String) {
   me {
-    orders(first: 10) {
+    orders(first: 1, before: $before, after: $after) {
       edges {
+        cursor
         node {
           ...OrderDetailsFragment
         }
       }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
     }
   }
 }
@@ -14069,6 +14080,8 @@ export const OrdersDocument = gql`
  * @example
  * const { data, loading, error } = useOrdersQuery({
  *   variables: {
+ *      before: // value for 'before'
+ *      after: // value for 'after'
  *   },
  * });
  */

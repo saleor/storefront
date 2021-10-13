@@ -2,6 +2,7 @@ import BaseTemplate from "@/components/BaseTemplate";
 import { useOrdersQuery } from "@/saleor/api";
 import { useAuthState } from "@saleor/sdk";
 import OrdersTable from "@/components/OrdersTable";
+import { Pagination } from "@/components/Pagination";
 
 const OrdersPage: React.VFC = () => {
   const { authenticated } = useAuthState();
@@ -9,17 +10,29 @@ const OrdersPage: React.VFC = () => {
     data: ordersCollection,
     loading,
     error,
-  } = useOrdersQuery({ skip: !authenticated });
+    fetchMore,
+  } = useOrdersQuery({
+    skip: !authenticated,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
 
   if (loading) {
     return <BaseTemplate isLoading={true} />;
   }
-
   if (error) return <p>Error {error.message}</p>;
 
   const orders = ordersCollection?.me?.orders?.edges.map((order) => {
     return order.node;
   });
+
+  const onLoadMore = async () => {
+    await fetchMore({
+      variables: {
+        after: ordersCollection?.me?.orders?.pageInfo.endCursor,
+      },
+    });
+  };
 
   return (
     <BaseTemplate>
@@ -32,8 +45,14 @@ const OrdersPage: React.VFC = () => {
             Navigation Panel
             {/* <NavigationPanel active={"Orders"} /> */}
           </div>
-          <div className="border-r flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
+          <div className="border-r flex flex-auto flex-col px-4 pt-4 space-y-4 pb-4">
             <OrdersTable orders={orders} />
+            <Pagination
+              onLoadMore={onLoadMore}
+              pageInfo={ordersCollection?.me?.orders?.pageInfo}
+              itemCount={ordersCollection?.me?.orders?.edges.length}
+              totalCount={ordersCollection?.me?.orders?.totalCount || undefined}
+            />
           </div>
         </main>
       </div>

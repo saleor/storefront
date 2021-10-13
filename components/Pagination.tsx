@@ -12,7 +12,7 @@ export const Pagination: React.VFC<PaginationProps> = ({
   itemCount,
   totalCount,
 }) => {
-  if (!pageInfo || !pageInfo?.hasNextPage) {
+  if (!pageInfo) {
     return <></>;
   }
 
