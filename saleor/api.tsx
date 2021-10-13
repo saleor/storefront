@@ -12867,7 +12867,6 @@ export type CollectionBySlugQuery = { __typename?: 'Query', collection?: Maybe<{
 
 export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
-
 export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> }> };
 
 export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } };
