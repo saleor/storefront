@@ -121,7 +121,7 @@ export const Navbar: React.VFC = ({}) => {
                           className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
                           role="menuitem"
                         >
-                          Account settings
+                          Account preferences
                         </a>
                       </Link>
                     </div>
