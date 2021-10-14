@@ -543,3 +543,78 @@ query PageQuery($slug: String!) {
     content
   }
 }
+
+mutation RequestEmailChange(
+  $newEmail: String!
+  $password: String!
+  $redirectUrl: String!
+) {
+  requestEmailChange(
+    channel: "default-channel"
+    newEmail: $newEmail
+    password: $password
+    redirectUrl: $redirectUrl
+  ) {
+    user {
+      email
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation PasswordChange($newPassword: String!, $oldPassword: String!) {
+  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {
+    user {
+      email
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+fragment CollectionBasicFragment on Collection {
+  id
+  name
+  slug
+}
+
+fragment CollectionDetailsFragment on Collection {
+  id
+  ...CollectionBasicFragment
+  seoTitle
+  seoDescription
+  description
+  backgroundImage {
+    ...ImageFragment
+  }
+}
+
+query CollectionBySlug($slug: String!) {
+  collection(slug: $slug, channel: "default-channel") {
+    id
+    ...CollectionDetailsFragment
+    seoTitle
+    seoDescription
+    description
+    backgroundImage {
+      ...ImageFragment
+    }
+  }
+}
+
+query CollectionPaths {
+  collections(channel: "default-channel", first: 20) {
+    edges {
+      node {
+        slug
+      }
+    }
+  }
+}

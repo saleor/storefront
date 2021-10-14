@@ -400,6 +400,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ACCOUNT_NOT_CONFIRMED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ACTIVATE_OWN_ACCOUNT",
             "description": null,
             "isDeprecated": false,
@@ -45313,6 +45319,22 @@
             "deprecationReason": null
           },
           {
+            "name": "ids",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "metadata",
             "description": null,
             "type": {
@@ -78485,6 +78507,24 @@
             "deprecationReason": null
           },
           {
+            "name": "DRAFT_ORDER_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DRAFT_ORDER_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DRAFT_ORDER_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "FULFILLMENT_CREATED",
             "description": "A new fulfillment is created.",
             "isDeprecated": false,
@@ -78689,6 +78729,24 @@
           },
           {
             "name": "CUSTOMER_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DRAFT_ORDER_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DRAFT_ORDER_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DRAFT_ORDER_UPDATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
