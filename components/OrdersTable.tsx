@@ -1,5 +1,4 @@
 import { OrderDetailsFragment } from "@/saleor/api";
-import { Button } from "@/components/Button";
 
 interface OrdersTableProps {
   orders: OrderDetailsFragment[] | undefined;

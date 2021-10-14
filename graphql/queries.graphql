@@ -562,7 +562,7 @@ fragment OrderDetailsFragment on Order {
 
 query Orders($before: String, $after: String) {
   me {
-    orders(first: 1, before: $before, after: $after) {
+    orders(first: 10, before: $before, after: $after) {
       edges {
         cursor
         node {
