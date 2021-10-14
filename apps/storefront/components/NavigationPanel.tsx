@@ -10,7 +10,7 @@ export const NavigationPanel: React.VFC<NavigationPanelProps> = ({
 }) => {
   return (
     <div className="group w-4/5 cursor-default rounded-md bg-white">
-      <Link href="/account/accountPreferences">
+      <Link href="/account/preferences">
         <a className="text-black">
           <span
             className={clsx(
