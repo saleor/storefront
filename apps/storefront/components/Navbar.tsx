@@ -115,7 +115,7 @@ export const Navbar: React.VFC = ({}) => {
                       </p>
                     </div>
                     <div className="py-1">
-                      <Link href="/account">
+                      <Link href="/account/preferences">
                         <a
                           tabIndex={0}
                           className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
