@@ -13,9 +13,11 @@ const AccountBaseTemplate: React.VFC<AccountBaseTemplateProps> = ({
 }) => {
   const router = useRouter();
   const { data, loading } = useMeDetailsQuery();
+
   if (loading) {
     return <BaseTemplate isLoading={true} />;
   }
+
   if (!data?.me?.id) {
     router.push("/account/login");
     // todo: resolve issue with auth token not automatically added to the client
@@ -26,6 +28,7 @@ const AccountBaseTemplate: React.VFC<AccountBaseTemplateProps> = ({
     // });
     return null;
   }
+
   return (
     <BaseTemplate>
       <div className="py-10">
@@ -34,7 +37,7 @@ const AccountBaseTemplate: React.VFC<AccountBaseTemplateProps> = ({
         </header>
         <main className="flex max-w-7xl mx-auto px-8">
           <div className="flex-initial w-2/5">
-            <NavigationPanel active={"AccountPreferences"} />
+            <NavigationPanel />
           </div>
           <div className="border-r flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
             {children}

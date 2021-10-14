@@ -12837,15 +12837,6 @@ export type PageQueryVariables = Exact<{
 
 export type PageQuery = { __typename?: 'Query', page?: Maybe<{ __typename?: 'Page', id: string, title: string, seoTitle?: Maybe<string>, seoDescription?: Maybe<string>, slug: string, created: any, content?: Maybe<string> }> };
 
-export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } };
-
-export type OrdersQueryVariables = Exact<{
-  before?: Maybe<Scalars['String']>;
-  after?: Maybe<Scalars['String']>;
-}>;
-
-
-export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
 export type RequestEmailChangeMutationVariables = Exact<{
   newEmail: Scalars['String'];
   password: Scalars['String'];
@@ -12878,6 +12869,16 @@ export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> }> };
+
+export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } };
+
+export type OrdersQueryVariables = Exact<{
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -13125,23 +13126,6 @@ export const MenuItemFragmentDoc = gql`
   }
 }
     `;
-export const OrderDetailsFragmentDoc = gql`
-    fragment OrderDetailsFragment on Order {
-  id
-  created
-  number
-  status
-  total {
-    currency
-    gross {
-      amount
-    }
-    net {
-      amount
-    }
-  }
-}
-    `;
 export const CollectionBasicFragmentDoc = gql`
     fragment CollectionBasicFragment on Collection {
   id
@@ -13162,6 +13146,23 @@ export const CollectionDetailsFragmentDoc = gql`
 }
     ${CollectionBasicFragmentDoc}
 ${ImageFragmentDoc}`;
+export const OrderDetailsFragmentDoc = gql`
+    fragment OrderDetailsFragment on Order {
+  id
+  created
+  number
+  status
+  total {
+    currency
+    gross {
+      amount
+    }
+    net {
+      amount
+    }
+  }
+}
+    `;
 export const CheckoutPaymentCreateDocument = gql`
     mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
   checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
@@ -14250,27 +14251,27 @@ export const CollectionPathsDocument = gql`
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
- * @example const { data, loading, error } = useCollectionPathsQuery({
+ * @example
+ * const { data, loading, error } = useCollectionPathsQuery({
  *   variables: {
  *   },
  * });
  */
 export function useCollectionPathsQuery(baseOptions?: Apollo.QueryHookOptions<CollectionPathsQuery, CollectionPathsQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
+      }
 export function useCollectionPathsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionPathsQuery, CollectionPathsQueryVariables>) {
-    const options = {...defaultOptions, ...baseOptions}
-    return Apollo.useLazyQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
-  }
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
+        }
 export type CollectionPathsQueryHookResult = ReturnType<typeof useCollectionPathsQuery>;
 export type CollectionPathsLazyQueryHookResult = ReturnType<typeof useCollectionPathsLazyQuery>;
 export type CollectionPathsQueryResult = Apollo.QueryResult<CollectionPathsQuery, CollectionPathsQueryVariables>;
-
 export const OrdersDocument = gql`
     query Orders($before: String, $after: String) {
   me {
-    orders(first: 1, before: $before, after: $after) {
+    orders(first: 10, before: $before, after: $after) {
       edges {
         cursor
         node {
@@ -14294,7 +14295,11 @@ export const OrdersDocument = gql`
  *
  * To run a query within a React component, call `useOrdersQuery` and pass it any options that fit your needs.
  * When your component renders, `useOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
-
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
  * const { data, loading, error } = useOrdersQuery({
  *   variables: {
  *      before: // value for 'before'
