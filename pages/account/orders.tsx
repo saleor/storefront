@@ -13,9 +13,7 @@ const OrdersPage: React.VFC = () => {
     error,
     fetchMore,
   } = useOrdersQuery({
-    skip: !authenticated,
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
+    skip: false,
   });
 
   if (loading) {
@@ -25,6 +23,7 @@ const OrdersPage: React.VFC = () => {
       </AccountBaseTemplate>
     );
   }
+
   if (error) return <p>Error {error.message}</p>;
 
   const orders =
@@ -32,8 +31,8 @@ const OrdersPage: React.VFC = () => {
       return order.node;
     }) || [];
 
-  const onLoadMore = async () => {
-    await fetchMore({
+  const onLoadMore = () => {
+    fetchMore({
       variables: {
         after: ordersCollection?.me?.orders?.pageInfo.endCursor,
       },
