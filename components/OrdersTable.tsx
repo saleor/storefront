@@ -1,9 +1,12 @@
 import { OrderDetailsFragment } from "@/saleor/api";
+import { useRouter } from "next/router";
 
 interface OrdersTableProps {
-  orders: OrderDetailsFragment[] | undefined;
+  orders: OrderDetailsFragment[];
 }
 const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
+  const router = useRouter();
+
   return (
     <table className="rounded-xl w-full divide-y divide-gray-300">
       <thead className="bg-gray-50">
@@ -20,7 +23,12 @@ const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
             <tr
               className="text-center divide-x divide-black bg-emerald-200 whitespace-normal"
               key={order.id}
-              onClick={() => console.log("to order page")}
+              onClick={() =>
+                router.push({
+                  pathname: "/order/[token]",
+                  query: { token: order.id },
+                })
+              }
             >
               <td>{order?.number}</td>
               <td>{order.created.slice(0, 10)}</td>
