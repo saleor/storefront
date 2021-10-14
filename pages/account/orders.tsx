@@ -13,7 +13,7 @@ const OrdersPage: React.VFC = () => {
     error,
     fetchMore,
   } = useOrdersQuery({
-    skip: false,
+    skip: !authenticated,
   });
 
   if (loading) {
