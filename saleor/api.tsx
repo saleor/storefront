@@ -12880,6 +12880,13 @@ export type OrdersQueryVariables = Exact<{
 
 export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
 
+export type OrderDetailsByTokenQueryVariables = Exact<{
+  token: Scalars['UUID'];
+}>;
+
+
+export type OrderDetailsByTokenQuery = { __typename?: 'Query', orderByToken?: Maybe<{ __typename?: 'Order', id: string, status: OrderStatus, number?: Maybe<string>, shippingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, billingAddress?: Maybe<{ __typename?: 'Address', phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, country: { __typename?: 'CountryDisplay', code: string, country: string } }>, subtotal: { __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, tax: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } }, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } }, lines: Array<Maybe<{ __typename?: 'OrderLine', id: string, productName: string, quantity: number, variant?: Maybe<{ __typename?: 'ProductVariant', name: string, id: string, sku: string }>, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } }>>, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } }> };
+
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
   phone
@@ -14318,6 +14325,88 @@ export function useOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ord
 export type OrdersQueryHookResult = ReturnType<typeof useOrdersQuery>;
 export type OrdersLazyQueryHookResult = ReturnType<typeof useOrdersLazyQuery>;
 export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVariables>;
+export const OrderDetailsByTokenDocument = gql`
+    query OrderDetailsByToken($token: UUID!) {
+  orderByToken(token: $token) {
+    id
+    status
+    number
+    shippingAddress {
+      ...AddressDetailsFragment
+    }
+    billingAddress {
+      ...AddressDetailsFragment
+    }
+    subtotal {
+      net {
+        ...PriceFragment
+      }
+      tax {
+        ...PriceFragment
+      }
+    }
+    total {
+      gross {
+        ...PriceFragment
+      }
+    }
+    lines {
+      id
+      productName
+      quantity
+      variant {
+        name
+        id
+        sku
+      }
+      unitPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+      totalPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    shippingPrice {
+      gross {
+        ...PriceFragment
+      }
+    }
+  }
+}
+    ${AddressDetailsFragmentDoc}
+${PriceFragmentDoc}`;
+
+/**
+ * __useOrderDetailsByTokenQuery__
+ *
+ * To run a query within a React component, call `useOrderDetailsByTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrderDetailsByTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrderDetailsByTokenQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useOrderDetailsByTokenQuery(baseOptions: Apollo.QueryHookOptions<OrderDetailsByTokenQuery, OrderDetailsByTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrderDetailsByTokenQuery, OrderDetailsByTokenQueryVariables>(OrderDetailsByTokenDocument, options);
+      }
+export function useOrderDetailsByTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrderDetailsByTokenQuery, OrderDetailsByTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrderDetailsByTokenQuery, OrderDetailsByTokenQueryVariables>(OrderDetailsByTokenDocument, options);
+        }
+export type OrderDetailsByTokenQueryHookResult = ReturnType<typeof useOrderDetailsByTokenQuery>;
+export type OrderDetailsByTokenLazyQueryHookResult = ReturnType<typeof useOrderDetailsByTokenLazyQuery>;
+export type OrderDetailsByTokenQueryResult = Apollo.QueryResult<OrderDetailsByTokenQuery, OrderDetailsByTokenQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
