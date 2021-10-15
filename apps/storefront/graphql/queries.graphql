@@ -654,3 +654,55 @@ query Orders($before: String, $after: String) {
     }
   }
 }
+
+query OrderDetailsByToken($token: UUID!) {
+  orderByToken(token: $token) {
+    id
+    status
+    number
+    shippingAddress {
+      ...AddressDetailsFragment
+    }
+    billingAddress {
+      ...AddressDetailsFragment
+    }
+    subtotal {
+      net {
+        ...PriceFragment
+      }
+      tax {
+        ...PriceFragment
+      }
+    }
+    total {
+      gross {
+        ...PriceFragment
+      }
+    }
+    lines {
+      id
+      productName
+      quantity
+      variant {
+        name
+        id
+        sku
+      }
+      unitPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+      totalPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    shippingPrice {
+      gross {
+        ...PriceFragment
+      }
+    }
+  }
+}
