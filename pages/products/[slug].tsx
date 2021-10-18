@@ -25,23 +25,6 @@ import { useLocalStorage } from "react-use";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import Custom404 from "pages/404";
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const productSlug = context.params?.slug?.toString();
-  const data: ApolloQueryResult<ProductBySlugQuery | undefined> =
-    await apolloClient.query({
-      query: ProductBySlugDocument,
-      variables: {
-        slug: productSlug,
-      },
-    });
-  return {
-    props: {
-      productSSG: data,
-    },
-    revalidate: 60, // value in seconds, how often ISR will trigger on the server
-  };
-};
-
 const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
   ({ productSSG }) => {
     const router = useRouter();
@@ -213,3 +196,20 @@ export async function getStaticPaths() {
     fallback: "blocking",
   };
 }
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const productSlug = context.params?.slug?.toString();
+  const data: ApolloQueryResult<ProductBySlugQuery | undefined> =
+    await apolloClient.query({
+      query: ProductBySlugDocument,
+      variables: {
+        slug: productSlug,
+      },
+    });
+  return {
+    props: {
+      productSSG: data,
+    },
+    revalidate: 60, // value in seconds, how often ISR will trigger on the server
+  };
+};
