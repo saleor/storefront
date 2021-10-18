@@ -1,6 +1,7 @@
 import BaseTemplate from "@/components/BaseTemplate";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
 import { useOrderDetailsByTokenQuery } from "@/saleor/api";
+import { useAuthState } from "@saleor/sdk";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Image from "next/image";
 
@@ -22,9 +23,10 @@ export async function getStaticPaths() {
 const OrderDetailsPage: React.VFC<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ token }) => {
+  const { authenticated } = useAuthState();
   const { loading, error, data } = useOrderDetailsByTokenQuery({
-    variables: { token: "53d82eb1-b2e7-40dc-91ac-fb62abac0d4c" },
-    skip: !token,
+    variables: { token: token },
+    skip: !token && !authenticated,
   });
 
   if (loading) return <BaseTemplate isLoading={true}></BaseTemplate>;
