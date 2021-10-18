@@ -1,6 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-shop`](https://github.com/saleor/create-next-shop).
+# React Storefront
 
-## Getting Started
+React Storefront is an open-source frontend e-commerce platform from the [Saleor](https://saleor.io) team.
+
+* Next.js
+* TypeScript
+* GraphQL
+
+## Motivation
+
+* modern & fast
+* easily customizable
+* works out-of-the-box
+* all-in-one solution
+
+## Setup
 
 Install dependencies:
 
@@ -14,9 +27,7 @@ Start the dev server:
 npm run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
-
-If you modify graphql files and would like to update the hooks, run:
+If you modify GraphQL files and would like to update the hooks, run:
 
 ```bash
 npm run generate
@@ -43,7 +54,7 @@ npm run debug
 
 Add [breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoints), and start debugging session in your editor.
 
-## VS Code graphql extension
+## VS Code GraphQL Extension
 
 GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.
 
