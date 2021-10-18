@@ -33,9 +33,9 @@ const AccountBaseTemplate: React.VFC<AccountBaseTemplateProps> = ({
         </header>
         <main className="flex max-w-7xl mx-auto px-8">
           <div className="flex-initial w-2/5">
-            <NavigationPanel active={"AccountPreferences"} />
+            <NavigationPanel />
           </div>
-          <div className="border-r flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
+          <div className="flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
             {children}
           </div>
         </main>

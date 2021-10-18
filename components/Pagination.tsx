@@ -27,7 +27,7 @@ export const Pagination: React.VFC<PaginationProps> = ({
         </a>
         {itemCount && totalCount && (
           <div className="text-sm text-gray-500 mt-2">
-            {itemCount} products out of {totalCount}
+            {itemCount} out of {totalCount}
           </div>
         )}
       </div>
