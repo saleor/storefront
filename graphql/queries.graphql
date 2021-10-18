@@ -682,6 +682,7 @@ query OrderDetailsByToken($token: UUID!) {
     lines {
       id
       productName
+      variantName
       quantity
       thumbnail {
         url
