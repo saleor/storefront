@@ -618,3 +618,39 @@ query CollectionPaths {
     }
   }
 }
+
+fragment OrderDetailsFragment on Order {
+  id
+  created
+  number
+  status
+  total {
+    currency
+    gross {
+      ...PriceFragment
+    }
+    net {
+      ...PriceFragment
+    }
+  }
+}
+
+query Orders($before: String, $after: String) {
+  me {
+    orders(first: 10, before: $before, after: $after) {
+      edges {
+        cursor
+        node {
+          ...OrderDetailsFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}

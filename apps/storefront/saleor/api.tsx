@@ -12870,6 +12870,16 @@ export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> }> };
 
+export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } };
+
+export type OrdersQueryVariables = Exact<{
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
+
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
   phone
@@ -13136,6 +13146,23 @@ export const CollectionDetailsFragmentDoc = gql`
 }
     ${CollectionBasicFragmentDoc}
 ${ImageFragmentDoc}`;
+export const OrderDetailsFragmentDoc = gql`
+    fragment OrderDetailsFragment on Order {
+  id
+  created
+  number
+  status
+  total {
+    currency
+    gross {
+      ...PriceFragment
+    }
+    net {
+      ...PriceFragment
+    }
+  }
+}
+    ${PriceFragmentDoc}`;
 export const CheckoutPaymentCreateDocument = gql`
     mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
   checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
@@ -14241,6 +14268,56 @@ export function useCollectionPathsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type CollectionPathsQueryHookResult = ReturnType<typeof useCollectionPathsQuery>;
 export type CollectionPathsLazyQueryHookResult = ReturnType<typeof useCollectionPathsLazyQuery>;
 export type CollectionPathsQueryResult = Apollo.QueryResult<CollectionPathsQuery, CollectionPathsQueryVariables>;
+export const OrdersDocument = gql`
+    query Orders($before: String, $after: String) {
+  me {
+    orders(first: 10, before: $before, after: $after) {
+      edges {
+        cursor
+        node {
+          ...OrderDetailsFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}
+    ${OrderDetailsFragmentDoc}`;
+
+/**
+ * __useOrdersQuery__
+ *
+ * To run a query within a React component, call `useOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrdersQuery({
+ *   variables: {
+ *      before: // value for 'before'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useOrdersQuery(baseOptions?: Apollo.QueryHookOptions<OrdersQuery, OrdersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrdersQuery, OrdersQueryVariables>(OrdersDocument, options);
+      }
+export function useOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrdersQuery, OrdersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrdersQuery, OrdersQueryVariables>(OrdersDocument, options);
+        }
+export type OrdersQueryHookResult = ReturnType<typeof useOrdersQuery>;
+export type OrdersLazyQueryHookResult = ReturnType<typeof useOrdersLazyQuery>;
+export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
