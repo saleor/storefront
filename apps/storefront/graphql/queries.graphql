@@ -621,6 +621,7 @@ query CollectionPaths {
 
 fragment OrderDetailsFragment on Order {
   id
+  token
   created
   number
   status

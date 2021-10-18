@@ -12870,7 +12870,7 @@ export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> }> };
 
-export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } };
+export type OrderDetailsFragment = { __typename?: 'Order', id: string, token: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } };
 
 export type OrdersQueryVariables = Exact<{
   before?: Maybe<Scalars['String']>;
@@ -12878,7 +12878,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
+export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, token: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
 
 export type OrderDetailsByTokenQueryVariables = Exact<{
   token: Scalars['UUID'];
@@ -13156,6 +13156,7 @@ ${ImageFragmentDoc}`;
 export const OrderDetailsFragmentDoc = gql`
     fragment OrderDetailsFragment on Order {
   id
+  token
   created
   number
   status
