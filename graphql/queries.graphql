@@ -627,10 +627,10 @@ fragment OrderDetailsFragment on Order {
   total {
     currency
     gross {
-      amount
+      ...PriceFragment
     }
     net {
-      amount
+      ...PriceFragment
     }
   }
 }

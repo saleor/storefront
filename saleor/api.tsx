@@ -12867,9 +12867,10 @@ export type CollectionBySlugQuery = { __typename?: 'Query', collection?: Maybe<{
 
 export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
+
 export type CollectionPathsQuery = { __typename?: 'Query', collections?: Maybe<{ __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> }> };
 
-export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } };
+export type OrderDetailsFragment = { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } };
 
 export type OrdersQueryVariables = Exact<{
   before?: Maybe<Scalars['String']>;
@@ -12877,7 +12878,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', amount: number }, net: { __typename?: 'Money', amount: number } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
+export type OrdersQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', orders?: Maybe<{ __typename?: 'OrderCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, created: any, number?: Maybe<string>, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> }> };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -13154,14 +13155,14 @@ export const OrderDetailsFragmentDoc = gql`
   total {
     currency
     gross {
-      amount
+      ...PriceFragment
     }
     net {
-      amount
+      ...PriceFragment
     }
   }
 }
-    `;
+    ${PriceFragmentDoc}`;
 export const CheckoutPaymentCreateDocument = gql`
     mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
   checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {

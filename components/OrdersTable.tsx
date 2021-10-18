@@ -33,7 +33,7 @@ const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
               <td>{order?.number}</td>
               <td>{order.created.slice(0, 10)}</td>
               <td>{order.status}</td>
-              <td>{order.total.gross.amount}</td>
+              <td>{order.total.gross.localizedAmount}</td>
             </tr>
           );
         })}
