@@ -46,7 +46,7 @@ export const ProductCard: React.VFC<ProductCardProps> = ({ product }) => {
             {!!product.pricing?.onSale && (
               <>
                 <br />
-                <div className="bg-red-500 text-white w-1/4 text-center rounded-r-xl shadow-lg">
+                <div className="bg-red-600 text-white w-1/4 text-center rounded-r-xl shadow-lg">
                   Sale
                 </div>
               </>
