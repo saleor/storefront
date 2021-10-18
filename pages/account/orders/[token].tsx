@@ -26,7 +26,7 @@ const OrderDetailsPage: React.VFC<
   const { authenticated } = useAuthState();
   const { loading, error, data } = useOrderDetailsByTokenQuery({
     variables: { token: token },
-    skip: !token && !authenticated,
+    skip: !token || !authenticated,
   });
 
   if (loading) return <BaseTemplate isLoading={true}></BaseTemplate>;
@@ -67,8 +67,11 @@ const OrderDetailsPage: React.VFC<
                           width={70}
                           height={70}
                         ></Image>
-                        <div className="flex items-center">
-                          {line?.productName}
+                        <div className="flex flex-col justify-center">
+                          <div>{line?.productName}</div>
+                          <div className="text-xs text-gray-600">
+                            {line?.variantName}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -100,20 +103,20 @@ const OrderDetailsPage: React.VFC<
           </p>
         </div>
         <div className="col-span-4 border-b"></div>
-        <div className="my-3 text-lg font-semibold text-center">Total</div>
+        <div className="my-3 text-md font-semibold text-center">Total</div>
         <div className="my-3 text-md font-semibold col-start-4 text-center">
           {order?.total.gross.localizedAmount}
         </div>
 
         {!!order?.billingAddress && (
-          <div className="mx-7 mt-5 checkout-section-container shadow-md">
+          <div className="mx-5 my-1 checkout-section-container shadow-md">
             <h2 className="font-semibold">Billing Address </h2>
             <AddressDisplay address={order.billingAddress}></AddressDisplay>
           </div>
         )}
 
         {!!order?.shippingAddress && (
-          <div className="mt-5 checkout-section-container shadow-md">
+          <div className="mx-5 my-1 checkout-section-container shadow-md">
             <h2 className="font-semibold">Shipping Address </h2>
             <AddressDisplay address={order.shippingAddress}></AddressDisplay>
           </div>
