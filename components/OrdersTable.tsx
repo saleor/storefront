@@ -25,8 +25,8 @@ const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
               key={order.id}
               onClick={() =>
                 router.push({
-                  pathname: "/order/[token]",
-                  query: { token: order.id },
+                  pathname: "/account/orders/[token]",
+                  query: { token: order.token },
                 })
               }
             >
