@@ -12892,20 +12892,20 @@ export type UserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UserAddressesQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', addresses?: Maybe<Array<Maybe<{ __typename?: 'Address', id: string, phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: Maybe<boolean>, isDefaultShippingAddress?: Maybe<boolean>, country: { __typename?: 'CountryDisplay', code: string, country: string } }>>> }> };
 
-export type DeleteAddressMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type DeleteAddressMutation = { __typename?: 'Mutation', accountAddressDelete?: Maybe<{ __typename?: 'AccountAddressDelete', errors: Array<{ __typename?: 'AccountError', message?: Maybe<string> }> }> };
-
 export type SetAddressDefaultMutationVariables = Exact<{
   id: Scalars['ID'];
   type: AddressTypeEnum;
 }>;
 
 
-export type SetAddressDefaultMutation = { __typename?: 'Mutation', accountSetDefaultAddress?: Maybe<{ __typename?: 'AccountSetDefaultAddress', errors: Array<{ __typename?: 'AccountError', message?: Maybe<string> }> }> };
+export type SetAddressDefaultMutation = { __typename?: 'Mutation', accountSetDefaultAddress?: Maybe<{ __typename?: 'AccountSetDefaultAddress', user?: Maybe<{ __typename?: 'User', addresses?: Maybe<Array<Maybe<{ __typename?: 'Address', id: string, phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: Maybe<boolean>, isDefaultShippingAddress?: Maybe<boolean>, country: { __typename?: 'CountryDisplay', code: string, country: string } }>>> }>, errors: Array<{ __typename?: 'AccountError', code: AccountErrorCode, message?: Maybe<string> }> }> };
+
+export type DeleteAddressMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteAddressMutation = { __typename?: 'Mutation', accountAddressDelete?: Maybe<{ __typename?: 'AccountAddressDelete', user?: Maybe<{ __typename?: 'User', addresses?: Maybe<Array<Maybe<{ __typename?: 'Address', id: string, phone?: Maybe<string>, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: Maybe<boolean>, isDefaultShippingAddress?: Maybe<boolean>, country: { __typename?: 'CountryDisplay', code: string, country: string } }>>> }> }> };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -14467,50 +14467,21 @@ export function useUserAddressesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type UserAddressesQueryHookResult = ReturnType<typeof useUserAddressesQuery>;
 export type UserAddressesLazyQueryHookResult = ReturnType<typeof useUserAddressesLazyQuery>;
 export type UserAddressesQueryResult = Apollo.QueryResult<UserAddressesQuery, UserAddressesQueryVariables>;
-export const DeleteAddressDocument = gql`
-    mutation DeleteAddress($id: ID!) {
-  accountAddressDelete(id: $id) {
-    errors {
-      message
-    }
-  }
-}
-    `;
-export type DeleteAddressMutationFn = Apollo.MutationFunction<DeleteAddressMutation, DeleteAddressMutationVariables>;
-
-/**
- * __useDeleteAddressMutation__
- *
- * To run a mutation, you first call `useDeleteAddressMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteAddressMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteAddressMutation, { data, loading, error }] = useDeleteAddressMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteAddressMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAddressMutation, DeleteAddressMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteAddressMutation, DeleteAddressMutationVariables>(DeleteAddressDocument, options);
-      }
-export type DeleteAddressMutationHookResult = ReturnType<typeof useDeleteAddressMutation>;
-export type DeleteAddressMutationResult = Apollo.MutationResult<DeleteAddressMutation>;
-export type DeleteAddressMutationOptions = Apollo.BaseMutationOptions<DeleteAddressMutation, DeleteAddressMutationVariables>;
 export const SetAddressDefaultDocument = gql`
     mutation SetAddressDefault($id: ID!, $type: AddressTypeEnum!) {
   accountSetDefaultAddress(id: $id, type: $type) {
+    user {
+      addresses {
+        ...AddressDetailsFragment
+      }
+    }
     errors {
+      code
       message
     }
   }
 }
-    `;
+    ${AddressDetailsFragmentDoc}`;
 export type SetAddressDefaultMutationFn = Apollo.MutationFunction<SetAddressDefaultMutation, SetAddressDefaultMutationVariables>;
 
 /**
@@ -14538,6 +14509,43 @@ export function useSetAddressDefaultMutation(baseOptions?: Apollo.MutationHookOp
 export type SetAddressDefaultMutationHookResult = ReturnType<typeof useSetAddressDefaultMutation>;
 export type SetAddressDefaultMutationResult = Apollo.MutationResult<SetAddressDefaultMutation>;
 export type SetAddressDefaultMutationOptions = Apollo.BaseMutationOptions<SetAddressDefaultMutation, SetAddressDefaultMutationVariables>;
+export const DeleteAddressDocument = gql`
+    mutation DeleteAddress($id: ID!) {
+  accountAddressDelete(id: $id) {
+    user {
+      addresses {
+        ...AddressDetailsFragment
+      }
+    }
+  }
+}
+    ${AddressDetailsFragmentDoc}`;
+export type DeleteAddressMutationFn = Apollo.MutationFunction<DeleteAddressMutation, DeleteAddressMutationVariables>;
+
+/**
+ * __useDeleteAddressMutation__
+ *
+ * To run a mutation, you first call `useDeleteAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAddressMutation, { data, loading, error }] = useDeleteAddressMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAddressMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAddressMutation, DeleteAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAddressMutation, DeleteAddressMutationVariables>(DeleteAddressDocument, options);
+      }
+export type DeleteAddressMutationHookResult = ReturnType<typeof useDeleteAddressMutation>;
+export type DeleteAddressMutationResult = Apollo.MutationResult<DeleteAddressMutation>;
+export type DeleteAddressMutationOptions = Apollo.BaseMutationOptions<DeleteAddressMutation, DeleteAddressMutationVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
