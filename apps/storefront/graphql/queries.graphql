@@ -724,18 +724,26 @@ enum AddressTypeEnum {
   SHIPPING
 }
 
-mutation DeleteAddress($id: ID!) {
-  accountAddressDelete(id: $id) {
+mutation SetAddressDefault($id: ID!, $type: AddressTypeEnum!) {
+  accountSetDefaultAddress(id: $id, type: $type) {
+    user {
+      addresses {
+        ...AddressDetailsFragment
+      }
+    }
     errors {
+      code
       message
     }
   }
 }
 
-mutation SetAddressDefault($id: ID!, $type: AddressTypeEnum!) {
-  accountSetDefaultAddress(id: $id, type: $type) {
-    errors {
-      message
+mutation DeleteAddress($id: ID!) {
+  accountAddressDelete(id: $id) {
+    user {
+      addresses {
+        ...AddressDetailsFragment
+      }
     }
   }
 }
