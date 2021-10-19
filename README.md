@@ -18,7 +18,7 @@ React Storefront is an open-source frontend e-commerce platform from the [Saleor
 Install dependencies:
 
 ```bash
-pnpm i
+npm i
 ```
 
 Start the dev server:
