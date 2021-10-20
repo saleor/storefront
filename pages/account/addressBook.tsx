@@ -3,6 +3,7 @@ import { Button } from "@/components/Button";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
 import Spinner from "@/components/Spinner";
 import {
+  UserAddressesDocument,
   AddressTypeEnum,
   AddressDetailsFragment,
   useSetAddressDefaultMutation,
@@ -19,7 +20,9 @@ const AddressBookPage: React.VFC = () => {
     fetchPolicy: "network-only",
   });
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
-  const [deleteAddressMutation] = useDeleteAddressMutation();
+  const [deleteAddressMutation] = useDeleteAddressMutation({
+    refetchQueries: [{ query: UserAddressesDocument }],
+  });
   if (loading) {
     return (
       <AccountBaseTemplate>
