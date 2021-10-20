@@ -47,7 +47,7 @@ const AddressBookPage: React.VFC = () => {
       return (
         <div
           key={index}
-          className="justify-between flex flex-col checkout-section-container mx-2 mb-2"
+          className="justify-between flex flex-col checkout-section-container md:mx-2 mb-2"
         >
           <p className="text-md font-semibold">
             Default billing and shipping address
