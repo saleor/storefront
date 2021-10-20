@@ -38,21 +38,25 @@ const OrderDetailsPage: React.VFC<
 
   return (
     <BaseTemplate>
-      <h1 className="text-2xl ml-20 mt-5 font-bold text-gray-800 mb-2">
+      <h1 className="text-2xl ml-2 md:ml-20 mt-5 font-bold text-gray-800 mb-2">
         Your order number : {order?.number}
       </h1>
-      <h1 className="text-1xl ml-20 font-semibold text-gray-600 mb-4">
+      <h1 className="text-1xl ml-2 md:ml-20 font-semibold text-gray-600 mb-4">
         Status : {order?.status}
       </h1>
-      <div className="grid grid-cols-4 mb-20 mt-10 ml-20 max-w-7xl h-full">
-        <div className="col-span-4">
-          <table className="w-full divide-y">
+      <div className="grid grid-cols-2 md:grid-cols-4 mb-20 mt-10 ml-2 md:ml-20 max-w-6xl h-full">
+        <div className="col-span-2 md:col-span-4">
+          <table className="w-full divide-y table-fixed">
             <thead className="text-center">
               <tr>
-                <td className="w-1/4 font-semibold text-md">Items</td>
-                <td className="w-1/4 font-semibold text-md">Price</td>
-                <td className="w-1/4 font-semibold text-md">Quantity</td>
-                <td className="w-1/4 font-semibold text-md">Total</td>
+                <td className="md:w-1/4 font-semibold text-md md:text-center text-left">
+                  Items
+                </td>
+                <td className="md:w-1/4 font-semibold text-md">Price</td>
+                <td className="md:w-1/4 font-semibold text-md">Quantity</td>
+                <td className="md:w-1/4 font-semibold text-md text-right">
+                  <p className="mr-3 md:mr-10">Total</p>
+                </td>
               </tr>
             </thead>
             <tbody className="text-center divide-y">
@@ -69,7 +73,7 @@ const OrderDetailsPage: React.VFC<
                         ></Image>
                         <div className="flex flex-col justify-center">
                           <div>{line?.productName}</div>
-                          <div className="text-xs text-gray-600">
+                          <div className="text-xs text-left text-gray-600">
                             {line?.variantName}
                           </div>
                         </div>
@@ -77,7 +81,11 @@ const OrderDetailsPage: React.VFC<
                     </td>
                     <td>{line?.unitPrice.gross.localizedAmount}</td>
                     <td>{line?.quantity}</td>
-                    <td>{line?.totalPrice.gross.localizedAmount}</td>
+                    <td>
+                      <p className="mr-3 md:mr-10 text-right">
+                        {line?.totalPrice.gross.localizedAmount}
+                      </p>
+                    </td>
                   </tr>
                 );
               })}
@@ -85,39 +93,43 @@ const OrderDetailsPage: React.VFC<
             </tbody>
           </table>
         </div>
-        <div className="text-md font-semibold h-16">
-          <div className="mt-5 text-center">Subtotal</div>
+        <div className="md:col-start-3 text-md h-16">
+          <div className="mt-5 text-left md:text-center">Subtotal</div>
         </div>
-        <div className="text-md font-semibold col-start-4 text-center">
-          <p className="mt-5 text-center">
+        <div className="text-md text-center">
+          <p className="mt-5 text-right mr-3 md:mr-10">
             {order?.subtotal.net.localizedAmount}
           </p>
         </div>
-        <div className="col-span-4 border-b"></div>
-        <div className="text-md font-semibold text-center h-16">
-          <p className="mt-5 text-center">Shipping Prince</p>
+        <div className="md:col-start-3 col-span-2 border-t"></div>
+        <div className="md:col-start-3 text-md h-16">
+          <div className="mt-5 text-left md:text-center">Shipping Price</div>
         </div>
-        <div className="text-md font-semibold col-start-4 text-center">
-          <p className="mt-5 text-center">
+        <div className="text-md text-center">
+          <p className="mt-5 text-right mr-3 md:mr-10">
             {order?.shippingPrice.gross.localizedAmount}
           </p>
         </div>
-        <div className="col-span-4 border-b"></div>
-        <div className="my-3 text-md font-semibold text-center">Total</div>
-        <div className="my-3 text-md font-semibold col-start-4 text-center">
-          {order?.total.gross.localizedAmount}
+        <div className="md:col-start-3 col-span-2 border-t"></div>
+        <div className="md:col-start-3 text-md font-semibold h-16">
+          <div className="mt-5 text-left md:text-center">Total</div>
+        </div>
+        <div className="text-md font-semibold text-center">
+          <p className="mt-5 text-right mr-3 md:mr-10">
+            {order?.total.gross.localizedAmount}
+          </p>
         </div>
 
         {!!order?.billingAddress && (
-          <div className="mx-5 my-1 checkout-section-container shadow-md">
-            <h2 className="font-semibold">Billing Address </h2>
+          <div className="col-span-2 mr-2 my-2 p-4 rounded shadow-xs bg-white border md:w-1/2 md:col-span-2 md:w-full">
+            <h2 className="font-semibold text-lg mb-2">Billing Address </h2>
             <AddressDisplay address={order.billingAddress}></AddressDisplay>
           </div>
         )}
 
         {!!order?.shippingAddress && (
-          <div className="mx-5 my-1 checkout-section-container shadow-md">
-            <h2 className="font-semibold">Shipping Address </h2>
+          <div className="col-span-2 mr-2 md:ml-2 my-2 p-4 shadow-xs rounded bg-white border md:w-1/2 md:col-start-3 md:col-span-2 md:w-full">
+            <h2 className="font-semibold text-lg mb-2">Shipping Address </h2>
             <AddressDisplay address={order.shippingAddress}></AddressDisplay>
           </div>
         )}
