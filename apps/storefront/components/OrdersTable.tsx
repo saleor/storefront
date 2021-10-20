@@ -8,20 +8,22 @@ const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
   const router = useRouter();
 
   return (
-    <table className="rounded-xl w-full divide-y divide-gray-300">
-      <thead className="bg-gray-50">
+    <table className="w-full divide-y bg-white rounded-md ">
+      <thead className="text-center h-16">
         <tr>
-          <th>Number</th>
-          <th>Creation Date</th>
-          <th>Status</th>
-          <th>Total</th>
+          <th className="w-1/4 font-semibold text-md">Number</th>
+          <th className="w-1/4 font-semibold text-md">Creation Date</th>
+          <th className="w-1/4 font-semibold text-md md:text-center hidden md:table-cell">
+            Status
+          </th>
+          <th className="w-1/4 font-semibold text-md">Total</th>
         </tr>
       </thead>
-      <tbody className="bg-white divide-y divide-gray-300">
+      <tbody className="text-center divide-y">
         {orders?.map((order) => {
           return (
             <tr
-              className="text-center divide-x divide-black bg-emerald-200 whitespace-normal"
+              className="h-16 cursor-pointer"
               key={order.id}
               onClick={() =>
                 router.push({
@@ -32,7 +34,7 @@ const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
             >
               <td>{order?.number}</td>
               <td>{order.created.slice(0, 10)}</td>
-              <td>{order.status}</td>
+              <td className="hidden md:table-cell">{order.status}</td>
               <td>{order.total.gross.localizedAmount}</td>
             </tr>
           );
