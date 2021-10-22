@@ -11199,6 +11199,26 @@
             "deprecationReason": null
           },
           {
+            "name": "lines",
+            "description": "List of line Ids which cause the error.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "message",
             "description": "The error message.",
             "args": [],
@@ -11805,6 +11825,53 @@
             },
             "isDeprecated": true,
             "deprecationReason": "Use errors field instead. This field will be removed in Saleor 4.0."
+          },
+          {
+            "name": "errors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "CheckoutError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CheckoutLinesDelete",
+        "description": "Deletes checkout lines.",
+        "fields": [
+          {
+            "name": "checkout",
+            "description": "An updated checkout.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Checkout",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "errors",
@@ -33477,8 +33544,8 @@
               "name": "CheckoutLineDelete",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "DEPRECATED: Will be removed in Saleor 4.0. Use `checkoutLinesDelete` instead."
           },
           {
             "name": "checkoutLinesAdd",
@@ -33532,6 +33599,55 @@
             "type": {
               "kind": "OBJECT",
               "name": "CheckoutLinesAdd",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "checkoutLinesDelete",
+            "description": "Deletes checkout lines.",
+            "args": [
+              {
+                "name": "linesIds",
+                "description": "A list of checkout lines.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "token",
+                "description": "Checkout token.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CheckoutLinesDelete",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79232,11 +79348,6 @@
           {
             "kind": "OBJECT",
             "name": "Product",
-            "ofType": null
-          },
-          {
-            "kind": "OBJECT",
-            "name": "ProductImage",
             "ofType": null
           },
           {
