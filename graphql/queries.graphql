@@ -621,6 +621,7 @@ query CollectionPaths {
 
 fragment OrderDetailsFragment on Order {
   id
+  token
   created
   number
   status
@@ -651,6 +652,58 @@ query Orders($before: String, $after: String) {
         endCursor
       }
       totalCount
+    }
+  }
+}
+
+query OrderDetailsByToken($token: UUID!) {
+  orderByToken(token: $token) {
+    id
+    status
+    number
+    shippingAddress {
+      ...AddressDetailsFragment
+    }
+    billingAddress {
+      ...AddressDetailsFragment
+    }
+    subtotal {
+      net {
+        ...PriceFragment
+      }
+      tax {
+        ...PriceFragment
+      }
+    }
+    total {
+      gross {
+        ...PriceFragment
+      }
+    }
+    lines {
+      id
+      productName
+      variantName
+      quantity
+      thumbnail {
+        url
+        alt
+      }
+      unitPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+      totalPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    shippingPrice {
+      gross {
+        ...PriceFragment
+      }
     }
   }
 }
