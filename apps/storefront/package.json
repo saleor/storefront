@@ -2,6 +2,9 @@
   "name": "react-storefront",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' PORT=3001 next dev",
     "dev": "PORT=3001 next dev",
