@@ -19,117 +19,55 @@ export const AddressBookCard: React.VFC<AddressBookCardProps> = ({
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
   const [deleteAddressMutation] = useDeleteAddressMutation();
 
+  let cardHeader = "";
+  if (address.isDefaultShippingAddress && address.isDefaultBillingAddress) {
+    cardHeader = "Default billing and shipping address";
+  } else if (address.isDefaultShippingAddress) {
+    cardHeader = "Default shipping address";
+  } else if (address.isDefaultBillingAddress) {
+    cardHeader = "Default billing address";
+  }
+
+  const onDeleteAddress = (addressId: string) => {
+    deleteAddressMutation({
+      variables: { id: addressId },
+    });
+    onRefreshBook();
+  };
+
   return (
     <div className="justify-between flex flex-col checkout-section-container md:mx-2 mb-2">
-      {address.isDefaultShippingAddress && address.isDefaultBillingAddress && (
-        <>
-          <p className="text-md font-semibold mb-2">
-            Default billing and shipping address
-          </p>
-          <AddressDisplay address={address}></AddressDisplay>
-          <Button
-            className="my-1"
-            onClick={() => {
-              deleteAddressMutation({
-                variables: { id: address.id },
-              });
-              onRefreshBook();
-            }}
-          >
-            Remove
-          </Button>
-        </>
+      {!!cardHeader && (
+        <p className="text-md font-semibold mb-1">{cardHeader}</p>
       )}
-      {address.isDefaultShippingAddress && !address.isDefaultBillingAddress && (
-        <>
-          <p className="text-md font-semibold">Default shipping address</p>
-          <AddressDisplay address={address}></AddressDisplay>
-          <Button
-            className="my-1"
-            onClick={() =>
-              setAddressDefaultMutation({
-                variables: { id: address.id, type: AddressTypeEnum.Billing },
-              })
-            }
-          >
-            Set as billing default
-          </Button>
-          <Button
-            className="my-1"
-            onClick={() => {
-              deleteAddressMutation({
-                variables: { id: address.id },
-              });
-              onRefreshBook();
-            }}
-          >
-            Remove
-          </Button>
-        </>
+      <AddressDisplay address={address}></AddressDisplay>
+      {!address.isDefaultBillingAddress && (
+        <Button
+          className="my-1"
+          onClick={() =>
+            setAddressDefaultMutation({
+              variables: { id: address.id, type: AddressTypeEnum.Billing },
+            })
+          }
+        >
+          Set as billing default
+        </Button>
       )}
-      {!address.isDefaultShippingAddress && address.isDefaultBillingAddress && (
-        <>
-          <p className="text-md font-semibold">Default billing address</p>
-          <AddressDisplay address={address}></AddressDisplay>
-          <Button
-            className="my-1"
-            onClick={() =>
-              setAddressDefaultMutation({
-                variables: { id: address.id, type: AddressTypeEnum.Shipping },
-              })
-            }
-          >
-            Set as shipping default
-          </Button>
-          <Button
-            className="my-1"
-            onClick={() => {
-              deleteAddressMutation({
-                variables: { id: address.id },
-              });
-              onRefreshBook();
-            }}
-          >
-            Remove
-          </Button>
-        </>
+      {!address.isDefaultShippingAddress && (
+        <Button
+          className="my-1"
+          onClick={() =>
+            setAddressDefaultMutation({
+              variables: { id: address.id, type: AddressTypeEnum.Shipping },
+            })
+          }
+        >
+          Set as shipping default
+        </Button>
       )}
-      {!address.isDefaultShippingAddress && !address.isDefaultBillingAddress && (
-        <>
-          <AddressDisplay address={address}></AddressDisplay>
-          <Button
-            className="my-1"
-            onClick={() =>
-              setAddressDefaultMutation({
-                variables: { id: address.id, type: AddressTypeEnum.Billing },
-              })
-            }
-          >
-            Set as billing default
-          </Button>
-          <Button
-            className="my-1"
-            onClick={() =>
-              setAddressDefaultMutation({
-                variables: { id: address.id, type: AddressTypeEnum.Shipping },
-              })
-            }
-          >
-            Set as shipping default
-          </Button>
-          <Button
-            className="my-1"
-            onClick={() => {
-              deleteAddressMutation({
-                variables: { id: address.id },
-              });
-              onRefreshBook();
-            }}
-          >
-            Remove
-          </Button>
-        </>
-      )}
+      <Button className="my-1" onClick={() => onDeleteAddress(address.id)}>
+        Remove
+      </Button>
     </div>
   );
 };
