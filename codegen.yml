@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - "https://vercel.saleor.cloud/graphql/"
+  - ${NEXT_PUBLIC_API_URI}
   - local-schema.graphql
 documents: "graphql/**/*.{ts,graphql}"
 generates:
