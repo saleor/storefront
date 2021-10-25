@@ -1,20 +1,15 @@
 import BaseTemplate from "@/components/BaseTemplate";
 import HomepageBlock from "@/components/HomepageBlock";
 import BaseSeo from "@/components/seo/BaseSeo";
-import { useMenuQuery } from "@/saleor/api";
+import apolloClient from "@/lib/graphql";
+import { MenuQuery, MenuQueryDocument } from "@/saleor/api";
+import { ApolloQueryResult } from "@apollo/client";
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import React from "react";
 
-const Home: React.VFC = () => {
-  const { data, loading } = useMenuQuery({ variables: { slug: "homepage" } });
-
-  if (loading) {
-    return (
-      <BaseTemplate isLoading={true}>
-        <BaseSeo />
-      </BaseTemplate>
-    );
-  }
-
+const Home: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  menuData,
+}) => {
   return (
     <BaseTemplate>
       <BaseSeo />
@@ -24,7 +19,7 @@ const Home: React.VFC = () => {
         </header>
         <main>
           <div className="max-w-7xl mx-auto px-8">
-            {data?.menu?.items?.map((m) => {
+            {menuData?.menu?.items?.map((m) => {
               if (!!m) return <HomepageBlock key={m?.id} menuItem={m} />;
             })}
           </div>
@@ -35,3 +30,17 @@ const Home: React.VFC = () => {
 };
 
 export default Home;
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const result: ApolloQueryResult<MenuQuery | undefined> =
+    await apolloClient.query({
+      query: MenuQueryDocument,
+      variables: { slug: "homepage" },
+    });
+  return {
+    props: {
+      menuData: result?.data,
+    },
+    revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
+  };
+};
