@@ -2,6 +2,9 @@
   "name": "react-storefront",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' PORT=3001 next dev",
     "dev": "PORT=3001 next dev",
@@ -9,7 +12,7 @@
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "prettier --write . && next lint",
-    "generate": "graphql-codegen --config codegen.yml -w"
+    "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w"
   },
   "dependencies": {
     "@apollo/client": "3.4.16",
@@ -23,6 +26,8 @@
     "@tailwindcss/typography": "^0.4.1",
     "clsx": "1.1.1",
     "editorjs-blocks-react-renderer": "^1.2.0",
+    "dotenv": "^10.0.0",
+    "dotenv-cli": "^4.0.0",
     "graphql": "15.6.1",
     "next": "11.1.2",
     "next-seo": "^4.28.1",
