@@ -1,15 +1,13 @@
-import BaseTemplate from "@/components/BaseTemplate";
-import HomepageBlock from "@/components/HomepageBlock";
+import React from "react";
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+
+import { BaseTemplate, HomepageBlock } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import apolloClient from "@/lib/graphql";
 import { MenuQuery, MenuQueryDocument } from "@/saleor/api";
 import { ApolloQueryResult } from "@apollo/client";
-import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import React from "react";
 
-const Home: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  menuData,
-}) => {
+const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <BaseTemplate>
       <BaseSeo />

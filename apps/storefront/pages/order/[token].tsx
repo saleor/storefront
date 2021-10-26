@@ -1,11 +1,8 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
 import { Navbar } from "@/components";
-
 import { useOrderDetailsQuery } from "@/saleor/api";
-
 import { formatAsMoney } from "@/lib/util";
-import { useRouter } from "next/router";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -15,14 +12,11 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   };
 };
 
-const OrderDetailsPage: React.VFC<
-  InferGetStaticPropsType<typeof getStaticProps>
-> = ({ orderToken }) => {
+const OrderDetailsPage = ({ orderToken }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { loading, error, data } = useOrderDetailsQuery({
     variables: { token: orderToken || "" },
     skip: !orderToken,
   });
-  const router = useRouter();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;

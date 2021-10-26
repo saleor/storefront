@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 
-export const Button: React.VFC<Props> = ({ onClick, className, children }) => {
+export const Button = ({ onClick, className, children }: Props) => {
   return (
     <button className={clsx(styles, className)} onClick={onClick}>
       {children}

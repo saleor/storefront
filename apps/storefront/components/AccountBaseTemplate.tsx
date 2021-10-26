@@ -1,16 +1,15 @@
 import React from "react";
-import { NavigationPanel } from "@/components/NavigationPanel";
-import BaseTemplate from "@/components/BaseTemplate";
 import { useRouter } from "next/router";
 import { useAuthState } from "@saleor/sdk";
+
+import { NavigationPanel } from "@/components/NavigationPanel";
+import { BaseTemplate } from "@/components";
 
 interface AccountBaseTemplateProps {
   children: React.ReactNode;
 }
 
-const AccountBaseTemplate: React.VFC<AccountBaseTemplateProps> = ({
-  children,
-}) => {
+export const AccountBaseTemplate = ({ children }: AccountBaseTemplateProps) => {
   const router = useRouter();
   const { authenticated, authenticating } = useAuthState();
   if (authenticating) {
@@ -44,4 +43,3 @@ const AccountBaseTemplate: React.VFC<AccountBaseTemplateProps> = ({
   );
 };
 
-export default AccountBaseTemplate;

@@ -1,9 +1,6 @@
 import React from "react";
 
-export const CheckoutPriceEntry: React.VFC<Record<string, string>> = ({
-  label,
-  value,
-}) => {
+export const CheckoutPriceEntry = ({ label, value }: Record<string, string>) => {
   return (
     <div className="flex justify-between">
       <dt>{label}</dt>

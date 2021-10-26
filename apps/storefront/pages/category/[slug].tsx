@@ -1,17 +1,20 @@
-import { ProductCollection, Navbar } from "@/components";
+import React from "react";
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { ApolloQueryResult } from "@apollo/client";
+
 import CategoryPageSeo from "@/components/seo/CategoryPageSeo";
 import {
   CategoryPathsDocument,
   CategoryPathsQuery,
   useCategoryBySlugQuery,
 } from "@/saleor/api";
-import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import React from "react";
 import Custom404 from "pages/404";
 import apolloClient from "@/lib/graphql";
-import { ApolloQueryResult } from "@apollo/client";
-import BaseTemplate from "@/components/BaseTemplate";
-import PageHero from "@/components/PageHero";
+import {
+  BaseTemplate,
+  PageHero,
+  ProductCollection
+} from "@/components";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -21,8 +24,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   };
 };
 
-const CategoryPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ categorySlug }) => {
+const CategoryPage = ({ categorySlug }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const {
       loading,
       error,

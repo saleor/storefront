@@ -5,7 +5,7 @@ interface BaseSeoProps {
   description?: string;
 }
 
-export const BaseSeo: React.VFC<BaseSeoProps> = ({ title, description }) => {
+export const BaseSeo = ({ title, description }: BaseSeoProps) => {
   const baseTitle = `Saleor Tutorial`;
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";

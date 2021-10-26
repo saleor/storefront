@@ -5,12 +5,12 @@ interface CompleteCheckoutButtonProps {
   onClick?: () => void;
 }
 
-export const CompleteCheckoutButton: React.VFC<CompleteCheckoutButtonProps> = ({
+export const CompleteCheckoutButton = ({
   isDisabled,
   isProcessing,
   children,
   onClick,
-}) => {
+}: CompleteCheckoutButtonProps) => {
   return (
     <>
       {isProcessing ? (

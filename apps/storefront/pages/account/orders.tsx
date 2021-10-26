@@ -1,11 +1,15 @@
-import { useOrdersQuery } from "@/saleor/api";
-import OrdersTable from "@/components/OrdersTable";
-import { Pagination } from "@/components/Pagination";
-import AccountBaseTemplate from "@/components/AccountBaseTemplate";
-import Spinner from "@/components/Spinner";
 import { useAuthState } from "@saleor/sdk";
 
-const OrdersPage: React.VFC = () => {
+import { useOrdersQuery } from "@/saleor/api";
+
+import {
+  OrdersTable,
+  Pagination,
+  Spinner,
+  AccountBaseTemplate,
+} from "@/components";
+
+const OrdersPage = () => {
   const { authenticated } = useAuthState();
   const {
     data: ordersCollection,

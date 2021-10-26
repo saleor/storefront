@@ -2,7 +2,7 @@ import React from "react";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 import { Pagination } from "./Pagination";
-import Spinner from "./Spinner";
+import { Spinner } from "./Spinner";
 import { ProductCard } from "./ProductCard";
 
 export interface ProductCollectionProps {
@@ -10,10 +10,7 @@ export interface ProductCollectionProps {
   allowMore?: boolean;
 }
 
-export const ProductCollection: React.VFC<ProductCollectionProps> = ({
-  filter,
-  allowMore = true,
-}) => {
+export const ProductCollection = ({ filter, allowMore = true }: ProductCollectionProps) => {
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
     variables: { filter: filter },
   });

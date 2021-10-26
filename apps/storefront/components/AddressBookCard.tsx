@@ -12,10 +12,10 @@ interface AddressBookCardProps {
   onRefreshBook: () => void;
 }
 
-export const AddressBookCard: React.VFC<AddressBookCardProps> = ({
+export const AddressBookCard = ({
   address,
   onRefreshBook,
-}) => {
+}: AddressBookCardProps) => {
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
   const [deleteAddressMutation] = useDeleteAddressMutation();
 

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-export const NavigationPanel: React.VFC = () => {
+export const NavigationPanel = () => {
   const linkClassname =
     "flex p-4 items-center w-full rounded-md shadow-sm h-10 hover:text-blue-500";
   return (

@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+
 import NotFoundSeo from "@/components/seo/NotFoundSeo";
 import { Navbar } from "@/components/Navbar";
 

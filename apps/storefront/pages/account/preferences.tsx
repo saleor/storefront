@@ -1,7 +1,7 @@
 import React from "react";
 import { EmailPreferences } from "../../components/accountPreferences/EmailPreferences";
 import { PasswordPreferences } from "../../components/accountPreferences/PasswordPreferences";
-import AccountBaseTemplate from "@/components/AccountBaseTemplate";
+import { AccountBaseTemplate } from "@/components";
 
 const AccountPreferencesPage: React.VFC<any> = ({}) => {
   return (

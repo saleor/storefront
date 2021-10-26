@@ -1,15 +1,16 @@
+import React from "react";
+
 import {
   CollectionDetailsFragment,
   CategoryDetailsFragment,
 } from "@/saleor/api";
-import React from "react";
-import RichText from "./RichText";
+import { RichText } from "./RichText";
 
 export interface PageHeroProps {
   entity: CollectionDetailsFragment | CategoryDetailsFragment;
 }
 
-export const PageHero: React.VFC<PageHeroProps> = ({ entity }) => {
+export const PageHero = ({ entity }: PageHeroProps) => {
   const style: React.CSSProperties = {};
   if (!!entity.backgroundImage?.url) {
     style.backgroundImage = `url(${entity.backgroundImage?.url})`;

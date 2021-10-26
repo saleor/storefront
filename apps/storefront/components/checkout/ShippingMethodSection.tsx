@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-
 import { RadioGroup } from "@headlessui/react";
+
 import {
   CheckoutDetailsFragment,
   useCheckoutShippingMethodUpdateMutation,
@@ -14,10 +14,10 @@ export interface ShippingMethodSectionProps {
   active: boolean;
 }
 
-export const ShippingMethodSection: React.VFC<ShippingMethodSectionProps> = ({
+export const ShippingMethodSection = ({
   checkout,
   active,
-}) => {
+}: ShippingMethodSectionProps) => {
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     checkout.shippingMethod
   );
