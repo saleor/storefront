@@ -22,11 +22,11 @@ export interface AddressFormProps {
   updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
 }
 
-export const AddressForm: React.VFC<AddressFormProps> = ({
+export const AddressForm = ({
   existingAddressData,
   toggleEdit,
   updateAddressMutation,
-}) => {
+}: AddressFormProps) => {
   const {
     register: registerAddress,
     handleSubmit: handleSubmitAddress,

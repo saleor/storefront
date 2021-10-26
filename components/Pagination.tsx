@@ -1,4 +1,5 @@
 import { PageInfo } from "@/saleor/api";
+
 export interface PaginationProps {
   pageInfo?: PageInfo;
   onLoadMore: () => void;
@@ -6,12 +7,12 @@ export interface PaginationProps {
   itemCount?: number;
 }
 
-export const Pagination: React.VFC<PaginationProps> = ({
+export const Pagination = ({
   pageInfo,
   onLoadMore,
   itemCount,
   totalCount,
-}) => {
+}: PaginationProps) => {
   if (!pageInfo || !pageInfo?.hasNextPage) {
     return <></>;
   }

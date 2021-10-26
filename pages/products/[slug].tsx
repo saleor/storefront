@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useLocalStorage } from "react-use";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import { ApolloQueryResult } from "@apollo/client";
 import { useAuthState } from "@saleor/sdk";
+
 import {
   useAddProductToCheckoutMutation,
   ProductPathsQuery,
@@ -17,16 +19,17 @@ import {
 } from "@/saleor/api";
 import apolloClient from "@/lib/graphql";
 
+import {
+  BaseTemplate,
+  RichText,
+  VariantSelector
+} from "@/components";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
-import RichText from "@/components/RichText";
-import BaseTemplate from "@/components/BaseTemplate";
-import VariantSelector from "@/components/VariantSelector";
-import { useLocalStorage } from "react-use";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import Custom404 from "pages/404";
 
-const ProductPage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ productSSG }) => {
+const ProductPage =
+  ({ productSSG }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const router = useRouter();
     const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
     const [createCheckout] = useCreateCheckoutMutation();

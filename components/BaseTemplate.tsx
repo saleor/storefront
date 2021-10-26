@@ -1,5 +1,4 @@
-import { Navbar } from ".";
-import Spinner from "./Spinner";
+import { Navbar, Spinner } from ".";
 
 export interface BaseTemplateProps {
   children?: React.ReactNode;
@@ -7,10 +6,10 @@ export interface BaseTemplateProps {
   error?: boolean;
 }
 
-export const BaseTemplate: React.VFC<BaseTemplateProps> = ({
+export const BaseTemplate = ({
   children,
   isLoading,
-}) => {
+}: BaseTemplateProps) => {
   return (
     <>
       <Navbar />

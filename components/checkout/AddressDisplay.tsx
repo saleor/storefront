@@ -4,7 +4,7 @@ export interface AddressDisplayProps {
   address: AddressDetailsFragment;
 }
 
-export const AddressDisplay: React.VFC<AddressDisplayProps> = ({ address }) => {
+export const AddressDisplay = ({ address }: AddressDisplayProps) => {
   return (
     <div>
       <address className="not-italic mb-2">

@@ -1,8 +1,11 @@
-import AccountBaseTemplate from "@/components/AccountBaseTemplate";
-import { AddressBookCard } from "@/components/AddressBookCard";
-import Spinner from "@/components/Spinner";
-import { useUserAddressesQuery } from "@/saleor/api";
 import { useAuthState } from "@saleor/sdk";
+
+import {
+  Spinner,
+  AddressBookCard,
+  AccountBaseTemplate,
+} from "@/components";
+import { useUserAddressesQuery } from "@/saleor/api";
 
 const AddressBookPage: React.VFC = () => {
   const { authenticated } = useAuthState();

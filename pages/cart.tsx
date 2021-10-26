@@ -1,19 +1,20 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { useLocalStorage } from "react-use";
 
-import { CartSummary } from "@/components";
+import {
+  CartSummary,
+  BaseTemplate
+} from "@/components";
 import {
   useCheckoutByTokenQuery,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { BaseSeo } from "@/components/seo/BaseSeo";
-import BaseTemplate from "@/components/BaseTemplate";
 
-const Cart: React.VFC = ({}) => {
+const Cart = () => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);
   const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",

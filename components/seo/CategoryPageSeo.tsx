@@ -6,9 +6,9 @@ interface CategoryPageSeoProps {
   category: CategoryDetailsFragment;
 }
 
-export const CategoryPageSeo: React.VFC<CategoryPageSeoProps> = ({
+export const CategoryPageSeo = ({
   category,
-}) => {
+}: CategoryPageSeoProps) => {
   const baseTitle = `Saleor Tutorial`;
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";

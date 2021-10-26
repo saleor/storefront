@@ -7,9 +7,7 @@ interface CheckoutSidebarProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const CheckoutSidebar: React.VFC<CheckoutSidebarProps> = ({
-  checkout,
-}) => {
+export const CheckoutSidebar = ({ checkout }: CheckoutSidebarProps) => {
   const lines = checkout.lines?.filter((l) => !!l) || [];
   return (
     <section className="max-w-md w-full flex flex-col ">

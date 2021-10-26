@@ -10,7 +10,7 @@ export interface EmailSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const EmailSection: React.VFC<EmailSectionProps> = ({ checkout }) => {
+export const EmailSection = ({ checkout }: EmailSectionProps) => {
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
   const [checkoutEmailUpdate] = useCheckoutEmailUpdateMutation({});

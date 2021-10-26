@@ -1,18 +1,17 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import { useRouter } from "next/router";
 import { useAuthState } from "@saleor/sdk";
 import { ShoppingBagIcon, UserCircleIcon } from "@heroicons/react/outline";
 import { useLocalStorage } from "react-use";
 import { useAuth } from "@saleor/sdk";
+import { useApolloClient } from "@apollo/client";
 
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 import { CHECKOUT_TOKEN } from "@/lib/const";
-import { useRouter } from "next/router";
-import { useApolloClient } from "@apollo/client";
 
-export const Navbar: React.VFC = ({}) => {
+export const Navbar = () => {
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const { logout } = useAuth();
   const router = useRouter();

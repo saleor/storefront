@@ -8,10 +8,7 @@ export interface VariantSelectorProps {
   selectedVariantID?: string;
 }
 
-export const VariantSelector: React.VFC<VariantSelectorProps> = ({
-  product,
-  selectedVariantID,
-}) => {
+export const VariantSelector = ({ product, selectedVariantID }: VariantSelectorProps) => {
   const variants = product.variants;
   if (!variants || variants.length === 1) {
     return null;
