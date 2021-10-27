@@ -33,11 +33,11 @@ const CheckoutPage = () => {
     <BaseTemplate>
       <BaseSeo title="Checkout - Saleor Tutorial" />
 
-      <main className="min-h-screen overflow-hidden grid grid-cols-1 md:grid-cols-3">
-        <div className="col-span-2">
+      <main className="min-h-screen w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
+        <div className="md:w-2/3 w-full">
           <CheckoutForm checkout={checkout} />
         </div>
-        <div className="w-full">
+        <div className="md:w-1/3 w-full">
           <CheckoutSidebar checkout={checkout} />
         </div>
       </main>
