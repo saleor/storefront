@@ -12928,10 +12928,12 @@ export type DeleteAddressMutationVariables = Exact<{
 
 export type DeleteAddressMutation = { __typename?: 'Mutation', accountAddressDelete?: { __typename?: 'AccountAddressDelete', user?: { __typename?: 'User', addresses?: Array<{ __typename?: 'Address', id: string, phone?: string | null | undefined, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null | undefined, isDefaultShippingAddress?: boolean | null | undefined, country: { __typename?: 'CountryDisplay', code: string, country: string } } | null | undefined> | null | undefined } | null | undefined } | null | undefined };
 
+export type MainMenuItemFragment = { __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', name: string, category?: { __typename?: 'Category', slug: string } | null | undefined, collection?: { __typename?: 'Collection', slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined };
+
 export type MainMenuQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', items?: Array<{ __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', name: string, category?: { __typename?: 'Category', slug: string } | null | undefined, collection?: { __typename?: 'Collection', slug: string } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', items?: Array<{ __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', name: string, category?: { __typename?: 'Category', slug: string } | null | undefined, collection?: { __typename?: 'Collection', slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
 export const AddressDetailsFragmentDoc = gql`
     fragment AddressDetailsFragment on Address {
@@ -13220,6 +13222,29 @@ export const OrderDetailsFragmentDoc = gql`
   }
 }
     ${PriceFragmentDoc}`;
+export const MainMenuItemFragmentDoc = gql`
+    fragment MainMenuItemFragment on MenuItem {
+  name
+  children {
+    name
+    category {
+      slug
+    }
+    collection {
+      slug
+    }
+    page {
+      id
+      title
+      seoTitle
+      seoDescription
+      slug
+      created
+      content
+    }
+  }
+}
+    `;
 export const CheckoutPaymentCreateDocument = gql`
     mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
   checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
@@ -14576,20 +14601,11 @@ export const MainMenuDocument = gql`
     query MainMenu {
   menu(slug: "navbar") {
     items {
-      name
-      children {
-        name
-        category {
-          slug
-        }
-        collection {
-          slug
-        }
-      }
+      ...MainMenuItemFragment
     }
   }
 }
-    `;
+    ${MainMenuItemFragmentDoc}`;
 
 /**
  * __useMainMenuQuery__
