@@ -19,7 +19,7 @@ export const CheckoutProductList: React.VFC<CheckoutProductListProps> = ({
   return (
     <ul
       role="list"
-      className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4"
+      className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4 md:pr-4 md:pl-0"
     >
       {lines.map((line) => {
         if (!line) {
