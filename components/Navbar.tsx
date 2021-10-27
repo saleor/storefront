@@ -35,11 +35,11 @@ export const Navbar = () => {
     <div className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto pr-8">
         <div className="flex justify-between h-16">
-          <div className="flex space-x-8">
+          <div className="flex">
             <MainMenu />
             <Link href="/">
               <a>
-                <div className="md:ml-6 mt-px group block h-16 w-28 relative">
+                <div className="mt-px group block h-16 w-28 relative">
                   <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
                 </div>
               </a>

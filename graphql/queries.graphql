@@ -748,19 +748,32 @@ mutation DeleteAddress($id: ID!) {
   }
 }
 
+fragment MainMenuItemFragment on MenuItem {
+  name
+  children {
+    name
+    category {
+      slug
+    }
+    collection {
+      slug
+    }
+    page {
+      id
+      title
+      seoTitle
+      seoDescription
+      slug
+      created
+      content
+    }
+  }
+}
+
 query MainMenu {
   menu(slug: "navbar") {
     items {
-      name
-      children {
-        name
-        category {
-          slug
-        }
-        collection {
-          slug
-        }
-      }
+      ...MainMenuItemFragment
     }
   }
 }
