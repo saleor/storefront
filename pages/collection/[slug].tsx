@@ -3,7 +3,7 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Custom404 from "pages/404";
 import React from "react";
 
-import { BaseTemplate, PageHero,ProductCollection } from "@/components";
+import { BaseTemplate, PageHero, ProductCollection } from "@/components";
 import CollectionPageSeo from "@/components/seo/CollectionPageSeo";
 import apolloClient from "@/lib/graphql";
 import {

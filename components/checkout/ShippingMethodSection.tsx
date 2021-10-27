@@ -1,6 +1,7 @@
 import { RadioGroup } from "@headlessui/react";
 import React, { useState } from "react";
 
+import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
   useCheckoutShippingMethodUpdateMutation,
@@ -9,7 +10,6 @@ import {
 import { Button } from "../Button";
 import ShippingMethodDisplay from "./ShippingMethodDisplay";
 import { ShippingMethodOption } from "./ShippingMethodOption";
-import { notNullable } from "@/lib/util";
 
 export interface ShippingMethodSectionProps {
   checkout: CheckoutDetailsFragment;
