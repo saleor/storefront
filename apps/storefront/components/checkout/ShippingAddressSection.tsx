@@ -9,6 +9,7 @@ import {
 import { Button } from "../Button";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
+import { notNullable } from "@/lib/util";
 
 export interface ShippingAddressSectionProps {
   active: boolean;
@@ -60,7 +61,9 @@ export const ShippingAddressSection = ({
         token: checkout.token,
       },
     });
-    return data?.checkoutShippingAddressUpdate?.errors.filter((e) => !!e) || [];
+    return (
+      data?.checkoutShippingAddressUpdate?.errors.filter(notNullable) || []
+    );
   };
 
   return (

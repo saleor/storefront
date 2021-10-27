@@ -8,6 +8,7 @@ import {
 import { Button } from "../Button";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
+import { notNullable } from "@/lib/util";
 
 export interface BillingAddressSection {
   active: boolean;
@@ -31,7 +32,7 @@ export const BillingAddressSection = ({
         token: checkout.token,
       },
     });
-    return data?.checkoutBillingAddressUpdate?.errors.filter((e) => !!e) || [];
+    return data?.checkoutBillingAddressUpdate?.errors.filter(notNullable) || [];
   };
 
   return (
