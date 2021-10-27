@@ -1,10 +1,11 @@
-import React, { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
+import React, { useState } from "react";
 
 import {
   CheckoutDetailsFragment,
   useCheckoutShippingMethodUpdateMutation,
 } from "@/saleor/api";
+
 import { Button } from "../Button";
 import ShippingMethodDisplay from "./ShippingMethodDisplay";
 import { ShippingMethodOption } from "./ShippingMethodOption";

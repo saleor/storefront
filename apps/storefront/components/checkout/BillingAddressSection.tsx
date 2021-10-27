@@ -1,8 +1,10 @@
+import React, { useState } from "react";
+
 import {
   CheckoutDetailsFragment,
   useCheckoutBillingAddressUpdateMutation,
 } from "@/saleor/api";
-import React, { useState } from "react";
+
 import { Button } from "../Button";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
@@ -12,7 +14,10 @@ export interface BillingAddressSection {
   checkout: CheckoutDetailsFragment;
 }
 
-export const BillingAddressSection = ({ active, checkout }: BillingAddressSection) => {
+export const BillingAddressSection = ({
+  active,
+  checkout,
+}: BillingAddressSection) => {
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] =
     useCheckoutBillingAddressUpdateMutation({});

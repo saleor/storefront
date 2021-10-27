@@ -1,10 +1,12 @@
-import { CheckoutDetailsFragment } from "@/saleor/api";
 import React from "react";
-import { ShippingMethodSection } from "./ShippingMethodSection";
+
+import { CheckoutDetailsFragment } from "@/saleor/api";
+
 import BillingAddressSection from "./BillingAddressSection";
-import ShippingAddressSection from "./ShippingAddressSection";
 import { EmailSection } from "./EmailSection";
 import PaymentSection from "./payments/PaymentSection";
+import ShippingAddressSection from "./ShippingAddressSection";
+import { ShippingMethodSection } from "./ShippingMethodSection";
 
 interface CollapsedSections {
   billingAddress: boolean;

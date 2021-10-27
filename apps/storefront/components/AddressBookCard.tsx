@@ -1,8 +1,8 @@
-import AddressDisplay from "@/components/checkout/AddressDisplay";
 import { Button } from "@/components/Button";
+import AddressDisplay from "@/components/checkout/AddressDisplay";
 import {
-  AddressTypeEnum,
   AddressDetailsFragment,
+  AddressTypeEnum,
   useDeleteAddressMutation,
   useSetAddressDefaultMutation,
 } from "@/saleor/api";

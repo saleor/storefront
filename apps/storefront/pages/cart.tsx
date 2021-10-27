@@ -1,18 +1,15 @@
-import React from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import { useLocalStorage } from "react-use";
 
-import {
-  CartSummary,
-  BaseTemplate
-} from "@/components";
+import { BaseTemplate,CartSummary } from "@/components";
+import { BaseSeo } from "@/components/seo/BaseSeo";
+import { CHECKOUT_TOKEN } from "@/lib/const";
 import {
   useCheckoutByTokenQuery,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
-import { CHECKOUT_TOKEN } from "@/lib/const";
-import { BaseSeo } from "@/components/seo/BaseSeo";
 
 const Cart = () => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);

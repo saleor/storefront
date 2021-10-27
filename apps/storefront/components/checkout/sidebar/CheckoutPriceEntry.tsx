@@ -1,6 +1,9 @@
 import React from "react";
 
-export const CheckoutPriceEntry = ({ label, value }: Record<string, string>) => {
+export const CheckoutPriceEntry = ({
+  label,
+  value,
+}: Record<string, string>) => {
   return (
     <div className="flex justify-between">
       <dt>{label}</dt>

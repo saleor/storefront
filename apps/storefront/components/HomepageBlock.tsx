@@ -1,7 +1,8 @@
-import React from "react";
 import Link from "next/link";
+import React from "react";
 
 import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
+
 import { ProductCollection, RichText } from ".";
 
 export interface HomepageBlockProps {
