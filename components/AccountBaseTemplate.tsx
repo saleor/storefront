@@ -1,9 +1,9 @@
-import React from "react";
-import { useRouter } from "next/router";
 import { useAuthState } from "@saleor/sdk";
+import { useRouter } from "next/router";
+import React from "react";
 
-import { NavigationPanel } from "@/components/NavigationPanel";
 import { BaseTemplate } from "@/components";
+import { NavigationPanel } from "@/components/NavigationPanel";
 
 interface AccountBaseTemplateProps {
   children: React.ReactNode;
@@ -42,4 +42,3 @@ export const AccountBaseTemplate = ({ children }: AccountBaseTemplateProps) => {
     </BaseTemplate>
   );
 };
-

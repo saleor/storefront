@@ -1,16 +1,21 @@
+import Image from "next/image";
+import React from "react";
+
 import {
   CheckoutLineDetailsFragment,
   Maybe,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
-import React from "react";
-import Image from "next/image";
+
 export interface CheckoutProductListProps {
   lines: Maybe<CheckoutLineDetailsFragment>[];
   token: string;
 }
 
-export const CheckoutProductList = ({ lines, token }: CheckoutProductListProps) => {
+export const CheckoutProductList = ({
+  lines,
+  token,
+}: CheckoutProductListProps) => {
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   return (

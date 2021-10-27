@@ -1,4 +1,5 @@
 import { NextSeo } from "next-seo";
+
 import { ProductDetailsFragment } from "@/saleor/api";
 
 interface ProductPageSeoProps {

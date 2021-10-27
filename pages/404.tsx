@@ -1,8 +1,8 @@
-import React from "react";
 import Link from "next/link";
+import React from "react";
 
-import NotFoundSeo from "@/components/seo/NotFoundSeo";
 import { Navbar } from "@/components/Navbar";
+import NotFoundSeo from "@/components/seo/NotFoundSeo";
 
 const Custom404: React.VFC = () => {
   return (

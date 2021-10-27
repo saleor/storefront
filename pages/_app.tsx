@@ -1,10 +1,10 @@
-import type { AppProps } from "next/app";
+import "styles/globals.css";
+
 import { ApolloProvider } from "@apollo/client";
 import { SaleorProvider } from "@saleor/sdk";
+import type { AppProps } from "next/app";
 
 import apolloClient, { saleorClient } from "@/lib/graphql";
-
-import "styles/globals.css";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
@@ -14,6 +14,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </SaleorProvider>
     </ApolloProvider>
   );
-}
+};
 
 export default MyApp;
