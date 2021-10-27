@@ -6,9 +6,7 @@ export interface ShippingMethodOptionProps {
   method: DeliveryMethodFragment;
 }
 
-export const ShippingMethodOption: React.VFC<ShippingMethodOptionProps> = ({
-  method,
-}) => {
+export const ShippingMethodOption = ({ method }: ShippingMethodOptionProps) => {
   return (
     <RadioGroup.Option
       key={method.id}

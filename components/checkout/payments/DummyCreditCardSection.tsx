@@ -21,8 +21,8 @@ interface DummyCreditCardSectionInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-export const DummyCreditCardSection: React.VFC<DummyCreditCardSectionInterface> =
-  ({ checkout }) => {
+export const DummyCreditCardSection =
+  ({ checkout }: DummyCreditCardSectionInterface) => {
     const gateway = checkout.availablePaymentGateways.find(
       (gateway) => gateway.id === DUMMY_CREDIT_CARD_GATEWAY
     );

@@ -5,7 +5,7 @@ export interface RichTextProps {
   jsonStringData?: string;
 }
 
-export const RichText: React.VFC<RichTextProps> = ({ jsonStringData }) => {
+export const RichText = ({ jsonStringData }: RichTextProps) => {
   if (!jsonStringData) {
     return null;
   }
@@ -26,5 +26,3 @@ export const RichText: React.VFC<RichTextProps> = ({ jsonStringData }) => {
     </article>
   );
 };
-
-export default RichText;

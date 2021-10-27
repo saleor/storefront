@@ -10,10 +10,7 @@ export interface CheckoutProductListProps {
   token: string;
 }
 
-export const CheckoutProductList: React.VFC<CheckoutProductListProps> = ({
-  lines,
-  token,
-}) => {
+export const CheckoutProductList = ({ lines, token }: CheckoutProductListProps) => {
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   return (

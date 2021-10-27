@@ -1,14 +1,14 @@
-import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
-import Link from "next/link";
 import React from "react";
-import { ProductCollection } from ".";
-import RichText from "./RichText";
+import Link from "next/link";
+
+import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
+import { ProductCollection, RichText } from ".";
 
 export interface HomepageBlockProps {
   menuItem: MenuItemFragment;
 }
 
-export const HomepageBlock: React.VFC<HomepageBlockProps> = ({ menuItem }) => {
+export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
   const filter: ProductFilterInput = {};
   if (!!menuItem.page?.id) {
     return (

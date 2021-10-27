@@ -1,10 +1,12 @@
-import { OrderDetailsFragment } from "@/saleor/api";
 import { useRouter } from "next/router";
+
+import { OrderDetailsFragment } from "@/saleor/api";
 
 interface OrdersTableProps {
   orders: OrderDetailsFragment[];
 }
-const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
+
+export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const router = useRouter();
 
   return (
@@ -44,4 +46,3 @@ const OrdersTable: React.VFC<OrdersTableProps> = ({ orders }) => {
   );
 };
 
-export default OrdersTable;

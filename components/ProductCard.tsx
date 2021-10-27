@@ -1,6 +1,7 @@
-import { ProductCardFragment } from "@/saleor/api";
 import Link from "next/link";
 import React from "react";
+
+import { ProductCardFragment } from "@/saleor/api";
 
 const styles = {
   grid: `grid grid-cols-4 gap-4`,
@@ -16,7 +17,7 @@ export interface ProductCardProps {
   product: ProductCardFragment;
 }
 
-export const ProductCard: React.VFC<ProductCardProps> = ({ product }) => {
+export const ProductCard = ({ product }: ProductCardProps) => {
   let priceDisplay =
     product.pricing?.priceRange?.start?.gross.localizedAmount || "";
   if (

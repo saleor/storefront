@@ -1,17 +1,21 @@
 import React from "react";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { ApolloQueryResult } from "@apollo/client";
+
 import apolloClient from "@/lib/graphql";
 import {
   CollectionPathsDocument,
   CollectionPathsQuery,
   useCollectionBySlugQuery,
 } from "@/saleor/api";
-import BaseTemplate from "@/components/BaseTemplate";
+import {
+  BaseTemplate,
+  ProductCollection,
+  PageHero
+} from "@/components";
+
 import Custom404 from "pages/404";
-import { ProductCollection } from "@/components";
 import CollectionPageSeo from "@/components/seo/CollectionPageSeo";
-import PageHero from "@/components/PageHero";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -21,9 +25,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   };
 };
 
-const CollectionPage: React.VFC<
-  InferGetStaticPropsType<typeof getStaticProps>
-> = ({ collectionSlug }) => {
+const CollectionPage = ({ collectionSlug }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const {
     loading,
     error,

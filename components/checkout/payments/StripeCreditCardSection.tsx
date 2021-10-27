@@ -21,11 +21,7 @@ interface StripeCardFormInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
-  checkout,
-}: {
-  checkout: CheckoutDetailsFragment;
-}) => {
+const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
