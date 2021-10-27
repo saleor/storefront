@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { useLocalStorage } from "react-use";
 
-import { BaseTemplate,CartSummary } from "@/components";
+import { BaseTemplate, CartSummary } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import {
