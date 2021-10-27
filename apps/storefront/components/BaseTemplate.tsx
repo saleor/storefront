@@ -6,10 +6,7 @@ export interface BaseTemplateProps {
   error?: boolean;
 }
 
-export const BaseTemplate = ({
-  children,
-  isLoading,
-}: BaseTemplateProps) => {
+export const BaseTemplate = ({ children, isLoading }: BaseTemplateProps) => {
   return (
     <>
       <Navbar />

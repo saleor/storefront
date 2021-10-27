@@ -11,7 +11,7 @@
     "build": "next build",
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "prettier --write . && next lint",
+    "lint": "prettier --write . && next lint --fix",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w"
   },
   "dependencies": {
@@ -48,12 +48,12 @@
     "@next/bundle-analyzer": "^11.1.2",
     "@types/react": "17.0.33",
     "autoprefixer": "10.3.7",
-    "eslint": "8.1.0",
+    "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "postcss": "8.3.11",
     "prettier": "2.4.1",
-    "prettier-plugin-organize-imports": "^2.3.4",
     "tailwindcss": "2.2.17",
     "typescript": "4.4.4"
   }

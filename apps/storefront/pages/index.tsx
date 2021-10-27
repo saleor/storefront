@@ -1,11 +1,11 @@
-import React from "react";
+import { ApolloQueryResult } from "@apollo/client";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import React from "react";
 
 import { BaseTemplate, HomepageBlock } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import apolloClient from "@/lib/graphql";
 import { MenuQuery, MenuQueryDocument } from "@/saleor/api";
-import { ApolloQueryResult } from "@apollo/client";
 
 const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (

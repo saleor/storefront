@@ -1,14 +1,18 @@
-import { ProductDetailsFragment } from "@/saleor/api";
 import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
+
+import { ProductDetailsFragment } from "@/saleor/api";
 
 export interface VariantSelectorProps {
   product: ProductDetailsFragment;
   selectedVariantID?: string;
 }
 
-export const VariantSelector = ({ product, selectedVariantID }: VariantSelectorProps) => {
+export const VariantSelector = ({
+  product,
+  selectedVariantID,
+}: VariantSelectorProps) => {
   const variants = product.variants;
   if (!variants || variants.length === 1) {
     return null;

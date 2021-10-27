@@ -1,14 +1,13 @@
-import { CategoryDetailsFragment } from "@/saleor/api";
 import { NextSeo } from "next-seo";
 import { OpenGraphMedia } from "next-seo/lib/types";
+
+import { CategoryDetailsFragment } from "@/saleor/api";
 
 interface CategoryPageSeoProps {
   category: CategoryDetailsFragment;
 }
 
-export const CategoryPageSeo = ({
-  category,
-}: CategoryPageSeoProps) => {
+export const CategoryPageSeo = ({ category }: CategoryPageSeoProps) => {
   const baseTitle = `Saleor Tutorial`;
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";

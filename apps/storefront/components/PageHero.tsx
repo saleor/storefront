@@ -1,9 +1,10 @@
 import React from "react";
 
 import {
-  CollectionDetailsFragment,
   CategoryDetailsFragment,
+  CollectionDetailsFragment,
 } from "@/saleor/api";
+
 import { RichText } from "./RichText";
 
 export interface PageHeroProps {
