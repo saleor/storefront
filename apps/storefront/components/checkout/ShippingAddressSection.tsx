@@ -1,9 +1,10 @@
+import React, { useState } from "react";
+
 import {
   CheckoutDetailsFragment,
   CountryCode,
   useCheckoutShippingAddressUpdateMutation,
 } from "@/saleor/api";
-import React, { useState } from "react";
 import { Button } from "../Button";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
@@ -13,10 +14,10 @@ export interface ShippingAddressSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const ShippingAddressSection: React.VFC<ShippingAddressSectionProps> = ({
+export const ShippingAddressSection = ({
   active,
   checkout,
-}) => {
+}: ShippingAddressSectionProps) => {
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] =
     useCheckoutShippingAddressUpdateMutation({});

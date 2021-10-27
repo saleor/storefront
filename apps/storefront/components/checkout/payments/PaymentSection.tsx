@@ -1,11 +1,8 @@
 import {
   CheckoutDetailsFragment,
-  useCheckoutEmailUpdateMutation,
 } from "@/saleor/api";
 import { RadioGroup } from "@headlessui/react";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "../../Button";
 import DummyCreditCardSection, {
   DUMMY_CREDIT_CARD_GATEWAY,
 } from "./DummyCreditCardSection";
@@ -18,10 +15,7 @@ export interface PaymentSectionProps {
   active: boolean;
 }
 
-export const PaymentSection: React.VFC<PaymentSectionProps> = ({
-  checkout,
-  active,
-}) => {
+export const PaymentSection = ({ checkout, active }: PaymentSectionProps) => {
   const existingGateways = [STRIPE_GATEWAY, DUMMY_CREDIT_CARD_GATEWAY];
   const availableGateways = checkout.availablePaymentGateways.filter((g) =>
     existingGateways.includes(g.id)

@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo";
 
-export const NotFoundSeo: React.VFC = () => {
+export const NotFoundSeo = () => {
   const title = `Not found - Saleor Tutorial`;
   const description = "Page not found.";
 

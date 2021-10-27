@@ -6,9 +6,9 @@ interface CollectionPageSeoProps {
   collection: CollectionDetailsFragment;
 }
 
-export const CollectionPageSeo: React.VFC<CollectionPageSeoProps> = ({
+export const CollectionPageSeo = ({
   collection,
-}) => {
+}: CollectionPageSeoProps) => {
   const baseTitle = `Saleor Tutorial`;
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";

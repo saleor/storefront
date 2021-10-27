@@ -5,3 +5,13 @@ export { CheckoutSidebar } from "./checkout/sidebar/CheckoutSidebar";
 export { CheckoutForm } from "./checkout/CheckoutForm";
 export { CheckoutProductList } from "./checkout/sidebar/CheckoutProductList";
 export { CheckoutPriceEntry } from "./checkout/sidebar/CheckoutPriceEntry";
+export { BaseTemplate } from './BaseTemplate'
+export { HomepageBlock } from './HomepageBlock'
+export { RichText } from './RichText'
+export { VariantSelector } from './VariantSelector'
+export { PageHero } from './PageHero';
+export { OrdersTable } from './OrdersTable';
+export { Pagination } from './Pagination';
+export { Spinner } from './Spinner';
+export { AddressBookCard } from './AddressBookCard';
+export { AccountBaseTemplate } from './AccountBaseTemplate';

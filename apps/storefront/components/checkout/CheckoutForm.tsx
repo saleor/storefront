@@ -43,11 +43,11 @@ const sectionsManager = (
   return state;
 };
 
-export const CheckoutForm = ({
-  checkout,
-}: {
+interface Props {
   checkout?: CheckoutDetailsFragment;
-}) => {
+}
+
+export const CheckoutForm = ({ checkout }: Props) => {
   const collapsedSections = sectionsManager(checkout);
   if (!checkout) {
     return <></>;

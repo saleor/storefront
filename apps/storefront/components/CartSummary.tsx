@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+
 import {
   CheckoutDetailsFragment,
   useCheckoutAddPromoCodeMutation,
 } from "@/saleor/api";
-import { useForm } from "react-hook-form";
 
 export interface PromoCodeFormData {
   promoCode: string;
@@ -13,7 +14,7 @@ export interface CartSummaryProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const CartSummary: React.VFC<CartSummaryProps> = ({ checkout }) => {
+export const CartSummary = ({ checkout }: CartSummaryProps) => {
   const [editPromoCode, setEditPromoCode] = useState(false);
   const [checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
   const { subtotalPrice, shippingPrice, totalPrice, discount, discountName } =

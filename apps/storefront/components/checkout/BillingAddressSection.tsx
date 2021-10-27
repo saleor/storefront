@@ -12,10 +12,7 @@ export interface BillingAddressSection {
   checkout: CheckoutDetailsFragment;
 }
 
-export const BillingAddressSection: React.VFC<BillingAddressSection> = ({
-  active,
-  checkout,
-}) => {
+export const BillingAddressSection = ({ active, checkout }: BillingAddressSection) => {
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] =
     useCheckoutBillingAddressUpdateMutation({});

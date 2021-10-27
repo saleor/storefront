@@ -1,14 +1,16 @@
-import { CheckoutSidebar, CheckoutForm, Navbar } from "@/components";
-import BaseTemplate from "@/components/BaseTemplate";
-import BaseSeo from "@/components/seo/BaseSeo";
-import Spinner from "@/components/Spinner";
-import { CHECKOUT_TOKEN } from "@/lib/const";
-import { useCheckoutByTokenQuery } from "@/saleor/api";
-import Link from "next/link";
 import React from "react";
 import { useLocalStorage } from "react-use";
 
-export default function CheckoutPage() {
+import {
+  BaseTemplate,
+  CheckoutSidebar,
+  CheckoutForm,
+} from "@/components";
+import BaseSeo from "@/components/seo/BaseSeo";
+import { CHECKOUT_TOKEN } from "@/lib/const";
+import { useCheckoutByTokenQuery } from "@/saleor/api";
+
+const CheckoutPage = () => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);
   const { data: checkoutData, loading } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
@@ -46,3 +48,5 @@ export default function CheckoutPage() {
     </BaseTemplate>
   );
 }
+
+export default CheckoutPage;
