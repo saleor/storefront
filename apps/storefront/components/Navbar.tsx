@@ -1,6 +1,6 @@
 import { useApolloClient } from "@apollo/client";
 import { ShoppingBagIcon, UserCircleIcon } from "@heroicons/react/outline";
-import { useAuth,useAuthState  } from "@saleor/sdk";
+import { useAuth, useAuthState } from "@saleor/sdk";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";

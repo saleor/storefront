@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocalStorage } from "react-use";
 
-import { BaseTemplate, CheckoutForm,CheckoutSidebar } from "@/components";
+import { BaseTemplate, CheckoutForm, CheckoutSidebar } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";

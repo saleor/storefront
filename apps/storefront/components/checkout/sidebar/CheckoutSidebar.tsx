@@ -1,8 +1,8 @@
 import React from "react";
 
 import { CartSummary, CheckoutProductList } from "@/components";
-import { CheckoutDetailsFragment } from "@/saleor/api";
 import { notNullable } from "@/lib/util";
+import { CheckoutDetailsFragment } from "@/saleor/api";
 
 interface CheckoutSidebarProps {
   checkout: CheckoutDetailsFragment;
