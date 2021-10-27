@@ -1,13 +1,12 @@
 import { useAuthState } from "@saleor/sdk";
 
-import { useOrdersQuery } from "@/saleor/api";
-
 import {
+  AccountBaseTemplate,
   OrdersTable,
   Pagination,
   Spinner,
-  AccountBaseTemplate,
 } from "@/components";
+import { useOrdersQuery } from "@/saleor/api";
 
 const OrdersPage = () => {
   const { authenticated } = useAuthState();

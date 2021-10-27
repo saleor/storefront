@@ -1,8 +1,8 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
 import { Navbar } from "@/components";
-import { useOrderDetailsQuery } from "@/saleor/api";
 import { formatAsMoney } from "@/lib/util";
+import { useOrderDetailsQuery } from "@/saleor/api";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -12,7 +12,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   };
 };
 
-const OrderDetailsPage = ({ orderToken }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const OrderDetailsPage = ({
+  orderToken,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { loading, error, data } = useOrderDetailsQuery({
     variables: { token: orderToken || "" },
     skip: !orderToken,

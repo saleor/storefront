@@ -1,11 +1,10 @@
+import { useAuthState } from "@saleor/sdk";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Image from "next/image";
 
+import { BaseTemplate } from "@/components";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
 import { useOrderDetailsByTokenQuery } from "@/saleor/api";
-import { useAuthState } from "@saleor/sdk";
-
-import { BaseTemplate } from "@/components";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -22,7 +21,9 @@ export async function getStaticPaths() {
   };
 }
 
-const OrderDetailsPage = ({ token }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const OrderDetailsPage = ({
+  token,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { authenticated } = useAuthState();
   const { loading, error, data } = useOrderDetailsByTokenQuery({
     variables: { token: token },

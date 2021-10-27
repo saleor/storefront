@@ -1,6 +1,7 @@
-import { DeliveryMethodFragment } from "@/saleor/api";
 import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
+
+import { DeliveryMethodFragment } from "@/saleor/api";
 
 export interface ShippingMethodOptionProps {
   method: DeliveryMethodFragment;

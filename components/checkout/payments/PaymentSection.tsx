@@ -1,8 +1,8 @@
-import {
-  CheckoutDetailsFragment,
-} from "@/saleor/api";
 import { RadioGroup } from "@headlessui/react";
 import React, { useState } from "react";
+
+import { CheckoutDetailsFragment } from "@/saleor/api";
+
 import DummyCreditCardSection, {
   DUMMY_CREDIT_CARD_GATEWAY,
 } from "./DummyCreditCardSection";
