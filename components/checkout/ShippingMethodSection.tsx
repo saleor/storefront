@@ -9,6 +9,7 @@ import {
 import { Button } from "../Button";
 import ShippingMethodDisplay from "./ShippingMethodDisplay";
 import { ShippingMethodOption } from "./ShippingMethodOption";
+import { notNullable } from "@/lib/util";
 
 export interface ShippingMethodSectionProps {
   checkout: CheckoutDetailsFragment;
@@ -44,7 +45,7 @@ export const ShippingMethodSection = ({
   };
 
   const availableShippingMethods =
-    checkout.availableShippingMethods.filter((m) => !!m) || [];
+    checkout.availableShippingMethods.filter(notNullable) || [];
 
   return (
     <>

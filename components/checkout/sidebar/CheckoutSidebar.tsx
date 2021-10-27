@@ -2,13 +2,14 @@ import React from "react";
 
 import { CartSummary, CheckoutProductList } from "@/components";
 import { CheckoutDetailsFragment } from "@/saleor/api";
+import { notNullable } from "@/lib/util";
 
 interface CheckoutSidebarProps {
   checkout: CheckoutDetailsFragment;
 }
 
 export const CheckoutSidebar = ({ checkout }: CheckoutSidebarProps) => {
-  const lines = checkout.lines?.filter((l) => !!l) || [];
+  let lines = checkout.lines?.filter(notNullable) || [];
   return (
     <section className="max-w-md w-full flex flex-col ">
       <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 p-4">

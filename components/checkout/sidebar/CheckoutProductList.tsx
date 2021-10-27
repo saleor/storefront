@@ -3,12 +3,11 @@ import React from "react";
 
 import {
   CheckoutLineDetailsFragment,
-  Maybe,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
 
 export interface CheckoutProductListProps {
-  lines: Maybe<CheckoutLineDetailsFragment>[];
+  lines: CheckoutLineDetailsFragment[];
   token: string;
 }
 
