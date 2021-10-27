@@ -1,11 +1,9 @@
 module.exports = {
-  siteUrl: process.env.SITE_URL || "https://localhost:3001",
+  siteUrl: process.env.NEXT_PUBLIC_VERCEL_URL,
   generateRobotsTxt: true,
   exclude: ["/checkout", "/account/preferences", "/[sitemap]"],
   robotsTxtOptions: {
-    additionalSitemaps: [
-      process.env.SITE_URL || "https://localhost:3001" + "/[sitemap]",
-    ],
+    additionalSitemaps: [process.env.NEXT_PUBLIC_VERCEL_URL + "/[sitemap]"],
     policies: [
       {
         userAgent: "*",
