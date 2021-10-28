@@ -16,12 +16,14 @@ import {
   CheckoutError,
   ProductBySlugDocument,
   ProductBySlugQuery,
+  ProductMediaFragment,
   ProductPathsDocument,
   ProductPathsQuery,
   useAddProductToCheckoutMutation,
   useCheckoutByTokenQuery,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
+import { ImageExpand } from "@/components/ImageExpand";
 
 const ProductPage = ({
   productSSG,
@@ -38,6 +40,9 @@ const ProductPage = ({
   const [addProductToCheckout] = useAddProductToCheckoutMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
+  const [expandedImage, setExpandedImage] = useState<
+    ProductMediaFragment | undefined
+  >(undefined);
 
   const product = productSSG?.data?.product;
   if (!product?.id) {
@@ -122,20 +127,30 @@ const ProductPage = ({
     <BaseTemplate>
       <ProductPageSeo product={product} />
 
-      <main className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-7xl mx-auto pt-8 px-8">
-        <div className="w-full aspect-w-1 aspect-h-1 ">
-          {!!productImage && (
-            <Image
-              src={productImage.url}
-              alt="Product cover image"
-              layout="fill"
-              objectFit="cover"
-              className="w-full h-full object-center object-cover"
-            />
-          )}
+      <main className="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-screen overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8">
+        <div
+          className="md:col-span-2 mt-1 mb-2 w-full max-h-screen overflow-auto grid grid-cols-1 md:grid-cols-2 md:h-full h-96 overflow-auto"
+          style={{ scrollSnapType: "both mandatory" }}
+        >
+          {product.media?.map((media) => {
+            return (
+              <div
+                key={media.url}
+                className={"aspect-w-1 aspect-h-1"}
+                onClick={() => setExpandedImage(media)}
+              >
+                <Image
+                  src={media.url}
+                  alt={media.alt}
+                  layout="fill"
+                  objectFit="cover"
+                ></Image>
+              </div>
+            );
+          })}
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-8 mt-10 md:mt-0">
           <div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-800">
               {product?.name}
@@ -172,6 +187,10 @@ const ProductPage = ({
           )}
           {!!addToCartError && <p>{addToCartError}</p>}
         </div>
+        <ImageExpand
+          image={expandedImage}
+          onRemoveExpand={() => setExpandedImage(undefined)}
+        />
       </main>
     </BaseTemplate>
   );
