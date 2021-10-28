@@ -1,19 +1,21 @@
-import React, { FormEvent, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js/pure";
 import {
   CardElement,
   Elements,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js/pure";
+import { useRouter } from "next/router";
+import React, { FormEvent, useState } from "react";
+
+import { CHECKOUT_TOKEN } from "@/lib/const";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
   useCheckoutPaymentCreateMutation,
 } from "@/saleor/api";
-import { useRouter } from "next/router";
+
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
-import { CHECKOUT_TOKEN } from "@/lib/const";
 
 export const STRIPE_GATEWAY = "saleor.payments.stripe";
 
@@ -21,11 +23,7 @@ interface StripeCardFormInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-const StripeCardForm: React.VFC<StripeCardFormInterface> = ({
-  checkout,
-}: {
-  checkout: CheckoutDetailsFragment;
-}) => {
+const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();

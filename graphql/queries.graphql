@@ -12,12 +12,15 @@ fragment ProductMediaFragment on ProductMedia {
 }
 
 fragment AddressDetailsFragment on Address {
+  id
   phone
   firstName
   lastName
   streetAddress1
   city
   postalCode
+  isDefaultBillingAddress
+  isDefaultShippingAddress
   country {
     code
     country
@@ -703,6 +706,43 @@ query OrderDetailsByToken($token: UUID!) {
     shippingPrice {
       gross {
         ...PriceFragment
+      }
+    }
+  }
+}
+
+query UserAddresses {
+  me {
+    addresses {
+      ...AddressDetailsFragment
+    }
+  }
+}
+
+enum AddressTypeEnum {
+  BILLING
+  SHIPPING
+}
+
+mutation SetAddressDefault($id: ID!, $type: AddressTypeEnum!) {
+  accountSetDefaultAddress(id: $id, type: $type) {
+    user {
+      addresses {
+        ...AddressDetailsFragment
+      }
+    }
+    errors {
+      code
+      message
+    }
+  }
+}
+
+mutation DeleteAddress($id: ID!) {
+  accountAddressDelete(id: $id) {
+    user {
+      addresses {
+        ...AddressDetailsFragment
       }
     }
   }

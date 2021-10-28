@@ -4,9 +4,9 @@ export interface ShippingMethodDisplayProps {
   method: DeliveryMethodFragment;
 }
 
-export const ShippingMethodDisplay: React.VFC<ShippingMethodDisplayProps> = ({
+export const ShippingMethodDisplay = ({
   method,
-}) => {
+}: ShippingMethodDisplayProps) => {
   return (
     <div>
       <div className="mt-6 text-sm font-medium text-gray-900">

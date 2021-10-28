@@ -1,7 +1,7 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+
+import { BaseTemplate, RichText } from "@/components";
 import { usePageQuery } from "@/saleor/api";
-import BaseTemplate from "@/components/BaseTemplate";
-import RichText from "@/components/RichText";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   return {
@@ -11,9 +11,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   };
 };
 
-const PagePage: React.VFC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+const PagePage = ({
   pageSlug,
-}) => {
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { loading, error, data } = usePageQuery({
     variables: { slug: pageSlug || "" },
     skip: !pageSlug,

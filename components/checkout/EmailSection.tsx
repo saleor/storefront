@@ -1,16 +1,18 @@
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+
 import {
   CheckoutDetailsFragment,
   useCheckoutEmailUpdateMutation,
 } from "@/saleor/api";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+
 import { Button } from "../Button";
 
 export interface EmailSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const EmailSection: React.VFC<EmailSectionProps> = ({ checkout }) => {
+export const EmailSection = ({ checkout }: EmailSectionProps) => {
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
   const [checkoutEmailUpdate] = useCheckoutEmailUpdateMutation({});

@@ -1,10 +1,12 @@
-import { CheckoutDetailsFragment } from "@/saleor/api";
 import React from "react";
-import { ShippingMethodSection } from "./ShippingMethodSection";
+
+import { CheckoutDetailsFragment } from "@/saleor/api";
+
 import BillingAddressSection from "./BillingAddressSection";
-import ShippingAddressSection from "./ShippingAddressSection";
 import { EmailSection } from "./EmailSection";
 import PaymentSection from "./payments/PaymentSection";
+import ShippingAddressSection from "./ShippingAddressSection";
+import { ShippingMethodSection } from "./ShippingMethodSection";
 
 interface CollapsedSections {
   billingAddress: boolean;
@@ -43,18 +45,18 @@ const sectionsManager = (
   return state;
 };
 
-export const CheckoutForm = ({
-  checkout,
-}: {
+interface Props {
   checkout?: CheckoutDetailsFragment;
-}) => {
+}
+
+export const CheckoutForm = ({ checkout }: Props) => {
   const collapsedSections = sectionsManager(checkout);
   if (!checkout) {
     return <></>;
   }
 
   return (
-    <section className=" border-r flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
+    <section className="flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">
       <div className="checkout-section-container">
         <EmailSection checkout={checkout} />
       </div>

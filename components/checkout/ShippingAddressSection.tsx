@@ -1,9 +1,12 @@
+import React, { useState } from "react";
+
+import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
   CountryCode,
   useCheckoutShippingAddressUpdateMutation,
 } from "@/saleor/api";
-import React, { useState } from "react";
+
 import { Button } from "../Button";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
@@ -13,10 +16,10 @@ export interface ShippingAddressSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const ShippingAddressSection: React.VFC<ShippingAddressSectionProps> = ({
+export const ShippingAddressSection = ({
   active,
   checkout,
-}) => {
+}: ShippingAddressSectionProps) => {
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] =
     useCheckoutShippingAddressUpdateMutation({});
@@ -58,7 +61,9 @@ export const ShippingAddressSection: React.VFC<ShippingAddressSectionProps> = ({
         token: checkout.token,
       },
     });
-    return data?.checkoutShippingAddressUpdate?.errors.filter((e) => !!e) || [];
+    return (
+      data?.checkoutShippingAddressUpdate?.errors.filter(notNullable) || []
+    );
   };
 
   return (

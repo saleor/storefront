@@ -1,8 +1,11 @@
+import React, { useState } from "react";
+
+import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
   useCheckoutBillingAddressUpdateMutation,
 } from "@/saleor/api";
-import React, { useState } from "react";
+
 import { Button } from "../Button";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
@@ -12,10 +15,10 @@ export interface BillingAddressSection {
   checkout: CheckoutDetailsFragment;
 }
 
-export const BillingAddressSection: React.VFC<BillingAddressSection> = ({
+export const BillingAddressSection = ({
   active,
   checkout,
-}) => {
+}: BillingAddressSection) => {
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] =
     useCheckoutBillingAddressUpdateMutation({});
@@ -29,7 +32,7 @@ export const BillingAddressSection: React.VFC<BillingAddressSection> = ({
         token: checkout.token,
       },
     });
-    return data?.checkoutBillingAddressUpdate?.errors.filter((e) => !!e) || [];
+    return data?.checkoutBillingAddressUpdate?.errors.filter(notNullable) || [];
   };
 
   return (

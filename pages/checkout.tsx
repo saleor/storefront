@@ -1,14 +1,12 @@
-import { CheckoutSidebar, CheckoutForm, Navbar } from "@/components";
-import BaseTemplate from "@/components/BaseTemplate";
-import BaseSeo from "@/components/seo/BaseSeo";
-import Spinner from "@/components/Spinner";
-import { CHECKOUT_TOKEN } from "@/lib/const";
-import { useCheckoutByTokenQuery } from "@/saleor/api";
-import Link from "next/link";
 import React from "react";
 import { useLocalStorage } from "react-use";
 
-export default function CheckoutPage() {
+import { BaseTemplate, CheckoutForm, CheckoutSidebar } from "@/components";
+import BaseSeo from "@/components/seo/BaseSeo";
+import { CHECKOUT_TOKEN } from "@/lib/const";
+import { useCheckoutByTokenQuery } from "@/saleor/api";
+
+const CheckoutPage = () => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);
   const { data: checkoutData, loading } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
@@ -35,14 +33,16 @@ export default function CheckoutPage() {
     <BaseTemplate>
       <BaseSeo title="Checkout - Saleor Tutorial" />
 
-      <main className="min-h-screen overflow-hidden grid grid-cols-1 md:grid-cols-3">
-        <div className="col-span-2">
+      <main className="min-h-screen w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
+        <div className="md:w-2/3 w-full">
           <CheckoutForm checkout={checkout} />
         </div>
-        <div className="w-full">
+        <div className="md:w-1/3 w-full">
           <CheckoutSidebar checkout={checkout} />
         </div>
       </main>
     </BaseTemplate>
   );
-}
+};
+
+export default CheckoutPage;

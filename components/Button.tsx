@@ -1,5 +1,5 @@
-import React from "react";
 import clsx from "clsx";
+import React from "react";
 
 const styles = `bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200`;
 
@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 
-export const Button: React.VFC<Props> = ({ onClick, className, children }) => {
+export const Button = ({ onClick, className, children }: Props) => {
   return (
     <button className={clsx(styles, className)} onClick={onClick}>
       {children}

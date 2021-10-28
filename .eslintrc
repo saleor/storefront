@@ -1,4 +1,12 @@
 {
   "extends": ["next", "next/core-web-vitals", "prettier"],
-  "ignorePatterns": ["saleor/api.tsx"]
+  "ignorePatterns": ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json"],
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn",
+    "import/first": "warn",
+    "import/newline-after-import": "warn",
+    "import/no-duplicates": "warn"
+  }
 }

@@ -1,10 +1,11 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+
 import {
   AddressDetailsFragment,
   CheckoutError,
   CountryCode,
 } from "@/saleor/api";
-import React from "react";
-import { useForm } from "react-hook-form";
 
 export interface AddressFormData {
   firstName: string;
@@ -22,11 +23,11 @@ export interface AddressFormProps {
   updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
 }
 
-export const AddressForm: React.VFC<AddressFormProps> = ({
+export const AddressForm = ({
   existingAddressData,
   toggleEdit,
   updateAddressMutation,
-}) => {
+}: AddressFormProps) => {
   const {
     register: registerAddress,
     handleSubmit: handleSubmitAddress,

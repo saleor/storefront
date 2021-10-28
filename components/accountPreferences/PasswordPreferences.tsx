@@ -1,13 +1,15 @@
-import { usePasswordChangeMutation } from "@/saleor/api";
 import React from "react";
 import { useForm } from "react-hook-form";
+
+import { usePasswordChangeMutation } from "@/saleor/api";
+
 interface PasswordChangeFormData {
   oldPassword: string;
   newPassword: string;
   newPasswordRepeat: string;
 }
 
-export const PasswordPreferences: React.VFC<any> = ({}) => {
+export const PasswordPreferences = () => {
   const [passwordChangeMutation] = usePasswordChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<String>("");
 

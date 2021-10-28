@@ -1,25 +1,26 @@
+import Image from "next/image";
+import React from "react";
+
 import {
   CheckoutLineDetailsFragment,
-  Maybe,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
-import React from "react";
-import Image from "next/image";
+
 export interface CheckoutProductListProps {
-  lines: Maybe<CheckoutLineDetailsFragment>[];
+  lines: CheckoutLineDetailsFragment[];
   token: string;
 }
 
-export const CheckoutProductList: React.VFC<CheckoutProductListProps> = ({
+export const CheckoutProductList = ({
   lines,
   token,
-}) => {
+}: CheckoutProductListProps) => {
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   return (
     <ul
       role="list"
-      className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4"
+      className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4 md:pr-4 md:pl-0"
     >
       {lines.map((line) => {
         if (!line) {

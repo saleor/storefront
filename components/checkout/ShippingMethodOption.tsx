@@ -1,14 +1,13 @@
-import { DeliveryMethodFragment } from "@/saleor/api";
 import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
+
+import { DeliveryMethodFragment } from "@/saleor/api";
 
 export interface ShippingMethodOptionProps {
   method: DeliveryMethodFragment;
 }
 
-export const ShippingMethodOption: React.VFC<ShippingMethodOptionProps> = ({
-  method,
-}) => {
+export const ShippingMethodOption = ({ method }: ShippingMethodOptionProps) => {
   return (
     <RadioGroup.Option
       key={method.id}

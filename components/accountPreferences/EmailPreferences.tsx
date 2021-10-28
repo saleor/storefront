@@ -1,13 +1,15 @@
 import React from "react";
-import { useRequestEmailChangeMutation } from "@/saleor/api";
 import { useForm } from "react-hook-form";
+
+import { useRequestEmailChangeMutation } from "@/saleor/api";
+
 interface EmailChangeFormData {
   newEmail: string;
   password: string;
   redirectUrl: string;
 }
 
-export const EmailPreferences: React.VFC<any> = ({}) => {
+export const EmailPreferences = () => {
   const [requestEmailChange] = useRequestEmailChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<String>();
   const {

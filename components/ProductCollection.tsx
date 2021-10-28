@@ -1,19 +1,20 @@
 import React from "react";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
+
 import { Pagination } from "./Pagination";
-import Spinner from "./Spinner";
 import { ProductCard } from "./ProductCard";
+import { Spinner } from "./Spinner";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
   allowMore?: boolean;
 }
 
-export const ProductCollection: React.VFC<ProductCollectionProps> = ({
+export const ProductCollection = ({
   filter,
   allowMore = true,
-}) => {
+}: ProductCollectionProps) => {
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
     variables: { filter: filter },
   });

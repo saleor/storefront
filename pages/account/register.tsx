@@ -1,6 +1,5 @@
-import { useAuth, useAuthState } from "@saleor/sdk";
+import { useAuth } from "@saleor/sdk";
 import Link from "next/link";
-
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +9,7 @@ export interface RegisterFormData {
   password: string;
 }
 
-const RegisterPage: React.VFC = () => {
+const RegisterPage = () => {
   const router = useRouter();
   const { register } = useAuth();
   const {
@@ -18,7 +17,6 @@ const RegisterPage: React.VFC = () => {
     handleSubmit: handleSubmitForm,
     formState: { errors: errorsForm },
     setError: setErrorForm,
-    getValues,
   } = useForm<RegisterFormData>({});
 
   const handleRegister = handleSubmitForm(
