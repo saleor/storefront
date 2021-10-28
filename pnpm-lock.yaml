@@ -59,6 +59,7 @@ dependencies:
   graphql: 16.0.1
   next: 12.0.2_react-dom@17.0.2+react@17.0.2
   next-seo: 4.28.1_c26ef06698b9ab1b17bf6451df0179c6
+  next-sitemap: 1.6.203_next@12.0.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-hook-form: 7.18.1_react@17.0.2
@@ -3047,7 +3048,6 @@ packages:
   /escape-string-regexp/4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
-    dev: true
 
   /eslint-config-next/12.0.2_66d207263647b78e34ede3147eaf5a19:
     resolution: {integrity: sha512-Tck3Ga3IQ+/6ziTraLc1CTQ9kw2jWzjgZtB6wsBOAvMauK25a/ociCW8SFXsYWVFb899tdqPemrTZEeXjXjrvQ==}
@@ -4874,6 +4874,18 @@ packages:
       next: 12.0.2_react-dom@17.0.2+react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /next-sitemap/1.6.203_next@12.0.2:
+    resolution: {integrity: sha512-WigcoqIUNbXQa2GnwOiCOydGx/XHCS4kRtIPNEsc8DGX2XvJtbAJKRxcidZZ2KihTAtwwCu1XQ4Hbof4mJbvLg==}
+    hasBin: true
+    peerDependencies:
+      next: '*'
+    dependencies:
+      '@corex/deepmerge': 2.6.34
+      matcher: 4.0.0
+      minimist: 1.2.5
+      next: 12.0.2_react-dom@17.0.2+react@17.0.2
     dev: false
 
   /next/12.0.2_react-dom@17.0.2+react@17.0.2:
