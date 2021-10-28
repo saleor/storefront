@@ -6,7 +6,7 @@ import { HamburgerButton } from "./HamburgerButton";
 import Link from "next/link";
 import clsx from "clsx";
 
-export const MainMenu: React.VFC = () => {
+export const MainMenu = () => {
   const { loading, error, data } = useMainMenuQuery();
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 
@@ -40,7 +40,7 @@ export const MainMenu: React.VFC = () => {
         )}
       >
         {/* lg:max-w-7xl */}
-        <div className="mt-5 mx-3 z-40 absolute h-screen w-screen lg:max-w-7xl md:h-56 bg-white border border-gray-200 rounded-md shadow-lg outline-none">
+        <div className="mt-5 mr-2 -ml-2 md:mx-3 z-40 absolute h-screen w-screen lg:max-w-7xl md:h-56 bg-white border border-gray-200 rounded-md shadow-lg outline-none">
           <div className="flex flex-col md:flex-row cursor-default md:divide-x md:divide-gray-200">
             {menu?.map((item) => {
               return (
