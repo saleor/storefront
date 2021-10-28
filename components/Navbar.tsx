@@ -9,7 +9,7 @@ import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 import { useRouter } from "next/router";
 import { useApolloClient } from "@apollo/client";
-import { MainMenu } from "./MainMenu";
+import { MainMenu } from "@/components/MainMenu";
 
 export const Navbar = () => {
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
@@ -33,7 +33,7 @@ export const Navbar = () => {
 
   return (
     <div className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto pr-8">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex">
             <MainMenu />

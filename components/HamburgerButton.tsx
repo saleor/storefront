@@ -4,15 +4,12 @@ interface HamburgerButtonProps {
   onClick: (ev: any) => void;
   active?: boolean;
 }
-export const HamburgerButton: React.VFC<HamburgerButtonProps> = ({
-  onClick,
-  active,
-}) => {
+export const HamburgerButton = ({ active, onClick }: HamburgerButtonProps) => {
   return (
     <button
       onClick={(ev) => onClick(ev)}
       className={clsx(
-        "flex-shrink-0 h-6 w-6 mt-4 ml-3 cursor-pointer",
+        "flex-shrink-0 h-6 w-6 mt-4 cursor-pointer",
         active && "bg-gray-100 rounded-md border-1 shadow-inner"
       )}
     >
