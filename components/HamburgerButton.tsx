@@ -9,7 +9,7 @@ export const HamburgerButton = ({ active, onClick }: HamburgerButtonProps) => {
     <button
       onClick={(ev) => onClick(ev)}
       className={clsx(
-        "flex-shrink-0 h-6 w-6 mt-4 cursor-pointer",
+        "flex-shrink-0 h-6 w-6 cursor-pointer",
         active && "bg-gray-100 rounded-md border-1 shadow-inner"
       )}
     >
