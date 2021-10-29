@@ -1,10 +1,10 @@
+import clsx from "clsx";
+import Link from "next/link";
 import React from "react";
 
 import { useMainMenuQuery } from "@/saleor/api";
-import { HamburgerButton } from "./HamburgerButton";
 
-import Link from "next/link";
-import clsx from "clsx";
+import { HamburgerButton } from "./HamburgerButton";
 
 export const MainMenu = () => {
   const { loading, error, data } = useMainMenuQuery();
@@ -27,7 +27,7 @@ export const MainMenu = () => {
   };
 
   return (
-    <div className="group relative flex pt-2 flex-col">
+    <div className="group relative justify-center flex pt-2 flex-col">
       <HamburgerButton
         active={openDropdown}
         onClick={(ev: MouseEvent) => onClickButton(ev)}
@@ -39,14 +39,16 @@ export const MainMenu = () => {
           !openDropdown && "invisible opacity-0"
         )}
       >
-        {/* lg:max-w-7xl */}
         <div className="mt-5 mr-2 -ml-2 md:mx-3 z-40 absolute h-screen w-screen lg:max-w-7xl md:h-56 bg-white border border-gray-200 rounded-md shadow-lg outline-none">
           <div className="flex flex-col md:flex-row cursor-default md:divide-x md:divide-gray-200">
             {menu?.map((item) => {
               return (
-                <div key={item?.name} className="md:pl-10 ml-5 md:ml-16 mt-10">
+                <div
+                  key={item?.name}
+                  className="h-32 md:pl-10 ml-5 md:ml-16 mt-10"
+                >
                   <h2 className="font-semibold text-md">{item?.name}</h2>
-                  <ul className="mt-3">
+                  <ul className="mt-3 absolute">
                     {item?.children?.map((child) => {
                       return (
                         <li
