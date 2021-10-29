@@ -1,5 +1,6 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { useAuthState } from "@saleor/sdk";
+import clsx from "clsx";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import React, { useState } from "react";
 import { useLocalStorage } from "react-use";
 
 import { BaseTemplate, RichText, VariantSelector } from "@/components";
+import { ImageExpand } from "@/components/ImageExpand";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
@@ -23,8 +25,6 @@ import {
   useCheckoutByTokenQuery,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
-import { ImageExpand } from "@/components/ImageExpand";
-import clsx from "clsx";
 
 const ProductPage = ({
   productSSG,
@@ -163,7 +163,7 @@ const ProductPage = ({
                     alt={media.alt}
                     layout="fill"
                     objectFit="cover"
-                  ></Image>
+                  />
                 </div>
               );
             })}
