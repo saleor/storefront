@@ -71,7 +71,7 @@ const OrderDetailsPage = ({
                           alt={line?.thumbnail?.alt || " "}
                           width={70}
                           height={70}
-                        ></Image>
+                        />
                         <div className="flex flex-col justify-center">
                           <div>{line?.productName}</div>
                           <div className="text-xs text-left text-gray-600">
