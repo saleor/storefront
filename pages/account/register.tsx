@@ -24,7 +24,7 @@ const RegisterPage = () => {
       const { data } = await register({
         email: formData.email,
         password: formData.password,
-        redirectUrl: `${window.location.host})/account/confirm`,
+        redirectUrl: `${window.location.origin}/account/confirm`,
       });
 
       if (data?.accountRegister?.errors.length) {
