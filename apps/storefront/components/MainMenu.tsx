@@ -27,7 +27,7 @@ export const MainMenu = () => {
   };
 
   return (
-    <div className="group relative justify-center flex pt-2 flex-col">
+    <div className="group relative justify-center flex flex-col">
       <HamburgerButton
         active={openDropdown}
         onClick={(ev: MouseEvent) => onClickButton(ev)}
