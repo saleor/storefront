@@ -1,14 +1,15 @@
-import { useApolloClient } from "@apollo/client";
 import { ShoppingBagIcon, UserCircleIcon } from "@heroicons/react/outline";
 import { useAuth, useAuthState } from "@saleor/sdk";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import { useLocalStorage } from "react-use";
 
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
+import { useRouter } from "next/router";
+import { useApolloClient } from "@apollo/client";
+import { MainMenu } from "@/components/MainMenu";
 
 export const Navbar = () => {
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
@@ -32,15 +33,18 @@ export const Navbar = () => {
 
   return (
     <div className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
-          <Link href="/">
-            <a>
-              <div className="block h-16 w-28 relative">
-                <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
-              </div>
-            </a>
-          </Link>
+          <div className="flex">
+            <MainMenu />
+            <Link href="/">
+              <a>
+                <div className="mt-px group block h-16 w-28 relative">
+                  <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
+                </div>
+              </a>
+            </Link>
+          </div>
           <div className="flex space-x-8">
             <Link href="/cart">
               <a className="group -m-2 p-2 flex items-center">
