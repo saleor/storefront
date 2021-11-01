@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from "@apollo/client";
+import { PlayIcon } from "@heroicons/react/outline";
 import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
@@ -12,6 +13,7 @@ import { useLocalStorage } from "react-use";
 import { BaseTemplate, RichText, VariantSelector } from "@/components";
 import { ImageExpand } from "@/components/ImageExpand";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
+import { VideoExpand } from "@/components/VideoExpand";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import {
@@ -42,6 +44,9 @@ const ProductPage = ({
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
   const [expandedImage, setExpandedImage] = useState<
+    ProductMediaFragment | undefined
+  >(undefined);
+  const [videoToPlay, setVideoToPlay] = useState<
     ProductMediaFragment | undefined
   >(undefined);
 
@@ -134,7 +139,8 @@ const ProductPage = ({
             "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8",
             product.media && product.media.length > 1 && "md:grid-cols-3",
             product.media && product.media.length === 1 && "md:grid-cols-2",
-            expandedImage && "hidden"
+            expandedImage && "hidden",
+            videoToPlay && "hidden"
           )}
         >
           <div
@@ -153,17 +159,38 @@ const ProductPage = ({
                 <div
                   key={media.url}
                   className={"aspect-w-1 aspect-h-1"}
-                  onClick={() => setExpandedImage(media)}
                   style={{
                     scrollSnapAlign: "start",
                   }}
                 >
-                  <Image
-                    src={media.url}
-                    alt={media.alt}
-                    layout="fill"
-                    objectFit="cover"
-                  />
+                  {media.type === "IMAGE" && (
+                    <Image
+                      onClick={() => setExpandedImage(media)}
+                      src={media.url}
+                      alt={media.alt}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  )}
+                  {media.type === "VIDEO" && (
+                    <div onClick={() => setVideoToPlay(media)}>
+                      <Image
+                        src={
+                          "https://img.youtube.com/vi/di8_dJ3Clyo/maxresdefault.jpg"
+                        }
+                        alt={media.alt}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                      <div
+                        className={
+                          "transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 absolute w-full h-full flex justify-center items-center bg-transparent"
+                        }
+                      >
+                        <PlayIcon className="h-12 w-12" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -213,6 +240,14 @@ const ProductPage = ({
           <ImageExpand
             image={expandedImage}
             onRemoveExpand={() => setExpandedImage(undefined)}
+          />
+        </div>
+      )}
+      {videoToPlay && (
+        <div className="absolute min-h-screen min-w-screen top-0 bottom-0 left-0 right-0 z-40">
+          <VideoExpand
+            video={videoToPlay}
+            onRemoveExpand={() => setVideoToPlay(undefined)}
           />
         </div>
       )}
