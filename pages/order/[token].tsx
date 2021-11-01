@@ -1,7 +1,9 @@
+import { CheckIcon } from "@heroicons/react/outline";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import Link from "next/link";
+import React from "react";
 
-import { Navbar } from "@/components";
-import { formatAsMoney } from "@/lib/util";
+import { BaseTemplate } from "@/components";
 import { useOrderDetailsQuery } from "@/saleor/api";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
@@ -29,25 +31,17 @@ const OrderDetailsPage = ({
   const order = data.orderByToken;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-
+    <BaseTemplate>
       <main className="max-w-7xl mx-auto pt-8 px-8">
-        <div className="grid grid-cols-2 gap-x-10 items-start">
-          <p>
-            Order #{order?.number} - {order?.statusDisplay}
-          </p>
-          <p>Lines: {order?.lines.length}</p>
-          <p>
-            Total:
-            {formatAsMoney(
-              order?.total.gross.amount,
-              order?.total.gross.currency
-            )}
-          </p>
-        </div>
+        <CheckIcon className="text-green-700" />
+        <div className="font-semibold text-3xl">Your order is completed!</div>
+        <p className="mt-3  ">Order number: #{order?.number}</p>
+        <p className="mt-2">
+          To check the other details,
+          <Link href={`/account/orders/${orderToken}`}> click here.</Link>
+        </p>
       </main>
-    </div>
+    </BaseTemplate>
   );
 };
 
