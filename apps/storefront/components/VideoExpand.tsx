@@ -4,14 +4,15 @@ import React from "react";
 import { ProductMediaFragment } from "@/saleor/api";
 
 interface VideoExpandProps {
-  video?: ProductMediaFragment;
+  videoId?: string;
   onRemoveExpand: () => void;
 }
 
-export const VideoExpand = ({ video, onRemoveExpand }: VideoExpandProps) => {
-  if (!video) {
+export const VideoExpand = ({ videoId, onRemoveExpand }: VideoExpandProps) => {
+  if (!videoId) {
     return null;
   }
+
   return (
     <div
       className={
@@ -26,12 +27,9 @@ export const VideoExpand = ({ video, onRemoveExpand }: VideoExpandProps) => {
       </div>
       <div className="w-full h-full absolute md:mt-10 flex justify-center items-center">
         <iframe
-          src={"https://www.youtube.com/embed/di8_dJ3Clyo?autoplay=1"}
-          width="853"
-          height="480"
-          allow="autoplay"
+          src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1"}
+          className="w-full h-4/5 md:w-4/5"
           allowFullScreen
-          title={video.alt}
         />
       </div>
     </div>
