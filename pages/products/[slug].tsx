@@ -46,9 +46,9 @@ const ProductPage = ({
   const [expandedImage, setExpandedImage] = useState<
     ProductMediaFragment | undefined
   >(undefined);
-  const [videoToPlay, setVideoToPlay] = useState<
-    ProductMediaFragment | undefined
-  >(undefined);
+  const [videoIdToPlay, setVideoIdToPlay] = useState<string | undefined>(
+    undefined
+  );
 
   const product = productSSG?.data?.product;
   if (!product?.id) {
@@ -66,6 +66,13 @@ const ProductPage = ({
   const selectedVariant = product?.variants?.find(
     (v) => v?.id === selectedVariantID
   );
+
+  const youtube_parser = (url: string) => {
+    var regExp =
+      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return match && match[7].length == 11 ? match[7] : undefined;
+  };
 
   const onAddToCart = async () => {
     // Clear previous error messages
@@ -140,7 +147,7 @@ const ProductPage = ({
             product.media && product.media.length > 1 && "md:grid-cols-3",
             product.media && product.media.length === 1 && "md:grid-cols-2",
             expandedImage && "hidden",
-            videoToPlay && "hidden"
+            videoIdToPlay && "hidden"
           )}
         >
           <div
@@ -173,10 +180,17 @@ const ProductPage = ({
                     />
                   )}
                   {media.type === "VIDEO" && (
-                    <div onClick={() => setVideoToPlay(media)}>
+                    <div
+                      onClick={() => {
+                        const videoId = youtube_parser(media.url);
+                        setVideoIdToPlay(videoId);
+                      }}
+                    >
                       <Image
                         src={
-                          "https://img.youtube.com/vi/di8_dJ3Clyo/maxresdefault.jpg"
+                          "https://img.youtube.com/vi/" +
+                          youtube_parser(media.url) +
+                          "/maxresdefault.jpg"
                         }
                         alt={media.alt}
                         layout="fill"
@@ -243,11 +257,11 @@ const ProductPage = ({
           />
         </div>
       )}
-      {videoToPlay && (
+      {videoIdToPlay && (
         <div className="absolute min-h-screen min-w-screen top-0 bottom-0 left-0 right-0 z-40">
           <VideoExpand
-            video={videoToPlay}
-            onRemoveExpand={() => setVideoToPlay(undefined)}
+            videoId={videoIdToPlay}
+            onRemoveExpand={() => setVideoIdToPlay(undefined)}
           />
         </div>
       )}
