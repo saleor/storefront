@@ -1,5 +1,5 @@
-query ProductBySlug($slug: String!) {
-  product(slug: $slug, channel: "default-channel") {
+query ProductBySlug($slug: String!, $channel: String!) {
+  product(slug: $slug, channel: $channel) {
     ...ProductDetailsFragment
   }
 }

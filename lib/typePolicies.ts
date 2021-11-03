@@ -8,7 +8,7 @@ export const typePolicies: TypedTypePolicies = {
   Money: {
     fields: {
       localizedAmount: {
-        read(_, { readField }) {
+        read(_, { readField, args }) {
           return formatAsMoney(readField("amount"), readField("currency"));
         },
       },

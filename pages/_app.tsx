@@ -1,12 +1,13 @@
 import "styles/globals.css";
 
 import { ApolloProvider } from "@apollo/client";
-import { SaleorProvider } from "@saleor/sdk";
 import { NextPage } from "next";
 import { AppProps } from "next/app";
-import { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
-import apolloClient, { saleorClient } from "@/lib/graphql";
+import ChannelsProvider from "@/components/ChannelsProvider";
+import SaleorProviderWithChannels from "@/components/SaleorProviderWithChannels";
+import apolloClient from "@/lib/graphql";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -20,11 +21,13 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <SaleorProvider client={saleorClient}>
-        {getLayout(<Component {...pageProps} />)}
-      </SaleorProvider>
-    </ApolloProvider>
+    <ChannelsProvider>
+      <ApolloProvider client={apolloClient}>
+        <SaleorProviderWithChannels>
+          {getLayout(<Component {...pageProps} />)}
+        </SaleorProviderWithChannels>
+      </ApolloProvider>
+    </ChannelsProvider>
   );
 };
 

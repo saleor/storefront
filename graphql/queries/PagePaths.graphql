@@ -1,5 +1,5 @@
-query CategoryPaths($after: String) {
-  categories(first: 100, after: $after) {
+query PagePaths($after: String) {
+  pages(first: 100, after: $after) {
     pageInfo {
       ...PageInfoFragment
     }
