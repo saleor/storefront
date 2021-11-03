@@ -25,6 +25,7 @@ const SearchPage = () => {
         <input
           className="md:w-96 mb-10 block border-gray-300 rounded-md shadow-sm sm:text-sm"
           type="text"
+          value={filter || ""}
           placeholder="Search..."
           onChange={(e) => setFilter(e.target.value)}
         />
