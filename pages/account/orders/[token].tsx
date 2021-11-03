@@ -35,7 +35,7 @@ const OrderDetailsPage = ({
   if (loading) return <BaseTemplate isLoading={true}></BaseTemplate>;
   if (error) return <div>Error : {error.message}</div>;
 
-  if (typeof window !== "undefined" && !authenticated) {
+  if (process.browser && !authenticated) {
     router.push({
       pathname: "/account/login",
       query: { next: `/account/orders/${token}` },
