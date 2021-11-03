@@ -51,7 +51,9 @@ export const Navbar = () => {
           </div>
           <div className="flex space-x-px md:space-x-8 items-center">
             <SearchIcon
-              className={"h-6 w-6"}
+              className={
+                "flex-shrink-0 h-6 w-6 text-gray-400 hover:text-gray-500"
+              }
               onClick={() => router.push("/search")}
             />
             <Link href="/cart">
