@@ -43,10 +43,10 @@ const OrderDetailsPage = ({
     return null;
   }
 
-  if (!data) {
+  if (!data || !data.orderByToken) {
     return null;
   }
-  let order = data?.orderByToken;
+  let order = data.orderByToken;
 
   return (
     <BaseTemplate>
