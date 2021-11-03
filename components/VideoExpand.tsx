@@ -1,15 +1,16 @@
 import { XIcon } from "@heroicons/react/outline";
 import React from "react";
 
+import { getYouTubeIDFromURL } from "@/lib/util";
 import { ProductMediaFragment } from "@/saleor/api";
 
 interface VideoExpandProps {
-  videoId?: string;
+  video?: ProductMediaFragment;
   onRemoveExpand: () => void;
 }
 
-export const VideoExpand = ({ videoId, onRemoveExpand }: VideoExpandProps) => {
-  if (!videoId) {
+export const VideoExpand = ({ video, onRemoveExpand }: VideoExpandProps) => {
+  if (!video) {
     return null;
   }
 
@@ -27,8 +28,13 @@ export const VideoExpand = ({ videoId, onRemoveExpand }: VideoExpandProps) => {
       </div>
       <div className="w-full h-full absolute md:mt-10 flex justify-center items-center">
         <iframe
-          src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1"}
+          src={
+            "https://www.youtube.com/embed/" +
+            getYouTubeIDFromURL(video.url) +
+            "?autoplay=1"
+          }
           className="w-full h-4/5 md:w-4/5"
+          allow="autoplay"
           allowFullScreen
         />
       </div>
