@@ -16,6 +16,7 @@ import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { VideoExpand } from "@/components/VideoExpand";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
+import { getYouTubeIDFromURL } from "@/lib/util";
 import {
   CheckoutError,
   ProductBySlugDocument,
@@ -46,9 +47,9 @@ const ProductPage = ({
   const [expandedImage, setExpandedImage] = useState<
     ProductMediaFragment | undefined
   >(undefined);
-  const [videoIdToPlay, setVideoIdToPlay] = useState<string | undefined>(
-    undefined
-  );
+  const [videoToPlay, setVideoToPlay] = useState<
+    ProductMediaFragment | undefined
+  >(undefined);
 
   const product = productSSG?.data?.product;
   if (!product?.id) {
@@ -66,13 +67,6 @@ const ProductPage = ({
   const selectedVariant = product?.variants?.find(
     (v) => v?.id === selectedVariantID
   );
-
-  const youtube_parser = (url: string) => {
-    var regExp =
-      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    var match = url.match(regExp);
-    return match && match[7].length == 11 ? match[7] : undefined;
-  };
 
   const onAddToCart = async () => {
     // Clear previous error messages
@@ -147,7 +141,7 @@ const ProductPage = ({
             product.media && product.media.length > 1 && "md:grid-cols-3",
             product.media && product.media.length === 1 && "md:grid-cols-2",
             expandedImage && "hidden",
-            videoIdToPlay && "hidden"
+            videoToPlay && "hidden"
           )}
         >
           <div
@@ -182,14 +176,13 @@ const ProductPage = ({
                   {media.type === "VIDEO" && (
                     <div
                       onClick={() => {
-                        const videoId = youtube_parser(media.url);
-                        setVideoIdToPlay(videoId);
+                        setVideoToPlay(media);
                       }}
                     >
                       <Image
                         src={
                           "https://img.youtube.com/vi/" +
-                          youtube_parser(media.url) +
+                          getYouTubeIDFromURL(media.url) +
                           "/maxresdefault.jpg"
                         }
                         alt={media.alt}
@@ -257,11 +250,11 @@ const ProductPage = ({
           />
         </div>
       )}
-      {videoIdToPlay && (
+      {videoToPlay && (
         <div className="absolute min-h-screen min-w-screen top-0 bottom-0 left-0 right-0 z-40">
           <VideoExpand
-            videoId={videoIdToPlay}
-            onRemoveExpand={() => setVideoIdToPlay(undefined)}
+            video={videoToPlay}
+            onRemoveExpand={() => setVideoToPlay(undefined)}
           />
         </div>
       )}
