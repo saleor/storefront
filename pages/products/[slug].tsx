@@ -130,6 +130,13 @@ const ProductPage = ({
 
   const productImage = product?.media![0];
 
+  let media;
+  queryVariant &&
+  selectedVariant?.id === queryVariant &&
+  selectedVariant.media?.length !== 0
+    ? (media = selectedVariant.media)
+    : (media = product.media);
+
   return (
     <>
       <BaseTemplate>
@@ -138,8 +145,8 @@ const ProductPage = ({
         <main
           className={clsx(
             "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8",
-            product.media && product.media.length > 1 && "md:grid-cols-3",
-            product.media && product.media.length === 1 && "md:grid-cols-2",
+            media && media.length > 1 && "md:grid-cols-3",
+            media && media.length === 1 && "md:grid-cols-2",
             expandedImage && "hidden",
             videoToPlay && "hidden"
           )}
@@ -147,15 +154,13 @@ const ProductPage = ({
           <div
             className={clsx(
               "mt-1 mb-2 w-full max-h-screen overflow-scroll grid grid-cols-1 md:h-full h-96",
-              product.media &&
-                product.media.length > 1 &&
-                "md:grid-cols-2 md:col-span-2"
+              media && media.length > 1 && "md:grid-cols-2 md:col-span-2"
             )}
             style={{
               scrollSnapType: "both mandatory",
             }}
           >
-            {product.media?.map((media) => {
+            {media?.map((media) => {
               return (
                 <div
                   key={media.url}
