@@ -7,7 +7,7 @@ module.exports = withBundleAnalyzer({
   swcMinify: true,
   images: {
     domains: ["vercel.saleor.cloud", "img.youtube.com"],
-    //formats: ["image/avif", "image/webp"],
+    formats: ["image/avif", "image/webp"],
   },
   i18n: {
     locales: ["en-US"],
