@@ -50,12 +50,15 @@ export const Navbar = () => {
             </Link>
           </div>
           <div className="flex space-x-px md:space-x-8 items-center">
-            <SearchIcon
-              className={
-                "flex-shrink-0 h-6 w-6 text-gray-400 hover:text-gray-500"
-              }
-              onClick={() => router.push("/search")}
-            />
+            <Link href="/search">
+              <a className="-m-2 p-2 flex items-center">
+                <SearchIcon
+                  className={
+                    "flex-shrink-0 h-6 w-6 text-gray-400 hover:text-gray-500"
+                  }
+                />
+              </a>
+            </Link>
             <Link href="/cart">
               <a className="group -m-2 p-2 flex items-center">
                 <ShoppingBagIcon

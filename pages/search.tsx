@@ -6,16 +6,16 @@ import { BaseTemplate, ProductCollection } from "@/components";
 import { ProductFilterInput } from "@/saleor/api";
 
 const SearchPage = () => {
-  const [filter, setFilter] = useQueryState("search");
+  const [searchQuery, setSearchQuery] = useQueryState("q");
   const [debouncedFilter, setDebouncedFilter] =
-    React.useState<ProductFilterInput>({ search: filter });
+    React.useState<ProductFilterInput>({ search: searchQuery });
 
   const [] = useDebounce(
     () => {
-      setDebouncedFilter({ search: filter });
+      setDebouncedFilter({ search: searchQuery });
     },
     1000,
-    [filter]
+    [searchQuery]
   );
 
   return (
@@ -25,9 +25,9 @@ const SearchPage = () => {
         <input
           className="md:w-96 mb-10 block border-gray-300 rounded-md shadow-sm sm:text-sm"
           type="text"
-          value={filter || ""}
-          placeholder="Search..."
-          onChange={(e) => setFilter(e.target.value)}
+          value={searchQuery || ""}
+          placeholder={"Search..."}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <ProductCollection filter={debouncedFilter} />
       </main>
