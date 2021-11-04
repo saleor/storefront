@@ -43,15 +43,12 @@ export const DummyCreditCardSection = ({
     setError: setErrorCard,
   } = useForm<CardForm>({});
 
-  const redirectToOrderDetailsPage = (orderToken: string) => {
+  const redirectToOrderDetailsPage = () => {
     // remove completed checkout
     localStorage.removeItem(CHECKOUT_TOKEN);
 
     // redirect to the order details page
-    router.push({
-      pathname: "/order/[token]",
-      query: { token: orderToken },
-    });
+    router.push("/order");
   };
 
   const handleSubmit = handleSubmitCard(async (formData: CardForm) => {
@@ -92,7 +89,7 @@ export const DummyCreditCardSection = ({
     let order = completeData?.checkoutComplete?.order;
     // If there are no errors during payment and confirmation, order should be created
     if (order) {
-      redirectToOrderDetailsPage(order.token);
+      redirectToOrderDetailsPage();
       return;
     } else {
       console.error("Order was not created");
