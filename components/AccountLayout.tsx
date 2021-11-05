@@ -13,7 +13,11 @@ export const AccountLayout = ({ children }: AccountLayoutProps) => {
   const router = useRouter();
   const { authenticated, authenticating } = useAuthState();
   if (authenticating) {
-    return <Layout></Layout>;
+    return (
+      <Layout>
+        <Spinner />
+      </Layout>
+    );
   }
 
   if (!authenticated && process.browser) {
