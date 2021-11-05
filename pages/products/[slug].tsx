@@ -21,6 +21,7 @@ import {
   CheckoutError,
   ProductBySlugDocument,
   ProductBySlugQuery,
+  ProductDetailsFragment,
   ProductMediaFragment,
   ProductPathsDocument,
   ProductPathsQuery,
@@ -130,12 +131,28 @@ const ProductPage = ({
 
   const productImage = product?.media![0];
 
-  let media;
-  queryVariant &&
-  selectedVariant?.id === queryVariant &&
-  selectedVariant.media?.length !== 0
-    ? (media = selectedVariant.media)
-    : (media = product.media);
+  /**
+   * if a variant has been selected by the user and this variant has media, return only those items.
+   * Otherwise, all product media are returned.
+   * @param   {ProductDetailsFragment} product  The product object
+   * @param   {ProductVariant} selectedVariant   The selected variant object
+   * @return  {ProductMediaFragment[]}   The media object that will be displayed to the user
+   */
+
+  const getGalleryMedia = (
+    product: ProductDetailsFragment,
+    selectedVariant: any
+  ) => {
+    if (
+      queryVariant &&
+      selectedVariant?.id === queryVariant &&
+      selectedVariant.media?.length !== 0
+    )
+      return selectedVariant.media;
+    return product.media;
+  };
+
+  const media = getGalleryMedia(product, selectedVariant);
 
   return (
     <>
