@@ -1,0 +1,11 @@
+query ProductPaths($after: String) {
+  products(first: 50, channel: "default-channel", after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        slug
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import AddressDisplay from "@/components/checkout/AddressDisplay";
 import {
   AddressDetailsFragment,
   AddressTypeEnum,
-  useDeleteAddressMutation,
+  useAddressDeleteMutation,
   useSetAddressDefaultMutation,
 } from "@/saleor/api";
 
@@ -17,7 +17,7 @@ export const AddressBookCard = ({
   onRefreshBook,
 }: AddressBookCardProps) => {
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
-  const [deleteAddressMutation] = useDeleteAddressMutation();
+  const [deleteAddressMutation] = useAddressDeleteMutation();
 
   let cardHeader = "";
   if (address.isDefaultShippingAddress && address.isDefaultBillingAddress) {

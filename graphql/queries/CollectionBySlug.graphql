@@ -1,0 +1,12 @@
+query CollectionBySlug($slug: String!) {
+  collection(slug: $slug, channel: "default-channel") {
+    id
+    ...CollectionDetailsFragment
+    seoTitle
+    seoDescription
+    description
+    backgroundImage {
+      ...ImageFragment
+    }
+  }
+}

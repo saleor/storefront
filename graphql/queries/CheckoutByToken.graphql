@@ -1,0 +1,5 @@
+query CheckoutByToken($checkoutToken: UUID!) {
+  checkout(token: $checkoutToken) {
+    ...CheckoutDetailsFragment
+  }
+}

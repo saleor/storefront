@@ -1,0 +1,26 @@
+fragment ProductCardFragment on Product {
+  id
+  slug
+  name
+  thumbnail {
+    ...ImageFragment
+  }
+  category {
+    name
+  }
+  pricing {
+    onSale
+    priceRange {
+      start {
+        gross {
+          ...PriceFragment
+        }
+      }
+      stop {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+fragment DeliveryMethodFragment on ShippingMethod {
+  id
+  name
+  price {
+    ...PriceFragment
+  }
+  minimumDeliveryDays
+  maximumDeliveryDays
+}

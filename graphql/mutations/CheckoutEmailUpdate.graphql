@@ -1,0 +1,11 @@
+mutation CheckoutEmailUpdate($token: UUID!, $email: String!) {
+  checkoutEmailUpdate(email: $email, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

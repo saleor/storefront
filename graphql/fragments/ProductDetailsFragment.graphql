@@ -1,0 +1,35 @@
+fragment ProductDetailsFragment on Product {
+  id
+  name
+  slug
+  description
+  seoDescription
+  seoTitle
+  isAvailableForPurchase
+  category {
+    ...CategoryBasicFragment
+  }
+  variants {
+    id
+    name
+    quantityAvailable
+  }
+  pricing {
+    priceRange {
+      start {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+  media {
+    ...ProductMediaFragment
+  }
+  thumbnail {
+    ...ImageFragment
+  }
+  category {
+    name
+  }
+}

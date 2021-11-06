@@ -1,0 +1,18 @@
+
+fragment MenuItemFragment on MenuItem {
+  id
+  name
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+    content
+  }
+}
