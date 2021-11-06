@@ -2,11 +2,11 @@ import { useAuthState } from "@saleor/sdk";
 import React, { ReactElement } from "react";
 
 import { AccountLayout, AddressBookCard, Spinner } from "@/components";
-import { useUserAddressesQuery } from "@/saleor/api";
+import { useCurrentUserAddressesQuery } from "@/saleor/api";
 
 const AddressBookPage = () => {
   const { authenticated } = useAuthState();
-  const { loading, error, data, refetch } = useUserAddressesQuery({
+  const { loading, error, data, refetch } = useCurrentUserAddressesQuery({
     skip: !authenticated,
     fetchPolicy: "network-only",
   });

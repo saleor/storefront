@@ -1,0 +1,17 @@
+mutation AddressSetDefault(
+  $addressID: ID!
+  $userID: ID!
+  $addressType: AddressTypeEnum!
+) {
+  addressSetDefault(
+    addressId: $addressID
+    type: $addressType
+    userId: $userID
+  ) {
+    errors {
+      field
+      message
+      code
+    }
+  }
+}

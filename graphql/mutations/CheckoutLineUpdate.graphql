@@ -1,0 +1,10 @@
+mutation CheckoutLineUpdate($token: UUID, $lines: [CheckoutLineInput!]!) {
+  checkoutLinesUpdate(token: $token, lines: $lines) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      ...ErrorDetailsFragment
+    }
+  }
+}

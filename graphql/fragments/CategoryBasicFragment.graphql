@@ -1,0 +1,5 @@
+fragment CategoryBasicFragment on Category {
+  id
+  name
+  slug
+}

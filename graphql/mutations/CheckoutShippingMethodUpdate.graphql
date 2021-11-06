@@ -1,0 +1,15 @@
+mutation CheckoutShippingMethodUpdate($token: UUID!, $shippingMethodId: ID!) {
+  checkoutShippingMethodUpdate(
+    shippingMethodId: $shippingMethodId
+    token: $token
+  ) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}

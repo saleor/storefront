@@ -1,0 +1,28 @@
+fragment CheckoutLineDetailsFragment on CheckoutLine {
+  id
+  totalPrice {
+    gross {
+      ...PriceFragment
+    }
+  }
+  variant {
+    id
+    product {
+      id
+      name
+      slug
+      thumbnail {
+        ...ImageFragment
+      }
+    }
+    pricing {
+      price {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    name
+  }
+  quantity
+}
