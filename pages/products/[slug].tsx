@@ -152,6 +152,27 @@ const ProductPage = ({
 
   const media = getGalleryMedia(product, selectedVariant);
 
+  /**
+   * When a variant is selected, the attributes are changed to the attributes of the variant. Otherwise, the product
+   * attributes are shown
+   * @param   {ProductDetailsFragment} product  The product object
+   * @param   {ProductVariant} selectedVariant   The selected variant object
+   * @return  The attributes that will be shown to the user for the chosen product
+   */
+
+  const getProductAttributes = (
+    product: ProductDetailsFragment,
+    selectedVariant: any
+  ) => {
+    if (queryVariant && selectedVariant?.id === queryVariant)
+      return selectedVariant.attributes;
+    return product.attributes;
+  };
+
+  const attributes = getProductAttributes(product, selectedVariant);
+
+  const productImage = product?.media![0];
+
   return (
     <>
       <ProductPageSeo product={product} />
@@ -236,12 +257,6 @@ const ProductPage = ({
           </div>
 
           <p className="text-2xl text-gray-900">{price}</p>
-
-          {product?.description && (
-            <div className="text-base text-gray-700 space-y-6">
-              <RichText jsonStringData={product.description} />
-            </div>
-          )}
           <VariantSelector
             product={product}
             selectedVariantID={selectedVariantID}
@@ -251,7 +266,7 @@ const ProductPage = ({
               onClick={onAddToCart}
               type="submit"
               disabled={loadingAddToCheckout}
-              className="max-w-xs w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
+              className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
             >
               {loadingAddToCheckout ? "Adding..." : "Add to cart"}
             </button>
@@ -259,6 +274,40 @@ const ProductPage = ({
             <p className="text-lg- text-yellow-600">Sold out!</p>
           )}
           {!!addToCartError && <p>{addToCartError}</p>}
+
+          {product?.description && (
+            <div className="text-base text-gray-700 space-y-6">
+              <RichText jsonStringData={product.description} />
+            </div>
+          )}
+
+          {attributes.length > 0 && (
+            <div>
+              <p className="text-xl font-semibold mb-2">Attributes</p>
+              <div className="">
+                {attributes.map((attribute: any) => (
+                  <div
+                    key={attribute.attribute.name}
+                    className="grid grid-cols-2"
+                  >
+                    <div>
+                      <p>{attribute.attribute.name}</p>
+                    </div>
+                    <div>
+                      {attribute.values.map((value: any, index: number) => (
+                        <p key={index}>
+                          {value.name}
+                          {attribute.values.length !== index + 1 && (
+                            <div>{" | "}</div>
+                          )}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
