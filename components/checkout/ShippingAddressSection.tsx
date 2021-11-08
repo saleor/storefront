@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import { ChoosePredefinedAddress } from "@/components";
 import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
@@ -81,6 +82,11 @@ export const ShippingAddressSection = ({
       </div>
       {active && (
         <>
+          <ChoosePredefinedAddress
+            updateAddressMutation={(address: AddressFormData) =>
+              updateMutation(address)
+            }
+          />
           {editing ? (
             <>
               <div className="col-span-full">

@@ -3,6 +3,7 @@ export { AddressBookCard } from "./AddressBookCard";
 export { BaseTemplate } from "./BaseTemplate";
 export { CartSummary } from "./CartSummary";
 export { CheckoutForm } from "./checkout/CheckoutForm";
+export { ChoosePredefinedAddress } from "./checkout/ChoosePredefinedAddress";
 export { CheckoutPriceEntry } from "./checkout/sidebar/CheckoutPriceEntry";
 export { CheckoutProductList } from "./checkout/sidebar/CheckoutProductList";
 export { CheckoutSidebar } from "./checkout/sidebar/CheckoutSidebar";

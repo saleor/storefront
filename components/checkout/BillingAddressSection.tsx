@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import { ChoosePredefinedAddress } from "@/components";
 import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
@@ -50,6 +51,11 @@ export const BillingAddressSection = ({
       </div>
       {active && (
         <>
+          <ChoosePredefinedAddress
+            updateAddressMutation={(address: AddressFormData) =>
+              updateMutation(address)
+            }
+          />
           {editing ? (
             <AddressForm
               existingAddressData={checkout.billingAddress || undefined}
