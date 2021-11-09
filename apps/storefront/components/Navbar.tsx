@@ -1,15 +1,19 @@
-import { ShoppingBagIcon, UserCircleIcon } from "@heroicons/react/outline";
+import { useApolloClient } from "@apollo/client";
+import {
+  SearchIcon,
+  ShoppingBagIcon,
+  UserCircleIcon,
+} from "@heroicons/react/outline";
 import { useAuth, useAuthState } from "@saleor/sdk";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { useLocalStorage } from "react-use";
 
+import { MainMenu } from "@/components/MainMenu";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
-import { useRouter } from "next/router";
-import { useApolloClient } from "@apollo/client";
-import { MainMenu } from "@/components/MainMenu";
 
 export const Navbar = () => {
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
@@ -35,7 +39,7 @@ export const Navbar = () => {
     <div className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
-          <div className="flex">
+          <div className="flex justify-between items-center">
             <MainMenu />
             <Link href="/">
               <a>
@@ -45,7 +49,16 @@ export const Navbar = () => {
               </a>
             </Link>
           </div>
-          <div className="flex space-x-8">
+          <div className="flex space-x-px md:space-x-8 items-center">
+            <Link href="/search">
+              <a className="-m-2 p-2 flex items-center">
+                <SearchIcon
+                  className={
+                    "flex-shrink-0 h-6 w-6 text-gray-400 hover:text-gray-500"
+                  }
+                />
+              </a>
+            </Link>
             <Link href="/cart">
               <a className="group -m-2 p-2 flex items-center">
                 <ShoppingBagIcon
