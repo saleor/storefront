@@ -16,7 +16,7 @@ import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { VideoExpand } from "@/components/VideoExpand";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
-import { getYouTubeIDFromURL } from "@/lib/util";
+import { getYouTubeIDFromURL, notNullable } from "@/lib/util";
 import {
   CheckoutError,
   ProductBySlugDocument,
@@ -148,8 +148,8 @@ const ProductPage = ({
       selectedVariant?.id === queryVariant &&
       selectedVariant.media?.length !== 0
     )
-      return selectedVariant.media;
-    return product.media;
+      return selectedVariant.media.filter(notNullable);
+    return product?.media?.filter(notNullable) || [];
   };
 
   const media = getGalleryMedia(product, selectedVariant);
@@ -177,7 +177,7 @@ const ProductPage = ({
               scrollSnapType: "both mandatory",
             }}
           >
-            {media?.map((media) => {
+            {media?.map((media: ProductMediaFragment) => {
               return (
                 <div
                   key={media.url}
