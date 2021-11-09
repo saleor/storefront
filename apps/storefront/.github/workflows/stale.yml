@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: actions/stale@v4
         with:
-          days-before-stale: 2
-          days-before-close: 2
+          days-before-stale: 7
+          days-before-close: 7
           days-before-pr-close: -1
