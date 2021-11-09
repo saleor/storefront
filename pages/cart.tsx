@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import React, { ReactElement } from "react";
@@ -27,6 +28,8 @@ const Cart = () => {
   const [quantityForLine, setQuantityForLine] = React.useState<
     { lineId: string | undefined; quantity: number | undefined }[] | []
   >();
+
+  const [quantityErrors, setQuantityErrors] = React.useState<any>(null);
 
   React.useEffect(() => {
     const quantityForLines = data?.checkout?.lines?.map((line) => ({
@@ -59,23 +62,25 @@ const Cart = () => {
   };
 
   const onQuantityUpdate = async (event: any, lineID: string) => {
-    if (event?.target?.validity?.valid) {
-      changeLineState(event, lineID);
-      if (event.target.value !== "") {
-        const lineFromCheckout = data?.checkout?.lines?.find(
-          (line) => line?.id === lineID
-        );
-        await checkoutLineUpdateMutation({
-          variables: {
-            checkoutId: data?.checkout?.id,
-            lines: [
-              {
-                quantity: parseFloat(event.target.value),
-                variantId: lineFromCheckout?.variant.id || "",
-              },
-            ],
-          },
-        });
+    changeLineState(event, lineID);
+    if (event.target.value !== "") {
+      const lineFromCheckout = data?.checkout?.lines?.find(
+        (line) => line?.id === lineID
+      );
+      const result = await checkoutLineUpdateMutation({
+        variables: {
+          checkoutId: data?.checkout?.id,
+          lines: [
+            {
+              quantity: parseFloat(event.target.value),
+              variantId: lineFromCheckout?.variant.id || "",
+            },
+          ],
+        },
+      });
+      const errors = result.data?.checkoutLinesUpdate?.errors;
+      if (errors && errors.length > 0) {
+        setQuantityErrors(errors);
       }
     }
   };
@@ -149,17 +154,39 @@ const Cart = () => {
                               >
                                 <span>Remove</span>
                               </button>
+                              {quantityErrors && (
+                                <div>
+                                  {quantityErrors.map((error: any) => (
+                                    <span
+                                      className="text-red-500 text-sm font-medium"
+                                      key={error.field}
+                                    >
+                                      {error.message}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                             <div className="flex justify-items-end space-x-4">
                               <input
                                 type="number"
-                                className="h-8 w-16 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+                                className={clsx(
+                                  "h-8 w-16 block border-gray-300 rounded-md shadow-sm sm:text-sm",
+                                  quantityErrors && "border-red-500"
+                                )}
                                 value={
                                   quantityForLine?.find(
                                     (q) => q?.lineId === lineID
                                   )?.quantity
                                 }
-                                onChange={(ev) => onQuantityUpdate(ev, lineID)}
+                                onFocus={() => setQuantityErrors(null)}
+                                onChange={(ev) => changeLineState(ev, lineID)}
+                                onBlur={(ev) => onQuantityUpdate(ev, lineID)}
+                                onKeyPress={(ev) => {
+                                  if (ev.key === "Enter") {
+                                    onQuantityUpdate(ev, lineID);
+                                  }
+                                }}
                                 min={1}
                                 disabled={loadingLineUpdate}
                                 pattern="[0-9]*"
