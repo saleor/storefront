@@ -1,9 +1,9 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Custom404 from "pages/404";
-import React from "react";
+import React, { ReactElement } from "react";
 
-import { BaseTemplate, PageHero, ProductCollection } from "@/components";
+import { Layout, PageHero, ProductCollection, Spinner } from "@/components";
 import CategoryPageSeo from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
 import {
@@ -33,7 +33,7 @@ const CategoryPage = ({
   });
 
   if (loading) {
-    return <BaseTemplate isLoading={true} />;
+    return <Spinner />;
   }
   if (error) return <p>Error</p>;
 
@@ -44,7 +44,7 @@ const CategoryPage = ({
   }
 
   return (
-    <BaseTemplate>
+    <>
       <CategoryPageSeo category={category} />
       <header className="mb-4 pt-4">
         <div className="max-w-7xl mx-auto px-8">
@@ -56,7 +56,7 @@ const CategoryPage = ({
           <ProductCollection filter={{ categories: [category?.id] }} />
         </div>
       </main>
-    </BaseTemplate>
+    </>
   );
 };
 
@@ -78,3 +78,7 @@ export async function getStaticPaths() {
     fallback: true,
   };
 }
+
+CategoryPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};

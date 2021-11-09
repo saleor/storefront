@@ -1,15 +1,15 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import React from "react";
+import React, { ReactElement } from "react";
 
-import { BaseTemplate, HomepageBlock } from "@/components";
+import { HomepageBlock, Layout } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import apolloClient from "@/lib/graphql";
 import { MenuQuery, MenuQueryDocument } from "@/saleor/api";
 
 const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <BaseTemplate>
+    <>
       <BaseSeo />
       <div className="py-10">
         <header className="mb-4">
@@ -23,7 +23,7 @@ const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
           </div>
         </main>
       </div>
-    </BaseTemplate>
+    </>
   );
 };
 
@@ -41,4 +41,8 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
     revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
   };
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
