@@ -1,5 +1,7 @@
+import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 
+import { SavedAddressSelectionList } from "@/components";
 import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
@@ -20,6 +22,7 @@ export const ShippingAddressSection = ({
   active,
   checkout,
 }: ShippingAddressSectionProps) => {
+  const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] =
     useCheckoutShippingAddressUpdateMutation({});
@@ -61,6 +64,7 @@ export const ShippingAddressSection = ({
         token: checkout.token,
       },
     });
+    setEditing(false);
     return (
       data?.checkoutShippingAddressUpdate?.errors.filter(notNullable) || []
     );
@@ -83,6 +87,13 @@ export const ShippingAddressSection = ({
         <>
           {editing ? (
             <>
+              {authenticated && (
+                <SavedAddressSelectionList
+                  updateAddressMutation={(address: AddressFormData) =>
+                    updateMutation(address)
+                  }
+                />
+              )}
               <div className="col-span-full">
                 <button
                   className="btn-checkout-section"

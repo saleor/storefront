@@ -1,5 +1,7 @@
+import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 
+import { SavedAddressSelectionList } from "@/components";
 import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
@@ -19,6 +21,7 @@ export const BillingAddressSection = ({
   active,
   checkout,
 }: BillingAddressSection) => {
+  const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] =
     useCheckoutBillingAddressUpdateMutation({});
@@ -32,6 +35,7 @@ export const BillingAddressSection = ({
         token: checkout.token,
       },
     });
+    setEditing(false);
     return data?.checkoutBillingAddressUpdate?.errors.filter(notNullable) || [];
   };
 
@@ -51,11 +55,20 @@ export const BillingAddressSection = ({
       {active && (
         <>
           {editing ? (
-            <AddressForm
-              existingAddressData={checkout.billingAddress || undefined}
-              toggleEdit={() => setEditing(false)}
-              updateAddressMutation={updateMutation}
-            />
+            <>
+              {authenticated && (
+                <SavedAddressSelectionList
+                  updateAddressMutation={(address: AddressFormData) =>
+                    updateMutation(address)
+                  }
+                />
+              )}
+              <AddressForm
+                existingAddressData={checkout.billingAddress || undefined}
+                toggleEdit={() => setEditing(false)}
+                updateAddressMutation={updateMutation}
+              />
+            </>
           ) : (
             <section className="flex justify-between items-center mb-4">
               {!!checkout.billingAddress && (
