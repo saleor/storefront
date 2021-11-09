@@ -1,7 +1,7 @@
-name: Lint
+name: QA
 on: pull_request
 jobs:
-  build:
+  build-and-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,3 +14,4 @@ jobs:
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm lint
+      - run: pnpm build
