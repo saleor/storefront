@@ -1,3 +1,4 @@
+import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 
 import { SavedAddressSelectionList } from "@/components";
@@ -21,6 +22,7 @@ export const ShippingAddressSection = ({
   active,
   checkout,
 }: ShippingAddressSectionProps) => {
+  const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] =
     useCheckoutShippingAddressUpdateMutation({});
@@ -85,11 +87,13 @@ export const ShippingAddressSection = ({
         <>
           {editing ? (
             <>
-              <SavedAddressSelectionList
-                updateAddressMutation={(address: AddressFormData) =>
-                  updateMutation(address)
-                }
-              />
+              {authenticated && (
+                <SavedAddressSelectionList
+                  updateAddressMutation={(address: AddressFormData) =>
+                    updateMutation(address)
+                  }
+                />
+              )}
               <div className="col-span-full">
                 <button
                   className="btn-checkout-section"

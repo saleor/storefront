@@ -1,3 +1,4 @@
+import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 
 import { SavedAddressSelectionList } from "@/components";
@@ -20,6 +21,7 @@ export const BillingAddressSection = ({
   active,
   checkout,
 }: BillingAddressSection) => {
+  const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] =
     useCheckoutBillingAddressUpdateMutation({});
@@ -54,11 +56,13 @@ export const BillingAddressSection = ({
         <>
           {editing ? (
             <>
-              <SavedAddressSelectionList
-                updateAddressMutation={(address: AddressFormData) =>
-                  updateMutation(address)
-                }
-              />
+              {authenticated && (
+                <SavedAddressSelectionList
+                  updateAddressMutation={(address: AddressFormData) =>
+                    updateMutation(address)
+                  }
+                />
+              )}
               <AddressForm
                 existingAddressData={checkout.billingAddress || undefined}
                 toggleEdit={() => setEditing(false)}

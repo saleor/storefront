@@ -28,7 +28,9 @@ export const SavedAddressSelectionList = ({
 
   if (error) return <p>Error : {error.message}</p>;
 
-  let addresses = data?.me?.addresses || [];
+  const addresses = data?.me?.addresses || [];
+
+  if (addresses.length === 0) return null;
 
   const onSelectSavedAddress = (address: AddressDetailsFragment) => {
     setSelectedSavedAddress(address);
@@ -43,7 +45,7 @@ export const SavedAddressSelectionList = ({
     });
   };
 
-  return addresses.length > 0 ? (
+  return (
     <div className="grid grid-cols-2 mb-2">
       {addresses.map((address) => {
         return (
@@ -68,7 +70,7 @@ export const SavedAddressSelectionList = ({
         );
       })}
     </div>
-  ) : null;
+  );
 };
 
 export default SavedAddressSelectionList;
