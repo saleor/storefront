@@ -2,7 +2,7 @@ overwrite: true
 schema:
   - ${NEXT_PUBLIC_API_URI}
   - local-schema.graphql
-documents: "graphql/**/*.{ts,graphql}"
+documents: "graphql/**/*.graphql"
 generates:
   saleor/api.tsx:
     plugins:
@@ -19,6 +19,20 @@ generates:
         JSONString: string
         # SampleScalar: Scalar.SampleScalar
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
+  graphql/types.generated.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+  graphql/:
+    preset: near-operation-file
+    presetConfig:
+      baseTypesPath: "types.generated.ts"
+      # importAllFragmentsFrom: '~types'
+      extension: .ts
+      folder: __generated__
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
   ./graphql.schema.json:
     plugins:
       - "introspection"

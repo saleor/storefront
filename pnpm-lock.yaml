@@ -5,6 +5,7 @@ specifiers:
   '@graphql-codegen/add': ^3.1.0
   '@graphql-codegen/cli': 2.2.2
   '@graphql-codegen/introspection': 2.1.0
+  '@graphql-codegen/near-operation-file-preset': ^2.2.1
   '@graphql-codegen/typescript': 2.3.0
   '@graphql-codegen/typescript-apollo-client-helpers': ^2.1.7
   '@graphql-codegen/typescript-operations': 2.2.0
@@ -70,6 +71,7 @@ devDependencies:
   '@graphql-codegen/add': 3.1.0_graphql@16.0.1
   '@graphql-codegen/cli': 2.2.2_graphql@16.0.1+typescript@4.4.4
   '@graphql-codegen/introspection': 2.1.0_graphql@16.0.1
+  '@graphql-codegen/near-operation-file-preset': 2.2.1_graphql@16.0.1
   '@graphql-codegen/typescript': 2.3.0_graphql@16.0.1
   '@graphql-codegen/typescript-apollo-client-helpers': 2.1.7_graphql@16.0.1
   '@graphql-codegen/typescript-operations': 2.2.0_graphql@16.0.1
@@ -846,6 +848,22 @@ packages:
       '@graphql-codegen/plugin-helpers': 2.3.0_graphql@16.0.1
       graphql: 16.0.1
       tslib: 2.3.1
+    dev: true
+
+  /@graphql-codegen/near-operation-file-preset/2.2.1_graphql@16.0.1:
+    resolution: {integrity: sha512-u5HkPBguSSBWAA2K/GFKruTDQwU5Ia2Rmwo8L7x3eJq0LPGRrnMgtjMFmnGYfkSr5ahDpp7G2fjWr2jNDvJZpQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-codegen/add': 3.1.0_graphql@16.0.1
+      '@graphql-codegen/plugin-helpers': 2.3.0_graphql@16.0.1
+      '@graphql-codegen/visitor-plugin-common': 2.5.0_graphql@16.0.1
+      '@graphql-tools/utils': 8.5.2_graphql@16.0.1
+      graphql: 16.0.1
+      parse-filepath: 1.0.2
+      tslib: 2.3.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@graphql-codegen/plugin-helpers/2.3.0_graphql@16.0.1:
