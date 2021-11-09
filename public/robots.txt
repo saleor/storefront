@@ -4,8 +4,9 @@ Allow: /
 
 # *
 User-agent: *
+Disallow: /cart
 Disallow: /checkout
-Disallow: /account/preferences
+Disallow: /account/*
 
 # Host
 Host: https://localhost:3001
