@@ -225,6 +225,9 @@ fragment ProductDetailsFragment on Product {
     id
     name
     quantityAvailable
+    media {
+      ...ProductMediaFragment
+    }
   }
   pricing {
     priceRange {

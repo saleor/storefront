@@ -16,11 +16,12 @@ import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { VideoExpand } from "@/components/VideoExpand";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
-import { getYouTubeIDFromURL } from "@/lib/util";
+import { getYouTubeIDFromURL, notNullable } from "@/lib/util";
 import {
   CheckoutError,
   ProductBySlugDocument,
   ProductBySlugQuery,
+  ProductDetailsFragment,
   ProductMediaFragment,
   ProductPathsDocument,
   ProductPathsQuery,
@@ -130,6 +131,29 @@ const ProductPage = ({
 
   const productImage = product?.media![0];
 
+  /**
+   * if a variant has been selected by the user and this variant has media, return only those items.
+   * Otherwise, all product media are returned.
+   * @param   {ProductDetailsFragment} product  The product object
+   * @param   {ProductVariant} selectedVariant   The selected variant object
+   * @return  {ProductMediaFragment[]}   The media object that will be displayed to the user
+   */
+
+  const getGalleryMedia = (
+    product: ProductDetailsFragment,
+    selectedVariant: any
+  ) => {
+    if (
+      queryVariant &&
+      selectedVariant?.id === queryVariant &&
+      selectedVariant.media?.length !== 0
+    )
+      return selectedVariant.media.filter(notNullable);
+    return product?.media?.filter(notNullable) || [];
+  };
+
+  const media = getGalleryMedia(product, selectedVariant);
+
   return (
     <>
       <BaseTemplate>
@@ -138,8 +162,8 @@ const ProductPage = ({
         <main
           className={clsx(
             "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8",
-            product.media && product.media.length > 1 && "md:grid-cols-3",
-            product.media && product.media.length === 1 && "md:grid-cols-2",
+            media && media.length > 1 && "md:grid-cols-3",
+            media && media.length === 1 && "md:grid-cols-2",
             expandedImage && "hidden",
             videoToPlay && "hidden"
           )}
@@ -147,15 +171,13 @@ const ProductPage = ({
           <div
             className={clsx(
               "mt-1 mb-2 w-full max-h-screen overflow-scroll grid grid-cols-1 md:h-full h-96",
-              product.media &&
-                product.media.length > 1 &&
-                "md:grid-cols-2 md:col-span-2"
+              media && media.length > 1 && "md:grid-cols-2 md:col-span-2"
             )}
             style={{
               scrollSnapType: "both mandatory",
             }}
           >
-            {product.media?.map((media) => {
+            {media?.map((media: ProductMediaFragment) => {
               return (
                 <div
                   key={media.url}
