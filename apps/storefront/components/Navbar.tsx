@@ -51,7 +51,7 @@ export const Navbar = () => {
           </div>
           <div className="flex space-x-px md:space-x-8 items-center">
             <Link href="/search">
-              <a className="-m-2 p-2 flex items-center">
+              <a className="-m-2 p-2 flex items-center" aria-label="Search">
                 <SearchIcon
                   className={
                     "flex-shrink-0 h-6 w-6 text-gray-400 hover:text-gray-500"

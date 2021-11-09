@@ -129,8 +129,6 @@ const ProductPage = ({
     setAddToCartError(errorMessages.join("\n"));
   };
 
-  const productImage = product?.media![0];
-
   /**
    * if a variant has been selected by the user and this variant has media, return only those items.
    * Otherwise, all product media are returned.
@@ -231,7 +229,7 @@ const ProductPage = ({
               {product?.name}
             </h1>
             <Link href={`/category/${product?.category?.slug}`} passHref>
-              <p className="text-lg mt-2 font-medium text-gray-500 cursor-pointer">
+              <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
                 {product?.category?.name}
               </p>
             </Link>
@@ -253,7 +251,7 @@ const ProductPage = ({
               onClick={onAddToCart}
               type="submit"
               disabled={loadingAddToCheckout}
-              className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
+              className="max-w-xs w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
             >
               {loadingAddToCheckout ? "Adding..." : "Add to cart"}
             </button>
