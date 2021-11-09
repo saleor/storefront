@@ -7,10 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Custom404 from "pages/404";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { useLocalStorage } from "react-use";
 
-import { BaseTemplate, RichText, VariantSelector } from "@/components";
+import { Layout, RichText, VariantSelector } from "@/components";
 import { ImageExpand } from "@/components/ImageExpand";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { VideoExpand } from "@/components/VideoExpand";
@@ -156,114 +156,114 @@ const ProductPage = ({
 
   return (
     <>
-      <BaseTemplate>
-        <ProductPageSeo product={product} />
-
-        <main
+      <ProductPageSeo product={product} />
+      <main
+        className={clsx(
+          "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8",
+          product.media && product.media.length > 1 && "md:grid-cols-3",
+          product.media && product.media.length === 1 && "md:grid-cols-2",
+          expandedImage && "hidden",
+          videoToPlay && "hidden"
+        )}
+      >
+        <div
           className={clsx(
-            "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8",
-            media && media.length > 1 && "md:grid-cols-3",
-            media && media.length === 1 && "md:grid-cols-2",
-            expandedImage && "hidden",
-            videoToPlay && "hidden"
+            "mt-1 mb-2 w-full max-h-screen overflow-scroll grid grid-cols-1 md:h-full h-96",
+            product.media &&
+              product.media.length > 1 &&
+              "md:grid-cols-2 md:col-span-2"
           )}
+          style={{
+            scrollSnapType: "both mandatory",
+          }}
         >
-          <div
-            className={clsx(
-              "mt-1 mb-2 w-full max-h-screen overflow-scroll grid grid-cols-1 md:h-full h-96",
-              media && media.length > 1 && "md:grid-cols-2 md:col-span-2"
-            )}
-            style={{
-              scrollSnapType: "both mandatory",
-            }}
-          >
-            {media?.map((media: ProductMediaFragment) => {
-              return (
-                <div
-                  key={media.url}
-                  className={"aspect-w-1 aspect-h-1"}
-                  style={{
-                    scrollSnapAlign: "start",
-                  }}
-                >
-                  {media.type === "IMAGE" && (
+          {media?.map((media: ProductMediaFragment) => {
+            return (
+              <div
+                key={media.url}
+                className={"aspect-w-1 aspect-h-1"}
+                style={{
+                  scrollSnapAlign: "start",
+                }}
+              >
+                {media.type === "IMAGE" && (
+                  <Image
+                    onClick={() => setExpandedImage(media)}
+                    src={media.url}
+                    alt={media.alt}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                )}
+                {media.type === "VIDEO" && (
+                  <div
+                    onClick={() => {
+                      setVideoToPlay(media);
+                    }}
+                  >
                     <Image
-                      onClick={() => setExpandedImage(media)}
-                      src={media.url}
+                      src={
+                        "https://img.youtube.com/vi/" +
+                        getYouTubeIDFromURL(media.url) +
+                        "/maxresdefault.jpg"
+                      }
                       alt={media.alt}
                       layout="fill"
                       objectFit="cover"
                     />
-                  )}
-                  {media.type === "VIDEO" && (
                     <div
-                      onClick={() => {
-                        setVideoToPlay(media);
-                      }}
+                      className={
+                        "transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 absolute w-full h-full flex justify-center items-center bg-transparent"
+                      }
                     >
-                      <Image
-                        src={
-                          "https://img.youtube.com/vi/" +
-                          getYouTubeIDFromURL(media.url) +
-                          "/maxresdefault.jpg"
-                        }
-                        alt={media.alt}
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                      <div
-                        className={
-                          "transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 absolute w-full h-full flex justify-center items-center bg-transparent"
-                        }
-                      >
-                        <PlayIcon className="h-12 w-12" />
-                      </div>
+                      <PlayIcon className="h-12 w-12" />
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="space-y-8 mt-10 md:mt-0">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-800">
-                {product?.name}
-              </h1>
-              <Link href={`/category/${product?.category?.slug}`} passHref>
-                <p className="text-lg mt-2 font-medium text-gray-500 cursor-pointer">
-                  {product?.category?.name}
-                </p>
-              </Link>
-            </div>
-
-            <p className="text-2xl text-gray-900">{price}</p>
-
-            {product?.description && (
-              <div className="text-base text-gray-700 space-y-6">
-                <RichText jsonStringData={product.description} />
+                  </div>
+                )}
               </div>
-            )}
-            <VariantSelector
-              product={product}
-              selectedVariantID={selectedVariantID}
-            />
-            {selectedVariant && selectedVariant?.quantityAvailable > 0 ? (
-              <button
-                onClick={onAddToCart}
-                type="submit"
-                disabled={loadingAddToCheckout}
-                className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
-              >
-                {loadingAddToCheckout ? "Adding..." : "Add to cart"}
-              </button>
-            ) : (
-              <p className="text-lg- text-yellow-600">Sold out!</p>
-            )}
-            {!!addToCartError && <p>{addToCartError}</p>}
+            );
+          })}
+        </div>
+
+        <div className="space-y-8 mt-10 md:mt-0">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-800">
+              {product?.name}
+            </h1>
+            <Link href={`/category/${product?.category?.slug}`} passHref>
+              <p className="text-lg mt-2 font-medium text-gray-500 cursor-pointer">
+                {product?.category?.name}
+              </p>
+            </Link>
           </div>
-        </main>
-      </BaseTemplate>
+
+          <p className="text-2xl text-gray-900">{price}</p>
+
+          {product?.description && (
+            <div className="text-base text-gray-700 space-y-6">
+              <RichText jsonStringData={product.description} />
+            </div>
+          )}
+          <VariantSelector
+            product={product}
+            selectedVariantID={selectedVariantID}
+          />
+          {selectedVariant && selectedVariant?.quantityAvailable > 0 ? (
+            <button
+              onClick={onAddToCart}
+              type="submit"
+              disabled={loadingAddToCheckout}
+              className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
+            >
+              {loadingAddToCheckout ? "Adding..." : "Add to cart"}
+            </button>
+          ) : (
+            <p className="text-lg- text-yellow-600">Sold out!</p>
+          )}
+          {!!addToCartError && <p>{addToCartError}</p>}
+        </div>
+      </main>
+
       {expandedImage && (
         <div className="absolute min-h-screen min-w-screen h-full w-full top-0 bottom-0 left-0 right-0 z-40">
           <ImageExpand
@@ -272,6 +272,7 @@ const ProductPage = ({
           />
         </div>
       )}
+
       {videoToPlay && (
         <div className="absolute min-h-screen min-w-screen top-0 bottom-0 left-0 right-0 z-40">
           <VideoExpand
@@ -318,4 +319,8 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
     revalidate: 60, // value in seconds, how often ISR will trigger on the server
   };
+};
+
+ProductPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { useLocalStorage } from "react-use";
 
-import { BaseTemplate, CheckoutForm, CheckoutSidebar } from "@/components";
+import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
@@ -15,22 +15,19 @@ const CheckoutPage = () => {
   });
   if (loading) {
     return (
-      <BaseTemplate isLoading={true}>
+      <>
+        <Spinner />
         <BaseSeo title="Checkout - Saleor Tutorial" />
-      </BaseTemplate>
+      </>
     );
   }
   const checkout = checkoutData?.checkout;
   if (!checkout || checkout.lines?.length === 0) {
-    return (
-      <BaseTemplate>
-        <BaseSeo title="Checkout - Saleor Tutorial" />
-      </BaseTemplate>
-    );
+    return <BaseSeo title="Checkout - Saleor Tutorial" />;
   }
 
   return (
-    <BaseTemplate>
+    <>
       <BaseSeo title="Checkout - Saleor Tutorial" />
 
       <main className="min-h-screen w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
@@ -41,8 +38,12 @@ const CheckoutPage = () => {
           <CheckoutSidebar checkout={checkout} />
         </div>
       </main>
-    </BaseTemplate>
+    </>
   );
 };
 
 export default CheckoutPage;
+
+CheckoutPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};

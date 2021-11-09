@@ -1,6 +1,8 @@
-import { getServerSideSitemap } from "next-sitemap";
-import { GetServerSideProps } from "next";
 import { ApolloQueryResult } from "@apollo/client";
+import { GetServerSideProps } from "next";
+import { getServerSideSitemap } from "next-sitemap";
+
+import apolloClient from "@/lib/graphql";
 import {
   CategoryPathsDocument,
   CategoryPathsQuery,
@@ -9,7 +11,6 @@ import {
   ProductPathsDocument,
   ProductPathsQuery,
 } from "@/saleor/api";
-import apolloClient from "@/lib/graphql";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let fields: { loc: string }[] = [];

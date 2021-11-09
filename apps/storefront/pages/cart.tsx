@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { ReactElement } from "react";
 import { useLocalStorage } from "react-use";
 
-import { BaseTemplate, CartSummary } from "@/components";
+import { CartSummary, Layout, Spinner } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import {
@@ -21,14 +21,14 @@ const Cart = () => {
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   if (loading) {
-    return <BaseTemplate isLoading={true} />;
+    return <Spinner />;
   }
   if (error) return <p>Error</p>;
 
   const products = data?.checkout?.lines || [];
 
   return (
-    <BaseTemplate>
+    <>
       <BaseSeo title="Cart - Saleor Tutorial" />
 
       <div className="py-10">
@@ -125,8 +125,12 @@ const Cart = () => {
           </div>
         </main>
       </div>
-    </BaseTemplate>
+    </>
   );
 };
 
 export default Cart;
+
+Cart.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};

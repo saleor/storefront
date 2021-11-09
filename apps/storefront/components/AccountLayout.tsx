@@ -2,18 +2,22 @@ import { useAuthState } from "@saleor/sdk";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { BaseTemplate } from "@/components";
+import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 
-interface AccountBaseTemplateProps {
+interface AccountLayoutProps {
   children: React.ReactNode;
 }
 
-export const AccountBaseTemplate = ({ children }: AccountBaseTemplateProps) => {
+export const AccountLayout = ({ children }: AccountLayoutProps) => {
   const router = useRouter();
   const { authenticated, authenticating } = useAuthState();
   if (authenticating) {
-    return <BaseTemplate isLoading={true} />;
+    return (
+      <Layout>
+        <Spinner />
+      </Layout>
+    );
   }
 
   if (!authenticated && process.browser) {
@@ -25,7 +29,7 @@ export const AccountBaseTemplate = ({ children }: AccountBaseTemplateProps) => {
   }
 
   return (
-    <BaseTemplate>
+    <Layout>
       <div className="py-10">
         <header className="mb-4">
           <h1 className="max-w-7xl text-2xl mx-auto px-8">Account</h1>
@@ -39,6 +43,6 @@ export const AccountBaseTemplate = ({ children }: AccountBaseTemplateProps) => {
           </div>
         </main>
       </div>
-    </BaseTemplate>
+    </Layout>
   );
 };

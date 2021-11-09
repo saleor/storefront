@@ -1,11 +1,7 @@
 import { useAuthState } from "@saleor/sdk";
+import React, { ReactElement } from "react";
 
-import {
-  AccountBaseTemplate,
-  OrdersTable,
-  Pagination,
-  Spinner,
-} from "@/components";
+import { AccountLayout, OrdersTable, Pagination, Spinner } from "@/components";
 import { useOrdersQuery } from "@/saleor/api";
 
 const OrdersPage = () => {
@@ -20,11 +16,7 @@ const OrdersPage = () => {
   });
 
   if (loading) {
-    return (
-      <AccountBaseTemplate>
-        <Spinner />
-      </AccountBaseTemplate>
-    );
+    return <Spinner />;
   }
 
   if (error) return <p>Error {error.message}</p>;
@@ -43,7 +35,7 @@ const OrdersPage = () => {
   };
 
   return (
-    <AccountBaseTemplate>
+    <>
       <OrdersTable orders={orders} />
       <Pagination
         onLoadMore={onLoadMore}
@@ -51,8 +43,12 @@ const OrdersPage = () => {
         itemCount={ordersCollection?.me?.orders?.edges.length}
         totalCount={ordersCollection?.me?.orders?.totalCount || undefined}
       />
-    </AccountBaseTemplate>
+    </>
   );
 };
 
 export default OrdersPage;
+
+OrdersPage.getLayout = function getLayout(page: ReactElement) {
+  return <AccountLayout>{page}</AccountLayout>;
+};

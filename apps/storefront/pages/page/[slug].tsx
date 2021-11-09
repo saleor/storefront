@@ -1,6 +1,7 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { ReactElement } from "react";
 
-import { BaseTemplate, RichText } from "@/components";
+import { Layout, RichText, Spinner } from "@/components";
 import { usePageQuery } from "@/saleor/api";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
@@ -19,7 +20,7 @@ const PagePage = ({
     skip: !pageSlug,
   });
 
-  if (loading) return <BaseTemplate isLoading={true} />;
+  if (loading) return <Spinner />;
   if (error) return <p>Error</p>;
 
   const page = data?.page;
@@ -28,11 +29,9 @@ const PagePage = ({
   }
 
   return (
-    <BaseTemplate>
-      <main className="max-w-7xl mx-auto pt-8 px-8">
-        {!!page.content && <RichText jsonStringData={page.content} />}
-      </main>
-    </BaseTemplate>
+    <main className="max-w-7xl mx-auto pt-8 px-8">
+      {!!page.content && <RichText jsonStringData={page.content} />}
+    </main>
   );
 };
 
@@ -44,3 +43,7 @@ export async function getStaticPaths() {
     fallback: true,
   };
 }
+
+PagePage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
