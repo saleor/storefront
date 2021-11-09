@@ -58,14 +58,32 @@ const ProductPage = ({
   }
   const price = product?.pricing?.priceRange?.start?.gross.localizedAmount;
 
+  const getSelectedVariantID = (
+    queryVariant: string | undefined,
+    product: ProductDetailsFragment
+  ) => {
+    if (queryVariant) return queryVariant;
+    else if (product?.variants?.length === 1) {
+      process.browser
+        ? router.push({
+            pathname: "/products/[slug]",
+            query: { variant: product.variants![0]!.id!, slug: product.slug },
+          })
+        : undefined;
+      return product.variants![0]!.id!;
+    }
+    return "";
+  };
+
   // We have to check if code is run on the browser
   // before we can use the router
   const queryVariant = process.browser
     ? router.query.variant?.toString()
     : undefined;
-  const selectedVariantID = queryVariant || product?.variants![0]!.id!;
 
-  const selectedVariant = product?.variants?.find(
+  const selectedVariantID = getSelectedVariantID(queryVariant, product);
+
+  let selectedVariant = product?.variants?.find(
     (v) => v?.id === selectedVariantID
   );
 
@@ -153,7 +171,6 @@ const ProductPage = ({
   const media = getGalleryMedia(product, selectedVariant);
 
   /**
-   * When a variant is selected, the attributes are changed to the attributes of the variant. Otherwise, the product
    * attributes are shown
    * @param   {ProductDetailsFragment} product  The product object
    * @param   {ProductVariant} selectedVariant   The selected variant object
@@ -164,8 +181,8 @@ const ProductPage = ({
     product: ProductDetailsFragment,
     selectedVariant: any
   ) => {
-    if (queryVariant && selectedVariant?.id === queryVariant)
-      return selectedVariant.attributes;
+    if (selectedVariant)
+      return product.attributes.concat(selectedVariant.attributes);
     return product.attributes;
   };
 
@@ -256,7 +273,6 @@ const ProductPage = ({
             </Link>
           </div>
 
-          <p className="text-2xl text-gray-900">{price}</p>
           <VariantSelector
             product={product}
             selectedVariantID={selectedVariantID}
@@ -270,9 +286,16 @@ const ProductPage = ({
             >
               {loadingAddToCheckout ? "Adding..." : "Add to cart"}
             </button>
-          ) : (
+          ) : null}
+
+          {!selectedVariant && (
+            <p className="text-lg- text-yellow-600">Please choose a variant</p>
+          )}
+
+          {selectedVariant?.quantityAvailable === 0 && (
             <p className="text-lg- text-yellow-600">Sold out!</p>
           )}
+
           {!!addToCartError && <p>{addToCartError}</p>}
 
           {product?.description && (
@@ -283,7 +306,9 @@ const ProductPage = ({
 
           {attributes.length > 0 && (
             <div>
-              <p className="text-xl font-semibold mb-2">Attributes</p>
+              <p className="text-lg mt-2 font-medium text-gray-500">
+                Attributes
+              </p>
               <div className="">
                 {attributes.map((attribute: any) => (
                   <div
