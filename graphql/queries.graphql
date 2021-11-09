@@ -63,6 +63,7 @@ fragment CheckoutLineDetailsFragment on CheckoutLine {
     }
     name
   }
+  quantity
 }
 
 fragment CheckoutDetailsFragment on Checkout {
@@ -777,6 +778,19 @@ query MainMenu {
   menu(slug: "navbar") {
     items {
       ...MainMenuItemFragment
+    }
+  }
+}
+
+mutation CheckoutLineUpdate($checkoutId: ID, $lines: [CheckoutLineInput!]!) {
+  checkoutLinesUpdate(checkoutId: $checkoutId, lines: $lines) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
     }
   }
 }

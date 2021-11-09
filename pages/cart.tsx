@@ -8,6 +8,7 @@ import { BaseSeo } from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import {
   useCheckoutByTokenQuery,
+  useCheckoutLineUpdateMutation,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
 
@@ -20,12 +21,64 @@ const Cart = () => {
   });
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
+  const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
+    useCheckoutLineUpdateMutation();
+
+  const [quantityForLine, setQuantityForLine] = React.useState<
+    { lineId: string | undefined; quantity: number | undefined }[] | []
+  >();
+
+  React.useEffect(() => {
+    const quantityForLines = data?.checkout?.lines?.map((line) => ({
+      lineId: line?.id,
+      quantity: line?.quantity,
+    }));
+    if (quantityForLines) setQuantityForLine(quantityForLines);
+  }, [data]);
+
   if (loading) {
     return <Spinner />;
   }
   if (error) return <p>Error</p>;
 
   const products = data?.checkout?.lines || [];
+
+  const changeLineState = (event: any, lineID: string) => {
+    if (event?.target?.validity?.valid) {
+      const line = quantityForLine?.find((q) => q.lineId === lineID);
+      if (line) {
+        line.quantity = event.target.value;
+        const newQuantities =
+          quantityForLine?.filter((q) => {
+            q.lineId !== lineID;
+          }) || [];
+        newQuantities.push(line);
+        setQuantityForLine(newQuantities);
+      }
+    }
+  };
+
+  const onQuantityUpdate = async (event: any, lineID: string) => {
+    if (event?.target?.validity?.valid) {
+      changeLineState(event, lineID);
+      if (event.target.value !== "") {
+        const lineFromCheckout = data?.checkout?.lines?.find(
+          (line) => line?.id === lineID
+        );
+        await checkoutLineUpdateMutation({
+          variables: {
+            checkoutId: data?.checkout?.id,
+            lines: [
+              {
+                quantity: parseFloat(event.target.value),
+                variantId: lineFromCheckout?.variant.id || "",
+              },
+            ],
+          },
+        });
+      }
+    }
+  };
 
   return (
     <>
@@ -97,10 +150,24 @@ const Cart = () => {
                                 <span>Remove</span>
                               </button>
                             </div>
-
-                            <p className="text-xl text-gray-900 text-right">
-                              {price?.localizedAmount}
-                            </p>
+                            <div className="flex justify-items-end space-x-4">
+                              <input
+                                type="number"
+                                className="h-8 w-16 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+                                value={
+                                  quantityForLine?.find(
+                                    (q) => q?.lineId === lineID
+                                  )?.quantity
+                                }
+                                onChange={(ev) => onQuantityUpdate(ev, lineID)}
+                                min={1}
+                                disabled={loadingLineUpdate}
+                                pattern="[0-9]*"
+                              />
+                              <p className="text-xl text-gray-900 text-right">
+                                {price?.localizedAmount}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
