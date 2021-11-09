@@ -177,7 +177,7 @@ const ProductPage = ({
             scrollSnapType: "both mandatory",
           }}
         >
-          {media?.map((media: any) => {
+          {media?.map((media: ProductMediaFragment) => {
             return (
               <div
                 key={media.url}
