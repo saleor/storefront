@@ -2,6 +2,10 @@
 
 ![alt text](https://og-image.vercel.app/React%20Storefront.png?theme=light&md=1&fontSize=100px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg&images=https%3A%2F%2Fsaleor.io%2Fstatic%2Flogo-ad1b99aa7c6f5acf58a61640af760cfd.svg)
 
+<p align="center">
+  <a href="https://learn-saleor-demo.vercel.app">Live demo</a> / <a href="https://githubbox.com/saleor/react-storefront">Explore and run the code in CodeSandbox</a>
+</p>
+
 React Storefront is an open-source frontend e-commerce platform from the [Saleor](https://saleor.io) team.
 
 - Next.js
@@ -9,8 +13,7 @@ React Storefront is an open-source frontend e-commerce platform from the [Saleor
 - GraphQL with Apollo Client
 - Tailwind CSS
 
-[Live demo](https://learn-saleor-demo.vercel.app)
-
+  
 ## Motivation
 
 **modern & fast**:
