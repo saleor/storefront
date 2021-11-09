@@ -62,6 +62,7 @@ export const ShippingAddressSection = ({
         token: checkout.token,
       },
     });
+    setEditing(false);
     return (
       data?.checkoutShippingAddressUpdate?.errors.filter(notNullable) || []
     );
@@ -82,13 +83,13 @@ export const ShippingAddressSection = ({
       </div>
       {active && (
         <>
-          <ChoosePredefinedAddress
-            updateAddressMutation={(address: AddressFormData) =>
-              updateMutation(address)
-            }
-          />
           {editing ? (
             <>
+              <ChoosePredefinedAddress
+                updateAddressMutation={(address: AddressFormData) =>
+                  updateMutation(address)
+                }
+              />
               <div className="col-span-full">
                 <button
                   className="btn-checkout-section"
