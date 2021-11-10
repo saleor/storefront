@@ -284,16 +284,17 @@ const ProductPage = ({
             selectedVariantID={selectedVariantID}
           />
 
-          {selectedVariant && selectedVariant?.quantityAvailable > 0 ? (
-            <button
-              onClick={onAddToCart}
-              type="submit"
-              disabled={isAddToCartButtonDisabled}
-              className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
-            >
-              {loadingAddToCheckout ? "Adding..." : "Add to cart"}
-            </button>
-          ) : null}
+          <button
+            onClick={onAddToCart}
+            type="submit"
+            disabled={isAddToCartButtonDisabled}
+            className={clsx(
+              "max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none",
+              isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400"
+            )}
+          >
+            {loadingAddToCheckout ? "Adding..." : "Add to cart"}
+          </button>
 
           {!selectedVariant && (
             <p className="text-lg- text-yellow-600">Please choose a variant</p>
