@@ -6,7 +6,7 @@ import {
   AddressDetailsFragment,
   CheckoutError,
   CountryCode,
-  useUserAddressesQuery,
+  useCurrentUserAddressesQuery,
 } from "@/saleor/api";
 
 import { AddressFormData } from "./AddressForm";
@@ -18,7 +18,7 @@ interface SavedAddressSelectionListProps {
 export const SavedAddressSelectionList = ({
   updateAddressMutation,
 }: SavedAddressSelectionListProps) => {
-  const { loading, error, data } = useUserAddressesQuery();
+  const { loading, error, data } = useCurrentUserAddressesQuery();
   const [selectedSavedAddres, setSelectedSavedAddress] =
     React.useState<AddressDetailsFragment | null>();
 

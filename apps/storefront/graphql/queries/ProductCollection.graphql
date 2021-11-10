@@ -1,0 +1,27 @@
+query ProductCollection(
+  $before: String
+  $after: String
+  $filter: ProductFilterInput
+) {
+  products(
+    first: 4
+    channel: "default-channel"
+    after: $after
+    before: $before
+    filter: $filter
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...ProductCardFragment
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

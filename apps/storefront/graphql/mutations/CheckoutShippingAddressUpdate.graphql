@@ -1,0 +1,12 @@
+mutation CheckoutShippingAddressUpdate($token: UUID!, $address: AddressInput!) {
+  checkoutShippingAddressUpdate(shippingAddress: $address, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}

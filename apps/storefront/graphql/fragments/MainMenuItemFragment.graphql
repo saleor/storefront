@@ -1,0 +1,21 @@
+fragment MainMenuItemFragment on MenuItem {
+  name
+  children {
+    name
+    category {
+      slug
+    }
+    collection {
+      slug
+    }
+    page {
+      id
+      title
+      seoTitle
+      seoDescription
+      slug
+      created
+      content
+    }
+  }
+}

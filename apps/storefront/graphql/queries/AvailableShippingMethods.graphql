@@ -1,0 +1,11 @@
+query AvailableShippingMethods {
+  shop {
+    availableShippingMethods(channel: "default-channel") {
+      id
+      name
+      price {
+        ...PriceFragment
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+query CategoryPaths {
+  categories(first: 20) {
+    edges {
+      cursor
+      node {
+        id
+        slug
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+fragment CategoryDetailsFragment on Category {
+  id
+  ...CategoryBasicFragment
+  seoTitle
+  seoDescription
+  description
+  backgroundImage {
+    ...ImageFragment
+  }
+  ancestors(first: 5) {
+    edges {
+      node {
+        ...CategoryBasicFragment
+      }
+    }
+  }
+}
