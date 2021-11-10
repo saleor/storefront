@@ -782,15 +782,19 @@ query MainMenu {
   }
 }
 
-mutation CheckoutLineUpdate($checkoutId: ID, $lines: [CheckoutLineInput!]!) {
-  checkoutLinesUpdate(checkoutId: $checkoutId, lines: $lines) {
+fragment ErrorDetailsFragment on CheckoutError {
+  field
+  message
+  code
+}
+
+mutation CheckoutLineUpdate($token: UUID, $lines: [CheckoutLineInput!]!) {
+  checkoutLinesUpdate(token: $token, lines: $lines) {
     checkout {
       ...CheckoutDetailsFragment
     }
     errors {
-      field
-      message
-      code
+      ...ErrorDetailsFragment
     }
   }
 }

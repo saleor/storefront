@@ -12935,8 +12935,10 @@ export type MainMenuQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', items?: Array<{ __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', name: string, category?: { __typename?: 'Category', slug: string } | null | undefined, collection?: { __typename?: 'Collection', slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
+export type ErrorDetailsFragment = { __typename?: 'CheckoutError', field?: string | null | undefined, message?: string | null | undefined, code: CheckoutErrorCode };
+
 export type CheckoutLineUpdateMutationVariables = Exact<{
-  checkoutId?: Maybe<Scalars['ID']>;
+  token?: Maybe<Scalars['UUID']>;
   lines: Array<CheckoutLineInput> | CheckoutLineInput;
 }>;
 
@@ -13255,6 +13257,13 @@ export const MainMenuItemFragmentDoc = gql`
       content
     }
   }
+}
+    `;
+export const ErrorDetailsFragmentDoc = gql`
+    fragment ErrorDetailsFragment on CheckoutError {
+  field
+  message
+  code
 }
     `;
 export const CheckoutPaymentCreateDocument = gql`
@@ -14646,19 +14655,18 @@ export type MainMenuQueryHookResult = ReturnType<typeof useMainMenuQuery>;
 export type MainMenuLazyQueryHookResult = ReturnType<typeof useMainMenuLazyQuery>;
 export type MainMenuQueryResult = Apollo.QueryResult<MainMenuQuery, MainMenuQueryVariables>;
 export const CheckoutLineUpdateDocument = gql`
-    mutation CheckoutLineUpdate($checkoutId: ID, $lines: [CheckoutLineInput!]!) {
-  checkoutLinesUpdate(checkoutId: $checkoutId, lines: $lines) {
+    mutation CheckoutLineUpdate($token: UUID, $lines: [CheckoutLineInput!]!) {
+  checkoutLinesUpdate(token: $token, lines: $lines) {
     checkout {
       ...CheckoutDetailsFragment
     }
     errors {
-      field
-      message
-      code
+      ...ErrorDetailsFragment
     }
   }
 }
-    ${CheckoutDetailsFragmentDoc}`;
+    ${CheckoutDetailsFragmentDoc}
+${ErrorDetailsFragmentDoc}`;
 export type CheckoutLineUpdateMutationFn = Apollo.MutationFunction<CheckoutLineUpdateMutation, CheckoutLineUpdateMutationVariables>;
 
 /**
@@ -14674,7 +14682,7 @@ export type CheckoutLineUpdateMutationFn = Apollo.MutationFunction<CheckoutLineU
  * @example
  * const [checkoutLineUpdateMutation, { data, loading, error }] = useCheckoutLineUpdateMutation({
  *   variables: {
- *      checkoutId: // value for 'checkoutId'
+ *      token: // value for 'token'
  *      lines: // value for 'lines'
  *   },
  * });
