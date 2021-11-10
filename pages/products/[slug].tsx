@@ -148,7 +148,7 @@ const ProductPage = ({
   };
 
   /**
-   * if a variant has been selected by the user and this variant has media, return only those items.
+   * If a variant has been selected by the user and this variant has media, return only those items.
    * Otherwise, all product media are returned.
    * @param   {ProductDetailsFragment} product  The product object
    * @param   {ProductVariant} selectedVariant   The selected variant object
@@ -171,6 +171,7 @@ const ProductPage = ({
   const media = getGalleryMedia(product, selectedVariant);
 
   /**
+   * When a variant is selected, the variant attributes are shown together with the attributes of the product. Otherwise, onyl the product
    * attributes are shown
    * @param   {ProductDetailsFragment} product  The product object
    * @param   {ProductVariant} selectedVariant   The selected variant object
@@ -189,6 +190,11 @@ const ProductPage = ({
   const attributes = getProductAttributes(product, selectedVariant);
 
   const productImage = product?.media![0];
+
+  const isAddToCartButtonDisabled =
+    !selectedVariant ||
+    selectedVariant?.quantityAvailable === 0 ||
+    loadingAddToCheckout;
 
   return (
     <>
@@ -277,11 +283,12 @@ const ProductPage = ({
             product={product}
             selectedVariantID={selectedVariantID}
           />
+
           {selectedVariant && selectedVariant?.quantityAvailable > 0 ? (
             <button
               onClick={onAddToCart}
               type="submit"
-              disabled={loadingAddToCheckout}
+              disabled={isAddToCartButtonDisabled}
               className="max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
             >
               {loadingAddToCheckout ? "Adding..." : "Add to cart"}
@@ -309,8 +316,8 @@ const ProductPage = ({
               <p className="text-lg mt-2 font-medium text-gray-500">
                 Attributes
               </p>
-              <div className="">
-                {attributes.map((attribute: any) => (
+              <div>
+                {attributes.map((attribute) => (
                   <div
                     key={attribute.attribute.name}
                     className="grid grid-cols-2"
@@ -319,9 +326,9 @@ const ProductPage = ({
                       <p>{attribute.attribute.name}</p>
                     </div>
                     <div>
-                      {attribute.values.map((value: any, index: number) => (
+                      {attribute.values.map((value, index) => (
                         <p key={index}>
-                          {value.name}
+                          {value?.name}
                           {attribute.values.length !== index + 1 && (
                             <div>{" | "}</div>
                           )}
