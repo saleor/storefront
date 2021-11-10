@@ -218,15 +218,37 @@ fragment ProductDetailsFragment on Product {
   seoDescription
   seoTitle
   isAvailableForPurchase
+  attributes {
+    attribute {
+      name
+      type
+      unit
+    }
+    values {
+      name
+      value
+    }
+  }
   category {
     ...CategoryBasicFragment
   }
   variants {
+    media {
+      ...ProductMediaFragment
+    }
     id
     name
     quantityAvailable
-    media {
-      ...ProductMediaFragment
+    attributes {
+      attribute {
+        name
+        type
+        unit
+      }
+      values {
+        name
+        value
+      }
     }
   }
   pricing {

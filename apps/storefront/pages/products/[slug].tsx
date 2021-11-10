@@ -58,14 +58,32 @@ const ProductPage = ({
   }
   const price = product?.pricing?.priceRange?.start?.gross.localizedAmount;
 
+  const getSelectedVariantID = (
+    queryVariant: string | undefined,
+    product: ProductDetailsFragment
+  ) => {
+    if (queryVariant) return queryVariant;
+    else if (product?.variants?.length === 1) {
+      process.browser
+        ? router.push({
+            pathname: "/products/[slug]",
+            query: { variant: product.variants![0]!.id!, slug: product.slug },
+          })
+        : undefined;
+      return product.variants![0]!.id!;
+    }
+    return "";
+  };
+
   // We have to check if code is run on the browser
   // before we can use the router
   const queryVariant = process.browser
     ? router.query.variant?.toString()
     : undefined;
-  const selectedVariantID = queryVariant || product?.variants![0]!.id!;
 
-  const selectedVariant = product?.variants?.find(
+  const selectedVariantID = getSelectedVariantID(queryVariant, product);
+
+  let selectedVariant = product?.variants?.find(
     (v) => v?.id === selectedVariantID
   );
 
@@ -130,7 +148,7 @@ const ProductPage = ({
   };
 
   /**
-   * if a variant has been selected by the user and this variant has media, return only those items.
+   * If a variant has been selected by the user and this variant has media, return only those items.
    * Otherwise, all product media are returned.
    * @param   {ProductDetailsFragment} product  The product object
    * @param   {ProductVariant} selectedVariant   The selected variant object
@@ -151,6 +169,32 @@ const ProductPage = ({
   };
 
   const media = getGalleryMedia(product, selectedVariant);
+
+  /**
+   * When a variant is selected, the variant attributes are shown together with the attributes of the product. Otherwise, onyl the product
+   * attributes are shown
+   * @param   {ProductDetailsFragment} product  The product object
+   * @param   {ProductVariant} selectedVariant   The selected variant object
+   * @return  The attributes that will be shown to the user for the chosen product
+   */
+
+  const getProductAttributes = (
+    product: ProductDetailsFragment,
+    selectedVariant: any
+  ) => {
+    if (selectedVariant)
+      return product.attributes.concat(selectedVariant.attributes);
+    return product.attributes;
+  };
+
+  const attributes = getProductAttributes(product, selectedVariant);
+
+  const productImage = product?.media![0];
+
+  const isAddToCartButtonDisabled =
+    !selectedVariant ||
+    selectedVariant?.quantityAvailable === 0 ||
+    loadingAddToCheckout;
 
   return (
     <>
@@ -235,30 +279,68 @@ const ProductPage = ({
             </Link>
           </div>
 
-          <p className="text-2xl text-gray-900">{price}</p>
+          <VariantSelector
+            product={product}
+            selectedVariantID={selectedVariantID}
+          />
+
+          <button
+            onClick={onAddToCart}
+            type="submit"
+            disabled={isAddToCartButtonDisabled}
+            className={clsx(
+              "max-w-xs w-full bg-blue-500 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none",
+              isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400"
+            )}
+          >
+            {loadingAddToCheckout ? "Adding..." : "Add to cart"}
+          </button>
+
+          {!selectedVariant && (
+            <p className="text-lg- text-yellow-600">Please choose a variant</p>
+          )}
+
+          {selectedVariant?.quantityAvailable === 0 && (
+            <p className="text-lg- text-yellow-600">Sold out!</p>
+          )}
+
+          {!!addToCartError && <p>{addToCartError}</p>}
 
           {product?.description && (
             <div className="text-base text-gray-700 space-y-6">
               <RichText jsonStringData={product.description} />
             </div>
           )}
-          <VariantSelector
-            product={product}
-            selectedVariantID={selectedVariantID}
-          />
-          {selectedVariant && selectedVariant?.quantityAvailable > 0 ? (
-            <button
-              onClick={onAddToCart}
-              type="submit"
-              disabled={loadingAddToCheckout}
-              className="max-w-xs w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-600 focus:outline-none"
-            >
-              {loadingAddToCheckout ? "Adding..." : "Add to cart"}
-            </button>
-          ) : (
-            <p className="text-lg- text-yellow-600">Sold out!</p>
+
+          {attributes.length > 0 && (
+            <div>
+              <p className="text-lg mt-2 font-medium text-gray-500">
+                Attributes
+              </p>
+              <div>
+                {attributes.map((attribute) => (
+                  <div
+                    key={attribute.attribute.name}
+                    className="grid grid-cols-2"
+                  >
+                    <div>
+                      <p>{attribute.attribute.name}</p>
+                    </div>
+                    <div>
+                      {attribute.values.map((value, index) => (
+                        <p key={index}>
+                          {value?.name}
+                          {attribute.values.length !== index + 1 && (
+                            <div>{" | "}</div>
+                          )}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
-          {!!addToCartError && <p>{addToCartError}</p>}
         </div>
       </main>
 
