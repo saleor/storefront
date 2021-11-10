@@ -4,15 +4,15 @@ import Link from "next/link";
 import React from "react";
 
 import {
-  CheckoutLine,
+  CheckoutLineDetailsFragment,
   ErrorDetailsFragment,
   useCheckoutLineUpdateMutation,
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
 
 interface CheckoutLineItemProps {
-  line: CheckoutLine | any;
-  token: any;
+  line: CheckoutLineDetailsFragment;
+  token: string;
 }
 
 export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
@@ -20,7 +20,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
     useCheckoutLineUpdateMutation();
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
-  const [quantity, setQuantity] = React.useState<string | undefined>();
+  const [quantity, setQuantity] = React.useState<number>();
   const [errors, setErrors] = React.useState<ErrorDetailsFragment[] | null>(
     null
   );
@@ -116,8 +116,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
                 type="number"
                 className={clsx(
                   "h-8 w-16 block border-gray-300 rounded-md shadow-sm sm:text-sm",
-                  errors && "border-red-500",
-                  quantity === "" && "border-red-500"
+                  errors && "border-red-500"
                 )}
                 value={quantity}
                 onFocus={() => {
@@ -131,6 +130,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
                   }
                 }}
                 min={1}
+                required
                 disabled={loadingLineUpdate}
                 pattern="[0-9]*"
               />

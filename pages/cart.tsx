@@ -8,7 +8,7 @@ import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 const Cart = () => {
-  const [token] = useLocalStorage(CHECKOUT_TOKEN);
+  const [token] = useLocalStorage<string>(CHECKOUT_TOKEN);
   const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
     variables: { checkoutToken: token },
@@ -47,7 +47,9 @@ const Cart = () => {
               <ul role="list" className="divide-y divide-gray-200">
                 {products.map((line) => (
                   <li key={line?.id} className="flex py-6">
-                    <CheckoutLineItem line={line} token={token} />
+                    {line && token && (
+                      <CheckoutLineItem line={line} token={token} />
+                    )}
                   </li>
                 ))}
               </ul>

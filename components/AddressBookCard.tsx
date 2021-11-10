@@ -8,7 +8,7 @@ import {
 } from "@/saleor/api";
 
 interface AddressBookCardProps {
-  address: AddressDetailsFragment | any;
+  address: AddressDetailsFragment;
   onRefreshBook: () => void;
 }
 
