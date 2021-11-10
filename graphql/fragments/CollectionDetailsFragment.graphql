@@ -1,0 +1,10 @@
+fragment CollectionDetailsFragment on Collection {
+  id
+  ...CollectionBasicFragment
+  seoTitle
+  seoDescription
+  description
+  backgroundImage {
+    ...ImageFragment
+  }
+}

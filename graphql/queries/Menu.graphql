@@ -1,0 +1,10 @@
+query MenuQuery($slug: String!) {
+  menu(channel: "default-channel", slug: $slug) {
+    id
+    name
+    slug
+    items {
+      ...MenuItemFragment
+    }
+  }
+}

@@ -25,7 +25,7 @@ import {
   ProductMediaFragment,
   ProductPathsDocument,
   ProductPathsQuery,
-  useAddProductToCheckoutMutation,
+  useCheckoutAddProductLineMutation,
   useCheckoutByTokenQuery,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
@@ -42,7 +42,7 @@ const ProductPage = ({
     variables: { checkoutToken },
     skip: !checkoutToken || !process.browser,
   });
-  const [addProductToCheckout] = useAddProductToCheckoutMutation();
+  const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
   const [expandedImage, setExpandedImage] = useState<

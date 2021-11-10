@@ -1,0 +1,16 @@
+query CurrentUserDetails {
+  me {
+    id
+    lastLogin
+    dateJoined
+    email
+    firstName
+    lastName
+    avatar {
+      ...ImageFragment
+    }
+    orders {
+      totalCount
+    }
+  }
+}
