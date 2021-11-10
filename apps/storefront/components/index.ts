@@ -6,6 +6,7 @@ export { SavedAddressSelectionList } from "./checkout/SavedAddressSelectionList"
 export { CheckoutPriceEntry } from "./checkout/sidebar/CheckoutPriceEntry";
 export { CheckoutProductList } from "./checkout/sidebar/CheckoutProductList";
 export { CheckoutSidebar } from "./checkout/sidebar/CheckoutSidebar";
+export { CheckoutLineItem } from "./CheckoutLineItem";
 export { HomepageBlock } from "./HomepageBlock";
 export { Layout } from "./Layout";
 export { Navbar } from "./Navbar";
