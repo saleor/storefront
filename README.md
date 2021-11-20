@@ -13,7 +13,6 @@ React Storefront is an open-source frontend e-commerce platform from the [Saleor
 - GraphQL with Apollo Client
 - Tailwind CSS
 
-  
 ## Motivation
 
 **modern & fast**:
