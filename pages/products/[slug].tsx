@@ -65,7 +65,7 @@ const ProductPage = ({
     if (queryVariant) return queryVariant;
     else if (product?.variants?.length === 1) {
       process.browser
-        ? router.push({
+        ? router.replace({
             pathname: "/products/[slug]",
             query: { variant: product.variants![0]!.id!, slug: product.slug },
           })
