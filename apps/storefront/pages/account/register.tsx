@@ -31,9 +31,9 @@ const RegisterPage = () => {
         // Unable to sign in.
         data?.accountRegister?.errors.forEach((e) => {
           if (e.field === "email") {
-            setErrorForm("email", { message: e.message });
+            setErrorForm("email", { message: e.message! });
           } else if (e.field === "password") {
-            setErrorForm("password", { message: e.message });
+            setErrorForm("password", { message: e.message! });
           } else {
             console.error("Registration error:", e);
           }
