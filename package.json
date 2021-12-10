@@ -6,8 +6,8 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "debug": "NODE_OPTIONS='--inspect' PORT=3001 next dev",
-    "dev": "PORT=3001 next dev",
+    "debug": "NODE_OPTIONS='--inspect' next dev --port 3001",
+    "dev": "next dev --port 3001",
     "build": "next build",
     "postbuild": "next-sitemap",
     "analyze-build": "ANALYZE=true next build",
