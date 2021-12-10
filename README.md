@@ -46,6 +46,8 @@ npm run dev
 
 Storefront can be now accessed at http://localhost:3001/.
 
+(If you are using windows, change the "dev" command in package.json from "PORT=3001 next dev" to "next dev --port 3001")
+
 ## Development
 
 ### Configuration
