@@ -14,7 +14,7 @@ specifiers:
   '@next/bundle-analyzer': ^12.0.7
   '@saleor/sdk': ^0.4.0
   '@stripe/react-stripe-js': ^1.6.0
-  '@stripe/stripe-js': ^1.21.2
+  '@stripe/stripe-js': ^1.22.0
   '@tailwindcss/aspect-ratio': ^0.4.0
   '@tailwindcss/forms': ^0.4.0
   '@tailwindcss/typography': ^0.5.0
@@ -48,8 +48,8 @@ dependencies:
   '@headlessui/react': 1.4.2_react-dom@17.0.2+react@17.0.2
   '@heroicons/react': 1.0.5_react@17.0.2
   '@saleor/sdk': 0.4.0_eaf61e21d862aae0b26e61a3a29a862d
-  '@stripe/react-stripe-js': 1.6.0_5bc45ac3c6095f6cc2c5aa5e184e07da
-  '@stripe/stripe-js': 1.21.2
+  '@stripe/react-stripe-js': 1.6.0_d6bc5921380077b4678dd37cad633149
+  '@stripe/stripe-js': 1.22.0
   '@tailwindcss/aspect-ratio': 0.4.0_tailwindcss@3.0.0
   '@tailwindcss/forms': 0.4.0_tailwindcss@3.0.0
   '@tailwindcss/typography': 0.5.0_tailwindcss@3.0.0
@@ -1502,21 +1502,21 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /@stripe/react-stripe-js/1.6.0_5bc45ac3c6095f6cc2c5aa5e184e07da:
+  /@stripe/react-stripe-js/1.6.0_d6bc5921380077b4678dd37cad633149:
     resolution: {integrity: sha512-tMmsPD+wkpiiVJZgQ1E06tklG5MZHG462s6OWja9abpxq76kerAxMFN+KdhUg0LIEY79THbzvH3s/WGHasnV3w==}
     peerDependencies:
       '@stripe/stripe-js': ^1.19.1
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      '@stripe/stripe-js': 1.21.2
+      '@stripe/stripe-js': 1.22.0
       prop-types: 15.7.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /@stripe/stripe-js/1.21.2:
-    resolution: {integrity: sha512-iIXe+XF9XdyO4/1i+TPRdsjy4rFOkYLeCsmB/uuSrCVs+Y0nxCdaRK3oD6n7c7lEi1sxDbAQX615wlt9E4EqWQ==}
+  /@stripe/stripe-js/1.22.0:
+    resolution: {integrity: sha512-fm8TR8r4LwbXgBIYdPmeMjJJkxxFC66tvoliNnmXOpUgZSgQKoNPW3ON0ZphZIiif1oqWNhAaSrr7tOvGu+AFg==}
     dev: false
 
   /@szmarczak/http-timer/1.1.2:
@@ -2127,7 +2127,7 @@ packages:
     dependencies:
       caniuse-lite: 1.0.30001286
       colorette: 1.4.0
-      electron-to-chromium: 1.4.15
+      electron-to-chromium: 1.4.16
       escalade: 3.1.1
       node-releases: 1.1.77
     dev: false
@@ -2138,7 +2138,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001286
-      electron-to-chromium: 1.4.15
+      electron-to-chromium: 1.4.16
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -2931,8 +2931,8 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /electron-to-chromium/1.4.15:
-    resolution: {integrity: sha512-WDw2IUL3k4QpbzInV3JZK+Zd1NjWJPDZ28oUSchWb/kf6AVj7/niaAlgcJlvojFa1d7pJSyQ/KSZsEtq5W7aGQ==}
+  /electron-to-chromium/1.4.16:
+    resolution: {integrity: sha512-BQb7FgYwnu6haWLU63/CdVW+9xhmHls3RCQUFiV4lvw3wimEHTVcUk2hkuZo76QhR8nnDdfZE7evJIZqijwPdA==}
 
   /elegant-spinner/1.0.1:
     resolution: {integrity: sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=}
@@ -3016,11 +3016,11 @@ packages:
       has-symbols: 1.0.2
       internal-slot: 1.0.3
       is-callable: 1.2.4
-      is-negative-zero: 2.0.1
+      is-negative-zero: 2.0.2
       is-regex: 1.1.4
       is-shared-array-buffer: 1.0.1
       is-string: 1.0.7
-      is-weakref: 1.0.1
+      is-weakref: 1.0.2
       object-inspect: 1.11.1
       object-keys: 1.1.1
       object.assign: 4.1.2
@@ -4159,8 +4159,8 @@ packages:
       define-properties: 1.1.3
     dev: false
 
-  /is-negative-zero/2.0.1:
-    resolution: {integrity: sha512-2z6JzQvZRa9A2Y7xC6dQQm4FSTSTNWjKIYYTt4246eMTJmIo0Q+ZyOsU66X8lxK1AbB92dFeglPLrhwpeRKO6w==}
+  /is-negative-zero/2.0.2:
+    resolution: {integrity: sha512-dqJvarLawXsFbNDeJW7zAz8ItJ9cd28YufuuFzh0G8pNHjJMnY08Dv7sYX2uF5UpQOwieAeOExEYAWWfu7ZZUA==}
     engines: {node: '>= 0.4'}
 
   /is-number-object/1.0.6:
@@ -4247,8 +4247,8 @@ packages:
       tslib: 2.3.1
     dev: true
 
-  /is-weakref/1.0.1:
-    resolution: {integrity: sha512-b2jKc2pQZjaeFYWEf7ScFj+Be1I+PXmlu572Q8coTXZ+LD/QQZ7ShPMst8h16riVgyXTQwUsFEl74mDvc/3MHQ==}
+  /is-weakref/1.0.2:
+    resolution: {integrity: sha512-qctsuLZmIQ0+vSSMfoVvyFe2+GSEvnmZ2ezTup1SBse9+twCCeial6EEi3Nc2KFcf6+qz2FBPnjXsk8xhKSaPQ==}
     dependencies:
       call-bind: 1.0.2
 
@@ -4797,7 +4797,7 @@ packages:
       rtl-css-js: 1.15.0
       sourcemap-codec: 1.4.8
       stacktrace-js: 2.0.2
-      stylis: 4.0.11
+      stylis: 4.0.13
     dev: false
 
   /nanoid/3.1.30:
@@ -6260,8 +6260,8 @@ packages:
     resolution: {integrity: sha512-8/3pSmthWM7lsPBKv7NXkzn2Uc9W7NotcwGNpJaa3k7WMM1XDCA4MgT5k/8BIexd5ydZdboXtU90XH9Ec4Bv/Q==}
     dev: false
 
-  /stylis/4.0.11:
-    resolution: {integrity: sha512-Q7gWFqMXrpDAnqhkFZdgBjXzybYc4WaJNtFdnQQSfww/cIiBUx/3sPGYMKFh3muXA47dhaWfYqc/HQkg8j7+ig==}
+  /stylis/4.0.13:
+    resolution: {integrity: sha512-xGPXiFVl4YED9Jh7Euv2V220mriG9u4B2TA6Ybjc1catrstKD2PpIdU3U0RKpkVBC2EhmL/F0sPCr9vrFTNRag==}
     dev: false
 
   /subscriptions-transport-ws/0.11.0_graphql@16.1.0:
