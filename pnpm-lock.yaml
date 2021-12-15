@@ -33,6 +33,7 @@ specifiers:
   next-seo: ^4.28.1
   next-sitemap: ^1.6.203
   next-usequerystate: 1.4.0-beta.5
+  pathpida: ^0.17.0
   postcss: 8.4.4
   prettier: 2.5.1
   react: 17.0.2
@@ -62,6 +63,7 @@ dependencies:
   next-seo: 4.28.1_d837ce8f3acb2f60f8b7454672a9bcea
   next-sitemap: 1.6.203_next@12.0.7
   next-usequerystate: 1.4.0-beta.5_d837ce8f3acb2f60f8b7454672a9bcea
+  pathpida: 0.17.0
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-hook-form: 7.21.0_react@17.0.2
@@ -2340,7 +2342,6 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /chownr/1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
@@ -3974,7 +3975,6 @@ packages:
   /ignore/5.1.9:
     resolution: {integrity: sha512-2zeMQpbKz5dhZ9IwL0gbxSW5w0NK/MSAMtNuhgIHEPmaU3vPdKPL0UdvUCXs5SS4JAwsBxysK5sFMW8ocFiVjQ==}
     engines: {node: '>= 4'}
-    dev: true
 
   /image-size/1.0.0:
     resolution: {integrity: sha512-JLJ6OwBfO1KcA+TvJT+v8gbE6iWbj24LyDNFgFEN0lzegn6cC6a/p3NIDaepMsJjQjlUWqIC7wJv8lBFxPNjcw==}
@@ -5365,6 +5365,15 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /pathpida/0.17.0:
+    resolution: {integrity: sha512-Ajk/uMPJUECIK0jb1rG1rOATTjU2PSksSVIWS2n6w2jp3QgN4kHbGnPDFLqeaag2eudI2tOPQfAzDO7F26XSmg==}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.2
+      ignore: 5.1.9
+      minimist: 1.2.5
+    dev: false
+
   /pbkdf2/3.1.2:
     resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
     engines: {node: '>=0.12'}
@@ -5730,7 +5739,6 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.0
-    dev: true
 
   /reduce-css-calc/2.1.8:
     resolution: {integrity: sha512-8liAVezDmUcH+tdzoEGrhfbGcP7nOV4NkGE3a74+qqvE7nt9i4sKLGBuZNOnpI4WiGksiNPklZxva80061QiPg==}

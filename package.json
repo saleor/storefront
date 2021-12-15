@@ -13,7 +13,8 @@
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "prettier --write . && next lint --fix",
-    "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w"
+    "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
+    "path": "pathpida --ignorePath .gitignore"
   },
   "dependencies": {
     "@apollo/client": "3.5.5",
@@ -34,6 +35,7 @@
     "next-seo": "^4.28.1",
     "next-sitemap": "^1.6.203",
     "next-usequerystate": "1.4.0-beta.5",
+    "pathpida": "^0.17.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.21.0",
