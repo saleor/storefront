@@ -72,7 +72,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
           <div className="flex justify-between">
             <div className="pr-6">
               <h3 className="text-xl font-bold">
-                <Link href={`/products/${line?.variant.product?.slug}`}>
+                <Link href={`/product/${line?.variant.product?.slug}`}>
                   <a className="font-medium text-gray-700 hover:text-gray-800">
                     {line?.variant.product?.name}
                   </a>
