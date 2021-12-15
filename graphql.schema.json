@@ -7710,6 +7710,61 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "CardInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "code",
+            "description": "Payment method nonce, a token returned by the appropriate provider's SDK.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "cvc",
+            "description": "Card security code.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "money",
+            "description": "Information about currency and amount.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "MoneyInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "CatalogueInput",
         "description": null,
         "fields": null,
@@ -7749,6 +7804,22 @@
           {
             "name": "products",
             "description": "Products related to the discount.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": "Product variant related to the discount.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -31241,6 +31312,49 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "MoneyInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "amount",
+            "description": "Amount of money.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "PositiveDecimal",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "currency",
+            "description": "Currency code.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "MoneyRange",
         "description": "Represents a range of amounts of money.",
@@ -34568,7 +34682,7 @@
             "args": [
               {
                 "name": "id",
-                "description": "ID of an object to update.",
+                "description": "ID or token (for Order and Checkout) of an object to update.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -34621,7 +34735,7 @@
             "args": [
               {
                 "name": "id",
-                "description": "ID of an object to update.",
+                "description": "ID or token (for Order and Checkout) of an object to update.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -37693,6 +37807,35 @@
             "type": {
               "kind": "OBJECT",
               "name": "PaymentCapture",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "paymentCheckBalance",
+            "description": "Check payment balance.",
+            "args": [
+              {
+                "name": "input",
+                "description": "Fields required to check payment balance.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PaymentCheckBalanceInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PaymentCheckBalance",
               "ofType": null
             },
             "isDeprecated": false,
@@ -40937,7 +41080,7 @@
             "args": [
               {
                 "name": "id",
-                "description": "ID of an object to update.",
+                "description": "ID or token (for Order and Checkout) of an object to update.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -40990,7 +41133,7 @@
             "args": [
               {
                 "name": "id",
-                "description": "ID of an object to update.",
+                "description": "ID or token (for Order and Checkout) of an object to update.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -51116,6 +51259,152 @@
       },
       {
         "kind": "OBJECT",
+        "name": "PaymentCheckBalance",
+        "description": "Check payment balance.",
+        "fields": [
+          {
+            "name": "data",
+            "description": "Response from the gateway.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "errors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "PaymentError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "paymentErrors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "PaymentError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": true,
+            "deprecationReason": "Use errors field instead. This field will be removed in Saleor 4.0."
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "PaymentCheckBalanceInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "card",
+            "description": "Information about card.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "CardInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "channel",
+            "description": "Slug of a channel for which the data should be returned.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "gatewayId",
+            "description": "An ID of a payment gateway to check.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "method",
+            "description": "Payment method name.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "PaymentCountableConnection",
         "description": null,
         "fields": [
@@ -51279,6 +51568,12 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
+          {
+            "name": "BALANCE_CHECK_ERROR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "BILLING_ADDRESS_NOT_SET",
             "description": null,
@@ -65387,6 +65682,67 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": "List of product variants this sale applies to.",
+            "args": [
+              {
+                "name": "after",
+                "description": "Return the elements in the list that come after the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": "Return the elements in the list that come before the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "first",
+                "description": "Return the first n elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "last",
+                "description": "Return the last n elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductVariantCountableConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -66233,6 +66589,22 @@
               "kind": "SCALAR",
               "name": "PositiveDecimal",
               "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -75558,6 +75930,67 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": "List of product variants this voucher applies to.",
+            "args": [
+              {
+                "name": "after",
+                "description": "Return the elements in the list that come after the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": "Return the elements in the list that come before the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "first",
+                "description": "Return the first n elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "last",
+                "description": "Return the last n elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductVariantCountableConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -76557,6 +76990,22 @@
               "kind": "SCALAR",
               "name": "Int",
               "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": "Variants discounted by the voucher.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,

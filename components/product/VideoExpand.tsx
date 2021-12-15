@@ -1,7 +1,7 @@
 import { XIcon } from "@heroicons/react/outline";
 import React from "react";
 
-import { getYouTubeIDFromURL } from "@/lib/util";
+import { getYouTubeIDFromURL } from "@/lib/media";
 import { ProductMediaFragment } from "@/saleor/api";
 
 interface VideoExpandProps {

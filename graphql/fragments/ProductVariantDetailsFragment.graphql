@@ -1,0 +1,11 @@
+fragment ProductVariantDetailsFragment on ProductVariant {
+  id
+  name
+  quantityAvailable
+  attributes {
+    ...SelectedAttributeDetailsFragment
+  }
+  media {
+    ...ProductMediaFragment
+  }
+}

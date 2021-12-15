@@ -13,7 +13,7 @@ export { Navbar } from "./Navbar";
 export { OrdersTable } from "./OrdersTable";
 export { PageHero } from "./PageHero";
 export { Pagination } from "./Pagination";
+export { VariantSelector } from "./product/VariantSelector";
 export { ProductCollection } from "./ProductCollection";
 export { RichText } from "./RichText";
 export { Spinner } from "./Spinner";
-export { VariantSelector } from "./VariantSelector";

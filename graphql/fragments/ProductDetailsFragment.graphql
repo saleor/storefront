@@ -7,37 +7,13 @@ fragment ProductDetailsFragment on Product {
   seoTitle
   isAvailableForPurchase
   attributes {
-    attribute {
-      name
-      type
-      unit
-    }
-    values {
-      name
-      value
-    }
+    ...SelectedAttributeDetailsFragment
   }
   category {
     ...CategoryBasicFragment
   }
   variants {
-    media {
-      ...ProductMediaFragment
-    }
-    id
-    name
-    quantityAvailable
-    attributes {
-      attribute {
-        name
-        type
-        unit
-      }
-      values {
-        name
-        value
-      }
-    }
+    ...ProductVariantDetailsFragment
   }
   pricing {
     priceRange {
