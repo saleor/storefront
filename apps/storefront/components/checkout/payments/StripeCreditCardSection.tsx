@@ -183,32 +183,33 @@ interface StripeCreditCardSectionInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-export const StripeCreditCardSection: React.VFC<StripeCreditCardSectionInterface> =
-  ({ checkout }) => {
-    const stripeGateway = checkout.availablePaymentGateways.find(
-      (gateway) => gateway.id === STRIPE_GATEWAY
-    );
-    const stripeApiKey = stripeGateway?.config.find(
-      (conf) => conf.field === "api_key"
-    )?.value;
+export const StripeCreditCardSection: React.VFC<
+  StripeCreditCardSectionInterface
+> = ({ checkout }) => {
+  const stripeGateway = checkout.availablePaymentGateways.find(
+    (gateway) => gateway.id === STRIPE_GATEWAY
+  );
+  const stripeApiKey = stripeGateway?.config.find(
+    (conf) => conf.field === "api_key"
+  )?.value;
 
-    if (!stripeApiKey) {
-      return (
-        <div className="py-8">
-          <h3 className="text-lg font-medium text-gray-900">Payment Details</h3>
-          <p>Stripe cannot be initialized - missing configuration</p>
-        </div>
-      );
-    }
-    const stripePromise = loadStripe(stripeApiKey);
-
+  if (!stripeApiKey) {
     return (
       <div className="py-8">
-        <Elements stripe={stripePromise}>
-          <StripeCardForm checkout={checkout} />
-        </Elements>
+        <h3 className="text-lg font-medium text-gray-900">Payment Details</h3>
+        <p>Stripe cannot be initialized - missing configuration</p>
       </div>
     );
-  };
+  }
+  const stripePromise = loadStripe(stripeApiKey);
+
+  return (
+    <div className="py-8">
+      <Elements stripe={stripePromise}>
+        <StripeCardForm checkout={checkout} />
+      </Elements>
+    </div>
+  );
+};
 
 export default StripeCreditCardSection;

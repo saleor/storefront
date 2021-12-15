@@ -38,7 +38,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       key={product.id}
       className="relative bg-white border shadow-md hover:shadow-2xl"
     >
-      <Link href={`/products/${product.slug}`} prefetch={false}>
+      <Link href={`/product/${product.slug}`} prefetch={false}>
         <a>
           <div
             className="flex rounded flex-col  w-full h-60 bg-gray-200"

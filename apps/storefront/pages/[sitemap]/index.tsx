@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       fields = paths.map((path) => ({
         loc: `https://localhost:3001/collection/${path.params.slug}`,
       }));
-    } else if (ctx.params["sitemap"] === "products") {
+    } else if (ctx.params["sitemap"] === "product") {
       const result: ApolloQueryResult<ProductPathsQuery | undefined> =
         await apolloClient.query({
           query: ProductPathsDocument,
@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           params: { slug: node.slug },
         })) || [];
       fields = paths.map((path) => ({
-        loc: `https://localhost:3001/products/${path.params.slug}`,
+        loc: `https://localhost:3001/product/${path.params.slug}`,
       }));
     }
   }
