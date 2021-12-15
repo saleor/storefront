@@ -12,6 +12,7 @@ import React from "react";
 import { useLocalStorage } from "react-use";
 
 import { MainMenu } from "@/components/MainMenu";
+import { pagesPath } from "@/lib/$path";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
@@ -41,7 +42,7 @@ export const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex justify-between items-center">
             <MainMenu />
-            <Link href="/">
+            <Link href={pagesPath.$url()}>
               <a>
                 <div className="mt-px group block h-16 w-28 relative">
                   <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
@@ -50,7 +51,7 @@ export const Navbar = () => {
             </Link>
           </div>
           <div className="flex space-x-px md:space-x-8 items-center">
-            <Link href="/search">
+            <Link href={pagesPath.search.$url()}>
               <a className="-m-2 p-2 flex items-center" aria-label="Search">
                 <SearchIcon
                   className={
@@ -59,7 +60,7 @@ export const Navbar = () => {
                 />
               </a>
             </Link>
-            <Link href="/cart">
+            <Link href={pagesPath.cart.$url()}>
               <a className="group -m-2 p-2 flex items-center">
                 <ShoppingBagIcon
                   className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
@@ -71,7 +72,7 @@ export const Navbar = () => {
               </a>
             </Link>
             {!authenticated && (
-              <Link href="/account/login">
+              <Link href={pagesPath.account.login.$url()}>
                 <a className="group -m-2 p-2 flex items-center">
                   <UserCircleIcon
                     className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
@@ -130,7 +131,7 @@ export const Navbar = () => {
                       </p>
                     </div>
                     <div className="py-1">
-                      <Link href="/account/preferences">
+                      <Link href={pagesPath.account.preferences.$url()}>
                         <a
                           tabIndex={0}
                           className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"

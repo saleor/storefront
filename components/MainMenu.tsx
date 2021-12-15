@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
 
+import { pagesPath } from "@/lib/$path";
 import { useMainMenuQuery } from "@/saleor/api";
 
 import { HamburgerButton } from "./HamburgerButton";
@@ -56,7 +57,11 @@ export const MainMenu = () => {
                           onClick={() => setOpenDropdown(false)}
                         >
                           {!!child?.category && (
-                            <Link href={"/category/" + child?.category?.slug}>
+                            <Link
+                              href={pagesPath.category
+                                ._slug(child.category.slug)
+                                .$url()}
+                            >
                               <a
                                 role="menuitem"
                                 className="ml-3 text-black hover:font-semibold hover:text-black"
@@ -67,7 +72,9 @@ export const MainMenu = () => {
                           )}
                           {!!child?.collection && (
                             <Link
-                              href={"/collection/" + child?.collection?.slug}
+                              href={pagesPath.collection
+                                ._slug(child?.collection?.slug)
+                                .$url()}
                             >
                               <a
                                 role="menuitem"
@@ -78,7 +85,11 @@ export const MainMenu = () => {
                             </Link>
                           )}
                           {!!child?.page && (
-                            <Link href={"/page/" + child?.page?.slug}>
+                            <Link
+                              href={pagesPath.page
+                                ._slug(child?.page?.slug)
+                                .$url()}
+                            >
                               <a
                                 role="menuitem"
                                 className="ml-3 text-black hover:font-semibold hover:text-black"

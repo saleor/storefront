@@ -12,6 +12,7 @@ import { Layout, RichText, VariantSelector } from "@/components";
 import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
+import { pagesPath } from "@/lib/$path";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { getSelectedVariantID } from "@/lib/product";
@@ -137,11 +138,16 @@ const ProductPage = ({
             <h1 className="text-4xl font-bold tracking-tight text-gray-800">
               {product?.name}
             </h1>
-            <Link href={`/category/${product?.category?.slug}`} passHref>
-              <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
-                {product?.category?.name}
-              </p>
-            </Link>
+            {!!product?.category && (
+              <Link
+                href={pagesPath.category._slug(product?.category?.slug).$url()}
+                passHref
+              >
+                <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
+                  {product?.category?.name}
+                </p>
+              </Link>
+            )}
           </div>
 
           <VariantSelector
