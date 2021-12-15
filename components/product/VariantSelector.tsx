@@ -25,7 +25,7 @@ export const VariantSelector = ({
           <Link
             key={variant?.name}
             href={{
-              pathname: "/products/[slug]",
+              pathname: "/product/[slug]",
               query: { variant: variant?.id, slug: product.slug },
             }}
             replace
