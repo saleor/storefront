@@ -1,6 +1,10 @@
 fragment MenuItemFragment on MenuItem {
   id
   name
+  translation(languageCode: $locale) {
+    id
+    name
+  }
   category {
     id
     slug
@@ -12,6 +16,5 @@ fragment MenuItemFragment on MenuItem {
   page {
     id
     slug
-    content
   }
 }

@@ -43,7 +43,7 @@ export const pagePaths = async () => {
           paths.push({
             params: {
               channel: channel.slug,
-              locale: locale,
+              locale: locale.slug,
               slug,
             },
           });

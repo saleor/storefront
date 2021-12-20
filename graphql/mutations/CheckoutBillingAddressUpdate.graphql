@@ -1,4 +1,8 @@
-mutation CheckoutBillingAddressUpdate($token: UUID!, $address: AddressInput!) {
+mutation CheckoutBillingAddressUpdate(
+  $token: UUID!
+  $address: AddressInput!
+  $locale: LanguageCodeEnum!
+) {
   checkoutBillingAddressUpdate(billingAddress: $address, token: $token) {
     checkout {
       ...CheckoutDetailsFragment

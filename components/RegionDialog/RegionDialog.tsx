@@ -86,9 +86,9 @@ const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
               required: true,
             })}
           >
-            {LOCALES.map((slug) => (
-              <option key={slug} value={slug}>
-                {slug}
+            {LOCALES.map((locale) => (
+              <option key={locale.slug} value={locale.slug}>
+                {locale.name}
               </option>
             ))}
           </select>

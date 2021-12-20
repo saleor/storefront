@@ -21,7 +21,9 @@ import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { productPaths } from "@/lib/ssr/product";
+import { translate } from "@/lib/translations";
 import {
   CheckoutError,
   ProductBySlugDocument,
@@ -45,9 +47,9 @@ const ProductPage = ({
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const [createCheckout] = useCreateCheckoutMutation();
   const { user } = useAuthState();
-
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const { data: checkoutData } = useCheckoutByTokenQuery({
-    variables: { checkoutToken },
+    variables: { checkoutToken, locale: localeToEnum(locale) },
     skip: !checkoutToken || !process.browser,
   });
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
@@ -81,6 +83,7 @@ const ProductPage = ({
         variables: {
           checkoutToken: checkoutToken,
           variantId: selectedVariantID,
+          locale: localeToEnum(locale),
         },
       });
       addToCartData?.checkoutLinesAdd?.errors.forEach((e) => {
@@ -147,15 +150,15 @@ const ProductPage = ({
         <div className="space-y-8 mt-10 md:mt-0">
           <div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-800">
-              {product?.name}
+              {translate(product, "name")}
             </h1>
-            {!!product?.category?.slug && (
+            {!!product.category?.slug && (
               <Link
                 href={paths.category._slug(product?.category?.slug).$url()}
                 passHref
               >
                 <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
-                  {product?.category?.name}
+                  {translate(product.category, "name")}
                 </p>
               </Link>
             )}
@@ -188,9 +191,10 @@ const ProductPage = ({
 
           {!!addToCartError && <p>{addToCartError}</p>}
 
-          {product?.description && (
+          {product.description && (
             <div className="text-base text-gray-700 space-y-6">
-              <RichText jsonStringData={product.description} />
+              {/* TODO: fix rich text types */}
+              {/* <RichText jsonStringData={translate(product, "description")} /> */}
             </div>
           )}
 
@@ -217,12 +221,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const productSlug = context.params?.slug?.toString()!;
   const channelSlug = context.params?.channel?.toString()!;
+  const locale = context.params?.locale?.toString()!;
   const response: ApolloQueryResult<ProductBySlugQuery> =
     await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>({
       query: ProductBySlugDocument,
       variables: {
         slug: productSlug,
         channel: channelSlug,
+        locale: localeToEnum(locale),
       },
     });
   return {

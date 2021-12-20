@@ -1,7 +1,9 @@
 import { useAuthState } from "@saleor/sdk";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 import { SavedAddressSelectionList } from "@/components";
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { notNullable } from "@/lib/util";
 import {
   CheckoutDetailsFragment,
@@ -22,12 +24,14 @@ export const ShippingAddressSection = ({
   active,
   checkout,
 }: ShippingAddressSectionProps) => {
+  const router = useRouter();
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] =
     useCheckoutShippingAddressUpdateMutation({});
 
   const billingAddress = checkout.billingAddress;
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
   const onSameAsBilling = async () => {
     if (!billingAddress) {
@@ -46,6 +50,7 @@ export const ShippingAddressSection = ({
           postalCode: billingAddress.postalCode || "",
         },
         token: checkout.token,
+        locale: localeToEnum(locale),
       },
     });
     if (!!data?.checkoutShippingAddressUpdate?.errors.length) {
@@ -62,6 +67,7 @@ export const ShippingAddressSection = ({
           ...formData,
         },
         token: checkout.token,
+        locale: localeToEnum(locale),
       },
     });
     setEditing(false);

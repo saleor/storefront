@@ -1,16 +1,20 @@
+import { useRouter } from "next/router";
 import React, { ReactElement } from "react";
 import { useLocalStorage } from "react-use";
 
 import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 const CheckoutPage = () => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);
+  const router = useRouter();
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const { data: checkoutData, loading } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
-    variables: { checkoutToken: token },
+    variables: { checkoutToken: token, locale: localeToEnum(locale) },
     skip: !token,
   });
   if (loading) {

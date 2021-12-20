@@ -1,5 +1,5 @@
-query MenuQuery($slug: String!) {
-  menu(channel: "default-channel", slug: $slug) {
+query MenuQuery($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
+  menu(channel: $channel, slug: $slug) {
     id
     name
     slug

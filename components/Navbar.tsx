@@ -14,6 +14,7 @@ import { useLocalStorage } from "react-use";
 import { MainMenu } from "@/components/MainMenu";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 import { useChannels } from "./ChannelsProvider";
@@ -29,8 +30,9 @@ export const Navbar = () => {
   const router = useRouter();
   const client = useApolloClient();
   const { authenticated, user } = useAuthState();
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const { data } = useCheckoutByTokenQuery({
-    variables: { checkoutToken },
+    variables: { checkoutToken, locale: localeToEnum(locale) },
     skip: !checkoutToken || !process.browser,
   });
 

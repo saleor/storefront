@@ -1,6 +1,8 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import {
   CheckoutDetailsFragment,
   useCheckoutEmailUpdateMutation,
@@ -13,6 +15,7 @@ export interface EmailSectionProps {
 }
 
 export const EmailSection = ({ checkout }: EmailSectionProps) => {
+  const router = useRouter();
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
   const [checkoutEmailUpdate] = useCheckoutEmailUpdateMutation({});
@@ -26,9 +29,14 @@ export const EmailSection = ({ checkout }: EmailSectionProps) => {
       email: checkout?.email || "",
     },
   });
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const onEmailFormSubmit = handleSubmit(async (formData) => {
     const result = await checkoutEmailUpdate({
-      variables: { email: formData.email, token: checkout?.token },
+      variables: {
+        email: formData.email,
+        token: checkout?.token,
+        locale: localeToEnum(locale),
+      },
     });
     const errors = result.data?.checkoutEmailUpdate?.errors || [];
     if (errors.length > 0) {

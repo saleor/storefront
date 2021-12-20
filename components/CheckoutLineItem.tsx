@@ -1,8 +1,11 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
+import { translate } from "@/lib/translations";
 import {
   CheckoutLineDetailsFragment,
   ErrorDetailsFragment,
@@ -19,7 +22,8 @@ interface CheckoutLineItemProps {
 
 export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
   const paths = usePaths();
-
+  const router = useRouter();
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
     useCheckoutLineUpdateMutation();
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
@@ -51,6 +55,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
             variantId: line?.variant.id || "",
           },
         ],
+        locale: localeToEnum(locale),
       },
     });
     const errors = result.data?.checkoutLinesUpdate?.errors;
@@ -82,13 +87,13 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
                     .$url()}
                 >
                   <a className="font-medium text-gray-700 hover:text-gray-800">
-                    {line?.variant.product?.name}
+                    {translate(line?.variant.product, "name")}
                   </a>
                 </Link>
               </h3>
               <h4 className="text-m font-regular">
                 <a className="text-gray-700 hover:text-gray-800">
-                  {line?.variant?.name}
+                  {translate(line?.variant, "name")}
                 </a>
               </h4>
 
@@ -99,6 +104,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
                     variables: {
                       checkoutToken: token,
                       lineId: line?.id,
+                      locale: localeToEnum(locale),
                     },
                   })
                 }

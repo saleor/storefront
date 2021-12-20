@@ -4,6 +4,10 @@ fragment CollectionDetailsFragment on Collection {
   seoTitle
   seoDescription
   description
+  translation(languageCode: $locale) {
+    id
+    description
+  }
   backgroundImage {
     ...ImageFragment
   }

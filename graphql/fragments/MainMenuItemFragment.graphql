@@ -1,13 +1,7 @@
 fragment MainMenuItemFragment on MenuItem {
   name
   children {
-    name
-    category {
-      slug
-    }
-    collection {
-      slug
-    }
+    ...MenuItemFragment
     page {
       id
       title

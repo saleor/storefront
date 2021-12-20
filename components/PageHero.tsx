@@ -1,5 +1,6 @@
 import React from "react";
 
+import { translate } from "@/lib/translations";
 import {
   CategoryDetailsFragment,
   CollectionDetailsFragment,
@@ -26,9 +27,10 @@ export const PageHero = ({ entity }: PageHeroProps) => {
         <h1 className="text-5xl font-bold mb-4">{entity.name}</h1>
 
         <p className="text-lg inline-block sm:block">
-          {!!entity.description && (
-            <RichText jsonStringData={entity.description} />
-          )}
+          {/* TODO: Fix rich text */}
+          {/* {!!entity.description && (
+            <RichText jsonStringData={translate(entity, "description")} />
+          )} */}
         </p>
       </div>
     </div>

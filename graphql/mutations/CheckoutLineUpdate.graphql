@@ -1,4 +1,8 @@
-mutation CheckoutLineUpdate($token: UUID, $lines: [CheckoutLineInput!]!) {
+mutation CheckoutLineUpdate(
+  $token: UUID
+  $lines: [CheckoutLineInput!]!
+  $locale: LanguageCodeEnum!
+) {
   checkoutLinesUpdate(token: $token, lines: $lines) {
     checkout {
       ...CheckoutDetailsFragment

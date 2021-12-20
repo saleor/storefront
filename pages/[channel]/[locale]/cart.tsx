@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { ReactElement } from "react";
 import { useLocalStorage } from "react-use";
 
@@ -6,15 +7,17 @@ import { CartSummary, CheckoutLineItem, Layout, Spinner } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 const Cart = () => {
   const paths = usePaths();
-
+  const router = useRouter();
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const [token] = useLocalStorage<string>(CHECKOUT_TOKEN);
   const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
-    variables: { checkoutToken: token },
+    variables: { checkoutToken: token, locale: localeToEnum(locale) },
     skip: !token,
   });
 

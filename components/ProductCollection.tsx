@@ -1,5 +1,7 @@
+import { useRouter } from "next/router";
 import React from "react";
 
+import { localeToEnum } from "@/lib/regions";
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
 import { useChannels } from "./ChannelsProvider";
@@ -17,9 +19,15 @@ export const ProductCollection = ({
   allowMore = true,
 }: ProductCollectionProps) => {
   const { currentChannel } = useChannels();
+  const router = useRouter();
+  const locale = router.query.locale?.toString() || "";
 
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
-    variables: { filter: filter, channel: currentChannel.slug },
+    variables: {
+      filter: filter,
+      channel: currentChannel.slug,
+      locale: localeToEnum(locale),
+    },
   });
 
   const onLoadMore = () => {

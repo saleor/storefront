@@ -1,6 +1,8 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import {
   CheckoutDetailsFragment,
   useCheckoutAddPromoCodeMutation,
@@ -15,6 +17,7 @@ export interface CartSummaryProps {
 }
 
 export const CartSummary = ({ checkout }: CartSummaryProps) => {
+  const router = useRouter();
   const [editPromoCode, setEditPromoCode] = useState(false);
   const [checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
   const { subtotalPrice, shippingPrice, totalPrice, discount, discountName } =
@@ -26,11 +29,16 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
     setError: setErrorForm,
     getValues,
   } = useForm<PromoCodeFormData>({});
+  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
   const onAddPromoCode = handleSubmitForm(
     async (formData: PromoCodeFormData) => {
       const { data: promoMutationData } = await checkoutAddPromoCodeMutation({
-        variables: { promoCode: formData.promoCode, token: checkout.token },
+        variables: {
+          promoCode: formData.promoCode,
+          token: checkout.token,
+          locale: localeToEnum(locale),
+        },
       });
       const errors = promoMutationData?.checkoutAddPromoCode?.errors;
       if (!!errors && errors.length > 0) {

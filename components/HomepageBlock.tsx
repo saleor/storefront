@@ -3,6 +3,7 @@ import React from "react";
 import { UrlObject } from "url";
 
 import { usePaths } from "@/lib/paths";
+import { translate } from "@/lib/translations";
 import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
 
 import { ProductCollection, RichText } from ".";
@@ -18,9 +19,10 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
   if (!!menuItem.page?.id) {
     return (
       <div className="pb-10">
-        {!!menuItem.page?.content && (
+        {/* TODO: Fix rich text */}
+        {/* {!!menuItem.page?.content && (
           <RichText jsonStringData={menuItem.page?.content} />
-        )}
+        )} */}
       </div>
     );
   }
@@ -36,7 +38,7 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
   return (
     <div className="pb-8">
       <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 pb-4">
-        {menuItem.name}
+        {translate(menuItem, "name")}
       </h1>
       <ProductCollection filter={filter} allowMore={false} />
       <div className="flex flex-row-reverse p-4">

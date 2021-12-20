@@ -10,6 +10,7 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero, ProductCollection } from "@/components";
 import CollectionPageSeo from "@/components/seo/CollectionPageSeo";
 import apolloClient from "@/lib/graphql";
+import { localeToEnum } from "@/lib/regions";
 import { collectionPaths } from "@/lib/ssr/collection";
 import {
   CollectionBySlugDocument,
@@ -52,6 +53,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const collectionSlug = context.params?.slug?.toString()!;
+  const locale = context.params?.locale?.toString()!;
+  const channel = context.params?.channel?.toString()!;
   const response: ApolloQueryResult<CollectionBySlugQuery> =
     await apolloClient.query<
       CollectionBySlugQuery,
@@ -60,6 +63,8 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       query: CollectionBySlugDocument,
       variables: {
         slug: collectionSlug,
+        channel: channel,
+        locale: localeToEnum(locale),
       },
     });
   return {

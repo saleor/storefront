@@ -1,4 +1,4 @@
-query CheckoutByToken($checkoutToken: UUID!) {
+query CheckoutByToken($checkoutToken: UUID!, $locale: LanguageCodeEnum!) {
   checkout(token: $checkoutToken) {
     ...CheckoutDetailsFragment
   }
