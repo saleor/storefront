@@ -9,7 +9,7 @@ import React, { ReactElement } from "react";
 import { HomepageBlock, Layout } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import apolloClient from "@/lib/graphql";
-import { localeToEnum } from "@/lib/regions";
+import { contextToRegionQuery } from "@/lib/regions";
 import { homepagePaths } from "@/lib/ssr/homepage";
 import { MenuQuery, MenuQueryDocument, MenuQueryVariables } from "@/saleor/api";
 
@@ -44,14 +44,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const locale = context.params?.locale?.toString() as string;
-  const channel = context.params?.channel?.toString() as string;
   const result: ApolloQueryResult<MenuQuery> = await apolloClient.query<
     MenuQuery,
     MenuQueryVariables
   >({
     query: MenuQueryDocument,
-    variables: { slug: "homepage", locale: localeToEnum(locale), channel },
+    variables: { slug: "homepage", ...contextToRegionQuery(context) },
   });
   return {
     props: {

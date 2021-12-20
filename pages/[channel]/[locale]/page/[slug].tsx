@@ -9,7 +9,7 @@ import { ReactElement } from "react";
 
 import { Layout, RichText } from "@/components";
 import apolloClient from "@/lib/graphql";
-import { localeToEnum } from "@/lib/regions";
+import { contextToRegionQuery } from "@/lib/regions";
 import { pagePaths } from "@/lib/ssr/page";
 import { PageDocument, PageQuery, PageQueryVariables } from "@/saleor/api";
 
@@ -43,7 +43,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const pageSlug = context.params?.slug?.toString()!;
-  const locale = context.params?.locale?.toString()!;
   const response: ApolloQueryResult<PageQuery> = await apolloClient.query<
     PageQuery,
     PageQueryVariables
@@ -51,7 +50,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     query: PageDocument,
     variables: {
       slug: pageSlug,
-      locale: localeToEnum(locale),
+      locale: contextToRegionQuery(context).locale,
     },
   });
   return {

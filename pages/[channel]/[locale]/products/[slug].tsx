@@ -13,15 +13,19 @@ import React, { ReactElement, useState } from "react";
 import { useLocalStorage } from "react-use";
 
 import { Layout, RichText, VariantSelector } from "@/components";
-import { useChannels } from "@/components/ChannelsProvider";
 import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
+import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
-import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
+import {
+  contextToRegionQuery,
+  DEFAULT_LOCALE,
+  localeToEnum,
+} from "@/lib/regions";
 import { productPaths } from "@/lib/ssr/product";
 import { translate } from "@/lib/translations";
 import {
@@ -43,7 +47,7 @@ const ProductPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const paths = usePaths();
-  const { currentChannel } = useChannels();
+  const { currentChannel } = useRegions();
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const [createCheckout] = useCreateCheckoutMutation();
   const { user } = useAuthState();
@@ -220,15 +224,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const productSlug = context.params?.slug?.toString()!;
-  const channelSlug = context.params?.channel?.toString()!;
-  const locale = context.params?.locale?.toString()!;
   const response: ApolloQueryResult<ProductBySlugQuery> =
     await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>({
       query: ProductBySlugDocument,
       variables: {
         slug: productSlug,
-        channel: channelSlug,
-        locale: localeToEnum(locale),
+        ...contextToRegionQuery(context),
       },
     });
   return {

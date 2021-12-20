@@ -10,7 +10,7 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero, ProductCollection } from "@/components";
 import CategoryPageSeo from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
-import { localeToEnum } from "@/lib/regions";
+import { contextToRegionQuery } from "@/lib/regions";
 import { categoryPaths } from "@/lib/ssr/category";
 import {
   CategoryBySlugDocument,
@@ -53,14 +53,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const categorySlug = context.params?.slug?.toString()!;
-  const locale = context.params?.locale?.toString()!;
   const response: ApolloQueryResult<CategoryBySlugQuery> =
     await apolloClient.query<CategoryBySlugQuery, CategoryBySlugQueryVariables>(
       {
         query: CategoryBySlugDocument,
         variables: {
           slug: categorySlug,
-          locale: localeToEnum(locale),
+          locale: contextToRegionQuery(context).locale,
         },
       }
     );

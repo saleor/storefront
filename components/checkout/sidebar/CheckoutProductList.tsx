@@ -1,8 +1,7 @@
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React from "react";
 
-import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
+import { useRegions } from "@/components/RegionsProvider";
 import { translate } from "@/lib/translations";
 import {
   CheckoutLineDetailsFragment,
@@ -18,9 +17,9 @@ export const CheckoutProductList = ({
   lines,
   token,
 }: CheckoutProductListProps) => {
-  const router = useRouter();
+  const { query } = useRegions();
+
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
   return (
     <ul
@@ -62,7 +61,7 @@ export const CheckoutProductList = ({
                       variables: {
                         checkoutToken: token,
                         lineId: line.id,
-                        locale: localeToEnum(locale),
+                        locale: query.locale,
                       },
                     })
                   }

@@ -14,6 +14,7 @@ import {
 } from "@/saleor/api";
 
 import { usePaths } from "../lib/paths";
+import { useRegions } from "./RegionsProvider";
 
 interface CheckoutLineItemProps {
   line: CheckoutLineDetailsFragment;
@@ -23,7 +24,8 @@ interface CheckoutLineItemProps {
 export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
   const paths = usePaths();
   const router = useRouter();
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
+  const { query } = useRegions();
+
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
     useCheckoutLineUpdateMutation();
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
@@ -55,7 +57,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
             variantId: line?.variant.id || "",
           },
         ],
-        locale: localeToEnum(locale),
+        locale: query.locale,
       },
     });
     const errors = result.data?.checkoutLinesUpdate?.errors;
@@ -104,7 +106,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
                     variables: {
                       checkoutToken: token,
                       lineId: line?.id,
-                      locale: localeToEnum(locale),
+                      locale: query.locale,
                     },
                   })
                 }

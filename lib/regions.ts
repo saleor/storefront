@@ -1,3 +1,5 @@
+import { GetStaticPropsContext } from "next";
+
 import { LanguageCodeEnum } from "./../saleor/api";
 
 export const LOCALES = [
@@ -62,4 +64,11 @@ export const localeToEnum = (localeSlug: string): LanguageCodeEnum => {
     LOCALES.find(({ slug }) => slug === DEFAULT_LOCALE)?.code ||
     LanguageCodeEnum.EnUs
   );
+};
+
+export const contextToRegionQuery = (context: GetStaticPropsContext) => {
+  return {
+    channel: context.params?.channel?.toString() || DEFAULT_CHANNEL.slug,
+    locale: localeToEnum(context.params?.locale?.toString() || DEFAULT_LOCALE),
+  };
 };

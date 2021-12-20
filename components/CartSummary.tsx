@@ -8,6 +8,8 @@ import {
   useCheckoutAddPromoCodeMutation,
 } from "@/saleor/api";
 
+import { useRegions } from "./RegionsProvider";
+
 export interface PromoCodeFormData {
   promoCode: string;
 }
@@ -29,7 +31,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
     setError: setErrorForm,
     getValues,
   } = useForm<PromoCodeFormData>({});
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
+  const { query } = useRegions();
 
   const onAddPromoCode = handleSubmitForm(
     async (formData: PromoCodeFormData) => {
@@ -37,7 +39,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
         variables: {
           promoCode: formData.promoCode,
           token: checkout.token,
-          locale: localeToEnum(locale),
+          locale: query.locale,
         },
       });
       const errors = promoMutationData?.checkoutAddPromoCode?.errors;

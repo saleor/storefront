@@ -3,10 +3,10 @@ import React, { PropsWithChildren, useEffect } from "react";
 
 import { saleorClient } from "@/lib/graphql";
 
-import { useChannels } from "../ChannelsProvider";
+import { useRegions } from "../RegionsProvider";
 
 const SaleorProviderWithChannels = ({ children }: PropsWithChildren<{}>) => {
-  const { currentChannel } = useChannels();
+  const { currentChannel } = useRegions();
 
   const {
     config: { setChannel },

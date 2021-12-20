@@ -10,6 +10,7 @@ import {
 } from "@/saleor/api";
 
 import { Button } from "../Button";
+import { useRegions } from "../RegionsProvider";
 import ShippingMethodDisplay from "./ShippingMethodDisplay";
 import { ShippingMethodOption } from "./ShippingMethodOption";
 
@@ -22,7 +23,8 @@ export const ShippingMethodSection = ({
   checkout,
   active,
 }: ShippingMethodSectionProps) => {
-  const router = useRouter();
+  const { query } = useRegions();
+
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     checkout.shippingMethod
   );
@@ -31,14 +33,12 @@ export const ShippingMethodSection = ({
   const [checkoutShippingMethodUpdate] =
     useCheckoutShippingMethodUpdateMutation({});
 
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
-
   const handleChange = async (method: any) => {
     const { data } = await checkoutShippingMethodUpdate({
       variables: {
         token: checkout.token,
         shippingMethodId: method.id,
-        locale: localeToEnum(locale),
+        locale: query.locale,
       },
     });
     if (!!data?.checkoutShippingMethodUpdate?.errors.length) {

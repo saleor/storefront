@@ -9,13 +9,14 @@ import {
 } from "@/saleor/api";
 
 import { Button } from "../Button";
+import { useRegions } from "../RegionsProvider";
 
 export interface EmailSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
 export const EmailSection = ({ checkout }: EmailSectionProps) => {
-  const router = useRouter();
+  const { query } = useRegions();
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
   const [checkoutEmailUpdate] = useCheckoutEmailUpdateMutation({});
@@ -29,13 +30,12 @@ export const EmailSection = ({ checkout }: EmailSectionProps) => {
       email: checkout?.email || "",
     },
   });
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
   const onEmailFormSubmit = handleSubmit(async (formData) => {
     const result = await checkoutEmailUpdate({
       variables: {
         email: formData.email,
         token: checkout?.token,
-        locale: localeToEnum(locale),
+        locale: query.locale,
       },
     });
     const errors = result.data?.checkoutEmailUpdate?.errors || [];

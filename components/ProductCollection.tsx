@@ -1,12 +1,10 @@
-import { useRouter } from "next/router";
 import React from "react";
 
-import { localeToEnum } from "@/lib/regions";
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
-import { useChannels } from "./ChannelsProvider";
 import { Pagination } from "./Pagination";
 import { ProductCard } from "./ProductCard";
+import { useRegions } from "./RegionsProvider";
 import { Spinner } from "./Spinner";
 
 export interface ProductCollectionProps {
@@ -18,15 +16,12 @@ export const ProductCollection = ({
   filter,
   allowMore = true,
 }: ProductCollectionProps) => {
-  const { currentChannel } = useChannels();
-  const router = useRouter();
-  const locale = router.query.locale?.toString() || "";
+  const { query } = useRegions();
 
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
     variables: {
       filter: filter,
-      channel: currentChannel.slug,
-      locale: localeToEnum(locale),
+      ...query,
     },
   });
 

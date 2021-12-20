@@ -1,25 +1,21 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
-import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import { notNullable } from "@/lib/util";
 import { MenuItemFragment, useMainMenuQuery } from "@/saleor/api";
 
 import { usePaths } from "../lib/paths";
-import { useChannels } from "./ChannelsProvider";
 import { HamburgerButton } from "./HamburgerButton";
+import { useRegions } from "./RegionsProvider";
 
 export const MainMenu = () => {
   const paths = usePaths();
-  const { currentChannel } = useChannels();
-  const router = useRouter();
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
+  const { query } = useRegions();
 
   const { loading, error, data } = useMainMenuQuery({
-    variables: { locale: localeToEnum(locale), channel: currentChannel.slug },
+    variables: { ...query },
   });
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
