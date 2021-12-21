@@ -218,22 +218,20 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   const productSlug = context.params?.slug?.toString() as string;
   const channelSlug = context.params?.channel?.toString() as string;
   const locale = context.params?.locale?.toString() as string;
-  const response: ApolloQueryResult<ProductBySlugQuery> =
-    await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>({
-      query: ProductBySlugDocument,
-      variables: {
-        slug: productSlug,
-        channel: channelSlug,
-      },
-    });
+  const response: ApolloQueryResult<ProductBySlugQuery> = await apolloClient.query<
+    ProductBySlugQuery,
+    ProductBySlugQueryVariables
+  >({
+    query: ProductBySlugDocument,
+    variables: {
+      slug: productSlug,
+      channel: channelSlug,
+    },
+  });
   return {
     props: {
       product: response.data.product,
     },
     revalidate: 60, // value in seconds, how often ISR will trigger on the server
   };
-};
-
-ProductPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
 };

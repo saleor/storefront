@@ -78,7 +78,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
-Cart.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};

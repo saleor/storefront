@@ -57,7 +57,3 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
   };
 };
-
-Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};

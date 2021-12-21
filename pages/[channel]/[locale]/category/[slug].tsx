@@ -53,22 +53,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const categorySlug = context.params?.slug?.toString() as string;
   const locale = context.params?.locale?.toString() as string;
-  const response: ApolloQueryResult<CategoryBySlugQuery> =
-    await apolloClient.query<CategoryBySlugQuery, CategoryBySlugQueryVariables>(
-      {
-        query: CategoryBySlugDocument,
-        variables: {
-          slug: categorySlug,
-        },
-      }
-    );
+  const response: ApolloQueryResult<CategoryBySlugQuery> = await apolloClient.query<
+    CategoryBySlugQuery,
+    CategoryBySlugQueryVariables
+  >({
+    query: CategoryBySlugDocument,
+    variables: {
+      slug: categorySlug,
+    },
+  });
   return {
     props: {
       category: response.data.category,
     },
   };
-};
-
-CategoryPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
 };

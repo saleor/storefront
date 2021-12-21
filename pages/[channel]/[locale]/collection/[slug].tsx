@@ -53,23 +53,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const collectionSlug = context.params?.slug?.toString() as string;
   const locale = context.params?.locale?.toString() as string;
-  const response: ApolloQueryResult<CollectionBySlugQuery> =
-    await apolloClient.query<
-      CollectionBySlugQuery,
-      CollectionBySlugQueryVariables
-    >({
-      query: CollectionBySlugDocument,
-      variables: {
-        slug: collectionSlug,
-      },
-    });
+  const response: ApolloQueryResult<CollectionBySlugQuery> = await apolloClient.query<
+    CollectionBySlugQuery,
+    CollectionBySlugQueryVariables
+  >({
+    query: CollectionBySlugDocument,
+    variables: {
+      slug: collectionSlug,
+    },
+  });
   return {
     props: {
       collection: response.data.collection,
     },
   };
-};
-
-CollectionPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
 };

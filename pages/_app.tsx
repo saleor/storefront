@@ -1,30 +1,22 @@
 import "styles/globals.css";
 
 import { ApolloProvider } from "@apollo/client";
-import { NextPage } from "next";
 import { AppProps } from "next/app";
-import React, { ReactElement, ReactNode } from "react";
+import React from "react";
 
 import ChannelsProvider from "@/components/ChannelsProvider";
 import SaleorProviderWithChannels from "@/components/SaleorProviderWithChannels";
 import apolloClient from "@/lib/graphql";
+import { Layout } from "@/components";
 
-type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-};
-
-const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-  const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
-
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ChannelsProvider>
       <ApolloProvider client={apolloClient}>
         <SaleorProviderWithChannels>
-          {getLayout(<Component {...pageProps} />)}
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </SaleorProviderWithChannels>
       </ApolloProvider>
     </ChannelsProvider>

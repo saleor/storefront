@@ -6,12 +6,7 @@ import { useOrdersQuery } from "@/saleor/api";
 
 const OrdersPage = () => {
   const { authenticated } = useAuthState();
-  const {
-    data: ordersCollection,
-    loading,
-    error,
-    fetchMore,
-  } = useOrdersQuery({
+  const { data: ordersCollection, loading, error, fetchMore } = useOrdersQuery({
     skip: !authenticated,
   });
 
@@ -48,7 +43,3 @@ const OrdersPage = () => {
 };
 
 export default OrdersPage;
-
-OrdersPage.getLayout = function getLayout(page: ReactElement) {
-  return <AccountLayout>{page}</AccountLayout>;
-};

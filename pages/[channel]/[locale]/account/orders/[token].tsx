@@ -142,7 +142,3 @@ const OrderDetailsPage = ({
 };
 
 export default OrderDetailsPage;
-
-OrderDetailsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};

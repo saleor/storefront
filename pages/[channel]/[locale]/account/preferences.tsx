@@ -18,7 +18,3 @@ const AccountPreferencesPage = () => {
 };
 
 export default AccountPreferencesPage;
-
-AccountPreferencesPage.getLayout = function getLayout(page: ReactElement) {
-  return <AccountLayout>{page}</AccountLayout>;
-};

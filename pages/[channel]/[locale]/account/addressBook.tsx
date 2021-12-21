@@ -39,7 +39,3 @@ const AddressBookPage = () => {
 };
 
 export default AddressBookPage;
-
-AddressBookPage.getLayout = function getLayout(page: ReactElement) {
-  return <AccountLayout>{page}</AccountLayout>;
-};

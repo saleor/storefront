@@ -58,7 +58,3 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
   };
 };
-
-PagePage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};

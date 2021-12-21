@@ -21,7 +21,3 @@ const OrderCompletedPage = () => {
 };
 
 export default OrderCompletedPage;
-
-OrderCompletedPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};

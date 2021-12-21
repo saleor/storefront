@@ -43,7 +43,3 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
-
-CheckoutPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};

@@ -7,8 +7,10 @@ import { ProductFilterInput } from "@/saleor/api";
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useQueryState("q");
-  const [debouncedFilter, setDebouncedFilter] =
-    React.useState<ProductFilterInput>({ search: searchQuery });
+  const [
+    debouncedFilter,
+    setDebouncedFilter,
+  ] = React.useState<ProductFilterInput>({ search: searchQuery });
 
   const [] = useDebounce(
     () => {
@@ -31,10 +33,6 @@ const SearchPage = () => {
       <ProductCollection filter={debouncedFilter} />
     </main>
   );
-};
-
-SearchPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
 };
 
 export default SearchPage;
