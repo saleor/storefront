@@ -25,17 +25,17 @@ export const productPaths = async () => {
     let endCursor = "";
 
     while (hasNextPage) {
-      const response: ApolloQueryResult<ProductPathsQuery> = await apolloClient.query<
-        ProductPathsQuery,
-        ProductPathsQueryVariables
-      >({
-        query: ProductPathsDocument,
-        fetchPolicy: "no-cache",
-        variables: {
-          channel: channelSlug,
-          after: endCursor,
-        },
-      });
+      const response: ApolloQueryResult<ProductPathsQuery> =
+        await apolloClient.query<ProductPathsQuery, ProductPathsQueryVariables>(
+          {
+            query: ProductPathsDocument,
+            fetchPolicy: "no-cache",
+            variables: {
+              channel: channelSlug,
+              after: endCursor,
+            },
+          }
+        );
 
       const edges = response.data.products?.edges;
       if (!edges) {

@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 
 import { pagesPath } from "@/lib/$path";
-import { DEFAULT_LOCALE, DEFAULT_CHANNEL } from "./regions";
+
+import { DEFAULT_CHANNEL,DEFAULT_LOCALE } from "./regions";
 
 export const usePaths = () => {
   const { query } = useRouter();

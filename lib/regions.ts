@@ -1,4 +1,5 @@
 import * as storefrontConfig from "../storefront.config";
+
 export const CHANNEL_SLUG_KEY = "channelSlug";
 
 export interface Channel {
