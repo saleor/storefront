@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import {
   CheckoutLineDetailsFragment,

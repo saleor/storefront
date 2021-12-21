@@ -1,8 +1,6 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import {
   CheckoutDetailsFragment,
   useCheckoutEmailUpdateMutation,
