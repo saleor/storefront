@@ -31,7 +31,7 @@ export const VariantSelector = ({
         const isSelected = variant.id === selectedVariantID;
         return (
           <Link
-            key={variant.name}
+            key={translate(variant, "name")}
             href={paths.products
               ._slug(product.slug)
               .$url({ query: { variant: variant.id } })}

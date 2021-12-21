@@ -78,7 +78,7 @@ export const MainMenu = () => {
                       }
                       return (
                         <li
-                          key={child.name}
+                          key={child.id}
                           onClick={() => setOpenDropdown(false)}
                         >
                           <Link href={menuLink(child)}>

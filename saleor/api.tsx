@@ -13044,7 +13044,7 @@ export type MainMenuQueryVariables = Exact<{
 }>;
 
 
-export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', items?: Array<{ __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
 export type MenuQueryVariables = Exact<{
   slug: Scalars['String'];
@@ -14507,6 +14507,7 @@ export type CurrentUserDetailsQueryResult = Apollo.QueryResult<CurrentUserDetail
 export const MainMenuDocument = gql`
     query MainMenu($locale: LanguageCodeEnum!, $channel: String!) {
   menu(slug: "navbar", channel: $channel) {
+    id
     items {
       ...MainMenuItemFragment
     }

@@ -1,6 +1,7 @@
 import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
 
+import { translate } from "@/lib/translations";
 import { DeliveryMethodFragment } from "@/saleor/api";
 
 export interface ShippingMethodOptionProps {
@@ -28,7 +29,7 @@ export const ShippingMethodOption = ({ method }: ShippingMethodOptionProps) => {
                 as="span"
                 className="block text-sm font-medium text-gray-900"
               >
-                {method.name}
+                {translate(method, "name")}
               </RadioGroup.Label>
               <RadioGroup.Description
                 as="span"

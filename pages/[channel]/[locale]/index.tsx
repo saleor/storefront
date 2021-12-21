@@ -24,7 +24,7 @@ const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <main>
           <div className="max-w-7xl mx-auto px-8">
             {menuData?.menu?.items?.map((m) => {
-              if (!!m) return <HomepageBlock key={m?.id} menuItem={m} />;
+              if (!!m) return <HomepageBlock key={m.id} menuItem={m} />;
             })}
           </div>
         </main>
