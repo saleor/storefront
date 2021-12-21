@@ -72,3 +72,10 @@ export const contextToRegionQuery = (context: GetStaticPropsContext) => {
     locale: localeToEnum(context.params?.locale?.toString() || DEFAULT_LOCALE),
   };
 };
+
+export const languageCodeToLocale = (locale: string) => {
+  // Converts locale from EN_US to en-US
+  const splitted = locale.split("_");
+  splitted[0] = splitted[0].toLowerCase();
+  return splitted.join("-");
+};

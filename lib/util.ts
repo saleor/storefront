@@ -1,6 +1,11 @@
-export const formatAsMoney = (amount: number = 0, currency = "USD") =>
-  new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
+import { DEFAULT_LOCALE } from "@/lib/regions";
+
+export const formatAsMoney = (
+  amount: number = 0,
+  currency = "USD",
+  locale = DEFAULT_LOCALE
+) =>
+  new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
   }).format(amount);

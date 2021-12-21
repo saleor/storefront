@@ -34,7 +34,7 @@ export const RegionsProvider: React.FC = ({ children }) => {
   );
 
   const setCurrentChannel = (channel: string) => {
-    // todo: changing the channel should also clear the cart
+    // TODO: changing the channel should also clear the cart
     setCurrentChannelSlug(channel);
     apolloClient.clearStore();
   };
