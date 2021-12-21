@@ -59,7 +59,7 @@ export const Navbar = () => {
               </Link>
             </div>
             <div className="flex space-x-px md:space-x-8 items-center">
-              <Link href="/search">
+              <Link href={paths.search.$url()}>
                 <a className="-m-2 p-2 flex items-center" aria-label="Search">
                   <SearchIcon
                     className={

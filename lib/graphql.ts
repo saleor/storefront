@@ -1,7 +1,7 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { createFetch, createSaleorClient } from "@saleor/sdk";
 
-import { API_URI } from "./const";
+import { API_URI, DEFAULT_CHANNEL } from "./const";
 import { typePolicies } from "./typePolicies";
 
 const httpLink = createHttpLink({
@@ -17,7 +17,7 @@ const apolloClient = new ApolloClient({
 
 export const saleorClient = createSaleorClient({
   apiUrl: API_URI,
-  channel: "default-channel",
+  channel: DEFAULT_CHANNEL,
 });
 
 export default apolloClient;

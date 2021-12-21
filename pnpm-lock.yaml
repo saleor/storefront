@@ -34,10 +34,8 @@ specifiers:
   next-seo: ^4.28.1
   next-sitemap: ^1.6.203
   next-usequerystate: 1.4.0-beta.5
-  pathpida: ^0.17.0
   postcss: 8.4.5
   prettier: 2.5.1
-  qs: ^6.10.1
   react: 17.0.2
   react-dom: 17.0.2
   react-hook-form: ^7.22.1
@@ -64,8 +62,6 @@ dependencies:
   next-seo: 4.28.1_d837ce8f3acb2f60f8b7454672a9bcea
   next-sitemap: 1.6.203_next@12.0.7
   next-usequerystate: 1.4.0-beta.5_d837ce8f3acb2f60f8b7454672a9bcea
-  pathpida: 0.17.0
-  qs: 6.10.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-hook-form: 7.22.2_react@17.0.2
@@ -2326,6 +2322,7 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /cipher-base/1.0.4:
     resolution: {integrity: sha512-Kkht5ye6ZGmwv40uUDZztayT2ThLQGfnj/T71N/XzeZeo3nf8foyW7zGTsPYkEya3m5f3cAypH+qe7YOrM1U2Q==}
@@ -3866,6 +3863,7 @@ packages:
   /ignore/5.1.9:
     resolution: {integrity: sha512-2zeMQpbKz5dhZ9IwL0gbxSW5w0NK/MSAMtNuhgIHEPmaU3vPdKPL0UdvUCXs5SS4JAwsBxysK5sFMW8ocFiVjQ==}
     engines: {node: '>= 4'}
+    dev: true
 
   /image-size/1.0.0:
     resolution: {integrity: sha512-JLJ6OwBfO1KcA+TvJT+v8gbE6iWbj24LyDNFgFEN0lzegn6cC6a/p3NIDaepMsJjQjlUWqIC7wJv8lBFxPNjcw==}
@@ -5192,15 +5190,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /pathpida/0.17.0:
-    resolution: {integrity: sha512-Ajk/uMPJUECIK0jb1rG1rOATTjU2PSksSVIWS2n6w2jp3QgN4kHbGnPDFLqeaag2eudI2tOPQfAzDO7F26XSmg==}
-    hasBin: true
-    dependencies:
-      chokidar: 3.5.2
-      ignore: 5.1.9
-      minimist: 1.2.5
-    dev: false
-
   /pbkdf2/3.1.2:
     resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
     engines: {node: '>=0.12'}
@@ -5361,13 +5350,6 @@ packages:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
     engines: {node: '>=6'}
 
-  /qs/6.10.2:
-    resolution: {integrity: sha512-mSIdjzqznWgfd4pMii7sHtaYF8rx8861hBO80SraY5GT0XQibWZWJSid0avzHGkDIZLImux2S5mXO0Hfct2QCw==}
-    engines: {node: '>=0.6'}
-    dependencies:
-      side-channel: 1.0.4
-    dev: false
-
   /querystring-es3/0.2.1:
     resolution: {integrity: sha1-nsYfeQSYdXB9aUFFlv2Qek1xHnM=}
     engines: {node: '>=0.4.x'}
@@ -5520,6 +5502,7 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.0
+    dev: true
 
   /regenerator-runtime/0.13.4:
     resolution: {integrity: sha512-plpwicqEzfEyTQohIKktWigcLzmNStMGwbOUbykx51/29Z3JOGYldaaNGK7ngNXV+UcoqvIMmloZ48Sr74sd+g==}
