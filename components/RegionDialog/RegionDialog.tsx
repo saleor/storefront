@@ -18,7 +18,7 @@ export interface RegionFormData {
   locale: string;
 }
 
-const RegionDialog: React.FC<RegionDialogProps> = ({ isOpen, onClose }) => {
+const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
   const router = useRouter();
   const { channels, currentChannel, setCurrentChannel } = useChannels();
 

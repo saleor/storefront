@@ -3,6 +3,7 @@ import React, { createContext, useState } from "react";
 
 import apolloClient from "@/lib/graphql";
 import { Channel, CHANNELS, DEFAULT_CHANNEL } from "@/lib/regions";
+import { WithChildren } from "@/lib/globalTypes";
 
 export interface ChannelsConsumerProps {
   channels: Channel[];
@@ -18,7 +19,7 @@ export const ChannelsContext = createContext<ChannelsConsumerProps>({
   setCurrentChannel: () => {},
 });
 
-const ChannelsProvider: React.FC = ({ children }) => {
+const ChannelsProvider = ({ children }: WithChildren) => {
   const router = useRouter();
 
   const [currentChannelSlug, setCurrentChannelSlug] = useState(

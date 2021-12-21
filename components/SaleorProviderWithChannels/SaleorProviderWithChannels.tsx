@@ -4,8 +4,9 @@ import React, { useEffect } from "react";
 import { saleorClient } from "@/lib/graphql";
 
 import useChannels from "../ChannelsProvider/useChannels";
+import { WithChildren } from "@/lib/globalTypes";
 
-const SaleorProviderWithChannels: React.FC = ({ children }) => {
+const SaleorProviderWithChannels = ({ children }: WithChildren) => {
   const { currentChannel } = useChannels();
 
   const {

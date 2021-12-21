@@ -5,12 +5,9 @@ import React from "react";
 import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
+import { WithChildren } from "@/lib/globalTypes";
 
-interface AccountLayoutProps {
-  children: React.ReactNode;
-}
-
-export const AccountLayout = ({ children }: AccountLayoutProps) => {
+export const AccountLayout = ({ children }: WithChildren) => {
   const router = useRouter();
   const { paths } = usePaths();
   const { authenticated, authenticating } = useAuthState();
