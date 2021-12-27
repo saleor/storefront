@@ -6,7 +6,7 @@ import { clearCheckout } from "@/lib/checkout";
 import { DEFAULT_LOCALE, LOCALES } from "@/lib/regions";
 
 import { Button } from "../Button";
-import useChannels from "../ChannelsProvider/useChannels";
+import { useChannels } from "../ChannelsProvider";
 
 interface RegionDialogProps {
   onClose: () => void;

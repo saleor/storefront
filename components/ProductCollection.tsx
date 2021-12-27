@@ -2,7 +2,7 @@ import React from "react";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
-import useChannels from "./ChannelsProvider/useChannels";
+import { useChannels } from "./ChannelsProvider";
 import { Pagination } from "./Pagination";
 import { ProductCard } from "./ProductCard";
 import { Spinner } from "./Spinner";

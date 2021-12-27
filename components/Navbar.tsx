@@ -16,7 +16,7 @@ import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
-import useChannels from "./ChannelsProvider/useChannels";
+import { useChannels } from "./ChannelsProvider";
 import RegionDialog from "./RegionDialog";
 
 export const Navbar = () => {

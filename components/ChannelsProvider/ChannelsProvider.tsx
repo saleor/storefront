@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
-import React, { createContext, PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 
 import apolloClient from "@/lib/graphql";
 import { Channel, CHANNELS, DEFAULT_CHANNEL } from "@/lib/regions";
+import createSafeContext from "@/lib/useSafeContext";
 
 export interface ChannelsConsumerProps {
   channels: Channel[];
@@ -11,12 +12,7 @@ export interface ChannelsConsumerProps {
   setCurrentChannel: (slug: string) => void;
 }
 
-export const ChannelsContext = createContext<ChannelsConsumerProps>({
-  channels: CHANNELS,
-  defaultChannel: DEFAULT_CHANNEL,
-  currentChannel: DEFAULT_CHANNEL,
-  setCurrentChannel: () => {},
-});
+const [useContext, Provider] = createSafeContext<ChannelsConsumerProps>();
 
 const ChannelsProvider = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter();
@@ -41,11 +37,9 @@ const ChannelsProvider = ({ children }: PropsWithChildren<{}>) => {
     setCurrentChannel: setCurrentChannel,
   };
 
-  return (
-    <ChannelsContext.Provider value={providerValues}>
-      {children}
-    </ChannelsContext.Provider>
-  );
+  return <Provider value={providerValues}>{children}</Provider>;
 };
+
+export const useChannels = useContext;
 
 export default ChannelsProvider;
