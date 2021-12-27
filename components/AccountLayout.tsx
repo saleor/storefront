@@ -1,13 +1,12 @@
 import { useAuthState } from "@saleor/sdk";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
-import { WithChildren } from "@/lib/globalTypes";
 
-export const AccountLayout = ({ children }: WithChildren) => {
+export const AccountLayout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter();
   const { paths } = usePaths();
   const { authenticated, authenticating } = useAuthState();

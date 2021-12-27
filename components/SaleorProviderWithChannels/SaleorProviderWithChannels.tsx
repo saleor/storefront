@@ -1,12 +1,11 @@
 import { SaleorProvider } from "@saleor/sdk";
-import React, { useEffect } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 
 import { saleorClient } from "@/lib/graphql";
 
 import useChannels from "../ChannelsProvider/useChannels";
-import { WithChildren } from "@/lib/globalTypes";
 
-const SaleorProviderWithChannels = ({ children }: WithChildren) => {
+const SaleorProviderWithChannels = ({ children }: PropsWithChildren<{}>) => {
   const { currentChannel } = useChannels();
 
   const {
