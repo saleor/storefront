@@ -13,7 +13,7 @@ import React, { ReactElement, useState } from "react";
 import { useLocalStorage } from "react-use";
 
 import { Layout, RichText, VariantSelector } from "@/components";
-import { useChannels } from "@/components/ChannelsProvider/useChannels";
+import { useChannels } from "@/components/ChannelsProvider";
 import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
