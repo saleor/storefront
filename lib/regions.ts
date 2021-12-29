@@ -1,4 +1,5 @@
-import * as storefrontConfig from "../storefront.config";
+export const LOCALES = ["en-US", "fr-fr", "pl-pl"];
+export const DEFAULT_LOCALE = "en-US";
 
 export const CHANNEL_SLUG_KEY = "channelSlug";
 
@@ -8,17 +9,25 @@ export interface Channel {
   currencyCode: string;
 }
 
-export const {
-  defaultChannel: DEFAULT_CHANNEL,
-  defaultLocale: DEFAULT_LOCALE,
-} = storefrontConfig;
+export const DEFAULT_CHANNEL: Channel = {
+  slug: "default-channel",
+  name: "United States Dollar",
+  currencyCode: "USD",
+};
 
 export const CHANNELS: Channel[] = [
   DEFAULT_CHANNEL,
-  ...storefrontConfig.channels,
+  {
+    slug: "channel-pln",
+    name: "Polski Złoty",
+    currencyCode: "PLN",
+  },
+  {
+    slug: "channel-gbp",
+    name: "British Pound Sterling",
+    currencyCode: "GBP",
+  },
 ];
-
-export const LOCALES = [DEFAULT_LOCALE, ...storefrontConfig.locales];
 
 export interface RegionCombination {
   channelSlug: string;
