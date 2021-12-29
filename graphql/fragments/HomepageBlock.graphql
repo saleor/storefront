@@ -1,0 +1,29 @@
+fragment HomepageBlockFragment on MenuItem {
+  id
+  name
+  translation(languageCode: $locale) {
+    id
+    name
+  }
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+  }
+  page {
+    id
+    content
+    title
+    translation(languageCode: $locale) {
+      content
+      title
+    }
+  }
+}

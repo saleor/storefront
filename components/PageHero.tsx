@@ -18,6 +18,7 @@ export const PageHero = ({ entity }: PageHeroProps) => {
     style.backgroundImage = `url(${entity.backgroundImage?.url})`;
   }
 
+  const description = translate(entity, "description")
   return (
     <div
       className="container mx-auto bg-gray-400 h-96 rounded-md flex items-center"
@@ -26,12 +27,10 @@ export const PageHero = ({ entity }: PageHeroProps) => {
       <div className="sm:ml-20 text-gray-50 text-center sm:text-left">
         <h1 className="text-5xl font-bold mb-4">{entity.name}</h1>
 
+        {description &&
         <p className="text-lg inline-block sm:block">
-          {/* TODO: Fix rich text */}
-          {/* {!!entity.description && (
-            <RichText jsonStringData={translate(entity, "description")} />
-          )} */}
-        </p>
+          <RichText jsonStringData={description} />
+        </p>}
       </div>
     </div>
   );

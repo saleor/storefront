@@ -140,6 +140,8 @@ const ProductPage = ({
     selectedVariant?.quantityAvailable === 0 ||
     loadingAddToCheckout;
 
+  const description = translate(product, "description")
+
   return (
     <>
       <ProductPageSeo product={product} />
@@ -195,10 +197,9 @@ const ProductPage = ({
 
           {!!addToCartError && <p>{addToCartError}</p>}
 
-          {product.description && (
+          {description && (
             <div className="text-base text-gray-700 space-y-6">
-              {/* TODO: fix rich text types */}
-              {/* <RichText jsonStringData={translate(product, "description")} /> */}
+              <RichText jsonStringData={description} />
             </div>
           )}
 

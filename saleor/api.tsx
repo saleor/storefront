@@ -12825,9 +12825,9 @@ export type DeliveryMethodFragment = { __typename?: 'ShippingMethod', id: string
 
 export type ErrorDetailsFragment = { __typename?: 'CheckoutError', field?: string | null | undefined, message?: string | null | undefined, code: CheckoutErrorCode };
 
-export type ImageFragment = { __typename?: 'Image', url: string, alt?: string | null | undefined };
+export type HomepageBlockFragment = { __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, slug: string, content?: string | null | undefined, title: string, translation?: { __typename?: 'PageTranslation', content?: string | null | undefined, title?: string | null | undefined } | null | undefined } | null | undefined };
 
-export type MainMenuItemFragment = { __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined };
+export type ImageFragment = { __typename?: 'Image', url: string, alt?: string | null | undefined };
 
 export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, slug: string } | null | undefined };
 
@@ -13038,22 +13038,22 @@ export type CurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserDetailsQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, lastLogin?: any | null | undefined, dateJoined: any, email: string, firstName: string, lastName: string, avatar?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined, orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null | undefined } | null | undefined } | null | undefined };
 
-export type MainMenuQueryVariables = Exact<{
-  locale: LanguageCodeEnum;
-  channel: Scalars['String'];
-}>;
-
-
-export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined } | null | undefined };
-
-export type MenuQueryVariables = Exact<{
+export type HomepageBlocksQueryVariables = Exact<{
   slug: Scalars['String'];
   channel: Scalars['String'];
   locale: LanguageCodeEnum;
 }>;
 
 
-export type MenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, name: string, slug: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+export type HomepageBlocksQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, name: string, slug: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, slug: string, content?: string | null | undefined, title: string, translation?: { __typename?: 'PageTranslation', content?: string | null | undefined, title?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+
+export type MainMenuQueryVariables = Exact<{
+  locale: LanguageCodeEnum;
+  channel: Scalars['String'];
+}>;
+
+
+export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null | undefined, category?: { __typename?: 'Category', id: string, slug: string } | null | undefined, collection?: { __typename?: 'Collection', id: string, slug: string } | null | undefined, page?: { __typename?: 'Page', id: string, slug: string } | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
 export type OrderDetailsQueryVariables = Exact<{
   token: Scalars['UUID'];
@@ -13335,6 +13335,37 @@ export const ErrorDetailsFragmentDoc = gql`
   code
 }
     `;
+export const HomepageBlockFragmentDoc = gql`
+    fragment HomepageBlockFragment on MenuItem {
+  id
+  name
+  translation(languageCode: $locale) {
+    id
+    name
+  }
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+  }
+  page {
+    id
+    content
+    title
+    translation(languageCode: $locale) {
+      content
+      title
+    }
+  }
+}
+    `;
 export const MenuItemFragmentDoc = gql`
     fragment MenuItemFragment on MenuItem {
   id
@@ -13357,23 +13388,6 @@ export const MenuItemFragmentDoc = gql`
   }
 }
     `;
-export const MainMenuItemFragmentDoc = gql`
-    fragment MainMenuItemFragment on MenuItem {
-  name
-  children {
-    ...MenuItemFragment
-    page {
-      id
-      title
-      seoTitle
-      seoDescription
-      slug
-      created
-      content
-    }
-  }
-}
-    ${MenuItemFragmentDoc}`;
 export const OrderDetailsFragmentDoc = gql`
     fragment OrderDetailsFragment on Order {
   id
@@ -14504,16 +14518,61 @@ export function useCurrentUserDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type CurrentUserDetailsQueryHookResult = ReturnType<typeof useCurrentUserDetailsQuery>;
 export type CurrentUserDetailsLazyQueryHookResult = ReturnType<typeof useCurrentUserDetailsLazyQuery>;
 export type CurrentUserDetailsQueryResult = Apollo.QueryResult<CurrentUserDetailsQuery, CurrentUserDetailsQueryVariables>;
+export const HomepageBlocksQueryDocument = gql`
+    query HomepageBlocksQuery($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
+  menu(channel: $channel, slug: $slug) {
+    id
+    name
+    slug
+    items {
+      ...HomepageBlockFragment
+    }
+  }
+}
+    ${HomepageBlockFragmentDoc}`;
+
+/**
+ * __useHomepageBlocksQuery__
+ *
+ * To run a query within a React component, call `useHomepageBlocksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomepageBlocksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomepageBlocksQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *      channel: // value for 'channel'
+ *      locale: // value for 'locale'
+ *   },
+ * });
+ */
+export function useHomepageBlocksQuery(baseOptions: Apollo.QueryHookOptions<HomepageBlocksQuery, HomepageBlocksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomepageBlocksQuery, HomepageBlocksQueryVariables>(HomepageBlocksQueryDocument, options);
+      }
+export function useHomepageBlocksQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomepageBlocksQuery, HomepageBlocksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomepageBlocksQuery, HomepageBlocksQueryVariables>(HomepageBlocksQueryDocument, options);
+        }
+export type HomepageBlocksQueryHookResult = ReturnType<typeof useHomepageBlocksQuery>;
+export type HomepageBlocksQueryLazyQueryHookResult = ReturnType<typeof useHomepageBlocksQueryLazyQuery>;
+export type HomepageBlocksQueryQueryResult = Apollo.QueryResult<HomepageBlocksQuery, HomepageBlocksQueryVariables>;
 export const MainMenuDocument = gql`
     query MainMenu($locale: LanguageCodeEnum!, $channel: String!) {
   menu(slug: "navbar", channel: $channel) {
     id
     items {
-      ...MainMenuItemFragment
+      children {
+        ...MenuItemFragment
+      }
+      ...MenuItemFragment
     }
   }
 }
-    ${MainMenuItemFragmentDoc}`;
+    ${MenuItemFragmentDoc}`;
 
 /**
  * __useMainMenuQuery__
@@ -14543,48 +14602,6 @@ export function useMainMenuLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<M
 export type MainMenuQueryHookResult = ReturnType<typeof useMainMenuQuery>;
 export type MainMenuLazyQueryHookResult = ReturnType<typeof useMainMenuLazyQuery>;
 export type MainMenuQueryResult = Apollo.QueryResult<MainMenuQuery, MainMenuQueryVariables>;
-export const MenuQueryDocument = gql`
-    query MenuQuery($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
-  menu(channel: $channel, slug: $slug) {
-    id
-    name
-    slug
-    items {
-      ...MenuItemFragment
-    }
-  }
-}
-    ${MenuItemFragmentDoc}`;
-
-/**
- * __useMenuQuery__
- *
- * To run a query within a React component, call `useMenuQuery` and pass it any options that fit your needs.
- * When your component renders, `useMenuQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMenuQuery({
- *   variables: {
- *      slug: // value for 'slug'
- *      channel: // value for 'channel'
- *      locale: // value for 'locale'
- *   },
- * });
- */
-export function useMenuQuery(baseOptions: Apollo.QueryHookOptions<MenuQuery, MenuQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MenuQuery, MenuQueryVariables>(MenuQueryDocument, options);
-      }
-export function useMenuQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MenuQuery, MenuQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MenuQuery, MenuQueryVariables>(MenuQueryDocument, options);
-        }
-export type MenuQueryHookResult = ReturnType<typeof useMenuQuery>;
-export type MenuQueryLazyQueryHookResult = ReturnType<typeof useMenuQueryLazyQuery>;
-export type MenuQueryQueryResult = Apollo.QueryResult<MenuQuery, MenuQueryVariables>;
 export const OrderDetailsQueryDocument = gql`
     query OrderDetailsQuery($token: UUID!) {
   orderByToken(token: $token) {

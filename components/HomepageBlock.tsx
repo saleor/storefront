@@ -4,12 +4,12 @@ import { UrlObject } from "url";
 
 import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
-import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
+import { HomepageBlockFragment, ProductFilterInput } from "@/saleor/api";
 
 import { ProductCollection, RichText } from ".";
 
 export interface HomepageBlockProps {
-  menuItem: MenuItemFragment;
+  menuItem: HomepageBlockFragment;
 }
 
 export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
@@ -17,12 +17,12 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
 
   const filter: ProductFilterInput = {};
   if (!!menuItem.page?.id) {
+    const content = translate(menuItem.page!, "content")
     return (
       <div className="pb-10">
-        {/* TODO: Fix rich text */}
-        {/* {!!menuItem.page?.content && (
-          <RichText jsonStringData={menuItem.page?.content} />
-        )} */}
+        {content && (
+          <RichText jsonStringData={content} />
+        )}
       </div>
     );
   }

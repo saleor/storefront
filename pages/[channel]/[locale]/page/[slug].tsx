@@ -12,15 +12,18 @@ import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
 import { pagePaths } from "@/lib/ssr/page";
 import { PageDocument, PageQuery, PageQueryVariables } from "@/saleor/api";
+import { translate } from "@/lib/translations";
 
 const PagePage = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
   if (!page?.id) {
     return <Custom404 />;
   }
 
+  const content = translate(page, "content")
+
   return (
     <main className="max-w-7xl mx-auto pt-8 px-8">
-      {!!page.content && <RichText jsonStringData={page.content} />}
+      {content && <RichText jsonStringData={content} />}
     </main>
   );
 };
