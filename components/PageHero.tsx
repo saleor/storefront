@@ -25,7 +25,7 @@ export const PageHero = ({ entity }: PageHeroProps) => {
       style={style}
     >
       <div className="sm:ml-20 text-gray-50 text-center sm:text-left">
-        <h1 className="text-5xl font-bold mb-4">{entity.name}</h1>
+        <h1 className="text-5xl font-bold mb-4">{translate(entity, "name")}</h1>
 
         {description &&
         <p className="text-lg inline-block sm:block">
