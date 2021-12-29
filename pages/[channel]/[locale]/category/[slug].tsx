@@ -51,8 +51,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const categorySlug = context.params?.slug?.toString() as string;
-  const locale = context.params?.locale?.toString() as string;
+  const categorySlug = context.params?.slug?.toString()!;
   const response: ApolloQueryResult<CategoryBySlugQuery> =
     await apolloClient.query<CategoryBySlugQuery, CategoryBySlugQueryVariables>(
       {

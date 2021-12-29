@@ -51,8 +51,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const collectionSlug = context.params?.slug?.toString() as string;
-  const locale = context.params?.locale?.toString() as string;
+  const collectionSlug = context.params?.slug?.toString()!;
   const response: ApolloQueryResult<CollectionBySlugQuery> =
     await apolloClient.query<
       CollectionBySlugQuery,

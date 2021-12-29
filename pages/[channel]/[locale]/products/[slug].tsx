@@ -215,9 +215,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const productSlug = context.params?.slug?.toString() as string;
-  const channelSlug = context.params?.channel?.toString() as string;
-  const locale = context.params?.locale?.toString() as string;
+  const productSlug = context.params?.slug?.toString()!;
+  const channelSlug = context.params?.channel?.toString()!;
   const response: ApolloQueryResult<ProductBySlugQuery> =
     await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>({
       query: ProductBySlugDocument,
