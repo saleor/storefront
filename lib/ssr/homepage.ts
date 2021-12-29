@@ -8,14 +8,13 @@ export interface ProductPathArguments extends ParsedUrlQuery {
 }
 
 export const homepagePaths = () => {
-  const paths: Path<ProductPathArguments>[] = [];
-  regionCombinations().forEach((combination) => {
-    paths.push({
+  const paths: Path<ProductPathArguments>[]  = regionCombinations().map((combination) =>
+  ({
       params: {
         locale: combination.localeSlug,
         channel: combination.channelSlug,
       },
-    });
-  });
+    })
+  );
   return paths;
 };
