@@ -30,7 +30,7 @@ export const DummyCreditCardSection = ({
   const gateway = checkout.availablePaymentGateways.find(
     (gateway) => gateway.id === DUMMY_CREDIT_CARD_GATEWAY
   );
-  const { paths } = usePaths();
+  const paths = usePaths();
   const router = useRouter();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();

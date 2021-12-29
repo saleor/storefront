@@ -19,7 +19,7 @@ export interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   let priceDisplay =
     product.pricing?.priceRange?.start?.gross.localizedAmount || "";

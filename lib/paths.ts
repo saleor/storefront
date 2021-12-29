@@ -8,5 +8,5 @@ export const usePaths = () => {
   const { query } = useRouter();
   const channel = query.channel?.toString() || DEFAULT_CHANNEL.slug;
   const locale = query.locale?.toString() || DEFAULT_LOCALE;
-  return { paths: pagesPath._channel(channel)._locale(locale) };
+  return pagesPath._channel(channel)._locale(locale);
 };

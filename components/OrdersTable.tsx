@@ -9,7 +9,7 @@ interface OrdersTableProps {
 
 export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const router = useRouter();
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   return (
     <table className="w-full divide-y bg-white rounded-md ">

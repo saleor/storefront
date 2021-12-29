@@ -17,7 +17,7 @@ export interface LoginFormData {
 
 const LoginPage: React.VFC = () => {
   const router = useRouter();
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const { login } = useAuth();
   const { authenticated } = useAuthState();

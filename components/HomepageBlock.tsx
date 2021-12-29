@@ -12,7 +12,7 @@ export interface HomepageBlockProps {
 }
 
 export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const filter: ProductFilterInput = {};
   if (!!menuItem.page?.id) {

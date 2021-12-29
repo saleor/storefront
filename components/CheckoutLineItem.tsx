@@ -18,7 +18,7 @@ interface CheckoutLineItemProps {
 }
 
 export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
     useCheckoutLineUpdateMutation();

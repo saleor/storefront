@@ -6,7 +6,7 @@ import NotFoundSeo from "@/components/seo/NotFoundSeo";
 import { usePaths } from "@/lib/paths";
 
 const Custom404: React.VFC = () => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   return (
     <>

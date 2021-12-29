@@ -9,7 +9,7 @@ import { usePaths } from "@/lib/paths";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 const Cart = () => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const [token] = useLocalStorage<string>(CHECKOUT_TOKEN);
   const { data, loading, error } = useCheckoutByTokenQuery({

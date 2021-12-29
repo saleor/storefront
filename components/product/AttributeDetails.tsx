@@ -17,7 +17,6 @@ export const AttributeDetails = ({
   if (attributes.length === 0) {
     return <></>;
   }
-  console.log(attributes);
   return (
     <div>
       <p className="text-lg mt-2 font-medium text-gray-500">Attributes</p>

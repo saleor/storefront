@@ -8,7 +8,7 @@ import { usePaths } from "@/lib/paths";
 
 export const AccountLayout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter();
-  const { paths } = usePaths();
+  const paths = usePaths();
   const { authenticated, authenticating } = useAuthState();
   if (authenticating) {
     return (

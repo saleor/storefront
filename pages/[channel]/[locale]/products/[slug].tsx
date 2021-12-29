@@ -40,7 +40,7 @@ const ProductPage = ({
   product,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  const { paths } = usePaths();
+  const paths = usePaths();
   const { currentChannel } = useChannels();
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const [createCheckout] = useCreateCheckoutMutation();

@@ -14,7 +14,7 @@ export const VariantSelector = ({
   product,
   selectedVariantID,
 }: VariantSelectorProps) => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const variants = product.variants;
   if (!variants || variants.length === 1) {

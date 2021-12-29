@@ -4,7 +4,7 @@ import React from "react";
 import { usePaths } from "../lib/paths";
 
 export const NavigationPanel = () => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const linkClassname =
     "flex p-4 items-center w-full rounded-md shadow-sm h-10 hover:text-blue-500";

@@ -28,7 +28,7 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
-  const { paths } = usePaths();
+  const paths = usePaths();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);

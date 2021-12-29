@@ -20,7 +20,7 @@ import { useChannels } from "./ChannelsProvider";
 import RegionDialog from "./RegionDialog";
 
 export const Navbar = () => {
-  const { paths } = usePaths();
+  const paths = usePaths();
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { currentChannel } = useChannels();
 

@@ -9,7 +9,7 @@ import { HamburgerButton } from "./HamburgerButton";
 
 export const MainMenu = () => {
   const { loading, error, data } = useMainMenuQuery();
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 

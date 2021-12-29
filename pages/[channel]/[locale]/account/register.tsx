@@ -13,7 +13,7 @@ export interface RegisterFormData {
 
 const RegisterPage = () => {
   const router = useRouter();
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   const { register } = useAuth();
   const {

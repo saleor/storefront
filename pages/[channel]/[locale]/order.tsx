@@ -6,7 +6,7 @@ import { Layout } from "@/components";
 import { usePaths } from "@/lib/paths";
 
 const OrderCompletedPage = () => {
-  const { paths } = usePaths();
+  const paths = usePaths();
 
   return (
     <main className="max-w-7xl mx-auto pt-8 px-8">
