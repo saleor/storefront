@@ -140,7 +140,7 @@ const ProductPage = ({
     selectedVariant?.quantityAvailable === 0 ||
     loadingAddToCheckout;
 
-  const description = translate(product, "description")
+  const description = translate(product, "description");
 
   return (
     <>

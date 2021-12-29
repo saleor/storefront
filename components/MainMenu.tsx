@@ -65,7 +65,7 @@ export const MainMenu = () => {
         <div className="mt-5 mr-2 -ml-2 md:mx-3 z-40 absolute h-screen w-screen lg:max-w-7xl md:h-56 bg-white border border-gray-200 rounded-md shadow-lg outline-none">
           <div className="flex flex-col md:flex-row cursor-default md:divide-x md:divide-gray-200">
             {menu?.map((item) => {
-              if(!item){
+              if (!item) {
                 return null;
               }
               return (
@@ -73,7 +73,9 @@ export const MainMenu = () => {
                   key={item?.id}
                   className="h-32 md:pl-10 ml-5 md:ml-16 mt-10"
                 >
-                  <h2 className="font-semibold text-md">{translate(item, "name")}</h2>
+                  <h2 className="font-semibold text-md">
+                    {translate(item, "name")}
+                  </h2>
                   <ul className="mt-3 absolute">
                     {item?.children?.map((child) => {
                       if (!notNullable(child)) {

@@ -11,7 +11,11 @@ import BaseSeo from "@/components/seo/BaseSeo";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
 import { homepagePaths } from "@/lib/ssr/homepage";
-import { HomepageBlocksQuery, HomepageBlocksQueryDocument, HomepageBlocksQueryVariables } from "@/saleor/api";
+import {
+  HomepageBlocksQuery,
+  HomepageBlocksQueryDocument,
+  HomepageBlocksQueryVariables,
+} from "@/saleor/api";
 
 const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -44,13 +48,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const result: ApolloQueryResult<HomepageBlocksQuery> = await apolloClient.query<
-    HomepageBlocksQuery,
-    HomepageBlocksQueryVariables
-  >({
-    query: HomepageBlocksQueryDocument,
-    variables: { slug: "homepage", ...contextToRegionQuery(context) },
-  });
+  const result: ApolloQueryResult<HomepageBlocksQuery> =
+    await apolloClient.query<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
+      {
+        query: HomepageBlocksQueryDocument,
+        variables: { slug: "homepage", ...contextToRegionQuery(context) },
+      }
+    );
   return {
     props: {
       menuData: result?.data,
