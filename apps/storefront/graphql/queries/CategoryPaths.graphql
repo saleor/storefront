@@ -1,9 +1,10 @@
-query CategoryPaths {
-  categories(first: 20) {
+query CategoryPaths($after: String) {
+  categories(first: 100, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
     edges {
-      cursor
       node {
-        id
         slug
       }
     }

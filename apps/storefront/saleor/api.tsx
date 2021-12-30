@@ -12771,6 +12771,8 @@ export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: stri
 
 export type OrderDetailsFragment = { __typename?: 'Order', id: string, token: string, created: any, number?: string | null | undefined, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string }, net: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } };
 
+export type PageInfoFragment = { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined };
+
 export type PriceFragment = { __typename?: 'Money', currency: string, amount: number, localizedAmount: string };
 
 export type ProductCardFragment = { __typename?: 'Product', id: string, slug: string, name: string, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined, category?: { __typename?: 'Category', name: string } | null | undefined, pricing?: { __typename?: 'ProductPricingInfo', onSale?: boolean | null | undefined, priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } | null | undefined, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number, localizedAmount: string } } | null | undefined } | null | undefined } | null | undefined };
@@ -12834,6 +12836,7 @@ export type CheckoutCompleteMutation = { __typename?: 'Mutation', checkoutComple
 export type CreateCheckoutMutationVariables = Exact<{
   email: Scalars['String'];
   lines: Array<CheckoutLineInput> | CheckoutLineInput;
+  channel: Scalars['String'];
 }>;
 
 
@@ -12924,10 +12927,12 @@ export type CategoryBySlugQueryVariables = Exact<{
 
 export type CategoryBySlugQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, description?: string | null | undefined, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string } }> } | null | undefined } | null | undefined };
 
-export type CategoryPathsQueryVariables = Exact<{ [key: string]: never; }>;
+export type CategoryPathsQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']>;
+}>;
 
 
-export type CategoryPathsQuery = { __typename?: 'Query', categories?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', cursor: string, node: { __typename?: 'Category', id: string, slug: string } }> } | null | undefined };
+export type CategoryPathsQuery = { __typename?: 'Query', categories?: { __typename?: 'CategoryCountableConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined }, edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', slug: string } }> } | null | undefined };
 
 export type CheckoutByTokenQueryVariables = Exact<{
   checkoutToken: Scalars['UUID'];
@@ -12943,10 +12948,13 @@ export type CollectionBySlugQueryVariables = Exact<{
 
 export type CollectionBySlugQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, description?: string | null | undefined, name: string, slug: string, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null | undefined } | null | undefined } | null | undefined };
 
-export type CollectionPathsQueryVariables = Exact<{ [key: string]: never; }>;
+export type CollectionPathsQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']>;
+  channel: Scalars['String'];
+}>;
 
 
-export type CollectionPathsQuery = { __typename?: 'Query', collections?: { __typename?: 'CollectionCountableConnection', edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> } | null | undefined };
+export type CollectionPathsQuery = { __typename?: 'Query', collections?: { __typename?: 'CollectionCountableConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined }, edges: Array<{ __typename?: 'CollectionCountableEdge', node: { __typename?: 'Collection', slug: string } }> } | null | undefined };
 
 export type CurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12994,8 +13002,16 @@ export type PageQueryVariables = Exact<{
 
 export type PageQuery = { __typename?: 'Query', page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null | undefined, seoDescription?: string | null | undefined, slug: string, created: any, content?: string | null | undefined } | null | undefined };
 
+export type PagePathsQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type PagePathsQuery = { __typename?: 'Query', pages?: { __typename?: 'PageCountableConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined }, edges: Array<{ __typename?: 'PageCountableEdge', node: { __typename?: 'Page', slug: string } }> } | null | undefined };
+
 export type ProductBySlugQueryVariables = Exact<{
   slug: Scalars['String'];
+  channel: Scalars['String'];
 }>;
 
 
@@ -13005,6 +13021,7 @@ export type ProductCollectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']>;
   after?: InputMaybe<Scalars['String']>;
   filter?: InputMaybe<ProductFilterInput>;
+  channel: Scalars['String'];
 }>;
 
 
@@ -13012,10 +13029,11 @@ export type ProductCollectionQuery = { __typename?: 'Query', products?: { __type
 
 export type ProductPathsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']>;
+  channel: Scalars['String'];
 }>;
 
 
-export type ProductPathsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, slug: string } }> } | null | undefined };
+export type ProductPathsQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null | undefined, endCursor?: string | null | undefined }, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', slug: string } }> } | null | undefined };
 
 export type CurrentUserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -13264,6 +13282,13 @@ export const OrderDetailsFragmentDoc = gql`
   }
 }
     ${PriceFragmentDoc}`;
+export const PageInfoFragmentDoc = gql`
+    fragment PageInfoFragment on PageInfo {
+  hasNextPage
+  startCursor
+  endCursor
+}
+    `;
 export const ProductCardFragmentDoc = gql`
     fragment ProductCardFragment on Product {
   id
@@ -13625,10 +13650,8 @@ export type CheckoutCompleteMutationHookResult = ReturnType<typeof useCheckoutCo
 export type CheckoutCompleteMutationResult = Apollo.MutationResult<CheckoutCompleteMutation>;
 export type CheckoutCompleteMutationOptions = Apollo.BaseMutationOptions<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>;
 export const CreateCheckoutDocument = gql`
-    mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!) {
-  checkoutCreate(
-    input: {channel: "default-channel", email: $email, lines: $lines}
-  ) {
+    mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!, $channel: String!) {
+  checkoutCreate(input: {channel: $channel, email: $email, lines: $lines}) {
     checkout {
       id
       token
@@ -13658,6 +13681,7 @@ export type CreateCheckoutMutationFn = Apollo.MutationFunction<CreateCheckoutMut
  *   variables: {
  *      email: // value for 'email'
  *      lines: // value for 'lines'
+ *      channel: // value for 'channel'
  *   },
  * });
  */
@@ -14119,18 +14143,19 @@ export type CategoryBySlugQueryHookResult = ReturnType<typeof useCategoryBySlugQ
 export type CategoryBySlugLazyQueryHookResult = ReturnType<typeof useCategoryBySlugLazyQuery>;
 export type CategoryBySlugQueryResult = Apollo.QueryResult<CategoryBySlugQuery, CategoryBySlugQueryVariables>;
 export const CategoryPathsDocument = gql`
-    query CategoryPaths {
-  categories(first: 20) {
+    query CategoryPaths($after: String) {
+  categories(first: 100, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
     edges {
-      cursor
       node {
-        id
         slug
       }
     }
   }
 }
-    `;
+    ${PageInfoFragmentDoc}`;
 
 /**
  * __useCategoryPathsQuery__
@@ -14144,6 +14169,7 @@ export const CategoryPathsDocument = gql`
  * @example
  * const { data, loading, error } = useCategoryPathsQuery({
  *   variables: {
+ *      after: // value for 'after'
  *   },
  * });
  */
@@ -14237,8 +14263,11 @@ export type CollectionBySlugQueryHookResult = ReturnType<typeof useCollectionByS
 export type CollectionBySlugLazyQueryHookResult = ReturnType<typeof useCollectionBySlugLazyQuery>;
 export type CollectionBySlugQueryResult = Apollo.QueryResult<CollectionBySlugQuery, CollectionBySlugQueryVariables>;
 export const CollectionPathsDocument = gql`
-    query CollectionPaths {
-  collections(channel: "default-channel", first: 20) {
+    query CollectionPaths($after: String, $channel: String!) {
+  collections(first: 20, channel: $channel, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
     edges {
       node {
         slug
@@ -14246,7 +14275,7 @@ export const CollectionPathsDocument = gql`
     }
   }
 }
-    `;
+    ${PageInfoFragmentDoc}`;
 
 /**
  * __useCollectionPathsQuery__
@@ -14260,10 +14289,12 @@ export const CollectionPathsDocument = gql`
  * @example
  * const { data, loading, error } = useCollectionPathsQuery({
  *   variables: {
+ *      after: // value for 'after'
+ *      channel: // value for 'channel'
  *   },
  * });
  */
-export function useCollectionPathsQuery(baseOptions?: Apollo.QueryHookOptions<CollectionPathsQuery, CollectionPathsQueryVariables>) {
+export function useCollectionPathsQuery(baseOptions: Apollo.QueryHookOptions<CollectionPathsQuery, CollectionPathsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CollectionPathsQuery, CollectionPathsQueryVariables>(CollectionPathsDocument, options);
       }
@@ -14631,9 +14662,51 @@ export function usePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PageQ
 export type PageQueryHookResult = ReturnType<typeof usePageQuery>;
 export type PageLazyQueryHookResult = ReturnType<typeof usePageLazyQuery>;
 export type PageQueryResult = Apollo.QueryResult<PageQuery, PageQueryVariables>;
+export const PagePathsDocument = gql`
+    query PagePaths($after: String) {
+  pages(first: 100, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
+    edges {
+      node {
+        slug
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __usePagePathsQuery__
+ *
+ * To run a query within a React component, call `usePagePathsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePagePathsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePagePathsQuery({
+ *   variables: {
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function usePagePathsQuery(baseOptions?: Apollo.QueryHookOptions<PagePathsQuery, PagePathsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PagePathsQuery, PagePathsQueryVariables>(PagePathsDocument, options);
+      }
+export function usePagePathsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PagePathsQuery, PagePathsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PagePathsQuery, PagePathsQueryVariables>(PagePathsDocument, options);
+        }
+export type PagePathsQueryHookResult = ReturnType<typeof usePagePathsQuery>;
+export type PagePathsLazyQueryHookResult = ReturnType<typeof usePagePathsLazyQuery>;
+export type PagePathsQueryResult = Apollo.QueryResult<PagePathsQuery, PagePathsQueryVariables>;
 export const ProductBySlugDocument = gql`
-    query ProductBySlug($slug: String!) {
-  product(slug: $slug, channel: "default-channel") {
+    query ProductBySlug($slug: String!, $channel: String!) {
+  product(slug: $slug, channel: $channel) {
     ...ProductDetailsFragment
   }
 }
@@ -14652,6 +14725,7 @@ export const ProductBySlugDocument = gql`
  * const { data, loading, error } = useProductBySlugQuery({
  *   variables: {
  *      slug: // value for 'slug'
+ *      channel: // value for 'channel'
  *   },
  * });
  */
@@ -14667,10 +14741,10 @@ export type ProductBySlugQueryHookResult = ReturnType<typeof useProductBySlugQue
 export type ProductBySlugLazyQueryHookResult = ReturnType<typeof useProductBySlugLazyQuery>;
 export type ProductBySlugQueryResult = Apollo.QueryResult<ProductBySlugQuery, ProductBySlugQueryVariables>;
 export const ProductCollectionDocument = gql`
-    query ProductCollection($before: String, $after: String, $filter: ProductFilterInput) {
+    query ProductCollection($before: String, $after: String, $filter: ProductFilterInput, $channel: String!) {
   products(
     first: 4
-    channel: "default-channel"
+    channel: $channel
     after: $after
     before: $before
     filter: $filter
@@ -14707,10 +14781,11 @@ export const ProductCollectionDocument = gql`
  *      before: // value for 'before'
  *      after: // value for 'after'
  *      filter: // value for 'filter'
+ *      channel: // value for 'channel'
  *   },
  * });
  */
-export function useProductCollectionQuery(baseOptions?: Apollo.QueryHookOptions<ProductCollectionQuery, ProductCollectionQueryVariables>) {
+export function useProductCollectionQuery(baseOptions: Apollo.QueryHookOptions<ProductCollectionQuery, ProductCollectionQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ProductCollectionQuery, ProductCollectionQueryVariables>(ProductCollectionDocument, options);
       }
@@ -14722,18 +14797,19 @@ export type ProductCollectionQueryHookResult = ReturnType<typeof useProductColle
 export type ProductCollectionLazyQueryHookResult = ReturnType<typeof useProductCollectionLazyQuery>;
 export type ProductCollectionQueryResult = Apollo.QueryResult<ProductCollectionQuery, ProductCollectionQueryVariables>;
 export const ProductPathsDocument = gql`
-    query ProductPaths($after: String) {
-  products(first: 50, channel: "default-channel", after: $after) {
+    query ProductPaths($after: String, $channel: String!) {
+  products(first: 100, channel: $channel, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
     edges {
-      cursor
       node {
-        id
         slug
       }
     }
   }
 }
-    `;
+    ${PageInfoFragmentDoc}`;
 
 /**
  * __useProductPathsQuery__
@@ -14748,10 +14824,11 @@ export const ProductPathsDocument = gql`
  * const { data, loading, error } = useProductPathsQuery({
  *   variables: {
  *      after: // value for 'after'
+ *      channel: // value for 'channel'
  *   },
  * });
  */
-export function useProductPathsQuery(baseOptions?: Apollo.QueryHookOptions<ProductPathsQuery, ProductPathsQueryVariables>) {
+export function useProductPathsQuery(baseOptions: Apollo.QueryHookOptions<ProductPathsQuery, ProductPathsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ProductPathsQuery, ProductPathsQueryVariables>(ProductPathsDocument, options);
       }

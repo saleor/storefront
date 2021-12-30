@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 
+import { usePaths } from "@/lib/paths";
 import { OrderDetailsFragment } from "@/saleor/api";
 
 interface OrdersTableProps {
@@ -8,6 +9,7 @@ interface OrdersTableProps {
 
 export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const router = useRouter();
+  const paths = usePaths();
 
   return (
     <table className="w-full divide-y bg-white rounded-md ">
@@ -28,10 +30,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
               className="h-16 cursor-pointer"
               key={order.id}
               onClick={() =>
-                router.push({
-                  pathname: "/account/orders/[token]",
-                  query: { token: order.token },
-                })
+                router.push(paths.account.orders._token(order.token).$url())
               }
             >
               <td>{order?.number}</td>

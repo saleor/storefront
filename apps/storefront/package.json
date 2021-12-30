@@ -13,13 +13,14 @@
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "prettier --write . && next lint --fix",
-    "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w"
+    "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
+    "path": "pathpida --ignorePath .gitignore"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
     "@headlessui/react": "1.4.2",
     "@heroicons/react": "1.0.5",
-    "@saleor/sdk": "^0.4.0",
+    "@saleor/sdk": "^0.4.1",
     "@stripe/react-stripe-js": "^1.7.0",
     "@stripe/stripe-js": "^1.22.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",
@@ -48,6 +49,7 @@
     "@graphql-codegen/typescript-operations": "2.2.1",
     "@graphql-codegen/typescript-react-apollo": "3.2.2",
     "@next/bundle-analyzer": "^12.0.7",
+    "@types/qs": "^6.9.7",
     "@types/react": "17.0.37",
     "autoprefixer": "10.4.0",
     "eslint": "8.4.1",

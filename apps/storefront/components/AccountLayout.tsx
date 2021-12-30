@@ -1,16 +1,14 @@
 import { useAuthState } from "@saleor/sdk";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
+import { usePaths } from "@/lib/paths";
 
-interface AccountLayoutProps {
-  children: React.ReactNode;
-}
-
-export const AccountLayout = ({ children }: AccountLayoutProps) => {
+export const AccountLayout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter();
+  const paths = usePaths();
   const { authenticated, authenticating } = useAuthState();
   if (authenticating) {
     return (
@@ -21,10 +19,9 @@ export const AccountLayout = ({ children }: AccountLayoutProps) => {
   }
 
   if (!authenticated && process.browser) {
-    router.push({
-      pathname: "/account/login",
-      query: { next: router?.pathname },
-    });
+    router.push(
+      paths.account.login.$url({ query: { next: router?.pathname } })
+    );
     return null;
   }
 

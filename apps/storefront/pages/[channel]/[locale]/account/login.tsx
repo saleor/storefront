@@ -1,60 +1,62 @@
-import { useAuth } from "@saleor/sdk";
+import { useAuth, useAuthState } from "@saleor/sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export interface RegisterFormData {
+import { usePaths } from "@/lib/paths";
+
+export type OptionalQuery = {
+  next?: string;
+};
+
+export interface LoginFormData {
   email: string;
   password: string;
 }
 
-const RegisterPage = () => {
+const LoginPage: React.VFC = () => {
   const router = useRouter();
-  const { register } = useAuth();
+  const paths = usePaths();
+
+  const { login } = useAuth();
+  const { authenticated } = useAuthState();
   const {
     register: registerForm,
     handleSubmit: handleSubmitForm,
     formState: { errors: errorsForm },
     setError: setErrorForm,
-  } = useForm<RegisterFormData>({});
+    getValues,
+  } = useForm<LoginFormData>({});
 
-  const handleRegister = handleSubmitForm(
-    async (formData: RegisterFormData) => {
-      const { data } = await register({
-        email: formData.email,
-        password: formData.password,
-        redirectUrl: `${window.location.origin}/account/confirm`,
-      });
+  const redirectURL = router.query.next?.toString() || "/";
 
-      if (data?.accountRegister?.errors.length) {
-        // Unable to sign in.
-        data?.accountRegister?.errors.forEach((e) => {
-          if (e.field === "email") {
-            setErrorForm("email", { message: e.message! });
-          } else if (e.field === "password") {
-            setErrorForm("password", { message: e.message! });
-          } else {
-            console.error("Registration error:", e);
-          }
-        });
-        return;
-      }
-      console.log(data?.accountRegister);
-      // User signed in successfully.
-      router.push("/");
-      return null;
+  const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
+    const { data } = await login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (data?.tokenCreate?.errors[0]) {
+      // Unable to sign in.
+      setErrorForm("email", { message: "Invalid credentials" });
     }
-  );
+  });
+  if (authenticated) {
+    // User signed in successfully.
+    router.push(redirectURL);
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-blue-500">
       <div className="flex justify-end">
         <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
           <div>
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleLogin}>
               <div>
-                <h1 className="text-2xl font-bold">Create a new account</h1>
+                <span className="text-sm text-gray-900">Welcome back</span>
+                <h1 className="text-2xl font-bold">Login to your account</h1>
               </div>
 
               <div className="my-3">
@@ -67,11 +69,6 @@ const RegisterPage = () => {
                     required: true,
                   })}
                 />
-                {!!errorsForm.email && (
-                  <p className="text-sm text-red-500 pt-2">
-                    {errorsForm.email?.message}
-                  </p>
-                )}
               </div>
               <div className="mt-5">
                 <label className="block text-md mb-2">Password</label>
@@ -83,24 +80,28 @@ const RegisterPage = () => {
                     required: true,
                   })}
                 />
-                {!!errorsForm.password && (
-                  <p className="text-sm text-red-500 pt-2">
-                    {errorsForm.password?.message}
-                  </p>
-                )}
               </div>
-
+              <div className="flex justify-between">
+                <span className="text-sm text-blue-700 hover:underline cursor-pointer pt-2">
+                  Forgot password?
+                </span>
+              </div>
               <div className="">
                 <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
-                  Register
+                  Login now
                 </button>
+                {!!errorsForm.email && (
+                  <p className="text-sm text-red-500 pt-2">
+                    {errorsForm.email?.message}
+                  </p>
+                )}
               </div>
             </form>
             <p className="mt-8">
               {" "}
-              Already have an account?{" "}
-              <Link href="/account/login">
-                <a> Log in!</a>
+              Dont have an account?{" "}
+              <Link href={paths.account.register.$url()}>
+                <a> Register!</a>
               </Link>
             </p>
           </div>
@@ -110,4 +111,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

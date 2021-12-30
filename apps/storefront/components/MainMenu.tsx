@@ -4,10 +4,13 @@ import React from "react";
 
 import { useMainMenuQuery } from "@/saleor/api";
 
+import { usePaths } from "../lib/paths";
 import { HamburgerButton } from "./HamburgerButton";
 
 export const MainMenu = () => {
   const { loading, error, data } = useMainMenuQuery();
+  const paths = usePaths();
+
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 
   if (loading)
@@ -56,7 +59,11 @@ export const MainMenu = () => {
                           onClick={() => setOpenDropdown(false)}
                         >
                           {!!child?.category && (
-                            <Link href={"/category/" + child?.category?.slug}>
+                            <Link
+                              href={paths.category
+                                ._slug(child?.category?.slug)
+                                .$url()}
+                            >
                               <a
                                 role="menuitem"
                                 className="ml-3 text-black hover:font-semibold hover:text-black"
@@ -67,7 +74,9 @@ export const MainMenu = () => {
                           )}
                           {!!child?.collection && (
                             <Link
-                              href={"/collection/" + child?.collection?.slug}
+                              href={paths.collection
+                                ._slug(child?.collection?.slug)
+                                .$url()}
                             >
                               <a
                                 role="menuitem"
@@ -78,7 +87,9 @@ export const MainMenu = () => {
                             </Link>
                           )}
                           {!!child?.page && (
-                            <Link href={"/page/" + child?.page?.slug}>
+                            <Link
+                              href={paths.page._slug(child?.page?.slug).$url()}
+                            >
                               <a
                                 role="menuitem"
                                 className="ml-3 text-black hover:font-semibold hover:text-black"

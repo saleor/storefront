@@ -2,6 +2,7 @@ import React from "react";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
+import { useChannels } from "./ChannelsProvider";
 import { Pagination } from "./Pagination";
 import { ProductCard } from "./ProductCard";
 import { Spinner } from "./Spinner";
@@ -15,8 +16,10 @@ export const ProductCollection = ({
   filter,
   allowMore = true,
 }: ProductCollectionProps) => {
+  const { currentChannel } = useChannels();
+
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
-    variables: { filter: filter },
+    variables: { filter: filter, channel: currentChannel.slug },
   });
 
   const onLoadMore = () => {

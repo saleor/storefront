@@ -1,7 +1,9 @@
-mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!) {
-  checkoutCreate(
-    input: { channel: "default-channel", email: $email, lines: $lines }
-  ) {
+mutation CreateCheckout(
+  $email: String!
+  $lines: [CheckoutLineInput!]!
+  $channel: String!
+) {
+  checkoutCreate(input: { channel: $channel, email: $email, lines: $lines }) {
     checkout {
       id
       token

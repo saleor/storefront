@@ -9,8 +9,15 @@ module.exports = withBundleAnalyzer({
     domains: ["vercel.saleor.cloud", "img.youtube.com"],
     formats: ["image/avif", "image/webp"],
   },
-  i18n: {
-    locales: ["en-US"],
-    defaultLocale: "en-US",
+  async redirects() {
+    return [
+      {
+        source: "/",
+        // TODO: Investigate why constants from project cannot be imported
+        // User should be redirected to the defaults defined in @lib/regions
+        destination: "/default-channel/en-US",
+        permanent: false,
+      },
+    ];
   },
 });
