@@ -2,7 +2,8 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { CHECKOUT_TOKEN } from "@/lib/const";
+import { clearCheckout } from "@/lib/checkout";
+import { usePaths } from "@/lib/paths";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
@@ -29,6 +30,7 @@ export const DummyCreditCardSection = ({
   const gateway = checkout.availablePaymentGateways.find(
     (gateway) => gateway.id === DUMMY_CREDIT_CARD_GATEWAY
   );
+  const paths = usePaths();
   const router = useRouter();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
@@ -45,10 +47,10 @@ export const DummyCreditCardSection = ({
 
   const redirectToOrderDetailsPage = () => {
     // remove completed checkout
-    localStorage.removeItem(CHECKOUT_TOKEN);
+    clearCheckout();
 
     // redirect to the order details page
-    router.push("/order");
+    router.push(paths.order.$url());
   };
 
   const handleSubmit = handleSubmitCard(async (formData: CardForm) => {

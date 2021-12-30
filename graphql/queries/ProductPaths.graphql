@@ -1,9 +1,10 @@
-query ProductPaths($after: String) {
-  products(first: 50, channel: "default-channel", after: $after) {
+query ProductPaths($after: String, $channel: String!) {
+  products(first: 100, channel: $channel, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
     edges {
-      cursor
       node {
-        id
         slug
       }
     }

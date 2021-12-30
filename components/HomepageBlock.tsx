@@ -1,6 +1,8 @@
 import Link from "next/link";
 import React from "react";
+import { UrlObject } from "url";
 
+import { usePaths } from "@/lib/paths";
 import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
 
 import { ProductCollection, RichText } from ".";
@@ -10,6 +12,8 @@ export interface HomepageBlockProps {
 }
 
 export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
+  const paths = usePaths();
+
   const filter: ProductFilterInput = {};
   if (!!menuItem.page?.id) {
     return (
@@ -20,14 +24,14 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
       </div>
     );
   }
-  let link = "";
+  let link: UrlObject = {};
   if (!!menuItem.category?.id) {
     filter.categories = [menuItem.category?.id];
-    link = `/category/${menuItem.category?.slug}`;
+    link = paths.category._slug(menuItem.category.slug).$url();
   }
   if (!!menuItem.collection?.id) {
     filter.collections = [menuItem.collection?.id];
-    link = `/category/${menuItem.collection?.slug}`;
+    link = paths.collection._slug(menuItem.collection.slug).$url();
   }
   return (
     <div className="pb-8">

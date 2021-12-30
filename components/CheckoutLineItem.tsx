@@ -10,12 +10,16 @@ import {
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
 
+import { usePaths } from "../lib/paths";
+
 interface CheckoutLineItemProps {
   line: CheckoutLineDetailsFragment;
   token: string;
 }
 
 export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
+  const paths = usePaths();
+
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
     useCheckoutLineUpdateMutation();
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
@@ -72,7 +76,11 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
           <div className="flex justify-between">
             <div className="pr-6">
               <h3 className="text-xl font-bold">
-                <Link href={`/product/${line?.variant.product?.slug}`}>
+                <Link
+                  href={paths.products
+                    ._slug(line?.variant?.product?.slug)
+                    .$url()}
+                >
                   <a className="font-medium text-gray-700 hover:text-gray-800">
                     {line?.variant.product?.name}
                   </a>

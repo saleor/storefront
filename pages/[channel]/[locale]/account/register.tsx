@@ -1,55 +1,63 @@
-import { useAuth, useAuthState } from "@saleor/sdk";
+import { useAuth } from "@saleor/sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export interface LoginFormData {
+import { usePaths } from "@/lib/paths";
+
+export interface RegisterFormData {
   email: string;
   password: string;
 }
 
-const LoginPage: React.VFC = () => {
+const RegisterPage = () => {
   const router = useRouter();
-  const { login } = useAuth();
-  const { authenticated } = useAuthState();
+  const paths = usePaths();
+
+  const { register } = useAuth();
   const {
     register: registerForm,
     handleSubmit: handleSubmitForm,
     formState: { errors: errorsForm },
     setError: setErrorForm,
-    getValues,
-  } = useForm<LoginFormData>({});
+  } = useForm<RegisterFormData>({});
 
-  const redirectURL = router.query.next?.toString() || "/";
+  const handleRegister = handleSubmitForm(
+    async (formData: RegisterFormData) => {
+      const { data } = await register({
+        email: formData.email,
+        password: formData.password,
+        redirectUrl: `${window.location.origin}/account/confirm`,
+      });
 
-  const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
-    const { data } = await login({
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (data?.tokenCreate?.errors[0]) {
-      // Unable to sign in.
-      console.log(data?.tokenCreate?.errors);
-      setErrorForm("email", { message: "Invalid credentials" });
+      if (data?.accountRegister?.errors.length) {
+        // Unable to sign in.
+        data?.accountRegister?.errors.forEach((e) => {
+          if (e.field === "email") {
+            setErrorForm("email", { message: e.message! });
+          } else if (e.field === "password") {
+            setErrorForm("password", { message: e.message! });
+          } else {
+            console.error("Registration error:", e);
+          }
+        });
+        return;
+      }
+      // User signed in successfully.
+      router.push(paths.$url());
+      return null;
     }
-  });
-  if (authenticated) {
-    // User signed in successfully.
-    router.push(redirectURL);
-    return null;
-  }
+  );
 
   return (
     <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-blue-500">
       <div className="flex justify-end">
         <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
           <div>
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleRegister}>
               <div>
-                <span className="text-sm text-gray-900">Welcome back</span>
-                <h1 className="text-2xl font-bold">Login to your account</h1>
+                <h1 className="text-2xl font-bold">Create a new account</h1>
               </div>
 
               <div className="my-3">
@@ -62,6 +70,11 @@ const LoginPage: React.VFC = () => {
                     required: true,
                   })}
                 />
+                {!!errorsForm.email && (
+                  <p className="text-sm text-red-500 pt-2">
+                    {errorsForm.email?.message}
+                  </p>
+                )}
               </div>
               <div className="mt-5">
                 <label className="block text-md mb-2">Password</label>
@@ -73,28 +86,24 @@ const LoginPage: React.VFC = () => {
                     required: true,
                   })}
                 />
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-blue-700 hover:underline cursor-pointer pt-2">
-                  Forgot password?
-                </span>
-              </div>
-              <div className="">
-                <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
-                  Login now
-                </button>
-                {!!errorsForm.email && (
+                {!!errorsForm.password && (
                   <p className="text-sm text-red-500 pt-2">
-                    {errorsForm.email?.message}
+                    {errorsForm.password?.message}
                   </p>
                 )}
+              </div>
+
+              <div className="">
+                <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
+                  Register
+                </button>
               </div>
             </form>
             <p className="mt-8">
               {" "}
-              Dont have an account?{" "}
-              <Link href="/account/register">
-                <a> Register!</a>
+              Already have an account?{" "}
+              <Link href={paths.account.login.$url()}>
+                <a> Log in!</a>
               </Link>
             </p>
           </div>
@@ -104,4 +113,4 @@ const LoginPage: React.VFC = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

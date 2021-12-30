@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
+import { usePaths } from "@/lib/paths";
 import { ProductCardFragment } from "@/saleor/api";
 
 const styles = {
@@ -18,6 +19,8 @@ export interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const paths = usePaths();
+
   let priceDisplay =
     product.pricing?.priceRange?.start?.gross.localizedAmount || "";
   if (
@@ -38,7 +41,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       key={product.id}
       className="relative bg-white border shadow-md hover:shadow-2xl"
     >
-      <Link href={`/product/${product.slug}`} prefetch={false}>
+      <Link href={paths.products._slug(product.slug).$url()} prefetch={false}>
         <a>
           <div
             className="flex rounded flex-col  w-full h-60 bg-gray-200"

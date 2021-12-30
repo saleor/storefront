@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
 
+import { usePaths } from "@/lib/paths";
 import { ProductDetailsFragment } from "@/saleor/api";
 
 export interface VariantSelectorProps {
@@ -13,6 +14,8 @@ export const VariantSelector = ({
   product,
   selectedVariantID,
 }: VariantSelectorProps) => {
+  const paths = usePaths();
+
   const variants = product.variants;
   if (!variants || variants.length === 1) {
     return null;
@@ -24,10 +27,9 @@ export const VariantSelector = ({
         return (
           <Link
             key={variant?.name}
-            href={{
-              pathname: "/product/[slug]",
-              query: { variant: variant?.id, slug: product.slug },
-            }}
+            href={paths.products
+              ._slug(product.slug)
+              .$url({ query: { variant: variant?.id } })}
             replace
             shallow
           >

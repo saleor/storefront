@@ -1,7 +1,6 @@
 import { useAuthState } from "@saleor/sdk";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
 import { Layout, Spinner } from "@/components";
@@ -26,7 +25,6 @@ export async function getStaticPaths() {
 const OrderDetailsPage = ({
   token,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const router = useRouter();
   const { authenticated } = useAuthState();
   const { loading, error, data } = useOrderDetailsByTokenQuery({
     variables: { token: token },
@@ -35,14 +33,6 @@ const OrderDetailsPage = ({
 
   if (loading) return <Spinner />;
   if (error) return <div>Error : {error.message}</div>;
-
-  if (process.browser && !authenticated) {
-    router.push({
-      pathname: "/account/login",
-      query: { next: `/account/orders/${token}` },
-    });
-    return null;
-  }
 
   if (!data || !data.orderByToken) {
     return null;

@@ -8,7 +8,8 @@ import { loadStripe } from "@stripe/stripe-js/pure";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
-import { CHECKOUT_TOKEN } from "@/lib/const";
+import { clearCheckout } from "@/lib/checkout";
+import { usePaths } from "@/lib/paths";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
@@ -27,6 +28,7 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
+  const paths = usePaths();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
@@ -34,10 +36,10 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const payLabel = `Pay ${!!totalPrice ? totalPrice.localizedAmount : ""}`;
   const redirectToOrderDetailsPage = () => {
     // remove completed checkout
-    localStorage.removeItem(CHECKOUT_TOKEN);
+    clearCheckout();
 
     // redirect to the order details page
-    router.push("/order");
+    router.push(paths.order.$url());
   };
 
   const handleSubmit = async (event: FormEvent) => {
