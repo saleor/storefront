@@ -3,10 +3,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { clearCheckout } from "@/lib/checkout";
-import { DEFAULT_LOCALE, LOCALES } from "@/lib/regions";
+import { LOCALES } from "@/lib/regions";
 
 import { Button } from "../Button";
-import { useChannels } from "../ChannelsProvider";
+import { useRegions } from "../RegionsProvider";
 
 interface RegionDialogProps {
   onClose: () => void;
@@ -18,17 +18,17 @@ export interface RegionFormData {
   locale: string;
 }
 
-const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
+export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
   const router = useRouter();
-  const { channels, currentChannel, setCurrentChannel } = useChannels();
-
-  const { register, handleSubmit } = useForm<RegionFormData>({
-    defaultValues: {
-      channel: currentChannel.slug,
-      locale: router.locale || DEFAULT_LOCALE,
-    },
-  });
-
+  const { channels, currentChannel, setCurrentChannel, currentLocale } =
+    useRegions();
+  const { register: register, handleSubmit: handleSubmit } =
+    useForm<RegionFormData>({
+      defaultValues: {
+        channel: currentChannel.slug,
+        locale: currentLocale,
+      },
+    });
   const onSubmit = handleSubmit(async (formData: RegionFormData) => {
     if (formData.channel !== currentChannel.slug) {
       await setCurrentChannel(formData.channel);
@@ -86,9 +86,9 @@ const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
               required: true,
             })}
           >
-            {LOCALES.map((slug) => (
-              <option key={slug} value={slug}>
-                {slug}
+            {LOCALES.map((locale) => (
+              <option key={locale.slug} value={locale.slug}>
+                {locale.name}
               </option>
             ))}
           </select>

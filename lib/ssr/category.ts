@@ -46,7 +46,7 @@ export const categoryPaths = async () => {
           paths.push({
             params: {
               channel: channelSlug,
-              locale: locale,
+              locale: locale.slug,
               slug,
             },
           });

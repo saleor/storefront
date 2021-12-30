@@ -3,6 +3,8 @@ import Link from "next/link";
 import React from "react";
 
 import { usePaths } from "@/lib/paths";
+import { translate } from "@/lib/translations";
+import { notNullable } from "@/lib/util";
 import { ProductDetailsFragment } from "@/saleor/api";
 
 export interface VariantSelectorProps {
@@ -23,13 +25,16 @@ export const VariantSelector = ({
   return (
     <div className="grid grid-cols-8 gap-2">
       {variants.map((variant) => {
-        const isSelected = variant?.id === selectedVariantID;
+        if (!notNullable(variant)) {
+          return null;
+        }
+        const isSelected = variant.id === selectedVariantID;
         return (
           <Link
-            key={variant?.name}
+            key={translate(variant, "name")}
             href={paths.products
               ._slug(product.slug)
-              .$url({ query: { variant: variant?.id } })}
+              .$url({ query: { variant: variant.id } })}
             replace
             shallow
           >
@@ -40,7 +45,7 @@ export const VariantSelector = ({
                 !isSelected && "border-2 border-gray-300"
               )}
             >
-              {variant?.name}
+              {translate(variant, "name")}
             </a>
           </Link>
         );

@@ -2,9 +2,9 @@ import React from "react";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
-import { useChannels } from "./ChannelsProvider";
 import { Pagination } from "./Pagination";
 import { ProductCard } from "./ProductCard";
+import { useRegions } from "./RegionsProvider";
 import { Spinner } from "./Spinner";
 
 export interface ProductCollectionProps {
@@ -16,10 +16,13 @@ export const ProductCollection = ({
   filter,
   allowMore = true,
 }: ProductCollectionProps) => {
-  const { currentChannel } = useChannels();
+  const { query } = useRegions();
 
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
-    variables: { filter: filter, channel: currentChannel.slug },
+    variables: {
+      filter: filter,
+      ...query,
+    },
   });
 
   const onLoadMore = () => {

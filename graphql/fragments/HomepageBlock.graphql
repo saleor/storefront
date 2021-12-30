@@ -1,4 +1,4 @@
-fragment MenuItemFragment on MenuItem {
+fragment HomepageBlockFragment on MenuItem {
   id
   name
   translation(languageCode: $locale) {
@@ -16,5 +16,14 @@ fragment MenuItemFragment on MenuItem {
   page {
     id
     slug
+  }
+  page {
+    id
+    content
+    title
+    translation(languageCode: $locale) {
+      content
+      title
+    }
   }
 }

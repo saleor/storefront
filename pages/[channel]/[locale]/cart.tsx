@@ -3,6 +3,7 @@ import React, { ReactElement } from "react";
 import { useLocalStorage } from "react-use";
 
 import { CartSummary, CheckoutLineItem, Layout, Spinner } from "@/components";
+import { useRegions } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
@@ -10,11 +11,11 @@ import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 const Cart = () => {
   const paths = usePaths();
-
+  const { query } = useRegions();
   const [token] = useLocalStorage<string>(CHECKOUT_TOKEN);
   const { data, loading, error } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
-    variables: { checkoutToken: token },
+    variables: { checkoutToken: token, locale: query.locale },
     skip: !token,
   });
 

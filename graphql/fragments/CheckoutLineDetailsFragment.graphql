@@ -10,6 +10,10 @@ fragment CheckoutLineDetailsFragment on CheckoutLine {
     product {
       id
       name
+      translation(languageCode: $locale) {
+        id
+        name
+      }
       slug
       thumbnail {
         ...ImageFragment
@@ -23,6 +27,10 @@ fragment CheckoutLineDetailsFragment on CheckoutLine {
       }
     }
     name
+    translation(languageCode: $locale) {
+      id
+      name
+    }
   }
   quantity
 }

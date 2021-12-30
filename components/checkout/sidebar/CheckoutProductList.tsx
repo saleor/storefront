@@ -1,6 +1,8 @@
 import Image from "next/image";
 import React from "react";
 
+import { useRegions } from "@/components/RegionsProvider";
+import { translate } from "@/lib/translations";
 import {
   CheckoutLineDetailsFragment,
   useRemoveProductFromCheckoutMutation,
@@ -15,6 +17,8 @@ export const CheckoutProductList = ({
   lines,
   token,
 }: CheckoutProductListProps) => {
+  const { query } = useRegions();
+
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   return (
@@ -38,8 +42,12 @@ export const CheckoutProductList = ({
 
             <div className="flex flex-col justify-between space-y-4">
               <div className="text-sm font-medium space-y-1">
-                <h3 className="text-gray-900">{line.variant.product.name}</h3>
-                <p className="text-gray-500">{line.variant.name}</p>
+                <h3 className="text-gray-900">
+                  {translate(line.variant.product, "name")}
+                </h3>
+                <p className="text-gray-500">
+                  {translate(line.variant, "name")}
+                </p>
                 <p className="text-gray-900">
                   {line.totalPrice?.gross.localizedAmount}
                 </p>
@@ -53,6 +61,7 @@ export const CheckoutProductList = ({
                       variables: {
                         checkoutToken: token,
                         lineId: line.id,
+                        locale: query.locale,
                       },
                     })
                   }

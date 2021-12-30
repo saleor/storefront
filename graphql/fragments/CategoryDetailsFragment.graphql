@@ -4,6 +4,10 @@ fragment CategoryDetailsFragment on Category {
   seoTitle
   seoDescription
   description
+  translation(languageCode: $locale) {
+    id
+    description
+  }
   backgroundImage {
     ...ImageFragment
   }

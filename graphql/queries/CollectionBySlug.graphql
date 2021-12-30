@@ -1,10 +1,11 @@
-query CollectionBySlug($slug: String!) {
-  collection(slug: $slug, channel: "default-channel") {
+query CollectionBySlug(
+  $slug: String!
+  $channel: String!
+  $locale: LanguageCodeEnum!
+) {
+  collection(slug: $slug, channel: $channel) {
     id
     ...CollectionDetailsFragment
-    seoTitle
-    seoDescription
-    description
     backgroundImage {
       ...ImageFragment
     }

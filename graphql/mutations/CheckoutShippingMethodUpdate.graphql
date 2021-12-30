@@ -1,4 +1,8 @@
-mutation CheckoutShippingMethodUpdate($token: UUID!, $shippingMethodId: ID!) {
+mutation CheckoutShippingMethodUpdate(
+  $token: UUID!
+  $shippingMethodId: ID!
+  $locale: LanguageCodeEnum!
+) {
   checkoutShippingMethodUpdate(
     shippingMethodId: $shippingMethodId
     token: $token
