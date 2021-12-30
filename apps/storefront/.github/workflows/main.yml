@@ -12,6 +12,13 @@ jobs:
         with:
           node-version: "16"
           cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm lint
-      - run: pnpm build
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check linters
+        run: pnpm lint
+      - name: Validate paths
+        run: |
+          pnpm paths
+          git diff --exit-code ./lib/\$path.ts
+      - name: Build project
+        run: pnpm build

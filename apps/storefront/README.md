@@ -75,11 +75,40 @@ Script will start the [GraphQL Code Generator](https://www.graphql-code-generato
 
 ### React and Next.js code structure
 
-Project use [file based routing](https://nextjs.org/docs/routing/introduction). Available routes can be found at `./pages`. Dynamic routes (for example `./pages/product/[slug].tsx`) are generated at build time based on [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation).
-
 When creating new components, please follow the [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components/).
 
 Code for the payment gateways can be found at `./components/checkout/payments`. At the moment we support [Saleor test gateway](https://docs.saleor.io/docs/3.0/developer/available-plugins/dummy-credit-card) and basic flow for Stripe.
+
+#### Routing and urls
+
+Project use [file based routing](https://nextjs.org/docs/routing/introduction). Available routes can be found at `./pages`. Dynamic routes (for example `./pages/product/[slug].tsx`) are generated at build time based on [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation).
+
+To ensure, that Link components use only the existing URLs with required arguments, we use [pathpida](https://github.com/aspida/pathpida). It is used to automatically generate the `./lib/$path.ts` file with all available routes. File should not be updated manually, instead run:
+
+```bash
+npm run paths
+```
+
+Since routes require additional arguments with current locale and channel, you should use `usePaths` hook which will automatically add those. Let's create example component with link to the product page:
+
+```tsx
+import Link from "next/link";
+import { usePaths } from "@/lib/paths";
+
+export const ProductLinkComponent = () => {
+  const paths = usePaths();
+  return (
+    <Link
+      href={paths.products._slug(line?.variant?.product?.slug).$url()}
+    >
+      <a>
+        Product link
+      </a>
+    </Link>
+  )
+};
+```
+
 
 ### Code style
 
