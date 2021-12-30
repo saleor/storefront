@@ -2,14 +2,21 @@ import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
 
-import { useMainMenuQuery } from "@/saleor/api";
+import { translate } from "@/lib/translations";
+import { notNullable } from "@/lib/util";
+import { MenuItemFragment, useMainMenuQuery } from "@/saleor/api";
 
 import { usePaths } from "../lib/paths";
 import { HamburgerButton } from "./HamburgerButton";
+import { useRegions } from "./RegionsProvider";
 
 export const MainMenu = () => {
-  const { loading, error, data } = useMainMenuQuery();
   const paths = usePaths();
+  const { query } = useRegions();
+
+  const { loading, error, data } = useMainMenuQuery({
+    variables: { ...query },
+  });
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 
@@ -20,10 +27,23 @@ export const MainMenu = () => {
       </div>
     );
 
-  if (error) return <p>Error : {error.message}</p>;
-
+  if (error) {
+    console.error("Navigation component error", error.message);
+    return null;
+  }
   const menu = data?.menu?.items || [];
-
+  const menuLink = (item: MenuItemFragment) => {
+    if (!!item.category) {
+      return paths.category._slug(item.category?.slug).$url();
+    }
+    if (!!item.collection) {
+      return paths.collection._slug(item.collection?.slug).$url();
+    }
+    if (!!item.page) {
+      return paths.page._slug(item.page?.slug).$url();
+    }
+    return paths.$url();
+  };
   const onClickButton = (ev: { stopPropagation: () => void }) => {
     ev.stopPropagation();
     setOpenDropdown(!openDropdown);
@@ -45,59 +65,35 @@ export const MainMenu = () => {
         <div className="mt-5 mr-2 -ml-2 md:mx-3 z-40 absolute h-screen w-screen lg:max-w-7xl md:h-56 bg-white border border-gray-200 rounded-md shadow-lg outline-none">
           <div className="flex flex-col md:flex-row cursor-default md:divide-x md:divide-gray-200">
             {menu?.map((item) => {
+              if (!item) {
+                return null;
+              }
               return (
                 <div
-                  key={item?.name}
+                  key={item?.id}
                   className="h-32 md:pl-10 ml-5 md:ml-16 mt-10"
                 >
-                  <h2 className="font-semibold text-md">{item?.name}</h2>
+                  <h2 className="font-semibold text-md">
+                    {translate(item, "name")}
+                  </h2>
                   <ul className="mt-3 absolute">
                     {item?.children?.map((child) => {
+                      if (!notNullable(child)) {
+                        return null;
+                      }
                       return (
                         <li
-                          key={child?.name}
+                          key={child.id}
                           onClick={() => setOpenDropdown(false)}
                         >
-                          {!!child?.category && (
-                            <Link
-                              href={paths.category
-                                ._slug(child?.category?.slug)
-                                .$url()}
+                          <Link href={menuLink(child)}>
+                            <a
+                              role="menuitem"
+                              className="ml-3 text-black hover:font-semibold hover:text-black"
                             >
-                              <a
-                                role="menuitem"
-                                className="ml-3 text-black hover:font-semibold hover:text-black"
-                              >
-                                {child?.name}
-                              </a>
-                            </Link>
-                          )}
-                          {!!child?.collection && (
-                            <Link
-                              href={paths.collection
-                                ._slug(child?.collection?.slug)
-                                .$url()}
-                            >
-                              <a
-                                role="menuitem"
-                                className="ml-3 text-black hover:font-semibold hover:text-black"
-                              >
-                                {child?.name}
-                              </a>
-                            </Link>
-                          )}
-                          {!!child?.page && (
-                            <Link
-                              href={paths.page._slug(child?.page?.slug).$url()}
-                            >
-                              <a
-                                role="menuitem"
-                                className="ml-3 text-black hover:font-semibold hover:text-black"
-                              >
-                                {child?.name}
-                              </a>
-                            </Link>
-                          )}
+                              {translate(child, "name")}
+                            </a>
+                          </Link>
                         </li>
                       );
                     })}

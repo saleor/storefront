@@ -6,6 +6,11 @@ fragment ProductDetailsFragment on Product {
   seoDescription
   seoTitle
   isAvailableForPurchase
+  translation(languageCode: $locale) {
+    id
+    description
+    name
+  }
   attributes {
     ...SelectedAttributeDetailsFragment
   }

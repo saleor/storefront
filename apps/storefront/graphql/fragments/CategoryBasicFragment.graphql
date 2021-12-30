@@ -2,4 +2,8 @@ fragment CategoryBasicFragment on Category {
   id
   name
   slug
+  translation(languageCode: $locale) {
+    id
+    name
+  }
 }

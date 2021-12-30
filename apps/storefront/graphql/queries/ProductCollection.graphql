@@ -3,6 +3,7 @@ query ProductCollection(
   $after: String
   $filter: ProductFilterInput
   $channel: String!
+  $locale: LanguageCodeEnum!
 ) {
   products(
     first: 4

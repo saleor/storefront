@@ -10,6 +10,7 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero, ProductCollection } from "@/components";
 import CategoryPageSeo from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
+import { contextToRegionQuery } from "@/lib/regions";
 import { categoryPaths } from "@/lib/ssr/category";
 import {
   CategoryBySlugDocument,
@@ -58,6 +59,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         query: CategoryBySlugDocument,
         variables: {
           slug: categorySlug,
+          locale: contextToRegionQuery(context).locale,
         },
       }
     );

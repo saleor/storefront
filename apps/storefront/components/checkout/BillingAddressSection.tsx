@@ -9,6 +9,7 @@ import {
 } from "@/saleor/api";
 
 import { Button } from "../Button";
+import { useRegions } from "../RegionsProvider";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
 
@@ -26,6 +27,8 @@ export const BillingAddressSection = ({
   const [checkoutBillingAddressUpdate] =
     useCheckoutBillingAddressUpdateMutation({});
 
+  const { query } = useRegions();
+
   const updateMutation = async (formData: AddressFormData) => {
     const { data } = await checkoutBillingAddressUpdate({
       variables: {
@@ -33,6 +36,7 @@ export const BillingAddressSection = ({
           ...formData,
         },
         token: checkout.token,
+        locale: query.locale,
       },
     });
     setEditing(false);

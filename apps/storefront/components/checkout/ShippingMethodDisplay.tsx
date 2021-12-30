@@ -1,3 +1,4 @@
+import { translate } from "@/lib/translations";
 import { DeliveryMethodFragment } from "@/saleor/api";
 
 export interface ShippingMethodDisplayProps {
@@ -10,7 +11,7 @@ export const ShippingMethodDisplay = ({
   return (
     <div>
       <div className="mt-6 text-sm font-medium text-gray-900">
-        {method.name}
+        {translate(method, "name")}
       </div>
       <div className="mt-1 flex items-center text-sm text-gray-500">
         {method.minimumDeliveryDays || 2}-{method.maximumDeliveryDays || 14}{" "}

@@ -16,21 +16,23 @@ import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
-import { useChannels } from "./ChannelsProvider";
-import RegionDialog from "./RegionDialog";
+import { RegionDialog } from "./RegionDialog";
+import { useRegions } from "./RegionsProvider";
 
 export const Navbar = () => {
   const paths = usePaths();
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
-  const { currentChannel } = useChannels();
+  const { currentChannel } = useRegions();
 
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const { logout } = useAuth();
   const router = useRouter();
   const client = useApolloClient();
   const { authenticated, user } = useAuthState();
+  const { query } = useRegions();
+
   const { data } = useCheckoutByTokenQuery({
-    variables: { checkoutToken },
+    variables: { checkoutToken, locale: query.locale },
     skip: !checkoutToken || !process.browser,
   });
 

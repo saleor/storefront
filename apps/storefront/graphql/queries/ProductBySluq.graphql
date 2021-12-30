@@ -1,4 +1,8 @@
-query ProductBySlug($slug: String!, $channel: String!) {
+query ProductBySlug(
+  $slug: String!
+  $channel: String!
+  $locale: LanguageCodeEnum!
+) {
   product(slug: $slug, channel: $channel) {
     ...ProductDetailsFragment
   }

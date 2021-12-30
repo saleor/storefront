@@ -10091,7 +10091,7 @@
           },
           {
             "name": "availableShippingMethods",
-            "description": "Shipping methods that can be used with this order.",
+            "description": "Shipping methods that can be used with this checkout.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -10106,8 +10106,8 @@
                 }
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "Use `shippingMethods`, this field will be removed in 4.0."
           },
           {
             "name": "billingAddress",
@@ -10381,6 +10381,26 @@
               "kind": "OBJECT",
               "name": "ShippingMethod",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shippingMethods",
+            "description": "Shipping methods that can be used with this checkout.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ShippingMethod",
+                  "ofType": null
+                }
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -23256,6 +23276,12 @@
           },
           {
             "name": "NOT_READY",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NO_INVOICE_PLUGIN",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -42235,6 +42261,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "ShippingMethodType",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "ShippingZone",
             "ofType": null
           },
@@ -42437,6 +42468,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "ShippingMethodType",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "ShippingZone",
             "ofType": null
           },
@@ -42495,8 +42531,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "Use `shippingMethods`, this field will be removed in 4.0"
           },
           {
             "name": "billingAddress",
@@ -42980,7 +43016,7 @@
           },
           {
             "name": "shippingMethod",
-            "description": null,
+            "description": "Shipping method for this order.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -42998,6 +43034,30 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shippingMethods",
+            "description": "Shipping methods related to this order.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ShippingMethod",
+                    "ofType": null
+                  }
+                }
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -67440,23 +67500,19 @@
       {
         "kind": "OBJECT",
         "name": "ShippingMethod",
-        "description": "Shipping method are the methods you'll use to get customer's orders to them. They are directly exposed to the customers.",
+        "description": "('Shipping methods that can be used as means of shippingfor orders and checkouts.',)",
         "fields": [
           {
-            "name": "channelListings",
-            "description": "List of channels available for the method.",
+            "name": "active",
+            "description": "Describes if this shipping method is active and can be selected.",
             "args": [],
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ShippingMethodChannelListing",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -67464,7 +67520,7 @@
           },
           {
             "name": "description",
-            "description": null,
+            "description": "Shipping method description (JSON).",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -67475,69 +67531,8 @@
             "deprecationReason": null
           },
           {
-            "name": "excludedProducts",
-            "description": "List of excluded products for the shipping method.",
-            "args": [
-              {
-                "name": "after",
-                "description": "Return the elements in the list that come after the specified cursor.",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "before",
-                "description": "Return the elements in the list that come before the specified cursor.",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "first",
-                "description": "Return the first n elements from the list.",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "last",
-                "description": "Return the last n elements from the list.",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "ProductCountableConnection",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "id",
-            "description": "The ID of the object.",
+            "description": "Unique ID of ShippingMethod available for Order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -67553,7 +67548,7 @@
           },
           {
             "name": "maximumDeliveryDays",
-            "description": null,
+            "description": "Maximum delivery days for this shipping method.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -67565,7 +67560,7 @@
           },
           {
             "name": "maximumOrderPrice",
-            "description": "The price of the cheapest variant (including discounts).",
+            "description": "Maximum order price for this shipping method.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -67577,11 +67572,23 @@
           },
           {
             "name": "maximumOrderWeight",
-            "description": null,
+            "description": "Maximum order weight for this shipping method.",
             "args": [],
             "type": {
               "kind": "OBJECT",
               "name": "Weight",
+              "ofType": null
+            },
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0."
+          },
+          {
+            "name": "message",
+            "description": "Message connected to this shipping method.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -67609,7 +67616,7 @@
           },
           {
             "name": "minimumDeliveryDays",
-            "description": null,
+            "description": "Minimum delivery days for this shipping method.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -67621,7 +67628,7 @@
           },
           {
             "name": "minimumOrderPrice",
-            "description": "The price of the cheapest variant (including discounts).",
+            "description": "Minimal order price for this shipping method.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -67633,19 +67640,19 @@
           },
           {
             "name": "minimumOrderWeight",
-            "description": null,
+            "description": "Minimum order weight for this shipping method.",
             "args": [],
             "type": {
               "kind": "OBJECT",
               "name": "Weight",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0."
           },
           {
             "name": "name",
-            "description": null,
+            "description": "Shipping method name.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -67660,29 +67667,17 @@
             "deprecationReason": null
           },
           {
-            "name": "postalCodeRules",
-            "description": "Postal code ranges rule of exclusion or inclusion of the shipping method.",
+            "name": "price",
+            "description": "The price of selected shipping method.",
             "args": [],
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ShippingMethodPostalCodeRule",
+                "name": "Money",
                 "ofType": null
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "price",
-            "description": "The price of the cheapest variant (including discounts).",
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "Money",
-              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -67745,8 +67740,8 @@
               "name": "ShippingMethodTypeEnum",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0."
           }
         ],
         "inputFields": null,
@@ -68023,7 +68018,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -68159,7 +68154,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": true,
@@ -68273,6 +68268,298 @@
           {
             "kind": "INTERFACE",
             "name": "Node",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ShippingMethodType",
+        "description": "Shipping method are the methods you'll use to get customer's orders to them. They are directly exposed to the customers.",
+        "fields": [
+          {
+            "name": "channelListings",
+            "description": "List of channels available for the method.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ShippingMethodChannelListing",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "excludedProducts",
+            "description": "List of excluded products for the shipping method.",
+            "args": [
+              {
+                "name": "after",
+                "description": "Return the elements in the list that come after the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": "Return the elements in the list that come before the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "first",
+                "description": "Return the first n elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "last",
+                "description": "Return the last n elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductCountableConnection",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": "The ID of the object.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "maximumDeliveryDays",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "maximumOrderWeight",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Weight",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metadata",
+            "description": "List of public metadata items. Can be accessed without permissions.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MetadataItem",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "minimumDeliveryDays",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "minimumOrderWeight",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Weight",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "postalCodeRules",
+            "description": "Postal code ranges rule of exclusion or inclusion of the shipping method.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ShippingMethodPostalCodeRule",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetadata",
+            "description": "List of private metadata items.Requires proper staff permissions to access.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MetadataItem",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translation",
+            "description": "Returns translated shipping method fields for the given language code.",
+            "args": [
+              {
+                "name": "languageCode",
+                "description": "A language code to return the translation for shipping method.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "LanguageCodeEnum",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ShippingMethodTranslation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Type of the shipping method.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "ShippingMethodTypeEnum",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Node",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "ObjectWithMetadata",
             "ofType": null
           }
         ],
@@ -68475,7 +68762,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -68558,7 +68845,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -68641,7 +68928,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -68902,7 +69189,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -68949,7 +69236,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -69079,7 +69366,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "ShippingMethod",
+              "name": "ShippingMethodType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -69269,7 +69556,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ShippingMethod",
+                "name": "ShippingMethodType",
                 "ofType": null
               }
             },
@@ -79054,6 +79341,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CHECKOUT_FILTER_SHIPPING_METHODS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CHECKOUT_UPDATED",
             "description": "A checkout is updated. It also triggers all updates related to the checkout.",
             "isDeprecated": false,
@@ -79134,6 +79427,12 @@
           {
             "name": "ORDER_CREATED",
             "description": "A new order is placed.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ORDER_FILTER_SHIPPING_METHODS",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -79281,6 +79580,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CHECKOUT_FILTER_SHIPPING_METHODS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CHECKOUT_UPDATED",
             "description": null,
             "isDeprecated": false,
@@ -79360,6 +79665,12 @@
           },
           {
             "name": "ORDER_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ORDER_FILTER_SHIPPING_METHODS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

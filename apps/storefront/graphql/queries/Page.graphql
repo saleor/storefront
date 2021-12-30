@@ -1,7 +1,12 @@
-query Page($slug: String!) {
+query Page($slug: String!, $locale: LanguageCodeEnum!) {
   page(slug: $slug) {
     id
     title
+    translation(languageCode: $locale) {
+      id
+      title
+      content
+    }
     seoTitle
     seoDescription
     slug

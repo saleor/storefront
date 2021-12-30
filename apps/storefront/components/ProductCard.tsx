@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 import { usePaths } from "@/lib/paths";
+import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
 
 const styles = {
@@ -57,8 +58,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
           <div className={styles.product.details}>
-            <p className={styles.product.name}>{product.name}</p>
-            <p className={styles.product.category}>{product.category?.name}</p>
+            <p className={styles.product.name}>{translate(product, "name")}</p>
+            {!!product.category && (
+              <p className={styles.product.category}>
+                {translate(product.category, "name")}
+              </p>
+            )}
             <p className={styles.product.price}>{priceDisplay}</p>
           </div>
         </a>

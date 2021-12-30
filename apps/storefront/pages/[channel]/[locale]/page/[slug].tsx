@@ -9,7 +9,9 @@ import { ReactElement } from "react";
 
 import { Layout, RichText } from "@/components";
 import apolloClient from "@/lib/graphql";
+import { contextToRegionQuery } from "@/lib/regions";
 import { pagePaths } from "@/lib/ssr/page";
+import { translate } from "@/lib/translations";
 import { PageDocument, PageQuery, PageQueryVariables } from "@/saleor/api";
 
 const PagePage = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -17,9 +19,11 @@ const PagePage = ({ page }: InferGetStaticPropsType<typeof getStaticProps>) => {
     return <Custom404 />;
   }
 
+  const content = translate(page, "content");
+
   return (
     <main className="max-w-7xl mx-auto pt-8 px-8">
-      {!!page.content && <RichText jsonStringData={page.content} />}
+      {content && <RichText jsonStringData={content} />}
     </main>
   );
 };
@@ -49,6 +53,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     query: PageDocument,
     variables: {
       slug: pageSlug,
+      locale: contextToRegionQuery(context).locale,
     },
   });
   return {

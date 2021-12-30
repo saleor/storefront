@@ -1,4 +1,5 @@
 import { useAuthState } from "@saleor/sdk";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 import { SavedAddressSelectionList } from "@/components";
@@ -10,6 +11,7 @@ import {
 } from "@/saleor/api";
 
 import { Button } from "../Button";
+import { useRegions } from "../RegionsProvider";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
 
@@ -22,6 +24,9 @@ export const ShippingAddressSection = ({
   active,
   checkout,
 }: ShippingAddressSectionProps) => {
+  const router = useRouter();
+  const { query } = useRegions();
+
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] =
@@ -46,6 +51,7 @@ export const ShippingAddressSection = ({
           postalCode: billingAddress.postalCode || "",
         },
         token: checkout.token,
+        locale: query.locale,
       },
     });
     if (!!data?.checkoutShippingAddressUpdate?.errors.length) {
@@ -62,6 +68,7 @@ export const ShippingAddressSection = ({
           ...formData,
         },
         token: checkout.token,
+        locale: query.locale,
       },
     });
     setEditing(false);

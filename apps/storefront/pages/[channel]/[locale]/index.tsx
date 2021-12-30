@@ -9,8 +9,13 @@ import React, { ReactElement } from "react";
 import { HomepageBlock, Layout } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import apolloClient from "@/lib/graphql";
+import { contextToRegionQuery } from "@/lib/regions";
 import { homepagePaths } from "@/lib/ssr/homepage";
-import { MenuQuery, MenuQueryDocument, MenuQueryVariables } from "@/saleor/api";
+import {
+  HomepageBlocksQuery,
+  HomepageBlocksQueryDocument,
+  HomepageBlocksQueryVariables,
+} from "@/saleor/api";
 
 const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -23,7 +28,7 @@ const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <main>
           <div className="max-w-7xl mx-auto px-8">
             {menuData?.menu?.items?.map((m) => {
-              if (!!m) return <HomepageBlock key={m?.id} menuItem={m} />;
+              if (!!m) return <HomepageBlock key={m.id} menuItem={m} />;
             })}
           </div>
         </main>
@@ -43,13 +48,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const result: ApolloQueryResult<MenuQuery> = await apolloClient.query<
-    MenuQuery,
-    MenuQueryVariables
-  >({
-    query: MenuQueryDocument,
-    variables: { slug: "homepage" },
-  });
+  const result: ApolloQueryResult<HomepageBlocksQuery> =
+    await apolloClient.query<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
+      {
+        query: HomepageBlocksQueryDocument,
+        variables: { slug: "homepage", ...contextToRegionQuery(context) },
+      }
+    );
   return {
     props: {
       menuData: result?.data,

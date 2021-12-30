@@ -8,6 +8,7 @@ import {
 } from "@/saleor/api";
 
 import { Button } from "../Button";
+import { useRegions } from "../RegionsProvider";
 import ShippingMethodDisplay from "./ShippingMethodDisplay";
 import { ShippingMethodOption } from "./ShippingMethodOption";
 
@@ -20,6 +21,8 @@ export const ShippingMethodSection = ({
   checkout,
   active,
 }: ShippingMethodSectionProps) => {
+  const { query } = useRegions();
+
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     checkout.shippingMethod
   );
@@ -33,6 +36,7 @@ export const ShippingMethodSection = ({
       variables: {
         token: checkout.token,
         shippingMethodId: method.id,
+        locale: query.locale,
       },
     });
     if (!!data?.checkoutShippingMethodUpdate?.errors.length) {

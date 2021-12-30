@@ -2,15 +2,18 @@ import React, { ReactElement } from "react";
 import { useLocalStorage } from "react-use";
 
 import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
+import { useRegions } from "@/components/RegionsProvider";
 import BaseSeo from "@/components/seo/BaseSeo";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 const CheckoutPage = () => {
   const [token] = useLocalStorage(CHECKOUT_TOKEN);
+  const { query } = useRegions();
+
   const { data: checkoutData, loading } = useCheckoutByTokenQuery({
     fetchPolicy: "network-only",
-    variables: { checkoutToken: token },
+    variables: { checkoutToken: token, locale: query.locale },
     skip: !token,
   });
   if (loading) {

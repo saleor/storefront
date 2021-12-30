@@ -3,12 +3,13 @@ import React from "react";
 import { UrlObject } from "url";
 
 import { usePaths } from "@/lib/paths";
-import { MenuItemFragment, ProductFilterInput } from "@/saleor/api";
+import { translate } from "@/lib/translations";
+import { HomepageBlockFragment, ProductFilterInput } from "@/saleor/api";
 
 import { ProductCollection, RichText } from ".";
 
 export interface HomepageBlockProps {
-  menuItem: MenuItemFragment;
+  menuItem: HomepageBlockFragment;
 }
 
 export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
@@ -16,11 +17,10 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
 
   const filter: ProductFilterInput = {};
   if (!!menuItem.page?.id) {
+    const content = translate(menuItem.page!, "content");
     return (
       <div className="pb-10">
-        {!!menuItem.page?.content && (
-          <RichText jsonStringData={menuItem.page?.content} />
-        )}
+        {content && <RichText jsonStringData={content} />}
       </div>
     );
   }
@@ -36,7 +36,7 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
   return (
     <div className="pb-8">
       <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 pb-4">
-        {menuItem.name}
+        {translate(menuItem, "name")}
       </h1>
       <ProductCollection filter={filter} allowMore={false} />
       <div className="flex flex-row-reverse p-4">

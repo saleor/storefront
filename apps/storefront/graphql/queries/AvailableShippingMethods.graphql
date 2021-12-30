@@ -1,8 +1,12 @@
-query AvailableShippingMethods {
+query AvailableShippingMethods($channel: String!, $locale: LanguageCodeEnum!) {
   shop {
-    availableShippingMethods(channel: "default-channel") {
+    availableShippingMethods(channel: $channel) {
       id
       name
+      translation(languageCode: $locale) {
+        id
+        name
+      }
       price {
         ...PriceFragment
       }
