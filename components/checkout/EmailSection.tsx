@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
 import {
   CheckoutDetailsFragment,
@@ -8,12 +9,14 @@ import {
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 
 export interface EmailSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
 export const EmailSection = ({ checkout }: EmailSectionProps) => {
+  const t = useIntl();
   const { query } = useRegions();
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
@@ -47,12 +50,16 @@ export const EmailSection = ({ checkout }: EmailSectionProps) => {
   return (
     <>
       <div className="mt-4 mb-4">
-        <h2 className="checkout-section-header-active">Email Address</h2>
+        <h2 className="checkout-section-header-active">
+          {t.formatMessage(messages.emailAddressCardHeader)}
+        </h2>
       </div>
       {!modifyEmail ? (
         <div className="flex justify-between items-center">
           <p>{checkout?.email}</p>
-          <Button onClick={() => setModifyEmail(true)}>Change</Button>
+          <Button onClick={() => setModifyEmail(true)}>
+            {t.formatMessage(messages.changeButton)}
+          </Button>
         </div>
       ) : (
         <>
@@ -75,7 +82,7 @@ export const EmailSection = ({ checkout }: EmailSectionProps) => {
                   className="btn-checkout-section"
                   onClick={() => onEmailFormSubmit}
                 >
-                  Save
+                  {t.formatMessage(messages.saveButton)}
                 </button>
               </div>
             </div>

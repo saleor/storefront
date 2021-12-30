@@ -5,6 +5,7 @@ import {
   InferGetStaticPropsType,
 } from "next";
 import React, { ReactElement } from "react";
+import { useIntl } from "react-intl";
 
 import { HomepageBlock, Layout } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
@@ -18,6 +19,7 @@ import {
 } from "@/saleor/api";
 
 const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const t = useIntl();
   return (
     <>
       <BaseSeo />

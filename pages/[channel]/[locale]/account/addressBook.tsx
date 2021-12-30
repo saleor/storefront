@@ -1,10 +1,13 @@
 import { useAuthState } from "@saleor/sdk";
 import React, { ReactElement } from "react";
+import { useIntl } from "react-intl";
 
 import { AccountLayout, AddressBookCard, Spinner } from "@/components";
+import { messages } from "@/components/translations";
 import { useCurrentUserAddressesQuery } from "@/saleor/api";
 
 const AddressBookPage = () => {
+  const t = useIntl();
   const { authenticated } = useAuthState();
   const { loading, error, data, refetch } = useCurrentUserAddressesQuery({
     skip: !authenticated,
@@ -19,7 +22,7 @@ const AddressBookPage = () => {
   let addresses = data?.me?.addresses || [];
 
   if (addresses.length === 0) {
-    return <div>No addresses information for this user</div>;
+    return <div>{t.formatMessage(messages.noAddressDataMessage)}</div>;
   }
 
   return (

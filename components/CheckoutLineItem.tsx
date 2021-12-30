@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import { useIntl } from "react-intl";
 
 import { translate } from "@/lib/translations";
 import {
@@ -14,6 +14,7 @@ import {
 
 import { usePaths } from "../lib/paths";
 import { useRegions } from "./RegionsProvider";
+import { messages } from "./translations";
 
 interface CheckoutLineItemProps {
   line: CheckoutLineDetailsFragment;
@@ -22,7 +23,7 @@ interface CheckoutLineItemProps {
 
 export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
   const paths = usePaths();
-  const router = useRouter();
+  const t = useIntl();
   const { query } = useRegions();
 
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
@@ -111,7 +112,7 @@ export const CheckoutLineItem = ({ line, token }: CheckoutLineItemProps) => {
                 }
                 className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
               >
-                <span>Remove</span>
+                <span>{t.formatMessage(messages.removeButton)}</span>
               </button>
               {errors && (
                 <div>

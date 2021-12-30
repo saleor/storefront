@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Custom404 from "pages/404";
 import React, { ReactElement, useState } from "react";
+import { useIntl } from "react-intl";
 import { useLocalStorage } from "react-use";
 
 import { Layout, RichText, VariantSelector } from "@/components";
@@ -17,6 +18,7 @@ import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
+import { messages } from "@/components/translations";
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
@@ -47,6 +49,7 @@ const ProductPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const paths = usePaths();
+  const t = useIntl();
   const { currentChannel } = useRegions();
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const [createCheckout] = useCreateCheckoutMutation();
@@ -184,15 +187,21 @@ const ProductPage = ({
               isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400"
             )}
           >
-            {loadingAddToCheckout ? "Adding..." : "Add to cart"}
+            {loadingAddToCheckout
+              ? t.formatMessage(messages.adding)
+              : t.formatMessage(messages.addToCart)}
           </button>
 
           {!selectedVariant && (
-            <p className="text-lg- text-yellow-600">Please choose a variant</p>
+            <p className="text-lg- text-yellow-600">
+              {t.formatMessage(messages.variantNotChosen)}
+            </p>
           )}
 
           {selectedVariant?.quantityAvailable === 0 && (
-            <p className="text-lg- text-yellow-600">Sold out!</p>
+            <p className="text-lg- text-yellow-600">
+              {t.formatMessage(messages.soldOut)}
+            </p>
           )}
 
           {!!addToCartError && <p>{addToCartError}</p>}

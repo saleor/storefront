@@ -1,7 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
 import { usePasswordChangeMutation } from "@/saleor/api";
+
+import { messages } from "../translations";
 
 interface PasswordChangeFormData {
   oldPassword: string;
@@ -10,6 +13,7 @@ interface PasswordChangeFormData {
 }
 
 export const PasswordPreferences = () => {
+  const t = useIntl();
   const [passwordChangeMutation] = usePasswordChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<String>("");
 
@@ -48,12 +52,14 @@ export const PasswordPreferences = () => {
   });
   return (
     <div className="mt-4 mb-4">
-      <h2 className="checkout-section-header-active mb-2">Change password</h2>
+      <h2 className="checkout-section-header-active mb-2">
+        {t.formatMessage(messages.changePasswordHeader)}
+      </h2>
       <form onSubmit={onPasswordPreferenceSubmit}>
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
             <label className="block pl-1 text-sm font-medium text-gray-700">
-              Old password
+              {t.formatMessage(messages.oldPasswordFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
@@ -73,7 +79,7 @@ export const PasswordPreferences = () => {
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
             <label className="block pl-1 text-sm font-medium text-gray-700">
-              New password
+              {t.formatMessage(messages.newPasswordFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
@@ -93,7 +99,7 @@ export const PasswordPreferences = () => {
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
             <label className="block pl-1 text-sm font-medium text-gray-700">
-              Repeat new password
+              {t.formatMessage(messages.newPasswordRepeatedFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
@@ -119,7 +125,7 @@ export const PasswordPreferences = () => {
             onClick={() => onPasswordPreferenceSubmit()}
             type="submit"
           >
-            Submit changes
+            {t.formatMessage(messages.saveButton)}
           </button>
         </div>
       </form>

@@ -1,6 +1,6 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
 import {
   CheckoutDetailsFragment,
@@ -8,6 +8,7 @@ import {
 } from "@/saleor/api";
 
 import { useRegions } from "./RegionsProvider";
+import { messages } from "./translations";
 
 export interface PromoCodeFormData {
   promoCode: string;
@@ -18,7 +19,7 @@ export interface CartSummaryProps {
 }
 
 export const CartSummary = ({ checkout }: CartSummaryProps) => {
-  const router = useRouter();
+  const t = useIntl();
   const [editPromoCode, setEditPromoCode] = useState(false);
   const [checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
   const { subtotalPrice, shippingPrice, totalPrice, discount, discountName } =
@@ -56,7 +57,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
               htmlFor="discount-code"
               className="block text-sm font-medium text-gray-700"
             >
-              Discount code
+              {t.formatMessage(messages.discountCodeFieldLabel)}
             </label>
             <div className="flex space-x-4 mt-1">
               <input
@@ -71,7 +72,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
                 type="submit"
                 className="bg-gray-200 text-sm font-medium text-gray-600 rounded-md px-4 hover:bg-blue-300"
               >
-                Apply
+                {t.formatMessage(messages.activateButton)}
               </button>
             </div>
             {!!errorsForm.promoCode && (
@@ -85,32 +86,40 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
           <dl className="text-sm">
             {!!discount?.amount && (
               <div className="py-2 flex items-center justify-between">
-                <dt className="text-gray-600">Discount</dt>
+                <dt className="text-gray-600">
+                  {t.formatMessage(messages.discount)}
+                </dt>
                 <dd className="font-medium text-gray-900">
                   {discount?.localizedAmount}
                 </dd>
               </div>
             )}
             <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">Subtotal</dt>
+              <dt className="text-gray-600">
+                {t.formatMessage(messages.subtotal)}
+              </dt>
               <dd className="font-medium text-gray-900">
                 {subtotalPrice?.net.localizedAmount}
               </dd>
             </div>
             <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">Shipping</dt>
+              <dt className="text-gray-600">
+                {t.formatMessage(messages.shipping)}
+              </dt>
               <dd className="font-medium text-gray-900">
                 {shippingPrice?.gross.localizedAmount}
               </dd>
             </div>
             <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">Tax</dt>
+              <dt className="text-gray-600">{t.formatMessage(messages.tax)}</dt>
               <dd className="font-medium text-gray-900">
                 {subtotalPrice?.tax.localizedAmount}
               </dd>
             </div>
             <div className="pt-4 flex items-center justify-between border-t border-gray-300">
-              <dt className="text-lg font-bold text-gray-900">Total</dt>
+              <dt className="text-lg font-bold text-gray-900">
+                {t.formatMessage(messages.total)}
+              </dt>
               <dd className="text-lg font-bold text-gray-900">
                 {totalPrice?.gross.localizedAmount}
               </dd>

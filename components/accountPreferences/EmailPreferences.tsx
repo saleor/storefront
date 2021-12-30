@@ -1,7 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
 import { useRequestEmailChangeMutation } from "@/saleor/api";
+
+import { messages } from "../translations";
 
 interface EmailChangeFormData {
   newEmail: string;
@@ -10,6 +13,7 @@ interface EmailChangeFormData {
 }
 
 export const EmailPreferences = () => {
+  const t = useIntl();
   const [requestEmailChange] = useRequestEmailChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<String>();
   const {
@@ -52,12 +56,11 @@ export const EmailPreferences = () => {
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
             <label className="block pl-1 text-sm font-medium text-gray-700">
-              Email
+              {t.formatMessage(messages.loginEmailFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="email"
-              placeholder="Email"
               {...register("newEmail", {
                 required: true,
                 pattern: /^\S+@\S+$/i,
@@ -73,12 +76,11 @@ export const EmailPreferences = () => {
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
             <label className="block pl-1 text-sm font-medium text-gray-700">
-              Password
+              {t.formatMessage(messages.loginPasswordFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
-              placeholder="Password"
               {...register("password", {
                 required: true,
               })}
@@ -99,7 +101,7 @@ export const EmailPreferences = () => {
             onClick={() => onEmailPreferenceSubmit()}
             type="submit"
           >
-            Submit changes
+            {t.formatMessage(messages.saveButton)}
           </button>
         </div>
       </form>

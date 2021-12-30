@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
+import { IntlProvider } from "react-intl";
 
 import apolloClient from "@/lib/graphql";
 import {
@@ -11,6 +12,9 @@ import {
 } from "@/lib/regions";
 import createSafeContext from "@/lib/useSafeContext";
 import { LanguageCodeEnum } from "@/saleor/api";
+
+import * as sourceOfTruth from "../../locale/en-US.json";
+import * as pl from "../../locale/pl-PL.json";
 
 export interface RegionsConsumerProps {
   channels: Channel[];
@@ -26,6 +30,18 @@ export interface RegionsConsumerProps {
 
 export const [useContext, Provider] = createSafeContext<RegionsConsumerProps>();
 
+export type LocaleMessages = typeof sourceOfTruth;
+export type LocaleKey = keyof LocaleMessages;
+export function importMessages(locale: string): LocaleMessages {
+  switch (locale) {
+    case "en-US":
+      return sourceOfTruth;
+    case "pl-PL":
+      return pl;
+    default:
+      return sourceOfTruth;
+  }
+}
 export const RegionsProvider: React.FC = ({ children }) => {
   const router = useRouter();
 
@@ -56,7 +72,19 @@ export const RegionsProvider: React.FC = ({ children }) => {
     },
   };
 
-  return <Provider value={providerValues}>{children}</Provider>;
+  const msgs = importMessages(locale);
+
+  return (
+    <Provider value={providerValues}>
+      <IntlProvider
+        messages={msgs}
+        locale={locale}
+        defaultLocale={DEFAULT_LOCALE}
+      >
+        {children}
+      </IntlProvider>
+    </Provider>
+  );
 };
 
 export const useRegions = useContext;
