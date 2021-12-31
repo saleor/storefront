@@ -147,3 +147,28 @@ npm run analyze-build
 ```
 
 After the build, report will open in your browser.
+
+## Deployment
+
+### Vercel & Netlify
+
+This application is optimized for deployments on Vercel and Netlify. You can use the following deploy buttons
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Freact-storefront&project-name=my-react-storefront&repo-name=my-react-storefront)
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/saleor/react-storefront)
+
+or, configure it directly in the respective cloud provider.
+
+### Heroku
+
+For Heroku, you need to specify a LTS version of Node.js in your `package.json` explicitly. Add the following snippet in `package.json`:
+
+```json
+"engines": {
+  "node": ">=14 <17",
+  "npm": ">=6.11.0 <8"
+}
+```
+
+We don't add this in this codebase as we prefer to target the latest Node.js version.
