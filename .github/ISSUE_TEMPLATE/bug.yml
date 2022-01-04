@@ -1,0 +1,93 @@
+name: Bug Report
+description: Create a report to help us improve the Saleor React Storefront
+title: ''
+labels: ['type: bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Using this template makes it a lot easier for us to diagnose your problem, so please fill in as many fields as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Summary
+      description: A short description of the problem
+      placeholder: |
+        Include what you expected to happen, and what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: input
+    id: link-to-reproduction
+    attributes:
+      label: A link to a reproduction repository
+      description: The fastest way to describe your bug is to provide a reproduction repository.
+      placeholder: https://github.com/project/link-to-your-reproduction-repo
+
+  - type: dropdown
+    id: which-os
+    attributes:
+      label: What OS are you using?
+      description: What OS are you using?
+      options:
+        - Windows
+        - Mac OS
+        - Linux
+        - Other
+
+  - type: textarea
+    id: next-config
+    attributes:
+      label: Your `next.config.js` file
+      description: Please provide a copy of your `next.config.js` file.
+      value: |
+        <details>
+          <summary>`next.config.js`</summary>
+
+        ```toml
+        # Paste content of your `next.config.js` file here. Check there is no private info in there.
+        ```
+
+        </details>
+
+  - type: textarea
+    id: build-logs
+    attributes:
+      label: Builds logs (or link to your logs)
+      value: |
+        <details>
+          <summary>Build logs</summary>
+
+        ```
+        # Paste logs here
+        ```
+
+        </details>
+
+  - type: textarea
+    id: function-logs
+    attributes:
+      label: Function logs
+      description: If it is a runtime error, please provide a copy of the relevant function logs.
+      value: |
+        <details>
+          <summary>Function logs</summary>
+
+        ```
+        # Paste logs here
+        ```
+
+        </details>
+
