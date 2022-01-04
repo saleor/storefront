@@ -39,7 +39,7 @@ export const AddressForm = ({
       firstName: existingAddressData?.firstName || "",
       lastName: existingAddressData?.lastName || "",
       phone: existingAddressData?.phone || "",
-      country: CountryCode.Pl,
+      country: "PL",
       streetAddress1: existingAddressData?.streetAddress1 || "",
       city: existingAddressData?.city || "",
       postalCode: existingAddressData?.postalCode || "",
