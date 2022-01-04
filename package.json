@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=14.0.0"
+    "node": "^14 || ^16 || ^18"
   },
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' next dev --port 3001",
