@@ -1,6 +1,5 @@
 name: Bug Report
 description: Create a report to help us improve the Saleor React Storefront
-title: ''
 labels: ['type: bug']
 body:
   - type: markdown
