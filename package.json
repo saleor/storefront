@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=14.0.0"
+    "node": "^14 || ^16 || ^18"
   },
   "scripts": {
     "debug": "NODE_OPTIONS='--inspect' next dev --port 3001",
@@ -35,8 +35,8 @@
     "next-seo": "^4.28.1",
     "next-sitemap": "^1.6.203",
     "next-usequerystate": "1.4.0-beta.5",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "rc",
+    "react-dom": "rc",
     "react-hook-form": "^7.22.5",
     "react-use": "^17.3.2"
   },
