@@ -44,8 +44,7 @@ export const ShippingAddressSection = ({
           firstName: billingAddress.firstName || "",
           lastName: billingAddress.lastName || "",
           phone: billingAddress.phone || "",
-          country:
-            (billingAddress.country.code as CountryCode) || CountryCode.Pl,
+          country: (billingAddress.country.code as CountryCode) || "PL",
           streetAddress1: billingAddress.streetAddress1 || "",
           city: billingAddress.city || "",
           postalCode: billingAddress.postalCode || "",

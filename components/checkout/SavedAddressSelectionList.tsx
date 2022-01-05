@@ -5,7 +5,6 @@ import { Spinner } from "@/components";
 import {
   AddressDetailsFragment,
   CheckoutError,
-  CountryCode,
   useCurrentUserAddressesQuery,
 } from "@/saleor/api";
 
@@ -38,7 +37,7 @@ export const SavedAddressSelectionList = ({
       firstName: address?.firstName,
       lastName: address?.lastName,
       phone: address?.phone || "",
-      country: CountryCode.Pl,
+      country: "PL",
       streetAddress1: address.streetAddress1,
       city: address.city,
       postalCode: address.postalCode,
