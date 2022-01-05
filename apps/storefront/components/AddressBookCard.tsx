@@ -2,7 +2,6 @@ import { Button } from "@/components/Button";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
 import {
   AddressDetailsFragment,
-  AddressTypeEnum,
   useAddressDeleteMutation,
   useSetAddressDefaultMutation,
 } from "@/saleor/api";
@@ -46,7 +45,7 @@ export const AddressBookCard = ({
           className="my-1"
           onClick={() =>
             setAddressDefaultMutation({
-              variables: { id: address.id, type: AddressTypeEnum.Billing },
+              variables: { id: address.id, type: "BILLING" },
             })
           }
         >
@@ -58,7 +57,7 @@ export const AddressBookCard = ({
           className="my-1"
           onClick={() =>
             setAddressDefaultMutation({
-              variables: { id: address.id, type: AddressTypeEnum.Shipping },
+              variables: { id: address.id, type: "SHIPPING" },
             })
           }
         >

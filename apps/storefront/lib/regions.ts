@@ -3,8 +3,12 @@ import { GetStaticPropsContext } from "next";
 import { LanguageCodeEnum } from "./../saleor/api";
 
 export const LOCALES = [
-  { slug: "en-US", code: LanguageCodeEnum.EnUs, name: "American English" },
-  { slug: "pl-PL", code: LanguageCodeEnum.PlPl, name: "Polski" },
+  {
+    slug: "en-US",
+    code: "EN_US" as LanguageCodeEnum,
+    name: "American English",
+  },
+  { slug: "pl-PL", code: "PL_PL" as LanguageCodeEnum, name: "Polski" },
 ];
 export const DEFAULT_LOCALE = "en-US";
 
@@ -60,10 +64,7 @@ export const localeToEnum = (localeSlug: string): LanguageCodeEnum => {
   if (chosenLocale) {
     return chosenLocale;
   }
-  return (
-    LOCALES.find(({ slug }) => slug === DEFAULT_LOCALE)?.code ||
-    LanguageCodeEnum.EnUs
-  );
+  return LOCALES.find(({ slug }) => slug === DEFAULT_LOCALE)?.code || "EN_US";
 };
 
 export const contextToRegionQuery = (context: GetStaticPropsContext) => {

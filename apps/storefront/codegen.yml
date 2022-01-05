@@ -17,8 +17,8 @@ generates:
     config:
       scalars:
         JSONString: string
-        # SampleScalar: Scalar.SampleScalar
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
+      enumsAsTypes: true
   ./graphql.schema.json:
     plugins:
       - "introspection"
