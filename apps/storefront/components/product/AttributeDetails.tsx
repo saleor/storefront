@@ -29,7 +29,7 @@ export const AttributeDetails = ({
             </div>
             <div>
               {attribute.values.map((value, index) => (
-                <>
+                <div key={index}>
                   {!!value && (
                     <p key={index}>
                       {translate(value, "name")}
@@ -38,7 +38,7 @@ export const AttributeDetails = ({
                       )}
                     </p>
                   )}
-                </>
+                </div>
               ))}
             </div>
           </div>
