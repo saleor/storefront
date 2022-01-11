@@ -10,10 +10,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
-import { useLocalStorage } from "react-use";
 
 import { MainMenu } from "@/components/MainMenu";
 import { CHECKOUT_TOKEN } from "@/lib/const";
+import { useLocalStorage } from "@/lib/hooks/useLocalStorage";
 import { usePaths } from "@/lib/paths";
 import { useCheckoutByTokenQuery } from "@/saleor/api";
 
@@ -26,8 +26,9 @@ export const Navbar = () => {
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { currentChannel } = useRegions();
   const t = useIntl();
-
-  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
+  // using our useLocalStorage hook because it listens to changes
+  // in storage when token changes in the background
+  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN, "");
   const { logout } = useAuth();
   const router = useRouter();
   const client = useApolloClient();
@@ -75,7 +76,7 @@ export const Navbar = () => {
               </Link>
               <div className="flex space-x-8">
                 <a
-                  href='#'
+                  href="#"
                   className="group -m-2 p-2 flex items-center text-sm font-medium text-gray-700 group-hover:text-gray-800"
                   onClick={() => setRegionDialogOpen(true)}
                 >
