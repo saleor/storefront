@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
 import { CheckoutDetailsFragment } from "@/saleor/api";
 
 import BillingAddressSection from "./BillingAddressSection";
@@ -45,15 +46,14 @@ const sectionsManager = (
   return state;
 };
 
-interface Props {
-  checkout?: CheckoutDetailsFragment;
-}
+export const CheckoutForm = () => {
+  const { checkout } = useCheckoutWithToken();
 
-export const CheckoutForm = ({ checkout }: Props) => {
-  const collapsedSections = sectionsManager(checkout);
   if (!checkout) {
     return <></>;
   }
+
+  const collapsedSections = sectionsManager(checkout);
 
   return (
     <section className="flex flex-auto flex-col overflow-y-auto px-4 pt-4 space-y-4 pb-4">

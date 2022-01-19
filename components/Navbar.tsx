@@ -12,42 +12,41 @@ import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
 import { MainMenu } from "@/components/MainMenu";
-import { CHECKOUT_TOKEN } from "@/lib/const";
-import { useLocalStorage } from "@/lib/hooks/useLocalStorage";
 import { usePaths } from "@/lib/paths";
-import { useCheckoutByTokenQuery } from "@/saleor/api";
+import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
 
 import { RegionDialog } from "./RegionDialog";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
+import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
+import { CheckoutLineCountableEdge } from "@saleor/sdk/dist/apollo/types";
 
 export const Navbar = () => {
   const paths = usePaths();
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { currentChannel } = useRegions();
   const t = useIntl();
-  // using our useLocalStorage hook because it listens to changes
-  // in storage when token changes in the background
-  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN, "");
+  const { checkout, resetCheckoutToken } = useCheckoutWithToken();
+
   const { logout } = useAuth();
   const router = useRouter();
   const client = useApolloClient();
   const { authenticated, user } = useAuthState();
-  const { query } = useRegions();
-
-  const { data } = useCheckoutByTokenQuery({
-    variables: { checkoutToken, locale: query.locale },
-    skip: !checkoutToken || !process.browser,
-  });
 
   const onLogout = async () => {
     // clear all the user data on logout
     await logout();
-    await setCheckoutToken("");
+    await resetCheckoutToken();
     await client.resetStore();
     router.push(paths.$url());
   };
-  const counter = data?.checkout?.lines?.length || 0;
+
+  const counter =
+    checkout?.lines?.reduce(
+      (amount: number, line?: CheckoutLineDetailsFragment | null) =>
+        line ? amount + line.quantity : amount,
+      0
+    ) || 0;
 
   return (
     <>
