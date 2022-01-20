@@ -216,10 +216,11 @@ const ProductPage = ({
 export default ProductPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await productPaths();
+  // Temporally do not render all possible products during the build time
+  // const paths = await productPaths();
   return {
-    paths,
-    fallback: true,
+    paths: [],
+    fallback: "blocking",
   };
 };
 
