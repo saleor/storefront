@@ -5,7 +5,6 @@ module.exports = {
   generateRobotsTxt: true,
   exclude: excludedPaths + ["/[sitemap]"],
   robotsTxtOptions: {
-    additionalSitemaps: [process.env.NEXT_PUBLIC_VERCEL_URL + "/[sitemap]"],
     policies: [
       {
         userAgent: "*",
