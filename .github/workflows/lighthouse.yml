@@ -40,28 +40,29 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const result = ${{ steps.lighthouse_audit.outputs.manifest }}[0].summary
             const links = ${{ steps.lighthouse_audit.outputs.links }}
+            const results = (${{ steps.lighthouse_audit.outputs.manifest }}).filter(result => result.isRepresentativeRun);
 
-            const formatResult = (res) => Math.round((res * 100))
-            Object.keys(result).forEach(key => result[key] = formatResult(result[key]))
+            const score = res => res >= 90 ? '🟢' : res >= 50 ? '🟠' : '🔴';
 
-            const score = res => res >= 90 ? '🟢' : res >= 50 ? '🟠' : '🔴'
+            const comment = results.map((result) => {
+              const summary = result.summary;
+              const url = result.url;
 
-            const comment = [
-                `⚡️ [Lighthouse report](${Object.values(links)[0]}) for the changes in this PR:`,
-                '| Category | Score |',
-                '| --- | --- |',
-                `| ${score(result.performance)} Performance | ${result.performance} |`,
-                `| ${score(result.accessibility)} Accessibility | ${result.accessibility} |`,
-                `| ${score(result['best-practices'])} Best practices | ${result['best-practices']} |`,
-                `| ${score(result.seo)} SEO | ${result.seo} |`,
-                `| ${score(result.pwa)} PWA | ${result.pwa} |`,
-                ' ',
-                `*Lighthouse ran on [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
-            ].join('\n')
+              return `
+              🌎 [${url}](${url})
+              ⚡️ [Lighthouse report](${links[url]})
 
-             core.setOutput("comment", comment);
+              | Category | Score |
+              | --- | --- |
+              ${Object.keys(summary).map((key) => {
+                const percentage = Math.round(summary[key] * 100);
+                return `| ${score(percentage)} ${key} | ${percentage} |`;
+              }).join('\n')}
+              `;
+            }).join('---');
+
+            core.setOutput("comment", comment);
       - name: Add comment to PR
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v1
