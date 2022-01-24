@@ -72,6 +72,7 @@ export const Navbar = () => {
               </Link>
               <div className="flex space-x-8">
                 <a
+                  href='#'
                   className="group -m-2 p-2 flex items-center text-sm font-medium text-gray-700 group-hover:text-gray-800"
                   onClick={() => setRegionDialogOpen(true)}
                 >
