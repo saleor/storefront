@@ -29,7 +29,9 @@ jobs:
         uses: treosh/lighthouse-ci-action@v3
         with:
           urls: |
-            ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}
+            ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}/default-channel/en-US/products/saleor-cup
+            ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}/default-channel/en-US/category/accessories
+            ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}/default-channel/en-US
           uploadArtifacts: true
           temporaryPublicStorage: true
       - name: Format lighthouse score
@@ -59,7 +61,7 @@ jobs:
                 `*Lighthouse ran on [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
             ].join('\n')
 
-             core.setOutput("comment", comment); 
+             core.setOutput("comment", comment);
       - name: Add comment to PR
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v1
