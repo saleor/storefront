@@ -34,6 +34,8 @@ jobs:
             ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}/default-channel/en-US
           uploadArtifacts: true
           temporaryPublicStorage: true
+          runs: 3
+          configPath: '.github/workflows/lighthouserc.json'
       - name: Format lighthouse score
         id: format_lighthouse_score
         uses: actions/github-script@v3
