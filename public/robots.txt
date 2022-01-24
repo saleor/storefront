@@ -13,4 +13,3 @@ Host: https://localhost:3001
 
 # Sitemaps
 Sitemap: https://localhost:3001/sitemap.xml
-Sitemap: https://localhost:3001/[sitemap]
