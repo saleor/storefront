@@ -57,6 +57,7 @@ export const ProductGallery = ({
                   alt={media.alt}
                   layout="fill"
                   objectFit="cover"
+                  priority
                 />
               )}
               {media.type === "VIDEO" && (
