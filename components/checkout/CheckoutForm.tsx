@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { CheckoutDetailsFragment } from "@/saleor/api";
 
 import BillingAddressSection from "./BillingAddressSection";
@@ -47,7 +47,7 @@ const sectionsManager = (
 };
 
 export const CheckoutForm = () => {
-  const { checkout } = useCheckoutWithToken();
+  const { checkout } = useCheckout();
 
   if (!checkout) {
     return <></>;

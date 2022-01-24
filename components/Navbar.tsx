@@ -13,20 +13,19 @@ import { useIntl } from "react-intl";
 
 import { MainMenu } from "@/components/MainMenu";
 import { usePaths } from "@/lib/paths";
-import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 import { RegionDialog } from "./RegionDialog";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
 import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
-import { CheckoutLineCountableEdge } from "@saleor/sdk/dist/apollo/types";
 
 export const Navbar = () => {
   const paths = usePaths();
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { currentChannel } = useRegions();
   const t = useIntl();
-  const { checkout, resetCheckoutToken } = useCheckoutWithToken();
+  const { checkout, resetCheckoutToken } = useCheckout();
 
   const { logout } = useAuth();
   const router = useRouter();

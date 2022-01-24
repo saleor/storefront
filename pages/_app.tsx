@@ -8,7 +8,7 @@ import React, { ReactElement, ReactNode } from "react";
 import RegionsProvider from "@/components/RegionsProvider";
 import SaleorProviderWithChannels from "@/components/SaleorProviderWithChannels";
 import apolloClient from "@/lib/graphql";
-import { CheckoutWithTokenProvider } from "@/lib/providers/CheckoutWithTokenProvider";
+import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -23,13 +23,13 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <CheckoutWithTokenProvider>
+      <CheckoutProvider>
         <RegionsProvider>
           <SaleorProviderWithChannels>
             {getLayout(<Component {...pageProps} />)}
           </SaleorProviderWithChannels>
         </RegionsProvider>
-      </CheckoutWithTokenProvider>
+      </CheckoutProvider>
     </ApolloProvider>
   );
 };

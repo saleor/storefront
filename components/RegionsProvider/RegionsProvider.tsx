@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useState } from "react";
 import { IntlProvider } from "react-intl";
 
 import apolloClient from "@/lib/graphql";
-import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   Channel,
   CHANNELS,
@@ -45,7 +45,7 @@ export function importMessages(locale: string): LocaleMessages {
 }
 export const RegionsProvider: React.FC = ({ children }) => {
   const router = useRouter();
-  const { resetCheckoutToken } = useCheckoutWithToken();
+  const { resetCheckoutToken } = useCheckout();
 
   const [currentChannelSlug, setCurrentChannelSlug] = useState(
     router.query.channel

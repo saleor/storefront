@@ -6,13 +6,12 @@ import { CartSummary, CheckoutLineItem, Layout, Spinner } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
-import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 const Cart = () => {
   const t = useIntl();
   const paths = usePaths();
-  const { loading, checkoutError, checkout, checkoutToken } =
-    useCheckoutWithToken();
+  const { loading, checkoutError, checkout, checkoutToken } = useCheckout();
 
   if (loading) {
     return <Spinner />;

@@ -8,7 +8,7 @@ import { DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import createSafeContext from "@/lib/useSafeContext";
 import { CheckoutDetailsFragment, useCheckoutByTokenQuery } from "@/saleor/api";
 
-export interface CheckoutWithTokenConsumerProps {
+export interface CheckoutConsumerProps {
   checkoutToken: string;
   setCheckoutToken: (token: string) => void;
   resetCheckoutToken: () => void;
@@ -17,10 +17,10 @@ export interface CheckoutWithTokenConsumerProps {
   loading: boolean;
 }
 
-export const [useCheckoutWithToken, Provider] =
-  createSafeContext<CheckoutWithTokenConsumerProps>();
+export const [useCheckout, Provider] =
+  createSafeContext<CheckoutConsumerProps>();
 
-export const CheckoutWithTokenProvider = ({
+export const CheckoutProvider = ({
   children,
 }: {
   children: ReactChildren | ReactNode;
@@ -45,7 +45,7 @@ export const CheckoutWithTokenProvider = ({
 
   const resetCheckoutToken = () => setCheckoutToken("");
 
-  const providerValues: CheckoutWithTokenConsumerProps = {
+  const providerValues: CheckoutConsumerProps = {
     checkoutToken,
     setCheckoutToken,
     resetCheckoutToken,

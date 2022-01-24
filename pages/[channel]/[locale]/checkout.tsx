@@ -2,10 +2,10 @@ import React, { ReactElement } from "react";
 
 import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
-import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 const CheckoutPage = () => {
-  const { checkout, loading } = useCheckoutWithToken();
+  const { checkout, loading } = useCheckout();
 
   if (loading) {
     return (

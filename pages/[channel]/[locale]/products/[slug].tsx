@@ -21,7 +21,7 @@ import { messages } from "@/components/translations";
 import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
-import { useCheckoutWithToken } from "@/lib/providers/CheckoutWithTokenProvider";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   contextToRegionQuery,
   DEFAULT_LOCALE,
@@ -50,7 +50,7 @@ const ProductPage = ({
   const t = useIntl();
   const { currentChannel } = useRegions();
 
-  const { checkoutToken, setCheckoutToken, checkout } = useCheckoutWithToken();
+  const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
 
   const [createCheckout] = useCreateCheckoutMutation();
   const { user } = useAuthState();
