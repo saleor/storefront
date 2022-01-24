@@ -47,7 +47,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = await collectionPaths();
   return {
     paths: paths,
-    fallback: true,
+    fallback: "blocking",
   };
 };
 

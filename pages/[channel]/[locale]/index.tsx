@@ -43,7 +43,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = homepagePaths();
   return {
     paths,
-    fallback: true,
+    fallback: "blocking",
   };
 };
 
