@@ -32,7 +32,7 @@ specifiers:
   graphql: 16.2.0
   next: 12.0.8
   next-seo: ^4.29.0
-  next-sitemap: ^1.9.12
+  next-sitemap: ^2.0.2
   next-usequerystate: 1.4.0-beta.5
   pathpida: ^0.17.0
   postcss: 8.4.5
@@ -41,7 +41,7 @@ specifiers:
   react-dom: rc
   react-hook-form: ^7.25.0
   react-use: ^17.3.2
-  tailwindcss: 3.0.15
+  tailwindcss: 3.0.16
   typescript: 4.5.5
 
 dependencies:
@@ -51,9 +51,9 @@ dependencies:
   '@saleor/sdk': 0.4.1_711fc4af47299680ab8ff8db47292bc8
   '@stripe/react-stripe-js': 1.7.0_a5b2abe0d2ade2fb1db7cd88143b2dd0
   '@stripe/stripe-js': 1.22.0
-  '@tailwindcss/aspect-ratio': 0.4.0_tailwindcss@3.0.15
-  '@tailwindcss/forms': 0.4.0_tailwindcss@3.0.15
-  '@tailwindcss/typography': 0.5.0_tailwindcss@3.0.15
+  '@tailwindcss/aspect-ratio': 0.4.0_tailwindcss@3.0.16
+  '@tailwindcss/forms': 0.4.0_tailwindcss@3.0.16
+  '@tailwindcss/typography': 0.5.0_tailwindcss@3.0.16
   clsx: 1.1.1
   dotenv: 14.2.0
   dotenv-cli: 4.1.1
@@ -61,7 +61,7 @@ dependencies:
   graphql: 16.2.0
   next: 12.0.8_757a802188413a36d4f24237d13b8e90
   next-seo: 4.29.0_0547caee8b096ccbe3eb66b2e33e801f
-  next-sitemap: 1.9.12_next@12.0.8
+  next-sitemap: 2.0.2_next@12.0.8
   next-usequerystate: 1.4.0-beta.5_0547caee8b096ccbe3eb66b2e33e801f
   react: 18.0.0-rc.0
   react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
@@ -87,7 +87,7 @@ devDependencies:
   pathpida: 0.17.0
   postcss: 8.4.5
   prettier: 2.5.1
-  tailwindcss: 3.0.15_ef48b3b8837f8a23677bffe8f9cd866d
+  tailwindcss: 3.0.16_ef48b3b8837f8a23677bffe8f9cd866d
   typescript: 4.5.5
 
 packages:
@@ -752,15 +752,15 @@ packages:
     dependencies:
       '@graphql-codegen/core': 2.4.0_graphql@16.2.0
       '@graphql-codegen/plugin-helpers': 2.3.2_graphql@16.2.0
-      '@graphql-tools/apollo-engine-loader': 7.2.1_graphql@16.2.0
+      '@graphql-tools/apollo-engine-loader': 7.2.2_graphql@16.2.0
       '@graphql-tools/code-file-loader': 7.2.3_graphql@16.2.0
       '@graphql-tools/git-loader': 7.1.2_graphql@16.2.0
-      '@graphql-tools/github-loader': 7.2.1_graphql@16.2.0
+      '@graphql-tools/github-loader': 7.2.2_graphql@16.2.0
       '@graphql-tools/graphql-file-loader': 7.3.3_graphql@16.2.0
       '@graphql-tools/json-file-loader': 7.3.3_graphql@16.2.0
       '@graphql-tools/load': 7.5.1_graphql@16.2.0
       '@graphql-tools/prisma-loader': 7.1.1_graphql@16.2.0
-      '@graphql-tools/url-loader': 7.7.0_graphql@16.2.0
+      '@graphql-tools/url-loader': 7.7.1_graphql@16.2.0
       '@graphql-tools/utils': 8.6.1_graphql@16.2.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
@@ -934,13 +934,13 @@ packages:
       - supports-color
     dev: true
 
-  /@graphql-tools/apollo-engine-loader/7.2.1_graphql@16.2.0:
-    resolution: {integrity: sha512-Fj/A8+9SXPTXkpKqhcSq7O9WZuMdy5zynGrnMyewbCuw1kSfzgC4pJB76ILSPa5ajOcC5bBmmvXm+yVFVRgVMg==}
+  /@graphql-tools/apollo-engine-loader/7.2.2_graphql@16.2.0:
+    resolution: {integrity: sha512-jrtA1IvgbaHzla9nyBngNyvajudTcQAVE3//mgrK+DoN7UpUhtoXfxTOOq2tzZN67o4a6Bv/RJsxB3rSI3NLzg==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
       '@graphql-tools/utils': 8.6.1_graphql@16.2.0
-      cross-undici-fetch: 0.0.20
+      cross-undici-fetch: 0.1.19
       graphql: 16.2.0
       sync-fetch: 0.3.1
       tslib: 2.3.1
@@ -1005,14 +1005,14 @@ packages:
       - supports-color
     dev: true
 
-  /@graphql-tools/github-loader/7.2.1_graphql@16.2.0:
-    resolution: {integrity: sha512-vqwh2H11ZkAATDam/JqiP0CSqQRPUbjgCDxPdUu/xvST2QKyA4+uVXLBcpBRJc5kJCQjELijeRWVHSk9oN1q6g==}
+  /@graphql-tools/github-loader/7.2.2_graphql@16.2.0:
+    resolution: {integrity: sha512-prk7fWkPQdkOIGv/tFxNFAmxrBbWwc/ztOk2m5tAfmdiVM0HR3MC5Ckx3kLpODVG7lpxKRamMsPCIqmjhrCLWQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
       '@graphql-tools/graphql-tag-pluck': 7.1.5_graphql@16.2.0
       '@graphql-tools/utils': 8.6.1_graphql@16.2.0
-      cross-undici-fetch: 0.0.20
+      cross-undici-fetch: 0.1.19
       graphql: 16.2.0
       sync-fetch: 0.3.1
       tslib: 2.3.1
@@ -1108,7 +1108,7 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
-      '@graphql-tools/url-loader': 7.7.0_graphql@16.2.0
+      '@graphql-tools/url-loader': 7.7.1_graphql@16.2.0
       '@graphql-tools/utils': 8.6.1_graphql@16.2.0
       '@types/js-yaml': 4.0.5
       '@types/json-stable-stringify': 1.0.33
@@ -1163,8 +1163,8 @@ packages:
       value-or-promise: 1.0.11
     dev: true
 
-  /@graphql-tools/url-loader/7.7.0_graphql@16.2.0:
-    resolution: {integrity: sha512-mBBb+aJqI4E0MVEzyfi76Pi/G6lGxGTVt/tP1YtKJly7UnonNoWOtDusdL3zIVAGhGgLsNrLbGhLDbwSd6TV6A==}
+  /@graphql-tools/url-loader/7.7.1_graphql@16.2.0:
+    resolution: {integrity: sha512-K/5amdeHtKYI976HVd/AXdSNvLL7vx5QVjMlwN0OHeYyxSgC+UOH+KkS7cshYgL13SekGu0Mxbg9ABfgQ34ECA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
@@ -1492,24 +1492,24 @@ packages:
       defer-to-connect: 1.1.3
     dev: true
 
-  /@tailwindcss/aspect-ratio/0.4.0_tailwindcss@3.0.15:
+  /@tailwindcss/aspect-ratio/0.4.0_tailwindcss@3.0.16:
     resolution: {integrity: sha512-WJu0I4PpqNPuutpaA9zDUq2JXR+lorZ7PbLcKNLmb6GL9/HLfC7w3CRsMhJF4BbYd/lkY6CfXOvkYpuGnZfkpQ==}
     peerDependencies:
       tailwindcss: '>=2.0.0 || >=3.0.0 || >=3.0.0-alpha.1'
     dependencies:
-      tailwindcss: 3.0.15_ef48b3b8837f8a23677bffe8f9cd866d
+      tailwindcss: 3.0.16_ef48b3b8837f8a23677bffe8f9cd866d
     dev: false
 
-  /@tailwindcss/forms/0.4.0_tailwindcss@3.0.15:
+  /@tailwindcss/forms/0.4.0_tailwindcss@3.0.16:
     resolution: {integrity: sha512-DeaQBx6EgEeuZPQACvC+mKneJsD8am1uiJugjgQK1+/Vt+Ai0GpFBC2T2fqnUad71WgOxyrZPE6BG1VaI6YqfQ==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.3
-      tailwindcss: 3.0.15_ef48b3b8837f8a23677bffe8f9cd866d
+      tailwindcss: 3.0.16_ef48b3b8837f8a23677bffe8f9cd866d
     dev: false
 
-  /@tailwindcss/typography/0.5.0_tailwindcss@3.0.15:
+  /@tailwindcss/typography/0.5.0_tailwindcss@3.0.16:
     resolution: {integrity: sha512-1p/3C6C+JJziS/ghtG8ACYalbA2SyLJY27Pm33cVTlAoY6VQ7zfm2H64cPxUMBkVIlWXTtWHhZcZJPobMRmQAA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1 || insiders'
@@ -1518,7 +1518,7 @@ packages:
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
-      tailwindcss: 3.0.15_ef48b3b8837f8a23677bffe8f9cd866d
+      tailwindcss: 3.0.16_ef48b3b8837f8a23677bffe8f9cd866d
     dev: false
 
   /@tootallnate/once/2.0.0:
@@ -1587,8 +1587,8 @@ packages:
       '@types/node': 17.0.10
     dev: true
 
-  /@typescript-eslint/parser/5.10.0_eslint@8.7.0+typescript@4.5.5:
-    resolution: {integrity: sha512-pJB2CCeHWtwOAeIxv8CHVGJhI5FNyJAIpx5Pt72YkK3QfEzt6qAlXZuyaBmyfOdM62qU0rbxJzNToPTVeJGrQw==}
+  /@typescript-eslint/parser/5.10.1_eslint@8.7.0+typescript@4.5.5:
+    resolution: {integrity: sha512-GReo3tjNBwR5RnRO0K2wDIDN31cM3MmDtgyQ85oAxAmC5K3j/g85IjP+cDfcqDsDDBf1HNKQAD0WqOYL8jXqUA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -1597,9 +1597,9 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/scope-manager': 5.10.0
-      '@typescript-eslint/types': 5.10.0
-      '@typescript-eslint/typescript-estree': 5.10.0_typescript@4.5.5
+      '@typescript-eslint/scope-manager': 5.10.1
+      '@typescript-eslint/types': 5.10.1
+      '@typescript-eslint/typescript-estree': 5.10.1_typescript@4.5.5
       debug: 4.3.3
       eslint: 8.7.0
       typescript: 4.5.5
@@ -1607,21 +1607,21 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/scope-manager/5.10.0:
-    resolution: {integrity: sha512-tgNgUgb4MhqK6DoKn3RBhyZ9aJga7EQrw+2/OiDk5hKf3pTVZWyqBi7ukP+Z0iEEDMF5FDa64LqODzlfE4O/Dg==}
+  /@typescript-eslint/scope-manager/5.10.1:
+    resolution: {integrity: sha512-Lyvi559Gvpn94k7+ElXNMEnXu/iundV5uFmCUNnftbFrUbAJ1WBoaGgkbOBm07jVZa682oaBU37ao/NGGX4ZDg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      '@typescript-eslint/types': 5.10.0
-      '@typescript-eslint/visitor-keys': 5.10.0
+      '@typescript-eslint/types': 5.10.1
+      '@typescript-eslint/visitor-keys': 5.10.1
     dev: true
 
-  /@typescript-eslint/types/5.10.0:
-    resolution: {integrity: sha512-wUljCgkqHsMZbw60IbOqT/puLfyqqD5PquGiBo1u1IS3PLxdi3RDGlyf032IJyh+eQoGhz9kzhtZa+VC4eWTlQ==}
+  /@typescript-eslint/types/5.10.1:
+    resolution: {integrity: sha512-ZvxQ2QMy49bIIBpTqFiOenucqUyjTQ0WNLhBM6X1fh1NNlYAC6Kxsx8bRTY3jdYsYg44a0Z/uEgQkohbR0H87Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@typescript-eslint/typescript-estree/5.10.0_typescript@4.5.5:
-    resolution: {integrity: sha512-x+7e5IqfwLwsxTdliHRtlIYkgdtYXzE0CkFeV6ytAqq431ZyxCFzNMNR5sr3WOlIG/ihVZr9K/y71VHTF/DUQA==}
+  /@typescript-eslint/typescript-estree/5.10.1_typescript@4.5.5:
+    resolution: {integrity: sha512-PwIGnH7jIueXv4opcwEbVGDATjGPO1dx9RkUl5LlHDSe+FXxPwFL5W/qYd5/NHr7f6lo/vvTrAzd0KlQtRusJQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -1629,8 +1629,8 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/types': 5.10.0
-      '@typescript-eslint/visitor-keys': 5.10.0
+      '@typescript-eslint/types': 5.10.1
+      '@typescript-eslint/visitor-keys': 5.10.1
       debug: 4.3.3
       globby: 11.1.0
       is-glob: 4.0.3
@@ -1641,11 +1641,11 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/visitor-keys/5.10.0:
-    resolution: {integrity: sha512-GMxj0K1uyrFLPKASLmZzCuSddmjZVbVj3Ouy5QVuIGKZopxvOr24JsS7gruz6C3GExE01mublZ3mIBOaon9zuQ==}
+  /@typescript-eslint/visitor-keys/5.10.1:
+    resolution: {integrity: sha512-NjQ0Xinhy9IL979tpoTRuLKxMc0zJC7QVSdeerXs2/QvOy2yRkzX5dRb10X5woNUdJgU8G3nYRDlI33sq1K4YQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      '@typescript-eslint/types': 5.10.0
+      '@typescript-eslint/types': 5.10.1
       eslint-visitor-keys: 3.2.0
     dev: true
 
@@ -1988,7 +1988,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001301
-      electron-to-chromium: 1.4.51
+      electron-to-chromium: 1.4.52
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -2329,17 +2329,6 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /cross-undici-fetch/0.0.20:
-    resolution: {integrity: sha512-5d3WBC4VRHpFndECK9bx4TngXrw0OUXdhX561Ty1ZoqMASz9uf55BblhTC1CO6GhMWnvk9SOqYEXQliq6D2P4A==}
-    dependencies:
-      abort-controller: 3.0.0
-      form-data: 4.0.0
-      node-fetch: 2.6.7
-      undici: 4.12.2
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
   /cross-undici-fetch/0.1.19:
     resolution: {integrity: sha512-bNBuesVn09Iy15mAM/hpt97fLWSexblVYpUYa5FjbtLHA7om9w3g1uRGGwrEnmVxy3wouNvZyJwQzAPHXgOrxQ==}
     dependencies:
@@ -2612,8 +2601,8 @@ packages:
       react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
     dev: false
 
-  /electron-to-chromium/1.4.51:
-    resolution: {integrity: sha512-JNEmcYl3mk1tGQmy0EvL5eik/CKSBuzAyGP0QFdG6LIgxQe3II0BL1m2zKc2MZMf3uGqHWE1TFddJML0RpjSHQ==}
+  /electron-to-chromium/1.4.52:
+    resolution: {integrity: sha512-JGkh8HEh5PnVrhU4HbpyyO0O791dVY6k7AdqfDeqbcRMeoGxtNHWT77deR2nhvbLe4dKpxjlDEvdEwrvRLGu2Q==}
     dev: true
 
   /elegant-spinner/1.0.1:
@@ -2723,7 +2712,7 @@ packages:
     dependencies:
       '@next/eslint-plugin-next': 12.0.8
       '@rushstack/eslint-patch': 1.1.0
-      '@typescript-eslint/parser': 5.10.0_eslint@8.7.0+typescript@4.5.5
+      '@typescript-eslint/parser': 5.10.1_eslint@8.7.0+typescript@4.5.5
       eslint: 8.7.0
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.5.0_9ff7dbcc486b497d34e34a545c49272a
@@ -3131,15 +3120,6 @@ packages:
       mime-types: 2.1.34
     dev: true
 
-  /form-data/4.0.0:
-    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
-    engines: {node: '>= 6'}
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      mime-types: 2.1.34
-    dev: true
-
   /formdata-node/4.3.2:
     resolution: {integrity: sha512-k7lYJyzDOSL6h917favP8j1L0/wNyylzU+x+1w4p5haGVHNlP58dbpdJhiCUsDbWsa9HwEtLp89obQgXl2e0qg==}
     engines: {node: '>= 12.20'}
@@ -3300,7 +3280,7 @@ packages:
       '@graphql-tools/json-file-loader': 7.3.3_graphql@16.2.0
       '@graphql-tools/load': 7.5.1_graphql@16.2.0
       '@graphql-tools/merge': 8.2.1_graphql@16.2.0
-      '@graphql-tools/url-loader': 7.7.0_graphql@16.2.0
+      '@graphql-tools/url-loader': 7.7.1_graphql@16.2.0
       '@graphql-tools/utils': 8.6.1_graphql@16.2.0
       cosmiconfig: 7.0.1
       cosmiconfig-toml-loader: 1.0.0
@@ -4284,8 +4264,8 @@ packages:
       react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
     dev: false
 
-  /next-sitemap/1.9.12_next@12.0.8:
-    resolution: {integrity: sha512-kHXf4ZNAGLJyK16HbjzE5X9JlKwXtxW+9J4dh3oT7LSbU/+3bN+VqWjNw/776Otbanf7EJsvl51oQ78qQW5XBQ==}
+  /next-sitemap/2.0.2_next@12.0.8:
+    resolution: {integrity: sha512-7k2zPQYWsSX+Yd7tvJVxHYA/lDZX2Vg+bG0hSRz2UYte9KmPatJ5+FHhcK82hAADokcBcIBSMx3qT33I4hzRbg==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
@@ -5538,8 +5518,8 @@ packages:
       - encoding
     dev: true
 
-  /tailwindcss/3.0.15_ef48b3b8837f8a23677bffe8f9cd866d:
-    resolution: {integrity: sha512-bT2iy7FtjwgsXik4ZoJnHXR+SRCiGR1W95fVqpLZebr64m4ahwUwRbIAc5w5+2fzr1YF4Ct2eI7dojMRRl8sVQ==}
+  /tailwindcss/3.0.16_ef48b3b8837f8a23677bffe8f9cd866d:
+    resolution: {integrity: sha512-1L8E5Wr+o1c4kxxObNz2owJe94a7BLEMV+2Lz6wzprJdcs3ENSRR9t4OZf2OqtRNS/q/zFPuOKoLtQoy3Lrhhw==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     peerDependencies:
