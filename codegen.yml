@@ -13,7 +13,6 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-      - "typescript-apollo-client-helpers"
     config:
       scalars:
         JSONString: string
