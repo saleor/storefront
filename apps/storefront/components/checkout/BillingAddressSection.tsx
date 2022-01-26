@@ -1,5 +1,6 @@
 import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
+import { useIntl } from "react-intl";
 
 import { SavedAddressSelectionList } from "@/components";
 import { notNullable } from "@/lib/util";
@@ -10,6 +11,7 @@ import {
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
 
@@ -22,6 +24,7 @@ export const BillingAddressSection = ({
   active,
   checkout,
 }: BillingAddressSection) => {
+  const t = useIntl();
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] =
@@ -53,7 +56,7 @@ export const BillingAddressSection = ({
               : "checkout-section-header-disabled"
           }
         >
-          Billing Address
+          {t.formatMessage(messages.billingAddressCardHeader)}
         </h2>
       </div>
       {active && (
@@ -78,7 +81,9 @@ export const BillingAddressSection = ({
               {!!checkout.billingAddress && (
                 <AddressDisplay address={checkout.billingAddress} />
               )}
-              <Button onClick={() => setEditing(true)}>Change</Button>
+              <Button onClick={() => setEditing(true)}>
+                {t.formatMessage(messages.changeButton)}
+              </Button>
             </section>
           )}
         </>

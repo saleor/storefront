@@ -1,3 +1,5 @@
+import { useIntl } from "react-intl";
+
 import { Button } from "@/components/Button";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
 import {
@@ -5,6 +7,8 @@ import {
   useAddressDeleteMutation,
   useSetAddressDefaultMutation,
 } from "@/saleor/api";
+
+import { messages } from "./translations";
 
 interface AddressBookCardProps {
   address: AddressDetailsFragment;
@@ -15,16 +19,17 @@ export const AddressBookCard = ({
   address,
   onRefreshBook,
 }: AddressBookCardProps) => {
+  const t = useIntl();
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
   const [deleteAddressMutation] = useAddressDeleteMutation();
 
   let cardHeader = "";
   if (address.isDefaultShippingAddress && address.isDefaultBillingAddress) {
-    cardHeader = "Default billing and shipping address";
+    cardHeader = t.formatMessage(messages.defaultBillingAndShipping);
   } else if (address.isDefaultShippingAddress) {
-    cardHeader = "Default shipping address";
+    cardHeader = t.formatMessage(messages.defaultShipping);
   } else if (address.isDefaultBillingAddress) {
-    cardHeader = "Default billing address";
+    cardHeader = t.formatMessage(messages.defaultBilling);
   }
 
   const onDeleteAddress = (addressId: string) => {
@@ -49,7 +54,7 @@ export const AddressBookCard = ({
             })
           }
         >
-          Set as billing default
+          {t.formatMessage(messages.setDefaultBilling)}
         </Button>
       )}
       {!address.isDefaultShippingAddress && (
@@ -61,11 +66,11 @@ export const AddressBookCard = ({
             })
           }
         >
-          Set as shipping default
+          {t.formatMessage(messages.setDefaultShipping)}
         </Button>
       )}
       <Button className="my-1" onClick={() => onDeleteAddress(address.id)}>
-        Remove
+        {t.formatMessage(messages.removeButton)}
       </Button>
     </div>
   );

@@ -98,17 +98,12 @@ import { usePaths } from "@/lib/paths";
 export const ProductLinkComponent = () => {
   const paths = usePaths();
   return (
-    <Link
-      href={paths.products._slug(line?.variant?.product?.slug).$url()}
-    >
-      <a>
-        Product link
-      </a>
+    <Link href={paths.products._slug(line?.variant?.product?.slug).$url()}>
+      <a>Product link</a>
     </Link>
-  )
+  );
 };
 ```
-
 
 ### Code style
 

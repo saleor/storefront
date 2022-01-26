@@ -1,12 +1,14 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
 import { clearCheckout } from "@/lib/checkout";
 import { LOCALES } from "@/lib/regions";
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 
 interface RegionDialogProps {
   onClose: () => void;
@@ -19,6 +21,7 @@ export interface RegionFormData {
 }
 
 export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
+  const t = useIntl();
   const router = useRouter();
   const { channels, currentChannel, setCurrentChannel, currentLocale } =
     useRegions();
@@ -59,10 +62,14 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
       <div className="absolute bg-black opacity-50 inset-0 z-0"></div>
       <div className="w-full  max-w-lg pb-6 relative mx-auto my-auto rounded-sm shadow-lg flex flex-col items-center bg-white ">
         <div className="text-center p-5 mt-4 flex-auto justify-center">
-          <h2 className="text-2xl font-bold py-4">Choose your region</h2>
+          <h2 className="text-2xl font-bold py-4">
+            {t.formatMessage(messages.regionModalHeader)}
+          </h2>
         </div>
         <div className="text-gray-300 py-1 mb-4 flex flex-col items-center w-3/5">
-          <p className="text-sm text-gray-500 self-start mb-1">Channel</p>
+          <p className="text-sm text-gray-500 self-start mb-1">
+            {t.formatMessage(messages.channelFieldLabel)}
+          </p>
           <select
             className="w-full"
             id="channel"
@@ -78,7 +85,9 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
           </select>
         </div>
         <div className="text-gray-300 py-1 pb-3 flex flex-col items-center w-3/5">
-          <p className="text-sm text-gray-500 self-start mb-1">Language</p>
+          <p className="text-sm text-gray-500 self-start mb-1">
+            {t.formatMessage(messages.languageFieldLabel)}
+          </p>
           <select
             className="w-full"
             id="locale"
@@ -94,7 +103,9 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
           </select>
         </div>
         <div className="p-3  mt-4 mb-4 text-center space-x-4 md:block">
-          <Button onClick={onSubmit}>Apply</Button>
+          <Button onClick={onSubmit}>
+            {t.formatMessage(messages.saveButton)}
+          </Button>
         </div>
       </div>
     </div>

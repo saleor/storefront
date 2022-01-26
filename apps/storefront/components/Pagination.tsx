@@ -1,18 +1,23 @@
+import { useIntl } from "react-intl";
+
 import { PageInfo } from "@/saleor/api";
+
+import { messages } from "./translations";
 
 export interface PaginationProps {
   pageInfo?: PageInfo;
   onLoadMore: () => void;
   totalCount?: number;
-  itemCount?: number;
+  itemsCount?: number;
 }
 
 export const Pagination = ({
   pageInfo,
   onLoadMore,
-  itemCount,
+  itemsCount,
   totalCount,
 }: PaginationProps) => {
+  const t = useIntl();
   if (!pageInfo || !pageInfo?.hasNextPage) {
     return <></>;
   }
@@ -24,11 +29,14 @@ export const Pagination = ({
           onClick={onLoadMore}
           className="relative inline-flex  items-center px-4 py-2 border text-sm font-medium rounded-md text-gray-700 bg-gray-50 hover:border-blue-300 cursor-pointer"
         >
-          Load More
+          {t.formatMessage(messages.loadMoreButton)}
         </a>
-        {itemCount && totalCount && (
+        {itemsCount && totalCount && (
           <div className="text-sm text-gray-500 mt-2">
-            {itemCount} out of {totalCount}
+            {t.formatMessage(messages.paginationProductCounter, {
+              totalItemsCount: 0,
+              currentItemsCount: itemsCount,
+            })}
           </div>
         )}
       </div>

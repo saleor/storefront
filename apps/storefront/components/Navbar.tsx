@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { useIntl } from "react-intl";
 import { useLocalStorage } from "react-use";
 
 import { MainMenu } from "@/components/MainMenu";
@@ -18,11 +19,13 @@ import { useCheckoutByTokenQuery } from "@/saleor/api";
 
 import { RegionDialog } from "./RegionDialog";
 import { useRegions } from "./RegionsProvider";
+import { messages } from "./translations";
 
 export const Navbar = () => {
   const paths = usePaths();
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { currentChannel } = useRegions();
+  const t = useIntl();
 
   const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const { logout } = useAuth();
@@ -98,7 +101,7 @@ export const Navbar = () => {
                       aria-hidden="true"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                      Log in
+                      {t.formatMessage(messages.logIn)}
                     </span>
                   </a>
                 </Link>
@@ -143,12 +146,6 @@ export const Navbar = () => {
                       id="headlessui-menu-items-117"
                       role="menu"
                     >
-                      <div className="px-4 py-3">
-                        <p className="text-sm leading-5">Signed in as</p>
-                        <p className="text-sm font-medium leading-5 text-gray-900 truncate">
-                          {user?.email}
-                        </p>
-                      </div>
                       <div className="py-1">
                         <Link href={paths.account.preferences.$url()}>
                           <a
@@ -156,7 +153,7 @@ export const Navbar = () => {
                             className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
                             role="menuitem"
                           >
-                            Account preferences
+                            {t.formatMessage(messages.menuAccountPreferences)}
                           </a>
                         </Link>
                       </div>
@@ -167,7 +164,7 @@ export const Navbar = () => {
                           className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
                           role="menuitem"
                         >
-                          Log out
+                          {t.formatMessage(messages.logOut)}
                         </a>
                       </div>
                     </div>

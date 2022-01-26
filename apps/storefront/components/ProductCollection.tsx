@@ -1,4 +1,5 @@
 import React from "react";
+import { useIntl } from "react-intl";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
@@ -6,6 +7,7 @@ import { Pagination } from "./Pagination";
 import { ProductCard } from "./ProductCard";
 import { useRegions } from "./RegionsProvider";
 import { Spinner } from "./Spinner";
+import { messages } from "./translations";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
@@ -16,6 +18,7 @@ export const ProductCollection = ({
   filter,
   allowMore = true,
 }: ProductCollectionProps) => {
+  const t = useIntl();
   const { query } = useRegions();
 
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
@@ -38,7 +41,7 @@ export const ProductCollection = ({
 
   const products = data?.products?.edges.map((edge) => edge.node) || [];
   if (products.length === 0) {
-    return <p>No products.</p>;
+    return <p>{t.formatMessage(messages.noProducts)}</p>;
   }
   return (
     <div>
@@ -54,7 +57,7 @@ export const ProductCollection = ({
         <Pagination
           onLoadMore={onLoadMore}
           pageInfo={data?.products?.pageInfo}
-          itemCount={data?.products?.edges.length}
+          itemsCount={data?.products?.edges.length}
           totalCount={data?.products?.totalCount || undefined}
         />
       )}
