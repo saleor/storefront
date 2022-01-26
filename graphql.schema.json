@@ -12293,7 +12293,7 @@
       {
         "kind": "OBJECT",
         "name": "CheckoutShippingMethodUpdate",
-        "description": "Updates the shipping address of the checkout.",
+        "description": "Updates the shipping method of the checkout.",
         "fields": [
           {
             "name": "checkout",
@@ -34011,7 +34011,7 @@
           },
           {
             "name": "checkoutShippingMethodUpdate",
-            "description": "Updates the shipping address of the checkout.",
+            "description": "Updates the shipping method of the checkout.",
             "args": [
               {
                 "name": "checkoutId",

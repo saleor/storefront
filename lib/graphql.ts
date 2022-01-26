@@ -1,19 +1,11 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
-import { createFetch, createSaleorClient } from "@saleor/sdk";
+import { createSaleorClient } from "@saleor/sdk";
+import { createClient } from "urql";
 
 import { API_URI } from "./const";
 import { DEFAULT_CHANNEL } from "./regions";
-import { typePolicies } from "./typePolicies";
 
-const httpLink = createHttpLink({
-  uri: API_URI,
-  fetch: createFetch(),
-});
-
-const apolloClient = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache({ typePolicies }),
-  ssrMode: !process.browser,
+const apolloClient = createClient({
+  url: API_URI,
 });
 
 export const saleorClient = createSaleorClient({

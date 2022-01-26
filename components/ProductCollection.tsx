@@ -21,19 +21,21 @@ export const ProductCollection = ({
   const t = useIntl();
   const { query } = useRegions();
 
-  const { loading, error, data, fetchMore } = useProductCollectionQuery({
+  const [{ fetching: loading, error, data }] = useProductCollectionQuery({
     variables: {
       filter: filter,
       ...query,
     },
   });
 
+  console.log('ERROR', error)
+
   const onLoadMore = () => {
-    fetchMore({
-      variables: {
-        after: data?.products?.pageInfo.endCursor,
-      },
-    });
+    // fetchMore({
+    //   variables: {
+    //     after: data?.products?.pageInfo.endCursor,
+    //   },
+    // });
   };
 
   if (loading) return <Spinner />;

@@ -14,7 +14,7 @@ interface PasswordChangeFormData {
 
 export const PasswordPreferences = () => {
   const t = useIntl();
-  const [passwordChangeMutation] = usePasswordChangeMutation({});
+  const [,passwordChangeMutation] = usePasswordChangeMutation();
   const [successMessage, setSuccessMessage] = React.useState<String>("");
 
   const {
@@ -29,10 +29,8 @@ export const PasswordPreferences = () => {
       setError("newPasswordRepeat", { message: "Passwords have to match." });
     } else {
       const result = await passwordChangeMutation({
-        variables: {
-          newPassword: formData.newPassword,
-          oldPassword: formData.oldPassword,
-        },
+        newPassword: formData.newPassword,
+        oldPassword: formData.oldPassword,
       });
       const errors = result.data?.passwordChange?.errors || [];
       if (errors.length > 0) {

@@ -1,4 +1,3 @@
-import { ApolloQueryResult } from "@apollo/client";
 import {
   GetStaticPaths,
   GetStaticPropsContext,
@@ -50,13 +49,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const result: ApolloQueryResult<HomepageBlocksQuery> =
+  const result =
     await apolloClient.query<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
-      {
-        query: HomepageBlocksQueryDocument,
-        variables: { slug: "homepage", ...contextToRegionQuery(context) },
-      }
-    );
+      HomepageBlocksQueryDocument,
+      { slug: "homepage", ...contextToRegionQuery(context) },
+    ).toPromise();
+
+    console.log('udap', result)
   return {
     props: {
       menuData: result?.data,

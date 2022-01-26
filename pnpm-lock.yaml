@@ -10,7 +10,6 @@ specifiers:
   '@graphql-codegen/introspection': 2.1.1
   '@graphql-codegen/typescript': 2.4.3
   '@graphql-codegen/typescript-operations': 2.2.4
-  '@graphql-codegen/typescript-react-apollo': 3.2.5
   '@headlessui/react': 1.4.3
   '@heroicons/react': 1.0.5
   '@next/bundle-analyzer': ^12.0.10
@@ -47,6 +46,7 @@ specifiers:
   react-use: ^17.3.2
   tailwindcss: 3.0.19
   typescript: 4.5.5
+  urql: ^2.0.6
 
 dependencies:
   '@apollo/client': 3.5.8_graphql@16.3.0+react@18.0.0-rc.0
@@ -73,6 +73,7 @@ dependencies:
   react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
   react-hook-form: 7.26.1_react@18.0.0-rc.0
   react-use: 17.3.2_757a802188413a36d4f24237d13b8e90
+  urql: 2.1.3_graphql@16.3.0+react@18.0.0-rc.0
 
 devDependencies:
   '@formatjs/cli': 4.8.2
@@ -81,7 +82,6 @@ devDependencies:
   '@graphql-codegen/introspection': 2.1.1_graphql@16.3.0
   '@graphql-codegen/typescript': 2.4.3_graphql@16.3.0
   '@graphql-codegen/typescript-operations': 2.2.4_graphql@16.3.0
-  '@graphql-codegen/typescript-react-apollo': 3.2.5_graphql@16.3.0
   '@next/bundle-analyzer': 12.0.10
   '@types/qs': 6.9.7
   '@types/react': 17.0.39
@@ -981,23 +981,6 @@ packages:
       - supports-color
     dev: true
 
-  /@graphql-codegen/typescript-react-apollo/3.2.5_graphql@16.3.0:
-    resolution: {integrity: sha512-ODOmONBfZpNpWXrF6TKfeEoaaU/mnQ9lLZ1rv1fu2FusREvpMITaLznYUDo1RsI+iSjsJYm7dmSJmFPv+lxZrg==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      graphql-tag: ^2.0.0
-    dependencies:
-      '@graphql-codegen/plugin-helpers': 2.4.0_graphql@16.3.0
-      '@graphql-codegen/visitor-plugin-common': 2.6.0_graphql@16.3.0
-      auto-bind: 4.0.0
-      change-case-all: 1.0.14
-      graphql: 16.3.0
-      tslib: 2.3.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: true
-
   /@graphql-codegen/typescript/2.4.3_graphql@16.3.0:
     resolution: {integrity: sha512-5b+4EVA01kiKId6IbBvuvSs0/aGeuSU+Cg2pBbe9VZol49iid982p28k9knEH4Jzgu4tUp4UMQTWNNwkPB4tEQ==}
     peerDependencies:
@@ -1788,6 +1771,16 @@ packages:
       '@typescript-eslint/types': 5.11.0
       eslint-visitor-keys: 3.2.0
     dev: true
+
+  /@urql/core/2.4.1_graphql@16.3.0:
+    resolution: {integrity: sha512-HnS54oNwO4pAACKl/2/tNLbRrxAxKawVJuG9UPiixqeEVekiecUQQnCjb9SpOW4Qr54HYzCMDbr3c5px3hfEEg==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.3.0
+      graphql: 16.3.0
+      wonka: 4.0.15
+    dev: false
 
   /@vue/compiler-core/3.2.30:
     resolution: {integrity: sha512-64fq1KfcR+k3Vlw+IsBM2VhV5B+2IP3YxvKU8LWCDLrkmlXtbf2eMK6+0IwX5KP41D0f1gzryIiXR7P8cB9O5Q==}
@@ -5977,12 +5970,33 @@ packages:
       prepend-http: 2.0.0
     dev: true
 
+  /urql/2.1.3_graphql@16.3.0+react@18.0.0-rc.0:
+    resolution: {integrity: sha512-S6GaKM7NJLed25L2qdZxaWFjWggXQHrneEVEe47+ZTQWxmfyV05STMl6DhtnZqb6n1wdT/KUljHkggz0kiE3NA==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+      react: '>= 16.8.0'
+    dependencies:
+      '@urql/core': 2.4.1_graphql@16.3.0
+      graphql: 16.3.0
+      react: 18.0.0-rc.0
+      use-sync-external-store: 1.0.0-rc.0_react@18.0.0-rc.0
+      wonka: 4.0.15
+    dev: false
+
   /use-subscription/1.5.1_react@18.0.0-rc.0:
     resolution: {integrity: sha512-Xv2a1P/yReAjAbhylMfFplFKj9GssgTwN7RlcTxBujFQcloStWNDQdc4g4NRWH9xS4i/FDk04vQBptAXoF3VcA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
     dependencies:
       object-assign: 4.1.1
+      react: 18.0.0-rc.0
+    dev: false
+
+  /use-sync-external-store/1.0.0-rc.0_react@18.0.0-rc.0:
+    resolution: {integrity: sha512-0U9Xlc2QDFzSGMB0DvcJQL0+DIdxDPJC7mnZlYFbl7wrSrPMcs89X5TVkNB6Dzg618m8lZop+U+J6ow3vq9RAQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0-rc
+    dependencies:
       react: 18.0.0-rc.0
     dev: false
 
@@ -6081,6 +6095,10 @@ packages:
     hasBin: true
     dependencies:
       isexe: 2.0.0
+
+  /wonka/4.0.15:
+    resolution: {integrity: sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==}
+    dev: false
 
   /word-wrap/1.2.3:
     resolution: {integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==}

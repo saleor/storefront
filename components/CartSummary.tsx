@@ -21,7 +21,7 @@ export interface CartSummaryProps {
 export const CartSummary = ({ checkout }: CartSummaryProps) => {
   const t = useIntl();
   const [editPromoCode, setEditPromoCode] = useState(false);
-  const [checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
+  const [,checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
   const { subtotalPrice, shippingPrice, totalPrice, discount, discountName } =
     checkout;
   const {
@@ -36,11 +36,9 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
   const onAddPromoCode = handleSubmitForm(
     async (formData: PromoCodeFormData) => {
       const { data: promoMutationData } = await checkoutAddPromoCodeMutation({
-        variables: {
-          promoCode: formData.promoCode,
-          token: checkout.token,
-          locale: query.locale,
-        },
+        promoCode: formData.promoCode,
+        token: checkout.token,
+        locale: query.locale,
       });
       const errors = promoMutationData?.checkoutAddPromoCode?.errors;
       if (!!errors && errors.length > 0) {

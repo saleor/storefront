@@ -41,7 +41,8 @@
     "react": "rc",
     "react-dom": "rc",
     "react-hook-form": "^7.26.1",
-    "react-use": "^17.3.2"
+    "react-use": "^17.3.2",
+    "urql": "^2.0.6"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.1",
@@ -49,7 +50,6 @@
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.3",
     "@graphql-codegen/typescript-operations": "2.2.4",
-    "@graphql-codegen/typescript-react-apollo": "3.2.5",
     "react-hook-form": "^7.26.1",
     "react-intl": "^5.24.6",
     "react-use": "^17.3.2",
@@ -68,5 +68,8 @@
     "prettier": "2.5.1",
     "tailwindcss": "3.0.19",
     "typescript": "4.5.5"
+  },
+  "peerDependencies": {
+    "@apollo/client": "3.5.8"
   }
 }

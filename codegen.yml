@@ -12,7 +12,7 @@ generates:
             - "import * as Scalar from '../scalars'"
       - "typescript"
       - "typescript-operations"
-      - "typescript-react-apollo"
+      - "typescript-urql"
     config:
       scalars:
         JSONString: string

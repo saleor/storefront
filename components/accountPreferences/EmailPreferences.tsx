@@ -14,7 +14,7 @@ interface EmailChangeFormData {
 
 export const EmailPreferences = () => {
   const t = useIntl();
-  const [requestEmailChange] = useRequestEmailChangeMutation({});
+  const [,requestEmailChange] = useRequestEmailChangeMutation();
   const [successMessage, setSuccessMessage] = React.useState<String>();
   const {
     register,
@@ -25,11 +25,9 @@ export const EmailPreferences = () => {
 
   const onEmailPreferenceSubmit = handleSubmit(async (formData) => {
     const result = await requestEmailChange({
-      variables: {
-        newEmail: formData.newEmail,
-        password: formData.password,
-        redirectUrl: `https://${window.location.host}/account/preferences`,
-      },
+      newEmail: formData.newEmail,
+      password: formData.password,
+      redirectUrl: `https://${window.location.host}/account/preferences`,
     });
     const errors = result?.data?.requestEmailChange?.errors || [];
     if (errors.length > 0) {

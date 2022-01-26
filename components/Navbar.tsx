@@ -1,4 +1,3 @@
-import { useApolloClient } from "@apollo/client";
 import {
   SearchIcon,
   ShoppingBagIcon,
@@ -14,11 +13,11 @@ import { useIntl } from "react-intl";
 import { MainMenu } from "@/components/MainMenu";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
+import { CheckoutLine, CheckoutLineDetailsFragment, useCheckoutByTokenQuery } from "@/saleor/api";
 
 import { RegionDialog } from "./RegionDialog";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
-import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
 
 export const Navbar = () => {
   const paths = usePaths();
@@ -29,14 +28,14 @@ export const Navbar = () => {
 
   const { logout } = useAuth();
   const router = useRouter();
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const { authenticated, user } = useAuthState();
 
   const onLogout = async () => {
     // clear all the user data on logout
     await logout();
     await resetCheckoutToken();
-    await client.resetStore();
+    // await client.resetStore();
     router.push(paths.$url());
   };
 
