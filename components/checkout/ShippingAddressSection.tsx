@@ -1,6 +1,6 @@
 import { useAuthState } from "@saleor/sdk";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { useIntl } from "react-intl";
 
 import { SavedAddressSelectionList } from "@/components";
 import { notNullable } from "@/lib/util";
@@ -12,6 +12,7 @@ import {
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 import AddressDisplay from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
 
@@ -24,7 +25,7 @@ export const ShippingAddressSection = ({
   active,
   checkout,
 }: ShippingAddressSectionProps) => {
-  const router = useRouter();
+  const t = useIntl();
   const { query } = useRegions();
 
   const { authenticated } = useAuthState();
@@ -86,7 +87,7 @@ export const ShippingAddressSection = ({
               : "checkout-section-header-disabled"
           }
         >
-          Shipping Address
+          {t.formatMessage(messages.shippingAddressCardHeader)}
         </h2>
       </div>
       {active && (
@@ -105,7 +106,7 @@ export const ShippingAddressSection = ({
                   className="btn-checkout-section"
                   onClick={onSameAsBilling}
                 >
-                  Use the same address as billing
+                  {t.formatMessage(messages.sameAsBillingButton)}
                 </button>
               </div>
               <AddressForm
@@ -119,7 +120,9 @@ export const ShippingAddressSection = ({
               {!!checkout.shippingAddress && (
                 <AddressDisplay address={checkout.shippingAddress} />
               )}
-              <Button onClick={() => setEditing(true)}>Change</Button>
+              <Button onClick={() => setEditing(true)}>
+                {t.formatMessage(messages.changeButton)}
+              </Button>
             </section>
           )}
         </>

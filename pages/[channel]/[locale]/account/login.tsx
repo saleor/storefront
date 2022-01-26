@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
+import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
 
 export type OptionalQuery = {
@@ -18,6 +20,7 @@ export interface LoginFormData {
 const LoginPage: React.VFC = () => {
   const router = useRouter();
   const paths = usePaths();
+  const t = useIntl();
 
   const { login } = useAuth();
   const { authenticated } = useAuthState();
@@ -29,7 +32,7 @@ const LoginPage: React.VFC = () => {
     getValues,
   } = useForm<LoginFormData>({});
 
-  const redirectURL = router.query.next?.toString() || "/";
+  const redirectURL = router.query.next?.toString() || paths.$url();
 
   const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
     const { data } = await login({
@@ -55,27 +58,33 @@ const LoginPage: React.VFC = () => {
           <div>
             <form onSubmit={handleLogin}>
               <div>
-                <span className="text-sm text-gray-900">Welcome back</span>
-                <h1 className="text-2xl font-bold">Login to your account</h1>
+                <span className="text-sm text-gray-900">
+                  {t.formatMessage(messages.loginWelcomeMessage)}
+                </span>
+                <h1 className="text-2xl font-bold">
+                  {t.formatMessage(messages.loginHeader)}
+                </h1>
               </div>
 
               <div className="my-3">
-                <label className="block text-md mb-2">Email</label>
+                <label className="block text-md mb-2">
+                  {t.formatMessage(messages.loginEmailFieldLabel)}
+                </label>
                 <input
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="email"
-                  placeholder="email"
                   {...registerForm("email", {
                     required: true,
                   })}
                 />
               </div>
               <div className="mt-5">
-                <label className="block text-md mb-2">Password</label>
+                <label className="block text-md mb-2">
+                  {t.formatMessage(messages.loginPasswordFieldLabel)}
+                </label>
                 <input
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="password"
-                  placeholder="password"
                   {...registerForm("password", {
                     required: true,
                   })}
@@ -83,12 +92,12 @@ const LoginPage: React.VFC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-blue-700 hover:underline cursor-pointer pt-2">
-                  Forgot password?
+                  {t.formatMessage(messages.loginRemindPasswordButtonLabel)}
                 </span>
               </div>
               <div className="">
                 <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
-                  Login now
+                  {t.formatMessage(messages.logIn)}
                 </button>
                 {!!errorsForm.email && (
                   <p className="text-sm text-red-500 pt-2">
@@ -98,10 +107,8 @@ const LoginPage: React.VFC = () => {
               </div>
             </form>
             <p className="mt-8">
-              {" "}
-              Dont have an account?{" "}
               <Link href={paths.account.register.$url()}>
-                <a> Register!</a>
+                <a>{t.formatMessage(messages.createAccount)}</a>
               </Link>
             </p>
           </div>

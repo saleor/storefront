@@ -40,7 +40,7 @@ const OrdersPage = () => {
       <Pagination
         onLoadMore={onLoadMore}
         pageInfo={ordersCollection?.me?.orders?.pageInfo}
-        itemCount={ordersCollection?.me?.orders?.edges.length}
+        itemsCount={ordersCollection?.me?.orders?.edges.length}
         totalCount={ordersCollection?.me?.orders?.totalCount || undefined}
       />
     </>

@@ -1,11 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
 import {
   AddressDetailsFragment,
   CheckoutError,
   CountryCode,
 } from "@/saleor/api";
+
+import { messages } from "../translations";
 
 export interface AddressFormData {
   firstName: string;
@@ -28,6 +31,7 @@ export const AddressForm = ({
   toggleEdit,
   updateAddressMutation,
 }: AddressFormProps) => {
+  const t = useIntl();
   const {
     register: registerAddress,
     handleSubmit: handleSubmitAddress,
@@ -72,7 +76,7 @@ export const AddressForm = ({
             htmlFor="address"
             className="block text-sm font-medium text-gray-700"
           >
-            Phone
+            {t.formatMessage(messages.phoneField)}
           </label>
           <div className="mt-1">
             <input
@@ -94,7 +98,7 @@ export const AddressForm = ({
             htmlFor="firstName"
             className="block text-sm font-medium text-gray-700"
           >
-            First Name
+            {t.formatMessage(messages.firstNameField)}
           </label>
           <div className="mt-1">
             <input
@@ -116,7 +120,7 @@ export const AddressForm = ({
             htmlFor="province"
             className="block text-sm font-medium text-gray-700"
           >
-            Last Name
+            {t.formatMessage(messages.lastNameField)}
           </label>
           <div className="mt-1">
             <input
@@ -138,7 +142,7 @@ export const AddressForm = ({
             htmlFor="address"
             className="block text-sm font-medium text-gray-700"
           >
-            Address
+            {t.formatMessage(messages.addressField)}
           </label>
           <div className="mt-1">
             <input
@@ -160,7 +164,7 @@ export const AddressForm = ({
             htmlFor="city"
             className="block text-sm font-medium text-gray-700"
           >
-            City
+            {t.formatMessage(messages.cityField)}
           </label>
           <div className="mt-1">
             <input
@@ -194,7 +198,7 @@ export const AddressForm = ({
             htmlFor="postal-code"
             className="block text-sm font-medium text-gray-700"
           >
-            Postal code
+            {t.formatMessage(messages.postalCodeField)}
           </label>
           <div className="mt-1">
             <input
@@ -217,7 +221,7 @@ export const AddressForm = ({
             className="btn-checkout-section"
             onClick={onAddressFormSubmit}
           >
-            Save
+            {t.formatMessage(messages.saveButton)}
           </button>
         </div>
       </div>

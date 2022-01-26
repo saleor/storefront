@@ -1,7 +1,9 @@
 import Image from "next/image";
 import React from "react";
+import { useIntl } from "react-intl";
 
 import { useRegions } from "@/components/RegionsProvider";
+import { messages } from "@/components/translations";
 import { translate } from "@/lib/translations";
 import {
   CheckoutLineDetailsFragment,
@@ -17,6 +19,7 @@ export const CheckoutProductList = ({
   lines,
   token,
 }: CheckoutProductListProps) => {
+  const t = useIntl();
   const { query } = useRegions();
 
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
@@ -28,7 +31,7 @@ export const CheckoutProductList = ({
     >
       {lines.map((line) => {
         if (!line) {
-          return <></>;
+          return null;
         }
         return (
           <li key={line.id} className="flex py-4 space-x-4">
@@ -66,7 +69,7 @@ export const CheckoutProductList = ({
                     })
                   }
                 >
-                  Remove
+                  {t.formatMessage(messages.removeButton)}
                 </button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { RadioGroup } from "@headlessui/react";
 import React, { useState } from "react";
+import { useIntl } from "react-intl";
 
 import { notNullable } from "@/lib/util";
 import {
@@ -9,6 +10,7 @@ import {
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 import ShippingMethodDisplay from "./ShippingMethodDisplay";
 import { ShippingMethodOption } from "./ShippingMethodOption";
 
@@ -21,6 +23,7 @@ export const ShippingMethodSection = ({
   checkout,
   active,
 }: ShippingMethodSectionProps) => {
+  const t = useIntl();
   const { query } = useRegions();
 
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
@@ -61,7 +64,7 @@ export const ShippingMethodSection = ({
               : "checkout-section-header-disabled"
           }
         >
-          Shipping Method
+          {t.formatMessage(messages.shippingMethodCardHeader)}
         </h2>
       </div>
       {active && (
@@ -90,7 +93,9 @@ export const ShippingMethodSection = ({
                 <ShippingMethodDisplay method={checkout.shippingMethod} />
               )}
               <div className="flex justify-between items-center">
-                <Button onClick={() => setEditing(true)}>Change</Button>
+                <Button onClick={() => setEditing(true)}>
+                  {t.formatMessage(messages.changeButton)}
+                </Button>
               </div>
             </section>
           )}

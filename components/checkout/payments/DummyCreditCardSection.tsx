@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
+import { messages } from "@/components/translations";
 import { clearCheckout } from "@/lib/checkout";
 import { usePaths } from "@/lib/paths";
 import {
@@ -27,16 +29,16 @@ interface DummyCreditCardSectionInterface {
 export const DummyCreditCardSection = ({
   checkout,
 }: DummyCreditCardSectionInterface) => {
-  const gateway = checkout.availablePaymentGateways.find(
-    (gateway) => gateway.id === DUMMY_CREDIT_CARD_GATEWAY
-  );
+  const t = useIntl();
   const paths = usePaths();
   const router = useRouter();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
-  const payLabel = `Pay ${!!totalPrice ? totalPrice.localizedAmount : ""}`;
+  const payLabel = t.formatMessage(messages.paymentButton, {
+    total: !!totalPrice ? totalPrice.localizedAmount : "",
+  });
 
   const {
     register: registerCard,
@@ -108,7 +110,7 @@ export const DummyCreditCardSection = ({
                 htmlFor="card-number"
                 className="block text-sm font-semibold text-gray-700"
               >
-                Card number
+                {t.formatMessage(messages.cardNumberField)}
               </label>
               <div className="mt-1">
                 <input
@@ -127,7 +129,7 @@ export const DummyCreditCardSection = ({
                 htmlFor="expiration-date"
                 className="block text-sm font-semibold text-gray-700"
               >
-                Expiration date
+                {t.formatMessage(messages.expDateField)}
               </label>
               <div className="mt-1">
                 <input
@@ -147,7 +149,7 @@ export const DummyCreditCardSection = ({
                 htmlFor="cvc"
                 className="block text-sm font-semibold text-gray-700"
               >
-                CVC
+                {t.formatMessage(messages.cvcField)}
               </label>
               <div className="mt-1">
                 <input

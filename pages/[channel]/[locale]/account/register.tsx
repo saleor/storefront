@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useIntl } from "react-intl";
 
+import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
 
 export interface RegisterFormData {
@@ -14,6 +16,7 @@ export interface RegisterFormData {
 const RegisterPage = () => {
   const router = useRouter();
   const paths = usePaths();
+  const t = useIntl();
 
   const { register } = useAuth();
   const {
@@ -57,15 +60,18 @@ const RegisterPage = () => {
           <div>
             <form onSubmit={handleRegister}>
               <div>
-                <h1 className="text-2xl font-bold">Create a new account</h1>
+                <h1 className="text-2xl font-bold">
+                  {t.formatMessage(messages.registerHeader)}
+                </h1>
               </div>
 
               <div className="my-3">
-                <label className="block text-md mb-2">Email</label>
+                <label className="block text-md mb-2">
+                  {t.formatMessage(messages.registerEmailFieldLabel)}
+                </label>
                 <input
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="email"
-                  placeholder="email"
                   {...registerForm("email", {
                     required: true,
                   })}
@@ -77,11 +83,12 @@ const RegisterPage = () => {
                 )}
               </div>
               <div className="mt-5">
-                <label className="block text-md mb-2">Password</label>
+                <label className="block text-md mb-2">
+                  {t.formatMessage(messages.registerPasswordFieldLabel)}
+                </label>
                 <input
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="password"
-                  placeholder="password"
                   {...registerForm("password", {
                     required: true,
                   })}
@@ -95,15 +102,13 @@ const RegisterPage = () => {
 
               <div className="">
                 <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
-                  Register
+                  {t.formatMessage(messages.registerButton)}
                 </button>
               </div>
             </form>
             <p className="mt-8">
-              {" "}
-              Already have an account?{" "}
               <Link href={paths.account.login.$url()}>
-                <a> Log in!</a>
+                <a>{t.formatMessage(messages.backToLogin)}</a>
               </Link>
             </p>
           </div>

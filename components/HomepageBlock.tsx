@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { useIntl } from "react-intl";
 import { UrlObject } from "url";
 
 import { usePaths } from "@/lib/paths";
@@ -7,6 +8,7 @@ import { translate } from "@/lib/translations";
 import { HomepageBlockFragment, ProductFilterInput } from "@/saleor/api";
 
 import { ProductCollection, RichText } from ".";
+import { messages } from "./translations";
 
 export interface HomepageBlockProps {
   menuItem: HomepageBlockFragment;
@@ -14,7 +16,7 @@ export interface HomepageBlockProps {
 
 export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
   const paths = usePaths();
-
+  const t = useIntl();
   const filter: ProductFilterInput = {};
   if (!!menuItem.page?.id) {
     const content = translate(menuItem.page!, "content");
@@ -42,7 +44,7 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
       <div className="flex flex-row-reverse p-4">
         <Link href={link}>
           <a>
-            <p>More →</p>
+            <p>{t.formatMessage(messages.more)}</p>
           </a>
         </Link>
       </div>

@@ -1,6 +1,8 @@
 import { RadioGroup } from "@headlessui/react";
 import React, { useState } from "react";
+import { useIntl } from "react-intl";
 
+import { messages } from "@/components/translations";
 import { CheckoutDetailsFragment } from "@/saleor/api";
 
 import DummyCreditCardSection, {
@@ -16,6 +18,7 @@ export interface PaymentSectionProps {
 }
 
 export const PaymentSection = ({ checkout, active }: PaymentSectionProps) => {
+  const t = useIntl();
   const existingGateways = [STRIPE_GATEWAY, DUMMY_CREDIT_CARD_GATEWAY];
   const availableGateways = checkout.availablePaymentGateways.filter((g) =>
     existingGateways.includes(g.id)
@@ -33,13 +36,15 @@ export const PaymentSection = ({ checkout, active }: PaymentSectionProps) => {
               : "checkout-section-header-disabled"
           }
         >
-          Payment
+          {t.formatMessage(messages.paymentCardHeader)}
         </h2>
       </div>
       {active && (
         <>
           <div className="block">
-            <span className="text-gray-700">Choose payment method</span>
+            <span className="text-gray-700">
+              {t.formatMessage(messages.paymentInstruction)}
+            </span>
             <RadioGroup
               value={chosenGateway}
               onChange={setChosenGateway}
