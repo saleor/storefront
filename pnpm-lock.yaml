@@ -1,12 +1,11 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@apollo/client': 3.5.7
+  '@apollo/client': 3.5.8
   '@graphql-codegen/add': ^3.1.1
   '@graphql-codegen/cli': 2.4.0
   '@graphql-codegen/introspection': 2.1.1
   '@graphql-codegen/typescript': 2.4.2
-  '@graphql-codegen/typescript-apollo-client-helpers': ^2.1.9
   '@graphql-codegen/typescript-operations': 2.2.2
   '@graphql-codegen/typescript-react-apollo': 3.2.4
   '@headlessui/react': 1.4.3
@@ -22,7 +21,7 @@ specifiers:
   '@types/react': 17.0.38
   autoprefixer: 10.4.2
   clsx: 1.1.1
-  dotenv: ^14.2.0
+  dotenv: ^14.3.2
   dotenv-cli: ^4.1.1
   editorjs-blocks-react-renderer: ^1.2.4
   eslint: 8.7.0
@@ -32,40 +31,40 @@ specifiers:
   graphql: 16.2.0
   next: 12.0.8
   next-seo: ^4.29.0
-  next-sitemap: ^2.0.2
+  next-sitemap: ^2.0.7
   next-usequerystate: 1.4.0-beta.5
   pathpida: ^0.17.0
   postcss: 8.4.5
   prettier: 2.5.1
   react: rc
   react-dom: rc
-  react-hook-form: ^7.25.0
+  react-hook-form: ^7.25.1
   react-use: ^17.3.2
   tailwindcss: 3.0.16
   typescript: 4.5.5
 
 dependencies:
-  '@apollo/client': 3.5.7_graphql@16.2.0+react@18.0.0-rc.0
+  '@apollo/client': 3.5.8_graphql@16.2.0+react@18.0.0-rc.0
   '@headlessui/react': 1.4.3_757a802188413a36d4f24237d13b8e90
   '@heroicons/react': 1.0.5_react@18.0.0-rc.0
-  '@saleor/sdk': 0.4.1_711fc4af47299680ab8ff8db47292bc8
+  '@saleor/sdk': 0.4.1_2aa5b8c001247e9d6ce9cc61468e9deb
   '@stripe/react-stripe-js': 1.7.0_a5b2abe0d2ade2fb1db7cd88143b2dd0
   '@stripe/stripe-js': 1.22.0
   '@tailwindcss/aspect-ratio': 0.4.0_tailwindcss@3.0.16
   '@tailwindcss/forms': 0.4.0_tailwindcss@3.0.16
   '@tailwindcss/typography': 0.5.0_tailwindcss@3.0.16
   clsx: 1.1.1
-  dotenv: 14.2.0
+  dotenv: 14.3.2
   dotenv-cli: 4.1.1
   editorjs-blocks-react-renderer: 1.2.4_757a802188413a36d4f24237d13b8e90
   graphql: 16.2.0
   next: 12.0.8_757a802188413a36d4f24237d13b8e90
   next-seo: 4.29.0_0547caee8b096ccbe3eb66b2e33e801f
-  next-sitemap: 2.0.2_next@12.0.8
+  next-sitemap: 2.0.7_next@12.0.8
   next-usequerystate: 1.4.0-beta.5_0547caee8b096ccbe3eb66b2e33e801f
   react: 18.0.0-rc.0
   react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
-  react-hook-form: 7.25.0_react@18.0.0-rc.0
+  react-hook-form: 7.25.1_react@18.0.0-rc.0
   react-use: 17.3.2_757a802188413a36d4f24237d13b8e90
 
 devDependencies:
@@ -73,7 +72,6 @@ devDependencies:
   '@graphql-codegen/cli': 2.4.0_graphql@16.2.0+typescript@4.5.5
   '@graphql-codegen/introspection': 2.1.1_graphql@16.2.0
   '@graphql-codegen/typescript': 2.4.2_graphql@16.2.0
-  '@graphql-codegen/typescript-apollo-client-helpers': 2.1.9_graphql@16.2.0
   '@graphql-codegen/typescript-operations': 2.2.2_graphql@16.2.0
   '@graphql-codegen/typescript-react-apollo': 3.2.4_graphql@16.2.0
   '@next/bundle-analyzer': 12.0.8
@@ -92,8 +90,8 @@ devDependencies:
 
 packages:
 
-  /@apollo/client/3.5.7_graphql@16.2.0+react@18.0.0-rc.0:
-    resolution: {integrity: sha512-HSLqTGp3sp/PVIWYLLr5v3fjQSr6Fxg6Z5RQj5Q9ALyseIVudD8GZk1jHplaUblTFMBueXGw3Z6DXObuVAr3tw==}
+  /@apollo/client/3.5.8_graphql@16.2.0+react@18.0.0-rc.0:
+    resolution: {integrity: sha512-MAm05+I1ullr64VLpZwon/ISnkMuNLf6vDqgo9wiMhHYBGT4yOAbAIseRdjCHZwfSx/7AUuBgaTNOssZPIr6FQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
       react: ^16.8.0 || ^17.0.0
@@ -848,22 +846,6 @@ packages:
       tslib: 2.3.1
     dev: true
 
-  /@graphql-codegen/typescript-apollo-client-helpers/2.1.9_graphql@16.2.0:
-    resolution: {integrity: sha512-d0j5tdWJL64eYsyxBqD8LTZTKp5UeKQIDFMwWxMHo4M50kOizfjFi0ql2SpD7CZIBXFaql7fvhJfdm6NVmSRPQ==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@graphql-codegen/plugin-helpers': 2.3.2_graphql@16.2.0
-      '@graphql-codegen/visitor-plugin-common': 2.5.2_graphql@16.2.0
-      auto-bind: 4.0.0
-      change-case-all: 1.0.14
-      graphql: 16.2.0
-      tslib: 2.3.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: true
-
   /@graphql-codegen/typescript-operations/2.2.2_graphql@16.2.0:
     resolution: {integrity: sha512-J50AuTA37RYv67hP2oHbfr3iGxexTCoadQsbr5pEUGucrIupCA0hLEJH2W+9/h6YNh0UlZT3kRTJp81ARoAjOA==}
     peerDependencies:
@@ -1430,7 +1412,7 @@ packages:
     resolution: {integrity: sha512-JLo+Y592QzIE+q7Dl2pMUtt4q8SKYI5jDrZxrozEQxnGVOyYE+GWK9eLkwTaeN9DDctlaRAQ3TBmzZ1qdLE30A==}
     dev: true
 
-  /@saleor/sdk/0.4.1_711fc4af47299680ab8ff8db47292bc8:
+  /@saleor/sdk/0.4.1_2aa5b8c001247e9d6ce9cc61468e9deb:
     resolution: {integrity: sha512-25b4R2tlBp1Mf0vybOFE5lSOsbL6aeCGOfWhVxRKtvKfxlEFrpMiLyQBuZSgZvd0Qrgc7Xmj7214lBwNqfeMgQ==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -1438,7 +1420,7 @@ packages:
       graphql: ^15.5.0
       react: ^16.8.0 || ^17.0.0
     dependencies:
-      '@apollo/client': 3.5.7_graphql@16.2.0+react@18.0.0-rc.0
+      '@apollo/client': 3.5.8_graphql@16.2.0+react@18.0.0-rc.0
       cross-fetch: 3.1.5
       graphql: 16.2.0
       jwt-decode: 3.1.2
@@ -1545,11 +1527,11 @@ packages:
   /@types/jsonwebtoken/8.5.8:
     resolution: {integrity: sha512-zm6xBQpFDIDM6o9r6HSgDeIcLy82TKWctCXEPbJJcXb5AKmi5BNNdLXneixK4lplX3PqIVcwLBCGE/kAGnlD4A==}
     dependencies:
-      '@types/node': 17.0.10
+      '@types/node': 17.0.12
     dev: true
 
-  /@types/node/17.0.10:
-    resolution: {integrity: sha512-S/3xB4KzyFxYGCppyDt68yzBU9ysL88lSdIah4D6cptdcltc4NCPCAMc0+PCpg/lLIyC7IPvj2Z52OJWeIUkog==}
+  /@types/node/17.0.12:
+    resolution: {integrity: sha512-4YpbAsnJXWYK/fpTVFlMIcUIho2AYCi4wg5aNPrG1ng7fn/1/RZfCIpRCiBX+12RVa34RluilnvCqD+g3KiSiA==}
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -1578,13 +1560,13 @@ packages:
   /@types/websocket/1.0.4:
     resolution: {integrity: sha512-qn1LkcFEKK8RPp459jkjzsfpbsx36BBt3oC3pITYtkoBw/aVX+EZFa5j3ThCRTNpLFvIMr5dSTD4RaMdilIOpA==}
     dependencies:
-      '@types/node': 17.0.10
+      '@types/node': 17.0.12
     dev: true
 
   /@types/ws/8.2.2:
     resolution: {integrity: sha512-NOn5eIcgWLOo6qW8AcuLZ7G8PycXu0xTxxkS6Q18VWFxgPUSOwV0pBj2a/4viNZVu25i7RIB7GttdkAIUUXOOg==}
     dependencies:
-      '@types/node': 17.0.10
+      '@types/node': 17.0.12
     dev: true
 
   /@typescript-eslint/parser/5.10.1_eslint@8.7.0+typescript@4.5.5:
@@ -1875,7 +1857,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.19.1
-      caniuse-lite: 1.0.30001301
+      caniuse-lite: 1.0.30001302
       fraction.js: 4.1.2
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -1987,8 +1969,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001301
-      electron-to-chromium: 1.4.52
+      caniuse-lite: 1.0.30001302
+      electron-to-chromium: 1.4.53
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -2057,8 +2039,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001301:
-    resolution: {integrity: sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==}
+  /caniuse-lite/1.0.30001302:
+    resolution: {integrity: sha512-YYTMO+tfwvgUN+1ZnRViE53Ma1S/oETg+J2lISsqi/ZTNThj3ZYBOKP2rHwJc37oCsPqAzJ3w2puZHn0xlLPPw==}
 
   /capital-case/1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -2560,8 +2542,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /dotenv/14.2.0:
-    resolution: {integrity: sha512-05POuPJyPpO6jqzTNweQFfAyMSD4qa4lvsMOWyTRTdpHKy6nnnN+IYWaXF+lHivhBH/ufDKlR4IWCAN3oPnHuw==}
+  /dotenv/14.3.2:
+    resolution: {integrity: sha512-vwEppIphpFdvaMCaHfCEv9IgwcxMljMw2TnAQBB4VWPvzXQLTb82jwmdOKzlEVUL3gNFT4l4TPKO+Bn+sqcrVQ==}
     engines: {node: '>=12'}
     dev: false
 
@@ -2601,8 +2583,8 @@ packages:
       react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
     dev: false
 
-  /electron-to-chromium/1.4.52:
-    resolution: {integrity: sha512-JGkh8HEh5PnVrhU4HbpyyO0O791dVY6k7AdqfDeqbcRMeoGxtNHWT77deR2nhvbLe4dKpxjlDEvdEwrvRLGu2Q==}
+  /electron-to-chromium/1.4.53:
+    resolution: {integrity: sha512-rFveSKQczlcav+H3zkKqykU6ANseFwXwkl855jOIap5/0gnEcuIhv2ecz6aoTrXavF6I/CEBeRnBnkB51k06ew==}
     dev: true
 
   /elegant-spinner/1.0.1:
@@ -3783,7 +3765,7 @@ packages:
     resolution: {integrity: sha512-mk0umAQ5lT+CaOJ+Qp01N6kz48sJG2kr2n1rX0koqKf6FIygQV0qLOdN9SCYID4IVeSigDOcPeGLozdMLYfb5g==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      '@types/node': 17.0.10
+      '@types/node': 17.0.12
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -4264,8 +4246,8 @@ packages:
       react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
     dev: false
 
-  /next-sitemap/2.0.2_next@12.0.8:
-    resolution: {integrity: sha512-7k2zPQYWsSX+Yd7tvJVxHYA/lDZX2Vg+bG0hSRz2UYte9KmPatJ5+FHhcK82hAADokcBcIBSMx3qT33I4hzRbg==}
+  /next-sitemap/2.0.7_next@12.0.8:
+    resolution: {integrity: sha512-QuB0j34a61FjSqOLab+57nBb9rfPEUewgpggs/BUR4CkXgglqn2eLorT0gh2lv9NA1j2rMmVH5xZTJpRlURyow==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
@@ -4308,7 +4290,7 @@ packages:
     dependencies:
       '@next/env': 12.0.8
       '@next/react-refresh-utils': 12.0.8_react-refresh@0.8.3
-      caniuse-lite: 1.0.30001301
+      caniuse-lite: 1.0.30001302
       jest-worker: 27.0.0-next.5
       node-fetch: 2.6.1
       postcss: 8.2.15
@@ -4833,8 +4815,8 @@ packages:
       scheduler: 0.21.0-rc.0-next-fe905f152-20220107
     dev: false
 
-  /react-hook-form/7.25.0_react@18.0.0-rc.0:
-    resolution: {integrity: sha512-MyF4YXegIT/vfyZloTm98mpJwLUPfULdX37yPzXeijT1hePCkV8DN1IAnEufxgtqCpc7aFGRinegQwisUGZCnA==}
+  /react-hook-form/7.25.1_react@18.0.0-rc.0:
+    resolution: {integrity: sha512-AVE/kFtOQ6GEC5TBDNzZrVO8k4QRMi5RNhUWeBq6Koc9V/luBrP1xybWByl4n1yLFL8/2H3p0VM7wp3CW7t8JQ==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17
