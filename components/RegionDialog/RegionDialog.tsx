@@ -3,12 +3,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
-import { clearCheckout } from "@/lib/checkout";
 import { LOCALES } from "@/lib/regions";
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 interface RegionDialogProps {
   onClose: () => void;
@@ -23,6 +23,7 @@ export interface RegionFormData {
 export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
   const t = useIntl();
   const router = useRouter();
+  const { resetCheckoutToken } = useCheckout();
   const { channels, currentChannel, setCurrentChannel, currentLocale } =
     useRegions();
   const { register: register, handleSubmit: handleSubmit } =
@@ -35,7 +36,7 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
   const onSubmit = handleSubmit(async (formData: RegionFormData) => {
     if (formData.channel !== currentChannel.slug) {
       await setCurrentChannel(formData.channel);
-      clearCheckout();
+      resetCheckoutToken();
     }
     onClose();
 
