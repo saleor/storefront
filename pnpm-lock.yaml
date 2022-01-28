@@ -10,6 +10,7 @@ specifiers:
   '@graphql-codegen/introspection': 2.1.1
   '@graphql-codegen/typescript': 2.4.3
   '@graphql-codegen/typescript-operations': 2.2.4
+  '@graphql-codegen/typescript-urql': ^3.4.2
   '@headlessui/react': 1.4.3
   '@heroicons/react': 1.0.5
   '@next/bundle-analyzer': ^12.0.10
@@ -32,6 +33,7 @@ specifiers:
   eslint-plugin-formatjs: ^3.0.0
   eslint-plugin-simple-import-sort: ^7.0.0
   graphql: 16.3.0
+  graphql-tag: ^2.12.6
   next: 12.0.10
   next-seo: ^5.1.0
   next-sitemap: ^2.1.13
@@ -65,6 +67,7 @@ dependencies:
   dotenv-cli: 5.0.0
   editorjs-blocks-react-renderer: 1.2.4_757a802188413a36d4f24237d13b8e90
   graphql: 16.3.0
+  graphql-tag: 2.12.6_graphql@16.3.0
   next: 12.0.10_757a802188413a36d4f24237d13b8e90
   next-seo: 5.1.0_bb7ee03ffe212ae096763d60faecb626
   next-sitemap: 2.1.13_next@12.0.10
@@ -82,6 +85,7 @@ devDependencies:
   '@graphql-codegen/introspection': 2.1.1_graphql@16.3.0
   '@graphql-codegen/typescript': 2.4.3_graphql@16.3.0
   '@graphql-codegen/typescript-operations': 2.2.4_graphql@16.3.0
+  '@graphql-codegen/typescript-urql': 3.5.1_e20029557891e0afb887c44ec7f516f8
   '@next/bundle-analyzer': 12.0.10
   '@types/qs': 6.9.7
   '@types/react': 17.0.39
@@ -975,6 +979,23 @@ packages:
       '@graphql-codegen/visitor-plugin-common': 2.6.0_graphql@16.3.0
       auto-bind: 4.0.0
       graphql: 16.3.0
+      tslib: 2.3.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
+  /@graphql-codegen/typescript-urql/3.5.1_e20029557891e0afb887c44ec7f516f8:
+    resolution: {integrity: sha512-vrOLJ7fAQQuckn01wMXi+Htx1UxKP9bAq1hxfrRNCaz1EOTAhoPy1dwf1nowZ53RzuiGQFuqRU3eSlDs5CI+lQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+      graphql-tag: ^2.0.0
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 2.4.0_graphql@16.3.0
+      '@graphql-codegen/visitor-plugin-common': 2.6.0_graphql@16.3.0
+      auto-bind: 4.0.0
+      graphql: 16.3.0
+      graphql-tag: 2.12.6_graphql@16.3.0
       tslib: 2.3.1
     transitivePeerDependencies:
       - encoding

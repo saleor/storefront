@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { usePaths } from "@/lib/paths";
 import { OrderDetailsFragment } from "@/saleor/api";
 
+import { LocalizedAmount } from "./LocalizedAmount";
+
 interface OrdersTableProps {
   orders: OrderDetailsFragment[];
 }
@@ -36,7 +38,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
               <td>{order?.number}</td>
               <td>{order.created.slice(0, 10)}</td>
               <td className="hidden md:table-cell">{order.status}</td>
-              <td>{order.total.gross.localizedAmount}</td>
+              <td><LocalizedAmount {...order.total.gross} /></td>
             </tr>
           );
         })}

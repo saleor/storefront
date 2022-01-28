@@ -34,6 +34,7 @@
     "dotenv-cli": "^5.0.0",
     "editorjs-blocks-react-renderer": "^1.2.4",
     "graphql": "16.3.0",
+    "graphql-tag": "^2.12.6",
     "next": "12.0.10",
     "next-seo": "^5.1.0",
     "next-sitemap": "^2.1.13",
@@ -45,11 +46,13 @@
     "urql": "^2.0.6"
   },
   "devDependencies": {
+    "@formatjs/cli": "^4.8.1",
     "@graphql-codegen/add": "^3.1.1",
     "@graphql-codegen/cli": "2.5.0",
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.3",
     "@graphql-codegen/typescript-operations": "2.2.4",
+    "@graphql-codegen/typescript-urql": "^3.4.2",
     "react-hook-form": "^7.26.1",
     "react-intl": "^5.24.6",
     "react-use": "^17.3.2",

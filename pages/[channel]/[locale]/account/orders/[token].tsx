@@ -5,6 +5,7 @@ import { ReactElement } from "react";
 
 import { Layout, Spinner } from "@/components";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
+import { LocalizedAmount } from "@/components/LocalizedAmount";
 import { useOrderDetailsByTokenQuery } from "@/saleor/api";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
@@ -26,9 +27,9 @@ const OrderDetailsPage = ({
   token,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { authenticated } = useAuthState();
-  const { loading, error, data } = useOrderDetailsByTokenQuery({
+  const [{ fetching: loading, error, data }] = useOrderDetailsByTokenQuery({
     variables: { token: token },
-    skip: !token || !authenticated,
+    // skip: !token || !authenticated,
   });
 
   if (loading) return <Spinner />;
@@ -82,11 +83,11 @@ const OrderDetailsPage = ({
                         </div>
                       </div>
                     </td>
-                    <td>{line?.unitPrice.gross.localizedAmount}</td>
+                    <td><LocalizedAmount {...line?.unitPrice.gross} /></td>
                     <td>{line?.quantity}</td>
                     <td>
                       <p className="mr-3 md:mr-10 text-right">
-                        {line?.totalPrice.gross.localizedAmount}
+                        <LocalizedAmount {...line?.totalPrice.gross} />
                       </p>
                     </td>
                   </tr>
@@ -101,7 +102,7 @@ const OrderDetailsPage = ({
         </div>
         <div className="text-md text-center">
           <p className="mt-5 text-right mr-3 md:mr-10">
-            {order?.subtotal.net.localizedAmount}
+            <LocalizedAmount {...order?.subtotal.net} />
           </p>
         </div>
         <div className="md:col-start-3 col-span-2 border-t"></div>
@@ -110,7 +111,7 @@ const OrderDetailsPage = ({
         </div>
         <div className="text-md text-center">
           <p className="mt-5 text-right mr-3 md:mr-10">
-            {order?.shippingPrice.gross.localizedAmount}
+            <LocalizedAmount {...order?.shippingPrice.gross} />
           </p>
         </div>
         <div className="md:col-start-3 col-span-2 border-t"></div>
@@ -119,19 +120,19 @@ const OrderDetailsPage = ({
         </div>
         <div className="text-md font-semibold text-center">
           <p className="mt-5 text-right mr-3 md:mr-10">
-            {order?.total.gross.localizedAmount}
+            <LocalizedAmount {...order?.total.gross} />
           </p>
         </div>
 
         {!!order?.billingAddress && (
-          <div className="col-span-2 mr-2 my-2 p-4 rounded shadow-xs bg-white border md:w-1/2 md:col-span-2 md:w-full">
+          <div className="col-span-2 mr-2 my-2 p-4 rounded shadow-xs bg-white border md:col-span-2 md:w-full">
             <h2 className="font-semibold text-lg mb-2">Billing Address </h2>
             <AddressDisplay address={order.billingAddress}></AddressDisplay>
           </div>
         )}
 
         {!!order?.shippingAddress && (
-          <div className="col-span-2 mr-2 md:ml-2 my-2 p-4 shadow-xs rounded bg-white border md:w-1/2 md:col-start-3 md:col-span-2 md:w-full">
+          <div className="col-span-2 mr-2 md:ml-2 my-2 p-4 shadow-xs rounded bg-white border md:col-start-3 md:col-span-2 md:w-full">
             <h2 className="font-semibold text-lg mb-2">Shipping Address </h2>
             <AddressDisplay address={order.shippingAddress}></AddressDisplay>
           </div>

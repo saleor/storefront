@@ -1,4 +1,3 @@
-import { ApolloQueryResult } from "@apollo/client";
 import {
   GetStaticPaths,
   GetStaticPropsContext,
@@ -53,19 +52,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const categorySlug = context.params?.slug?.toString()!;
-  const response: ApolloQueryResult<CategoryBySlugQuery> =
+  const response =
     await apolloClient.query<CategoryBySlugQuery, CategoryBySlugQueryVariables>(
+      CategoryBySlugDocument,
       {
-        query: CategoryBySlugDocument,
-        variables: {
-          slug: categorySlug,
-          locale: contextToRegionQuery(context).locale,
-        },
-      }
-    );
+        slug: categorySlug,
+        locale: contextToRegionQuery(context).locale,
+      },
+
+    ).toPromise();
   return {
     props: {
-      category: response.data.category,
+      category: response.data?.category,
     },
   };
 };

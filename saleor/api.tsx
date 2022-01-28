@@ -4857,7 +4857,6 @@ export type Money = {
   amount: Scalars['Float'];
   /** Currency code. */
   currency: Scalars['String'];
-  localizedAmount: Scalars['String'];
 };
 
 export type MoneyInput = {

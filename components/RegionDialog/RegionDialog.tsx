@@ -3,12 +3,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { LOCALES } from "@/lib/regions";
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 interface RegionDialogProps {
   onClose: () => void;

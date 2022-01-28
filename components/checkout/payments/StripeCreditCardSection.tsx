@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
 import { usePaths } from "@/lib/paths";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
@@ -16,7 +17,6 @@ import {
 } from "@/saleor/api";
 
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 export const STRIPE_GATEWAY = "saleor.payments.stripe";
 
@@ -30,11 +30,12 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const router = useRouter();
   const paths = usePaths();
   const { resetCheckoutToken } = useCheckout();
-  const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
-  const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
+  const [,checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
+  const [,checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
-  const payLabel = `Pay ${!!totalPrice ? totalPrice.localizedAmount : ""}`;
+  // FIXME localizedAmount
+  const payLabel = `Pay ${!!totalPrice ? totalPrice.amount : ""}`;
   const redirectToOrderDetailsPage = () => {
     resetCheckoutToken();
 
@@ -82,15 +83,13 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
     }
 
     // Send Stripe payment data to the Saleor
-    const { data: paymentCreateData, errors: paymentCreateErrors } =
+    const { data: paymentCreateData, error: paymentCreateErrors } =
       await checkoutPaymentCreateMutation({
-        variables: {
-          checkoutToken: checkout.token,
-          paymentInput: {
-            gateway: "saleor.payments.stripe",
-            amount: checkout.totalPrice?.gross.amount,
-            token: pR.paymentMethod.id,
-          },
+        checkoutToken: checkout.token,
+        paymentInput: {
+          gateway: "saleor.payments.stripe",
+          amount: checkout.totalPrice?.gross.amount,
+          token: pR.paymentMethod.id,
         },
       });
 
@@ -101,11 +100,9 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
     }
 
     // Try to complete the checkout
-    const { data: completeData, errors: completeErrors } =
+    const { data: completeData, error: completeErrors } =
       await checkoutCompleteMutation({
-        variables: {
-          checkoutToken: checkout.token,
-        },
+        checkoutToken: checkout.token,
       });
     if (completeErrors) {
       console.error("complete errors:", completeErrors);
@@ -140,11 +137,9 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
       }
 
       // Try to complete checkout
-      const { data: confirmedCompleteData, errors: confirmedCompleteErrors } =
+      const { data: confirmedCompleteData, error: confirmedCompleteErrors } =
         await checkoutCompleteMutation({
-          variables: {
-            checkoutToken: checkout.token,
-          },
+          checkoutToken: checkout.token,
         });
 
       if (confirmedCompleteErrors) {

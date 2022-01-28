@@ -1,4 +1,3 @@
-import { ApolloQueryResult } from "@apollo/client";
 import { ParsedUrlQuery } from "querystring";
 
 import {
@@ -25,19 +24,16 @@ export const productPaths = async () => {
     let endCursor = "";
 
     while (hasNextPage) {
-      const response: ApolloQueryResult<ProductPathsQuery> =
+      const response =
         await apolloClient.query<ProductPathsQuery, ProductPathsQueryVariables>(
-          {
-            query: ProductPathsDocument,
-            fetchPolicy: "no-cache",
-            variables: {
+            ProductPathsDocument,
+            {
               channel: channelSlug,
               after: endCursor,
             },
-          }
-        );
+        ).toPromise();
 
-      const edges = response.data.products?.edges;
+      const edges = response.data?.products?.edges;
       if (!edges) {
         break;
       }
@@ -56,7 +52,7 @@ export const productPaths = async () => {
       }
 
       hasNextPage = response.data?.products?.pageInfo.hasNextPage || false;
-      endCursor = response.data.products?.pageInfo.endCursor || "";
+      endCursor = response.data?.products?.pageInfo.endCursor || "";
     }
   }
 

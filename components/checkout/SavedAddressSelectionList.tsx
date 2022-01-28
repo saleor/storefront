@@ -17,7 +17,7 @@ interface SavedAddressSelectionListProps {
 export const SavedAddressSelectionList = ({
   updateAddressMutation,
 }: SavedAddressSelectionListProps) => {
-  const { loading, error, data } = useCurrentUserAddressesQuery();
+  const [{ fetching: loading, error, data }] = useCurrentUserAddressesQuery();
   const [selectedSavedAddres, setSelectedSavedAddress] =
     React.useState<AddressDetailsFragment | null>();
 

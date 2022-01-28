@@ -20,7 +20,7 @@ export const EmailSection = ({ checkout }: EmailSectionProps) => {
   const { query } = useRegions();
   const [modifyEmail, setModifyEmail] = useState(!checkout?.email);
 
-  const [checkoutEmailUpdate] = useCheckoutEmailUpdateMutation({});
+  const [,checkoutEmailUpdate] = useCheckoutEmailUpdateMutation();
   const {
     register,
     handleSubmit,
@@ -33,11 +33,9 @@ export const EmailSection = ({ checkout }: EmailSectionProps) => {
   });
   const onEmailFormSubmit = handleSubmit(async (formData) => {
     const result = await checkoutEmailUpdate({
-      variables: {
-        email: formData.email,
-        token: checkout?.token,
-        locale: query.locale,
-      },
+      email: formData.email,
+      token: checkout?.token,
+      locale: query.locale,
     });
     const errors = result.data?.checkoutEmailUpdate?.errors || [];
     if (errors.length > 0) {

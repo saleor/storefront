@@ -14,7 +14,7 @@ export const MainMenu = () => {
   const paths = usePaths();
   const { query } = useRegions();
 
-  const { loading, error, data } = useMainMenuQuery({
+  const [{ fetching: loading, error, data }] = useMainMenuQuery({
     variables: { ...query },
   });
 

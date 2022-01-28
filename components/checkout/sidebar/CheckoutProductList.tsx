@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { useIntl } from "react-intl";
 
+import { LocalizedAmount } from "@/components/LocalizedAmount";
 import { useRegions } from "@/components/RegionsProvider";
 import { messages } from "@/components/translations";
 import { translate } from "@/lib/translations";
@@ -22,7 +23,7 @@ export const CheckoutProductList = ({
   const t = useIntl();
   const { query } = useRegions();
 
-  const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
+  const [,removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   return (
     <ul
@@ -52,7 +53,7 @@ export const CheckoutProductList = ({
                   {translate(line.variant, "name")}
                 </p>
                 <p className="text-gray-900">
-                  {line.totalPrice?.gross.localizedAmount}
+                  <LocalizedAmount {...line.totalPrice?.gross} />
                 </p>
               </div>
               <div className="flex space-x-4">
@@ -61,11 +62,9 @@ export const CheckoutProductList = ({
                   className="text-sm font-medium text-blue-600 hover:text-blue-500"
                   onClick={() =>
                     removeProductFromCheckout({
-                      variables: {
-                        checkoutToken: token,
-                        lineId: line.id,
-                        locale: query.locale,
-                      },
+                      checkoutToken: token,
+                      lineId: line.id,
+                      locale: query.locale,
                     })
                   }
                 >

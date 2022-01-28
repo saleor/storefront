@@ -15,6 +15,7 @@ import {
 
 import { usePaths } from "../lib/paths";
 import { Spinner } from ".";
+import { LocalizedAmount } from "./LocalizedAmount";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
 
@@ -27,9 +28,11 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
   const t = useIntl();
   const { query } = useRegions();
   const { checkoutToken: token } = useCheckout();
-  const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
-    useCheckoutLineUpdateMutation();
-  const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
+  const [,checkoutLineUpdateMutation] = useCheckoutLineUpdateMutation();
+  // FIXME handle loading
+  // const [,checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
+  //   useCheckoutLineUpdateMutation();
+  const [,removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   const [quantity, setQuantity] = React.useState<number>();
   const [errors, setErrors] = React.useState<ErrorDetailsFragment[] | null>(
@@ -50,16 +53,14 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
     changeLineState(event);
     if (!event?.target?.validity?.valid || event?.target?.value === "") return;
     const result = await checkoutLineUpdateMutation({
-      variables: {
-        token: token,
-        lines: [
-          {
-            quantity: parseFloat(event.target.value),
-            variantId: line?.variant.id || "",
-          },
-        ],
-        locale: query.locale,
-      },
+      token: token,
+      lines: [
+        {
+          quantity: parseFloat(event.target.value),
+          variantId: line?.variant.id || "",
+        },
+      ],
+      locale: query.locale,
     });
     const errors = result.data?.checkoutLinesUpdate?.errors;
     if (errors && errors.length > 0) {
@@ -104,11 +105,9 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
                 type="button"
                 onClick={() =>
                   removeProductFromCheckout({
-                    variables: {
-                      checkoutToken: token,
-                      lineId: line?.id,
-                      locale: query.locale,
-                    },
+                    checkoutToken: token,
+                    lineId: line?.id,
+                    locale: query.locale,
                   })
                 }
                 className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
@@ -148,11 +147,11 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
                 }}
                 min={1}
                 required
-                disabled={loadingLineUpdate}
+                // disabled={loadingLineUpdate}
                 pattern="[0-9]*"
               />
               <p className="text-xl text-gray-900 text-right">
-                {line?.totalPrice?.gross.localizedAmount}
+                <LocalizedAmount {...line?.totalPrice?.gross} />
               </p>
             </div>
           </div>

@@ -22,8 +22,9 @@ export interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const paths = usePaths();
 
+  // FIXME localizedAmount
   let priceDisplay =
-    product.pricing?.priceRange?.start?.gross.localizedAmount || "";
+    product.pricing?.priceRange?.start?.gross.amount || "";
   if (
     product.pricing?.priceRange?.start?.gross.amount !==
     product.pricing?.priceRange?.stop?.gross.amount

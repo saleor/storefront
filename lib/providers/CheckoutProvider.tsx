@@ -1,4 +1,3 @@
-import { ApolloError } from "@apollo/client";
 import { useRouter } from "next/router";
 import { ReactChildren, ReactNode, useEffect } from "react";
 
@@ -13,7 +12,7 @@ export interface CheckoutConsumerProps {
   setCheckoutToken: (token: string) => void;
   resetCheckoutToken: () => void;
   checkout: CheckoutDetailsFragment | undefined | null;
-  checkoutError: ApolloError | undefined;
+  checkoutError: Error | undefined;
   loading: boolean;
 }
 
@@ -34,13 +33,13 @@ export const CheckoutProvider = ({
     { sync: true }
   );
 
-  const {
+  const [{
     data,
-    loading,
+    fetching: loading,
     error: checkoutError,
-  } = useCheckoutByTokenQuery({
+  }] = useCheckoutByTokenQuery({
     variables: { checkoutToken, locale: localeToEnum(locale) },
-    skip: !checkoutToken || !process.browser,
+    // skip: !checkoutToken || !process.browser,
   });
 
   const resetCheckoutToken = () => setCheckoutToken("");

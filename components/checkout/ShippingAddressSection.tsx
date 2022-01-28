@@ -30,8 +30,8 @@ export const ShippingAddressSection = ({
 
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
-  const [shippingAddressUpdateMutation] =
-    useCheckoutShippingAddressUpdateMutation({});
+  const [,shippingAddressUpdateMutation] =
+    useCheckoutShippingAddressUpdateMutation();
 
   const billingAddress = checkout.billingAddress;
 
@@ -40,19 +40,17 @@ export const ShippingAddressSection = ({
       return;
     }
     const { data } = await shippingAddressUpdateMutation({
-      variables: {
-        address: {
-          firstName: billingAddress.firstName || "",
-          lastName: billingAddress.lastName || "",
-          phone: billingAddress.phone || "",
-          country: (billingAddress.country.code as CountryCode) || "PL",
-          streetAddress1: billingAddress.streetAddress1 || "",
-          city: billingAddress.city || "",
-          postalCode: billingAddress.postalCode || "",
-        },
-        token: checkout.token,
-        locale: query.locale,
+      address: {
+        firstName: billingAddress.firstName || "",
+        lastName: billingAddress.lastName || "",
+        phone: billingAddress.phone || "",
+        country: (billingAddress.country.code as CountryCode) || "PL",
+        streetAddress1: billingAddress.streetAddress1 || "",
+        city: billingAddress.city || "",
+        postalCode: billingAddress.postalCode || "",
       },
+      token: checkout.token,
+      locale: query.locale,
     });
     if (!!data?.checkoutShippingAddressUpdate?.errors.length) {
       // todo: add error handling
@@ -63,13 +61,11 @@ export const ShippingAddressSection = ({
   };
   const updateMutation = async (formData: AddressFormData) => {
     const { data } = await shippingAddressUpdateMutation({
-      variables: {
-        address: {
-          ...formData,
-        },
-        token: checkout.token,
-        locale: query.locale,
+      address: {
+        ...formData,
       },
+      token: checkout.token,
+      locale: query.locale,
     });
     setEditing(false);
     return (

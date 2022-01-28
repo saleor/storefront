@@ -1,6 +1,8 @@
 import { translate } from "@/lib/translations";
 import { DeliveryMethodFragment } from "@/saleor/api";
 
+import { LocalizedAmount } from "../LocalizedAmount";
+
 export interface ShippingMethodDisplayProps {
   method: DeliveryMethodFragment;
 }
@@ -18,7 +20,7 @@ export const ShippingMethodDisplay = ({
         business days
       </div>
       <div className="mt-6 text-sm font-medium text-gray-900">
-        {method.price?.localizedAmount}
+        <LocalizedAmount {...method.price} />
       </div>
     </div>
   );

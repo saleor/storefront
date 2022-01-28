@@ -27,20 +27,18 @@ export const BillingAddressSection = ({
   const t = useIntl();
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.billingAddress);
-  const [checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation({});
+  const [,checkoutBillingAddressUpdate] =
+    useCheckoutBillingAddressUpdateMutation();
 
   const { query } = useRegions();
 
   const updateMutation = async (formData: AddressFormData) => {
     const { data } = await checkoutBillingAddressUpdate({
-      variables: {
-        address: {
-          ...formData,
-        },
-        token: checkout.token,
-        locale: query.locale,
+      address: {
+        ...formData,
       },
+      token: checkout.token,
+      locale: query.locale,
     });
     setEditing(false);
     return data?.checkoutBillingAddressUpdate?.errors.filter(notNullable) || [];

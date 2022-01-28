@@ -9,9 +9,9 @@ import { useCurrentUserAddressesQuery } from "@/saleor/api";
 const AddressBookPage = () => {
   const t = useIntl();
   const { authenticated } = useAuthState();
-  const { loading, error, data, refetch } = useCurrentUserAddressesQuery({
-    skip: !authenticated,
-    fetchPolicy: "network-only",
+  const [{ fetching: loading, error, data }, refetch] = useCurrentUserAddressesQuery({
+    // skip: !authenticated,
+    // fetchPolicy: "network-only",
   });
 
   if (loading) {

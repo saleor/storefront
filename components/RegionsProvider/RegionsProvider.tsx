@@ -54,7 +54,7 @@ export const RegionsProvider: React.FC = ({ children }) => {
   const setCurrentChannel = (channel: string) => {
     resetCheckoutToken();
     setCurrentChannelSlug(channel);
-    apolloClient.clearStore();
+    // apolloClient.clearStore();
   };
 
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;

@@ -31,16 +31,14 @@ export const ShippingMethodSection = ({
   );
   const [editing, setEditing] = useState(!checkout.shippingMethod);
 
-  const [checkoutShippingMethodUpdate] =
-    useCheckoutShippingMethodUpdateMutation({});
+  const [,checkoutShippingMethodUpdate] =
+    useCheckoutShippingMethodUpdateMutation();
 
   const handleChange = async (method: any) => {
     const { data } = await checkoutShippingMethodUpdate({
-      variables: {
-        token: checkout.token,
-        shippingMethodId: method.id,
-        locale: query.locale,
-      },
+      token: checkout.token,
+      shippingMethodId: method.id,
+      locale: query.locale,
     });
     if (!!data?.checkoutShippingMethodUpdate?.errors.length) {
       // todo: handle errors

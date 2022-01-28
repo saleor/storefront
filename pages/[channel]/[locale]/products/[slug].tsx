@@ -1,4 +1,3 @@
-import { ApolloQueryResult } from "@apollo/client";
 import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import {
@@ -52,11 +51,11 @@ const ProductPage = ({
 
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
 
-  const [createCheckout] = useCreateCheckoutMutation();
+  const [,createCheckout] = useCreateCheckoutMutation();
   const { user } = useAuthState();
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
-  const [addProductToCheckout] = useCheckoutAddProductLineMutation();
+  const [,addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
 
@@ -84,11 +83,9 @@ const ProductPage = ({
     if (!!checkout) {
       // If checkout is already existing, add products
       const { data: addToCartData } = await addProductToCheckout({
-        variables: {
-          checkoutToken: checkoutToken,
-          variantId: selectedVariantID,
-          locale: localeToEnum(locale),
-        },
+        checkoutToken: checkoutToken,
+        variantId: selectedVariantID,
+        locale: localeToEnum(locale),
       });
       addToCartData?.checkoutLinesAdd?.errors.forEach((e) => {
         if (!!e) {
@@ -98,16 +95,14 @@ const ProductPage = ({
     } else {
       // Theres no checkout, we have to create one
       const { data: createCheckoutData } = await createCheckout({
-        variables: {
-          email: user?.email || "anonymous@example.com",
-          channel: currentChannel.slug,
-          lines: [
-            {
-              quantity: 1,
-              variantId: selectedVariantID,
-            },
-          ],
-        },
+        email: user?.email || "anonymous@example.com",
+        channel: currentChannel.slug,
+        lines: [
+          {
+            quantity: 1,
+            variantId: selectedVariantID,
+          },
+        ],
       });
       createCheckoutData?.checkoutCreate?.errors.forEach((e) => {
         if (!!e) {
@@ -232,17 +227,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const productSlug = context.params?.slug?.toString()!;
-  const response: ApolloQueryResult<ProductBySlugQuery> =
-    await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>({
-      query: ProductBySlugDocument,
-      variables: {
+  const response =
+    await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>(
+      ProductBySlugDocument,
+      {
         slug: productSlug,
         ...contextToRegionQuery(context),
       },
-    });
+    ).toPromise();
   return {
     props: {
-      product: response.data.product,
+      product: response.data?.product,
     },
     revalidate: 60, // value in seconds, how often ISR will trigger on the server
   };

@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
@@ -12,7 +13,6 @@ import {
 } from "@/saleor/api";
 
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 export const DUMMY_CREDIT_CARD_GATEWAY = "mirumee.payments.dummy";
 
@@ -33,12 +33,14 @@ export const DummyCreditCardSection = ({
   const { resetCheckoutToken } = useCheckout();
   const paths = usePaths();
   const router = useRouter();
-  const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
-  const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
+  const [,checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
+  const [,checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
+
+  // FIXME localizedAmount
   const payLabel = t.formatMessage(messages.paymentButton, {
-    total: !!totalPrice ? totalPrice.localizedAmount : "",
+    total: !!totalPrice ? totalPrice.amount : "",
   });
 
   const {
@@ -58,15 +60,13 @@ export const DummyCreditCardSection = ({
     setIsPaymentProcessing(true);
 
     // Create Saleor payment
-    const { data: paymentCreateData, errors: paymentCreateErrors } =
+    const { data: paymentCreateData, error: paymentCreateErrors } =
       await checkoutPaymentCreateMutation({
-        variables: {
-          checkoutToken: checkout.token,
-          paymentInput: {
-            gateway: DUMMY_CREDIT_CARD_GATEWAY,
-            amount: checkout.totalPrice?.gross.amount,
-            token: formData.cardNumber,
-          },
+        checkoutToken: checkout.token,
+        paymentInput: {
+          gateway: DUMMY_CREDIT_CARD_GATEWAY,
+          amount: checkout.totalPrice?.gross.amount,
+          token: formData.cardNumber,
         },
       });
 
@@ -77,11 +77,9 @@ export const DummyCreditCardSection = ({
     }
 
     // Try to complete the checkout
-    const { data: completeData, errors: completeErrors } =
+    const { data: completeData, error: completeErrors } =
       await checkoutCompleteMutation({
-        variables: {
-          checkoutToken: checkout.token,
-        },
+        checkoutToken: checkout.token,
       });
     if (completeErrors) {
       console.error("complete errors:", completeErrors);

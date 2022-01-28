@@ -55,7 +55,6 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       { slug: "homepage", ...contextToRegionQuery(context) },
     ).toPromise();
 
-    console.log('udap', result)
   return {
     props: {
       menuData: result?.data,
