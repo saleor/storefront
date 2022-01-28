@@ -1,21 +1,12 @@
 import React, { ReactElement } from "react";
-import { useLocalStorage } from "react-use";
 
 import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
-import { useRegions } from "@/components/RegionsProvider";
 import BaseSeo from "@/components/seo/BaseSeo";
-import { CHECKOUT_TOKEN } from "@/lib/const";
-import { useCheckoutByTokenQuery } from "@/saleor/api";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 const CheckoutPage = () => {
-  const [token] = useLocalStorage(CHECKOUT_TOKEN);
-  const { query } = useRegions();
+  const { checkout, loading } = useCheckout();
 
-  const { data: checkoutData, loading } = useCheckoutByTokenQuery({
-    fetchPolicy: "network-only",
-    variables: { checkoutToken: token, locale: query.locale },
-    skip: !token,
-  });
   if (loading) {
     return (
       <>
@@ -24,7 +15,7 @@ const CheckoutPage = () => {
       </>
     );
   }
-  const checkout = checkoutData?.checkout;
+
   if (!checkout || checkout.lines?.length === 0) {
     return <BaseSeo title="Checkout - Saleor Tutorial" />;
   }
@@ -35,7 +26,7 @@ const CheckoutPage = () => {
 
       <main className="min-h-screen w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
         <div className="md:w-2/3 w-full">
-          <CheckoutForm checkout={checkout} />
+          <CheckoutForm />
         </div>
         <div className="md:w-1/3 w-full">
           <CheckoutSidebar checkout={checkout} />

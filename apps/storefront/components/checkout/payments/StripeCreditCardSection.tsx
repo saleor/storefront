@@ -8,7 +8,6 @@ import { loadStripe } from "@stripe/stripe-js/pure";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
-import { clearCheckout } from "@/lib/checkout";
 import { usePaths } from "@/lib/paths";
 import {
   CheckoutDetailsFragment,
@@ -17,6 +16,7 @@ import {
 } from "@/saleor/api";
 
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 export const STRIPE_GATEWAY = "saleor.payments.stripe";
 
@@ -29,16 +29,15 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const elements = useElements();
   const router = useRouter();
   const paths = usePaths();
+  const { resetCheckoutToken } = useCheckout();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
   const payLabel = `Pay ${!!totalPrice ? totalPrice.localizedAmount : ""}`;
   const redirectToOrderDetailsPage = () => {
-    // remove completed checkout
-    clearCheckout();
+    resetCheckoutToken();
 
-    // redirect to the order details page
     router.push(paths.order.$url());
   };
 
