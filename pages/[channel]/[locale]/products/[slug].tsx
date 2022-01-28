@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import Custom404 from "pages/404";
 import React, { ReactElement, useState } from "react";
 import { useIntl } from "react-intl";
-import { useLocalStorage } from "react-use";
 
 import { Layout, RichText, VariantSelector } from "@/components";
 import { AttributeDetails } from "@/components/product/AttributeDetails";
@@ -19,10 +18,10 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
-import { CHECKOUT_TOKEN } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   contextToRegionQuery,
   DEFAULT_LOCALE,
@@ -36,7 +35,6 @@ import {
   ProductBySlugQuery,
   ProductBySlugQueryVariables,
   useCheckoutAddProductLineMutation,
-  useCheckoutByTokenQuery,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
 
@@ -51,14 +49,13 @@ const ProductPage = ({
   const paths = usePaths();
   const t = useIntl();
   const { currentChannel } = useRegions();
-  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
+
+  const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
+
   const [createCheckout] = useCreateCheckoutMutation();
   const { user } = useAuthState();
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
-  const { data: checkoutData } = useCheckoutByTokenQuery({
-    variables: { checkoutToken, locale: localeToEnum(locale) },
-    skip: !checkoutToken || !process.browser,
-  });
+
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
@@ -84,7 +81,7 @@ const ProductPage = ({
       return;
     }
 
-    if (!!checkoutData?.checkout) {
+    if (!!checkout) {
       // If checkout is already existing, add products
       const { data: addToCartData } = await addProductToCheckout({
         variables: {

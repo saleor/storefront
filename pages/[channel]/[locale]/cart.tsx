@@ -1,33 +1,24 @@
 import Link from "next/link";
 import React, { ReactElement } from "react";
 import { useIntl } from "react-intl";
-import { useLocalStorage } from "react-use";
 
 import { CartSummary, CheckoutLineItem, Layout, Spinner } from "@/components";
-import { useRegions } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { messages } from "@/components/translations";
-import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
-import { useCheckoutByTokenQuery } from "@/saleor/api";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 const Cart = () => {
   const t = useIntl();
   const paths = usePaths();
-  const { query } = useRegions();
-  const [token] = useLocalStorage<string>(CHECKOUT_TOKEN);
-  const { data, loading, error } = useCheckoutByTokenQuery({
-    fetchPolicy: "network-only",
-    variables: { checkoutToken: token, locale: query.locale },
-    skip: !token,
-  });
+  const { loading, checkoutError, checkout, checkoutToken } = useCheckout();
 
   if (loading) {
     return <Spinner />;
   }
-  if (error) return <p>Error</p>;
+  if (checkoutError) return <p>Error</p>;
 
-  const products = data?.checkout?.lines || [];
+  const products = checkout?.lines || [];
 
   return (
     <>
@@ -56,17 +47,15 @@ const Cart = () => {
               <ul role="list" className="divide-y divide-gray-200">
                 {products.map((line) => (
                   <li key={line?.id} className="flex py-6">
-                    {line && token && (
-                      <CheckoutLineItem line={line} token={token} />
-                    )}
+                    {line && checkoutToken && <CheckoutLineItem line={line} />}
                   </li>
                 ))}
               </ul>
             </section>
 
-            {!!data?.checkout && (
+            {!!checkout && (
               <div>
-                <CartSummary checkout={data.checkout} />
+                <CartSummary checkout={checkout} />
                 <div className="mt-12">
                   <Link href={paths.checkout.$url()}>
                     <a className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700">

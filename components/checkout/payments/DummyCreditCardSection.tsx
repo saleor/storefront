@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
 import { messages } from "@/components/translations";
-import { clearCheckout } from "@/lib/checkout";
 import { usePaths } from "@/lib/paths";
 import {
   CheckoutDetailsFragment,
@@ -13,6 +12,7 @@ import {
 } from "@/saleor/api";
 
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 export const DUMMY_CREDIT_CARD_GATEWAY = "mirumee.payments.dummy";
 
@@ -30,6 +30,7 @@ export const DummyCreditCardSection = ({
   checkout,
 }: DummyCreditCardSectionInterface) => {
   const t = useIntl();
+  const { resetCheckoutToken } = useCheckout();
   const paths = usePaths();
   const router = useRouter();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
@@ -48,10 +49,8 @@ export const DummyCreditCardSection = ({
   } = useForm<CardForm>({});
 
   const redirectToOrderDetailsPage = () => {
-    // remove completed checkout
-    clearCheckout();
+    resetCheckoutToken();
 
-    // redirect to the order details page
     router.push(paths.order.$url());
   };
 

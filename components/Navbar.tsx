@@ -10,43 +10,42 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
-import { useLocalStorage } from "react-use";
 
 import { MainMenu } from "@/components/MainMenu";
-import { CHECKOUT_TOKEN } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
-import { useCheckoutByTokenQuery } from "@/saleor/api";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 import { RegionDialog } from "./RegionDialog";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
+import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
 
 export const Navbar = () => {
   const paths = usePaths();
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { currentChannel } = useRegions();
   const t = useIntl();
+  const { checkout, resetCheckoutToken } = useCheckout();
 
-  const [checkoutToken, setCheckoutToken] = useLocalStorage(CHECKOUT_TOKEN);
   const { logout } = useAuth();
   const router = useRouter();
   const client = useApolloClient();
   const { authenticated, user } = useAuthState();
-  const { query } = useRegions();
-
-  const { data } = useCheckoutByTokenQuery({
-    variables: { checkoutToken, locale: query.locale },
-    skip: !checkoutToken || !process.browser,
-  });
 
   const onLogout = async () => {
     // clear all the user data on logout
     await logout();
-    await setCheckoutToken("");
+    await resetCheckoutToken();
     await client.resetStore();
     router.push(paths.$url());
   };
-  const counter = data?.checkout?.lines?.length || 0;
+
+  const counter =
+    checkout?.lines?.reduce(
+      (amount: number, line?: CheckoutLineDetailsFragment | null) =>
+        line ? amount + line.quantity : amount,
+      0
+    ) || 0;
 
   return (
     <>
@@ -75,7 +74,7 @@ export const Navbar = () => {
               </Link>
               <div className="flex space-x-8">
                 <a
-                  href='#'
+                  href="#"
                   className="group -m-2 p-2 flex items-center text-sm font-medium text-gray-700 group-hover:text-gray-800"
                   onClick={() => setRegionDialogOpen(true)}
                 >
