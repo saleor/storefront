@@ -1,0 +1,5 @@
+query Checkout($token: UUID!) {
+  checkout(token: $token) {
+    email
+  }
+}

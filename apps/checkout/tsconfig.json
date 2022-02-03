@@ -3,8 +3,10 @@
     "paths": {
       "@components/*": ["./src/components/*"],
       "@icons": ["./src/assets/icons"],
-      "@assets/*": ["./src/assets/*"]
+      "@assets/*": ["./src/assets/*"],
+      "@graphql": ["./src/graphql"]
     },
+    "types": ["react/next", "react-dom/next"],
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

@@ -7,7 +7,7 @@ export interface TextProps {
   bold?: boolean;
 }
 
-const Text: React.FC<TextProps> = ({ children, size, color, bold }) => {
+export const Text: React.FC<TextProps> = ({ children, size, color, bold }) => {
   const classes = clsx({
     "text-text-secondary": color === "secondary",
     "text-text-tertiary": color === "tertiary",
