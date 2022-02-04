@@ -1,3 +1,13 @@
+const getSpacing = (
+  base /* number */,
+  unit /* "px" | "rem" */,
+  values /* number[] */
+) => {
+  return values.reduce((acc, value) => {
+    return { ...acc, [value]: base * value + unit };
+  }, {});
+};
+
 const theme = {
   colors: {
     text: {
@@ -28,29 +38,21 @@ const theme = {
   fontFamily: {
     sans: ["Inter"],
   },
-  spacing: {
-    0: "0px",
-    1: "4px",
-    2: "8px",
-    3: "12px",
-    4: "16px",
-    5: "20px",
-    6: "24px",
-    7: "28px",
-    8: "32px",
-    9: "36px",
-    10: "40px",
-  },
+  spacing: getSpacing(
+    0.4,
+    "rem",
+    [0, 2, 3, 4, 5, 6, 8, 10, 11, 12, 18, 8, 350]
+  ),
   fontWeight: {
     normal: 400,
     bold: 600,
   },
   fontSize: {
-    xs: ["11px", "16px"],
-    sm: ["12px", "21px"],
-    base: ["14px", "21px"],
-    lg: ["16px", "23px"],
-    xl: ["32px", "46px"],
+    xs: ["1.1rem", "1.6rem"],
+    sm: ["1.2rem", "2.1rem"],
+    base: ["1.4rem", "2.1rem"],
+    lg: ["1.6rem", "2.3rem"],
+    xl: ["3.2rem", "4.6rem"],
   },
   extend: {},
 };

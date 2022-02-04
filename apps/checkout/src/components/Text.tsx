@@ -9,6 +9,7 @@ export interface TextProps {
 
 export const Text: React.FC<TextProps> = ({ children, size, color, bold }) => {
   const classes = clsx({
+    "text-base": !size,
     "text-text-secondary": color === "secondary",
     "text-text-tertiary": color === "tertiary",
     "text-error": color === "error",

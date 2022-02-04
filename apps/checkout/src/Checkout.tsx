@@ -1,7 +1,10 @@
-import { Suspense } from "react";
+// import { Suspense } from "react";
 
-import { Text } from "@components/Text";
+// import { Text } from "@components/Text";
 import { useCheckoutQuery } from "@graphql";
+import PageHeader from "@sections/PageHeader";
+import Summary from "@sections/Summary";
+import CheckoutForm from "@sections/CheckoutForm";
 
 const SuspenseTest = () => {
   const [{ data }] = useCheckoutQuery({
@@ -13,15 +16,18 @@ const SuspenseTest = () => {
 
 export const Checkout = () => {
   return (
-    <div>
-      <Text size="xl" bold>
-        Saleor Checkout
-      </Text>
-      <Text size="sm" color="secondary">
+    <div className="page">
+      <PageHeader />
+      {/* <Text size="sm" color="secondary">
         <Suspense fallback={"Loading..."}>
           <SuspenseTest />
         </Suspense>
-      </Text>
+      </Text> */}
+      <div className="page-content">
+        <CheckoutForm />
+        <div className="page-divider" />
+        <Summary />
+      </div>
     </div>
   );
 };

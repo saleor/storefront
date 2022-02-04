@@ -2,6 +2,7 @@
   "compilerOptions": {
     "paths": {
       "@components/*": ["./src/components/*"],
+      "@sections/*": ["./src/sections/*"],
       "@icons": ["./src/assets/icons"],
       "@assets/*": ["./src/assets/*"],
       "@graphql": ["./src/graphql"]
