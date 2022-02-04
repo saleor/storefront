@@ -3,3 +3,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TextInput */
+
+.input {
+  transition: border 0.2s ease-in-out;
+  height: 56px;
+  padding-left: 11px;
+}
+
+.input:focus + .text-input-label,
+.input:active + .text-input-label,
+.input.text-input-filled + .text-input-label {
+  font-size: 11px;
+  transition: all 0.2s ease-out;
+  top: 0.4rem;
+}
+
+.label {
+  transition: all 0.2s ease-out;
+  top: 1.2rem;
+  left: 0;
+}
+
+@layer components {
+  .text-input {
+    @apply input border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary py-3 pt-5 pb-2;
+  }
+
+  .text-input-error {
+    @apply border-border-error;
+  }
+
+  .text-input-label {
+    @apply label absolute text-text-secondary text-base ml-3;
+  }
+}

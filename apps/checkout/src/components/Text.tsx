@@ -24,5 +24,3 @@ export const Text: React.FC<TextProps> = ({ children, size, color, bold }) => {
 
   return <p className={classes}>{children}</p>;
 };
-
-export default Text;
