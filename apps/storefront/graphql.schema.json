@@ -11410,6 +11410,12 @@
             "deprecationReason": null
           },
           {
+            "name": "NO_LINES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PAYMENT_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -12293,7 +12299,7 @@
       {
         "kind": "OBJECT",
         "name": "CheckoutShippingMethodUpdate",
-        "description": "Updates the shipping address of the checkout.",
+        "description": "Updates the shipping method of the checkout.",
         "fields": [
           {
             "name": "checkout",
@@ -16378,6 +16384,29 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CountryFilterInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attachedToShippingZones",
+            "description": "Boolean for filtering countries by having shipping zone assigned.If 'true', return countries with shipping zone assigned.If 'false', return countries without any shipping zone assigned.If the argument is not provided (null), return all countries.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -34011,7 +34040,7 @@
           },
           {
             "name": "checkoutShippingMethodUpdate",
-            "description": "Updates the shipping address of the checkout.",
+            "description": "Updates the shipping method of the checkout.",
             "args": [
               {
                 "name": "checkoutId",
@@ -39045,7 +39074,7 @@
               },
               {
                 "name": "input",
-                "description": "('List of fields required to create or upgrade product variant ', 'channel listings.')",
+                "description": "('List of fields required to create or upgrade product variant channel listings.',)",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -51613,6 +51642,26 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": "List of varint IDs which causes the error.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -51677,6 +51726,12 @@
             "deprecationReason": null
           },
           {
+            "name": "NO_CHECKOUT_LINES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PARTIAL_PAYMENT_NOT_ALLOWED",
             "description": null,
             "isDeprecated": false,
@@ -51702,6 +51757,12 @@
           },
           {
             "name": "SHIPPING_METHOD_NOT_SET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UNAVAILABLE_VARIANT_IN_CHANNEL",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -52744,6 +52805,22 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "ids",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "search",
             "description": null,
@@ -70439,6 +70516,18 @@
             "description": "List of countries available in the shop.",
             "args": [
               {
+                "name": "filter",
+                "description": "Filtering options for countries",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CountryFilterInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "languageCode",
                 "description": "DEPRECATED: This argument will be removed in Saleor 4.0. A language code to return the translation for.",
                 "type": {
@@ -72558,6 +72647,22 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "ids",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "search",
             "description": null,
