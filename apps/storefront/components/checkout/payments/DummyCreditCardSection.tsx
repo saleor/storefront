@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
@@ -12,7 +13,6 @@ import {
 } from "@/saleor/api";
 
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 export const DUMMY_CREDIT_CARD_GATEWAY = "mirumee.payments.dummy";
 

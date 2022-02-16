@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
 import { usePaths } from "@/lib/paths";
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   CheckoutDetailsFragment,
   useCheckoutCompleteMutation,
@@ -16,7 +17,6 @@ import {
 } from "@/saleor/api";
 
 import CompleteCheckoutButton from "../CompleteCheckoutButton";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 export const STRIPE_GATEWAY = "saleor.payments.stripe";
 

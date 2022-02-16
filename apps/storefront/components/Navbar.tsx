@@ -14,11 +14,11 @@ import { useIntl } from "react-intl";
 import { MainMenu } from "@/components/MainMenu";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
+import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
 
 import { RegionDialog } from "./RegionDialog";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
-import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
 
 export const Navbar = () => {
   const paths = usePaths();
