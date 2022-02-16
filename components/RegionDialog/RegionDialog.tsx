@@ -3,12 +3,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
+import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { LOCALES } from "@/lib/regions";
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 interface RegionDialogProps {
   onClose: () => void;
@@ -72,7 +72,7 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
             {t.formatMessage(messages.channelFieldLabel)}
           </p>
           <select
-            className="w-full"
+            className="w-full text-black"
             id="channel"
             {...register("channel", {
               required: true,
@@ -90,7 +90,7 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
             {t.formatMessage(messages.languageFieldLabel)}
           </p>
           <select
-            className="w-full"
+            className="w-full text-black"
             id="locale"
             {...register("locale", {
               required: true,
