@@ -34,7 +34,7 @@ export const ProductGallery = ({
     <>
       <div
         className={clsx(
-          "mt-1 mb-2 w-full max-h-screen overflow-scroll grid grid-cols-1 md:h-full h-96",
+          "mt-1 mb-2 w-full max-h-screen grid grid-cols-1 md:h-full h-96 overflow-scroll scrollbar-hide",
           media.length > 1 && "md:grid-cols-2 md:col-span-2"
         )}
         style={{
