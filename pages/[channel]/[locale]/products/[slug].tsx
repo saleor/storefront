@@ -158,6 +158,11 @@ const ProductPage = ({
             <h1 className="text-4xl font-bold tracking-tight text-gray-800">
               {translate(product, "name")}
             </h1>
+            <h1 className="text-xl font-bold tracking-tight text-gray-800">
+              {selectedVariant
+                ? selectedVariant.pricing?.price?.gross.localizedAmount
+                : product.pricing?.priceRange?.start?.gross.localizedAmount}
+            </h1>
             {!!product.category?.slug && (
               <Link
                 href={paths.category._slug(product?.category?.slug).$url()}

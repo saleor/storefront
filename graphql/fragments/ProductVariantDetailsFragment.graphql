@@ -12,4 +12,11 @@ fragment ProductVariantDetailsFragment on ProductVariant {
   media {
     ...ProductMediaFragment
   }
+  pricing {
+    price {
+      gross {
+        ...PriceFragment
+      }
+    }
+  }
 }
