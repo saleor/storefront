@@ -69,6 +69,14 @@ export const pagesPath = {
       $url: (url?: { hash?: string }) => ({ pathname: '/[channel]/[locale]' as const, query: { channel, locale }, hash: url?.hash })
     })
   }),
+  revalidation: {
+    ondemand: {
+      $url: (url?: { hash?: string }) => ({ pathname: '/revalidation/ondemand' as const, hash: url?.hash })
+    },
+    timed: {
+      $url: (url?: { hash?: string }) => ({ pathname: '/revalidation/timed' as const, hash: url?.hash })
+    }
+  },
   $url: (url?: { hash?: string }) => ({ pathname: '/' as const, hash: url?.hash })
 }
 
