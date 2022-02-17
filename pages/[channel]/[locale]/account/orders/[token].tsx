@@ -5,6 +5,7 @@ import { ReactElement } from "react";
 
 import { Layout, Spinner } from "@/components";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
+import { useRegions } from "@/components/RegionsProvider";
 import { useOrderDetailsByTokenQuery } from "@/saleor/api";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
@@ -25,6 +26,7 @@ export async function getStaticPaths() {
 const OrderDetailsPage = ({
   token,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { formatPrice } = useRegions();
   const { authenticated } = useAuthState();
   const { loading, error, data } = useOrderDetailsByTokenQuery({
     variables: { token: token },
@@ -82,11 +84,11 @@ const OrderDetailsPage = ({
                         </div>
                       </div>
                     </td>
-                    <td>{line?.unitPrice.gross.localizedAmount}</td>
+                    <td>{formatPrice(line?.unitPrice.gross)}</td>
                     <td>{line?.quantity}</td>
                     <td>
                       <p className="mr-3 md:mr-10 text-right">
-                        {line?.totalPrice.gross.localizedAmount}
+                        {formatPrice(line?.totalPrice.gross)}
                       </p>
                     </td>
                   </tr>
@@ -101,7 +103,7 @@ const OrderDetailsPage = ({
         </div>
         <div className="text-md text-center">
           <p className="mt-5 text-right mr-3 md:mr-10">
-            {order?.subtotal.net.localizedAmount}
+            {formatPrice(order?.subtotal.net)}
           </p>
         </div>
         <div className="md:col-start-3 col-span-2 border-t"></div>
@@ -110,7 +112,7 @@ const OrderDetailsPage = ({
         </div>
         <div className="text-md text-center">
           <p className="mt-5 text-right mr-3 md:mr-10">
-            {order?.shippingPrice.gross.localizedAmount}
+            {formatPrice(order?.shippingPrice.gross)}
           </p>
         </div>
         <div className="md:col-start-3 col-span-2 border-t"></div>
@@ -119,7 +121,7 @@ const OrderDetailsPage = ({
         </div>
         <div className="text-md font-semibold text-center">
           <p className="mt-5 text-right mr-3 md:mr-10">
-            {order?.total.gross.localizedAmount}
+            {formatPrice(order?.total.gross)}
           </p>
         </div>
 

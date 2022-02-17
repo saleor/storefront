@@ -5,6 +5,8 @@ import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
 
+import { useRegions } from "./RegionsProvider";
+
 const styles = {
   grid: `grid grid-cols-4 gap-4`,
   product: {
@@ -21,9 +23,9 @@ export interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const paths = usePaths();
+  const { formatPrice } = useRegions();
 
-  let priceDisplay =
-    product.pricing?.priceRange?.start?.gross.localizedAmount || "";
+  let priceDisplay = formatPrice(product.pricing?.priceRange?.start?.gross);
   if (
     product.pricing?.priceRange?.start?.gross.amount !==
     product.pricing?.priceRange?.stop?.gross.amount

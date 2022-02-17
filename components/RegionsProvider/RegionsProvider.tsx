@@ -12,7 +12,8 @@ import {
   localeToEnum,
 } from "@/lib/regions";
 import createSafeContext from "@/lib/useSafeContext";
-import { LanguageCodeEnum } from "@/saleor/api";
+import { formatAsMoney } from "@/lib/util";
+import { LanguageCodeEnum, PriceFragment } from "@/saleor/api";
 
 import * as sourceOfTruth from "../../locale/en-US.json";
 import * as pl from "../../locale/pl-PL.json";
@@ -27,6 +28,7 @@ export interface RegionsConsumerProps {
     locale: LanguageCodeEnum;
   };
   setCurrentChannel: (slug: string) => void;
+  formatPrice: (price?: PriceFragment) => string;
 }
 
 export const [useContext, Provider] = createSafeContext<RegionsConsumerProps>();
@@ -62,6 +64,14 @@ export const RegionsProvider: React.FC = ({ children }) => {
   const currentChannel =
     CHANNELS.find(({ slug }) => slug === currentChannelSlug) || DEFAULT_CHANNEL;
 
+  const formatPrice = (price?: PriceFragment) => {
+    return formatAsMoney(
+      price?.amount || 0,
+      price?.currency || currentChannel.currencyCode,
+      locale
+    );
+  };
+
   const providerValues: RegionsConsumerProps = {
     channels: CHANNELS,
     defaultChannel: DEFAULT_CHANNEL,
@@ -72,6 +82,7 @@ export const RegionsProvider: React.FC = ({ children }) => {
       channel: currentChannel.slug,
       locale: localeToEnum(locale),
     },
+    formatPrice,
   };
 
   const msgs = importMessages(locale);

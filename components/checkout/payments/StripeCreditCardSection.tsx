@@ -8,6 +8,7 @@ import { loadStripe } from "@stripe/stripe-js/pure";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
+import { useRegions } from "@/components/RegionsProvider";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
@@ -27,6 +28,7 @@ interface StripeCardFormInterface {
 const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const stripe = useStripe();
   const elements = useElements();
+  const { formatPrice } = useRegions();
   const router = useRouter();
   const paths = usePaths();
   const { resetCheckoutToken } = useCheckout();
@@ -34,7 +36,7 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
-  const payLabel = `Pay ${!!totalPrice ? totalPrice.localizedAmount : ""}`;
+  const payLabel = `Pay ${formatPrice(totalPrice)}`;
   const redirectToOrderDetailsPage = () => {
     resetCheckoutToken();
 

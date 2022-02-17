@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
+import { useRegions } from "@/components/RegionsProvider";
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -33,12 +34,13 @@ export const DummyCreditCardSection = ({
   const { resetCheckoutToken } = useCheckout();
   const paths = usePaths();
   const router = useRouter();
+  const { formatPrice } = useRegions();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const totalPrice = checkout.totalPrice?.gross;
   const payLabel = t.formatMessage(messages.paymentButton, {
-    total: !!totalPrice ? totalPrice.localizedAmount : "",
+    total: formatPrice(totalPrice),
   });
 
   const {

@@ -1,6 +1,8 @@
 import { translate } from "@/lib/translations";
 import { DeliveryMethodFragment } from "@/saleor/api";
 
+import { useRegions } from "../RegionsProvider";
+
 export interface ShippingMethodDisplayProps {
   method: DeliveryMethodFragment;
 }
@@ -8,6 +10,7 @@ export interface ShippingMethodDisplayProps {
 export const ShippingMethodDisplay = ({
   method,
 }: ShippingMethodDisplayProps) => {
+  const { formatPrice } = useRegions();
   return (
     <div>
       <div className="mt-6 text-sm font-medium text-gray-900">
@@ -18,7 +21,7 @@ export const ShippingMethodDisplay = ({
         business days
       </div>
       <div className="mt-6 text-sm font-medium text-gray-900">
-        {method.price?.localizedAmount}
+        {formatPrice(method.price)}
       </div>
     </div>
   );

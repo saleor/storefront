@@ -14,7 +14,6 @@ import {
 } from "@/saleor/api";
 
 import { usePaths } from "../lib/paths";
-import { Spinner } from ".";
 import { useRegions } from "./RegionsProvider";
 import { messages } from "./translations";
 
@@ -25,7 +24,7 @@ interface CheckoutLineItemProps {
 export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
   const paths = usePaths();
   const t = useIntl();
-  const { query } = useRegions();
+  const { query, formatPrice } = useRegions();
   const { checkoutToken: token } = useCheckout();
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
     useCheckoutLineUpdateMutation();
@@ -152,7 +151,7 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
                 pattern="[0-9]*"
               />
               <p className="text-xl text-gray-900 text-right">
-                {line?.totalPrice?.gross.localizedAmount}
+                {formatPrice(line?.totalPrice?.gross)}
               </p>
             </div>
           </div>
