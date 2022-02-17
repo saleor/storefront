@@ -48,7 +48,7 @@ const ProductPage = ({
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
-  const { currentChannel } = useRegions();
+  const { currentChannel, formatPrice } = useRegions();
 
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
 
@@ -142,6 +142,10 @@ const ProductPage = ({
 
   const description = translate(product, "description");
 
+  const price =
+    selectedVariant?.pricing?.price?.gross ||
+    product.pricing?.priceRange?.start?.gross;
+
   return (
     <>
       <ProductPageSeo product={product} />
@@ -158,11 +162,11 @@ const ProductPage = ({
             <h1 className="text-4xl font-bold tracking-tight text-gray-800">
               {translate(product, "name")}
             </h1>
-            <h1 className="text-xl font-bold tracking-tight text-gray-800">
-              {selectedVariant
-                ? selectedVariant.pricing?.price?.gross.localizedAmount
-                : product.pricing?.priceRange?.start?.gross.localizedAmount}
-            </h1>
+            {price && (
+              <h2 className="text-xl font-bold tracking-tight text-gray-800">
+                {formatPrice(price)}
+              </h2>
+            )}
             {!!product.category?.slug && (
               <Link
                 href={paths.category._slug(product?.category?.slug).$url()}

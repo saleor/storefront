@@ -20,7 +20,7 @@ export const CheckoutProductList = ({
   token,
 }: CheckoutProductListProps) => {
   const t = useIntl();
-  const { query } = useRegions();
+  const { query, formatPrice } = useRegions();
 
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
@@ -52,7 +52,7 @@ export const CheckoutProductList = ({
                   {translate(line.variant, "name")}
                 </p>
                 <p className="text-gray-900">
-                  {line.totalPrice?.gross.localizedAmount}
+                  {formatPrice(line.totalPrice?.gross)}
                 </p>
               </div>
               <div className="flex space-x-4">

@@ -1,5 +1,4 @@
 fragment PriceFragment on Money {
   currency
   amount
-  localizedAmount @client
 }

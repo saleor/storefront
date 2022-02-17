@@ -4,11 +4,15 @@ import clsx from "clsx";
 import { translate } from "@/lib/translations";
 import { DeliveryMethodFragment } from "@/saleor/api";
 
+import { useRegions } from "../RegionsProvider";
+
 export interface ShippingMethodOptionProps {
   method: DeliveryMethodFragment;
 }
 
 export const ShippingMethodOption = ({ method }: ShippingMethodOptionProps) => {
+  const { formatPrice } = useRegions();
+
   return (
     <RadioGroup.Option
       key={method.id}
@@ -42,7 +46,7 @@ export const ShippingMethodOption = ({ method }: ShippingMethodOptionProps) => {
                 as="span"
                 className="mt-6 text-sm font-medium text-gray-900"
               >
-                {method.price?.localizedAmount}
+                {formatPrice(method.price)}
               </RadioGroup.Description>
             </div>
           </div>
