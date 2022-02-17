@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { usePaths } from "@/lib/paths";
 import { OrderDetailsFragment } from "@/saleor/api";
 
+import { useRegions } from "./RegionsProvider";
+
 interface OrdersTableProps {
   orders: OrderDetailsFragment[];
 }
@@ -10,6 +12,7 @@ interface OrdersTableProps {
 export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const router = useRouter();
   const paths = usePaths();
+  const { formatPrice } = useRegions();
 
   return (
     <table className="w-full divide-y bg-white rounded-md ">
@@ -36,7 +39,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
               <td>{order?.number}</td>
               <td>{order.created.slice(0, 10)}</td>
               <td className="hidden md:table-cell">{order.status}</td>
-              <td>{order.total.gross.localizedAmount}</td>
+              <td>{formatPrice(order.total.gross)}</td>
             </tr>
           );
         })}

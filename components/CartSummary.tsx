@@ -31,7 +31,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
     setError: setErrorForm,
     getValues,
   } = useForm<PromoCodeFormData>({});
-  const { query } = useRegions();
+  const { query, formatPrice } = useRegions();
 
   const onAddPromoCode = handleSubmitForm(
     async (formData: PromoCodeFormData) => {
@@ -90,7 +90,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
                   {t.formatMessage(messages.discount)}
                 </dt>
                 <dd className="font-medium text-gray-900">
-                  {discount?.localizedAmount}
+                  {formatPrice(discount)}
                 </dd>
               </div>
             )}
@@ -99,7 +99,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
                 {t.formatMessage(messages.subtotal)}
               </dt>
               <dd className="font-medium text-gray-900">
-                {subtotalPrice?.net.localizedAmount}
+                {formatPrice(subtotalPrice?.net)}
               </dd>
             </div>
             <div className="py-2 flex items-center justify-between">
@@ -107,13 +107,13 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
                 {t.formatMessage(messages.shipping)}
               </dt>
               <dd className="font-medium text-gray-900">
-                {shippingPrice?.gross.localizedAmount}
+                {formatPrice(shippingPrice?.gross)}
               </dd>
             </div>
             <div className="py-2 flex items-center justify-between">
               <dt className="text-gray-600">{t.formatMessage(messages.tax)}</dt>
               <dd className="font-medium text-gray-900">
-                {subtotalPrice?.tax.localizedAmount}
+                {formatPrice(subtotalPrice?.tax)}
               </dd>
             </div>
             <div className="pt-4 flex items-center justify-between border-t border-gray-300">
@@ -121,7 +121,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
                 {t.formatMessage(messages.total)}
               </dt>
               <dd className="text-lg font-bold text-gray-900">
-                {totalPrice?.gross.localizedAmount}
+                {formatPrice(totalPrice?.gross)}
               </dd>
             </div>
           </dl>
