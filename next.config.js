@@ -20,4 +20,7 @@ module.exports = withBundleAnalyzer({
       },
     ];
   },
+  experimental: {
+    reactRoot: true
+  },
 });
