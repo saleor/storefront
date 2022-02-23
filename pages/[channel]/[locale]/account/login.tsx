@@ -26,13 +26,12 @@ const LoginPage: React.VFC = () => {
   const { login } = useAuth();
   const { authenticated } = useAuthState();
 
-  let defaultValues: LoginFormData | undefined = undefined;
-  if (DEMO_MODE) {
-    defaultValues = {
-      email: "admin@example.com",
-      password: "admin",
-    };
-  }
+  let defaultValues = DEMO_MODE
+    ? {
+        email: "admin@example.com",
+        password: "admin",
+      }
+    : {};
 
   const {
     register: registerForm,
