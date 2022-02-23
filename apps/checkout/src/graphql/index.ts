@@ -1749,6 +1749,7 @@ export type CheckoutErrorCode =
   | 'INVALID_SHIPPING_METHOD'
   | 'MISSING_CHANNEL_SLUG'
   | 'NOT_FOUND'
+  | 'NO_LINES'
   | 'PAYMENT_ERROR'
   | 'PRODUCT_NOT_PUBLISHED'
   | 'PRODUCT_UNAVAILABLE_FOR_PURCHASE'
@@ -2537,6 +2538,11 @@ export type CountryDisplay = {
   country: Scalars['String'];
   /** Country tax. */
   vat?: Maybe<Vat>;
+};
+
+export type CountryFilterInput = {
+  /** Boolean for filtering countries by having shipping zone assigned.If 'true', return countries with shipping zone assigned.If 'false', return countries without any shipping zone assigned.If the argument is not provided (null), return all countries. */
+  attachedToShippingZones?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** Create JWT token. */
@@ -8253,6 +8259,8 @@ export type PaymentError = {
   field?: Maybe<Scalars['String']>;
   /** The error message. */
   message?: Maybe<Scalars['String']>;
+  /** List of varint IDs which causes the error. */
+  variants?: Maybe<Array<Scalars['ID']>>;
 };
 
 /** An enumeration. */
@@ -8265,11 +8273,13 @@ export type PaymentErrorCode =
   | 'INVALID_SHIPPING_METHOD'
   | 'NOT_FOUND'
   | 'NOT_SUPPORTED_GATEWAY'
+  | 'NO_CHECKOUT_LINES'
   | 'PARTIAL_PAYMENT_NOT_ALLOWED'
   | 'PAYMENT_ERROR'
   | 'REQUIRED'
   | 'SHIPPING_ADDRESS_NOT_SET'
   | 'SHIPPING_METHOD_NOT_SET'
+  | 'UNAVAILABLE_VARIANT_IN_CHANNEL'
   | 'UNIQUE';
 
 export type PaymentFilterInput = {
@@ -8435,6 +8445,7 @@ export type PermissionGroupErrorCode =
   | 'UNIQUE';
 
 export type PermissionGroupFilterInput = {
+  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -11235,6 +11246,7 @@ export type ShopAvailableShippingMethodsArgs = {
 
 /** Represents a shop resource containing general shop data and configuration. */
 export type ShopCountriesArgs = {
+  filter?: InputMaybe<CountryFilterInput>;
   languageCode?: InputMaybe<LanguageCodeEnum>;
 };
 
@@ -11510,6 +11522,7 @@ export type StaffUpdateInput = {
 };
 
 export type StaffUserInput = {
+  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   search?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<StaffMemberStatus>;
 };
@@ -12707,22 +12720,153 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type CheckoutLineFragment = { __typename?: 'CheckoutLine', id: string, quantity: number, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, variant: { __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', onSale?: boolean | null, price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, priceUndiscounted?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null, product: { __typename?: 'Product', name: string }, media?: Array<{ __typename?: 'ProductMedia', alt: string, type: ProductMediaType, url: string }> | null } };
+
+export type CheckoutFragment = { __typename?: 'Checkout', id: string, email: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', currency: string, amount: number } } | null, shippingPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null, subtotalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, variant: { __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', onSale?: boolean | null, price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, priceUndiscounted?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null, product: { __typename?: 'Product', name: string }, media?: Array<{ __typename?: 'ProductMedia', alt: string, type: ProductMediaType, url: string }> | null } } | null> | null };
+
 export type CheckoutQueryVariables = Exact<{
   token: Scalars['UUID'];
 }>;
 
 
-export type CheckoutQuery = { __typename?: 'Query', checkout?: { __typename?: 'Checkout', email: string } | null };
+export type CheckoutQuery = { __typename?: 'Query', checkout?: { __typename?: 'Checkout', id: string, email: string, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', currency: string, amount: number } } | null, shippingPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null, subtotalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } } | null, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, variant: { __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', onSale?: boolean | null, price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, priceUndiscounted?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null, product: { __typename?: 'Product', name: string }, media?: Array<{ __typename?: 'ProductMedia', alt: string, type: ProductMediaType, url: string }> | null } } | null> | null } | null };
+
+export type CheckoutLinesUpdateMutationVariables = Exact<{
+  token: Scalars['UUID'];
+  lines: Array<InputMaybe<CheckoutLineInput>> | InputMaybe<CheckoutLineInput>;
+}>;
 
 
-export const CheckoutDocument = gql`
-    query Checkout($token: UUID!) {
-  checkout(token: $token) {
-    email
+export type CheckoutLinesUpdateMutation = { __typename?: 'Mutation', checkoutLinesUpdate?: { __typename?: 'CheckoutLinesUpdate', errors: Array<{ __typename?: 'CheckoutError', message?: string | null, field?: string | null, code: CheckoutErrorCode }>, checkout?: { __typename?: 'Checkout', token: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, variant: { __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', onSale?: boolean | null, price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, priceUndiscounted?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null, product: { __typename?: 'Product', name: string }, media?: Array<{ __typename?: 'ProductMedia', alt: string, type: ProductMediaType, url: string }> | null } } | null> | null } | null } | null };
+
+export type CheckoutLineDeleteMutationVariables = Exact<{
+  token: Scalars['UUID'];
+  lineId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type CheckoutLineDeleteMutation = { __typename?: 'Mutation', checkoutLineDelete?: { __typename?: 'CheckoutLineDelete', errors: Array<{ __typename?: 'CheckoutError', message?: string | null, field?: string | null, code: CheckoutErrorCode }>, checkout?: { __typename?: 'Checkout', token: string, lines?: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, totalPrice?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, variant: { __typename?: 'ProductVariant', id: string, name: string, pricing?: { __typename?: 'VariantPricingInfo', onSale?: boolean | null, price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, priceUndiscounted?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null, product: { __typename?: 'Product', name: string }, media?: Array<{ __typename?: 'ProductMedia', alt: string, type: ProductMediaType, url: string }> | null } } | null> | null } | null } | null };
+
+export const CheckoutLineFragmentDoc = gql`
+    fragment CheckoutLineFragment on CheckoutLine {
+  id
+  quantity
+  totalPrice {
+    gross {
+      currency
+      amount
+    }
+  }
+  variant {
+    id
+    pricing {
+      onSale
+      price {
+        gross {
+          currency
+          amount
+        }
+      }
+      priceUndiscounted {
+        gross {
+          currency
+          amount
+        }
+      }
+    }
+    name
+    product {
+      name
+    }
+    media {
+      alt
+      type
+      url(size: 72)
+    }
   }
 }
     `;
+export const CheckoutFragmentDoc = gql`
+    fragment CheckoutFragment on Checkout {
+  id
+  email
+  totalPrice {
+    gross {
+      amount
+      currency
+    }
+    tax {
+      currency
+      amount
+    }
+  }
+  shippingPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+  subtotalPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+  lines {
+    ...CheckoutLineFragment
+  }
+}
+    ${CheckoutLineFragmentDoc}`;
+export const CheckoutDocument = gql`
+    query Checkout($token: UUID!) {
+  checkout(token: $token) {
+    ...CheckoutFragment
+  }
+}
+    ${CheckoutFragmentDoc}`;
 
 export function useCheckoutQuery(options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, 'query'>) {
   return Urql.useQuery<CheckoutQuery>({ query: CheckoutDocument, ...options });
+};
+export const CheckoutLinesUpdateDocument = gql`
+    mutation CheckoutLinesUpdate($token: UUID!, $lines: [CheckoutLineInput]!) {
+  checkoutLinesUpdate(token: $token, lines: $lines) {
+    errors {
+      message
+      field
+      code
+    }
+    checkout {
+      token
+      lines {
+        ...CheckoutLineFragment
+      }
+    }
+  }
+}
+    ${CheckoutLineFragmentDoc}`;
+
+export function useCheckoutLinesUpdateMutation() {
+  return Urql.useMutation<CheckoutLinesUpdateMutation, CheckoutLinesUpdateMutationVariables>(CheckoutLinesUpdateDocument);
+};
+export const CheckoutLineDeleteDocument = gql`
+    mutation CheckoutLineDelete($token: UUID!, $lineId: ID) {
+  checkoutLineDelete(token: $token, lineId: $lineId) {
+    errors {
+      message
+      field
+      code
+    }
+    checkout {
+      token
+      lines {
+        ...CheckoutLineFragment
+      }
+    }
+  }
+}
+    ${CheckoutLineFragmentDoc}`;
+
+export function useCheckoutLineDeleteMutation() {
+  return Urql.useMutation<CheckoutLineDeleteMutation, CheckoutLineDeleteMutationVariables>(CheckoutLineDeleteDocument);
 };

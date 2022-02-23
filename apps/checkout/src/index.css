@@ -47,16 +47,24 @@ html {
   }
 
   /* General Layout */
+  .app {
+    @apply bg-background-primary;
+  }
+
   .page {
-    @apply mx-auto flex flex-col pt-8 md:pt-10 px-10 md:px-10 xl:px-8 2xl:w-350;
+    @apply min-h-screen mx-auto flex flex-col pt-8 md:pt-10 px-10 md:px-12 xl:px-18 2xl:w-350;
   }
 
   .page-header {
-    @apply mb-4 md:mb-12;
+    @apply mb-6 md:mb-12;
+  }
+
+  .page-header .saleor-logo {
+    @apply h-10;
   }
 
   .page-content {
-    @apply flex flex-col-reverse md:flex-row w-full;
+    @apply flex flex-col-reverse lg:flex-row w-full;
   }
 
   .page-divider {
@@ -65,11 +73,55 @@ html {
 
   /* Summary */
   .summary {
-    @apply flex flex-col w-full md:w-1/2 xl:w-1/3;
+    @apply flex flex-col w-full mb-8 lg:w-1/2 xl:w-1/3 bg-background-secondary py-8 overflow-hidden;
+  }
+
+  .summary-title {
+    @apply flex flex-row px-6 justify-between items-center  bg-background-secondary z-50;
+  }
+
+  .summary-title .text {
+    @apply text-lg font-bold;
+  }
+
+  .summary-title .text {
+    @apply sm:text-xl;
+  }
+
+  .summary-title .money {
+    @apply sm:hidden;
+  }
+
+  .summary-title img {
+    @apply sm:hidden transition-all;
+  }
+
+  .summary-title.open img {
+    @apply origin-center rotate-180;
+  }
+
+  .summary-items {
+    @apply overflow-visible sm:overflow-scroll;
+  }
+
+  .summary-row {
+    @apply flex flex-row justify-between;
+  }
+
+  .summary-item-image {
+    @apply w-18 h-18 flex items-center justify-center;
+  }
+
+  .summary .delete-row-button {
+    @apply absolute -left-4 top-1 border border-border-primary bg-button-secondary hover:border-border-active active:border-border-active active:bg-button-tertiary w-8 h-8 flex items-center justify-center rounded-full;
+  }
+
+  .summary-recap {
+    @apply flex flex-col max-w-full px-6 ml-0 md:ml-22;
   }
 
   /* Checkout Form */
   .checkout-form {
-    @apply flex flex-col w-full md:w-1/2 xl:w-2/3;
+    @apply flex flex-col w-full lg:w-1/2 xl:w-2/3;
   }
 }

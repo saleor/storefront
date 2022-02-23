@@ -34,3 +34,6 @@ yarn-error.log*
 
 # build
 dist
+
+#editor
+.vscode

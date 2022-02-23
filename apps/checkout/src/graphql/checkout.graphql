@@ -1,5 +1,105 @@
+fragment CheckoutLineFragment on CheckoutLine {
+  id
+  quantity
+  totalPrice {
+    gross {
+      currency
+      amount
+    }
+  }
+  variant {
+    id
+    pricing {
+      onSale
+      price {
+        gross {
+          currency
+          amount
+        }
+      }
+      priceUndiscounted {
+        gross {
+          currency
+          amount
+        }
+      }
+    }
+    name
+    product {
+      name
+    }
+    media {
+      alt
+      type
+      url(size: 72)
+    }
+  }
+}
+
+fragment CheckoutFragment on Checkout {
+  id
+  email
+  totalPrice {
+    gross {
+      amount
+      currency
+    }
+    tax {
+      currency
+      amount
+    }
+  }
+  shippingPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+  subtotalPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+  lines {
+    ...CheckoutLineFragment
+  }
+}
+
 query Checkout($token: UUID!) {
   checkout(token: $token) {
-    email
+    ...CheckoutFragment
+  }
+}
+
+mutation CheckoutLinesUpdate($token: UUID!, $lines: [CheckoutLineInput]!) {
+  checkoutLinesUpdate(token: $token, lines: $lines) {
+    errors {
+      message
+      field
+      code
+    }
+    checkout {
+      token
+      lines {
+        ...CheckoutLineFragment
+      }
+    }
+  }
+}
+
+mutation CheckoutLineDelete($token: UUID!, $lineId: ID) {
+  checkoutLineDelete(token: $token, lineId: $lineId) {
+    errors {
+      message
+      field
+      code
+    }
+    checkout {
+      token
+      lines {
+        ...CheckoutLineFragment
+      }
+    }
   }
 }
