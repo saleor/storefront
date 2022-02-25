@@ -1,10 +1,11 @@
 import queryString from "query-string";
 
-export const getToken = (): string => {
-  // eslint-disable-next-line no-restricted-globals
-  const token = (
-    queryString.parse(location.search) as { token?: string | null }
-  )?.token;
+export const extractTokenFromUrl = (): string => {
+  const token =
+    // eslint-disable-next-line no-restricted-globals
+    (queryString.parse(location.search) as { token?: string | null })?.token ||
+    // for development & preview purposes
+    process.env.REACT_APP_TEST_CHECKOUT_TOKEN;
 
   if (typeof token !== "string") {
     throw "Checkout token does not exist";

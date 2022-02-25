@@ -46,6 +46,32 @@ html {
     @apply label absolute text-text-secondary text-base ml-3;
   }
 
+  /* Button */
+  .button {
+    @apply py-3 px-4 border focus:outline-none active:outline-none;
+  }
+
+  .button-primary {
+    @apply bg-button-primary hover:bg-button-secondary active:bg-button-tertiary disabled:border-none disabled:bg-background-tertiary;
+  }
+
+  .button-primary p {
+    @apply text-text-tertiary;
+  }
+
+  .button-primary:hover p,
+  .button-primary:active p {
+    @apply text-text-primary;
+  }
+
+  .button:disabled p {
+    @apply text-text-secondary;
+  }
+
+  .button-secondary {
+    @apply border-border-primary hover:border-border-active bg-transparent hover:bg-button-secondary active:bg-button-tertiary disabled:border-border-primary disabled:bg-transparent;
+  }
+
   /* General Layout */
   .app {
     @apply bg-background-primary;
@@ -59,7 +85,7 @@ html {
     @apply mb-6 md:mb-12;
   }
 
-  .page-header .saleor-logo {
+  .logo {
     @apply h-10;
   }
 

@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Text } from "@components/Text";
 import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
-import { CheckoutLine, useCheckoutQuery } from "@graphql";
+import { CheckoutLine } from "@graphql";
 import Divider from "@components/Divider";
 import { Money } from "@components/Money";
 import { ChevronDownIcon } from "@icons";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useCheckout } from "@hooks/useCheckout";
+import compact from "lodash/compact";
 
 interface SummaryProps {}
 
@@ -56,8 +57,8 @@ export const Summary: React.FC<SummaryProps> = ({}) => {
       >
         <div className="w-full h-12" />
         <ul className="summary-items">
-          {checkout?.lines.map((line: CheckoutLine) => (
-            <SummaryItem line={line} key={line.id} />
+          {compact(checkout?.lines)?.map((line) => (
+            <SummaryItem line={line as CheckoutLine} key={line?.id} />
           ))}
         </ul>
         <div className="summary-recap">

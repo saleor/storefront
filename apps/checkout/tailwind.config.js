@@ -11,11 +11,12 @@ const getSpacing = (
 const spacing = getSpacing(
   0.4,
   "rem",
-  [0, 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 14, 16, 18, 19, 21, 22, 28, 256, 350]
+  [0, 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 14, 16, 18, 19, 21, 22, 28, 85, 256, 350]
 );
 
 const theme = {
   colors: {
+    transparent: "transparent",
     skeleton: "#DEE4EF",
     background: {
       primary: "#FAFAFA",
@@ -33,7 +34,6 @@ const theme = {
       secondary: "#FFFFFF",
       tertiary: "#DEE4EF",
       quaternary: "#EEF1F7",
-      transparent: "transparent",
     },
     border: {
       primary: "#B9C1CF",
@@ -68,6 +68,7 @@ const theme = {
   },
   extend: {
     minHeight: spacing,
+    maxWidth: spacing,
   },
 };
 

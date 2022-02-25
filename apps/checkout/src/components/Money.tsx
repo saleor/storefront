@@ -4,10 +4,12 @@ import {
   Money as MoneyType,
   useFormattedMoney,
 } from "@hooks/useFormattedMoney";
+import { Classes } from "@lib/globalTypes";
 
-export interface MoneyProps<TMoney extends MoneyType> extends TextProps {
+export interface MoneyProps<TMoney extends MoneyType>
+  extends TextProps,
+    Classes {
   money?: TMoney;
-  className?: string;
 }
 
 export const Money = <TMoney extends MoneyType>({
