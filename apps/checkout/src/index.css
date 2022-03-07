@@ -72,6 +72,14 @@ html {
     @apply border-border-primary hover:border-border-active bg-transparent hover:bg-button-secondary active:bg-button-tertiary disabled:border-border-primary disabled:bg-transparent;
   }
 
+  .button-tertiary {
+    @apply border-none bg-transparent px-0 py-0;
+  }
+
+  .button-tertiary p {
+    @apply active:text-text-secondary;
+  }
+
   /* General Layout */
   .app {
     @apply bg-background-primary;

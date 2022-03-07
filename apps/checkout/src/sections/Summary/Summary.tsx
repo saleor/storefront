@@ -3,7 +3,7 @@ import { Text } from "@components/Text";
 import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
 import { CheckoutLine } from "@graphql";
-import Divider from "@components/Divider";
+import { Divider } from "@components/Divider";
 import { Money } from "@components/Money";
 import { ChevronDownIcon } from "@icons";
 import { Transition } from "@headlessui/react";
@@ -11,9 +11,7 @@ import clsx from "clsx";
 import { useCheckout } from "@hooks/useCheckout";
 import compact from "lodash/compact";
 
-interface SummaryProps {}
-
-export const Summary: React.FC<SummaryProps> = ({}) => {
+export const Summary = () => {
   const [isOpen, setOpen] = useState(true);
   const { checkout } = useCheckout();
 
@@ -37,6 +35,7 @@ export const Summary: React.FC<SummaryProps> = ({}) => {
           <Text size="lg" bold>
             {formatMessage("summary")}
           </Text>
+
           <img
             src={ChevronDownIcon}
             alt="chevron-down"

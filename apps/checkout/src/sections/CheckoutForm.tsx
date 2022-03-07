@@ -1,14 +1,11 @@
-import React from "react";
-import { Text } from "@components/Text";
+import { Divider } from "@components/Divider";
+import { Contact } from "./Contact";
 
-interface CheckoutFormProps {}
-
-const CheckoutForm: React.FC<CheckoutFormProps> = ({}) => {
+export const CheckoutForm = () => {
   return (
-    <div className="checkout-form" style={{ border: "1px solid red" }}>
-      <Text>Checkout here</Text>
+    <div className="checkout-form">
+      <Contact />
+      <Divider className="my-8" />
     </div>
   );
 };
-
-export default CheckoutForm;

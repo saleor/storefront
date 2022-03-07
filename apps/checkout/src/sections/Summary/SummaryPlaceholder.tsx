@@ -1,12 +1,9 @@
 import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import React from "react";
 import { Text } from "@components/Text";
-import Skeleton from "@components/Skeleton";
-import Divider from "@components/Divider";
+import { Skeleton } from "@components/Skeleton";
+import { Divider } from "@components/Divider";
 
-interface SummaryPlaceholderProps {}
-
-export const SummaryPlaceholder: React.FC<SummaryPlaceholderProps> = ({}) => {
+export const SummaryPlaceholder = () => {
   const formatMessage = useFormattedMessages();
 
   return (

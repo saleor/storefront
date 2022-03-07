@@ -1,4 +1,4 @@
-import IconButton from "@components/IconButton";
+import { IconButton } from "@components/IconButton";
 import { MinusIcon, PlusIcon } from "@icons";
 import { Text } from "@components/Text";
 
@@ -48,7 +48,7 @@ export const SummaryItemMoneySection: React.FC<
     if (quantity !== newQuantity) {
       setQuantity(newQuantity);
     }
-  }, [data, fetching]);
+  }, [data, fetching, line.id, quantity]);
 
   const getUpdateLineVars = (
     quantity: number
@@ -66,6 +66,7 @@ export const SummaryItemMoneySection: React.FC<
     updateLines(getUpdateLineVars(quantity));
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSubmit = useCallback(
     debounce((quantity) => handleSubmit(quantity), 250),
     []
@@ -77,7 +78,7 @@ export const SummaryItemMoneySection: React.FC<
     }
 
     debouncedSubmit(quantity);
-  }, [quantity]);
+  }, [quantity, debouncedSubmit]);
 
   const piecePrice = pricing?.price?.gross;
   const formatMessage = useFormattedMessages();

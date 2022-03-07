@@ -1,0 +1,34 @@
+name: CheckoutTests
+
+on:
+  push:
+    paths:
+      - "apps/checkout/**/*"
+
+jobs:
+  tsc-and-linters:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Turbo Cache
+        id: turbo-cache
+        uses: actions/cache@v2
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
+
+      - name: Install deps
+        run: |
+          npm install -g yarn
+          yarn
+
+      - name: Run tsc
+        run: |
+          yarn run check-types --scope="checkout"
+
+      - name: Run lint
+        run: |
+          yarn turbo run lint --scope="checkout"

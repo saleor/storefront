@@ -3,7 +3,9 @@ import { useButton } from "@react-aria/button";
 import { useRef } from "react";
 import { AriaButtonProps } from "@react-types/button";
 
-const IconButton = (props: AriaButtonProps<ElementType<HTMLButtonElement>>) => {
+export const IconButton = (
+  props: AriaButtonProps<ElementType<HTMLButtonElement>>
+) => {
   const { children } = props;
   const ref = useRef<HTMLButtonElement | null>(null);
   const { buttonProps } = useButton(props, ref);
@@ -18,5 +20,3 @@ const IconButton = (props: AriaButtonProps<ElementType<HTMLButtonElement>>) => {
     </button>
   );
 };
-
-export default IconButton;

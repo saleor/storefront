@@ -69,6 +69,7 @@ const theme = {
   extend: {
     minHeight: spacing,
     maxWidth: spacing,
+    top: spacing,
   },
 };
 

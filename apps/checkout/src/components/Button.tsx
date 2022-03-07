@@ -10,11 +10,11 @@ interface ButtonProps
   extends AriaButtonProps<ElementType<HTMLButtonElement>>,
     Classes {
   disabled?: boolean;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "tertiary";
   title: string;
 }
 
-const Button: React.FC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
   title,
   className,
   variant = "primary",
@@ -29,6 +29,7 @@ const Button: React.FC<ButtonProps> = ({
     {
       "button-primary": variant === "primary",
       "button-secondary": variant === "secondary",
+      "button-tertiary": variant === "tertiary",
     },
     className
   );
@@ -39,5 +40,3 @@ const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-
-export default Button;

@@ -1,6 +1,6 @@
 import PageHeader from "@sections/PageHeader";
 import { Summary } from "@sections/Summary";
-import CheckoutForm from "@sections/CheckoutForm";
+import { CheckoutForm } from "@sections/CheckoutForm";
 import { Suspense } from "react";
 import { SummaryPlaceholder } from "@sections/Summary/SummaryPlaceholder";
 import { extractTokenFromUrl } from "@lib/utils";

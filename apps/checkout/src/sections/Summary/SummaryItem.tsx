@@ -37,7 +37,7 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
           ) : (
             <img
               className="object-cover"
-              alt="product image placeholder"
+              alt="product placeholder"
               src={PhotoIcon}
             />
           )}
