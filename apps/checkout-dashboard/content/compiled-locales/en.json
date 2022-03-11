@@ -1,0 +1,62 @@
+{
+  "ChannelDetails/messages/1+HS9r": [
+    {
+      "type": 0,
+      "value": "Select payment methods"
+    }
+  ],
+  "ChannelList/messages/vOL1vk": [
+    {
+      "type": 0,
+      "value": "Channel name"
+    }
+  ],
+  "CustomizationDetails/messages/CAoP49": [
+    {
+      "type": 0,
+      "value": "Customization preview"
+    }
+  ],
+  "FileInput/messages/AlmJPi": [
+    {
+      "type": 0,
+      "value": "Upload file"
+    }
+  ],
+  "FileInput/messages/Zr2A5Y": [
+    {
+      "type": 0,
+      "value": "Max size 1GB"
+    }
+  ],
+  "FileInput/messages/h6LHdF": [
+    {
+      "type": 0,
+      "value": "Drag an image here"
+    }
+  ],
+  "PaymentProviderDetails/messages/n3PNHM": [
+    {
+      "type": 0,
+      "value": "Payment provider settings"
+    }
+  ],
+  "misc/commonMessages/95qy1d": [
+    {
+      "type": 0,
+      "value": "Channels"
+    }
+  ],
+  "misc/commonMessages/g8hTTQ": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
+  "misc/commonMessages/gnUZny": [
+    {
+      "type": 0,
+      "value": "Customization"
+    }
+  ]
+}

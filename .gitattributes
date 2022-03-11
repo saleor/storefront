@@ -1,0 +1,2 @@
+# Package manager lock files
+yarn.lock linguist-generated -diff -merge

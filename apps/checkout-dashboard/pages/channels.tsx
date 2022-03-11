@@ -1,10 +1,8 @@
-import AppNavigation from "@components/AppNavigation";
+import ChannelList from "@templates/ChannelList";
+import { useChannelList } from "api/saleor/api";
 
 export default function Channels() {
-  return (
-    <>
-      <AppNavigation />
-      <div>Channels</div>
-    </>
-  );
+  const channels = useChannelList();
+
+  return <ChannelList channels={channels} />;
 }

@@ -1,0 +1,12 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    [
+      "formatjs",
+      {
+        "idInterpolationPattern": "[folder]/[name]/[sha512:contenthash:base64:6]",
+        "ast": true
+      }
+    ]
+  ]
+}
