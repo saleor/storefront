@@ -65,7 +65,7 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
       type: "card",
       card: cardElement,
       billing_details: {
-        email: checkout.email,
+        email: checkout.email!,
         phone: checkout.billingAddress?.phone || "",
         name: `${checkout.billingAddress?.firstName} ${checkout.billingAddress?.lastName}`,
         address: {
