@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
 import { messages } from "@/components/translations";
+import { DEMO_MODE } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 
 export type OptionalQuery = {
@@ -24,13 +25,21 @@ const LoginPage: React.VFC = () => {
 
   const { login } = useAuth();
   const { authenticated } = useAuthState();
+
+  let defaultValues = DEMO_MODE
+    ? {
+        email: "admin@example.com",
+        password: "admin",
+      }
+    : {};
+
   const {
     register: registerForm,
     handleSubmit: handleSubmitForm,
     formState: { errors: errorsForm },
     setError: setErrorForm,
     getValues,
-  } = useForm<LoginFormData>({});
+  } = useForm<LoginFormData>({ defaultValues });
 
   const redirectURL = router.query.next?.toString() || paths.$url();
 
