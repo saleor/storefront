@@ -13,8 +13,7 @@ const OrderCompletedPage = () => {
       <CheckIcon className="text-green-700" />
       <div className="font-semibold text-3xl">Your order is completed!</div>
       <p className="mt-2">
-        To check your orders,
-        <Link href={paths.account.orders.$url()}> click here.</Link>
+        <Link href={paths.$url()}>Go back to homepage</Link>
       </p>
     </main>
   );
