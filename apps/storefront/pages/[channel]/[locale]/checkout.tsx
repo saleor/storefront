@@ -1,11 +1,22 @@
-import React, { ReactElement } from "react";
+import { useRouter } from "next/router";
+import React, { ReactElement, useEffect } from "react";
 
 import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
+import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 const CheckoutPage = () => {
+  const router = useRouter();
+  const paths = usePaths();
   const { checkout, loading } = useCheckout();
+
+  useEffect(() => {
+    // Redirect to cart if theres no checkout data
+    if (!loading && (!checkout || !checkout.lines?.length)) {
+      router.push(paths.cart.$url());
+    }
+  });
 
   if (loading) {
     return (
