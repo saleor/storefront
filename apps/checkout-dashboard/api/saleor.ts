@@ -1,4 +1,4 @@
-import { Channel } from "./types";
+import { Channel } from "types/saleor";
 
 // Should be fetched from saleor backend
 export const channelList: Channel[] = [

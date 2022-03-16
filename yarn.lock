@@ -2486,10 +2486,10 @@
   dependencies:
     uuid "^8.3.2"
 
-"@saleor/macaw-ui@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@saleor/macaw-ui/-/macaw-ui-0.3.2.tgz#7a80c363b255a8f6508a698e15e86c308a374b7b"
-  integrity sha512-h8hyIkGRnWHzUVSVKjAZYMGojL2qmWRiKLe4taAa0SWr2Xps/SxWEFPgdWJGxTUWTKe0qnqXc6IcJmvwQU23+A==
+"@saleor/macaw-ui@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@saleor/macaw-ui/-/macaw-ui-0.3.3.tgz#91a3ac34f049b6e16e588a43dfc5ddee02aa1262"
+  integrity sha512-b2dLlOAXDe2OSmYeZSFKwiRMrJc+YkGhvvQCHQXHHP89TZbGZlWP0F13ycCI3OJSfYbCWZlQGM+alMiE31HOuA==
   dependencies:
     clsx "^1.1.1"
     lodash "^4.17.21"
@@ -10672,6 +10672,11 @@ react-from-dom@^0.6.0:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/react-from-dom/-/react-from-dom-0.6.1.tgz#6740f5a3d79e0c354703e5c096b8fdfe0db71b0f"
   integrity sha512-7aAZx7LhRnmR51W5XtmTBYHGFl2n1AdEk1uoXLuzHa1OoGXrxOW/iwLcudvgp6BGX/l4Yh1rtMrIzvhlvbVddg==
+
+react-hook-form@^7.27.1:
+  version "7.27.1"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.27.1.tgz#fe5fbcb6bf58751f66d9569e998d671480cc57f6"
+  integrity sha512-N3a7A6zIQ8DJeThisVZGtOUabTbJw+7DHJidmB9w8m3chckv2ZWKb5MHps9d2pPJqmCDoWe53Bos56bYmJms5w==
 
 react-inlinesvg@^2.3.0:
   version "2.3.0"

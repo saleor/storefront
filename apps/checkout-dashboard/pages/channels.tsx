@@ -1,5 +1,5 @@
 import ChannelList from "@templates/ChannelList";
-import { useChannelList } from "api/saleor/api";
+import { useChannelList } from "api/saleor";
 
 export default function Channels() {
   const channels = useChannelList();

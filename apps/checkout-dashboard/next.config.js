@@ -15,4 +15,5 @@ module.exports = withTM({
       },
     ];
   },
+  images: { domains: ["localhost"] },
 });

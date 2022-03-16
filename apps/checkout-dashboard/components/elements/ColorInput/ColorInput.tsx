@@ -2,11 +2,20 @@ import { OutlinedInput, Typography } from "@material-ui/core";
 import { useStyles } from "./styles";
 
 interface ColorInputProps {
+  name: string;
   label: string;
   value?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
-const ColorInput: React.FC<ColorInputProps> = ({ label, value }) => {
+const ColorInput: React.FC<ColorInputProps> = ({
+  name,
+  label,
+  value,
+  onChange,
+  onBlur,
+}) => {
   const classes = useStyles();
 
   return (
@@ -15,12 +24,15 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, value }) => {
         {label}
       </Typography>
       <OutlinedInput
+        name={name}
         className={classes.input}
         type="color"
         value={value}
         inputProps={{
           className: classes.colorBox,
         }}
+        onChange={onChange}
+        onBlur={onBlur}
       />
     </div>
   );

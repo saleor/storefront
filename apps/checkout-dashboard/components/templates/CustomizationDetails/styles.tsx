@@ -63,9 +63,10 @@ export const useStyles = makeStyles(
     },
     optionDetailsContent: {
       width: "100%",
-      display: "flex",
-      gap: theme.spacing(2),
       padding: theme.spacing(0, 4, 4, 4),
+      display: "flex",
+      flexWrap: "wrap",
+      gap: theme.spacing(2),
     },
     design: {
       flex: "2",

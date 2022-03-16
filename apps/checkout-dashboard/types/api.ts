@@ -1,4 +1,4 @@
-import { Channel } from "api/saleor/types";
+import { Channel } from "types/saleor";
 import {
   CustomizationID,
   CustomizationSettingID,
@@ -33,5 +33,10 @@ export type PaymentProviderSettingsValues = {
 export type CustomizationSettingsValues = {
   [P in CustomizationID]: {
     [K in CustomizationSettingID<P>]: string;
+  };
+};
+export type UnknownSettingsValues = {
+  [P in string]: {
+    [K in string]: string;
   };
 };

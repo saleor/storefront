@@ -1,4 +1,4 @@
-import { channelList } from "api/saleor/api";
+import { channelList } from "api/saleor";
 import { customizations, paymentMethods, paymentProviders } from "consts";
 import {
   Customization,
@@ -13,9 +13,8 @@ import {
   ChannelActivePaymentProviders,
   ChannelPaymentOptions,
   CustomizationSettingsValues,
-  PaymentOption,
   PaymentProviderSettingsValues,
-} from "./types";
+} from "types/api";
 
 // Should be fetched from app backend
 export const activePaymentProviders: ChannelActivePaymentProviders = {
@@ -33,7 +32,7 @@ export const activePaymentProviders: ChannelActivePaymentProviders = {
   },
 };
 
-export const useChannelPaymentOptionsList = (): ChannelPaymentOptions[] =>
+export const getChannelPaymentOptionsList = (): ChannelPaymentOptions[] =>
   channelList.map((channel) => ({
     id: channel.id,
     channel: channel,
@@ -48,8 +47,8 @@ export const useChannelPaymentOptionsList = (): ChannelPaymentOptions[] =>
     })),
   }));
 
-export const useChannelPaymentOptions = (channelId: string) =>
-  useChannelPaymentOptionsList().find(
+export const getChannelPaymentOptions = (channelId: string) =>
+  getChannelPaymentOptionsList().find(
     (channelPayments) => channelPayments.channel.id === channelId
   );
 
@@ -65,7 +64,7 @@ export const paymentProviderSettingsValues: PaymentProviderSettingsValues = {
     "supported-currencies": "",
   },
 };
-export const usePaymentProviderSettings =
+export const getPaymentProviderSettings =
   (): PaymentProvider<PaymentProviderID>[] =>
     paymentProviders.map((provider) => ({
       ...provider,
@@ -91,7 +90,7 @@ export const customizationSettingsValues: CustomizationSettingsValues = {
     "low-stock-threshold": "",
   },
 };
-export const useCustomizationSettings = (): Customization<CustomizationID>[] =>
+export const getCustomizationSettings = (): Customization<CustomizationID>[] =>
   customizations.map((customization) => ({
     ...customization,
     settings: customization.settings.map(

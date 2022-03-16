@@ -3,7 +3,6 @@ import {
   OffsettedListBody,
   OffsettedListItem,
   OffsettedListItemCell,
-  SettingsIcon,
   useOffsettedListWidths,
 } from "@saleor/macaw-ui";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
@@ -16,8 +15,8 @@ import {
   Switch,
   Typography,
 } from "@material-ui/core";
-import { ChannelPaymentOptions } from "api/app/types";
-import { Channel } from "api/saleor/types";
+import { ChannelPaymentOptions } from "types/api";
+import { Channel } from "types/saleor";
 import { paymentProviders } from "consts";
 import { useStyles } from "./styles";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
