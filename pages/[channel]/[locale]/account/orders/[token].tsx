@@ -3,7 +3,7 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Image from "next/image";
 import { ReactElement } from "react";
 
-import { Layout, Spinner } from "@/components";
+import { AccountLayout, Spinner } from "@/components";
 import AddressDisplay from "@/components/checkout/AddressDisplay";
 import { useRegions } from "@/components/RegionsProvider";
 import { useOrderDetailsByTokenQuery } from "@/saleor/api";
@@ -146,5 +146,5 @@ const OrderDetailsPage = ({
 export default OrderDetailsPage;
 
 OrderDetailsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <AccountLayout>{page}</AccountLayout>;
 };
