@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 
 import { useRegions } from "@/components/RegionsProvider";
 import { messages } from "@/components/translations";
+import { DEMO_MODE } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
@@ -42,6 +43,14 @@ export const DummyCreditCardSection = ({
   const payLabel = t.formatMessage(messages.paymentButton, {
     total: formatPrice(totalPrice),
   });
+
+  let defaultValues = DEMO_MODE
+    ? {
+        cardNumber: "4242 4242 4242 4242",
+        expDate: "12/34",
+        cvc: "123",
+      }
+    : {};
 
   const {
     register: registerCard,
