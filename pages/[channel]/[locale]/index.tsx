@@ -9,6 +9,7 @@ import { useIntl } from "react-intl";
 
 import { HomepageBlock, Layout } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
+import { HOMEPAGE_MENU } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
 import { homepagePaths } from "@/lib/ssr/homepage";
@@ -54,7 +55,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     await apolloClient.query<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
       {
         query: HomepageBlocksQueryDocument,
-        variables: { slug: "homepage", ...contextToRegionQuery(context) },
+        variables: { slug: HOMEPAGE_MENU, ...contextToRegionQuery(context) },
       }
     );
   return {
