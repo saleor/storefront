@@ -2,11 +2,13 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
 
+const apiURL = new URL(process.env.NEXT_PUBLIC_API_URI);
+
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["vercel.saleor.cloud", "img.youtube.com"],
+    domains: [apiURL.hostname, "img.youtube.com"],
     formats: ["image/avif", "image/webp"],
   },
   async redirects() {
@@ -21,6 +23,6 @@ module.exports = withBundleAnalyzer({
     ];
   },
   experimental: {
-    reactRoot: true
+    reactRoot: true,
   },
 });
