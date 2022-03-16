@@ -57,12 +57,12 @@ export const DummyCreditCardSection = ({
     handleSubmit: handleSubmitCard,
     formState: { errors: errorsAddress },
     setError: setErrorCard,
-  } = useForm<CardForm>({});
+  } = useForm<CardForm>({ defaultValues });
 
-  const redirectToOrderDetailsPage = () => {
+  const redirectToOrderDetailsPage = async () => {
+    // without the `await` checkout data will be removed before the redirection which will cause issue with rendering checkout view
+    await router.push(paths.order.$url());
     resetCheckoutToken();
-
-    router.push(paths.order.$url());
   };
 
   const handleSubmit = handleSubmitCard(async (formData: CardForm) => {
