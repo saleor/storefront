@@ -25,6 +25,9 @@ export type ChannelActivePaymentProviders = {
     [K in string]: PaymentProviderID;
   };
 };
+export type ChannelActivePaymentProvidersByChannel = {
+  [P in PaymentMethodID]: PaymentProviderID;
+};
 export type PaymentProviderSettingsValues = {
   [P in PaymentProviderID]: {
     [K in PaymentProviderSettingID<P>]: string;

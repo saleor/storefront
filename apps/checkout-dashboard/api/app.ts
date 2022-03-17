@@ -11,6 +11,7 @@ import {
 import { findById } from "utils";
 import {
   ChannelActivePaymentProviders,
+  ChannelActivePaymentProvidersByChannel,
   ChannelPaymentOptions,
   CustomizationSettingsValues,
   PaymentProviderSettingsValues,
@@ -32,6 +33,16 @@ export const activePaymentProviders: ChannelActivePaymentProviders = {
   },
 };
 
+export const getActivePaymentProvidersByChannel = (
+  channelId: string
+): ChannelActivePaymentProvidersByChannel =>
+  Object.keys(activePaymentProviders).reduce(
+    (providers, paymentProvider) => ({
+      ...providers,
+      [paymentProvider]: activePaymentProviders[paymentProvider][channelId],
+    }),
+    {} as ChannelActivePaymentProvidersByChannel
+  );
 export const getChannelPaymentOptionsList = (): ChannelPaymentOptions[] =>
   channelList.map((channel) => ({
     id: channel.id,
