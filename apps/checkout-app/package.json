@@ -1,0 +1,49 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "npm run i18n && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate": "graphql-codegen --config codegen.yml",
+    "extract:i18n": "formatjs extract '{pages,components,hooks,misc}/**/*.{js,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",
+    "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
+    "i18n": "npm run extract:i18n && npm run compile:i18n"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@saleor/app-bridge": "^0.1.5",
+    "@saleor/macaw-ui": "^0.3.3",
+    "clsx": "^1.1.1",
+    "graphql": "^16.3.0",
+    "next": "12.0.7",
+    "next-urql": "^3.3.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-hook-form": "^7.27.1",
+    "react-intl": "^5.24.6",
+    "react-is": "^17.0.2",
+    "urql": "^2.2.0"
+  },
+  "devDependencies": {
+    "@formatjs/cli": "^4.8.2",
+    "@graphql-codegen/add": "^3.1.1",
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/introspection": "^2.1.1",
+    "@graphql-codegen/typescript": "^2.4.8",
+    "@graphql-codegen/typescript-operations": "^2.3.5",
+    "@graphql-codegen/typescript-urql": "^3.5.6",
+    "@graphql-codegen/urql-introspection": "^2.1.1",
+    "@types/react": "17.0.37",
+    "babel-plugin-formatjs": "^10.3.18",
+    "config": "*",
+    "eslint": "7.32.0",
+    "next-transpile-modules": "9.0.0",
+    "tsconfig": "*",
+    "typescript": "^4.5.3"
+  }
+}
