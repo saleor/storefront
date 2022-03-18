@@ -1,6 +1,5 @@
-import clsx from "clsx";
-import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 
 import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
@@ -17,40 +16,47 @@ export const VariantSelector = ({
   selectedVariantID,
 }: VariantSelectorProps) => {
   const paths = usePaths();
+  const router = useRouter();
+
+  const [value, setValue] = useState(selectedVariantID);
 
   const variants = product.variants;
+
+  // Skip displaying selector when theres less than 2 variants
   if (!variants || variants.length === 1) {
     return null;
   }
+
+  const onChange = (event: React.FormEvent<HTMLSelectElement>) => {
+    const target = event.target as HTMLSelectElement;
+    setValue(target.value);
+    let query = {};
+    if (target.value !== "None") {
+      query = { variant: target.value };
+    }
+    router.replace(
+      paths.products._slug(product.slug).$url({ query }),
+      undefined,
+      { shallow: true }
+    );
+  };
+
   return (
-    <div className="grid grid-cols-8 gap-2">
+    <select onChange={onChange} value={value} className="w-full">
+      <option key="None" value="None">
+        -
+      </option>
       {variants.map((variant) => {
         if (!notNullable(variant)) {
           return null;
         }
-        const isSelected = variant.id === selectedVariantID;
         return (
-          <Link
-            key={translate(variant, "name")}
-            href={paths.products
-              ._slug(product.slug)
-              .$url({ query: { variant: variant.id } })}
-            replace
-            shallow
-          >
-            <a
-              className={clsx(
-                "flex justify-center  rounded-md p-3 font-semibold hover:border-blue-400 shadow-md",
-                isSelected && "border-2 border-blue-300 bg-blue-300",
-                !isSelected && "border-2 border-gray-300"
-              )}
-            >
-              {translate(variant, "name")}
-            </a>
-          </Link>
+          <option key={variant.id} value={variant.id}>
+            {translate(variant, "name")}
+          </option>
         );
       })}
-    </div>
+    </select>
   );
 };
 
