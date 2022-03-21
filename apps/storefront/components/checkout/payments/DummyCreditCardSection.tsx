@@ -44,7 +44,7 @@ export const DummyCreditCardSection = ({
     total: formatPrice(totalPrice),
   });
 
-  let defaultValues = DEMO_MODE
+  const defaultValues = DEMO_MODE
     ? {
         cardNumber: "4242 4242 4242 4242",
         expDate: "12/34",
