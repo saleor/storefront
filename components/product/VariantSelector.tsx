@@ -27,8 +27,8 @@ export const VariantSelector = ({
     return null;
   }
 
-  const onChange = (event: React.FormEvent<HTMLSelectElement>) => {
-    const target = event.target as HTMLSelectElement;
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const target = event.target;
     setValue(target.value);
     let query = {};
     if (target.value !== "None") {
