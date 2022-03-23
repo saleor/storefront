@@ -1,17 +1,17 @@
-import React, { ElementType } from "react";
+import React, { BaseSyntheticEvent } from "react";
 import { useButton } from "@react-aria/button";
 import { useRef } from "react";
 import { Text } from "@components/Text";
-import { AriaButtonProps } from "@react-types/button";
 import clsx from "clsx";
 import { Classes } from "@lib/globalTypes";
+import { AriaButtonProps } from "@react-types/button";
 
-interface ButtonProps
-  extends AriaButtonProps<ElementType<HTMLButtonElement>>,
-    Classes {
+export interface ButtonProps extends AriaButtonProps<"button">, Classes {
   disabled?: boolean;
   variant?: "primary" | "secondary" | "tertiary";
   title: string;
+  onClick: (event: BaseSyntheticEvent<HTMLButtonElement>) => any;
+  ariaLabel: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -19,6 +19,8 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   variant = "primary",
   disabled = false,
+  onClick,
+  ariaLabel,
   ...rest
 }) => {
   const ref = useRef<HTMLButtonElement | null>(null);
@@ -35,8 +37,15 @@ export const Button: React.FC<ButtonProps> = ({
   );
 
   return (
-    <button {...buttonProps} disabled={disabled} className={classes} ref={ref}>
-      <Text>{title}</Text>
+    <button
+      {...buttonProps}
+      onClick={onClick}
+      disabled={disabled}
+      className={classes}
+      ref={ref}
+      aria-label={ariaLabel}
+    >
+      <Text weight="semibold">{title}</Text>
     </button>
   );
 };

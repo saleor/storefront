@@ -3,26 +3,22 @@ import clsx from "clsx";
 import { Classes } from "@lib/globalTypes";
 
 export interface TextProps extends Classes {
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "lg";
   color?: "secondary" | "tertiary" | "error";
-  variant?: "title";
-  bold?: boolean;
+  weight?: "normal" | "regular" | "semibold" | "bold";
   className?: string;
   ariaLabel?: string;
   labeledBy?: string;
-  id?: string;
 }
 
 export const Text: React.FC<TextProps> = ({
   children,
   size,
   color,
-  bold,
-  variant,
+  weight,
   className,
   ariaLabel,
   labeledBy,
-  id,
 }) => {
   const classes = clsx(
     "text",
@@ -35,22 +31,16 @@ export const Text: React.FC<TextProps> = ({
       "text-base": !size,
       "text-md": size === "md",
       "text-lg": size === "lg",
-      "text-xl": size === "xl" || variant === "title",
-      "font-bold": bold || variant === "title",
+      "font-bold": weight === "bold",
+      "font-semibold": weight === "semibold",
+      "font-regular": weight === "regular",
     },
     className
   );
 
-  const textProps = {
-    className: classes,
-    "aria-label": ariaLabel,
-    "labeled-by": labeledBy,
-    id: id,
-  };
-
-  if (size === "xl" || size === "lg") {
-    return <h2 {...textProps}>{children}</h2>;
-  }
-
-  return <p {...textProps}>{children}</p>;
+  return (
+    <p className={classes} aria-label={ariaLabel} labeled-by={labeledBy}>
+      {children}
+    </p>
+  );
 };

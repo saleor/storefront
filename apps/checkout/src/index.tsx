@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import { createClient, Provider as UrqlProvider } from "urql";
 
@@ -7,11 +6,20 @@ import { Checkout } from "./Checkout";
 import reportWebVitals from "./reportWebVitals";
 import { getCurrentRegion } from "./lib/regions";
 import { I18nProvider } from "@react-aria/i18n";
+import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 
 const client = createClient({
   url: "https://latest.staging.saleor.cloud/graphql/",
   suspense: true,
   requestPolicy: "cache-first",
+  fetch: createFetch(),
+});
+
+// temporarily need to use @apollo/client because saleor sdk
+// is based on apollo. to be changed
+const saleorClient = createSaleorClient({
+  apiUrl: "https://latest.staging.saleor.cloud/graphql/",
+  channel: "default-channel",
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
@@ -20,11 +28,13 @@ root.render(
   // disabled temporarily because of headless-ui transition not working
   // yet with React 18 https://github.com/tailwindlabs/headlessui/issues/681
   // <React.StrictMode>
-  <I18nProvider locale={getCurrentRegion()}>
-    <UrqlProvider value={client}>
-      <Checkout />
-    </UrqlProvider>
-  </I18nProvider>
+  <SaleorProvider client={saleorClient}>
+    <I18nProvider locale={getCurrentRegion()}>
+      <UrqlProvider value={client}>
+        <Checkout />
+      </UrqlProvider>
+    </I18nProvider>
+  </SaleorProvider>
   // </React.StrictMode>
 );
 

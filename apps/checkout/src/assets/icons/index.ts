@@ -12,6 +12,8 @@ import PenIcon from "./edit.svg";
 import ErrorIcon from "./error.svg";
 import LabelIcon from "./discount.svg";
 import PhotoIcon from "./photo.svg";
+import EyeIcon from "./eye.svg";
+import EyeHiddenIcon from "./eyeHidden.svg";
 
 export {
   PhotoIcon,
@@ -28,4 +30,6 @@ export {
   GiftCardIcon,
   ExclamationIcon,
   PenIcon,
+  EyeIcon,
+  EyeHiddenIcon,
 };

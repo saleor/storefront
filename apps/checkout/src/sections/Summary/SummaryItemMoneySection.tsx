@@ -13,6 +13,7 @@ import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import { useFormattedMoney } from "@hooks/useFormattedMoney";
 import { Money } from "@components/Money";
 import clsx from "clsx";
+import { getDataWithToken } from "@lib/utils";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLine;
@@ -52,15 +53,15 @@ export const SummaryItemMoneySection: React.FC<
 
   const getUpdateLineVars = (
     quantity: number
-  ): CheckoutLinesUpdateMutationVariables => ({
-    token: "f683e21b-7171-460d-96bf-50557b2fb5de",
-    lines: [
-      {
-        quantity,
-        variantId,
-      },
-    ],
-  });
+  ): CheckoutLinesUpdateMutationVariables =>
+    getDataWithToken({
+      lines: [
+        {
+          quantity,
+          variantId,
+        },
+      ],
+    });
 
   const handleSubmit = (quantity: number) => {
     updateLines(getUpdateLineVars(quantity));
@@ -90,19 +91,19 @@ export const SummaryItemMoneySection: React.FC<
     <div className="flex flex-col items-end">
       <div className="flex flex-row mb-3">
         <IconButton
-          aria-label="add item quantity"
-          onPress={() => {
+          ariaLabel={formatMessage("addItemQuantityLabel")}
+          onClick={() => {
             setQuantity(quantity - 1);
           }}
         >
           <img src={MinusIcon} alt="remove" />
         </IconButton>
-        <Text bold className="mx-3">
+        <Text weight="bold" className="mx-3">
           {quantity}
         </Text>
         <IconButton
-          aria-label="subtract item quantity"
-          onPress={() => {
+          ariaLabel={formatMessage("subtractItemQuantityLabel")}
+          onClick={() => {
             setQuantity(quantity + 1);
           }}
         >
@@ -127,7 +128,7 @@ export const SummaryItemMoneySection: React.FC<
             currency: piecePrice?.currency as string,
             amount: (piecePrice?.amount || 0) * quantity,
           }}
-          bold
+          weight="bold"
           className={clsx({
             "text-text-error": pricing?.onSale,
           })}

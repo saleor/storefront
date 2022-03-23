@@ -1,31 +1,67 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, {
+  ForwardedRef,
+  forwardRef,
+  RefObject,
+  useEffect,
+  useState,
+} from "react";
 import { AriaTextFieldOptions, useTextField } from "@react-aria/textfield";
 import { Classes } from "@lib/globalTypes";
+import {
+  Control,
+  FieldPath,
+  FormState,
+  UseFormRegisterReturn,
+  useWatch,
+} from "react-hook-form";
+import { ControlFormData } from "@hooks/useGetInputProps";
 
-// @ts-ignore TMP
-interface TextInputProps extends AriaTextFieldOptions<"input">, Classes {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
+export interface TextInputProps<
+  TControl extends Control<any, any>,
+  TFormData extends ControlFormData<TControl>
+> extends Omit<
+      AriaTextFieldOptions<"input">,
+      "onBlur" | "onChange" | "name" | "ref"
+    >,
+    Pick<FormState<TFormData>, "errors">,
+    Omit<UseFormRegisterReturn, "ref">,
+    Classes {
+  control: TControl;
+  name: FieldPath<TFormData>;
   label: string;
   optional?: boolean;
-  error?: boolean;
-  errorMessage?: string;
+  icon?: React.ReactNode;
 }
 
-export const TextInput: React.FC<TextInputProps> = (props) => {
+const TextInputComponent = <
+  TControl extends Control<any, any>,
+  TFormData extends ControlFormData<TControl>
+>(
+  props: TextInputProps<TControl, TFormData>,
+  ref: ForwardedRef<HTMLInputElement>
+) => {
   const {
     label,
     optional = false,
-    error,
-    errorMessage,
-    value,
-    onChange,
+    errors,
     className,
+    onChange,
+    onBlur,
+    name,
+    control,
+    icon,
     ...rest
   } = props;
 
   const [labelFixed, setLabelFixed] = useState(false);
+
+  const error = errors[name as keyof typeof errors];
+
+  const value = useWatch({
+    control,
+    name,
+  });
 
   useEffect(() => {
     if (!labelFixed && value) {
@@ -33,15 +69,16 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
     }
   }, [value, labelFixed]);
 
-  const ref = React.useRef<HTMLInputElement | null>(null);
-
-  const { labelProps, inputProps, errorMessageProps } = useTextField(rest, ref);
+  const { labelProps, inputProps, errorMessageProps } = useTextField(
+    rest,
+    ref as RefObject<HTMLInputElement>
+  );
 
   const inputClasses = clsx("text-input", {
-    "text-input-error": error,
+    "text-input-error": !!error,
   });
 
-  const labelClasses = clsx("text-input-label top-4", {
+  const labelClasses = clsx("text-input-label", {
     "text-input-filled-label": labelFixed,
   });
 
@@ -51,22 +88,35 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
   };
 
   return (
-    <div className={clsx("relative", className)}>
+    <div className={clsx("text-input-container", className)}>
       <input
-        ref={ref}
         {...inputProps}
+        name={name}
+        ref={ref}
         className={inputClasses}
-        value={value}
+        onBlur={onBlur}
         onChange={handleChange}
+        aria-label={name}
       />
-      <label {...labelProps} className={labelClasses}>
+      <label {...labelProps} htmlFor={inputProps.id} className={labelClasses}>
         {optional ? label : `${label}*`}
       </label>
       {error && (
         <span className="text-xs text-text-error" {...errorMessageProps}>
-          {errorMessage}
+          {/* react-hook-form has this typed badly */}
+          {(error as any).message}
         </span>
       )}
+      {icon && <div className="icon">{icon}</div>}
     </div>
   );
 };
+
+export const TextInput = forwardRef(TextInputComponent) as <
+  TControl extends Control<any, any>,
+  TFormData extends ControlFormData<TControl>
+>(
+  props: TextInputProps<TControl, TFormData> & {
+    ref?: ForwardedRef<HTMLInputElement>;
+  }
+) => ReturnType<typeof TextInputComponent>;

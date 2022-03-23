@@ -1,11 +1,9 @@
 import { useCheckoutQuery } from "@graphql";
-import { extractTokenFromUrl } from "@lib/utils";
+import { getDataWithToken } from "@lib/utils";
 
 export const useCheckout = () => {
-  const token = extractTokenFromUrl();
-
   const [{ data, fetching: loading }] = useCheckoutQuery({
-    variables: { token },
+    variables: getDataWithToken(),
   });
 
   return { checkout: data!.checkout!, loading };

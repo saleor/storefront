@@ -1,3 +1,37 @@
+fragment CheckoutFragment on Checkout {
+  id
+  email
+  user {
+    id
+    email
+  }
+  totalPrice {
+    gross {
+      amount
+      currency
+    }
+    tax {
+      currency
+      amount
+    }
+  }
+  shippingPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+  subtotalPrice {
+    gross {
+      amount
+      currency
+    }
+  }
+  lines {
+    ...CheckoutLineFragment
+  }
+}
+
 fragment CheckoutLineFragment on CheckoutLine {
   id
   quantity
@@ -36,36 +70,6 @@ fragment CheckoutLineFragment on CheckoutLine {
   }
 }
 
-fragment CheckoutFragment on Checkout {
-  id
-  email
-  totalPrice {
-    gross {
-      amount
-      currency
-    }
-    tax {
-      currency
-      amount
-    }
-  }
-  shippingPrice {
-    gross {
-      amount
-      currency
-    }
-  }
-  subtotalPrice {
-    gross {
-      amount
-      currency
-    }
-  }
-  lines {
-    ...CheckoutLineFragment
-  }
-}
-
 query Checkout($token: UUID!) {
   checkout(token: $token) {
     ...CheckoutFragment
@@ -100,6 +104,42 @@ mutation CheckoutLineDelete($token: UUID!, $lineId: ID) {
       lines {
         ...CheckoutLineFragment
       }
+    }
+  }
+}
+
+mutation checkoutEmailUpdate($email: String!, $token: UUID!) {
+  checkoutEmailUpdate(email: $email, token: $token) {
+    errors {
+      field
+      message
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutCustomerAttach($customerId: ID!, $token: UUID!) {
+  checkoutCustomerAttach(customerId: $customerId, token: $token) {
+    errors {
+      field
+      message
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutCustomerDetach($token: UUID!) {
+  checkoutCustomerDetach(token: $token) {
+    errors {
+      field
+      message
+    }
+    checkout {
+      ...CheckoutFragment
     }
   }
 }

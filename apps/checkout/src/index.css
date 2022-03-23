@@ -10,45 +10,80 @@ html {
   font-size: 62.5%;
 }
 
-/* TextInput */
-
-.input {
-  transition: border 0.2s ease-in-out;
-  height: 56px;
-  padding-left: 11px;
-}
-
-.input:focus + .text-input-label,
-.input:active + .text-input-label,
-.input.text-input-filled + .text-input-label {
-  font-size: 11px;
-  transition: all 0.2s ease-out;
-  top: 0.4rem;
-}
-
-.label {
-  transition: all 0.2s ease-out;
-  top: 1.2rem;
-  left: 0;
-}
-
 @layer components {
+  /* Checkbox */
+  .checkbox {
+    @apply flex flex-row mb-4;
+  }
+
+  .checkbox [type="checkbox"] {
+    @apply opacity-0 absolute z-10;
+  }
+
+  .checkbox [type="checkbox"]:checked + .checkbox-input {
+    @apply border-border-active;
+  }
+
+  .checkbox .checkbox-input:hover {
+    @apply border-border-active;
+  }
+
+  .checkbox [type="checkbox"]:checked + .checkbox-input img {
+    @apply opacity-100;
+  }
+
+  .checkbox .checkbox-input {
+    @apply w-5 h-5 border border-border-primary absolute top-0 left-0 z-50;
+  }
+
+  .checkbox .checkbox-input img {
+    @apply opacity-0;
+  }
+
   /* Test Input */
+
+  .text-input-container {
+    @apply relative mb-4;
+  }
+
   .text-input {
+    transition: border 0.2s ease-in-out;
+    height: 56px;
+    padding-left: 11px;
     @apply input border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary py-3 pt-5 pb-2;
   }
 
   .text-input-error {
-    @apply border-border-error;
+    @apply border-border-error mb-2;
+  }
+
+  .input:focus.text-input-error {
+    @apply border-border-error mb-2;
   }
 
   .text-input-label {
-    @apply label absolute text-text-secondary text-base ml-3;
+    transition: all 0.2s ease-out;
+    @apply absolute top-4 left-0 text-text-secondary text-base ml-3;
+  }
+
+  .text-input-filled-label {
+    transition: all 0.2s ease-out;
+    top: 0.6rem;
+    @apply text-xs;
+  }
+
+  .input:focus + .text-input-label,
+  .input:active + .text-input-label {
+    @apply text-input-filled-label;
+  }
+
+  .text-input-container .icon {
+    @apply absolute right-0 top-4 right-4 h-full;
   }
 
   /* Button */
   .button {
-    @apply py-3 px-4 border focus:outline-none active:outline-none;
+    @apply py-3 px-4 whitespace-nowrap border focus:outline-none active:outline-none;
   }
 
   .button-primary {
@@ -157,5 +192,9 @@ html {
   /* Checkout Form */
   .checkout-form {
     @apply flex flex-col w-full lg:w-1/2 xl:w-2/3;
+  }
+
+  .actions {
+    @apply flex flex-row w-full justify-end items-center;
   }
 }

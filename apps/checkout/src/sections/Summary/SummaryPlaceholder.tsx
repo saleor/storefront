@@ -10,7 +10,7 @@ export const SummaryPlaceholder = () => {
     <div className="summary px-6">
       <div className="flex flex-col">
         <div className="summary-row mb-6">
-          <Text size="lg" bold className="hidden sm:block">
+          <Text size="lg" weight="bold" className="hidden sm:block">
             {formatMessage("summary")}
           </Text>
           <Skeleton className="w-1/3 block sm:hidden" />

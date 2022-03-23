@@ -46,7 +46,7 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
       <div className="summary-row w-full">
         <div className="flex flex-col">
           <Text
-            bold
+            weight="bold"
             ariaLabel={formatMessage("itemNameLabel")}
             className="mb-2"
           >
