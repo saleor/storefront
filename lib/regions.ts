@@ -33,11 +33,6 @@ export const CHANNELS: Channel[] = [
     name: "Polski Złoty",
     currencyCode: "PLN",
   },
-  {
-    slug: "channel-gbp",
-    name: "British Pound Sterling",
-    currencyCode: "GBP",
-  },
 ];
 
 export interface RegionCombination {
