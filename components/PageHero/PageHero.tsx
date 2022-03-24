@@ -6,7 +6,7 @@ import {
   CollectionDetailsFragment,
 } from "@/saleor/api";
 
-import { RichText } from "./RichText";
+import { RichText } from "../RichText";
 
 export interface PageHeroProps {
   entity: CollectionDetailsFragment | CategoryDetailsFragment;

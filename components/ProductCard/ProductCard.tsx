@@ -5,7 +5,7 @@ import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
 
-import { useRegions } from "./RegionsProvider";
+import { useRegions } from "../RegionsProvider";
 
 const styles = {
   grid: `grid grid-cols-4 gap-4`,

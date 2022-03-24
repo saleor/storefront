@@ -7,8 +7,9 @@ import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
 import { HomepageBlockFragment, ProductFilterInput } from "@/saleor/api";
 
-import { ProductCollection, RichText } from ".";
-import { messages } from "./translations";
+import { ProductCollection } from "../ProductCollection";
+import { RichText } from "../RichText";
+import { messages } from "../translations";
 
 export interface HomepageBlockProps {
   menuItem: HomepageBlockFragment;

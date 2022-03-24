@@ -7,8 +7,8 @@ import {
   useCheckoutAddPromoCodeMutation,
 } from "@/saleor/api";
 
-import { useRegions } from "./RegionsProvider";
-import { messages } from "./translations";
+import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 
 export interface PromoCodeFormData {
   promoCode: string;

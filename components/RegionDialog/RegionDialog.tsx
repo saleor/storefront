@@ -10,7 +10,7 @@ import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
 
-interface RegionDialogProps {
+export interface RegionDialogProps {
   onClose: () => void;
   isOpen: boolean;
 }
