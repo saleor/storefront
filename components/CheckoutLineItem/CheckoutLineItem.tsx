@@ -13,9 +13,9 @@ import {
   useRemoveProductFromCheckoutMutation,
 } from "@/saleor/api";
 
-import { usePaths } from "../lib/paths";
-import { useRegions } from "./RegionsProvider";
-import { messages } from "./translations";
+import { usePaths } from "../../lib/paths";
+import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 
 interface CheckoutLineItemProps {
   line: CheckoutLineDetailsFragment;
@@ -160,4 +160,5 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
     </>
   );
 };
+
 export default CheckoutLineItem;

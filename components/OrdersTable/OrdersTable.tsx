@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import { usePaths } from "@/lib/paths";
 import { OrderDetailsFragment } from "@/saleor/api";
 
-import { useRegions } from "./RegionsProvider";
+import { useRegions } from "../RegionsProvider";
 
-interface OrdersTableProps {
+export interface OrdersTableProps {
   orders: OrderDetailsFragment[];
 }
 

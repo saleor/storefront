@@ -2,8 +2,8 @@ import Link from "next/link";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import { usePaths } from "../lib/paths";
-import { messages } from "./translations";
+import { usePaths } from "../../lib/paths";
+import { messages } from "../translations";
 
 export const NavigationPanel = () => {
   const paths = usePaths();

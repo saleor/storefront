@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-interface HamburgerButtonProps {
+export interface HamburgerButtonProps {
   onClick: (ev: any) => void;
   active?: boolean;
 }
