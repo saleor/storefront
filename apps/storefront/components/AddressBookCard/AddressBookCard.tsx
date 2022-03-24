@@ -8,9 +8,9 @@ import {
   useSetAddressDefaultMutation,
 } from "@/saleor/api";
 
-import { messages } from "./translations";
+import { messages } from "../translations";
 
-interface AddressBookCardProps {
+export interface AddressBookCardProps {
   address: AddressDetailsFragment;
   onRefreshBook: () => void;
 }

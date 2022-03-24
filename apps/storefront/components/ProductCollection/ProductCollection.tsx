@@ -3,11 +3,11 @@ import { useIntl } from "react-intl";
 
 import { ProductFilterInput, useProductCollectionQuery } from "@/saleor/api";
 
-import { Pagination } from "./Pagination";
-import { ProductCard } from "./ProductCard";
-import { useRegions } from "./RegionsProvider";
-import { Spinner } from "./Spinner";
-import { messages } from "./translations";
+import { Pagination } from "../Pagination";
+import { ProductCard } from "../ProductCard";
+import { useRegions } from "../RegionsProvider";
+import { Spinner } from "../Spinner";
+import { messages } from "../translations";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;

@@ -6,9 +6,9 @@ import { translate } from "@/lib/translations";
 import { notNullable } from "@/lib/util";
 import { MenuItemFragment, useMainMenuQuery } from "@/saleor/api";
 
-import { usePaths } from "../lib/paths";
-import { HamburgerButton } from "./HamburgerButton";
-import { useRegions } from "./RegionsProvider";
+import { usePaths } from "../../lib/paths";
+import { HamburgerButton } from "../HamburgerButton";
+import { useRegions } from "../RegionsProvider";
 
 export const MainMenu = () => {
   const paths = usePaths();

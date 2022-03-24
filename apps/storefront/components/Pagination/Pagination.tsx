@@ -2,7 +2,7 @@ import { useIntl } from "react-intl";
 
 import { PageInfo } from "@/saleor/api";
 
-import { messages } from "./translations";
+import { messages } from "../translations";
 
 export interface PaginationProps {
   pageInfo?: PageInfo;

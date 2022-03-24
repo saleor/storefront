@@ -16,9 +16,9 @@ import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { CheckoutLine, CheckoutLineDetailsFragment } from "@/saleor/api";
 
-import { RegionDialog } from "./RegionDialog";
-import { useRegions } from "./RegionsProvider";
-import { messages } from "./translations";
+import { RegionDialog } from "../RegionDialog";
+import { useRegions } from "../RegionsProvider";
+import { messages } from "../translations";
 
 export const Navbar = () => {
   const paths = usePaths();

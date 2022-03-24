@@ -6,7 +6,9 @@ import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
 
-export const AccountLayout = ({ children }: PropsWithChildren<{}>) => {
+export interface AccountLayoutProps extends PropsWithChildren<{}> {}
+
+export const AccountLayout = ({ children }: AccountLayoutProps) => {
   const router = useRouter();
   const paths = usePaths();
   const { authenticated, authenticating } = useAuthState();
