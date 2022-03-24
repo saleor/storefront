@@ -5472,6 +5472,7 @@ export type MetadataErrorCode =
   | 'GRAPHQL_ERROR'
   | 'INVALID'
   | 'NOT_FOUND'
+  | 'NOT_UPDATED'
   | 'REQUIRED';
 
 export type MetadataFilter = {
@@ -8742,7 +8743,7 @@ export type PageTranslatableContent = Node & {
   contentJson?: Maybe<Scalars['JSONString']>;
   id: Scalars['ID'];
   /**
-   * ('A static page that can be manually added by a shop operator ', 'through the dashboard.')
+   * A static page that can be manually added by a shop operator through the dashboard.
    * @deprecated This field will be removed in Saleor 4.0. Get model fields from the root level queries.
    */
   page?: Maybe<Page>;
@@ -9425,7 +9426,7 @@ export type Product = Node & ObjectWithMetadata & {
   __typename?: 'Product';
   /** List of attributes assigned to this product. */
   attributes: Array<SelectedAttribute>;
-  /** Date when product is available for purchase.  */
+  /** Date when product is available for purchase. */
   availableForPurchase?: Maybe<Scalars['Date']>;
   category?: Maybe<Category>;
   /** Channel given to retrieve this product. Also used by federation gateway to resolve this object in a federated query. */
