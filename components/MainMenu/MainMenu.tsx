@@ -76,9 +76,10 @@ export function MainMenu() {
                         return null;
                       }
                       return (
-                        <li key={child.id} onClick={() => setOpenDropdown(false)}>
+                        <li key={child.id}>
                           <Link href={menuLink(child)} passHref>
                             <a
+                              onClick={() => setOpenDropdown(false)}
                               href="pass"
                               role="menuitem"
                               className="ml-3 text-black hover:font-semibold hover:text-black"

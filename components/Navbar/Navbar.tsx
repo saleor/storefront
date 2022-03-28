@@ -65,12 +65,14 @@ export function Navbar() {
                 </a>
               </Link>
               <div className="flex space-x-8">
-                <p
+                <button
+                  type="button"
+                  tabIndex={-1}
                   className="group -m-2 p-2 flex items-center text-sm font-medium text-gray-700 group-hover:text-gray-800"
                   onClick={() => setRegionDialogOpen(true)}
                 >
                   {currentChannel.currencyCode}
-                </p>
+                </button>
               </div>
               <Link href={paths.cart.$url()} passHref>
                 <a href="pass" className="group -m-2 p-2 flex items-center">
@@ -144,13 +146,14 @@ export function Navbar() {
                         </Link>
                       </div>
                       <div className="py-1">
-                        <p
+                        <button
+                          type="button"
                           onClick={onLogout}
                           tabIndex={-1}
-                          className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
+                          className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left hover:text-blue-500 cursor-pointer"
                         >
                           {t.formatMessage(messages.logOut)}
-                        </p>
+                        </button>
                       </div>
                     </div>
                   </div>
