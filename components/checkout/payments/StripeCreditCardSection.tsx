@@ -1,8 +1,5 @@
 import {
-  CardElement,
-  Elements,
-  useElements,
-  useStripe,
+  CardElement, Elements, useElements, useStripe,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js/pure";
 import { useRouter } from "next/router";
@@ -17,7 +14,7 @@ import {
   useCheckoutPaymentCreateMutation,
 } from "@/saleor/api";
 
-import CompleteCheckoutButton from "../CompleteCheckoutButton";
+import { CompleteCheckoutButton } from "../CompleteCheckoutButton";
 
 export const STRIPE_GATEWAY = "saleor.payments.stripe";
 
@@ -25,7 +22,7 @@ interface StripeCardFormInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
+function StripeCardForm({ checkout }: StripeCardFormInterface) {
   const stripe = useStripe();
   const elements = useElements();
   const { formatPrice } = useRegions();
@@ -84,17 +81,16 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
     }
 
     // Send Stripe payment data to the Saleor
-    const { data: paymentCreateData, errors: paymentCreateErrors } =
-      await checkoutPaymentCreateMutation({
-        variables: {
-          checkoutToken: checkout.token,
-          paymentInput: {
-            gateway: "saleor.payments.stripe",
-            amount: checkout.totalPrice?.gross.amount,
-            token: pR.paymentMethod.id,
-          },
+    const { errors: paymentCreateErrors } = await checkoutPaymentCreateMutation({
+      variables: {
+        checkoutToken: checkout.token,
+        paymentInput: {
+          gateway: "saleor.payments.stripe",
+          amount: checkout.totalPrice?.gross.amount,
+          token: pR.paymentMethod.id,
         },
-      });
+      },
+    });
 
     if (paymentCreateErrors) {
       console.error(paymentCreateErrors);
@@ -103,12 +99,11 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
     }
 
     // Try to complete the checkout
-    const { data: completeData, errors: completeErrors } =
-      await checkoutCompleteMutation({
-        variables: {
-          checkoutToken: checkout.token,
-        },
-      });
+    const { data: completeData, errors: completeErrors } = await checkoutCompleteMutation({
+      variables: {
+        checkoutToken: checkout.token,
+      },
+    });
     if (completeErrors) {
       console.error("complete errors:", completeErrors);
       setIsPaymentProcessing(false);
@@ -120,23 +115,18 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
     // Additional payment action is needed (ex. 3D Secure)
     if (completeData?.checkoutComplete?.confirmationNeeded) {
       // Parse data for the Stripe
-      const confirmationData = JSON.parse(
-        completeData?.checkoutComplete?.confirmationData || ""
-      );
+      const confirmationData = JSON.parse(completeData?.checkoutComplete?.confirmationData || "");
 
       // Execute additional action at Stripe
       const stripeConfirmationResponse = await stripe.confirmCardPayment(
         confirmationData.client_secret,
         {
           payment_method: pR.paymentMethod.id,
-        }
+        },
       );
 
       if (stripeConfirmationResponse.error) {
-        console.error(
-          "Stripe payment confirmation error: ",
-          stripeConfirmationResponse.error
-        );
+        console.error("Stripe payment confirmation error: ", stripeConfirmationResponse.error);
         setIsPaymentProcessing(false);
         return;
       }
@@ -152,7 +142,7 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
       if (confirmedCompleteErrors) {
         console.error(
           "Errors during checkout completion after the confirmation: ",
-          confirmedCompleteErrors
+          confirmedCompleteErrors,
         );
         setIsPaymentProcessing(false);
         return;
@@ -163,7 +153,6 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
     // If there are no errors during payment and confirmation, order should be created
     if (order) {
       redirectToOrderDetailsPage();
-      return;
     } else {
       console.error("Order was not created");
     }
@@ -180,21 +169,17 @@ const StripeCardForm = ({ checkout }: StripeCardFormInterface) => {
       </CompleteCheckoutButton>
     </form>
   );
-};
+}
 
 interface StripeCreditCardSectionInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-export const StripeCreditCardSection: React.VFC<
-  StripeCreditCardSectionInterface
-> = ({ checkout }) => {
+export function StripeCreditCardSection({ checkout }: StripeCreditCardSectionInterface) {
   const stripeGateway = checkout.availablePaymentGateways.find(
-    (gateway) => gateway.id === STRIPE_GATEWAY
+    (gateway) => gateway.id === STRIPE_GATEWAY,
   );
-  const stripeApiKey = stripeGateway?.config.find(
-    (conf) => conf.field === "api_key"
-  )?.value;
+  const stripeApiKey = stripeGateway?.config.find((conf) => conf.field === "api_key")?.value;
 
   if (!stripeApiKey) {
     return (
@@ -213,6 +198,6 @@ export const StripeCreditCardSection: React.VFC<
       </Elements>
     </div>
   );
-};
+}
 
 export default StripeCreditCardSection;

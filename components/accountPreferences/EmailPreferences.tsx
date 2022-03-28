@@ -12,10 +12,10 @@ interface EmailChangeFormData {
   redirectUrl: string;
 }
 
-export const EmailPreferences = () => {
+export function EmailPreferences() {
   const t = useIntl();
   const [requestEmailChange] = useRequestEmailChangeMutation({});
-  const [successMessage, setSuccessMessage] = React.useState<String>();
+  const [successMessage, setSuccessMessage] = React.useState<string>();
   const {
     register,
     handleSubmit,
@@ -31,18 +31,14 @@ export const EmailPreferences = () => {
         redirectUrl: `https://${window.location.host}/account/preferences`,
       },
     });
-    const errors = result?.data?.requestEmailChange?.errors || [];
-    if (errors.length > 0) {
-      errors.forEach((e) =>
+    const mutationErrors = result?.data?.requestEmailChange?.errors || [];
+    if (mutationErrors.length > 0) {
+      mutationErrors.forEach((e) =>
         setError(e.field as keyof EmailChangeFormData, {
           message: e.message || "",
-        })
-      );
-      return;
+        }));
     } else if (result.data?.requestEmailChange?.user) {
-      setSuccessMessage(
-        "Email changed successfully. Check your mailbox for confirmation email."
-      );
+      setSuccessMessage("Email changed successfully. Check your mailbox for confirmation email.");
       setTimeout(() => {
         setSuccessMessage("");
       }, 3000);
@@ -67,9 +63,7 @@ export const EmailPreferences = () => {
               })}
             />
             {!!errors.newEmail && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.newEmail.message}
-              </p>
+              <p className="mt-2 text-sm text-red-600">{errors.newEmail.message}</p>
             )}
           </div>
         </div>
@@ -86,15 +80,11 @@ export const EmailPreferences = () => {
               })}
             />
             {!!errors.password && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.password.message}
-              </p>
+              <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
             )}
           </div>
         </div>
-        {!!successMessage && (
-          <p className="mt-2 text-sm text-green-600">{successMessage}</p>
-        )}
+        {!!successMessage && <p className="mt-2 text-sm text-green-600">{successMessage}</p>}
         <div>
           <button
             className="mt-2 w-40 bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
@@ -107,4 +97,6 @@ export const EmailPreferences = () => {
       </form>
     </div>
   );
-};
+}
+
+export default EmailPreferences;

@@ -1,1 +1,2 @@
-export { CheckoutLineItem } from "./CheckoutLineItem";
+export * from "./CheckoutLineItem";
+export { default } from "./CheckoutLineItem";

@@ -11,16 +11,13 @@ export interface VariantSelectorProps {
   selectedVariantID?: string;
 }
 
-export const VariantSelector = ({
-  product,
-  selectedVariantID,
-}: VariantSelectorProps) => {
+export function VariantSelector({ product, selectedVariantID }: VariantSelectorProps) {
   const paths = usePaths();
   const router = useRouter();
 
   const [value, setValue] = useState(selectedVariantID);
 
-  const variants = product.variants;
+  const { variants } = product;
 
   // Skip displaying selector when theres less than 2 variants
   if (!variants || variants.length === 1) {
@@ -28,17 +25,15 @@ export const VariantSelector = ({
   }
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const target = event.target;
+    const { target } = event;
     setValue(target.value);
     let query = {};
     if (target.value !== "None") {
       query = { variant: target.value };
     }
-    router.replace(
-      paths.products._slug(product.slug).$url({ query }),
-      undefined,
-      { shallow: true }
-    );
+    router.replace(paths.products._slug(product.slug).$url({ query }), undefined, {
+      shallow: true,
+    });
   };
 
   return (
@@ -58,6 +53,6 @@ export const VariantSelector = ({
       })}
     </select>
   );
-};
+}
 
 export default VariantSelector;

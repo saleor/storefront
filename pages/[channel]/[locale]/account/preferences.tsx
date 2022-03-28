@@ -4,7 +4,7 @@ import { AccountLayout } from "@/components";
 import { EmailPreferences } from "@/components/accountPreferences/EmailPreferences";
 import { PasswordPreferences } from "@/components/accountPreferences/PasswordPreferences";
 
-const AccountPreferencesPage = () => {
+function AccountPreferencesPage() {
   return (
     <>
       <div className="checkout-section-container">
@@ -15,7 +15,7 @@ const AccountPreferencesPage = () => {
       </div>
     </>
   );
-};
+}
 
 export default AccountPreferencesPage;
 

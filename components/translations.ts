@@ -345,8 +345,7 @@ export const messages = defineMessages({
   },
   defaultBillingAndShipping: {
     id: "app.preferences.addressbook.defaultBillingShipping",
-    description:
-      "Message displayed when address is both billing and shipping default",
+    description: "Message displayed when address is both billing and shipping default",
     defaultMessage: "Default billing and shipping address",
   },
   defaultBilling: {
@@ -370,3 +369,5 @@ export const messages = defineMessages({
     defaultMessage: "Set as billing default",
   },
 });
+
+export default messages;

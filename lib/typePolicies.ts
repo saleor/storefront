@@ -14,3 +14,5 @@ export const typePolicies: TypedTypePolicies = {
     },
   },
 };
+
+export default typePolicies;

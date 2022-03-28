@@ -3,10 +3,7 @@ mutation CheckoutAddProductLine(
   $variantId: ID!
   $locale: LanguageCodeEnum!
 ) {
-  checkoutLinesAdd(
-    token: $checkoutToken
-    lines: [{ quantity: 1, variantId: $variantId }]
-  ) {
+  checkoutLinesAdd(token: $checkoutToken, lines: [{ quantity: 1, variantId: $variantId }]) {
     checkout {
       ...CheckoutDetailsFragment
     }

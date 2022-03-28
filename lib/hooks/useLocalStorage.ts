@@ -9,7 +9,7 @@ export type SetLocalStorage<T> = (value: SetLocalStorageValue<T>) => void;
 export function useLocalStorage<T>(
   key: string,
   initialValue: T,
-  { sync }: UseLocalStorageOpts = {}
+  { sync }: UseLocalStorageOpts = {},
 ): [T, SetLocalStorage<T>] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     let result: T;
@@ -25,8 +25,7 @@ export function useLocalStorage<T>(
 
   const setValue = (valueOrCb: SetLocalStorageValue<T>) => {
     setStoredValue(valueOrCb);
-    const valueToStore =
-      valueOrCb instanceof Function ? valueOrCb(storedValue) : valueOrCb;
+    const valueToStore = valueOrCb instanceof Function ? valueOrCb(storedValue) : valueOrCb;
 
     try {
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
@@ -48,7 +47,7 @@ export function useLocalStorage<T>(
         console.warn(`Could not update value for ${key}`);
       }
     },
-    [key]
+    [key],
   );
 
   useEffect(() => {

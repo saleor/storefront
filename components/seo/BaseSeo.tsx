@@ -5,8 +5,8 @@ interface BaseSeoProps {
   description?: string;
 }
 
-export const BaseSeo = ({ title, description }: BaseSeoProps) => {
-  const baseTitle = `Saleor Tutorial`;
+export function BaseSeo({ title, description }: BaseSeoProps) {
+  const baseTitle = "Saleor Tutorial";
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";
 
@@ -30,6 +30,6 @@ export const BaseSeo = ({ title, description }: BaseSeoProps) => {
       }}
     />
   );
-};
+}
 
 export default BaseSeo;

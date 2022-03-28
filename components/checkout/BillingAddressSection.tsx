@@ -4,10 +4,7 @@ import { useIntl } from "react-intl";
 
 import { SavedAddressSelectionList } from "@/components";
 import { notNullable } from "@/lib/util";
-import {
-  CheckoutDetailsFragment,
-  useCheckoutBillingAddressUpdateMutation,
-} from "@/saleor/api";
+import { CheckoutDetailsFragment, useCheckoutBillingAddressUpdateMutation } from "@/saleor/api";
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
@@ -20,15 +17,11 @@ export interface BillingAddressSection {
   checkout: CheckoutDetailsFragment;
 }
 
-export const BillingAddressSection = ({
-  active,
-  checkout,
-}: BillingAddressSection) => {
+export function BillingAddressSection({ active, checkout }: BillingAddressSection) {
   const t = useIntl();
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.billingAddress);
-  const [checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation({});
+  const [checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation({});
 
   const { query } = useRegions();
 
@@ -50,11 +43,7 @@ export const BillingAddressSection = ({
     <>
       <div className="mt-4 mb-4">
         <h2
-          className={
-            active
-              ? "checkout-section-header-active"
-              : "checkout-section-header-disabled"
-          }
+          className={active ? "checkout-section-header-active" : "checkout-section-header-disabled"}
         >
           {t.formatMessage(messages.billingAddressCardHeader)}
         </h2>
@@ -65,9 +54,7 @@ export const BillingAddressSection = ({
             <>
               {authenticated && (
                 <SavedAddressSelectionList
-                  updateAddressMutation={(address: AddressFormData) =>
-                    updateMutation(address)
-                  }
+                  updateAddressMutation={(address: AddressFormData) => updateMutation(address)}
                 />
               )}
               <AddressForm
@@ -78,9 +65,7 @@ export const BillingAddressSection = ({
             </>
           ) : (
             <section className="flex justify-between items-center mb-4">
-              {!!checkout.billingAddress && (
-                <AddressDisplay address={checkout.billingAddress} />
-              )}
+              {!!checkout.billingAddress && <AddressDisplay address={checkout.billingAddress} />}
               <Button onClick={() => setEditing(true)}>
                 {t.formatMessage(messages.changeButton)}
               </Button>
@@ -90,6 +75,6 @@ export const BillingAddressSection = ({
       )}
     </>
   );
-};
+}
 
 export default BillingAddressSection;

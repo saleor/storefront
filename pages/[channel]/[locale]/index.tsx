@@ -1,11 +1,6 @@
 import { ApolloQueryResult } from "@apollo/client";
-import {
-  GetStaticPaths,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
-} from "next";
+import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import React, { ReactElement } from "react";
-import { useIntl } from "react-intl";
 
 import { HomepageBlock, Layout } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
@@ -19,26 +14,40 @@ import {
   HomepageBlocksQueryVariables,
 } from "@/saleor/api";
 
-const Home = ({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const t = useIntl();
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const result: ApolloQueryResult<HomepageBlocksQuery> = await apolloClient.query<
+    HomepageBlocksQuery,
+    HomepageBlocksQueryVariables
+  >({
+    query: HomepageBlocksQueryDocument,
+    variables: { slug: HOMEPAGE_MENU, ...contextToRegionQuery(context) },
+  });
+  return {
+    props: {
+      menuData: result?.data,
+    },
+    revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
+  };
+};
+function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <BaseSeo />
       <div className="py-10">
         <header className="mb-4">
-          <div className="max-w-7xl mx-auto px-8"></div>
+          <div className="max-w-7xl mx-auto px-8" />
         </header>
         <main>
           <div className="max-w-7xl mx-auto px-8">
             {menuData?.menu?.items?.map((m) => {
-              if (!!m) return <HomepageBlock key={m.id} menuItem={m} />;
+              if (m) return <HomepageBlock key={m.id} menuItem={m} />;
             })}
           </div>
         </main>
       </div>
     </>
   );
-};
+}
 
 export default Home;
 
@@ -47,22 +56,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths,
     fallback: "blocking",
-  };
-};
-
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const result: ApolloQueryResult<HomepageBlocksQuery> =
-    await apolloClient.query<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
-      {
-        query: HomepageBlocksQueryDocument,
-        variables: { slug: HOMEPAGE_MENU, ...contextToRegionQuery(context) },
-      }
-    );
-  return {
-    props: {
-      menuData: result?.data,
-    },
-    revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
   };
 };
 

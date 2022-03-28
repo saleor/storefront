@@ -1,8 +1,4 @@
-mutation CheckoutEmailUpdate(
-  $token: UUID!
-  $email: String!
-  $locale: LanguageCodeEnum!
-) {
+mutation CheckoutEmailUpdate($token: UUID!, $email: String!, $locale: LanguageCodeEnum!) {
   checkoutEmailUpdate(email: $email, token: $token) {
     checkout {
       ...CheckoutDetailsFragment

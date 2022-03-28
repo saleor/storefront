@@ -14,16 +14,15 @@ export interface ProductCollectionProps {
   allowMore?: boolean;
 }
 
-export const ProductCollection = ({
-  filter,
-  allowMore = true,
-}: ProductCollectionProps) => {
+export function ProductCollection({ filter, allowMore = true }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
 
-  const { loading, error, data, fetchMore } = useProductCollectionQuery({
+  const {
+    loading, error, data, fetchMore,
+  } = useProductCollectionQuery({
     variables: {
-      filter: filter,
+      filter,
       ...query,
     },
   });
@@ -45,10 +44,7 @@ export const ProductCollection = ({
   }
   return (
     <div>
-      <ul
-        role="list"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-      >
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
@@ -63,6 +59,6 @@ export const ProductCollection = ({
       )}
     </div>
   );
-};
+}
 
 export default ProductCollection;

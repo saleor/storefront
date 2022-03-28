@@ -17,31 +17,31 @@ export interface CategoryPathArguments extends ParsedUrlQuery {
 }
 
 export const categoryPaths = async () => {
-  let paths: Path<CategoryPathArguments>[] = [];
+  const paths: Path<CategoryPathArguments>[] = [];
 
   let hasNextPage = true;
   let endCursor = "";
 
   while (hasNextPage) {
-    const response: ApolloQueryResult<CategoryPathsQuery> =
-      await apolloClient.query<CategoryPathsQuery, CategoryPathsQueryVariables>(
-        {
-          query: CategoryPathsDocument,
-          fetchPolicy: "no-cache",
-          variables: {
-            after: endCursor,
-          },
-        }
-      );
+    const response: ApolloQueryResult<CategoryPathsQuery> = await apolloClient.query<
+      CategoryPathsQuery,
+      CategoryPathsQueryVariables
+    >({
+      query: CategoryPathsDocument,
+      fetchPolicy: "no-cache",
+      variables: {
+        after: endCursor,
+      },
+    });
 
     const edges = response.data.categories?.edges;
     if (!edges) {
       break;
     }
     const responseSlugs: string[] = edges.map((edge) => edge.node.slug);
-    for (let channel of CHANNELS) {
-      let channelSlug = channel.slug;
-      for (let locale of LOCALES) {
+    for (const channel of CHANNELS) {
+      const channelSlug = channel.slug;
+      for (const locale of LOCALES) {
         responseSlugs.forEach((slug) => {
           paths.push({
             params: {

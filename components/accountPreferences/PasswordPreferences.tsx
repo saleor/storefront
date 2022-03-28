@@ -12,10 +12,10 @@ interface PasswordChangeFormData {
   newPasswordRepeat: string;
 }
 
-export const PasswordPreferences = () => {
+export function PasswordPreferences() {
   const t = useIntl();
   const [passwordChangeMutation] = usePasswordChangeMutation({});
-  const [successMessage, setSuccessMessage] = React.useState<String>("");
+  const [successMessage, setSuccessMessage] = React.useState<string>("");
 
   const {
     register,
@@ -34,14 +34,12 @@ export const PasswordPreferences = () => {
           oldPassword: formData.oldPassword,
         },
       });
-      const errors = result.data?.passwordChange?.errors || [];
-      if (errors.length > 0) {
-        errors.forEach((e) =>
+      const mutationErrors = result.data?.passwordChange?.errors || [];
+      if (mutationErrors.length > 0) {
+        mutationErrors.forEach((e) =>
           setError(e.field as keyof PasswordChangeFormData, {
             message: e.message || "",
-          })
-        );
-        return;
+          }));
       } else if (result.data?.passwordChange?.user) {
         setSuccessMessage("Password changed successfully.");
         setTimeout(() => {
@@ -70,9 +68,7 @@ export const PasswordPreferences = () => {
               })}
             />
             {!!errors.oldPassword && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.oldPassword.message}
-              </p>
+              <p className="mt-2 text-sm text-red-600">{errors.oldPassword.message}</p>
             )}
           </div>
         </div>
@@ -90,9 +86,7 @@ export const PasswordPreferences = () => {
               })}
             />
             {!!errors.newPassword && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.newPassword.message}
-              </p>
+              <p className="mt-2 text-sm text-red-600">{errors.newPassword.message}</p>
             )}
           </div>
         </div>
@@ -110,15 +104,11 @@ export const PasswordPreferences = () => {
               })}
             />
             {!!errors.newPasswordRepeat && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.newPasswordRepeat.message}
-              </p>
+              <p className="mt-2 text-sm text-red-600">{errors.newPasswordRepeat.message}</p>
             )}
           </div>
         </div>
-        {!!successMessage && (
-          <p className="mt-2 text-sm text-green-600">{successMessage}</p>
-        )}
+        {!!successMessage && <p className="mt-2 text-sm text-green-600">{successMessage}</p>}
         <div>
           <button
             className="mt-2 w-40 bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
@@ -131,4 +121,6 @@ export const PasswordPreferences = () => {
       </form>
     </div>
   );
-};
+}
+
+export default PasswordPreferences;

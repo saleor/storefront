@@ -18,7 +18,7 @@ export interface LoginFormData {
   password: string;
 }
 
-const LoginPage: React.VFC = () => {
+function LoginPage() {
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
@@ -26,11 +26,11 @@ const LoginPage: React.VFC = () => {
   const { login } = useAuth();
   const { authenticated } = useAuthState();
 
-  let defaultValues = DEMO_MODE
+  const defaultValues = DEMO_MODE
     ? {
-        email: "admin@example.com",
-        password: "admin",
-      }
+      email: "admin@example.com",
+      password: "admin",
+    }
     : {};
 
   const {
@@ -38,7 +38,6 @@ const LoginPage: React.VFC = () => {
     handleSubmit: handleSubmitForm,
     formState: { errors: errorsForm },
     setError: setErrorForm,
-    getValues,
   } = useForm<LoginFormData>({ defaultValues });
 
   const redirectURL = router.query.next?.toString() || paths.$url();
@@ -70,9 +69,7 @@ const LoginPage: React.VFC = () => {
                 <span className="text-sm text-gray-900">
                   {t.formatMessage(messages.loginWelcomeMessage)}
                 </span>
-                <h1 className="text-2xl font-bold">
-                  {t.formatMessage(messages.loginHeader)}
-                </h1>
+                <h1 className="text-2xl font-bold">{t.formatMessage(messages.loginHeader)}</h1>
               </div>
 
               <div className="my-3">
@@ -105,19 +102,20 @@ const LoginPage: React.VFC = () => {
                 </span>
               </div>
               <div className="">
-                <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
+                <button
+                  type="submit"
+                  className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
+                >
                   {t.formatMessage(messages.logIn)}
                 </button>
                 {!!errorsForm.email && (
-                  <p className="text-sm text-red-500 pt-2">
-                    {errorsForm.email?.message}
-                  </p>
+                  <p className="text-sm text-red-500 pt-2">{errorsForm.email?.message}</p>
                 )}
               </div>
             </form>
             <p className="mt-8">
-              <Link href={paths.account.register.$url()}>
-                <a>{t.formatMessage(messages.createAccount)}</a>
+              <Link href={paths.account.register.$url()} passHref>
+                <a href="pass">{t.formatMessage(messages.createAccount)}</a>
               </Link>
             </p>
           </div>
@@ -125,6 +123,6 @@ const LoginPage: React.VFC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default LoginPage;

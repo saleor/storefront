@@ -11,12 +11,9 @@ export interface PaginationProps {
   itemsCount?: number;
 }
 
-export const Pagination = ({
-  pageInfo,
-  onLoadMore,
-  itemsCount,
-  totalCount,
-}: PaginationProps) => {
+export function Pagination({
+  pageInfo, onLoadMore, itemsCount, totalCount,
+}: PaginationProps) {
   const t = useIntl();
   if (!pageInfo || !pageInfo?.hasNextPage) {
     return <></>;
@@ -25,12 +22,12 @@ export const Pagination = ({
   return (
     <nav className="mt-8 p-4 ">
       <div className="flex justify-center flex-col items-center">
-        <a
+        <p
           onClick={onLoadMore}
           className="relative inline-flex  items-center px-4 py-2 border text-sm font-medium rounded-md text-gray-700 bg-gray-50 hover:border-blue-300 cursor-pointer"
         >
           {t.formatMessage(messages.loadMoreButton)}
-        </a>
+        </p>
         {itemsCount && totalCount && (
           <div className="text-sm text-gray-500 mt-2">
             {t.formatMessage(messages.paginationProductCounter, {
@@ -42,4 +39,4 @@ export const Pagination = ({
       </div>
     </nav>
   );
-};
+}

@@ -13,7 +13,7 @@ export interface RegisterFormData {
   password: string;
 }
 
-const RegisterPage = () => {
+function RegisterPage() {
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
@@ -26,32 +26,30 @@ const RegisterPage = () => {
     setError: setErrorForm,
   } = useForm<RegisterFormData>({});
 
-  const handleRegister = handleSubmitForm(
-    async (formData: RegisterFormData) => {
-      const { data } = await register({
-        email: formData.email,
-        password: formData.password,
-        redirectUrl: `${window.location.origin}/account/confirm`,
-      });
+  const handleRegister = handleSubmitForm(async (formData: RegisterFormData) => {
+    const { data } = await register({
+      email: formData.email,
+      password: formData.password,
+      redirectUrl: `${window.location.origin}/account/confirm`,
+    });
 
-      if (data?.accountRegister?.errors.length) {
-        // Unable to sign in.
-        data?.accountRegister?.errors.forEach((e) => {
-          if (e.field === "email") {
-            setErrorForm("email", { message: e.message! });
-          } else if (e.field === "password") {
-            setErrorForm("password", { message: e.message! });
-          } else {
-            console.error("Registration error:", e);
-          }
-        });
-        return;
-      }
-      // User signed in successfully.
-      router.push(paths.$url());
-      return null;
+    if (data?.accountRegister?.errors.length) {
+      // Unable to sign in.
+      data?.accountRegister?.errors.forEach((e) => {
+        if (e.field === "email") {
+          setErrorForm("email", { message: e.message! });
+        } else if (e.field === "password") {
+          setErrorForm("password", { message: e.message! });
+        } else {
+          console.error("Registration error:", e);
+        }
+      });
+      return;
     }
-  );
+    // User signed in successfully.
+    router.push(paths.$url());
+    return null;
+  });
 
   return (
     <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-blue-500">
@@ -60,9 +58,7 @@ const RegisterPage = () => {
           <div>
             <form onSubmit={handleRegister}>
               <div>
-                <h1 className="text-2xl font-bold">
-                  {t.formatMessage(messages.registerHeader)}
-                </h1>
+                <h1 className="text-2xl font-bold">{t.formatMessage(messages.registerHeader)}</h1>
               </div>
 
               <div className="my-3">
@@ -77,9 +73,7 @@ const RegisterPage = () => {
                   })}
                 />
                 {!!errorsForm.email && (
-                  <p className="text-sm text-red-500 pt-2">
-                    {errorsForm.email?.message}
-                  </p>
+                  <p className="text-sm text-red-500 pt-2">{errorsForm.email?.message}</p>
                 )}
               </div>
               <div className="mt-5">
@@ -94,21 +88,22 @@ const RegisterPage = () => {
                   })}
                 />
                 {!!errorsForm.password && (
-                  <p className="text-sm text-red-500 pt-2">
-                    {errorsForm.password?.message}
-                  </p>
+                  <p className="text-sm text-red-500 pt-2">{errorsForm.password?.message}</p>
                 )}
               </div>
 
               <div className="">
-                <button className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100">
+                <button
+                  type="button"
+                  className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
+                >
                   {t.formatMessage(messages.registerButton)}
                 </button>
               </div>
             </form>
             <p className="mt-8">
-              <Link href={paths.account.login.$url()}>
-                <a>{t.formatMessage(messages.backToLogin)}</a>
+              <Link href={paths.account.login.$url()} passHref>
+                <a href="pass">{t.formatMessage(messages.backToLogin)}</a>
               </Link>
             </p>
           </div>
@@ -116,6 +111,6 @@ const RegisterPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default RegisterPage;

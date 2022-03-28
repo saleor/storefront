@@ -6,10 +6,9 @@ interface ProductPageSeoProps {
   product: ProductDetailsFragment;
 }
 
-export const ProductPageSeo = ({ product }: ProductPageSeoProps) => {
+export function ProductPageSeo({ product }: ProductPageSeoProps) {
   const title = `${product?.seoTitle} - Saleor Tutorial`;
-  const description =
-    product?.seoDescription || "Welcome to tutorial storefront.";
+  const description = product?.seoDescription || "Welcome to tutorial storefront.";
   const thumbnailUrl = product.thumbnail?.url || "";
   const thumbnailAlt = product.thumbnail?.alt || title;
 
@@ -30,6 +29,6 @@ export const ProductPageSeo = ({ product }: ProductPageSeoProps) => {
       }}
     />
   );
-};
+}
 
 export default ProductPageSeo;
