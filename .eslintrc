@@ -35,6 +35,7 @@
     "array-callback-return": "off",
     "implicit-arrow-linebreak": "off",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "no-restricted-imports": "off",
     "no-restricted-exports": "off",
     "@typescript-eslint/ban-ts-comment": "off",
