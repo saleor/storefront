@@ -19,9 +19,7 @@ export function CartSummary({ checkout }: CartSummaryProps) {
   const t = useIntl();
   const [editPromoCode] = useState(false);
   const [checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
-  const {
-    subtotalPrice, shippingPrice, totalPrice, discount,
-  } = checkout;
+  const { subtotalPrice, shippingPrice, totalPrice, discount } = checkout;
   const {
     register: registerForm,
     handleSubmit: handleSubmitForm,

@@ -2,9 +2,7 @@ import Link from "next/link";
 import React, { ReactElement } from "react";
 import { useIntl } from "react-intl";
 
-import {
-  CartSummary, CheckoutLineItem, Layout, Spinner,
-} from "@/components";
+import { CartSummary, CheckoutLineItem, Layout, Spinner } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
@@ -13,9 +11,7 @@ import { useCheckout } from "@/lib/providers/CheckoutProvider";
 function Cart() {
   const t = useIntl();
   const paths = usePaths();
-  const {
-    loading, checkoutError, checkout, checkoutToken,
-  } = useCheckout();
+  const { loading, checkoutError, checkout, checkoutToken } = useCheckout();
 
   if (loading) {
     return <Spinner />;

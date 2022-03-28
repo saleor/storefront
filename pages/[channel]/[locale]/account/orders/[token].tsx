@@ -31,12 +31,7 @@ function OrderDetailsPage({ token }: InferGetStaticPropsType<typeof getStaticPro
 
   if (loading) return <Spinner />;
   if (error) {
-    return (
-      <div>
-        Error :
-        {error.message}
-      </div>
-    );
+    return <div>Error :{error.message}</div>;
   }
 
   if (!data || !data.orderByToken) {
@@ -47,14 +42,10 @@ function OrderDetailsPage({ token }: InferGetStaticPropsType<typeof getStaticPro
   return (
     <>
       <h1 className="text-2xl ml-2 md:ml-20 mt-5 font-bold text-gray-800 mb-2">
-        Your order number :
-        {" "}
-        {order?.number}
+        Your order number : {order?.number}
       </h1>
       <h1 className="text-1xl ml-2 md:ml-20 font-semibold text-gray-600 mb-4">
-        Status :
-        {" "}
-        {order?.status}
+        Status : {order?.status}
       </h1>
       <div className="grid grid-cols-2 md:grid-cols-4 mb-20 mt-10 ml-2 md:ml-20 max-w-6xl h-full">
         <div className="col-span-2 md:col-span-4">

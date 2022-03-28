@@ -39,8 +39,8 @@ export function Navbar() {
   const counter =
     checkout?.lines?.reduce(
       (amount: number, line?: CheckoutLineDetailsFragment | null) =>
-        (line ? amount + line.quantity : amount),
-      0,
+        line ? amount + line.quantity : amount,
+      0
     ) || 0;
 
   return (

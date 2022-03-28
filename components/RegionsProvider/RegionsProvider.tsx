@@ -4,9 +4,7 @@ import { IntlProvider } from "react-intl";
 
 import apolloClient from "@/lib/graphql";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
-import {
-  Channel, CHANNELS, DEFAULT_CHANNEL, DEFAULT_LOCALE, localeToEnum,
-} from "@/lib/regions";
+import { Channel, CHANNELS, DEFAULT_CHANNEL, DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import createSafeContext from "@/lib/useSafeContext";
 import { formatAsMoney } from "@/lib/util";
 import { LanguageCodeEnum, PriceFragment } from "@/saleor/api";

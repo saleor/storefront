@@ -16,7 +16,7 @@ import {
 
 export const getProductAttributes = (
   product: ProductDetailsFragment,
-  selectedVariant?: ProductVariantDetailsFragment,
+  selectedVariant?: ProductVariantDetailsFragment
 ): SelectedAttributeDetailsFragment[] => {
   if (selectedVariant) return product.attributes.concat(selectedVariant.attributes);
   return product.attributes;

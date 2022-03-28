@@ -51,7 +51,8 @@ export function CheckoutProductList({ lines, token }: CheckoutProductListProps) 
                         lineId: line.id,
                         locale: query.locale,
                       },
-                    })}
+                    })
+                  }
                 >
                   {t.formatMessage(messages.removeButton)}
                 </button>

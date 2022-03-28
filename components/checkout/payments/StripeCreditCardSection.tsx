@@ -1,6 +1,4 @@
-import {
-  CardElement, Elements, useElements, useStripe,
-} from "@stripe/react-stripe-js";
+import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js/pure";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
@@ -122,7 +120,7 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
         confirmationData.client_secret,
         {
           payment_method: pR.paymentMethod.id,
-        },
+        }
       );
 
       if (stripeConfirmationResponse.error) {
@@ -142,7 +140,7 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
       if (confirmedCompleteErrors) {
         console.error(
           "Errors during checkout completion after the confirmation: ",
-          confirmedCompleteErrors,
+          confirmedCompleteErrors
         );
         setIsPaymentProcessing(false);
         return;
@@ -177,7 +175,7 @@ interface StripeCreditCardSectionInterface {
 
 export function StripeCreditCardSection({ checkout }: StripeCreditCardSectionInterface) {
   const stripeGateway = checkout.availablePaymentGateways.find(
-    (gateway) => gateway.id === STRIPE_GATEWAY,
+    (gateway) => gateway.id === STRIPE_GATEWAY
   );
   const stripeApiKey = stripeGateway?.config.find((conf) => conf.field === "api_key")?.value;
 

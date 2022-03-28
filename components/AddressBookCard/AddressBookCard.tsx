@@ -46,7 +46,8 @@ export function AddressBookCard({ address, onRefreshBook }: AddressBookCardProps
           onClick={() =>
             setAddressDefaultMutation({
               variables: { id: address.id, type: "BILLING" },
-            })}
+            })
+          }
         >
           {t.formatMessage(messages.setDefaultBilling)}
         </Button>
@@ -57,7 +58,8 @@ export function AddressBookCard({ address, onRefreshBook }: AddressBookCardProps
           onClick={() =>
             setAddressDefaultMutation({
               variables: { id: address.id, type: "SHIPPING" },
-            })}
+            })
+          }
         >
           {t.formatMessage(messages.setDefaultShipping)}
         </Button>

@@ -3,9 +3,9 @@
   "extends": [
     "next",
     "next/core-web-vitals",
-    "prettier",
     "airbnb",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier" // prettier *has* to be the last one, to avoid conflicting rules
   ],
   "ignorePatterns": ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json"],
   "plugins": ["simple-import-sort", "formatjs", "@typescript-eslint"],

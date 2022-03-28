@@ -102,7 +102,8 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                       lineId: line?.id,
                       locale: query.locale,
                     },
-                  })}
+                  })
+                }
                 className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
               >
                 <span>{t.formatMessage(messages.removeButton)}</span>
@@ -122,7 +123,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                 type="number"
                 className={clsx(
                   "h-8 w-16 block border-gray-300 rounded-md shadow-sm sm:text-sm",
-                  errors && "border-red-500",
+                  errors && "border-red-500"
                 )}
                 value={quantity}
                 onFocus={() => {

@@ -58,7 +58,7 @@ export function MainMenu() {
         className={clsx(
           "z-40 dropdown-menu transition-all duration-300 transform origin-top-left -translate-y-2 scale-95",
           openDropdown && "visible",
-          !openDropdown && "invisible opacity-0",
+          !openDropdown && "invisible opacity-0"
         )}
       >
         <div className="mt-5 mr-2 -ml-2 md:mx-3 z-40 absolute h-screen w-screen lg:max-w-7xl md:h-56 bg-white border border-gray-200 rounded-md shadow-lg outline-none">

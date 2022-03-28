@@ -1,9 +1,7 @@
 import { useAuthState } from "@saleor/sdk";
 import React, { ReactElement } from "react";
 
-import {
-  AccountLayout, OrdersTable, Pagination, Spinner,
-} from "@/components";
+import { AccountLayout, OrdersTable, Pagination, Spinner } from "@/components";
 import { useOrdersQuery } from "@/saleor/api";
 
 function OrdersPage() {

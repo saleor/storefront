@@ -24,9 +24,7 @@ export function RegionDialog({ isOpen, onClose }: RegionDialogProps) {
   const t = useIntl();
   const router = useRouter();
   const { resetCheckoutToken } = useCheckout();
-  const {
-    channels, currentChannel, setCurrentChannel, currentLocale,
-  } = useRegions();
+  const { channels, currentChannel, setCurrentChannel, currentLocale } = useRegions();
   const { register, handleSubmit } = useForm<RegionFormData>({
     defaultValues: {
       channel: currentChannel.slug,

@@ -9,9 +9,7 @@ import { useCurrentUserAddressesQuery } from "@/saleor/api";
 function AddressBookPage() {
   const t = useIntl();
   const { authenticated } = useAuthState();
-  const {
-    loading, error, data, refetch,
-  } = useCurrentUserAddressesQuery({
+  const { loading, error, data, refetch } = useCurrentUserAddressesQuery({
     skip: !authenticated,
     fetchPolicy: "network-only",
   });
@@ -20,12 +18,7 @@ function AddressBookPage() {
     return <Spinner />;
   }
   if (error) {
-    return (
-      <p>
-        Error :
-        {error.message}
-      </p>
-    );
+    return <p>Error :{error.message}</p>;
   }
 
   const addresses = data?.me?.addresses || [];
@@ -38,7 +31,7 @@ function AddressBookPage() {
     <div className="grid grid-cols-1 md:grid-cols-2">
       {addresses.map(
         (address) =>
-          address && <AddressBookCard address={address} onRefreshBook={() => refetch()} />,
+          address && <AddressBookCard address={address} onRefreshBook={() => refetch()} />
       )}
     </div>
   );

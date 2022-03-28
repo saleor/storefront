@@ -17,7 +17,8 @@ export function PaymentSection({ checkout, active }: PaymentSectionProps) {
   const t = useIntl();
   const existingGateways = [STRIPE_GATEWAY, DUMMY_CREDIT_CARD_GATEWAY];
   const availableGateways = checkout.availablePaymentGateways.filter((g) =>
-    existingGateways.includes(g.id));
+    existingGateways.includes(g.id)
+  );
 
   const [chosenGateway, setChosenGateway] = useState("");
 

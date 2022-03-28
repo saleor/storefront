@@ -28,9 +28,9 @@ function LoginPage() {
 
   const defaultValues = DEMO_MODE
     ? {
-      email: "admin@example.com",
-      password: "admin",
-    }
+        email: "admin@example.com",
+        password: "admin",
+      }
     : {};
 
   const {

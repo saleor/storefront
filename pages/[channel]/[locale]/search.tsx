@@ -19,7 +19,7 @@ function SearchPage() {
       setDebouncedFilter({ search: searchQuery });
     },
     1000,
-    [searchQuery],
+    [searchQuery]
   );
 
   return (

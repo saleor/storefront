@@ -22,12 +22,7 @@ export function SavedAddressSelectionList({
   }
 
   if (error) {
-    return (
-      <p>
-        Error :
-        {error.message}
-      </p>
-    );
+    return <p>Error :{error.message}</p>;
   }
 
   const addresses = data?.me?.addresses || [];
@@ -57,7 +52,7 @@ export function SavedAddressSelectionList({
           onClick={() => address && onSelectSavedAddress(address)}
           className={clsx(
             "border-2 p-3 mr-2 rounded-md",
-            address?.id === selectedSavedAddress?.id && "border-blue-500",
+            address?.id === selectedSavedAddress?.id && "border-blue-500"
           )}
           key={address?.id}
         >

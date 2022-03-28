@@ -157,7 +157,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
       <ProductPageSeo product={product} />
       <main
         className={clsx(
-          "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8 md:grid-cols-3",
+          "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden max-w-7xl mx-auto pt-8 px-8 md:grid-cols-3"
         )}
       >
         <div className="col-span-2">
@@ -190,7 +190,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             disabled={isAddToCartButtonDisabled}
             className={clsx(
               "w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-700 focus:outline-none",
-              isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400",
+              isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400"
             )}
           >
             {loadingAddToCheckout

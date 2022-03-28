@@ -36,7 +36,8 @@ export function EmailPreferences() {
       mutationErrors.forEach((e) =>
         setError(e.field as keyof EmailChangeFormData, {
           message: e.message || "",
-        }));
+        })
+      );
     } else if (result.data?.requestEmailChange?.user) {
       setSuccessMessage("Email changed successfully. Check your mailbox for confirmation email.");
       setTimeout(() => {

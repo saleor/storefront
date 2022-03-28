@@ -15,7 +15,8 @@ export const getGalleryMedia = ({
   product: ProductDetailsFragment;
   selectedVariant?: ProductVariantDetailsFragment;
 }) => {
-  if (selectedVariant && selectedVariant.media?.length !== 0) return selectedVariant.media?.filter(notNullable) || [];
+  if (selectedVariant && selectedVariant.media?.length !== 0)
+    return selectedVariant.media?.filter(notNullable) || [];
   return product?.media?.filter(notNullable) || [];
 };
 

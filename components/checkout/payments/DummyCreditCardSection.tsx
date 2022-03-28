@@ -44,10 +44,10 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
 
   const defaultValues = DEMO_MODE
     ? {
-      cardNumber: "4242 4242 4242 4242",
-      expDate: "12/34",
-      cvc: "123",
-    }
+        cardNumber: "4242 4242 4242 4242",
+        expDate: "12/34",
+        cvc: "123",
+      }
     : {};
 
   const { register: registerCard, handleSubmit: handleSubmitCard } = useForm<CardForm>({

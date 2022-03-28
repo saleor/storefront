@@ -18,9 +18,7 @@ export function ProductCollection({ filter, allowMore = true }: ProductCollectio
   const t = useIntl();
   const { query } = useRegions();
 
-  const {
-    loading, error, data, fetchMore,
-  } = useProductCollectionQuery({
+  const { loading, error, data, fetchMore } = useProductCollectionQuery({
     variables: {
       filter,
       ...query,

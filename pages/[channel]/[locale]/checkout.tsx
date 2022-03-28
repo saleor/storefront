@@ -1,9 +1,7 @@
 import { useRouter } from "next/router";
 import React, { ReactElement, useEffect } from "react";
 
-import {
-  CheckoutForm, CheckoutSidebar, Layout, Spinner,
-} from "@/components";
+import { CheckoutForm, CheckoutSidebar, Layout, Spinner } from "@/components";
 import BaseSeo from "@/components/seo/BaseSeo";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
