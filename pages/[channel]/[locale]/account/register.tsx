@@ -48,7 +48,6 @@ function RegisterPage() {
     }
     // User signed in successfully.
     router.push(paths.$url());
-    return null;
   });
 
   return (

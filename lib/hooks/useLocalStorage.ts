@@ -58,6 +58,7 @@ export function useLocalStorage<T>(
         window.removeEventListener("storage", onStorage);
       };
     }
+    return undefined;
   }, [onStorage, sync]);
 
   return [storedValue, setValue];

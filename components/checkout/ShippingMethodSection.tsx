@@ -63,10 +63,11 @@ export function ShippingMethodSection({ checkout, active }: ShippingMethodSectio
             <RadioGroup value={selectedDeliveryMethod} onChange={handleChange} className="py-8">
               <div className="mt-4 grid grid-cols-2 gap-2">
                 {availableShippingMethods.map((method) => {
-                  if (method) {
-                    // todo: Investigate why filter did not excluded non existing methods
-                    return <ShippingMethodOption method={method} key={method.id} />;
+                  // todo: Investigate why filter did not excluded non existing methods
+                  if (!method) {
+                    return null;
                   }
+                  return <ShippingMethodOption method={method} key={method.id} />;
                 })}
               </div>
             </RadioGroup>

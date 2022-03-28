@@ -31,7 +31,7 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
             <div>
               {attribute.values.map((value, index) => {
                 if (!value) {
-                  return;
+                  return null;
                 }
                 return (
                   <div key={value.id}>
