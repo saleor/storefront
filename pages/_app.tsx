@@ -5,9 +5,9 @@ import { NextPage } from "next";
 import { AppProps } from "next/app";
 import React, { ReactElement, ReactNode } from "react";
 
-import DemoBanner from "@/components/DemoBanner";
-import RegionsProvider from "@/components/RegionsProvider";
-import SaleorProviderWithChannels from "@/components/SaleorProviderWithChannels";
+import { DemoBanner } from "@/components/DemoBanner";
+import { RegionsProvider } from "@/components/RegionsProvider";
+import { SaleorProviderWithChannels } from "@/components/SaleorProviderWithChannels";
 import { DEMO_MODE } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";

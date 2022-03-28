@@ -43,7 +43,6 @@
     "jsx-a11y/click-events-have-key-events": "off",
     "import/no-cycle": "off", // pathpidia issue
     "react/jsx-no-useless-fragment": "off",
-    "import/no-named-as-default": "off",
     "consistent-return": "off"
   }
 }

@@ -1,7 +1,7 @@
 import { useIntl } from "react-intl";
 
 import { Button } from "@/components/Button";
-import AddressDisplay from "@/components/checkout/AddressDisplay";
+import { AddressDisplay } from "@/components/checkout/AddressDisplay";
 import {
   AddressDetailsFragment,
   useAddressDeleteMutation,

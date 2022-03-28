@@ -9,7 +9,7 @@ import { CheckoutDetailsFragment, useCheckoutBillingAddressUpdateMutation } from
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
-import AddressDisplay from "./AddressDisplay";
+import { AddressDisplay } from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
 
 export interface BillingAddressSection {

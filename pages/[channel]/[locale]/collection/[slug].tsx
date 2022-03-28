@@ -4,7 +4,7 @@ import Custom404 from "pages/404";
 import React, { ReactElement } from "react";
 
 import { Layout, PageHero, ProductCollection } from "@/components";
-import CollectionPageSeo from "@/components/seo/CollectionPageSeo";
+import { CollectionPageSeo } from "@/components/seo/CollectionPageSeo";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
 import { collectionPaths } from "@/lib/ssr/collection";

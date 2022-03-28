@@ -14,7 +14,7 @@ import {
   useCheckoutPaymentCreateMutation,
 } from "@/saleor/api";
 
-import CompleteCheckoutButton from "../CompleteCheckoutButton";
+import { CompleteCheckoutButton } from "../CompleteCheckoutButton";
 
 export const DUMMY_CREDIT_CARD_GATEWAY = "mirumee.payments.dummy";
 

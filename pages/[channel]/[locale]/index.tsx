@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "
 import React, { ReactElement } from "react";
 
 import { HomepageBlock, Layout } from "@/components";
-import BaseSeo from "@/components/seo/BaseSeo";
+import { BaseSeo } from "@/components/seo/BaseSeo";
 import { HOMEPAGE_MENU } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";

@@ -4,7 +4,7 @@ import Custom404 from "pages/404";
 import React, { ReactElement } from "react";
 
 import { Layout, PageHero, ProductCollection } from "@/components";
-import CategoryPageSeo from "@/components/seo/CategoryPageSeo";
+import { CategoryPageSeo } from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
 import { categoryPaths } from "@/lib/ssr/category";
