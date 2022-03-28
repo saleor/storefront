@@ -20,6 +20,11 @@ export function ImageExpand({ image, onRemoveExpand }: ImageExpandProps) {
         tabIndex={0}
         className="absolute grid h-6 justify-end w-full z-40 p-8 lg:px-8 mx-auto"
         onClick={() => onRemoveExpand()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onRemoveExpand();
+          }
+        }}
       >
         <XIcon className="w-6 h-6" />
       </div>

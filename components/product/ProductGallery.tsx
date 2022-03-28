@@ -61,6 +61,11 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                 onClick={() => {
                   setVideoToPlay(media);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setVideoToPlay(media);
+                  }
+                }}
               >
                 <Image
                   src={getVideoThumbnail(media.url)}

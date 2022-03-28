@@ -50,6 +50,11 @@ export function SavedAddressSelectionList({
           aria-checked={address?.id === selectedSavedAddress?.id}
           tabIndex={-1}
           onClick={() => address && onSelectSavedAddress(address)}
+          onKeyDown={(e) => {
+            if (address && e.key === "Enter") {
+              onSelectSavedAddress(address);
+            }
+          }}
           className={clsx(
             "border-2 p-3 mr-2 rounded-md",
             address?.id === selectedSavedAddress?.id && "border-blue-500"
