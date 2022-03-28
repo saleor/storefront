@@ -14,7 +14,7 @@ export interface PaginationProps {
 export function Pagination({ pageInfo, onLoadMore, itemsCount, totalCount }: PaginationProps) {
   const t = useIntl();
   if (!pageInfo || !pageInfo?.hasNextPage) {
-    return <></>;
+    return null;
   }
 
   return (

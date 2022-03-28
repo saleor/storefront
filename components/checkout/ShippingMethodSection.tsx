@@ -57,34 +57,31 @@ export function ShippingMethodSection({ checkout, active }: ShippingMethodSectio
           {t.formatMessage(messages.shippingMethodCardHeader)}
         </h2>
       </div>
-      {active && (
-        <>
-          {editing ? (
-            <RadioGroup value={selectedDeliveryMethod} onChange={handleChange} className="py-8">
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {availableShippingMethods.map((method) => {
-                  // todo: Investigate why filter did not excluded non existing methods
-                  if (!method) {
-                    return null;
-                  }
-                  return <ShippingMethodOption method={method} key={method.id} />;
-                })}
-              </div>
-            </RadioGroup>
-          ) : (
-            <section className="flex justify-between items-center mb-4">
-              {!!checkout.shippingMethod && (
-                <ShippingMethodDisplay method={checkout.shippingMethod} />
-              )}
-              <div className="flex justify-between items-center">
-                <Button onClick={() => setEditing(true)}>
-                  {t.formatMessage(messages.changeButton)}
-                </Button>
-              </div>
-            </section>
-          )}
-        </>
-      )}
+      {active &&
+        (editing ? (
+          <RadioGroup value={selectedDeliveryMethod} onChange={handleChange} className="py-8">
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {availableShippingMethods.map((method) => {
+                // todo: Investigate why filter did not excluded non existing methods
+                if (!method) {
+                  return null;
+                }
+                return <ShippingMethodOption method={method} key={method.id} />;
+              })}
+            </div>
+          </RadioGroup>
+        ) : (
+          <section className="flex justify-between items-center mb-4">
+            {!!checkout.shippingMethod && (
+              <ShippingMethodDisplay method={checkout.shippingMethod} />
+            )}
+            <div className="flex justify-between items-center">
+              <Button onClick={() => setEditing(true)}>
+                {t.formatMessage(messages.changeButton)}
+              </Button>
+            </div>
+          </section>
+        ))}
     </>
   );
 }
