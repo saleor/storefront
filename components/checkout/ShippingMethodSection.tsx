@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
 import { notNullable } from "@/lib/util";
-import { CheckoutDetailsFragment, useCheckoutShippingMethodUpdateMutation } from "@/saleor/api";
+import {
+  CheckoutDetailsFragment,
+  ShippingMethod,
+  useCheckoutShippingMethodUpdateMutation,
+} from "@/saleor/api";
 
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
@@ -25,7 +29,7 @@ export function ShippingMethodSection({ checkout, active }: ShippingMethodSectio
 
   const [checkoutShippingMethodUpdate] = useCheckoutShippingMethodUpdateMutation({});
 
-  const handleChange = async (method: any) => {
+  const handleChange = async (method: ShippingMethod) => {
     const { data } = await checkoutShippingMethodUpdate({
       variables: {
         token: checkout.token,
