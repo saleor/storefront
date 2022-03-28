@@ -1,7 +1,8 @@
 import clsx from "clsx";
+import React from "react";
 
 export interface HamburgerButtonProps {
-  onClick: (ev: any) => void;
+  onClick: (ev: React.FormEvent) => void;
   active?: boolean;
 }
 export function HamburgerButton({ active, onClick }: HamburgerButtonProps) {

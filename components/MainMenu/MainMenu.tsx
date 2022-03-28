@@ -28,7 +28,7 @@ export function MainMenu() {
   if (loading) {
     return (
       <div className="group md:px-8 relative max-w-screen-md flex md:pt-2 md:pl-2 flex-col">
-        <HamburgerButton onClick={(ev: MouseEvent) => onClickButton(ev)} />
+        <HamburgerButton onClick={(ev) => onClickButton(ev)} />
       </div>
     );
   }
@@ -53,7 +53,7 @@ export function MainMenu() {
 
   return (
     <div className="group relative justify-center flex flex-col">
-      <HamburgerButton active={openDropdown} onClick={(ev: MouseEvent) => onClickButton(ev)} />
+      <HamburgerButton active={openDropdown} onClick={(ev) => onClickButton(ev)} />
       <div
         className={clsx(
           "z-40 dropdown-menu transition-all duration-300 transform origin-top-left -translate-y-2 scale-95",
