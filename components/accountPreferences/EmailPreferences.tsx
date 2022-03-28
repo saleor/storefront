@@ -51,12 +51,13 @@ export function EmailPreferences() {
       <form onSubmit={onEmailPreferenceSubmit}>
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
-            <label className="block pl-1 text-sm font-medium text-gray-700">
+            <label htmlFor="newEmail" className="block pl-1 text-sm font-medium text-gray-700">
               {t.formatMessage(messages.loginEmailFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="email"
+              id="newEmail"
               {...register("newEmail", {
                 required: true,
                 pattern: /^\S+@\S+$/i,
@@ -69,12 +70,13 @@ export function EmailPreferences() {
         </div>
         <div className="grid grid-cols-12 gap-4 w-full mt-2">
           <div className="col-span-full">
-            <label className="block pl-1 text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block pl-1 text-sm font-medium text-gray-700">
               {t.formatMessage(messages.loginPasswordFieldLabel)}
             </label>
             <input
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
+              id="password"
               {...register("password", {
                 required: true,
               })}

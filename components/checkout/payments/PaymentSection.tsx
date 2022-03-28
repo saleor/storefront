@@ -37,8 +37,14 @@ export function PaymentSection({ checkout, active }: PaymentSectionProps) {
             <RadioGroup value={chosenGateway} onChange={setChosenGateway} className="mt-2">
               {availableGateways.map((gateway) => (
                 <RadioGroup.Option key={gateway.id} value={gateway.id}>
-                  <label className="inline-flex items-center">
-                    <input type="radio" className="form-radio" name="radio" value={gateway.id} />
+                  <label className="inline-flex items-center" htmlFor={gateway.id}>
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="radio"
+                      value={gateway.id}
+                      id={gateway.id}
+                    />
                     <span className="ml-2">{gateway.name}</span>
                   </label>
                 </RadioGroup.Option>

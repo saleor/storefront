@@ -62,12 +62,13 @@ function RegisterPage() {
               </div>
 
               <div className="my-3">
-                <label className="block text-md mb-2">
+                <label htmlFor="email" className="block text-md mb-2">
                   {t.formatMessage(messages.registerEmailFieldLabel)}
                 </label>
                 <input
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="email"
+                  id="email"
                   {...registerForm("email", {
                     required: true,
                   })}
@@ -77,12 +78,13 @@ function RegisterPage() {
                 )}
               </div>
               <div className="mt-5">
-                <label className="block text-md mb-2">
+                <label htmlFor="password" className="block text-md mb-2">
                   {t.formatMessage(messages.registerPasswordFieldLabel)}
                 </label>
                 <input
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="password"
+                  id="password"
                   {...registerForm("password", {
                     required: true,
                   })}
