@@ -17,6 +17,8 @@ export function VideoExpand({ video, onRemoveExpand }: VideoExpandProps) {
   return (
     <div className="min-h-screen absolute grid grid-cols-1 mx-auto px-8 md:h-full w-full bg-gray-100">
       <div
+        role="button"
+        tabIndex={0}
         className="absolute grid h-6 justify-end w-full z-40 p-8 lg:px-8 mx-auto"
         onClick={() => onRemoveExpand()}
       >

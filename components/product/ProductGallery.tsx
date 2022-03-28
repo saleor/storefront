@@ -49,11 +49,15 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                 alt={media.alt}
                 layout="fill"
                 objectFit="cover"
+                role="button"
+                tabIndex={-2}
                 priority
               />
             )}
             {media.type === "VIDEO" && (
               <div
+                role="button"
+                tabIndex={-2}
                 onClick={() => {
                   setVideoToPlay(media);
                 }}

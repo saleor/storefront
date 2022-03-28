@@ -51,6 +51,9 @@ export function SavedAddressSelectionList({
     <div className="grid grid-cols-2 mb-2">
       {addresses.map((address) => (
         <div
+          role="radio"
+          aria-checked={address?.id === selectedSavedAddres?.id}
+          tabIndex={-1}
           onClick={() => address && onSelectSavedAddress(address)}
           className={clsx(
             "border-2 p-3 mr-2 rounded-md",
@@ -58,19 +61,10 @@ export function SavedAddressSelectionList({
           )}
           key={address?.id}
         >
-          <p>
-            {address?.firstName}
-            {" "}
-            {address?.lastName}
-          </p>
+          <p>{`${address?.firstName} ${address?.lastName}`}</p>
           <p className="text-gray-600 text-sm">{address?.streetAddress1}</p>
           <p className="text-gray-600 text-sm">
-            {address?.postalCode}
-            {" "}
-            {address?.city}
-            ,
-            {" "}
-            {address?.country.country}
+            {`${address?.postalCode} ${address?.city}, ${address?.country.country}`}
           </p>
         </div>
       ))}
