@@ -14,7 +14,7 @@ export function SavedAddressSelectionList({
   updateAddressMutation,
 }: SavedAddressSelectionListProps) {
   const { loading, error, data } = useCurrentUserAddressesQuery();
-  const [selectedSavedAddres, setSelectedSavedAddress] =
+  const [selectedSavedAddress, setSelectedSavedAddress] =
     React.useState<AddressDetailsFragment | null>();
 
   if (loading) {
@@ -52,12 +52,12 @@ export function SavedAddressSelectionList({
       {addresses.map((address) => (
         <div
           role="radio"
-          aria-checked={address?.id === selectedSavedAddres?.id}
+          aria-checked={address?.id === selectedSavedAddress?.id}
           tabIndex={-1}
           onClick={() => address && onSelectSavedAddress(address)}
           className={clsx(
             "border-2 p-3 mr-2 rounded-md",
-            address?.id === selectedSavedAddres?.id && "border-blue-500",
+            address?.id === selectedSavedAddress?.id && "border-blue-500",
           )}
           key={address?.id}
         >
