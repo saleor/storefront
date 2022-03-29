@@ -6,9 +6,9 @@ import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
 
-export interface AccountLayoutProps extends PropsWithChildren<{}> {}
+export type AccountLayoutProps = PropsWithChildren<{}>;
 
-export const AccountLayout = ({ children }: AccountLayoutProps) => {
+export function AccountLayout({ children }: AccountLayoutProps) {
   const router = useRouter();
   const paths = usePaths();
   const { authenticated, authenticating } = useAuthState();
@@ -21,9 +21,7 @@ export const AccountLayout = ({ children }: AccountLayoutProps) => {
   }
 
   if (!authenticated && process.browser) {
-    router.push(
-      paths.account.login.$url({ query: { next: router?.pathname } })
-    );
+    router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
     return null;
   }
 
@@ -41,4 +39,4 @@ export const AccountLayout = ({ children }: AccountLayoutProps) => {
       </div>
     </Layout>
   );
-};
+}

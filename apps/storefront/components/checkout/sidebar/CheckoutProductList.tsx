@@ -5,30 +5,21 @@ import { useIntl } from "react-intl";
 import { useRegions } from "@/components/RegionsProvider";
 import { messages } from "@/components/translations";
 import { translate } from "@/lib/translations";
-import {
-  CheckoutLineDetailsFragment,
-  useRemoveProductFromCheckoutMutation,
-} from "@/saleor/api";
+import { CheckoutLineDetailsFragment, useRemoveProductFromCheckoutMutation } from "@/saleor/api";
 
 export interface CheckoutProductListProps {
   lines: CheckoutLineDetailsFragment[];
   token: string;
 }
 
-export const CheckoutProductList = ({
-  lines,
-  token,
-}: CheckoutProductListProps) => {
+export function CheckoutProductList({ lines, token }: CheckoutProductListProps) {
   const t = useIntl();
   const { query, formatPrice } = useRegions();
 
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   return (
-    <ul
-      role="list"
-      className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4 md:pr-4 md:pl-0"
-    >
+    <ul className="flex-auto overflow-y-auto divide-y divide-gray-200 px-4 md:pr-4 md:pl-0">
       {lines.map((line) => {
         if (!line) {
           return null;
@@ -45,15 +36,9 @@ export const CheckoutProductList = ({
 
             <div className="flex flex-col justify-between space-y-4">
               <div className="text-sm font-medium space-y-1">
-                <h3 className="text-gray-900">
-                  {translate(line.variant.product, "name")}
-                </h3>
-                <p className="text-gray-500">
-                  {translate(line.variant, "name")}
-                </p>
-                <p className="text-gray-900">
-                  {formatPrice(line.totalPrice?.gross)}
-                </p>
+                <h3 className="text-gray-900">{translate(line.variant.product, "name")}</h3>
+                <p className="text-gray-500">{translate(line.variant, "name")}</p>
+                <p className="text-gray-900">{formatPrice(line.totalPrice?.gross)}</p>
               </div>
               <div className="flex space-x-4">
                 <button
@@ -78,4 +63,4 @@ export const CheckoutProductList = ({
       })}
     </ul>
   );
-};
+}

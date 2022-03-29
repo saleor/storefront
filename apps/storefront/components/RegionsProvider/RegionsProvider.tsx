@@ -4,13 +4,7 @@ import { IntlProvider } from "react-intl";
 
 import apolloClient from "@/lib/graphql";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
-import {
-  Channel,
-  CHANNELS,
-  DEFAULT_CHANNEL,
-  DEFAULT_LOCALE,
-  localeToEnum,
-} from "@/lib/regions";
+import { Channel, CHANNELS, DEFAULT_CHANNEL, DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import createSafeContext from "@/lib/useSafeContext";
 import { formatAsMoney } from "@/lib/util";
 import { LanguageCodeEnum, PriceFragment } from "@/saleor/api";
@@ -45,13 +39,16 @@ export function importMessages(locale: string): LocaleMessages {
       return sourceOfTruth;
   }
 }
-export const RegionsProvider: React.FC = ({ children }) => {
+
+export interface RegionsProviderProps {
+  children: React.ReactNode;
+}
+
+export function RegionsProvider({ children }: PropsWithChildren<{}>) {
   const router = useRouter();
   const { resetCheckoutToken } = useCheckout();
 
-  const [currentChannelSlug, setCurrentChannelSlug] = useState(
-    router.query.channel
-  );
+  const [currentChannelSlug, setCurrentChannelSlug] = useState(router.query.channel);
 
   const setCurrentChannel = (channel: string) => {
     resetCheckoutToken();
@@ -64,19 +61,14 @@ export const RegionsProvider: React.FC = ({ children }) => {
   const currentChannel =
     CHANNELS.find(({ slug }) => slug === currentChannelSlug) || DEFAULT_CHANNEL;
 
-  const formatPrice = (price?: PriceFragment) => {
-    return formatAsMoney(
-      price?.amount || 0,
-      price?.currency || currentChannel.currencyCode,
-      locale
-    );
-  };
+  const formatPrice = (price?: PriceFragment) =>
+    formatAsMoney(price?.amount || 0, price?.currency || currentChannel.currencyCode, locale);
 
   const providerValues: RegionsConsumerProps = {
     channels: CHANNELS,
     defaultChannel: DEFAULT_CHANNEL,
     currentChannel,
-    setCurrentChannel: setCurrentChannel,
+    setCurrentChannel,
     currentLocale: locale,
     query: {
       channel: currentChannel.slug,
@@ -89,16 +81,12 @@ export const RegionsProvider: React.FC = ({ children }) => {
 
   return (
     <Provider value={providerValues}>
-      <IntlProvider
-        messages={msgs}
-        locale={locale}
-        defaultLocale={DEFAULT_LOCALE}
-      >
+      <IntlProvider messages={msgs} locale={locale} defaultLocale={DEFAULT_LOCALE}>
         {children}
       </IntlProvider>
     </Provider>
   );
-};
+}
 
 export const useRegions = useContext;
 

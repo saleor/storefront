@@ -2,11 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
-import {
-  AddressDetailsFragment,
-  CheckoutError,
-  CountryCode,
-} from "@/saleor/api";
+import { AddressDetailsFragment, CheckoutError, CountryCode } from "@/saleor/api";
 
 import { messages } from "../translations";
 
@@ -26,18 +22,17 @@ export interface AddressFormProps {
   updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
 }
 
-export const AddressForm = ({
+export function AddressForm({
   existingAddressData,
   toggleEdit,
   updateAddressMutation,
-}: AddressFormProps) => {
+}: AddressFormProps) {
   const t = useIntl();
   const {
     register: registerAddress,
     handleSubmit: handleSubmitAddress,
     formState: { errors: errorsAddress },
     setError: setErrorAddress,
-    getValues,
   } = useForm<AddressFormData>({
     defaultValues: {
       firstName: existingAddressData?.firstName || "",
@@ -50,32 +45,27 @@ export const AddressForm = ({
     },
   });
 
-  const onAddressFormSubmit = handleSubmitAddress(
-    async (formData: AddressFormData) => {
-      const errors = await updateAddressMutation(formData);
+  const onAddressFormSubmit = handleSubmitAddress(async (formData: AddressFormData) => {
+    const errors = await updateAddressMutation(formData);
 
-      // Assign errors to the form fields
-      if (errors.length > 0) {
-        errors.forEach((e) =>
-          setErrorAddress(e.field as keyof AddressFormData, {
-            message: e.message || "",
-          })
-        );
-        return;
-      }
-
-      // Address updated, we can exit the edit mode
-      toggleEdit();
+    // Assign errors to the form fields
+    if (errors.length > 0) {
+      errors.forEach((e) =>
+        setErrorAddress(e.field as keyof AddressFormData, {
+          message: e.message || "",
+        })
+      );
+      return;
     }
-  );
+
+    // Address updated, we can exit the edit mode
+    toggleEdit();
+  });
   return (
     <form onSubmit={onAddressFormSubmit}>
       <div className="grid grid-cols-12 gap-4 w-full">
         <div className="col-span-full">
-          <label
-            htmlFor="address"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="address" className="block text-sm font-medium text-gray-700">
             {t.formatMessage(messages.phoneField)}
           </label>
           <div className="mt-1">
@@ -85,8 +75,7 @@ export const AddressForm = ({
               className="w-full border-gray-300 rounded-md shadow-sm text-sm"
               {...registerAddress("phone", {
                 required: true,
-                pattern:
-                  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i,
+                pattern: /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i,
               })}
             />
             {!!errorsAddress.phone && <p>{errorsAddress.phone.message}</p>}
@@ -94,10 +83,7 @@ export const AddressForm = ({
         </div>
 
         <div className="col-span-full sm:col-span-6">
-          <label
-            htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
             {t.formatMessage(messages.firstNameField)}
           </label>
           <div className="mt-1">
@@ -109,17 +95,12 @@ export const AddressForm = ({
                 required: true,
               })}
             />
-            {!!errorsAddress.firstName && (
-              <p>{errorsAddress.firstName.message}</p>
-            )}
+            {!!errorsAddress.firstName && <p>{errorsAddress.firstName.message}</p>}
           </div>
         </div>
 
         <div className="col-span-full sm:col-span-6">
-          <label
-            htmlFor="province"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="province" className="block text-sm font-medium text-gray-700">
             {t.formatMessage(messages.lastNameField)}
           </label>
           <div className="mt-1">
@@ -131,17 +112,12 @@ export const AddressForm = ({
                 required: true,
               })}
             />
-            {!!errorsAddress.lastName && (
-              <p>{errorsAddress.lastName.message}</p>
-            )}
+            {!!errorsAddress.lastName && <p>{errorsAddress.lastName.message}</p>}
           </div>
         </div>
 
         <div className="col-span-full">
-          <label
-            htmlFor="address"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="address" className="block text-sm font-medium text-gray-700">
             {t.formatMessage(messages.addressField)}
           </label>
           <div className="mt-1">
@@ -153,17 +129,12 @@ export const AddressForm = ({
                 required: true,
               })}
             />
-            {!!errorsAddress.streetAddress1 && (
-              <p>{errorsAddress.streetAddress1.message}</p>
-            )}
+            {!!errorsAddress.streetAddress1 && <p>{errorsAddress.streetAddress1.message}</p>}
           </div>
         </div>
 
         <div className="col-span-full sm:col-span-6">
-          <label
-            htmlFor="city"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="city" className="block text-sm font-medium text-gray-700">
             {t.formatMessage(messages.cityField)}
           </label>
           <div className="mt-1">
@@ -194,10 +165,7 @@ export const AddressForm = ({
       </div> */}
 
         <div className="col-span-full sm:col-span-6">
-          <label
-            htmlFor="postal-code"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
             {t.formatMessage(messages.postalCodeField)}
           </label>
           <div className="mt-1">
@@ -210,21 +178,16 @@ export const AddressForm = ({
                 required: true,
               })}
             />
-            {!!errorsAddress.postalCode && (
-              <p>{errorsAddress.postalCode.message}</p>
-            )}
+            {!!errorsAddress.postalCode && <p>{errorsAddress.postalCode.message}</p>}
           </div>
         </div>
 
         <div className="col-span-full">
-          <button
-            className="btn-checkout-section"
-            onClick={onAddressFormSubmit}
-          >
+          <button type="button" className="btn-checkout-section" onClick={onAddressFormSubmit}>
             {t.formatMessage(messages.saveButton)}
           </button>
         </div>
       </div>
     </form>
   );
-};
+}

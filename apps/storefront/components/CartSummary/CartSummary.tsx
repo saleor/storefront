@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 
-import {
-  CheckoutDetailsFragment,
-  useCheckoutAddPromoCodeMutation,
-} from "@/saleor/api";
+import { CheckoutDetailsFragment, useCheckoutAddPromoCodeMutation } from "@/saleor/api";
 
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
@@ -18,45 +15,38 @@ export interface CartSummaryProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const CartSummary = ({ checkout }: CartSummaryProps) => {
+export function CartSummary({ checkout }: CartSummaryProps) {
   const t = useIntl();
-  const [editPromoCode, setEditPromoCode] = useState(false);
+  const [editPromoCode] = useState(false);
   const [checkoutAddPromoCodeMutation] = useCheckoutAddPromoCodeMutation();
-  const { subtotalPrice, shippingPrice, totalPrice, discount, discountName } =
-    checkout;
+  const { subtotalPrice, shippingPrice, totalPrice, discount } = checkout;
   const {
     register: registerForm,
     handleSubmit: handleSubmitForm,
     formState: { errors: errorsForm },
     setError: setErrorForm,
-    getValues,
   } = useForm<PromoCodeFormData>({});
   const { query, formatPrice } = useRegions();
 
-  const onAddPromoCode = handleSubmitForm(
-    async (formData: PromoCodeFormData) => {
-      const { data: promoMutationData } = await checkoutAddPromoCodeMutation({
-        variables: {
-          promoCode: formData.promoCode,
-          token: checkout.token,
-          locale: query.locale,
-        },
-      });
-      const errors = promoMutationData?.checkoutAddPromoCode?.errors;
-      if (!!errors && errors.length > 0) {
-        setErrorForm("promoCode", { message: errors[0].message || "Error" });
-      }
+  const onAddPromoCode = handleSubmitForm(async (formData: PromoCodeFormData) => {
+    const { data: promoMutationData } = await checkoutAddPromoCodeMutation({
+      variables: {
+        promoCode: formData.promoCode,
+        token: checkout.token,
+        locale: query.locale,
+      },
+    });
+    const errors = promoMutationData?.checkoutAddPromoCode?.errors;
+    if (!!errors && errors.length > 0) {
+      setErrorForm("promoCode", { message: errors[0].message || "Error" });
     }
-  );
+  });
   return (
     <section>
       <div className="bg-gray-50 rounded p-8 border">
         {(editPromoCode || !discount?.amount) && (
           <form className="pb-4" onSubmit={onAddPromoCode}>
-            <label
-              htmlFor="discount-code"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="discount-code" className="block text-sm font-medium text-gray-700">
               {t.formatMessage(messages.discountCodeFieldLabel)}
             </label>
             <div className="flex space-x-4 mt-1">
@@ -76,9 +66,7 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
               </button>
             </div>
             {!!errorsForm.promoCode && (
-              <p className="text-sm text-red-500 pt-2">
-                {errorsForm.promoCode?.message}
-              </p>
+              <p className="text-sm text-red-500 pt-2">{errorsForm.promoCode?.message}</p>
             )}
           </form>
         )}
@@ -86,47 +74,29 @@ export const CartSummary = ({ checkout }: CartSummaryProps) => {
           <dl className="text-sm">
             {!!discount?.amount && (
               <div className="py-2 flex items-center justify-between">
-                <dt className="text-gray-600">
-                  {t.formatMessage(messages.discount)}
-                </dt>
-                <dd className="font-medium text-gray-900">
-                  {formatPrice(discount)}
-                </dd>
+                <dt className="text-gray-600">{t.formatMessage(messages.discount)}</dt>
+                <dd className="font-medium text-gray-900">{formatPrice(discount)}</dd>
               </div>
             )}
             <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">
-                {t.formatMessage(messages.subtotal)}
-              </dt>
-              <dd className="font-medium text-gray-900">
-                {formatPrice(subtotalPrice?.net)}
-              </dd>
+              <dt className="text-gray-600">{t.formatMessage(messages.subtotal)}</dt>
+              <dd className="font-medium text-gray-900">{formatPrice(subtotalPrice?.net)}</dd>
             </div>
             <div className="py-2 flex items-center justify-between">
-              <dt className="text-gray-600">
-                {t.formatMessage(messages.shipping)}
-              </dt>
-              <dd className="font-medium text-gray-900">
-                {formatPrice(shippingPrice?.gross)}
-              </dd>
+              <dt className="text-gray-600">{t.formatMessage(messages.shipping)}</dt>
+              <dd className="font-medium text-gray-900">{formatPrice(shippingPrice?.gross)}</dd>
             </div>
             <div className="py-2 flex items-center justify-between">
               <dt className="text-gray-600">{t.formatMessage(messages.tax)}</dt>
-              <dd className="font-medium text-gray-900">
-                {formatPrice(subtotalPrice?.tax)}
-              </dd>
+              <dd className="font-medium text-gray-900">{formatPrice(subtotalPrice?.tax)}</dd>
             </div>
             <div className="pt-4 flex items-center justify-between border-t border-gray-300">
-              <dt className="text-lg font-bold text-gray-900">
-                {t.formatMessage(messages.total)}
-              </dt>
-              <dd className="text-lg font-bold text-gray-900">
-                {formatPrice(totalPrice?.gross)}
-              </dd>
+              <dt className="text-lg font-bold text-gray-900">{t.formatMessage(messages.total)}</dt>
+              <dd className="text-lg font-bold text-gray-900">{formatPrice(totalPrice?.gross)}</dd>
             </div>
           </dl>
         </div>
       </div>
     </section>
   );
-};
+}

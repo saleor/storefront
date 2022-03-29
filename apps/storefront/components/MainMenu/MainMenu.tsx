@@ -10,7 +10,7 @@ import { usePaths } from "../../lib/paths";
 import { HamburgerButton } from "../HamburgerButton";
 import { useRegions } from "../RegionsProvider";
 
-export const MainMenu = () => {
+export function MainMenu() {
   const paths = usePaths();
   const { query } = useRegions();
 
@@ -20,12 +20,18 @@ export const MainMenu = () => {
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 
-  if (loading)
+  const onClickButton = (ev: { stopPropagation: () => void }) => {
+    ev.stopPropagation();
+    setOpenDropdown(!openDropdown);
+  };
+
+  if (loading) {
     return (
       <div className="group md:px-8 relative max-w-screen-md flex md:pt-2 md:pl-2 flex-col">
-        <HamburgerButton onClick={(ev: MouseEvent) => onClickButton(ev)} />
+        <HamburgerButton onClick={(ev) => onClickButton(ev)} />
       </div>
     );
+  }
 
   if (error) {
     console.error("Navigation component error", error.message);
@@ -33,28 +39,21 @@ export const MainMenu = () => {
   }
   const menu = data?.menu?.items || [];
   const menuLink = (item: MenuItemFragment) => {
-    if (!!item.category) {
+    if (item.category) {
       return paths.category._slug(item.category?.slug).$url();
     }
-    if (!!item.collection) {
+    if (item.collection) {
       return paths.collection._slug(item.collection?.slug).$url();
     }
-    if (!!item.page) {
+    if (item.page) {
       return paths.page._slug(item.page?.slug).$url();
     }
     return paths.$url();
   };
-  const onClickButton = (ev: { stopPropagation: () => void }) => {
-    ev.stopPropagation();
-    setOpenDropdown(!openDropdown);
-  };
 
   return (
     <div className="group relative justify-center flex flex-col">
-      <HamburgerButton
-        active={openDropdown}
-        onClick={(ev: MouseEvent) => onClickButton(ev)}
-      />
+      <HamburgerButton active={openDropdown} onClick={(ev) => onClickButton(ev)} />
       <div
         className={clsx(
           "z-40 dropdown-menu transition-all duration-300 transform origin-top-left -translate-y-2 scale-95",
@@ -69,25 +68,19 @@ export const MainMenu = () => {
                 return null;
               }
               return (
-                <div
-                  key={item?.id}
-                  className="h-32 md:pl-10 ml-5 md:ml-16 mt-10"
-                >
-                  <h2 className="font-semibold text-md">
-                    {translate(item, "name")}
-                  </h2>
+                <div key={item?.id} className="h-32 md:pl-10 ml-5 md:ml-16 mt-10">
+                  <h2 className="font-semibold text-md">{translate(item, "name")}</h2>
                   <ul className="mt-3 absolute">
                     {item?.children?.map((child) => {
                       if (!notNullable(child)) {
                         return null;
                       }
                       return (
-                        <li
-                          key={child.id}
-                          onClick={() => setOpenDropdown(false)}
-                        >
-                          <Link href={menuLink(child)}>
+                        <li key={child.id}>
+                          <Link href={menuLink(child)} passHref>
                             <a
+                              onClick={() => setOpenDropdown(false)}
+                              href="pass"
                               role="menuitem"
                               className="ml-3 text-black hover:font-semibold hover:text-black"
                             >
@@ -106,4 +99,6 @@ export const MainMenu = () => {
       </div>
     </div>
   );
-};
+}
+
+export default MainMenu;

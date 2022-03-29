@@ -3,10 +3,7 @@ mutation CheckoutShippingMethodUpdate(
   $shippingMethodId: ID!
   $locale: LanguageCodeEnum!
 ) {
-  checkoutShippingMethodUpdate(
-    shippingMethodId: $shippingMethodId
-    token: $token
-  ) {
+  checkoutShippingMethodUpdate(shippingMethodId: $shippingMethodId, token: $token) {
     checkout {
       ...CheckoutDetailsFragment
     }

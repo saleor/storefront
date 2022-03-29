@@ -4,7 +4,7 @@ import React, { ReactElement } from "react";
 import { AccountLayout, OrdersTable, Pagination, Spinner } from "@/components";
 import { useOrdersQuery } from "@/saleor/api";
 
-const OrdersPage = () => {
+function OrdersPage() {
   const { authenticated } = useAuthState();
   const {
     data: ordersCollection,
@@ -19,12 +19,16 @@ const OrdersPage = () => {
     return <Spinner />;
   }
 
-  if (error) return <p>Error {error.message}</p>;
+  if (error) {
+    return (
+      <p>
+        Error
+        {error.message}
+      </p>
+    );
+  }
 
-  const orders =
-    ordersCollection?.me?.orders?.edges.map((order) => {
-      return order.node;
-    }) || [];
+  const orders = ordersCollection?.me?.orders?.edges.map((order) => order.node) || [];
 
   const onLoadMore = () => {
     fetchMore({
@@ -45,7 +49,7 @@ const OrdersPage = () => {
       />
     </>
   );
-};
+}
 
 export default OrdersPage;
 

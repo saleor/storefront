@@ -1,11 +1,7 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { ParsedUrlQuery } from "querystring";
 
-import {
-  PagePathsDocument,
-  PagePathsQuery,
-  PagePathsQueryVariables,
-} from "@/saleor/api";
+import { PagePathsDocument, PagePathsQuery, PagePathsQueryVariables } from "@/saleor/api";
 
 import apolloClient from "../graphql";
 import { CHANNELS, LOCALES, Path } from "../regions";
@@ -17,28 +13,30 @@ export interface PagePathArguments extends ParsedUrlQuery {
 }
 
 export const pagePaths = async () => {
-  let paths: Path<PagePathArguments>[] = [];
+  const paths: Path<PagePathArguments>[] = [];
 
   let hasNextPage = true;
   let endCursor = "";
 
   while (hasNextPage) {
-    const response: ApolloQueryResult<PagePathsQuery> =
-      await apolloClient.query<PagePathsQuery, PagePathsQueryVariables>({
-        query: PagePathsDocument,
-        fetchPolicy: "no-cache",
-        variables: {
-          after: endCursor,
-        },
-      });
+    const response: ApolloQueryResult<PagePathsQuery> = await apolloClient.query<
+      PagePathsQuery,
+      PagePathsQueryVariables
+    >({
+      query: PagePathsDocument,
+      fetchPolicy: "no-cache",
+      variables: {
+        after: endCursor,
+      },
+    });
 
     const edges = response.data.pages?.edges;
     if (!edges) {
       break;
     }
     const responseSlugs: string[] = edges.map((edge) => edge.node.slug);
-    for (let locale of LOCALES) {
-      for (let channel of CHANNELS) {
+    for (const locale of LOCALES) {
+      for (const channel of CHANNELS) {
         responseSlugs.forEach((slug) => {
           paths.push({
             params: {

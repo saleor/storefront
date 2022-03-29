@@ -7,14 +7,12 @@ interface CollectionPageSeoProps {
   collection: CollectionDetailsFragment;
 }
 
-export const CollectionPageSeo = ({ collection }: CollectionPageSeoProps) => {
-  const baseTitle = `Saleor Tutorial`;
+export function CollectionPageSeo({ collection }: CollectionPageSeoProps) {
+  const baseTitle = "Saleor Tutorial";
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";
 
-  const seoTitle = !collection.seoTitle
-    ? baseTitle
-    : `${collection.seoTitle} - ${baseTitle}`;
+  const seoTitle = !collection.seoTitle ? baseTitle : `${collection.seoTitle} - ${baseTitle}`;
   const seoDescription = collection.seoDescription || baseDescription;
   let images: OpenGraphMedia[] = [
     {
@@ -22,7 +20,7 @@ export const CollectionPageSeo = ({ collection }: CollectionPageSeoProps) => {
       alt: "Saleor tutorial hero image",
     },
   ];
-  if (!!collection.backgroundImage) {
+  if (collection.backgroundImage) {
     images = [
       {
         url: collection.backgroundImage.url,
@@ -43,6 +41,6 @@ export const CollectionPageSeo = ({ collection }: CollectionPageSeoProps) => {
       }}
     />
   );
-};
+}
 
 export default CollectionPageSeo;

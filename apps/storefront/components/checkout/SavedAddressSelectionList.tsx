@@ -2,11 +2,7 @@ import clsx from "clsx";
 import React from "react";
 
 import { Spinner } from "@/components";
-import {
-  AddressDetailsFragment,
-  CheckoutError,
-  useCurrentUserAddressesQuery,
-} from "@/saleor/api";
+import { AddressDetailsFragment, CheckoutError, useCurrentUserAddressesQuery } from "@/saleor/api";
 
 import { AddressFormData } from "./AddressForm";
 
@@ -14,18 +10,20 @@ interface SavedAddressSelectionListProps {
   updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
 }
 
-export const SavedAddressSelectionList = ({
+export function SavedAddressSelectionList({
   updateAddressMutation,
-}: SavedAddressSelectionListProps) => {
+}: SavedAddressSelectionListProps) {
   const { loading, error, data } = useCurrentUserAddressesQuery();
-  const [selectedSavedAddres, setSelectedSavedAddress] =
+  const [selectedSavedAddress, setSelectedSavedAddress] =
     React.useState<AddressDetailsFragment | null>();
 
   if (loading) {
     return <Spinner />;
   }
 
-  if (error) return <p>Error : {error.message}</p>;
+  if (error) {
+    return <p>Error :{error.message}</p>;
+  }
 
   const addresses = data?.me?.addresses || [];
 
@@ -46,30 +44,32 @@ export const SavedAddressSelectionList = ({
 
   return (
     <div className="grid grid-cols-2 mb-2">
-      {addresses.map((address) => {
-        return (
-          <div
-            onClick={() => {
-              return address && onSelectSavedAddress(address);
-            }}
-            className={clsx(
-              "border-2 p-3 mr-2 rounded-md",
-              address?.id === selectedSavedAddres?.id && "border-blue-500"
-            )}
-            key={address?.id}
-          >
-            <p>
-              {address?.firstName} {address?.lastName}
-            </p>
-            <p className="text-gray-600 text-sm">{address?.streetAddress1}</p>
-            <p className="text-gray-600 text-sm">
-              {address?.postalCode} {address?.city}, {address?.country.country}
-            </p>
-          </div>
-        );
-      })}
+      {addresses.map((address) => (
+        <div
+          role="radio"
+          aria-checked={address?.id === selectedSavedAddress?.id}
+          tabIndex={-1}
+          onClick={() => address && onSelectSavedAddress(address)}
+          onKeyDown={(e) => {
+            if (address && e.key === "Enter") {
+              onSelectSavedAddress(address);
+            }
+          }}
+          className={clsx(
+            "border-2 p-3 mr-2 rounded-md",
+            address?.id === selectedSavedAddress?.id && "border-blue-500"
+          )}
+          key={address?.id}
+        >
+          <p>{`${address?.firstName} ${address?.lastName}`}</p>
+          <p className="text-gray-600 text-sm">{address?.streetAddress1}</p>
+          <p className="text-gray-600 text-sm">
+            {`${address?.postalCode} ${address?.city}, ${address?.country.country}`}
+          </p>
+        </div>
+      ))}
     </div>
   );
-};
+}
 
 export default SavedAddressSelectionList;

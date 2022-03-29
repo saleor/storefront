@@ -1,3 +1,4 @@
+/* eslint-disable */ // component will be fulle redesigned
 interface CompleteCheckoutButtonProps {
   isDisabled: boolean;
   isProcessing: boolean;
@@ -5,17 +6,17 @@ interface CompleteCheckoutButtonProps {
   onClick?: () => void;
 }
 
-export const CompleteCheckoutButton = ({
+export function CompleteCheckoutButton({
   isDisabled,
   isProcessing,
   children,
   onClick,
-}: CompleteCheckoutButtonProps) => {
+}: CompleteCheckoutButtonProps) {
   return (
     <>
       {isProcessing ? (
         <button
-          disabled={true}
+          disabled
           className="w-full mt-6 bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white flex items-center justify-center"
         >
           <svg
@@ -52,6 +53,6 @@ export const CompleteCheckoutButton = ({
       )}
     </>
   );
-};
+}
 
 export default CompleteCheckoutButton;

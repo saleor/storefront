@@ -1,8 +1,4 @@
-query HomepageBlocksQuery(
-  $slug: String!
-  $channel: String!
-  $locale: LanguageCodeEnum!
-) {
+query HomepageBlocksQuery($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
   menu(channel: $channel, slug: $slug) {
     id
     name

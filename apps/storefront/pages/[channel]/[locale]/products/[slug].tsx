@@ -1,11 +1,7 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
-import {
-  GetStaticPaths,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
-} from "next";
+import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Custom404 from "pages/404";
@@ -22,12 +18,7 @@ import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
-import {
-  contextToRegionQuery,
-  DEFAULT_LOCALE,
-  localeToEnum,
-} from "@/lib/regions";
-import { productPaths } from "@/lib/ssr/product";
+import { contextToRegionQuery, DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import {
   CheckoutError,
@@ -41,10 +32,33 @@ import {
 export type OptionalQuery = {
   variant?: string;
 };
-
-const ProductPage = ({
-  product,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+export const getStaticPaths: GetStaticPaths = async () =>
+  // Temporally do not render all possible products during the build time
+  // const paths = await productPaths();
+  ({
+    paths: [],
+    fallback: "blocking",
+  });
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const productSlug = context.params?.slug?.toString()!;
+  const response: ApolloQueryResult<ProductBySlugQuery> = await apolloClient.query<
+    ProductBySlugQuery,
+    ProductBySlugQueryVariables
+  >({
+    query: ProductBySlugDocument,
+    variables: {
+      slug: productSlug,
+      ...contextToRegionQuery(context),
+    },
+  });
+  return {
+    props: {
+      product: response.data.product,
+    },
+    revalidate: 60, // value in seconds, how often ISR will trigger on the server
+  };
+};
+function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
@@ -66,8 +80,7 @@ const ProductPage = ({
 
   const selectedVariantID = getSelectedVariantID(product, router);
 
-  const selectedVariant =
-    product?.variants?.find((v) => v?.id === selectedVariantID) || undefined;
+  const selectedVariant = product?.variants?.find((v) => v?.id === selectedVariantID) || undefined;
 
   const onAddToCart = async () => {
     // Clear previous error messages
@@ -81,17 +94,17 @@ const ProductPage = ({
       return;
     }
 
-    if (!!checkout) {
+    if (checkout) {
       // If checkout is already existing, add products
       const { data: addToCartData } = await addProductToCheckout({
         variables: {
-          checkoutToken: checkoutToken,
+          checkoutToken,
           variantId: selectedVariantID,
           locale: localeToEnum(locale),
         },
       });
       addToCartData?.checkoutLinesAdd?.errors.forEach((e) => {
-        if (!!e) {
+        if (e) {
           errors.push(e);
         }
       });
@@ -110,7 +123,7 @@ const ProductPage = ({
         },
       });
       createCheckoutData?.checkoutCreate?.errors.forEach((e) => {
-        if (!!e) {
+        if (e) {
           errors.push(e);
         }
       });
@@ -128,23 +141,16 @@ const ProductPage = ({
     }
 
     // Display error message
-    const errorMessages =
-      errors.map((e) => {
-        return e.message || "";
-      }) || [];
+    const errorMessages = errors.map((e) => e.message || "") || [];
     setAddToCartError(errorMessages.join("\n"));
   };
 
   const isAddToCartButtonDisabled =
-    !selectedVariant ||
-    selectedVariant?.quantityAvailable === 0 ||
-    loadingAddToCheckout;
+    !selectedVariant || selectedVariant?.quantityAvailable === 0 || loadingAddToCheckout;
 
   const description = translate(product, "description");
 
-  const price =
-    selectedVariant?.pricing?.price?.gross ||
-    product.pricing?.priceRange?.start?.gross;
+  const price = selectedVariant?.pricing?.price?.gross || product.pricing?.priceRange?.start?.gross;
 
   return (
     <>
@@ -168,10 +174,7 @@ const ProductPage = ({
               </h2>
             )}
             {!!product.category?.slug && (
-              <Link
-                href={paths.category._slug(product?.category?.slug).$url()}
-                passHref
-              >
+              <Link href={paths.category._slug(product?.category?.slug).$url()} passHref>
                 <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
                   {translate(product.category, "name")}
                 </p>
@@ -179,10 +182,7 @@ const ProductPage = ({
             )}
           </div>
 
-          <VariantSelector
-            product={product}
-            selectedVariantID={selectedVariantID}
-          />
+          <VariantSelector product={product} selectedVariantID={selectedVariantID} />
 
           <button
             onClick={onAddToCart}
@@ -199,15 +199,11 @@ const ProductPage = ({
           </button>
 
           {!selectedVariant && (
-            <p className="text-lg- text-yellow-600">
-              {t.formatMessage(messages.variantNotChosen)}
-            </p>
+            <p className="text-lg- text-yellow-600">{t.formatMessage(messages.variantNotChosen)}</p>
           )}
 
           {selectedVariant?.quantityAvailable === 0 && (
-            <p className="text-lg- text-yellow-600">
-              {t.formatMessage(messages.soldOut)}
-            </p>
+            <p className="text-lg- text-yellow-600">{t.formatMessage(messages.soldOut)}</p>
           )}
 
           {!!addToCartError && <p>{addToCartError}</p>}
@@ -218,44 +214,14 @@ const ProductPage = ({
             </div>
           )}
 
-          <AttributeDetails
-            product={product}
-            selectedVariant={selectedVariant}
-          />
+          <AttributeDetails product={product} selectedVariant={selectedVariant} />
         </div>
       </main>
     </>
   );
-};
+}
 
 export default ProductPage;
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  // Temporally do not render all possible products during the build time
-  // const paths = await productPaths();
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-};
-
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const productSlug = context.params?.slug?.toString()!;
-  const response: ApolloQueryResult<ProductBySlugQuery> =
-    await apolloClient.query<ProductBySlugQuery, ProductBySlugQueryVariables>({
-      query: ProductBySlugDocument,
-      variables: {
-        slug: productSlug,
-        ...contextToRegionQuery(context),
-      },
-    });
-  return {
-    props: {
-      product: response.data.product,
-    },
-    revalidate: 60, // value in seconds, how often ISR will trigger on the server
-  };
-};
 
 ProductPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

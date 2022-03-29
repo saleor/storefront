@@ -5,7 +5,7 @@ export interface RichTextProps {
   jsonStringData?: string;
 }
 
-export const RichText = ({ jsonStringData }: RichTextProps) => {
+export function RichText({ jsonStringData }: RichTextProps) {
   if (!jsonStringData) {
     return null;
   }
@@ -25,4 +25,6 @@ export const RichText = ({ jsonStringData }: RichTextProps) => {
       <Blocks data={data} />
     </article>
   );
-};
+}
+
+export default RichText;

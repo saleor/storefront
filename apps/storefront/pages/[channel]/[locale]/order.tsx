@@ -5,7 +5,7 @@ import React, { ReactElement } from "react";
 import { Layout } from "@/components";
 import { usePaths } from "@/lib/paths";
 
-const OrderCompletedPage = () => {
+function OrderCompletedPage() {
   const paths = usePaths();
 
   return (
@@ -17,7 +17,7 @@ const OrderCompletedPage = () => {
       </p>
     </main>
   );
-};
+}
 
 export default OrderCompletedPage;
 

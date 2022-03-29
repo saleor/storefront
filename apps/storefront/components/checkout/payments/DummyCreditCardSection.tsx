@@ -14,7 +14,7 @@ import {
   useCheckoutPaymentCreateMutation,
 } from "@/saleor/api";
 
-import CompleteCheckoutButton from "../CompleteCheckoutButton";
+import { CompleteCheckoutButton } from "../CompleteCheckoutButton";
 
 export const DUMMY_CREDIT_CARD_GATEWAY = "mirumee.payments.dummy";
 
@@ -28,9 +28,7 @@ interface DummyCreditCardSectionInterface {
   checkout: CheckoutDetailsFragment;
 }
 
-export const DummyCreditCardSection = ({
-  checkout,
-}: DummyCreditCardSectionInterface) => {
+export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInterface) {
   const t = useIntl();
   const { resetCheckoutToken } = useCheckout();
   const paths = usePaths();
@@ -52,12 +50,9 @@ export const DummyCreditCardSection = ({
       }
     : {};
 
-  const {
-    register: registerCard,
-    handleSubmit: handleSubmitCard,
-    formState: { errors: errorsAddress },
-    setError: setErrorCard,
-  } = useForm<CardForm>({ defaultValues });
+  const { register: registerCard, handleSubmit: handleSubmitCard } = useForm<CardForm>({
+    defaultValues,
+  });
 
   const redirectToOrderDetailsPage = async () => {
     // without the `await` checkout data will be removed before the redirection which will cause issue with rendering checkout view
@@ -69,17 +64,16 @@ export const DummyCreditCardSection = ({
     setIsPaymentProcessing(true);
 
     // Create Saleor payment
-    const { data: paymentCreateData, errors: paymentCreateErrors } =
-      await checkoutPaymentCreateMutation({
-        variables: {
-          checkoutToken: checkout.token,
-          paymentInput: {
-            gateway: DUMMY_CREDIT_CARD_GATEWAY,
-            amount: checkout.totalPrice?.gross.amount,
-            token: formData.cardNumber,
-          },
+    const { errors: paymentCreateErrors } = await checkoutPaymentCreateMutation({
+      variables: {
+        checkoutToken: checkout.token,
+        paymentInput: {
+          gateway: DUMMY_CREDIT_CARD_GATEWAY,
+          amount: checkout.totalPrice?.gross.amount,
+          token: formData.cardNumber,
         },
-      });
+      },
+    });
 
     if (paymentCreateErrors) {
       console.error(paymentCreateErrors);
@@ -88,23 +82,21 @@ export const DummyCreditCardSection = ({
     }
 
     // Try to complete the checkout
-    const { data: completeData, errors: completeErrors } =
-      await checkoutCompleteMutation({
-        variables: {
-          checkoutToken: checkout.token,
-        },
-      });
+    const { data: completeData, errors: completeErrors } = await checkoutCompleteMutation({
+      variables: {
+        checkoutToken: checkout.token,
+      },
+    });
     if (completeErrors) {
       console.error("complete errors:", completeErrors);
       setIsPaymentProcessing(false);
       return;
     }
 
-    let order = completeData?.checkoutComplete?.order;
+    const order = completeData?.checkoutComplete?.order;
     // If there are no errors during payment and confirmation, order should be created
     if (order) {
       redirectToOrderDetailsPage();
-      return;
     } else {
       console.error("Order was not created");
     }
@@ -116,10 +108,7 @@ export const DummyCreditCardSection = ({
         <div className="py-8">
           <div className="mt-4 grid grid-cols-12 gap-x-2 gap-y-4">
             <div className="col-span-6">
-              <label
-                htmlFor="card-number"
-                className="block text-sm font-semibold text-gray-700"
-              >
+              <label htmlFor="card-number" className="block text-sm font-semibold text-gray-700">
                 {t.formatMessage(messages.cardNumberField)}
               </label>
               <div className="mt-1">
@@ -155,10 +144,7 @@ export const DummyCreditCardSection = ({
             </div>
 
             <div className="col-span-3">
-              <label
-                htmlFor="cvc"
-                className="block text-sm font-semibold text-gray-700"
-              >
+              <label htmlFor="cvc" className="block text-sm font-semibold text-gray-700">
                 {t.formatMessage(messages.cvcField)}
               </label>
               <div className="mt-1">
@@ -174,15 +160,12 @@ export const DummyCreditCardSection = ({
             </div>
           </div>
         </div>
-        <CompleteCheckoutButton
-          isProcessing={isPaymentProcessing}
-          isDisabled={isPaymentProcessing}
-        >
+        <CompleteCheckoutButton isProcessing={isPaymentProcessing} isDisabled={isPaymentProcessing}>
           {payLabel}
         </CompleteCheckoutButton>
       </form>
     </div>
   );
-};
+}
 
 export default DummyCreditCardSection;

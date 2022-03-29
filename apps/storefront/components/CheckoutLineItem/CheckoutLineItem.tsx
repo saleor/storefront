@@ -21,7 +21,7 @@ interface CheckoutLineItemProps {
   line: CheckoutLineDetailsFragment;
 }
 
-export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
+export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
   const paths = usePaths();
   const t = useIntl();
   const { query, formatPrice } = useRegions();
@@ -31,9 +31,7 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
 
   const [quantity, setQuantity] = React.useState<number>();
-  const [errors, setErrors] = React.useState<ErrorDetailsFragment[] | null>(
-    null
-  );
+  const [errors, setErrors] = React.useState<ErrorDetailsFragment[] | null>(null);
 
   React.useEffect(() => {
     if (!line) return;
@@ -50,7 +48,7 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
     if (!event?.target?.validity?.valid || event?.target?.value === "") return;
     const result = await checkoutLineUpdateMutation({
       variables: {
-        token: token,
+        token,
         lines: [
           {
             quantity: parseFloat(event.target.value),
@@ -60,9 +58,9 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
         locale: query.locale,
       },
     });
-    const errors = result.data?.checkoutLinesUpdate?.errors;
-    if (errors && errors.length > 0) {
-      setErrors(errors);
+    const mutationErrors = result.data?.checkoutLinesUpdate?.errors;
+    if (mutationErrors && mutationErrors.length > 0) {
+      setErrors(mutationErrors);
     }
   };
 
@@ -83,20 +81,16 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
           <div className="flex justify-between">
             <div className="pr-6">
               <h3 className="text-xl font-bold">
-                <Link
-                  href={paths.products
-                    ._slug(line?.variant?.product?.slug)
-                    .$url()}
-                >
-                  <a className="font-medium text-gray-700 hover:text-gray-800">
+                <Link href={paths.products._slug(line?.variant?.product?.slug).$url()} passHref>
+                  <a href="pass" className="font-medium text-gray-700 hover:text-gray-800">
                     {translate(line?.variant.product, "name")}
                   </a>
                 </Link>
               </h3>
               <h4 className="text-m font-regular">
-                <a className="text-gray-700 hover:text-gray-800">
+                <p className="text-gray-700 hover:text-gray-800">
                   {translate(line?.variant, "name")}
-                </a>
+                </p>
               </h4>
 
               <button
@@ -117,10 +111,7 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
               {errors && (
                 <div>
                   {errors.map((err) => (
-                    <span
-                      className="text-red-500 text-sm font-medium"
-                      key={err.field}
-                    >
+                    <span className="text-red-500 text-sm font-medium" key={err.field}>
                       {err.message}
                     </span>
                   ))}
@@ -159,6 +150,6 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
       </div>
     </>
   );
-};
+}
 
 export default CheckoutLineItem;

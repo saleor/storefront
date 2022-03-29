@@ -15,24 +15,20 @@ export interface HomepageBlockProps {
   menuItem: HomepageBlockFragment;
 }
 
-export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
+export function HomepageBlock({ menuItem }: HomepageBlockProps) {
   const paths = usePaths();
   const t = useIntl();
   const filter: ProductFilterInput = {};
-  if (!!menuItem.page?.id) {
+  if (menuItem.page?.id) {
     const content = translate(menuItem.page!, "content");
-    return (
-      <div className="pb-10">
-        {content && <RichText jsonStringData={content} />}
-      </div>
-    );
+    return <div className="pb-10">{content && <RichText jsonStringData={content} />}</div>;
   }
   let link: UrlObject = {};
-  if (!!menuItem.category?.id) {
+  if (menuItem.category?.id) {
     filter.categories = [menuItem.category?.id];
     link = paths.category._slug(menuItem.category.slug).$url();
   }
-  if (!!menuItem.collection?.id) {
+  if (menuItem.collection?.id) {
     filter.collections = [menuItem.collection?.id];
     link = paths.collection._slug(menuItem.collection.slug).$url();
   }
@@ -43,14 +39,14 @@ export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
       </h1>
       <ProductCollection filter={filter} allowMore={false} />
       <div className="flex flex-row-reverse p-4">
-        <Link href={link}>
-          <a>
+        <Link href={link} passHref>
+          <a href="pass">
             <p>{t.formatMessage(messages.more)}</p>
           </a>
         </Link>
       </div>
     </div>
   );
-};
+}
 
 export default HomepageBlock;

@@ -1,7 +1,7 @@
 import { useIntl } from "react-intl";
 
 import { Button } from "@/components/Button";
-import AddressDisplay from "@/components/checkout/AddressDisplay";
+import { AddressDisplay } from "@/components/checkout/AddressDisplay";
 import {
   AddressDetailsFragment,
   useAddressDeleteMutation,
@@ -15,10 +15,7 @@ export interface AddressBookCardProps {
   onRefreshBook: () => void;
 }
 
-export const AddressBookCard = ({
-  address,
-  onRefreshBook,
-}: AddressBookCardProps) => {
+export function AddressBookCard({ address, onRefreshBook }: AddressBookCardProps) {
   const t = useIntl();
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
   const [deleteAddressMutation] = useAddressDeleteMutation();
@@ -41,10 +38,8 @@ export const AddressBookCard = ({
 
   return (
     <div className="justify-between flex flex-col checkout-section-container md:mx-2 mb-2">
-      {!!cardHeader && (
-        <p className="text-md font-semibold mb-1">{cardHeader}</p>
-      )}
-      <AddressDisplay address={address}></AddressDisplay>
+      {!!cardHeader && <p className="text-md font-semibold mb-1">{cardHeader}</p>}
+      <AddressDisplay address={address} />
       {!address.isDefaultBillingAddress && (
         <Button
           className="my-1"
@@ -74,4 +69,4 @@ export const AddressBookCard = ({
       </Button>
     </div>
   );
-};
+}

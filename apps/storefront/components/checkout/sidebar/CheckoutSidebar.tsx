@@ -10,9 +10,9 @@ interface CheckoutSidebarProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const CheckoutSidebar = ({ checkout }: CheckoutSidebarProps) => {
+export function CheckoutSidebar({ checkout }: CheckoutSidebarProps) {
   const t = useIntl();
-  let lines = checkout.lines?.filter(notNullable) || [];
+  const lines = checkout.lines?.filter(notNullable) || [];
   return (
     <section className="max-w-md w-full flex flex-col ">
       <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 md:pr-4 md:py-4 md:pl-0 p-4">
@@ -23,6 +23,6 @@ export const CheckoutSidebar = ({ checkout }: CheckoutSidebarProps) => {
       <CartSummary checkout={checkout} />
     </section>
   );
-};
+}
 
 export default CheckoutSidebar;

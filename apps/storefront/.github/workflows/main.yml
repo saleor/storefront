@@ -1,7 +1,7 @@
 name: QA
-on: pull_request
+on: [pull_request]
 jobs:
-  build-and-lint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,5 +20,18 @@ jobs:
         run: |
           pnpm paths
           git diff --exit-code ./lib/\$path.ts
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.19.1
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
       - name: Build project
         run: pnpm build

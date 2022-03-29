@@ -1,8 +1,4 @@
-mutation RequestEmailChange(
-  $newEmail: String!
-  $password: String!
-  $redirectUrl: String!
-) {
+mutation RequestEmailChange($newEmail: String!, $password: String!, $redirectUrl: String!) {
   requestEmailChange(
     channel: "default-channel"
     newEmail: $newEmail

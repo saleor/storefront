@@ -1,12 +1,14 @@
 import clsx from "clsx";
+import React from "react";
 
 export interface HamburgerButtonProps {
-  onClick: (ev: any) => void;
+  onClick: (ev: React.FormEvent) => void;
   active?: boolean;
 }
-export const HamburgerButton = ({ active, onClick }: HamburgerButtonProps) => {
+export function HamburgerButton({ active, onClick }: HamburgerButtonProps) {
   return (
     <button
+      type="button"
       onClick={(ev) => onClick(ev)}
       aria-label="Open main menu"
       className={clsx(
@@ -14,12 +16,7 @@ export const HamburgerButton = ({ active, onClick }: HamburgerButtonProps) => {
         active && "bg-gray-100 rounded-md border-1 shadow-inner"
       )}
     >
-      <svg
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -29,4 +26,4 @@ export const HamburgerButton = ({ active, onClick }: HamburgerButtonProps) => {
       </svg>
     </button>
   );
-};
+}
