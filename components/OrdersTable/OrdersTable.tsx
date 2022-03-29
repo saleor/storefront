@@ -9,7 +9,7 @@ export interface OrdersTableProps {
   orders: OrderDetailsFragment[];
 }
 
-export const OrdersTable = ({ orders }: OrdersTableProps) => {
+export function OrdersTable({ orders }: OrdersTableProps) {
   const router = useRouter();
   const paths = usePaths();
   const { formatPrice } = useRegions();
@@ -27,23 +27,19 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
         </tr>
       </thead>
       <tbody className="text-center divide-y">
-        {orders?.map((order) => {
-          return (
-            <tr
-              className="h-16 cursor-pointer"
-              key={order.id}
-              onClick={() =>
-                router.push(paths.account.orders._token(order.token).$url())
-              }
-            >
-              <td>{order?.number}</td>
-              <td>{order.created.slice(0, 10)}</td>
-              <td className="hidden md:table-cell">{order.status}</td>
-              <td>{formatPrice(order.total.gross)}</td>
-            </tr>
-          );
-        })}
+        {orders?.map((order) => (
+          <tr
+            className="h-16 cursor-pointer"
+            key={order.id}
+            onClick={() => router.push(paths.account.orders._token(order.token).$url())}
+          >
+            <td>{order?.number}</td>
+            <td>{order.created.slice(0, 10)}</td>
+            <td className="hidden md:table-cell">{order.status}</td>
+            <td>{formatPrice(order.total.gross)}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
-};
+}

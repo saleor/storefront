@@ -1,6 +1,6 @@
 import { GetStaticPropsContext } from "next";
 
-import { LanguageCodeEnum } from "./../saleor/api";
+import { LanguageCodeEnum } from "../saleor/api";
 
 export const LOCALES = [
   {
@@ -62,12 +62,10 @@ export const localeToEnum = (localeSlug: string): LanguageCodeEnum => {
   return LOCALES.find(({ slug }) => slug === DEFAULT_LOCALE)?.code || "EN_US";
 };
 
-export const contextToRegionQuery = (context: GetStaticPropsContext) => {
-  return {
-    channel: context.params?.channel?.toString() || DEFAULT_CHANNEL.slug,
-    locale: localeToEnum(context.params?.locale?.toString() || DEFAULT_LOCALE),
-  };
-};
+export const contextToRegionQuery = (context: GetStaticPropsContext) => ({
+  channel: context.params?.channel?.toString() || DEFAULT_CHANNEL.slug,
+  locale: localeToEnum(context.params?.locale?.toString() || DEFAULT_LOCALE),
+});
 
 export const languageCodeToLocale = (locale: string) => {
   // Converts locale from EN_US to en-US

@@ -4,7 +4,7 @@ export interface LayoutProps {
   children?: React.ReactNode;
 }
 
-export const Layout = ({ children }: LayoutProps) => {
+export function Layout({ children }: LayoutProps) {
   return (
     <>
       <Navbar />
@@ -13,6 +13,6 @@ export const Layout = ({ children }: LayoutProps) => {
       </div>
     </>
   );
-};
+}
 
 export default Layout;

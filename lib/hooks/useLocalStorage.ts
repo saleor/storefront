@@ -25,8 +25,7 @@ export function useLocalStorage<T>(
 
   const setValue = (valueOrCb: SetLocalStorageValue<T>) => {
     setStoredValue(valueOrCb);
-    const valueToStore =
-      valueOrCb instanceof Function ? valueOrCb(storedValue) : valueOrCb;
+    const valueToStore = valueOrCb instanceof Function ? valueOrCb(storedValue) : valueOrCb;
 
     try {
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
@@ -59,6 +58,7 @@ export function useLocalStorage<T>(
         window.removeEventListener("storage", onStorage);
       };
     }
+    return undefined;
   }, [onStorage, sync]);
 
   return [storedValue, setValue];

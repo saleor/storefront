@@ -17,33 +17,32 @@ export interface CollectionPathArguments extends ParsedUrlQuery {
 }
 
 export const collectionPaths = async () => {
-  let paths: Path<CollectionPathArguments>[] = [];
+  const paths: Path<CollectionPathArguments>[] = [];
 
-  for (let channel of CHANNELS) {
-    let channelSlug = channel.slug;
+  for (const channel of CHANNELS) {
+    const channelSlug = channel.slug;
     let hasNextPage = true;
     let endCursor = "";
 
     while (hasNextPage) {
-      const response: ApolloQueryResult<CollectionPathsQuery> =
-        await apolloClient.query<
-          CollectionPathsQuery,
-          CollectionPathsQueryVariables
-        >({
-          query: CollectionPathsDocument,
-          fetchPolicy: "no-cache",
-          variables: {
-            channel: channelSlug,
-            after: endCursor,
-          },
-        });
+      const response: ApolloQueryResult<CollectionPathsQuery> = await apolloClient.query<
+        CollectionPathsQuery,
+        CollectionPathsQueryVariables
+      >({
+        query: CollectionPathsDocument,
+        fetchPolicy: "no-cache",
+        variables: {
+          channel: channelSlug,
+          after: endCursor,
+        },
+      });
 
       const edges = response.data.collections?.edges;
       if (!edges) {
         break;
       }
       const responseSlugs: string[] = edges.map((edge) => edge.node.slug);
-      for (let locale of LOCALES) {
+      for (const locale of LOCALES) {
         responseSlugs.forEach((slug) => {
           paths.push({
             params: {

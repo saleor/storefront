@@ -4,7 +4,7 @@ export interface AddressDisplayProps {
   address: AddressDetailsFragment;
 }
 
-export const AddressDisplay = ({ address }: AddressDisplayProps) => {
+export function AddressDisplay({ address }: AddressDisplayProps) {
   return (
     <div>
       <address className="not-italic mb-2">
@@ -19,6 +19,6 @@ export const AddressDisplay = ({ address }: AddressDisplayProps) => {
       <div>{address?.phone}</div>
     </div>
   );
-};
+}
 
 export default AddressDisplay;

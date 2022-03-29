@@ -1,11 +1,7 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { ParsedUrlQuery } from "querystring";
 
-import {
-  ProductPathsDocument,
-  ProductPathsQuery,
-  ProductPathsQueryVariables,
-} from "@/saleor/api";
+import { ProductPathsDocument, ProductPathsQuery, ProductPathsQueryVariables } from "@/saleor/api";
 
 import apolloClient from "../graphql";
 import { CHANNELS, LOCALES, Path } from "../regions";
@@ -17,25 +13,25 @@ export interface ProductPathArguments extends ParsedUrlQuery {
 }
 
 export const productPaths = async () => {
-  let paths: Path<ProductPathArguments>[] = [];
+  const paths: Path<ProductPathArguments>[] = [];
 
-  for (let channel of CHANNELS) {
-    let channelSlug = channel.slug;
+  for (const channel of CHANNELS) {
+    const channelSlug = channel.slug;
     let hasNextPage = true;
     let endCursor = "";
 
     while (hasNextPage) {
-      const response: ApolloQueryResult<ProductPathsQuery> =
-        await apolloClient.query<ProductPathsQuery, ProductPathsQueryVariables>(
-          {
-            query: ProductPathsDocument,
-            fetchPolicy: "no-cache",
-            variables: {
-              channel: channelSlug,
-              after: endCursor,
-            },
-          }
-        );
+      const response: ApolloQueryResult<ProductPathsQuery> = await apolloClient.query<
+        ProductPathsQuery,
+        ProductPathsQueryVariables
+      >({
+        query: ProductPathsDocument,
+        fetchPolicy: "no-cache",
+        variables: {
+          channel: channelSlug,
+          after: endCursor,
+        },
+      });
 
       const edges = response.data.products?.edges;
       if (!edges) {
@@ -43,7 +39,7 @@ export const productPaths = async () => {
       }
       const responseSlugs: string[] = edges.map((edge) => edge.node.slug);
 
-      for (let locale of LOCALES) {
+      for (const locale of LOCALES) {
         responseSlugs.forEach((slug) => {
           paths.push({
             params: {

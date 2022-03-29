@@ -1,7 +1,7 @@
 import { NextSeo } from "next-seo";
 
-export const NotFoundSeo = () => {
-  const title = `Not found - Saleor Tutorial`;
+export function NotFoundSeo() {
+  const title = "Not found - Saleor Tutorial";
   const description = "Page not found.";
 
   return (
@@ -21,6 +21,6 @@ export const NotFoundSeo = () => {
       }}
     />
   );
-};
+}
 
 export default NotFoundSeo;

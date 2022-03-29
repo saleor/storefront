@@ -2,10 +2,7 @@ import { useIntl } from "react-intl";
 
 import { getProductAttributes } from "@/lib/product";
 import { translate } from "@/lib/translations";
-import {
-  ProductDetailsFragment,
-  ProductVariantDetailsFragment,
-} from "@/saleor/api";
+import { ProductDetailsFragment, ProductVariantDetailsFragment } from "@/saleor/api";
 
 import { messages } from "../translations";
 
@@ -14,10 +11,7 @@ export interface AttributeDetailsProps {
   selectedVariant?: ProductVariantDetailsFragment;
 }
 
-export const AttributeDetails = ({
-  product,
-  selectedVariant,
-}: AttributeDetailsProps) => {
+export function AttributeDetails({ product, selectedVariant }: AttributeDetailsProps) {
   const t = useIntl();
   const attributes = getProductAttributes(product, selectedVariant);
   if (attributes.length === 0) {
@@ -35,22 +29,23 @@ export const AttributeDetails = ({
               <p>{translate(attribute.attribute, "name")}</p>
             </div>
             <div>
-              {attribute.values.map((value, index) => (
-                <div key={index}>
-                  {!!value && (
-                    <p key={index}>
+              {attribute.values.map((value, index) => {
+                if (!value) {
+                  return null;
+                }
+                return (
+                  <div key={value.id}>
+                    <p>
                       {translate(value, "name")}
-                      {attribute.values.length !== index + 1 && (
-                        <div>{" | "}</div>
-                      )}
+                      {attribute.values.length !== index + 1 && <div>{" | "}</div>}
                     </p>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-};
+}

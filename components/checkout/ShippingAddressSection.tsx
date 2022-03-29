@@ -13,7 +13,7 @@ import {
 import { Button } from "../Button";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
-import AddressDisplay from "./AddressDisplay";
+import { AddressDisplay } from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
 
 export interface ShippingAddressSectionProps {
@@ -21,19 +21,15 @@ export interface ShippingAddressSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export const ShippingAddressSection = ({
-  active,
-  checkout,
-}: ShippingAddressSectionProps) => {
+export function ShippingAddressSection({ active, checkout }: ShippingAddressSectionProps) {
   const t = useIntl();
   const { query } = useRegions();
 
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
-  const [shippingAddressUpdateMutation] =
-    useCheckoutShippingAddressUpdateMutation({});
+  const [shippingAddressUpdateMutation] = useCheckoutShippingAddressUpdateMutation({});
 
-  const billingAddress = checkout.billingAddress;
+  const { billingAddress } = checkout;
 
   const onSameAsBilling = async () => {
     if (!billingAddress) {
@@ -54,7 +50,7 @@ export const ShippingAddressSection = ({
         locale: query.locale,
       },
     });
-    if (!!data?.checkoutShippingAddressUpdate?.errors.length) {
+    if (data?.checkoutShippingAddressUpdate?.errors.length) {
       // todo: add error handling
       return;
     }
@@ -72,63 +68,44 @@ export const ShippingAddressSection = ({
       },
     });
     setEditing(false);
-    return (
-      data?.checkoutShippingAddressUpdate?.errors.filter(notNullable) || []
-    );
+    return data?.checkoutShippingAddressUpdate?.errors.filter(notNullable) || [];
   };
 
   return (
     <>
       <div className="mt-4 mb-4">
         <h2
-          className={
-            active
-              ? "checkout-section-header-active"
-              : "checkout-section-header-disabled"
-          }
+          className={active ? "checkout-section-header-active" : "checkout-section-header-disabled"}
         >
           {t.formatMessage(messages.shippingAddressCardHeader)}
         </h2>
       </div>
-      {active && (
+      {active && editing ? (
         <>
-          {editing ? (
-            <>
-              {authenticated && (
-                <SavedAddressSelectionList
-                  updateAddressMutation={(address: AddressFormData) =>
-                    updateMutation(address)
-                  }
-                />
-              )}
-              <div className="col-span-full">
-                <button
-                  className="btn-checkout-section"
-                  onClick={onSameAsBilling}
-                >
-                  {t.formatMessage(messages.sameAsBillingButton)}
-                </button>
-              </div>
-              <AddressForm
-                existingAddressData={checkout.shippingAddress || undefined}
-                toggleEdit={() => setEditing(false)}
-                updateAddressMutation={updateMutation}
-              />
-            </>
-          ) : (
-            <section className="flex justify-between items-center mb-4">
-              {!!checkout.shippingAddress && (
-                <AddressDisplay address={checkout.shippingAddress} />
-              )}
-              <Button onClick={() => setEditing(true)}>
-                {t.formatMessage(messages.changeButton)}
-              </Button>
-            </section>
+          {authenticated && (
+            <SavedAddressSelectionList
+              updateAddressMutation={(address: AddressFormData) => updateMutation(address)}
+            />
           )}
+          <div className="col-span-full">
+            <button type="button" className="btn-checkout-section" onClick={onSameAsBilling}>
+              {t.formatMessage(messages.sameAsBillingButton)}
+            </button>
+          </div>
+          <AddressForm
+            existingAddressData={checkout.shippingAddress || undefined}
+            toggleEdit={() => setEditing(false)}
+            updateAddressMutation={updateMutation}
+          />
         </>
+      ) : (
+        <section className="flex justify-between items-center mb-4">
+          {!!checkout.shippingAddress && <AddressDisplay address={checkout.shippingAddress} />}
+          <Button onClick={() => setEditing(true)}>{t.formatMessage(messages.changeButton)}</Button>
+        </section>
       )}
     </>
   );
-};
+}
 
 export default ShippingAddressSection;

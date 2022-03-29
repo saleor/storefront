@@ -5,7 +5,7 @@ import { saleorClient } from "@/lib/graphql";
 
 import { useRegions } from "../RegionsProvider";
 
-const SaleorProviderWithChannels = ({ children }: PropsWithChildren<{}>) => {
+export function SaleorProviderWithChannels({ children }: PropsWithChildren<{}>) {
   const { currentChannel } = useRegions();
 
   const {
@@ -17,6 +17,6 @@ const SaleorProviderWithChannels = ({ children }: PropsWithChildren<{}>) => {
   }, [currentChannel, setChannel]);
 
   return <SaleorProvider client={saleorClient}>{children}</SaleorProvider>;
-};
+}
 
 export default SaleorProviderWithChannels;

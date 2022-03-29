@@ -1,13 +1,45 @@
 {
-  "extends": ["next", "next/core-web-vitals", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "prettier" // prettier *has* to be the last one, to avoid conflicting rules
+  ],
   "ignorePatterns": ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json"],
-  "plugins": ["simple-import-sort", "formatjs"],
+  "plugins": ["simple-import-sort", "formatjs", "@typescript-eslint"],
   "rules": {
+    "quotes": ["error", "double"],
+    "react/react-in-jsx-scope": "off", // next does not require react imports
+    "import/extensions": "off", // file extension not required when importing
+    "react/jsx-filename-extension": "off",
+    "no-restricted-syntax": "off",
+    "no-underscore-dangle": "off",
+    "no-await-in-loop": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off",
     "simple-import-sort/imports": "warn",
     "simple-import-sort/exports": "warn",
     "import/first": "warn",
     "import/newline-after-import": "warn",
     "import/no-duplicates": "warn",
-    "formatjs/no-offset": "error"
+    "formatjs/no-offset": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/ban-types": "off",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "operator-linebreak": "off",
+    "max-len": "off",
+    // To be discussed
+    "array-callback-return": "off",
+    "implicit-arrow-linebreak": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "no-restricted-imports": "off",
+    "no-restricted-exports": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    // TO FIX:
+    "import/no-cycle": "off" // pathpidia issue
   }
 }

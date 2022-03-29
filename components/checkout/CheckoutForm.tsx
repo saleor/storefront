@@ -3,10 +3,10 @@ import React from "react";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { CheckoutDetailsFragment } from "@/saleor/api";
 
-import BillingAddressSection from "./BillingAddressSection";
+import { BillingAddressSection } from "./BillingAddressSection";
 import { EmailSection } from "./EmailSection";
-import PaymentSection from "./payments/PaymentSection";
-import ShippingAddressSection from "./ShippingAddressSection";
+import { PaymentSection } from "./payments/PaymentSection";
+import { ShippingAddressSection } from "./ShippingAddressSection";
 import { ShippingMethodSection } from "./ShippingMethodSection";
 
 interface CollapsedSections {
@@ -16,9 +16,7 @@ interface CollapsedSections {
   payment: boolean;
 }
 
-const sectionsManager = (
-  checkout?: CheckoutDetailsFragment
-): CollapsedSections => {
+const sectionsManager = (checkout?: CheckoutDetailsFragment): CollapsedSections => {
   // Will hide sections which cannot be set yet during the checkout
   // Start with all the sections hidden
   const state: CollapsedSections = {
@@ -46,11 +44,11 @@ const sectionsManager = (
   return state;
 };
 
-export const CheckoutForm = () => {
+export function CheckoutForm() {
   const { checkout } = useCheckout();
 
   if (!checkout) {
-    return <></>;
+    return null;
   }
 
   const collapsedSections = sectionsManager(checkout);
@@ -61,34 +59,24 @@ export const CheckoutForm = () => {
         <EmailSection checkout={checkout} />
       </div>
       <div className="checkout-section-container">
-        <BillingAddressSection
-          active={!collapsedSections.billingAddress}
-          checkout={checkout}
-        />
+        <BillingAddressSection active={!collapsedSections.billingAddress} checkout={checkout} />
       </div>
 
       {checkout.isShippingRequired && (
         <div className="checkout-section-container">
-          <ShippingAddressSection
-            active={!collapsedSections.shippingAddress}
-            checkout={checkout}
-          />
+          <ShippingAddressSection active={!collapsedSections.shippingAddress} checkout={checkout} />
         </div>
       )}
       {checkout.isShippingRequired && (
         <div className="checkout-section-container">
-          <ShippingMethodSection
-            active={!collapsedSections.shippingMethod}
-            checkout={checkout}
-          />
+          <ShippingMethodSection active={!collapsedSections.shippingMethod} checkout={checkout} />
         </div>
       )}
       <div className="checkout-section-container">
-        <PaymentSection
-          active={!collapsedSections.payment}
-          checkout={checkout}
-        />
+        <PaymentSection active={!collapsedSections.payment} checkout={checkout} />
       </div>
     </section>
   );
-};
+}
+
+export default CheckoutForm;

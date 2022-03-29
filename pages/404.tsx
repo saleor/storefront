@@ -2,10 +2,10 @@ import Link from "next/link";
 import React from "react";
 
 import { Navbar } from "@/components/Navbar";
-import NotFoundSeo from "@/components/seo/NotFoundSeo";
+import { NotFoundSeo } from "@/components/seo/NotFoundSeo";
 import { usePaths } from "@/lib/paths";
 
-const Custom404: React.VFC = () => {
+function Custom404() {
   const paths = usePaths();
 
   return (
@@ -20,8 +20,8 @@ const Custom404: React.VFC = () => {
           </header>
           <main>
             <div className="max-w-7xl mx-auto px-8">
-              <Link href={paths.$url()}>
-                <a>Go back home</a>
+              <Link href={paths.$url()} passHref>
+                <a href="pass">Go back home</a>
               </Link>
             </div>
           </main>
@@ -29,6 +29,6 @@ const Custom404: React.VFC = () => {
       </div>
     </>
   );
-};
+}
 
 export default Custom404;

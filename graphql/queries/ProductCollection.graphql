@@ -5,13 +5,7 @@ query ProductCollection(
   $channel: String!
   $locale: LanguageCodeEnum!
 ) {
-  products(
-    first: 4
-    channel: $channel
-    after: $after
-    before: $before
-    filter: $filter
-  ) {
+  products(first: 4, channel: $channel, after: $after, before: $before, filter: $filter) {
     totalCount
     edges {
       cursor

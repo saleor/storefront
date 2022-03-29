@@ -7,14 +7,12 @@ interface CategoryPageSeoProps {
   category: CategoryDetailsFragment;
 }
 
-export const CategoryPageSeo = ({ category }: CategoryPageSeoProps) => {
-  const baseTitle = `Saleor Tutorial`;
+export function CategoryPageSeo({ category }: CategoryPageSeoProps) {
+  const baseTitle = "Saleor Tutorial";
   const baseDescription =
     "Saleor tutorial project. Learn how to use our API and create storefront for your shop";
 
-  const seoTitle = !category.seoTitle
-    ? baseTitle
-    : `${category.seoTitle} - ${baseTitle}`;
+  const seoTitle = !category.seoTitle ? baseTitle : `${category.seoTitle} - ${baseTitle}`;
   const seoDescription = category.seoDescription || baseDescription;
   let images: OpenGraphMedia[] = [
     {
@@ -22,7 +20,7 @@ export const CategoryPageSeo = ({ category }: CategoryPageSeoProps) => {
       alt: "Saleor tutorial hero image",
     },
   ];
-  if (!!category.backgroundImage) {
+  if (category.backgroundImage) {
     images = [
       {
         url: category.backgroundImage.url,
@@ -43,6 +41,6 @@ export const CategoryPageSeo = ({ category }: CategoryPageSeoProps) => {
       }}
     />
   );
-};
+}
 
 export default CategoryPageSeo;
