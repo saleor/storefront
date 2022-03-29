@@ -3,7 +3,7 @@ name: CheckoutTests
 on:
   push:
     paths:
-      - "apps/checkout/**/*"
+      - "apps/checkout/**"
       - ".github/workflows/checkoutTests.yaml"
 
 jobs:

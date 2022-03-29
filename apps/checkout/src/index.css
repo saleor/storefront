@@ -50,7 +50,7 @@ html {
     transition: border 0.2s ease-in-out;
     height: 56px;
     padding-left: 11px;
-    @apply input border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary py-3 pt-5 pb-2;
+    @apply input text-base border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary pb-1 pt-5;
   }
 
   .text-input-error {
@@ -69,7 +69,7 @@ html {
   .text-input-filled-label {
     transition: all 0.2s ease-out;
     top: 0.6rem;
-    @apply text-xs;
+    @apply text-sm;
   }
 
   .input:focus + .text-input-label,

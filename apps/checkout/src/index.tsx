@@ -1,4 +1,4 @@
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { createClient, Provider as UrqlProvider } from "urql";
 
 import "./index.css";
@@ -8,11 +8,13 @@ import { getCurrentRegion } from "./lib/regions";
 import { I18nProvider } from "@react-aria/i18n";
 import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 
+const authorizedFetch = createFetch();
+
 const client = createClient({
   url: "https://latest.staging.saleor.cloud/graphql/",
   suspense: true,
   requestPolicy: "cache-first",
-  fetch: createFetch(),
+  fetch: authorizedFetch,
 });
 
 // temporarily need to use @apollo/client because saleor sdk
@@ -22,7 +24,7 @@ const saleorClient = createSaleorClient({
   channel: "default-channel",
 });
 
-const root = ReactDOM.createRoot(document.getElementById("root")!);
+const root = createRoot(document.getElementById("root")!);
 
 root.render(
   // disabled temporarily because of headless-ui transition not working

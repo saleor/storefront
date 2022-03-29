@@ -1,18 +1,15 @@
 import { useCheckout } from "@hooks/useCheckout";
 import { getDataWithToken, getQueryVariables } from "@lib/utils";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { AnonymousCustomerForm } from "./AnonymousCustomerForm";
 import { SignInForm } from "./SignInForm";
 import { SignedInUser } from "./SignedInUser";
 import { useAuthState } from "@saleor/sdk";
-import {
-  useCheckoutCustomerAttachMutation,
-  useCheckoutCustomerDetachMutation,
-} from "@graphql";
+import { useCheckoutCustomerAttachMutation } from "@graphql";
 import { ResetPassword } from "./ResetPassword";
+import { GuestUserForm } from "./GuestUserForm";
 
-type Section = "signedInUser" | "anonymousUser" | "signIn" | "resetPassword";
+type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
 interface ContactProps {
   onEmailChange: (value: string) => void;
@@ -20,8 +17,7 @@ interface ContactProps {
 }
 
 export const Contact = ({ onEmailChange, email }: ContactProps) => {
-  const [currentSection, setCurrentSection] =
-    useState<Section>("anonymousUser");
+  const [currentSection, setCurrentSection] = useState<Section>("guestUser");
 
   const changeSection = (section: Section) => () => {
     if (isCurrentSection(section)) {
@@ -34,8 +30,7 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
   const isCurrentSection = (section: Section) => currentSection === section;
 
   const [passwordResetShown, setPasswordResetShown] = useState(false);
-  const [, customerAttatch] = useCheckoutCustomerAttachMutation();
-  const [, customerDetach] = useCheckoutCustomerDetachMutation();
+  const [, customerAttach] = useCheckoutCustomerAttachMutation();
 
   const { authenticated, user } = useAuthState();
   const { checkout, loading } = useCheckout();
@@ -47,11 +42,11 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
       return;
     }
 
-    if (authenticated || checkout.user) {
+    if (authenticated) {
       setCurrentSection("signedInUser");
 
-      if (authenticated && checkout.user?.id !== user?.id) {
-        customerAttatch(
+      if (checkout?.user?.id !== user?.id) {
+        customerAttach(
           getDataWithToken({
             customerId: user?.id as string,
           })
@@ -67,17 +62,14 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
       return;
     }
 
-    setCurrentSection("anonymousUser");
-    if (checkout.user) {
-      customerDetach(getDataWithToken());
-    }
+    setCurrentSection("guestUser");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, checkout, authenticated, passwordResetToken]);
 
   return (
     <div>
-      {isCurrentSection("anonymousUser") && (
-        <AnonymousCustomerForm
+      {isCurrentSection("guestUser") && (
+        <GuestUserForm
           defaultValues={{ email }}
           onEmailChange={onEmailChange}
           onSectionChange={changeSection("signIn")}
@@ -86,14 +78,14 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
 
       {isCurrentSection("signIn") && (
         <SignInForm
-          onSectionChange={changeSection("anonymousUser")}
+          onSectionChange={changeSection("guestUser")}
           onEmailChange={onEmailChange}
           defaultValues={{ email }}
         />
       )}
 
       {isCurrentSection("signedInUser") && (
-        <SignedInUser onSectionChange={changeSection("anonymousUser")} />
+        <SignedInUser onSectionChange={changeSection("guestUser")} />
       )}
 
       {isCurrentSection("resetPassword") && (

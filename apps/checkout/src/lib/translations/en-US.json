@@ -55,5 +55,6 @@
   "signInLabel": "sign in",
   "sectionChangeButtonLabel": "contact section change button",
   "addItemQuantityLabel": "add item quantity",
-  "subtractItemQuantityLabel": "subtract item quantity"
+  "subtractItemQuantityLabel": "subtract item quantity",
+  "error": "error"
 }

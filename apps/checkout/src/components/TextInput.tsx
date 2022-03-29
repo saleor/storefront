@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import React, {
+  AllHTMLAttributes,
   ForwardedRef,
   forwardRef,
-  RefObject,
   useEffect,
+  useId,
   useState,
 } from "react";
-import { AriaTextFieldOptions, useTextField } from "@react-aria/textfield";
 import { Classes } from "@lib/globalTypes";
 import {
   Control,
@@ -21,7 +21,7 @@ export interface TextInputProps<
   TControl extends Control<any, any>,
   TFormData extends ControlFormData<TControl>
 > extends Omit<
-      AriaTextFieldOptions<"input">,
+      AllHTMLAttributes<HTMLInputElement>,
       "onBlur" | "onChange" | "name" | "ref"
     >,
     Pick<FormState<TFormData>, "errors">,
@@ -51,8 +51,10 @@ const TextInputComponent = <
     name,
     control,
     icon,
-    ...rest
+    type,
   } = props;
+
+  const id = useId();
 
   const [labelFixed, setLabelFixed] = useState(false);
 
@@ -69,11 +71,6 @@ const TextInputComponent = <
     }
   }, [value, labelFixed]);
 
-  const { labelProps, inputProps, errorMessageProps } = useTextField(
-    rest,
-    ref as RefObject<HTMLInputElement>
-  );
-
   const inputClasses = clsx("text-input", {
     "text-input-error": !!error,
   });
@@ -87,22 +84,26 @@ const TextInputComponent = <
     onChange(event);
   };
 
+  const errorId = `${id} ${name} error`;
+
   return (
     <div className={clsx("text-input-container", className)}>
       <input
-        {...inputProps}
+        type={type}
+        id={id}
         name={name}
         ref={ref}
         className={inputClasses}
         onBlur={onBlur}
         onChange={handleChange}
         aria-label={name}
+        aria-describedby={errorId}
       />
-      <label {...labelProps} htmlFor={inputProps.id} className={labelClasses}>
+      <label htmlFor={id} className={labelClasses}>
         {optional ? label : `${label}*`}
       </label>
       {error && (
-        <span className="text-xs text-text-error" {...errorMessageProps}>
+        <span id={errorId} className="text-xs text-text-error">
           {/* react-hook-form has this typed badly */}
           {(error as any).message}
         </span>

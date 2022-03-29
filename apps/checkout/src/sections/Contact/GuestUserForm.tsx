@@ -25,7 +25,7 @@ interface FormData {
   email: string;
 }
 
-export const AnonymousCustomerForm: React.FC<AnonymousCustomerFormProps> = ({
+export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   onSectionChange,
   onEmailChange,
   defaultValues,
@@ -79,7 +79,6 @@ export const AnonymousCustomerForm: React.FC<AnonymousCustomerFormProps> = ({
         })}
       />
       <Checkbox
-        id="want to create account"
         value="createAccount"
         label={formatMessage("wantToCreateAccountLabel")}
         checked={createAccountSelected}

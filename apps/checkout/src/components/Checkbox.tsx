@@ -1,17 +1,14 @@
-// import {useCheckbox} from '@react-aria/checkbox' -> won't work now because of React 18, add after official release
-
 import { Label } from "@components/Label";
 import { CheckIcon } from "@icons";
 import { Classes } from "@lib/globalTypes";
 import clsx from "clsx";
+import { useId } from "react";
 
 interface CheckboxProps extends Classes {
   label: string;
   value: string;
   checked: boolean;
   onChange: (value: boolean) => void;
-  // TMP until react aria checkbox works
-  id: string;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
@@ -20,8 +17,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   value,
   onChange,
   className,
-  id,
 }) => {
+  const id = useId();
+
   return (
     <div className={clsx("checkbox", className)}>
       <div className="relative h-5 w-5 mr-2">
