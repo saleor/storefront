@@ -6,7 +6,7 @@ generates:
     plugins:
       - add:
           content:
-            - "// THIS FILE IS GENERATED WITH `yarn generate`"
+            - "// THIS FILE IS GENERATED WITH `pnpm generate`"
       - "typescript"
       - "typescript-operations"
       - "typescript-urql"

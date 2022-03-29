@@ -22,9 +22,11 @@
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/yup": "^0.29.13",
+    "@typescript-eslint/parser": "^5.17.0",
     "autoprefixer": "9.8.6",
     "clsx": "^1.1.1",
     "graphql": "^16.3.0",
+    "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "postcss": "^8.4.6",
     "query-string": "^7.1.1",
@@ -45,14 +47,8 @@
     "eject": "react-scripts eject",
     "format-code": "npx prettier --check \"src/**/*.@(tsx|ts|jsx|js)\" --write",
     "generate": "graphql-codegen --config codegen.yml && prettier --check \"src/graphql/index.ts\" --write",
-    "lint": "yarn format-code && eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
+    "lint": "pnpm format-code && eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
     "check-types": "tsc --noEmit --strict"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -67,6 +63,9 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.12.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "@graphql-codegen/add": "^3.1.1",
     "@graphql-codegen/cli": "2.4.0",
     "@graphql-codegen/introspection": "2.1.1",

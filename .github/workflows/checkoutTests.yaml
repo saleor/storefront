@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "apps/checkout/**/*"
+      - ".github/workflows/checkoutTests.yaml"
 
 jobs:
   tsc-and-linters:
@@ -22,13 +23,13 @@ jobs:
 
       - name: Install deps
         run: |
-          npm install -g yarn
-          yarn
+          npm install -g pnpm
+          pnpm i
 
       - name: Run tsc
         run: |
-          yarn run check-types --scope="checkout"
+          pnpm run check-types -- --scope="checkout"
 
       - name: Run lint
         run: |
-          yarn turbo run lint --scope="checkout"
+          pnpm turbo run lint -- --scope="checkout"

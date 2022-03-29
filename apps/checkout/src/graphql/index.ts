@@ -1,4 +1,4 @@
-// THIS FILE IS GENERATED WITH `yarn generate`
+// THIS FILE IS GENERATED WITH `pnpm generate`
 import gql from "graphql-tag";
 import * as Urql from "urql";
 export type Maybe<T> = T | null;
@@ -13430,40 +13430,6 @@ export type _Service = {
   sdl?: Maybe<Scalars["String"]>;
 };
 
-export type CheckoutLineFragment = {
-  __typename?: "CheckoutLine";
-  id: string;
-  quantity: number;
-  totalPrice?: {
-    __typename?: "TaxedMoney";
-    gross: { __typename?: "Money"; currency: string; amount: number };
-  } | null;
-  variant: {
-    __typename?: "ProductVariant";
-    id: string;
-    name: string;
-    pricing?: {
-      __typename?: "VariantPricingInfo";
-      onSale?: boolean | null;
-      price?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
-      priceUndiscounted?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
-    } | null;
-    product: { __typename?: "Product"; name: string };
-    media?: Array<{
-      __typename?: "ProductMedia";
-      alt: string;
-      type: ProductMediaType;
-      url: string;
-    }> | null;
-  };
-};
-
 export type CheckoutFragment = {
   __typename?: "Checkout";
   id: string;
@@ -13515,6 +13481,40 @@ export type CheckoutFragment = {
       }> | null;
     };
   } | null> | null;
+};
+
+export type CheckoutLineFragment = {
+  __typename?: "CheckoutLine";
+  id: string;
+  quantity: number;
+  totalPrice?: {
+    __typename?: "TaxedMoney";
+    gross: { __typename?: "Money"; currency: string; amount: number };
+  } | null;
+  variant: {
+    __typename?: "ProductVariant";
+    id: string;
+    name: string;
+    pricing?: {
+      __typename?: "VariantPricingInfo";
+      onSale?: boolean | null;
+      price?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
+      priceUndiscounted?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
+    } | null;
+    product: { __typename?: "Product"; name: string };
+    media?: Array<{
+      __typename?: "ProductMedia";
+      alt: string;
+      type: ProductMediaType;
+      url: string;
+    }> | null;
+  };
 };
 
 export type CheckoutQueryVariables = Exact<{

@@ -2,10 +2,9 @@
 
 Extensible, powerful checkout powered by Saleor API.
 
-
 ## Setup
 
-This monorepo uses [Yarn](https://classic.yarnpkg.com/lang/en/) as a package manager.
+This monorepo uses [PNPM](https://pnpm.io/) as a package manager.
 
 ### Monorepo structure
 
@@ -13,13 +12,12 @@ This monorepo uses [Yarn](https://classic.yarnpkg.com/lang/en/) as a package man
 - `packages/config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
 
-
 ### Build
 
 To build all apps and packages, run the following command:
 
 ```
-yarn run build
+pnpm run build
 ```
 
 ### Develop
@@ -27,5 +25,5 @@ yarn run build
 To develop all apps and packages, run the following command:
 
 ```
-yarn run dev
+pnpm run dev
 ```
