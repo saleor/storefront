@@ -25,3 +25,7 @@ List of available channels can be changed by adding new entries to `CHANNELS` co
 ## Languages
 
 To configure available languages, read [translation](docs/translations.md) docs.
+
+## Homepage
+
+By default homepage will show content blocks based at Menu object fetched from the API. Slug of the object can be configured with the `NEXT_PUBLIC_HOMEPAGE_MENU` variable.
