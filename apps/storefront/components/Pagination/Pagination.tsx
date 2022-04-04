@@ -30,7 +30,7 @@ export function Pagination({ pageInfo, onLoadMore, itemsCount, totalCount }: Pag
         {itemsCount && totalCount && (
           <div className="text-sm text-gray-500 mt-2">
             {t.formatMessage(messages.paginationProductCounter, {
-              totalItemsCount: 0,
+              totalItemsCount: totalCount,
               currentItemsCount: itemsCount,
             })}
           </div>
