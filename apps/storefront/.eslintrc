@@ -7,7 +7,7 @@
     "plugin:@typescript-eslint/recommended",
     "prettier" // prettier *has* to be the last one, to avoid conflicting rules
   ],
-  "ignorePatterns": ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json"],
+  "ignorePatterns": ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json", "lib/$path.ts"],
   "plugins": ["simple-import-sort", "formatjs", "@typescript-eslint"],
   "rules": {
     "quotes": ["error", "double"],
@@ -31,7 +31,6 @@
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "operator-linebreak": "off",
     "max-len": "off",
-    // To be discussed
     "array-callback-return": "off",
     "implicit-arrow-linebreak": "off",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
