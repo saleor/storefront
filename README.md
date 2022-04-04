@@ -43,7 +43,7 @@ pnpm i
 Start the dev server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Storefront can be now accessed at http://localhost:3001/.
@@ -52,9 +52,7 @@ Storefront can be now accessed at http://localhost:3001/.
 
 ### Configuration
 
-The `.env` file contains environment variables used by the application. You can override them by creating `.env.local` file.
-
-[Read more](https://nextjs.org/docs/basic-features/environment-variables)
+Instructions how to configure the application (e.g. change the graphql API URL) can be found [here](docs/configuration.md).
 
 ### GraphQL queries
 
@@ -62,12 +60,12 @@ Graphql queries are located under the `./graphql`. We strongly encourage use of 
 
 Our client of choice is [Apollo](https://www.apollographql.com/docs/react/), which provides excellent cache and features out of the box. To get fully typed requests and responses, [GraphQL Code Generator](https://www.graphql-code-generator.com/) transforms all `.graphql` files into ready to use hooks. Generated code is located at `./saleor/api.tsx` file.
 
-API endpoint can be configured via `.env` file.
+API endpoint can be configured via `.env` file as described in [docs](docs/configuration.md).
 
 #### Workflow
 
 - Modify or create GraphQL file. For example, new query at `./graphql/queries/FeaturedProducts.graphql`
-- Run `npm run generate` command
+- Run `pnpm generate` command
 - New query will be added to the `./saleor/api.tsx` file
 - Import generated hook (`import { useFeaturedProductsQuery } from "@/saleor/api";`) in your component code
 
@@ -86,7 +84,7 @@ Project use [file based routing](https://nextjs.org/docs/routing/introduction). 
 To ensure, that Link components use only the existing URLs with required arguments, we use [pathpida](https://github.com/aspida/pathpida). It is used to automatically generate the `./lib/$path.ts` file with all available routes. File should not be updated manually, instead run:
 
 ```bash
-npm run paths
+pnpm paths
 ```
 
 Since routes require additional arguments with current locale and channel, you should use `usePaths` hook which will automatically add those. Let's create example component with link to the product page:
@@ -107,10 +105,10 @@ export const ProductLinkComponent = () => {
 
 ### Code style
 
-Before commiting the code, make sure to run code linters and formatters:
+Before committing the code, Git pre-hooks will check staged changes for following the code styles. If you would like to format the code by yourself, run the command:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ## Other tools
@@ -122,7 +120,7 @@ The repository contains ready to use VS Code debugger configuration (`.vscode/la
 Start server in debug mode
 
 ```bash
-npm run debug
+pnpm debug
 ```
 
 Add [breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoints), and start debugging session in your editor.
@@ -138,7 +136,7 @@ VS Marketplace [link](https://marketplace.visualstudio.com/items?itemName=GraphQ
 If you want to check how your changes impact page size, use command:
 
 ```bash
-npm run analyze-build
+pnpm analyze-build
 ```
 
 After the build, report will open in your browser.
