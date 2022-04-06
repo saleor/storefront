@@ -1,5 +1,4 @@
-import { CountryCode, useCheckoutEmailUpdateMutation } from "@graphql";
-import { useCheckout } from "@hooks/useCheckout";
+import { CountryCode } from "@graphql";
 import React, { useState } from "react";
 import { AddressFormData } from "./types";
 import { UserAddressForm } from "./UserAddressForm";
@@ -19,6 +18,9 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   const [selectedCountryCode, setSelectedCountryCode] =
     useState<CountryCode>("PL");
 
+  const handleSave = (address: AddressFormData) =>
+    onSubmit({ ...address, countryCode: selectedCountryCode });
+
   return (
     <UserAddressSectionContainer
       title={title}
@@ -27,7 +29,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
       onCountrySelect={setSelectedCountryCode}
     >
       <UserAddressForm
-        onSave={onSubmit}
+        onSave={handleSave}
         countryCode={selectedCountryCode}
         defaultValues={address}
       />

@@ -19,6 +19,7 @@ export type AddressField =
   | "countryArea"
   | "cityArea"
   | "postalCode"
+  | "countryCode"
   | "companyName"
   | "streetAddress1"
   | "streetAddress2"
