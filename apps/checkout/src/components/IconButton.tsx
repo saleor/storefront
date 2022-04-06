@@ -1,16 +1,17 @@
+import { Classes } from "@lib/globalTypes";
+import clsx from "clsx";
 import { ButtonProps } from "./Button";
 
-export const IconButton = (
-  props: Omit<ButtonProps, "title"> & { ariaLabel: string }
-) => {
-  const { children, ariaLabel } = props;
+interface IconButtonProps extends Classes, Omit<ButtonProps, "title"> {
+  ariaLabel: string;
+}
 
-  return (
-    <button
-      className="outline-none focus:outline-none active:outline-none"
-      aria-label={ariaLabel}
-    >
-      {children}
-    </button>
-  );
-};
+export const IconButton: React.FC<IconButtonProps> = ({
+  children,
+  ariaLabel,
+  className,
+}) => (
+  <button className={clsx("icon-button", className)} aria-label={ariaLabel}>
+    {children}
+  </button>
+);

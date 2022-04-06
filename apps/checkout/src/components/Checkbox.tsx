@@ -22,7 +22,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <div className={clsx("checkbox", className)}>
-      <div className="relative h-5 w-5 mr-2">
+      <div className="relative icon mr-2">
         <input type="checkbox" value={value} checked={checked} id={id} />
         <div className="checkbox-input" onClick={() => onChange(!checked)}>
           <img alt="check icon" src={CheckIcon} />

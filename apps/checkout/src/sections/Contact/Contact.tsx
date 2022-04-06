@@ -46,11 +46,12 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
       setCurrentSection("signedInUser");
 
       if (checkout?.user?.id !== user?.id) {
-        customerAttach(
-          getDataWithToken({
-            customerId: user?.id as string,
-          })
-        );
+        // TMP for development
+        // customerAttach(
+        //   getDataWithToken({
+        //     customerId: user?.id as string,
+        //   })
+        // );
       }
 
       return;
