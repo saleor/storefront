@@ -12,6 +12,11 @@ This monorepo uses [PNPM](https://pnpm.io/) as a package manager.
 - `packages/config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
 
+### Install
+```
+pnpm i
+```
+
 ### Build
 
 To build all apps and packages, run the following command:
