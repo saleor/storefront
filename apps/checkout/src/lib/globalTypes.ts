@@ -9,3 +9,17 @@ export interface ValidationError<TFormData> {
   path: keyof TFormData;
   message: string;
 }
+
+export type AddressField =
+  | "city"
+  | "name"
+  | "firstName"
+  | "lastName"
+  | "country"
+  | "countryArea"
+  | "cityArea"
+  | "postalCode"
+  | "companyName"
+  | "streetAddress1"
+  | "streetAddress2"
+  | "phone";

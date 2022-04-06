@@ -1,8 +1,7 @@
 import { useCheckoutEmailUpdateMutation } from "@graphql";
 import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import { getDataWithToken, useValidationResolver } from "@lib/utils";
-import { useToggleState } from "@react-stately/toggle";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox } from "@components/Checkbox";
 import { TextInput } from "@components/TextInput";
 import { PasswordInput } from "@components/PasswordInput";
@@ -32,10 +31,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
 }) => {
   const formatMessage = useFormattedMessages();
   const errorMessages = useErrorMessages();
-  const {
-    isSelected: createAccountSelected,
-    setSelected: setCreateAccountSelected,
-  } = useToggleState();
+  const [createAccountSelected, setCreateAccountSelected] = useState(false);
 
   const schema = object({
     email: string()
