@@ -1,4 +1,4 @@
-// THIS FILE IS GENERATED WITH `yarn generate`
+// THIS FILE IS GENERATED WITH `pnpm generate`
 import gql from 'graphql-tag';
 import * as Urql from 'urql';
 export type Maybe<T> = T | null;
@@ -5470,6 +5470,7 @@ export type MetadataErrorCode =
   | 'GRAPHQL_ERROR'
   | 'INVALID'
   | 'NOT_FOUND'
+  | 'NOT_UPDATED'
   | 'REQUIRED';
 
 export type MetadataFilter = {
@@ -13872,19 +13873,35 @@ export type AppQueryVariables = Exact<{
 
 export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, name?: string | null } | null };
 
+export type ChannelFragment = { __typename?: 'Channel', id: string, name: string, slug: string };
+
 export type ChannelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ChannelsQuery = { __typename?: 'Query', channels?: Array<{ __typename?: 'Channel', id: string, name: string, slug: string }> | null };
 
-export type MetadataQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
+export type PrivateMetadataQueryVariables = Exact<{
+  id: Scalars['ID'];
 }>;
 
 
-export type MetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null };
+export type PrivateMetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null };
+
+export type UpdatePrivateMetadataMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: Array<MetadataInput> | MetadataInput;
+}>;
 
 
+export type UpdatePrivateMetadataMutation = { __typename?: 'Mutation', updatePrivateMetadata?: { __typename?: 'UpdatePrivateMetadata', item?: { __typename?: 'App', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Attribute', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Category', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Checkout', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Collection', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'DigitalContent', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Fulfillment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'GiftCard', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Invoice', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Menu', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'MenuItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Order', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Page', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'PageType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Payment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Product', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ProductType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ProductVariant', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Sale', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingMethod', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingMethodType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingZone', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'User', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Voucher', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Warehouse', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
+
+export const ChannelFragmentDoc = gql`
+    fragment ChannelFragment on Channel {
+  id
+  name
+  slug
+}
+    `;
 export const AppDocument = gql`
     query App($id: ID) {
   app(id: $id) {
@@ -13900,18 +13917,16 @@ export function useAppQuery(options?: Omit<Urql.UseQueryArgs<AppQueryVariables>,
 export const ChannelsDocument = gql`
     query Channels {
   channels {
-    id
-    name
-    slug
+    ...ChannelFragment
   }
 }
-    `;
+    ${ChannelFragmentDoc}`;
 
 export function useChannelsQuery(options?: Omit<Urql.UseQueryArgs<ChannelsQueryVariables>, 'query'>) {
   return Urql.useQuery<ChannelsQuery>({ query: ChannelsDocument, ...options });
 };
-export const MetadataDocument = gql`
-    query Metadata($id: ID) {
+export const PrivateMetadataDocument = gql`
+    query PrivateMetadata($id: ID!) {
   app(id: $id) {
     id
     privateMetadata {
@@ -13922,6 +13937,27 @@ export const MetadataDocument = gql`
 }
     `;
 
-export function useMetadataQuery(options?: Omit<Urql.UseQueryArgs<MetadataQueryVariables>, 'query'>) {
-  return Urql.useQuery<MetadataQuery>({ query: MetadataDocument, ...options });
+export function usePrivateMetadataQuery(options: Omit<Urql.UseQueryArgs<PrivateMetadataQueryVariables>, 'query'>) {
+  return Urql.useQuery<PrivateMetadataQuery>({ query: PrivateMetadataDocument, ...options });
+};
+export const UpdatePrivateMetadataDocument = gql`
+    mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
+  updatePrivateMetadata(id: $id, input: $input) {
+    item {
+      privateMetadata {
+        key
+        value
+      }
+    }
+    errors {
+      code
+      message
+      field
+    }
+  }
+}
+    `;
+
+export function useUpdatePrivateMetadataMutation() {
+  return Urql.useMutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(UpdatePrivateMetadataDocument);
 };

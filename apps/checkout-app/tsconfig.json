@@ -6,10 +6,15 @@
       "@backend/*": ["backend/*"],
       "@graphql": ["graphql"],
       "@graphql/*": ["graphql/*"],
-      "@utils": ["utils.ts"]
-    }
+      "@utils": ["utils.ts"],
+      "@constants": ["constants.ts"]
+    },
+    "strict": true,
+    "noEmit": true,
+    "declaration": false, // Fixes "inferred type cannot be named without a reference to ..." errors
+    "declarationMap": false // Fixes "inferred type cannot be named without a reference to ..." errors
   },
-  "extends": "tsconfig/nextjs.json",
+  "extends": "../../packages/tsconfig/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

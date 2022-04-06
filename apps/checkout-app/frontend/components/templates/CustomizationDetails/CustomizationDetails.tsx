@@ -13,34 +13,40 @@ import {
   ConfirmButtonTransitionState,
 } from "@saleor/macaw-ui";
 import { Customization, CustomizationID } from "types/common";
-import { UnknownSettingsValues } from "types/api";
+import { CustomizationSettingsValues } from "types/api";
 import { useStyles } from "./styles";
 import { FormattedMessage } from "react-intl";
 import { useForm, Controller } from "react-hook-form";
 import { messages } from "./messages";
 import Setting from "@frontend/components/elements/Setting";
 import { flattenSettingId, unflattenSettings } from "@frontend/utils";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 interface CustomizationDetailsProps {
   options: Customization<CustomizationID>[];
-  disabled: boolean;
+  loading: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
-  onCanel: () => void;
-  onSubmit: (data: UnknownSettingsValues) => void;
+  onCancel: () => void;
+  onSubmit: (data: CustomizationSettingsValues) => void;
 }
 
 const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
   options,
-  disabled,
+  loading,
   saveButtonBarState,
-  onCanel,
+  onCancel,
   onSubmit,
 }) => {
   const classes = useStyles();
   const { control, handleSubmit: handleSubmitForm, formState } = useForm();
 
-  const handleSubmit = (flattedSettings: Record<string, string>) => {
-    onSubmit(unflattenSettings(flattedSettings, options));
+  const handleSubmit = (flattenedSettings: Record<string, string>) => {
+    onSubmit(
+      unflattenSettings(
+        flattenedSettings,
+        options
+      ) as CustomizationSettingsValues
+    );
   };
 
   return (
@@ -63,24 +69,28 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                 </AccordionSummary>
                 <AccordionDetails className={classes.optionDetails}>
                   <div className={classes.optionDetailsContent}>
-                    {option.settings?.map(({ id, type, label, value }) => (
-                      <Controller
-                        key={id}
-                        name={flattenSettingId(optionIdx, id)}
-                        control={control}
-                        defaultValue={value}
-                        render={({ field }) => (
-                          <Setting
-                            name={field.name}
-                            type={type}
-                            label={label}
-                            value={field.value}
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                          />
-                        )}
-                      />
-                    ))}
+                    {option.settings?.map(({ id, type, label, value }) =>
+                      loading ? (
+                        <Skeleton key={id} />
+                      ) : (
+                        <Controller
+                          key={id}
+                          name={flattenSettingId(optionIdx, id)}
+                          control={control}
+                          defaultValue={value}
+                          render={({ field }) => (
+                            <Setting
+                              name={field.name}
+                              type={type}
+                              label={label}
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                            />
+                          )}
+                        />
+                      )
+                    )}
                   </div>
                 </AccordionDetails>
               </Accordion>
@@ -95,9 +105,9 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
         </div>
       </div>
       <AppSavebar
-        disabled={disabled || !formState.isDirty}
+        disabled={loading || !formState.isDirty}
         state={saveButtonBarState}
-        onCancel={onCanel}
+        onCancel={onCancel}
         onSubmit={handleSubmitForm(handleSubmit)}
       />
     </form>

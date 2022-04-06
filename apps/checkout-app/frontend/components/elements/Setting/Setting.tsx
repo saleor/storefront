@@ -8,7 +8,11 @@ interface SettingProps {
   type: SettingType;
   label: string;
   value?: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+    event:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | React.DragEvent<HTMLDivElement>
+  ) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 

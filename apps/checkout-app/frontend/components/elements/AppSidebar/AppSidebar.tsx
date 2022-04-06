@@ -1,3 +1,4 @@
+import Skeleton from "@material-ui/lab/Skeleton";
 import {
   OffsettedList,
   OffsettedListBody,
@@ -5,22 +6,20 @@ import {
   OffsettedListItemCell,
 } from "@saleor/macaw-ui";
 import clsx from "clsx";
+import { Item } from "types/common";
 import { useStyles } from "./styles";
-
-export interface Item {
-  id: string;
-  label: string;
-}
 
 interface AppSidebarProps {
   items: Item[];
   selectedItem?: Item;
+  loading: boolean;
   onItemClick: (item: Item) => void;
 }
 
 const AppSidebar: React.FC<AppSidebarProps> = ({
   items,
   selectedItem,
+  loading,
   onItemClick,
 }) => {
   const classes = useStyles();
@@ -28,17 +27,21 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
   return (
     <OffsettedList gridTemplate={["1fr"]} className={classes.itemList}>
       <OffsettedListBody>
-        {items?.map((item) => (
-          <OffsettedListItem
-            key={item.id}
-            className={clsx(classes.itemListItem, {
-              [classes.itemListItemActive]: item.id === selectedItem?.id,
-            })}
-            onClick={() => onItemClick(item)}
-          >
-            <OffsettedListItemCell>{item.label}</OffsettedListItemCell>
-          </OffsettedListItem>
-        ))}
+        {loading ? (
+          <Skeleton />
+        ) : (
+          items?.map((item) => (
+            <OffsettedListItem
+              key={item.id}
+              className={clsx(classes.itemListItem, {
+                [classes.itemListItemActive]: item.id === selectedItem?.id,
+              })}
+              onClick={() => onItemClick(item)}
+            >
+              <OffsettedListItemCell>{item.label}</OffsettedListItemCell>
+            </OffsettedListItem>
+          ))
+        )}
       </OffsettedListBody>
     </OffsettedList>
   );

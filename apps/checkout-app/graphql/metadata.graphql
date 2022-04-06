@@ -1,9 +1,25 @@
-query Metadata($id: ID) {
+query PrivateMetadata($id: ID!) {
   app(id: $id) {
     id
     privateMetadata {
       key
       value
+    }
+  }
+}
+
+mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
+  updatePrivateMetadata(id: $id, input: $input) {
+    item {
+      privateMetadata {
+        key
+        value
+      }
+    }
+    errors {
+      code
+      message
+      field
     }
   }
 }

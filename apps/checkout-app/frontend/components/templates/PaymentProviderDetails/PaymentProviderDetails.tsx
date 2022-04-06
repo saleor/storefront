@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Card, CardContent, Typography } from "@material-ui/core";
-import { PaymentProvider, PaymentProviderID } from "types/common";
+import { Item, PaymentProvider, PaymentProviderID } from "types/common";
 import { paymentProviders } from "consts";
 import VerticalSpacer from "@frontend/components/elements/VerticalSpacer";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
@@ -12,24 +12,27 @@ import { sectionMessages } from "@frontend/misc/commonMessages";
 import AppLayout from "@frontend/components/elements/AppLayout";
 import AppSavebar from "@frontend/components/elements/AppSavebar";
 import Setting from "@frontend/components/elements/Setting";
-import { UnknownSettingsValues } from "types/api";
+import { PaymentProviderSettingsValues } from "types/api";
 import { ConfirmButtonTransitionState } from "@saleor/macaw-ui";
+import Skeleton from "@material-ui/lab/Skeleton";
+import { getFormDefaultValues } from "./data";
+import { useEffect } from "react";
 
 interface PaymentProviderDetailsProps {
-  selectedPaymentProvider?: PaymentProvider<PaymentProviderID>;
+  selectedPaymentProvider: PaymentProvider<PaymentProviderID>;
   channelId?: string;
-  disabled: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
-  onCanel: () => void;
-  onSubmit: (data: UnknownSettingsValues) => void;
+  loading: boolean;
+  onCancel: () => void;
+  onSubmit: (data: PaymentProviderSettingsValues) => void;
 }
 
 const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
   selectedPaymentProvider,
   channelId,
-  disabled,
   saveButtonBarState,
-  onCanel,
+  loading,
+  onCancel,
   onSubmit,
 }) => {
   const router = useRouter();
@@ -39,9 +42,14 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
     control,
     handleSubmit: handleSubmitForm,
     formState,
+    reset: resetForm,
   } = useForm({
-    shouldUnregister: true,
+    shouldUnregister: true, // Legacy fields from different subpage using the same form might be still present, this should unregister them
   });
+
+  useEffect(() => {
+    resetForm(getFormDefaultValues(selectedPaymentProvider)); // Update values on subpage change as the same form is used
+  }, [selectedPaymentProvider, resetForm]);
 
   const onBackClick = () => {
     if (channelId) {
@@ -56,9 +64,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
     }
   };
 
-  const onPaymentProviderClick = (
-    paymentProvider: PaymentProvider<PaymentProviderID>
-  ) => {
+  const onPaymentProviderClick = (paymentProvider: Item) => {
     if (channelId) {
       router.push({
         pathname: paymentProviderPath,
@@ -80,7 +86,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
   const handleSubmit = (flattedOptions: Record<string, string>) => {
     onSubmit({
       [selectedPaymentProvider.id]: flattedOptions,
-    });
+    } as PaymentProviderSettingsValues);
   };
 
   return (
@@ -90,6 +96,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
         onBackClick={onBackClick}
         items={paymentProviders}
         selectedItem={selectedPaymentProvider}
+        loading={loading}
         onItemClick={onPaymentProviderClick}
       >
         <Card>
@@ -99,34 +106,37 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
             </Typography>
             <VerticalSpacer />
             <div className={classes.settings}>
-              {selectedPaymentProvider?.settings?.map(
-                ({ id, type, label, value }) => (
-                  <Controller
-                    key={id}
-                    name={id}
-                    control={control}
-                    defaultValue={value}
-                    render={({ field }) => (
-                      <Setting
-                        name={field.name}
-                        type={type}
-                        label={label}
-                        value={field.value}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                      />
-                    )}
-                  />
-                )
+              {selectedPaymentProvider.settings.map(
+                ({ id, type, label, value }) =>
+                  loading ? (
+                    <Skeleton key={id} />
+                  ) : (
+                    <Controller
+                      key={id}
+                      name={id}
+                      control={control}
+                      defaultValue={value}
+                      render={({ field }) => (
+                        <Setting
+                          name={field.name}
+                          type={type}
+                          label={label}
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                        />
+                      )}
+                    />
+                  )
               )}
             </div>
           </CardContent>
         </Card>
       </AppLayout>
       <AppSavebar
-        disabled={disabled || !formState.isDirty}
+        disabled={loading || !formState.isDirty}
         state={saveButtonBarState}
-        onCancel={onCanel}
+        onCancel={onCancel}
         onSubmit={handleSubmitForm(handleSubmit)}
       />
     </form>

@@ -4,7 +4,7 @@ import { VerticalSpacerProps } from "./types";
 export const useStyles = makeStyles(
   (theme) => ({
     container: ({ spacing }: VerticalSpacerProps) => ({
-      height: theme.spacing(spacing),
+      height: theme.spacing(spacing || 0),
     }),
   }),
   { name: "VerticalSpacer" }

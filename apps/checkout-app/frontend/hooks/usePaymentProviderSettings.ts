@@ -1,9 +1,11 @@
-import { useMetadataQuery } from "@graphql";
+import { usePrivateMetadataQuery } from "@graphql";
+import { useAuthData } from "./useAuthData";
 
 export const usePaymentProviderSettings = () => {
-  const [metadataQuery] = useMetadataQuery({
+  const { app } = useAuthData();
+  const [metadataQuery] = usePrivateMetadataQuery({
     variables: {
-      id: process.env.NEXT_PUBLIC_APP_ID,
+      id: app,
     },
   });
 

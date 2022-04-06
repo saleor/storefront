@@ -1,14 +1,14 @@
-import { Channel } from "types/saleor";
+import { ChannelFragment } from "@graphql";
 
-// Should be fetched from saleor backend
-export const channelList: Channel[] = [
+export const channels: ChannelFragment[] = [
   {
     id: "channel-1",
-    label: "B2B Channel",
+    name: "B2B Channel",
+    slug: "b2b-channel",
   },
   {
     id: "channel-2",
-    label: "B2C Channel",
+    name: "B2C Channel",
+    slug: "b2c-channel",
   },
 ];
-export const useChannelList = () => channelList;

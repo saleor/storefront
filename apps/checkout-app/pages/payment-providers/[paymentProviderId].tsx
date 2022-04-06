@@ -1,16 +1,38 @@
 import PaymentProviderDetails from "frontend/components/templates/PaymentProviderDetails";
-import { getPaymentProviderSettings } from "mocks/app";
-import { UnknownSettingsValues } from "types/api";
+import { PaymentProviderSettingsValues } from "types/api";
 import { useRouter } from "next/router";
-import { withUrqlClient } from "next-urql";
-// import { usePaymentProviderSettings } from "@hooks/usePaymentProviderSettings";
+import { useAuthData } from "@frontend/hooks/useAuthData";
+import {
+  usePrivateMetadataQuery,
+  useUpdatePrivateMetadataMutation,
+} from "@graphql";
+import { mapMetadataToSettings, mapSettingsToMetadata } from "@frontend/utils";
+import { getPaymentProviderSettings } from "@frontend/data";
+import ErrorDetails from "@frontend/components/templates/ErrorDetails";
+import { useIntl } from "react-intl";
+import { notFoundMessages } from "@frontend/misc/errorMessages";
 
 const PaymentProvider = () => {
   const router = useRouter();
   const { paymentProviderId, channelId } = router.query;
+  const intl = useIntl();
 
-  const paymentProviders = getPaymentProviderSettings();
-  // const [paymentProviderQuery] = usePaymentProviderSettings();
+  const { app } = useAuthData();
+  const [metadataQuery] = usePrivateMetadataQuery({
+    variables: {
+      id: app,
+    },
+  });
+  const [metadataMutation, setPrivateMetadata] =
+    useUpdatePrivateMetadataMutation();
+
+  const settingsValues = mapMetadataToSettings(
+    metadataQuery.data?.app?.privateMetadata || []
+  );
+  const paymentProviders = getPaymentProviderSettings(
+    settingsValues.paymentProviders
+  );
+
   const paymentProvider = paymentProviders.find(
     (paymentMethod) => paymentMethod.id === paymentProviderId
   );
@@ -19,21 +41,37 @@ const PaymentProvider = () => {
     router.back();
   };
 
-  const handleSubmit = (data: UnknownSettingsValues) => {
-    console.log(data);
+  const handleSubmit = (data: PaymentProviderSettingsValues) => {
+    const metadata = mapSettingsToMetadata({
+      paymentProviders: {
+        ...settingsValues.paymentProviders,
+        ...data,
+      },
+    });
+
+    setPrivateMetadata({
+      id: app,
+      input: metadata,
+    });
   };
+
+  if (!paymentProvider) {
+    return (
+      <ErrorDetails
+        error={intl.formatMessage(notFoundMessages.paymentProviderNotFound)}
+      />
+    );
+  }
 
   return (
     <PaymentProviderDetails
       selectedPaymentProvider={paymentProvider}
       channelId={channelId?.toString()}
-      disabled={false}
       saveButtonBarState="default"
-      onCanel={handleCancel}
+      loading={metadataQuery.fetching || metadataMutation.fetching}
+      onCancel={handleCancel}
       onSubmit={handleSubmit}
     />
   );
 };
-export default withUrqlClient(() => ({
-  url: process.env.NEXT_PUBLIC_API_URL,
-}))(PaymentProvider);
+export default PaymentProvider;

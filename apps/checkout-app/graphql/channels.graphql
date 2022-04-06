@@ -1,7 +1,11 @@
+fragment ChannelFragment on Channel {
+  id
+  name
+  slug
+}
+
 query Channels {
   channels {
-    id
-    name
-    slug
+    ...ChannelFragment
   }
 }

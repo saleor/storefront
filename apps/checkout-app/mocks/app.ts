@@ -1,67 +1,23 @@
-import { channelList } from "mocks/saleor";
-import { customizations, paymentMethods, paymentProviders } from "../consts";
-import {
-  Customization,
-  CustomizationID,
-  CustomizationSettings,
-  PaymentProvider,
-  PaymentProviderID,
-  PaymentProviderSettings,
-} from "types/common";
-import { findById } from "../utils";
+import { channels } from "mocks/saleor";
 import {
   ChannelActivePaymentProviders,
-  ChannelActivePaymentProvidersByChannel,
-  ChannelPaymentOptions,
   CustomizationSettingsValues,
   PaymentProviderSettingsValues,
 } from "types/api";
 
 // Should be fetched from app backend
 export const activePaymentProviders: ChannelActivePaymentProviders = {
-  "credit-card": {
-    [channelList[0].id]: "mollie",
-    [channelList[1].id]: "adyen",
+  [channels[0].id]: {
+    "credit-card": "mollie",
+    "apple-pay": "mollie",
+    paypal: "adyen",
   },
-  "apple-pay": {
-    [channelList[0].id]: "mollie",
-    [channelList[1].id]: "adyen",
-  },
-  paypal: {
-    [channelList[0].id]: "mollie",
-    [channelList[1].id]: "adyen",
+  [channels[1].id]: {
+    "credit-card": "adyen",
+    "apple-pay": "adyen",
+    paypal: "mollie",
   },
 };
-
-export const getActivePaymentProvidersByChannel = (
-  channelId: string
-): ChannelActivePaymentProvidersByChannel =>
-  Object.keys(activePaymentProviders).reduce(
-    (providers, paymentProvider) => ({
-      ...providers,
-      [paymentProvider]: activePaymentProviders[paymentProvider][channelId],
-    }),
-    {} as ChannelActivePaymentProvidersByChannel
-  );
-export const getChannelPaymentOptionsList = (): ChannelPaymentOptions[] =>
-  channelList.map((channel) => ({
-    id: channel.id,
-    channel: channel,
-    paymentOptions: paymentMethods.map((method) => ({
-      id: method.id,
-      method,
-      availableProviders: paymentProviders,
-      activeProvider: findById(
-        paymentProviders,
-        activePaymentProviders[method.id][channel.id]
-      ),
-    })),
-  }));
-
-export const getChannelPaymentOptions = (channelId: string) =>
-  getChannelPaymentOptionsList().find(
-    (channelPayments) => channelPayments.channel.id === channelId
-  );
 
 // Should be fetched from app backend
 export const paymentProviderSettingsValues: PaymentProviderSettingsValues = {
@@ -75,17 +31,6 @@ export const paymentProviderSettingsValues: PaymentProviderSettingsValues = {
     "supported-currencies": "",
   },
 };
-export const getPaymentProviderSettings =
-  (): PaymentProvider<PaymentProviderID>[] =>
-    paymentProviders.map((provider) => ({
-      ...provider,
-      settings: provider.settings.map(
-        (setting: PaymentProviderSettings<PaymentProviderID>) => ({
-          ...setting,
-          value: paymentProviderSettingsValues[provider.id][setting.id],
-        })
-      ),
-    }));
 
 // Should be fetched from app backend
 export const customizationSettingsValues: CustomizationSettingsValues = {
@@ -101,13 +46,3 @@ export const customizationSettingsValues: CustomizationSettingsValues = {
     "low-stock-threshold": "",
   },
 };
-export const getCustomizationSettings = (): Customization<CustomizationID>[] =>
-  customizations.map((customization) => ({
-    ...customization,
-    settings: customization.settings.map(
-      (setting: CustomizationSettings<CustomizationID>) => ({
-        ...setting,
-        value: customizationSettingsValues[customization.id][setting.id],
-      })
-    ),
-  }));

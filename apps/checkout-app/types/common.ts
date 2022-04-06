@@ -1,3 +1,9 @@
+export const allSettingID = [
+  "customizations",
+  "paymentProviders",
+  "channelActivePaymentProviders",
+] as const;
+export type SettingID = typeof allSettingID;
 export type SettingType = "string" | "color" | "image";
 
 /**
@@ -70,4 +76,11 @@ export interface Customization<P extends CustomizationID> {
  */
 export interface Node {
   id: string;
+}
+export interface NamedNode extends Node {
+  name: string;
+}
+export interface Item {
+  id: string;
+  label: string;
 }

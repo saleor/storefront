@@ -15,7 +15,7 @@ interface FileInputProps {
   onChange: (
     event: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>
   ) => void;
-  onBlur: React.FocusEventHandler<HTMLDivElement>;
+  onBlur?: React.FocusEventHandler<HTMLDivElement>;
 }
 
 const FileInput: React.FC<FileInputProps> = ({
@@ -27,10 +27,10 @@ const FileInput: React.FC<FileInputProps> = ({
   onBlur,
 }) => {
   const classes = useStyles();
-  const anchor = useRef<HTMLInputElement>();
+  const anchor = useRef<HTMLInputElement>(null);
   const [src, setSrc] = React.useState<string | undefined>(value);
 
-  const handleFileUploadButtonClick = () => anchor.current.click();
+  const handleFileUploadButtonClick = () => anchor.current!.click();
 
   const handleDragEvent = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -47,11 +47,13 @@ const FileInput: React.FC<FileInputProps> = ({
     event.preventDefault();
     onChange(event);
     const files = event.target.files;
-    setSrc(URL.createObjectURL(files[0]));
+    if (files) {
+      setSrc(URL.createObjectURL(files[0]));
+    }
   };
 
   const handleFileDelete = () => {
-    anchor.current.value = "";
+    anchor.current!.value = "";
     onChange({
       target: {
         name,
