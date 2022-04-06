@@ -47,6 +47,9 @@ export const pagesPath = {
         })
       },
       "order": {
+        _token: (token: string | number) => ({
+          $url: (url?: { hash?: string }) => ({ pathname: '/[channel]/[locale]/order/[token]' as const, query: { channel, locale, token }, hash: url?.hash })
+        }),
         $url: (url?: { hash?: string }) => ({ pathname: '/[channel]/[locale]/order' as const, query: { channel, locale }, hash: url?.hash })
       },
       "page": {
