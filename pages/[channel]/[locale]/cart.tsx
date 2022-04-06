@@ -59,14 +59,13 @@ function Cart() {
               <div>
                 <CartSummary checkout={checkout} />
                 <div className="mt-12">
-                  <Link href={paths.checkout.$url()} passHref>
-                    <a
-                      className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700"
-                      href="pass"
-                    >
-                      {t.formatMessage(messages.checkoutButton)}
-                    </a>
-                  </Link>
+                  <a
+                    className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700"
+                    href={`${process.env.NEXT_PUBLIC_CHECKOUT_URL}?checkoutToken=${checkout.token}`}
+                    target="_self"
+                  >
+                    {t.formatMessage(messages.checkoutButton)}
+                  </a>
                 </div>
               </div>
             )}
