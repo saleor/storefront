@@ -1,4 +1,4 @@
-import { usePrivateMetadataQuery } from "@graphql";
+import { usePrivateMetadataQuery } from "@/graphql";
 import { useAuthData } from "./useAuthData";
 
 export const usePaymentProviderSettings = () => {

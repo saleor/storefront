@@ -1,5 +1,5 @@
-import AppNavigation from "@frontend/components/elements/AppNavigation";
-import AppSavebar from "@frontend/components/elements/AppSavebar";
+import AppNavigation from "@/frontend/components/elements/AppNavigation";
+import AppSavebar from "@/frontend/components/elements/AppSavebar";
 import {
   Typography,
   Accordion,
@@ -18,8 +18,8 @@ import { useStyles } from "./styles";
 import { FormattedMessage } from "react-intl";
 import { useForm, Controller } from "react-hook-form";
 import { messages } from "./messages";
-import Setting from "@frontend/components/elements/Setting";
-import { flattenSettingId, unflattenSettings } from "@frontend/utils";
+import Setting from "@/frontend/components/elements/Setting";
+import { flattenSettingId, unflattenSettings } from "@/frontend/utils";
 import Skeleton from "@material-ui/lab/Skeleton";
 
 interface CustomizationDetailsProps {

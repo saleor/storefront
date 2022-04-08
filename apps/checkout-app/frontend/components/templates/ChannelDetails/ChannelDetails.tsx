@@ -24,19 +24,19 @@ import { paymentProviders } from "consts";
 import { useStyles } from "./styles";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
 import { messages } from "./messages";
-import AppLayout from "@frontend/components/elements/AppLayout";
+import AppLayout from "@/frontend/components/elements/AppLayout";
 import {
   flattenSettingId,
   mapNodesToItems,
   mapNodeToItem,
-} from "@frontend/utils";
+} from "@/frontend/utils";
 import { Item } from "types/common";
 import Skeleton from "@material-ui/lab/Skeleton";
-import AppSavebar from "@frontend/components/elements/AppSavebar";
+import AppSavebar from "@/frontend/components/elements/AppSavebar";
 import { Controller, useForm } from "react-hook-form";
 import { getActivePaymentProvider, getFormDefaultValues } from "./data";
 import { useEffect } from "react";
-import { ChannelFragment } from "@graphql";
+import { ChannelFragment } from "@/graphql";
 
 interface ChannelDetailsProps {
   channelPaymentOptions: ChannelPaymentOptions;

@@ -1,4 +1,4 @@
-import { getActivePaymentProvidersByChannel } from "@frontend/data";
+import { getActivePaymentProvidersByChannel } from "@/frontend/data";
 import { activePaymentProviders } from "mocks/app";
 import { NextApiRequest, NextApiResponse } from "next";
 

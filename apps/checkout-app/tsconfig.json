@@ -1,18 +1,13 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "@frontend/*": ["frontend/*"],
-      "@backend/*": ["backend/*"],
-      "@graphql": ["graphql"],
-      "@graphql/*": ["graphql/*"],
-      "@utils": ["utils.ts"],
-      "@constants": ["constants.ts"]
-    },
     "strict": true,
     "noEmit": true,
-    "declaration": false, // Fixes "inferred type cannot be named without a reference to ..." errors
-    "declarationMap": false // Fixes "inferred type cannot be named without a reference to ..." errors
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "declaration": false,
+    "declarationMap": false
   },
   "extends": "../../packages/tsconfig/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

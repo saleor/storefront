@@ -1,4 +1,4 @@
-const withTM = require("next-transpile-modules")(["../checkout"]);
+const withTM = require("next-transpile-modules")();
 
 module.exports = withTM({
   i18n: {

@@ -1,4 +1,4 @@
-import { parseJwt } from "@frontend/utils";
+import { parseJwt } from "@/frontend/utils";
 import { useApp } from "./useApp";
 
 export interface AuthTokenPayload {

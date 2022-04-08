@@ -3,10 +3,10 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import { ThemeProvider } from "@saleor/macaw-ui";
 import { IntlProvider } from "react-intl";
-import { useFormattedMessages } from "@frontend/hooks/useFormattedMessages";
-import AppContainer from "@frontend/components/elements/AppContainer";
-import AppProvider from "@frontend/components/elements/AppProvider";
-import ClientProvider from "@frontend/components/elements/ClientProvider";
+import { useFormattedMessages } from "@/frontend/hooks/useFormattedMessages";
+import AppContainer from "@/frontend/components/elements/AppContainer";
+import AppProvider from "@/frontend/components/elements/AppProvider";
+import ClientProvider from "@/frontend/components/elements/ClientProvider";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;

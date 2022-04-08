@@ -1,5 +1,5 @@
-import { ChannelFragment } from "@graphql";
-import { findById } from "@utils";
+import { ChannelFragment } from "@/graphql";
+import { findById } from "@/utils";
 import { customizations, paymentMethods, paymentProviders } from "consts";
 import {
   ChannelActivePaymentProviders,

@@ -1,4 +1,4 @@
-import { ChannelFragment } from "@graphql";
+import { ChannelFragment } from "@/graphql";
 
 export const channels: ChannelFragment[] = [
   {

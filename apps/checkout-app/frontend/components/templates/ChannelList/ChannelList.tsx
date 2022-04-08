@@ -1,4 +1,4 @@
-import AppNavigation from "@frontend/components/elements/AppNavigation";
+import AppNavigation from "@/frontend/components/elements/AppNavigation";
 import {
   OffsettedList,
   OffsettedListBody,
@@ -11,7 +11,7 @@ import { channelPath } from "routes";
 import { useStyles } from "./styles";
 import { FormattedMessage } from "react-intl";
 import { messages } from "./messages";
-import { ChannelFragment } from "@graphql";
+import { ChannelFragment } from "@/graphql";
 import Skeleton from "@material-ui/lab/Skeleton";
 
 interface ChannelListProps {

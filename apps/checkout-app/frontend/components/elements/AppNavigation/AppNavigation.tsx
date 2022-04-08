@@ -2,7 +2,7 @@ import { PageTabs, PageTab } from "@saleor/macaw-ui";
 import { useRouter } from "next/router";
 import { channelListPath, customizationPath } from "routes";
 import { useIntl } from "react-intl";
-import { sectionMessages } from "@frontend/misc/commonMessages";
+import { sectionMessages } from "@/frontend/misc/commonMessages";
 
 const AppNavigation: React.FC = () => {
   const router = useRouter();

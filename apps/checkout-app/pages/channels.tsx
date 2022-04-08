@@ -1,5 +1,5 @@
 import ChannelList from "frontend/components/templates/ChannelList";
-import { useChannelsQuery } from "@graphql";
+import { useChannelsQuery } from "@/graphql";
 
 const Channels = () => {
   const [channelsQuery] = useChannelsQuery();

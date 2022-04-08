@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import CustomizationDetails from "@frontend/components/templates/CustomizationDetails";
+import CustomizationDetails from "@/frontend/components/templates/CustomizationDetails";
 import { CustomizationSettingsValues } from "types/api";
 import {
   usePrivateMetadataQuery,
   useUpdatePrivateMetadataMutation,
-} from "@graphql";
-import { mapMetadataToSettings, mapSettingsToMetadata } from "@frontend/utils";
-import { getCustomizationSettings } from "@frontend/data";
-import { useAuthData } from "@frontend/hooks/useAuthData";
+} from "@/graphql";
+import { mapMetadataToSettings, mapSettingsToMetadata } from "@/frontend/utils";
+import { getCustomizationSettings } from "@/frontend/data";
+import { useAuthData } from "@/frontend/hooks/useAuthData";
 
 const Customization = () => {
   const router = useRouter();

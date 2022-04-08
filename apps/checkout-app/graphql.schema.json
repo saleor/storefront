@@ -9444,7 +9444,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -15009,7 +15009,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -39526,7 +39526,7 @@
               },
               {
                 "name": "input",
-                "description": "Input for External Notification Trigger. ",
+                "description": "Input for External Notification Trigger.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -40893,6 +40893,47 @@
             "type": {
               "kind": "OBJECT",
               "name": "OrderConfirm",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "orderCreateFromCheckout",
+            "description": "Note: this feature is in a preview state and can be subject to changes at later point. Create new order from existing checkout.",
+            "args": [
+              {
+                "name": "id",
+                "description": "ID of a checkout that will be converted to an order.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "removeCheckout",
+                "description": "Determines if checkout should be removed after creating an order. Default true.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": "true",
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "OrderCreateFromCheckout",
               "ofType": null
             },
             "isDeprecated": false,
@@ -42444,6 +42485,63 @@
             "deprecationReason": null
           },
           {
+            "name": "paymentCreate",
+            "description": "Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order.",
+            "args": [
+              {
+                "name": "id",
+                "description": "The ID of the checkout or order.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "payment",
+                "description": "Input data required to create a new payment object.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PaymentCreateInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "transaction",
+                "description": "Data that defines a payment transaction.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "TransactionInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PaymentCreate",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "paymentInitialize",
             "description": "Initializes payment process when it is required by gateway.",
             "args": [
@@ -42532,6 +42630,59 @@
             "type": {
               "kind": "OBJECT",
               "name": "PaymentRefund",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "paymentUpdate",
+            "description": "Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order.",
+            "args": [
+              {
+                "name": "id",
+                "description": "The ID of the payment.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "payment",
+                "description": "Input data required to create a new payment object.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "PaymentUpdateInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "transaction",
+                "description": "Data that defines a payment transaction.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "TransactionInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PaymentUpdate",
               "ofType": null
             },
             "isDeprecated": false,
@@ -44967,7 +45118,7 @@
             "args": [
               {
                 "name": "id",
-                "description": "('ShippingMethodType ID or ShippingMethodTranslatableContent ID.',)",
+                "description": "ShippingMethodType ID or ShippingMethodTranslatableContent ID.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -47189,7 +47340,7 @@
         "fields": [
           {
             "name": "actions",
-            "description": "List of actions that can be performed in the current state of an order.",
+            "description": "This field will be removed in Saleor 4.0. Use actions on order.payments. List of actions that can be performed in the current state of an order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -48612,6 +48763,239 @@
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "OrderCreateFromCheckout",
+        "description": "Note: this feature is in a preview state and can be subject to changes at later point. Create new order from existing checkout.",
+        "fields": [
+          {
+            "name": "errors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "OrderCreateFromCheckoutError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "order",
+            "description": "Placed order.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Order",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "OrderCreateFromCheckoutError",
+        "description": null,
+        "fields": [
+          {
+            "name": "code",
+            "description": "The error code.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "OrderCreateFromCheckoutErrorCode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "field",
+            "description": "Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lines",
+            "description": "List of line Ids which cause the error.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "The error message.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variants",
+            "description": "List of variant IDs which causes the error.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "OrderCreateFromCheckoutErrorCode",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "BILLING_ADDRESS_NOT_SET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CHANNEL_INACTIVE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "EMAIL_NOT_SET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "GIFT_CARD_NOT_APPLICABLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "GRAPHQL_ERROR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INSUFFICIENT_STOCK",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INVALID_SHIPPING_METHOD",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NOT_FOUND",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NO_LINES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SHIPPING_ADDRESS_NOT_SET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SHIPPING_METHOD_NOT_SET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TAX_ERROR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UNAVAILABLE_VARIANT_IN_CHANNEL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOUCHER_NOT_APPLICABLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "OrderDirection",
         "description": null,
@@ -49675,6 +50059,18 @@
             "deprecationReason": null
           },
           {
+            "name": "reference",
+            "description": "The reference of payment's transaction.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "relatedOrder",
             "description": "The order which is related to this order.",
             "args": [],
@@ -49693,6 +50089,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "The status of payment's transaction.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "TransactionStatus",
               "ofType": null
             },
             "isDeprecated": false,
@@ -54426,7 +54834,7 @@
           },
           {
             "name": "page",
-            "description": "('A static page that can be manually added by a shop operator ', 'through the dashboard.')",
+            "description": "A static page that can be manually added by a shop operator through the dashboard.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -55809,10 +56217,30 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "ENUM",
-                  "name": "OrderAction",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "PaymentActionEnum",
+                    "ofType": null
+                  }
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "authorizedAmount",
+            "description": "Total amount authorized for this payment.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Money",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -55827,8 +56255,8 @@
               "name": "Money",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "availableRefundAmount",
@@ -55839,17 +56267,21 @@
               "name": "Money",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "capturedAmount",
             "description": "Total amount captured for this payment.",
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "Money",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Money",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -55867,8 +56299,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "checkout",
@@ -55907,8 +56339,8 @@
               "name": "CreditCard",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "customerIpAddress",
@@ -55919,8 +56351,8 @@
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "gateway",
@@ -55935,8 +56367,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "id",
@@ -55967,8 +56399,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "metadata",
@@ -56031,8 +56463,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "privateMetadata",
@@ -56055,7 +56487,7 @@
             "deprecationReason": null
           },
           {
-            "name": "token",
+            "name": "reference",
             "description": null,
             "args": [],
             "type": {
@@ -56069,6 +56501,54 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "refundedAmount",
+            "description": "Total amount refunded for this payment.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Money",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "token",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
           },
           {
             "name": "total",
@@ -56095,6 +56575,38 @@
                 "ofType": null
               }
             },
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use new checkout flow."
+          },
+          {
+            "name": "type",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "voidedAmount",
+            "description": "Total amount voided for this payment.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Money",
+                "ofType": null
+              }
+            },
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -56113,6 +56625,41 @@
           }
         ],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "PaymentActionEnum",
+        "description": "Represents possible actions on payment.\n\n    The following actions are possible:\n    CAPTURE - Represents the capture action.\n    REFUND - Represents a refund action.\n    VOID - Represents a void action.\n    MARK_AS_PAID - This field will be removed in Saleor 4.0. Represents a mark-as-paid\n    action.\n    ",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "CAPTURE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MARK_AS_PAID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REFUND",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -56494,6 +57041,308 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PaymentCreate",
+        "description": "Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order.",
+        "fields": [
+          {
+            "name": "errors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "PaymentCreateError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "payment",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Payment",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PaymentCreateError",
+        "description": null,
+        "fields": [
+          {
+            "name": "code",
+            "description": "The error code.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "PaymentCreateErrorCode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "field",
+            "description": "Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "The error message.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "PaymentCreateErrorCode",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "GRAPHQL_ERROR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INCORRECT_CURRENCY",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INVALID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "METADATA_KEY_REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NOT_FOUND",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "PaymentCreateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "amountAuthorized",
+            "description": "Amount authorized by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountCaptured",
+            "description": "Amount captured by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountRefunded",
+            "description": "Amount refunded by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountVoided",
+            "description": "Amount refunded by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "availableActions",
+            "description": "List of all possible actions for the payment",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "PaymentActionEnum",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metadata",
+            "description": "User public metadata.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "MetadataInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetadata",
+            "description": "User public metadata.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "MetadataInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reference",
+            "description": "Reference of the payment.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "Status of the payment.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Payment type used for this payment.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -57155,6 +58004,300 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PaymentUpdate",
+        "description": "Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order.",
+        "fields": [
+          {
+            "name": "errors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "PaymentUpdateError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "payment",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Payment",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PaymentUpdateError",
+        "description": null,
+        "fields": [
+          {
+            "name": "code",
+            "description": "The error code.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "PaymentUpdateErrorCode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "field",
+            "description": "Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "The error message.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "PaymentUpdateErrorCode",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "GRAPHQL_ERROR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INCORRECT_CURRENCY",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INVALID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "METADATA_KEY_REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NOT_FOUND",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "PaymentUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "amountAuthorized",
+            "description": "Amount authorized by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountCaptured",
+            "description": "Amount captured by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountRefunded",
+            "description": "Amount refunded by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "amountVoided",
+            "description": "Amount refunded by this payment.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MoneyInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "availableActions",
+            "description": "List of all possible actions for the payment",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "PaymentActionEnum",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metadata",
+            "description": "User public metadata.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "MetadataInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetadata",
+            "description": "User public metadata.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "MetadataInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reference",
+            "description": "Reference of the payment.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "Status of the payment.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Payment type used for this payment.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -58947,7 +60090,7 @@
           },
           {
             "name": "availableForPurchase",
-            "description": "Date when product is available for purchase. ",
+            "description": "Date when product is available for purchase.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -62327,7 +63470,7 @@
           },
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -72903,7 +74046,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -79776,6 +80919,57 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "TransactionInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "name",
+            "description": "Name of the transaction.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reference",
+            "description": "Reference of the transaction.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "Current status of the payment transaction.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "TransactionStatus",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "TransactionKind",
         "description": "An enumeration.",
@@ -79839,6 +81033,35 @@
           },
           {
             "name": "VOID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "TransactionStatus",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "FAILURE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PENDING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SUCCESS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -83947,7 +85170,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",

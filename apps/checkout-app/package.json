@@ -1,10 +1,11 @@
 {
-  "name": "saleor-checkout-app",
+  "name": "checkout-app",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run i18n && next build",
+    "test": "jest",
+    "build": "pnpm run i18n && next build",
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc",
@@ -19,6 +20,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/styles": "^4.11.5",
+    "@mollie/api-client": "^3.6.0",
     "@saleor/app-bridge": "^0.1.5",
     "@saleor/macaw-ui": "^0.3.3",
     "@urql/exchange-auth": "^0.1.7",
@@ -46,10 +48,13 @@
     "@graphql-codegen/urql-introspection": "^2.1.1",
     "@types/react": "17.0.37",
     "babel-plugin-formatjs": "^10.3.18",
-    "config": "*",
+    "config": "workspace:*",
     "eslint": "7.32.0",
+    "jest": "^27.5.1",
     "next-transpile-modules": "9.0.0",
-    "tsconfig": "*",
+    "node-mocks-http": "^1.11.0",
+    "ts-jest": "^27.1.4",
+    "tsconfig": "workspace:*",
     "typescript": "^4.5.3"
   }
 }

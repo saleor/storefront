@@ -1,4 +1,4 @@
-import { AppContext } from "@frontend/components/elements/AppProvider";
+import { AppContext } from "@/frontend/components/elements/AppProvider";
 import { useContext } from "react";
 
 export const useApp = () => {

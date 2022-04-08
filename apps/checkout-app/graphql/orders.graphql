@@ -1,0 +1,99 @@
+fragment Address on Address {
+  companyName
+  firstName
+  lastName
+  streetAddress1
+  streetAddress2
+  postalCode
+  city
+  country {
+    code
+  }
+  countryArea
+  phone
+}
+
+fragment Money on Money {
+  currency
+  amount
+}
+
+fragment OrderLine on OrderLine {
+  productName
+  variantName
+  quantity
+  taxRate
+  variant {
+    product {
+      productType {
+        isDigital
+        kind
+      }
+    }
+  }
+  unitPrice {
+    gross {
+      ...Money
+    }
+  }
+  totalPrice {
+    gross {
+      ...Money
+    }
+    tax {
+      ...Money
+    }
+  }
+}
+
+fragment Order on Order {
+  id
+  number
+  token
+  userEmail
+  billingAddress {
+    ...Address
+  }
+  shippingAddress {
+    ...Address
+  }
+  total {
+    gross {
+      ...Money
+    }
+  }
+  discounts {
+    name
+    amount {
+      ...Money
+    }
+  }
+  shippingPrice {
+    gross {
+      ...Money
+    }
+    net {
+      ...Money
+    }
+    tax {
+      ...Money
+    }
+  }
+  shippingTaxRate
+  shippingMethodName
+  lines {
+    ...OrderLine
+  }
+}
+
+mutation OrderCreate($id: ID!) {
+  orderCreateFromCheckout(id: $id) {
+    order {
+      ...Order
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

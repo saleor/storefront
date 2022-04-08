@@ -1,10 +1,10 @@
-name: CheckoutTests
+name: Checkout app checks
 
 on:
   push:
     paths:
-      - "apps/checkout/**"
-      - ".github/workflows/checkoutTests.yaml"
+      - "apps/checkout-app/**"
+      - ".github/workflows/checkout-app.yaml"
 
 jobs:
   tsc-and-linters:
@@ -28,8 +28,12 @@ jobs:
 
       - name: Run tsc
         run: |
-          pnpm turbo run check-types --scope="checkout"
+          pnpm run check-types -- --scope="checkout-app"
 
       - name: Run lint
         run: |
-          pnpm turbo run lint --scope="checkout"
+          pnpm run lint -- --scope="checkout-app"
+
+      - name: Run tests
+        run: |
+          pnpm run test -- --scope="checkout-app"

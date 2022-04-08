@@ -1,13 +1,13 @@
-import ErrorDetails from "@frontend/components/templates/ErrorDetails";
-import { getChannelPaymentOptions } from "@frontend/data";
-import { useAuthData } from "@frontend/hooks/useAuthData";
-import { notFoundMessages } from "@frontend/misc/errorMessages";
-import { mapMetadataToSettings, mapSettingsToMetadata } from "@frontend/utils";
+import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
+import { getChannelPaymentOptions } from "@/frontend/data";
+import { useAuthData } from "@/frontend/hooks/useAuthData";
+import { notFoundMessages } from "@/frontend/misc/errorMessages";
+import { mapMetadataToSettings, mapSettingsToMetadata } from "@/frontend/utils";
 import {
   useChannelsQuery,
   usePrivateMetadataQuery,
   useUpdatePrivateMetadataMutation,
-} from "@graphql";
+} from "@/graphql";
 import ChannelDetails from "frontend/components/templates/ChannelDetails";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";

@@ -1,0 +1,15 @@
+mutation PaymentCreate(
+  $id: ID!
+  $payment: PaymentCreateInput!
+  $transaction: TransactionInput
+) {
+  paymentCreate(id: $id, payment: $payment, transaction: $transaction) {
+    payment {
+      id
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

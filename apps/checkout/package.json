@@ -40,7 +40,6 @@
   "scripts": {
     "dev": "PORT=8001 craco start",
     "build": "craco build",
-    "test": "craco test",
     "eject": "react-scripts eject",
     "format-code": "npx prettier --check \"src/**/*.@(tsx|ts|jsx|js)\" --write",
     "generate": "graphql-codegen --config codegen.yml && prettier --check \"src/graphql/index.ts\" --write",

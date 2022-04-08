@@ -16,10 +16,6 @@ generates:
         UUID: string
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
       enumsAsTypes: true
-  # required for urql cache
-  # ./generated-introspection.json:
-  #   plugins:
-  #     - "urql-introspection"
   ./graphql.schema.json:
     plugins:
       - "introspection"

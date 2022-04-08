@@ -1,16 +1,16 @@
 import PaymentProviderDetails from "frontend/components/templates/PaymentProviderDetails";
 import { PaymentProviderSettingsValues } from "types/api";
 import { useRouter } from "next/router";
-import { useAuthData } from "@frontend/hooks/useAuthData";
+import { useAuthData } from "@/frontend/hooks/useAuthData";
 import {
   usePrivateMetadataQuery,
   useUpdatePrivateMetadataMutation,
-} from "@graphql";
-import { mapMetadataToSettings, mapSettingsToMetadata } from "@frontend/utils";
-import { getPaymentProviderSettings } from "@frontend/data";
-import ErrorDetails from "@frontend/components/templates/ErrorDetails";
+} from "@/graphql";
+import { mapMetadataToSettings, mapSettingsToMetadata } from "@/frontend/utils";
+import { getPaymentProviderSettings } from "@/frontend/data";
+import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
 import { useIntl } from "react-intl";
-import { notFoundMessages } from "@frontend/misc/errorMessages";
+import { notFoundMessages } from "@/frontend/misc/errorMessages";
 
 const PaymentProvider = () => {
   const router = useRouter();

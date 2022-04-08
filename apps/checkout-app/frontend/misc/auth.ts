@@ -8,7 +8,7 @@ import {
   fetchExchange,
   Operation,
 } from "urql";
-import { API_URL } from "@constants";
+import { API_URL } from "@/constants";
 
 interface AuthState {
   token: string;

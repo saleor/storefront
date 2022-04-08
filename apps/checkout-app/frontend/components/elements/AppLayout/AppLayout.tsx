@@ -1,6 +1,6 @@
 import { IconButton, SettingsIcon } from "@saleor/macaw-ui";
-import AppHeader from "@frontend/components/elements/AppHeader";
-import AppSidebar from "@frontend/components/elements/AppSidebar";
+import AppHeader from "@/frontend/components/elements/AppHeader";
+import AppSidebar from "@/frontend/components/elements/AppSidebar";
 import { useStyles } from "./styles";
 import { Item } from "types/common";
 

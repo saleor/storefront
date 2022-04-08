@@ -1,4 +1,4 @@
-import { isSsr } from "@constants";
+import { isSsr } from "@/constants";
 import { useMemo } from "react";
 import { OperationContext } from "urql";
 import { useApp } from "./useApp";

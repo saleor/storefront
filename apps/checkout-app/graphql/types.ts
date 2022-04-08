@@ -1,12 +1,9 @@
-// THIS FILE IS GENERATED WITH `pnpm generate`
-import gql from 'graphql-tag';
-import * as Urql from 'urql';
+// THIS FILE IS GENERATED WITH `yarn generate`
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -5470,7 +5467,6 @@ export type MetadataErrorCode =
   | 'GRAPHQL_ERROR'
   | 'INVALID'
   | 'NOT_FOUND'
-  | 'NOT_UPDATED'
   | 'REQUIRED';
 
 export type MetadataFilter = {
@@ -5810,8 +5806,6 @@ export type Mutation = {
   orderCapture?: Maybe<OrderCapture>;
   /** Confirms an unconfirmed order by changing status to unfulfilled. */
   orderConfirm?: Maybe<OrderConfirm>;
-  /** Note: this feature is in a preview state and can be subject to changes at later point. Create new order from existing checkout. */
-  orderCreateFromCheckout?: Maybe<OrderCreateFromCheckout>;
   /** Adds discount to the order. */
   orderDiscountAdd?: Maybe<OrderDiscountAdd>;
   /** Remove discount from the order. */
@@ -5886,14 +5880,10 @@ export type Mutation = {
   paymentCapture?: Maybe<PaymentCapture>;
   /** Check payment balance. */
   paymentCheckBalance?: Maybe<PaymentCheckBalance>;
-  /** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-  paymentCreate?: Maybe<PaymentCreate>;
   /** Initializes payment process when it is required by gateway. */
   paymentInitialize?: Maybe<PaymentInitialize>;
   /** Refunds the captured payment amount. */
   paymentRefund?: Maybe<PaymentRefund>;
-  /** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-  paymentUpdate?: Maybe<PaymentUpdate>;
   /** Voids the authorized payment. */
   paymentVoid?: Maybe<PaymentVoid>;
   /** Create new permission group. */
@@ -6865,12 +6855,6 @@ export type MutationOrderConfirmArgs = {
 };
 
 
-export type MutationOrderCreateFromCheckoutArgs = {
-  id: Scalars['ID'];
-  removeCheckout?: InputMaybe<Scalars['Boolean']>;
-};
-
-
 export type MutationOrderDiscountAddArgs = {
   input: OrderDiscountCommonInput;
   orderId: Scalars['ID'];
@@ -7084,13 +7068,6 @@ export type MutationPaymentCheckBalanceArgs = {
 };
 
 
-export type MutationPaymentCreateArgs = {
-  id: Scalars['ID'];
-  payment: PaymentCreateInput;
-  transaction?: InputMaybe<TransactionInput>;
-};
-
-
 export type MutationPaymentInitializeArgs = {
   channel?: InputMaybe<Scalars['String']>;
   gateway: Scalars['String'];
@@ -7101,13 +7078,6 @@ export type MutationPaymentInitializeArgs = {
 export type MutationPaymentRefundArgs = {
   amount?: InputMaybe<Scalars['PositiveDecimal']>;
   paymentId: Scalars['ID'];
-};
-
-
-export type MutationPaymentUpdateArgs = {
-  id: Scalars['ID'];
-  payment?: InputMaybe<PaymentUpdateInput>;
-  transaction?: InputMaybe<TransactionInput>;
 };
 
 
@@ -7679,7 +7649,7 @@ export type ObjectWithMetadata = {
 /** Represents an order in the shop. */
 export type Order = Node & ObjectWithMetadata & {
   __typename?: 'Order';
-  /** This field will be removed in Saleor 4.0. Use actions on order.payments. List of actions that can be performed in the current state of an order. */
+  /** List of actions that can be performed in the current state of an order. */
   actions: Array<Maybe<OrderAction>>;
   /** New in Saleor 3.1. Collection points that can be used for this order. Note: this feature is in a preview state and can be subject to changes at later point. */
   availableCollectionPoints: Array<Warehouse>;
@@ -7873,45 +7843,6 @@ export type OrderCountableEdge = {
   node: Order;
 };
 
-/** Note: this feature is in a preview state and can be subject to changes at later point. Create new order from existing checkout. */
-export type OrderCreateFromCheckout = {
-  __typename?: 'OrderCreateFromCheckout';
-  errors: Array<OrderCreateFromCheckoutError>;
-  /** Placed order. */
-  order?: Maybe<Order>;
-};
-
-export type OrderCreateFromCheckoutError = {
-  __typename?: 'OrderCreateFromCheckoutError';
-  /** The error code. */
-  code: OrderCreateFromCheckoutErrorCode;
-  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
-  field?: Maybe<Scalars['String']>;
-  /** List of line Ids which cause the error. */
-  lines?: Maybe<Array<Scalars['ID']>>;
-  /** The error message. */
-  message?: Maybe<Scalars['String']>;
-  /** List of variant IDs which causes the error. */
-  variants?: Maybe<Array<Scalars['ID']>>;
-};
-
-/** An enumeration. */
-export type OrderCreateFromCheckoutErrorCode =
-  | 'BILLING_ADDRESS_NOT_SET'
-  | 'CHANNEL_INACTIVE'
-  | 'EMAIL_NOT_SET'
-  | 'GIFT_CARD_NOT_APPLICABLE'
-  | 'GRAPHQL_ERROR'
-  | 'INSUFFICIENT_STOCK'
-  | 'INVALID_SHIPPING_METHOD'
-  | 'NOT_FOUND'
-  | 'NO_LINES'
-  | 'SHIPPING_ADDRESS_NOT_SET'
-  | 'SHIPPING_METHOD_NOT_SET'
-  | 'TAX_ERROR'
-  | 'UNAVAILABLE_VARIANT_IN_CHANNEL'
-  | 'VOUCHER_NOT_APPLICABLE';
-
 export type OrderDirection =
   /** Specifies an ascending sort order. */
   | 'ASC'
@@ -8075,14 +8006,10 @@ export type OrderEvent = Node & {
   paymentId?: Maybe<Scalars['String']>;
   /** Number of items. */
   quantity?: Maybe<Scalars['Int']>;
-  /** The reference of payment's transaction. */
-  reference?: Maybe<Scalars['String']>;
   /** The order which is related to this order. */
   relatedOrder?: Maybe<Order>;
   /** Define if shipping costs were included to the refund. */
   shippingCostsIncluded?: Maybe<Scalars['Boolean']>;
-  /** The status of payment's transaction. */
-  status?: Maybe<TransactionStatus>;
   /** The transaction reference of captured payment. */
   transactionReference?: Maybe<Scalars['String']>;
   /** Order event type. */
@@ -8810,7 +8737,7 @@ export type PageTranslatableContent = Node & {
   contentJson?: Maybe<Scalars['JSONString']>;
   id: Scalars['ID'];
   /**
-   * A static page that can be manually added by a shop operator through the dashboard.
+   * ('A static page that can be manually added by a shop operator ', 'through the dashboard.')
    * @deprecated This field will be removed in Saleor 4.0. Get model fields from the root level queries.
    */
   page?: Maybe<Page>;
@@ -9010,82 +8937,36 @@ export type PasswordChange = {
 export type Payment = Node & ObjectWithMetadata & {
   __typename?: 'Payment';
   /** List of actions that can be performed in the current state of a payment. */
-  actions: Array<PaymentActionEnum>;
-  /** Total amount authorized for this payment. */
-  authorizedAmount: Money;
-  /**
-   * Maximum amount of money that can be captured.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  actions: Array<Maybe<OrderAction>>;
+  /** Maximum amount of money that can be captured. */
   availableCaptureAmount?: Maybe<Money>;
-  /**
-   * Maximum amount of money that can be refunded.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  /** Maximum amount of money that can be refunded. */
   availableRefundAmount?: Maybe<Money>;
   /** Total amount captured for this payment. */
-  capturedAmount: Money;
-  /**
-   * Internal payment status.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  capturedAmount?: Maybe<Money>;
+  /** Internal payment status. */
   chargeStatus: PaymentChargeStatusEnum;
   checkout?: Maybe<Checkout>;
   created: Scalars['DateTime'];
-  /**
-   * The details of the card used for this payment.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  /** The details of the card used for this payment. */
   creditCard?: Maybe<CreditCard>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   customerIpAddress?: Maybe<Scalars['String']>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   gateway: Scalars['String'];
   id: Scalars['ID'];
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   isActive: Scalars['Boolean'];
   /** List of public metadata items. Can be accessed without permissions. */
   metadata: Array<Maybe<MetadataItem>>;
   modified: Scalars['DateTime'];
   order?: Maybe<Order>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   paymentMethodType: Scalars['String'];
   /** List of private metadata items.Requires proper staff permissions to access. */
   privateMetadata: Array<Maybe<MetadataItem>>;
-  reference: Scalars['String'];
-  /** Total amount refunded for this payment. */
-  refundedAmount: Money;
-  status: Scalars['String'];
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   token: Scalars['String'];
   /** Total amount of the payment. */
   total?: Maybe<Money>;
-  /**
-   * List of all transactions within this payment.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  /** List of all transactions within this payment. */
   transactions?: Maybe<Array<Maybe<Transaction>>>;
-  type: Scalars['String'];
-  /** Total amount voided for this payment. */
-  voidedAmount: Money;
 };
-
-/**
- * Represents possible actions on payment.
- *
- *     The following actions are possible:
- *     CAPTURE - Represents the capture action.
- *     REFUND - Represents a refund action.
- *     VOID - Represents a void action.
- *     MARK_AS_PAID - This field will be removed in Saleor 4.0. Represents a mark-as-paid
- *     action.
- *
- */
-export type PaymentActionEnum =
-  | 'CAPTURE'
-  | 'MARK_AS_PAID'
-  | 'REFUND'
-  | 'VOID';
 
 /** Captures the authorized payment amount. */
 export type PaymentCapture = {
@@ -9144,54 +9025,6 @@ export type PaymentCountableEdge = {
   cursor: Scalars['String'];
   /** The item at the end of the edge. */
   node: Payment;
-};
-
-/** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-export type PaymentCreate = {
-  __typename?: 'PaymentCreate';
-  errors: Array<PaymentCreateError>;
-  payment?: Maybe<Payment>;
-};
-
-export type PaymentCreateError = {
-  __typename?: 'PaymentCreateError';
-  /** The error code. */
-  code: PaymentCreateErrorCode;
-  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
-  field?: Maybe<Scalars['String']>;
-  /** The error message. */
-  message?: Maybe<Scalars['String']>;
-};
-
-/** An enumeration. */
-export type PaymentCreateErrorCode =
-  | 'GRAPHQL_ERROR'
-  | 'INCORRECT_CURRENCY'
-  | 'INVALID'
-  | 'METADATA_KEY_REQUIRED'
-  | 'NOT_FOUND';
-
-export type PaymentCreateInput = {
-  /** Amount authorized by this payment. */
-  amountAuthorized?: InputMaybe<MoneyInput>;
-  /** Amount captured by this payment. */
-  amountCaptured?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountRefunded?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountVoided?: InputMaybe<MoneyInput>;
-  /** List of all possible actions for the payment */
-  availableActions?: InputMaybe<Array<PaymentActionEnum>>;
-  /** User public metadata. */
-  metadata?: InputMaybe<Array<MetadataInput>>;
-  /** User public metadata. */
-  privateMetadata?: InputMaybe<Array<MetadataInput>>;
-  /** Reference of the payment. */
-  reference?: InputMaybe<Scalars['String']>;
-  /** Status of the payment. */
-  status: Scalars['String'];
-  /** Payment type used for this payment. */
-  type: Scalars['String'];
 };
 
 export type PaymentError = {
@@ -9299,54 +9132,6 @@ export type PaymentSource = {
   metadata: Array<Maybe<MetadataItem>>;
   /** ID of stored payment method. */
   paymentMethodId?: Maybe<Scalars['String']>;
-};
-
-/** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-export type PaymentUpdate = {
-  __typename?: 'PaymentUpdate';
-  errors: Array<PaymentUpdateError>;
-  payment?: Maybe<Payment>;
-};
-
-export type PaymentUpdateError = {
-  __typename?: 'PaymentUpdateError';
-  /** The error code. */
-  code: PaymentUpdateErrorCode;
-  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
-  field?: Maybe<Scalars['String']>;
-  /** The error message. */
-  message?: Maybe<Scalars['String']>;
-};
-
-/** An enumeration. */
-export type PaymentUpdateErrorCode =
-  | 'GRAPHQL_ERROR'
-  | 'INCORRECT_CURRENCY'
-  | 'INVALID'
-  | 'METADATA_KEY_REQUIRED'
-  | 'NOT_FOUND';
-
-export type PaymentUpdateInput = {
-  /** Amount authorized by this payment. */
-  amountAuthorized?: InputMaybe<MoneyInput>;
-  /** Amount captured by this payment. */
-  amountCaptured?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountRefunded?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountVoided?: InputMaybe<MoneyInput>;
-  /** List of all possible actions for the payment */
-  availableActions?: InputMaybe<Array<PaymentActionEnum>>;
-  /** User public metadata. */
-  metadata?: InputMaybe<Array<MetadataInput>>;
-  /** User public metadata. */
-  privateMetadata?: InputMaybe<Array<MetadataInput>>;
-  /** Reference of the payment. */
-  reference?: InputMaybe<Scalars['String']>;
-  /** Status of the payment. */
-  status?: InputMaybe<Scalars['String']>;
-  /** Payment type used for this payment. */
-  type?: InputMaybe<Scalars['String']>;
 };
 
 /** Voids the authorized payment. */
@@ -9635,7 +9420,7 @@ export type Product = Node & ObjectWithMetadata & {
   __typename?: 'Product';
   /** List of attributes assigned to this product. */
   attributes: Array<SelectedAttribute>;
-  /** Date when product is available for purchase. */
+  /** Date when product is available for purchase.  */
   availableForPurchase?: Maybe<Scalars['Date']>;
   category?: Maybe<Category>;
   /** Channel given to retrieve this product. Also used by federation gateway to resolve this object in a federated query. */
@@ -12863,15 +12648,6 @@ export type Transaction = Node & {
   token: Scalars['String'];
 };
 
-export type TransactionInput = {
-  /** Name of the transaction. */
-  name?: InputMaybe<Scalars['String']>;
-  /** Reference of the transaction. */
-  reference?: InputMaybe<Scalars['String']>;
-  /** Current status of the payment transaction. */
-  status: TransactionStatus;
-};
-
 /** An enumeration. */
 export type TransactionKind =
   | 'ACTION_TO_CONFIRM'
@@ -12884,12 +12660,6 @@ export type TransactionKind =
   | 'REFUND'
   | 'REFUND_ONGOING'
   | 'VOID';
-
-/** An enumeration. */
-export type TransactionStatus =
-  | 'FAILURE'
-  | 'PENDING'
-  | 'SUCCESS';
 
 export type TranslatableItem = AttributeTranslatableContent | AttributeValueTranslatableContent | CategoryTranslatableContent | CollectionTranslatableContent | MenuItemTranslatableContent | PageTranslatableContent | ProductTranslatableContent | ProductVariantTranslatableContent | SaleTranslatableContent | ShippingMethodTranslatableContent | VoucherTranslatableContent;
 
@@ -14090,252 +13860,4 @@ export type _Entity = Address | App | Category | Collection | Group | PageType |
 export type _Service = {
   __typename?: '_Service';
   sdl?: Maybe<Scalars['String']>;
-};
-
-export type AppQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
-}>;
-
-
-export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, name?: string | null } | null };
-
-export type ChannelFragment = { __typename?: 'Channel', id: string, name: string, slug: string };
-
-export type ChannelsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ChannelsQuery = { __typename?: 'Query', channels?: Array<{ __typename?: 'Channel', id: string, name: string, slug: string }> | null };
-
-export type PrivateMetadataQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type PrivateMetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null };
-
-export type UpdatePrivateMetadataMutationVariables = Exact<{
-  id: Scalars['ID'];
-  input: Array<MetadataInput> | MetadataInput;
-}>;
-
-
-export type UpdatePrivateMetadataMutation = { __typename?: 'Mutation', updatePrivateMetadata?: { __typename?: 'UpdatePrivateMetadata', item?: { __typename?: 'App', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Attribute', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Category', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Checkout', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Collection', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'DigitalContent', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Fulfillment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'GiftCard', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Invoice', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Menu', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'MenuItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Order', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Page', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'PageType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Payment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Product', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ProductType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ProductVariant', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Sale', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingMethod', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingMethodType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingZone', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'User', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Voucher', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Warehouse', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
-
-export type AddressFragment = { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } };
-
-export type MoneyFragment = { __typename?: 'Money', currency: string, amount: number };
-
-export type OrderLineFragment = { __typename?: 'OrderLine', productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } } };
-
-export type OrderFragment = { __typename?: 'Order', id: string, number?: string | null, token: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts?: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }> | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } } } | null> };
-
-export type OrderCreateMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type OrderCreateMutation = { __typename?: 'Mutation', orderCreateFromCheckout?: { __typename?: 'OrderCreateFromCheckout', order?: { __typename?: 'Order', id: string, number?: string | null, token: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts?: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }> | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } } } | null> } | null, errors: Array<{ __typename?: 'OrderCreateFromCheckoutError', code: OrderCreateFromCheckoutErrorCode, message?: string | null }> } | null };
-
-export type PaymentCreateMutationVariables = Exact<{
-  id: Scalars['ID'];
-  payment: PaymentCreateInput;
-  transaction?: InputMaybe<TransactionInput>;
-}>;
-
-
-export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate?: { __typename?: 'PaymentCreate', payment?: { __typename?: 'Payment', id: string } | null, errors: Array<{ __typename?: 'PaymentCreateError', code: PaymentCreateErrorCode, message?: string | null }> } | null };
-
-export const ChannelFragmentDoc = gql`
-    fragment ChannelFragment on Channel {
-  id
-  name
-  slug
-}
-    `;
-export const AddressFragmentDoc = gql`
-    fragment Address on Address {
-  companyName
-  firstName
-  lastName
-  streetAddress1
-  streetAddress2
-  postalCode
-  city
-  country {
-    code
-  }
-  countryArea
-  phone
-}
-    `;
-export const MoneyFragmentDoc = gql`
-    fragment Money on Money {
-  currency
-  amount
-}
-    `;
-export const OrderLineFragmentDoc = gql`
-    fragment OrderLine on OrderLine {
-  productName
-  variantName
-  quantity
-  taxRate
-  variant {
-    product {
-      productType {
-        isDigital
-        kind
-      }
-    }
-  }
-  unitPrice {
-    gross {
-      ...Money
-    }
-  }
-  totalPrice {
-    gross {
-      ...Money
-    }
-    tax {
-      ...Money
-    }
-  }
-}
-    ${MoneyFragmentDoc}`;
-export const OrderFragmentDoc = gql`
-    fragment Order on Order {
-  id
-  number
-  token
-  userEmail
-  billingAddress {
-    ...Address
-  }
-  shippingAddress {
-    ...Address
-  }
-  total {
-    gross {
-      ...Money
-    }
-  }
-  discounts {
-    name
-    amount {
-      ...Money
-    }
-  }
-  shippingPrice {
-    gross {
-      ...Money
-    }
-    net {
-      ...Money
-    }
-    tax {
-      ...Money
-    }
-  }
-  shippingTaxRate
-  shippingMethodName
-  lines {
-    ...OrderLine
-  }
-}
-    ${AddressFragmentDoc}
-${MoneyFragmentDoc}
-${OrderLineFragmentDoc}`;
-export const AppDocument = gql`
-    query App($id: ID) {
-  app(id: $id) {
-    id
-    name
-  }
-}
-    `;
-
-export function useAppQuery(options?: Omit<Urql.UseQueryArgs<AppQueryVariables>, 'query'>) {
-  return Urql.useQuery<AppQuery>({ query: AppDocument, ...options });
-};
-export const ChannelsDocument = gql`
-    query Channels {
-  channels {
-    ...ChannelFragment
-  }
-}
-    ${ChannelFragmentDoc}`;
-
-export function useChannelsQuery(options?: Omit<Urql.UseQueryArgs<ChannelsQueryVariables>, 'query'>) {
-  return Urql.useQuery<ChannelsQuery>({ query: ChannelsDocument, ...options });
-};
-export const PrivateMetadataDocument = gql`
-    query PrivateMetadata($id: ID!) {
-  app(id: $id) {
-    id
-    privateMetadata {
-      key
-      value
-    }
-  }
-}
-    `;
-
-export function usePrivateMetadataQuery(options: Omit<Urql.UseQueryArgs<PrivateMetadataQueryVariables>, 'query'>) {
-  return Urql.useQuery<PrivateMetadataQuery>({ query: PrivateMetadataDocument, ...options });
-};
-export const UpdatePrivateMetadataDocument = gql`
-    mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
-  updatePrivateMetadata(id: $id, input: $input) {
-    item {
-      privateMetadata {
-        key
-        value
-      }
-    }
-    errors {
-      code
-      message
-      field
-    }
-  }
-}
-    `;
-
-export function useUpdatePrivateMetadataMutation() {
-  return Urql.useMutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(UpdatePrivateMetadataDocument);
-};
-export const OrderCreateDocument = gql`
-    mutation OrderCreate($id: ID!) {
-  orderCreateFromCheckout(id: $id) {
-    order {
-      ...Order
-    }
-    errors {
-      code
-      message
-    }
-  }
-}
-    ${OrderFragmentDoc}`;
-
-export function useOrderCreateMutation() {
-  return Urql.useMutation<OrderCreateMutation, OrderCreateMutationVariables>(OrderCreateDocument);
-};
-export const PaymentCreateDocument = gql`
-    mutation PaymentCreate($id: ID!, $payment: PaymentCreateInput!, $transaction: TransactionInput) {
-  paymentCreate(id: $id, payment: $payment, transaction: $transaction) {
-    payment {
-      id
-    }
-    errors {
-      code
-      message
-    }
-  }
-}
-    `;
-
-export function usePaymentCreateMutation() {
-  return Urql.useMutation<PaymentCreateMutation, PaymentCreateMutationVariables>(PaymentCreateDocument);
 };
