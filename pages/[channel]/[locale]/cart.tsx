@@ -13,11 +13,9 @@ function Cart() {
   const paths = usePaths();
   const { loading, checkoutError, checkout, checkoutToken } = useCheckout();
 
-  if (loading) {
-    return <Spinner />;
-  }
   if (checkoutError) return <p>Error</p>;
 
+  const isCheckoutLoading = loading || typeof window === "undefined";
   const products = checkout?.lines || [];
 
   return (
@@ -45,11 +43,15 @@ function Cart() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-8">
             <section className="col-span-2">
               <ul className="divide-y divide-gray-200">
-                {products.map((line) => (
-                  <li key={line?.id} className="flex py-6">
-                    {line && checkoutToken && <CheckoutLineItem line={line} />}
-                  </li>
-                ))}
+                {isCheckoutLoading ? (
+                  <Spinner />
+                ) : (
+                  products.map((line) => (
+                    <li key={line?.id} className="flex py-6">
+                      {line && checkoutToken && <CheckoutLineItem line={line} />}
+                    </li>
+                  ))
+                )}
               </ul>
             </section>
 
