@@ -1,25 +1,25 @@
 import { getSortedAddressFieldsFromAddress } from "@lib/utils/address";
 import { Text } from "@components/Text";
 import React from "react";
-import { RadioOption, RadioOptionContentProps } from "@components/Radio";
+import { RadioOptionChildrenProps } from "@components/Radio";
 import { IconButton } from "@components/IconButton";
 import { PenIcon, TrashIcon } from "@icons";
 import { AddressField } from "@lib/globalTypes";
+import { useFormattedMessages } from "@hooks/useFormattedMessages";
 
-interface addressBoxContentProps
-  extends RadioOptionContentProps,
-    Pick<RadioOption, "disabled"> {
-  address: Record<AddressField, any>;
+interface AddressBoxContentProps extends RadioOptionChildrenProps {
+  address: Partial<Record<AddressField, any>>;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export const AddressBoxContent: React.FC<addressBoxContentProps> = ({
+export const AddressBoxContent: React.FC<AddressBoxContentProps> = ({
   address,
   htmlFor,
   onDelete,
   onEdit,
 }) => {
+  const formatMessage = useFormattedMessages();
   const name = address.name || `${address.firstName} ${address.lastName}`;
 
   return (
@@ -35,10 +35,17 @@ export const AddressBoxContent: React.FC<addressBoxContentProps> = ({
         </label>
       </div>
       <div>
-        <IconButton onClick={onEdit} ariaLabel="edit address" className="mr-2">
+        <IconButton
+          onClick={onEdit}
+          ariaLabel={formatMessage("editAddressLabel")}
+          className="mr-2"
+        >
           <img src={PenIcon} />
         </IconButton>
-        <IconButton onClick={onDelete} ariaLabel="delete address">
+        <IconButton
+          onClick={onDelete}
+          ariaLabel={formatMessage("deleteAddressLabel")}
+        >
           <img src={TrashIcon} />
         </IconButton>
       </div>

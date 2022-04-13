@@ -10,8 +10,13 @@ export const IconButton: React.FC<IconButtonProps> = ({
   children,
   ariaLabel,
   className,
+  onClick,
 }) => (
-  <button className={clsx("icon-button", className)} aria-label={ariaLabel}>
+  <button
+    className={clsx("icon-button", className)}
+    aria-label={ariaLabel}
+    onClick={onClick}
+  >
     {children}
   </button>
 );

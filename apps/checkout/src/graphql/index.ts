@@ -13479,11 +13479,6 @@ export type CheckoutFragment = {
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   user?: { __typename?: "User"; id: string; email: string } | null;
-  totalPrice?: {
-    __typename?: "TaxedMoney";
-    gross: { __typename?: "Money"; amount: number; currency: string };
-    tax: { __typename?: "Money"; currency: string; amount: number };
-  } | null;
   availablePaymentGateways: Array<{
     __typename?: "PaymentGateway";
     id: string;
@@ -13497,8 +13492,15 @@ export type CheckoutFragment = {
     __typename?: "ShippingMethod";
     id: string;
     name: string;
+    maximumDeliveryDays?: number | null;
+    minimumDeliveryDays?: number | null;
     price: { __typename?: "Money"; amount: number; currency: string };
   } | null>;
+  totalPrice?: {
+    __typename?: "TaxedMoney";
+    gross: { __typename?: "Money"; amount: number; currency: string };
+    tax: { __typename?: "Money"; currency: string; amount: number };
+  } | null;
   shippingPrice?: {
     __typename?: "TaxedMoney";
     gross: { __typename?: "Money"; amount: number; currency: string };
@@ -13633,11 +13635,6 @@ export type CheckoutQuery = {
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     user?: { __typename?: "User"; id: string; email: string } | null;
-    totalPrice?: {
-      __typename?: "TaxedMoney";
-      gross: { __typename?: "Money"; amount: number; currency: string };
-      tax: { __typename?: "Money"; currency: string; amount: number };
-    } | null;
     availablePaymentGateways: Array<{
       __typename?: "PaymentGateway";
       id: string;
@@ -13651,8 +13648,15 @@ export type CheckoutQuery = {
       __typename?: "ShippingMethod";
       id: string;
       name: string;
+      maximumDeliveryDays?: number | null;
+      minimumDeliveryDays?: number | null;
       price: { __typename?: "Money"; amount: number; currency: string };
     } | null>;
+    totalPrice?: {
+      __typename?: "TaxedMoney";
+      gross: { __typename?: "Money"; amount: number; currency: string };
+      tax: { __typename?: "Money"; currency: string; amount: number };
+    } | null;
     shippingPrice?: {
       __typename?: "TaxedMoney";
       gross: { __typename?: "Money"; amount: number; currency: string };
@@ -13894,11 +13898,6 @@ export type CheckoutEmailUpdateMutation = {
         };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      totalPrice?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
       availablePaymentGateways: Array<{
         __typename?: "PaymentGateway";
         id: string;
@@ -13912,8 +13911,15 @@ export type CheckoutEmailUpdateMutation = {
         __typename?: "ShippingMethod";
         id: string;
         name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
         price: { __typename?: "Money"; amount: number; currency: string };
       } | null>;
+      totalPrice?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
       shippingPrice?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; amount: number; currency: string };
@@ -14017,11 +14023,6 @@ export type CheckoutCustomerAttachMutation = {
         };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      totalPrice?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
       availablePaymentGateways: Array<{
         __typename?: "PaymentGateway";
         id: string;
@@ -14035,8 +14036,15 @@ export type CheckoutCustomerAttachMutation = {
         __typename?: "ShippingMethod";
         id: string;
         name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
         price: { __typename?: "Money"; amount: number; currency: string };
       } | null>;
+      totalPrice?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
       shippingPrice?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; amount: number; currency: string };
@@ -14139,11 +14147,6 @@ export type CheckoutCustomerDetachMutation = {
         };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      totalPrice?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
       availablePaymentGateways: Array<{
         __typename?: "PaymentGateway";
         id: string;
@@ -14157,8 +14160,15 @@ export type CheckoutCustomerDetachMutation = {
         __typename?: "ShippingMethod";
         id: string;
         name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
         price: { __typename?: "Money"; amount: number; currency: string };
       } | null>;
+      totalPrice?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
       shippingPrice?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; amount: number; currency: string };
@@ -14357,11 +14367,6 @@ export type CheckoutShippingAddressUpdateMutation = {
         };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      totalPrice?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
       availablePaymentGateways: Array<{
         __typename?: "PaymentGateway";
         id: string;
@@ -14375,8 +14380,15 @@ export type CheckoutShippingAddressUpdateMutation = {
         __typename?: "ShippingMethod";
         id: string;
         name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
         price: { __typename?: "Money"; amount: number; currency: string };
       } | null>;
+      totalPrice?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
       shippingPrice?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; amount: number; currency: string };
@@ -14480,11 +14492,6 @@ export type CheckoutBillingAddressUpdateMutation = {
         };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      totalPrice?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
       availablePaymentGateways: Array<{
         __typename?: "PaymentGateway";
         id: string;
@@ -14498,8 +14505,15 @@ export type CheckoutBillingAddressUpdateMutation = {
         __typename?: "ShippingMethod";
         id: string;
         name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
         price: { __typename?: "Money"; amount: number; currency: string };
       } | null>;
+      totalPrice?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
       shippingPrice?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; amount: number; currency: string };
@@ -14603,11 +14617,6 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      totalPrice?: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      } | null;
       availablePaymentGateways: Array<{
         __typename?: "PaymentGateway";
         id: string;
@@ -14621,8 +14630,15 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         __typename?: "ShippingMethod";
         id: string;
         name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
         price: { __typename?: "Money"; amount: number; currency: string };
       } | null>;
+      totalPrice?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
       shippingPrice?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; amount: number; currency: string };
@@ -14767,6 +14783,26 @@ export const CheckoutFragmentDoc = gql`
       id
       email
     }
+    availablePaymentGateways {
+      id
+      name
+    }
+    deliveryMethod {
+      ... on ShippingMethod {
+        id
+      }
+      ... on Warehouse {
+        id
+      }
+    }
+    shippingMethods {
+      id
+      name
+      price {
+        amount
+        currency
+      }
+    }
     totalPrice {
       gross {
         amount
@@ -14791,6 +14827,8 @@ export const CheckoutFragmentDoc = gql`
         amount
         currency
       }
+      maximumDeliveryDays
+      minimumDeliveryDays
     }
     totalPrice {
       gross {

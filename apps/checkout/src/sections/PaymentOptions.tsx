@@ -1,14 +1,13 @@
 import { Button } from "@components/Button";
-// import { Title } from "@components/Title";
 import { useCheckout } from "@hooks/useCheckout";
+import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import React from "react";
 
 interface PaymentOptionsProps {}
 
 export const PaymentOptions: React.FC<PaymentOptionsProps> = ({}) => {
+  const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
-
-  // const [selectedOptionId, setSelectedOptionId] = useState();
 
   const finalizeCheckout = async () => {
     const result = await fetch(
@@ -31,21 +30,9 @@ export const PaymentOptions: React.FC<PaymentOptionsProps> = ({}) => {
   };
 
   return (
-    <div className="mb-10">
-      {/* <Title className="mb-4">Payment options</Title>
-      {checkout?.availablePaymentGateways?.map(({ id, name }) => (
-        <div>
-          <input
-            type="radio"
-            className="mr-2 mt-1"
-            checked={selectedOptionId === id}
-            onChange={() => setSelectedOptionId(id)}
-          />
-          <label>{name}</label>
-        </div>
-      ))} */}
+    <div className="mb-10 flex flex-row justify-end">
       <Button
-        ariaLabel="finaliza checkout"
+        ariaLabel={formatMessage("finalizeCheckoutLabel")}
         title="Pay"
         onClick={finalizeCheckout}
         className="min-w-28"

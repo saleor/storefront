@@ -16,3 +16,19 @@ export const useFormattedMoney = <TMoney extends Money>(
 
   return money ? formatter.format(money.amount) : "";
 };
+
+export const getFormattedMoney = <TMoney extends Money>(
+  money: TMoney | undefined
+) => {
+  if (!money) {
+    return "";
+  }
+
+  const { amount, currency } = money;
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    currencyDisplay: "symbol",
+  }).format(amount);
+};

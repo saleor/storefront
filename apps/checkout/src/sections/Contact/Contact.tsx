@@ -37,6 +37,7 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
 
   const passwordResetToken = getQueryVariables().passwordResetToken;
 
+  console.log(666, { currentSection });
   useEffect(() => {
     if (loading) {
       return;
@@ -46,12 +47,11 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
       setCurrentSection("signedInUser");
 
       if (checkout?.user?.id !== user?.id) {
-        // TMP for development
-        // customerAttach(
-        //   getDataWithToken({
-        //     customerId: user?.id as string,
-        //   })
-        // );
+        customerAttach(
+          getDataWithToken({
+            customerId: user?.id as string,
+          })
+        );
       }
 
       return;
@@ -65,7 +65,7 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
 
     setCurrentSection("guestUser");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, checkout, authenticated, passwordResetToken]);
+  }, [loading, checkout?.user, authenticated, passwordResetToken]);
 
   return (
     <div>

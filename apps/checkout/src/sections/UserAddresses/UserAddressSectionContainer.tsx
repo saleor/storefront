@@ -22,7 +22,7 @@ export const UserAddressSectionContainer: React.FC<
   return (
     <div className="my-6">
       <div className="flex flex-row justify-between">
-        <Title className="mb-4">{title}</Title>
+        <Title>{title}</Title>
         {displayCountrySelect && (
           <select
             onChange={(event) => {

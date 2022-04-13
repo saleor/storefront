@@ -3,6 +3,7 @@ import React from "react";
 import { CloseIcon as DeleteIcon } from "@icons";
 import { CheckoutLine, useCheckoutLineDeleteMutation } from "@graphql";
 import { getDataWithToken } from "@lib/utils";
+import { useFormattedMessages } from "@hooks/useFormattedMessages";
 
 interface LineItemDeleteProps {
   line: CheckoutLine;
@@ -11,6 +12,7 @@ interface LineItemDeleteProps {
 export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({
   line: { id: lineId },
 }) => {
+  const formatMessage = useFormattedMessages();
   const [, deleteLine] = useCheckoutLineDeleteMutation();
 
   const handleLineDelete = () =>
@@ -22,7 +24,10 @@ export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({
 
   return (
     <div className="delete-row-button">
-      <IconButton onClick={handleLineDelete} ariaLabel="delete item">
+      <IconButton
+        onClick={handleLineDelete}
+        ariaLabel={formatMessage("deleteItemLabel")}
+      >
         <img src={DeleteIcon} alt="delete icon" />
       </IconButton>
     </div>

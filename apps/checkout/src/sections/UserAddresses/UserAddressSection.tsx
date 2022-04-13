@@ -5,6 +5,7 @@ import {
   useUserAddressCreateMutation,
   useUserAddressUpdateMutation,
 } from "@graphql";
+import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import { extractMutationErrors, getById } from "@lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React, { Suspense, useEffect, useState } from "react";
@@ -30,9 +31,14 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   title,
   type,
 }) => {
-  const [addAddressOpened, setAddAddressOpened] = useState(false);
+  const formatMessage = useFormattedMessages();
+  const [displayAddressAdd, setDisplayAddressAdd] = useState(false);
 
   const [editedAddressId, setEditedAddressId] = useState<string | null>();
+
+  const displayAddressEdit = !!editedAddressId;
+
+  const displayAddressList = !displayAddressEdit && !displayAddressAdd;
 
   const [selectedCountryCode, setSelectedCountryCode] =
     useState<CountryCode>("PL");
@@ -50,8 +56,6 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
       onAddressSelect(selectedAddress as unknown as UserAddressFormData);
     }
   }, [selectedAddressId]);
-
-  const editAddressOpened = !!editedAddressId;
 
   const [, userAddressUpdate] = useUserAddressUpdateMutation();
   const [, userAddressAdd] = useUserAddressCreateMutation();
@@ -84,7 +88,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
     const [hasErrors] = extractMutationErrors(result);
 
     if (!hasErrors) {
-      setAddAddressOpened(false);
+      setDisplayAddressAdd(false);
     }
   };
 
@@ -92,26 +96,19 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
     <Suspense fallback="loaden...">
       <UserAddressSectionContainer
         title={title}
-        displayCountrySelect={editAddressOpened || addAddressOpened}
+        displayCountrySelect={displayAddressEdit || displayAddressAdd}
         selectedCountryCode={selectedCountryCode}
         onCountrySelect={setSelectedCountryCode}
       >
-        {addAddressOpened ? (
+        {displayAddressAdd && (
           <UserAddressForm
             onSave={handleAddressAdd}
             countryCode={selectedCountryCode}
-            onCancel={() => setAddAddressOpened(false)}
-          />
-        ) : (
-          <Button
-            ariaLabel="add new address"
-            onClick={() => setAddAddressOpened(true)}
-            title="Add new address"
-            className="mb-4"
+            onCancel={() => setDisplayAddressAdd(false)}
           />
         )}
 
-        {editAddressOpened ? (
+        {displayAddressEdit && (
           <UserAddressForm
             onSave={handleAddressUpdate}
             countryCode={selectedCountryCode}
@@ -123,13 +120,24 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
             }
             onCancel={() => setEditedAddressId(null)}
           />
-        ) : (
-          <UserAddressList
-            addresses={addresses as AddressFragment[]}
-            onAddressSelect={onSelectAddress}
-            selectedAddressId={selectedAddressId}
-            onEditChange={(id: string) => setEditedAddressId(id)}
-          />
+        )}
+
+        {displayAddressList && (
+          <>
+            <Button
+              variant="secondary"
+              ariaLabel={formatMessage("addAddressLabel")}
+              onClick={() => setDisplayAddressAdd(true)}
+              title={formatMessage("addAddress")}
+              className="mb-4 w-full"
+            />
+            <UserAddressList
+              addresses={addresses as AddressFragment[]}
+              onAddressSelect={onSelectAddress}
+              selectedAddressId={selectedAddressId}
+              onEditChange={(id: string) => setEditedAddressId(id)}
+            />
+          </>
         )}
       </UserAddressSectionContainer>
     </Suspense>

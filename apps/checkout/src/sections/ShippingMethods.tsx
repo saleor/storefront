@@ -7,10 +7,15 @@ import {
 import { useCheckout } from "@hooks/useCheckout";
 import { getDataWithToken } from "@lib/utils";
 import React, { useEffect, useState } from "react";
+import { RadioGroup } from "@components/RadioGroup";
+import { getFormattedMoney } from "@hooks/useFormattedMoney";
+import { Radio } from "@components/Radio";
+import { useFormattedMessages } from "@hooks/useFormattedMessages";
 
 interface ShippingMethodsProps {}
 
 export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
+  const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const [selectedMethodId, setSelectedMethodId] = useState(
     checkout?.deliveryMethod?.id
@@ -25,25 +30,45 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
     }
   }, [selectedMethodId]);
 
+  const getSubtitle = ({
+    min,
+    max,
+  }: {
+    min?: number | null;
+    max?: number | null;
+  }) => {
+    if (!min || !max) {
+      return undefined;
+    }
+
+    return formatMessage("businessDays", {
+      min: min.toString(),
+      max: max.toString(),
+    });
+  };
+
   return (
     <div className="my-6">
-      <Title>Shipping methods</Title>
-      <Text className="mb-2">(scrollable)</Text>
-      <div style={{ maxHeight: 300, overflowY: "scroll" }}>
+      <Title>{formatMessage("deliveryMethod")}</Title>
+      <RadioGroup label={formatMessage("shippingMethodsLabel")}>
         {(checkout?.shippingMethods as ShippingMethod[])?.map(
-          ({ id, name, price }) => (
-            <div>
-              <input
-                type="radio"
-                className="mr-2 mt-1"
-                checked={selectedMethodId === id}
-                onChange={() => setSelectedMethodId(id)}
-              />
-              <label>{`${name} - ${price.amount} ${price.currency}`}</label>
-            </div>
+          ({
+            id,
+            name,
+            price,
+            minimumDeliveryDays: min,
+            maximumDeliveryDays: max,
+          }) => (
+            <Radio
+              value={id}
+              title={`${name} - ${getFormattedMoney(price)}`}
+              subtitle={getSubtitle({ min, max })}
+              selectedValue={selectedMethodId}
+              onSelect={setSelectedMethodId}
+            />
           )
         )}
-      </div>
+      </RadioGroup>
     </div>
   );
 };

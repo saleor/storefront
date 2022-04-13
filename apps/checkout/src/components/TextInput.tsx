@@ -108,7 +108,7 @@ const TextInputComponent = <
           {(error as any).message}
         </span>
       )}
-      {icon && <div className="icon">{icon}</div>}
+      <div className="absolute top-0 right-0">{icon}</div>
     </div>
   );
 };

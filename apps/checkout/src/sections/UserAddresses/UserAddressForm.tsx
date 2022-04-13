@@ -1,6 +1,7 @@
 import { Button } from "@components/Button";
 import { TextInput } from "@components/TextInput";
 import { CountryCode, useAddressValidationRulesQuery } from "@graphql";
+import { useFormattedMessages } from "@hooks/useFormattedMessages";
 import { useGetInputProps } from "@hooks/useGetInputProps";
 import { AddressField } from "@lib/globalTypes";
 import { DefaultValues, SubmitHandler, useForm } from "react-hook-form";
@@ -19,6 +20,8 @@ export const UserAddressForm = <TFormData extends AddressFormData>({
   onCancel,
   onSave,
 }: UserAddressFormProps<TFormData>) => {
+  const formatMessage = useFormattedMessages();
+
   const { handleSubmit, watch, getValues, ...rest } = useForm<TFormData>({
     mode: "onBlur",
     defaultValues,
@@ -48,13 +51,18 @@ export const UserAddressForm = <TFormData extends AddressFormData>({
       <div className="boo">
         {onCancel && (
           <Button
-            ariaLabel="cancel"
+            className="mr-4"
+            ariaLabel={formatMessage("cancelLabel")}
             variant="secondary"
             onClick={onCancel}
-            title="cancel"
+            title={formatMessage("cancel")}
           />
         )}
-        <Button ariaLabel="save" onClick={handleSubmit(onSave)} title="Save" />
+        <Button
+          ariaLabel={formatMessage("saveLabel")}
+          onClick={handleSubmit(onSave)}
+          title={formatMessage("saveAddress")}
+        />
       </div>
     </div>
   );

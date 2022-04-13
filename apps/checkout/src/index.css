@@ -21,10 +21,6 @@ html {
     @apply icon outline-none focus:outline-none active:outline-none;
   }
 
-  .icon-button:hover path {
-    fill: "red";
-  }
-
   /* Checkbox */
   .checkbox {
     @apply flex flex-row mb-4;

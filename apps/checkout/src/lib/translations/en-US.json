@@ -56,5 +56,16 @@
   "sectionChangeButtonLabel": "contact section change button",
   "addItemQuantityLabel": "add item quantity",
   "subtractItemQuantityLabel": "subtract item quantity",
-  "error": "error"
+  "error": "error",
+  "deliveryMethod": "Delivery method",
+  "businessDays": "{min} - {max} business days",
+  "finalizeCheckoutLabel": "finalize checkout",
+  "editAddressLabel": "edit address",
+  "deleteAddressLabel": "edit address",
+  "deleteItemLabel": "delete item",
+  "cancelLabel": "cancel",
+  "saveLabel": "save",
+  "addAddressLabel": "add new address",
+  "useShippingAsBilling": "Use shipping address as billing address",
+  "shippingMethodsLabel": "shipping methods"
 }
