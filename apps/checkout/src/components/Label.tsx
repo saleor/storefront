@@ -1,12 +1,12 @@
 import { Classes } from "@lib/globalTypes";
 import clsx from "clsx";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 interface LabelProps extends Classes {
   htmlFor: string;
 }
 
-export const Label: React.FC<LabelProps> = ({
+export const Label: React.FC<PropsWithChildren<LabelProps>> = ({
   children,
   htmlFor,
   className,

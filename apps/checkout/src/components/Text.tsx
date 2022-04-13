@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import clsx from "clsx";
 import { Classes } from "@lib/globalTypes";
 
@@ -11,7 +11,7 @@ export interface TextProps extends Classes {
   labeledBy?: string;
 }
 
-export const Text: React.FC<TextProps> = ({
+export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   children,
   size,
   color,

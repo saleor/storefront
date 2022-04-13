@@ -30,6 +30,8 @@ root.render(
   // disabled temporarily because of headless-ui transition not working
   // yet with React 18 https://github.com/tailwindlabs/headlessui/issues/681
   // <React.StrictMode>
+  // @ts-ignore because saleor provider still uses react types 17 where
+  // children are part of FC type
   <SaleorProvider client={saleorClient}>
     <I18nProvider locale={getCurrentRegion()}>
       <UrqlProvider value={client}>

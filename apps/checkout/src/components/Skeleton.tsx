@@ -1,8 +1,11 @@
 import { Classes } from "@lib/globalTypes";
 import clsx from "clsx";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-export const Skeleton: React.FC<Classes> = ({ children, className }) => {
+export const Skeleton: React.FC<PropsWithChildren<Classes>> = ({
+  children,
+  className,
+}) => {
   if (children) return <>{children}</>;
 
   const classes = clsx("min-h-3", "w-full", "bg-skeleton", className);

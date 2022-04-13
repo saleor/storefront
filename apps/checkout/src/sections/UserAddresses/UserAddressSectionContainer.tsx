@@ -1,6 +1,6 @@
 import { Title } from "@components/Title";
 import { CountryCode } from "@graphql";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { countries } from "./countries";
 
 interface UserAddressSectionContainerProps {
@@ -11,7 +11,7 @@ interface UserAddressSectionContainerProps {
 }
 
 export const UserAddressSectionContainer: React.FC<
-  UserAddressSectionContainerProps
+  PropsWithChildren<UserAddressSectionContainerProps>
 > = ({
   selectedCountryCode,
   title,
