@@ -9444,7 +9444,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -15009,7 +15009,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -39526,7 +39526,7 @@
               },
               {
                 "name": "input",
-                "description": "Input for External Notification Trigger.",
+                "description": "Input for External Notification Trigger. ",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -44967,7 +44967,7 @@
             "args": [
               {
                 "name": "id",
-                "description": "ShippingMethodType ID or ShippingMethodTranslatableContent ID.",
+                "description": "('ShippingMethodType ID or ShippingMethodTranslatableContent ID.',)",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -54426,7 +54426,7 @@
           },
           {
             "name": "page",
-            "description": "A static page that can be manually added by a shop operator through the dashboard.",
+            "description": "('A static page that can be manually added by a shop operator ', 'through the dashboard.')",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -58947,7 +58947,7 @@
           },
           {
             "name": "availableForPurchase",
-            "description": "Date when product is available for purchase.",
+            "description": "Date when product is available for purchase. ",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -62327,7 +62327,7 @@
           },
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -72903,7 +72903,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -83947,7 +83947,7 @@
         "inputFields": [
           {
             "name": "channel",
-            "description": "Specifies the channel in which to sort the data.\n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
+            "description": "Specifies the channel in which to sort the data. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.",
             "type": {
               "kind": "SCALAR",
               "name": "String",

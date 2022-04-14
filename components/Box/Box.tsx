@@ -3,10 +3,12 @@ import { HTMLAttributes } from "react";
 
 import styles from "./Box.module.css";
 
-export type BoxProps = HTMLAttributes<HTMLDivElement>
+export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
+  shadowless?: boolean;
+}
 
 export function Box({ className, ...rest }: BoxProps) {
-  return <div className={clsx(styles.box, className)} {...rest} />
+  return <div className={clsx(styles.box, className)} {...rest} />;
 }
 
 export default Box;

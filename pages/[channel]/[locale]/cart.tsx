@@ -24,7 +24,7 @@ function Cart() {
 
       <div className="py-10">
         <header className="mb-4">
-          <div className="max-w-7xl mx-auto px-8">
+          <div className="container px-8">
             <div className="flex justify-between">
               <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
                 {t.formatMessage(messages.cartPageHeader)}
@@ -40,7 +40,7 @@ function Cart() {
           </div>
         </header>
         <main>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 container px-8">
             <section className="col-span-2">
               <ul className="divide-y divide-gray-200">
                 {isCheckoutLoading ? (

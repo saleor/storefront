@@ -6,7 +6,7 @@ class MyDocument extends Document {
     const { hostname } = new URL(uri);
 
     return (
-      <Html lang="en" className="bg-gray-50">
+      <Html lang="en">
         <Head>
           <link rel="preconnect" href={`//${hostname}`} crossOrigin="true" />
           <link rel="dns-prefetch" href={`//${hostname}`} />

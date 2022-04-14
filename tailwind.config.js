@@ -1,4 +1,5 @@
-const getSpacing = (base /* number */, unit /* "px" | "rem" */, values /* number[] */) => values.reduce((acc, value) => ({ ...acc, [value]: base * value + unit }), {});
+const getSpacing = (base /* number */, unit /* "px" | "rem" */, values /* number[] */) =>
+  values.reduce((acc, value) => ({ ...acc, [value]: base * value + unit }), {});
 
 const spacing = getSpacing(
   0.4,
@@ -16,8 +17,9 @@ module.exports = {
     extend: {
       container: {
         center: true,
+        padding: "1.6rem",
         screens: {
-          "2xl": "1316px",
+          "2xl": "1348px",
         },
       },
       colors: {
@@ -62,6 +64,7 @@ module.exports = {
         full: "50%",
       },
       boxShadow: {
+        "decorative-center": "0 32px 0 -16px #394052",
         decorative: "16px 16px 0 #394052",
       },
     },

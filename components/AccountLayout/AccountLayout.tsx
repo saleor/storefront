@@ -28,7 +28,7 @@ export function AccountLayout({ children }: AccountLayoutProps) {
   return (
     <Layout>
       <div className="py-10">
-        <main className="flex flex-col md:flex-row max-w-7xl mx-auto px-8">
+        <main className="flex flex-col md:flex-row container px-8">
           <div className="mb-2 flex-initial md:w-3/5">
             <NavigationPanel />
           </div>
