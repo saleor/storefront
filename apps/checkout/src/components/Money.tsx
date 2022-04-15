@@ -3,8 +3,8 @@ import { Text, TextProps } from "./Text";
 import {
   Money as MoneyType,
   useFormattedMoney,
-} from "@hooks/useFormattedMoney";
-import { Classes } from "@lib/globalTypes";
+} from "@/hooks/useFormattedMoney";
+import { Classes } from "@/lib/globalTypes";
 
 export interface MoneyProps<TMoney extends MoneyType>
   extends TextProps,

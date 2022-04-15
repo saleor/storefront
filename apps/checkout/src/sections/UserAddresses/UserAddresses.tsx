@@ -1,13 +1,13 @@
-import { Checkbox } from "@components/Checkbox";
+import { Checkbox } from "@/components/Checkbox";
 import {
   AddressFragment,
   useCheckoutBillingAddressUpdateMutation,
   useCheckoutShippingAddressUpdateMutation,
   useUserQuery,
-} from "@graphql";
-import { useCheckout } from "@hooks/useCheckout";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import { getDataWithToken } from "@lib/utils";
+} from "@/graphql";
+import { useCheckout } from "@/hooks/useCheckout";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { getDataWithToken } from "@/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";

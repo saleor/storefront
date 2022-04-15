@@ -1,4 +1,4 @@
-import { ValidationError, ValidationErrorType } from "@lib/globalTypes";
+import { ValidationError, ValidationErrorType } from "@/lib/globalTypes";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
 import { ValidationError as ValidationErrorObject } from "yup";

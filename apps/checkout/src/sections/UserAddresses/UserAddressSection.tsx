@@ -1,12 +1,12 @@
-import { Button } from "@components/Button";
+import { Button } from "@/components/Button";
 import {
   AddressFragment,
   CountryCode,
   useUserAddressCreateMutation,
   useUserAddressUpdateMutation,
-} from "@graphql";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import { extractMutationErrors, getById } from "@lib/utils";
+} from "@/graphql";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { extractMutationErrors, getById } from "@/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React, { Suspense, useEffect, useState } from "react";
 import { AddressFormData, UserAddressFormData } from "./types";

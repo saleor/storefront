@@ -1,4 +1,4 @@
-import { AddressField } from "@lib/globalTypes";
+import { AddressField } from "@/lib/globalTypes";
 
 const addressFieldsOrder: AddressField[] = [
   "name",

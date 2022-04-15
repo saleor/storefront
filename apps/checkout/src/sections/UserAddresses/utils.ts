@@ -1,4 +1,4 @@
-import { AddressInput, CountryCode, CountryDisplay } from "@graphql";
+import { AddressInput, CountryCode, CountryDisplay } from "@/graphql";
 import { omit } from "lodash";
 import { AddressFormData } from "./types";
 

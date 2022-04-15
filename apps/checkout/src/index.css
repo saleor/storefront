@@ -60,7 +60,7 @@ html {
     transition: border 0.2s ease-in-out;
     height: 56px;
     padding-left: 11px;
-    @apply input text-base border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary pb-1 pt-5;
+    @apply input text-text-primary text-base border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary pb-1 pt-5;
   }
 
   .text-input-error {
@@ -103,11 +103,11 @@ html {
   }
 
   .button-primary {
-    @apply bg-button-primary hover:bg-button-secondary active:bg-button-tertiary disabled:border-none disabled:bg-background-tertiary;
+    @apply border-border-primary bg-button-primary hover:bg-button-secondary active:bg-button-tertiary disabled:border-none disabled:bg-background-tertiary;
   }
 
   .button-primary p {
-    @apply text-text-tertiary;
+    @apply text-text-button;
   }
 
   .button-primary:hover p,

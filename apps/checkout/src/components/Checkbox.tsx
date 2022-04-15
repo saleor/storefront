@@ -1,6 +1,6 @@
-import { Label } from "@components/Label";
-import { CheckIcon } from "@icons";
-import { Classes } from "@lib/globalTypes";
+import { Label } from "@/components/Label";
+import { CheckIcon } from "@/icons";
+import { Classes } from "@/lib/globalTypes";
 import clsx from "clsx";
 import { useId } from "react";
 

@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import clsx from "clsx";
-import { Classes } from "@lib/globalTypes";
+import { Classes } from "@/lib/globalTypes";
 
 export interface TextProps extends Classes {
   size?: "sm" | "md" | "lg";

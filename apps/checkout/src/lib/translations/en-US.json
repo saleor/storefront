@@ -67,5 +67,10 @@
   "saveLabel": "save",
   "addAddressLabel": "add new address",
   "useShippingAsBilling": "Use shipping address as billing address",
-  "shippingMethodsLabel": "shipping methods"
+  "shippingMethodsLabel": "shipping methods",
+  "paymentProviders": "Payment providers",
+  "paymentProvidersLabel": "payment providers",
+  "creditCard": "Credit Card",
+  "applePay": "Apple Pay",
+  "paypal": "PayPal"
 }

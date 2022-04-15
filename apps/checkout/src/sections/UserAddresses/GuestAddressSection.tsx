@@ -1,4 +1,4 @@
-import { CountryCode } from "@graphql";
+import { CountryCode } from "@/graphql";
 import React, { useState } from "react";
 import { AddressFormData } from "./types";
 import { UserAddressForm } from "./UserAddressForm";

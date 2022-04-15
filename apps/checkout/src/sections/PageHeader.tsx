@@ -1,4 +1,4 @@
-import { SaleorLogo } from "@images";
+import { SaleorLogo } from "@/images";
 
 const PageHeader = () => {
   return (

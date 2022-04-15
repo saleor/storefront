@@ -1,9 +1,9 @@
-import { Button } from "@components/Button";
-import { TextInput } from "@components/TextInput";
-import { CountryCode, useAddressValidationRulesQuery } from "@graphql";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import { useGetInputProps } from "@hooks/useGetInputProps";
-import { AddressField } from "@lib/globalTypes";
+import { Button } from "@/components/Button";
+import { TextInput } from "@/components/TextInput";
+import { CountryCode, useAddressValidationRulesQuery } from "@/graphql";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useGetInputProps } from "@/hooks/useGetInputProps";
+import { AddressField } from "@/lib/globalTypes";
 import { DefaultValues, SubmitHandler, useForm } from "react-hook-form";
 import { AddressFormData } from "./types";
 

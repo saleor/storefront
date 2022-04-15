@@ -1,7 +1,7 @@
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import { Text } from "@components/Text";
-import { Skeleton } from "@components/Skeleton";
-import { Divider } from "@components/Divider";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { Text } from "@/components/Text";
+import { Skeleton } from "@/components/Skeleton";
+import { Divider } from "@/components/Divider";
 
 export const SummaryPlaceholder = () => {
   const formatMessage = useFormattedMessages();

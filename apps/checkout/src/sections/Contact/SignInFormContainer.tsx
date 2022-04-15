@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from "react";
-import { Text } from "@components/Text";
-import { Button } from "@components/Button";
-import { Title } from "@components/Title";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
+import { Text } from "@/components/Text";
+import { Button } from "@/components/Button";
+import { Title } from "@/components/Title";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 
 export interface SignInFormContainerProps {
   title: string;

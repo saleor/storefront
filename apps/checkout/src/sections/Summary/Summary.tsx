@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Text } from "@components/Text";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
+import { Text } from "@/components/Text";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
-import { CheckoutLine } from "@graphql";
-import { Divider } from "@components/Divider";
-import { Money } from "@components/Money";
-import { ChevronDownIcon } from "@icons";
+import { CheckoutLine } from "@/graphql";
+import { Divider } from "@/components/Divider";
+import { Money } from "@/components/Money";
+import { ChevronDownIcon } from "@/icons";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { useCheckout } from "@hooks/useCheckout";
+import { useCheckout } from "@/hooks/useCheckout";
 import compact from "lodash/compact";
 
 export const Summary = () => {

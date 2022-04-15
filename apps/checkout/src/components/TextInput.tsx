@@ -7,7 +7,7 @@ import React, {
   useId,
   useState,
 } from "react";
-import { Classes } from "@lib/globalTypes";
+import { Classes } from "@/lib/globalTypes";
 import {
   Control,
   FieldPath,
@@ -15,7 +15,7 @@ import {
   UseFormRegisterReturn,
   useWatch,
 } from "react-hook-form";
-import { ControlFormData } from "@hooks/useGetInputProps";
+import { ControlFormData } from "@/hooks/useGetInputProps";
 
 export interface TextInputProps<
   TControl extends Control<any, any>,

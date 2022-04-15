@@ -1,6 +1,6 @@
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import { ControlFormData } from "@hooks/useGetInputProps";
-import { EyeHiddenIcon, EyeIcon } from "@icons";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { ControlFormData } from "@/hooks/useGetInputProps";
+import { EyeHiddenIcon, EyeIcon } from "@/icons";
 import { ForwardedRef, useState } from "react";
 import { forwardRef } from "react";
 import { Control } from "react-hook-form";

@@ -1,7 +1,7 @@
 import React from "react";
-import { Text } from "@components/Text";
+import { Text } from "@/components/Text";
 import clsx from "clsx";
-import { Classes } from "@lib/globalTypes";
+import { Classes } from "@/lib/globalTypes";
 import { AriaButtonProps } from "@react-types/button";
 import { SyntheticEvent } from "react";
 

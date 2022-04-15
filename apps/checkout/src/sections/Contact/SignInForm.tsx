@@ -1,8 +1,8 @@
-import { Button } from "@components/Button";
-import { PasswordInput } from "@components/PasswordInput";
-import { TextInput } from "@components/TextInput";
-import { Text } from "@components/Text";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
+import { Button } from "@/components/Button";
+import { PasswordInput } from "@/components/PasswordInput";
+import { TextInput } from "@/components/TextInput";
+import { Text } from "@/components/Text";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
 import {
@@ -13,12 +13,12 @@ import {
   extractValidationError,
   getCurrentHref,
   useValidationResolver,
-} from "@lib/utils";
+} from "@/lib/utils";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useGetInputProps } from "@hooks/useGetInputProps";
+import { useGetInputProps } from "@/hooks/useGetInputProps";
 import { object, string, ValidationError } from "yup";
-import { useErrorMessages } from "@hooks/useErrorMessages";
+import { useErrorMessages } from "@/hooks/useErrorMessages";
 import { useEffect } from "react";
 
 interface SignInFormProps

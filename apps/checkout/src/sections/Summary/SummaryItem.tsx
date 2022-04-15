@@ -1,10 +1,10 @@
-import { CheckoutLine } from "@graphql";
+import { CheckoutLine } from "@/graphql";
 import React from "react";
-import { Text } from "@components/Text";
+import { Text } from "@/components/Text";
 import { SummaryItemMoneySection } from "./SummaryItemMoneySection";
 import { SummaryItemDelete } from "./SummaryItemDelete";
-import { PhotoIcon } from "@icons";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
+import { PhotoIcon } from "@/icons";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 
 interface LineItemProps {
   line: CheckoutLine;

@@ -1,4 +1,4 @@
-import { Classes } from "@lib/globalTypes";
+import { Classes } from "@/lib/globalTypes";
 import clsx from "clsx";
 import { ButtonProps } from "./Button";
 

@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Text } from "@components/Text";
+import { Text } from "@/components/Text";
 import clsx from "clsx";
 
 export interface RadioOptionBase {

@@ -1,16 +1,16 @@
-import { Title } from "@components/Title";
-import { Text } from "@components/Text";
+import { Title } from "@/components/Title";
+import { Text } from "@/components/Text";
 import {
   ShippingMethod,
   useCheckoutDeliveryMethodUpdateMutation,
-} from "@graphql";
-import { useCheckout } from "@hooks/useCheckout";
-import { getDataWithToken } from "@lib/utils";
+} from "@/graphql";
+import { useCheckout } from "@/hooks/useCheckout";
+import { getDataWithToken } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { RadioGroup } from "@components/RadioGroup";
-import { getFormattedMoney } from "@hooks/useFormattedMoney";
-import { Radio } from "@components/Radio";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
+import { RadioGroup } from "@/components/RadioGroup";
+import { getFormattedMoney } from "@/hooks/useFormattedMoney";
+import { Radio } from "@/components/Radio";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 
 interface ShippingMethodsProps {}
 

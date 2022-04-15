@@ -1,14 +1,14 @@
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import React from "react";
 import {
   SignInFormContainer,
   SignInFormContainerProps,
 } from "./SignInFormContainer";
-import { Text } from "@components/Text";
+import { Text } from "@/components/Text";
 import { useAuth, useAuthState } from "@saleor/sdk";
-import { Button } from "@components/Button";
-import { useCheckoutCustomerDetachMutation } from "@graphql";
-import { getDataWithToken } from "@lib/utils";
+import { Button } from "@/components/Button";
+import { useCheckoutCustomerDetachMutation } from "@/graphql";
+import { getDataWithToken } from "@/lib/utils";
 
 type SignedInUserProps = Pick<SignInFormContainerProps, "onSectionChange">;
 

@@ -1,5 +1,5 @@
-import { Title } from "@components/Title";
-import { CountryCode } from "@graphql";
+import { Title } from "@/components/Title";
+import { CountryCode } from "@/graphql";
 import React, { PropsWithChildren } from "react";
 import { countries } from "./countries";
 

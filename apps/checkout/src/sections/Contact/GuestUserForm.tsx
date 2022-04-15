@@ -1,18 +1,18 @@
-import { useCheckoutEmailUpdateMutation } from "@graphql";
-import { useFormattedMessages } from "@hooks/useFormattedMessages";
-import { getDataWithToken, useValidationResolver } from "@lib/utils";
+import { useCheckoutEmailUpdateMutation } from "@/graphql";
+import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { getDataWithToken, useValidationResolver } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { Checkbox } from "@components/Checkbox";
-import { TextInput } from "@components/TextInput";
-import { PasswordInput } from "@components/PasswordInput";
+import { Checkbox } from "@/components/Checkbox";
+import { TextInput } from "@/components/TextInput";
+import { PasswordInput } from "@/components/PasswordInput";
 import {
   SignInFormContainer,
   SignInFormContainerProps,
 } from "./SignInFormContainer";
 import { object, string } from "yup";
 import { useForm, useFormContext } from "react-hook-form";
-import { useGetInputProps } from "@hooks/useGetInputProps";
-import { useErrorMessages } from "@hooks/useErrorMessages";
+import { useGetInputProps } from "@/hooks/useGetInputProps";
+import { useErrorMessages } from "@/hooks/useErrorMessages";
 
 interface AnonymousCustomerFormProps
   extends Pick<SignInFormContainerProps, "onSectionChange"> {
@@ -71,10 +71,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
         {...getInputProps("email", {
           // for some reason using handleSubmit here
           // disallows password input to focus
-          onBlur: () => {
-            console.log(666, "BLUUUURRRRWEEEEEEN");
-            onSubmit(getValues());
-          },
+          onBlur: () => onSubmit(getValues()),
         })}
       />
       <Checkbox
