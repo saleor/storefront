@@ -2,25 +2,25 @@
 
 ## Environment variables
 
-SRS is built using Next.js framework which comes with complete workflow for working with environment variables. You can read more at [documentation](https://nextjs.org/docs/basic-features/environment-variables) pages.
+SRS is built using the Next.js framework. It comes with a complete workflow for working with environment variables. You can read more at these [documentation](https://nextjs.org/docs/basic-features/environment-variables) pages.
 
-All of the options available to change via environment variables can be found in `.env` file.
+All available options to change via environment variables can be found in the `.env` file.
 
 ### Example - Changing the API URI
 
-For local development we are recommending configuration via `.env.local` file:
+For local development, we recommend configuration via the `.env.local` file:
 
 1. Create `.env.local` in the root of the project
 2. Add entry `NEXT_PUBLIC_API_URI=https://my-saleor-instance/graphql/`
 3. If dev server was running, new values will be loaded after the server restart
 
-To ensure that local configuration will not be exposed, `.env.local` file is ignored by Git.
+Git ignores the `.env.local` file to ensure that the local configuration is not exposed.
 
-For application deployments we suggest to setup environment variables instead of files. Depending of hosting provider, the way you can set them vary. In case of using Vercel, related documentation can be found [here](https://vercel.com/docs/concepts/projects/environment-variables).
+For application deployments, we suggest setting environment variables instead of files. The way you can set them varies depending on the hosting provider. In the case of using Vercel, related documentation can be found [here](https://vercel.com/docs/concepts/projects/environment-variables).
 
 ## Changing available channels
 
-List of available channels can be changed by adding new entries to `CHANNELS` constant located in the `lib/regions.ts` file.
+The list of available channels can be changed by adding new entries to the `CHANNELS` constant located in the `lib/regions.ts` file.
 
 ## Languages
 
@@ -28,4 +28,4 @@ To configure available languages, read [translation](docs/translations.md) docs.
 
 ## Homepage
 
-By default homepage will show content blocks based at Menu object fetched from the API. Slug of the object can be configured with the `NEXT_PUBLIC_HOMEPAGE_MENU` variable.
+The homepage will show content blocks based, by default, on the Menu object fetched from the API. Slug of the object can be configured with the `NEXT_PUBLIC_HOMEPAGE_MENU` variable.
