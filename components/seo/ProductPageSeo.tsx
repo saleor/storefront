@@ -1,5 +1,6 @@
 import { NextSeo } from "next-seo";
 
+import { STOREFRONT_NAME } from "@/lib/const";
 import { ProductDetailsFragment } from "@/saleor/api";
 
 interface ProductPageSeoProps {
@@ -7,8 +8,10 @@ interface ProductPageSeoProps {
 }
 
 export function ProductPageSeo({ product }: ProductPageSeoProps) {
-  const title = `${product?.seoTitle} - Saleor Tutorial`;
-  const description = product?.seoDescription || "Welcome to tutorial storefront.";
+  const productName = product.seoTitle || product.name;
+  const title = productName ? `${productName} - ${STOREFRONT_NAME}` : STOREFRONT_NAME;
+
+  const description = product?.seoDescription || "";
   const thumbnailUrl = product.thumbnail?.url || "";
   const thumbnailAlt = product.thumbnail?.alt || title;
 

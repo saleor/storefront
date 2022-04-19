@@ -20,7 +20,7 @@ function Cart() {
 
   return (
     <>
-      <BaseSeo title="Cart - Saleor Tutorial" />
+      <BaseSeo title="Cart" />
 
       <div className="py-10">
         <header className="mb-4">
