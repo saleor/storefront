@@ -1,7 +1,9 @@
 import { NextSeo } from "next-seo";
 
+import { STOREFRONT_NAME } from "@/lib/const";
+
 export function NotFoundSeo() {
-  const title = "Not found - Saleor Tutorial";
+  const title = `Page Not found - ${STOREFRONT_NAME}`;
   const description = "Page not found.";
 
   return (

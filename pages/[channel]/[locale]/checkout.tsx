@@ -22,18 +22,18 @@ function CheckoutPage() {
     return (
       <>
         <Spinner />
-        <BaseSeo title="Checkout - Saleor Tutorial" />
+        <BaseSeo title="Checkout" />
       </>
     );
   }
 
   if (!checkout || checkout.lines?.length === 0) {
-    return <BaseSeo title="Checkout - Saleor Tutorial" />;
+    return <BaseSeo title="Checkout" />;
   }
 
   return (
     <>
-      <BaseSeo title="Checkout - Saleor Tutorial" />
+      <BaseSeo title="Checkout" />
 
       <main className="min-h-screen w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
         <div className="md:w-2/3 w-full">
