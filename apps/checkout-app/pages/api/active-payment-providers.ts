@@ -1,6 +1,12 @@
-import { activePaymentProviders } from "mocks/app";
+import { getActivePaymentProvidersSettings } from "@/backend/configuration/settings";
+import { allowCors } from "@/backend/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json(activePaymentProviders);
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const providersSettings = await getActivePaymentProvidersSettings();
+
+  console.log(providersSettings);
+
+  res.status(200).json(providersSettings);
 }
+export default allowCors(handler);

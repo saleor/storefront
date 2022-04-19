@@ -1,4 +1,4 @@
-import { ChannelFragment, ChannelsQuery } from "@/graphql";
+import { ChannelFragment } from "@/graphql";
 import {
   CustomizationID,
   CustomizationSettingID,
@@ -24,11 +24,11 @@ export interface ChannelPaymentOptions {
 
 export type ChannelActivePaymentProviders = {
   [P in string]: {
-    [K in PaymentMethodID]: PaymentProviderID;
+    [K in PaymentMethodID]: PaymentProviderID | "";
   };
 };
 export type ChannelActivePaymentProvidersByChannel = {
-  [P in PaymentMethodID]: PaymentProviderID;
+  [P in PaymentMethodID]: PaymentProviderID | "";
 };
 export type PaymentProviderSettingsValues = {
   [P in PaymentProviderID]: {

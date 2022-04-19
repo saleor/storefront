@@ -1,4 +1,4 @@
-import { client } from "@/graphql/client";
+import { client } from "@/backend/client";
 import {
   OrderCreateDocument,
   OrderCreateMutation,

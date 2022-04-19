@@ -3,7 +3,7 @@ import { ChannelPaymentOptions, PaymentOption } from "types/api";
 export const getActivePaymentProvider = (paymentOption: PaymentOption) =>
   paymentOption.availableProviders.find(
     (provider) => provider.id === paymentOption.activeProvider?.id
-  )?.id || null;
+  )?.id || "";
 
 export const getFormDefaultValues = (
   channelPaymentOptions: ChannelPaymentOptions | undefined

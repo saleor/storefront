@@ -8,7 +8,7 @@ export interface AuthTokenPayload {
 export const useAuthData = (): AuthTokenPayload => {
   const app = useApp();
   const appState = app?.getState();
-  const payload = parseJwt(appState?.token);
+  const payload = appState?.token ? parseJwt(appState.token) : { app: "" };
 
   return payload;
 };

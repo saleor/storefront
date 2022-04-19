@@ -20,7 +20,7 @@ import {
   ChannelActivePaymentProviders,
   ChannelPaymentOptions,
 } from "types/api";
-import { paymentProviders } from "consts";
+import { paymentProviders } from "config/fields";
 import { useStyles } from "./styles";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
 import { messages } from "./messages";
@@ -161,7 +161,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
                                         name: paymentOption.id,
                                         value:
                                           field.value === provider.id
-                                            ? null
+                                            ? ""
                                             : provider.id,
                                       },
                                     })

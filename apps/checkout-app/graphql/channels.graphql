@@ -4,6 +4,12 @@ fragment ChannelFragment on Channel {
   slug
 }
 
+query Channel($id: ID!) {
+  channel(id: $id) {
+    ...ChannelFragment
+  }
+}
+
 query Channels {
   channels {
     ...ChannelFragment

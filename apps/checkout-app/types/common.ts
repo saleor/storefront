@@ -9,18 +9,18 @@ export type SettingType = "string" | "color" | "image";
 /**
  * Payment types
  */
-export type PaymentMethodID = "credit-card" | "apple-pay" | "paypal";
+export type PaymentMethodID = "creditCard" | "applePay" | "paypal";
 export interface PaymentMethod {
   id: PaymentMethodID;
   name: string;
 }
 
 export type PaymentProviderID = "mollie" | "adyen";
-export type MollieProviderSettingID = "partner-id" | "live-test-api-key";
+export type MollieProviderSettingID = "partnerId" | "liveTestApiKey";
 export type AdyenProviderSettingID =
-  | "merchant-account"
-  | "client-key"
-  | "supported-currencies";
+  | "merchantAccount"
+  | "clientKey"
+  | "supportedCurrencies";
 export type PaymentProviderSettingID<P extends PaymentProviderID> =
   P extends "mollie"
     ? MollieProviderSettingID
@@ -43,19 +43,21 @@ export interface PaymentProvider<P extends PaymentProviderID> {
 /**
  * Customization types
  */
-export type CustomizationID = "branding" | "product-settings";
+export type CustomizationID = "branding" | "productSettings";
 export type BrandingCustomizationSettingID =
-  | "active"
-  | "text"
-  | "bg"
-  | "error"
-  | "success"
-  | "logo";
-export type ProductCustomizationSettingID = "low-stock-threshold";
+  | "buttonBgColorPrimary"
+  | "buttonBgColorHover"
+  | "borderColorPrimary"
+  | "errorColor"
+  | "successColor"
+  | "textColor"
+  | "buttonTextColor"
+  | "logoUrl";
+export type ProductCustomizationSettingID = "lowStockThreshold";
 export type CustomizationSettingID<P extends CustomizationID> =
   P extends "branding"
     ? BrandingCustomizationSettingID
-    : P extends "product-settings"
+    : P extends "productSettings"
     ? ProductCustomizationSettingID
     : never;
 

@@ -1,5 +1,8 @@
-import { SettingsValues, UnknownSettingsValues } from "types/api";
-import { allSettingID, Item, NamedNode, Node, SettingID } from "types/common";
+import { MetadataItemFragment } from "@/graphql";
+import settingsValues from "@/config/defaults";
+import { SettingsValues, UnknownSettingsValues } from "@/types/api";
+import { allSettingID, Item, NamedNode, Node, SettingID } from "@/types/common";
+import reduce from "lodash/reduce";
 
 export function parseJwt(token: string) {
   var base64Url = token.split(".")[1];
@@ -43,13 +46,37 @@ export const unflattenSettings = <T, S extends Node>(
   return unflattenedSettings;
 };
 
+/**
+ * Merges settings. To be used when default and saved settings may differ (e.g. after app update).
+ * @param defaultSettings
+ * @param savedSettings
+ * @returns Returns either previously saved settings values or default settings values. If settings values are present in default and saved at the same time, then saved value is returned.
+ */
+export const mergeSettingsValues = (
+  defaultSettings: UnknownSettingsValues,
+  savedSettings: UnknownSettingsValues
+) => {
+  return reduce(
+    defaultSettings,
+    (result, defaultSetting, settingKey) => {
+      const savedSetting = savedSettings[settingKey];
+      const hasSettingInBothSettings = !!savedSetting;
+      const udpatedSetting = hasSettingInBothSettings
+        ? { ...defaultSetting, ...savedSetting }
+        : defaultSetting;
+
+      return {
+        ...result,
+        [settingKey]: udpatedSetting,
+      };
+    },
+    savedSettings
+  );
+};
+
 export const mapMetadataToSettings = (
-  metadata: Array<{
-    __typename?: "MetadataItem";
-    key: string;
-    value: string;
-  } | null>
-): Partial<SettingsValues> => {
+  metadata: (MetadataItemFragment | null)[]
+): SettingsValues => {
   const settings = metadata.reduce((settings, metadataItem) => {
     const settingsKey = metadataItem?.key;
 
@@ -61,18 +88,21 @@ export const mapMetadataToSettings = (
     }
 
     try {
-      const settingsValue = JSON.parse(metadataItem?.value);
+      const metadataItemSettings = JSON.parse(metadataItem?.value);
       return {
         ...settings,
-        [settingsKey]: settingsValue,
+        [settingsKey]: mergeSettingsValues(
+          settings[settingsKey as SettingID[number]],
+          metadataItemSettings
+        ),
       };
     } catch (e) {
       return {
         ...settings,
-        [settingsKey]: {},
+        [settingsKey]: settings[settingsKey as SettingID[number]] || {},
       };
     }
-  }, {} as SettingsValues);
+  }, settingsValues);
 
   return settings;
 };
