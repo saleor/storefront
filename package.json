@@ -58,6 +58,7 @@
     "@graphql-codegen/typescript-operations": "2.3.5",
     "@graphql-codegen/typescript-react-apollo": "3.2.11",
     "@next/bundle-analyzer": "^12.1.4",
+    "@svgr/webpack": "^6.2.1",
     "@types/qs": "^6.9.7",
     "@types/react": "17.0.43",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
