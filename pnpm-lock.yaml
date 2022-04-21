@@ -127,7 +127,7 @@ importers:
       '@material-ui/lab': ^4.0.0-alpha.60
       '@material-ui/styles': ^4.11.5
       '@mollie/api-client': ^3.6.0
-      '@saleor/app-bridge': ^0.1.5
+      '@saleor/app-bridge': ^0.1.7
       '@saleor/macaw-ui': ^0.3.3
       '@types/react': 17.0.37
       '@types/react-dom': 17.0.11
@@ -160,7 +160,7 @@ importers:
       '@material-ui/lab': 4.0.0-alpha.61_6b1dc0c9d553a2d02b19272f2ed5c6ad
       '@material-ui/styles': 4.11.5_5539cae010396b202b015f3568914e95
       '@mollie/api-client': 3.6.0
-      '@saleor/app-bridge': 0.1.6
+      '@saleor/app-bridge': 0.1.7
       '@saleor/macaw-ui': 0.3.3_1cdc5c7fddbb2168add9985cd94e1e8b
       '@urql/exchange-auth': 0.1.7_graphql@16.3.0
       clsx: 1.1.1
@@ -3436,8 +3436,8 @@ packages:
     resolution: {integrity: sha512-WiBSI6JBIhC6LRIsB2Kwh8DsGTlbBU+mLRxJmAe3LjHTdkDpwIbEOZgoXBbZilk/vlfjK8i6nKRAvIRn1XaIMw==}
     dev: false
 
-  /@saleor/app-bridge/0.1.6:
-    resolution: {integrity: sha512-kWjJDWc7xv+fymZv0E1hQaNrhk+KEdk2ipisdbJ7dzW+YrBtCWsvH/dtnpoQpMqSxet0O+35Q5nZbI6T5Dfulg==}
+  /@saleor/app-bridge/0.1.7:
+    resolution: {integrity: sha512-EXNNAZD1g79fCtoaNLqoTKg9GiB1Lj26E7iKz4PmUOQZyDeBEBxc6CLpUwNptb4Xw7+KULMHdtxJVkp/RTC2TQ==}
     engines: {node: '>=10'}
     dependencies:
       uuid: 8.3.2
