@@ -2,17 +2,16 @@ import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
 
+import { getLinkPath } from "@/lib/menus";
 import { translate } from "@/lib/translations";
 import { notNullable } from "@/lib/util";
-import { MenuItemFragment, useMainMenuQuery } from "@/saleor/api";
+import { useMainMenuQuery } from "@/saleor/api";
 
-import { usePaths } from "../../lib/paths";
 import { HamburgerButton } from "../HamburgerButton";
 import { useRegions } from "../RegionsProvider";
 
 export function MainMenu() {
-  const paths = usePaths();
-  const { query } = useRegions();
+  const { query, currentChannel, currentLocale } = useRegions();
 
   const { loading, error, data } = useMainMenuQuery({
     variables: { ...query },
@@ -38,18 +37,6 @@ export function MainMenu() {
     return null;
   }
   const menu = data?.menu?.items || [];
-  const menuLink = (item: MenuItemFragment) => {
-    if (item.category) {
-      return paths.category._slug(item.category?.slug).$url();
-    }
-    if (item.collection) {
-      return paths.collection._slug(item.collection?.slug).$url();
-    }
-    if (item.page) {
-      return paths.page._slug(item.page?.slug).$url();
-    }
-    return paths.$url();
-  };
 
   return (
     <div className="group relative justify-center flex flex-col">
@@ -77,7 +64,10 @@ export function MainMenu() {
                       }
                       return (
                         <li key={child.id}>
-                          <Link href={menuLink(child)} passHref>
+                          <Link
+                            href={getLinkPath(child, currentChannel.slug, currentLocale)}
+                            passHref
+                          >
                             <a
                               onClick={() => setOpenDropdown(false)}
                               href="pass"

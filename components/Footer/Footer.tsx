@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { HTMLAttributes } from "react";
 
+import { getLinkPath } from "@/lib/menus";
 import { usePaths } from "@/lib/paths";
-import { MenuItemFragment, useFooterMenuQuery } from "@/saleor/api";
+import { useFooterMenuQuery } from "@/saleor/api";
 
 import { Box } from "../Box";
 import { useRegions } from "../RegionsProvider";
@@ -14,7 +15,7 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 
 export function Footer({ className, ...rest }: FooterProps) {
   const paths = usePaths();
-  const { query } = useRegions();
+  const { query, currentChannel, currentLocale } = useRegions();
 
   const { data, error } = useFooterMenuQuery({ variables: { ...query } });
 
@@ -24,19 +25,6 @@ export function Footer({ className, ...rest }: FooterProps) {
   }
 
   const menu = data?.menu?.items || [];
-
-  const gethLinkPath = (item: MenuItemFragment) => {
-    if (item.category) {
-      return paths.category._slug(item.category?.slug).$url();
-    }
-    if (item.collection) {
-      return paths.collection._slug(item.collection?.slug).$url();
-    }
-    if (item.page) {
-      return paths.page._slug(item.page?.slug).$url();
-    }
-    return paths.$url();
-  };
 
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
@@ -52,7 +40,7 @@ export function Footer({ className, ...rest }: FooterProps) {
           <div className="grid grid-cols-2 gap-[2rem] w-full sm:w-auto sm:flex sm:flex-wrap sm:justify-end sm:ml-auto">
             {menu.map((item) => (
               <div className="sm:ml-14" key={item?.id}>
-                <Link href={gethLinkPath(item!)} passHref>
+                <Link href={getLinkPath(item!, currentChannel.slug, currentLocale)} passHref>
                   <a
                     href="pass"
                     className="block text-md font-bold mb-4 cursor-pointer hover:underline"
@@ -63,7 +51,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                 <ul className={styles.menu}>
                   {item?.children?.map((sub) => (
                     <li key={sub?.id}>
-                      <Link href={gethLinkPath(sub!)} passHref>
+                      <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
                         <a href="pass" className={styles["menu-link"]}>
                           {sub?.name}
                         </a>

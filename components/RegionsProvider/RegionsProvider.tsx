@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { PropsWithChildren, useState } from "react";
 import { IntlProvider } from "react-intl";
@@ -81,6 +82,7 @@ export function RegionsProvider({ children }: PropsWithChildren<{}>) {
 
   return (
     <Provider value={providerValues}>
+      <Head>{/* <html lang={providerValues.currentLocale} /> */}</Head>
       <IntlProvider messages={msgs} locale={locale} defaultLocale={DEFAULT_LOCALE}>
         {children}
       </IntlProvider>
