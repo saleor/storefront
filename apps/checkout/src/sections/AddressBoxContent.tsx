@@ -20,7 +20,7 @@ export const AddressBoxContent: React.FC<AddressBoxContentProps> = ({
   onEdit,
 }) => {
   const formatMessage = useFormattedMessages();
-  const name = address.name || `${address.firstName} ${address.lastName}`;
+  const name = `${address.firstName} ${address.lastName}`;
 
   return (
     <div className="flex flex-row justify-between w-full">

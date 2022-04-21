@@ -18,7 +18,7 @@ export const pay = ({
   totalAmount: number;
   provider: string;
 }): FetchResponse<PayResult> =>
-  fetch(`${envVars.apiUrl}/pay`, {
+  fetch(`${envVars.checkoutAppUrl}/pay`, {
     method: "POST",
     body: JSON.stringify({
       provider,

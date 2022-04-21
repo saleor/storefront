@@ -30,13 +30,13 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   defaultValues,
 }) => {
   const formatMessage = useFormattedMessages();
-  const errorMessages = useErrorMessages();
+  const { errorMessages } = useErrorMessages();
   const [createAccountSelected, setCreateAccountSelected] = useState(false);
 
   const schema = object({
     email: string()
       .email(errorMessages.invalidValue)
-      .required(errorMessages.requiredField),
+      .required(errorMessages.requiredValue),
   });
 
   const resolver = useValidationResolver(schema);

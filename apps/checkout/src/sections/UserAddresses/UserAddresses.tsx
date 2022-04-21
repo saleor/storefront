@@ -1,19 +1,14 @@
 import { Checkbox } from "@/components/Checkbox";
-import {
-  AddressFragment,
-  useCheckoutBillingAddressUpdateMutation,
-  useCheckoutShippingAddressUpdateMutation,
-  useUserQuery,
-} from "@/graphql";
+import { AddressFragment, useUserQuery } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { getDataWithToken } from "@/lib/utils";
+import { ErrorsProvider } from "@/providers/ErrorsProvider";
 import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { AddressFormData, UserAddressFormData } from "./types";
+import { UserAddressFormData } from "./types";
+import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
-import { getAddressInputData } from "./utils";
 
 interface UserAddressesProps {}
 
@@ -21,8 +16,16 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({}) => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
+
   const [useShippingAsBillingAddress, setUseShippingAsBillingAddressSelected] =
-    useState(true);
+    useState(!checkout?.billingAddress);
+
+  const {
+    shippingAddressUpdateErrors,
+    billingAddressUpdateErrors,
+    updateShippingAddress,
+    updateBillingAddress,
+  } = useCheckoutAddressUpdate({ useShippingAsBillingAddress });
 
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
@@ -31,66 +34,56 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({}) => {
   const user = data?.user;
   const addresses = user?.addresses;
 
-  const [, checkoutShippingAddressUpdate] =
-    useCheckoutShippingAddressUpdateMutation();
-
-  const handleShippingUpdate = (address: AddressFormData) => {
-    checkoutShippingAddressUpdate(
-      getDataWithToken({ shippingAddress: getAddressInputData(address) })
-    );
-  };
-
-  const [, checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation();
-
-  const handleBillingUpdate = (address: AddressFormData) =>
-    checkoutBillingAddressUpdate(
-      getDataWithToken({ billingAddress: getAddressInputData(address) })
-    );
+  const defaultShippingAddress =
+    checkout?.shippingAddress || user?.defaultShippingAddress;
+  const defaultBillingAddress =
+    checkout?.billingAddress || user?.defaultBillingAddress;
 
   return (
     <div>
-      {authUser ? (
-        <UserAddressSection
-          title={formatMessage("shippingAddress")}
-          type="SHIPPING"
-          onAddressSelect={handleShippingUpdate}
-          // @ts-ignore TMP
-          addresses={addresses as UserAddressFormData[]}
-          defaultAddress={user?.defaultShippingAddress}
-        />
-      ) : (
-        <GuestAddressSection
-          // @ts-ignore TMP
-          address={checkout?.shippingAddress as AddressFormData}
-          title={formatMessage("shippingAddress")}
-          onSubmit={handleShippingUpdate}
-        />
-      )}
+      <ErrorsProvider apiErrors={shippingAddressUpdateErrors}>
+        {authUser ? (
+          <UserAddressSection
+            title={formatMessage("shippingAddress")}
+            type="SHIPPING"
+            onAddressSelect={updateShippingAddress}
+            // @ts-ignore TMP
+            addresses={addresses as UserAddressFormData[]}
+            defaultAddress={defaultShippingAddress}
+          />
+        ) : (
+          <GuestAddressSection
+            address={checkout?.shippingAddress as AddressFragment}
+            title={formatMessage("shippingAddress")}
+            onSubmit={updateShippingAddress}
+          />
+        )}
+      </ErrorsProvider>
       <Checkbox
         value="useShippingAsBilling"
         checked={useShippingAsBillingAddress}
         onChange={setUseShippingAsBillingAddressSelected}
         label={formatMessage("useShippingAsBilling")}
       />
-      {!useShippingAsBillingAddress &&
-        (authUser ? (
-          <UserAddressSection
-            title={formatMessage("billingAddress")}
-            type="BILLING"
-            onAddressSelect={handleBillingUpdate}
-            // @ts-ignore TMP
-            addresses={addresses as AddressFragment[]}
-            defaultAddress={user?.defaultBillingAddress}
-          />
-        ) : (
-          <GuestAddressSection
-            title={formatMessage("billingAddress")}
-            onSubmit={handleBillingUpdate}
-            // @ts-ignore TMP
-            address={checkout?.billingAddress as AddressFormData}
-          />
-        ))}
+      {!useShippingAsBillingAddress && (
+        <ErrorsProvider apiErrors={billingAddressUpdateErrors}>
+          {authUser ? (
+            <UserAddressSection
+              title={formatMessage("billingAddress")}
+              type="BILLING"
+              onAddressSelect={updateBillingAddress}
+              addresses={addresses as AddressFragment[]}
+              defaultAddress={defaultBillingAddress}
+            />
+          ) : (
+            <GuestAddressSection
+              address={checkout?.billingAddress as AddressFragment}
+              title={formatMessage("billingAddress")}
+              onSubmit={updateBillingAddress}
+            />
+          )}
+        </ErrorsProvider>
+      )}
     </div>
   );
 };

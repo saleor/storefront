@@ -25,7 +25,7 @@ export const useFetch = <
 
   const useFetchArgsDeps = args ? Object.values(args) : [];
 
-  const fetchData = async (immediateArgs?: TArgs): Promise<TData | void> => {
+  const fetchData = async (immediateArgs?: TArgs): Promise<TData | null> => {
     setLoading(true);
 
     try {
@@ -35,6 +35,7 @@ export const useFetch = <
       return result;
     } catch (e) {
       setError(e as TError);
+      return null;
     } finally {
       setLoading(false);
     }

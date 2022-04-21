@@ -23,11 +23,11 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
   onSectionChange,
 }) => {
   const formatMessage = useFormattedMessages();
-  const errorMessages = useErrorMessages();
+  const { errorMessages } = useErrorMessages();
   const { setPassword } = useAuth();
 
   const schema = object({
-    password: string().required(errorMessages.requiredField),
+    password: string().required(errorMessages.requiredValue),
   });
 
   const resolver = useValidationResolver(schema);

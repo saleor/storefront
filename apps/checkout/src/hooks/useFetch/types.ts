@@ -6,7 +6,7 @@ export type FetchResponse<TData> = Promise<
 
 export type UseFetchResult<TError, TData, TArgs> = [
   { data?: TData | null; loading: boolean; error?: TError | null },
-  (args?: TArgs) => Promise<TData | void>
+  (args?: TArgs) => Promise<TData | null>
 ];
 
 export type GetArgsType<TFetchFn> = TFetchFn extends (

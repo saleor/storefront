@@ -1,4 +1,6 @@
-import { ValidationError, ValidationErrorType } from "@/lib/globalTypes";
+import { useErrorMessages } from "@/hooks/useErrorMessages";
+import { ValidationError, ValidationErrorCode } from "@/lib/globalTypes";
+import { ApiErrors } from "@/providers/ErrorsProvider";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
 import { ValidationError as ValidationErrorObject } from "yup";
@@ -23,12 +25,12 @@ export const extractValidationError = <TFormData>({
   ValidationErrorObject,
   "type" | "path" | "message"
 >): ValidationError<TFormData> => ({
-  type: type as ValidationErrorType,
+  type: type as ValidationErrorCode,
   path: path as keyof TFormData,
   message,
 });
 
-const getErrorsAsObject = <TFormData extends Record<string, any>>(
+export const getErrorsAsObject = <TFormData extends Record<string, any>>(
   errors: ValidationError<TFormData>[]
 ): FieldErrors<TFormData> =>
   errors.reduce(
@@ -62,3 +64,26 @@ export const useValidationResolver = <
     },
     [schema]
   );
+
+export const useGetFormErrorsFromApiErrors = <TFormData>(): ((
+  apiErrors: ApiErrors<TFormData>
+) => FieldErrors<TFormData>) => {
+  const { getMessageByErrorCode } = useErrorMessages();
+
+  const getErrorsFromApi = (apiErrors: ApiErrors<TFormData>) => {
+    if (!apiErrors) {
+      return {} as FieldErrors<TFormData>;
+    }
+
+    return apiErrors.reduce((result, { field, code }) => {
+      const errorCode = code.toLowerCase() as ValidationErrorCode;
+
+      return {
+        ...result,
+        [field]: { code: errorCode, message: getMessageByErrorCode(errorCode) },
+      };
+    }, {} as FieldErrors<TFormData>);
+  };
+
+  return getErrorsFromApi;
+};

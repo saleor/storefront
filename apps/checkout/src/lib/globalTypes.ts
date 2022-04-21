@@ -2,17 +2,16 @@ export interface Classes {
   className?: string;
 }
 
-export type ValidationErrorType = "invalid" | "missing";
+export type ValidationErrorCode = "invalid" | "required";
 
 export interface ValidationError<TFormData> {
-  type: ValidationErrorType;
+  type: ValidationErrorCode;
   path: keyof TFormData;
   message: string;
 }
 
 export type AddressField =
   | "city"
-  | "name"
   | "firstName"
   | "lastName"
   | "country"
@@ -24,3 +23,5 @@ export type AddressField =
   | "streetAddress1"
   | "streetAddress2"
   | "phone";
+
+export type ApiAddressField = AddressField | "name";

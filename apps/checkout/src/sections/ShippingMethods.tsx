@@ -50,6 +50,11 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
   return (
     <div className="my-6">
       <Title>{formatMessage("deliveryMethod")}</Title>
+      {!checkout?.shippingAddress && (
+        <Text>
+          Please fill in shipping address to see available shipping methods
+        </Text>
+      )}
       <RadioGroup label={formatMessage("shippingMethodsLabel")}>
         {(checkout?.shippingMethods as ShippingMethod[])?.map(
           ({

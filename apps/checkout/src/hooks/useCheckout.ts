@@ -10,5 +10,5 @@ export const useCheckout = () => {
     pause: authenticating,
   });
 
-  return { checkout: data!.checkout!, loading };
+  return { checkout: data?.checkout!, loading };
 };

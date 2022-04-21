@@ -38,15 +38,15 @@ export const SignInForm: React.FC<SignInFormProps> = ({
   defaultValues,
 }) => {
   const formatMessage = useFormattedMessages();
-  const errorMessages = useErrorMessages();
+  const { errorMessages } = useErrorMessages();
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
 
   const schema = object({
-    password: string().required(errorMessages.requiredField),
+    password: string().required(errorMessages.requiredValue),
     email: string()
       .email(errorMessages.invalidValue)
-      .required(errorMessages.requiredField),
+      .required(errorMessages.requiredValue),
   });
 
   const resolver = useValidationResolver(schema);

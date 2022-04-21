@@ -1,12 +1,13 @@
-import { CountryCode } from "@/graphql";
+import { AddressFragment, CountryCode } from "@/graphql";
 import React, { useState } from "react";
 import { AddressFormData } from "./types";
-import { UserAddressForm } from "./UserAddressForm";
+import { AddressForm } from "./AddressForm";
 import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
+import { getAddressFormDataFromAddress } from "./utils";
 
 interface GuestAddressSectionProps {
   onSubmit: (address: AddressFormData) => void;
-  address: AddressFormData;
+  address: AddressFragment;
   title: string;
 }
 
@@ -28,10 +29,10 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
       selectedCountryCode={selectedCountryCode}
       onCountrySelect={setSelectedCountryCode}
     >
-      <UserAddressForm
+      <AddressForm
         onSave={handleSave}
         countryCode={selectedCountryCode}
-        defaultValues={address}
+        defaultValues={getAddressFormDataFromAddress(address)}
       />
     </UserAddressSectionContainer>
   );

@@ -10,13 +10,13 @@ import { extractMutationErrors, getById } from "@/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React, { Suspense, useEffect, useState } from "react";
 import { AddressFormData, UserAddressFormData } from "./types";
-import { UserAddressForm } from "./UserAddressForm";
+import { AddressForm } from "./AddressForm";
 import { UserAddressList } from "./UserAddressList";
 import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
 import { getAddressInputData } from "./utils";
+import { useErrorsContext } from "@/providers/ErrorsProvider";
 
 export interface UserAddressSectionProps {
-  // TMP
   defaultAddress?: Pick<AddressFragment, "id"> | null;
   onAddressSelect: (address: UserAddressFormData) => void;
   addresses: AddressFragment[];
@@ -32,6 +32,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   type,
 }) => {
   const formatMessage = useFormattedMessages();
+  const { setErrorsFromApi } = useErrorsContext();
   const [displayAddressAdd, setDisplayAddressAdd] = useState(false);
 
   const [editedAddressId, setEditedAddressId] = useState<string | null>();
@@ -69,11 +70,14 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
       id: address.id,
     });
 
-    const [hasErrors] = extractMutationErrors(result);
+    const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
       setEditedAddressId(null);
+      return;
     }
+
+    setErrorsFromApi(errors);
   };
 
   const handleAddressAdd = async (address: AddressFormData) => {
@@ -85,15 +89,18 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
       type,
     });
 
-    const [hasErrors] = extractMutationErrors(result);
+    const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
       setDisplayAddressAdd(false);
+      return;
     }
+
+    setErrorsFromApi(errors);
   };
 
   return (
-    <Suspense fallback="loaden...">
+    <Suspense fallback="loading...">
       <UserAddressSectionContainer
         title={title}
         displayCountrySelect={displayAddressEdit || displayAddressAdd}
@@ -101,7 +108,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
         onCountrySelect={setSelectedCountryCode}
       >
         {displayAddressAdd && (
-          <UserAddressForm
+          <AddressForm
             onSave={handleAddressAdd}
             countryCode={selectedCountryCode}
             onCancel={() => setDisplayAddressAdd(false)}
@@ -109,7 +116,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
         )}
 
         {displayAddressEdit && (
-          <UserAddressForm
+          <AddressForm
             onSave={handleAddressUpdate}
             countryCode={selectedCountryCode}
             defaultValues={

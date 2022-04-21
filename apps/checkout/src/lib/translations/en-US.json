@@ -72,5 +72,16 @@
   "paymentProvidersLabel": "payment providers",
   "creditCard": "Credit Card",
   "applePay": "Apple Pay",
-  "paypal": "PayPal"
+  "paypal": "PayPal",
+  "city": "City",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "country": "Country",
+  "countryArea": "Country area",
+  "cityArea": "City area",
+  "postalCode": "Postal code",
+  "companyName": "Company",
+  "streetAddress1": "Street address",
+  "streetAddress2": "Street address (continue)",
+  "phone": "Phone number"
 }

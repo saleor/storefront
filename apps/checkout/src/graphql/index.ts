@@ -13434,6 +13434,7 @@ export type _Service = {
 export type AccountErrorFragment = {
   __typename?: "AccountError";
   message?: string | null;
+  field?: string | null;
   code: AccountErrorCode;
 };
 
@@ -14225,6 +14226,7 @@ export type UserAddressDeleteMutation = {
     errors: Array<{
       __typename?: "AccountError";
       message?: string | null;
+      field?: string | null;
       code: AccountErrorCode;
     }>;
     address?: {
@@ -14257,6 +14259,7 @@ export type UserAddressUpdateMutation = {
     errors: Array<{
       __typename?: "AccountError";
       message?: string | null;
+      field?: string | null;
       code: AccountErrorCode;
     }>;
     address?: {
@@ -14289,6 +14292,7 @@ export type UserAddressCreateMutation = {
     errors: Array<{
       __typename?: "AccountError";
       message?: string | null;
+      field?: string | null;
       code: AccountErrorCode;
     }>;
     address?: {
@@ -14701,6 +14705,7 @@ export type AddressValidationRulesQuery = {
 export const AccountErrorFragmentDoc = gql`
   fragment AccountErrorFragment on AccountError {
     message
+    field
     code
   }
 `;

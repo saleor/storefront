@@ -8,13 +8,15 @@ export interface Money {
 export const useFormattedMoney = <TMoney extends Money>(
   money: TMoney | undefined
 ) => {
+  if (!money) return "";
+
   const formatter = useNumberFormatter({
     style: "currency",
-    currency: money?.currency,
+    currency: money.currency,
     minimumFractionDigits: 2,
   });
 
-  return money ? formatter.format(money.amount) : "";
+  return formatter.format(money.amount);
 };
 
 export const getFormattedMoney = <TMoney extends Money>(
