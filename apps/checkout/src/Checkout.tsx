@@ -9,6 +9,7 @@ import { ErrorBoundary } from "react-error-boundary";
 export const Checkout = () => {
   return (
     <div className="app">
+      {/* @ts-ignore - ErrorBoundary lacks explicit definition of children in props, as required since React 18 */}
       <ErrorBoundary FallbackComponent={PageNotFound}>
         <div className="page">
           <PageHeader />
