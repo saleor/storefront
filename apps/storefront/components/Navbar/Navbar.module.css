@@ -1,0 +1,35 @@
+.navbar {
+  @apply bg-white text-main sticky top-0 z-50;
+}
+
+.inner {
+  @apply container h-18 flex items-center;
+}
+
+.logo {
+  @apply hover:text-brand;
+}
+
+.nav {
+  @apply ml-8;
+}
+
+.nav ol {
+  @apply list-none flex items-center;
+}
+
+.nav ol li + li {
+  @apply ml-8;
+}
+
+.dropdown-menu {
+  @apply flex items-center h-full;
+}
+
+.dropdown-menu-trigger {
+  @apply flex items-center text-center text-md font-bold hover:text-brand;
+}
+
+.dropdown-menu-trigger svg {
+  @apply ml-2;
+}
