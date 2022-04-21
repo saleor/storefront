@@ -3,6 +3,7 @@ import "styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { NextPage } from "next";
 import { AppProps } from "next/app";
+import NextNProgress from "nextjs-progressbar";
 import React, { ReactElement, ReactNode } from "react";
 
 import { DemoBanner } from "@/components/DemoBanner";
@@ -28,6 +29,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <CheckoutProvider>
         <RegionsProvider>
           <SaleorProviderWithChannels>
+            <NextNProgress color="#5B68E4" />
             {DEMO_MODE && <DemoBanner />}
             {getLayout(<Component {...pageProps} />)}
           </SaleorProviderWithChannels>
