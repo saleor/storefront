@@ -3,7 +3,7 @@
 }
 
 .inner {
-  @apply container h-18 flex items-center;
+  @apply container h-18 flex flex-nowrap items-center;
 }
 
 .logo {
@@ -11,25 +11,38 @@
 }
 
 .nav {
-  @apply ml-8;
+  @apply pl-2.5;
 }
 
-.nav ol {
+.nav > ol {
   @apply list-none flex items-center;
 }
 
-.nav ol li + li {
+.nav > ol > li + li {
   @apply ml-8;
 }
 
-.dropdown-menu {
+.dropdown {
   @apply flex items-center h-full;
 }
 
-.dropdown-menu-trigger {
+.dropdown-trigger {
   @apply flex items-center text-center text-md font-bold hover:text-brand;
 }
 
-.dropdown-menu-trigger svg {
-  @apply ml-2;
+.dropdown-menu {
+  @apply absolute top-18 left-[50%] translate-x-[-50%] bg-white w-full border-b border-main-4;
+  padding-bottom: calc(theme("spacing.12") - theme("borderWidth.DEFAULT"));
+}
+
+.dropdown-ul {
+  @apply list-none mt-3;
+}
+
+.dropdown-ul > li + li {
+  @apply mt-2;
+}
+
+.dropdown-link {
+  @apply text-base text-main-2 cursor-pointer hover:underline;
 }
