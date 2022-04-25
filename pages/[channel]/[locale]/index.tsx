@@ -35,10 +35,10 @@ function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
       <BaseSeo />
       <div className="py-10">
         <header className="mb-4">
-          <div className="max-w-7xl mx-auto px-8" />
+          <div className="container" />
         </header>
         <main>
-          <div className="max-w-7xl mx-auto px-8">
+          <div className="container">
             {menuData?.menu?.items?.map((m) => {
               if (!m) {
                 return null;

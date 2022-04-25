@@ -23,7 +23,7 @@ function SearchPage() {
   );
 
   return (
-    <main className="max-w-7xl mx-auto w-full px-8 mt-5">
+    <main className="container w-full px-8 mt-5">
       <p className="font-semibold text-2xl mb-5">{t.formatMessage(messages.searchHeader)}</p>
       <input
         className="md:w-96 mb-10 block border-gray-300 rounded-md shadow-sm sm:text-sm"

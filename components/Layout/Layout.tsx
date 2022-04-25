@@ -1,3 +1,4 @@
+import { Footer } from "../Footer";
 import { Navbar } from "../Navbar";
 
 export interface LayoutProps {
@@ -8,9 +9,8 @@ export function Layout({ children }: LayoutProps) {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 align-middle flex flex-col flex-grow">
-        {children}
-      </div>
+      <div className="align-middle flex flex-col flex-grow">{children}</div>
+      <Footer />
     </>
   );
 }

@@ -40,12 +40,12 @@ function CollectionPage({ collection }: InferGetStaticPropsType<typeof getStatic
     <>
       <CollectionPageSeo collection={collection} />
       <header className="mb-4 pt-4">
-        <div className="max-w-7xl mx-auto px-8">
+        <div className="container px-8">
           <PageHero entity={collection} />
         </div>
       </header>
       <main>
-        <div className="max-w-7xl mx-auto px-8">
+        <div className="container px-8">
           <ProductCollection filter={{ collections: [collection?.id] }} />
         </div>
       </main>

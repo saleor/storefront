@@ -46,7 +46,7 @@ export function Navbar() {
   return (
     <>
       <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="container">
           <div className="flex justify-between h-16">
             <div className="flex justify-between items-center">
               <MainMenu />

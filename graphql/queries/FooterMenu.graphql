@@ -1,0 +1,11 @@
+query FooterMenu($locale: LanguageCodeEnum!, $channel: String!) {
+  menu(slug: "footer", channel: $channel) {
+    id
+    items {
+      children {
+        ...MenuItemFragment
+      }
+      ...MenuItemFragment
+    }
+  }
+}
