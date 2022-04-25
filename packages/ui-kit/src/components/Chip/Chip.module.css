@@ -1,0 +1,13 @@
+.chip {
+  @apply h-10 inline-flex items-center border border-border-tertiary bg-transparent;
+  padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
+  padding-right: calc(theme("spacing.2") - theme("borderWidth.DEFAULT"));
+}
+
+.chip-label-margin {
+  @apply ml-1.5;
+}
+
+.chip-button {
+  @apply ml-1.5;
+}

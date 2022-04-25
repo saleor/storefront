@@ -1,0 +1,56 @@
+.container {
+  @apply relative block;
+}
+
+:local(.trigger) {
+  @apply h-10 border border-border-primary hover:border-border-active text-base items-center cursor-pointer w-full text-left whitespace-nowrap text-ellipsis overflow-hidden;
+  padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
+  padding-right: calc(theme("spacing.11") - theme("borderWidth.DEFAULT"));
+}
+
+.trigger-error {
+  @apply border-border-error;
+}
+
+.trigger-disabled {
+  @apply bg-select-disabled border-select-disabled pointer-events-none;
+  padding-right: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
+}
+
+.trigger-icon {
+  @apply ml-1 mr-3 inline-block;
+}
+
+.arrow-container {
+  @apply absolute right-0 inline-flex items-center px-2 ml-3;
+}
+
+.arrow-container svg {
+  @apply opacity-60;
+}
+
+:local(.trigger:hover .arrow-container svg) {
+  @apply opacity-100;
+}
+
+.arrow-container-open svg {
+  @apply rotate-180;
+}
+
+.arrow-container::before {
+  @apply absolute h-5 w-[1px] left-0 bg-border-primary;
+  content: "";
+}
+
+.options {
+  @apply absolute shadow-modal;
+  min-width: 100%;
+}
+
+.option {
+  @apply px-4 pt-[14px] pb-[13px] text-base cursor-pointer flex items-center;
+}
+
+.option-icon {
+  @apply mr-3;
+}

@@ -1,0 +1,39 @@
+:local(.checkbox) {
+  @apply relative flex flex-row mb-4;
+}
+
+:local(.box) {
+  @apply absolute h-5 w-5 pointer-events-none inline-flex;
+}
+
+.box-static {
+  @apply relative;
+}
+
+:local([type="checkbox"]) {
+  @apply opacity-0 absolute z-10;
+}
+
+:local .checkbox:hover .checkbox-input {
+  @apply border-border-active;
+}
+
+:local([type="checkbox"]:checked + .checkbox-input) {
+  @apply border-border-active;
+}
+
+:local([type="checkbox"]:checked + .checkbox-input svg) {
+  @apply opacity-100;
+}
+
+:local(.checkbox-input) {
+  @apply w-5 h-5 border border-border-primary absolute top-0 left-0 z-50 text-border-active;
+}
+
+:local(.checkbox-input svg) {
+  @apply opacity-0 absolute -top-px -left-px;
+}
+
+.checkbox-label {
+  @apply pl-6.5;
+}

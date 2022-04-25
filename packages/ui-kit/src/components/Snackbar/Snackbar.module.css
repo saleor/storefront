@@ -1,0 +1,15 @@
+.snackbar {
+  @apply relative px-6 py-3 h-12 flex items-center;
+}
+
+.snackbar-success {
+  @apply bg-snackbar-success;
+}
+
+.snackbar-error {
+  @apply bg-snackbar-error;
+}
+
+.snackbar-label-margin {
+  @apply ml-2;
+}
