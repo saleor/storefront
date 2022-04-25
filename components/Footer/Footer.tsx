@@ -21,7 +21,6 @@ export function Footer({ className, ...rest }: FooterProps) {
 
   if (error) {
     console.error("Footer component error", error.message);
-    return null;
   }
 
   const menu = data?.menu?.items || [];
