@@ -41,12 +41,12 @@ function CategoryPage({ category }: InferGetStaticPropsType<typeof getStaticProp
     <>
       <CategoryPageSeo category={category} />
       <header className="mb-4 pt-4">
-        <div className="max-w-7xl mx-auto px-8">
+        <div className="container px-8">
           <PageHero entity={category} />
         </div>
       </header>
       <main>
-        <div className="max-w-7xl mx-auto px-8">
+        <div className="container px-8">
           <ProductCollection filter={{ categories: [category?.id] }} />
         </div>
       </main>

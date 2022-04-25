@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,14 +23,14 @@
   .btn-checkout-section {
     @apply w-full bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200;
   }
-
-  a {
-    @apply text-blue-600 hover:text-blue-500 cursor-pointer;
-  }
 }
 
 .dropdown:focus-within .dropdown-menu {
   opacity: 1;
   transform: translate(0) scale(1);
   visibility: visible;
+}
+
+html {
+  font-size: 62.5%;
 }

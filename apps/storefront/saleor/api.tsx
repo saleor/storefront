@@ -8743,7 +8743,7 @@ export type PageTranslatableContent = Node & {
   contentJson?: Maybe<Scalars['JSONString']>;
   id: Scalars['ID'];
   /**
-   * A static page that can be manually added by a shop operator through the dashboard.
+   * ('A static page that can be manually added by a shop operator ', 'through the dashboard.')
    * @deprecated This field will be removed in Saleor 4.0. Get model fields from the root level queries.
    */
   page?: Maybe<Page>;
@@ -9426,7 +9426,7 @@ export type Product = Node & ObjectWithMetadata & {
   __typename?: 'Product';
   /** List of attributes assigned to this product. */
   attributes: Array<SelectedAttribute>;
-  /** Date when product is available for purchase. */
+  /** Date when product is available for purchase.  */
   availableForPurchase?: Maybe<Scalars['Date']>;
   category?: Maybe<Category>;
   /** Channel given to retrieve this product. Also used by federation gateway to resolve this object in a federated query. */
@@ -14099,6 +14099,14 @@ export type CurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserDetailsQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, lastLogin?: any | null, dateJoined: any, email: string, firstName: string, lastName: string, avatar?: { __typename?: 'Image', url: string, alt?: string | null } | null, orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null } | null } | null };
 
+export type FooterMenuQueryVariables = Exact<{
+  locale: LanguageCodeEnum;
+  channel: Scalars['String'];
+}>;
+
+
+export type FooterMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null } | null };
+
 export type HomepageBlocksQueryVariables = Exact<{
   slug: Scalars['String'];
   channel: Scalars['String'];
@@ -15586,6 +15594,48 @@ export function useCurrentUserDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type CurrentUserDetailsQueryHookResult = ReturnType<typeof useCurrentUserDetailsQuery>;
 export type CurrentUserDetailsLazyQueryHookResult = ReturnType<typeof useCurrentUserDetailsLazyQuery>;
 export type CurrentUserDetailsQueryResult = Apollo.QueryResult<CurrentUserDetailsQuery, CurrentUserDetailsQueryVariables>;
+export const FooterMenuDocument = gql`
+    query FooterMenu($locale: LanguageCodeEnum!, $channel: String!) {
+  menu(slug: "footer", channel: $channel) {
+    id
+    items {
+      children {
+        ...MenuItemFragment
+      }
+      ...MenuItemFragment
+    }
+  }
+}
+    ${MenuItemFragmentDoc}`;
+
+/**
+ * __useFooterMenuQuery__
+ *
+ * To run a query within a React component, call `useFooterMenuQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFooterMenuQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFooterMenuQuery({
+ *   variables: {
+ *      locale: // value for 'locale'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function useFooterMenuQuery(baseOptions: Apollo.QueryHookOptions<FooterMenuQuery, FooterMenuQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FooterMenuQuery, FooterMenuQueryVariables>(FooterMenuDocument, options);
+      }
+export function useFooterMenuLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FooterMenuQuery, FooterMenuQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FooterMenuQuery, FooterMenuQueryVariables>(FooterMenuDocument, options);
+        }
+export type FooterMenuQueryHookResult = ReturnType<typeof useFooterMenuQuery>;
+export type FooterMenuLazyQueryHookResult = ReturnType<typeof useFooterMenuLazyQuery>;
+export type FooterMenuQueryResult = Apollo.QueryResult<FooterMenuQuery, FooterMenuQueryVariables>;
 export const HomepageBlocksQueryDocument = gql`
     query HomepageBlocksQuery($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
   menu(channel: $channel, slug: $slug) {
