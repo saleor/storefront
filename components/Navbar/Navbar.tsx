@@ -17,12 +17,17 @@ export function Navbar() {
     <>
       <div className={clsx(styles.navbar)}>
         <div className={clsx(styles.inner)}>
-          <Link href={paths.$url()} passHref>
-            <a href="pass" className={styles.logo}>
-              <Stamp />
-            </a>
-          </Link>
-          <Menu />
+          <div className="flex-1">
+            <Menu />
+          </div>
+          <div className="flex-1 flex justify-center">
+            <Link href={paths.$url()} passHref>
+              <a href="pass" className={styles.logo}>
+                <Stamp />
+              </a>
+            </Link>
+          </div>
+          <div className="flex-1" />
         </div>
       </div>
       <RegionDialog isOpen={isRegionDialogOpen} onClose={() => setRegionDialogOpen(false)} />

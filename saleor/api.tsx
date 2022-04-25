@@ -13892,6 +13892,8 @@ export type ImageFragment = { __typename?: 'Image', url: string, alt?: string | 
 
 export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: string, url?: string | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null };
 
+export type MenuItemWithChildrenFragment = { __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null };
+
 export type OrderDetailsFragment = { __typename?: 'Order', id: string, token: string, created: any, number?: string | null, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number } } };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null };
@@ -14457,6 +14459,34 @@ export const MenuItemFragmentDoc = gql`
   url
 }
     `;
+export const MenuItemWithChildrenFragmentDoc = gql`
+    fragment MenuItemWithChildrenFragment on MenuItem {
+  id
+  name
+  translation(languageCode: $locale) {
+    id
+    name
+  }
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+  }
+  children {
+    ...MenuItemFragment
+    children {
+      ...MenuItemFragment
+    }
+  }
+}
+    ${MenuItemFragmentDoc}`;
 export const OrderDetailsFragmentDoc = gql`
     fragment OrderDetailsFragment on Order {
   id
@@ -15684,14 +15714,11 @@ export const MainMenuDocument = gql`
   menu(slug: "navbar", channel: $channel) {
     id
     items {
-      children {
-        ...MenuItemFragment
-      }
-      ...MenuItemFragment
+      ...MenuItemWithChildrenFragment
     }
   }
 }
-    ${MenuItemFragmentDoc}`;
+    ${MenuItemWithChildrenFragmentDoc}`;
 
 /**
  * __useMainMenuQuery__
