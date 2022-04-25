@@ -1,0 +1,26 @@
+fragment MenuItemWithChildrenFragment on MenuItem {
+  id
+  name
+  translation(languageCode: $locale) {
+    id
+    name
+  }
+  category {
+    id
+    slug
+  }
+  collection {
+    id
+    slug
+  }
+  page {
+    id
+    slug
+  }
+  children {
+    ...MenuItemFragment
+    children {
+      ...MenuItemFragment
+    }
+  }
+}

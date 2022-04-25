@@ -1,16 +1,13 @@
 import React from "react";
 
-import { translate } from "@/lib/translations";
-import { MenuItemFragment, useMainMenuQuery } from "@/saleor/api";
+import { useMainMenuQuery } from "@/saleor/api";
 
-import { usePaths } from "../../lib/paths";
 import { HamburgerButton } from "../HamburgerButton";
 import { useRegions } from "../RegionsProvider";
 import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
 
 export function Menu() {
-  const paths = usePaths();
   const { query } = useRegions();
 
   const { loading, error, data } = useMainMenuQuery({
@@ -34,37 +31,20 @@ export function Menu() {
 
   if (error) {
     console.error("Navigation component error", error.message);
-    return null;
   }
 
   const menu = data?.menu?.items || [];
 
-  const menuLink = (item: MenuItemFragment) => {
-    if (item.category) {
-      return paths.category._slug(item.category?.slug).$url();
-    }
-    if (item.collection) {
-      return paths.collection._slug(item.collection?.slug).$url();
-    }
-    if (item.page) {
-      return paths.page._slug(item.page?.slug).$url();
-    }
-    return paths.$url();
-  };
-
   return (
     <nav className={styles.nav}>
       <ol>
-        {menu?.map((item) => {
+        {menu?.slice(0, 1).map((item) => {
           if (!item) {
             return null;
           }
           return (
-            <li>
-              <DropdownMenu
-                key={item?.id}
-                main={{ label: translate(item, "name"), url: menuLink(item) }}
-              />
+            <li key={item?.id}>
+              <DropdownMenu key={item?.id} data={item} />
             </li>
           );
         })}
