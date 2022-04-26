@@ -22,7 +22,7 @@
     "@material-ui/styles": "^4.11.5",
     "@mollie/api-client": "^3.6.0",
     "@saleor/app-bridge": "^0.1.7",
-    "@saleor/macaw-ui": "^0.3.3",
+    "@saleor/macaw-ui": "^0.4.0",
     "@urql/exchange-auth": "^0.1.7",
     "clsx": "^1.1.1",
     "eslint-plugin-react": "^7.29.4",
