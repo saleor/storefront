@@ -6,7 +6,9 @@ export const getPaymentProviders = () =>
   fetch(`${envVars.configAppUrl}/active-payment-providers/channel-1`);
 
 export interface PayResult {
-  checkoutUrl: string;
+  data: {
+    checkoutUrl: string;
+  };
 }
 
 export const pay = ({

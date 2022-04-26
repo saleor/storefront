@@ -14,7 +14,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.0",
-    "@types/lodash": "^4.14.180",
+    "@types/lodash-es": "^4.17.6",
     "@types/node": "^16.11.22",
     "@types/react": "18.0.3",
     "@types/react-dom": "18.0.0",
@@ -25,7 +25,7 @@
     "graphql": "^16.3.0",
     "graphql-tag": "^2.12.6",
     "hex-rgb": "^5.0.0",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "postcss": "^8.4.6",
     "query-string": "^7.1.1",
     "react": "^18.0.0-rc.0",
@@ -43,7 +43,7 @@
     "build": "craco build",
     "eject": "react-scripts eject",
     "format-code": "npx prettier --check \"src/**/*.@(tsx|ts|jsx|js)\" --write",
-    "generate": "graphql-codegen --config codegen.yml && prettier --check \"src/graphql/index.ts\" --write",
+    "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r dotenv/config --config codegen.yml && prettier --check \"src/graphql/index.ts\" --write",
     "lint": "pnpm format-code && eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
     "check-types": "tsc --noEmit --strict"
   },
@@ -68,11 +68,11 @@
     "@graphql-codegen/typescript-urql": "^3.5.0",
     "@graphql-codegen/urql-introspection": "2.1.1",
     "@types/webpack-env": "^1.16.3",
+    "checkout-app": "workspace:*",
     "eslint": "^8.12.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.5",
-    "checkout-app": "workspace:*"
+    "typescript": "^4.5.5"
   }
 }

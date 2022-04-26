@@ -23,6 +23,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
     <RadioGroup label="user addresses">
       {addresses.map(({ id, ...rest }: AddressFragment) => (
         <Radio
+          key={id}
           value={id}
           selectedValue={selectedAddressId}
           onSelect={() => onAddressSelect(id)}

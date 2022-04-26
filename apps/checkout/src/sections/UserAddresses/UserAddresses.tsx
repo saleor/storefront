@@ -2,7 +2,6 @@ import { Checkbox } from "@/components/Checkbox";
 import { AddressFragment, useUserQuery } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { ErrorsProvider } from "@/providers/ErrorsProvider";
 import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
@@ -20,18 +19,14 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({}) => {
   const [useShippingAsBillingAddress, setUseShippingAsBillingAddressSelected] =
     useState(!checkout?.billingAddress);
 
-  const {
-    shippingAddressUpdateErrors,
-    billingAddressUpdateErrors,
-    updateShippingAddress,
-    updateBillingAddress,
-  } = useCheckoutAddressUpdate({ useShippingAsBillingAddress });
+  const { updateShippingAddress, updateBillingAddress } =
+    useCheckoutAddressUpdate({ useShippingAsBillingAddress });
 
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
-    variables: { id: authUser?.id as string },
   });
-  const user = data?.user;
+
+  const user = data?.me;
   const addresses = user?.addresses;
 
   const defaultShippingAddress =
@@ -41,49 +36,46 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({}) => {
 
   return (
     <div>
-      <ErrorsProvider apiErrors={shippingAddressUpdateErrors}>
-        {authUser ? (
-          <UserAddressSection
-            title={formatMessage("shippingAddress")}
-            type="SHIPPING"
-            onAddressSelect={updateShippingAddress}
-            // @ts-ignore TMP
-            addresses={addresses as UserAddressFormData[]}
-            defaultAddress={defaultShippingAddress}
-          />
-        ) : (
-          <GuestAddressSection
-            address={checkout?.shippingAddress as AddressFragment}
-            title={formatMessage("shippingAddress")}
-            onSubmit={updateShippingAddress}
-          />
-        )}
-      </ErrorsProvider>
+      {authUser ? (
+        <UserAddressSection
+          title={formatMessage("shippingAddress")}
+          type="SHIPPING"
+          onAddressSelect={updateShippingAddress}
+          // @ts-ignore TMP
+          addresses={addresses as UserAddressFormData[]}
+          defaultAddress={defaultShippingAddress}
+        />
+      ) : (
+        <GuestAddressSection
+          address={checkout?.shippingAddress as AddressFragment}
+          title={formatMessage("shippingAddress")}
+          onSubmit={updateShippingAddress}
+          errorScope="checkoutShippingUpdate"
+        />
+      )}
       <Checkbox
         value="useShippingAsBilling"
         checked={useShippingAsBillingAddress}
         onChange={setUseShippingAsBillingAddressSelected}
         label={formatMessage("useShippingAsBilling")}
       />
-      {!useShippingAsBillingAddress && (
-        <ErrorsProvider apiErrors={billingAddressUpdateErrors}>
-          {authUser ? (
-            <UserAddressSection
-              title={formatMessage("billingAddress")}
-              type="BILLING"
-              onAddressSelect={updateBillingAddress}
-              addresses={addresses as AddressFragment[]}
-              defaultAddress={defaultBillingAddress}
-            />
-          ) : (
-            <GuestAddressSection
-              address={checkout?.billingAddress as AddressFragment}
-              title={formatMessage("billingAddress")}
-              onSubmit={updateBillingAddress}
-            />
-          )}
-        </ErrorsProvider>
-      )}
+      {!useShippingAsBillingAddress &&
+        (authUser ? (
+          <UserAddressSection
+            title={formatMessage("billingAddress")}
+            type="BILLING"
+            onAddressSelect={updateBillingAddress}
+            addresses={addresses as AddressFragment[]}
+            defaultAddress={defaultBillingAddress}
+          />
+        ) : (
+          <GuestAddressSection
+            address={checkout?.billingAddress as AddressFragment}
+            title={formatMessage("billingAddress")}
+            onSubmit={updateBillingAddress}
+            errorScope="checkoutBillingUpdate"
+          />
+        ))}
     </div>
   );
 };

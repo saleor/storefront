@@ -1,7 +1,6 @@
-import reduce from "lodash/reduce";
-import kebabCase from "lodash/kebabCase";
 import { BrandingColors } from "./types";
 import hexToRgb from "hex-rgb";
+import { kebabCase, reduce } from "lodash-es";
 
 export const getParsedCssBody = (brandingColors: BrandingColors) => {
   const bodyCSS = reduce(

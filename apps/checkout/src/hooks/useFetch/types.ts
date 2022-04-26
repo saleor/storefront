@@ -27,5 +27,5 @@ export type FetchFn<TArgs extends Record<string, any> | never, TData> = (
 
 export interface UseFetchOptionalProps<TArgs> {
   args?: TArgs;
-  opts?: { skip?: boolean };
+  skip?: boolean;
 }

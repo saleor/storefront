@@ -159,8 +159,8 @@ query checkout($token: UUID!) {
   }
 }
 
-query user($id: ID!) {
-  user(id: $id) {
+query user {
+  me {
     id
     addresses {
       ...AddressFragment
@@ -174,7 +174,10 @@ query user($id: ID!) {
   }
 }
 
-mutation checkoutLinesUpdate($token: UUID!, $lines: [CheckoutLineInput]!) {
+mutation checkoutLinesUpdate(
+  $token: UUID!
+  $lines: [CheckoutLineUpdateInput!]!
+) {
   checkoutLinesUpdate(token: $token, lines: $lines) {
     errors {
       ...CheckoutErrorFragment
@@ -213,8 +216,8 @@ mutation checkoutEmailUpdate($email: String!, $token: UUID!) {
   }
 }
 
-mutation checkoutCustomerAttach($customerId: ID!, $token: UUID!) {
-  checkoutCustomerAttach(customerId: $customerId, token: $token) {
+mutation checkoutCustomerAttach($token: UUID!) {
+  checkoutCustomerAttach(token: $token) {
     errors {
       ...CheckoutErrorFragment
     }

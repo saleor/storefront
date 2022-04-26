@@ -16,8 +16,7 @@ export const useFetch = <
   fetchFn: TFetchFn,
   optionalProps?: UseFetchOptionalProps<TArgs>
 ): UseFetchResult<TError, TData, TArgs> => {
-  const { args, opts } = optionalProps || {};
-  const { skip = false } = opts || {};
+  const { args, skip = false } = optionalProps || {};
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TData | null>(null);

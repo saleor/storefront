@@ -3,9 +3,9 @@ import createSafeContext from "@/providers/createSafeContext";
 import { getAppConfig } from "@/fetch";
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { AppConfig, BrandingColors, BrandingColorsData } from "./types";
-import isEqual from "lodash/isEqual";
 import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
+import { isEqual } from "lodash-es";
 
 interface AppConfigContextConsumerProps {
   config?: AppConfig | null;

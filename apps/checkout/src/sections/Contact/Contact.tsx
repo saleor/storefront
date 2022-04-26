@@ -11,12 +11,7 @@ import { GuestUserForm } from "./GuestUserForm";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
-interface ContactProps {
-  onEmailChange: (value: string) => void;
-  email: string;
-}
-
-export const Contact = ({ onEmailChange, email }: ContactProps) => {
+export const Contact = () => {
   const [currentSection, setCurrentSection] = useState<Section>("guestUser");
 
   const changeSection = (section: Section) => () => {
@@ -46,11 +41,7 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
       setCurrentSection("signedInUser");
 
       if (checkout?.user?.id !== user?.id) {
-        customerAttach(
-          getDataWithToken({
-            customerId: user?.id as string,
-          })
-        );
+        customerAttach(getDataWithToken());
       }
 
       return;
@@ -69,19 +60,11 @@ export const Contact = ({ onEmailChange, email }: ContactProps) => {
   return (
     <div>
       {isCurrentSection("guestUser") && (
-        <GuestUserForm
-          defaultValues={{ email }}
-          onEmailChange={onEmailChange}
-          onSectionChange={changeSection("signIn")}
-        />
+        <GuestUserForm onSectionChange={changeSection("signIn")} />
       )}
 
       {isCurrentSection("signIn") && (
-        <SignInForm
-          onSectionChange={changeSection("guestUser")}
-          onEmailChange={onEmailChange}
-          defaultValues={{ email }}
-        />
+        <SignInForm onSectionChange={changeSection("guestUser")} />
       )}
 
       {isCurrentSection("signedInUser") && (

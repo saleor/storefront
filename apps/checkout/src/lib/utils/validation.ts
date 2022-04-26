@@ -65,12 +65,12 @@ export const useValidationResolver = <
     [schema]
   );
 
-export const useGetFormErrorsFromApiErrors = <TFormData>(): ((
+export const useGetFormErrorsFromApiErrors = (): (<TFormData>(
   apiErrors: ApiErrors<TFormData>
 ) => FieldErrors<TFormData>) => {
   const { getMessageByErrorCode } = useErrorMessages();
 
-  const getErrorsFromApi = (apiErrors: ApiErrors<TFormData>) => {
+  const getErrorsFromApi = <TFormData>(apiErrors: ApiErrors<TFormData>) => {
     if (!apiErrors) {
       return {} as FieldErrors<TFormData>;
     }

@@ -15,32 +15,29 @@ import {
   useValidationResolver,
 } from "@/lib/utils";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import { useGetInputProps } from "@/hooks/useGetInputProps";
 import { object, string, ValidationError } from "yup";
 import { useErrorMessages } from "@/hooks/useErrorMessages";
 import { useEffect } from "react";
 
-interface SignInFormProps
-  extends Pick<SignInFormContainerProps, "onSectionChange"> {
-  onEmailChange: (value: string) => void;
-  defaultValues: Partial<FormData>;
-}
+type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
 interface FormData {
   email: string;
   password: string;
 }
 
-export const SignInForm: React.FC<SignInFormProps> = ({
-  onSectionChange,
-  onEmailChange,
-  defaultValues,
-}) => {
+export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
+  const {
+    getValues: getContextValues,
+    setValue: setContextValue,
+    ...contextPropsRest
+  } = useFormContext();
 
   const schema = object({
     password: string().required(errorMessages.requiredValue),
@@ -54,7 +51,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     useForm<FormData>({
       resolver,
       mode: "onBlur",
-      defaultValues,
+      defaultValues: { email: getContextValues("email") },
     });
   const getInputProps = useGetInputProps(rest);
 
@@ -88,7 +85,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
   const emailValue = watch("email");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => onEmailChange(emailValue), [emailValue]);
+  useEffect(() => setContextValue("email", emailValue), [emailValue]);
 
   return (
     <SignInFormContainer

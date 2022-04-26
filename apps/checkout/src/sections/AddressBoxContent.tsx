@@ -6,6 +6,7 @@ import { PenIcon, TrashIcon } from "@/icons";
 import { AddressField } from "@/lib/globalTypes";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { getSortedAddressFieldsFromAddress } from "@/lib/utils";
+import { pull } from "lodash-es";
 
 interface AddressBoxContentProps extends RadioOptionChildrenProps {
   address: Partial<Record<AddressField, any>>;
@@ -27,11 +28,13 @@ export const AddressBoxContent: React.FC<AddressBoxContentProps> = ({
       <div className="flex flex-col">
         <label htmlFor={htmlFor}>
           <Text weight="semibold">{name}</Text>
-          {getSortedAddressFieldsFromAddress(address).map(
-            (field: AddressField) => (
-              <Text key={field}>{address[field] as string}</Text>
-            )
-          )}
+          {pull(
+            getSortedAddressFieldsFromAddress(address),
+            "firstName",
+            "lastName"
+          ).map((field: AddressField) => (
+            <Text key={field}>{address[field] as string}</Text>
+          ))}
         </label>
       </div>
       <div>

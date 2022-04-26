@@ -9,7 +9,7 @@ import { ChevronDownIcon } from "@/icons";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useCheckout } from "@/hooks/useCheckout";
-import compact from "lodash/compact";
+import { compact } from "lodash-es";
 
 export const Summary = () => {
   const [isOpen, setOpen] = useState(true);

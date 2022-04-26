@@ -1,20 +1,15 @@
 import { Button } from "@/components/Button";
-import {
-  AddressFragment,
-  CountryCode,
-  useUserAddressCreateMutation,
-  useUserAddressUpdateMutation,
-} from "@/graphql";
+import { AddressFragment, CountryCode } from "@/graphql";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { extractMutationErrors, getById } from "@/lib/utils";
+import { getById } from "@/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React, { Suspense, useEffect, useState } from "react";
-import { AddressFormData, UserAddressFormData } from "./types";
-import { AddressForm } from "./AddressForm";
+import { UserAddressFormData } from "./types";
 import { UserAddressList } from "./UserAddressList";
 import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
-import { getAddressInputData } from "./utils";
-import { useErrorsContext } from "@/providers/ErrorsProvider";
+import { AddressCreateForm } from "./AddressCreateForm";
+import { AddressEditForm } from "./AddressEditForm";
+import { getAddressFormDataFromAddress } from "./utils";
 
 export interface UserAddressSectionProps {
   defaultAddress?: Pick<AddressFragment, "id"> | null;
@@ -32,14 +27,14 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   type,
 }) => {
   const formatMessage = useFormattedMessages();
-  const { setErrorsFromApi } = useErrorsContext();
-  const [displayAddressAdd, setDisplayAddressAdd] = useState(false);
+
+  const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
   const [editedAddressId, setEditedAddressId] = useState<string | null>();
 
   const displayAddressEdit = !!editedAddressId;
 
-  const displayAddressList = !displayAddressEdit && !displayAddressAdd;
+  const displayAddressList = !displayAddressEdit && !displayAddressCreate;
 
   const [selectedCountryCode, setSelectedCountryCode] =
     useState<CountryCode>("PL");
@@ -58,83 +53,36 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
     }
   }, [selectedAddressId]);
 
-  const [, userAddressUpdate] = useUserAddressUpdateMutation();
-  const [, userAddressAdd] = useUserAddressCreateMutation();
-
-  const handleAddressUpdate = async (address: UserAddressFormData) => {
-    const result = await userAddressUpdate({
-      address: getAddressInputData({
-        ...address,
-        countryCode: selectedCountryCode,
-      }),
-      id: address.id,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (!hasErrors) {
-      setEditedAddressId(null);
-      return;
-    }
-
-    setErrorsFromApi(errors);
-  };
-
-  const handleAddressAdd = async (address: AddressFormData) => {
-    const result = await userAddressAdd({
-      address: getAddressInputData({
-        ...address,
-        countryCode: selectedCountryCode,
-      }),
-      type,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (!hasErrors) {
-      setDisplayAddressAdd(false);
-      return;
-    }
-
-    setErrorsFromApi(errors);
-  };
-
   return (
     <Suspense fallback="loading...">
       <UserAddressSectionContainer
         title={title}
-        displayCountrySelect={displayAddressEdit || displayAddressAdd}
+        displayCountrySelect={displayAddressEdit || displayAddressCreate}
         selectedCountryCode={selectedCountryCode}
         onCountrySelect={setSelectedCountryCode}
       >
-        {displayAddressAdd && (
-          <AddressForm
-            onSave={handleAddressAdd}
-            countryCode={selectedCountryCode}
-            onCancel={() => setDisplayAddressAdd(false)}
-          />
-        )}
+        <AddressCreateForm
+          show={displayAddressCreate}
+          countryCode={selectedCountryCode}
+          type={type}
+          onClose={() => setDisplayAddressCreate(false)}
+        />
 
-        {displayAddressEdit && (
-          <AddressForm
-            onSave={handleAddressUpdate}
-            countryCode={selectedCountryCode}
-            defaultValues={
-              addresses.find(
-                getById(editedAddressId as string)
-                // TMP
-              ) as unknown as UserAddressFormData
-            }
-            onCancel={() => setEditedAddressId(null)}
-          />
-        )}
+        <AddressEditForm
+          show={displayAddressEdit}
+          countryCode={selectedCountryCode}
+          onClose={() => setEditedAddressId(null)}
+          defaultValues={getAddressFormDataFromAddress(
+            addresses.find(getById(editedAddressId as string))
+          )}
+        />
 
         {displayAddressList && (
           <>
             <Button
               variant="secondary"
               ariaLabel={formatMessage("addAddressLabel")}
-              onClick={() => setDisplayAddressAdd(true)}
+              onClick={() => setDisplayAddressCreate(true)}
               title={formatMessage("addAddress")}
               className="mb-4 w-full"
             />

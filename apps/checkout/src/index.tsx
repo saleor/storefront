@@ -1,14 +1,16 @@
 import { createRoot } from "react-dom/client";
 import { createClient, Provider as UrqlProvider } from "urql";
 
-import "./index.css";
-import { Checkout } from "./Checkout";
+import "@/index.css";
+import { Checkout } from "@/Checkout";
 import reportWebVitals from "./reportWebVitals";
-import { getCurrentRegion } from "./lib/regions";
+import { getCurrentRegion } from "@/lib/regions";
 import { I18nProvider } from "@react-aria/i18n";
 import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 import { envVars } from "@/lib/utils";
 import { AppConfigProvider } from "@/providers/AppConfigProvider";
+import React from "react";
+import { ErrorsProvider } from "@/providers/ErrorsProvider";
 
 const authorizedFetch = createFetch();
 
@@ -38,7 +40,9 @@ root.render(
     <I18nProvider locale={getCurrentRegion()}>
       <UrqlProvider value={client}>
         <AppConfigProvider>
-          <Checkout />
+          <ErrorsProvider>
+            <Checkout />
+          </ErrorsProvider>
         </AppConfigProvider>
       </UrqlProvider>
     </I18nProvider>

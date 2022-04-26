@@ -8,12 +8,12 @@ import {
   CheckoutLinesUpdateMutationVariables,
   useCheckoutLinesUpdateMutation,
 } from "@/graphql";
-import debounce from "lodash/debounce";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useFormattedMoney } from "@/hooks/useFormattedMoney";
 import { Money } from "@/components/Money";
 import clsx from "clsx";
 import { getDataWithToken } from "@/lib/utils";
+import { debounce } from "lodash-es";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLine;

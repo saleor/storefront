@@ -14,11 +14,10 @@ import { useForm, useFormContext } from "react-hook-form";
 import { useGetInputProps } from "@/hooks/useGetInputProps";
 import { useErrorMessages } from "@/hooks/useErrorMessages";
 
-interface AnonymousCustomerFormProps
-  extends Pick<SignInFormContainerProps, "onSectionChange"> {
-  onEmailChange: (value: string) => void;
-  defaultValues: Partial<FormData>;
-}
+type AnonymousCustomerFormProps = Pick<
+  SignInFormContainerProps,
+  "onSectionChange"
+>;
 
 interface FormData {
   email: string;
@@ -26,12 +25,15 @@ interface FormData {
 
 export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   onSectionChange,
-  onEmailChange,
-  defaultValues,
 }) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const [createAccountSelected, setCreateAccountSelected] = useState(false);
+  const {
+    getValues: getContextValues,
+    setValue: setContextValue,
+    ...contextPropsRest
+  } = useFormContext();
 
   const schema = object({
     email: string()
@@ -40,14 +42,13 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   });
 
   const resolver = useValidationResolver(schema);
-  const contextFormProps = useFormContext();
   const { handleSubmit, watch, getValues, ...rest } = useForm<FormData>({
     resolver,
     mode: "onBlur",
-    defaultValues,
+    defaultValues: { email: getContextValues("email") },
   });
   const getInputProps = useGetInputProps(rest);
-  const getContextInputProps = useGetInputProps(contextFormProps);
+  const getContextInputProps = useGetInputProps(contextPropsRest);
 
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
 
@@ -56,8 +57,12 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
 
   const emailValue = watch("email");
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => onEmailChange(emailValue), [emailValue]);
+  useEffect(() => setContextValue("email", emailValue), [emailValue]);
+
+  useEffect(
+    () => setContextValue("createAccount", createAccountSelected),
+    [createAccountSelected]
+  );
 
   return (
     <SignInFormContainer

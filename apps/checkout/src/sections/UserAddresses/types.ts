@@ -1,4 +1,4 @@
-import { CountryCode } from "@/graphql";
+import { AddressTypeEnum, CountryCode } from "@/graphql";
 import { AddressField } from "@/lib/globalTypes";
 
 export interface AddressFormData
@@ -12,3 +12,6 @@ export interface AddressFormData
 export interface UserAddressFormData extends AddressFormData {
   id: string;
 }
+
+export interface AddressFormCommonProps
+  extends Pick<AddressFormData, "countryCode"> {}

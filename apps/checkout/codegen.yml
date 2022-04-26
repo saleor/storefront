@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://vercel-saleor-cloud.graphcdn.app/"
+schema: ${REACT_APP_API_URL}
 documents: "src/**/*.graphql"
 generates:
   src/graphql/index.ts:

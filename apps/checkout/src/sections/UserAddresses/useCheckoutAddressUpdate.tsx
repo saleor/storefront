@@ -5,8 +5,8 @@ import {
 } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
 import { extractMutationErrors, getDataWithToken } from "@/lib/utils";
-import { ApiErrors } from "@/providers/ErrorsProvider";
-import { useEffect, useState } from "react";
+import { useErrors } from "@/providers/ErrorsProvider";
+import { useEffect } from "react";
 import { AddressFormData } from "./types";
 import { getAddressFormDataFromAddress, getAddressInputData } from "./utils";
 
@@ -16,13 +16,12 @@ export const useCheckoutAddressUpdate = ({
   useShippingAsBillingAddress: boolean;
 }) => {
   const { checkout } = useCheckout();
-
-  const [shippingAddressUpdateErrors, setShippingAddressUpdateErrors] =
-    useState<ApiErrors<AddressFormData>>([]);
-
-  const [billingAddressUpdateErrors, setBillingAddressUpdateErrors] = useState<
-    ApiErrors<AddressFormData>
-  >([]);
+  const { setApiErrors: setShippingApiErrors } = useErrors<AddressFormData>(
+    "checkoutShippingUpdate"
+  );
+  const { setApiErrors: setBillingApiErrors } = useErrors<AddressFormData>(
+    "checkoutBillingUpdate"
+  );
 
   const [, checkoutShippingAddressUpdate] =
     useCheckoutShippingAddressUpdateMutation();
@@ -35,7 +34,7 @@ export const useCheckoutAddressUpdate = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (hasErrors) {
-      setShippingAddressUpdateErrors(errors);
+      setShippingApiErrors(errors);
       return;
     }
 
@@ -57,7 +56,7 @@ export const useCheckoutAddressUpdate = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (hasErrors) {
-      setBillingAddressUpdateErrors(errors);
+      setBillingApiErrors(errors);
     }
   };
 
@@ -86,7 +85,5 @@ export const useCheckoutAddressUpdate = ({
   return {
     updateShippingAddress,
     updateBillingAddress: handleUpdateBillingAddress,
-    shippingAddressUpdateErrors,
-    billingAddressUpdateErrors,
   };
 };

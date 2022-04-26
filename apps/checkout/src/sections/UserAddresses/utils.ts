@@ -4,7 +4,7 @@ import {
   CountryCode,
   CountryDisplay,
 } from "@/graphql";
-import { omit } from "lodash";
+import { omit } from "lodash-es";
 import { AddressFormData } from "./types";
 
 export const getAddressInputData = ({

@@ -5,8 +5,7 @@ import { useFetch } from "@/hooks/useFetch";
 import { MessageKey, useFormattedMessages } from "@/hooks/useFormattedMessages";
 import React from "react";
 import { getPaymentProviders } from "@/fetch";
-import map from "lodash/map";
-import camelCase from "lodash/camelCase";
+import { camelCase, map } from "lodash-es";
 
 export const PaymentProviders: React.FC<
   Pick<RadioOption, "onSelect" | "selectedValue">
