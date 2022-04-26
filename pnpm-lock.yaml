@@ -12,7 +12,7 @@ specifiers:
   '@graphql-codegen/typescript-apollo-client-helpers': ^2.1.15
   '@graphql-codegen/typescript-operations': 2.3.5
   '@graphql-codegen/typescript-react-apollo': 3.2.11
-  '@headlessui/react': 1.5.0
+  '@headlessui/react': ^1.6.0
   '@heroicons/react': 1.0.5
   '@next/bundle-analyzer': ^12.1.4
   '@saleor/sdk': ^0.4.4
@@ -66,7 +66,7 @@ dependencies:
   '@formatjs/swc-plugin': 1.4.0
   '@formatjs/ts-transformer': 3.9.2
   '@graphql-codegen/typescript-apollo-client-helpers': 2.1.15_graphql@16.3.0
-  '@headlessui/react': 1.5.0_react-dom@18.0.0+react@18.0.0
+  '@headlessui/react': 1.6.0_react-dom@18.0.0+react@18.0.0
   '@heroicons/react': 1.0.5_react@18.0.0
   '@saleor/sdk': 0.4.4_39cc40c1647cf7040e7b6bc81a824410
   '@stripe/react-stripe-js': 1.7.0_6bff7b216ff0cd849b31ececd2749e19
@@ -2120,8 +2120,8 @@ packages:
       graphql: 16.3.0
     dev: false
 
-  /@headlessui/react/1.5.0_react-dom@18.0.0+react@18.0.0:
-    resolution: {integrity: sha512-aaRnYxBb3MU2FNJf3Ut9RMTUqqU3as0aI1lQhgo2n9Fa67wRu14iOGqx93xB+uMNVfNwZ5B3y/Ndm7qZGuFeMQ==}
+  /@headlessui/react/1.6.0_react-dom@18.0.0+react@18.0.0:
+    resolution: {integrity: sha512-PlDuytBC6iDC/uMvpANm5VpRSuayyXMEeo/dNIwAZNHCfhZUqDQgLXjGu48SHsvMw22Kc3c3u9TOAMZNg+1vzw==}
     engines: {node: '>=10'}
     peerDependencies:
       react: ^16 || ^17 || ^18 || 18
