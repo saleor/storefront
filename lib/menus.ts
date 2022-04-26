@@ -13,6 +13,7 @@ export const getLinkPath = (item: MenuItemFragment, channel: string, locale: str
   if (item.page) {
     return paths.page._slug(item.page?.slug).$url();
   }
+
   return paths.$url();
 };
 

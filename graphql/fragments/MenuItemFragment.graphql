@@ -17,4 +17,5 @@ fragment MenuItemFragment on MenuItem {
     id
     slug
   }
+  url
 }
