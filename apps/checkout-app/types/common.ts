@@ -16,7 +16,7 @@ export interface PaymentMethod {
 }
 
 export type PaymentProviderID = "mollie" | "adyen";
-export type MollieProviderSettingID = "partnerId" | "liveTestApiKey";
+export type MollieProviderSettingID = "partnerId" | "liveApiKey" | "testApiKey";
 export type AdyenProviderSettingID =
   | "merchantAccount"
   | "clientKey"

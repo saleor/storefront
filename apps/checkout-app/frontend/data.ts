@@ -1,10 +1,10 @@
 import { ChannelFragment } from "@/graphql";
 import { findById } from "@/utils";
 import {
-  customizations,
-  paymentMethods,
-  paymentProviders,
-} from "config/fields";
+  useCustomizations,
+  usePaymentMethods,
+  usePaymentProviders,
+} from "@/config/fields";
 import {
   ChannelActivePaymentProviders,
   ChannelPaymentOptions,
@@ -19,10 +19,10 @@ import {
   PaymentProviderSettings,
 } from "types/common";
 
-export const getCustomizationSettings = (
+export const useCustomizationSettings = (
   settingsValues: UnknownSettingsValues
 ): Customization<CustomizationID>[] =>
-  customizations.map((customization) => ({
+  useCustomizations().map((customization) => ({
     ...customization,
     settings: customization.settings.map(
       (setting: CustomizationSettings<CustomizationID>) => ({
@@ -32,10 +32,10 @@ export const getCustomizationSettings = (
     ),
   }));
 
-export const getPaymentProviderSettings = (
+export const usePaymentProviderSettings = (
   settingsValues: UnknownSettingsValues
 ): PaymentProvider<PaymentProviderID>[] =>
-  paymentProviders.map((provider) => ({
+  usePaymentProviders().map((provider) => ({
     ...provider,
     settings: provider.settings.map(
       (setting: PaymentProviderSettings<PaymentProviderID>) => ({
@@ -45,11 +45,14 @@ export const getPaymentProviderSettings = (
     ),
   }));
 
-export const getChannelPaymentOptionsList = (
+export const useChannelPaymentOptionsList = (
   channels: ChannelFragment[],
   activePaymentProviders?: ChannelActivePaymentProviders
-): ChannelPaymentOptions[] =>
-  channels.map((channel) => ({
+): ChannelPaymentOptions[] => {
+  const paymentMethods = usePaymentMethods();
+  const paymentProviders = usePaymentProviders();
+
+  return channels.map((channel) => ({
     id: channel.id,
     channel: channel,
     paymentOptions: paymentMethods.map((method) => {
@@ -69,11 +72,12 @@ export const getChannelPaymentOptionsList = (
       };
     }),
   }));
-export const getChannelPaymentOptions = (
+};
+export const useChannelPaymentOptions = (
   channels: ChannelFragment[],
   activePaymentProviders?: ChannelActivePaymentProviders,
   channelId?: string
 ) =>
-  getChannelPaymentOptionsList(channels, activePaymentProviders).find(
+  useChannelPaymentOptionsList(channels, activePaymentProviders).find(
     (channelPayments) => channelPayments.channel.id === channelId
   );

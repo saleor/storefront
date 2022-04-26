@@ -1,5 +1,5 @@
 import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
-import { getChannelPaymentOptions } from "@/frontend/data";
+import { useChannelPaymentOptions } from "@/frontend/data";
 import { useAuthData } from "@/frontend/hooks/useAuthData";
 import { notFoundMessages } from "@/frontend/misc/errorMessages";
 import {
@@ -41,7 +41,7 @@ const Channel = () => {
   });
   const channels = channelsQuery.data?.channels || [];
 
-  const channelPaymentOptions = getChannelPaymentOptions(
+  const channelPaymentOptions = useChannelPaymentOptions(
     channels,
     settingsValues.channelActivePaymentProviders,
     channelId?.toString()

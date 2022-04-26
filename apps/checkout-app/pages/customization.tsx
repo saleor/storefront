@@ -10,7 +10,7 @@ import {
   mapMetadataToSettings,
   mapSettingsToMetadata,
 } from "@/frontend/utils";
-import { getCustomizationSettings } from "@/frontend/data";
+import { useCustomizationSettings } from "@/frontend/data";
 import { useAuthData } from "@/frontend/hooks/useAuthData";
 
 const Customization = () => {
@@ -28,7 +28,7 @@ const Customization = () => {
   const settingsValues = mapMetadataToSettings(
     metadataQuery.data?.app?.privateMetadata || []
   );
-  const customizationSettings = getCustomizationSettings(
+  const customizationSettings = useCustomizationSettings(
     settingsValues.customizations
   );
 

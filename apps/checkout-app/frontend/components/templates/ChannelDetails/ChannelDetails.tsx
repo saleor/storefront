@@ -21,7 +21,6 @@ import {
   ChannelActivePaymentProviders,
   ChannelPaymentOptions,
 } from "types/api";
-import { paymentProviders } from "config/fields";
 import { useStyles } from "./styles";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
 import { messages } from "./messages";
@@ -40,6 +39,7 @@ import { useEffect } from "react";
 import { ChannelFragment, MetadataErrorFragment } from "@/graphql";
 import { getMetadataErrorMessage } from "@/frontend/misc/errors";
 import ErrorAlert from "../../elements/ErrorAlert";
+import { usePaymentProviders } from "@/config/fields";
 
 interface ChannelDetailsProps {
   channelPaymentOptions: ChannelPaymentOptions;
@@ -60,6 +60,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
   onCancel,
   onSubmit,
 }) => {
+  const paymentProviders = usePaymentProviders();
   const router = useRouter();
   const classes = useStyles();
   const { actions } = useOffsettedListWidths();
@@ -84,8 +85,8 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
     router.push({
       pathname: paymentProviderPath,
       query: {
-        paymentProviderId: paymentProviders[0].id,
         channelId: channelPaymentOptions.channel.id,
+        paymentProviderId: paymentProviders[0].id,
       },
     });
   };

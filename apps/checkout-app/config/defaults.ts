@@ -15,7 +15,8 @@ export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProviders
 export const defaultPaymentProviderSettings: PaymentProviderSettingsValues = {
   mollie: {
     partnerId: "",
-    liveTestApiKey: "",
+    liveApiKey: "",
+    testApiKey: "",
   },
   adyen: {
     merchantAccount: "",
