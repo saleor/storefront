@@ -23,7 +23,7 @@
     "@formatjs/swc-plugin": "^1.4.0",
     "@formatjs/ts-transformer": "^3.9.2",
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.15",
-    "@headlessui/react": "1.5.0",
+    "@headlessui/react": "^1.6.0",
     "@heroicons/react": "1.0.5",
     "@saleor/sdk": "^0.4.4",
     "@stripe/react-stripe-js": "^1.7.0",

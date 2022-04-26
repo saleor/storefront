@@ -15,6 +15,9 @@ module.exports = {
   mode: "jit",
   theme: {
     extend: {
+      screens: {
+        xs: "375px",
+      },
       container: {
         center: true,
         padding: "1.6rem",
@@ -66,6 +69,7 @@ module.exports = {
       boxShadow: {
         "decorative-center": "0 32px 0 -16px #394052",
         decorative: "16px 16px 0 #394052",
+        modal: "0px 4px 20px 0px rgba(0, 0, 0, 0.12)",
       },
     },
   },
