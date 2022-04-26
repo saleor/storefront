@@ -13890,7 +13890,7 @@ export type HomepageBlockFragment = { __typename?: 'MenuItem', id: string, name:
 
 export type ImageFragment = { __typename?: 'Image', url: string, alt?: string | null };
 
-export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null };
+export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: string, url?: string | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null };
 
 export type OrderDetailsFragment = { __typename?: 'Order', id: string, token: string, created: any, number?: string | null, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number } } };
 
@@ -14105,7 +14105,7 @@ export type FooterMenuQueryVariables = Exact<{
 }>;
 
 
-export type FooterMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null } | null };
+export type FooterMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null } | null };
 
 export type HomepageBlocksQueryVariables = Exact<{
   slug: Scalars['String'];
@@ -14122,7 +14122,7 @@ export type MainMenuQueryVariables = Exact<{
 }>;
 
 
-export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null } | null };
+export type MainMenuQuery = { __typename?: 'Query', menu?: { __typename?: 'Menu', id: string, items?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null } | null> | null } | null };
 
 export type OrderDetailsQueryVariables = Exact<{
   token: Scalars['UUID'];
@@ -14454,6 +14454,7 @@ export const MenuItemFragmentDoc = gql`
     id
     slug
   }
+  url
 }
     `;
 export const OrderDetailsFragmentDoc = gql`

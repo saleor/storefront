@@ -20,6 +20,10 @@
   @apply mt-2;
 }
 
+.menu-heading {
+  @apply block text-md font-bold mb-4 cursor-pointer hover:underline;
+}
+
 .menu-link {
   @apply text-base cursor-pointer hover:underline;
 }
