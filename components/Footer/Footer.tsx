@@ -39,22 +39,41 @@ export function Footer({ className, ...rest }: FooterProps) {
           <div className="grid grid-cols-2 gap-[2rem] w-full sm:w-auto sm:flex sm:flex-wrap sm:justify-end sm:ml-auto">
             {menu.map((item) => (
               <div className="sm:ml-14" key={item?.id}>
-                <Link href={getLinkPath(item!, currentChannel.slug, currentLocale)} passHref>
+                {item?.url ? (
                   <a
-                    href="pass"
-                    className="block text-md font-bold mb-4 cursor-pointer hover:underline"
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles["menu-heading"]}
                   >
                     {item?.name}
                   </a>
-                </Link>
+                ) : (
+                  <Link href={getLinkPath(item!, currentChannel.slug, currentLocale)} passHref>
+                    <a href="pass" className={styles["menu-heading"]}>
+                      {item?.name}
+                    </a>
+                  </Link>
+                )}
                 <ul className={styles.menu}>
                   {item?.children?.map((sub) => (
                     <li key={sub?.id}>
-                      <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
-                        <a href="pass" className={styles["menu-link"]}>
+                      {sub?.url ? (
+                        <a
+                          href={sub.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles["menu-link"]}
+                        >
                           {sub?.name}
                         </a>
-                      </Link>
+                      ) : (
+                        <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
+                          <a href="pass" className={styles["menu-link"]}>
+                            {sub?.name}
+                          </a>
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
