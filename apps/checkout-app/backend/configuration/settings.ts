@@ -22,11 +22,13 @@ export const getSettings = async () => {
     )
     .toPromise();
 
-  console.log(data, error);
+  console.log(data, error); // for deployment debug pusposes
 
   if (error) {
     throw error;
   }
+
+  console.log(data?.app?.privateMetadata); // for deployment debug pusposes
 
   const settingsValues = mapMetadataToSettings(
     data?.app?.privateMetadata || []
@@ -42,7 +44,7 @@ export const getActivePaymentProvidersSettings = async () => {
     .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument)
     .toPromise();
 
-  console.log(data, error);
+  console.log(data, error); // for deployment debug pusposes
 
   if (error) {
     throw error;
@@ -65,7 +67,7 @@ export const getChannelActivePaymentProvidersSettings = async (
     })
     .toPromise();
 
-  console.log(data, error);
+  console.log(data, error); // for deployment debug pusposes
 
   if (error) {
     throw error;

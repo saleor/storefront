@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc",
-    "generate": "graphql-codegen --config codegen.yml",
+    "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r dotenv/config --config codegen.yml",
     "extract:i18n": "formatjs extract '{pages,components,hooks,misc}/**/*.{js,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",
     "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
     "i18n": "npm run extract:i18n && npm run compile:i18n"

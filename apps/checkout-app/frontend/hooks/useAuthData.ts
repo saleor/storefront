@@ -1,14 +1,20 @@
-import { parseJwt } from "@/frontend/utils";
+import { useMemo } from "react";
 import { useApp } from "./useApp";
 
 export interface AuthTokenPayload {
-  app: string;
+  appId: string;
+  isAuthorized: boolean;
 }
 
 export const useAuthData = (): AuthTokenPayload => {
-  const app = useApp();
-  const appState = app?.getState();
-  const payload = appState?.token ? parseJwt(appState.token) : { app: "" };
+  const { app, isAuthorized } = useApp();
 
-  return payload;
+  const appId = useMemo(() => {
+    return app?.getState()?.id;
+  }, [app]);
+
+  return {
+    appId: appId || "",
+    isAuthorized: isAuthorized,
+  };
 };

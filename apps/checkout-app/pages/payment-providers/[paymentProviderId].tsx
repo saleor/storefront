@@ -17,11 +17,12 @@ const PaymentProvider = () => {
   const { paymentProviderId, channelId } = router.query;
   const intl = useIntl();
 
-  const { app } = useAuthData();
+  const { appId, isAuthorized } = useAuthData();
   const [metadataQuery] = usePrivateMetadataQuery({
     variables: {
-      id: app,
+      id: appId,
     },
+    pause: !isAuthorized,
   });
   const [metadataMutation, setPrivateMetadata] =
     useUpdatePrivateMetadataMutation();
@@ -50,7 +51,7 @@ const PaymentProvider = () => {
     });
 
     setPrivateMetadata({
-      id: app,
+      id: appId,
       input: metadata,
     });
   };

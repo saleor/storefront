@@ -1,3 +1,4 @@
+import { API_URL } from "@/constants";
 import { authExchange } from "@urql/exchange-auth";
 import {
   createClient,
@@ -8,26 +9,23 @@ import {
   fetchExchange,
   Operation,
 } from "urql";
-import { API_URL } from "@/constants";
+import { app } from "./app";
 
 interface AuthState {
   token: string;
 }
 
-const getAuth =
-  (token?: string) =>
-  async ({ authState }: { authState?: AuthState | null }) => {
-    if (!authState) {
-      if (typeof window === "undefined") {
-        return null;
-      }
-      if (token) {
-        return { token };
-      }
-    }
+const getAuth = async ({ authState }: { authState?: AuthState | null }) => {
+  if (!authState) {
+    const token = app?.getState().token;
 
-    return null;
-  };
+    if (token) {
+      return { token };
+    }
+  }
+
+  return null;
+};
 
 const addAuthToOperation = ({
   authState,
@@ -36,7 +34,7 @@ const addAuthToOperation = ({
   authState?: AuthState | null;
   operation: Operation<any, any>;
 }) => {
-  if (!authState || !authState.token) {
+  if (!authState?.token) {
     return operation;
   }
 
@@ -57,17 +55,21 @@ const addAuthToOperation = ({
   });
 };
 
-const getAuthConfig = (token?: string): ClientOptions => ({
+const willAuthError = ({ authState }: { authState?: AuthState | null }) =>
+  !authState?.token;
+
+const authConfig: ClientOptions = {
   url: API_URL,
   exchanges: [
     dedupExchange,
     cacheExchange,
     authExchange({
-      getAuth: getAuth(token),
+      getAuth,
+      willAuthError,
       addAuthToOperation,
     }),
     fetchExchange,
   ],
-});
+};
 
-export const getClient = (token?: string) => createClient(getAuthConfig(token));
+export const client = createClient(authConfig);

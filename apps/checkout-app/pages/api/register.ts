@@ -6,7 +6,7 @@ const handler = async (
   request: NextApiRequest,
   response: NextApiResponse
 ): Promise<undefined> => {
-  console.log(request);
+  console.log(request); // for deployment debug pusposes
 
   const saleor_domain = request.headers[SALEOR_DOMAIN_HEADER];
   if (!saleor_domain) {
