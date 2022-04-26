@@ -3,6 +3,7 @@ import settingsValues from "@/config/defaults";
 import { SettingsValues, UnknownSettingsValues } from "@/types/api";
 import { allSettingID, Item, NamedNode, Node, SettingID } from "@/types/common";
 import reduce from "lodash/reduce";
+import { CombinedError } from "urql";
 
 export function parseJwt(token: string) {
   var base64Url = token.split(".")[1];
@@ -137,3 +138,8 @@ export const mapNodeToItem = (node: NamedNode): Item => ({
 });
 export const mapNodesToItems = (nodes?: NamedNode[]): Item[] =>
   nodes?.map(mapNodeToItem) || [];
+
+export const getCommonErrors = (error?: CombinedError) => [
+  ...(error?.graphQLErrors || []),
+  ...((error?.networkError && [error.networkError]) || []),
+];

@@ -2,7 +2,11 @@ import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
 import { getChannelPaymentOptions } from "@/frontend/data";
 import { useAuthData } from "@/frontend/hooks/useAuthData";
 import { notFoundMessages } from "@/frontend/misc/errorMessages";
-import { mapMetadataToSettings, mapSettingsToMetadata } from "@/frontend/utils";
+import {
+  getCommonErrors,
+  mapMetadataToSettings,
+  mapSettingsToMetadata,
+} from "@/frontend/utils";
 import {
   useChannelsQuery,
   usePrivateMetadataQuery,
@@ -61,6 +65,11 @@ const Channel = () => {
     });
   };
 
+  const errors = [
+    ...(metadataMutation.data?.updatePrivateMetadata?.errors || []),
+    ...getCommonErrors(metadataMutation.error),
+  ];
+
   if (!channelPaymentOptions) {
     return (
       <ErrorDetails
@@ -81,6 +90,7 @@ const Channel = () => {
         metadataQuery.fetching ||
         metadataMutation.fetching
       }
+      errors={errors}
       onCancel={handleCancel}
       onSubmit={handleSubmit}
     />

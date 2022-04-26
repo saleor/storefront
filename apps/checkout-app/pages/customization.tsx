@@ -5,7 +5,11 @@ import {
   usePrivateMetadataQuery,
   useUpdatePrivateMetadataMutation,
 } from "@/graphql";
-import { mapMetadataToSettings, mapSettingsToMetadata } from "@/frontend/utils";
+import {
+  getCommonErrors,
+  mapMetadataToSettings,
+  mapSettingsToMetadata,
+} from "@/frontend/utils";
 import { getCustomizationSettings } from "@/frontend/data";
 import { useAuthData } from "@/frontend/hooks/useAuthData";
 
@@ -43,11 +47,17 @@ const Customization = () => {
     });
   };
 
+  const errors = [
+    ...(metadataMutation.data?.updatePrivateMetadata?.errors || []),
+    ...getCommonErrors(metadataMutation.error),
+  ];
+
   return (
     <CustomizationDetails
       options={customizationSettings}
       loading={metadataQuery.fetching || metadataMutation.fetching}
       saveButtonBarState="default"
+      errors={errors}
       onCancel={handleCancel}
       onSubmit={handleSubmit}
     />

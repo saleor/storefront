@@ -8,6 +8,7 @@ export const useStyles = makeStyles(
     },
     content: {
       flex: "2",
+      marginTop: theme.spacing(1),
     },
     settings: {
       display: "flex",

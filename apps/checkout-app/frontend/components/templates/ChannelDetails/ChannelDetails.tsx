@@ -1,4 +1,5 @@
 import {
+  Alert,
   ConfirmButtonTransitionState,
   OffsettedList,
   OffsettedListBody,
@@ -36,13 +37,16 @@ import AppSavebar from "@/frontend/components/elements/AppSavebar";
 import { Controller, useForm } from "react-hook-form";
 import { getActivePaymentProvider, getFormDefaultValues } from "./data";
 import { useEffect } from "react";
-import { ChannelFragment } from "@/graphql";
+import { ChannelFragment, MetadataErrorFragment } from "@/graphql";
+import { getMetadataErrorMessage } from "@/frontend/misc/errors";
+import ErrorAlert from "../../elements/ErrorAlert";
 
 interface ChannelDetailsProps {
   channelPaymentOptions: ChannelPaymentOptions;
   channels: ChannelFragment[];
   saveButtonBarState: ConfirmButtonTransitionState;
   loading: boolean;
+  errors?: Partial<MetadataErrorFragment>[];
   onCancel: () => void;
   onSubmit: (data: ChannelActivePaymentProviders) => void;
 }
@@ -52,6 +56,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
   channels,
   saveButtonBarState,
   loading,
+  errors,
   onCancel,
   onSubmit,
 }) => {
@@ -109,6 +114,14 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
         loading={loading}
         onItemClick={onChannelClick}
       >
+        <ErrorAlert
+          errors={errors}
+          getErrorMessage={(error, intl) =>
+            error.code
+              ? getMetadataErrorMessage(error.code, intl)
+              : error.message
+          }
+        />
         <Typography variant="subtitle1">
           <FormattedMessage {...messages.selectPaymentMethods} />
         </Typography>

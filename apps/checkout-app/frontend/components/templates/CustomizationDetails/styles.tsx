@@ -70,6 +70,7 @@ export const useStyles = makeStyles(
     },
     design: {
       flex: "2",
+      marginTop: theme.spacing(2),
     },
     designPreview: {
       background: "#fff",

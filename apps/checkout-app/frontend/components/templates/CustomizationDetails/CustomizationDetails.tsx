@@ -21,11 +21,15 @@ import { messages } from "./messages";
 import Setting from "@/frontend/components/elements/Setting";
 import { flattenSettingId, unflattenSettings } from "@/frontend/utils";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { MetadataErrorFragment } from "@/graphql";
+import { getMetadataErrorMessage } from "@/frontend/misc/errors";
+import ErrorAlert from "../../elements/ErrorAlert";
 
 interface CustomizationDetailsProps {
   options: Customization<CustomizationID>[];
   loading: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
+  errors?: Partial<MetadataErrorFragment>[];
   onCancel: () => void;
   onSubmit: (data: CustomizationSettingsValues) => void;
 }
@@ -34,6 +38,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
   options,
   loading,
   saveButtonBarState,
+  errors,
   onCancel,
   onSubmit,
 }) => {
@@ -98,6 +103,14 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
           </OffsettedListBody>
         </OffsettedList>
         <div className={classes.design}>
+          <ErrorAlert
+            errors={errors}
+            getErrorMessage={(error, intl) =>
+              error.code
+                ? getMetadataErrorMessage(error.code, intl)
+                : error.message
+            }
+          />
           <Typography variant="subtitle1">
             <FormattedMessage {...messages.customizationPreview} />
           </Typography>

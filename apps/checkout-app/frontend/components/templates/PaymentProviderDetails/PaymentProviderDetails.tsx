@@ -17,12 +17,16 @@ import { ConfirmButtonTransitionState } from "@saleor/macaw-ui";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { getFormDefaultValues } from "./data";
 import { useEffect } from "react";
+import { getMetadataErrorMessage } from "@/frontend/misc/errors";
+import { MetadataErrorFragment } from "@/graphql";
+import ErrorAlert from "../../elements/ErrorAlert";
 
 interface PaymentProviderDetailsProps {
   selectedPaymentProvider: PaymentProvider<PaymentProviderID>;
   channelId?: string;
   saveButtonBarState: ConfirmButtonTransitionState;
   loading: boolean;
+  errors?: Partial<MetadataErrorFragment>[];
   onCancel: () => void;
   onSubmit: (data: PaymentProviderSettingsValues) => void;
 }
@@ -32,6 +36,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
   channelId,
   saveButtonBarState,
   loading,
+  errors,
   onCancel,
   onSubmit,
 }) => {
@@ -99,6 +104,14 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
         loading={loading}
         onItemClick={onPaymentProviderClick}
       >
+        <ErrorAlert
+          errors={errors}
+          getErrorMessage={(error, intl) =>
+            error.code
+              ? getMetadataErrorMessage(error.code, intl)
+              : error.message
+          }
+        />
         <Card>
           <CardContent>
             <Typography variant="body1">

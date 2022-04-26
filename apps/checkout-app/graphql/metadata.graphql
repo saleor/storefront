@@ -3,6 +3,12 @@ fragment MetadataItemFragment on MetadataItem {
   value
 }
 
+fragment MetadataErrorFragment on MetadataError {
+  code
+  message
+  field
+}
+
 query PrivateMetadata($id: ID!) {
   app(id: $id) {
     id
@@ -20,9 +26,7 @@ mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
       }
     }
     errors {
-      code
-      message
-      field
+      ...MetadataErrorFragment
     }
   }
 }

@@ -14115,6 +14115,8 @@ export type ChannelsQuery = { __typename?: 'Query', channels?: Array<{ __typenam
 
 export type MetadataItemFragment = { __typename?: 'MetadataItem', key: string, value: string };
 
+export type MetadataErrorFragment = { __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null };
+
 export type PrivateMetadataQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -14165,6 +14167,13 @@ export const MetadataItemFragmentDoc = gql`
     fragment MetadataItemFragment on MetadataItem {
   key
   value
+}
+    `;
+export const MetadataErrorFragmentDoc = gql`
+    fragment MetadataErrorFragment on MetadataError {
+  code
+  message
+  field
 }
     `;
 export const AddressFragmentDoc = gql`
@@ -14318,13 +14327,12 @@ export const UpdatePrivateMetadataDocument = gql`
       }
     }
     errors {
-      code
-      message
-      field
+      ...MetadataErrorFragment
     }
   }
 }
-    ${MetadataItemFragmentDoc}`;
+    ${MetadataItemFragmentDoc}
+${MetadataErrorFragmentDoc}`;
 
 export function useUpdatePrivateMetadataMutation() {
   return Urql.useMutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(UpdatePrivateMetadataDocument);
