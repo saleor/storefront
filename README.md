@@ -39,8 +39,6 @@ Set up your local storefront development environment by running `storefront crea
 saleor storefront create
 ```
 
-The command will take you through creating a new Saleor API instance (or choosing an existing one) and connecting it to your freshly cloned local storefront setup in minutes.
-
 [Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli)
 
 
