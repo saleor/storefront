@@ -30,7 +30,7 @@ Pre configured tools for DX.
 
 Supercharge your development with our CLI tool and free developer account at [Saleor Cloud](https://cloud.saleor.io/). To download and install Saleor CLI, run the following command:
 ```
-npm i -g saleor-cli@latest 
+npm i -g saleor@latest 
 ```
 
 Set up your local storefront development environment by running `storefront create` command. It will take you through the process of creating a new Saleor API instance (or choosing an existing one) and connecting it to your freshly cloned local storefront setup:
