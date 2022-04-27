@@ -28,6 +28,18 @@ Pre configured tools for DX.
 
 ## Setup
 
+[Saleor Cloud](https://cloud.saleor.io/) users can supercharge setup process using Saleor CLI. With CLI installed simply run:
+
+```
+saleor storefront create
+```
+
+and the storefront will be setup and operational at http://localhost:3001/
+
+[Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli)
+
+---
+
 Please note: this project use the [pnpm](https://pnpm.io/) package manager. To install it, run:
 
 ```bash
