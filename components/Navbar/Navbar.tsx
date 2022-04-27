@@ -7,6 +7,7 @@ import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { CheckoutLineDetailsFragment } from "@/saleor/api";
 
+import { BurgerMenu } from "../BurgerMenu";
 import { RegionDialog } from "../RegionDialog";
 import { Menu } from "./Menu";
 import styles from "./Navbar.module.css";
@@ -17,6 +18,7 @@ import UserMenu from "./UserMenu";
 export function Navbar() {
   const paths = usePaths();
 
+  const [isBurgerOpen, setBurgerOpen] = useState(false);
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
@@ -62,10 +64,17 @@ export function Navbar() {
                 <NavIconButton icon="spyglass" />
               </a>
             </Link>
+
+            <NavIconButton
+              icon="menu"
+              className="ml-2 lg:hidden"
+              onClick={() => setBurgerOpen(true)}
+            />
           </div>
         </div>
       </div>
       <RegionDialog isOpen={isRegionDialogOpen} onClose={() => setRegionDialogOpen(false)} />
+      <BurgerMenu open={isBurgerOpen} onCloseClick={() => setBurgerOpen(false)} />
     </>
   );
 }

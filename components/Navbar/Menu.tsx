@@ -14,7 +14,7 @@ export function Menu() {
   });
 
   if (error) {
-    console.error("Navigation component error", error.message);
+    console.error("Navbar/Menu component error", error.message);
   }
 
   const menu = data?.menu?.items || [];

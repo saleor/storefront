@@ -1,0 +1,58 @@
+.container {
+  @apply fixed top-0 right-0 w-full h-full z-50 flex justify-end opacity-0 invisible ease-in-out duration-150;
+}
+
+.container--open {
+  @apply opacity-100 visible;
+}
+
+.backdrop {
+  @apply absolute z-0 top-0 right-0 w-full h-full;
+  background-color: rgba(57, 64, 82, 0.6);
+}
+
+.body {
+  @apply relative z-10 bg-white h-full overflow-y-scroll py-6 px-7 flex flex-col;
+  width: 93.846153846153846%;
+  max-width: 366px;
+}
+
+.burger-link {
+  @apply text-main-2 text-md font-bold text-left;
+}
+
+.burger-link + .burger-link {
+  @apply mt-3;
+}
+
+.collpase + .collpase {
+  @apply mt-6;
+}
+
+.collapse-main {
+  @apply text-main text-lg leading-[1.2em] font-bold block w-full text-left;
+}
+
+.collapse-main--active {
+  @apply text-brand mb-4 pb-4 border-b border-main-4;
+}
+
+.collapse-sub {
+  @apply text-main text-[2rem] leading-[1.2em] font-bold flex w-full;
+}
+
+.collapse-sub svg {
+  @apply ml-auto;
+}
+
+.collapse-sub--active svg {
+  @apply rotate-180;
+}
+
+.menu-link {
+  @apply block mt-1.5 text-main-2 text-base;
+}
+
+.menu-link:first-of-type {
+  @apply block mt-3;
+}
