@@ -2,7 +2,7 @@ import { MetadataItemFragment } from "@/graphql";
 import settingsValues from "@/config/defaults";
 import { SettingsValues, UnknownSettingsValues } from "@/types/api";
 import { allSettingID, Item, NamedNode, Node, SettingID } from "@/types/common";
-import reduce from "lodash/reduce";
+import reduce from "lodash-es/reduce";
 import { CombinedError } from "urql";
 
 export function parseJwt(token: string) {

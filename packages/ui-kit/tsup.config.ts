@@ -12,7 +12,7 @@ const handleStyleInjection = (css: string, digest: string) => {
 
   return `
     const styleId = 'style_${digest}';
-    if (!document.getElementById(styleId)) {
+    if (typeof document !== 'undefined' && !document.getElementById(styleId)) {
       const style = document.createElement('style');
       style.id = styleId;
       style.textContent = \`${transformed}\`;

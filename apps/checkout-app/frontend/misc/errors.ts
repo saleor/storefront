@@ -1,7 +1,7 @@
 import { MetadataErrorCode } from "@/graphql";
 import { IntlShape } from "react-intl";
 import { commonErrorMessages } from "./errorMessages";
-import camelCase from "lodash/camelCase";
+import camelCase from "lodash-es/camelCase";
 
 export const getMetadataErrorMessage = (
   code: MetadataErrorCode,
