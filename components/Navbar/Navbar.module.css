@@ -39,6 +39,10 @@
   @apply visible;
 }
 
+.dropdown-main {
+  @apply inline-block text-[1.8rem] leading-[2.16rem] font-bold cursor-pointer hover:underline;
+}
+
 .dropdown-ul {
   @apply list-none mt-3;
 }

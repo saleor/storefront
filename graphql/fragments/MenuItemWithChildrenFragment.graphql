@@ -23,4 +23,5 @@ fragment MenuItemWithChildrenFragment on MenuItem {
       ...MenuItemFragment
     }
   }
+  url
 }

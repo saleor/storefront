@@ -7,11 +7,11 @@ import { MenuItemWithChildrenFragment } from "@/saleor/api";
 import { useRegions } from "../RegionsProvider";
 import styles from "./Navbar.module.css";
 
-interface DropdwonProps {
+interface DropdownProps {
   data: MenuItemWithChildrenFragment;
 }
 
-function Dropdwon({ data }: DropdwonProps) {
+function Dropdown({ data }: DropdownProps) {
   const {
     currentChannel: { slug },
     currentLocale,
@@ -19,26 +19,39 @@ function Dropdwon({ data }: DropdwonProps) {
 
   return (
     <div className={styles.dropdown}>
-      <Link href="/" passHref>
-        <a href="pass" className={styles["dropdown-trigger"]}>
+      {data?.url ? (
+        <a href={data.url} target="_blank" rel="noreferrer" className={styles["dropdown-trigger"]}>
           {translate(data, "name")}
         </a>
-      </Link>
+      ) : (
+        <Link href={getLinkPath(data, slug, currentLocale)} passHref>
+          <a href="pass" className={styles["dropdown-trigger"]}>
+            {translate(data, "name")}
+          </a>
+        </Link>
+      )}
       {!!data.children?.length && (
         <div className={styles["dropdown-menu"]}>
-          {/* <div className="container grid grid-cols-[auto_55%]"> */}
           <div className="container">
             <div className="grid grid-cols-7 gap-[2rem]">
               {data.children?.map((item) => (
                 <div key={item?.id}>
-                  <Link href={getLinkPath(item!, slug, currentLocale)} passHref>
+                  {item?.url ? (
                     <a
-                      href="pass"
-                      className="inline-block text-[1.8rem] leading-[2.16rem] font-bold cursor-pointer hover:underline"
+                      href={item.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles["dropdown-main"]}
                     >
                       {item?.name}
                     </a>
-                  </Link>
+                  ) : (
+                    <Link href={getLinkPath(item!, slug, currentLocale)} passHref>
+                      <a href="pass" className={styles["dropdown-main"]}>
+                        {item?.name}
+                      </a>
+                    </Link>
+                  )}
                   {!!item?.children?.length && (
                     <ul className={styles["dropdown-ul"]}>
                       {item?.children?.map((sub) => (
@@ -55,7 +68,6 @@ function Dropdwon({ data }: DropdwonProps) {
                 </div>
               ))}
             </div>
-            {/* <div /> */}
           </div>
         </div>
       )}
@@ -63,4 +75,4 @@ function Dropdwon({ data }: DropdwonProps) {
   );
 }
 
-export default Dropdwon;
+export default Dropdown;
