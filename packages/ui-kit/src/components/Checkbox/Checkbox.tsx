@@ -19,32 +19,33 @@ export const Checkbox: FC<CheckboxProps> = ({
   checked,
   value,
   classNames,
-  id = useId(),
   ...rest
-}) => (
-  <div className={clsx(styles.checkbox, classNames?.container)}>
-    <div
-      className={clsx(styles["box"], {
-        [styles["box-static"]]: !label,
-      })}>
-      <input
-        type='checkbox'
-        value={value}
-        checked={checked}
-        id={id}
-        className={classNames?.input}
-        {...rest}
-      />
-      <div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
-        <CheckIcon />
+}) => {
+  const id = rest.id || useId();
+
+  return (
+    <div className={clsx(styles.checkbox, classNames?.container)}>
+      <div
+        className={clsx(styles["box"], {
+          [styles["box-static"]]: !label,
+        })}>
+        <input
+          type='checkbox'
+          value={value}
+          checked={checked}
+          id={id}
+          className={classNames?.input}
+          {...rest}
+        />
+        <div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
+          <CheckIcon />
+        </div>
       </div>
+      {label && (
+        <Label className={clsx(classNames?.label)} htmlFor={id}>
+          {label}
+        </Label>
+      )}
     </div>
-    {label && (
-      <Label
-        className={clsx(styles["checkbox-label"], classNames?.label)}
-        htmlFor={id}>
-        {label}
-      </Label>
-    )}
-  </div>
-);
+  );
+};

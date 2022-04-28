@@ -1,13 +1,9 @@
 :local(.radio) {
-  @apply relative flex flex-row mb-4;
+  @apply relative flex flex-row mb-4 pl-6.5;
 }
 
 :local(.box) {
-  @apply absolute h-5 w-5 pointer-events-none inline-flex;
-}
-
-.box-static {
-  @apply relative;
+  @apply absolute left-0 h-5 w-5 pointer-events-none inline-flex;
 }
 
 :local([type="radio"]) {
@@ -24,8 +20,4 @@
 
 :local(.radio-input) {
   @apply w-5 h-5 border rounded-full border-border-primary absolute top-0 left-0 z-50;
-}
-
-.radio-label {
-  @apply pl-6.5;
 }

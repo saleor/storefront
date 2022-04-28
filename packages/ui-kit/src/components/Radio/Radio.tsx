@@ -18,30 +18,28 @@ export const Radio: FC<RadioProps> = ({
   checked,
   value,
   classNames,
-  id = useId(),
   ...rest
-}) => (
-  <div className={clsx(styles.radio, classNames?.container)}>
-    <div
-      className={clsx(styles["box"], {
-        [styles["box-static"]]: !label,
-      })}>
-      <input
-        type='radio'
-        value={value}
-        checked={checked}
-        id={id}
-        className={classNames?.input}
-        {...rest}
-      />
-      <div className={clsx(styles["radio-input"], classNames?.radio)} />
+}) => {
+  const id = rest.id || useId();
+
+  return (
+    <div className={clsx(styles.radio, classNames?.container)}>
+      <div className={clsx(styles["box"])}>
+        <input
+          type='radio'
+          value={value}
+          checked={checked}
+          id={id}
+          className={classNames?.input}
+          {...rest}
+        />
+        <div className={clsx(styles["radio-input"], classNames?.radio)} />
+      </div>
+      {label && (
+        <Label className={clsx(classNames?.label)} htmlFor={id}>
+          {label}
+        </Label>
+      )}
     </div>
-    {label && (
-      <Label
-        className={clsx(styles["radio-label"], classNames?.label)}
-        htmlFor={id}>
-        {label}
-      </Label>
-    )}
-  </div>
-);
+  );
+};

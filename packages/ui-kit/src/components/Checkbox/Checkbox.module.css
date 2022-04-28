@@ -1,13 +1,9 @@
 :local(.checkbox) {
-  @apply relative flex flex-row mb-4;
+  @apply relative flex flex-row mb-4 pl-6.5;
 }
 
 :local(.box) {
-  @apply absolute h-5 w-5 pointer-events-none inline-flex;
-}
-
-.box-static {
-  @apply relative;
+  @apply absolute left-0 h-5 w-5 pointer-events-none inline-flex;
 }
 
 :local([type="checkbox"]) {
@@ -32,8 +28,4 @@
 
 :local(.checkbox-input svg) {
   @apply opacity-0 absolute -top-px -left-px;
-}
-
-.checkbox-label {
-  @apply pl-6.5;
 }
