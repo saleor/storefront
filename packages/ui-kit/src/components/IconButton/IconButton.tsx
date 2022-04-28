@@ -5,7 +5,9 @@ import styles from "./IconButton.module.css";
 import { Button, ButtonProps, ButtonLabel } from "../Button/Button";
 import { HorizontalAlignment } from "@lib/globalTypes";
 
-export interface IconButtonProps extends Omit<ButtonProps, "variant"> {
+export interface IconButtonProps
+  extends Omit<ButtonProps, "variant" | "label">,
+    Partial<Pick<ButtonProps, "label">> {
   icon: ReactNode;
   alignment?: HorizontalAlignment;
   variant?: "bare";

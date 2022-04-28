@@ -28,6 +28,7 @@ export default defineConfig({
   dts: true,
   esbuildPlugins: [
     cssModulesPlugin({
+      localsConvention: "camelCase",
       inject: handleStyleInjection,
     }),
   ],

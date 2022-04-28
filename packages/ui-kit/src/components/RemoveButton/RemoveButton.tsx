@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes } from "react";
+import { FC } from "react";
 import clsx from "clsx";
 
 import styles from "./RemoveButton.module.css";

@@ -9,5 +9,6 @@ export * from "./Label";
 export * from "./Radio";
 export * from "./RemoveButton";
 export * from "./Switch";
+export * from "./Snackbar";
 export * from "./Text";
 export * from "./TextInput";
