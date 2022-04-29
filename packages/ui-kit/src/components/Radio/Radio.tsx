@@ -1,4 +1,4 @@
-import { FC, ReactNode, InputHTMLAttributes, useId } from "react";
+import { Ref, ReactNode, InputHTMLAttributes, forwardRef, useId } from "react";
 import clsx from "clsx";
 
 import styles from "./Radio.module.css";
@@ -13,33 +13,33 @@ export interface RadioProps
   >;
 }
 
-export const Radio: FC<RadioProps> = ({
-  label,
-  checked,
-  value,
-  classNames,
-  ...rest
-}) => {
-  const id = rest.id || useId();
+export const Checkbox = forwardRef(
+  (
+    { label, checked, value, classNames, ...rest }: RadioProps,
+    ref: Ref<HTMLInputElement>
+  ) => {
+    const id = rest?.id || useId();
 
-  return (
-    <div className={clsx(styles.radio, classNames?.container)}>
-      <div className={clsx(styles["box"])}>
-        <input
-          type='radio'
-          value={value}
-          checked={checked}
-          id={id}
-          className={classNames?.input}
-          {...rest}
-        />
-        <div className={clsx(styles["radio-input"], classNames?.radio)} />
+    return (
+      <div className={clsx(styles.radio, classNames?.container)}>
+        <div className={clsx(styles["box"])}>
+          <input
+            ref={ref}
+            type='radio'
+            value={value}
+            checked={checked}
+            id={id}
+            className={classNames?.input}
+            {...rest}
+          />
+          <div className={clsx(styles["radio-input"], classNames?.radio)} />
+        </div>
+        {label && (
+          <Label className={clsx(classNames?.label)} htmlFor={id}>
+            {label}
+          </Label>
+        )}
       </div>
-      {label && (
-        <Label className={clsx(classNames?.label)} htmlFor={id}>
-          {label}
-        </Label>
-      )}
-    </div>
-  );
-};
+    );
+  }
+);
