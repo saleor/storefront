@@ -6,9 +6,8 @@ interface BaseSeoProps {
 }
 
 export function BaseSeo({ title, description }: BaseSeoProps) {
-  const baseTitle = "Saleor Tutorial";
-  const baseDescription =
-    "Saleor tutorial project. Learn how to use our API and create storefront for your shop";
+  const baseTitle = "GPAX E-Commerce";
+  const baseDescription = "GPAX E-Commerce, one platform and one stop shop for all of your needs.";
 
   const seoTitle = title || baseTitle;
   const seoDescription = description || baseDescription;
@@ -23,10 +22,10 @@ export function BaseSeo({ title, description }: BaseSeoProps) {
         images: [
           {
             url: "https://og-image.vercel.app/React%20Storefront.png?theme=light&md=1&fontSize=100px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg&images=https%3A%2F%2Fsaleor.io%2Fstatic%2Flogo-ad1b99aa7c6f5acf58a61640af760cfd.svg",
-            alt: "Saleor tutorial hero image",
+            alt: "GPAX products images",
           },
         ],
-        site_name: "Saleor Tutorial",
+        site_name: "GPAX E-Commerce",
       }}
     />
   );

@@ -52,8 +52,8 @@ export function Navbar() {
               <MainMenu />
               <Link href={paths.$url()} passHref>
                 <a href="pass">
-                  <div className="mt-px group block h-16 w-28 relative">
-                    <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
+                  <div className="mt-px group block h-16 w-28 ml-2 relative">
+                    <Image src="/gpax-logo.svg" alt="Saleor logo" layout="fill" />
                   </div>
                 </a>
               </Link>
