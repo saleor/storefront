@@ -35,6 +35,8 @@ export function importMessages(locale: string): LocaleMessages {
       return sourceOfTruth;
     case "pl-PL":
       return pl;
+    case "ru-RU":
+      return pl;
     default:
       return sourceOfTruth;
   }

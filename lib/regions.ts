@@ -9,6 +9,7 @@ export const LOCALES = [
     name: "American English",
   },
   { slug: "pl-PL", code: "PL_PL" as LanguageCodeEnum, name: "Polski" },
+  { slug: "ru-RU", code: "RU_RU" as LanguageCodeEnum, name: "Русский" },
 ];
 export const DEFAULT_LOCALE = "en-US";
 
