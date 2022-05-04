@@ -33,7 +33,7 @@ function Dropdown({ data }: DropdownProps) {
       {!!data.children?.length && (
         <div className={styles["dropdown-menu"]}>
           <div className="container">
-            <div className="grid grid-cols-7 gap-[2rem]">
+            <div className="grid grid-cols-7 gap-[2rem] mx-2">
               {data.children?.map((item) => (
                 <div key={item?.id}>
                   {item?.url ? (
