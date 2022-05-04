@@ -7,7 +7,6 @@ import { Layout, PageHero, ProductCollection } from "@/components";
 import { CategoryPageSeo } from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
-import { categoryPaths } from "@/lib/ssr/category";
 import {
   CategoryBySlugDocument,
   CategoryBySlugQuery,
@@ -56,13 +55,10 @@ function CategoryPage({ category }: InferGetStaticPropsType<typeof getStaticProp
 
 export default CategoryPage;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await categoryPaths();
-  return {
-    paths,
-    fallback: "blocking",
-  };
-};
+export const getStaticPaths: GetStaticPaths = () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 CategoryPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
