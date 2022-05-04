@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <CheckoutProvider>
         <RegionsProvider>
           <SaleorProviderWithChannels>
-            <NextNProgress color="#5B68E4" />
+            <NextNProgress color="#5B68E4" options={{ showSpinner: false }} />
             {DEMO_MODE && <DemoBanner />}
             {getLayout(<Component {...pageProps} />)}
           </SaleorProviderWithChannels>
