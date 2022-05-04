@@ -16174,9 +16174,11 @@ export type _Service = {
 
 export type AddressDetailsFragment = { __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } };
 
+export type AttributeFilterFragment = { __typename?: 'Attribute', id: string, inputType?: AttributeInputTypeEnum | null, name?: string | null, slug?: string | null, withChoices: boolean, translation?: { __typename?: 'AttributeTranslation', id: string, name: string } | null, choices?: { __typename?: 'AttributeValueCountableConnection', edges: Array<{ __typename?: 'AttributeValueCountableEdge', cursor: string, node: { __typename?: 'AttributeValue', id: string, name?: string | null, slug?: string | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null } }> } | null };
+
 export type CategoryBasicFragment = { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null };
 
-export type CategoryDetailsFragment = { __typename?: 'Category', id: string, seoTitle?: string | null, seoDescription?: string | null, description?: string | null, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, description?: string | null, name?: string | null } | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } }> } | null };
+export type CategoryDetailsFragment = { __typename?: 'Category', id: string, seoTitle?: string | null, seoDescription?: string | null, description?: string | null, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, description?: string | null, name?: string | null } | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } }> } | null, children?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } }> } | null };
 
 export type CheckoutDetailsFragment = { __typename?: 'Checkout', id: string, token: any, email?: string | null, isShippingRequired: boolean, discountName?: string | null, billingAddress?: { __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } } | null, shippingAddress?: { __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } } | null, shippingMethod?: { __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: number | null, maximumDeliveryDays?: number | null, translation?: { __typename?: 'ShippingMethodTranslation', id: string, name?: string | null } | null, price: { __typename?: 'Money', currency: string, amount: number } } | null, availableShippingMethods: Array<{ __typename?: 'ShippingMethod', id: string, name: string, minimumDeliveryDays?: number | null, maximumDeliveryDays?: number | null, translation?: { __typename?: 'ShippingMethodTranslation', id: string, name?: string | null } | null, price: { __typename?: 'Money', currency: string, amount: number } }>, availablePaymentGateways: Array<{ __typename?: 'PaymentGateway', id: string, name: string, config: Array<{ __typename?: 'GatewayConfigLine', field: string, value?: string | null }> }>, lines: Array<{ __typename?: 'CheckoutLine', id: string, quantity: number, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, variant: { __typename?: 'ProductVariant', id: string, name: string, product: { __typename?: 'Product', id: string, name: string, slug: string, translation?: { __typename?: 'ProductTranslation', id: string, name?: string | null } | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null }, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null, translation?: { __typename?: 'ProductVariantTranslation', id: string, name: string } | null } }>, discount?: { __typename?: 'Money', currency: string, amount: number } | null, subtotalPrice: { __typename?: 'TaxedMoney', net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } };
 
@@ -16366,7 +16368,7 @@ export type CategoryBySlugQueryVariables = Exact<{
 }>;
 
 
-export type CategoryBySlugQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, seoTitle?: string | null, seoDescription?: string | null, description?: string | null, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, description?: string | null, name?: string | null } | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } }> } | null } | null };
+export type CategoryBySlugQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, seoTitle?: string | null, seoDescription?: string | null, description?: string | null, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, description?: string | null, name?: string | null } | null, backgroundImage?: { __typename?: 'Image', url: string, alt?: string | null } | null, ancestors?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } }> } | null, children?: { __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } }> } | null } | null };
 
 export type CategoryPathsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']>;
@@ -16404,6 +16406,15 @@ export type CurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentUserDetailsQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, lastLogin?: any | null, dateJoined: any, email: string, firstName: string, lastName: string, avatar?: { __typename?: 'Image', url: string, alt?: string | null } | null, orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null } | null } | null };
+
+export type FilteringAttributesQueryVariables = Exact<{
+  filter: AttributeFilterInput;
+  channel: Scalars['String'];
+  locale: LanguageCodeEnum;
+}>;
+
+
+export type FilteringAttributesQuery = { __typename?: 'Query', attributes?: { __typename?: 'AttributeCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'AttributeCountableEdge', node: { __typename?: 'Attribute', id: string, inputType?: AttributeInputTypeEnum | null, name?: string | null, slug?: string | null, withChoices: boolean, translation?: { __typename?: 'AttributeTranslation', id: string, name: string } | null, choices?: { __typename?: 'AttributeValueCountableConnection', edges: Array<{ __typename?: 'AttributeValueCountableEdge', cursor: string, node: { __typename?: 'AttributeValue', id: string, name?: string | null, slug?: string | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null } }> } | null } }> } | null };
 
 export type FooterMenuQueryVariables = Exact<{
   locale: LanguageCodeEnum;
@@ -16480,6 +16491,7 @@ export type ProductCollectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']>;
   after?: InputMaybe<Scalars['String']>;
   filter?: InputMaybe<ProductFilterInput>;
+  sortBy?: InputMaybe<ProductOrder>;
   channel: Scalars['String'];
   locale: LanguageCodeEnum;
 }>;
@@ -16500,6 +16512,32 @@ export type CurrentUserAddressesQueryVariables = Exact<{ [key: string]: never; }
 
 export type CurrentUserAddressesQuery = { __typename?: 'Query', me?: { __typename?: 'User', addresses?: Array<{ __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } }> | null } | null };
 
+export const AttributeFilterFragmentDoc = gql`
+    fragment AttributeFilterFragment on Attribute {
+  id
+  inputType
+  name
+  translation(languageCode: $locale) {
+    id
+    name
+  }
+  slug
+  withChoices
+  choices(first: 20) {
+    edges {
+      node {
+        id
+        name
+        slug
+        translation(languageCode: $locale) {
+          name
+        }
+      }
+      cursor
+    }
+  }
+}
+    `;
 export const CategoryBasicFragmentDoc = gql`
     fragment CategoryBasicFragment on Category {
   id
@@ -16532,6 +16570,13 @@ export const CategoryDetailsFragmentDoc = gql`
     ...ImageFragment
   }
   ancestors(first: 5) {
+    edges {
+      node {
+        ...CategoryBasicFragment
+      }
+    }
+  }
+  children(first: 10) {
     edges {
       node {
         ...CategoryBasicFragment
@@ -17930,6 +17975,48 @@ export function useCurrentUserDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type CurrentUserDetailsQueryHookResult = ReturnType<typeof useCurrentUserDetailsQuery>;
 export type CurrentUserDetailsLazyQueryHookResult = ReturnType<typeof useCurrentUserDetailsLazyQuery>;
 export type CurrentUserDetailsQueryResult = Apollo.QueryResult<CurrentUserDetailsQuery, CurrentUserDetailsQueryVariables>;
+export const FilteringAttributesQueryDocument = gql`
+    query FilteringAttributesQuery($filter: AttributeFilterInput!, $channel: String!, $locale: LanguageCodeEnum!) {
+  attributes(filter: $filter, first: 100, channel: $channel) {
+    totalCount
+    edges {
+      node {
+        ...AttributeFilterFragment
+      }
+    }
+  }
+}
+    ${AttributeFilterFragmentDoc}`;
+
+/**
+ * __useFilteringAttributesQuery__
+ *
+ * To run a query within a React component, call `useFilteringAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFilteringAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFilteringAttributesQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      channel: // value for 'channel'
+ *      locale: // value for 'locale'
+ *   },
+ * });
+ */
+export function useFilteringAttributesQuery(baseOptions: Apollo.QueryHookOptions<FilteringAttributesQuery, FilteringAttributesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FilteringAttributesQuery, FilteringAttributesQueryVariables>(FilteringAttributesQueryDocument, options);
+      }
+export function useFilteringAttributesQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FilteringAttributesQuery, FilteringAttributesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FilteringAttributesQuery, FilteringAttributesQueryVariables>(FilteringAttributesQueryDocument, options);
+        }
+export type FilteringAttributesQueryHookResult = ReturnType<typeof useFilteringAttributesQuery>;
+export type FilteringAttributesQueryLazyQueryHookResult = ReturnType<typeof useFilteringAttributesQueryLazyQuery>;
+export type FilteringAttributesQueryQueryResult = Apollo.QueryResult<FilteringAttributesQuery, FilteringAttributesQueryVariables>;
 export const FooterMenuDocument = gql`
     query FooterMenu($locale: LanguageCodeEnum!, $channel: String!) {
   menu(slug: "footer", channel: $channel) {
@@ -18375,13 +18462,14 @@ export type ProductBySlugQueryHookResult = ReturnType<typeof useProductBySlugQue
 export type ProductBySlugLazyQueryHookResult = ReturnType<typeof useProductBySlugLazyQuery>;
 export type ProductBySlugQueryResult = Apollo.QueryResult<ProductBySlugQuery, ProductBySlugQueryVariables>;
 export const ProductCollectionDocument = gql`
-    query ProductCollection($before: String, $after: String, $filter: ProductFilterInput, $channel: String!, $locale: LanguageCodeEnum!) {
+    query ProductCollection($before: String, $after: String, $filter: ProductFilterInput, $sortBy: ProductOrder, $channel: String!, $locale: LanguageCodeEnum!) {
   products(
     first: 4
     channel: $channel
     after: $after
     before: $before
     filter: $filter
+    sortBy: $sortBy
   ) {
     totalCount
     edges {
@@ -18415,6 +18503,7 @@ export const ProductCollectionDocument = gql`
  *      before: // value for 'before'
  *      after: // value for 'after'
  *      filter: // value for 'filter'
+ *      sortBy: // value for 'sortBy'
  *      channel: // value for 'channel'
  *      locale: // value for 'locale'
  *   },

@@ -20,7 +20,7 @@ export function AccountLayout({ children }: AccountLayoutProps) {
     );
   }
 
-  if (!authenticated && process.browser) {
+  if (!authenticated && typeof window !== "undefined") {
     router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
     return null;
   }

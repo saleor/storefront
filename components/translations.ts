@@ -276,7 +276,7 @@ export const messages = defineMessages({
   noProducts: {
     id: "app.ui.noProductsInfo",
     description: "Displayed when list has no products.",
-    defaultMessage: "No products",
+    defaultMessage: "Search query didn't return any viable results",
   },
   removeButton: {
     id: "app.ui.removeButton",

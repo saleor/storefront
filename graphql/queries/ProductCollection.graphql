@@ -2,10 +2,18 @@ query ProductCollection(
   $before: String
   $after: String
   $filter: ProductFilterInput
+  $sortBy: ProductOrder
   $channel: String!
   $locale: LanguageCodeEnum!
 ) {
-  products(first: 4, channel: $channel, after: $after, before: $before, filter: $filter) {
+  products(
+    first: 4
+    channel: $channel
+    after: $after
+    before: $before
+    filter: $filter
+    sortBy: $sortBy
+  ) {
     totalCount
     edges {
       cursor
