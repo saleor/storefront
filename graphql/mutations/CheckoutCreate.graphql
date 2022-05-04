@@ -1,4 +1,4 @@
-mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!, $channel: String!) {
+mutation CreateCheckout($email: String, $lines: [CheckoutLineInput!]!, $channel: String!) {
   checkoutCreate(input: { channel: $channel, email: $email, lines: $lines }) {
     checkout {
       id
