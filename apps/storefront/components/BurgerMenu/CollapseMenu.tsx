@@ -49,21 +49,14 @@ function SubCollapseMenu({ data }: CollapseMenuProps) {
           {open && (
             <div>
               {data?.children?.map((sub) => (
-                <li key={sub?.id}>
+                <li key={sub?.id} className={styles["menu-link"]}>
                   {sub?.url ? (
-                    <a
-                      href={sub.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles["menu-link"]}
-                    >
+                    <a href={sub.url} target="_blank" rel="noreferrer">
                       {sub?.name}
                     </a>
                   ) : (
                     <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
-                      <a href="pass" className={styles["menu-link"]}>
-                        {sub?.name}
-                      </a>
+                      <a href="pass">{sub?.name}</a>
                     </Link>
                   )}
                 </li>
