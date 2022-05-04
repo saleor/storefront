@@ -74,11 +74,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
               <p>{errors.email?.message}</p>
             </div>
             <div className="col-span-full">
-              <button
-                type="button"
-                className="btn-checkout-section"
-                onClick={() => onEmailFormSubmit}
-              >
+              <button type="submit" className="btn-checkout-section">
                 {t.formatMessage(messages.saveButton)}
               </button>
             </div>

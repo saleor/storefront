@@ -13960,7 +13960,7 @@ export type CheckoutCompleteMutationVariables = Exact<{
 export type CheckoutCompleteMutation = { __typename?: 'Mutation', checkoutComplete?: { __typename?: 'CheckoutComplete', confirmationNeeded: boolean, confirmationData?: string | null, order?: { __typename?: 'Order', id: string, status: OrderStatus, token: string, billingAddress?: { __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } } | null, shippingAddress?: { __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } } | null } | null, errors: Array<{ __typename?: 'CheckoutError', field?: string | null, message?: string | null, variants?: Array<string> | null, addressType?: AddressTypeEnum | null }> } | null };
 
 export type CreateCheckoutMutationVariables = Exact<{
-  email: Scalars['String'];
+  email?: InputMaybe<Scalars['String']>;
   lines: Array<CheckoutLineInput> | CheckoutLineInput;
   channel: Scalars['String'];
 }>;
@@ -14883,7 +14883,7 @@ export type CheckoutCompleteMutationHookResult = ReturnType<typeof useCheckoutCo
 export type CheckoutCompleteMutationResult = Apollo.MutationResult<CheckoutCompleteMutation>;
 export type CheckoutCompleteMutationOptions = Apollo.BaseMutationOptions<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>;
 export const CreateCheckoutDocument = gql`
-    mutation CreateCheckout($email: String!, $lines: [CheckoutLineInput!]!, $channel: String!) {
+    mutation CreateCheckout($email: String, $lines: [CheckoutLineInput!]!, $channel: String!) {
   checkoutCreate(input: {channel: $channel, email: $email, lines: $lines}) {
     checkout {
       id
