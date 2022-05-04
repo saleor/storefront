@@ -1,7 +1,8 @@
 import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -17,11 +18,21 @@ import UserMenu from "./UserMenu";
 
 export function Navbar() {
   const paths = usePaths();
+  const router = useRouter();
 
   const [isBurgerOpen, setBurgerOpen] = useState(false);
   const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
+
+  useEffect(() => {
+    // Close side menu after changing the page
+    router.events.on("routeChangeStart", () => {
+      if (isBurgerOpen) {
+        setBurgerOpen(false);
+      }
+    });
+  });
 
   const counter =
     checkout?.lines?.reduce(
