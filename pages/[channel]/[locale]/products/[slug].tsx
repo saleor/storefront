@@ -188,7 +188,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             type="submit"
             disabled={isAddToCartButtonDisabled}
             className={clsx(
-              "w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white hover:bg-blue-700 focus:outline-none",
+              "w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-md text-white hover:bg-blue-700 focus:outline-none",
               isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400"
             )}
           >
