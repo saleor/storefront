@@ -32,13 +32,12 @@ import {
 export type OptionalQuery = {
   variant?: string;
 };
-export const getStaticPaths: GetStaticPaths = async () =>
-  // Temporally do not render all possible products during the build time
-  // const paths = await productPaths();
-  ({
-    paths: [],
-    fallback: "blocking",
-  });
+
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: "blocking",
+});
+
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const productSlug = context.params?.slug?.toString()!;
   const response: ApolloQueryResult<ProductBySlugQuery> = await apolloClient.query<
