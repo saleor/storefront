@@ -112,7 +112,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
       // Theres no checkout, we have to create one
       const { data: createCheckoutData } = await createCheckout({
         variables: {
-          email: user?.email || "anonymous@example.com",
+          email: user?.email,
           channel: currentChannel.slug,
           lines: [
             {
