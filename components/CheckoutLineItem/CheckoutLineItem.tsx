@@ -122,10 +122,10 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
               <input
                 type="number"
                 className={clsx(
-                  "h-8 w-16 block border-gray-300 rounded-md shadow-sm sm:text-sm",
+                  "h-8 mt-2 w-16 block border-gray-300 rounded-md shadow-sm sm:text-sm",
                   errors && "border-red-500"
                 )}
-                value={quantity}
+                defaultValue={quantity}
                 onFocus={() => {
                   setErrors(null);
                 }}
