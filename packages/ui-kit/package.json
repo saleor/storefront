@@ -1,27 +1,34 @@
 {
   "name": "@saleor/ui-kit",
   "version": "0.0.0",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "license": "BSD-3-Clause",
   "files": [
     "dist/**"
   ],
   "scripts": {
-    "build": "tsup --inject ./react_import.js",
-    "dev": "PORT=3000 tsup",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
     "lint": "eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "peerDependencies": {
-    "react": "^18",
-    "react-dom": "^18"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "resolutions": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-typescript": "^8.3.2",
     "@storybook/addon-actions": "^6.4.22",
     "@storybook/addon-essentials": "^6.4.22",
     "@storybook/addon-interactions": "^6.4.22",
@@ -37,21 +44,23 @@
     "config": "*",
     "css-loader": "^3.6.0",
     "css-modules-typescript-loader": "^4.0.1",
-    "esbuild-css-modules-plugin": "^2.2.12",
     "postcss": "^8.4.12",
-    "postcss-csso": "^6.0.0",
     "postcss-loader": "4.3.0",
     "react": "^18.1.0",
     "react-docgen-typescript": "^2.2.2",
-    "react-dom": "^18.1.0",
+    "rollup-plugin-dts": "^4.2.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2",
     "style-loader": "^1.3.0",
     "tailwindcss": "3.0.18",
     "tsconfig": "*",
-    "tsup": "^5.11.11",
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "@headlessui/react": "^1.6.0",
-    "clsx": "^1.1.1"
+    "@headlessui/react": "1.6.0",
+    "clsx": "^1.1.1",
+    "rollup": "^2.70.2",
+    "tslib": "^2.4.0"
   }
 }

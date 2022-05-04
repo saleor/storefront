@@ -13,7 +13,7 @@ export interface RadioProps
   >;
 }
 
-export const Checkbox = forwardRef(
+export const Radio = forwardRef(
   (
     { label, checked, value, classNames, ...rest }: RadioProps,
     ref: Ref<HTMLInputElement>
@@ -25,7 +25,7 @@ export const Checkbox = forwardRef(
         <div className={clsx(styles["box"])}>
           <input
             ref={ref}
-            type='radio'
+            type="radio"
             value={value}
             checked={checked}
             id={id}
