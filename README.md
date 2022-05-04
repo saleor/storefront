@@ -39,6 +39,13 @@ Set up your local storefront development environment by running the `storefront 
 saleor storefront create
 ```
 
+If you don't want to customize available options, you can also spawn a fully functional local storefront development environment, using`--demo` switch:
+
+```
+saleor storefront create --demo
+```
+
+
 [Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli)
 
 
