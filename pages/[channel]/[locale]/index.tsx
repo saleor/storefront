@@ -7,7 +7,6 @@ import { BaseSeo } from "@/components/seo/BaseSeo";
 import { HOMEPAGE_MENU } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
-import { homepagePaths } from "@/lib/ssr/homepage";
 import {
   HomepageBlocksQuery,
   HomepageBlocksQueryDocument,
@@ -54,13 +53,10 @@ function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
 
 export default Home;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = homepagePaths();
-  return {
-    paths,
-    fallback: "blocking",
-  };
-};
+export const getStaticPaths: GetStaticPaths = () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
