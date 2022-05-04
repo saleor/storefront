@@ -18,7 +18,8 @@ function CheckoutPage() {
     }
   });
 
-  if (loading) {
+  const isCheckoutLoading = loading || typeof window === "undefined";
+  if (isCheckoutLoading) {
     return (
       <>
         <Spinner />
@@ -35,7 +36,7 @@ function CheckoutPage() {
     <>
       <BaseSeo title="Checkout" />
 
-      <main className="min-h-screen w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
+      <main className="w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
         <div className="md:w-2/3 w-full">
           <CheckoutForm />
         </div>
