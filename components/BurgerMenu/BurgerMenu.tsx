@@ -1,5 +1,5 @@
 import { useApolloClient } from "@apollo/client";
-import { useAuth } from "@saleor/sdk";
+import { useAuth, useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,6 +26,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   const t = useIntl();
 
   const { logout } = useAuth();
+  const { authenticated } = useAuthState();
   const { resetCheckoutToken } = useCheckout();
   const router = useRouter();
   const client = useApolloClient();
@@ -66,19 +67,32 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
         })}
         <div className="mt-auto pt-4">
           <div className="flex flex-col">
-            <Link href={paths.account.preferences.$url()} passHref>
-              <a tabIndex={0} className={styles["burger-link"]} href="pass">
-                {t.formatMessage(messages.menuAccountPreferences)}
-              </a>
-            </Link>
-            <button
-              type="button"
-              onClick={onLogout}
-              tabIndex={-1}
-              className={styles["burger-link"]}
-            >
-              {t.formatMessage(messages.logOut)}
-            </button>
+            {authenticated ? (
+              <>
+                <Link href={paths.account.preferences.$url()} passHref>
+                  <a tabIndex={0} className={styles["burger-link"]} href="pass">
+                    {t.formatMessage(messages.menuAccountPreferences)}
+                  </a>
+                </Link>
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  tabIndex={-1}
+                  className={styles["burger-link"]}
+                >
+                  {t.formatMessage(messages.logOut)}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => router.push(paths.account.login.$url())}
+                tabIndex={-1}
+                className={styles["burger-link"]}
+              >
+                {t.formatMessage(messages.logIn)}
+              </button>
+            )}
           </div>
         </div>
       </div>
