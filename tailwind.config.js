@@ -43,7 +43,8 @@ module.exports = {
         DEFAULT: "1px",
       },
       fontFamily: {
-        sans: ["Inconsolata"],
+        sans: ["sans-serif", "Arial", "Muli"],
+        serif: ["Noto Serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
       },
       fontWeight: {
         normal: 400,
