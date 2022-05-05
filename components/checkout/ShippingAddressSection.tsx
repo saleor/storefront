@@ -80,30 +80,33 @@ export function ShippingAddressSection({ active, checkout }: ShippingAddressSect
           {t.formatMessage(messages.shippingAddressCardHeader)}
         </h2>
       </div>
-      {active && editing ? (
-        <>
-          {authenticated && (
-            <SavedAddressSelectionList
-              updateAddressMutation={(address: AddressFormData) => updateMutation(address)}
+      {active &&
+        (editing ? (
+          <>
+            {authenticated && (
+              <SavedAddressSelectionList
+                updateAddressMutation={(address: AddressFormData) => updateMutation(address)}
+              />
+            )}
+            <div className="col-span-full">
+              <button type="button" className="btn-checkout-section" onClick={onSameAsBilling}>
+                {t.formatMessage(messages.sameAsBillingButton)}
+              </button>
+            </div>
+            <AddressForm
+              existingAddressData={checkout.shippingAddress || undefined}
+              toggleEdit={() => setEditing(false)}
+              updateAddressMutation={updateMutation}
             />
-          )}
-          <div className="col-span-full">
-            <button type="button" className="btn-checkout-section" onClick={onSameAsBilling}>
-              {t.formatMessage(messages.sameAsBillingButton)}
-            </button>
-          </div>
-          <AddressForm
-            existingAddressData={checkout.shippingAddress || undefined}
-            toggleEdit={() => setEditing(false)}
-            updateAddressMutation={updateMutation}
-          />
-        </>
-      ) : (
-        <section className="flex justify-between items-center mb-4">
-          {!!checkout.shippingAddress && <AddressDisplay address={checkout.shippingAddress} />}
-          <Button onClick={() => setEditing(true)}>{t.formatMessage(messages.changeButton)}</Button>
-        </section>
-      )}
+          </>
+        ) : (
+          <section className="flex justify-between items-center mb-4">
+            {!!checkout.shippingAddress && <AddressDisplay address={checkout.shippingAddress} />}
+            <Button onClick={() => setEditing(true)}>
+              {t.formatMessage(messages.changeButton)}
+            </Button>
+          </section>
+        ))}
     </>
   );
 }
