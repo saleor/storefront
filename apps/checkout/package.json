@@ -5,7 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.10",
     "@craco/craco": "^6.4.3",
-    "@headlessui/react": "^1.4.3",
+    "@headlessui/react": "^1.6.0",
     "@hookform/error-message": "^2.0.0",
     "@react-aria/i18n": "^3.3.4",
     "@react-types/button": "^3.4.1",

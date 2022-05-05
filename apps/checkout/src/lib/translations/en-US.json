@@ -83,5 +83,12 @@
   "companyName": "Company",
   "streetAddress1": "Street address",
   "streetAddress2": "Street address (continue)",
-  "phone": "Phone number"
+  "phone": "Phone number",
+  "orderConfirmationTitle": "Order #{number} confirmed",
+  "orderConfirmationSubtitle": "Thank you for placing your order. We’ve received it and we will contact you as soon as your package is shipped. A confirmation email has been sent to {email}.",
+  "shippingMethodSection": "Shipping method",
+  "shippingDeliveryEstimate": "{deliveryDaysRange} business days",
+  "unpaidOrderMessage": "The order has not been paid for. If you ordered a payment - check for the confirmation.",
+  "paidOrderMessage": "We've received your payment.",
+  "paymentSection": "Payment"
 }

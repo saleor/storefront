@@ -28,12 +28,12 @@ jobs:
 
       - name: Run tsc
         run: |
-          pnpm run check-types -- --scope="checkout-app"
+          pnpm run check-types --scope="checkout-app"
 
       - name: Run lint
         run: |
-          pnpm run lint -- --scope="checkout-app"
+          pnpm run lint --scope="checkout-app"
 
       - name: Run tests
         run: |
-          pnpm run test -- --scope="checkout-app"
+          pnpm run test --scope="checkout-app"

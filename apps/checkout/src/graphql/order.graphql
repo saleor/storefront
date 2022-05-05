@@ -1,0 +1,97 @@
+fragment Money on Money {
+  currency
+  amount
+}
+
+fragment OrderLineFragment on OrderLine {
+  id
+  quantity
+  totalPrice {
+    gross {
+      ...Money
+    }
+  }
+  undiscountedUnitPrice {
+    gross {
+      ...Money
+    }
+  }
+  unitPrice {
+    gross {
+      ...Money
+    }
+  }
+  productName
+  variantName
+  thumbnail {
+    alt
+    url
+  }
+}
+
+fragment AddressFragment on Address {
+  id
+  city
+  phone
+  postalCode
+  companyName
+  cityArea
+  streetAddress1
+  streetAddress2
+  countryArea
+  country {
+    country
+    code
+  }
+  firstName
+  lastName
+}
+
+fragment Shipping on ShippingMethod {
+  name
+  minimumDeliveryDays
+  maximumDeliveryDays
+}
+
+fragment Order on Order {
+  number
+  userEmail
+  isPaid
+  paymentStatus
+  shippingAddress {
+    ...AddressFragment
+  }
+  billingAddress {
+    ...AddressFragment
+  }
+  deliveryMethod {
+    ...Shipping
+  }
+  total {
+    gross {
+      ...Money
+    }
+    tax {
+      ...Money
+    }
+  }
+  shippingPrice {
+    gross {
+      ...Money
+    }
+  }
+  subtotal {
+    gross {
+      ...Money
+    }
+  }
+  lines {
+    ...OrderLineFragment
+  }
+}
+
+query order($token: UUID!) {
+  orderByToken(token: $token) {
+    ...Order
+  }
+}

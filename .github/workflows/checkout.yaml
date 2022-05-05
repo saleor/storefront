@@ -28,8 +28,8 @@ jobs:
 
       - name: Run tsc
         run: |
-          pnpm run check-types -- --scope="checkout"
+          pnpm run check-types --scope="checkout"
 
       - name: Run lint
         run: |
-          pnpm run lint -- --scope="checkout"
+          pnpm run lint --scope="checkout"

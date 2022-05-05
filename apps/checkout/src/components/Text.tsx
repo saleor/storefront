@@ -4,7 +4,7 @@ import { Classes } from "@/lib/globalTypes";
 
 export interface TextProps extends Classes {
   size?: "sm" | "md" | "lg";
-  color?: "secondary" | "tertiary" | "error";
+  color?: "secondary" | "tertiary" | "error" | "success";
   weight?: "normal" | "regular" | "semibold" | "bold";
   className?: string;
   ariaLabel?: string;
@@ -27,6 +27,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       "text-text-secondary": color === "secondary",
       "text-text-tertiary": color === "tertiary",
       "text-error": color === "error",
+      "text-success": color === "success",
       "text-sm": size === "sm",
       "text-base": !size,
       "text-md": size === "md",

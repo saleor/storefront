@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Text } from "@/components/Text";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
-import { CheckoutLine } from "@/graphql";
 import { Divider } from "@/components/Divider";
 import { Money } from "@/components/Money";
 import { ChevronDownIcon } from "@/icons";
@@ -10,6 +9,8 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useCheckout } from "@/hooks/useCheckout";
 import { compact } from "lodash-es";
+
+import { getTaxPercentage } from "./utils";
 
 export const Summary = () => {
   const [isOpen, setOpen] = useState(true);
@@ -19,14 +20,7 @@ export const Summary = () => {
 
   const totalPrice = checkout?.totalPrice?.gross;
   const taxCost = checkout?.totalPrice?.tax;
-
-  const getTaxPercentage = (): number => {
-    if (!totalPrice || !taxCost) {
-      return 0;
-    }
-
-    return taxCost?.amount / totalPrice?.amount;
-  };
+  const taxPercentage = getTaxPercentage(taxCost, totalPrice);
 
   return (
     <div className="summary">
@@ -35,7 +29,6 @@ export const Summary = () => {
           <Text size="lg" weight="bold">
             {formatMessage("summary")}
           </Text>
-
           <img
             src={ChevronDownIcon}
             alt="chevron-down"
@@ -57,7 +50,7 @@ export const Summary = () => {
         <div className="w-full h-12" />
         <ul className="summary-items">
           {compact(checkout?.lines)?.map((line) => (
-            <SummaryItem line={line as CheckoutLine} key={line?.id} />
+            <SummaryItem line={line} key={line?.id} />
           ))}
         </ul>
         <div className="summary-recap">
@@ -73,7 +66,7 @@ export const Summary = () => {
           <div className="summary-row">
             <Text color="secondary">
               {formatMessage("taxCost", {
-                taxPercentage: getTaxPercentage(),
+                taxPercentage,
               })}
             </Text>
             <Money color="secondary" money={taxCost} />

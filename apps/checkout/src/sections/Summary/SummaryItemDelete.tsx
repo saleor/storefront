@@ -1,12 +1,12 @@
 import { IconButton } from "@/components/IconButton";
 import React from "react";
 import { CloseIcon as DeleteIcon } from "@/icons";
-import { CheckoutLine, useCheckoutLineDeleteMutation } from "@/graphql";
+import { CheckoutLineFragment, useCheckoutLineDeleteMutation } from "@/graphql";
 import { getDataWithToken } from "@/lib/utils";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 
 interface LineItemDeleteProps {
-  line: CheckoutLine;
+  line: CheckoutLineFragment;
 }
 
 export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({

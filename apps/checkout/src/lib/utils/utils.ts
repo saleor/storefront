@@ -16,13 +16,16 @@ export const getDataWithToken = <TData extends {} = {}>(
 });
 
 export type QueryVariables = Record<
-  "checkoutToken" | "passwordResetToken" | "email",
+  "checkoutToken" | "passwordResetToken" | "email" | "orderToken",
   string
 >;
 
 export const getQueryVariables = (): Partial<QueryVariables> => {
   const vars = queryString.parse(location.search);
-  return { ...vars, passwordResetToken: vars.token as string | undefined };
+  return {
+    ...vars,
+    passwordResetToken: vars.token as string | undefined,
+  };
 };
 
 export const getCurrentHref = () => location.href;

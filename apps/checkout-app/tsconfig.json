@@ -4,12 +4,15 @@
     "strict": true,
     "noEmit": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      // https://github.com/facebook/react/issues/24304
+      // Remove when this gets updated to React 18
+      "react": ["./node_modules/@types/react"]
     },
     "declaration": false,
     "declarationMap": false
   },
-  "extends": "../../packages/tsconfig/nextjs.json",
+  "extends": "tsconfig/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

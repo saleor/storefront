@@ -241,10 +241,6 @@ html {
     @apply text-lg font-bold;
   }
 
-  .summary-title .text {
-    @apply sm:text-xl;
-  }
-
   .summary-title .money {
     @apply sm:hidden;
   }
@@ -284,5 +280,18 @@ html {
 
   .actions {
     @apply flex flex-row w-full justify-end items-center;
+  }
+
+  /* Order confirmation */
+  .order-header {
+    @apply mb-8;
+  }
+
+  .order-content {
+    @apply flex flex-col lg:flex-row w-full mt-8;
+  }
+
+  .order-divider {
+    @apply h-6 md:h-full w-full md:w-12 xl:w-18;
   }
 }
