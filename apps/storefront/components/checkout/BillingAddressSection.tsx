@@ -48,25 +48,28 @@ export function BillingAddressSection({ active, checkout }: BillingAddressSectio
           {t.formatMessage(messages.billingAddressCardHeader)}
         </h2>
       </div>
-      {active && editing ? (
-        <>
-          {authenticated && (
-            <SavedAddressSelectionList
-              updateAddressMutation={(address: AddressFormData) => updateMutation(address)}
+      {active &&
+        (editing ? (
+          <>
+            {authenticated && (
+              <SavedAddressSelectionList
+                updateAddressMutation={(address: AddressFormData) => updateMutation(address)}
+              />
+            )}
+            <AddressForm
+              existingAddressData={checkout.billingAddress || undefined}
+              toggleEdit={() => setEditing(false)}
+              updateAddressMutation={updateMutation}
             />
-          )}
-          <AddressForm
-            existingAddressData={checkout.billingAddress || undefined}
-            toggleEdit={() => setEditing(false)}
-            updateAddressMutation={updateMutation}
-          />
-        </>
-      ) : (
-        <section className="flex justify-between items-center mb-4">
-          {!!checkout.billingAddress && <AddressDisplay address={checkout.billingAddress} />}
-          <Button onClick={() => setEditing(true)}>{t.formatMessage(messages.changeButton)}</Button>
-        </section>
-      )}
+          </>
+        ) : (
+          <section className="flex justify-between items-center mb-4">
+            {!!checkout.billingAddress && <AddressDisplay address={checkout.billingAddress} />}
+            <Button onClick={() => setEditing(true)}>
+              {t.formatMessage(messages.changeButton)}
+            </Button>
+          </section>
+        ))}
     </>
   );
 }
