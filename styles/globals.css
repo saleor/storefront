@@ -34,3 +34,17 @@
 html {
   font-size: 62.5%;
 }
+
+body {
+  @apply text-black subpixel-antialiased font-serif text-base;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-sans font-extrabold;
+  color: #2d384e;
+}

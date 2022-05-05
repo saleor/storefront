@@ -45,18 +45,18 @@ export function Navbar() {
 
   return (
     <>
-      <div className="bg-white shadow-sm">
+      <div className="bg-white shadow-sm m-6">
         <div className="container">
           <div className="flex justify-between h-16">
             <div className="flex justify-between items-center">
-              <MainMenu />
               <Link href={paths.$url()} passHref>
                 <a href="pass">
-                  <div className="mt-px group block h-16 w-28 relative">
-                    <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
+                  <div className="mt-px group block h-14 w-80 relative ">
+                    <Image src="/images/logo_blue.png" alt="CSPI logo" layout="fill" />
                   </div>
                 </a>
               </Link>
+              <MainMenu />
             </div>
             <div className="flex space-x-px md:space-x-8 items-center">
               <Link href={paths.search.$url()} passHref>
@@ -68,7 +68,7 @@ export function Navbar() {
                 <button
                   type="button"
                   tabIndex={-1}
-                  className="group -m-2 p-2 flex items-center text-sm font-medium text-gray-700 group-hover:text-gray-800"
+                  className="group -m-2 p-2 flex items-center text-base font-medium text-gray-700 group-hover:text-gray-800"
                   onClick={() => setRegionDialogOpen(true)}
                 >
                   {currentChannel.currencyCode}
@@ -80,7 +80,7 @@ export function Navbar() {
                     className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
                   />
-                  <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                  <span className="ml-2 text-base font-medium text-gray-700 group-hover:text-gray-800">
                     {counter}
                   </span>
                 </a>
@@ -92,7 +92,7 @@ export function Navbar() {
                       className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
                       aria-hidden="true"
                     />
-                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                    <span className="ml-2 text-base font-medium text-gray-700 group-hover:text-gray-800">
                       {t.formatMessage(messages.logIn)}
                     </span>
                   </a>
@@ -103,7 +103,7 @@ export function Navbar() {
                 <div className="group -m-2 p-2  text-left dropdown flex items-center z-40">
                   <span className="rounded-md shadow-sm">
                     <button
-                      className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800"
+                      className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800"
                       type="button"
                       aria-haspopup="true"
                       aria-expanded="true"
@@ -114,7 +114,7 @@ export function Navbar() {
                           className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
                           aria-hidden="true"
                         />
-                        <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                        <span className="ml-2 text-base font-medium text-gray-700 group-hover:text-gray-800">
                           {user?.firstName}
                         </span>
                       </p>
@@ -139,7 +139,7 @@ export function Navbar() {
                           <a
                             href="pass"
                             tabIndex={0}
-                            className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
+                            className="text-gray-700 flex justify-between w-full px-4 py-2 text-base leading-5 text-left"
                           >
                             {t.formatMessage(messages.menuAccountPreferences)}
                           </a>
@@ -150,7 +150,7 @@ export function Navbar() {
                           type="button"
                           onClick={onLogout}
                           tabIndex={-1}
-                          className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left hover:text-blue-500 cursor-pointer"
+                          className="text-gray-700 flex justify-between w-full px-4 py-2 text-base leading-5 text-left hover:text-blue-500 cursor-pointer"
                         >
                           {t.formatMessage(messages.logOut)}
                         </button>
@@ -160,6 +160,11 @@ export function Navbar() {
                 </div>
               )}
             </div>
+          </div>
+          <div>
+            <h1 className="uppercase leading-tight font-normal">
+              {process.env.NEXT_PUBLIC_STOREFRONT_NAME || ""}
+            </h1>
           </div>
         </div>
       </div>
