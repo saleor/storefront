@@ -14,17 +14,21 @@ export const mollieClient = createMollieClient({
   apiKey: process.env.MOLLIE_API_KEY!,
 });
 
-export const createMolliePayment = async (data: OrderFragment) => {
+export const createMolliePayment = async (
+  data: OrderFragment,
+  redirectUrl: string
+) => {
   const discountLines = getDiscountLines(data.discounts);
   const shippingLines = getShippingLines(data);
   const lines = getLines(data.lines);
+  const url = new URL(redirectUrl);
+  url.searchParams.set("order", data.token);
 
   const mollieData = await mollieClient.orders.create({
     orderNumber: data.number!,
     webhookUrl: `${APP_URL}/api/webhooks/mollie`,
     locale: "en_US",
-    // INFO: ENV is temporary, this should be passed as parameter to /pay endpoint
-    redirectUrl: `${process.env.REDIRECT_URL}/${data.token}`,
+    redirectUrl: url.toString(),
     metadata: {
       orderId: data.id,
     },

@@ -12,7 +12,8 @@ export type Body = {
   provider: PaymentProviderID;
   checkoutId: string;
   totalAmount: number;
-  captureAmount?: number; // support for partial payments
+  redirectUrl: string;
+  // captureAmount?: number; // support for partial payments
 };
 
 export type MollieResponse = {
@@ -60,7 +61,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   let response: Response;
 
   if (body.provider === "mollie") {
-    const url = await createMolliePayment(order.data);
+    const url = await createMolliePayment(order.data, body.redirectUrl);
 
     if (url) {
       response = {

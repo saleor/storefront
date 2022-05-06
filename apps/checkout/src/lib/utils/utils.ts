@@ -16,7 +16,11 @@ export const getDataWithToken = <TData extends {} = {}>(
 });
 
 export type QueryVariables = Record<
-  "checkoutToken" | "passwordResetToken" | "email" | "orderToken",
+  | "checkoutToken"
+  | "passwordResetToken"
+  | "email"
+  | "orderToken"
+  | "redirectUrl",
   string
 >;
 
@@ -24,6 +28,7 @@ export const getQueryVariables = (): Partial<QueryVariables> => {
   const vars = queryString.parse(location.search);
   return {
     ...vars,
+    orderToken: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
   };
 };

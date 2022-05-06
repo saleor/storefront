@@ -15,10 +15,12 @@ export const pay = ({
   checkoutId,
   totalAmount,
   provider,
+  redirectUrl,
 }: {
   checkoutId: string;
   totalAmount: number;
   provider: string;
+  redirectUrl: string;
 }): FetchResponse<PayResult> =>
   fetch(`${envVars.checkoutAppUrl}/pay`, {
     method: "POST",
@@ -26,6 +28,7 @@ export const pay = ({
       provider,
       checkoutId,
       totalAmount,
+      redirectUrl,
     }),
   });
 

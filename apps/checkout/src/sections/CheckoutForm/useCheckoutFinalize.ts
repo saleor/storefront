@@ -5,7 +5,21 @@ import { extractMutationErrors } from "@/lib/utils";
 import { useErrors } from "@/providers/ErrorsProvider";
 import { useAuth, useAuthState } from "@saleor/sdk";
 import { omit } from "lodash-es";
+
 import { FormData } from "./types";
+
+const getRedirectUrl = () => {
+  const url = new URL(window.location.href);
+  const redirectUrl = url.searchParams.get("redirectUrl");
+
+  // get redirectUrl from query params (passed from storefront)
+  if (redirectUrl) {
+    return redirectUrl;
+  }
+
+  // return existing url without any search params
+  return location.origin + location.pathname;
+};
 
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
@@ -15,10 +29,12 @@ export const useCheckoutFinalize = () => {
   const { setApiErrors, hasErrors } = useErrors<FormData>("userRegister");
 
   const checkoutPay = async () => {
+    const redirectUrl = getRedirectUrl();
     const result = await pay({
       provider: "mollie",
       checkoutId: checkout?.id,
       totalAmount: checkout?.totalPrice?.gross?.amount as number,
+      redirectUrl,
     });
 
     if (result?.data?.checkoutUrl) {
@@ -28,7 +44,7 @@ export const useCheckoutFinalize = () => {
 
   const handleUserRegister = async (formData: FormData) => {
     const registerFormData = omit(formData, "createAccount");
-    // adding redirect url becuase api is broken and requires it
+    // adding redirect url because api is broken and requires it
     // despite te types saying otherwise
     const result = await register({ ...registerFormData, redirectUrl: "" });
 
