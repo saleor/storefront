@@ -30,7 +30,7 @@ export function CheckoutProductList({ lines, token }: CheckoutProductListProps) 
               {line.variant.product?.thumbnail && (
                 <Image
                   src={line.variant.product?.thumbnail?.url}
-                  alt={line.variant.product?.thumbnail?.alt}
+                  alt={line.variant.product?.thumbnail?.alt || ""}
                   layout="fill"
                 />
               )}
