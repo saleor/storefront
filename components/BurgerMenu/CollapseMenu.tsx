@@ -8,7 +8,7 @@ import { MenuItemWithChildrenFragment } from "@/saleor/api";
 
 import { useRegions } from "../RegionsProvider";
 import styles from "./BurgerMenu.module.css";
-import ChebronDown from "./chevronDownIcon.svg"; // in the final version it should be imported from ui-kit package
+import ChevronDown from "./chevronDownIcon.svg"; // in the final version it should be imported from ui-kit package
 
 interface CollapseMenuProps {
   data: MenuItemWithChildrenFragment;
@@ -23,7 +23,7 @@ function SubCollapseMenu({ data }: CollapseMenuProps) {
       {translate(data, "name")}
     </a>
   ) : (
-    <Link href={getLinkPath(data!, currentChannel.slug, currentLocale)} passHref>
+    <Link href={getLinkPath(data, currentChannel.slug, currentLocale)} passHref>
       <a href="pass" className={styles["collapse-sub"]}>
         {translate(data, "name")}
       </a>
@@ -44,19 +44,19 @@ function SubCollapseMenu({ data }: CollapseMenuProps) {
             onClick={() => setOpen(!open)}
           >
             {translate(data, "name")}
-            <ChebronDown />
+            <ChevronDown />
           </button>
           {open && (
             <div>
               {data?.children?.map((sub) => (
-                <li key={sub?.id} className={styles["menu-link"]}>
-                  {sub?.url ? (
+                <li key={sub.id} className={styles["menu-link"]}>
+                  {sub.url ? (
                     <a href={sub.url} target="_blank" rel="noreferrer">
-                      {sub?.name}
+                      {sub.name}
                     </a>
                   ) : (
-                    <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
-                      <a href="pass">{sub?.name}</a>
+                    <Link href={getLinkPath(sub, currentChannel.slug, currentLocale)} passHref>
+                      <a href="pass">{sub.name}</a>
                     </Link>
                   )}
                 </li>
@@ -90,7 +90,7 @@ function CollapseMenu({ data }: CollapseMenuProps) {
   );
 
   return (
-    <div className={styles.collpase}>
+    <div className={styles.collapse}>
       {!data?.children?.length ? (
         anchor
       ) : (
@@ -106,10 +106,9 @@ function CollapseMenu({ data }: CollapseMenuProps) {
           </button>
           {open && (
             <div>
-              {data.children.map((item) => {
-                if (!item) return null;
-                return <SubCollapseMenu data={item} />;
-              })}
+              {data.children.map((item) => (
+                <SubCollapseMenu data={item} />
+              ))}
             </div>
           )}
         </>
