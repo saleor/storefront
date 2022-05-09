@@ -1,13 +1,10 @@
-import { useApolloClient } from "@apollo/client";
-import { useAuth } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { HTMLAttributes } from "react";
 import { useIntl } from "react-intl";
 
+import { useLogout } from "@/lib/auth";
 import { usePaths } from "@/lib/paths";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
 import { messages } from "../translations";
 import styles from "./Navbar.module.css";
@@ -18,18 +15,8 @@ type UserMenuProps = Pick<HTMLAttributes<HTMLDivElement>, "className">;
 function UserMenu({ className, ...rest }: UserMenuProps) {
   const paths = usePaths();
   const t = useIntl();
-  const { logout } = useAuth();
-  const { resetCheckoutToken } = useCheckout();
-  const router = useRouter();
-  const client = useApolloClient();
 
-  const onLogout = async () => {
-    // clear all the user data on logout
-    await logout();
-    await resetCheckoutToken();
-    await client.resetStore();
-    router.push(paths.$url());
-  };
+  const onLogout = useLogout();
 
   return (
     <div className={clsx(styles["user-menu-container"], className)} {...rest}>

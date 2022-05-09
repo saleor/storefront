@@ -1,12 +1,11 @@
-import { useApolloClient } from "@apollo/client";
-import { useAuth, useAuthState } from "@saleor/sdk";
+import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
 
+import { useLogout } from "@/lib/auth";
 import { usePaths } from "@/lib/paths";
-import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { useMainMenuQuery } from "@/saleor/api";
 
 import NavIconButton from "../Navbar/NavIconButton";
@@ -25,11 +24,8 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   const { query } = useRegions();
   const t = useIntl();
 
-  const { logout } = useAuth();
   const { authenticated } = useAuthState();
-  const { resetCheckoutToken } = useCheckout();
   const router = useRouter();
-  const client = useApolloClient();
 
   const { error, data } = useMainMenuQuery({
     variables: { ...query },
@@ -39,13 +35,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
     console.error("BurgerMenu component error", error.message);
   }
 
-  const onLogout = async () => {
-    // clear all the user data on logout
-    await logout();
-    await resetCheckoutToken();
-    await client.resetStore();
-    router.push(paths.$url());
-  };
+  const onLogout = useLogout();
 
   const menu = data?.menu?.items || [];
 
