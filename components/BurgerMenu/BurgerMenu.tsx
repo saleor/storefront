@@ -60,11 +60,9 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
         <div className="flex justify-end w-full mb-5">
           <NavIconButton icon="close" onClick={onCloseClick} />
         </div>
-        {menu.map((item) => {
-          if (!item) return null;
-
-          return <CollapseMenu data={item} key={item.id} />;
-        })}
+        {menu.map((item) => (
+          <CollapseMenu data={item} key={item.id} />
+        ))}
         <div className="mt-auto pt-4">
           <div className="flex flex-col">
             {authenticated ? (
