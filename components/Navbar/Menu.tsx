@@ -17,21 +17,16 @@ export function Menu() {
     console.error("Navbar/Menu component error", error.message);
   }
 
-  const menu = data?.menu?.items || [];
+  const menuItems = data?.menu?.items || [];
 
   return (
     <nav className={styles.nav}>
       <ol>
-        {menu?.map((item) => {
-          if (!item) {
-            return null;
-          }
-          return (
-            <li key={item?.id}>
-              <DropdownMenu key={item?.id} data={item} />
-            </li>
-          );
-        })}
+        {menuItems.map((item) => (
+          <li key={item?.id}>
+            <DropdownMenu key={item?.id} menuItem={item} />
+          </li>
+        ))}
       </ol>
     </nav>
   );
