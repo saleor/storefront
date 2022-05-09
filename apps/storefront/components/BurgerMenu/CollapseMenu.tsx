@@ -1,43 +1,26 @@
 import clsx from "clsx";
-import Link from "next/link";
 import { useState } from "react";
 
-import { getLinkPath } from "@/lib/menus";
 import { translate } from "@/lib/translations";
 import { MenuItemWithChildrenFragment } from "@/saleor/api";
 
-import { useRegions } from "../RegionsProvider";
+import { NavigationAnchor } from "../NavigationAnchor";
 import styles from "./BurgerMenu.module.css";
 import SubCollapseMenu from "./SubCollapseMenu";
 
 export interface CollapseMenuProps {
-  data: MenuItemWithChildrenFragment;
+  menuItem: MenuItemWithChildrenFragment;
 }
 
-function CollapseMenu({ data }: CollapseMenuProps) {
+export function CollapseMenu({ menuItem }: CollapseMenuProps) {
   const [open, setOpen] = useState(false);
 
-  const {
-    currentChannel: { slug },
-    currentLocale,
-  } = useRegions();
-
-  const anchor = data.url ? (
-    <a href={data.url} target="_blank" rel="noreferrer" className={styles["collapse-main"]}>
-      {translate(data, "name")}
-    </a>
-  ) : (
-    <Link href={getLinkPath(data!, slug, currentLocale)} passHref>
-      <a href="pass" className={styles["collapse-main"]}>
-        {translate(data, "name")}
-      </a>
-    </Link>
-  );
+  const shouldDisplayAnchor = !menuItem.children?.length;
 
   return (
     <div className={styles.collapse}>
-      {!data?.children?.length ? (
-        anchor
+      {shouldDisplayAnchor ? (
+        <NavigationAnchor menuItem={menuItem} className={styles["collapse-main"]} />
       ) : (
         <>
           <button
@@ -47,12 +30,12 @@ function CollapseMenu({ data }: CollapseMenuProps) {
             })}
             onClick={() => setOpen(!open)}
           >
-            {translate(data, "name")}
+            {translate(menuItem, "name")}
           </button>
           {open && (
             <div>
-              {data.children.map((item) => (
-                <SubCollapseMenu data={item} />
+              {menuItem.children?.map((item) => (
+                <SubCollapseMenu menuItem={item} key={item.id} />
               ))}
             </div>
           )}

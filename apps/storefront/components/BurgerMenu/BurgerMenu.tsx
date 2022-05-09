@@ -12,7 +12,7 @@ import NavIconButton from "../Navbar/NavIconButton";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
 import styles from "./BurgerMenu.module.css";
-import CollapseMenu from "./CollapseMenu";
+import { CollapseMenu } from "./CollapseMenu";
 
 export interface BurgerMenuProps {
   open?: boolean;
@@ -51,7 +51,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
           <NavIconButton icon="close" onClick={onCloseClick} />
         </div>
         {menu.map((item) => (
-          <CollapseMenu data={item} key={item.id} />
+          <CollapseMenu menuItem={item} key={item.id} />
         ))}
         <div className="mt-auto pt-4">
           <div className="flex flex-col">

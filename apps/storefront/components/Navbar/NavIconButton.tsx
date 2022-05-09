@@ -12,8 +12,8 @@ interface NavIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   counter?: number;
 }
 
-const switchIcon = (icon: NavIconButtonProps["icon"]) => {
-  switch (icon) {
+const getIcon = (iconName: NavIconButtonProps["icon"]) => {
+  switch (iconName) {
     case "user":
       return <User />;
     case "bag":
@@ -25,14 +25,14 @@ const switchIcon = (icon: NavIconButtonProps["icon"]) => {
     case "close":
       return <Close />;
     default:
-      return icon;
+      return iconName;
   }
 };
 
 function NavIconButton({ icon, counter, ...rest }: NavIconButtonProps) {
   return (
     <button type="button" className={styles["nav-icon-button"]} {...rest}>
-      {switchIcon(icon)}
+      {getIcon(icon)}
       {!!counter && <span className={styles["nav-icon-counter"]}>{counter}</span>}
     </button>
   );
