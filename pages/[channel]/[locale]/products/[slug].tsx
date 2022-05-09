@@ -168,15 +168,15 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
               {translate(product, "name")}
             </h1>
             {price && (
-              <h2 className="text-xl font-bold tracking-tight text-gray-800">
+              <h2 className="text-xl font-bold tracking-tight text-gray-800 mb-2">
                 {formatPrice(price)}
               </h2>
             )}
             {!!product.category?.slug && (
               <Link href={paths.category._slug(product?.category?.slug).$url()} passHref>
-                <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
+                <button type="button" className="text-lg font-medium">
                   {translate(product.category, "name")}
-                </p>
+                </button>
               </Link>
             )}
           </div>

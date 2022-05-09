@@ -42,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <li key={product.id} className="relative bg-white border shadow-md hover:shadow-2xl">
       <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
-        <a href="pass">
+        <a href="pass" style={{ textDecoration: "none" }}>
           <div className="flex rounded flex-col  w-full h-60 bg-gray-200" style={imageStyle}>
             {!!product.pricing?.onSale && (
               <>

@@ -13,6 +13,15 @@ import {
   HomepageBlocksQueryVariables,
 } from "@/saleor/api";
 
+const headLineSectionStyle = {
+  width: "100%",
+  height: "310px",
+  backgroundImage: `url(${"/images/default_headline_image.png"})`,
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+};
+
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const result: ApolloQueryResult<HomepageBlocksQuery> = await apolloClient.query<
     HomepageBlocksQuery,
@@ -32,12 +41,26 @@ function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <BaseSeo />
-      <div className="py-10">
+      <div>
         <header className="mb-4">
           <div className="container" />
         </header>
+
+        <section className="bg-fixed" style={headLineSectionStyle}>
+          <div className="ph_HeadlineSection ml-15 ">
+            <h3 className="max-w-4xl py-4 text-white lg:text-7xl">
+              Which book should I read first?
+            </h3>
+            <h1 className="font-normal text-white text-md mt-5">
+              People always ask, Which book should I read first?
+              <br />
+              My advice, start with Mohammed, once you know Mohammed you know Islam.
+            </h1>
+          </div>
+        </section>
+
         <main>
-          <div className="container">
+          <div className="container py-10">
             {menuData?.menu?.items?.map((m) => {
               if (!m) {
                 return null;

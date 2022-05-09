@@ -18,13 +18,13 @@ export function PageHero({ entity }: PageHeroProps) {
   const description = translate(entity, "description");
   return (
     <div className="container mx-auto bg-gray-400 h-96 rounded-md flex items-center" style={style}>
-      <div className="sm:ml-20 text-gray-50 text-center sm:text-left">
-        <h1 className="text-5xl font-bold mb-4">{translate(entity, "name")}</h1>
+      <div className="sm:ml-20 text-center sm:text-left">
+        <h1 className="text-5xl text-white font-bold mb-4">{translate(entity, "name")}</h1>
 
         {description && (
-          <p className="text-lg inline-block sm:block">
+          <span className="text-lg inline-block sm:block">
             <RichText jsonStringData={description} />
-          </p>
+          </span>
         )}
       </div>
     </div>
