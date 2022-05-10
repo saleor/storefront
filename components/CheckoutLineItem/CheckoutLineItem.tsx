@@ -106,7 +106,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                     },
                   })
                 }
-                className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
+                className="ml-4 text-sm font-medium sm:ml-0 sm:mt-3"
               >
                 <span>{t.formatMessage(messages.removeButton)}</span>
               </button>

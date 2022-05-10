@@ -53,7 +53,7 @@ module.exports = {
         white: "#ffffff",
         "blue-darker": "#0E1932",
         "blue-dark": "#1D2945",
-        // "blue": "#2d374d",
+        blue: "#2d374d",
         "blue-light": "#45526D",
         "blue-lighter": "#626E87",
         "pink-darker": "#A31E1E",

@@ -4,6 +4,7 @@ import { useIntl } from "react-intl";
 
 import { AddressDetailsFragment, CheckoutError, CountryCode } from "@/saleor/api";
 
+import { Button } from "../Button";
 import { messages } from "../translations";
 
 export interface AddressFormData {
@@ -65,14 +66,14 @@ export function AddressForm({
     <form onSubmit={onAddressFormSubmit}>
       <div className="grid grid-cols-12 gap-4 w-full">
         <div className="col-span-full">
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="address" className="block text-base font-medium text-gray-700">
             {t.formatMessage(messages.phoneField)}
           </label>
           <div className="mt-1">
             <input
               type="text"
               id="phone"
-              className="w-full border-gray-300 rounded-md shadow-sm text-sm"
+              className="w-full border-gray-300 rounded-md shadow-sm text-base"
               {...registerAddress("phone", {
                 required: true,
                 pattern: /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i,
@@ -83,14 +84,14 @@ export function AddressForm({
         </div>
 
         <div className="col-span-full sm:col-span-6">
-          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="firstName" className="block text-base font-medium text-gray-700">
             {t.formatMessage(messages.firstNameField)}
           </label>
           <div className="mt-1">
             <input
               type="text"
               id="province"
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
               {...registerAddress("firstName", {
                 required: true,
               })}
@@ -100,14 +101,14 @@ export function AddressForm({
         </div>
 
         <div className="col-span-full sm:col-span-6">
-          <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="province" className="block text-base font-medium text-gray-700">
             {t.formatMessage(messages.lastNameField)}
           </label>
           <div className="mt-1">
             <input
               type="text"
               id="lastName"
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
               {...registerAddress("lastName", {
                 required: true,
               })}
@@ -117,14 +118,14 @@ export function AddressForm({
         </div>
 
         <div className="col-span-full">
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="address" className="block text-base font-medium text-gray-700">
             {t.formatMessage(messages.addressField)}
           </label>
           <div className="mt-1">
             <input
               type="text"
               id="streetAddress1"
-              className="w-full border-gray-300 rounded-md shadow-sm text-sm"
+              className="w-full border-gray-300 rounded-md shadow-sm text-base"
               {...registerAddress("streetAddress1", {
                 required: true,
               })}
@@ -134,14 +135,14 @@ export function AddressForm({
         </div>
 
         <div className="col-span-full sm:col-span-6">
-          <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="city" className="block text-base font-medium text-gray-700">
             {t.formatMessage(messages.cityField)}
           </label>
           <div className="mt-1">
             <input
               type="text"
               id="city"
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
               {...registerAddress("city", { required: true })}
             />
             {!!errorsAddress.city && <p>{errorsAddress.city.message}</p>}
@@ -151,7 +152,7 @@ export function AddressForm({
         {/* <div className="col-span-full sm:col-span-4">
         <label
           htmlFor="province"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-base font-medium text-gray-700"
         >
           Province
         </label>
@@ -159,13 +160,13 @@ export function AddressForm({
           <input
             type="text"
             id="province"
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
           />
         </div>
       </div> */}
 
         <div className="col-span-full sm:col-span-6">
-          <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="postal-code" className="block text-base font-medium text-gray-700">
             {t.formatMessage(messages.postalCodeField)}
           </label>
           <div className="mt-1">
@@ -173,7 +174,7 @@ export function AddressForm({
               type="text"
               id="postal-code"
               autoComplete="postal-code"
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
               {...registerAddress("postalCode", {
                 required: true,
               })}
@@ -183,9 +184,9 @@ export function AddressForm({
         </div>
 
         <div className="col-span-full">
-          <button type="button" className="btn-checkout-section" onClick={onAddressFormSubmit}>
+          <Button className="btn-secondary w-full" onClick={onAddressFormSubmit}>
             {t.formatMessage(messages.saveButton)}
-          </button>
+          </Button>
         </div>
       </div>
     </form>

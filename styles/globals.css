@@ -16,11 +16,25 @@
     @apply text-lg font-medium text-gray-400;
   }
 
-  .btn-checkout-section {
-    @apply bg-pink border-pink border text-white py-2 px-4 rounded uppercase text-sm inline-block font-sans;
+  .btn-main {
+    @apply bg-pink border-pink text-white py-2 px-4 rounded text-base inline-block font-sans;
   }
-  .btn-checkout-section:hover {
-    @apply bg-pink-dark text-white;
+  .btn-main:hover {
+    @apply bg-pink-dark no-underline text-white;
+  }
+
+  .btn-main-disabled {
+    @apply bg-pink-lighter border-pink-lighter cursor-not-allowed;
+  }
+  .btn-main-disabled:hover {
+    @apply bg-pink-light text-white;
+  }
+
+  .btn-secondary {
+    @apply bg-pink-lighter border-pink text-black py-2 px-4 rounded text-base inline-block font-sans;
+  }
+  .btn-secondary:hover {
+    @apply bg-pink-light no-underline text-black;
   }
 }
 
