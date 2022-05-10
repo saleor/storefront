@@ -15,7 +15,7 @@ import {
 
 const headLineSectionStyle = {
   width: "100%",
-  height: "310px",
+  height: "345px",
   backgroundImage: `url(${"/images/default_headline_image.png"})`,
   backgroundPosition: "center",
   backgroundSize: "cover",
@@ -42,12 +42,12 @@ function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
     <>
       <BaseSeo />
       <div>
-        <header className="mb-4">
+        <header>
           <div className="container" />
         </header>
 
-        <section className="bg-fixed" style={headLineSectionStyle}>
-          <div className="ph_HeadlineSection ml-15 ">
+        <section className="bg-fixed align-middle" style={headLineSectionStyle}>
+          <div className="ph_HeadlineSection ml-15 align-middle ">
             <h3 className="max-w-4xl py-4 text-white lg:text-7xl">
               Which book should I read first?
             </h3>
