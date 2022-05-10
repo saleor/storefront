@@ -15,6 +15,7 @@
     "i18n": "npm run extract:i18n && npm run compile:i18n"
   },
   "dependencies": {
+    "@adyen/api-library": "^10.2.0",
     "@babel/eslint-parser": "^7.17.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",

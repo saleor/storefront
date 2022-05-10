@@ -72,20 +72,20 @@ export const getShippingLines = (
 
 export const getLines = (lines: OrderFragment["lines"]) =>
   lines.map((line) => ({
-    name: line!.productName + " - " + line!.variantName,
-    quantity: line!.quantity,
-    vatRate: parseAmountToString(line!.taxRate),
+    name: line.productName + " - " + line.variantName,
+    quantity: line.quantity,
+    vatRate: parseAmountToString(line.taxRate),
     vatAmount: {
-      currency: line!.totalPrice.tax.currency,
-      value: parseAmountToString(line!.totalPrice.tax.amount),
+      currency: line.totalPrice.tax.currency,
+      value: parseAmountToString(line.totalPrice.tax.amount),
     },
     unitPrice: {
-      currency: line!.unitPrice.gross.currency,
-      value: parseAmountToString(line!.unitPrice.gross.amount),
+      currency: line.unitPrice.gross.currency,
+      value: parseAmountToString(line.unitPrice.gross.amount),
     },
     totalAmount: {
-      currency: line!.totalPrice.gross.currency,
-      value: parseAmountToString(line!.totalPrice.gross.amount),
+      currency: line.totalPrice.gross.currency,
+      value: parseAmountToString(line.totalPrice.gross.amount),
     },
-    type: getProductType(line!),
+    type: getProductType(line),
   }));

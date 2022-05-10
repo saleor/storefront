@@ -7,7 +7,7 @@ export const getPaymentProviders = () =>
 
 export interface PayResult {
   data: {
-    checkoutUrl: string;
+    paymentUrl: string;
   };
 }
 

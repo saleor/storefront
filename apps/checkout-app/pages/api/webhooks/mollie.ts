@@ -3,7 +3,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { verifyPayment } from "@/backend/payments/providers/mollie";
-import { createPayment } from "@/backend/payments/createPayment";
+import { createTransaction } from "@/backend/payments/createTransaction";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,9 +13,11 @@ export default async function handler(
     const paymentData = await verifyPayment(req.body.id);
 
     if (paymentData) {
-      await createPayment(paymentData);
+      res.status(200).send("ok");
 
-      return res.status(200).json(true);
+      createTransaction(paymentData);
+
+      return;
     }
   }
 

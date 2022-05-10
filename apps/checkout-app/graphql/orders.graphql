@@ -19,12 +19,16 @@ fragment Money on Money {
 }
 
 fragment OrderLine on OrderLine {
+  id
   productName
   variantName
   quantity
   taxRate
   variant {
     product {
+      category {
+        name
+      }
       productType {
         isDigital
         kind
@@ -43,6 +47,9 @@ fragment OrderLine on OrderLine {
     tax {
       ...Money
     }
+  }
+  thumbnail {
+    url
   }
 }
 

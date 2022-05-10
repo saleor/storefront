@@ -47,7 +47,7 @@ export type Scalars = {
   _Any: any;
 };
 
-/** Create a new address for the customer. */
+/** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type AccountAddressCreate = {
   __typename?: 'AccountAddressCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -58,7 +58,7 @@ export type AccountAddressCreate = {
   user?: Maybe<User>;
 };
 
-/** Delete an address of the logged-in user. */
+/** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 export type AccountAddressDelete = {
   __typename?: 'AccountAddressDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -69,7 +69,7 @@ export type AccountAddressDelete = {
   user?: Maybe<User>;
 };
 
-/** Updates an address of the logged-in user. */
+/** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
 export type AccountAddressUpdate = {
   __typename?: 'AccountAddressUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -80,7 +80,7 @@ export type AccountAddressUpdate = {
   user?: Maybe<User>;
 };
 
-/** Remove user account. */
+/** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type AccountDelete = {
   __typename?: 'AccountDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -180,7 +180,7 @@ export type AccountRegisterInput = {
   redirectUrl?: InputMaybe<Scalars['String']>;
 };
 
-/** Sends an email with the account removal link for the logged-in user. */
+/** Sends an email with the account removal link for the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type AccountRequestDeletion = {
   __typename?: 'AccountRequestDeletion';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -188,7 +188,7 @@ export type AccountRequestDeletion = {
   errors: Array<AccountError>;
 };
 
-/** Sets a default address for the authenticated user. */
+/** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type AccountSetDefaultAddress = {
   __typename?: 'AccountSetDefaultAddress';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -198,7 +198,7 @@ export type AccountSetDefaultAddress = {
   user?: Maybe<User>;
 };
 
-/** Updates the account of the logged-in user. */
+/** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type AccountUpdate = {
   __typename?: 'AccountUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -229,7 +229,7 @@ export type Address = Node & {
   streetAddress2: Scalars['String'];
 };
 
-/** Creates user address. */
+/** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
 export type AddressCreate = {
   __typename?: 'AddressCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -240,7 +240,7 @@ export type AddressCreate = {
   user?: Maybe<User>;
 };
 
-/** Deletes an address. */
+/** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
 export type AddressDelete = {
   __typename?: 'AddressDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -276,7 +276,7 @@ export type AddressInput = {
   streetAddress2?: InputMaybe<Scalars['String']>;
 };
 
-/** Sets a default address for the given user. */
+/** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
 export type AddressSetDefault = {
   __typename?: 'AddressSetDefault';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -291,7 +291,7 @@ export type AddressTypeEnum =
   | 'BILLING'
   | 'SHIPPING';
 
-/** Updates an address. */
+/** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
 export type AddressUpdate = {
   __typename?: 'AddressUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -306,21 +306,21 @@ export type AddressValidationData = {
   __typename?: 'AddressValidationData';
   addressFormat?: Maybe<Scalars['String']>;
   addressLatinFormat?: Maybe<Scalars['String']>;
-  allowedFields?: Maybe<Array<Maybe<Scalars['String']>>>;
-  cityAreaChoices?: Maybe<Array<Maybe<ChoiceValue>>>;
+  allowedFields?: Maybe<Array<Scalars['String']>>;
+  cityAreaChoices?: Maybe<Array<ChoiceValue>>;
   cityAreaType?: Maybe<Scalars['String']>;
-  cityChoices?: Maybe<Array<Maybe<ChoiceValue>>>;
+  cityChoices?: Maybe<Array<ChoiceValue>>;
   cityType?: Maybe<Scalars['String']>;
-  countryAreaChoices?: Maybe<Array<Maybe<ChoiceValue>>>;
+  countryAreaChoices?: Maybe<Array<ChoiceValue>>;
   countryAreaType?: Maybe<Scalars['String']>;
   countryCode?: Maybe<Scalars['String']>;
   countryName?: Maybe<Scalars['String']>;
-  postalCodeExamples?: Maybe<Array<Maybe<Scalars['String']>>>;
-  postalCodeMatchers?: Maybe<Array<Maybe<Scalars['String']>>>;
+  postalCodeExamples?: Maybe<Array<Scalars['String']>>;
+  postalCodeMatchers?: Maybe<Array<Scalars['String']>>;
   postalCodePrefix?: Maybe<Scalars['String']>;
   postalCodeType?: Maybe<Scalars['String']>;
-  requiredFields?: Maybe<Array<Maybe<Scalars['String']>>>;
-  upperFields?: Maybe<Array<Maybe<Scalars['String']>>>;
+  requiredFields?: Maybe<Array<Scalars['String']>>;
+  upperFields?: Maybe<Array<Scalars['String']>>;
 };
 
 /** Represents allocation. */
@@ -358,26 +358,26 @@ export type App = Node & ObjectWithMetadata & {
   /** Determine if app will be set active or not. */
   isActive?: Maybe<Scalars['Boolean']>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** Name of the app. */
   name?: Maybe<Scalars['String']>;
   /** List of the app's permissions. */
-  permissions?: Maybe<Array<Maybe<Permission>>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  permissions?: Maybe<Array<Permission>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Support page for the app. */
   supportUrl?: Maybe<Scalars['String']>;
   /** Last 4 characters of the tokens. */
-  tokens?: Maybe<Array<Maybe<AppToken>>>;
+  tokens?: Maybe<Array<AppToken>>;
   /** Type of the app. */
   type?: Maybe<AppTypeEnum>;
   /** Version number of the app. */
   version?: Maybe<Scalars['String']>;
   /** List of webhooks assigned to this app. */
-  webhooks?: Maybe<Array<Maybe<Webhook>>>;
+  webhooks?: Maybe<Array<Webhook>>;
 };
 
-/** Activate the app. */
+/** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
 export type AppActivate = {
   __typename?: 'AppActivate';
   app?: Maybe<App>;
@@ -403,7 +403,7 @@ export type AppCountableEdge = {
   node: App;
 };
 
-/** Creates a new app. */
+/** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 export type AppCreate = {
   __typename?: 'AppCreate';
   app?: Maybe<App>;
@@ -414,7 +414,7 @@ export type AppCreate = {
   errors: Array<AppError>;
 };
 
-/** Deactivate the app. */
+/** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
 export type AppDeactivate = {
   __typename?: 'AppDeactivate';
   app?: Maybe<App>;
@@ -423,7 +423,7 @@ export type AppDeactivate = {
   errors: Array<AppError>;
 };
 
-/** Deletes an app. */
+/** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
 export type AppDelete = {
   __typename?: 'AppDelete';
   app?: Maybe<App>;
@@ -432,7 +432,7 @@ export type AppDelete = {
   errors: Array<AppError>;
 };
 
-/** Delete failed installation. */
+/** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
 export type AppDeleteFailedInstallation = {
   __typename?: 'AppDeleteFailedInstallation';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -506,7 +506,7 @@ export type AppExtensionCountableEdge = {
 };
 
 export type AppExtensionFilterInput = {
-  mount?: InputMaybe<Array<InputMaybe<AppExtensionMountEnum>>>;
+  mount?: InputMaybe<Array<AppExtensionMountEnum>>;
   target?: InputMaybe<AppExtensionTargetEnum>;
 };
 
@@ -533,7 +533,7 @@ export type AppExtensionTargetEnum =
   | 'APP_PAGE'
   | 'POPUP';
 
-/** Fetch and validate manifest. */
+/** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
 export type AppFetchManifest = {
   __typename?: 'AppFetchManifest';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -552,10 +552,10 @@ export type AppInput = {
   /** Name of the app. */
   name?: InputMaybe<Scalars['String']>;
   /** List of permission code names to assign to this app. */
-  permissions?: InputMaybe<Array<InputMaybe<PermissionEnum>>>;
+  permissions?: InputMaybe<Array<PermissionEnum>>;
 };
 
-/** Install new app by using app manifest. */
+/** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
 export type AppInstall = {
   __typename?: 'AppInstall';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -572,7 +572,7 @@ export type AppInstallInput = {
   /** Url to app's manifest in JSON format. */
   manifestUrl?: InputMaybe<Scalars['String']>;
   /** List of permission code names to assign to this app. */
-  permissions?: InputMaybe<Array<InputMaybe<PermissionEnum>>>;
+  permissions?: InputMaybe<Array<PermissionEnum>>;
 };
 
 /** Represents ongoing installation of app. */
@@ -605,7 +605,7 @@ export type AppManifestExtension = {
   url: Scalars['String'];
 };
 
-/** Retry failed installation of new app. */
+/** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
 export type AppRetryInstall = {
   __typename?: 'AppRetryInstall';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -637,7 +637,7 @@ export type AppToken = Node & {
   name?: Maybe<Scalars['String']>;
 };
 
-/** Creates a new token. */
+/** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
 export type AppTokenCreate = {
   __typename?: 'AppTokenCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -648,7 +648,7 @@ export type AppTokenCreate = {
   errors: Array<AppError>;
 };
 
-/** Deletes an authentication token assigned to app. */
+/** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
 export type AppTokenDelete = {
   __typename?: 'AppTokenDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -681,7 +681,7 @@ export type AppTypeEnum =
   /** Third party external App. Installation is fully automated. Saleor uses a defined App manifest to gather all required information. */
   | 'THIRDPARTY';
 
-/** Updates an existing app. */
+/** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
 export type AppUpdate = {
   __typename?: 'AppUpdate';
   app?: Maybe<App>;
@@ -699,7 +699,7 @@ export type AreaUnitsEnum =
   | 'SQ_M'
   | 'SQ_YD';
 
-/** Assigns storefront's navigation menus. */
+/** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
 export type AssignNavigation = {
   __typename?: 'AssignNavigation';
   errors: Array<MenuError>;
@@ -735,11 +735,11 @@ export type Attribute = Node & ObjectWithMetadata & {
   /** The input type to use for entering attribute values in the dashboard. */
   inputType?: Maybe<AttributeInputTypeEnum>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** Name of an attribute displayed in the interface. */
   name?: Maybe<Scalars['String']>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   productTypes: ProductTypeCountableConnection;
   productVariantTypes: ProductTypeCountableConnection;
   /** Internal representation of an attribute name. */
@@ -795,7 +795,7 @@ export type AttributeTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Deletes attributes. */
+/** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type AttributeBulkDelete = {
   __typename?: 'AttributeBulkDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -870,12 +870,12 @@ export type AttributeCreateInput = {
   /** Whether the attribute requires values to be passed or not. */
   valueRequired?: InputMaybe<Scalars['Boolean']>;
   /** List of attribute's values. */
-  values?: InputMaybe<Array<InputMaybe<AttributeValueCreateInput>>>;
+  values?: InputMaybe<Array<AttributeValueCreateInput>>;
   /** Whether the attribute should be visible or not in storefront. */
   visibleInStorefront?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** Deletes an attribute. */
+/** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type AttributeDelete = {
   __typename?: 'AttributeDelete';
   attribute?: Maybe<Attribute>;
@@ -918,11 +918,11 @@ export type AttributeFilterInput = {
   channel?: InputMaybe<Scalars['String']>;
   filterableInDashboard?: InputMaybe<Scalars['Boolean']>;
   filterableInStorefront?: InputMaybe<Scalars['Boolean']>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   inCategory?: InputMaybe<Scalars['ID']>;
   inCollection?: InputMaybe<Scalars['ID']>;
   isVariantOnly?: InputMaybe<Scalars['Boolean']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<AttributeTypeEnum>;
   valueRequired?: InputMaybe<Scalars['Boolean']>;
@@ -939,7 +939,7 @@ export type AttributeInput = {
   /** Internal representation of an attribute name. */
   slug: Scalars['String'];
   /** Internal representation of a value (unique per attribute). */
-  values?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  values?: InputMaybe<Array<Scalars['String']>>;
   /** The range that the returned values should be in. */
   valuesRange?: InputMaybe<IntRangeInput>;
 };
@@ -957,7 +957,7 @@ export type AttributeInputTypeEnum =
   | 'RICH_TEXT'
   | 'SWATCH';
 
-/** Reorder the values of an attribute. */
+/** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type AttributeReorderValues = {
   __typename?: 'AttributeReorderValues';
   /** Attribute from which values are reordered. */
@@ -1012,7 +1012,7 @@ export type AttributeTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for an attribute. */
+/** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type AttributeTranslate = {
   __typename?: 'AttributeTranslate';
   attribute?: Maybe<Attribute>;
@@ -1034,7 +1034,7 @@ export type AttributeTypeEnum =
   | 'PAGE_TYPE'
   | 'PRODUCT_TYPE';
 
-/** Updates attribute. */
+/** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type AttributeUpdate = {
   __typename?: 'AttributeUpdate';
   attribute?: Maybe<Attribute>;
@@ -1045,7 +1045,7 @@ export type AttributeUpdate = {
 
 export type AttributeUpdateInput = {
   /** New values to be created for this attribute. */
-  addValues?: InputMaybe<Array<InputMaybe<AttributeValueUpdateInput>>>;
+  addValues?: InputMaybe<Array<AttributeValueUpdateInput>>;
   /** Whether the attribute can be displayed in the admin product list. */
   availableInGrid?: InputMaybe<Scalars['Boolean']>;
   /** Whether the attribute can be filtered in dashboard. */
@@ -1057,7 +1057,7 @@ export type AttributeUpdateInput = {
   /** Name of an attribute displayed in the interface. */
   name?: InputMaybe<Scalars['String']>;
   /** IDs of values to be removed from this attribute. */
-  removeValues?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  removeValues?: InputMaybe<Array<Scalars['ID']>>;
   /** Internal representation of an attribute name. */
   slug?: InputMaybe<Scalars['String']>;
   /** The position of the attribute in the storefront navigation (0 by default). */
@@ -1104,7 +1104,7 @@ export type AttributeValueTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Deletes values of attributes. */
+/** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type AttributeValueBulkDelete = {
   __typename?: 'AttributeValueBulkDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -1131,7 +1131,7 @@ export type AttributeValueCountableEdge = {
   node: AttributeValue;
 };
 
-/** Creates a value for an attribute. */
+/** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type AttributeValueCreate = {
   __typename?: 'AttributeValueCreate';
   /** The updated attribute. */
@@ -1155,7 +1155,7 @@ export type AttributeValueCreateInput = {
   value?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a value of an attribute. */
+/** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type AttributeValueDelete = {
   __typename?: 'AttributeValueDelete';
   /** The updated attribute. */
@@ -1167,6 +1167,7 @@ export type AttributeValueDelete = {
 };
 
 export type AttributeValueFilterInput = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -1210,7 +1211,7 @@ export type AttributeValueTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for an attribute value. */
+/** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type AttributeValueTranslate = {
   __typename?: 'AttributeValueTranslate';
   attributeValue?: Maybe<AttributeValue>;
@@ -1233,7 +1234,7 @@ export type AttributeValueTranslationInput = {
   richText?: InputMaybe<Scalars['JSONString']>;
 };
 
-/** Updates value of an attribute. */
+/** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type AttributeValueUpdate = {
   __typename?: 'AttributeValueUpdate';
   /** The updated attribute. */
@@ -1313,13 +1314,13 @@ export type CardInput = {
 
 export type CatalogueInput = {
   /** Categories related to the discount. */
-  categories?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  categories?: InputMaybe<Array<Scalars['ID']>>;
   /** Collections related to the discount. */
-  collections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  collections?: InputMaybe<Array<Scalars['ID']>>;
   /** Products related to the discount. */
-  products?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  products?: InputMaybe<Array<Scalars['ID']>>;
   /** New in Saleor 3.1. Product variant related to the discount. */
-  variants?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  variants?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
@@ -1339,11 +1340,11 @@ export type Category = Node & ObjectWithMetadata & {
   id: Scalars['ID'];
   level: Scalars['Int'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
   parent?: Maybe<Category>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** List of products in the category. */
   products?: Maybe<ProductCountableConnection>;
   seoDescription?: Maybe<Scalars['String']>;
@@ -1393,7 +1394,7 @@ export type CategoryTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Deletes categories. */
+/** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CategoryBulkDelete = {
   __typename?: 'CategoryBulkDelete';
   /** Returns how many objects were affected. */
@@ -1420,7 +1421,7 @@ export type CategoryCountableEdge = {
   node: Category;
 };
 
-/** Creates a new category. */
+/** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CategoryCreate = {
   __typename?: 'CategoryCreate';
   category?: Maybe<Category>;
@@ -1429,7 +1430,13 @@ export type CategoryCreate = {
   productErrors: Array<ProductError>;
 };
 
-/** Deletes a category. */
+export type CategoryCreated = {
+  __typename?: 'CategoryCreated';
+  /** New in Saleor 3.2. Look up a category. Note: this feature is in a preview state and can be subject to changes at later point. */
+  category?: Maybe<Category>;
+};
+
+/** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CategoryDelete = {
   __typename?: 'CategoryDelete';
   category?: Maybe<Category>;
@@ -1438,9 +1445,15 @@ export type CategoryDelete = {
   productErrors: Array<ProductError>;
 };
 
+export type CategoryDeleted = {
+  __typename?: 'CategoryDeleted';
+  /** New in Saleor 3.2. Look up a category. Note: this feature is in a preview state and can be subject to changes at later point. */
+  category?: Maybe<Category>;
+};
+
 export type CategoryFilterInput = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -1506,7 +1519,7 @@ export type CategoryTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a category. */
+/** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type CategoryTranslate = {
   __typename?: 'CategoryTranslate';
   category?: Maybe<Category>;
@@ -1531,13 +1544,19 @@ export type CategoryTranslation = Node & {
   seoTitle?: Maybe<Scalars['String']>;
 };
 
-/** Updates a category. */
+/** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CategoryUpdate = {
   __typename?: 'CategoryUpdate';
   category?: Maybe<Category>;
   errors: Array<ProductError>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   productErrors: Array<ProductError>;
+};
+
+export type CategoryUpdated = {
+  __typename?: 'CategoryUpdated';
+  /** New in Saleor 3.2. Look up a category. Note: this feature is in a preview state and can be subject to changes at later point. */
+  category?: Maybe<Category>;
 };
 
 /** Represents channel. */
@@ -1554,7 +1573,7 @@ export type Channel = Node & {
   slug: Scalars['String'];
 };
 
-/** Activate a channel. */
+/** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 export type ChannelActivate = {
   __typename?: 'ChannelActivate';
   /** Activated channel. */
@@ -1564,7 +1583,7 @@ export type ChannelActivate = {
   errors: Array<ChannelError>;
 };
 
-/** Creates new channel. */
+/** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 export type ChannelCreate = {
   __typename?: 'ChannelCreate';
   channel?: Maybe<Channel>;
@@ -1588,7 +1607,7 @@ export type ChannelCreateInput = {
   slug: Scalars['String'];
 };
 
-/** Deactivate a channel. */
+/** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 export type ChannelDeactivate = {
   __typename?: 'ChannelDeactivate';
   /** Deactivated channel. */
@@ -1598,7 +1617,7 @@ export type ChannelDeactivate = {
   errors: Array<ChannelError>;
 };
 
-/** Delete a channel. Orders associated with the deleted channel will be moved to the target channel. Checkouts, product availability, and pricing will be removed. */
+/** Delete a channel. Orders associated with the deleted channel will be moved to the target channel. Checkouts, product availability, and pricing will be removed. Requires one of the following permissions: MANAGE_CHANNELS. */
 export type ChannelDelete = {
   __typename?: 'ChannelDelete';
   channel?: Maybe<Channel>;
@@ -1636,7 +1655,7 @@ export type ChannelErrorCode =
   | 'REQUIRED'
   | 'UNIQUE';
 
-/** Update a channel. */
+/** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
 export type ChannelUpdate = {
   __typename?: 'ChannelUpdate';
   channel?: Maybe<Channel>;
@@ -1671,7 +1690,7 @@ export type Checkout = Node & ObjectWithMetadata & {
    * Shipping methods that can be used with this checkout.
    * @deprecated This field will be removed in Saleor 4.0. Use `shippingMethods` instead.
    */
-  availableShippingMethods: Array<Maybe<ShippingMethod>>;
+  availableShippingMethods: Array<ShippingMethod>;
   billingAddress?: Maybe<Address>;
   channel: Channel;
   created: Scalars['DateTime'];
@@ -1682,7 +1701,7 @@ export type Checkout = Node & ObjectWithMetadata & {
   /** Email of a customer. */
   email?: Maybe<Scalars['String']>;
   /** List of gift cards associated with this checkout. */
-  giftCards?: Maybe<Array<Maybe<GiftCard>>>;
+  giftCards?: Maybe<Array<GiftCard>>;
   id: Scalars['ID'];
   /** Returns True, if checkout requires shipping. */
   isShippingRequired: Scalars['Boolean'];
@@ -1690,12 +1709,12 @@ export type Checkout = Node & ObjectWithMetadata & {
   languageCode: LanguageCodeEnum;
   lastChange: Scalars['DateTime'];
   /** A list of checkout lines, each containing information about an item in the checkout. */
-  lines?: Maybe<Array<Maybe<CheckoutLine>>>;
+  lines?: Maybe<Array<CheckoutLine>>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   note: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** The number of items purchased. */
   quantity: Scalars['Int'];
   shippingAddress?: Maybe<Address>;
@@ -1705,7 +1724,7 @@ export type Checkout = Node & ObjectWithMetadata & {
    */
   shippingMethod?: Maybe<ShippingMethod>;
   /** Shipping methods that can be used with this checkout. */
-  shippingMethods: Array<Maybe<ShippingMethod>>;
+  shippingMethods: Array<ShippingMethod>;
   /** The price of the shipping, with all the taxes included. */
   shippingPrice?: Maybe<TaxedMoney>;
   /** New in Saleor 3.1. Date when oldest stock reservation for this checkout  expires or null if no stock is reserved. */
@@ -1716,6 +1735,8 @@ export type Checkout = Node & ObjectWithMetadata & {
   token: Scalars['UUID'];
   /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
   totalPrice?: Maybe<TaxedMoney>;
+  /** New in Saleor 3.2. List of transactions for the checkout. Requires one of the following permissions: MANAGE_CHECKOUTS, HANDLE_PAYMENTS. Note: this feature is in a preview state and can be subject to changes at later point. */
+  transactions?: Maybe<Array<TransactionItem>>;
   translatedDiscountName?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
   voucherCode?: Maybe<Scalars['String']>;
@@ -1796,12 +1817,18 @@ export type CheckoutCreateInput = {
   /** Checkout language code. */
   languageCode?: InputMaybe<LanguageCodeEnum>;
   /** A list of checkout lines, each containing information about an item in the checkout. */
-  lines: Array<InputMaybe<CheckoutLineInput>>;
+  lines: Array<CheckoutLineInput>;
   /** The mailing address to where the checkout will be shipped. Note: the address will be ignored if the checkout doesn't contain shippable items. */
   shippingAddress?: InputMaybe<AddressInput>;
 };
 
-/** Sets the customer as the owner of the checkout. */
+export type CheckoutCreated = {
+  __typename?: 'CheckoutCreated';
+  /** New in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview state and can be subject to changes at later point. */
+  checkout?: Maybe<Checkout>;
+};
+
+/** Sets the customer as the owner of the checkout. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 export type CheckoutCustomerAttach = {
   __typename?: 'CheckoutCustomerAttach';
   /** An updated checkout. */
@@ -1811,7 +1838,7 @@ export type CheckoutCustomerAttach = {
   errors: Array<CheckoutError>;
 };
 
-/** Removes the user assigned as the owner of the checkout. */
+/** Removes the user assigned as the owner of the checkout. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
 export type CheckoutCustomerDetach = {
   __typename?: 'CheckoutCustomerDetach';
   /** An updated checkout. */
@@ -1886,10 +1913,10 @@ export type CheckoutErrorCode =
   | 'ZERO_QUANTITY';
 
 export type CheckoutFilterInput = {
-  channels?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  channels?: InputMaybe<Array<Scalars['ID']>>;
   created?: InputMaybe<DateRangeInput>;
   customer?: InputMaybe<Scalars['String']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -1943,8 +1970,19 @@ export type CheckoutLineDelete = {
 };
 
 export type CheckoutLineInput = {
+  /** New in Saleor 3.1. Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used. Note: this feature is in a preview state and can be subject to changes at later point. */
+  price?: InputMaybe<Scalars['PositiveDecimal']>;
   /** The number of items purchased. */
   quantity: Scalars['Int'];
+  /** ID of the product variant. */
+  variantId: Scalars['ID'];
+};
+
+export type CheckoutLineUpdateInput = {
+  /** New in Saleor 3.1. Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used. Note: this feature is in a preview state and can be subject to changes at later point. */
+  price?: InputMaybe<Scalars['PositiveDecimal']>;
+  /** The number of items purchased. Optional for apps, required for any other users. */
+  quantity?: InputMaybe<Scalars['Int']>;
   /** ID of the product variant. */
   variantId: Scalars['ID'];
 };
@@ -2034,6 +2072,12 @@ export type CheckoutSortingInput = {
   field: CheckoutSortField;
 };
 
+export type CheckoutUpdated = {
+  __typename?: 'CheckoutUpdated';
+  /** New in Saleor 3.2. Look up a Checkout. Note: this feature is in a preview state and can be subject to changes at later point. */
+  checkout?: Maybe<Checkout>;
+};
+
 export type ChoiceValue = {
   __typename?: 'ChoiceValue';
   raw?: Maybe<Scalars['String']>;
@@ -2056,10 +2100,10 @@ export type Collection = Node & ObjectWithMetadata & {
   descriptionJson?: Maybe<Scalars['JSONString']>;
   id: Scalars['ID'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** List of products in this collection. */
   products?: Maybe<ProductCountableConnection>;
   seoDescription?: Maybe<Scalars['String']>;
@@ -2092,7 +2136,7 @@ export type CollectionTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Adds products to a collection. */
+/** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionAddProducts = {
   __typename?: 'CollectionAddProducts';
   /** Collection to which products will be added. */
@@ -2102,7 +2146,7 @@ export type CollectionAddProducts = {
   errors: Array<CollectionError>;
 };
 
-/** Deletes collections. */
+/** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionBulkDelete = {
   __typename?: 'CollectionBulkDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -2137,7 +2181,7 @@ export type CollectionChannelListingError = {
   values?: Maybe<Array<Scalars['ID']>>;
 };
 
-/** Manage collection's availability in channels. */
+/** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionChannelListingUpdate = {
   __typename?: 'CollectionChannelListingUpdate';
   /** An updated collection instance. */
@@ -2171,7 +2215,7 @@ export type CollectionCountableEdge = {
   node: Collection;
 };
 
-/** Creates a new collection. */
+/** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionCreate = {
   __typename?: 'CollectionCreate';
   collection?: Maybe<Collection>;
@@ -2192,7 +2236,7 @@ export type CollectionCreateInput = {
   /** Name of the collection. */
   name?: InputMaybe<Scalars['String']>;
   /** List of products to be added to the collection. */
-  products?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  products?: InputMaybe<Array<Scalars['ID']>>;
   /** Publication date. ISO 8601 standard. */
   publicationDate?: InputMaybe<Scalars['Date']>;
   /** Search engine optimization fields. */
@@ -2201,13 +2245,35 @@ export type CollectionCreateInput = {
   slug?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a collection. */
+export type CollectionCreated = {
+  __typename?: 'CollectionCreated';
+  /** New in Saleor 3.2. Look up a collection. Note: this feature is in a preview state and can be subject to changes at later point. */
+  collection?: Maybe<Collection>;
+};
+
+
+export type CollectionCreatedCollectionArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionDelete = {
   __typename?: 'CollectionDelete';
   collection?: Maybe<Collection>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   collectionErrors: Array<CollectionError>;
   errors: Array<CollectionError>;
+};
+
+export type CollectionDeleted = {
+  __typename?: 'CollectionDeleted';
+  /** New in Saleor 3.2. Look up a collection. Note: this feature is in a preview state and can be subject to changes at later point. */
+  collection?: Maybe<Collection>;
+};
+
+
+export type CollectionDeletedCollectionArgs = {
+  channel?: InputMaybe<Scalars['String']>;
 };
 
 export type CollectionError = {
@@ -2239,8 +2305,8 @@ export type CollectionFilterInput = {
    * DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.
    */
   channel?: InputMaybe<Scalars['String']>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   published?: InputMaybe<CollectionPublished>;
   search?: InputMaybe<Scalars['String']>;
 };
@@ -2268,7 +2334,7 @@ export type CollectionPublished =
   | 'HIDDEN'
   | 'PUBLISHED';
 
-/** Remove products from a collection. */
+/** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionRemoveProducts = {
   __typename?: 'CollectionRemoveProducts';
   /** Collection from which products will be removed. */
@@ -2278,7 +2344,7 @@ export type CollectionRemoveProducts = {
   errors: Array<CollectionError>;
 };
 
-/** Reorder the products of a collection. */
+/** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionReorderProducts = {
   __typename?: 'CollectionReorderProducts';
   /** Collection from which products are reordered. */
@@ -2337,7 +2403,7 @@ export type CollectionTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a collection. */
+/** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type CollectionTranslate = {
   __typename?: 'CollectionTranslate';
   collection?: Maybe<Collection>;
@@ -2362,13 +2428,24 @@ export type CollectionTranslation = Node & {
   seoTitle?: Maybe<Scalars['String']>;
 };
 
-/** Updates a collection. */
+/** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type CollectionUpdate = {
   __typename?: 'CollectionUpdate';
   collection?: Maybe<Collection>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   collectionErrors: Array<CollectionError>;
   errors: Array<CollectionError>;
+};
+
+export type CollectionUpdated = {
+  __typename?: 'CollectionUpdated';
+  /** New in Saleor 3.2. Look up a collection. Note: this feature is in a preview state and can be subject to changes at later point. */
+  collection?: Maybe<Collection>;
+};
+
+
+export type CollectionUpdatedCollectionArgs = {
+  channel?: InputMaybe<Scalars['String']>;
 };
 
 /** Stores information about a single configuration field. */
@@ -2413,7 +2490,7 @@ export type ConfirmAccount = {
   user?: Maybe<User>;
 };
 
-/** Confirm the email change of the logged-in user. */
+/** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type ConfirmEmailChange = {
   __typename?: 'ConfirmEmailChange';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -2721,7 +2798,7 @@ export type CreditCard = {
   lastDigits: Scalars['String'];
 };
 
-/** Deletes customers. */
+/** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
 export type CustomerBulkDelete = {
   __typename?: 'CustomerBulkDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -2731,7 +2808,7 @@ export type CustomerBulkDelete = {
   errors: Array<AccountError>;
 };
 
-/** Creates a new customer. */
+/** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
 export type CustomerCreate = {
   __typename?: 'CustomerCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -2740,7 +2817,13 @@ export type CustomerCreate = {
   user?: Maybe<User>;
 };
 
-/** Deletes a customer. */
+export type CustomerCreated = {
+  __typename?: 'CustomerCreated';
+  /** New in Saleor 3.2. Look up a user. Note: this feature is in a preview state and can be subject to changes at later point. */
+  user?: Maybe<User>;
+};
+
+/** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
 export type CustomerDelete = {
   __typename?: 'CustomerDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -2789,7 +2872,7 @@ export type CustomerEventsEnum =
 
 export type CustomerFilterInput = {
   dateJoined?: InputMaybe<DateRangeInput>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   numberOfOrders?: InputMaybe<IntRangeInput>;
   placedOrders?: InputMaybe<DateRangeInput>;
   search?: InputMaybe<Scalars['String']>;
@@ -2815,12 +2898,18 @@ export type CustomerInput = {
   note?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates an existing customer. */
+/** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
 export type CustomerUpdate = {
   __typename?: 'CustomerUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   accountErrors: Array<AccountError>;
   errors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+export type CustomerUpdated = {
+  __typename?: 'CustomerUpdated';
+  /** New in Saleor 3.2. Look up a user. Note: this feature is in a preview state and can be subject to changes at later point. */
   user?: Maybe<User>;
 };
 
@@ -2838,7 +2927,7 @@ export type DateTimeRangeInput = {
   lte?: InputMaybe<Scalars['DateTime']>;
 };
 
-/** Deactivate all JWT tokens of the currently authenticated user. */
+/** Deactivate all JWT tokens of the currently authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type DeactivateAllUserTokens = {
   __typename?: 'DeactivateAllUserTokens';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -2846,7 +2935,7 @@ export type DeactivateAllUserTokens = {
   errors: Array<AccountError>;
 };
 
-/** Delete metadata of an object. */
+/** Delete metadata of an object. To use it, you need to have access to the modified object. */
 export type DeleteMetadata = {
   __typename?: 'DeleteMetadata';
   errors: Array<MetadataError>;
@@ -2855,7 +2944,7 @@ export type DeleteMetadata = {
   metadataErrors: Array<MetadataError>;
 };
 
-/** Delete object's private metadata. */
+/** Delete object's private metadata. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
 export type DeletePrivateMetadata = {
   __typename?: 'DeletePrivateMetadata';
   errors: Array<MetadataError>;
@@ -2874,14 +2963,14 @@ export type DigitalContent = Node & ObjectWithMetadata & {
   id: Scalars['ID'];
   maxDownloads?: Maybe<Scalars['Int']>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Product variant assigned to digital content. */
   productVariant: ProductVariant;
   urlValidDays?: Maybe<Scalars['Int']>;
   /** List of URLs for the digital variant. */
-  urls?: Maybe<Array<Maybe<DigitalContentUrl>>>;
+  urls?: Maybe<Array<DigitalContentUrl>>;
   useDefaultSettings: Scalars['Boolean'];
 };
 
@@ -3035,7 +3124,7 @@ export type Domain = {
   url: Scalars['String'];
 };
 
-/** Deletes draft orders. */
+/** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
 export type DraftOrderBulkDelete = {
   __typename?: 'DraftOrderBulkDelete';
   /** Returns how many objects were affected. */
@@ -3045,7 +3134,7 @@ export type DraftOrderBulkDelete = {
   orderErrors: Array<OrderError>;
 };
 
-/** Completes creating an order. */
+/** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type DraftOrderComplete = {
   __typename?: 'DraftOrderComplete';
   errors: Array<OrderError>;
@@ -3055,7 +3144,7 @@ export type DraftOrderComplete = {
   orderErrors: Array<OrderError>;
 };
 
-/** Creates a new draft order. */
+/** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type DraftOrderCreate = {
   __typename?: 'DraftOrderCreate';
   errors: Array<OrderError>;
@@ -3074,7 +3163,7 @@ export type DraftOrderCreateInput = {
   /** Discount amount for the order. */
   discount?: InputMaybe<Scalars['PositiveDecimal']>;
   /** Variant line input consisting of variant ID and quantity of products. */
-  lines?: InputMaybe<Array<InputMaybe<OrderLineCreateInput>>>;
+  lines?: InputMaybe<Array<OrderLineCreateInput>>;
   /** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
   redirectUrl?: InputMaybe<Scalars['String']>;
   /** Shipping address of the customer. */
@@ -3089,13 +3178,25 @@ export type DraftOrderCreateInput = {
   voucher?: InputMaybe<Scalars['ID']>;
 };
 
-/** Deletes a draft order. */
+export type DraftOrderCreated = {
+  __typename?: 'DraftOrderCreated';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
+};
+
+/** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type DraftOrderDelete = {
   __typename?: 'DraftOrderDelete';
   errors: Array<OrderError>;
   order?: Maybe<Order>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   orderErrors: Array<OrderError>;
+};
+
+export type DraftOrderDeleted = {
+  __typename?: 'DraftOrderDeleted';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
 };
 
 export type DraftOrderInput = {
@@ -3121,7 +3222,7 @@ export type DraftOrderInput = {
   voucher?: InputMaybe<Scalars['ID']>;
 };
 
-/** Deletes order lines. */
+/** Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS. */
 export type DraftOrderLinesBulkDelete = {
   __typename?: 'DraftOrderLinesBulkDelete';
   /** Returns how many objects were affected. */
@@ -3131,7 +3232,7 @@ export type DraftOrderLinesBulkDelete = {
   orderErrors: Array<OrderError>;
 };
 
-/** Updates a draft order. */
+/** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type DraftOrderUpdate = {
   __typename?: 'DraftOrderUpdate';
   errors: Array<OrderError>;
@@ -3139,6 +3240,14 @@ export type DraftOrderUpdate = {
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   orderErrors: Array<OrderError>;
 };
+
+export type DraftOrderUpdated = {
+  __typename?: 'DraftOrderUpdated';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
+};
+
+export type Event = CategoryCreated | CategoryDeleted | CategoryUpdated | CheckoutCreated | CheckoutUpdated | CollectionCreated | CollectionDeleted | CollectionUpdated | CustomerCreated | CustomerUpdated | DraftOrderCreated | DraftOrderDeleted | DraftOrderUpdated | FulfillmentCanceled | FulfillmentCreated | InvoiceDeleted | InvoiceRequested | InvoiceSent | OrderCancelled | OrderConfirmed | OrderCreated | OrderFulfilled | OrderFullyPaid | OrderUpdated | PageCreated | PageDeleted | PageUpdated | ProductCreated | ProductDeleted | ProductUpdated | ProductVariantBackInStock | ProductVariantCreated | ProductVariantDeleted | ProductVariantOutOfStock | ProductVariantUpdated | SaleCreated | SaleDeleted | SaleUpdated | ShippingPriceCreated | ShippingPriceDeleted | ShippingPriceUpdated | ShippingZoneCreated | ShippingZoneDeleted | ShippingZoneUpdated | TranslationCreated | TranslationUpdated;
 
 /** Event delivery. */
 export type EventDelivery = Node & {
@@ -3170,13 +3279,20 @@ export type EventDeliveryAttempt = Node & {
   __typename?: 'EventDeliveryAttempt';
   /** Event delivery creation date and time. */
   createdAt: Scalars['DateTime'];
+  /** Delivery attempt duration. */
   duration?: Maybe<Scalars['Float']>;
   id: Scalars['ID'];
+  /** Request headers for delivery attempt. */
   requestHeaders?: Maybe<Scalars['String']>;
+  /** Delivery attempt response content. */
   response?: Maybe<Scalars['String']>;
+  /** Response headers for delivery attempt. */
   responseHeaders?: Maybe<Scalars['String']>;
+  /** Delivery attempt response status code. */
+  responseStatusCode?: Maybe<Scalars['Int']>;
   /** Event delivery status. */
   status: EventDeliveryStatusEnum;
+  /** Task id for delivery attempt. */
   taskId?: Maybe<Scalars['String']>;
 };
 
@@ -3230,7 +3346,7 @@ export type EventDeliveryFilterInput = {
   status?: InputMaybe<EventDeliveryStatusEnum>;
 };
 
-/** Retries event delivery. */
+/** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
 export type EventDeliveryRetry = {
   __typename?: 'EventDeliveryRetry';
   /** Event delivery. */
@@ -3355,7 +3471,7 @@ export type ExportFileSortingInput = {
   field: ExportFileSortField;
 };
 
-/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type ExportGiftCards = {
   __typename?: 'ExportGiftCards';
   errors: Array<ExportError>;
@@ -3385,7 +3501,7 @@ export type ExportInfoInput = {
   warehouses?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** Export products to csv file. */
+/** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ExportProducts = {
   __typename?: 'ExportProducts';
   errors: Array<ExportError>;
@@ -3473,7 +3589,7 @@ export type ExternalNotificationTriggerInput = {
   /** Additional payload that will be merged with the one based on the bussines object ID. */
   extraPayload?: InputMaybe<Scalars['JSONString']>;
   /** The list of customers or orders node IDs that will be serialized and included in the notification payload. */
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 /** Obtain external access tokens for user by custom plugin. */
@@ -3551,11 +3667,11 @@ export type Fulfillment = Node & ObjectWithMetadata & {
   fulfillmentOrder: Scalars['Int'];
   id: Scalars['ID'];
   /** List of lines for the fulfillment. */
-  lines?: Maybe<Array<Maybe<FulfillmentLine>>>;
+  lines?: Maybe<Array<FulfillmentLine>>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   status: FulfillmentStatus;
   /** User-friendly fulfillment status. */
   statusDisplay?: Maybe<Scalars['String']>;
@@ -3564,7 +3680,7 @@ export type Fulfillment = Node & ObjectWithMetadata & {
   warehouse?: Maybe<Warehouse>;
 };
 
-/** New in Saleor 3.1. Approve existing fulfillment. */
+/** New in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
 export type FulfillmentApprove = {
   __typename?: 'FulfillmentApprove';
   errors: Array<OrderError>;
@@ -3576,7 +3692,7 @@ export type FulfillmentApprove = {
   orderErrors: Array<OrderError>;
 };
 
-/** Cancels existing fulfillment and optionally restocks items. */
+/** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
 export type FulfillmentCancel = {
   __typename?: 'FulfillmentCancel';
   errors: Array<OrderError>;
@@ -3593,6 +3709,18 @@ export type FulfillmentCancelInput = {
   warehouseId?: InputMaybe<Scalars['ID']>;
 };
 
+export type FulfillmentCanceled = {
+  __typename?: 'FulfillmentCanceled';
+  /** New in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview state and can be subject to changes at later point. */
+  fulfillment?: Maybe<Fulfillment>;
+};
+
+export type FulfillmentCreated = {
+  __typename?: 'FulfillmentCreated';
+  /** New in Saleor 3.2. Look up a Fulfillment. Note: this feature is in a preview state and can be subject to changes at later point. */
+  fulfillment?: Maybe<Fulfillment>;
+};
+
 /** Represents line of the fulfillment. */
 export type FulfillmentLine = Node & {
   __typename?: 'FulfillmentLine';
@@ -3601,7 +3729,7 @@ export type FulfillmentLine = Node & {
   quantity: Scalars['Int'];
 };
 
-/** Refund products. */
+/** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
 export type FulfillmentRefundProducts = {
   __typename?: 'FulfillmentRefundProducts';
   errors: Array<OrderError>;
@@ -3613,7 +3741,7 @@ export type FulfillmentRefundProducts = {
   orderErrors: Array<OrderError>;
 };
 
-/** Return products. */
+/** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
 export type FulfillmentReturnProducts = {
   __typename?: 'FulfillmentReturnProducts';
   errors: Array<OrderError>;
@@ -3639,7 +3767,7 @@ export type FulfillmentStatus =
   | 'RETURNED'
   | 'WAITING_FOR_APPROVAL';
 
-/** Updates a fulfillment for an order. */
+/** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type FulfillmentUpdateTracking = {
   __typename?: 'FulfillmentUpdateTracking';
   errors: Array<OrderError>;
@@ -3699,9 +3827,9 @@ export type GiftCard = Node & ObjectWithMetadata & {
   last4CodeChars: Scalars['String'];
   lastUsedOn?: Maybe<Scalars['DateTime']>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** New in Saleor 3.1. Related gift card product. Note: this feature is in a preview state and can be subject to changes at later point. */
   product?: Maybe<Product>;
   /**
@@ -3728,7 +3856,7 @@ export type GiftCardEventsArgs = {
   filter?: InputMaybe<GiftCardEventFilterInput>;
 };
 
-/** Activate a gift card. */
+/** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardActivate = {
   __typename?: 'GiftCardActivate';
   errors: Array<GiftCardError>;
@@ -3738,7 +3866,7 @@ export type GiftCardActivate = {
   giftCardErrors: Array<GiftCardError>;
 };
 
-/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardAddNote = {
   __typename?: 'GiftCardAddNote';
   errors: Array<GiftCardError>;
@@ -3753,7 +3881,7 @@ export type GiftCardAddNoteInput = {
   message: Scalars['String'];
 };
 
-/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardBulkActivate = {
   __typename?: 'GiftCardBulkActivate';
   /** Returns how many objects were affected. */
@@ -3761,7 +3889,7 @@ export type GiftCardBulkActivate = {
   errors: Array<GiftCardError>;
 };
 
-/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardBulkCreate = {
   __typename?: 'GiftCardBulkCreate';
   /** Returns how many objects were created. */
@@ -3784,7 +3912,7 @@ export type GiftCardBulkCreateInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardBulkDeactivate = {
   __typename?: 'GiftCardBulkDeactivate';
   /** Returns how many objects were affected. */
@@ -3792,7 +3920,7 @@ export type GiftCardBulkDeactivate = {
   errors: Array<GiftCardError>;
 };
 
-/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardBulkDelete = {
   __typename?: 'GiftCardBulkDelete';
   /** Returns how many objects were affected. */
@@ -3817,7 +3945,7 @@ export type GiftCardCountableEdge = {
   node: GiftCard;
 };
 
-/** Creates a new gift card. */
+/** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardCreate = {
   __typename?: 'GiftCardCreate';
   errors: Array<GiftCardError>;
@@ -3861,7 +3989,7 @@ export type GiftCardCreateInput = {
   userEmail?: InputMaybe<Scalars['String']>;
 };
 
-/** Deactivate a gift card. */
+/** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardDeactivate = {
   __typename?: 'GiftCardDeactivate';
   errors: Array<GiftCardError>;
@@ -3871,7 +3999,7 @@ export type GiftCardDeactivate = {
   giftCardErrors: Array<GiftCardError>;
 };
 
-/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardDelete = {
   __typename?: 'GiftCardDelete';
   errors: Array<GiftCardError>;
@@ -3973,14 +4101,14 @@ export type GiftCardFilterInput = {
   currentBalance?: InputMaybe<PriceRangeInput>;
   initialBalance?: InputMaybe<PriceRangeInput>;
   isActive?: InputMaybe<Scalars['Boolean']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
-  products?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
+  products?: InputMaybe<Array<Scalars['ID']>>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   used?: InputMaybe<Scalars['Boolean']>;
-  usedBy?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  usedBy?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+/** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardResend = {
   __typename?: 'GiftCardResend';
   errors: Array<GiftCardError>;
@@ -4027,7 +4155,7 @@ export type GiftCardSettingsExpiryTypeEnum =
   | 'EXPIRY_PERIOD'
   | 'NEVER_EXPIRE';
 
-/** Update gift card settings. */
+/** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardSettingsUpdate = {
   __typename?: 'GiftCardSettingsUpdate';
   errors: Array<GiftCardSettingsError>;
@@ -4085,7 +4213,7 @@ export type GiftCardTagFilterInput = {
   search?: InputMaybe<Scalars['String']>;
 };
 
-/** Update a gift card. */
+/** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
 export type GiftCardUpdate = {
   __typename?: 'GiftCardUpdate';
   errors: Array<GiftCardError>;
@@ -4123,11 +4251,11 @@ export type Group = Node & {
   id: Scalars['ID'];
   name: Scalars['String'];
   /** List of group permissions */
-  permissions?: Maybe<Array<Maybe<Permission>>>;
+  permissions?: Maybe<Array<Permission>>;
   /** True, if the currently authenticated user has rights to manage a group. */
   userCanManage: Scalars['Boolean'];
   /** List of group users */
-  users?: Maybe<Array<Maybe<User>>>;
+  users?: Maybe<Array<User>>;
 };
 
 export type GroupCountableConnection = {
@@ -4172,10 +4300,10 @@ export type Invoice = Job & Node & ObjectWithMetadata & {
   id: Scalars['ID'];
   message?: Maybe<Scalars['String']>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   number?: Maybe<Scalars['String']>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Job status. */
   status: JobStatusEnum;
   updatedAt: Scalars['DateTime'];
@@ -4183,7 +4311,7 @@ export type Invoice = Job & Node & ObjectWithMetadata & {
   url?: Maybe<Scalars['String']>;
 };
 
-/** Creates a ready to send invoice. */
+/** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 export type InvoiceCreate = {
   __typename?: 'InvoiceCreate';
   errors: Array<InvoiceError>;
@@ -4199,13 +4327,19 @@ export type InvoiceCreateInput = {
   url: Scalars['String'];
 };
 
-/** Deletes an invoice. */
+/** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 export type InvoiceDelete = {
   __typename?: 'InvoiceDelete';
   errors: Array<InvoiceError>;
   invoice?: Maybe<Invoice>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   invoiceErrors: Array<InvoiceError>;
+};
+
+export type InvoiceDeleted = {
+  __typename?: 'InvoiceDeleted';
+  /** New in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview state and can be subject to changes at later point. */
+  invoice?: Maybe<Invoice>;
 };
 
 export type InvoiceError = {
@@ -4229,7 +4363,7 @@ export type InvoiceErrorCode =
   | 'REQUIRED'
   | 'URL_NOT_SET';
 
-/** Request an invoice for the order using plugin. */
+/** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
 export type InvoiceRequest = {
   __typename?: 'InvoiceRequest';
   errors: Array<InvoiceError>;
@@ -4240,7 +4374,7 @@ export type InvoiceRequest = {
   order?: Maybe<Order>;
 };
 
-/** Requests deletion of an invoice. */
+/** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 export type InvoiceRequestDelete = {
   __typename?: 'InvoiceRequestDelete';
   errors: Array<InvoiceError>;
@@ -4249,7 +4383,13 @@ export type InvoiceRequestDelete = {
   invoiceErrors: Array<InvoiceError>;
 };
 
-/** Send an invoice notification to the customer. */
+export type InvoiceRequested = {
+  __typename?: 'InvoiceRequested';
+  /** New in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview state and can be subject to changes at later point. */
+  invoice?: Maybe<Invoice>;
+};
+
+/** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
 export type InvoiceSendNotification = {
   __typename?: 'InvoiceSendNotification';
   errors: Array<InvoiceError>;
@@ -4258,7 +4398,13 @@ export type InvoiceSendNotification = {
   invoiceErrors: Array<InvoiceError>;
 };
 
-/** Updates an invoice. */
+export type InvoiceSent = {
+  __typename?: 'InvoiceSent';
+  /** New in Saleor 3.2. Look up an Invoice. Note: this feature is in a preview state and can be subject to changes at later point. */
+  invoice?: Maybe<Invoice>;
+};
+
+/** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
 export type InvoiceUpdate = {
   __typename?: 'InvoiceUpdate';
   errors: Array<InvoiceError>;
@@ -5104,7 +5250,7 @@ export type Manifest = {
   homepageUrl?: Maybe<Scalars['String']>;
   identifier: Scalars['String'];
   name: Scalars['String'];
-  permissions?: Maybe<Array<Maybe<Permission>>>;
+  permissions?: Maybe<Array<Permission>>;
   supportUrl?: Maybe<Scalars['String']>;
   tokenTargetUrl?: Maybe<Scalars['String']>;
   version: Scalars['String'];
@@ -5153,16 +5299,16 @@ export type MeasurementUnitsEnum =
 export type Menu = Node & ObjectWithMetadata & {
   __typename?: 'Menu';
   id: Scalars['ID'];
-  items?: Maybe<Array<Maybe<MenuItem>>>;
+  items?: Maybe<Array<MenuItem>>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   slug: Scalars['String'];
 };
 
-/** Deletes menus. */
+/** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuBulkDelete = {
   __typename?: 'MenuBulkDelete';
   /** Returns how many objects were affected. */
@@ -5189,7 +5335,7 @@ export type MenuCountableEdge = {
   node: Menu;
 };
 
-/** Creates a new Menu. */
+/** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuCreate = {
   __typename?: 'MenuCreate';
   errors: Array<MenuError>;
@@ -5200,14 +5346,14 @@ export type MenuCreate = {
 
 export type MenuCreateInput = {
   /** List of menu items. */
-  items?: InputMaybe<Array<InputMaybe<MenuItemInput>>>;
+  items?: InputMaybe<Array<MenuItemInput>>;
   /** Name of the menu. */
   name: Scalars['String'];
   /** Slug of the menu. Will be generated if not provided. */
   slug?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a menu. */
+/** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuDelete = {
   __typename?: 'MenuDelete';
   errors: Array<MenuError>;
@@ -5239,9 +5385,9 @@ export type MenuErrorCode =
   | 'UNIQUE';
 
 export type MenuFilterInput = {
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
-  slug?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  slug?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type MenuInput = {
@@ -5255,18 +5401,18 @@ export type MenuInput = {
 export type MenuItem = Node & ObjectWithMetadata & {
   __typename?: 'MenuItem';
   category?: Maybe<Category>;
-  children?: Maybe<Array<Maybe<MenuItem>>>;
+  children?: Maybe<Array<MenuItem>>;
   collection?: Maybe<Collection>;
   id: Scalars['ID'];
   level: Scalars['Int'];
   menu: Menu;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
   page?: Maybe<Page>;
   parent?: Maybe<MenuItem>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Returns translated menu item fields for the given language code. */
   translation?: Maybe<MenuItemTranslation>;
   /** URL to the menu item. */
@@ -5279,7 +5425,7 @@ export type MenuItemTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Deletes menu items. */
+/** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuItemBulkDelete = {
   __typename?: 'MenuItemBulkDelete';
   /** Returns how many objects were affected. */
@@ -5306,7 +5452,7 @@ export type MenuItemCountableEdge = {
   node: MenuItem;
 };
 
-/** Creates a new menu item. */
+/** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuItemCreate = {
   __typename?: 'MenuItemCreate';
   errors: Array<MenuError>;
@@ -5332,7 +5478,7 @@ export type MenuItemCreateInput = {
   url?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a menu item. */
+/** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuItemDelete = {
   __typename?: 'MenuItemDelete';
   errors: Array<MenuError>;
@@ -5342,7 +5488,7 @@ export type MenuItemDelete = {
 };
 
 export type MenuItemFilterInput = {
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -5359,7 +5505,7 @@ export type MenuItemInput = {
   url?: InputMaybe<Scalars['String']>;
 };
 
-/** Moves items of menus. */
+/** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuItemMove = {
   __typename?: 'MenuItemMove';
   errors: Array<MenuError>;
@@ -5403,7 +5549,7 @@ export type MenuItemTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a menu item. */
+/** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type MenuItemTranslate = {
   __typename?: 'MenuItemTranslate';
   errors: Array<TranslationError>;
@@ -5420,7 +5566,7 @@ export type MenuItemTranslation = Node & {
   name: Scalars['String'];
 };
 
-/** Updates a menu item. */
+/** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuItemUpdate = {
   __typename?: 'MenuItemUpdate';
   errors: Array<MenuError>;
@@ -5446,7 +5592,7 @@ export type MenuSortingInput = {
   field: MenuSortField;
 };
 
-/** Updates a menu. */
+/** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
 export type MenuUpdate = {
   __typename?: 'MenuUpdate';
   errors: Array<MenuError>;
@@ -5529,99 +5675,99 @@ export type MoveProductInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Create a new address for the customer. */
+  /** Create a new address for the customer. Requires one of the following permissions: AUTHENTICATED_USER. */
   accountAddressCreate?: Maybe<AccountAddressCreate>;
-  /** Delete an address of the logged-in user. */
+  /** Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
   accountAddressDelete?: Maybe<AccountAddressDelete>;
-  /** Updates an address of the logged-in user. */
+  /** Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER. */
   accountAddressUpdate?: Maybe<AccountAddressUpdate>;
-  /** Remove user account. */
+  /** Remove user account. Requires one of the following permissions: AUTHENTICATED_USER. */
   accountDelete?: Maybe<AccountDelete>;
   /** Register a new user. */
   accountRegister?: Maybe<AccountRegister>;
-  /** Sends an email with the account removal link for the logged-in user. */
+  /** Sends an email with the account removal link for the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
   accountRequestDeletion?: Maybe<AccountRequestDeletion>;
-  /** Sets a default address for the authenticated user. */
+  /** Sets a default address for the authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
   accountSetDefaultAddress?: Maybe<AccountSetDefaultAddress>;
-  /** Updates the account of the logged-in user. */
+  /** Updates the account of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
   accountUpdate?: Maybe<AccountUpdate>;
-  /** Creates user address. */
+  /** Creates user address. Requires one of the following permissions: MANAGE_USERS. */
   addressCreate?: Maybe<AddressCreate>;
-  /** Deletes an address. */
+  /** Deletes an address. Requires one of the following permissions: MANAGE_USERS. */
   addressDelete?: Maybe<AddressDelete>;
-  /** Sets a default address for the given user. */
+  /** Sets a default address for the given user. Requires one of the following permissions: MANAGE_USERS. */
   addressSetDefault?: Maybe<AddressSetDefault>;
-  /** Updates an address. */
+  /** Updates an address. Requires one of the following permissions: MANAGE_USERS. */
   addressUpdate?: Maybe<AddressUpdate>;
-  /** Activate the app. */
+  /** Activate the app. Requires one of the following permissions: MANAGE_APPS. */
   appActivate?: Maybe<AppActivate>;
-  /** Creates a new app. */
+  /** Creates a new app. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
   appCreate?: Maybe<AppCreate>;
-  /** Deactivate the app. */
+  /** Deactivate the app. Requires one of the following permissions: MANAGE_APPS. */
   appDeactivate?: Maybe<AppDeactivate>;
-  /** Deletes an app. */
+  /** Deletes an app. Requires one of the following permissions: MANAGE_APPS. */
   appDelete?: Maybe<AppDelete>;
-  /** Delete failed installation. */
+  /** Delete failed installation. Requires one of the following permissions: MANAGE_APPS. */
   appDeleteFailedInstallation?: Maybe<AppDeleteFailedInstallation>;
-  /** Fetch and validate manifest. */
+  /** Fetch and validate manifest. Requires one of the following permissions: MANAGE_APPS. */
   appFetchManifest?: Maybe<AppFetchManifest>;
-  /** Install new app by using app manifest. */
+  /** Install new app by using app manifest. Requires the following permissions: AUTHENTICATED_STAFF_USER and MANAGE_APPS. */
   appInstall?: Maybe<AppInstall>;
-  /** Retry failed installation of new app. */
+  /** Retry failed installation of new app. Requires one of the following permissions: MANAGE_APPS. */
   appRetryInstall?: Maybe<AppRetryInstall>;
-  /** Creates a new token. */
+  /** Creates a new token. Requires one of the following permissions: MANAGE_APPS. */
   appTokenCreate?: Maybe<AppTokenCreate>;
-  /** Deletes an authentication token assigned to app. */
+  /** Deletes an authentication token assigned to app. Requires one of the following permissions: MANAGE_APPS. */
   appTokenDelete?: Maybe<AppTokenDelete>;
   /** Verify provided app token. */
   appTokenVerify?: Maybe<AppTokenVerify>;
-  /** Updates an existing app. */
+  /** Updates an existing app. Requires one of the following permissions: MANAGE_APPS. */
   appUpdate?: Maybe<AppUpdate>;
-  /** Assigns storefront's navigation menus. */
+  /** Assigns storefront's navigation menus. Requires one of the following permissions: MANAGE_MENUS, MANAGE_SETTINGS. */
   assignNavigation?: Maybe<AssignNavigation>;
-  /** Add shipping zone to given warehouse. */
+  /** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
   assignWarehouseShippingZone?: Maybe<WarehouseShippingZoneAssign>;
-  /** Deletes attributes. */
+  /** Deletes attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   attributeBulkDelete?: Maybe<AttributeBulkDelete>;
   /** Creates an attribute. */
   attributeCreate?: Maybe<AttributeCreate>;
-  /** Deletes an attribute. */
+  /** Deletes an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   attributeDelete?: Maybe<AttributeDelete>;
-  /** Reorder the values of an attribute. */
+  /** Reorder the values of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   attributeReorderValues?: Maybe<AttributeReorderValues>;
-  /** Creates/updates translations for an attribute. */
+  /** Creates/updates translations for an attribute. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   attributeTranslate?: Maybe<AttributeTranslate>;
-  /** Updates attribute. */
+  /** Updates attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   attributeUpdate?: Maybe<AttributeUpdate>;
-  /** Deletes values of attributes. */
+  /** Deletes values of attributes. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   attributeValueBulkDelete?: Maybe<AttributeValueBulkDelete>;
-  /** Creates a value for an attribute. */
+  /** Creates a value for an attribute. Requires one of the following permissions: MANAGE_PRODUCTS. */
   attributeValueCreate?: Maybe<AttributeValueCreate>;
-  /** Deletes a value of an attribute. */
+  /** Deletes a value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   attributeValueDelete?: Maybe<AttributeValueDelete>;
-  /** Creates/updates translations for an attribute value. */
+  /** Creates/updates translations for an attribute value. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   attributeValueTranslate?: Maybe<AttributeValueTranslate>;
-  /** Updates value of an attribute. */
+  /** Updates value of an attribute. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   attributeValueUpdate?: Maybe<AttributeValueUpdate>;
-  /** Deletes categories. */
+  /** Deletes categories. Requires one of the following permissions: MANAGE_PRODUCTS. */
   categoryBulkDelete?: Maybe<CategoryBulkDelete>;
-  /** Creates a new category. */
+  /** Creates a new category. Requires one of the following permissions: MANAGE_PRODUCTS. */
   categoryCreate?: Maybe<CategoryCreate>;
-  /** Deletes a category. */
+  /** Deletes a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
   categoryDelete?: Maybe<CategoryDelete>;
-  /** Creates/updates translations for a category. */
+  /** Creates/updates translations for a category. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   categoryTranslate?: Maybe<CategoryTranslate>;
-  /** Updates a category. */
+  /** Updates a category. Requires one of the following permissions: MANAGE_PRODUCTS. */
   categoryUpdate?: Maybe<CategoryUpdate>;
-  /** Activate a channel. */
+  /** Activate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
   channelActivate?: Maybe<ChannelActivate>;
-  /** Creates new channel. */
+  /** Creates new channel. Requires one of the following permissions: MANAGE_CHANNELS. */
   channelCreate?: Maybe<ChannelCreate>;
-  /** Deactivate a channel. */
+  /** Deactivate a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
   channelDeactivate?: Maybe<ChannelDeactivate>;
-  /** Delete a channel. Orders associated with the deleted channel will be moved to the target channel. Checkouts, product availability, and pricing will be removed. */
+  /** Delete a channel. Orders associated with the deleted channel will be moved to the target channel. Checkouts, product availability, and pricing will be removed. Requires one of the following permissions: MANAGE_CHANNELS. */
   channelDelete?: Maybe<ChannelDelete>;
-  /** Update a channel. */
+  /** Update a channel. Requires one of the following permissions: MANAGE_CHANNELS. */
   channelUpdate?: Maybe<ChannelUpdate>;
   /** Adds a gift card or a voucher to a checkout. */
   checkoutAddPromoCode?: Maybe<CheckoutAddPromoCode>;
@@ -5631,9 +5777,9 @@ export type Mutation = {
   checkoutComplete?: Maybe<CheckoutComplete>;
   /** Create a new checkout. */
   checkoutCreate?: Maybe<CheckoutCreate>;
-  /** Sets the customer as the owner of the checkout. */
+  /** Sets the customer as the owner of the checkout. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
   checkoutCustomerAttach?: Maybe<CheckoutCustomerAttach>;
-  /** Removes the user assigned as the owner of the checkout. */
+  /** Removes the user assigned as the owner of the checkout. Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_USER. */
   checkoutCustomerDetach?: Maybe<CheckoutCustomerDetach>;
   /** New in Saleor 3.1. Updates the delivery method (shipping method or pick up point) of the checkout. Note: this feature is in a preview state and can be subject to changes at later point. */
   checkoutDeliveryMethodUpdate?: Maybe<CheckoutDeliveryMethodUpdate>;
@@ -5663,43 +5809,43 @@ export type Mutation = {
    * @deprecated This field will be removed in Saleor 4.0. Use `checkoutDeliveryMethodUpdate` instead.
    */
   checkoutShippingMethodUpdate?: Maybe<CheckoutShippingMethodUpdate>;
-  /** Adds products to a collection. */
+  /** Adds products to a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionAddProducts?: Maybe<CollectionAddProducts>;
-  /** Deletes collections. */
+  /** Deletes collections. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionBulkDelete?: Maybe<CollectionBulkDelete>;
-  /** Manage collection's availability in channels. */
+  /** Manage collection's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionChannelListingUpdate?: Maybe<CollectionChannelListingUpdate>;
-  /** Creates a new collection. */
+  /** Creates a new collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionCreate?: Maybe<CollectionCreate>;
-  /** Deletes a collection. */
+  /** Deletes a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionDelete?: Maybe<CollectionDelete>;
-  /** Remove products from a collection. */
+  /** Remove products from a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionRemoveProducts?: Maybe<CollectionRemoveProducts>;
-  /** Reorder the products of a collection. */
+  /** Reorder the products of a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionReorderProducts?: Maybe<CollectionReorderProducts>;
-  /** Creates/updates translations for a collection. */
+  /** Creates/updates translations for a collection. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   collectionTranslate?: Maybe<CollectionTranslate>;
-  /** Updates a collection. */
+  /** Updates a collection. Requires one of the following permissions: MANAGE_PRODUCTS. */
   collectionUpdate?: Maybe<CollectionUpdate>;
   /** Confirm user account with token sent by email during registration. */
   confirmAccount?: Maybe<ConfirmAccount>;
-  /** Confirm the email change of the logged-in user. */
+  /** Confirm the email change of the logged-in user. Requires one of the following permissions: AUTHENTICATED_USER. */
   confirmEmailChange?: Maybe<ConfirmEmailChange>;
-  /** Creates new warehouse. */
+  /** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
   createWarehouse?: Maybe<WarehouseCreate>;
-  /** Deletes customers. */
+  /** Deletes customers. Requires one of the following permissions: MANAGE_USERS. */
   customerBulkDelete?: Maybe<CustomerBulkDelete>;
-  /** Creates a new customer. */
+  /** Creates a new customer. Requires one of the following permissions: MANAGE_USERS. */
   customerCreate?: Maybe<CustomerCreate>;
-  /** Deletes a customer. */
+  /** Deletes a customer. Requires one of the following permissions: MANAGE_USERS. */
   customerDelete?: Maybe<CustomerDelete>;
-  /** Updates an existing customer. */
+  /** Updates an existing customer. Requires one of the following permissions: MANAGE_USERS. */
   customerUpdate?: Maybe<CustomerUpdate>;
-  /** Delete metadata of an object. */
+  /** Delete metadata of an object. To use it, you need to have access to the modified object. */
   deleteMetadata?: Maybe<DeleteMetadata>;
-  /** Delete object's private metadata. */
+  /** Delete object's private metadata. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
   deletePrivateMetadata?: Maybe<DeletePrivateMetadata>;
-  /** Deletes selected warehouse. */
+  /** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
   deleteWarehouse?: Maybe<WarehouseDelete>;
   /** Create new digital content. This mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec */
   digitalContentCreate?: Maybe<DigitalContentCreate>;
@@ -5709,26 +5855,26 @@ export type Mutation = {
   digitalContentUpdate?: Maybe<DigitalContentUpdate>;
   /** Generate new URL to digital content. */
   digitalContentUrlCreate?: Maybe<DigitalContentUrlCreate>;
-  /** Deletes draft orders. */
+  /** Deletes draft orders. Requires one of the following permissions: MANAGE_ORDERS. */
   draftOrderBulkDelete?: Maybe<DraftOrderBulkDelete>;
-  /** Completes creating an order. */
+  /** Completes creating an order. Requires one of the following permissions: MANAGE_ORDERS. */
   draftOrderComplete?: Maybe<DraftOrderComplete>;
-  /** Creates a new draft order. */
+  /** Creates a new draft order. Requires one of the following permissions: MANAGE_ORDERS. */
   draftOrderCreate?: Maybe<DraftOrderCreate>;
-  /** Deletes a draft order. */
+  /** Deletes a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
   draftOrderDelete?: Maybe<DraftOrderDelete>;
   /**
-   * Deletes order lines.
+   * Deletes order lines. Requires one of the following permissions: MANAGE_ORDERS.
    * @deprecated This field will be removed in Saleor 4.0.
    */
   draftOrderLinesBulkDelete?: Maybe<DraftOrderLinesBulkDelete>;
-  /** Updates a draft order. */
+  /** Updates a draft order. Requires one of the following permissions: MANAGE_ORDERS. */
   draftOrderUpdate?: Maybe<DraftOrderUpdate>;
-  /** Retries event delivery. */
+  /** Retries event delivery. Requires one of the following permissions: MANAGE_APPS. */
   eventDeliveryRetry?: Maybe<EventDeliveryRetry>;
-  /** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Export gift cards to csv file. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   exportGiftCards?: Maybe<ExportGiftCards>;
-  /** Export products to csv file. */
+  /** Export products to csv file. Requires one of the following permissions: MANAGE_PRODUCTS. */
   exportProducts?: Maybe<ExportProducts>;
   /** Prepare external authentication url for user by custom plugin. */
   externalAuthenticationUrl?: Maybe<ExternalAuthenticationUrl>;
@@ -5744,303 +5890,299 @@ export type Mutation = {
   externalVerify?: Maybe<ExternalVerify>;
   /** Upload a file. This mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec */
   fileUpload?: Maybe<FileUpload>;
-  /** Activate a gift card. */
+  /** Activate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardActivate?: Maybe<GiftCardActivate>;
-  /** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Adds note to the gift card. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardAddNote?: Maybe<GiftCardAddNote>;
-  /** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Activate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardBulkActivate?: Maybe<GiftCardBulkActivate>;
-  /** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Create gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardBulkCreate?: Maybe<GiftCardBulkCreate>;
-  /** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Deactivate gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardBulkDeactivate?: Maybe<GiftCardBulkDeactivate>;
-  /** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Delete gift cards. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardBulkDelete?: Maybe<GiftCardBulkDelete>;
-  /** Creates a new gift card. */
+  /** Creates a new gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardCreate?: Maybe<GiftCardCreate>;
-  /** Deactivate a gift card. */
+  /** Deactivate a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardDeactivate?: Maybe<GiftCardDeactivate>;
-  /** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Delete gift card. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardDelete?: Maybe<GiftCardDelete>;
-  /** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Resend a gift card. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardResend?: Maybe<GiftCardResend>;
-  /** Update gift card settings. */
+  /** Update gift card settings. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardSettingsUpdate?: Maybe<GiftCardSettingsUpdate>;
-  /** Update a gift card. */
+  /** Update a gift card. Requires one of the following permissions: MANAGE_GIFT_CARD. */
   giftCardUpdate?: Maybe<GiftCardUpdate>;
-  /** Creates a ready to send invoice. */
+  /** Creates a ready to send invoice. Requires one of the following permissions: MANAGE_ORDERS. */
   invoiceCreate?: Maybe<InvoiceCreate>;
-  /** Deletes an invoice. */
+  /** Deletes an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
   invoiceDelete?: Maybe<InvoiceDelete>;
-  /** Request an invoice for the order using plugin. */
+  /** Request an invoice for the order using plugin. Requires one of the following permissions: MANAGE_ORDERS. */
   invoiceRequest?: Maybe<InvoiceRequest>;
-  /** Requests deletion of an invoice. */
+  /** Requests deletion of an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
   invoiceRequestDelete?: Maybe<InvoiceRequestDelete>;
-  /** Send an invoice notification to the customer. */
+  /** Send an invoice notification to the customer. Requires one of the following permissions: MANAGE_ORDERS. */
   invoiceSendNotification?: Maybe<InvoiceSendNotification>;
-  /** Updates an invoice. */
+  /** Updates an invoice. Requires one of the following permissions: MANAGE_ORDERS. */
   invoiceUpdate?: Maybe<InvoiceUpdate>;
-  /** Deletes menus. */
+  /** Deletes menus. Requires one of the following permissions: MANAGE_MENUS. */
   menuBulkDelete?: Maybe<MenuBulkDelete>;
-  /** Creates a new Menu. */
+  /** Creates a new Menu. Requires one of the following permissions: MANAGE_MENUS. */
   menuCreate?: Maybe<MenuCreate>;
-  /** Deletes a menu. */
+  /** Deletes a menu. Requires one of the following permissions: MANAGE_MENUS. */
   menuDelete?: Maybe<MenuDelete>;
-  /** Deletes menu items. */
+  /** Deletes menu items. Requires one of the following permissions: MANAGE_MENUS. */
   menuItemBulkDelete?: Maybe<MenuItemBulkDelete>;
-  /** Creates a new menu item. */
+  /** Creates a new menu item. Requires one of the following permissions: MANAGE_MENUS. */
   menuItemCreate?: Maybe<MenuItemCreate>;
-  /** Deletes a menu item. */
+  /** Deletes a menu item. Requires one of the following permissions: MANAGE_MENUS. */
   menuItemDelete?: Maybe<MenuItemDelete>;
-  /** Moves items of menus. */
+  /** Moves items of menus. Requires one of the following permissions: MANAGE_MENUS. */
   menuItemMove?: Maybe<MenuItemMove>;
-  /** Creates/updates translations for a menu item. */
+  /** Creates/updates translations for a menu item. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   menuItemTranslate?: Maybe<MenuItemTranslate>;
-  /** Updates a menu item. */
+  /** Updates a menu item. Requires one of the following permissions: MANAGE_MENUS. */
   menuItemUpdate?: Maybe<MenuItemUpdate>;
-  /** Updates a menu. */
+  /** Updates a menu. Requires one of the following permissions: MANAGE_MENUS. */
   menuUpdate?: Maybe<MenuUpdate>;
-  /** Adds note to the order. */
+  /** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderAddNote?: Maybe<OrderAddNote>;
-  /** Cancels orders. */
+  /** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
   orderBulkCancel?: Maybe<OrderBulkCancel>;
-  /** Cancel an order. */
+  /** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderCancel?: Maybe<OrderCancel>;
-  /** Capture an order. */
+  /** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderCapture?: Maybe<OrderCapture>;
-  /** Confirms an unconfirmed order by changing status to unfulfilled. */
+  /** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
   orderConfirm?: Maybe<OrderConfirm>;
-  /** Note: this feature is in a preview state and can be subject to changes at later point. Create new order from existing checkout. */
+  /** New in Saleor 3.2. Create new order from existing checkout. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_CHECKOUTS. */
   orderCreateFromCheckout?: Maybe<OrderCreateFromCheckout>;
-  /** Adds discount to the order. */
+  /** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderDiscountAdd?: Maybe<OrderDiscountAdd>;
-  /** Remove discount from the order. */
+  /** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderDiscountDelete?: Maybe<OrderDiscountDelete>;
-  /** Update discount for the order. */
+  /** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderDiscountUpdate?: Maybe<OrderDiscountUpdate>;
-  /** Creates new fulfillments for an order. */
+  /** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderFulfill?: Maybe<OrderFulfill>;
-  /** New in Saleor 3.1. Approve existing fulfillment. */
+  /** New in Saleor 3.1. Approve existing fulfillment. Requires one of the following permissions: MANAGE_ORDERS. */
   orderFulfillmentApprove?: Maybe<FulfillmentApprove>;
-  /** Cancels existing fulfillment and optionally restocks items. */
+  /** Cancels existing fulfillment and optionally restocks items. Requires one of the following permissions: MANAGE_ORDERS. */
   orderFulfillmentCancel?: Maybe<FulfillmentCancel>;
-  /** Refund products. */
+  /** Refund products. Requires one of the following permissions: MANAGE_ORDERS. */
   orderFulfillmentRefundProducts?: Maybe<FulfillmentRefundProducts>;
-  /** Return products. */
+  /** Return products. Requires one of the following permissions: MANAGE_ORDERS. */
   orderFulfillmentReturnProducts?: Maybe<FulfillmentReturnProducts>;
-  /** Updates a fulfillment for an order. */
+  /** Updates a fulfillment for an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderFulfillmentUpdateTracking?: Maybe<FulfillmentUpdateTracking>;
-  /** Deletes an order line from an order. */
+  /** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderLineDelete?: Maybe<OrderLineDelete>;
-  /** Remove discount applied to the order line. */
+  /** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
   orderLineDiscountRemove?: Maybe<OrderLineDiscountRemove>;
-  /** Update discount for the order line. */
+  /** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
   orderLineDiscountUpdate?: Maybe<OrderLineDiscountUpdate>;
-  /** Updates an order line of an order. */
+  /** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderLineUpdate?: Maybe<OrderLineUpdate>;
-  /** Create order lines for an order. */
+  /** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderLinesCreate?: Maybe<OrderLinesCreate>;
-  /** Mark order as manually paid. */
+  /** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
   orderMarkAsPaid?: Maybe<OrderMarkAsPaid>;
-  /** Refund an order. */
+  /** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderRefund?: Maybe<OrderRefund>;
-  /** Update shop order settings. */
+  /** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
   orderSettingsUpdate?: Maybe<OrderSettingsUpdate>;
-  /** Updates an order. */
+  /** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderUpdate?: Maybe<OrderUpdate>;
-  /** Updates a shipping method of the order. Requires shipping method ID to update, when null is passed then currently assigned shipping method is removed. */
+  /** Updates a shipping method of the order. Requires shipping method ID to update, when null is passed then currently assigned shipping method is removed. Requires one of the following permissions: MANAGE_ORDERS. */
   orderUpdateShipping?: Maybe<OrderUpdateShipping>;
-  /** Void an order. */
+  /** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
   orderVoid?: Maybe<OrderVoid>;
-  /** Assign attributes to a given page type. */
+  /** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageAttributeAssign?: Maybe<PageAttributeAssign>;
-  /** Unassign attributes from a given page type. */
+  /** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageAttributeUnassign?: Maybe<PageAttributeUnassign>;
-  /** Deletes pages. */
+  /** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
   pageBulkDelete?: Maybe<PageBulkDelete>;
-  /** Publish pages. */
+  /** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
   pageBulkPublish?: Maybe<PageBulkPublish>;
-  /** Creates a new page. */
+  /** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
   pageCreate?: Maybe<PageCreate>;
-  /** Deletes a page. */
+  /** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
   pageDelete?: Maybe<PageDelete>;
-  /** Reorder page attribute values. */
+  /** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
   pageReorderAttributeValues?: Maybe<PageReorderAttributeValues>;
-  /** Creates/updates translations for a page. */
+  /** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   pageTranslate?: Maybe<PageTranslate>;
-  /** Delete page types. */
+  /** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageTypeBulkDelete?: Maybe<PageTypeBulkDelete>;
-  /** Create a new page type. */
+  /** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageTypeCreate?: Maybe<PageTypeCreate>;
-  /** Delete a page type. */
+  /** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageTypeDelete?: Maybe<PageTypeDelete>;
-  /** Reorder the attributes of a page type. */
+  /** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageTypeReorderAttributes?: Maybe<PageTypeReorderAttributes>;
-  /** Update page type. */
+  /** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
   pageTypeUpdate?: Maybe<PageTypeUpdate>;
-  /** Updates an existing page. */
+  /** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
   pageUpdate?: Maybe<PageUpdate>;
-  /** Change the password of the logged in user. */
+  /** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
   passwordChange?: Maybe<PasswordChange>;
-  /** Captures the authorized payment amount. */
+  /** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
   paymentCapture?: Maybe<PaymentCapture>;
   /** Check payment balance. */
   paymentCheckBalance?: Maybe<PaymentCheckBalance>;
-  /** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-  paymentCreate?: Maybe<PaymentCreate>;
   /** Initializes payment process when it is required by gateway. */
   paymentInitialize?: Maybe<PaymentInitialize>;
-  /** Refunds the captured payment amount. */
+  /** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
   paymentRefund?: Maybe<PaymentRefund>;
-  /** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-  paymentUpdate?: Maybe<PaymentUpdate>;
-  /** Voids the authorized payment. */
+  /** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
   paymentVoid?: Maybe<PaymentVoid>;
-  /** Create new permission group. */
+  /** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
   permissionGroupCreate?: Maybe<PermissionGroupCreate>;
-  /** Delete permission group. */
+  /** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
   permissionGroupDelete?: Maybe<PermissionGroupDelete>;
-  /** Update permission group. */
+  /** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
   permissionGroupUpdate?: Maybe<PermissionGroupUpdate>;
-  /** Update plugin configuration. */
+  /** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
   pluginUpdate?: Maybe<PluginUpdate>;
-  /** Assign attributes to a given product type. */
+  /** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productAttributeAssign?: Maybe<ProductAttributeAssign>;
-  /** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+  /** New in Saleor 3.1. Update attributes assigned to product variant for given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productAttributeAssignmentUpdate?: Maybe<ProductAttributeAssignmentUpdate>;
-  /** Un-assign attributes from a given product type. */
+  /** Un-assign attributes from a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productAttributeUnassign?: Maybe<ProductAttributeUnassign>;
-  /** Deletes products. */
+  /** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productBulkDelete?: Maybe<ProductBulkDelete>;
-  /** Manage product's availability in channels. */
+  /** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productChannelListingUpdate?: Maybe<ProductChannelListingUpdate>;
-  /** Creates a new product. */
+  /** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productCreate?: Maybe<ProductCreate>;
-  /** Deletes a product. */
+  /** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productDelete?: Maybe<ProductDelete>;
-  /** Deletes product media. */
+  /** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productMediaBulkDelete?: Maybe<ProductMediaBulkDelete>;
-  /** Create a media object (image or video URL) associated with product. For image, this mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec */
+  /** Create a media object (image or video URL) associated with product. For image, this mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of the following permissions: MANAGE_PRODUCTS. */
   productMediaCreate?: Maybe<ProductMediaCreate>;
-  /** Deletes a product media. */
+  /** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productMediaDelete?: Maybe<ProductMediaDelete>;
-  /** Changes ordering of the product media. */
+  /** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productMediaReorder?: Maybe<ProductMediaReorder>;
-  /** Updates a product media. */
+  /** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productMediaUpdate?: Maybe<ProductMediaUpdate>;
-  /** Reorder product attribute values. */
+  /** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productReorderAttributeValues?: Maybe<ProductReorderAttributeValues>;
-  /** Creates/updates translations for a product. */
+  /** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   productTranslate?: Maybe<ProductTranslate>;
-  /** Deletes product types. */
+  /** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productTypeBulkDelete?: Maybe<ProductTypeBulkDelete>;
-  /** Creates a new product type. */
+  /** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productTypeCreate?: Maybe<ProductTypeCreate>;
-  /** Deletes a product type. */
+  /** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productTypeDelete?: Maybe<ProductTypeDelete>;
-  /** Reorder the attributes of a product type. */
+  /** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productTypeReorderAttributes?: Maybe<ProductTypeReorderAttributes>;
-  /** Updates an existing product type. */
+  /** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
   productTypeUpdate?: Maybe<ProductTypeUpdate>;
-  /** Updates an existing product. */
+  /** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productUpdate?: Maybe<ProductUpdate>;
-  /** Creates product variants for a given product. */
+  /** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantBulkCreate?: Maybe<ProductVariantBulkCreate>;
-  /** Deletes product variants. */
+  /** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantBulkDelete?: Maybe<ProductVariantBulkDelete>;
-  /** Manage product variant prices in channels. */
+  /** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantChannelListingUpdate?: Maybe<ProductVariantChannelListingUpdate>;
-  /** Creates a new variant for a product. */
+  /** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantCreate?: Maybe<ProductVariantCreate>;
-  /** Deletes a product variant. */
+  /** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantDelete?: Maybe<ProductVariantDelete>;
-  /** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder allocation into regular allocation. Note: this feature is in a preview state and can be subject to changes at later point. */
+  /** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder allocation into regular allocation. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantPreorderDeactivate?: Maybe<ProductVariantPreorderDeactivate>;
-  /** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+  /** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantReorder?: Maybe<ProductVariantReorder>;
-  /** Reorder product variant attribute values. */
+  /** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantReorderAttributeValues?: Maybe<ProductVariantReorderAttributeValues>;
-  /** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+  /** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantSetDefault?: Maybe<ProductVariantSetDefault>;
-  /** Creates stocks for product variant. */
+  /** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantStocksCreate?: Maybe<ProductVariantStocksCreate>;
-  /** Delete stocks from product variant. */
+  /** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantStocksDelete?: Maybe<ProductVariantStocksDelete>;
-  /** Update stocks for product variant. */
+  /** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantStocksUpdate?: Maybe<ProductVariantStocksUpdate>;
-  /** Creates/updates translations for a product variant. */
+  /** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   productVariantTranslate?: Maybe<ProductVariantTranslate>;
-  /** Updates an existing variant for product. */
+  /** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
   productVariantUpdate?: Maybe<ProductVariantUpdate>;
-  /** Request email change of the logged in user. */
+  /** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
   requestEmailChange?: Maybe<RequestEmailChange>;
   /** Sends an email with the account password modification link. */
   requestPasswordReset?: Maybe<RequestPasswordReset>;
-  /** Deletes sales. */
+  /** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleBulkDelete?: Maybe<SaleBulkDelete>;
-  /** Adds products, categories, collections to a voucher. */
+  /** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleCataloguesAdd?: Maybe<SaleAddCatalogues>;
-  /** Removes products, categories, collections from a sale. */
+  /** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleCataloguesRemove?: Maybe<SaleRemoveCatalogues>;
-  /** Manage sale's availability in channels. */
+  /** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleChannelListingUpdate?: Maybe<SaleChannelListingUpdate>;
-  /** Creates a new sale. */
+  /** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleCreate?: Maybe<SaleCreate>;
-  /** Deletes a sale. */
+  /** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleDelete?: Maybe<SaleDelete>;
-  /** Creates/updates translations for a sale. */
+  /** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   saleTranslate?: Maybe<SaleTranslate>;
-  /** Updates a sale. */
+  /** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   saleUpdate?: Maybe<SaleUpdate>;
   /** Sets the user's password from the token sent by email using the RequestPasswordReset mutation. */
   setPassword?: Maybe<SetPassword>;
-  /** Manage shipping method's availability in channels. */
+  /** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingMethodChannelListingUpdate?: Maybe<ShippingMethodChannelListingUpdate>;
-  /** Deletes shipping prices. */
+  /** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingPriceBulkDelete?: Maybe<ShippingPriceBulkDelete>;
-  /** Creates a new shipping price. */
+  /** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingPriceCreate?: Maybe<ShippingPriceCreate>;
-  /** Deletes a shipping price. */
+  /** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingPriceDelete?: Maybe<ShippingPriceDelete>;
-  /** Exclude products from shipping price. */
+  /** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingPriceExcludeProducts?: Maybe<ShippingPriceExcludeProducts>;
-  /** Remove product from excluded list for shipping price. */
+  /** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingPriceRemoveProductFromExclude?: Maybe<ShippingPriceRemoveProductFromExclude>;
-  /** Creates/updates translations for a shipping method. */
+  /** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   shippingPriceTranslate?: Maybe<ShippingPriceTranslate>;
-  /** Updates a new shipping price. */
+  /** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingPriceUpdate?: Maybe<ShippingPriceUpdate>;
-  /** Deletes shipping zones. */
+  /** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingZoneBulkDelete?: Maybe<ShippingZoneBulkDelete>;
-  /** Creates a new shipping zone. */
+  /** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingZoneCreate?: Maybe<ShippingZoneCreate>;
-  /** Deletes a shipping zone. */
+  /** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingZoneDelete?: Maybe<ShippingZoneDelete>;
-  /** Updates a new shipping zone. */
+  /** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
   shippingZoneUpdate?: Maybe<ShippingZoneUpdate>;
-  /** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+  /** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. Requires one of the following permissions: MANAGE_SETTINGS. */
   shopAddressUpdate?: Maybe<ShopAddressUpdate>;
-  /** Updates site domain of the shop. */
+  /** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
   shopDomainUpdate?: Maybe<ShopDomainUpdate>;
-  /** Fetch tax rates. */
+  /** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
   shopFetchTaxRates?: Maybe<ShopFetchTaxRates>;
-  /** Creates/updates translations for shop settings. */
+  /** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   shopSettingsTranslate?: Maybe<ShopSettingsTranslate>;
-  /** Updates shop settings. */
+  /** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
   shopSettingsUpdate?: Maybe<ShopSettingsUpdate>;
-  /** Deletes staff users. */
+  /** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
   staffBulkDelete?: Maybe<StaffBulkDelete>;
-  /** Creates a new staff user. */
+  /** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
   staffCreate?: Maybe<StaffCreate>;
-  /** Deletes a staff user. */
+  /** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
   staffDelete?: Maybe<StaffDelete>;
-  /** Creates a new staff notification recipient. */
+  /** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
   staffNotificationRecipientCreate?: Maybe<StaffNotificationRecipientCreate>;
-  /** Delete staff notification recipient. */
+  /** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
   staffNotificationRecipientDelete?: Maybe<StaffNotificationRecipientDelete>;
-  /** Updates a staff notification recipient. */
+  /** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
   staffNotificationRecipientUpdate?: Maybe<StaffNotificationRecipientUpdate>;
-  /** Updates an existing staff user. */
+  /** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
   staffUpdate?: Maybe<StaffUpdate>;
   /** Create JWT token. */
   tokenCreate?: Maybe<CreateToken>;
@@ -6048,47 +6190,53 @@ export type Mutation = {
   tokenRefresh?: Maybe<RefreshToken>;
   /** Verify JWT token. */
   tokenVerify?: Maybe<VerifyToken>;
-  /** Deactivate all JWT tokens of the currently authenticated user. */
+  /** Deactivate all JWT tokens of the currently authenticated user. Requires one of the following permissions: AUTHENTICATED_USER. */
   tokensDeactivateAll?: Maybe<DeactivateAllUserTokens>;
-  /** Remove shipping zone from given warehouse. */
+  /** New in Saleor 3.2. Create transaction for checkout or order. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_PAYMENTS. */
+  transactionCreate?: Maybe<TransactionCreate>;
+  /** New in Saleor 3.2. Request an action for payment transaction. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_PAYMENTS, MANAGE_ORDERS. */
+  transactionRequestAction?: Maybe<TransactionRequestAction>;
+  /** New in Saleor 3.2. Create transaction for checkout or order. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_PAYMENTS. */
+  transactionUpdate?: Maybe<TransactionUpdate>;
+  /** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
   unassignWarehouseShippingZone?: Maybe<WarehouseShippingZoneUnassign>;
-  /** Updates metadata of an object. */
+  /** Updates metadata of an object. To use it, you need to have access to the modified object. */
   updateMetadata?: Maybe<UpdateMetadata>;
-  /** Updates private metadata of an object. */
+  /** Updates private metadata of an object. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
   updatePrivateMetadata?: Maybe<UpdatePrivateMetadata>;
-  /** Updates given warehouse. */
+  /** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
   updateWarehouse?: Maybe<WarehouseUpdate>;
   /** Deletes a user avatar. Only for staff members. */
   userAvatarDelete?: Maybe<UserAvatarDelete>;
   /** Create a user avatar. Only for staff members. This mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec */
   userAvatarUpdate?: Maybe<UserAvatarUpdate>;
-  /** Activate or deactivate users. */
+  /** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
   userBulkSetActive?: Maybe<UserBulkSetActive>;
-  /** Assign an media to a product variant. */
+  /** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
   variantMediaAssign?: Maybe<VariantMediaAssign>;
-  /** Unassign an media from a product variant. */
+  /** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
   variantMediaUnassign?: Maybe<VariantMediaUnassign>;
-  /** Deletes vouchers. */
+  /** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherBulkDelete?: Maybe<VoucherBulkDelete>;
-  /** Adds products, categories, collections to a voucher. */
+  /** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherCataloguesAdd?: Maybe<VoucherAddCatalogues>;
-  /** Removes products, categories, collections from a voucher. */
+  /** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherCataloguesRemove?: Maybe<VoucherRemoveCatalogues>;
-  /** Manage voucher's availability in channels. */
+  /** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherChannelListingUpdate?: Maybe<VoucherChannelListingUpdate>;
-  /** Creates a new voucher. */
+  /** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherCreate?: Maybe<VoucherCreate>;
-  /** Deletes a voucher. */
+  /** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherDelete?: Maybe<VoucherDelete>;
-  /** Creates/updates translations for a voucher. */
+  /** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
   voucherTranslate?: Maybe<VoucherTranslate>;
-  /** Updates a voucher. */
+  /** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
   voucherUpdate?: Maybe<VoucherUpdate>;
-  /** Creates a new webhook subscription. */
+  /** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
   webhookCreate?: Maybe<WebhookCreate>;
-  /** Deletes a webhook subscription. */
+  /** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
   webhookDelete?: Maybe<WebhookDelete>;
-  /** Updates a webhook subscription. */
+  /** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
   webhookUpdate?: Maybe<WebhookUpdate>;
 };
 
@@ -6236,7 +6384,7 @@ export type MutationAssignWarehouseShippingZoneArgs = {
 
 
 export type MutationAttributeBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6252,7 +6400,7 @@ export type MutationAttributeDeleteArgs = {
 
 export type MutationAttributeReorderValuesArgs = {
   attributeId: Scalars['ID'];
-  moves: Array<InputMaybe<ReorderInput>>;
+  moves: Array<ReorderInput>;
 };
 
 
@@ -6270,7 +6418,7 @@ export type MutationAttributeUpdateArgs = {
 
 
 export type MutationAttributeValueBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6299,7 +6447,7 @@ export type MutationAttributeValueUpdateArgs = {
 
 
 export type MutationCategoryBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6424,20 +6572,20 @@ export type MutationCheckoutLineDeleteArgs = {
 
 export type MutationCheckoutLinesAddArgs = {
   checkoutId?: InputMaybe<Scalars['ID']>;
-  lines: Array<InputMaybe<CheckoutLineInput>>;
+  lines: Array<CheckoutLineInput>;
   token?: InputMaybe<Scalars['UUID']>;
 };
 
 
 export type MutationCheckoutLinesDeleteArgs = {
-  linesIds: Array<InputMaybe<Scalars['ID']>>;
+  linesIds: Array<Scalars['ID']>;
   token: Scalars['UUID'];
 };
 
 
 export type MutationCheckoutLinesUpdateArgs = {
   checkoutId?: InputMaybe<Scalars['ID']>;
-  lines: Array<InputMaybe<CheckoutLineInput>>;
+  lines: Array<CheckoutLineUpdateInput>;
   token?: InputMaybe<Scalars['UUID']>;
 };
 
@@ -6473,12 +6621,12 @@ export type MutationCheckoutShippingMethodUpdateArgs = {
 
 export type MutationCollectionAddProductsArgs = {
   collectionId: Scalars['ID'];
-  products: Array<InputMaybe<Scalars['ID']>>;
+  products: Array<Scalars['ID']>;
 };
 
 
 export type MutationCollectionBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6500,13 +6648,13 @@ export type MutationCollectionDeleteArgs = {
 
 export type MutationCollectionRemoveProductsArgs = {
   collectionId: Scalars['ID'];
-  products: Array<InputMaybe<Scalars['ID']>>;
+  products: Array<Scalars['ID']>;
 };
 
 
 export type MutationCollectionReorderProductsArgs = {
   collectionId: Scalars['ID'];
-  moves: Array<InputMaybe<MoveProductInput>>;
+  moves: Array<MoveProductInput>;
 };
 
 
@@ -6541,7 +6689,7 @@ export type MutationCreateWarehouseArgs = {
 
 
 export type MutationCustomerBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6601,7 +6749,7 @@ export type MutationDigitalContentUrlCreateArgs = {
 
 
 export type MutationDraftOrderBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6621,7 +6769,7 @@ export type MutationDraftOrderDeleteArgs = {
 
 
 export type MutationDraftOrderLinesBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6700,7 +6848,7 @@ export type MutationGiftCardAddNoteArgs = {
 
 
 export type MutationGiftCardBulkActivateArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6710,12 +6858,12 @@ export type MutationGiftCardBulkCreateArgs = {
 
 
 export type MutationGiftCardBulkDeactivateArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
 export type MutationGiftCardBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6784,7 +6932,7 @@ export type MutationInvoiceUpdateArgs = {
 
 
 export type MutationMenuBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6799,7 +6947,7 @@ export type MutationMenuDeleteArgs = {
 
 
 export type MutationMenuItemBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6815,7 +6963,7 @@ export type MutationMenuItemDeleteArgs = {
 
 export type MutationMenuItemMoveArgs = {
   menu: Scalars['ID'];
-  moves: Array<InputMaybe<MenuItemMoveInput>>;
+  moves: Array<MenuItemMoveInput>;
 };
 
 
@@ -6845,7 +6993,7 @@ export type MutationOrderAddNoteArgs = {
 
 
 export type MutationOrderBulkCancelArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -6949,7 +7097,7 @@ export type MutationOrderLineUpdateArgs = {
 
 export type MutationOrderLinesCreateArgs = {
   id: Scalars['ID'];
-  input: Array<InputMaybe<OrderLineCreateInput>>;
+  input: Array<OrderLineCreateInput>;
 };
 
 
@@ -7000,12 +7148,12 @@ export type MutationPageAttributeUnassignArgs = {
 
 
 export type MutationPageBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
 export type MutationPageBulkPublishArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
   isPublished: Scalars['Boolean'];
 };
 
@@ -7022,7 +7170,7 @@ export type MutationPageDeleteArgs = {
 
 export type MutationPageReorderAttributeValuesArgs = {
   attributeId: Scalars['ID'];
-  moves: Array<InputMaybe<ReorderInput>>;
+  moves: Array<ReorderInput>;
   pageId: Scalars['ID'];
 };
 
@@ -7084,13 +7232,6 @@ export type MutationPaymentCheckBalanceArgs = {
 };
 
 
-export type MutationPaymentCreateArgs = {
-  id: Scalars['ID'];
-  payment: PaymentCreateInput;
-  transaction?: InputMaybe<TransactionInput>;
-};
-
-
 export type MutationPaymentInitializeArgs = {
   channel?: InputMaybe<Scalars['String']>;
   gateway: Scalars['String'];
@@ -7101,13 +7242,6 @@ export type MutationPaymentInitializeArgs = {
 export type MutationPaymentRefundArgs = {
   amount?: InputMaybe<Scalars['PositiveDecimal']>;
   paymentId: Scalars['ID'];
-};
-
-
-export type MutationPaymentUpdateArgs = {
-  id: Scalars['ID'];
-  payment?: InputMaybe<PaymentUpdateInput>;
-  transaction?: InputMaybe<TransactionInput>;
 };
 
 
@@ -7140,25 +7274,25 @@ export type MutationPluginUpdateArgs = {
 
 
 export type MutationProductAttributeAssignArgs = {
-  operations: Array<InputMaybe<ProductAttributeAssignInput>>;
+  operations: Array<ProductAttributeAssignInput>;
   productTypeId: Scalars['ID'];
 };
 
 
 export type MutationProductAttributeAssignmentUpdateArgs = {
-  operations: Array<InputMaybe<ProductAttributeAssignmentUpdateInput>>;
+  operations: Array<ProductAttributeAssignmentUpdateInput>;
   productTypeId: Scalars['ID'];
 };
 
 
 export type MutationProductAttributeUnassignArgs = {
-  attributeIds: Array<InputMaybe<Scalars['ID']>>;
+  attributeIds: Array<Scalars['ID']>;
   productTypeId: Scalars['ID'];
 };
 
 
 export type MutationProductBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7179,7 +7313,7 @@ export type MutationProductDeleteArgs = {
 
 
 export type MutationProductMediaBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7194,7 +7328,7 @@ export type MutationProductMediaDeleteArgs = {
 
 
 export type MutationProductMediaReorderArgs = {
-  mediaIds: Array<InputMaybe<Scalars['ID']>>;
+  mediaIds: Array<Scalars['ID']>;
   productId: Scalars['ID'];
 };
 
@@ -7207,7 +7341,7 @@ export type MutationProductMediaUpdateArgs = {
 
 export type MutationProductReorderAttributeValuesArgs = {
   attributeId: Scalars['ID'];
-  moves: Array<InputMaybe<ReorderInput>>;
+  moves: Array<ReorderInput>;
   productId: Scalars['ID'];
 };
 
@@ -7220,7 +7354,7 @@ export type MutationProductTranslateArgs = {
 
 
 export type MutationProductTypeBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7235,7 +7369,7 @@ export type MutationProductTypeDeleteArgs = {
 
 
 export type MutationProductTypeReorderAttributesArgs = {
-  moves: Array<InputMaybe<ReorderInput>>;
+  moves: Array<ReorderInput>;
   productTypeId: Scalars['ID'];
   type: ProductAttributeType;
 };
@@ -7255,12 +7389,12 @@ export type MutationProductUpdateArgs = {
 
 export type MutationProductVariantBulkCreateArgs = {
   product: Scalars['ID'];
-  variants: Array<InputMaybe<ProductVariantBulkCreateInput>>;
+  variants: Array<ProductVariantBulkCreateInput>;
 };
 
 
 export type MutationProductVariantBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7286,14 +7420,14 @@ export type MutationProductVariantPreorderDeactivateArgs = {
 
 
 export type MutationProductVariantReorderArgs = {
-  moves: Array<InputMaybe<ReorderInput>>;
+  moves: Array<ReorderInput>;
   productId: Scalars['ID'];
 };
 
 
 export type MutationProductVariantReorderAttributeValuesArgs = {
   attributeId: Scalars['ID'];
-  moves: Array<InputMaybe<ReorderInput>>;
+  moves: Array<ReorderInput>;
   variantId: Scalars['ID'];
 };
 
@@ -7351,7 +7485,7 @@ export type MutationRequestPasswordResetArgs = {
 
 
 export type MutationSaleBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7410,7 +7544,7 @@ export type MutationShippingMethodChannelListingUpdateArgs = {
 
 
 export type MutationShippingPriceBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7432,7 +7566,7 @@ export type MutationShippingPriceExcludeProductsArgs = {
 
 export type MutationShippingPriceRemoveProductFromExcludeArgs = {
   id: Scalars['ID'];
-  products: Array<InputMaybe<Scalars['ID']>>;
+  products: Array<Scalars['ID']>;
 };
 
 
@@ -7450,7 +7584,7 @@ export type MutationShippingPriceUpdateArgs = {
 
 
 export type MutationShippingZoneBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7492,7 +7626,7 @@ export type MutationShopSettingsUpdateArgs = {
 
 
 export type MutationStaffBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7545,6 +7679,27 @@ export type MutationTokenVerifyArgs = {
 };
 
 
+export type MutationTransactionCreateArgs = {
+  id: Scalars['ID'];
+  transaction: TransactionCreateInput;
+  transactionEvent?: InputMaybe<TransactionEventInput>;
+};
+
+
+export type MutationTransactionRequestActionArgs = {
+  actionType: TransactionActionEnum;
+  amount?: InputMaybe<Scalars['PositiveDecimal']>;
+  id: Scalars['ID'];
+};
+
+
+export type MutationTransactionUpdateArgs = {
+  id: Scalars['ID'];
+  transaction?: InputMaybe<TransactionUpdateInput>;
+  transactionEvent?: InputMaybe<TransactionEventInput>;
+};
+
+
 export type MutationUnassignWarehouseShippingZoneArgs = {
   id: Scalars['ID'];
   shippingZoneIds: Array<Scalars['ID']>;
@@ -7575,7 +7730,7 @@ export type MutationUserAvatarUpdateArgs = {
 
 
 export type MutationUserBulkSetActiveArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
   isActive: Scalars['Boolean'];
 };
 
@@ -7593,7 +7748,7 @@ export type MutationVariantMediaUnassignArgs = {
 
 
 export type MutationVoucherBulkDeleteArgs = {
-  ids: Array<InputMaybe<Scalars['ID']>>;
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -7671,23 +7826,23 @@ export type Node = {
 
 export type ObjectWithMetadata = {
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
 };
 
 /** Represents an order in the shop. */
 export type Order = Node & ObjectWithMetadata & {
   __typename?: 'Order';
-  /** This field will be removed in Saleor 4.0. Use actions on order.payments. List of actions that can be performed in the current state of an order. */
-  actions: Array<Maybe<OrderAction>>;
+  /** List of actions that can be performed in the current state of an order. */
+  actions: Array<OrderAction>;
   /** New in Saleor 3.1. Collection points that can be used for this order. Note: this feature is in a preview state and can be subject to changes at later point. */
   availableCollectionPoints: Array<Warehouse>;
   /**
    * Shipping methods that can be used with this order.
    * @deprecated Use `shippingMethods`, this field will be removed in 4.0
    */
-  availableShippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
+  availableShippingMethods?: Maybe<Array<ShippingMethod>>;
   billingAddress?: Maybe<Address>;
   /** Informs whether a draft order can be finalized(turned into a regular order). */
   canFinalize: Scalars['Boolean'];
@@ -7713,14 +7868,14 @@ export type Order = Node & ObjectWithMetadata & {
   /** List of errors that occurred during order validation. */
   errors: Array<OrderError>;
   /** List of events associated with the order. */
-  events?: Maybe<Array<Maybe<OrderEvent>>>;
+  events?: Maybe<Array<OrderEvent>>;
   /** List of shipments for the order. */
-  fulfillments: Array<Maybe<Fulfillment>>;
+  fulfillments: Array<Fulfillment>;
   /** List of user gift cards. */
-  giftCards?: Maybe<Array<Maybe<GiftCard>>>;
+  giftCards?: Maybe<Array<GiftCard>>;
   id: Scalars['ID'];
   /** List of order invoices. */
-  invoices?: Maybe<Array<Maybe<Invoice>>>;
+  invoices?: Maybe<Array<Invoice>>;
   /** Informs if an order is fully paid. */
   isPaid: Scalars['Boolean'];
   /** Returns True, if order requires shipping. */
@@ -7730,9 +7885,9 @@ export type Order = Node & ObjectWithMetadata & {
   /** Order language code. */
   languageCodeEnum: LanguageCodeEnum;
   /** List of order lines. */
-  lines: Array<Maybe<OrderLine>>;
+  lines: Array<OrderLine>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** User-friendly number of an order. */
   number?: Maybe<Scalars['String']>;
   /** The order origin. */
@@ -7744,9 +7899,9 @@ export type Order = Node & ObjectWithMetadata & {
   /** User-friendly payment status. */
   paymentStatusDisplay: Scalars['String'];
   /** List of payments for the order. */
-  payments?: Maybe<Array<Maybe<Payment>>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  payments?: Maybe<Array<Payment>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   redirectUrl?: Maybe<Scalars['String']>;
   shippingAddress?: Maybe<Address>;
   /**
@@ -7756,7 +7911,7 @@ export type Order = Node & ObjectWithMetadata & {
   shippingMethod?: Maybe<ShippingMethod>;
   shippingMethodName?: Maybe<Scalars['String']>;
   /** Shipping methods related to this order. */
-  shippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
+  shippingMethods?: Maybe<Array<ShippingMethod>>;
   /** Total price of shipping. */
   shippingPrice: TaxedMoney;
   shippingTaxRate: Scalars['Float'];
@@ -7765,6 +7920,7 @@ export type Order = Node & ObjectWithMetadata & {
   statusDisplay?: Maybe<Scalars['String']>;
   /** The sum of line prices not including shipping. */
   subtotal: TaxedMoney;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `id` instead. */
   token: Scalars['String'];
   /** Total amount of the order. */
   total: TaxedMoney;
@@ -7775,6 +7931,8 @@ export type Order = Node & ObjectWithMetadata & {
   /** Amount captured by payment. */
   totalCaptured: Money;
   trackingClientId: Scalars['String'];
+  /** New in Saleor 3.2. List of transactions for the order. Requires one of the following permissions: MANAGE_ORDERS, HANDLE_PAYMENTS. Note: this feature is in a preview state and can be subject to changes at later point. */
+  transactions?: Maybe<Array<TransactionItem>>;
   /**
    * Translated discount name.
    * @deprecated This field will be removed in Saleor 4.0. Use the `discounts` field instead.
@@ -7800,7 +7958,7 @@ export type OrderAction =
   /** Represents a void action. */
   | 'VOID';
 
-/** Adds note to the order. */
+/** Adds note to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderAddNote = {
   __typename?: 'OrderAddNote';
   errors: Array<OrderError>;
@@ -7817,7 +7975,7 @@ export type OrderAddNoteInput = {
   message: Scalars['String'];
 };
 
-/** Cancels orders. */
+/** Cancels orders. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderBulkCancel = {
   __typename?: 'OrderBulkCancel';
   /** Returns how many objects were affected. */
@@ -7827,7 +7985,7 @@ export type OrderBulkCancel = {
   orderErrors: Array<OrderError>;
 };
 
-/** Cancel an order. */
+/** Cancel an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderCancel = {
   __typename?: 'OrderCancel';
   errors: Array<OrderError>;
@@ -7837,7 +7995,13 @@ export type OrderCancel = {
   orderErrors: Array<OrderError>;
 };
 
-/** Capture an order. */
+export type OrderCancelled = {
+  __typename?: 'OrderCancelled';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
+};
+
+/** Capture an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderCapture = {
   __typename?: 'OrderCapture';
   errors: Array<OrderError>;
@@ -7847,13 +8011,19 @@ export type OrderCapture = {
   orderErrors: Array<OrderError>;
 };
 
-/** Confirms an unconfirmed order by changing status to unfulfilled. */
+/** Confirms an unconfirmed order by changing status to unfulfilled. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderConfirm = {
   __typename?: 'OrderConfirm';
   errors: Array<OrderError>;
   order?: Maybe<Order>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   orderErrors: Array<OrderError>;
+};
+
+export type OrderConfirmed = {
+  __typename?: 'OrderConfirmed';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
 };
 
 export type OrderCountableConnection = {
@@ -7873,7 +8043,7 @@ export type OrderCountableEdge = {
   node: Order;
 };
 
-/** Note: this feature is in a preview state and can be subject to changes at later point. Create new order from existing checkout. */
+/** New in Saleor 3.2. Create new order from existing checkout. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_CHECKOUTS. */
 export type OrderCreateFromCheckout = {
   __typename?: 'OrderCreateFromCheckout';
   errors: Array<OrderCreateFromCheckoutError>;
@@ -7912,6 +8082,12 @@ export type OrderCreateFromCheckoutErrorCode =
   | 'UNAVAILABLE_VARIANT_IN_CHANNEL'
   | 'VOUCHER_NOT_APPLICABLE';
 
+export type OrderCreated = {
+  __typename?: 'OrderCreated';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
+};
+
 export type OrderDirection =
   /** Specifies an ascending sort order. */
   | 'ASC'
@@ -7935,7 +8111,7 @@ export type OrderDiscount = Node & {
   valueType: DiscountValueTypeEnum;
 };
 
-/** Adds discount to the order. */
+/** Adds discount to the order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderDiscountAdd = {
   __typename?: 'OrderDiscountAdd';
   errors: Array<OrderError>;
@@ -7954,7 +8130,7 @@ export type OrderDiscountCommonInput = {
   valueType: DiscountValueTypeEnum;
 };
 
-/** Remove discount from the order. */
+/** Remove discount from the order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderDiscountDelete = {
   __typename?: 'OrderDiscountDelete';
   errors: Array<OrderError>;
@@ -7969,7 +8145,7 @@ export type OrderDiscountType =
   | 'MANUAL'
   | 'VOUCHER';
 
-/** Update discount for the order. */
+/** Update discount for the order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderDiscountUpdate = {
   __typename?: 'OrderDiscountUpdate';
   errors: Array<OrderError>;
@@ -7980,10 +8156,10 @@ export type OrderDiscountUpdate = {
 };
 
 export type OrderDraftFilterInput = {
-  channels?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  channels?: InputMaybe<Array<Scalars['ID']>>;
   created?: InputMaybe<DateRangeInput>;
   customer?: InputMaybe<Scalars['String']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -8023,6 +8199,7 @@ export type OrderErrorCode =
   | 'INSUFFICIENT_STOCK'
   | 'INVALID'
   | 'INVALID_QUANTITY'
+  | 'MISSING_TRANSACTION_ACTION_REQUEST_WEBHOOK'
   | 'NOT_AVAILABLE_IN_CHANNEL'
   | 'NOT_EDITABLE'
   | 'NOT_FOUND'
@@ -8057,21 +8234,21 @@ export type OrderEvent = Node & {
   /** Type of an email sent to the customer. */
   emailType?: Maybe<OrderEventsEmailsEnum>;
   /** The lines fulfilled. */
-  fulfilledItems?: Maybe<Array<Maybe<FulfillmentLine>>>;
+  fulfilledItems?: Maybe<Array<FulfillmentLine>>;
   id: Scalars['ID'];
   /** Number of an invoice related to the order. */
   invoiceNumber?: Maybe<Scalars['String']>;
   /** The concerned lines. */
-  lines?: Maybe<Array<Maybe<OrderEventOrderLineObject>>>;
+  lines?: Maybe<Array<OrderEventOrderLineObject>>;
   /** Content of the event. */
   message?: Maybe<Scalars['String']>;
   /** User-friendly number of an order. */
   orderNumber?: Maybe<Scalars['String']>;
   /** List of oversold lines names. */
-  oversoldItems?: Maybe<Array<Maybe<Scalars['String']>>>;
+  oversoldItems?: Maybe<Array<Scalars['String']>>;
   /** The payment gateway of the payment. */
   paymentGateway?: Maybe<Scalars['String']>;
-  /** The payment ID from the payment gateway. */
+  /** The payment reference from the payment provider. */
   paymentId?: Maybe<Scalars['String']>;
   /** Number of items. */
   quantity?: Maybe<Scalars['Int']>;
@@ -8195,30 +8372,33 @@ export type OrderEventsEnum =
   | 'PLACED_FROM_DRAFT'
   | 'REMOVED_PRODUCTS'
   | 'TRACKING_UPDATED'
+  | 'TRANSACTION_CAPTURE_REQUESTED'
+  | 'TRANSACTION_REFUND_REQUESTED'
+  | 'TRANSACTION_VOID_REQUESTED'
   | 'UPDATED_ADDRESS';
 
 export type OrderFilterInput = {
-  channels?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  channels?: InputMaybe<Array<Scalars['ID']>>;
   created?: InputMaybe<DateRangeInput>;
   customer?: InputMaybe<Scalars['String']>;
   giftCardBought?: InputMaybe<Scalars['Boolean']>;
   giftCardUsed?: InputMaybe<Scalars['Boolean']>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   isClickAndCollect?: InputMaybe<Scalars['Boolean']>;
   isPreorder?: InputMaybe<Scalars['Boolean']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
-  paymentStatus?: InputMaybe<Array<InputMaybe<PaymentChargeStatusEnum>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
+  paymentStatus?: InputMaybe<Array<PaymentChargeStatusEnum>>;
   search?: InputMaybe<Scalars['String']>;
-  status?: InputMaybe<Array<InputMaybe<OrderStatusFilter>>>;
+  status?: InputMaybe<Array<OrderStatusFilter>>;
   updatedAt?: InputMaybe<DateTimeRangeInput>;
 };
 
-/** Creates new fulfillments for an order. */
+/** Creates new fulfillments for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderFulfill = {
   __typename?: 'OrderFulfill';
   errors: Array<OrderError>;
   /** List of created fulfillments. */
-  fulfillments?: Maybe<Array<Maybe<Fulfillment>>>;
+  fulfillments?: Maybe<Array<Fulfillment>>;
   /** Fulfilled order. */
   order?: Maybe<Order>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -8246,6 +8426,18 @@ export type OrderFulfillStockInput = {
   quantity: Scalars['Int'];
   /** ID of the warehouse from which the item will be fulfilled. */
   warehouse: Scalars['ID'];
+};
+
+export type OrderFulfilled = {
+  __typename?: 'OrderFulfilled';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
+};
+
+export type OrderFullyPaid = {
+  __typename?: 'OrderFullyPaid';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
 };
 
 /** Represents order line of particular order. */
@@ -8301,7 +8493,7 @@ export type OrderLineCreateInput = {
   variantId: Scalars['ID'];
 };
 
-/** Deletes an order line from an order. */
+/** Deletes an order line from an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderLineDelete = {
   __typename?: 'OrderLineDelete';
   errors: Array<OrderError>;
@@ -8313,7 +8505,7 @@ export type OrderLineDelete = {
   orderLine?: Maybe<OrderLine>;
 };
 
-/** Remove discount applied to the order line. */
+/** Remove discount applied to the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderLineDiscountRemove = {
   __typename?: 'OrderLineDiscountRemove';
   errors: Array<OrderError>;
@@ -8325,7 +8517,7 @@ export type OrderLineDiscountRemove = {
   orderLine?: Maybe<OrderLine>;
 };
 
-/** Update discount for the order line. */
+/** Update discount for the order line. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderLineDiscountUpdate = {
   __typename?: 'OrderLineDiscountUpdate';
   errors: Array<OrderError>;
@@ -8342,7 +8534,7 @@ export type OrderLineInput = {
   quantity: Scalars['Int'];
 };
 
-/** Updates an order line of an order. */
+/** Updates an order line of an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderLineUpdate = {
   __typename?: 'OrderLineUpdate';
   errors: Array<OrderError>;
@@ -8353,7 +8545,7 @@ export type OrderLineUpdate = {
   orderLine?: Maybe<OrderLine>;
 };
 
-/** Create order lines for an order. */
+/** Create order lines for an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderLinesCreate = {
   __typename?: 'OrderLinesCreate';
   errors: Array<OrderError>;
@@ -8365,7 +8557,7 @@ export type OrderLinesCreate = {
   orderLines?: Maybe<Array<OrderLine>>;
 };
 
-/** Mark order as manually paid. */
+/** Mark order as manually paid. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderMarkAsPaid = {
   __typename?: 'OrderMarkAsPaid';
   errors: Array<OrderError>;
@@ -8381,7 +8573,7 @@ export type OrderOriginEnum =
   | 'DRAFT'
   | 'REISSUE';
 
-/** Refund an order. */
+/** Refund an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderRefund = {
   __typename?: 'OrderRefund';
   errors: Array<OrderError>;
@@ -8468,7 +8660,7 @@ export type OrderSettingsError = {
 export type OrderSettingsErrorCode =
   | 'INVALID';
 
-/** Update shop order settings. */
+/** Update shop order settings. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderSettingsUpdate = {
   __typename?: 'OrderSettingsUpdate';
   errors: Array<OrderSettingsError>;
@@ -8536,7 +8728,7 @@ export type OrderStatusFilter =
   | 'UNCONFIRMED'
   | 'UNFULFILLED';
 
-/** Updates an order. */
+/** Updates an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderUpdate = {
   __typename?: 'OrderUpdate';
   errors: Array<OrderError>;
@@ -8554,7 +8746,7 @@ export type OrderUpdateInput = {
   userEmail?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates a shipping method of the order. Requires shipping method ID to update, when null is passed then currently assigned shipping method is removed. */
+/** Updates a shipping method of the order. Requires shipping method ID to update, when null is passed then currently assigned shipping method is removed. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderUpdateShipping = {
   __typename?: 'OrderUpdateShipping';
   errors: Array<OrderError>;
@@ -8569,7 +8761,13 @@ export type OrderUpdateShippingInput = {
   shippingMethod?: InputMaybe<Scalars['ID']>;
 };
 
-/** Void an order. */
+export type OrderUpdated = {
+  __typename?: 'OrderUpdated';
+  /** New in Saleor 3.2. Look up an order. Note: this feature is in a preview state and can be subject to changes at later point. */
+  order?: Maybe<Order>;
+};
+
+/** Void an order. Requires one of the following permissions: MANAGE_ORDERS. */
 export type OrderVoid = {
   __typename?: 'OrderVoid';
   errors: Array<OrderError>;
@@ -8595,10 +8793,10 @@ export type Page = Node & ObjectWithMetadata & {
   id: Scalars['ID'];
   isPublished: Scalars['Boolean'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   pageType: PageType;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   publicationDate?: Maybe<Scalars['Date']>;
   seoDescription?: Maybe<Scalars['String']>;
   seoTitle?: Maybe<Scalars['String']>;
@@ -8614,7 +8812,7 @@ export type PageTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Assign attributes to a given page type. */
+/** Assign attributes to a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageAttributeAssign = {
   __typename?: 'PageAttributeAssign';
   errors: Array<PageError>;
@@ -8624,7 +8822,7 @@ export type PageAttributeAssign = {
   pageType?: Maybe<PageType>;
 };
 
-/** Unassign attributes from a given page type. */
+/** Unassign attributes from a given page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageAttributeUnassign = {
   __typename?: 'PageAttributeUnassign';
   errors: Array<PageError>;
@@ -8634,7 +8832,7 @@ export type PageAttributeUnassign = {
   pageType?: Maybe<PageType>;
 };
 
-/** Deletes pages. */
+/** Deletes pages. Requires one of the following permissions: MANAGE_PAGES. */
 export type PageBulkDelete = {
   __typename?: 'PageBulkDelete';
   /** Returns how many objects were affected. */
@@ -8644,7 +8842,7 @@ export type PageBulkDelete = {
   pageErrors: Array<PageError>;
 };
 
-/** Publish pages. */
+/** Publish pages. Requires one of the following permissions: MANAGE_PAGES. */
 export type PageBulkPublish = {
   __typename?: 'PageBulkPublish';
   /** Returns how many objects were affected. */
@@ -8671,7 +8869,7 @@ export type PageCountableEdge = {
   node: Page;
 };
 
-/** Creates a new page. */
+/** Creates a new page. Requires one of the following permissions: MANAGE_PAGES. */
 export type PageCreate = {
   __typename?: 'PageCreate';
   errors: Array<PageError>;
@@ -8699,13 +8897,25 @@ export type PageCreateInput = {
   title?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a page. */
+export type PageCreated = {
+  __typename?: 'PageCreated';
+  /** New in Saleor 3.2. Look up a page. Note: this feature is in a preview state and can be subject to changes at later point. */
+  page?: Maybe<Page>;
+};
+
+/** Deletes a page. Requires one of the following permissions: MANAGE_PAGES. */
 export type PageDelete = {
   __typename?: 'PageDelete';
   errors: Array<PageError>;
   page?: Maybe<Page>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   pageErrors: Array<PageError>;
+};
+
+export type PageDeleted = {
+  __typename?: 'PageDeleted';
+  /** New in Saleor 3.2. Look up a page. Note: this feature is in a preview state and can be subject to changes at later point. */
+  page?: Maybe<Page>;
 };
 
 export type PageError = {
@@ -8733,9 +8943,9 @@ export type PageErrorCode =
   | 'UNIQUE';
 
 export type PageFilterInput = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
-  pageTypes?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
+  pageTypes?: InputMaybe<Array<Scalars['ID']>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -8769,7 +8979,7 @@ export type PageInput = {
   title?: InputMaybe<Scalars['String']>;
 };
 
-/** Reorder page attribute values. */
+/** Reorder page attribute values. Requires one of the following permissions: MANAGE_PAGES. */
 export type PageReorderAttributeValues = {
   __typename?: 'PageReorderAttributeValues';
   errors: Array<PageError>;
@@ -8826,7 +9036,7 @@ export type PageTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a page. */
+/** Creates/updates translations for a page. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type PageTranslate = {
   __typename?: 'PageTranslate';
   errors: Array<TranslationError>;
@@ -8862,17 +9072,17 @@ export type PageTranslationInput = {
 export type PageType = Node & ObjectWithMetadata & {
   __typename?: 'PageType';
   /** Page attributes of that page type. */
-  attributes?: Maybe<Array<Maybe<Attribute>>>;
+  attributes?: Maybe<Array<Attribute>>;
   /** Attributes that can be assigned to the page type. */
   availableAttributes?: Maybe<AttributeCountableConnection>;
   /** Whether page type has pages assigned. */
   hasPages?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   slug: Scalars['String'];
 };
 
@@ -8886,7 +9096,7 @@ export type PageTypeAvailableAttributesArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
-/** Delete page types. */
+/** Delete page types. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageTypeBulkDelete = {
   __typename?: 'PageTypeBulkDelete';
   /** Returns how many objects were affected. */
@@ -8913,7 +9123,7 @@ export type PageTypeCountableEdge = {
   node: PageType;
 };
 
-/** Create a new page type. */
+/** Create a new page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageTypeCreate = {
   __typename?: 'PageTypeCreate';
   errors: Array<PageError>;
@@ -8931,7 +9141,7 @@ export type PageTypeCreateInput = {
   slug?: InputMaybe<Scalars['String']>;
 };
 
-/** Delete a page type. */
+/** Delete a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageTypeDelete = {
   __typename?: 'PageTypeDelete';
   errors: Array<PageError>;
@@ -8944,7 +9154,7 @@ export type PageTypeFilterInput = {
   search?: InputMaybe<Scalars['String']>;
 };
 
-/** Reorder the attributes of a page type. */
+/** Reorder the attributes of a page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageTypeReorderAttributes = {
   __typename?: 'PageTypeReorderAttributes';
   errors: Array<PageError>;
@@ -8967,7 +9177,7 @@ export type PageTypeSortingInput = {
   field: PageTypeSortField;
 };
 
-/** Update page type. */
+/** Update page type. Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES. */
 export type PageTypeUpdate = {
   __typename?: 'PageTypeUpdate';
   errors: Array<PageError>;
@@ -8987,7 +9197,7 @@ export type PageTypeUpdateInput = {
   slug?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates an existing page. */
+/** Updates an existing page. Requires one of the following permissions: MANAGE_PAGES. */
 export type PageUpdate = {
   __typename?: 'PageUpdate';
   errors: Array<PageError>;
@@ -8996,7 +9206,13 @@ export type PageUpdate = {
   pageErrors: Array<PageError>;
 };
 
-/** Change the password of the logged in user. */
+export type PageUpdated = {
+  __typename?: 'PageUpdated';
+  /** New in Saleor 3.2. Look up a page. Note: this feature is in a preview state and can be subject to changes at later point. */
+  page?: Maybe<Page>;
+};
+
+/** Change the password of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type PasswordChange = {
   __typename?: 'PasswordChange';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -9010,84 +9226,38 @@ export type PasswordChange = {
 export type Payment = Node & ObjectWithMetadata & {
   __typename?: 'Payment';
   /** List of actions that can be performed in the current state of a payment. */
-  actions: Array<PaymentActionEnum>;
-  /** Total amount authorized for this payment. */
-  authorizedAmount: Money;
-  /**
-   * Maximum amount of money that can be captured.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  actions: Array<OrderAction>;
+  /** Maximum amount of money that can be captured. */
   availableCaptureAmount?: Maybe<Money>;
-  /**
-   * Maximum amount of money that can be refunded.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  /** Maximum amount of money that can be refunded. */
   availableRefundAmount?: Maybe<Money>;
   /** Total amount captured for this payment. */
-  capturedAmount: Money;
-  /**
-   * Internal payment status.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  capturedAmount?: Maybe<Money>;
+  /** Internal payment status. */
   chargeStatus: PaymentChargeStatusEnum;
   checkout?: Maybe<Checkout>;
   created: Scalars['DateTime'];
-  /**
-   * The details of the card used for this payment.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
+  /** The details of the card used for this payment. */
   creditCard?: Maybe<CreditCard>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   customerIpAddress?: Maybe<Scalars['String']>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   gateway: Scalars['String'];
   id: Scalars['ID'];
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   isActive: Scalars['Boolean'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   modified: Scalars['DateTime'];
   order?: Maybe<Order>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
   paymentMethodType: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
-  reference: Scalars['String'];
-  /** Total amount refunded for this payment. */
-  refundedAmount: Money;
-  status: Scalars['String'];
-  /** @deprecated This field will be removed in Saleor 4.0. Use new checkout flow. */
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   token: Scalars['String'];
   /** Total amount of the payment. */
   total?: Maybe<Money>;
-  /**
-   * List of all transactions within this payment.
-   * @deprecated This field will be removed in Saleor 4.0. Use new checkout flow.
-   */
-  transactions?: Maybe<Array<Maybe<Transaction>>>;
-  type: Scalars['String'];
-  /** Total amount voided for this payment. */
-  voidedAmount: Money;
+  /** List of all transactions within this payment. */
+  transactions?: Maybe<Array<Transaction>>;
 };
 
-/**
- * Represents possible actions on payment.
- *
- *     The following actions are possible:
- *     CAPTURE - Represents the capture action.
- *     REFUND - Represents a refund action.
- *     VOID - Represents a void action.
- *     MARK_AS_PAID - This field will be removed in Saleor 4.0. Represents a mark-as-paid
- *     action.
- *
- */
-export type PaymentActionEnum =
-  | 'CAPTURE'
-  | 'MARK_AS_PAID'
-  | 'REFUND'
-  | 'VOID';
-
-/** Captures the authorized payment amount. */
+/** Captures the authorized payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 export type PaymentCapture = {
   __typename?: 'PaymentCapture';
   errors: Array<PaymentError>;
@@ -9146,54 +9316,6 @@ export type PaymentCountableEdge = {
   node: Payment;
 };
 
-/** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-export type PaymentCreate = {
-  __typename?: 'PaymentCreate';
-  errors: Array<PaymentCreateError>;
-  payment?: Maybe<Payment>;
-};
-
-export type PaymentCreateError = {
-  __typename?: 'PaymentCreateError';
-  /** The error code. */
-  code: PaymentCreateErrorCode;
-  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
-  field?: Maybe<Scalars['String']>;
-  /** The error message. */
-  message?: Maybe<Scalars['String']>;
-};
-
-/** An enumeration. */
-export type PaymentCreateErrorCode =
-  | 'GRAPHQL_ERROR'
-  | 'INCORRECT_CURRENCY'
-  | 'INVALID'
-  | 'METADATA_KEY_REQUIRED'
-  | 'NOT_FOUND';
-
-export type PaymentCreateInput = {
-  /** Amount authorized by this payment. */
-  amountAuthorized?: InputMaybe<MoneyInput>;
-  /** Amount captured by this payment. */
-  amountCaptured?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountRefunded?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountVoided?: InputMaybe<MoneyInput>;
-  /** List of all possible actions for the payment */
-  availableActions?: InputMaybe<Array<PaymentActionEnum>>;
-  /** User public metadata. */
-  metadata?: InputMaybe<Array<MetadataInput>>;
-  /** User public metadata. */
-  privateMetadata?: InputMaybe<Array<MetadataInput>>;
-  /** Reference of the payment. */
-  reference?: InputMaybe<Scalars['String']>;
-  /** Status of the payment. */
-  status: Scalars['String'];
-  /** Payment type used for this payment. */
-  type: Scalars['String'];
-};
-
 export type PaymentError = {
   __typename?: 'PaymentError';
   /** The error code. */
@@ -9227,7 +9349,7 @@ export type PaymentErrorCode =
   | 'UNIQUE';
 
 export type PaymentFilterInput = {
-  checkouts?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  checkouts?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 /** Available payment gateway backend with configuration necessary to setup client. */
@@ -9236,7 +9358,7 @@ export type PaymentGateway = {
   /** Payment gateway client configuration. */
   config: Array<GatewayConfigLine>;
   /** Payment gateway supported currencies. */
-  currencies: Array<Maybe<Scalars['String']>>;
+  currencies: Array<Scalars['String']>;
   /** Payment gateway ID. */
   id: Scalars['ID'];
   /** Payment gateway name. */
@@ -9278,7 +9400,7 @@ export type PaymentInput = {
   token?: InputMaybe<Scalars['String']>;
 };
 
-/** Refunds the captured payment amount. */
+/** Refunds the captured payment amount. Requires one of the following permissions: MANAGE_ORDERS. */
 export type PaymentRefund = {
   __typename?: 'PaymentRefund';
   errors: Array<PaymentError>;
@@ -9296,60 +9418,12 @@ export type PaymentSource = {
   /** Payment gateway name. */
   gateway: Scalars['String'];
   /** New in Saleor 3.1. List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** ID of stored payment method. */
   paymentMethodId?: Maybe<Scalars['String']>;
 };
 
-/** Note: this feature is in a preview state and can be subject to changes at later point. Create payment for checkout or order. */
-export type PaymentUpdate = {
-  __typename?: 'PaymentUpdate';
-  errors: Array<PaymentUpdateError>;
-  payment?: Maybe<Payment>;
-};
-
-export type PaymentUpdateError = {
-  __typename?: 'PaymentUpdateError';
-  /** The error code. */
-  code: PaymentUpdateErrorCode;
-  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
-  field?: Maybe<Scalars['String']>;
-  /** The error message. */
-  message?: Maybe<Scalars['String']>;
-};
-
-/** An enumeration. */
-export type PaymentUpdateErrorCode =
-  | 'GRAPHQL_ERROR'
-  | 'INCORRECT_CURRENCY'
-  | 'INVALID'
-  | 'METADATA_KEY_REQUIRED'
-  | 'NOT_FOUND';
-
-export type PaymentUpdateInput = {
-  /** Amount authorized by this payment. */
-  amountAuthorized?: InputMaybe<MoneyInput>;
-  /** Amount captured by this payment. */
-  amountCaptured?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountRefunded?: InputMaybe<MoneyInput>;
-  /** Amount refunded by this payment. */
-  amountVoided?: InputMaybe<MoneyInput>;
-  /** List of all possible actions for the payment */
-  availableActions?: InputMaybe<Array<PaymentActionEnum>>;
-  /** User public metadata. */
-  metadata?: InputMaybe<Array<MetadataInput>>;
-  /** User public metadata. */
-  privateMetadata?: InputMaybe<Array<MetadataInput>>;
-  /** Reference of the payment. */
-  reference?: InputMaybe<Scalars['String']>;
-  /** Status of the payment. */
-  status?: InputMaybe<Scalars['String']>;
-  /** Payment type used for this payment. */
-  type?: InputMaybe<Scalars['String']>;
-};
-
-/** Voids the authorized payment. */
+/** Voids the authorized payment. Requires one of the following permissions: MANAGE_ORDERS. */
 export type PaymentVoid = {
   __typename?: 'PaymentVoid';
   errors: Array<PaymentError>;
@@ -9370,6 +9444,7 @@ export type Permission = {
 
 /** An enumeration. */
 export type PermissionEnum =
+  | 'HANDLE_CHECKOUTS'
   | 'HANDLE_PAYMENTS'
   | 'IMPERSONATE_USER'
   | 'MANAGE_APPS'
@@ -9390,7 +9465,7 @@ export type PermissionEnum =
   | 'MANAGE_TRANSLATIONS'
   | 'MANAGE_USERS';
 
-/** Create new permission group. */
+/** Create new permission group. Requires one of the following permissions: MANAGE_STAFF. */
 export type PermissionGroupCreate = {
   __typename?: 'PermissionGroupCreate';
   errors: Array<PermissionGroupError>;
@@ -9408,7 +9483,7 @@ export type PermissionGroupCreateInput = {
   name: Scalars['String'];
 };
 
-/** Delete permission group. */
+/** Delete permission group. Requires one of the following permissions: MANAGE_STAFF. */
 export type PermissionGroupDelete = {
   __typename?: 'PermissionGroupDelete';
   errors: Array<PermissionGroupError>;
@@ -9443,7 +9518,7 @@ export type PermissionGroupErrorCode =
   | 'UNIQUE';
 
 export type PermissionGroupFilterInput = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -9458,7 +9533,7 @@ export type PermissionGroupSortingInput = {
   field: PermissionGroupSortField;
 };
 
-/** Update permission group. */
+/** Update permission group. Requires one of the following permissions: MANAGE_STAFF. */
 export type PermissionGroupUpdate = {
   __typename?: 'PermissionGroupUpdate';
   errors: Array<PermissionGroupError>;
@@ -9503,7 +9578,7 @@ export type PluginConfiguration = {
   /** The channel to which the plugin configuration is assigned to. */
   channel?: Maybe<Channel>;
   /** Configuration of the plugin. */
-  configuration?: Maybe<Array<Maybe<ConfigurationItem>>>;
+  configuration?: Maybe<Array<ConfigurationItem>>;
 };
 
 export type PluginConfigurationType =
@@ -9568,7 +9643,7 @@ export type PluginStatusInChannelsInput = {
   channels: Array<Scalars['ID']>;
 };
 
-/** Update plugin configuration. */
+/** Update plugin configuration. Requires one of the following permissions: MANAGE_PLUGINS. */
 export type PluginUpdate = {
   __typename?: 'PluginUpdate';
   errors: Array<PluginError>;
@@ -9581,7 +9656,7 @@ export type PluginUpdateInput = {
   /** Indicates whether the plugin should be enabled. */
   active?: InputMaybe<Scalars['Boolean']>;
   /** Configuration of the plugin. */
-  configuration?: InputMaybe<Array<InputMaybe<ConfigurationItemInput>>>;
+  configuration?: InputMaybe<Array<ConfigurationItemInput>>;
 };
 
 /** An enumeration. */
@@ -9644,7 +9719,7 @@ export type Product = Node & ObjectWithMetadata & {
   channelListings?: Maybe<Array<ProductChannelListing>>;
   chargeTaxes: Scalars['Boolean'];
   /** List of collections for the product. */
-  collections?: Maybe<Array<Maybe<Collection>>>;
+  collections?: Maybe<Array<Collection>>;
   created: Scalars['DateTime'];
   defaultVariant?: Maybe<ProductVariant>;
   description?: Maybe<Scalars['JSONString']>;
@@ -9663,7 +9738,7 @@ export type Product = Node & ObjectWithMetadata & {
    * List of images for the product.
    * @deprecated This field will be removed in Saleor 4.0. Use the `media` field instead.
    */
-  images?: Maybe<Array<Maybe<ProductImage>>>;
+  images?: Maybe<Array<ProductImage>>;
   /** Whether the product is in stock and visible or not. */
   isAvailable?: Maybe<Scalars['Boolean']>;
   /** Whether the product is available for purchase. */
@@ -9673,12 +9748,12 @@ export type Product = Node & ObjectWithMetadata & {
   /** Get a single product media by ID. */
   mediaById?: Maybe<ProductMedia>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
   /** Lists the storefront product's pricing, the current price and discounts, only meant for displaying. */
   pricing?: Maybe<ProductPricingInfo>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   productType: ProductType;
   rating?: Maybe<Scalars['Float']>;
   seoDescription?: Maybe<Scalars['String']>;
@@ -9692,7 +9767,7 @@ export type Product = Node & ObjectWithMetadata & {
   translation?: Maybe<ProductTranslation>;
   updatedAt: Scalars['DateTime'];
   /** List of variants for the product. */
-  variants?: Maybe<Array<Maybe<ProductVariant>>>;
+  variants?: Maybe<Array<ProductVariant>>;
   weight?: Maybe<Weight>;
 };
 
@@ -9732,7 +9807,7 @@ export type ProductTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Assign attributes to a given product type. */
+/** Assign attributes to a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductAttributeAssign = {
   __typename?: 'ProductAttributeAssign';
   errors: Array<ProductError>;
@@ -9751,7 +9826,7 @@ export type ProductAttributeAssignInput = {
   variantSelection?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. */
+/** New in Saleor 3.1. Update attributes assigned to product variant for given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductAttributeAssignmentUpdate = {
   __typename?: 'ProductAttributeAssignmentUpdate';
   errors: Array<ProductError>;
@@ -9772,7 +9847,7 @@ export type ProductAttributeType =
   | 'PRODUCT'
   | 'VARIANT';
 
-/** Un-assign attributes from a given product type. */
+/** Un-assign attributes from a given product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductAttributeUnassign = {
   __typename?: 'ProductAttributeUnassign';
   errors: Array<ProductError>;
@@ -9782,7 +9857,7 @@ export type ProductAttributeUnassign = {
   productType?: Maybe<ProductType>;
 };
 
-/** Deletes products. */
+/** Deletes products. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductBulkDelete = {
   __typename?: 'ProductBulkDelete';
   /** Returns how many objects were affected. */
@@ -9856,7 +9931,7 @@ export type ProductChannelListingError = {
   variants?: Maybe<Array<Scalars['ID']>>;
 };
 
-/** Manage product's availability in channels. */
+/** Manage product's availability in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductChannelListingUpdate = {
   __typename?: 'ProductChannelListingUpdate';
   errors: Array<ProductChannelListingError>;
@@ -9890,7 +9965,7 @@ export type ProductCountableEdge = {
   node: Product;
 };
 
-/** Creates a new product. */
+/** Creates a new product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductCreate = {
   __typename?: 'ProductCreate';
   errors: Array<ProductError>;
@@ -9926,13 +10001,39 @@ export type ProductCreateInput = {
   weight?: InputMaybe<Scalars['WeightScalar']>;
 };
 
-/** Deletes a product. */
+export type ProductCreated = {
+  __typename?: 'ProductCreated';
+  /** New in Saleor 3.2. Look up a category. Note: this feature is in a preview state and can be subject to changes at later point. */
+  category?: Maybe<Category>;
+  /** New in Saleor 3.2. Look up a product. Note: this feature is in a preview state and can be subject to changes at later point. */
+  product?: Maybe<Product>;
+};
+
+
+export type ProductCreatedProductArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Deletes a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductDelete = {
   __typename?: 'ProductDelete';
   errors: Array<ProductError>;
   product?: Maybe<Product>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   productErrors: Array<ProductError>;
+};
+
+export type ProductDeleted = {
+  __typename?: 'ProductDeleted';
+  /** New in Saleor 3.2. Look up a category. Note: this feature is in a preview state and can be subject to changes at later point. */
+  category?: Maybe<Category>;
+  /** New in Saleor 3.2. Look up a product. Note: this feature is in a preview state and can be subject to changes at later point. */
+  product?: Maybe<Product>;
+};
+
+
+export type ProductDeletedProductArgs = {
+  channel?: InputMaybe<Scalars['String']>;
 };
 
 export type ProductError = {
@@ -9959,6 +10060,7 @@ export type ProductErrorCode =
   | 'DUPLICATED_INPUT_ITEM'
   | 'GRAPHQL_ERROR'
   | 'INVALID'
+  | 'MEDIA_ALREADY_ASSIGNED'
   | 'NOT_FOUND'
   | 'NOT_PRODUCTS_IMAGE'
   | 'NOT_PRODUCTS_VARIANT'
@@ -9985,24 +10087,24 @@ export type ProductFieldEnum =
   | 'VARIANT_WEIGHT';
 
 export type ProductFilterInput = {
-  attributes?: InputMaybe<Array<InputMaybe<AttributeInput>>>;
-  categories?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  attributes?: InputMaybe<Array<AttributeInput>>;
+  categories?: InputMaybe<Array<Scalars['ID']>>;
   /**
    * Specifies the channel by which the data should be filtered.
    *
    * DEPRECATED: this field will be removed in Saleor 4.0. Use root-level channel argument instead.
    */
   channel?: InputMaybe<Scalars['String']>;
-  collections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  collections?: InputMaybe<Array<Scalars['ID']>>;
   giftCard?: InputMaybe<Scalars['Boolean']>;
   hasCategory?: InputMaybe<Scalars['Boolean']>;
   hasPreorderedVariants?: InputMaybe<Scalars['Boolean']>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   isPublished?: InputMaybe<Scalars['Boolean']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   minimalPrice?: InputMaybe<PriceRangeInput>;
   price?: InputMaybe<PriceRangeInput>;
-  productTypes?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  productTypes?: InputMaybe<Array<Scalars['ID']>>;
   search?: InputMaybe<Scalars['String']>;
   stockAvailability?: InputMaybe<StockAvailability>;
   stocks?: InputMaybe<ProductStockFilterInput>;
@@ -10071,7 +10173,7 @@ export type ProductMediaUrlArgs = {
   size?: InputMaybe<Scalars['Int']>;
 };
 
-/** Deletes product media. */
+/** Deletes product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductMediaBulkDelete = {
   __typename?: 'ProductMediaBulkDelete';
   /** Returns how many objects were affected. */
@@ -10081,7 +10183,7 @@ export type ProductMediaBulkDelete = {
   productErrors: Array<ProductError>;
 };
 
-/** Create a media object (image or video URL) associated with product. For image, this mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec */
+/** Create a media object (image or video URL) associated with product. For image, this mutation must be sent as a `multipart` request. More detailed specs of the upload format can be found here: https://github.com/jaydenseric/graphql-multipart-request-spec Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductMediaCreate = {
   __typename?: 'ProductMediaCreate';
   errors: Array<ProductError>;
@@ -10102,7 +10204,7 @@ export type ProductMediaCreateInput = {
   product: Scalars['ID'];
 };
 
-/** Deletes a product media. */
+/** Deletes a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductMediaDelete = {
   __typename?: 'ProductMediaDelete';
   errors: Array<ProductError>;
@@ -10112,7 +10214,7 @@ export type ProductMediaDelete = {
   productErrors: Array<ProductError>;
 };
 
-/** Changes ordering of the product media. */
+/** Changes ordering of the product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductMediaReorder = {
   __typename?: 'ProductMediaReorder';
   errors: Array<ProductError>;
@@ -10127,7 +10229,7 @@ export type ProductMediaType =
   | 'IMAGE'
   | 'VIDEO';
 
-/** Updates a product media. */
+/** Updates a product media. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductMediaUpdate = {
   __typename?: 'ProductMediaUpdate';
   errors: Array<ProductError>;
@@ -10205,7 +10307,7 @@ export type ProductPricingInfo = {
   priceRangeUndiscounted?: Maybe<TaxedMoneyRange>;
 };
 
-/** Reorder product attribute values. */
+/** Reorder product attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductReorderAttributeValues = {
   __typename?: 'ProductReorderAttributeValues';
   errors: Array<ProductError>;
@@ -10248,7 +10350,7 @@ export type ProductTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a product. */
+/** Creates/updates translations for a product. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type ProductTranslate = {
   __typename?: 'ProductTranslate';
   errors: Array<TranslationError>;
@@ -10277,7 +10379,7 @@ export type ProductTranslation = Node & {
 export type ProductType = Node & ObjectWithMetadata & {
   __typename?: 'ProductType';
   /** New in Saleor 3.1. Variant attributes of that product type with attached variant selection. */
-  assignedVariantAttributes?: Maybe<Array<Maybe<AssignedVariantAttribute>>>;
+  assignedVariantAttributes?: Maybe<Array<AssignedVariantAttribute>>;
   availableAttributes?: Maybe<AttributeCountableConnection>;
   hasVariants: Scalars['Boolean'];
   id: Scalars['ID'];
@@ -10286,12 +10388,12 @@ export type ProductType = Node & ObjectWithMetadata & {
   /** The product type kind. */
   kind: ProductTypeKindEnum;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Product attributes of that product type. */
-  productAttributes?: Maybe<Array<Maybe<Attribute>>>;
+  productAttributes?: Maybe<Array<Attribute>>;
   /**
    * List of products of this type.
    * @deprecated This field will be removed in Saleor 4.0. Use the top-level `products` query with the `productTypes` filter.
@@ -10304,7 +10406,7 @@ export type ProductType = Node & ObjectWithMetadata & {
    * Variant attributes of that product type.
    * @deprecated This field will be removed in Saleor 4.0. Use `assignedVariantAttributes` instead.
    */
-  variantAttributes?: Maybe<Array<Maybe<Attribute>>>;
+  variantAttributes?: Maybe<Array<Attribute>>;
   weight?: Maybe<Weight>;
 };
 
@@ -10340,7 +10442,7 @@ export type ProductTypeVariantAttributesArgs = {
   variantSelection?: InputMaybe<VariantAttributeScope>;
 };
 
-/** Deletes product types. */
+/** Deletes product types. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductTypeBulkDelete = {
   __typename?: 'ProductTypeBulkDelete';
   /** Returns how many objects were affected. */
@@ -10371,7 +10473,7 @@ export type ProductTypeCountableEdge = {
   node: ProductType;
 };
 
-/** Creates a new product type. */
+/** Creates a new product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductTypeCreate = {
   __typename?: 'ProductTypeCreate';
   errors: Array<ProductError>;
@@ -10380,7 +10482,7 @@ export type ProductTypeCreate = {
   productType?: Maybe<ProductType>;
 };
 
-/** Deletes a product type. */
+/** Deletes a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductTypeDelete = {
   __typename?: 'ProductTypeDelete';
   errors: Array<ProductError>;
@@ -10395,9 +10497,9 @@ export type ProductTypeEnum =
 
 export type ProductTypeFilterInput = {
   configurable?: InputMaybe<ProductTypeConfigurable>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   kind?: InputMaybe<ProductTypeKindEnum>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   productType?: InputMaybe<ProductTypeEnum>;
   search?: InputMaybe<Scalars['String']>;
 };
@@ -10414,13 +10516,13 @@ export type ProductTypeInput = {
   /** Name of the product type. */
   name?: InputMaybe<Scalars['String']>;
   /** List of attributes shared among all product variants. */
-  productAttributes?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  productAttributes?: InputMaybe<Array<Scalars['ID']>>;
   /** Product type slug. */
   slug?: InputMaybe<Scalars['String']>;
   /** Tax rate for enabled tax gateway. */
   taxCode?: InputMaybe<Scalars['String']>;
   /** List of attributes used to distinguish between different variants of a product. */
-  variantAttributes?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  variantAttributes?: InputMaybe<Array<Scalars['ID']>>;
   /** Weight of the ProductType items. */
   weight?: InputMaybe<Scalars['WeightScalar']>;
 };
@@ -10430,7 +10532,7 @@ export type ProductTypeKindEnum =
   | 'GIFT_CARD'
   | 'NORMAL';
 
-/** Reorder the attributes of a product type. */
+/** Reorder the attributes of a product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductTypeReorderAttributes = {
   __typename?: 'ProductTypeReorderAttributes';
   errors: Array<ProductError>;
@@ -10455,7 +10557,7 @@ export type ProductTypeSortingInput = {
   field: ProductTypeSortField;
 };
 
-/** Updates an existing product type. */
+/** Updates an existing product type. Requires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
 export type ProductTypeUpdate = {
   __typename?: 'ProductTypeUpdate';
   errors: Array<ProductError>;
@@ -10464,13 +10566,26 @@ export type ProductTypeUpdate = {
   productType?: Maybe<ProductType>;
 };
 
-/** Updates an existing product. */
+/** Updates an existing product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductUpdate = {
   __typename?: 'ProductUpdate';
   errors: Array<ProductError>;
   product?: Maybe<Product>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   productErrors: Array<ProductError>;
+};
+
+export type ProductUpdated = {
+  __typename?: 'ProductUpdated';
+  /** New in Saleor 3.2. Look up a category. Note: this feature is in a preview state and can be subject to changes at later point. */
+  category?: Maybe<Category>;
+  /** New in Saleor 3.2. Look up a product. Note: this feature is in a preview state and can be subject to changes at later point. */
+  product?: Maybe<Product>;
+};
+
+
+export type ProductUpdatedProductArgs = {
+  channel?: InputMaybe<Scalars['String']>;
 };
 
 /** Represents a version of a product such as different size or color. */
@@ -10490,20 +10605,20 @@ export type ProductVariant = Node & ObjectWithMetadata & {
    * List of images for the product variant.
    * @deprecated This field will be removed in Saleor 4.0. Use the `media` field instead.
    */
-  images?: Maybe<Array<Maybe<ProductImage>>>;
+  images?: Maybe<Array<ProductImage>>;
   /** Gross margin percentage value. */
   margin?: Maybe<Scalars['Int']>;
   /** List of media for the product variant. */
   media?: Maybe<Array<ProductMedia>>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
   /** New in Saleor 3.1. Preorder data for product variant. Note: this feature is in a preview state and can be subject to changes at later point. */
   preorder?: Maybe<PreorderData>;
   /** Lists the storefront variant's pricing, the current price and discounts, only meant for displaying. */
   pricing?: Maybe<VariantPricingInfo>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   product: Product;
   /** Quantity of a product available for sale in one checkout. Field value will be `null` when no `limitQuantityPerCheckout` in global settings has been set, and `productVariant` stocks are not tracked. */
   quantityAvailable?: Maybe<Scalars['Int']>;
@@ -10514,7 +10629,7 @@ export type ProductVariant = Node & ObjectWithMetadata & {
   revenue?: Maybe<TaxedMoney>;
   sku?: Maybe<Scalars['String']>;
   /** Stocks for the product variant. */
-  stocks?: Maybe<Array<Maybe<Stock>>>;
+  stocks?: Maybe<Array<Stock>>;
   trackInventory: Scalars['Boolean'];
   /** Returns translated product variant fields for the given language code. */
   translation?: Maybe<ProductVariantTranslation>;
@@ -10560,7 +10675,20 @@ export type ProductVariantTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates product variants for a given product. */
+export type ProductVariantBackInStock = {
+  __typename?: 'ProductVariantBackInStock';
+  /** New in Saleor 3.2. Look up a product variant. Note: this feature is in a preview state and can be subject to changes at later point. */
+  productVariant?: Maybe<ProductVariant>;
+  /** New in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview state and can be subject to changes at later point. */
+  warehouse?: Maybe<Warehouse>;
+};
+
+
+export type ProductVariantBackInStockProductVariantArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Creates product variants for a given product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantBulkCreate = {
   __typename?: 'ProductVariantBulkCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -10591,7 +10719,7 @@ export type ProductVariantBulkCreateInput = {
   weight?: InputMaybe<Scalars['WeightScalar']>;
 };
 
-/** Deletes product variants. */
+/** Deletes product variants. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantBulkDelete = {
   __typename?: 'ProductVariantBulkDelete';
   /** Returns how many objects were affected. */
@@ -10626,7 +10754,7 @@ export type ProductVariantChannelListingAddInput = {
   price: Scalars['PositiveDecimal'];
 };
 
-/** Manage product variant prices in channels. */
+/** Manage product variant prices in channels. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantChannelListingUpdate = {
   __typename?: 'ProductVariantChannelListingUpdate';
   errors: Array<ProductChannelListingError>;
@@ -10653,7 +10781,7 @@ export type ProductVariantCountableEdge = {
   node: ProductVariant;
 };
 
-/** Creates a new variant for a product. */
+/** Creates a new variant for a product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantCreate = {
   __typename?: 'ProductVariantCreate';
   errors: Array<ProductError>;
@@ -10681,7 +10809,18 @@ export type ProductVariantCreateInput = {
   weight?: InputMaybe<Scalars['WeightScalar']>;
 };
 
-/** Deletes a product variant. */
+export type ProductVariantCreated = {
+  __typename?: 'ProductVariantCreated';
+  /** New in Saleor 3.2. Look up a product variant. Note: this feature is in a preview state and can be subject to changes at later point. */
+  productVariant?: Maybe<ProductVariant>;
+};
+
+
+export type ProductVariantCreatedProductVariantArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Deletes a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantDelete = {
   __typename?: 'ProductVariantDelete';
   errors: Array<ProductError>;
@@ -10690,11 +10829,22 @@ export type ProductVariantDelete = {
   productVariant?: Maybe<ProductVariant>;
 };
 
+export type ProductVariantDeleted = {
+  __typename?: 'ProductVariantDeleted';
+  /** New in Saleor 3.2. Look up a product variant. Note: this feature is in a preview state and can be subject to changes at later point. */
+  productVariant?: Maybe<ProductVariant>;
+};
+
+
+export type ProductVariantDeletedProductVariantArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
 export type ProductVariantFilterInput = {
   isPreorder?: InputMaybe<Scalars['Boolean']>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
-  sku?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  sku?: InputMaybe<Array<Scalars['String']>>;
   updatedAt?: InputMaybe<DateTimeRangeInput>;
 };
 
@@ -10713,7 +10863,20 @@ export type ProductVariantInput = {
   weight?: InputMaybe<Scalars['WeightScalar']>;
 };
 
-/** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder allocation into regular allocation. Note: this feature is in a preview state and can be subject to changes at later point. */
+export type ProductVariantOutOfStock = {
+  __typename?: 'ProductVariantOutOfStock';
+  /** New in Saleor 3.2. Look up a product variant. Note: this feature is in a preview state and can be subject to changes at later point. */
+  productVariant?: Maybe<ProductVariant>;
+  /** New in Saleor 3.2. Look up a warehouse. Note: this feature is in a preview state and can be subject to changes at later point. */
+  warehouse?: Maybe<Warehouse>;
+};
+
+
+export type ProductVariantOutOfStockProductVariantArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** New in Saleor 3.1. Deactivates product variant preorder. It changes all preorder allocation into regular allocation. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantPreorderDeactivate = {
   __typename?: 'ProductVariantPreorderDeactivate';
   errors: Array<ProductError>;
@@ -10721,7 +10884,7 @@ export type ProductVariantPreorderDeactivate = {
   productVariant?: Maybe<ProductVariant>;
 };
 
-/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantReorder = {
   __typename?: 'ProductVariantReorder';
   errors: Array<ProductError>;
@@ -10730,7 +10893,7 @@ export type ProductVariantReorder = {
   productErrors: Array<ProductError>;
 };
 
-/** Reorder product variant attribute values. */
+/** Reorder product variant attribute values. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantReorderAttributeValues = {
   __typename?: 'ProductVariantReorderAttributeValues';
   errors: Array<ProductError>;
@@ -10740,7 +10903,7 @@ export type ProductVariantReorderAttributeValues = {
   productVariant?: Maybe<ProductVariant>;
 };
 
-/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantSetDefault = {
   __typename?: 'ProductVariantSetDefault';
   errors: Array<ProductError>;
@@ -10760,7 +10923,7 @@ export type ProductVariantSortingInput = {
   field: ProductVariantSortField;
 };
 
-/** Creates stocks for product variant. */
+/** Creates stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantStocksCreate = {
   __typename?: 'ProductVariantStocksCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -10770,7 +10933,7 @@ export type ProductVariantStocksCreate = {
   productVariant?: Maybe<ProductVariant>;
 };
 
-/** Delete stocks from product variant. */
+/** Delete stocks from product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantStocksDelete = {
   __typename?: 'ProductVariantStocksDelete';
   errors: Array<StockError>;
@@ -10780,7 +10943,7 @@ export type ProductVariantStocksDelete = {
   stockErrors: Array<StockError>;
 };
 
-/** Update stocks for product variant. */
+/** Update stocks for product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantStocksUpdate = {
   __typename?: 'ProductVariantStocksUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -10810,7 +10973,7 @@ export type ProductVariantTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a product variant. */
+/** Creates/updates translations for a product variant. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type ProductVariantTranslate = {
   __typename?: 'ProductVariantTranslate';
   errors: Array<TranslationError>;
@@ -10827,13 +10990,24 @@ export type ProductVariantTranslation = Node & {
   name: Scalars['String'];
 };
 
-/** Updates an existing variant for product. */
+/** Updates an existing variant for product. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type ProductVariantUpdate = {
   __typename?: 'ProductVariantUpdate';
   errors: Array<ProductError>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   productErrors: Array<ProductError>;
   productVariant?: Maybe<ProductVariant>;
+};
+
+export type ProductVariantUpdated = {
+  __typename?: 'ProductVariantUpdated';
+  /** New in Saleor 3.2. Look up a product variant. Note: this feature is in a preview state and can be subject to changes at later point. */
+  productVariant?: Maybe<ProductVariant>;
+};
+
+
+export type ProductVariantUpdatedProductVariantArgs = {
+  channel?: InputMaybe<Scalars['String']>;
 };
 
 export type PublishableChannelListingInput = {
@@ -10921,7 +11095,7 @@ export type Query = {
   menus?: Maybe<MenuCountableConnection>;
   /** Look up an order by ID. */
   order?: Maybe<Order>;
-  /** Look up an order by token. */
+  /** {DEPRECATED_IN_3X_FIELD} Look up an order by token. */
   orderByToken?: Maybe<Order>;
   /** Order related settings from site settings. */
   orderSettings?: Maybe<OrderSettings>;
@@ -10980,7 +11154,7 @@ export type Query = {
   /** List of stocks. */
   stocks?: Maybe<StockCountableConnection>;
   /** List of all tax rates available from tax gateway. */
-  taxTypes?: Maybe<Array<Maybe<TaxType>>>;
+  taxTypes?: Maybe<Array<TaxType>>;
   translation?: Maybe<TranslatableItem>;
   /** Returns a list of all translatable items of a given kind. */
   translations?: Maybe<TranslatableItemConnection>;
@@ -11000,7 +11174,7 @@ export type Query = {
    * List of all available webhook events.
    * @deprecated This field will be removed in Saleor 4.0. Use `WebhookEventTypeAsyncEnum` and `WebhookEventTypeSyncEnum` to get available event types.
    */
-  webhookEvents?: Maybe<Array<Maybe<WebhookEvent>>>;
+  webhookEvents?: Maybe<Array<WebhookEvent>>;
   /** Retrieve a sample payload for a given webhook event based on real data. It can be useful for some integrations where sample payload is required. */
   webhookSamplePayload?: Maybe<Scalars['JSONString']>;
 };
@@ -11387,7 +11561,7 @@ export type QueryProductVariantsArgs = {
   channel?: InputMaybe<Scalars['String']>;
   filter?: InputMaybe<ProductVariantFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   last?: InputMaybe<Scalars['Int']>;
   sortBy?: InputMaybe<ProductVariantSortingInput>;
 };
@@ -11567,7 +11741,7 @@ export type ReportingPeriod =
   | 'THIS_MONTH'
   | 'TODAY';
 
-/** Request email change of the logged in user. */
+/** Request email change of the logged in user. Requires one of the following permissions: AUTHENTICATED_USER. */
 export type RequestEmailChange = {
   __typename?: 'RequestEmailChange';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11602,10 +11776,10 @@ export type Sale = Node & ObjectWithMetadata & {
   endDate?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** List of products this sale applies to. */
   products?: Maybe<ProductCountableConnection>;
   startDate: Scalars['DateTime'];
@@ -11659,7 +11833,7 @@ export type SaleVariantsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
-/** Adds products, categories, collections to a voucher. */
+/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleAddCatalogues = {
   __typename?: 'SaleAddCatalogues';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11669,7 +11843,7 @@ export type SaleAddCatalogues = {
   sale?: Maybe<Sale>;
 };
 
-/** Deletes sales. */
+/** Deletes sales. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleBulkDelete = {
   __typename?: 'SaleBulkDelete';
   /** Returns how many objects were affected. */
@@ -11702,7 +11876,7 @@ export type SaleChannelListingInput = {
   removeChannels?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** Manage sale's availability in channels. */
+/** Manage sale's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleChannelListingUpdate = {
   __typename?: 'SaleChannelListingUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11729,7 +11903,7 @@ export type SaleCountableEdge = {
   node: Sale;
 };
 
-/** Creates a new sale. */
+/** Creates a new sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleCreate = {
   __typename?: 'SaleCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11738,7 +11912,18 @@ export type SaleCreate = {
   sale?: Maybe<Sale>;
 };
 
-/** Deletes a sale. */
+export type SaleCreated = {
+  __typename?: 'SaleCreated';
+  /** New in Saleor 3.2. Look up a sale. Note: this feature is in a preview state and can be subject to changes at later point. */
+  sale?: Maybe<Sale>;
+};
+
+
+export type SaleCreatedSaleArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Deletes a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleDelete = {
   __typename?: 'SaleDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11747,36 +11932,47 @@ export type SaleDelete = {
   sale?: Maybe<Sale>;
 };
 
+export type SaleDeleted = {
+  __typename?: 'SaleDeleted';
+  /** New in Saleor 3.2. Look up a sale. Note: this feature is in a preview state and can be subject to changes at later point. */
+  sale?: Maybe<Sale>;
+};
+
+
+export type SaleDeletedSaleArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
 export type SaleFilterInput = {
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   saleType?: InputMaybe<DiscountValueTypeEnum>;
   search?: InputMaybe<Scalars['String']>;
   started?: InputMaybe<DateTimeRangeInput>;
-  status?: InputMaybe<Array<InputMaybe<DiscountStatusEnum>>>;
+  status?: InputMaybe<Array<DiscountStatusEnum>>;
   updatedAt?: InputMaybe<DateTimeRangeInput>;
 };
 
 export type SaleInput = {
   /** Categories related to the discount. */
-  categories?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  categories?: InputMaybe<Array<Scalars['ID']>>;
   /** Collections related to the discount. */
-  collections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  collections?: InputMaybe<Array<Scalars['ID']>>;
   /** End date of the voucher in ISO 8601 format. */
   endDate?: InputMaybe<Scalars['DateTime']>;
   /** Voucher name. */
   name?: InputMaybe<Scalars['String']>;
   /** Products related to the discount. */
-  products?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  products?: InputMaybe<Array<Scalars['ID']>>;
   /** Start date of the voucher in ISO 8601 format. */
   startDate?: InputMaybe<Scalars['DateTime']>;
   /** Fixed or percentage. */
   type?: InputMaybe<DiscountValueTypeEnum>;
   /** Value of the voucher. */
   value?: InputMaybe<Scalars['PositiveDecimal']>;
-  variants?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  variants?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** Removes products, categories, collections from a sale. */
+/** Removes products, categories, collections from a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleRemoveCatalogues = {
   __typename?: 'SaleRemoveCatalogues';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11833,7 +12029,7 @@ export type SaleTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a sale. */
+/** Creates/updates translations for a sale. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type SaleTranslate = {
   __typename?: 'SaleTranslate';
   errors: Array<TranslationError>;
@@ -11854,7 +12050,7 @@ export type SaleType =
   | 'FIXED'
   | 'PERCENTAGE';
 
-/** Updates a sale. */
+/** Updates a sale. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type SaleUpdate = {
   __typename?: 'SaleUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -11863,13 +12059,24 @@ export type SaleUpdate = {
   sale?: Maybe<Sale>;
 };
 
+export type SaleUpdated = {
+  __typename?: 'SaleUpdated';
+  /** New in Saleor 3.2. Look up a sale. Note: this feature is in a preview state and can be subject to changes at later point. */
+  sale?: Maybe<Sale>;
+};
+
+
+export type SaleUpdatedSaleArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
 /** Represents a custom attribute. */
 export type SelectedAttribute = {
   __typename?: 'SelectedAttribute';
   /** Name of an attribute displayed in the interface. */
   attribute: Attribute;
   /** Values of an attribute. */
-  values: Array<Maybe<AttributeValue>>;
+  values: Array<AttributeValue>;
 };
 
 export type SeoInput = {
@@ -11941,7 +12148,7 @@ export type ShippingMethod = Node & ObjectWithMetadata & {
   /** Message connected to this shipping method. */
   message?: Maybe<Scalars['String']>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** Minimum delivery days for this shipping method. */
   minimumDeliveryDays?: Maybe<Scalars['Int']>;
   /** Minimal order price for this shipping method. */
@@ -11955,8 +12162,8 @@ export type ShippingMethod = Node & ObjectWithMetadata & {
   name: Scalars['String'];
   /** The price of selected shipping method. */
   price: Money;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Returns translated shipping method fields for the given language code. */
   translation?: Maybe<ShippingMethodTranslation>;
   /**
@@ -12000,7 +12207,7 @@ export type ShippingMethodChannelListingInput = {
   removeChannels?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** Manage shipping method's availability in channels. */
+/** Manage shipping method's availability in channels. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingMethodChannelListingUpdate = {
   __typename?: 'ShippingMethodChannelListingUpdate';
   errors: Array<ShippingError>;
@@ -12069,7 +12276,7 @@ export type ShippingMethodType = Node & ObjectWithMetadata & {
   /** Maximum order weight to use this shipping method. */
   maximumOrderWeight?: Maybe<Weight>;
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** Minimal number of days for delivery. */
   minimumDeliveryDays?: Maybe<Scalars['Int']>;
   /** The price of the cheapest variant (including discounts). */
@@ -12079,9 +12286,9 @@ export type ShippingMethodType = Node & ObjectWithMetadata & {
   /** Shipping method name. */
   name: Scalars['String'];
   /** Postal code ranges rule of exclusion or inclusion of the shipping method. */
-  postalCodeRules?: Maybe<Array<Maybe<ShippingMethodPostalCodeRule>>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  postalCodeRules?: Maybe<Array<ShippingMethodPostalCodeRule>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** Returns translated shipping method fields for the given language code. */
   translation?: Maybe<ShippingMethodTranslation>;
   /** Type of the shipping method. */
@@ -12115,7 +12322,7 @@ export type ShippingPostalCodeRulesCreateInputRange = {
   start: Scalars['String'];
 };
 
-/** Deletes shipping prices. */
+/** Deletes shipping prices. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingPriceBulkDelete = {
   __typename?: 'ShippingPriceBulkDelete';
   /** Returns how many objects were affected. */
@@ -12125,7 +12332,7 @@ export type ShippingPriceBulkDelete = {
   shippingErrors: Array<ShippingError>;
 };
 
-/** Creates a new shipping price. */
+/** Creates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingPriceCreate = {
   __typename?: 'ShippingPriceCreate';
   errors: Array<ShippingError>;
@@ -12136,7 +12343,25 @@ export type ShippingPriceCreate = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
-/** Deletes a shipping price. */
+export type ShippingPriceCreated = {
+  __typename?: 'ShippingPriceCreated';
+  /** New in Saleor 3.2. Look up a shipping method. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingMethod?: Maybe<ShippingMethodType>;
+  /** New in Saleor 3.2. Look up a shipping zone. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+
+export type ShippingPriceCreatedShippingMethodArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+
+export type ShippingPriceCreatedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Deletes a shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingPriceDelete = {
   __typename?: 'ShippingPriceDelete';
   errors: Array<ShippingError>;
@@ -12148,7 +12373,25 @@ export type ShippingPriceDelete = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
-/** Exclude products from shipping price. */
+export type ShippingPriceDeleted = {
+  __typename?: 'ShippingPriceDeleted';
+  /** New in Saleor 3.2. Look up a shipping method. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingMethod?: Maybe<ShippingMethodType>;
+  /** New in Saleor 3.2. Look up a shipping zone. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+
+export type ShippingPriceDeletedShippingMethodArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+
+export type ShippingPriceDeletedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Exclude products from shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingPriceExcludeProducts = {
   __typename?: 'ShippingPriceExcludeProducts';
   errors: Array<ShippingError>;
@@ -12160,7 +12403,7 @@ export type ShippingPriceExcludeProducts = {
 
 export type ShippingPriceExcludeProductsInput = {
   /** List of products which will be excluded. */
-  products: Array<InputMaybe<Scalars['ID']>>;
+  products: Array<Scalars['ID']>;
 };
 
 export type ShippingPriceInput = {
@@ -12188,7 +12431,7 @@ export type ShippingPriceInput = {
   type?: InputMaybe<ShippingMethodTypeEnum>;
 };
 
-/** Remove product from excluded list for shipping price. */
+/** Remove product from excluded list for shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingPriceRemoveProductFromExclude = {
   __typename?: 'ShippingPriceRemoveProductFromExclude';
   errors: Array<ShippingError>;
@@ -12198,7 +12441,7 @@ export type ShippingPriceRemoveProductFromExclude = {
   shippingMethod?: Maybe<ShippingMethodType>;
 };
 
-/** Creates/updates translations for a shipping method. */
+/** Creates/updates translations for a shipping method. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type ShippingPriceTranslate = {
   __typename?: 'ShippingPriceTranslate';
   errors: Array<TranslationError>;
@@ -12213,7 +12456,7 @@ export type ShippingPriceTranslationInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates a new shipping price. */
+/** Updates a new shipping price. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingPriceUpdate = {
   __typename?: 'ShippingPriceUpdate';
   errors: Array<ShippingError>;
@@ -12224,31 +12467,49 @@ export type ShippingPriceUpdate = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
+export type ShippingPriceUpdated = {
+  __typename?: 'ShippingPriceUpdated';
+  /** New in Saleor 3.2. Look up a shipping method. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingMethod?: Maybe<ShippingMethodType>;
+  /** New in Saleor 3.2. Look up a shipping zone. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+
+export type ShippingPriceUpdatedShippingMethodArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+
+export type ShippingPriceUpdatedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
 /** Represents a shipping zone in the shop. Zones are the concept used only for grouping shipping methods in the dashboard, and are never exposed to the customers directly. */
 export type ShippingZone = Node & ObjectWithMetadata & {
   __typename?: 'ShippingZone';
   /** List of channels for shipping zone. */
   channels: Array<Channel>;
   /** List of countries available for the method. */
-  countries?: Maybe<Array<Maybe<CountryDisplay>>>;
+  countries?: Maybe<Array<CountryDisplay>>;
   default: Scalars['Boolean'];
   /** Description of a shipping zone. */
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
   /** Lowest and highest prices for the shipping. */
   priceRange?: Maybe<MoneyRange>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** List of shipping methods available for orders shipped to countries within this shipping zone. */
-  shippingMethods?: Maybe<Array<Maybe<ShippingMethodType>>>;
+  shippingMethods?: Maybe<Array<ShippingMethodType>>;
   /** List of warehouses for shipping zone. */
   warehouses: Array<Warehouse>;
 };
 
-/** Deletes shipping zones. */
+/** Deletes shipping zones. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingZoneBulkDelete = {
   __typename?: 'ShippingZoneBulkDelete';
   /** Returns how many objects were affected. */
@@ -12275,7 +12536,7 @@ export type ShippingZoneCountableEdge = {
   node: ShippingZone;
 };
 
-/** Creates a new shipping zone. */
+/** Creates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingZoneCreate = {
   __typename?: 'ShippingZoneCreate';
   errors: Array<ShippingError>;
@@ -12288,9 +12549,9 @@ export type ShippingZoneCreateInput = {
   /** List of channels to assign to the shipping zone. */
   addChannels?: InputMaybe<Array<Scalars['ID']>>;
   /** List of warehouses to assign to a shipping zone */
-  addWarehouses?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  addWarehouses?: InputMaybe<Array<Scalars['ID']>>;
   /** List of countries in this shipping zone. */
-  countries?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  countries?: InputMaybe<Array<Scalars['String']>>;
   /** Default shipping zone will be used for countries not covered by other zones. */
   default?: InputMaybe<Scalars['Boolean']>;
   /** Description of the shipping zone. */
@@ -12299,7 +12560,18 @@ export type ShippingZoneCreateInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a shipping zone. */
+export type ShippingZoneCreated = {
+  __typename?: 'ShippingZoneCreated';
+  /** New in Saleor 3.2. Look up a shipping zone. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+
+export type ShippingZoneCreatedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
+/** Deletes a shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingZoneDelete = {
   __typename?: 'ShippingZoneDelete';
   errors: Array<ShippingError>;
@@ -12308,12 +12580,23 @@ export type ShippingZoneDelete = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
+export type ShippingZoneDeleted = {
+  __typename?: 'ShippingZoneDeleted';
+  /** New in Saleor 3.2. Look up a shipping zone. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+
+export type ShippingZoneDeletedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars['String']>;
+};
+
 export type ShippingZoneFilterInput = {
-  channels?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  channels?: InputMaybe<Array<Scalars['ID']>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates a new shipping zone. */
+/** Updates a new shipping zone. Requires one of the following permissions: MANAGE_SHIPPING. */
 export type ShippingZoneUpdate = {
   __typename?: 'ShippingZoneUpdate';
   errors: Array<ShippingError>;
@@ -12326,9 +12609,9 @@ export type ShippingZoneUpdateInput = {
   /** List of channels to assign to the shipping zone. */
   addChannels?: InputMaybe<Array<Scalars['ID']>>;
   /** List of warehouses to assign to a shipping zone */
-  addWarehouses?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  addWarehouses?: InputMaybe<Array<Scalars['ID']>>;
   /** List of countries in this shipping zone. */
-  countries?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  countries?: InputMaybe<Array<Scalars['String']>>;
   /** Default shipping zone will be used for countries not covered by other zones. */
   default?: InputMaybe<Scalars['Boolean']>;
   /** Description of the shipping zone. */
@@ -12338,7 +12621,18 @@ export type ShippingZoneUpdateInput = {
   /** List of channels to unassign from the shipping zone. */
   removeChannels?: InputMaybe<Array<Scalars['ID']>>;
   /** List of warehouses to unassign from a shipping zone */
-  removeWarehouses?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  removeWarehouses?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export type ShippingZoneUpdated = {
+  __typename?: 'ShippingZoneUpdated';
+  /** New in Saleor 3.2. Look up a shipping zone. Note: this feature is in a preview state and can be subject to changes at later point. */
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+
+export type ShippingZoneUpdatedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars['String']>;
 };
 
 /** Represents a shop resource containing general shop data and configuration. */
@@ -12351,7 +12645,7 @@ export type Shop = {
   /** List of available payment gateways. */
   availablePaymentGateways: Array<PaymentGateway>;
   /** Shipping methods that are available for the shop. */
-  availableShippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
+  availableShippingMethods?: Maybe<Array<ShippingMethod>>;
   /** New in Saleor 3.1. List of all currencies supported by shop's channels. */
   channelCurrencies: Array<Scalars['String']>;
   /** Charge taxes on shipping. */
@@ -12389,7 +12683,7 @@ export type Shop = {
   /** Include taxes in prices. */
   includeTaxesInPrices: Scalars['Boolean'];
   /** List of the shops's supported languages. */
-  languages: Array<Maybe<LanguageDisplay>>;
+  languages: Array<LanguageDisplay>;
   /** New in Saleor 3.1. Default number of maximum line quantity in single checkout (per single checkout line). Note: this feature is in a preview state and can be subject to changes at later point. */
   limitQuantityPerCheckout?: Maybe<Scalars['Int']>;
   /** Resource limitations and current usage if any set for a shop */
@@ -12397,15 +12691,15 @@ export type Shop = {
   /** Shop's name. */
   name: Scalars['String'];
   /** List of available permissions. */
-  permissions: Array<Maybe<Permission>>;
+  permissions: Array<Permission>;
   /** List of possible phone prefixes. */
-  phonePrefixes: Array<Maybe<Scalars['String']>>;
+  phonePrefixes: Array<Scalars['String']>;
   /** New in Saleor 3.1. Default number of minutes stock will be reserved for anonymous checkout or null when stock reservation is disabled. */
   reserveStockDurationAnonymousUser?: Maybe<Scalars['Int']>;
   /** New in Saleor 3.1. Default number of minutes stock will be reserved for authenticated checkout or null when stock reservation is disabled. */
   reserveStockDurationAuthenticatedUser?: Maybe<Scalars['Int']>;
   /** List of staff notification recipients. */
-  staffNotificationRecipients?: Maybe<Array<Maybe<StaffNotificationRecipient>>>;
+  staffNotificationRecipients?: Maybe<Array<StaffNotificationRecipient>>;
   /** Enable inventory tracking. */
   trackInventoryByDefault?: Maybe<Scalars['Boolean']>;
   /** Returns translated shop fields for the given language code. */
@@ -12441,7 +12735,7 @@ export type ShopTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type ShopAddressUpdate = {
   __typename?: 'ShopAddressUpdate';
   errors: Array<ShopError>;
@@ -12451,7 +12745,7 @@ export type ShopAddressUpdate = {
   shopErrors: Array<ShopError>;
 };
 
-/** Updates site domain of the shop. */
+/** Updates site domain of the shop. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type ShopDomainUpdate = {
   __typename?: 'ShopDomainUpdate';
   errors: Array<ShopError>;
@@ -12481,7 +12775,7 @@ export type ShopErrorCode =
   | 'REQUIRED'
   | 'UNIQUE';
 
-/** Fetch tax rates. */
+/** Fetch tax rates. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type ShopFetchTaxRates = {
   __typename?: 'ShopFetchTaxRates';
   errors: Array<ShopError>;
@@ -12530,7 +12824,7 @@ export type ShopSettingsInput = {
   trackInventoryByDefault?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** Creates/updates translations for shop settings. */
+/** Creates/updates translations for shop settings. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type ShopSettingsTranslate = {
   __typename?: 'ShopSettingsTranslate';
   errors: Array<TranslationError>;
@@ -12545,7 +12839,7 @@ export type ShopSettingsTranslationInput = {
   headerText?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates shop settings. */
+/** Updates shop settings. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type ShopSettingsUpdate = {
   __typename?: 'ShopSettingsUpdate';
   errors: Array<ShopError>;
@@ -12571,7 +12865,7 @@ export type SiteDomainInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes staff users. */
+/** Deletes staff users. Requires one of the following permissions: MANAGE_STAFF. */
 export type StaffBulkDelete = {
   __typename?: 'StaffBulkDelete';
   /** Returns how many objects were affected. */
@@ -12581,7 +12875,7 @@ export type StaffBulkDelete = {
   staffErrors: Array<StaffError>;
 };
 
-/** Creates a new staff user. */
+/** Creates a new staff user. Requires one of the following permissions: MANAGE_STAFF. */
 export type StaffCreate = {
   __typename?: 'StaffCreate';
   errors: Array<StaffError>;
@@ -12607,7 +12901,7 @@ export type StaffCreateInput = {
   redirectUrl?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a staff user. */
+/** Deletes a staff user. Requires one of the following permissions: MANAGE_STAFF. */
 export type StaffDelete = {
   __typename?: 'StaffDelete';
   errors: Array<StaffError>;
@@ -12652,7 +12946,7 @@ export type StaffNotificationRecipient = Node & {
   user?: Maybe<User>;
 };
 
-/** Creates a new staff notification recipient. */
+/** Creates a new staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type StaffNotificationRecipientCreate = {
   __typename?: 'StaffNotificationRecipientCreate';
   errors: Array<ShopError>;
@@ -12661,7 +12955,7 @@ export type StaffNotificationRecipientCreate = {
   staffNotificationRecipient?: Maybe<StaffNotificationRecipient>;
 };
 
-/** Delete staff notification recipient. */
+/** Delete staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type StaffNotificationRecipientDelete = {
   __typename?: 'StaffNotificationRecipientDelete';
   errors: Array<ShopError>;
@@ -12679,7 +12973,7 @@ export type StaffNotificationRecipientInput = {
   user?: InputMaybe<Scalars['ID']>;
 };
 
-/** Updates a staff notification recipient. */
+/** Updates a staff notification recipient. Requires one of the following permissions: MANAGE_SETTINGS. */
 export type StaffNotificationRecipientUpdate = {
   __typename?: 'StaffNotificationRecipientUpdate';
   errors: Array<ShopError>;
@@ -12688,7 +12982,7 @@ export type StaffNotificationRecipientUpdate = {
   staffNotificationRecipient?: Maybe<StaffNotificationRecipient>;
 };
 
-/** Updates an existing staff user. */
+/** Updates an existing staff user. Requires one of the following permissions: MANAGE_STAFF. */
 export type StaffUpdate = {
   __typename?: 'StaffUpdate';
   errors: Array<StaffError>;
@@ -12715,7 +13009,7 @@ export type StaffUpdateInput = {
 };
 
 export type StaffUserInput = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   search?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<StaffMemberStatus>;
 };
@@ -12795,6 +13089,12 @@ export type StorePaymentMethodEnum =
   /** On session storage type. The payment is stored only to be reused when the customer is present in the checkout flow. */
   | 'ON_SESSION';
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  /** New in Saleor 3.2. Look up subscription event. Note: this feature is in a preview state and can be subject to changes at later point. */
+  event?: Maybe<Event>;
+};
+
 /** Representation of tax types fetched from tax gateway. */
 export type TaxType = {
   __typename?: 'TaxType';
@@ -12863,13 +13163,120 @@ export type Transaction = Node & {
   token: Scalars['String'];
 };
 
-export type TransactionInput = {
+/**
+ * Represents possible actions on payment transaction.
+ *
+ *     The following actions are possible:
+ *     CAPTURE - Represents the capture action.
+ *     REFUND - Represents a refund action.
+ *     VOID - Represents a void action.
+ *
+ */
+export type TransactionActionEnum =
+  | 'CAPTURE'
+  | 'REFUND'
+  | 'VOID';
+
+/** New in Saleor 3.2. Create transaction for checkout or order. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_PAYMENTS. */
+export type TransactionCreate = {
+  __typename?: 'TransactionCreate';
+  errors: Array<TransactionCreateError>;
+  transaction?: Maybe<TransactionItem>;
+};
+
+export type TransactionCreateError = {
+  __typename?: 'TransactionCreateError';
+  /** The error code. */
+  code: TransactionCreateErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** An enumeration. */
+export type TransactionCreateErrorCode =
+  | 'GRAPHQL_ERROR'
+  | 'INCORRECT_CURRENCY'
+  | 'INVALID'
+  | 'METADATA_KEY_REQUIRED'
+  | 'NOT_FOUND';
+
+export type TransactionCreateInput = {
+  /** Amount authorized by this transaction. */
+  amountAuthorized?: InputMaybe<MoneyInput>;
+  /** Amount captured by this transaction. */
+  amountCaptured?: InputMaybe<MoneyInput>;
+  /** Amount refunded by this transaction. */
+  amountRefunded?: InputMaybe<MoneyInput>;
+  /** Amount voided by this transaction. */
+  amountVoided?: InputMaybe<MoneyInput>;
+  /** List of all possible actions for the transaction */
+  availableActions?: InputMaybe<Array<TransactionActionEnum>>;
+  /** Payment public metadata. */
+  metadata?: InputMaybe<Array<MetadataInput>>;
+  /** Payment private metadata. */
+  privateMetadata?: InputMaybe<Array<MetadataInput>>;
+  /** Reference of the transaction. */
+  reference?: InputMaybe<Scalars['String']>;
+  /** Status of the transaction. */
+  status: Scalars['String'];
+  /** Payment type used for this transaction. */
+  type: Scalars['String'];
+};
+
+/** Represents transaction's event. */
+export type TransactionEvent = Node & {
+  __typename?: 'TransactionEvent';
+  createdAt: Scalars['DateTime'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Name of the transaction's event. */
+  name?: Maybe<Scalars['String']>;
+  /** Reference of transaction's event. */
+  reference: Scalars['String'];
+  /** Status of transaction's event. */
+  status: TransactionStatus;
+};
+
+export type TransactionEventInput = {
   /** Name of the transaction. */
   name?: InputMaybe<Scalars['String']>;
   /** Reference of the transaction. */
   reference?: InputMaybe<Scalars['String']>;
   /** Current status of the payment transaction. */
   status: TransactionStatus;
+};
+
+/** New in Saleor 3.2. Represents a payment transaction. Note: this feature is in a preview state and can be subject to changes at later point. */
+export type TransactionItem = Node & ObjectWithMetadata & {
+  __typename?: 'TransactionItem';
+  /** List of actions that can be performed in the current state of a payment. */
+  actions: Array<TransactionActionEnum>;
+  /** Total amount authorized for this payment. */
+  authorizedAmount: Money;
+  /** Total amount captured for this payment. */
+  capturedAmount: Money;
+  createdAt: Scalars['DateTime'];
+  /** List of all transaction's events. */
+  events: Array<TransactionEvent>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<MetadataItem>;
+  modifiedAt: Scalars['DateTime'];
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
+  /** Reference of transaction. */
+  reference: Scalars['String'];
+  /** Total amount refunded for this payment. */
+  refundedAmount: Money;
+  /** Status of transaction. */
+  status: Scalars['String'];
+  /** Type of transaction. */
+  type: Scalars['String'];
+  /** Total amount voided for this payment. */
+  voidedAmount: Money;
 };
 
 /** An enumeration. */
@@ -12885,11 +13292,83 @@ export type TransactionKind =
   | 'REFUND_ONGOING'
   | 'VOID';
 
+/** New in Saleor 3.2. Request an action for payment transaction. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_PAYMENTS, MANAGE_ORDERS. */
+export type TransactionRequestAction = {
+  __typename?: 'TransactionRequestAction';
+  errors: Array<TransactionRequestActionError>;
+  transaction?: Maybe<TransactionItem>;
+};
+
+export type TransactionRequestActionError = {
+  __typename?: 'TransactionRequestActionError';
+  /** The error code. */
+  code: TransactionRequestActionErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** An enumeration. */
+export type TransactionRequestActionErrorCode =
+  | 'GRAPHQL_ERROR'
+  | 'INVALID'
+  | 'MISSING_TRANSACTION_ACTION_REQUEST_WEBHOOK'
+  | 'NOT_FOUND';
+
 /** An enumeration. */
 export type TransactionStatus =
   | 'FAILURE'
   | 'PENDING'
   | 'SUCCESS';
+
+/** New in Saleor 3.2. Create transaction for checkout or order. Note: this feature is in a preview state and can be subject to changes at later point. Requires one of the following permissions: HANDLE_PAYMENTS. */
+export type TransactionUpdate = {
+  __typename?: 'TransactionUpdate';
+  errors: Array<TransactionUpdateError>;
+  transaction?: Maybe<TransactionItem>;
+};
+
+export type TransactionUpdateError = {
+  __typename?: 'TransactionUpdateError';
+  /** The error code. */
+  code: TransactionUpdateErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** An enumeration. */
+export type TransactionUpdateErrorCode =
+  | 'GRAPHQL_ERROR'
+  | 'INCORRECT_CURRENCY'
+  | 'INVALID'
+  | 'METADATA_KEY_REQUIRED'
+  | 'NOT_FOUND';
+
+export type TransactionUpdateInput = {
+  /** Amount authorized by this transaction. */
+  amountAuthorized?: InputMaybe<MoneyInput>;
+  /** Amount captured by this transaction. */
+  amountCaptured?: InputMaybe<MoneyInput>;
+  /** Amount refunded by this transaction. */
+  amountRefunded?: InputMaybe<MoneyInput>;
+  /** Amount voided by this transaction. */
+  amountVoided?: InputMaybe<MoneyInput>;
+  /** List of all possible actions for the transaction */
+  availableActions?: InputMaybe<Array<TransactionActionEnum>>;
+  /** Payment public metadata. */
+  metadata?: InputMaybe<Array<MetadataInput>>;
+  /** Payment private metadata. */
+  privateMetadata?: InputMaybe<Array<MetadataInput>>;
+  /** Reference of the transaction. */
+  reference?: InputMaybe<Scalars['String']>;
+  /** Status of the transaction. */
+  status?: InputMaybe<Scalars['String']>;
+  /** Payment type used for this transaction. */
+  type?: InputMaybe<Scalars['String']>;
+};
 
 export type TranslatableItem = AttributeTranslatableContent | AttributeValueTranslatableContent | CategoryTranslatableContent | CollectionTranslatableContent | MenuItemTranslatableContent | PageTranslatableContent | ProductTranslatableContent | ProductVariantTranslatableContent | SaleTranslatableContent | ShippingMethodTranslatableContent | VoucherTranslatableContent;
 
@@ -12923,6 +13402,12 @@ export type TranslatableKinds =
   | 'VARIANT'
   | 'VOUCHER';
 
+export type TranslationCreated = {
+  __typename?: 'TranslationCreated';
+  /** New in Saleor 3.2. Look up a translation. Note: this feature is in a preview state and can be subject to changes at later point. */
+  translation?: Maybe<TranslationTypes>;
+};
+
 export type TranslationError = {
   __typename?: 'TranslationError';
   /** The error code. */
@@ -12947,6 +13432,14 @@ export type TranslationInput = {
   seoTitle?: InputMaybe<Scalars['String']>;
 };
 
+export type TranslationTypes = AttributeTranslation | AttributeValueTranslation | CategoryTranslation | CollectionTranslation | MenuItemTranslation | PageTranslation | ProductTranslation | ProductVariantTranslation | SaleTranslation | ShippingMethodTranslation | VoucherTranslation;
+
+export type TranslationUpdated = {
+  __typename?: 'TranslationUpdated';
+  /** New in Saleor 3.2. Look up a translation. Note: this feature is in a preview state and can be subject to changes at later point. */
+  translation?: Maybe<TranslationTypes>;
+};
+
 export type UpdateInvoiceInput = {
   /** Invoice number */
   number?: InputMaybe<Scalars['String']>;
@@ -12954,7 +13447,7 @@ export type UpdateInvoiceInput = {
   url?: InputMaybe<Scalars['String']>;
 };
 
-/** Updates metadata of an object. */
+/** Updates metadata of an object. To use it, you need to have access to the modified object. */
 export type UpdateMetadata = {
   __typename?: 'UpdateMetadata';
   errors: Array<MetadataError>;
@@ -12963,7 +13456,7 @@ export type UpdateMetadata = {
   metadataErrors: Array<MetadataError>;
 };
 
-/** Updates private metadata of an object. */
+/** Updates private metadata of an object. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
 export type UpdatePrivateMetadata = {
   __typename?: 'UpdatePrivateMetadata';
   errors: Array<MetadataError>;
@@ -12990,7 +13483,7 @@ export type UploadErrorCode =
 export type User = Node & ObjectWithMetadata & {
   __typename?: 'User';
   /** List of all user's addresses. */
-  addresses?: Maybe<Array<Maybe<Address>>>;
+  addresses?: Maybe<Array<Address>>;
   avatar?: Maybe<Image>;
   /**
    * Returns the last open checkout of this user.
@@ -13003,10 +13496,10 @@ export type User = Node & ObjectWithMetadata & {
   defaultBillingAddress?: Maybe<Address>;
   defaultShippingAddress?: Maybe<Address>;
   /** List of user's permission groups which user can manage. */
-  editableGroups?: Maybe<Array<Maybe<Group>>>;
+  editableGroups?: Maybe<Array<Group>>;
   email: Scalars['String'];
   /** List of events associated with the user. */
-  events?: Maybe<Array<Maybe<CustomerEvent>>>;
+  events?: Maybe<Array<CustomerEvent>>;
   firstName: Scalars['String'];
   /** List of the user gift cards. */
   giftCards?: Maybe<GiftCardCountableConnection>;
@@ -13018,20 +13511,20 @@ export type User = Node & ObjectWithMetadata & {
   lastLogin?: Maybe<Scalars['DateTime']>;
   lastName: Scalars['String'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   /** A note about the customer. */
   note?: Maybe<Scalars['String']>;
   /** List of user's orders. */
   orders?: Maybe<OrderCountableConnection>;
   /** List of user's permission groups. */
-  permissionGroups?: Maybe<Array<Maybe<Group>>>;
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  permissionGroups?: Maybe<Array<Group>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** List of stored payment sources. */
-  storedPaymentSources?: Maybe<Array<Maybe<PaymentSource>>>;
+  storedPaymentSources?: Maybe<Array<PaymentSource>>;
   updatedAt: Scalars['DateTime'];
   /** List of user's permissions. */
-  userPermissions?: Maybe<Array<Maybe<UserPermission>>>;
+  userPermissions?: Maybe<Array<UserPermission>>;
 };
 
 
@@ -13090,7 +13583,7 @@ export type UserAvatarUpdate = {
   user?: Maybe<User>;
 };
 
-/** Activate or deactivate users. */
+/** Activate or deactivate users. Requires one of the following permissions: MANAGE_USERS. */
 export type UserBulkSetActive = {
   __typename?: 'UserBulkSetActive';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13182,7 +13675,7 @@ export type Vat = {
   /** Country code. */
   countryCode: Scalars['String'];
   /** Country's VAT rate exceptions for specific types of goods. */
-  reducedRates: Array<Maybe<ReducedRate>>;
+  reducedRates: Array<ReducedRate>;
   /** Standard VAT rate in percent. */
   standardRate?: Maybe<Scalars['Float']>;
 };
@@ -13192,7 +13685,7 @@ export type VariantAttributeScope =
   | 'NOT_VARIANT_SELECTION'
   | 'VARIANT_SELECTION';
 
-/** Assign an media to a product variant. */
+/** Assign an media to a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type VariantMediaAssign = {
   __typename?: 'VariantMediaAssign';
   errors: Array<ProductError>;
@@ -13202,7 +13695,7 @@ export type VariantMediaAssign = {
   productVariant?: Maybe<ProductVariant>;
 };
 
-/** Unassign an media from a product variant. */
+/** Unassign an media from a product variant. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type VariantMediaUnassign = {
   __typename?: 'VariantMediaUnassign';
   errors: Array<ProductError>;
@@ -13272,7 +13765,7 @@ export type Voucher = Node & ObjectWithMetadata & {
   /** List of collections this voucher applies to. */
   collections?: Maybe<CollectionCountableConnection>;
   /** List of countries available for the shipping voucher. */
-  countries?: Maybe<Array<Maybe<CountryDisplay>>>;
+  countries?: Maybe<Array<CountryDisplay>>;
   /** Currency code for voucher. */
   currency?: Maybe<Scalars['String']>;
   /** Voucher value. */
@@ -13282,14 +13775,14 @@ export type Voucher = Node & ObjectWithMetadata & {
   endDate?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   minCheckoutItemsQuantity?: Maybe<Scalars['Int']>;
   /** Minimum order value to apply voucher. */
   minSpent?: Maybe<Money>;
   name?: Maybe<Scalars['String']>;
   onlyForStaff: Scalars['Boolean'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   /** List of products this voucher applies to. */
   products?: Maybe<ProductCountableConnection>;
   startDate: Scalars['DateTime'];
@@ -13345,7 +13838,7 @@ export type VoucherVariantsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
-/** Adds products, categories, collections to a voucher. */
+/** Adds products, categories, collections to a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherAddCatalogues = {
   __typename?: 'VoucherAddCatalogues';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13355,7 +13848,7 @@ export type VoucherAddCatalogues = {
   voucher?: Maybe<Voucher>;
 };
 
-/** Deletes vouchers. */
+/** Deletes vouchers. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherBulkDelete = {
   __typename?: 'VoucherBulkDelete';
   /** Returns how many objects were affected. */
@@ -13391,7 +13884,7 @@ export type VoucherChannelListingInput = {
   removeChannels?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** Manage voucher's availability in channels. */
+/** Manage voucher's availability in channels. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherChannelListingUpdate = {
   __typename?: 'VoucherChannelListingUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13418,7 +13911,7 @@ export type VoucherCountableEdge = {
   node: Voucher;
 };
 
-/** Creates a new voucher. */
+/** Creates a new voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherCreate = {
   __typename?: 'VoucherCreate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13427,7 +13920,7 @@ export type VoucherCreate = {
   voucher?: Maybe<Voucher>;
 };
 
-/** Deletes a voucher. */
+/** Deletes a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherDelete = {
   __typename?: 'VoucherDelete';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13442,11 +13935,11 @@ export type VoucherDiscountType =
   | 'SHIPPING';
 
 export type VoucherFilterInput = {
-  discountType?: InputMaybe<Array<InputMaybe<VoucherDiscountType>>>;
-  metadata?: InputMaybe<Array<InputMaybe<MetadataFilter>>>;
+  discountType?: InputMaybe<Array<VoucherDiscountType>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars['String']>;
   started?: InputMaybe<DateTimeRangeInput>;
-  status?: InputMaybe<Array<InputMaybe<DiscountStatusEnum>>>;
+  status?: InputMaybe<Array<DiscountStatusEnum>>;
   timesUsed?: InputMaybe<IntRangeInput>;
 };
 
@@ -13456,13 +13949,13 @@ export type VoucherInput = {
   /** Voucher should be applied to the cheapest item or entire order. */
   applyOncePerOrder?: InputMaybe<Scalars['Boolean']>;
   /** Categories discounted by the voucher. */
-  categories?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  categories?: InputMaybe<Array<Scalars['ID']>>;
   /** Code to use the voucher. */
   code?: InputMaybe<Scalars['String']>;
   /** Collections discounted by the voucher. */
-  collections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  collections?: InputMaybe<Array<Scalars['ID']>>;
   /** Country codes that can be used with the shipping voucher. */
-  countries?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  countries?: InputMaybe<Array<Scalars['String']>>;
   /** Choices: fixed or percentage. */
   discountValueType?: InputMaybe<DiscountValueTypeEnum>;
   /** End date of the voucher in ISO 8601 format. */
@@ -13474,7 +13967,7 @@ export type VoucherInput = {
   /** Voucher can be used only by staff user. */
   onlyForStaff?: InputMaybe<Scalars['Boolean']>;
   /** Products discounted by the voucher. */
-  products?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  products?: InputMaybe<Array<Scalars['ID']>>;
   /** Start date of the voucher in ISO 8601 format. */
   startDate?: InputMaybe<Scalars['DateTime']>;
   /** Voucher type: PRODUCT, CATEGORY SHIPPING or ENTIRE_ORDER. */
@@ -13482,10 +13975,10 @@ export type VoucherInput = {
   /** Limit number of times this voucher can be used in total. */
   usageLimit?: InputMaybe<Scalars['Int']>;
   /** New in Saleor 3.1. Variants discounted by the voucher. */
-  variants?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  variants?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-/** Removes products, categories, collections from a voucher. */
+/** Removes products, categories, collections from a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherRemoveCatalogues = {
   __typename?: 'VoucherRemoveCatalogues';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13542,7 +14035,7 @@ export type VoucherTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/** Creates/updates translations for a voucher. */
+/** Creates/updates translations for a voucher. Requires one of the following permissions: MANAGE_TRANSLATIONS. */
 export type VoucherTranslate = {
   __typename?: 'VoucherTranslate';
   errors: Array<TranslationError>;
@@ -13564,7 +14057,7 @@ export type VoucherTypeEnum =
   | 'SHIPPING'
   | 'SPECIFIC_PRODUCT';
 
-/** Updates a voucher. */
+/** Updates a voucher. Requires one of the following permissions: MANAGE_DISCOUNTS. */
 export type VoucherUpdate = {
   __typename?: 'VoucherUpdate';
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -13588,10 +14081,10 @@ export type Warehouse = Node & ObjectWithMetadata & {
   id: Scalars['ID'];
   isPrivate: Scalars['Boolean'];
   /** List of public metadata items. Can be accessed without permissions. */
-  metadata: Array<Maybe<MetadataItem>>;
+  metadata: Array<MetadataItem>;
   name: Scalars['String'];
-  /** List of private metadata items.Requires proper staff permissions to access. */
-  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of private metadata items. Requires proper staff permissions to access. */
+  privateMetadata: Array<MetadataItem>;
   shippingZones: ShippingZoneCountableConnection;
   slug: Scalars['String'];
 };
@@ -13628,7 +14121,7 @@ export type WarehouseCountableEdge = {
   node: Warehouse;
 };
 
-/** Creates new warehouse. */
+/** Creates new warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type WarehouseCreate = {
   __typename?: 'WarehouseCreate';
   errors: Array<WarehouseError>;
@@ -13645,12 +14138,12 @@ export type WarehouseCreateInput = {
   /** Warehouse name. */
   name: Scalars['String'];
   /** Shipping zones supported by the warehouse. */
-  shippingZones?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  shippingZones?: InputMaybe<Array<Scalars['ID']>>;
   /** Warehouse slug. */
   slug?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes selected warehouse. */
+/** Deletes selected warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type WarehouseDelete = {
   __typename?: 'WarehouseDelete';
   errors: Array<WarehouseError>;
@@ -13680,12 +14173,12 @@ export type WarehouseErrorCode =
 
 export type WarehouseFilterInput = {
   clickAndCollectOption?: InputMaybe<WarehouseClickAndCollectOptionEnum>;
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  ids?: InputMaybe<Array<Scalars['ID']>>;
   isPrivate?: InputMaybe<Scalars['Boolean']>;
   search?: InputMaybe<Scalars['String']>;
 };
 
-/** Add shipping zone to given warehouse. */
+/** Add shipping zone to given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type WarehouseShippingZoneAssign = {
   __typename?: 'WarehouseShippingZoneAssign';
   errors: Array<WarehouseError>;
@@ -13694,7 +14187,7 @@ export type WarehouseShippingZoneAssign = {
   warehouseErrors: Array<WarehouseError>;
 };
 
-/** Remove shipping zone from given warehouse. */
+/** Remove shipping zone from given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type WarehouseShippingZoneUnassign = {
   __typename?: 'WarehouseShippingZoneUnassign';
   errors: Array<WarehouseError>;
@@ -13714,7 +14207,7 @@ export type WarehouseSortingInput = {
   field: WarehouseSortField;
 };
 
-/** Updates given warehouse. */
+/** Updates given warehouse. Requires one of the following permissions: MANAGE_PRODUCTS. */
 export type WarehouseUpdate = {
   __typename?: 'WarehouseUpdate';
   errors: Array<WarehouseError>;
@@ -13752,11 +14245,16 @@ export type Webhook = Node & {
    */
   events: Array<WebhookEvent>;
   id: Scalars['ID'];
+  /** Informs if webhook is activated. */
   isActive: Scalars['Boolean'];
   name: Scalars['String'];
+  /** Used to create a hash signature with each payload. */
   secretKey?: Maybe<Scalars['String']>;
+  /** Used to define payloads for specific events. */
+  subscriptionQuery?: Maybe<Scalars['String']>;
   /** List of synchronous webhook events. */
   syncEvents: Array<WebhookEventSync>;
+  /** Target URL for webhook. */
   targetUrl: Scalars['String'];
 };
 
@@ -13771,7 +14269,7 @@ export type WebhookEventDeliveriesArgs = {
   sortBy?: InputMaybe<EventDeliverySortingInput>;
 };
 
-/** Creates a new webhook subscription. */
+/** Creates a new webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 export type WebhookCreate = {
   __typename?: 'WebhookCreate';
   errors: Array<WebhookError>;
@@ -13790,11 +14288,13 @@ export type WebhookCreateInput = {
    *
    * DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `syncEvents` instead.
    */
-  events?: InputMaybe<Array<InputMaybe<WebhookEventTypeEnum>>>;
+  events?: InputMaybe<Array<WebhookEventTypeEnum>>;
   /** Determine if webhook will be set active or not. */
   isActive?: InputMaybe<Scalars['Boolean']>;
   /** The name of the webhook. */
   name?: InputMaybe<Scalars['String']>;
+  /** New in Saleor 3.2. Subscription query used to define a webhook payload. Note: this feature is in a preview state and can be subject to changes at later point. */
+  query?: InputMaybe<Scalars['String']>;
   /** The secret key used to create a hash signature with each payload. */
   secretKey?: InputMaybe<Scalars['String']>;
   /** The synchronous events that webhook wants to subscribe. */
@@ -13803,7 +14303,7 @@ export type WebhookCreateInput = {
   targetUrl?: InputMaybe<Scalars['String']>;
 };
 
-/** Deletes a webhook subscription. */
+/** Deletes a webhook subscription. Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP. */
 export type WebhookDelete = {
   __typename?: 'WebhookDelete';
   errors: Array<WebhookError>;
@@ -13861,6 +14361,12 @@ export type WebhookEventSync = {
 export type WebhookEventTypeAsyncEnum =
   /** All the events. */
   | 'ANY_EVENTS'
+  /** A new category created. */
+  | 'CATEGORY_CREATED'
+  /** A category is deleted. */
+  | 'CATEGORY_DELETED'
+  /** A category is updated. */
+  | 'CATEGORY_UPDATED'
   /** A new checkout is created. */
   | 'CHECKOUT_CREATED'
   /** A checkout is updated. It also triggers all updates related to the checkout. */
@@ -13925,38 +14431,80 @@ export type WebhookEventTypeAsyncEnum =
   | 'SALE_CREATED'
   | 'SALE_DELETED'
   | 'SALE_UPDATED'
+  /** A new shipping price is created. */
+  | 'SHIPPING_PRICE_CREATED'
+  /** A shipping price is deleted. */
+  | 'SHIPPING_PRICE_DELETED'
+  /** A shipping price is updated. */
+  | 'SHIPPING_PRICE_UPDATED'
+  /** A new shipping zone is created. */
+  | 'SHIPPING_ZONE_CREATED'
+  /** A shipping zone is deleted. */
+  | 'SHIPPING_ZONE_DELETED'
+  /** A shipping zone is updated. */
+  | 'SHIPPING_ZONE_UPDATED'
+  | 'TRANSACTION_ACTION_REQUEST'
   | 'TRANSLATION_CREATED'
   | 'TRANSLATION_UPDATED';
 
 /** Enum determining type of webhook. */
 export type WebhookEventTypeEnum =
+  /** All the events. */
   | 'ANY_EVENTS'
+  /** A new category created. */
+  | 'CATEGORY_CREATED'
+  /** A category is deleted. */
+  | 'CATEGORY_DELETED'
+  /** A category is updated. */
+  | 'CATEGORY_UPDATED'
+  /** A new checkout is created. */
   | 'CHECKOUT_CREATED'
   | 'CHECKOUT_FILTER_SHIPPING_METHODS'
+  /** A checkout is updated. It also triggers all updates related to the checkout. */
   | 'CHECKOUT_UPDATED'
+  /** A new collection is created. */
   | 'COLLECTION_CREATED'
+  /** A collection is deleted. */
   | 'COLLECTION_DELETED'
+  /** A collection is updated. */
   | 'COLLECTION_UPDATED'
+  /** A new customer account is created. */
   | 'CUSTOMER_CREATED'
+  /** A customer account is updated. */
   | 'CUSTOMER_UPDATED'
   | 'DRAFT_ORDER_CREATED'
   | 'DRAFT_ORDER_DELETED'
   | 'DRAFT_ORDER_UPDATED'
+  /** A fulfillment is cancelled. */
   | 'FULFILLMENT_CANCELED'
+  /** A new fulfillment is created. */
   | 'FULFILLMENT_CREATED'
+  /** An invoice is deleted. */
   | 'INVOICE_DELETED'
+  /** An invoice for order requested. */
   | 'INVOICE_REQUESTED'
+  /** Invoice has been sent. */
   | 'INVOICE_SENT'
+  /** User notification triggered. */
   | 'NOTIFY_USER'
+  /** An order is cancelled. */
   | 'ORDER_CANCELLED'
+  /** An order is confirmed (status change unconfirmed -> unfulfilled) by a staff user using the OrderConfirm mutation. It also triggers when the user completes the checkout and the shop setting `automatically_confirm_all_new_orders` is enabled. */
   | 'ORDER_CONFIRMED'
+  /** A new order is placed. */
   | 'ORDER_CREATED'
   | 'ORDER_FILTER_SHIPPING_METHODS'
+  /** An order is fulfilled. */
   | 'ORDER_FULFILLED'
+  /** Payment is made and an order is fully paid. */
   | 'ORDER_FULLY_PAID'
+  /** An order is updated; triggered for all changes related to an order; covers all other order webhooks, except for ORDER_CREATED. */
   | 'ORDER_UPDATED'
+  /** A new page is created. */
   | 'PAGE_CREATED'
+  /** A page is deleted. */
   | 'PAGE_DELETED'
+  /** A page is updated. */
   | 'PAGE_UPDATED'
   | 'PAYMENT_AUTHORIZE'
   | 'PAYMENT_CAPTURE'
@@ -13965,18 +14513,37 @@ export type WebhookEventTypeEnum =
   | 'PAYMENT_PROCESS'
   | 'PAYMENT_REFUND'
   | 'PAYMENT_VOID'
+  /** A new product is created. */
   | 'PRODUCT_CREATED'
+  /** A product is deleted. */
   | 'PRODUCT_DELETED'
+  /** A product is updated. */
   | 'PRODUCT_UPDATED'
   | 'PRODUCT_VARIANT_BACK_IN_STOCK'
+  /** A new product variant is created. */
   | 'PRODUCT_VARIANT_CREATED'
+  /** A product variant is deleted. */
   | 'PRODUCT_VARIANT_DELETED'
   | 'PRODUCT_VARIANT_OUT_OF_STOCK'
+  /** A product variant is updated. */
   | 'PRODUCT_VARIANT_UPDATED'
   | 'SALE_CREATED'
   | 'SALE_DELETED'
   | 'SALE_UPDATED'
   | 'SHIPPING_LIST_METHODS_FOR_CHECKOUT'
+  /** A new shipping price is created. */
+  | 'SHIPPING_PRICE_CREATED'
+  /** A shipping price is deleted. */
+  | 'SHIPPING_PRICE_DELETED'
+  /** A shipping price is updated. */
+  | 'SHIPPING_PRICE_UPDATED'
+  /** A new shipping zone is created. */
+  | 'SHIPPING_ZONE_CREATED'
+  /** A shipping zone is deleted. */
+  | 'SHIPPING_ZONE_DELETED'
+  /** A shipping zone is updated. */
+  | 'SHIPPING_ZONE_UPDATED'
+  | 'TRANSACTION_ACTION_REQUEST'
   | 'TRANSLATION_CREATED'
   | 'TRANSLATION_UPDATED';
 
@@ -13995,6 +14562,9 @@ export type WebhookEventTypeSyncEnum =
 
 /** An enumeration. */
 export type WebhookSampleEventTypeEnum =
+  | 'CATEGORY_CREATED'
+  | 'CATEGORY_DELETED'
+  | 'CATEGORY_UPDATED'
   | 'CHECKOUT_CREATED'
   | 'CHECKOUT_UPDATED'
   | 'COLLECTION_CREATED'
@@ -14031,10 +14601,17 @@ export type WebhookSampleEventTypeEnum =
   | 'SALE_CREATED'
   | 'SALE_DELETED'
   | 'SALE_UPDATED'
+  | 'SHIPPING_PRICE_CREATED'
+  | 'SHIPPING_PRICE_DELETED'
+  | 'SHIPPING_PRICE_UPDATED'
+  | 'SHIPPING_ZONE_CREATED'
+  | 'SHIPPING_ZONE_DELETED'
+  | 'SHIPPING_ZONE_UPDATED'
+  | 'TRANSACTION_ACTION_REQUEST'
   | 'TRANSLATION_CREATED'
   | 'TRANSLATION_UPDATED';
 
-/** Updates a webhook subscription. */
+/** Updates a webhook subscription. Requires one of the following permissions: MANAGE_APPS. */
 export type WebhookUpdate = {
   __typename?: 'WebhookUpdate';
   errors: Array<WebhookError>;
@@ -14053,11 +14630,13 @@ export type WebhookUpdateInput = {
    *
    * DEPRECATED: this field will be removed in Saleor 4.0. Use `asyncEvents` or `syncEvents` instead.
    */
-  events?: InputMaybe<Array<InputMaybe<WebhookEventTypeEnum>>>;
+  events?: InputMaybe<Array<WebhookEventTypeEnum>>;
   /** Determine if webhook will be set active or not. */
   isActive?: InputMaybe<Scalars['Boolean']>;
   /** The new name of the webhook. */
   name?: InputMaybe<Scalars['String']>;
+  /** New in Saleor 3.2. Subscription query used to define a webhook payload. Note: this feature is in a preview state and can be subject to changes at later point. */
+  query?: InputMaybe<Scalars['String']>;
   /** Use to create a hash signature with each payload. */
   secretKey?: InputMaybe<Scalars['String']>;
   /** The synchronous events that webhook wants to subscribe. */
@@ -14122,7 +14701,7 @@ export type PrivateMetadataQueryVariables = Exact<{
 }>;
 
 
-export type PrivateMetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null };
+export type PrivateMetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | null };
 
 export type UpdatePrivateMetadataMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -14130,31 +14709,40 @@ export type UpdatePrivateMetadataMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePrivateMetadataMutation = { __typename?: 'Mutation', updatePrivateMetadata?: { __typename?: 'UpdatePrivateMetadata', item?: { __typename?: 'App', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Attribute', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Category', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Checkout', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Collection', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'DigitalContent', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Fulfillment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'GiftCard', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Invoice', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Menu', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'MenuItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Order', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Page', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'PageType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Payment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Product', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ProductType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ProductVariant', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Sale', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingMethod', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingMethodType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'ShippingZone', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'User', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Voucher', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | { __typename?: 'Warehouse', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string } | null> } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
+export type UpdatePrivateMetadataMutation = { __typename?: 'Mutation', updatePrivateMetadata?: { __typename?: 'UpdatePrivateMetadata', item?: { __typename?: 'App', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Attribute', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Category', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Checkout', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Collection', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'DigitalContent', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Fulfillment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'GiftCard', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Invoice', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Menu', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'MenuItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Order', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Page', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'PageType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Payment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Product', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ProductType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ProductVariant', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Sale', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingMethod', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingMethodType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingZone', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'TransactionItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'User', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Voucher', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Warehouse', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
 
 export type AddressFragment = { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } };
 
 export type MoneyFragment = { __typename?: 'Money', currency: string, amount: number };
 
-export type OrderLineFragment = { __typename?: 'OrderLine', productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } } };
+export type OrderLineFragment = { __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', category?: { __typename?: 'Category', name: string } | null, productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', url: string } | null };
 
-export type OrderFragment = { __typename?: 'Order', id: string, number?: string | null, token: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts?: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }> | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } } } | null> };
+export type OrderFragment = { __typename?: 'Order', id: string, number?: string | null, token: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts?: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }> | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', category?: { __typename?: 'Category', name: string } | null, productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', url: string } | null }> };
 
 export type OrderCreateMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type OrderCreateMutation = { __typename?: 'Mutation', orderCreateFromCheckout?: { __typename?: 'OrderCreateFromCheckout', order?: { __typename?: 'Order', id: string, number?: string | null, token: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts?: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }> | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } } } | null> } | null, errors: Array<{ __typename?: 'OrderCreateFromCheckoutError', code: OrderCreateFromCheckoutErrorCode, message?: string | null }> } | null };
+export type OrderCreateMutation = { __typename?: 'Mutation', orderCreateFromCheckout?: { __typename?: 'OrderCreateFromCheckout', order?: { __typename?: 'Order', id: string, number?: string | null, token: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts?: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }> | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', category?: { __typename?: 'Category', name: string } | null, productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', url: string } | null }> } | null, errors: Array<{ __typename?: 'OrderCreateFromCheckoutError', code: OrderCreateFromCheckoutErrorCode, message?: string | null }> } | null };
 
-export type PaymentCreateMutationVariables = Exact<{
+export type TransactionCreateMutationVariables = Exact<{
   id: Scalars['ID'];
-  payment: PaymentCreateInput;
-  transaction?: InputMaybe<TransactionInput>;
+  transaction: TransactionCreateInput;
+  transactionEvent?: InputMaybe<TransactionEventInput>;
 }>;
 
 
-export type PaymentCreateMutation = { __typename?: 'Mutation', paymentCreate?: { __typename?: 'PaymentCreate', payment?: { __typename?: 'Payment', id: string } | null, errors: Array<{ __typename?: 'PaymentCreateError', code: PaymentCreateErrorCode, message?: string | null }> } | null };
+export type TransactionCreateMutation = { __typename?: 'Mutation', transactionCreate?: { __typename?: 'TransactionCreate', transaction?: { __typename?: 'TransactionItem', id: string } | null, errors: Array<{ __typename?: 'TransactionCreateError', code: TransactionCreateErrorCode, message?: string | null }> } | null };
+
+export type TransactionUpdateMutationVariables = Exact<{
+  id: Scalars['ID'];
+  transaction: TransactionUpdateInput;
+  transactionEvent?: InputMaybe<TransactionEventInput>;
+}>;
+
+
+export type TransactionUpdateMutation = { __typename?: 'Mutation', transactionUpdate?: { __typename?: 'TransactionUpdate', transaction?: { __typename?: 'TransactionItem', id: string } | null, errors: Array<{ __typename?: 'TransactionUpdateError', code: TransactionUpdateErrorCode, message?: string | null }> } | null };
 
 export const ChannelFragmentDoc = gql`
     fragment ChannelFragment on Channel {
@@ -14200,12 +14788,16 @@ export const MoneyFragmentDoc = gql`
     `;
 export const OrderLineFragmentDoc = gql`
     fragment OrderLine on OrderLine {
+  id
   productName
   variantName
   quantity
   taxRate
   variant {
     product {
+      category {
+        name
+      }
       productType {
         isDigital
         kind
@@ -14224,6 +14816,9 @@ export const OrderLineFragmentDoc = gql`
     tax {
       ...Money
     }
+  }
+  thumbnail {
+    url
   }
 }
     ${MoneyFragmentDoc}`;
@@ -14354,10 +14949,14 @@ export const OrderCreateDocument = gql`
 export function useOrderCreateMutation() {
   return Urql.useMutation<OrderCreateMutation, OrderCreateMutationVariables>(OrderCreateDocument);
 };
-export const PaymentCreateDocument = gql`
-    mutation PaymentCreate($id: ID!, $payment: PaymentCreateInput!, $transaction: TransactionInput) {
-  paymentCreate(id: $id, payment: $payment, transaction: $transaction) {
-    payment {
+export const TransactionCreateDocument = gql`
+    mutation TransactionCreate($id: ID!, $transaction: TransactionCreateInput!, $transactionEvent: TransactionEventInput) {
+  transactionCreate(
+    id: $id
+    transaction: $transaction
+    transactionEvent: $transactionEvent
+  ) {
+    transaction {
       id
     }
     errors {
@@ -14368,6 +14967,27 @@ export const PaymentCreateDocument = gql`
 }
     `;
 
-export function usePaymentCreateMutation() {
-  return Urql.useMutation<PaymentCreateMutation, PaymentCreateMutationVariables>(PaymentCreateDocument);
+export function useTransactionCreateMutation() {
+  return Urql.useMutation<TransactionCreateMutation, TransactionCreateMutationVariables>(TransactionCreateDocument);
+};
+export const TransactionUpdateDocument = gql`
+    mutation TransactionUpdate($id: ID!, $transaction: TransactionUpdateInput!, $transactionEvent: TransactionEventInput) {
+  transactionUpdate(
+    id: $id
+    transaction: $transaction
+    transactionEvent: $transactionEvent
+  ) {
+    transaction {
+      id
+    }
+    errors {
+      code
+      message
+    }
+  }
+}
+    `;
+
+export function useTransactionUpdateMutation() {
+  return Urql.useMutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(TransactionUpdateDocument);
 };

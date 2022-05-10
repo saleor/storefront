@@ -16,10 +16,12 @@ export const OrderInfo = ({ order }: { order: OrderFragment }) => {
         paymentStatus={order.paymentStatus}
       />
       <DeliverySection deliveryMethod={order.deliveryMethod} />
-      <Section>
-        <SectionTitle>{formatMessage("shippingAddress")}</SectionTitle>
-        <Address address={order.shippingAddress!} />
-      </Section>
+      {order.shippingAddress && (
+        <Section>
+          <SectionTitle>{formatMessage("shippingAddress")}</SectionTitle>
+          <Address address={order.shippingAddress} />
+        </Section>
+      )}
       <Section>
         <SectionTitle>{formatMessage("billingAddress")}</SectionTitle>
         <Address address={order.billingAddress!} />

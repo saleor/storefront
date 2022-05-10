@@ -7,7 +7,7 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
     id: "saleor.checkout.app",
     version: version,
     name: APP_NAME,
-    permissions: ["MANAGE_APPS"],
+    permissions: ["HANDLE_PAYMENTS", "HANDLE_CHECKOUTS", "MANAGE_ORDERS"],
     appUrl: `${APP_URL}/channels`,
     configurationUrl: `${APP_URL}/channels`,
     tokenTargetUrl: `${APP_URL}/api/register`,

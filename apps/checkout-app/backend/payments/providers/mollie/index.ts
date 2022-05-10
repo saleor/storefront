@@ -1,7 +1,8 @@
 import createMollieClient, { OrderStatus } from "@mollie/api-client";
 
-import { OrderFragment, PaymentCreateMutationVariables } from "@/graphql";
+import { OrderFragment, TransactionCreateMutationVariables } from "@/graphql";
 import { APP_URL } from "@/constants";
+import { formatRedirectUrl } from "@/backend/payments/utils";
 
 import {
   getDiscountLines,
@@ -21,14 +22,12 @@ export const createMolliePayment = async (
   const discountLines = getDiscountLines(data.discounts);
   const shippingLines = getShippingLines(data);
   const lines = getLines(data.lines);
-  const url = new URL(redirectUrl);
-  url.searchParams.set("order", data.token);
 
   const mollieData = await mollieClient.orders.create({
     orderNumber: data.number!,
     webhookUrl: `${APP_URL}/api/webhooks/mollie`,
     locale: "en_US",
-    redirectUrl: url.toString(),
+    redirectUrl: formatRedirectUrl(redirectUrl, data.token),
     metadata: {
       orderId: data.id,
     },
@@ -66,14 +65,14 @@ export const createMolliePayment = async (
 
 export const verifyPayment = async (
   id: string
-): Promise<PaymentCreateMutationVariables | undefined> => {
+): Promise<TransactionCreateMutationVariables | undefined> => {
   const { status, amountCaptured, metadata, method, amount } =
     await mollieClient.orders.get(id);
 
   if (status === OrderStatus.authorized) {
     return {
       id: metadata.orderId,
-      payment: {
+      transaction: {
         status,
         type: `mollie-${method}`,
         amountAuthorized: {
@@ -87,7 +86,7 @@ export const verifyPayment = async (
   if (status === OrderStatus.paid) {
     return {
       id: metadata.orderId,
-      payment: {
+      transaction: {
         status,
         type: `mollie-${method}`,
         amountCaptured: amountCaptured && {

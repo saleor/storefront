@@ -1,10 +1,34 @@
-mutation PaymentCreate(
+mutation TransactionCreate(
   $id: ID!
-  $payment: PaymentCreateInput!
-  $transaction: TransactionInput
+  $transaction: TransactionCreateInput!
+  $transactionEvent: TransactionEventInput
 ) {
-  paymentCreate(id: $id, payment: $payment, transaction: $transaction) {
-    payment {
+  transactionCreate(
+    id: $id
+    transaction: $transaction
+    transactionEvent: $transactionEvent
+  ) {
+    transaction {
+      id
+    }
+    errors {
+      code
+      message
+    }
+  }
+}
+
+mutation TransactionUpdate(
+  $id: ID!
+  $transaction: TransactionUpdateInput!
+  $transactionEvent: TransactionEventInput
+) {
+  transactionUpdate(
+    id: $id
+    transaction: $transaction
+    transactionEvent: $transactionEvent
+  ) {
+    transaction {
       id
     }
     errors {

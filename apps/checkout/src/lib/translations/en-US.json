@@ -90,5 +90,6 @@
   "shippingDeliveryEstimate": "{deliveryDaysRange} business days",
   "unpaidOrderMessage": "The order has not been paid for. If you ordered a payment - check for the confirmation.",
   "paidOrderMessage": "We've received your payment.",
-  "paymentSection": "Payment"
+  "paymentSection": "Payment",
+  "shippingMethodNotApplicable": "Not applicable"
 }

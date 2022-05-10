@@ -16,21 +16,24 @@ export const DeliverySection = ({
 }) => {
   const formatMessage = useFormattedMessages();
 
-  if (!isShipping(deliveryMethod)) {
-    return null;
-  }
+  const renderContent = () => {
+    if (!isShipping(deliveryMethod)) {
+      return (
+        <Text color="secondary">
+          {formatMessage("shippingMethodNotApplicable")}
+        </Text>
+      );
+    }
 
-  const deliveryDaysRange = [
-    deliveryMethod.minimumDeliveryDays,
-    deliveryMethod.maximumDeliveryDays,
-  ]
-    .filter(Boolean)
-    .join(" - ");
+    const deliveryDaysRange = [
+      deliveryMethod.minimumDeliveryDays,
+      deliveryMethod.maximumDeliveryDays,
+    ]
+      .filter(Boolean)
+      .join(" - ");
 
-  return (
-    <Section>
-      <SectionTitle>{formatMessage("shippingMethodSection")}</SectionTitle>
-      <div>
+    return (
+      <>
         <Text color="secondary">{deliveryMethod.name}</Text>
         {deliveryDaysRange && (
           <Text color="secondary">
@@ -39,7 +42,14 @@ export const DeliverySection = ({
             })}
           </Text>
         )}
-      </div>
+      </>
+    );
+  };
+
+  return (
+    <Section>
+      <SectionTitle>{formatMessage("shippingMethodSection")}</SectionTitle>
+      <div>{renderContent()}</div>
     </Section>
   );
 };
