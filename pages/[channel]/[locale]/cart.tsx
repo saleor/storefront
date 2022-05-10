@@ -31,7 +31,7 @@ function Cart() {
               </h1>
               <div>
                 <Link href={paths.$url()} passHref>
-                  <a href="pass" className="text-sm">
+                  <a href="pass" className="text-base">
                     {t.formatMessage(messages.browseProducts)}
                   </a>
                 </Link>
@@ -60,10 +60,7 @@ function Cart() {
                 <CartSummary checkout={checkout} />
                 <div className="mt-12">
                   <Link href={paths.checkout.$url()} passHref>
-                    <a
-                      className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-md text-white hover:bg-blue-700"
-                      href="pass"
-                    >
+                    <a className="btn-main w-full text-center text-md" href="pass">
                       {t.formatMessage(messages.checkoutButton)}
                     </a>
                   </Link>

@@ -65,7 +65,7 @@ export function BillingAddressSection({ active, checkout }: BillingAddressSectio
         ) : (
           <section className="flex justify-between items-center mb-4">
             {!!checkout.billingAddress && <AddressDisplay address={checkout.billingAddress} />}
-            <Button onClick={() => setEditing(true)}>
+            <Button onClick={() => setEditing(true)} className="btn-secondary">
               {t.formatMessage(messages.changeButton)}
             </Button>
           </section>

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
-import { MainMenu } from "@/components/MainMenu";
+// import { MainMenu } from "@/components/MainMenu";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { CheckoutLineDetailsFragment } from "@/saleor/api";
@@ -56,43 +56,43 @@ export function Navbar() {
                   </div>
                 </a>
               </Link>
-              <MainMenu />
+              {/* <MainMenu /> */}
             </div>
             <div className="flex space-x-px md:space-x-8 items-center">
               <Link href={paths.search.$url()} passHref>
                 <a href="pass" className="-m-2 p-2 flex items-center" aria-label="Search">
-                  <SearchIcon className="flex-shrink-0 h-6 w-6 text-gray-400 hover:text-gray-500" />
+                  <SearchIcon className="flex-shrink-0 h-6 w-6" />
                 </a>
               </Link>
               <div className="flex space-x-8">
                 <button
                   type="button"
                   tabIndex={-1}
-                  className="group -m-2 p-2 flex items-center text-base font-medium text-gray-700 group-hover:text-gray-800"
+                  className="group -m-2 p-2 flex items-center text-base font-medium"
                   onClick={() => setRegionDialogOpen(true)}
                 >
                   {currentChannel.currencyCode}
                 </button>
               </div>
               <Link href={paths.cart.$url()} passHref>
-                <a href="pass" className="group -m-2 p-2 flex items-center">
-                  <ShoppingBagIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <span className="ml-2 text-base font-medium text-gray-700 group-hover:text-gray-800">
-                    {counter}
-                  </span>
+                <a
+                  href="pass"
+                  className="group -m-2 p-2 flex items-center"
+                  style={{ textDecoration: "none" }}
+                >
+                  <ShoppingBagIcon className="flex-shrink-0 h-6 w-6" aria-hidden="true" />
+                  <span className="ml-2 text-base font-medium">{counter}</span>
                 </a>
               </Link>
               {!authenticated && (
                 <Link href={paths.account.login.$url()} passHref>
-                  <a href="pass" className="group -m-2 p-2 flex items-center">
-                    <UserCircleIcon
-                      className="flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500"
-                      aria-hidden="true"
-                    />
-                    <span className="ml-2 text-base font-medium text-gray-700 group-hover:text-gray-800">
+                  <a
+                    href="pass"
+                    className="group -m-2 p-2 flex items-center"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <UserCircleIcon className="flex-shrink-0 h-6 w-6" aria-hidden="true" />
+                    <span className="ml-2 text-base font-medium">
                       {t.formatMessage(messages.logIn)}
                     </span>
                   </a>

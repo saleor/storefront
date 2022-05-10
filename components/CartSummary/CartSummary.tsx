@@ -58,10 +58,7 @@ export function CartSummary({ checkout }: CartSummaryProps) {
                   required: true,
                 })}
               />
-              <button
-                type="submit"
-                className="bg-gray-200 text-sm font-medium text-gray-600 rounded-md px-4 hover:bg-blue-300"
-              >
+              <button type="submit" className="btn-secondary text-sm font-medium rounded-md px-4">
                 {t.formatMessage(messages.activateButton)}
               </button>
             </div>

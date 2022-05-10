@@ -5,10 +5,6 @@
 @tailwind utilities;
 
 @layer components {
-  .btn-blue {
-    @apply py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
-  }
-
   .checkout-section-container {
     @apply bg-white rounded p-4 border;
   }
@@ -20,9 +16,40 @@
     @apply text-lg font-medium text-gray-400;
   }
 
-  .btn-checkout-section {
-    @apply w-full bg-blue-100 border border-blue-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium hover:bg-blue-200;
+  .btn-main {
+    @apply bg-pink border-pink text-white py-2 px-4 rounded text-base inline-block font-sans;
   }
+  .btn-main:hover {
+    @apply bg-pink-dark no-underline text-white;
+  }
+
+  .btn-main-disabled {
+    @apply bg-pink-lighter border-pink-lighter cursor-not-allowed;
+  }
+  .btn-main-disabled:hover {
+    @apply bg-pink-light text-white;
+  }
+
+  .btn-secondary {
+    @apply bg-pink-lighter border-pink text-black py-2 px-4 rounded text-base inline-block font-sans;
+  }
+  .btn-secondary:hover {
+    @apply bg-pink-light no-underline text-black;
+  }
+}
+
+button,
+a {
+  @apply text-pink;
+}
+
+button:hover {
+  @apply text-pink-dark;
+}
+
+a:hover {
+  @apply text-pink-dark;
+  @apply underline;
 }
 
 .dropdown:focus-within .dropdown-menu {
@@ -47,4 +74,125 @@ h5,
 h6 {
   @apply font-sans font-extrabold;
   color: #2d384e;
+  line-height: 1.4;
+}
+h2 {
+  @apply text-4xl;
+}
+h3 {
+  @apply text-3xl;
+}
+h4 {
+  @apply text-2xl;
+}
+h5 {
+  @apply text-xl;
+}
+h6 {
+  @apply text-lg;
+}
+
+@media (max-width: 374px) {
+  h2 {
+    font-size: 1.875rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+  h5 {
+    font-size: 1.125rem;
+  }
+  h6 {
+    font-size: 1.1rem;
+  }
+}
+
+input,
+textarea,
+select {
+  @apply font-sans text-black;
+}
+
+.table td,
+.table th {
+  @apply p-3 border-b;
+}
+
+.standard-spacing h2,
+.standard-spacing h3,
+.standard-spacing h4,
+.standard-spacing h5,
+.standard-spacing h6,
+article h2,
+article h3,
+article h4,
+article h5,
+article h6 {
+  @apply mt-6 mb-4;
+}
+.standard-spacing h2,
+article h2 {
+  @apply leading-tight;
+}
+.standard-spacing iframe,
+.standard-spacing p,
+.standard-spacing ul,
+.standard-spacing ol,
+.standard-spacing img,
+.standard-spacing table,
+article iframe,
+article p,
+article ul,
+article ol,
+article img,
+article table {
+  @apply mb-4 leading-normal;
+}
+.standard-spacing li,
+article li {
+  @apply mb-2;
+}
+
+ul.standard-list,
+.standard-list ul,
+article ul,
+.standard-spacing ul {
+  list-style-type: square;
+  @apply ml-5;
+}
+ol.standard-list,
+.standard-list ol,
+article ol,
+.standard-spacing ol {
+  @apply ml-5 list-decimal;
+}
+
+/* COMPONENTS */
+
+.ph_Container {
+  background-position: 50% 50%;
+}
+.ph_Container-homepage {
+  background-position: 50% -100px;
+}
+.ph_HeadlineSection {
+  @apply py-10;
+}
+
+@media (min-height: 720px) {
+  .ph_HeadlineSection {
+    @apply py-16;
+  }
+}
+
+@media (min-height: 970px) {
+  .ph_Container-homepage {
+    background-position: 50% -200px;
+  }
+  .ph_HeadlineSection {
+    @apply py-24;
+  }
 }

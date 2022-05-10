@@ -54,7 +54,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
       {!modifyEmail ? (
         <div className="flex justify-between items-center">
           <p>{checkout?.email}</p>
-          <Button onClick={() => setModifyEmail(true)}>
+          <Button onClick={() => setModifyEmail(true)} className="btn-secondary">
             {t.formatMessage(messages.changeButton)}
           </Button>
         </div>
@@ -74,7 +74,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
               <p>{errors.email?.message}</p>
             </div>
             <div className="col-span-full">
-              <button type="submit" className="btn-checkout-section">
+              <button type="submit" className="btn-main">
                 {t.formatMessage(messages.saveButton)}
               </button>
             </div>

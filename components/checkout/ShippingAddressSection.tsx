@@ -89,7 +89,7 @@ export function ShippingAddressSection({ active, checkout }: ShippingAddressSect
               />
             )}
             <div className="col-span-full">
-              <button type="button" className="btn-checkout-section" onClick={onSameAsBilling}>
+              <button type="button" className="btn-secondary" onClick={onSameAsBilling}>
                 {t.formatMessage(messages.sameAsBillingButton)}
               </button>
             </div>
