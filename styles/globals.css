@@ -64,6 +64,7 @@ html {
 
 body {
   @apply text-black subpixel-antialiased font-serif text-base;
+  background-color: #f8f9fa;
 }
 
 h1,

@@ -28,14 +28,7 @@ export function Footer({ className, ...rest }: FooterProps) {
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
       <Box className={styles["footer-inner"]}>
-        <div className="flex mb-14 sm:mb-10">
-          <Link href={paths.$url()} passHref>
-            <a href="pass" className="hidden sm:inline-block">
-              <div className="mt-px group block h-16 w-28 relative grayscale">
-                <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
-              </div>
-            </a>
-          </Link>
+        <div className="flex">
           <div className="grid grid-cols-2 gap-[2rem] w-full sm:w-auto sm:flex sm:flex-wrap sm:justify-end sm:ml-auto">
             {menu.map((item) => (
               <div className="sm:ml-14" key={item?.id}>
@@ -81,8 +74,18 @@ export function Footer({ className, ...rest }: FooterProps) {
             ))}
           </div>
         </div>
-        <p className="text-sm text-main-3">
-          © Copyright 2018 - {new Date().getFullYear()} Saleor Commerce
+        <div className="mb-14 sm:mb-10">
+          <Link href={paths.$url()} passHref>
+            <a href="pass" className="hidden sm:inline-block">
+              <div className="mt-px group block h-14 w-80 relative ">
+                <Image src="/images/logo_blue.png" alt="CSPI logo" layout="fill" />
+              </div>
+            </a>
+          </Link>
+          <h1 className="uppercase font-normal">{process.env.NEXT_PUBLIC_STOREFRONT_NAME || ""}</h1>
+        </div>
+        <p className="text-sm">
+          © Copyright 2007 - {new Date().getFullYear()} CSPI, LLC. All right reserved.
         </p>
       </Box>
     </footer>

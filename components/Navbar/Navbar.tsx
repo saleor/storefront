@@ -45,8 +45,8 @@ export function Navbar() {
 
   return (
     <>
-      <div className="bg-white shadow-sm m-6">
-        <div className="container">
+      <div className="bg-white px-10 pt-6 pb-12">
+        <div>
           <div className="flex justify-between h-16">
             <div className="flex justify-between items-center">
               <Link href={paths.$url()} passHref>
