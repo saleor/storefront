@@ -7,6 +7,12 @@
       "name": "Attach to application",
       "skipFiles": ["<node_internals>/**"],
       "port": 9229
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3001"
     }
   ]
 }
