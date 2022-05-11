@@ -34,6 +34,7 @@ export function ProductCollection({ filter, allowMore = true }: ProductCollectio
   };
 
   if (loading) return <Spinner />;
+  if (filter?.search === null) return <p />; // this assumes there can't be an error if search field is empty
   if (error) return <p>Error</p>;
 
   const products = data?.products?.edges.map((edge) => edge.node) || [];
