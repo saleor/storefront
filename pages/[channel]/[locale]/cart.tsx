@@ -8,6 +8,8 @@ import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
+const externalCheckoutUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL;
+
 function Cart() {
   const t = useIntl();
   const paths = usePaths();
@@ -59,14 +61,24 @@ function Cart() {
               <div>
                 <CartSummary checkout={checkout} />
                 <div className="mt-12">
-                  <Link href={paths.checkout.$url()} passHref>
+                  {externalCheckoutUrl ? (
                     <a
-                      className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-md text-white hover:bg-blue-700"
-                      href="pass"
+                      className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700"
+                      href={`${externalCheckoutUrl}?checkoutToken=${checkout.token}`}
+                      target="_self"
                     >
                       {t.formatMessage(messages.checkoutButton)}
                     </a>
-                  </Link>
+                  ) : (
+                    <Link href={paths.checkout.$url()} passHref>
+                      <a
+                        className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-md text-white hover:bg-blue-700"
+                        href="pass"
+                      >
+                        {t.formatMessage(messages.checkoutButton)}
+                      </a>
+                    </Link>
+                  )}
                 </div>
               </div>
             )}
