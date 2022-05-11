@@ -1,16 +1,16 @@
 import { Title } from "@/components/Title";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import {
   ShippingMethod,
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
-import { getDataWithToken } from "@/lib/utils";
+import { getDataWithToken, handleInputChange } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { RadioGroup } from "@/components/RadioGroup";
 import { getFormattedMoney } from "@/hooks/useFormattedMoney";
-import { Radio } from "@/components/Radio";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { RadioBox } from "@/components/RadioBox";
+import { RadioBoxGroup } from "@/components/RadioBoxGroup";
 
 interface ShippingMethodsProps {}
 
@@ -55,7 +55,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
           Please fill in shipping address to see available shipping methods
         </Text>
       )}
-      <RadioGroup label={formatMessage("shippingMethodsLabel")}>
+      <RadioBoxGroup label={formatMessage("shippingMethodsLabel")}>
         {(checkout?.shippingMethods as ShippingMethod[])?.map(
           ({
             id,
@@ -64,7 +64,8 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
             minimumDeliveryDays: min,
             maximumDeliveryDays: max,
           }) => (
-            <Radio
+            <RadioBox
+              key={id}
               value={id}
               title={`${name} - ${getFormattedMoney(price)}`}
               subtitle={getSubtitle({ min, max })}
@@ -73,7 +74,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
             />
           )
         )}
-      </RadioGroup>
+      </RadioBoxGroup>
     </div>
   );
 };

@@ -115,6 +115,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
         validationRules?.allowedFields! as AddressField[]
       )?.map((field: AddressField) => (
         <TextInput
+          key={field}
           label={formatMessage(field as MessageKey)}
           {...getInputProps(field as Path<TFormData>)}
           optional={isFieldOptional(field)}
@@ -127,13 +128,13 @@ export const AddressForm = <TFormData extends AddressFormData>({
             ariaLabel={formatMessage("cancelLabel")}
             variant="secondary"
             onClick={handleCancel}
-            title={formatMessage("cancel")}
+            label={formatMessage("cancel")}
           />
         )}
         <Button
           ariaLabel={formatMessage("saveLabel")}
           onClick={handleSubmit(handleSave)}
-          title={formatMessage("saveAddress")}
+          label={formatMessage("saveAddress")}
         />
       </div>
     </div>

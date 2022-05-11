@@ -1,5 +1,5 @@
 .container {
-  @apply relative block;
+  @apply relative block w-full;
 }
 
 :local(.trigger) {
@@ -43,8 +43,7 @@
 }
 
 .options {
-  @apply absolute shadow-modal;
-  min-width: 100%;
+  @apply absolute shadow-modal z-20 bg-background-primary w-full;
 }
 
 .option {

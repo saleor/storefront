@@ -1,4 +1,4 @@
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { OrderLineFragment } from "@/graphql";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useFormattedMoney } from "@/hooks/useFormattedMoney";
@@ -51,7 +51,7 @@ export const SummaryItemMoneySection: React.FC<
       </Text>
       {multiplePieces && (
         <Text
-          ariaLabel={formatMessage("singlePiecePriceLabel")}
+          aria-label={formatMessage("singlePiecePriceLabel")}
           size="sm"
           color="secondary"
           className="ml-4"

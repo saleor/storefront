@@ -44,26 +44,28 @@ export const CheckoutForm = () => {
   const handleSubmit = () => checkoutFinalize(getValues());
 
   return (
-    <Suspense fallback="loaden">
-      <div className="checkout-form">
-        <FormProvider {...methods}>
-          <Contact />
-        </FormProvider>
-        <Divider className="mt-4" />
+    <div className="checkout-form">
+      <FormProvider {...methods}>
+        <Contact />
+      </FormProvider>
+      <Divider className="mt-4" />
+      <Suspense fallback="loading...">
         <UserAddresses />
+      </Suspense>
+      <Suspense fallback="loading...">
         <ShippingMethods />
-        {/* TMP */}
-        {/* <PaymentProviders
+      </Suspense>
+      {/* TMP */}
+      {/* <PaymentProviders
             onSelect={setSelectedPaymentProvider}
             selectedValue={selectedPaymentProvider}
           /> */}
-        <Button
-          ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          title="Pay"
-          onClick={handleSubmit}
-          className="min-w-28"
-        />
-      </div>
-    </Suspense>
+      <Button
+        ariaLabel={formatMessage("finalizeCheckoutLabel")}
+        label="Pay"
+        onClick={handleSubmit}
+        className="min-w-28"
+      />
+    </div>
   );
 };

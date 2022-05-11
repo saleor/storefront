@@ -1,6 +1,6 @@
 import { CheckoutLineFragment, OrderLineFragment } from "@/graphql";
 import React from "react";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { SummaryItemMoneySection } from "./SummaryItemMoneySection";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
 import { SummaryItemDelete } from "./SummaryItemDelete";
@@ -52,12 +52,12 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
         <div className="flex flex-col">
           <Text
             weight="bold"
-            ariaLabel={formatMessage("itemNameLabel")}
+            aria-label={formatMessage("itemNameLabel")}
             className="mb-2"
           >
             {productName}
           </Text>
-          <Text ariaLabel={formatMessage("variantNameLabel")}>
+          <Text aria-label={formatMessage("variantNameLabel")}>
             {variantName}
           </Text>
         </div>

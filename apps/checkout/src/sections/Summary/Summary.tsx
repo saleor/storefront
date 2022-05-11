@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Text } from "@/components/Text";
+import React, { useState } from "react";
+import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
 import { Divider } from "@/components/Divider";
@@ -35,7 +35,11 @@ export const Summary = () => {
             onClick={() => setOpen(!isOpen)}
           />
         </div>
-        <Money weight="bold" money={totalPrice} />
+        <Money
+          ariaLabel={formatMessage("totalPriceLabel")}
+          weight="bold"
+          money={totalPrice}
+        />
       </div>
       <Transition
         show={isOpen}
@@ -56,12 +60,20 @@ export const Summary = () => {
         <div className="summary-recap">
           <div className="summary-row">
             <Text weight="bold">{formatMessage("subtotal")}</Text>
-            <Money weight="bold" money={checkout?.subtotalPrice?.gross} />
+            <Money
+              ariaLabel={formatMessage("subtotalLabel")}
+              weight="bold"
+              money={checkout?.subtotalPrice?.gross}
+            />
           </div>
           <Divider className="my-4" />
           <div className="summary-row mb-2">
             <Text color="secondary">{formatMessage("shippingCost")}</Text>
-            <Money color="secondary" money={checkout?.shippingPrice?.gross} />
+            <Money
+              ariaLabel={formatMessage("shippingCostLabel")}
+              color="secondary"
+              money={checkout?.shippingPrice?.gross}
+            />
           </div>
           <div className="summary-row">
             <Text color="secondary">
@@ -69,14 +81,22 @@ export const Summary = () => {
                 taxPercentage,
               })}
             </Text>
-            <Money color="secondary" money={taxCost} />
+            <Money
+              ariaLabel={formatMessage("taxCostLabel")}
+              color="secondary"
+              money={taxCost}
+            />
           </div>
           <Divider className="my-4" />
           <div className="summary-row">
             <Text size="md" weight="bold">
               {formatMessage("total")}
             </Text>
-            <Money weight="bold" money={totalPrice} />
+            <Money
+              ariaLabel={formatMessage("totalLabel")}
+              weight="bold"
+              money={totalPrice}
+            />
           </div>
         </div>
       </Transition>

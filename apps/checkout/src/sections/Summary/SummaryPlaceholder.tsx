@@ -1,5 +1,5 @@
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { Skeleton } from "@/components/Skeleton";
 import { Divider } from "@/components/Divider";
 

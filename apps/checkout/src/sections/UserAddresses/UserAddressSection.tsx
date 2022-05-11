@@ -83,7 +83,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
               variant="secondary"
               ariaLabel={formatMessage("addAddressLabel")}
               onClick={() => setDisplayAddressCreate(true)}
-              title={formatMessage("addAddress")}
+              label={formatMessage("addAddress")}
               className="mb-4 w-full"
             />
             <UserAddressList

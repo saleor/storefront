@@ -1,5 +1,5 @@
 import { PaymentChargeStatusEnum } from "@/graphql";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 
 import { Section, SectionTitle } from "./Section";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";

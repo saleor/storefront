@@ -1,20 +1,13 @@
-import { Classes } from "@/lib/globalTypes";
-import clsx from "clsx";
-import React, { PropsWithChildren } from "react";
+import {
+  Label as UiKitLabel,
+  LabelProps as UiKitLabelProps,
+} from "@saleor/ui-kit";
+import React from "react";
 
-interface LabelProps extends Classes {
+interface LabelProps extends UiKitLabelProps {
   htmlFor: string;
 }
 
-export const Label: React.FC<PropsWithChildren<LabelProps>> = ({
-  children,
-  htmlFor,
-  className,
-}) => (
-  <label
-    htmlFor={htmlFor}
-    className={clsx("text-text-primary text-base font-regular", className)}
-  >
-    {children}
-  </label>
+export const Label: React.FC<LabelProps> = ({ ...rest }) => (
+  <UiKitLabel {...rest} />
 );

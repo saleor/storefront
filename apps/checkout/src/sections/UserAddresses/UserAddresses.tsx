@@ -9,9 +9,7 @@ import { UserAddressFormData } from "./types";
 import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
 
-interface UserAddressesProps {}
-
-export const UserAddresses: React.FC<UserAddressesProps> = ({}) => {
+export const UserAddresses: React.FC = () => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();

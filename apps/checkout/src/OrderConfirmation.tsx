@@ -5,9 +5,10 @@ import { FinalizedSummary } from "@/sections/Summary";
 import { OrderInfo } from "@/sections/OrderInfo";
 import { SummaryPlaceholder } from "@/sections/Summary/SummaryPlaceholder";
 import { Title } from "@/components/Title";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { useOrder } from "@/hooks/useOrder";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { Divider } from "@/components/Divider";
 
 export const OrderConfirmation = ({ orderToken }: { orderToken: string }) => {
   const { order } = useOrder(orderToken);
@@ -26,7 +27,7 @@ export const OrderConfirmation = ({ orderToken }: { orderToken: string }) => {
           })}
         </Text>
       </header>
-      <div className="divider" />
+      <Divider />
       <main className="order-content overflow-hidden">
         <OrderInfo order={order} />
         <div className="order-divider" />

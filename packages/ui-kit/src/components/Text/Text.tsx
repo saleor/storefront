@@ -6,7 +6,7 @@ import styles from "./Text.module.css";
 export interface TextProps extends HTMLAttributes<{}> {
   as?: keyof JSX.IntrinsicElements;
   size?: "xs" | "sm" | "md" | "base" | "lg" | "xl";
-  color?: "secondary" | "tertiary" | "error";
+  color?: "secondary" | "tertiary" | "error" | "success";
   weight?: "normal" | "regular" | "semibold" | "bold";
 }
 
@@ -24,6 +24,7 @@ export const Text: FC<TextProps> = ({
       [styles["txt-secondary"]]: color === "secondary",
       [styles["txt-tertiary"]]: color === "tertiary",
       [styles["txt-error"]]: color === "error",
+      [styles["txt-success"]]: color === "error",
       [styles["txt-xs"]]: size === "xs",
       [styles["txt-sm"]]: size === "sm",
       [styles["txt-md"]]: size === "md",

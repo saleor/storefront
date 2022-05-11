@@ -1,8 +1,7 @@
 import React from "react";
 import { AddressFragment, useUserAddressDeleteMutation } from "@/graphql";
-import { RadioGroup } from "@/components/RadioGroup";
-import { Radio, RadioOptionChildrenProps } from "@/components/Radio";
-import { AddressBoxContent } from "@/sections/AddressBoxContent";
+import { AddressRadioBox } from "../AddressRadioBox";
+import { RadioBoxGroup } from "@/components/RadioBoxGroup";
 
 interface UserAddressListProps {
   onAddressSelect: (id: string) => void;
@@ -20,24 +19,18 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
   const [, deleteAddress] = useUserAddressDeleteMutation();
 
   return (
-    <RadioGroup label="user addresses">
+    <RadioBoxGroup label="user addresses">
       {addresses.map(({ id, ...rest }: AddressFragment) => (
-        <Radio
+        <AddressRadioBox
           key={id}
           value={id}
           selectedValue={selectedAddressId}
           onSelect={() => onAddressSelect(id)}
-        >
-          {({ htmlFor }: RadioOptionChildrenProps) => (
-            <AddressBoxContent
-              htmlFor={htmlFor}
-              address={rest}
-              onDelete={() => deleteAddress({ id })}
-              onEdit={() => onEditChange(id)}
-            />
-          )}
-        </Radio>
+          address={rest}
+          onDelete={() => deleteAddress({ id })}
+          onEdit={() => onEditChange(id)}
+        />
       ))}
-    </RadioGroup>
+    </RadioBoxGroup>
   );
 };

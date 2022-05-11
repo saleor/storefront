@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { IconButton } from "@/components/IconButton";
 import { MinusIcon, PlusIcon } from "@/icons";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import {
   CheckoutLineFragment,
   CheckoutLinesUpdateMutationVariables,
@@ -91,24 +91,24 @@ export const SummaryItemMoneyEditableSection: React.FC<
     <div className="flex flex-col items-end">
       <div className="flex flex-row mb-3">
         <IconButton
+          variant="bare"
           ariaLabel={formatMessage("addItemQuantityLabel")}
           onClick={() => {
             setQuantity(quantity - 1);
           }}
-        >
-          <img src={MinusIcon} alt="remove" />
-        </IconButton>
+          icon={<img src={MinusIcon} alt="remove" />}
+        />
         <Text weight="bold" className="mx-3">
           {quantity}
         </Text>
         <IconButton
+          variant="bare"
           ariaLabel={formatMessage("subtractItemQuantityLabel")}
           onClick={() => {
             setQuantity(quantity + 1);
           }}
-        >
-          <img src={PlusIcon} alt="add" />
-        </IconButton>
+          icon={<img src={PlusIcon} alt="add" />}
+        />
       </div>
       <div className="flex flex-row justify-end">
         {pricing?.onSale && (
@@ -136,7 +136,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
       </div>
       {multiplePieces && (
         <Text
-          ariaLabel={formatMessage("singlePiecePriceLabel")}
+          aria-label={formatMessage("singlePiecePriceLabel")}
           size="sm"
           color="secondary"
           className="ml-4"

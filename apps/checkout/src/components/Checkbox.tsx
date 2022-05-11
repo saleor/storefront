@@ -1,36 +1,15 @@
-import { Label } from "@/components/Label";
-import { CheckIcon } from "@/icons";
-import { Classes } from "@/lib/globalTypes";
-import clsx from "clsx";
-import { useId } from "react";
+import React from "react";
+import {
+  Checkbox as UiKitCheckbox,
+  CheckboxProps as UiKitCheckboxProps,
+} from "@saleor/ui-kit";
 
-interface CheckboxProps extends Classes {
-  label: string;
-  value: string;
-  checked: boolean;
+interface CheckboxProps extends Omit<UiKitCheckboxProps, "onChange"> {
   onChange: (value: boolean) => void;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({
-  label,
-  checked,
-  value,
-  onChange,
-  className,
-}) => {
-  const id = useId();
+export const Checkbox: React.FC<CheckboxProps> = ({ onChange, ...rest }) => {
+  const { checked } = rest;
 
-  return (
-    <div className={clsx("checkbox", className)}>
-      <div className="relative icon mr-2">
-        <input type="checkbox" value={value} checked={checked} id={id} />
-        <div className="checkbox-input" onClick={() => onChange(!checked)}>
-          <img alt="check icon" src={CheckIcon} />
-        </div>
-      </div>
-      <Label className="checkbox-label" htmlFor={id}>
-        {label}
-      </Label>
-    </div>
-  );
+  return <UiKitCheckbox onChange={() => onChange(!checked)} {...rest} />;
 };

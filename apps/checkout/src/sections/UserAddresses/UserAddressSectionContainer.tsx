@@ -2,6 +2,7 @@ import { Title } from "@/components/Title";
 import { CountryCode } from "@/graphql";
 import React, { PropsWithChildren } from "react";
 import { countries } from "./countries";
+import { Select } from "@saleor/ui-kit";
 
 interface UserAddressSectionContainerProps {
   title: string;
@@ -21,20 +22,18 @@ export const UserAddressSectionContainer: React.FC<
 }) => {
   return (
     <div className="my-6">
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between items-baseline mb-3">
         <Title>{title}</Title>
         {displayCountrySelect && (
-          <select
-            onChange={(event) => {
-              onCountrySelect(event.target.value as CountryCode);
-            }}
-          >
-            {countries.map(({ name, code }) => (
-              <option value={code} selected={selectedCountryCode === code}>
-                {name}
-              </option>
-            ))}
-          </select>
+          <Select
+            classNames={{ container: "!w-1/3" }}
+            onChange={onCountrySelect}
+            selectedValue={selectedCountryCode}
+            options={countries.map(({ name, code }) => ({
+              label: name,
+              value: code,
+            }))}
+          />
         )}
       </div>
       {children}

@@ -1,5 +1,5 @@
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { Button } from "@/components/Button";
 import { SaleorLogo } from "@/images";
 import { Title } from "@/components/Title";
@@ -24,7 +24,7 @@ export const PageNotFound = () => {
           ariaLabel={formatMessage("goBackToStoreLabel")}
           onClick={goBack}
           variant="secondary"
-          title={formatMessage("goBackToStore")}
+          label={formatMessage("goBackToStore")}
         />
       </div>
     </div>

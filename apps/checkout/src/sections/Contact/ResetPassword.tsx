@@ -61,7 +61,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
         <Button
           ariaLabel={formatMessage("resetPasswordLabel")}
           onClick={handleSubmit(onSubmit)}
-          title={formatMessage("resetPassword")}
+          label={formatMessage("resetPassword")}
         />
       </div>
     </SignInFormContainer>

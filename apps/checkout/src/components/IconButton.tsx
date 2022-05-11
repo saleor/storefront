@@ -1,23 +1,12 @@
-import { Classes } from "@/lib/globalTypes";
-import clsx from "clsx";
-import { PropsWithChildren } from "react";
-import { ButtonProps } from "./Button";
+import { AriaLabel } from "@/lib/globalTypes";
+import {
+  IconButton as UiKitIconButton,
+  IconButtonProps as UiKitIconButtonProps,
+} from "@saleor/ui-kit";
 
-interface IconButtonProps extends Classes, Omit<ButtonProps, "title"> {
-  ariaLabel: string;
-}
+export type IconButtonProps = AriaLabel & UiKitIconButtonProps;
 
-export const IconButton: React.FC<PropsWithChildren<IconButtonProps>> = ({
-  children,
+export const IconButton: React.FC<IconButtonProps> = ({
   ariaLabel,
-  className,
-  onClick,
-}) => (
-  <button
-    className={clsx("icon-button", className)}
-    aria-label={ariaLabel}
-    onClick={onClick}
-  >
-    {children}
-  </button>
-);
+  ...rest
+}) => <UiKitIconButton aria-label={ariaLabel} {...rest} />;

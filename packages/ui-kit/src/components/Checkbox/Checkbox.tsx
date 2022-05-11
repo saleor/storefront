@@ -19,33 +19,33 @@ export const Checkbox = forwardRef(
     { label, checked, value, classNames, ...rest }: CheckboxProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const id = rest?.id || useId();
+    const generaredId = useId();
+    const id = rest?.id || generaredId;
 
     return (
-      <div className={clsx(styles.checkbox, classNames?.container)}>
-        <div
-          className={clsx(styles["box"], {
-            [styles["box-static"]]: !label,
-          })}>
-          <input
-            ref={ref}
-            type='checkbox'
-            value={value}
-            checked={checked}
-            id={id}
-            className={classNames?.input}
-            {...rest}
-          />
-          <div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
-            <CheckIcon />
+      <Label className={clsx(classNames?.label)} htmlFor={id}>
+        <>
+          <div className={clsx(styles.checkbox, classNames?.container)}>
+            <div className={clsx(styles["box"], "select-none")}>
+              <input
+                ref={ref}
+                {...rest}
+                type="checkbox"
+                value={value}
+                checked={!!checked}
+                id={id}
+                className={classNames?.input}
+              />
+              <div
+                className={clsx(styles["checkbox-input"], classNames?.checkbox)}
+              >
+                <CheckIcon />
+              </div>
+            </div>
+            {label && label}
           </div>
-        </div>
-        {label && (
-          <Label className={clsx(classNames?.label)} htmlFor={id}>
-            {label}
-          </Label>
-        )}
-      </div>
+        </>
+      </Label>
     );
   }
 );

@@ -8,19 +8,22 @@ export default {
   component: Select,
 } as ComponentMeta<typeof Select>;
 
-const Template: ComponentStory<typeof Select> = ({ selected, ...args }) => {
-  const [selectedOption, setSelectedOption] = useState(selected);
+const Template: ComponentStory<typeof Select> = ({
+  selectedValue: propsSelectedValue,
+  ...args
+}) => {
+  const [selectedValue, setSelectedValue] = useState(propsSelectedValue);
 
   useEffect(() => {
-    setSelectedOption(selected);
-  }, [selected]);
+    setSelectedValue(selectedValue);
+  }, [selectedValue]);
 
   return (
-    <div className='w-[440px]'>
+    <div className="w-[440px]">
       <Select
         {...args}
-        selected={selectedOption}
-        onChange={setSelectedOption}
+        selectedValue={selectedValue}
+        onChange={setSelectedValue}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 
 export const SectionTitle = ({ children }: { children: ReactNode }) => (
   <Text size="lg" weight="bold" className="mb-2">

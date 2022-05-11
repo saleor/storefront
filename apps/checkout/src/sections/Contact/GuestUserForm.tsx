@@ -2,7 +2,6 @@ import { useCheckoutEmailUpdateMutation } from "@/graphql";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { getDataWithToken, useValidationResolver } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { Checkbox } from "@/components/Checkbox";
 import { TextInput } from "@/components/TextInput";
 import { PasswordInput } from "@/components/PasswordInput";
 import {
@@ -13,6 +12,7 @@ import { object, string } from "yup";
 import { useForm, useFormContext } from "react-hook-form";
 import { useGetInputProps } from "@/hooks/useGetInputProps";
 import { useErrorMessages } from "@/hooks/useErrorMessages";
+import { Checkbox } from "@/components/Checkbox";
 
 type AnonymousCustomerFormProps = Pick<
   SignInFormContainerProps,

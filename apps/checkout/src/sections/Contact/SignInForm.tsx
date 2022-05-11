@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { PasswordInput } from "@/components/PasswordInput";
 import { TextInput } from "@/components/TextInput";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
@@ -109,14 +109,14 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
         <Button
           ariaLabel={formatMessage("sendPasswordLabel")}
           variant="tertiary"
-          title={formatMessage(passwordResetSent ? "resend" : "forgotPassword")}
+          label={formatMessage(passwordResetSent ? "resend" : "forgotPassword")}
           className="ml-1 mr-4"
           onClick={onPasswordReset}
         />
         <Button
           ariaLabel={formatMessage("signInLabel")}
           onClick={handleSubmit(onSubmit)}
-          title={formatMessage("signIn")}
+          label={formatMessage("signIn")}
         />
       </div>
     </SignInFormContainer>

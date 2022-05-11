@@ -3,7 +3,7 @@
 }
 
 :local(.box) {
-  @apply absolute left-0 h-5 w-5 pointer-events-none inline-flex;
+  @apply absolute left-0 h-5 w-5 inline-flex;
 }
 
 :local([type="checkbox"]) {

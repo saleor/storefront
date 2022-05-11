@@ -1,4 +1,4 @@
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
 import { OrderFragment } from "@/graphql";
@@ -33,12 +33,20 @@ export const FinalizedSummary = ({ order }: { order: OrderFragment }) => {
       <div className="summary-recap">
         <div className="summary-row">
           <Text weight="bold">{formatMessage("subtotal")}</Text>
-          <Money weight="bold" money={order.subtotal.gross} />
+          <Money
+            ariaLabel={formatMessage("subtotalLabel")}
+            weight="bold"
+            money={order.subtotal.gross}
+          />
         </div>
         <Divider className="my-4" />
         <div className="summary-row mb-2">
           <Text color="secondary">{formatMessage("shippingCost")}</Text>
-          <Money color="secondary" money={order.shippingPrice.gross} />
+          <Money
+            ariaLabel={formatMessage("shippingCostLabel")}
+            color="secondary"
+            money={order.shippingPrice.gross}
+          />
         </div>
         <div className="summary-row">
           <Text color="secondary">
@@ -46,14 +54,22 @@ export const FinalizedSummary = ({ order }: { order: OrderFragment }) => {
               taxPercentage,
             })}
           </Text>
-          <Money color="secondary" money={taxCost} />
+          <Money
+            ariaLabel={formatMessage("taxCostLabel")}
+            color="secondary"
+            money={taxCost}
+          />
         </div>
         <Divider className="my-4" />
         <div className="summary-row">
           <Text size="md" weight="bold">
             {formatMessage("total")}
           </Text>
-          <Money weight="bold" money={totalPrice} />
+          <Money
+            ariaLabel={formatMessage("totalLabel")}
+            weight="bold"
+            money={totalPrice}
+          />
         </div>
       </div>
     </div>

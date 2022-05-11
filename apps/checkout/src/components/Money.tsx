@@ -1,20 +1,22 @@
 import clsx from "clsx";
-import { Text, TextProps } from "./Text";
+import { Text, TextProps } from "@saleor/ui-kit";
 import {
   Money as MoneyType,
   useFormattedMoney,
 } from "@/hooks/useFormattedMoney";
-import { Classes } from "@/lib/globalTypes";
+import { AriaLabel, Classes } from "@/lib/globalTypes";
 
 export interface MoneyProps<TMoney extends MoneyType>
   extends TextProps,
-    Classes {
+    Classes,
+    AriaLabel {
   money?: TMoney;
 }
 
 export const Money = <TMoney extends MoneyType>({
   money,
   className,
+  ariaLabel,
   ...textProps
 }: MoneyProps<TMoney>) => {
   const formattedMoney = useFormattedMoney(money);
@@ -24,7 +26,11 @@ export const Money = <TMoney extends MoneyType>({
   }
 
   return (
-    <Text {...textProps} className={clsx("money", className)}>
+    <Text
+      {...textProps}
+      aria-label={ariaLabel}
+      className={clsx("money", className)}
+    >
       {formattedMoney}
     </Text>
   );

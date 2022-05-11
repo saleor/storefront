@@ -1,5 +1,5 @@
 import { AddressFragment } from "@/graphql";
-import { Text } from "@/components/Text";
+import { Text } from "@saleor/ui-kit";
 
 export const Address = ({ address }: { address: AddressFragment }) => {
   return (

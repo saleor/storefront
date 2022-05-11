@@ -1,5 +1,6 @@
 import { reduce } from "lodash-es";
 import queryString from "query-string";
+import { ChangeEvent, ReactEventHandler } from "react";
 import { OperationResult } from "urql";
 import { envVars } from "./environment";
 
@@ -66,3 +67,11 @@ export const extractMutationErrors = <TData extends Object, TVars = any>(
 
   return [errors.length > 0, errors];
 };
+
+export const handleInputChange =
+  <TData>(
+    callback: (value: TData) => void
+  ): ReactEventHandler<HTMLInputElement> =>
+  (event: ChangeEvent<HTMLInputElement>) => {
+    callback(event.target.value as unknown as TData);
+  };
