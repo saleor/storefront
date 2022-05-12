@@ -1,5 +1,5 @@
 .footer {
-  @apply mt-16;
+  margin-top: auto;
 }
 
 @screen sm {

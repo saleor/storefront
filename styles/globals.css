@@ -65,6 +65,8 @@ html {
 body {
   @apply text-black subpixel-antialiased font-serif text-base;
   background-color: #f8f9fa;
+  @apply flex flex-col; /*Place footer on bottom of site*/
+  min-height: 100vh;
 }
 
 h1,
