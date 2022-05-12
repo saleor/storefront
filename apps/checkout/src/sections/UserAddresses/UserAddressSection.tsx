@@ -19,6 +19,8 @@ export interface UserAddressSectionProps {
   type: AddressTypeEnum;
 }
 
+const defaultCountryCode: CountryCode = "PL";
+
 export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   defaultAddress,
   addresses = [],
@@ -37,15 +39,26 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   const displayAddressList = !displayAddressEdit && !displayAddressCreate;
 
   const [selectedCountryCode, setSelectedCountryCode] =
-    useState<CountryCode>("PL");
+    useState<CountryCode>(defaultCountryCode);
 
   const [selectedAddressId, setSelectedAddressId] = useState(
     defaultAddress?.id
   );
 
+  const editedAddress = addresses.find(getById(editedAddressId as string));
+
   const selectedAddress = addresses.find(getById(selectedAddressId));
 
   const onSelectAddress = (id: string) => setSelectedAddressId(id);
+
+  const handleSelectCountry = (address?: AddressFragment) => () =>
+    setSelectedCountryCode(
+      (address?.country.code as CountryCode) || defaultCountryCode
+    );
+
+  useEffect(handleSelectCountry(selectedAddress), [selectedAddress]);
+
+  useEffect(handleSelectCountry(editedAddress), [editedAddress]);
 
   useEffect(() => {
     if (!!selectedAddress) {
@@ -72,9 +85,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
           show={displayAddressEdit}
           countryCode={selectedCountryCode}
           onClose={() => setEditedAddressId(null)}
-          defaultValues={getAddressFormDataFromAddress(
-            addresses.find(getById(editedAddressId as string))
-          )}
+          defaultValues={getAddressFormDataFromAddress(editedAddress)}
         />
 
         {displayAddressList && (

@@ -1,4 +1,4 @@
-import { uniq } from "lodash-es";
+import { intersection, uniq } from "lodash-es";
 import { AddressField, ApiAddressField } from "../globalTypes";
 
 const addressFieldsOrder: AddressField[] = [
@@ -27,7 +27,9 @@ export const getFilteredAddressFields = (
 };
 
 // api doesn't order the fields but we want to
-export const getSortedAddressFields = (addressFields: AddressField[] = []) => {
+export const getSortedAddressFields = (
+  addressFields: AddressField[] = []
+): AddressField[] => {
   const filteredAddressFields = getFilteredAddressFields(addressFields);
 
   return addressFieldsOrder.reduce((result, orderedAddressField) => {

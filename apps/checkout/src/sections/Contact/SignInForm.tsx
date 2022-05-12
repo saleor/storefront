@@ -33,11 +33,8 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
   const { errorMessages } = useErrorMessages();
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
-  const {
-    getValues: getContextValues,
-    setValue: setContextValue,
-    ...contextPropsRest
-  } = useFormContext();
+  const { getValues: getContextValues, setValue: setContextValue } =
+    useFormContext();
 
   const schema = object({
     password: string().required(errorMessages.requiredValue),

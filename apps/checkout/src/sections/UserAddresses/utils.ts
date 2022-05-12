@@ -4,7 +4,8 @@ import {
   CountryCode,
   CountryDisplay,
 } from "@/graphql";
-import { omit } from "lodash-es";
+import { AddressField } from "@/lib/globalTypes";
+import { intersection, omit } from "lodash-es";
 import { AddressFormData } from "./types";
 
 export const getAddressInputData = ({
@@ -35,3 +36,33 @@ export const getAddressFormDataFromAddress = (
     countryCode: country.code as CountryCode,
   } as Partial<AddressFormData>;
 };
+
+export type AddressFormLayout = AddressFormLayoutField[];
+export type AddressFormLayoutField = AddressField | AddressField[];
+
+const addressFormLayout: AddressFormLayout = [
+  ["firstName", "lastName"],
+  "companyName",
+  "phone",
+  "streetAddress1",
+  "streetAddress2",
+  ["city", "postalCode"],
+  "cityArea",
+  "countryArea",
+];
+
+export const isAddressFieldRow = (formLayoutField: AddressFormLayoutField) =>
+  Array.isArray(formLayoutField);
+
+export const getAddressFormLayout = (orderedAdressFields: AddressField[]) =>
+  addressFormLayout.reduce((result, layoutField) => {
+    const shouldIncludeAddressField = isAddressFieldRow(layoutField)
+      ? !!intersection(orderedAdressFields, layoutField).length
+      : orderedAdressFields.includes(layoutField as AddressField);
+
+    if (shouldIncludeAddressField) {
+      return [...result, layoutField];
+    }
+
+    return result;
+  }, [] as AddressFormLayout);

@@ -7,7 +7,9 @@
     "lint": {
       "outputs": []
     },
-    "check-types": {},
+    "check-types": {
+      "dependsOn": ["@saleor/ui-kit#build"]
+    },
     "test": {},
     "dev": {
       "cache": false

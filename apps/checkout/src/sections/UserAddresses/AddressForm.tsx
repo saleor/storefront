@@ -12,7 +12,7 @@ import {
 } from "@/lib/utils";
 import { UseErrorsProps } from "@/providers/ErrorsProvider";
 import { forEach } from "lodash-es";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import {
   DefaultValues,
   FieldError,
@@ -24,6 +24,11 @@ import {
 } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
+import {
+  AddressFormLayoutField,
+  getAddressFormLayout,
+  isAddressFieldRow,
+} from "./utils";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Pick<
@@ -109,11 +114,26 @@ export const AddressForm = <TFormData extends AddressFormData>({
     onSave(address);
   };
 
+  const addressFormLayout = getAddressFormLayout(
+    getSortedAddressFields(validationRules?.allowedFields! as AddressField[])
+  );
+
+  const mapAddressFields = (renderFn: (field: AddressField) => ReactNode) =>
+    addressFormLayout.map((layoutField: AddressFormLayoutField) => {
+      if (isAddressFieldRow(layoutField)) {
+        return (
+          <div className="w-full flex flex-row gap-3 justify-between">
+            {(layoutField as AddressField[]).map(renderFn)}
+          </div>
+        );
+      }
+
+      return renderFn(layoutField as AddressField);
+    });
+
   return (
     <div>
-      {getSortedAddressFields(
-        validationRules?.allowedFields! as AddressField[]
-      )?.map((field: AddressField) => (
+      {mapAddressFields((field: AddressField) => (
         <TextInput
           key={field}
           label={formatMessage(field as MessageKey)}

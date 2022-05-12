@@ -1,5 +1,5 @@
 :local(.text-input-container) {
-  @apply relative mb-4;
+  @apply relative mb-3 w-full;
 }
 
 :local(.text-input-label) {
