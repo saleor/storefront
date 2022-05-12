@@ -1,7 +1,7 @@
 import { CheckoutLineFragment, Money, OrderLineFragment } from "@/graphql";
 
 export const getTaxPercentage = (taxCost: Money, totalPrice: Money): string => {
-  if (!totalPrice || !taxCost) {
+  if (!totalPrice?.amount || !taxCost?.amount) {
     return (0).toFixed(2);
   }
 

@@ -17,7 +17,7 @@ export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { checkout } = useCheckout();
-  const { checkoutFinalize } = useCheckoutFinalize();
+  const { checkoutFinalize, submitting } = useCheckoutFinalize();
 
   // TMP
   // const [selectedPaymentProvider, setSelectedPaymentProvider] =
@@ -43,6 +43,11 @@ export const CheckoutForm = () => {
   // not using form handleSubmit on purpose
   const handleSubmit = () => checkoutFinalize(getValues());
 
+  const payButtonDisabled =
+    submitting ||
+    (checkout.isShippingRequired && !checkout.shippingAddress) ||
+    !checkout.billingAddress;
+
   return (
     <div className="checkout-form">
       <FormProvider {...methods}>
@@ -65,6 +70,7 @@ export const CheckoutForm = () => {
         label="Pay"
         onClick={handleSubmit}
         className="min-w-28"
+        disabled={payButtonDisabled}
       />
     </div>
   );

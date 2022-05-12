@@ -19,6 +19,7 @@ fragment CheckoutFragment on Checkout {
   billingAddress {
     ...AddressFragment
   }
+  isShippingRequired
   user {
     id
     email

@@ -28,28 +28,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
 
   const [quantity, setQuantity] = useState(line.quantity);
   const previousQuantity = useRef(line.quantity);
-  const [{ fetching, data }, updateLines] = useCheckoutLinesUpdateMutation();
-
-  useEffect(() => {
-    if (fetching) {
-      return;
-    }
-
-    const newQuantity = data?.checkoutLinesUpdate?.checkout?.lines?.find(
-      (updatedLine) => updatedLine?.id === line.id
-    )?.quantity;
-
-    if (!newQuantity) {
-      setQuantity(previousQuantity.current);
-      return;
-    }
-
-    previousQuantity.current = quantity;
-
-    if (quantity !== newQuantity) {
-      setQuantity(newQuantity);
-    }
-  }, [data, fetching, line.id, quantity]);
+  const [, updateLines] = useCheckoutLinesUpdateMutation();
 
   const getUpdateLineVars = (
     quantity: number
@@ -77,6 +56,8 @@ export const SummaryItemMoneyEditableSection: React.FC<
     if (quantity === previousQuantity.current) {
       return;
     }
+
+    previousQuantity.current = quantity;
 
     debouncedSubmit(quantity);
   }, [quantity, debouncedSubmit]);

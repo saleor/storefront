@@ -25,7 +25,7 @@ export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
   const { register } = useAuth();
   const { user } = useAuthState();
-  const [, pay] = useFetch(payRequest, { skip: true });
+  const [{ loading }, pay] = useFetch(payRequest, { skip: true });
   const { setApiErrors, hasErrors } = useErrors<FormData>("userRegister");
 
   const checkoutPay = async () => {
@@ -65,5 +65,5 @@ export const useCheckoutFinalize = () => {
     }
   };
 
-  return { checkoutFinalize };
+  return { checkoutFinalize, submitting: loading };
 };
