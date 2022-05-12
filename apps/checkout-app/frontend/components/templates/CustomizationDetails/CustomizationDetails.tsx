@@ -74,10 +74,10 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                 </AccordionSummary>
                 <AccordionDetails className={classes.optionDetails}>
                   <div className={classes.optionDetailsContent}>
-                    {option.settings?.map(({ id, type, label, value }) =>
-                      loading ? (
-                        <Skeleton key={id} />
-                      ) : (
+                    {loading ? (
+                      <Skeleton className={classes.optionSkeleton} />
+                    ) : (
+                      option.settings?.map(({ id, type, label, value }) => (
                         <Controller
                           key={id}
                           name={flattenSettingId(optionIdx, id)}
@@ -94,7 +94,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                             />
                           )}
                         />
-                      )
+                      ))
                     )}
                   </div>
                 </AccordionDetails>

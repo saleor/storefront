@@ -127,7 +127,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
           <FormattedMessage {...messages.selectPaymentMethods} />
         </Typography>
         {loading ? (
-          <Skeleton />
+          <Skeleton className={classes.skeleton} />
         ) : (
           channelPaymentOptions.paymentOptions.map(
             (paymentOption, paymentOptionIdx) => (

@@ -58,6 +58,9 @@ export const useStyles = makeStyles(
     paymentMethod: {
       height: "70px",
     },
+    skeleton: {
+      margin: theme.spacing(2, 0),
+    },
   }),
   { name: "ChannelDetails" }
 );

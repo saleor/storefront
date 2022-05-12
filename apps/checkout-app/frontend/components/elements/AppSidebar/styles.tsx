@@ -12,6 +12,9 @@ export const useStyles = makeStyles(
     itemListItemActive: {
       borderLeft: `${theme.palette.primary.main} solid 0.5rem`,
     },
+    itemListItemSkeleton: {
+      margin: theme.spacing(0, 4),
+    },
   }),
   { name: "AppSidebar" }
 );

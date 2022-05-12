@@ -28,7 +28,9 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
     <OffsettedList gridTemplate={["1fr"]} className={classes.itemList}>
       <OffsettedListBody>
         {loading ? (
-          <Skeleton />
+          <OffsettedListItem className={classes.itemListItem}>
+            <Skeleton className={classes.itemListItemSkeleton} />
+          </OffsettedListItem>
         ) : (
           items?.map((item) => (
             <OffsettedListItem

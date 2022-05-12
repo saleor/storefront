@@ -43,7 +43,9 @@ const ChannelList: React.FC<ChannelListProps> = ({ channels, loading }) => {
         </OffsettedListHeader>
         <OffsettedListBody>
           {loading ? (
-            <Skeleton />
+            <OffsettedListItem className={classes.listItem}>
+              <Skeleton className={classes.listItemSkeleton} />
+            </OffsettedListItem>
           ) : (
             channels.map((channel) => (
               <OffsettedListItem
