@@ -5,7 +5,7 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
-import { getDataWithToken, handleInputChange } from "@/lib/utils";
+import { getDataWithToken } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { getFormattedMoney } from "@/hooks/useFormattedMoney";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
@@ -47,8 +47,12 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
     });
   };
 
+  if (!checkout?.isShippingRequired) {
+    return null;
+  }
+
   return (
-    <div className="my-6">
+    <div className="mt-6">
       <Title>{formatMessage("deliveryMethod")}</Title>
       {!checkout?.shippingAddress && (
         <Text>
@@ -65,7 +69,6 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
             maximumDeliveryDays: max,
           }) => (
             <RadioBox
-              key={id}
               value={id}
               title={`${name} - ${getFormattedMoney(price)}`}
               subtitle={getSubtitle({ min, max })}

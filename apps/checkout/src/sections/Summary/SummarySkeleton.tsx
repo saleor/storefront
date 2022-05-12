@@ -3,7 +3,7 @@ import { Text } from "@saleor/ui-kit";
 import { Skeleton } from "@/components/Skeleton";
 import { Divider } from "@/components/Divider";
 
-export const SummaryPlaceholder = () => {
+export const SummarySkeleton = () => {
   const formatMessage = useFormattedMessages();
 
   return (

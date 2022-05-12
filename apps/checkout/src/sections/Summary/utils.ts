@@ -11,3 +11,18 @@ export const getTaxPercentage = (taxCost: Money, totalPrice: Money): string => {
 export const isCheckoutLine = (
   line: CheckoutLineFragment | OrderLineFragment
 ): line is CheckoutLineFragment => line.__typename === "CheckoutLine";
+
+export const getSummaryLineProps = (
+  line: OrderLineFragment | CheckoutLineFragment
+) =>
+  isCheckoutLine(line)
+    ? {
+        variantName: line.variant.name,
+        productName: line.variant.product.name,
+        productImage: line.variant.media?.find(({ type }) => type === "IMAGE"),
+      }
+    : {
+        variantName: line.variantName,
+        productName: line.productName,
+        productImage: line.thumbnail,
+      };

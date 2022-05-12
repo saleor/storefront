@@ -2,15 +2,19 @@ import PageHeader from "@/sections/PageHeader";
 import { Summary } from "@/sections/Summary";
 import { CheckoutForm } from "@/sections/CheckoutForm";
 import { Suspense } from "react";
-import { SummaryPlaceholder } from "@/sections/Summary/SummaryPlaceholder";
+import { SummarySkeleton } from "@/sections/Summary/SummarySkeleton";
 import { PageNotFound } from "@/sections/PageNotFound";
 import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "./hooks/useCheckout";
+import { useAuthState } from "@saleor/sdk";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
+  const { authenticating } = useAuthState();
 
-  const isCheckoutInvalid = !loading && !checkout;
+  const isCheckoutInvalid = !loading && !checkout && !authenticating;
+
+  const isLoading = loading || authenticating;
 
   return (
     <div className="app">
@@ -24,8 +28,8 @@ export const Checkout = () => {
             <div className="page-content">
               <CheckoutForm />
               <div className="page-divider" />
-              <Suspense fallback={<SummaryPlaceholder />}>
-                <Summary />
+              <Suspense fallback={<SummarySkeleton />}>
+                {isLoading ? <SummarySkeleton /> : <Summary />}
               </Suspense>
             </div>
           </div>

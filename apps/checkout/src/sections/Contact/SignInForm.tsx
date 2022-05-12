@@ -1,6 +1,5 @@
 import { Button } from "@/components/Button";
 import { PasswordInput } from "@/components/PasswordInput";
-import { TextInput } from "@/components/TextInput";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useAuth } from "@saleor/sdk";
@@ -20,6 +19,7 @@ import { useGetInputProps } from "@/hooks/useGetInputProps";
 import { object, string, ValidationError } from "yup";
 import { useErrorMessages } from "@/hooks/useErrorMessages";
 import { useEffect } from "react";
+import { TextInput } from "@/components/TextInput";
 
 type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 

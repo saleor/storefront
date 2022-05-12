@@ -18,7 +18,7 @@ const authorizedFetch = createFetch();
 const client = createClient({
   url: envVars.apiUrl,
   suspense: true,
-  requestPolicy: "cache-first",
+  requestPolicy: "network-only",
   fetch: authorizedFetch,
 });
 

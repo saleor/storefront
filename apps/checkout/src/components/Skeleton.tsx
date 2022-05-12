@@ -2,13 +2,22 @@ import { Classes } from "@/lib/globalTypes";
 import clsx from "clsx";
 import React, { PropsWithChildren } from "react";
 
-export const Skeleton: React.FC<PropsWithChildren<Classes>> = ({
+export interface SkeletonProps extends Classes {
+  variant?: "paragraph" | "title";
+}
+
+export const Skeleton: React.FC<PropsWithChildren<SkeletonProps>> = ({
   children,
   className,
+  variant = "paragraph",
 }) => {
   if (children) return <>{children}</>;
 
-  const classes = clsx("min-h-3", "w-full", "bg-skeleton", className);
+  const classes = clsx(
+    "skeleton",
+    { "h-5 mb-6": variant === "title", "h-3": variant === "paragraph" },
+    className
+  );
 
   return <div className={classes} />;
 };

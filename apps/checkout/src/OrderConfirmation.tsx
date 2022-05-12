@@ -3,12 +3,12 @@ import { Suspense } from "react";
 import PageHeader from "@/sections/PageHeader";
 import { FinalizedSummary } from "@/sections/Summary";
 import { OrderInfo } from "@/sections/OrderInfo";
-import { SummaryPlaceholder } from "@/sections/Summary/SummaryPlaceholder";
 import { Title } from "@/components/Title";
 import { Text } from "@saleor/ui-kit";
 import { useOrder } from "@/hooks/useOrder";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { Divider } from "@/components/Divider";
+import { SummarySkeleton } from "@/sections/Summary/SummarySkeleton";
 
 export const OrderConfirmation = ({ orderToken }: { orderToken: string }) => {
   const { order } = useOrder(orderToken);
@@ -31,7 +31,7 @@ export const OrderConfirmation = ({ orderToken }: { orderToken: string }) => {
       <main className="order-content overflow-hidden">
         <OrderInfo order={order} />
         <div className="order-divider" />
-        <Suspense fallback={<SummaryPlaceholder />}>
+        <Suspense fallback={<SummarySkeleton />}>
           <FinalizedSummary order={order} />
         </Suspense>
       </main>

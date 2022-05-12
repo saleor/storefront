@@ -15,3 +15,8 @@ export interface UserAddressFormData extends AddressFormData {
 
 export interface AddressFormCommonProps
   extends Pick<AddressFormData, "countryCode"> {}
+
+export type UserDefaultAddressFragment =
+  | null
+  | undefined
+  | { __typename?: "Address"; id: string };

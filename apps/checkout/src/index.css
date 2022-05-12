@@ -11,6 +11,23 @@ html {
 }
 
 @layer components {
+  .pay-button {
+    @apply w-full md:w-28 self-end mt-6;
+  }
+
+  /* Skeleton */
+  .skeleton {
+    @apply min-h-3 bg-skeleton mb-2;
+  }
+
+  .skeleton-horiznontal-spacer {
+    @apply max-w-full;
+  }
+
+  .skeleton-box {
+    @apply border border-skeleton pt-6 pb-4 px-6;
+  }
+
   /* Password Input */
 
   .password-input-icon {
@@ -66,7 +83,7 @@ html {
   }
 
   .page-content {
-    @apply flex flex-col-reverse lg:flex-row w-full;
+    @apply flex flex-col-reverse lg:items-start lg:flex-row w-full;
   }
 
   .page-divider {
@@ -79,7 +96,7 @@ html {
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-center  bg-background-secondary z-50;
+    @apply flex flex-row px-6 justify-between items-center bg-background-secondary z-50;
   }
 
   .summary-title .text {
@@ -91,7 +108,7 @@ html {
   }
 
   .summary-title img {
-    @apply sm:hidden transition-all;
+    @apply lg:hidden transition-all;
   }
 
   .summary-title.open img {

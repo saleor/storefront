@@ -6,7 +6,7 @@ import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSecti
 import { SummaryItemDelete } from "./SummaryItemDelete";
 import { PhotoIcon } from "@/icons";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { isCheckoutLine } from "./utils";
+import { getSummaryLineProps, isCheckoutLine } from "./utils";
 
 interface LineItemProps {
   line: CheckoutLineFragment | OrderLineFragment;
@@ -14,24 +14,14 @@ interface LineItemProps {
 
 export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
   const readOnly = !isCheckoutLine(line);
-  const { variantName, productName, productImage } = !readOnly
-    ? {
-        variantName: line.variant.name,
-        productName: line.variant.product.name,
-        productImage: line.variant.media?.find(({ type }) => type === "IMAGE"),
-      }
-    : {
-        variantName: line.variantName,
-        productName: line.productName,
-        productImage: line.thumbnail,
-      };
+  const { variantName, productName, productImage } = getSummaryLineProps(line);
 
   const formatMessage = useFormattedMessages();
 
   return (
     <li className="flex flex-row px-6 mb-6">
       <div className="relative flex flex-row">
-        {!readOnly && <SummaryItemDelete line={line} />}
+        {!readOnly && <SummaryItemDelete line={line as CheckoutLineFragment} />}
         <div className="summary-item-image mr-4 z-1">
           {productImage ? (
             <img
@@ -62,9 +52,11 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
           </Text>
         </div>
         {readOnly ? (
-          <SummaryItemMoneySection line={line} />
+          <SummaryItemMoneySection line={line as OrderLineFragment} />
         ) : (
-          <SummaryItemMoneyEditableSection line={line} />
+          <SummaryItemMoneyEditableSection
+            line={line as CheckoutLineFragment}
+          />
         )}
       </div>
     </li>

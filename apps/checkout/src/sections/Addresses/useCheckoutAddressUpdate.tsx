@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { AddressFormData } from "./types";
 import { getAddressFormDataFromAddress, getAddressInputData } from "./utils";
 
+export type UseAddressUpdateFn = (address: AddressFormData) => Promise<void>;
+
 export const useCheckoutAddressUpdate = ({
   useShippingAsBillingAddress,
 }: {

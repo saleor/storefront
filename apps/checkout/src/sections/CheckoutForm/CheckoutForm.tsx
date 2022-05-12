@@ -1,8 +1,11 @@
 import { Divider } from "@/components/Divider";
 import { useCheckout } from "@/hooks/useCheckout";
-import { Contact } from "@/sections/Contact";
-import { ShippingMethods } from "@/sections/ShippingMethods";
-import { UserAddresses } from "@/sections/UserAddresses";
+import { Contact, ContactSkeleton } from "@/sections/Contact";
+import {
+  ShippingMethods,
+  ShippingMethodsSkeleton,
+} from "@/sections/ShippingMethods";
+import { Addresses, AddressesSkeleton } from "@/sections/Addresses";
 import { useErrorMessages } from "@/hooks/useErrorMessages";
 import { useValidationResolver } from "@/lib/utils";
 import { Suspense } from "react";
@@ -12,12 +15,16 @@ import { Button } from "@/components/Button";
 import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { FormData } from "./types";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useAuthState } from "@saleor/sdk";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const { checkout } = useCheckout();
+  const { checkout, loading } = useCheckout();
+  const { authenticating } = useAuthState();
   const { checkoutFinalize, submitting } = useCheckoutFinalize();
+
+  const isLoading = loading || authenticating;
 
   // TMP
   // const [selectedPaymentProvider, setSelectedPaymentProvider] =
@@ -45,36 +52,41 @@ export const CheckoutForm = () => {
 
   const payButtonDisabled =
     submitting ||
-    (checkout.isShippingRequired && !checkout.shippingAddress) ||
-    !checkout.billingAddress;
+    (checkout?.isShippingRequired && !checkout?.shippingAddress) ||
+    !checkout?.billingAddress;
 
   return (
     <div className="checkout-form">
       <FormProvider {...methods}>
-        <Contact />
+        {isLoading ? <ContactSkeleton /> : <Contact />}
       </FormProvider>
       <Divider className="mt-4" />
-      <Suspense fallback="loading...">
-        <>
-          <UserAddresses />
-          <Divider className="my-4" />
-        </>
+      <Suspense fallback={<AddressesSkeleton />}>
+        {isLoading ? <AddressesSkeleton /> : <Addresses />}
       </Suspense>
-      <Suspense fallback="loading...">
-        <ShippingMethods />
+      <Suspense fallback={<ShippingMethodsSkeleton />}>
+        {isLoading ? <ShippingMethodsSkeleton /> : <ShippingMethods />}
       </Suspense>
       {/* TMP */}
       {/* <PaymentProviders
             onSelect={setSelectedPaymentProvider}
             selectedValue={selectedPaymentProvider}
           /> */}
-      <Button
-        ariaLabel={formatMessage("finalizeCheckoutLabel")}
-        label="Pay"
-        onClick={handleSubmit}
-        disabled={payButtonDisabled}
-        className="min-w-28 mb-14"
-      />
+      {isLoading ? (
+        <Button
+          ariaLabel={formatMessage("finalizeCheckoutLabel")}
+          label=""
+          className="pay-button"
+        />
+      ) : (
+        <Button
+          disabled={payButtonDisabled}
+          ariaLabel={formatMessage("finalizeCheckoutLabel")}
+          label="Pay"
+          onClick={handleSubmit}
+          className="pay-button"
+        />
+      )}
     </div>
   );
 };

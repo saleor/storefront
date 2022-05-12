@@ -36,6 +36,7 @@
     "@storybook/addon-postcss": "^2.0.0",
     "@storybook/react": "v6.5.0-beta.7",
     "@storybook/testing-library": "^0.0.11",
+    "@types/node": "^16.11.22",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
     "@types/tailwindcss": "^3.0.9",
