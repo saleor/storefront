@@ -41,7 +41,7 @@ export function HomepageBlock({ menuItem }: HomepageBlockProps) {
       <div className="flex flex-row-reverse p-4">
         <Link href={link} passHref>
           <a href="pass">
-            <p>{t.formatMessage(messages.more)}</p>
+            <p className="text-base">{t.formatMessage(messages.more)}</p>
           </a>
         </Link>
       </div>
