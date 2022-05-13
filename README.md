@@ -14,6 +14,7 @@ React Storefront is an open-source frontend e-commerce platform from the [Saleor
 - TypeScript
 - GraphQL with Apollo Client
 - Tailwind CSS
+- [Saleor Checkout](https://github.com/saleor/saleor-checkout)
 
 ## Motivation
 
@@ -124,6 +125,11 @@ export const ProductLinkComponent = () => {
   );
 };
 ```
+
+### Saleor Checkout
+React Storefront uses the new [Saleor Checkout](https://github.com/saleor/saleor-checkout) for checkout and payments. The setup is as easy as:
+1. Deploy Saleor Checkout
+2. Set  the `NEXT_PUBLIC_CHECKOUT_URL` environment variable with Saleor Checkout URL
 
 ### Code style
 
