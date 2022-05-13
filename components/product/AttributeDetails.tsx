@@ -26,7 +26,7 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
         {attributes.map((attribute) => (
           <div key={attribute.attribute.id} className="grid grid-cols-2">
             <div>
-              <p>{translate(attribute.attribute, "name")}</p>
+              <p className="text-base">{translate(attribute.attribute, "name")}</p>
             </div>
             <div>
               {attribute.values.map((value, index) => {
@@ -35,7 +35,7 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
                 }
                 return (
                   <div key={value.id}>
-                    <p>
+                    <p className="text-base">
                       {translate(value, "name")}
                       {attribute.values.length !== index + 1 && <div>{" | "}</div>}
                     </p>
