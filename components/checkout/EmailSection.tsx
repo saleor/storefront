@@ -53,7 +53,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
       </div>
       {!modifyEmail ? (
         <div className="flex justify-between items-center">
-          <p>{checkout?.email}</p>
+          <p className="text-base">{checkout?.email}</p>
           <Button onClick={() => setModifyEmail(true)}>
             {t.formatMessage(messages.changeButton)}
           </Button>
@@ -65,7 +65,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
               <input
                 type="text"
                 autoComplete="email"
-                className="w-full border-gray-300 rounded-lg shadow-sm"
+                className="w-full border-gray-300 rounded-lg shadow-sm text-base"
                 {...register("email", {
                   required: true,
                   pattern: /^\S+@\S+$/i,

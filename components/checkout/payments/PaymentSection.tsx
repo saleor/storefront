@@ -34,7 +34,9 @@ export function PaymentSection({ checkout, active }: PaymentSectionProps) {
       {active && (
         <>
           <div className="block">
-            <span className="text-gray-700">{t.formatMessage(messages.paymentInstruction)}</span>
+            <span className="text-gray-700 text-base">
+              {t.formatMessage(messages.paymentInstruction)}
+            </span>
             <RadioGroup value={chosenGateway} onChange={setChosenGateway} className="mt-2">
               {availableGateways.map((gateway) => (
                 <RadioGroup.Option key={gateway.id} value={gateway.id}>
@@ -46,7 +48,7 @@ export function PaymentSection({ checkout, active }: PaymentSectionProps) {
                       value={gateway.id}
                       id={gateway.id}
                     />
-                    <span className="ml-2">{gateway.name}</span>
+                    <span className="ml-2 text-base">{gateway.name}</span>
                   </label>
                 </RadioGroup.Option>
               ))}

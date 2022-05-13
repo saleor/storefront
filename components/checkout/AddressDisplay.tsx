@@ -6,7 +6,7 @@ export interface AddressDisplayProps {
 
 export function AddressDisplay({ address }: AddressDisplayProps) {
   return (
-    <div>
+    <div className="text-base">
       <address className="not-italic mb-2">
         <p>
           {address?.firstName} {address?.lastName}
