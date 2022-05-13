@@ -12,7 +12,7 @@ const styles = {
   product: {
     name: "block text-lg text-gray-900 truncate",
     category: "block text-sm font-medium text-gray-500",
-    price: "block text-xs font-medium text-gray-900",
+    price: "block text-base font-medium text-gray-900",
     details: "px-4 py-2 border-gray-100 bg-gray-50 border-t",
   },
 };
