@@ -13,15 +13,24 @@ export function RichText({ jsonStringData }: RichTextProps) {
   try {
     data = JSON.parse(jsonStringData);
   } catch (e) {
-    console.error("Rich text data are not valid JSONString.");
     return null;
   }
-  if (!data.time || !data.version || !data.blocks.length) {
-    console.error("Rich text data not in the EditorJS format.");
+
+  if (!data.blocks?.length) {
+    // No data to render
     return null;
   }
+
+  // Path for compatibility with data from older version od EditorJS
+  if (!data.time) {
+    data.time = Date.now().toString();
+  }
+  if (!data.version) {
+    data.version = "2.22.2";
+  }
+
   return (
-    <article className="prose lg:prose-s">
+    <article className="prose-2xl">
       <Blocks data={data} />
     </article>
   );
