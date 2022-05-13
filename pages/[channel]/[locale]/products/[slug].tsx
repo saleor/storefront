@@ -198,17 +198,19 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           </button>
 
           {!selectedVariant && (
-            <p className="text-lg- text-yellow-600">{t.formatMessage(messages.variantNotChosen)}</p>
+            <p className="text-base text-yellow-600">
+              {t.formatMessage(messages.variantNotChosen)}
+            </p>
           )}
 
           {selectedVariant?.quantityAvailable === 0 && (
-            <p className="text-lg- text-yellow-600">{t.formatMessage(messages.soldOut)}</p>
+            <p className="text-base text-yellow-600">{t.formatMessage(messages.soldOut)}</p>
           )}
 
           {!!addToCartError && <p>{addToCartError}</p>}
 
           {description && (
-            <div className="text-base text-gray-700 space-y-6">
+            <div className="space-y-6">
               <RichText jsonStringData={description} />
             </div>
           )}

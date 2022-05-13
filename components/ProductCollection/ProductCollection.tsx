@@ -38,7 +38,7 @@ export function ProductCollection({ filter, allowMore = true }: ProductCollectio
 
   const products = data?.products?.edges.map((edge) => edge.node) || [];
   if (products.length === 0) {
-    return <p>{t.formatMessage(messages.noProducts)}</p>;
+    return <p className="text-base">{t.formatMessage(messages.noProducts)}</p>;
   }
   return (
     <div>
