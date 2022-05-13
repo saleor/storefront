@@ -37,7 +37,7 @@ export function VariantSelector({ product, selectedVariantID }: VariantSelectorP
   };
 
   return (
-    <select onChange={onChange} value={value} className="w-full">
+    <select onChange={onChange} value={value} className="w-full text-base">
       <option key="None" value="None">
         -
       </option>
