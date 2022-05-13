@@ -23,7 +23,7 @@ export function Pagination({ pageInfo, onLoadMore, itemsCount, totalCount }: Pag
         <button
           type="button"
           onClick={onLoadMore}
-          className="relative inline-flex  items-center px-4 py-2 border text-sm font-medium rounded-md text-gray-700 bg-gray-50 hover:border-blue-300 cursor-pointer"
+          className="relative inline-flex  items-center px-4 py-2 border text-base font-medium rounded-md text-gray-700 bg-gray-50 hover:border-blue-300 cursor-pointer"
         >
           {t.formatMessage(messages.loadMoreButton)}
         </button>
