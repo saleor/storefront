@@ -17,7 +17,7 @@ export function CompleteCheckoutButton({
       {isProcessing ? (
         <button
           disabled
-          className="w-full mt-6 bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white flex items-center justify-center"
+          className="w-full mt-6 bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white flex items-center justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@ export function CompleteCheckoutButton({
           onClick={onClick}
           disabled={isDisabled}
           type="submit"
-          className="w-full mt-6 bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 flex items-center justify-center"
+          className="w-full mt-6 bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white hover:bg-blue-700 flex items-center justify-center"
         >
           {children}
         </button>
