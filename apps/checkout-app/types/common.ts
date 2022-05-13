@@ -1,3 +1,7 @@
+import { SvgIconTypeMap } from "@material-ui/core";
+import { OverridableComponent } from "@material-ui/core/OverridableComponent";
+import { StaticImageData } from "next/image";
+
 export const allSettingID = [
   "customizations",
   "paymentProviders",
@@ -6,6 +10,10 @@ export const allSettingID = [
 export type SettingID = typeof allSettingID;
 export type SettingType = "string" | "color" | "image";
 
+export type ThemeVariant = "dark" | "light";
+
+export type IconComponent = OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+
 /**
  * Payment types
  */
@@ -13,6 +21,7 @@ export type PaymentMethodID = "creditCard" | "applePay" | "paypal";
 export interface PaymentMethod {
   id: PaymentMethodID;
   name: string;
+  logo?: IconComponent;
 }
 
 export type PaymentProviderID = "mollie" | "adyen";
@@ -37,6 +46,7 @@ export interface PaymentProviderSettings<P extends PaymentProviderID> {
 export interface PaymentProvider<P extends PaymentProviderID> {
   id: P;
   label: string;
+  logo?: IconComponent;
   settings: PaymentProviderSettings<P>[];
 }
 
@@ -85,4 +95,5 @@ export interface NamedNode extends Node {
 export interface Item {
   id: string;
   label: string;
+  logo?: IconComponent;
 }
