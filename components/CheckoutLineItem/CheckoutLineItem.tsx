@@ -87,7 +87,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                   </a>
                 </Link>
               </h3>
-              <h4 className="text-m font-regular">
+              <h4 className="text-md font-regular">
                 <p className="text-gray-700 hover:text-gray-800">
                   {translate(line?.variant, "name")}
                 </p>
@@ -104,7 +104,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                     },
                   })
                 }
-                className="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
+                className="ml-4 text-md font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
               >
                 <span>{t.formatMessage(messages.removeButton)}</span>
               </button>
@@ -122,7 +122,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
               <input
                 type="number"
                 className={clsx(
-                  "h-8 mt-2 w-16 block border-gray-300 rounded-md shadow-sm sm:text-sm",
+                  "h-8 mt-2 w-16 block border-gray-300 rounded-md shadow-sm text-base",
                   errors && "border-red-500"
                 )}
                 defaultValue={quantity}
