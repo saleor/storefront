@@ -1,3 +1,4 @@
+import { serverEnvVars } from "@/constants";
 import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
 import { useChannelPaymentOptions } from "@/frontend/data";
 import { useAuthData } from "@/frontend/hooks/useAuthData";
@@ -25,7 +26,7 @@ const Channel = () => {
   const { appId, isAuthorized } = useAuthData();
   const [metadataQuery] = usePrivateMetadataQuery({
     variables: {
-      id: appId,
+      id: appId || serverEnvVars.appId,
     },
     pause: !isAuthorized,
   });
@@ -60,7 +61,7 @@ const Channel = () => {
     });
 
     setPrivateMetadata({
-      id: appId,
+      id: appId || serverEnvVars.appId,
       input: metadata,
     });
   };

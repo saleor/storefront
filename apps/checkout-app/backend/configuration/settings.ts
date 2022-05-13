@@ -13,12 +13,13 @@ import {
 import { client } from "@/backend/client";
 import { defaultActiveChannelPaymentProviders } from "config/defaults";
 import { mergeChannelsWithPaymentProvidersSettings } from "./utils";
+import { serverEnvVars } from "@/constants";
 
 export const getSettings = async () => {
   const { data, error } = await client
     .query<PrivateMetadataQuery, PrivateMetadataQueryVariables>(
       PrivateMetadataDocument,
-      { id: process.env.SALEOR_APP_ID! }
+      { id: serverEnvVars.appId! }
     )
     .toPromise();
 

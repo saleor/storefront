@@ -147,6 +147,7 @@ importers:
       graphql: ^16.3.0
       graphql-tag: ^2.12.6
       jest: ^27.5.1
+      json-easy-strip: ^1.0.6
       next: 12.1.6
       next-transpile-modules: 9.0.0
       node-mocks-http: ^1.11.0
@@ -200,6 +201,7 @@ importers:
       config: link:../../packages/config
       eslint: 7.32.0
       jest: 27.5.1
+      json-easy-strip: 1.0.6
       next-transpile-modules: 9.0.0
       node-mocks-http: 1.11.0
       ts-jest: 27.1.4_9985e1834e803358b7be1e6ce5ca0eea
@@ -13460,6 +13462,10 @@ packages:
 
   /json-buffer/3.0.0:
     resolution: {integrity: sha1-Wx85evx11ne96Lz8Dkfh+aPZqJg=}
+    dev: true
+
+  /json-easy-strip/1.0.6:
+    resolution: {integrity: sha512-hof2dl1Fuzl+VV+bC9PsUDcce+cCa4EiTIDvfKgrq2OxHPzT/+rQhGSNvfs+jnDICdgNThw2jO6HZI9wBz9kIg==}
     dev: true
 
   /json-parse-better-errors/1.0.2:

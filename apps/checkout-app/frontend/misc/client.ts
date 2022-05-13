@@ -1,4 +1,4 @@
-import { API_URL } from "@/constants";
+import { envVars } from "@/constants";
 import { authExchange } from "@urql/exchange-auth";
 import {
   createClient,
@@ -59,7 +59,7 @@ const willAuthError = ({ authState }: { authState?: AuthState | null }) =>
   !authState?.token;
 
 const authConfig: ClientOptions = {
-  url: API_URL,
+  url: envVars.apiUrl,
   exchanges: [
     dedupExchange,
     cacheExchange,

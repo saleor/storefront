@@ -1,7 +1,7 @@
 import createMollieClient, { OrderStatus } from "@mollie/api-client";
 
 import { OrderFragment, TransactionCreateMutationVariables } from "@/graphql";
-import { APP_URL } from "@/constants";
+import { envVars } from "@/constants";
 import { formatRedirectUrl } from "@/backend/payments/utils";
 
 import {
@@ -25,7 +25,7 @@ export const createMolliePayment = async (
 
   const mollieData = await mollieClient.orders.create({
     orderNumber: data.number!,
-    webhookUrl: `${APP_URL}/api/webhooks/mollie`,
+    webhookUrl: `${envVars.appUrl}/api/webhooks/mollie`,
     locale: "en_US",
     redirectUrl: formatRedirectUrl(redirectUrl, data.token),
     metadata: {

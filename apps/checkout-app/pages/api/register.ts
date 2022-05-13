@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { SALEOR_DOMAIN_HEADER } from "../../constants";
+import { saleorDomainHeader } from "../../constants";
 
 const handler = async (
   request: NextApiRequest,
@@ -8,7 +8,7 @@ const handler = async (
 ): Promise<undefined> => {
   console.log(request); // for deployment debug pusposes
 
-  const saleor_domain = request.headers[SALEOR_DOMAIN_HEADER];
+  const saleor_domain = request.headers[saleorDomainHeader];
   if (!saleor_domain) {
     response
       .status(400)

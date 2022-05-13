@@ -1,7 +1,6 @@
 import { Client, CheckoutAPI, Types } from "@adyen/api-library";
 
 import { OrderFragment, TransactionCreateMutationVariables } from "@/graphql";
-import { APP_URL } from "@/constants";
 import { formatRedirectUrl } from "@/backend/payments/utils";
 
 import {

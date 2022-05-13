@@ -56,6 +56,7 @@
     "config": "workspace:*",
     "eslint": "7.32.0",
     "jest": "^27.5.1",
+    "json-easy-strip": "^1.0.6",
     "next-transpile-modules": "9.0.0",
     "node-mocks-http": "^1.11.0",
     "ts-jest": "^27.1.4",

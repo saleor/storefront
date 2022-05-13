@@ -15,6 +15,7 @@ import { usePaymentProviderSettings } from "@/frontend/data";
 import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
 import { useIntl } from "react-intl";
 import { notFoundMessages } from "@/frontend/misc/errorMessages";
+import { serverEnvVars } from "@/constants";
 
 const PaymentProvider = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const PaymentProvider = () => {
   const { appId, isAuthorized } = useAuthData();
   const [metadataQuery] = usePrivateMetadataQuery({
     variables: {
-      id: appId,
+      id: appId || serverEnvVars.appId,
     },
     pause: !isAuthorized,
   });
@@ -55,7 +56,7 @@ const PaymentProvider = () => {
     });
 
     setPrivateMetadata({
-      id: appId,
+      id: appId || serverEnvVars.appId,
       input: metadata,
     });
   };
