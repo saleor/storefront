@@ -12,7 +12,7 @@ html {
 
 @layer components {
   .pay-button {
-    @apply w-full md:w-28 self-end mt-6;
+    @apply w-full md:w-28 self-end mt-6 mb-14;
   }
 
   /* Skeleton */
