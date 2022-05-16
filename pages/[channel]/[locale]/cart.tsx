@@ -42,8 +42,8 @@ function Cart() {
           </div>
         </header>
         <main>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 container px-8">
-            <section className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 container px-8">
+            <div className="col-span-2">
               <ul className="divide-y divide-gray-200">
                 {isCheckoutLoading ? (
                   <Spinner />
@@ -55,7 +55,7 @@ function Cart() {
                   ))
                 )}
               </ul>
-            </section>
+            </div>
 
             {!!checkout && (
               <div>
@@ -63,7 +63,7 @@ function Cart() {
                 <div className="mt-12">
                   {externalCheckoutUrl ? (
                     <a
-                      className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center text-md font-medium text-white hover:bg-blue-700"
+                      className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700"
                       href={`${externalCheckoutUrl}?checkoutToken=${checkout.token}`}
                       target="_self"
                     >
