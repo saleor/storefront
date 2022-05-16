@@ -8,6 +8,7 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
     version: version,
     name: appName,
     permissions: ["HANDLE_PAYMENTS", "HANDLE_CHECKOUTS", "MANAGE_ORDERS"],
+    userPermissions: [],
     appUrl: `${envVars.appUrl}/channels`,
     configurationUrl: `${envVars.appUrl}/channels`,
     tokenTargetUrl: `${envVars.appUrl}/api/register`,

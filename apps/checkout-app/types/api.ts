@@ -7,7 +7,10 @@ import {
   PaymentProvider,
   PaymentProviderID,
   PaymentProviderSettingID,
+  PrivateSettingID,
+  PublicSettingID,
   SettingID,
+  SettingsType,
 } from "./common";
 
 export interface PaymentOption {
@@ -46,12 +49,18 @@ export type UnknownSettingsValues<T = string> = {
   };
 };
 
-export type SettingsValues = {
-  [P in SettingID[number]]: P extends "customizations"
+export type PublicSettingsValues = {
+  [P in PublicSettingID[number]]: P extends "customizations"
     ? CustomizationSettingsValues
-    : P extends "paymentProviders"
-    ? PaymentProviderSettingsValues
     : P extends "channelActivePaymentProviders"
     ? ChannelActivePaymentProviders
     : UnknownSettingsValues;
 };
+export type PrivateSettingsValues = {
+  [P in PrivateSettingID[number]]: P extends "paymentProviders"
+    ? PaymentProviderSettingsValues
+    : UnknownSettingsValues;
+};
+export type SettingsValues<T extends SettingsType> = T extends "public"
+  ? PublicSettingsValues
+  : PrivateSettingsValues;

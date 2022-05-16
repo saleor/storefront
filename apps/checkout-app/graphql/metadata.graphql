@@ -30,3 +30,25 @@ mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
     }
   }
 }
+
+query PublicMetadata($id: ID!) {
+  app(id: $id) {
+    id
+    metadata {
+      ...MetadataItemFragment
+    }
+  }
+}
+
+mutation UpdatePublicMetadata($id: ID!, $input: [MetadataInput!]!) {
+  updateMetadata(id: $id, input: $input) {
+    item {
+      metadata {
+        ...MetadataItemFragment
+      }
+    }
+    errors {
+      ...MetadataErrorFragment
+    }
+  }
+}

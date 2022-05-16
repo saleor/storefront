@@ -10,8 +10,8 @@ import {
 } from "@/frontend/utils";
 import {
   useChannelsQuery,
-  usePrivateMetadataQuery,
-  useUpdatePrivateMetadataMutation,
+  usePublicMetadataQuery,
+  useUpdatePublicMetadataMutation,
 } from "@/graphql";
 import ChannelDetails from "frontend/components/templates/ChannelDetails";
 import { useRouter } from "next/router";
@@ -24,17 +24,18 @@ const Channel = () => {
   const intl = useIntl();
 
   const { appId, isAuthorized } = useAuthData();
-  const [metadataQuery] = usePrivateMetadataQuery({
+  const [metadataQuery] = usePublicMetadataQuery({
     variables: {
       id: appId || serverEnvVars.appId,
     },
     pause: !isAuthorized,
   });
-  const [metadataMutation, setPrivateMetadata] =
-    useUpdatePrivateMetadataMutation();
+  const [metadataMutation, setPublicMetadata] =
+    useUpdatePublicMetadataMutation();
 
   const settingsValues = mapMetadataToSettings(
-    metadataQuery.data?.app?.privateMetadata || []
+    metadataQuery.data?.app?.metadata || [],
+    "public"
   );
 
   const [channelsQuery] = useChannelsQuery({
@@ -60,14 +61,14 @@ const Channel = () => {
       },
     });
 
-    setPrivateMetadata({
+    setPublicMetadata({
       id: appId || serverEnvVars.appId,
       input: metadata,
     });
   };
 
   const errors = [
-    ...(metadataMutation.data?.updatePrivateMetadata?.errors || []),
+    ...(metadataMutation.data?.updateMetadata?.errors || []),
     ...getCommonErrors(metadataMutation.error),
   ];
 

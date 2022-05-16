@@ -2,12 +2,19 @@ import { SvgIconTypeMap } from "@material-ui/core";
 import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 import { StaticImageData } from "next/image";
 
-export const allSettingID = [
+export type SettingsType = "public" | "private";
+export const allPublicSettingID = [
   "customizations",
-  "paymentProviders",
   "channelActivePaymentProviders",
 ] as const;
-export type SettingID = typeof allSettingID;
+export const allPrivateSettingID = ["paymentProviders"] as const;
+export const allSettingID = [
+  ...allPublicSettingID,
+  ...allPrivateSettingID,
+] as const;
+export type PublicSettingID = typeof allPublicSettingID;
+export type PrivateSettingID = typeof allPrivateSettingID;
+export type SettingID = PublicSettingID | PrivateSettingID;
 export type SettingType = "string" | "color" | "image";
 
 export type ThemeVariant = "dark" | "light";

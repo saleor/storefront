@@ -2,8 +2,8 @@ import { useRouter } from "next/router";
 import CustomizationDetails from "@/frontend/components/templates/CustomizationDetails";
 import { CustomizationSettingsValues } from "types/api";
 import {
-  usePrivateMetadataQuery,
-  useUpdatePrivateMetadataMutation,
+  usePublicMetadataQuery,
+  useUpdatePublicMetadataMutation,
 } from "@/graphql";
 import {
   getCommonErrors,
@@ -17,17 +17,18 @@ import { serverEnvVars } from "@/constants";
 const Customization = () => {
   const router = useRouter();
   const { appId, isAuthorized } = useAuthData();
-  const [metadataQuery] = usePrivateMetadataQuery({
+  const [metadataQuery] = usePublicMetadataQuery({
     variables: {
       id: appId || serverEnvVars.appId,
     },
     pause: !isAuthorized,
   });
-  const [metadataMutation, setPrivateMetadata] =
-    useUpdatePrivateMetadataMutation();
+  const [metadataMutation, setPublicMetadata] =
+    useUpdatePublicMetadataMutation();
 
   const settingsValues = mapMetadataToSettings(
-    metadataQuery.data?.app?.privateMetadata || []
+    metadataQuery.data?.app?.metadata || [],
+    "public"
   );
   const customizationSettings = useCustomizationSettings(
     settingsValues.customizations
@@ -42,14 +43,14 @@ const Customization = () => {
       customizations: data,
     });
 
-    setPrivateMetadata({
+    setPublicMetadata({
       id: appId || serverEnvVars.appId,
       input: metadata,
     });
   };
 
   const errors = [
-    ...(metadataMutation.data?.updatePrivateMetadata?.errors || []),
+    ...(metadataMutation.data?.updateMetadata?.errors || []),
     ...getCommonErrors(metadataMutation.error),
   ];
 

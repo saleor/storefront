@@ -1,7 +1,17 @@
 import { MetadataItemFragment } from "@/graphql";
-import settingsValues from "@/config/defaults";
+import {
+  defaultPrivateSettings,
+  defaultPublicSettings,
+} from "@/config/defaults";
 import { SettingsValues, UnknownSettingsValues } from "@/types/api";
-import { allSettingID, Item, NamedNode, Node, SettingID } from "@/types/common";
+import {
+  allSettingID,
+  Item,
+  NamedNode,
+  Node,
+  SettingID,
+  SettingsType,
+} from "@/types/common";
 import reduce from "lodash-es/reduce";
 import { CombinedError } from "urql";
 
@@ -75,46 +85,47 @@ export const mergeSettingsValues = (
   );
 };
 
-export const mapMetadataToSettings = (
-  metadata: (MetadataItemFragment | null)[]
-): SettingsValues => {
-  const settings = metadata.reduce((settings, metadataItem) => {
-    const settingsKey = metadataItem?.key;
+export const mapMetadataToSettings = <T extends SettingsType>(
+  metadata: (MetadataItemFragment | null)[],
+  type: T
+): SettingsValues<T> => {
+  const defaultSettings =
+    type === "public" ? defaultPublicSettings : defaultPrivateSettings;
 
-    if (
-      !settingsKey ||
-      !allSettingID.includes(settingsKey as SettingID[number])
-    ) {
+  const settings = metadata.reduce((settings, metadataItem) => {
+    const settingsKey = metadataItem?.key as keyof typeof settings;
+
+    if (!settingsKey || !allSettingID.includes(settingsKey)) {
       return settings;
     }
 
     try {
-      const metadataItemSettings = JSON.parse(metadataItem?.value);
+      const metadataItemSettings = JSON.parse(metadataItem?.value || "");
       return {
         ...settings,
         [settingsKey]: mergeSettingsValues(
-          settings[settingsKey as SettingID[number]],
+          settings[settingsKey],
           metadataItemSettings
         ),
       };
     } catch (e) {
       return {
         ...settings,
-        [settingsKey]: settings[settingsKey as SettingID[number]] || {},
+        [settingsKey]: settings[settingsKey] || {},
       };
     }
-  }, settingsValues);
+  }, defaultSettings);
 
-  return settings;
+  return settings as SettingsValues<T>;
 };
 
-export const mapSettingsToMetadata = (
-  settingsValues: Partial<SettingsValues>
+export const mapSettingsToMetadata = <T extends SettingsType>(
+  settingsValues: Partial<SettingsValues<T>>
 ) => {
   return Object.keys(settingsValues).reduce(
     (metadata, settingsValuesKey) => {
       const settingsValuesObject =
-        settingsValues[settingsValuesKey as keyof SettingsValues];
+        settingsValues[settingsValuesKey as keyof SettingsValues<T>];
       const settingsValuesValue = JSON.stringify(settingsValuesObject);
 
       return [

@@ -2,6 +2,8 @@ import {
   ChannelActivePaymentProvidersByChannel,
   CustomizationSettingsValues,
   PaymentProviderSettingsValues,
+  PrivateSettingsValues,
+  PublicSettingsValues,
   SettingsValues,
 } from "types/api";
 
@@ -41,9 +43,10 @@ export const defaultCustomizationSettings: CustomizationSettingsValues = {
   },
 };
 
-const defaultSettings: SettingsValues = {
-  channelActivePaymentProviders: {},
-  paymentProviders: defaultPaymentProviderSettings,
+export const defaultPublicSettings: PublicSettingsValues = {
   customizations: defaultCustomizationSettings,
+  channelActivePaymentProviders: {},
 };
-export default defaultSettings;
+export const defaultPrivateSettings: PrivateSettingsValues = {
+  paymentProviders: defaultPaymentProviderSettings,
+};
