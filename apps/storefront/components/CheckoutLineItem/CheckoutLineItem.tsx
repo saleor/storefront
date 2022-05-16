@@ -68,7 +68,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
 
   return (
     <>
-      <div className="flex-shrink-0 bg-white w-48 h-48 border object-center object-cover relative">
+      <div className="flex-shrink-0 bg-white w-32 h-32 sm:w-48 sm:h-48 border object-center object-cover relative">
         <Image
           src={line.variant.product?.thumbnail?.url || ""}
           alt={line.variant.product?.thumbnail?.alt || ""}
@@ -80,7 +80,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
         <div>
           <div className="flex justify-between">
             <div className="pr-6">
-              <h3 className="text-xl font-bold">
+              <h3 className="text-md md:text-xl font-bold">
                 <Link href={paths.products._slug(line?.variant?.product?.slug).$url()} passHref>
                   <a href="pass" className="font-medium text-gray-700 hover:text-gray-800">
                     {translate(line?.variant.product, "name")}
@@ -104,7 +104,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                     },
                   })
                 }
-                className="ml-4 text-md font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
+                className="text-md font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3"
               >
                 <span>{t.formatMessage(messages.removeButton)}</span>
               </button>
@@ -118,11 +118,11 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                 </div>
               )}
             </div>
-            <div className="flex justify-items-end space-x-4">
+            <div className="flex justify-items-end space-x-4 ">
               <input
                 type="number"
                 className={clsx(
-                  "h-8 mt-2 w-16 block border-gray-300 rounded-md shadow-sm text-base",
+                  "h-8 md:mt-2 w-10 md:w-16 block border-gray-300 rounded-md shadow-sm text-base",
                   errors && "border-red-500"
                 )}
                 defaultValue={quantity}
@@ -141,7 +141,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                 disabled={loadingLineUpdate}
                 pattern="[0-9]*"
               />
-              <p className="text-xl text-gray-900 text-right">
+              <p className="text-md md:text-xl text-gray-900 text-right">
                 {formatPrice(line?.totalPrice?.gross)}
               </p>
             </div>
