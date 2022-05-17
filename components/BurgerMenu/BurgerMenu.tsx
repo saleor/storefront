@@ -9,8 +9,8 @@ import { usePaths } from "@/lib/paths";
 import { useMainMenuQuery } from "@/saleor/api";
 
 import NavIconButton from "../Navbar/NavIconButton";
-import { ChannelDropdown } from "../RegionDialog/ChannelDropdown";
-import { LocaleDropdown } from "../RegionDialog/LocaleDropdown";
+import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
+import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
 import styles from "./BurgerMenu.module.css";
