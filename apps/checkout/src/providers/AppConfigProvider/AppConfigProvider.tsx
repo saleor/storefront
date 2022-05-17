@@ -54,14 +54,7 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{}>> = ({
     );
 
     if (hasStylingConfigChanged) {
-      // appendStylingToBody({
-      //   // TMP this is not the obj passes from the dashboard app
-      //   // because the names of the props don't match just yet and
-      //   // colors are for preview purposes
-      //   buttonBgColorPrimary: "#FF7C7C",
-      //   textColor: "#FF85BA",
-      //   borderColorPrimary: "#9D39FF",
-      // });
+      appendStylingToBody(appConfig?.branding as BrandingColors);
     }
 
     stylingRef.current = appConfig?.branding;

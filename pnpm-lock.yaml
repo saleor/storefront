@@ -39,7 +39,6 @@ importers:
       '@types/yup': ^0.29.13
       '@typescript-eslint/parser': ^5.17.0
       autoprefixer: 9.8.6
-      checkout-app: workspace:*
       clsx: ^1.1.1
       eslint: ^8.12.0
       eslint-plugin-react: ^7.29.4
@@ -106,7 +105,6 @@ importers:
       '@graphql-codegen/typescript-urql': 3.5.7_e20029557891e0afb887c44ec7f516f8
       '@graphql-codegen/urql-introspection': 2.1.1_graphql@16.3.0
       '@types/webpack-env': 1.16.4
-      checkout-app: link:../checkout-app
       eslint: 8.13.0
       eslint-plugin-react: 7.29.4_eslint@8.13.0
       eslint-plugin-react-hooks: 4.4.0_eslint@8.13.0

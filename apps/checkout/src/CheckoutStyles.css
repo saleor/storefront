@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .app {
+    @apply bg-background-primary;
+  }
+
+  .page {
+    @apply min-h-screen mx-auto flex flex-col pt-8 md:pt-10 px-4 md:px-12 xl:px-18 2xl:w-350;
+  }
+
+  .page-header {
+    @apply mb-6 md:mb-12;
+  }
+
+  .logo {
+    @apply h-10;
+  }
+
+  .page-content {
+    @apply flex flex-col-reverse lg:items-start lg:flex-row w-full;
+  }
+
+  .page-divider {
+    @apply h-6 md:h-full w-full md:w-12 xl:w-18;
+  }
+}

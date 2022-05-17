@@ -10,7 +10,7 @@ import { getCurrentRegion } from "@/lib/regions";
 import { envVars, getQueryVariables } from "@/lib/utils";
 import { AppConfigProvider } from "@/providers/AppConfigProvider";
 import { ErrorsProvider } from "@/providers/ErrorsProvider";
-import { OrderConfirmation } from "@/OrderConfirmation";
+import { OrderConfirmation } from "@/sections/OrderConfirmation";
 import { PageNotFound } from "@/sections/PageNotFound";
 
 const authorizedFetch = createFetch();

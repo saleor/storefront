@@ -6,6 +6,7 @@ import {
 } from "@saleor/ui-kit";
 import { getRadioPropsFromRadioBoxProps } from "./utils";
 import clsx from "clsx";
+import "./RadioBoxStyles.css";
 
 export interface RadioBoxProps
   extends Omit<UiKitRadioProps, "onSelect" | "label"> {

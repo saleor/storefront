@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .checkout-form {
+    @apply flex flex-col w-full lg:w-1/2 xl:w-2/3;
+  }
+
+  .actions {
+    @apply flex flex-row w-full justify-end items-center;
+  }
+
+  .pay-button {
+    @apply w-full md:w-28 self-end mt-6 mb-14;
+  }
+}

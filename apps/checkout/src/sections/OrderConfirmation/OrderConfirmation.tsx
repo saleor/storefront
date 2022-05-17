@@ -9,6 +9,7 @@ import { useOrder } from "@/hooks/useOrder";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { Divider } from "@/components/Divider";
 import { SummarySkeleton } from "@/sections/Summary/SummarySkeleton";
+import "./OrderConfirmationStyles.css";
 
 export const OrderConfirmation = ({ orderToken }: { orderToken: string }) => {
   const { order } = useOrder(orderToken);

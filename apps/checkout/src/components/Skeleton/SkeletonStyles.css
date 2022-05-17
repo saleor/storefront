@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .skeleton {
+    @apply min-h-3 bg-skeleton mb-2;
+  }
+
+  .skeleton-horiznontal-spacer {
+    @apply max-w-full;
+  }
+
+  .skeleton-box {
+    @apply border border-skeleton pt-6 pb-4 px-6;
+  }
+}

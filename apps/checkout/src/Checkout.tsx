@@ -7,6 +7,7 @@ import { PageNotFound } from "@/sections/PageNotFound";
 import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "./hooks/useCheckout";
 import { useAuthState } from "@saleor/sdk";
+import "./CheckoutStyles.css";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();

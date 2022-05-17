@@ -122,7 +122,10 @@ export const AddressForm = <TFormData extends AddressFormData>({
     addressFormLayout.map((layoutField: AddressFormLayoutField) => {
       if (isAddressFieldRow(layoutField)) {
         return (
-          <div className="w-full flex flex-row gap-3 justify-between">
+          <div
+            key={(layoutField as AddressField[]).join()}
+            className="w-full flex flex-row gap-3 justify-between"
+          >
             {(layoutField as AddressField[]).map(renderFn)}
           </div>
         );

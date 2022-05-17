@@ -3,8 +3,9 @@ import { ControlFormData } from "@/hooks/useGetInputProps";
 import { EyeHiddenIcon, EyeIcon } from "@/icons";
 import { ForwardedRef, forwardRef, useState } from "react";
 import { Control } from "react-hook-form";
-import { IconButton } from "./IconButton";
-import { TextInput, TextInputProps } from "./TextInput";
+import { IconButton } from "@/components/IconButton";
+import { TextInput, TextInputProps } from "@/components/TextInput";
+import "./PasswordInputStyles.css";
 
 const PasswordInputComponent = <
   TControl extends Control<any, any>,

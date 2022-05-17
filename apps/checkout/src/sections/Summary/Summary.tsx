@@ -9,6 +9,7 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useCheckout } from "@/hooks/useCheckout";
 import { compact } from "lodash-es";
+import "./SummaryStyles.css";
 
 import { getTaxPercentage } from "./utils";
 

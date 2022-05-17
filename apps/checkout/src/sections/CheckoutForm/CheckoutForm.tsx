@@ -16,6 +16,7 @@ import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { FormData } from "./types";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
+import "./CheckoutFormStyles.css";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
