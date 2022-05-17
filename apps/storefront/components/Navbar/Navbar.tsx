@@ -9,7 +9,6 @@ import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { CheckoutLineDetailsFragment } from "@/saleor/api";
 
 import { BurgerMenu } from "../BurgerMenu";
-import { RegionDialog } from "../RegionDialog";
 import { Menu } from "./Menu";
 import styles from "./Navbar.module.css";
 import NavIconButton from "./NavIconButton";
@@ -21,7 +20,6 @@ export function Navbar() {
   const router = useRouter();
 
   const [isBurgerOpen, setBurgerOpen] = useState(false);
-  const [isRegionDialogOpen, setRegionDialogOpen] = useState(false);
   const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
 
@@ -84,7 +82,6 @@ export function Navbar() {
           </div>
         </div>
       </div>
-      <RegionDialog isOpen={isRegionDialogOpen} onClose={() => setRegionDialogOpen(false)} />
       <BurgerMenu open={isBurgerOpen} onCloseClick={() => setBurgerOpen(false)} />
     </>
   );

@@ -8,8 +8,8 @@ import { usePaths } from "@/lib/paths";
 import { useFooterMenuQuery } from "@/saleor/api";
 
 import { Box } from "../Box";
-import { ChannelDropdown } from "../RegionDialog/ChannelDropdown";
-import { LocaleDropdown } from "../RegionDialog/LocaleDropdown";
+import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
+import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
 import { useRegions } from "../RegionsProvider";
 import styles from "./Footer.module.css";
 
