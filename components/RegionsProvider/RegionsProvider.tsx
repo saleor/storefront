@@ -53,7 +53,7 @@ export function RegionsProvider({ children }: PropsWithChildren<{}>) {
   const setCurrentChannel = (channel: string) => {
     resetCheckoutToken();
     setCurrentChannelSlug(channel);
-    apolloClient.clearStore();
+    apolloClient.resetStore();
   };
 
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
