@@ -13,10 +13,12 @@ export interface UserAddressFormData extends AddressFormData {
   id: string;
 }
 
-export interface AddressFormCommonProps
-  extends Pick<AddressFormData, "countryCode"> {}
-
 export type UserDefaultAddressFragment =
   | null
   | undefined
   | { __typename?: "Address"; id: string };
+
+export interface BillingSameAsShippingAddressProps {
+  isBillingSameAsShippingAddress: boolean;
+  setIsBillingSameAsShippingAddress: (value: boolean) => void;
+}

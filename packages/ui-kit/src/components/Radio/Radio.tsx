@@ -1,4 +1,3 @@
-import React from "react";
 import { Ref, ReactNode, InputHTMLAttributes, forwardRef, useId } from "react";
 import clsx from "clsx";
 
@@ -6,12 +5,14 @@ import styles from "./Radio.module.css";
 import { Label } from "../Label";
 import { ClassNames } from "@lib/globalTypes";
 
+export type RadioClassNames = ClassNames<
+  "container" | "inputContainer" | "input" | "radio" | "label"
+>;
+
 export interface RadioProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   label: string | ReactNode;
-  classNames?: ClassNames<
-    "container" | "inputContainer" | "input" | "radio" | "label"
-  >;
+  classNames?: RadioClassNames;
 }
 
 export const Radio = forwardRef(
@@ -23,7 +24,7 @@ export const Radio = forwardRef(
     const id = rest?.id || generatedId;
 
     return (
-      <Label className={clsx(classNames?.label)} htmlFor={id}>
+      <Label className={clsx(styles.label, classNames?.label)} htmlFor={id}>
         <div className={clsx(styles.radio, classNames?.container)}>
           <div className={clsx(styles["box"])}>
             <input
@@ -37,7 +38,7 @@ export const Radio = forwardRef(
             />
             <div className={clsx(styles["radio-input"], classNames?.radio)} />
           </div>
-          {label}
+          <div className="w-full flex justify-stretch ml-4">{label}</div>
         </div>
       </Label>
     );

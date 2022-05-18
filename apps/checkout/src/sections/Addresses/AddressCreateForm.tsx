@@ -1,25 +1,27 @@
 import { useUserAddressCreateMutation } from "@/graphql";
 import { extractMutationErrors } from "@/lib/utils";
+import { useCountrySelect } from "@/providers/CountrySelectProvider";
 import { useErrors } from "@/providers/ErrorsProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
 import { AddressForm } from "./AddressForm";
-import { AddressFormCommonProps, AddressFormData } from "./types";
+import { AddressFormData } from "./types";
 import { getAddressInputData } from "./utils";
 
-export interface AddressCreateFormProps extends AddressFormCommonProps {
+export interface AddressCreateFormProps {
   show: boolean;
   type: AddressTypeEnum;
   onClose: () => void;
 }
 
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
-  countryCode,
   show,
   type,
   onClose,
 }) => {
   const [, userAddressCreate] = useUserAddressCreateMutation();
+
+  const { countryCode } = useCountrySelect();
 
   const { setApiErrors, ...errorsRest } =
     useErrors<AddressFormData>("userAddressCreate");
@@ -48,11 +50,6 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   }
 
   return (
-    <AddressForm
-      onSave={handleSubmit}
-      countryCode={countryCode}
-      onCancel={onClose}
-      {...errorsRest}
-    />
+    <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />
   );
 };

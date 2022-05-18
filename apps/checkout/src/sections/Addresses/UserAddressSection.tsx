@@ -10,6 +10,7 @@ import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
 import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
+import { useCountrySelect } from "@/providers/CountrySelectProvider";
 
 export interface UserAddressSectionProps {
   defaultAddress?: Pick<AddressFragment, "id"> | null;
@@ -18,8 +19,6 @@ export interface UserAddressSectionProps {
   title: string;
   type: AddressTypeEnum;
 }
-
-const defaultCountryCode: CountryCode = "PL";
 
 export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   defaultAddress,
@@ -30,6 +29,8 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
 }) => {
   const formatMessage = useFormattedMessages();
 
+  const { setCountryCode } = useCountrySelect();
+
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
   const [editedAddressId, setEditedAddressId] = useState<string | null>();
@@ -37,9 +38,6 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   const displayAddressEdit = !!editedAddressId;
 
   const displayAddressList = !displayAddressEdit && !displayAddressCreate;
-
-  const [selectedCountryCode, setSelectedCountryCode] =
-    useState<CountryCode>(defaultCountryCode);
 
   const [selectedAddressId, setSelectedAddressId] = useState(
     defaultAddress?.id
@@ -52,9 +50,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   const onSelectAddress = (id: string) => setSelectedAddressId(id);
 
   const handleSelectCountry = (address?: AddressFragment) => () =>
-    setSelectedCountryCode(
-      (address?.country.code as CountryCode) || defaultCountryCode
-    );
+    setCountryCode(address?.country.code as CountryCode);
 
   useEffect(handleSelectCountry(selectedAddress), [selectedAddress]);
 
@@ -71,19 +67,15 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
       <UserAddressSectionContainer
         title={title}
         displayCountrySelect={displayAddressEdit || displayAddressCreate}
-        selectedCountryCode={selectedCountryCode}
-        onCountrySelect={setSelectedCountryCode}
       >
         <AddressCreateForm
           show={displayAddressCreate}
-          countryCode={selectedCountryCode}
           type={type}
           onClose={() => setDisplayAddressCreate(false)}
         />
 
         <AddressEditForm
           show={displayAddressEdit}
-          countryCode={selectedCountryCode}
           onClose={() => setEditedAddressId(null)}
           defaultValues={getAddressFormDataFromAddress(editedAddress)}
         />

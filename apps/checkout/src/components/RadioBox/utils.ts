@@ -1,5 +1,6 @@
 import { handleInputChange } from "@/lib/utils";
-import { RadioProps } from "@saleor/ui-kit";
+import { RadioProps, RadioClassNames } from "@saleor/ui-kit";
+import clsx from "clsx";
 import { RadioBoxProps } from "./RadioBox";
 
 export const getRadioPropsFromRadioBoxProps = ({
@@ -17,3 +18,10 @@ export const getRadioPropsFromRadioBoxProps = ({
     checked: selectedValue === value,
   };
 };
+
+export const useRadioBoxStyles =
+  (selected?: boolean) =>
+  ({ container }: RadioClassNames = {}) => ({
+    container: clsx("radio-box", selected && "selected", container),
+    label: "py-6 px-6",
+  });

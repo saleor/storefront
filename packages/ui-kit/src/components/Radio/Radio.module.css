@@ -1,16 +1,20 @@
 :local(.radio) {
-  @apply relative flex flex-row mb-4 pl-6.5;
+  @apply relative flex flex-row pl-6.5 w-full;
 }
 
 :local(.box) {
   @apply absolute left-0 h-5 w-5 pointer-events-none inline-flex;
 }
 
+:local(.label) {
+  @apply w-full cursor-pointer;
+}
+
 :local([type="radio"]) {
   @apply opacity-0 absolute z-10;
 }
 
-:local .radio:hover .radio-input {
+:local .label:hover .radio-input {
   @apply border-border-active;
 }
 

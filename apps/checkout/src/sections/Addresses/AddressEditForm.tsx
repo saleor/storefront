@@ -1,25 +1,26 @@
 import { useUserAddressUpdateMutation } from "@/graphql";
 import { extractMutationErrors } from "@/lib/utils";
+import { useCountrySelect } from "@/providers/CountrySelectProvider";
 import { useErrors } from "@/providers/ErrorsProvider";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
-import { AddressFormCommonProps, UserAddressFormData } from "./types";
+import { UserAddressFormData } from "./types";
 import { getAddressInputData } from "./utils";
 
 interface AddressEditFormProps
-  extends AddressFormCommonProps,
-    Pick<AddressFormProps<UserAddressFormData>, "defaultValues"> {
+  extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues"> {
   onClose: () => void;
   show: boolean;
 }
 
 export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
-  countryCode,
   show,
   defaultValues,
 }) => {
   const [, userAddressUpdate] = useUserAddressUpdateMutation();
+
+  const { countryCode } = useCountrySelect();
 
   const { setApiErrors, ...errorsRest } =
     useErrors<UserAddressFormData>("userAddressUpdate");
@@ -50,7 +51,6 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   return (
     <AddressForm
       onSave={handleSubmit}
-      countryCode={countryCode}
       defaultValues={defaultValues}
       onCancel={onClose}
       {...errorsRest}

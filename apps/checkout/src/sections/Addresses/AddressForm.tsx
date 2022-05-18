@@ -10,6 +10,7 @@ import {
   getSortedAddressFields,
   useValidationResolver,
 } from "@/lib/utils";
+import { useCountrySelect } from "@/providers/CountrySelectProvider";
 import { UseErrorsProps } from "@/providers/ErrorsProvider";
 import { forEach } from "lodash-es";
 import { ReactNode, useEffect } from "react";
@@ -35,14 +36,12 @@ export interface AddressFormProps<TFormData extends AddressFormData>
     UseErrorsProps<TFormData>,
     "errors" | "hasErrors" | "setErrors" | "clearErrors"
   > {
-  countryCode: CountryCode;
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
   onSave: SubmitHandler<TFormData>;
 }
 
 export const AddressForm = <TFormData extends AddressFormData>({
-  countryCode,
   defaultValues,
   onCancel,
   onSave,
@@ -52,6 +51,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
 }: AddressFormProps<TFormData>) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
+  const { countryCode } = useCountrySelect();
 
   const schema = object({
     firstName: string().required(errorMessages.requiredValue),

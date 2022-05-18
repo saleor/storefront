@@ -4,8 +4,7 @@ import {
   Radio as UiKitRadio,
   RadioProps as UiKitRadioProps,
 } from "@saleor/ui-kit";
-import { getRadioPropsFromRadioBoxProps } from "./utils";
-import clsx from "clsx";
+import { getRadioPropsFromRadioBoxProps, useRadioBoxStyles } from "./utils";
 import "./RadioBoxStyles.css";
 
 export interface RadioBoxProps
@@ -17,10 +16,14 @@ export interface RadioBoxProps
 
 export const RadioBox: React.FC<RadioBoxProps> = ({ subtitle, ...rest }) => {
   const radioProps = getRadioPropsFromRadioBoxProps(rest);
+  const getRadioBoxClasses = useRadioBoxStyles(radioProps.checked);
 
   return (
-    <div className={clsx("radio-box", radioProps.checked && "selected")}>
-      <UiKitRadio {...radioProps} classNames={{ container: "!mb-0" }} />
+    <div className={getRadioBoxClasses().container}>
+      <UiKitRadio
+        {...radioProps}
+        classNames={{ container: "!mb-0", label: getRadioBoxClasses().label }}
+      />
       {subtitle && <Text>{subtitle}</Text>}
     </div>
   );

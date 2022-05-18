@@ -1,15 +1,15 @@
 import { Radio, Text } from "@saleor/ui-kit";
-import React, { useId, useRef } from "react";
+import React from "react";
 import { IconButton } from "@/components/IconButton";
 import { PenIcon, TrashIcon } from "@/icons";
 import { AddressField } from "@/lib/globalTypes";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { getSortedAddressFieldsFromAddress } from "@/lib/utils";
 import { pull } from "lodash-es";
-import { Label } from "@/components/Label";
 import {
   getRadioPropsFromRadioBoxProps,
   RadioBoxProps,
+  useRadioBoxStyles,
 } from "@/components/RadioBox";
 
 interface AddressRadioBoxProps extends RadioBoxProps {
@@ -26,14 +26,20 @@ export const AddressRadioBox: React.FC<AddressRadioBoxProps> = ({
 }) => {
   const formatMessage = useFormattedMessages();
   const name = `${address.firstName} ${address.lastName}`;
+  const radioProps = getRadioPropsFromRadioBoxProps(rest);
+  const getRadioBoxClasses = useRadioBoxStyles(radioProps.checked);
 
   return (
-    <div className="radio-box address-radio-box">
+    <div
+      className={
+        getRadioBoxClasses({ container: "address-radio-box" }).container
+      }
+    >
       <Radio
-        {...getRadioPropsFromRadioBoxProps(rest)}
-        classNames={{ label: "w-full" }}
+        {...radioProps}
+        classNames={{ label: getRadioBoxClasses("w-full").label }}
         label={
-          <div className="w-full flex flex-row justify-between w-full">
+          <div className="w-full flex flex-row justify-between">
             <div className="flex flex-col">
               <Text weight="semibold">{name}</Text>
               {pull(

@@ -5,22 +5,24 @@ import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { UserDefaultAddressFragment } from "./types";
+import {
+  BillingSameAsShippingAddressProps,
+  UserDefaultAddressFragment,
+} from "./types";
 import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
 
-export interface ShippingAddressSectionProps {
+export interface ShippingAddressSectionProps
+  extends BillingSameAsShippingAddressProps {
   addresses?: AddressFragment[] | null;
   defaultShippingAddress: UserDefaultAddressFragment;
-  useShippingAsBillingAddress: boolean;
-  setUseShippingAsBillingAddress: (value: boolean) => void;
 }
 
 export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
-  useShippingAsBillingAddress,
-  setUseShippingAsBillingAddress,
   defaultShippingAddress,
   addresses = [],
+  isBillingSameAsShippingAddress,
+  setIsBillingSameAsShippingAddress,
 }) => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
@@ -29,7 +31,7 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
   const defaultAddress = checkout?.shippingAddress || defaultShippingAddress;
 
   const { updateShippingAddress } = useCheckoutAddressUpdate({
-    useShippingAsBillingAddress,
+    isBillingSameAsShippingAddress,
   });
 
   return (
@@ -53,8 +55,8 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
       )}
       <Checkbox
         value="useShippingAsBilling"
-        checked={useShippingAsBillingAddress}
-        onChange={setUseShippingAsBillingAddress}
+        checked={isBillingSameAsShippingAddress}
+        onChange={setIsBillingSameAsShippingAddress}
         label={formatMessage("useShippingAsBilling")}
       />
     </>

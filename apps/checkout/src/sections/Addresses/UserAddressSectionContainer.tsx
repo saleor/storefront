@@ -1,25 +1,19 @@
 import { Title } from "@/components/Title";
-import { CountryCode } from "@/graphql";
 import React, { PropsWithChildren } from "react";
 import { countries } from "./countries";
 import { Select } from "@saleor/ui-kit";
+import { useCountrySelect } from "@/providers/CountrySelectProvider";
 
 interface UserAddressSectionContainerProps {
   title: string;
   displayCountrySelect: boolean;
-  selectedCountryCode: CountryCode;
-  onCountrySelect: (countryCode: CountryCode) => void;
 }
 
 export const UserAddressSectionContainer: React.FC<
   PropsWithChildren<UserAddressSectionContainerProps>
-> = ({
-  selectedCountryCode,
-  title,
-  children,
-  displayCountrySelect,
-  onCountrySelect,
-}) => {
+> = ({ title, children, displayCountrySelect }) => {
+  const { countryCode, setCountryCode } = useCountrySelect();
+
   return (
     <div className="my-6">
       <div className="flex flex-row justify-between items-baseline mb-3">
@@ -27,8 +21,8 @@ export const UserAddressSectionContainer: React.FC<
         {displayCountrySelect && (
           <Select
             classNames={{ container: "!w-1/3" }}
-            onChange={onCountrySelect}
-            selectedValue={selectedCountryCode}
+            onChange={setCountryCode}
+            selectedValue={countryCode}
             options={countries.map(({ name, code }) => ({
               label: name,
               value: code,

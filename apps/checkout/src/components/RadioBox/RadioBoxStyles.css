@@ -12,7 +12,16 @@
   }
 
   .radio-box {
-    @apply box-content py-6 px-6 flex flex-row items-start border-x border-t border-border-primary;
+    @apply box-content flex flex-row items-start border-x border-t border-border-primary;
+  }
+
+  .radio-box:hover {
+    @apply border border-border-active;
+  }
+
+  .radio-box:hover + div.radio-box,
+  .radio-box:hover + div.radio-box.selected {
+    @apply border-t-0;
   }
 
   .radio-box-group div.radio-box.selected {

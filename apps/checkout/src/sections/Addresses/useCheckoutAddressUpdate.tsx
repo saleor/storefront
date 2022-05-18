@@ -7,16 +7,19 @@ import { useCheckout } from "@/hooks/useCheckout";
 import { extractMutationErrors, getDataWithToken } from "@/lib/utils";
 import { useErrors } from "@/providers/ErrorsProvider";
 import { useEffect } from "react";
-import { AddressFormData } from "./types";
+import { AddressFormData, BillingSameAsShippingAddressProps } from "./types";
 import { getAddressFormDataFromAddress, getAddressInputData } from "./utils";
 
 export type UseAddressUpdateFn = (address: AddressFormData) => Promise<void>;
 
+type UseCheckoutAddressUpdateProps = Pick<
+  BillingSameAsShippingAddressProps,
+  "isBillingSameAsShippingAddress"
+>;
+
 export const useCheckoutAddressUpdate = ({
-  useShippingAsBillingAddress,
-}: {
-  useShippingAsBillingAddress: boolean;
-}) => {
+  isBillingSameAsShippingAddress,
+}: UseCheckoutAddressUpdateProps) => {
   const { checkout } = useCheckout();
   const { setApiErrors: setShippingApiErrors } = useErrors<AddressFormData>(
     "checkoutShippingUpdate"
@@ -40,7 +43,7 @@ export const useCheckoutAddressUpdate = ({
       return;
     }
 
-    if (useShippingAsBillingAddress) {
+    if (isBillingSameAsShippingAddress) {
       handleUpdateBillingAddress(address);
     }
   };
@@ -70,7 +73,7 @@ export const useCheckoutAddressUpdate = ({
     const { shippingAddress } = checkout;
 
     const shouldUpdateBillingAddress =
-      useShippingAsBillingAddress && !!shippingAddress;
+      isBillingSameAsShippingAddress && !!shippingAddress;
 
     if (shouldUpdateBillingAddress) {
       updateBillingAddress(
@@ -82,7 +85,9 @@ export const useCheckoutAddressUpdate = ({
   const handleUpdateBillingAddress = (address: AddressFormData) =>
     updateBillingAddress(getAddressInputData(address));
 
-  useEffect(setBillingAddressWhenSameAsShipping, [useShippingAsBillingAddress]);
+  useEffect(setBillingAddressWhenSameAsShipping, [
+    isBillingSameAsShippingAddress,
+  ]);
 
   return {
     updateShippingAddress,
