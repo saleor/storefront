@@ -23,13 +23,13 @@ export function LocaleDropdown() {
     localeSlug: loc.slug,
   }));
 
-  const onLocaleChange = async (localeSlug: string) => {
+  const onLocaleChange = (localeSlug: string) => {
     if (localeSlug === currentLocale) {
       return;
     }
 
     // Update current URL to use the chosen locale
-    await router.push({
+    router.push({
       pathname: router.pathname,
       query: {
         ...router.query,
