@@ -21,14 +21,14 @@ export function ChannelDropdown() {
     channelSlug: ch.slug,
   }));
 
-  const onChannelChange = async (channelSlug: string) => {
+  const onChannelChange = (channelSlug: string) => {
     if (channelSlug === currentChannel.slug) {
       return;
     }
-    await setCurrentChannel(channelSlug);
+    setCurrentChannel(channelSlug);
 
     // Update current URL to use the chosen channel
-    await router.push({
+    router.push({
       pathname: router.pathname,
       query: {
         ...router.query,
