@@ -8,13 +8,14 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "dev": "env-cmd turbo run dev --parallel",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "prettier": "^2.5.1",
     "turbo": "latest"
   },

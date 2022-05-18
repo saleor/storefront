@@ -3,7 +3,7 @@ import { envVars } from "@/lib/utils";
 import { AppConfig } from "@/providers/AppConfigProvider/types";
 
 export const getPaymentProviders = () =>
-  fetch(`${envVars.configAppUrl}/active-payment-providers/channel-1`);
+  fetch(`${envVars.checkoutAppUrl}/active-payment-providers/channel-1`);
 
 export interface PayResult {
   data: {
@@ -33,4 +33,4 @@ export const pay = ({
   });
 
 export const getAppConfig = (): FetchResponse<AppConfig> =>
-  fetch(`${envVars.configAppUrl}/customization-settings`);
+  fetch(`${envVars.checkoutAppUrl}/customization-settings`);
