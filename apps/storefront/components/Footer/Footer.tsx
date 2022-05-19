@@ -88,8 +88,8 @@ export function Footer({ className, ...rest }: FooterProps) {
             © Copyright 2018 - {new Date().getFullYear()} Saleor Commerce
           </p>
           <div className="invisible md:visible flex gap-4">
-            <ChannelDropdown />
-            <LocaleDropdown />
+            <ChannelDropdown horizontalAlignment="right" />
+            <LocaleDropdown horizontalAlignment="right" />
           </div>
         </div>
       </Box>

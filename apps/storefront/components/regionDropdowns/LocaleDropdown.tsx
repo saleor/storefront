@@ -4,7 +4,7 @@ import React from "react";
 import { LOCALES } from "@/lib/regions";
 
 import { useRegions } from "../RegionsProvider";
-import { BaseRegionsDropdown } from "./BaseRegionsDropdown";
+import { BaseRegionsDropdown, HorizontalAlignment } from "./BaseRegionsDropdown";
 import { BaseRegionsDropdownItem } from "./BaseRegionsDropdownItem";
 
 interface DropdownOption {
@@ -13,7 +13,11 @@ interface DropdownOption {
   localeSlug: string;
 }
 
-export function LocaleDropdown() {
+export interface LocaleDropdownProps {
+  horizontalAlignment?: HorizontalAlignment;
+}
+
+export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
   const router = useRouter();
   const { currentLocale, currentChannel } = useRegions();
 
@@ -40,7 +44,7 @@ export function LocaleDropdown() {
   };
 
   return (
-    <BaseRegionsDropdown label={currentLocale}>
+    <BaseRegionsDropdown label={currentLocale} horizontalAlignment={horizontalAlignment}>
       {localeOptions.map((option) => (
         <BaseRegionsDropdownItem
           key={option.label}
