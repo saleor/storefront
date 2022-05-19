@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import { useRegions } from "../RegionsProvider";
-import { BaseRegionsDropdown } from "./BaseRegionsDropdown";
+import { BaseRegionsDropdown, HorizontalAlignment } from "./BaseRegionsDropdown";
 import { BaseRegionsDropdownItem } from "./BaseRegionsDropdownItem";
 
 interface DropdownOption {
@@ -11,7 +11,11 @@ interface DropdownOption {
   channelSlug: string;
 }
 
-export function ChannelDropdown() {
+export interface ChannelDropdownProps {
+  horizontalAlignment?: HorizontalAlignment;
+}
+
+export function ChannelDropdown({ horizontalAlignment }: ChannelDropdownProps) {
   const router = useRouter();
   const { channels, currentChannel, setCurrentChannel, currentLocale } = useRegions();
 
@@ -39,7 +43,10 @@ export function ChannelDropdown() {
   };
 
   return (
-    <BaseRegionsDropdown label={currentChannel.currencyCode}>
+    <BaseRegionsDropdown
+      label={currentChannel.currencyCode}
+      horizontalAlignment={horizontalAlignment}
+    >
       {channelOptions.map((option) => (
         <BaseRegionsDropdownItem
           key={option.label}
