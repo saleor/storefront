@@ -69,11 +69,13 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
   return (
     <>
       <div className="flex-shrink-0 bg-white w-32 h-32 sm:w-48 sm:h-48 border object-center object-cover relative">
-        <Image
-          src={line.variant.product?.thumbnail?.url || ""}
-          alt={line.variant.product?.thumbnail?.alt || ""}
-          layout="fill"
-        />
+        {line.variant.product?.thumbnail && (
+          <Image
+            src={line.variant.product?.thumbnail?.url}
+            alt={line.variant.product?.thumbnail?.alt || ""}
+            layout="fill"
+          />
+        )}
       </div>
 
       <div className="ml-8 flex-1 flex flex-col justify-center">

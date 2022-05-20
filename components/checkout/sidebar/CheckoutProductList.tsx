@@ -27,11 +27,13 @@ export function CheckoutProductList({ lines, token }: CheckoutProductListProps) 
         return (
           <li key={line.id} className="flex py-4 space-x-4">
             <div className="border bg-white w-32 h-32 object-center object-cover rounded-md relative">
-              <Image
-                src={line.variant.product.thumbnail?.url || ""}
-                alt={line.variant.product.thumbnail?.alt || ""}
-                layout="fill"
-              />
+              {line.variant.product?.thumbnail && (
+                <Image
+                  src={line.variant.product?.thumbnail?.url}
+                  alt={line.variant.product?.thumbnail?.alt || ""}
+                  layout="fill"
+                />
+              )}
             </div>
 
             <div className="flex flex-col justify-between space-y-4">
