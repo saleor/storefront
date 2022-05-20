@@ -29,10 +29,9 @@ function AddressBookPage() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2">
-      {addresses.map(
-        (address) =>
-          address && <AddressBookCard address={address} onRefreshBook={() => refetch()} />
-      )}
+      {addresses.map((address) => (
+        <AddressBookCard key={address.id} address={address} onRefreshBook={() => refetch()} />
+      ))}
     </div>
   );
 }
