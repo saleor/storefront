@@ -127,9 +127,11 @@ export const ProductLinkComponent = () => {
 ```
 
 ### Saleor Checkout
+
 React Storefront uses the new [Saleor Checkout](https://github.com/saleor/saleor-checkout) for checkout and payments. The setup is as easy as:
+
 1. Deploy Saleor Checkout
-2. Set  the `NEXT_PUBLIC_CHECKOUT_URL` environment variable with Saleor Checkout URL
+2. Set the `NEXT_PUBLIC_CHECKOUT_URL` environment variable with Saleor Checkout URL
 
 ### Code style
 
