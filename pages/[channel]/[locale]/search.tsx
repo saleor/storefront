@@ -10,13 +10,15 @@ import { ProductFilterInput } from "@/saleor/api";
 function SearchPage() {
   const t = useIntl();
   const [searchQuery, setSearchQuery] = useQueryState("q");
-  const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({
-    search: searchQuery,
-  });
+  const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({});
 
   useDebounce(
     () => {
-      setDebouncedFilter({ search: searchQuery });
+      if (searchQuery) {
+        setDebouncedFilter({ search: searchQuery });
+      } else {
+        setDebouncedFilter({});
+      }
     },
     1000,
     [searchQuery]
