@@ -95,7 +95,7 @@ function RegisterPage() {
 
               <div className="">
                 <button
-                  type="button"
+                  type="submit"
                   className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
                 >
                   {t.formatMessage(messages.registerButton)}
