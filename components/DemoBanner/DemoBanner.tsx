@@ -1,6 +1,6 @@
 export function DemoBanner() {
   return (
-    <div className="flex flex-row-reverse items-center h-16 space-x-4 border-b-2 border-dashed">
+    <div className="flex flex-row-reverse items-center h-16 space-x-4 border-b-2 border-dashed text-md">
       <div className="px-4">
         <a href="https://demo.saleor.io/graphql/">
           <span className="hidden md:inline text-gray-600">Play with&nbsp;</span>

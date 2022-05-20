@@ -15,6 +15,9 @@ module.exports = {
   mode: "jit",
   theme: {
     extend: {
+      screens: {
+        xs: "375px",
+      },
       container: {
         center: true,
         padding: "1.6rem",
@@ -30,9 +33,9 @@ module.exports = {
           DEFAULT: "#394052",
           1: "rgba(57, 64, 82, 0.8)",
           2: "rgba(57, 64, 82, 0.6)",
-          3: "rgba(57, 64, 82, 0.4)",
+          3: "#B9C1CF",
           4: "rgba(57, 64, 82, 0.15)",
-          5: "rgba(57, 64, 82, 0.1)",
+          5: "#EEF1F7",
         },
       },
       spacing: {
@@ -55,7 +58,7 @@ module.exports = {
         xs: ["1.1rem", "1.6rem"],
         sm: ["1.2rem", "2.1rem"],
         base: ["1.4rem", "2.1rem"],
-        md: ["1.6rem", "2.3rem"],
+        md: ["1.6rem", "1.9rem"],
         lg: ["2.4rem", "3.2rem"],
         xl: ["3.2rem", "4.6rem"],
       },
@@ -66,6 +69,7 @@ module.exports = {
       boxShadow: {
         "decorative-center": "0 32px 0 -16px #394052",
         decorative: "16px 16px 0 #394052",
+        modal: "0px 4px 20px 0px rgba(0, 0, 0, 0.12)",
       },
     },
   },

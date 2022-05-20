@@ -1,6 +1,6 @@
 mutation CheckoutLineUpdate(
   $token: UUID
-  $lines: [CheckoutLineInput!]!
+  $lines: [CheckoutLineUpdateInput!]!
   $locale: LanguageCodeEnum!
 ) {
   checkoutLinesUpdate(token: $token, lines: $lines) {

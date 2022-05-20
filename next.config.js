@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
@@ -16,6 +17,15 @@ module.exports = withBundleAnalyzer({
   images: {
     domains: [apiURL.hostname, ...allowedImageDomains],
     formats: imageConversionFormats,
+  },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ["@svgr/webpack"],
+    });
+
+    return config;
   },
   async headers() {
     return [

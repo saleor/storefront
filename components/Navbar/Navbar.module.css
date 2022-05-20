@@ -1,0 +1,81 @@
+.navbar {
+  @apply bg-white text-main sticky top-0 z-50;
+}
+
+.inner {
+  @apply container h-18 flex flex-nowrap items-center;
+}
+
+.logo {
+  @apply hover:text-brand;
+}
+
+.nav {
+  @apply pl-0.5 h-full hidden lg:flex;
+}
+
+.nav > ol {
+  @apply list-none flex items-center h-full;
+}
+
+.nav > ol > li {
+  @apply h-full;
+}
+
+.dropdown {
+  @apply flex items-center h-full;
+}
+
+.dropdown-trigger {
+  @apply flex items-center text-center text-md font-bold hover:text-brand h-full px-4;
+}
+
+.dropdown-menu {
+  @apply absolute top-18 left-[50%] translate-x-[-50%] pt-8 bg-white w-full border-b border-main-4 invisible;
+  padding-bottom: calc(theme("spacing.12") - theme("borderWidth.DEFAULT"));
+}
+
+.dropdown:hover :local .dropdown-menu {
+  @apply visible;
+}
+
+.dropdown-main {
+  @apply inline-block text-[1.8rem] leading-[2.16rem] font-bold cursor-pointer hover:underline;
+}
+
+.dropdown-ul {
+  @apply list-none mt-3;
+}
+
+.dropdown-ul > li + li {
+  @apply mt-2;
+}
+
+.dropdown-link {
+  @apply text-base text-main-2 cursor-pointer hover:underline;
+}
+
+.nav-icon-button {
+  @apply relative hover:text-brand w-8 h-8 flex justify-center items-center;
+}
+
+.nav-icon-counter {
+  @apply absolute bottom-2 right-2 translate-x-[50%] translate-y-[50%] bg-brand text-white flex justify-center items-center rounded text-[1rem] leading-[1rem] h-[14px] px-1;
+  min-width: theme("spacing.4");
+}
+
+.user-menu-container {
+  @apply relative;
+}
+
+.user-menu-container:hover :local .user-menu {
+  @apply visible;
+}
+
+.user-menu {
+  @apply absolute top-[100%] right-0 shadow-modal flex flex-col  invisible;
+}
+
+.user-menu-item {
+  @apply px-4 pt-[14px] pb-[13px] text-base font-medium cursor-pointer flex items-center whitespace-nowrap hover:text-brand;
+}

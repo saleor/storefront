@@ -115,7 +115,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
                 <input
                   type="text"
                   id="card-number"
-                  className="block w-full border-gray-300 rounded-md shadow-sm"
+                  className="block w-full border-gray-300 rounded-md shadow-sm text-base"
                   {...registerCard("cardNumber", {
                     required: true,
                   })}
@@ -134,7 +134,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
                 <input
                   type="text"
                   id="expiration-date"
-                  className="block w-full border-gray-300 rounded-md shadow-sm"
+                  className="block w-full border-gray-300 rounded-md shadow-sm text-base"
                   placeholder="MM / YY"
                   {...registerCard("expDate", {
                     required: true,
@@ -151,7 +151,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
                 <input
                   type="text"
                   id="cvc"
-                  className="block w-full border-gray-300 rounded-md shadow-sm"
+                  className="block w-full border-gray-300 rounded-md shadow-sm text-base"
                   {...registerCard("cvc", {
                     required: true,
                   })}
