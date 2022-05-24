@@ -104,3 +104,40 @@ mutation OrderCreate($id: ID!) {
     }
   }
 }
+
+fragment TransactionEvent on TransactionEvent {
+  name
+  reference
+}
+
+fragment Transaction on TransactionItem {
+  id
+  reference
+  voidedAmount {
+    ...Money
+  }
+  refundedAmount {
+    ...Money
+  }
+  chargedAmount {
+    ...Money
+  }
+  authorizedAmount {
+    ...Money
+  }
+  events {
+    ...TransactionEvent
+  }
+}
+
+query OrderTransactions($id: ID!) {
+  order(id: $id) {
+    transactions {
+      ...Transaction
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

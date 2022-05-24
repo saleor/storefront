@@ -64,6 +64,7 @@ describe("/api/pay", () => {
       checkoutId: "id",
       provider: "mollie",
       totalAmount: 100,
+      redirectUrl: "example.com",
     } as Body;
 
     // @ts-ignore
@@ -72,7 +73,10 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateMolliePayment).toHaveBeenCalledWith(mockOrderData);
+    expect(mockedCreateMolliePayment).toHaveBeenCalledWith(
+      mockOrderData,
+      "example.com"
+    );
     expect(mockedCreateMolliePayment).toHaveBeenCalledTimes(1);
 
     const data: SuccessResponse = res._getJSONData();
@@ -93,6 +97,7 @@ describe("/api/pay", () => {
       checkoutId: "id",
       provider: "adyen",
       totalAmount: 100,
+      redirectUrl: "example.com",
     } as Body;
 
     // @ts-ignore
@@ -101,7 +106,10 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(mockOrderData);
+    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(
+      mockOrderData,
+      "example.com"
+    );
     expect(mockedCreateAdyenPayment).toHaveBeenCalledTimes(1);
 
     const data: SuccessResponse = res._getJSONData();

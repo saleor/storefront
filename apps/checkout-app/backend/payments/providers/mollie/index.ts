@@ -89,7 +89,7 @@ export const verifyPayment = async (
       transaction: {
         status,
         type: `mollie-${method}`,
-        amountCaptured: amountCaptured && {
+        amountCharged: amountCaptured && {
           amount: parseFloat(amountCaptured.value),
           currency: amountCaptured.currency,
         },

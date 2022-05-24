@@ -1,4 +1,9 @@
-import { OrderFragment, TransactionActionEnum } from "@/graphql";
+import {
+  MoneyFragment,
+  OrderFragment,
+  TransactionActionEnum,
+  TransactionEventFragment,
+} from "@/graphql";
 import { Types } from "@adyen/api-library";
 
 export const getAdyenAmountFromSaleor = (float: number) =>
@@ -14,7 +19,7 @@ export const mapAvailableActions = (
       operation ===
       Types.notification.NotificationRequestItem.OperationsEnum.Capture
     ) {
-      return "CAPTURE";
+      return "CHARGE";
     }
 
     if (
@@ -48,3 +53,19 @@ export const getLineItems = (
     imageUrl: line.thumbnail?.url,
     itemCategory: line.variant?.product.category?.name,
   }));
+
+export const createEventUniqueKey = (event: TransactionEventFragment) =>
+  [event.name, event.reference].join();
+
+export const getAmountAfterRefund = (
+  money: MoneyFragment,
+  refundAmount: number
+) => {
+  const chargedAmount = money.amount - refundAmount;
+
+  if (chargedAmount < 0) {
+    throw "Amount after refund cannot be negative";
+  }
+
+  return chargedAmount;
+};

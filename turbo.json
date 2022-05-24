@@ -1,7 +1,15 @@
 {
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build",
+        "$SALEOR_API_URL",
+        "$CHECKOUT_API_URL",
+        "$REACT_APP_SALEOR_API_URL",
+        "$REACT_APP_CHECKOUT_API_URL",
+        "$SALEOR_APP_TOKEN",
+        "$NEXT_PUBLIC_SALEOR_API_URL"
+      ],
       "outputs": ["dist/**", ".next/**", "build/**"]
     },
     "lint": {

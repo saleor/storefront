@@ -31,7 +31,7 @@ export const useCheckoutFinalize = () => {
   const checkoutPay = async () => {
     const redirectUrl = getRedirectUrl();
     const result = await pay({
-      provider: "mollie",
+      provider: "adyen",
       checkoutId: checkout?.id,
       totalAmount: checkout?.totalPrice?.gross?.amount as number,
       redirectUrl,
