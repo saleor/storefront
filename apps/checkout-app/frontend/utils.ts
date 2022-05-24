@@ -1,44 +1,21 @@
-import { MetadataItemFragment } from "@/graphql";
+import { UnknownPublicSettingsValues } from "@/types/api";
 import {
-  defaultPrivateSettings,
-  defaultPublicSettings,
-} from "@/config/defaults";
-import { SettingsValues, UnknownSettingsValues } from "@/types/api";
-import {
-  allSettingID,
   Item,
   NamedNode,
   Node,
-  SettingID,
-  SettingsType,
+  PaymentProvider,
+  PaymentProviderID,
 } from "@/types/common";
-import reduce from "lodash-es/reduce";
 import { CombinedError } from "urql";
-
-export function parseJwt(token: string) {
-  var base64Url = token.split(".")[1];
-  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  var jsonPayload = decodeURIComponent(
-    Buffer.from(base64, "base64")
-      .toString()
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
-  );
-
-  return JSON.parse(jsonPayload);
-}
 
 export const flattenSettingId = (optionIdx: number, settingId: string) =>
   `${optionIdx}-${settingId}`;
 
-export const unflattenSettings = <T, S extends Node>(
-  flattenedSettings: Record<string, T>,
+export const unflattenSettings = <S extends Node>(
+  flattenedSettings: Record<string, string>,
   options: S[]
 ) => {
-  const unflattenedSettings: UnknownSettingsValues<T> = {};
+  const unflattenedSettings: UnknownPublicSettingsValues = {};
 
   Object.keys(flattenedSettings).forEach((flattedKey) => {
     const keys = flattedKey.split(/-(.+)/);
@@ -57,92 +34,6 @@ export const unflattenSettings = <T, S extends Node>(
   return unflattenedSettings;
 };
 
-/**
- * Merges settings. To be used when default and saved settings may differ (e.g. after app update).
- * @param defaultSettings
- * @param savedSettings
- * @returns Returns either previously saved settings values or default settings values. If settings values are present in default and saved at the same time, then saved value is returned.
- */
-export const mergeSettingsValues = (
-  defaultSettings: UnknownSettingsValues,
-  savedSettings: UnknownSettingsValues
-) => {
-  return reduce(
-    defaultSettings,
-    (result, defaultSetting, settingKey) => {
-      const savedSetting = savedSettings[settingKey];
-      const hasSettingInBothSettings = !!savedSetting;
-      const udpatedSetting = hasSettingInBothSettings
-        ? { ...defaultSetting, ...savedSetting }
-        : defaultSetting;
-
-      return {
-        ...result,
-        [settingKey]: udpatedSetting,
-      };
-    },
-    savedSettings
-  );
-};
-
-export const mapMetadataToSettings = <T extends SettingsType>(
-  metadata: (MetadataItemFragment | null)[],
-  type: T
-): SettingsValues<T> => {
-  const defaultSettings =
-    type === "public" ? defaultPublicSettings : defaultPrivateSettings;
-
-  const settings = metadata.reduce((settings, metadataItem) => {
-    const settingsKey = metadataItem?.key as keyof typeof settings;
-
-    if (!settingsKey || !allSettingID.includes(settingsKey)) {
-      return settings;
-    }
-
-    try {
-      const metadataItemSettings = JSON.parse(metadataItem?.value || "");
-      return {
-        ...settings,
-        [settingsKey]: mergeSettingsValues(
-          settings[settingsKey],
-          metadataItemSettings
-        ),
-      };
-    } catch (e) {
-      return {
-        ...settings,
-        [settingsKey]: settings[settingsKey] || {},
-      };
-    }
-  }, defaultSettings);
-
-  return settings as SettingsValues<T>;
-};
-
-export const mapSettingsToMetadata = <T extends SettingsType>(
-  settingsValues: Partial<SettingsValues<T>>
-) => {
-  return Object.keys(settingsValues).reduce(
-    (metadata, settingsValuesKey) => {
-      const settingsValuesObject =
-        settingsValues[settingsValuesKey as keyof SettingsValues<T>];
-      const settingsValuesValue = JSON.stringify(settingsValuesObject);
-
-      return [
-        ...metadata,
-        {
-          key: settingsValuesKey,
-          value: settingsValuesValue,
-        },
-      ];
-    },
-    [] as Array<{
-      key: string;
-      value: string;
-    }>
-  );
-};
-
 export const mapNodeToItem = (node: NamedNode): Item => ({
   id: node.id,
   label: node.name,
@@ -150,7 +41,10 @@ export const mapNodeToItem = (node: NamedNode): Item => ({
 export const mapNodesToItems = (nodes?: NamedNode[]): Item[] =>
   nodes?.map(mapNodeToItem) || [];
 
-export const getCommonErrors = (error?: CombinedError) => [
-  ...(error?.graphQLErrors || []),
-  ...((error?.networkError && [error.networkError]) || []),
-];
+export const getCommonErrors = (error?: Partial<CombinedError>) =>
+  error?.graphQLErrors || error?.networkError
+    ? [
+        ...(error?.graphQLErrors || []),
+        ...(error?.networkError ? [error.networkError] : []),
+      ]
+    : [...(error ? [error] : [])];

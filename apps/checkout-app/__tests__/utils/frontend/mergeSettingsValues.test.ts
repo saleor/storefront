@@ -1,6 +1,8 @@
-import { mergeSettingsValues } from "@/frontend/utils";
+import { mergeSettingsValues as mergePrivateSettingsValues } from "@/backend/configuration/mapPrivateMetadataToSettings";
+import { mergeSettingsValues as mergePublicSettingsValues } from "@/frontend/misc/mapPublicMetadataToSettings";
+import { PaymentProviderSettingsValues } from "@/types/api";
 
-describe("/utils/frontend/mergeSettingsValues", () => {
+describe("/utils/frontend/misc/mergeSettingsValues", () => {
   it("overrides default values", async () => {
     const defaultSettings = {
       foo: {
@@ -14,8 +16,27 @@ describe("/utils/frontend/mergeSettingsValues", () => {
         car: "cax",
       },
     };
+    const savedPrivateSettings = {
+      foo: {
+        bar: {
+          encrypted: false,
+          value: "qux",
+        },
+        car: {
+          encrypted: false,
+          value: "cax",
+        },
+      },
+    };
 
-    const mergedSettings = mergeSettingsValues(defaultSettings, savedSettings);
+    const mergedSettings = mergePublicSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+    const privateMergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedPrivateSettings
+    );
 
     const expectedSettings = {
       foo: {
@@ -25,6 +46,7 @@ describe("/utils/frontend/mergeSettingsValues", () => {
     };
 
     expect(mergedSettings).toEqual(expectedSettings);
+    expect(privateMergedSettings).toEqual(expectedSettings);
   });
 
   it("adds default values when no corresponding saved values", async () => {
@@ -36,12 +58,20 @@ describe("/utils/frontend/mergeSettingsValues", () => {
     };
     const savedSettings = {};
 
-    const mergedSettings = mergeSettingsValues(defaultSettings, savedSettings);
+    const mergedSettings = mergePublicSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+    const privateMergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
 
     expect(mergedSettings).toEqual(defaultSettings);
+    expect(privateMergedSettings).toEqual(defaultSettings);
   });
 
-  it("adds saved values when no corresponding default values", async () => {
+  it("adds saved values when no corresponding default value (only not encrypted)", async () => {
     const defaultSettings = {};
     const savedSettings = {
       foo: {
@@ -49,10 +79,30 @@ describe("/utils/frontend/mergeSettingsValues", () => {
         cat: "cax",
       },
     };
+    const savedPrivateSettings = {
+      foo: {
+        bar: {
+          encrypted: false,
+          value: "qux",
+        },
+        car: {
+          encrypted: false,
+          value: "cax",
+        },
+      },
+    };
 
-    const mergedSettings = mergeSettingsValues(defaultSettings, savedSettings);
+    const mergedSettings = mergePublicSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+    const privateMergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedPrivateSettings
+    );
 
     expect(mergedSettings).toEqual(savedSettings);
+    expect(privateMergedSettings).toEqual(defaultSettings);
   });
 
   it("merges default and saved values", async () => {
@@ -68,8 +118,27 @@ describe("/utils/frontend/mergeSettingsValues", () => {
         fooFour: "four",
       },
     };
+    const savedPrivateSettings = {
+      foo: {
+        fooThree: {
+          encrypted: false,
+          value: "three",
+        },
+        fooFour: {
+          encrypted: false,
+          value: "four",
+        },
+      },
+    };
 
-    const mergedSettings = mergeSettingsValues(defaultSettings, savedSettings);
+    const mergedSettings = mergePublicSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+    const privateMergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedPrivateSettings
+    );
 
     const expectedSettings = {
       foo: {
@@ -81,6 +150,7 @@ describe("/utils/frontend/mergeSettingsValues", () => {
     };
 
     expect(mergedSettings).toEqual(expectedSettings);
+    expect(privateMergedSettings).toEqual(expectedSettings);
   });
 
   it("overrides default, adds default, adds saved values", async () => {
@@ -100,8 +170,35 @@ describe("/utils/frontend/mergeSettingsValues", () => {
         fooSix: "sixNew",
       },
     };
+    const savedPrivateSettings = {
+      foo: {
+        fooOne: {
+          encrypted: false,
+          value: "oneReplaced",
+        },
+        fooTwo: {
+          encrypted: false,
+          value: "twoReplaced",
+        },
+        fooFive: {
+          encrypted: false,
+          value: "fourNew",
+        },
+        fooSix: {
+          encrypted: false,
+          value: "sixNew",
+        },
+      },
+    };
 
-    const mergedSettings = mergeSettingsValues(defaultSettings, savedSettings);
+    const mergedSettings = mergePublicSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+    const privateMergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedPrivateSettings
+    );
 
     const expectedSettings = {
       foo: {
@@ -115,6 +212,7 @@ describe("/utils/frontend/mergeSettingsValues", () => {
     };
 
     expect(mergedSettings).toEqual(expectedSettings);
+    expect(privateMergedSettings).toEqual(expectedSettings);
   });
 
   it("merges default and saved sub-settings", async () => {
@@ -132,8 +230,31 @@ describe("/utils/frontend/mergeSettingsValues", () => {
         png: "912",
       },
     };
+    const savedPrivateSettings = {
+      bar: {
+        xyz: {
+          encrypted: false,
+          value: "789",
+        },
+        jpg: {
+          encrypted: false,
+          value: "890",
+        },
+        png: {
+          encrypted: false,
+          value: "912",
+        },
+      },
+    };
 
-    const mergedSettings = mergeSettingsValues(defaultSettings, savedSettings);
+    const mergedSettings = mergePublicSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+    const privateMergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedPrivateSettings
+    );
 
     const expectedSettings = {
       foo: {
@@ -145,6 +266,74 @@ describe("/utils/frontend/mergeSettingsValues", () => {
         xyz: "789",
         jpg: "890",
         png: "912",
+      },
+    };
+
+    expect(mergedSettings).toEqual(expectedSettings);
+    expect(privateMergedSettings).toEqual(defaultSettings);
+  });
+
+  it("merges payment provider values", async () => {
+    const defaultSettings: PaymentProviderSettingsValues<"unencrypted"> = {
+      adyen: {
+        clientKey: "",
+        merchantAccount: "",
+        supportedCurrencies: "",
+      },
+      mollie: {
+        partnerId: "",
+        liveApiKey: "",
+        testApiKey: "",
+      },
+    };
+    const savedSettings: PaymentProviderSettingsValues<"encrypted"> = {
+      adyen: {
+        clientKey: {
+          encrypted: true,
+          value:
+            "U2FsdGVkX1/DpBetYEcOpf55fq9JoAa/fTUFzTq8zgh5IqTErE4YL8j1VD4KPBUN",
+        },
+        merchantAccount: {
+          encrypted: true,
+          value:
+            "U2FsdGVkX182nG081Vfy9CdwO+ZDM2pgPCQuQ2foyPwWmh21JWaI33Gz5Fp5q+18",
+        },
+        supportedCurrencies: {
+          encrypted: false,
+          value: "USD,EUR",
+        },
+      },
+      mollie: {
+        partnerId: {
+          encrypted: false,
+          value: "",
+        },
+        liveApiKey: {
+          encrypted: false,
+          value: "",
+        },
+        testApiKey: {
+          encrypted: false,
+          value: "",
+        },
+      },
+    };
+
+    const mergedSettings = mergePrivateSettingsValues(
+      defaultSettings,
+      savedSettings
+    );
+
+    const expectedSettings: PaymentProviderSettingsValues<"unencrypted"> = {
+      adyen: {
+        clientKey: "adyen_unencrypted_key",
+        merchantAccount: "adyen_unencrypted_value",
+        supportedCurrencies: "USD,EUR",
+      },
+      mollie: {
+        partnerId: "",
+        liveApiKey: "",
+        testApiKey: "",
       },
     };
 

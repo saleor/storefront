@@ -8,6 +8,7 @@ import { useFormattedMessages } from "@/frontend/hooks/useFormattedMessages";
 import AppContainer from "@/frontend/components/elements/AppContainer";
 import AppProvider from "@/frontend/components/elements/AppProvider";
 import { client } from "@/frontend/misc/client";
+import PrivateSettingsProvider from "@/frontend/components/elements/PrivateSettingsProvider";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -24,17 +25,19 @@ export default function App(props: AppProps) {
       </Head>
       <AppProvider>
         <ClientProvider value={client}>
-          <IntlProvider
-            locale={locale}
-            messages={messages}
-            onError={() => null} // Hide missing translation warnings
-          >
-            <ThemeProvider ssr={true}>
-              <AppContainer>
-                <Component {...pageProps} />
-              </AppContainer>
-            </ThemeProvider>
-          </IntlProvider>
+          <PrivateSettingsProvider>
+            <IntlProvider
+              locale={locale}
+              messages={messages}
+              onError={() => null} // Hide missing translation warnings
+            >
+              <ThemeProvider ssr={true}>
+                <AppContainer>
+                  <Component {...pageProps} />
+                </AppContainer>
+              </ThemeProvider>
+            </IntlProvider>
+          </PrivateSettingsProvider>
         </ClientProvider>
       </AppProvider>
     </>

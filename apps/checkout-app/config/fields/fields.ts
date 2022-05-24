@@ -1,5 +1,14 @@
-import { IntlShape, useIntl } from "react-intl";
-import { Customization, PaymentMethod, PaymentProvider } from "types/common";
+import { useIntl } from "react-intl";
+import {
+  Customization,
+  PaymentMethod,
+  PaymentProvider,
+  PaymentProviderSettings,
+  CustomizationSettings,
+  SettingID,
+  CustomizationID,
+  PaymentProviderID,
+} from "types/common";
 import {
   brandingCustomizationMessages,
   customizationMessages,
@@ -18,23 +27,135 @@ import PayPalIcon from "./icons/PayPal";
 import MollieIcon from "./icons/Mollie";
 import AdyenIcon from "./icons/Adyen";
 
+const paymentMethods: Omit<PaymentMethod, "name">[] = [
+  {
+    id: "creditCard",
+    logo: CreditCardIcon,
+  },
+  {
+    id: "applePay",
+    logo: AppleIcon,
+  },
+  {
+    id: "paypal",
+    logo: PayPalIcon,
+  },
+];
+
+const molliePaymentProvider: Omit<
+  PaymentProviderSettings<"mollie">,
+  "label"
+>[] = [
+  {
+    id: "partnerId",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "liveApiKey",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "testApiKey",
+    type: "string",
+    encrypt: true,
+  },
+];
+
+const adyenPaymentProvider: Omit<PaymentProviderSettings<"adyen">, "label">[] =
+  [
+    {
+      id: "merchantAccount",
+      type: "string",
+      encrypt: true,
+    },
+    {
+      id: "clientKey",
+      type: "string",
+      encrypt: true,
+    },
+    {
+      id: "supportedCurrencies",
+      type: "string",
+      encrypt: false,
+    },
+  ];
+
+const brandingCustomization: Omit<
+  CustomizationSettings<"branding">,
+  "label"
+>[] = [
+  {
+    id: "buttonBgColorPrimary",
+    type: "color",
+  },
+  {
+    id: "buttonBgColorHover",
+    type: "color",
+  },
+  {
+    id: "borderColorPrimary",
+    type: "color",
+  },
+  {
+    id: "errorColor",
+    type: "color",
+  },
+  {
+    id: "successColor",
+    type: "color",
+  },
+  {
+    id: "buttonTextColor",
+    type: "color",
+  },
+  {
+    id: "textColor",
+    type: "color",
+  },
+  {
+    id: "logoUrl",
+    type: "image",
+  },
+];
+
+const sectionsCustomization: Omit<
+  CustomizationSettings<"productSettings">,
+  "label"
+>[] = [
+  {
+    id: "lowStockThreshold",
+    type: "string",
+  },
+];
+
+const channelActivePaymentProvidersFields: Record<"anyChannel", any> = {
+  anyChannel: paymentMethods,
+};
+const customizationsFields: Record<CustomizationID, any> = {
+  branding: brandingCustomization,
+  productSettings: sectionsCustomization,
+};
+const paymentProviderFields: Record<PaymentProviderID, any> = {
+  mollie: molliePaymentProvider,
+  adyen: adyenPaymentProvider,
+};
+
+export type CommonField = { id: string } & Record<string, any>;
+export const fields: Record<
+  SettingID[number],
+  Record<string, CommonField[]>
+> = {
+  channelActivePaymentProviders: channelActivePaymentProvidersFields,
+  customizations: customizationsFields,
+  paymentProviders: paymentProviderFields,
+};
+
 export const usePaymentMethods = (): PaymentMethod[] => {
   const intl = useIntl();
 
-  return withNames(intl, paymentMethodsMessages, [
-    {
-      id: "creditCard",
-      logo: CreditCardIcon,
-    },
-    {
-      id: "applePay",
-      logo: AppleIcon,
-    },
-    {
-      id: "paypal",
-      logo: PayPalIcon,
-    },
-  ]);
+  return withNames(intl, paymentMethodsMessages, paymentMethods);
 };
 
 export const useMolliePaymentProvider = (): PaymentProvider<"mollie"> => {
@@ -44,20 +165,11 @@ export const useMolliePaymentProvider = (): PaymentProvider<"mollie"> => {
     id: "mollie",
     label: intl.formatMessage(paymentProvidersMessages.mollie),
     logo: MollieIcon,
-    settings: withLabels(intl, molliePaymentProviderMessages, [
-      {
-        id: "partnerId",
-        type: "string",
-      },
-      {
-        id: "liveApiKey",
-        type: "string",
-      },
-      {
-        id: "testApiKey",
-        type: "string",
-      },
-    ]),
+    settings: withLabels(
+      intl,
+      molliePaymentProviderMessages,
+      molliePaymentProvider
+    ),
   };
 };
 
@@ -68,20 +180,11 @@ export const useAdyenPaymentProvider = (): PaymentProvider<"adyen"> => {
     id: "adyen",
     label: intl.formatMessage(paymentProvidersMessages.adyen),
     logo: AdyenIcon,
-    settings: withLabels(intl, adyenPaymentProviderMessages, [
-      {
-        id: "merchantAccount",
-        type: "string",
-      },
-      {
-        id: "clientKey",
-        type: "string",
-      },
-      {
-        id: "supportedCurrencies",
-        type: "string",
-      },
-    ]),
+    settings: withLabels(
+      intl,
+      adyenPaymentProviderMessages,
+      adyenPaymentProvider
+    ),
   };
 };
 
@@ -96,40 +199,11 @@ export const useBrandingCustomization = (): Customization<"branding"> => {
   return {
     id: "branding",
     label: intl.formatMessage(customizationMessages.branding),
-    settings: withLabels(intl, brandingCustomizationMessages, [
-      {
-        id: "buttonBgColorPrimary",
-        type: "color",
-      },
-      {
-        id: "buttonBgColorHover",
-        type: "color",
-      },
-      {
-        id: "borderColorPrimary",
-        type: "color",
-      },
-      {
-        id: "errorColor",
-        type: "color",
-      },
-      {
-        id: "successColor",
-        type: "color",
-      },
-      {
-        id: "buttonTextColor",
-        type: "color",
-      },
-      {
-        id: "textColor",
-        type: "color",
-      },
-      {
-        id: "logoUrl",
-        type: "image",
-      },
-    ]),
+    settings: withLabels(
+      intl,
+      brandingCustomizationMessages,
+      brandingCustomization
+    ),
   };
 };
 
@@ -140,12 +214,11 @@ export const useSectionsCustomization =
     return {
       id: "productSettings",
       label: intl.formatMessage(customizationMessages.productSettings),
-      settings: withLabels(intl, sectionsCustomizationMessages, [
-        {
-          id: "lowStockThreshold",
-          type: "string",
-        },
-      ]),
+      settings: withLabels(
+        intl,
+        sectionsCustomizationMessages,
+        sectionsCustomization
+      ),
     };
   };
 

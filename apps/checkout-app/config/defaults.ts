@@ -4,7 +4,6 @@ import {
   PaymentProviderSettingsValues,
   PrivateSettingsValues,
   PublicSettingsValues,
-  SettingsValues,
 } from "types/api";
 
 export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProvidersByChannel =
@@ -14,18 +13,19 @@ export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProviders
     paypal: "",
   };
 
-export const defaultPaymentProviderSettings: PaymentProviderSettingsValues = {
-  mollie: {
-    partnerId: "",
-    liveApiKey: "",
-    testApiKey: "",
-  },
-  adyen: {
-    merchantAccount: "",
-    clientKey: "",
-    supportedCurrencies: "",
-  },
-};
+export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unencrypted"> =
+  {
+    mollie: {
+      partnerId: "",
+      liveApiKey: "",
+      testApiKey: "",
+    },
+    adyen: {
+      merchantAccount: "",
+      clientKey: "",
+      supportedCurrencies: "",
+    },
+  };
 
 export const defaultCustomizationSettings: CustomizationSettingsValues = {
   branding: {
@@ -47,6 +47,6 @@ export const defaultPublicSettings: PublicSettingsValues = {
   customizations: defaultCustomizationSettings,
   channelActivePaymentProviders: {},
 };
-export const defaultPrivateSettings: PrivateSettingsValues = {
+export const defaultPrivateSettings: PrivateSettingsValues<"unencrypted"> = {
   paymentProviders: defaultPaymentProviderSettings,
 };

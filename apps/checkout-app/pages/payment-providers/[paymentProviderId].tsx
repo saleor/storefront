@@ -1,43 +1,25 @@
 import PaymentProviderDetails from "frontend/components/templates/PaymentProviderDetails";
 import { PaymentProviderSettingsValues } from "types/api";
 import { useRouter } from "next/router";
-import { useAuthData } from "@/frontend/hooks/useAuthData";
-import {
-  usePrivateMetadataQuery,
-  useUpdatePrivateMetadataMutation,
-} from "@/graphql";
-import {
-  getCommonErrors,
-  mapMetadataToSettings,
-  mapSettingsToMetadata,
-} from "@/frontend/utils";
+import { getCommonErrors } from "@/frontend/utils";
 import { usePaymentProviderSettings } from "@/frontend/data";
 import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
 import { useIntl } from "react-intl";
 import { notFoundMessages } from "@/frontend/misc/errorMessages";
-import { serverEnvVars } from "@/constants";
+import { useGetPaymentProviderSettings } from "@/frontend/hooks/useGetPaymentProviderSettings";
+import { useSetPaymentProviderSettings } from "@/frontend/hooks/useSetPaymentProviderSettings";
 
 const PaymentProvider = () => {
   const router = useRouter();
   const { paymentProviderId, channelId } = router.query;
   const intl = useIntl();
 
-  const { appId, isAuthorized } = useAuthData();
-  const [metadataQuery] = usePrivateMetadataQuery({
-    variables: {
-      id: appId || serverEnvVars.appId,
-    },
-    pause: !isAuthorized,
-  });
-  const [metadataMutation, setPrivateMetadata] =
-    useUpdatePrivateMetadataMutation();
+  const getPaymentProviderSettings = useGetPaymentProviderSettings();
+  const [setPaymentProviderSettings, setPaymentProviderSettingsRequest] =
+    useSetPaymentProviderSettings();
 
-  const settingsValues = mapMetadataToSettings(
-    metadataQuery.data?.app?.privateMetadata || [],
-    "private"
-  );
   const paymentProviders = usePaymentProviderSettings(
-    settingsValues.paymentProviders
+    getPaymentProviderSettings.data
   );
 
   const paymentProvider = paymentProviders.find(
@@ -48,23 +30,13 @@ const PaymentProvider = () => {
     router.back();
   };
 
-  const handleSubmit = (data: PaymentProviderSettingsValues) => {
-    const metadata = mapSettingsToMetadata({
-      paymentProviders: {
-        ...settingsValues.paymentProviders,
-        ...data,
-      },
-    });
-
-    setPrivateMetadata({
-      id: appId || serverEnvVars.appId,
-      input: metadata,
-    });
+  const handleSubmit = (data: PaymentProviderSettingsValues<"unencrypted">) => {
+    setPaymentProviderSettingsRequest(data);
   };
 
   const errors = [
-    ...(metadataMutation.data?.updatePrivateMetadata?.errors || []),
-    ...getCommonErrors(metadataMutation.error),
+    ...getCommonErrors(getPaymentProviderSettings.error),
+    ...getCommonErrors(setPaymentProviderSettings.error),
   ];
 
   if (!paymentProvider) {
@@ -80,7 +52,9 @@ const PaymentProvider = () => {
       selectedPaymentProvider={paymentProvider}
       channelId={channelId?.toString()}
       saveButtonBarState="default"
-      loading={metadataQuery.fetching || metadataMutation.fetching}
+      loading={
+        getPaymentProviderSettings.loading || setPaymentProviderSettings.loading
+      }
       errors={errors}
       onCancel={handleCancel}
       onSubmit={handleSubmit}

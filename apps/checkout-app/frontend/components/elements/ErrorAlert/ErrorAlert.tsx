@@ -37,7 +37,8 @@ const ErrorAlert = <T extends any>({
       >
         {errors.map((error, idx) => (
           <Typography key={idx}>
-            {getErrorMessage(error, intl) || commonErrorMessages.unknownError}
+            {getErrorMessage(error, intl) ||
+              intl.formatMessage(commonErrorMessages.unknownError)}
           </Typography>
         ))}
       </Alert>

@@ -13,6 +13,6 @@
     "declarationMap": false
   },
   "extends": "tsconfig/nextjs.json",
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "setupTests.js"],
   "exclude": ["node_modules"]
 }

@@ -1,4 +1,5 @@
-import { client } from "@/backend/client";
+import { getClient } from "@/backend/client";
+import { envVars, serverEnvVars } from "@/constants";
 import {
   TransactionCreateDocument,
   TransactionCreateMutation,
@@ -8,7 +9,10 @@ import {
 export const createTransaction = async (
   args: TransactionCreateMutationVariables
 ) => {
-  const { data, error } = await client
+  const { data, error } = await getClient(
+    envVars.apiUrl,
+    serverEnvVars.appToken
+  )
     .mutation<TransactionCreateMutation, TransactionCreateMutationVariables>(
       TransactionCreateDocument,
       args

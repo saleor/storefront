@@ -1,6 +1,5 @@
 import { SvgIconTypeMap } from "@material-ui/core";
 import { OverridableComponent } from "@material-ui/core/OverridableComponent";
-import { StaticImageData } from "next/image";
 
 export type SettingsType = "public" | "private";
 export const allPublicSettingID = [
@@ -49,6 +48,7 @@ export interface PaymentProviderSettings<P extends PaymentProviderID> {
   label: string;
   type: SettingType;
   value?: string;
+  encrypt: boolean;
 }
 export interface PaymentProvider<P extends PaymentProviderID> {
   id: P;
