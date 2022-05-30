@@ -8,11 +8,11 @@ This monorepo uses [PNPM](https://pnpm.io/) as a package manager.
 
 ### Monorepo structure
 
-- `apps/checkout`: a SPA React 18 checkout app, ready to be extended/modified
-- `apps/checkout-app`: a Next.js checkout dashboard + payments app, ready to be extended/modified
-- `packages/ui-kit`: UI kit for checkout and (React Storefront)[https://github.com/saleor/react-storefront]
+- [`apps/checkout`](apps/checkout/README.md): a SPA React 18 checkout app, ready to be extended/modified
+- [`apps/checkout-app`](apps/checkout-app/README.md): a Next.js checkout dashboard + payments app, ready to be extended/modified
+- `packages/ui-kit`: UI kit for checkout and [React Storefront](https://github.com/saleor/react-storefront)
 - `packages/config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
+- [`packages/tsconfig`](packages/tsconfig/README.md): `tsconfig.json`s used throughout the monorepo
 
 ### Install
 ```
