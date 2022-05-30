@@ -2,22 +2,22 @@ import {
   defaultPrivateSettings,
   defaultPublicSettings,
 } from "@/config/defaults";
-import { mapPrivateMetadataToSettings } from "@/backend/configuration/mapPrivateMetadataToSettings";
-import { mapPublicMetadataToSettings } from "@/frontend/misc/mapPublicMetadataToSettings";
-import { MetadataItemFragment } from "@/graphql";
-import { PrivateSettingsValues, PublicSettingsValues } from "@/types/api";
+import { mapPrivateMetafieldsToSettings } from "@/backend/configuration/mapPrivateMetafieldsToSettings";
+import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
+import {
+  PrivateMetafieldsValues,
+  PrivateSettingsValues,
+  PublicMetafieldsValues,
+  PublicSettingsValues,
+} from "@/types/api";
 
 describe("/utils/frontend/misc/mapMetadataToSettings", () => {
   it("maps public metadata to settings", async () => {
-    const metadata: MetadataItemFragment[] = [
-      {
-        key: "customizations",
-        value:
-          '{"branding":{"buttonBgColorPrimary":"#fff","buttonBgColorHover":"#fff"}}',
-      },
-    ];
-
-    const mergedSettings = mapPublicMetadataToSettings(metadata);
+    const metafields: PublicMetafieldsValues = {
+      customizations:
+        '{"branding":{"buttonBgColorPrimary":"#fff","buttonBgColorHover":"#fff"}}',
+    };
+    const mergedSettings = mapPublicMetafieldsToSettings(metafields);
 
     const expectedSettings: PublicSettingsValues = {
       ...defaultPublicSettings,
@@ -35,15 +35,12 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
   });
 
   it("maps private metadata to settings", async () => {
-    const metadata: MetadataItemFragment[] = [
-      {
-        key: "paymentProviders",
-        value:
-          '{"mollie":{"partnerId":{"encrypted":false,"value":"some_not_encrypted_id"},"liveApiKey":{"encrypted":true,"value":"U2FsdGVkX18zfzUyZy2f00/5BoS3s3WtAOo7wY0yELlwuW6hX0R/zCn/ppPnsBRk"}}}',
-      },
-    ];
+    const metafields: PrivateMetafieldsValues = {
+      paymentProviders:
+        '{"mollie":{"partnerId":{"encrypted":false,"value":"some_not_encrypted_id"},"liveApiKey":{"encrypted":true,"value":"U2FsdGVkX18zfzUyZy2f00/5BoS3s3WtAOo7wY0yELlwuW6hX0R/zCn/ppPnsBRk"}}}',
+    };
 
-    const mergedSettings = mapPrivateMetadataToSettings(metadata);
+    const mergedSettings = mapPrivateMetafieldsToSettings(metafields);
 
     const expectedSettings: PrivateSettingsValues<"unencrypted"> = {
       ...defaultPrivateSettings,

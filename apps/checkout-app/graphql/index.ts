@@ -20322,39 +20322,41 @@ export type CheckoutQueryVariables = Exact<{
 
 export type CheckoutQuery = { __typename?: 'Query', checkout?: { __typename?: 'Checkout', id: string, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } } | null };
 
-export type MetadataItemFragment = { __typename?: 'MetadataItem', key: string, value: string };
-
 export type MetadataErrorFragment = { __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null };
 
-export type PrivateMetadataQueryVariables = Exact<{
+export type PublicMetafieldsQueryVariables = Exact<{
   id: Scalars['ID'];
+  keys?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type PrivateMetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | null };
+export type PublicMetafieldsQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, metafields?: any | null } | null };
 
-export type UpdatePrivateMetadataMutationVariables = Exact<{
+export type PrivateMetafieldsQueryVariables = Exact<{
   id: Scalars['ID'];
-  input: Array<MetadataInput> | MetadataInput;
+  keys?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type UpdatePrivateMetadataMutation = { __typename?: 'Mutation', updatePrivateMetadata?: { __typename?: 'UpdatePrivateMetadata', item?: { __typename?: 'App', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Attribute', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Category', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Checkout', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Collection', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'DigitalContent', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Fulfillment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'GiftCard', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Invoice', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Menu', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'MenuItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Order', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Page', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'PageType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Payment', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Product', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ProductType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ProductVariant', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Sale', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingMethod', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingMethodType', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingZone', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'TransactionItem', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'User', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Voucher', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Warehouse', privateMetadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
-
-export type PublicMetadataQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type PublicMetadataQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | null };
+export type PrivateMetafieldsQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetafields?: any | null } | null };
 
 export type UpdatePublicMetadataMutationVariables = Exact<{
   id: Scalars['ID'];
   input: Array<MetadataInput> | MetadataInput;
+  keys?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type UpdatePublicMetadataMutation = { __typename?: 'Mutation', updateMetadata?: { __typename?: 'UpdateMetadata', item?: { __typename?: 'App', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Attribute', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Category', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Checkout', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Collection', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'DigitalContent', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Fulfillment', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'GiftCard', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Invoice', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Menu', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'MenuItem', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Order', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Page', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'PageType', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Payment', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Product', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ProductType', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ProductVariant', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Sale', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingMethod', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingMethodType', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'ShippingZone', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'TransactionItem', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'User', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Voucher', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | { __typename?: 'Warehouse', metadata: Array<{ __typename?: 'MetadataItem', key: string, value: string }> } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
+export type UpdatePublicMetadataMutation = { __typename?: 'Mutation', updateMetadata?: { __typename?: 'UpdateMetadata', item?: { __typename?: 'App', metafields?: any | null } | { __typename?: 'Attribute', metafields?: any | null } | { __typename?: 'Category', metafields?: any | null } | { __typename?: 'Checkout', metafields?: any | null } | { __typename?: 'Collection', metafields?: any | null } | { __typename?: 'DigitalContent', metafields?: any | null } | { __typename?: 'Fulfillment', metafields?: any | null } | { __typename?: 'GiftCard', metafields?: any | null } | { __typename?: 'Invoice', metafields?: any | null } | { __typename?: 'Menu', metafields?: any | null } | { __typename?: 'MenuItem', metafields?: any | null } | { __typename?: 'Order', metafields?: any | null } | { __typename?: 'Page', metafields?: any | null } | { __typename?: 'PageType', metafields?: any | null } | { __typename?: 'Payment', metafields?: any | null } | { __typename?: 'Product', metafields?: any | null } | { __typename?: 'ProductType', metafields?: any | null } | { __typename?: 'ProductVariant', metafields?: any | null } | { __typename?: 'Sale', metafields?: any | null } | { __typename?: 'ShippingMethod', metafields?: any | null } | { __typename?: 'ShippingMethodType', metafields?: any | null } | { __typename?: 'ShippingZone', metafields?: any | null } | { __typename?: 'TransactionItem', metafields?: any | null } | { __typename?: 'User', metafields?: any | null } | { __typename?: 'Voucher', metafields?: any | null } | { __typename?: 'Warehouse', metafields?: any | null } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
+
+export type UpdatePrivateMetadataMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: Array<MetadataInput> | MetadataInput;
+  keys?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type UpdatePrivateMetadataMutation = { __typename?: 'Mutation', updatePrivateMetadata?: { __typename?: 'UpdatePrivateMetadata', item?: { __typename?: 'App', privateMetafields?: any | null } | { __typename?: 'Attribute', privateMetafields?: any | null } | { __typename?: 'Category', privateMetafields?: any | null } | { __typename?: 'Checkout', privateMetafields?: any | null } | { __typename?: 'Collection', privateMetafields?: any | null } | { __typename?: 'DigitalContent', privateMetafields?: any | null } | { __typename?: 'Fulfillment', privateMetafields?: any | null } | { __typename?: 'GiftCard', privateMetafields?: any | null } | { __typename?: 'Invoice', privateMetafields?: any | null } | { __typename?: 'Menu', privateMetafields?: any | null } | { __typename?: 'MenuItem', privateMetafields?: any | null } | { __typename?: 'Order', privateMetafields?: any | null } | { __typename?: 'Page', privateMetafields?: any | null } | { __typename?: 'PageType', privateMetafields?: any | null } | { __typename?: 'Payment', privateMetafields?: any | null } | { __typename?: 'Product', privateMetafields?: any | null } | { __typename?: 'ProductType', privateMetafields?: any | null } | { __typename?: 'ProductVariant', privateMetafields?: any | null } | { __typename?: 'Sale', privateMetafields?: any | null } | { __typename?: 'ShippingMethod', privateMetafields?: any | null } | { __typename?: 'ShippingMethodType', privateMetafields?: any | null } | { __typename?: 'ShippingZone', privateMetafields?: any | null } | { __typename?: 'TransactionItem', privateMetafields?: any | null } | { __typename?: 'User', privateMetafields?: any | null } | { __typename?: 'Voucher', privateMetafields?: any | null } | { __typename?: 'Warehouse', privateMetafields?: any | null } | null, errors: Array<{ __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null }> } | null };
 
 export type AddressFragment = { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } };
 
@@ -20405,12 +20407,6 @@ export const ChannelFragmentDoc = gql`
   id
   name
   slug
-}
-    `;
-export const MetadataItemFragmentDoc = gql`
-    fragment MetadataItemFragment on MetadataItem {
-  key
-  value
 }
     `;
 export const MetadataErrorFragmentDoc = gql`
@@ -20599,71 +20595,61 @@ export const CheckoutDocument = gql`
 export function useCheckoutQuery(options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, 'query'>) {
   return Urql.useQuery<CheckoutQuery>({ query: CheckoutDocument, ...options });
 };
-export const PrivateMetadataDocument = gql`
-    query PrivateMetadata($id: ID!) {
+export const PublicMetafieldsDocument = gql`
+    query PublicMetafields($id: ID!, $keys: [String!]) {
   app(id: $id) {
     id
-    privateMetadata {
-      ...MetadataItemFragment
-    }
+    metafields(keys: $keys)
   }
 }
-    ${MetadataItemFragmentDoc}`;
+    `;
 
-export function usePrivateMetadataQuery(options: Omit<Urql.UseQueryArgs<PrivateMetadataQueryVariables>, 'query'>) {
-  return Urql.useQuery<PrivateMetadataQuery>({ query: PrivateMetadataDocument, ...options });
+export function usePublicMetafieldsQuery(options: Omit<Urql.UseQueryArgs<PublicMetafieldsQueryVariables>, 'query'>) {
+  return Urql.useQuery<PublicMetafieldsQuery>({ query: PublicMetafieldsDocument, ...options });
 };
-export const UpdatePrivateMetadataDocument = gql`
-    mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
-  updatePrivateMetadata(id: $id, input: $input) {
-    item {
-      privateMetadata {
-        ...MetadataItemFragment
-      }
-    }
-    errors {
-      ...MetadataErrorFragment
-    }
-  }
-}
-    ${MetadataItemFragmentDoc}
-${MetadataErrorFragmentDoc}`;
-
-export function useUpdatePrivateMetadataMutation() {
-  return Urql.useMutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(UpdatePrivateMetadataDocument);
-};
-export const PublicMetadataDocument = gql`
-    query PublicMetadata($id: ID!) {
+export const PrivateMetafieldsDocument = gql`
+    query PrivateMetafields($id: ID!, $keys: [String!]) {
   app(id: $id) {
     id
-    metadata {
-      ...MetadataItemFragment
-    }
+    privateMetafields(keys: $keys)
   }
 }
-    ${MetadataItemFragmentDoc}`;
+    `;
 
-export function usePublicMetadataQuery(options: Omit<Urql.UseQueryArgs<PublicMetadataQueryVariables>, 'query'>) {
-  return Urql.useQuery<PublicMetadataQuery>({ query: PublicMetadataDocument, ...options });
+export function usePrivateMetafieldsQuery(options: Omit<Urql.UseQueryArgs<PrivateMetafieldsQueryVariables>, 'query'>) {
+  return Urql.useQuery<PrivateMetafieldsQuery>({ query: PrivateMetafieldsDocument, ...options });
 };
 export const UpdatePublicMetadataDocument = gql`
-    mutation UpdatePublicMetadata($id: ID!, $input: [MetadataInput!]!) {
+    mutation UpdatePublicMetadata($id: ID!, $input: [MetadataInput!]!, $keys: [String!]) {
   updateMetadata(id: $id, input: $input) {
     item {
-      metadata {
-        ...MetadataItemFragment
-      }
+      metafields(keys: $keys)
     }
     errors {
       ...MetadataErrorFragment
     }
   }
 }
-    ${MetadataItemFragmentDoc}
-${MetadataErrorFragmentDoc}`;
+    ${MetadataErrorFragmentDoc}`;
 
 export function useUpdatePublicMetadataMutation() {
   return Urql.useMutation<UpdatePublicMetadataMutation, UpdatePublicMetadataMutationVariables>(UpdatePublicMetadataDocument);
+};
+export const UpdatePrivateMetadataDocument = gql`
+    mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!, $keys: [String!]) {
+  updatePrivateMetadata(id: $id, input: $input) {
+    item {
+      privateMetafields(keys: $keys)
+    }
+    errors {
+      ...MetadataErrorFragment
+    }
+  }
+}
+    ${MetadataErrorFragmentDoc}`;
+
+export function useUpdatePrivateMetadataMutation() {
+  return Urql.useMutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(UpdatePrivateMetadataDocument);
 };
 export const OrderCreateDocument = gql`
     mutation OrderCreate($id: ID!) {

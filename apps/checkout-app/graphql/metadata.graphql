@@ -1,29 +1,31 @@
-fragment MetadataItemFragment on MetadataItem {
-  key
-  value
-}
-
 fragment MetadataErrorFragment on MetadataError {
   code
   message
   field
 }
 
-query PrivateMetadata($id: ID!) {
+query PublicMetafields($id: ID!, $keys: [String!]) {
   app(id: $id) {
     id
-    privateMetadata {
-      ...MetadataItemFragment
-    }
+    metafields(keys: $keys)
   }
 }
 
-mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
-  updatePrivateMetadata(id: $id, input: $input) {
+query PrivateMetafields($id: ID!, $keys: [String!]) {
+  app(id: $id) {
+    id
+    privateMetafields(keys: $keys)
+  }
+}
+
+mutation UpdatePublicMetadata(
+  $id: ID!
+  $input: [MetadataInput!]!
+  $keys: [String!]
+) {
+  updateMetadata(id: $id, input: $input) {
     item {
-      privateMetadata {
-        ...MetadataItemFragment
-      }
+      metafields(keys: $keys)
     }
     errors {
       ...MetadataErrorFragment
@@ -31,21 +33,14 @@ mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!) {
   }
 }
 
-query PublicMetadata($id: ID!) {
-  app(id: $id) {
-    id
-    metadata {
-      ...MetadataItemFragment
-    }
-  }
-}
-
-mutation UpdatePublicMetadata($id: ID!, $input: [MetadataInput!]!) {
-  updateMetadata(id: $id, input: $input) {
+mutation UpdatePrivateMetadata(
+  $id: ID!
+  $input: [MetadataInput!]!
+  $keys: [String!]
+) {
+  updatePrivateMetadata(id: $id, input: $input) {
     item {
-      metadata {
-        ...MetadataItemFragment
-      }
+      privateMetafields(keys: $keys)
     }
     errors {
       ...MetadataErrorFragment

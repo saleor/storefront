@@ -5,12 +5,12 @@ import {
   ChannelsDocument,
   ChannelsQuery,
   ChannelsQueryVariables,
-  PrivateMetadataDocument,
-  PrivateMetadataQuery,
-  PrivateMetadataQueryVariables,
-  PublicMetadataDocument,
-  PublicMetadataQuery,
-  PublicMetadataQueryVariables,
+  PrivateMetafieldsDocument,
+  PrivateMetafieldsQuery,
+  PrivateMetafieldsQueryVariables,
+  PublicMetafieldsDocument,
+  PublicMetafieldsQuery,
+  PublicMetafieldsQueryVariables,
   UpdatePrivateMetadataDocument,
   UpdatePrivateMetadataMutation,
   UpdatePrivateMetadataMutationVariables,
@@ -21,14 +21,15 @@ import { mergeChannelsWithPaymentProvidersSettings } from "./utils";
 import { envVars, serverEnvVars } from "@/constants";
 import { PrivateSettingsValues } from "@/types/api";
 import { mapPrivateSettingsToMetadata } from "./mapPrivateSettingsToMetadata";
-import { mapPrivateMetadataToSettings } from "./mapPrivateMetadataToSettings";
-import { mapPublicMetadataToSettings } from "@/frontend/misc/mapPublicMetadataToSettings";
+import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings";
+import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
+import { allPrivateSettingID, allPublicSettingID } from "@/types/common";
 
 export const getPrivateSettings = async (apiUrl: string) => {
   const { data, error } = await getClient(apiUrl, serverEnvVars.appToken)
-    .query<PrivateMetadataQuery, PrivateMetadataQueryVariables>(
-      PrivateMetadataDocument,
-      { id: serverEnvVars.appId }
+    .query<PrivateMetafieldsQuery, PrivateMetafieldsQueryVariables>(
+      PrivateMetafieldsDocument,
+      { id: serverEnvVars.appId, keys: [...allPrivateSettingID] }
     )
     .toPromise();
 
@@ -38,10 +39,10 @@ export const getPrivateSettings = async (apiUrl: string) => {
     throw error;
   }
 
-  console.log(data?.app?.privateMetadata); // for deployment debug pusposes
+  console.log(data?.app?.privateMetafields); // for deployment debug pusposes
 
-  const settingsValues = mapPrivateMetadataToSettings(
-    data?.app?.privateMetadata || []
+  const settingsValues = mapPrivateMetafieldsToSettings(
+    data?.app?.privateMetafields || {}
   );
 
   return settingsValues;
@@ -52,9 +53,9 @@ export const getPublicSettings = async () => {
     envVars.apiUrl,
     serverEnvVars.appToken
   )
-    .query<PublicMetadataQuery, PublicMetadataQueryVariables>(
-      PublicMetadataDocument,
-      { id: serverEnvVars.appId }
+    .query<PublicMetafieldsQuery, PublicMetafieldsQueryVariables>(
+      PublicMetafieldsDocument,
+      { id: serverEnvVars.appId, keys: [...allPublicSettingID] }
     )
     .toPromise();
 
@@ -64,9 +65,11 @@ export const getPublicSettings = async () => {
     throw error;
   }
 
-  console.log(data?.app?.metadata); // for deployment debug pusposes
+  console.log(data?.app?.metafields); // for deployment debug pusposes
 
-  const settingsValues = mapPublicMetadataToSettings(data?.app?.metadata || []);
+  const settingsValues = mapPublicMetafieldsToSettings(
+    data?.app?.metafields || {}
+  );
 
   return settingsValues;
 };
@@ -133,6 +136,7 @@ export const setPrivateSettings = async (
     >(UpdatePrivateMetadataDocument, {
       id: serverEnvVars.appId!,
       input: metadata,
+      keys: [...allPrivateSettingID],
     })
     .toPromise();
 
@@ -142,10 +146,10 @@ export const setPrivateSettings = async (
     throw error;
   }
 
-  console.log(data?.updatePrivateMetadata?.item?.privateMetadata); // for deployment debug pusposes
+  console.log(data?.updatePrivateMetadata?.item?.privateMetafields); // for deployment debug pusposes
 
-  const settingsValues = mapPrivateMetadataToSettings(
-    data?.updatePrivateMetadata?.item?.privateMetadata || []
+  const settingsValues = mapPrivateMetafieldsToSettings(
+    data?.updatePrivateMetadata?.item?.privateMetafields || {}
   );
 
   return settingsValues;

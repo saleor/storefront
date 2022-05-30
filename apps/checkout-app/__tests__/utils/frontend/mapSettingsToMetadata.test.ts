@@ -4,7 +4,6 @@ import {
 } from "@/config/defaults";
 import { mapPrivateSettingsToMetadata } from "@/backend/configuration/mapPrivateSettingsToMetadata";
 import { mapPublicSettingsToMetadata } from "@/frontend/misc/mapPublicSettingsToMetadata";
-import { MetadataItemFragment } from "@/graphql";
 import { PrivateSettingsValues, PublicSettingsValues } from "@/types/api";
 
 describe("/utils/frontend/misc/mapSettingsToMetadata", () => {
@@ -23,7 +22,10 @@ describe("/utils/frontend/misc/mapSettingsToMetadata", () => {
 
     const mappedMetadata = mapPublicSettingsToMetadata(settingsValues);
 
-    const expectedMetadata: MetadataItemFragment[] = [
+    const expectedMetadata: Array<{
+      key: string;
+      value: string;
+    }> = [
       {
         key: "customizations",
         value:

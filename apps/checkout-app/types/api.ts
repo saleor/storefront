@@ -83,3 +83,10 @@ export type SettingsValues<
   T extends SettingsType,
   E extends SettingReadMode
 > = T extends "public" ? PublicSettingsValues : PrivateSettingsValues<E>;
+
+export type PublicMetafieldsValues = {
+  [P in PublicSettingID[number]]?: string;
+};
+export type PrivateMetafieldsValues = {
+  [P in PrivateSettingID[number]]?: string;
+};

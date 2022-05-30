@@ -1,5 +1,5 @@
-import { mergeSettingsValues as mergePrivateSettingsValues } from "@/backend/configuration/mapPrivateMetadataToSettings";
-import { mergeSettingsValues as mergePublicSettingsValues } from "@/frontend/misc/mapPublicMetadataToSettings";
+import { mergeSettingsValues as mergePrivateSettingsValues } from "@/backend/configuration/mapPrivateMetafieldsToSettings";
+import { mergeSettingsValues as mergePublicSettingsValues } from "@/frontend/misc/mapPublicMetafieldsToSettings";
 import { PaymentProviderSettingsValues } from "@/types/api";
 
 describe("/utils/frontend/misc/mergeSettingsValues", () => {

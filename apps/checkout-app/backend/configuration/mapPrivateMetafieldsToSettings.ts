@@ -1,6 +1,6 @@
 import { defaultPrivateSettings } from "@/config/defaults";
-import { MetadataItemFragment } from "@/graphql";
 import {
+  PrivateMetafieldsValues,
   PrivateSettingsValues,
   SettingValue,
   UnknownPrivateSettingsValues,
@@ -72,33 +72,35 @@ export const mergeSettingsValues = (
   );
 };
 
-export const mapPrivateMetadataToSettings = (
-  metadata: (MetadataItemFragment | null)[]
+export const mapPrivateMetafieldsToSettings = (
+  metafields: PrivateMetafieldsValues
 ): PrivateSettingsValues<"unencrypted"> => {
-  const settings = metadata.reduce((settings, metadataItem) => {
-    const settingsKey = metadataItem?.key as keyof typeof settings;
+  return reduce(
+    metafields,
+    (settings, metafield, metafieldKey) => {
+      const settingsKey = metafieldKey as keyof typeof settings;
 
-    if (!settingsKey || !allSettingID.includes(settingsKey)) {
-      return settings;
-    }
+      if (!settingsKey || !allSettingID.includes(settingsKey)) {
+        return settings;
+      }
 
-    try {
-      const metadataItemSettings = JSON.parse(metadataItem?.value || "");
+      try {
+        const metadataItemSettings = JSON.parse(metafield || "");
 
-      return {
-        ...settings,
-        [settingsKey]: mergeSettingsValues(
-          settings[settingsKey],
-          metadataItemSettings
-        ) as PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">],
-      };
-    } catch (e) {
-      return {
-        ...settings,
-        [settingsKey]: settings[settingsKey] || {},
-      };
-    }
-  }, defaultPrivateSettings);
-
-  return settings as PrivateSettingsValues<"unencrypted">;
+        return {
+          ...settings,
+          [settingsKey]: mergeSettingsValues(
+            settings[settingsKey],
+            metadataItemSettings
+          ) as PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">],
+        };
+      } catch (e) {
+        return {
+          ...settings,
+          [settingsKey]: settings[settingsKey] || {},
+        };
+      }
+    },
+    defaultPrivateSettings
+  );
 };

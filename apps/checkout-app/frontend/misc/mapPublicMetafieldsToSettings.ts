@@ -1,7 +1,10 @@
 import { defaultPublicSettings } from "@/config/defaults";
-import { MetadataItemFragment } from "@/graphql";
-import { PublicSettingsValues, UnknownPublicSettingsValues } from "@/types/api";
-import { allSettingID } from "@/types/common";
+import {
+  PublicMetafieldsValues,
+  PublicSettingsValues,
+  UnknownPublicSettingsValues,
+} from "@/types/api";
+import { allPublicSettingID } from "@/types/common";
 import reduce from "lodash-es/reduce";
 
 /**
@@ -32,33 +35,35 @@ export const mergeSettingsValues = (
   );
 };
 
-export const mapPublicMetadataToSettings = (
-  metadata: (MetadataItemFragment | null)[]
+export const mapPublicMetafieldsToSettings = (
+  metafields: PublicMetafieldsValues
 ): PublicSettingsValues => {
-  const settings = metadata.reduce((settings, metadataItem) => {
-    const settingsKey = metadataItem?.key as keyof typeof settings;
+  return reduce(
+    metafields,
+    (settings, metafield, metafieldKey) => {
+      const settingsKey = metafieldKey as keyof typeof settings;
 
-    if (!settingsKey || !allSettingID.includes(settingsKey)) {
-      return settings;
-    }
+      if (!settingsKey || !allPublicSettingID.includes(settingsKey)) {
+        return settings;
+      }
 
-    try {
-      const metadataItemSettings = JSON.parse(metadataItem?.value || "");
+      try {
+        const metadataItemSettings = JSON.parse(metafield || "");
 
-      return {
-        ...settings,
-        [settingsKey]: mergeSettingsValues(
-          settings[settingsKey],
-          metadataItemSettings
-        ),
-      };
-    } catch (e) {
-      return {
-        ...settings,
-        [settingsKey]: settings[settingsKey] || {},
-      };
-    }
-  }, defaultPublicSettings);
-
-  return settings as PublicSettingsValues;
+        return {
+          ...settings,
+          [settingsKey]: mergeSettingsValues(
+            settings[settingsKey],
+            metadataItemSettings
+          ),
+        };
+      } catch (e) {
+        return {
+          ...settings,
+          [settingsKey]: settings[settingsKey] || {},
+        };
+      }
+    },
+    defaultPublicSettings
+  );
 };

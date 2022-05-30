@@ -3,14 +3,15 @@ import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
 import { useChannelPaymentOptions } from "@/frontend/data";
 import { useAuthData } from "@/frontend/hooks/useAuthData";
 import { notFoundMessages } from "@/frontend/misc/errorMessages";
-import { mapPublicMetadataToSettings } from "@/frontend/misc/mapPublicMetadataToSettings";
+import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
 import { mapPublicSettingsToMetadata } from "@/frontend/misc/mapPublicSettingsToMetadata";
 import { getCommonErrors } from "@/frontend/utils";
 import {
   useChannelsQuery,
-  usePublicMetadataQuery,
+  usePublicMetafieldsQuery,
   useUpdatePublicMetadataMutation,
 } from "@/graphql";
+import { PublicSettingID } from "@/types/common";
 import ChannelDetails from "frontend/components/templates/ChannelDetails";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
@@ -22,17 +23,18 @@ const Channel = () => {
   const intl = useIntl();
 
   const { appId, isAuthorized } = useAuthData();
-  const [metadataQuery] = usePublicMetadataQuery({
+  const [metafieldsQuery] = usePublicMetafieldsQuery({
     variables: {
       id: appId || serverEnvVars.appId,
+      keys: ["channelActivePaymentProviders"] as PublicSettingID[number][],
     },
     pause: !isAuthorized,
   });
   const [metadataMutation, setPublicMetadata] =
     useUpdatePublicMetadataMutation();
 
-  const settingsValues = mapPublicMetadataToSettings(
-    metadataQuery.data?.app?.metadata || []
+  const settingsValues = mapPublicMetafieldsToSettings(
+    metafieldsQuery.data?.app?.metafields || {}
   );
 
   const [channelsQuery] = useChannelsQuery({
@@ -86,7 +88,7 @@ const Channel = () => {
       saveButtonBarState="default"
       loading={
         channelsQuery.fetching ||
-        metadataQuery.fetching ||
+        metafieldsQuery.fetching ||
         metadataMutation.fetching
       }
       errors={errors}
