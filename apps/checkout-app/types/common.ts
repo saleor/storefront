@@ -31,11 +31,15 @@ export interface PaymentMethod {
 }
 
 export type PaymentProviderID = "mollie" | "adyen";
-export type MollieProviderSettingID = "partnerId" | "liveApiKey" | "testApiKey";
+export type MollieProviderSettingID = "profileId" | "apiKey";
 export type AdyenProviderSettingID =
   | "merchantAccount"
-  | "clientKey"
-  | "supportedCurrencies";
+  | "hmac"
+  | "username"
+  | "password"
+  | "apiKey"
+  | "clientKey";
+
 export type PaymentProviderSettingID<P extends PaymentProviderID> =
   P extends "mollie"
     ? MollieProviderSettingID

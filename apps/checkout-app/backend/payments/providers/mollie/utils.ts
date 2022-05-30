@@ -1,5 +1,20 @@
+import createMollieClient, {
+  OrderCreateParams,
+  OrderLineType,
+} from "@mollie/api-client";
+
+import { getPrivateSettings } from "@/backend/configuration/settings";
+import { envVars } from "@/constants";
 import { OrderFragment, OrderLineFragment } from "@/graphql";
-import { OrderCreateParams, OrderLineType } from "@mollie/api-client";
+
+export const getMollieClient = async () => {
+  const metadata = await getPrivateSettings(envVars.apiUrl, false);
+  const apiKey = metadata.paymentProviders.mollie.apiKey!;
+
+  return createMollieClient({
+    apiKey,
+  });
+};
 
 export const parseAmountToString = (amount: number, negative = false) => {
   const value = amount.toFixed(2).toString();

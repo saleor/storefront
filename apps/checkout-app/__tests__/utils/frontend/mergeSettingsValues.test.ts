@@ -35,7 +35,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     );
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedPrivateSettings
+      savedPrivateSettings,
+      false
     );
 
     const expectedSettings = {
@@ -64,7 +65,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     );
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedSettings
+      savedSettings,
+      false
     );
 
     expect(mergedSettings).toEqual(defaultSettings);
@@ -98,7 +100,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     );
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedPrivateSettings
+      savedPrivateSettings,
+      false
     );
 
     expect(mergedSettings).toEqual(savedSettings);
@@ -137,7 +140,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     );
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedPrivateSettings
+      savedPrivateSettings,
+      false
     );
 
     const expectedSettings = {
@@ -197,7 +201,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     );
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedPrivateSettings
+      savedPrivateSettings,
+      false
     );
 
     const expectedSettings = {
@@ -253,7 +258,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     );
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedPrivateSettings
+      savedPrivateSettings,
+      false
     );
 
     const expectedSettings = {
@@ -273,8 +279,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(defaultSettings);
   });
 
-  it("merges payment provider values", async () => {
-    const defaultSettings: PaymentProviderSettingsValues<"unencrypted"> = {
+  it("merges sample payment provider values", async () => {
+    const defaultSettings = {
       adyen: {
         clientKey: "",
         merchantAccount: "",
@@ -286,7 +292,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
         testApiKey: "",
       },
     };
-    const savedSettings: PaymentProviderSettingsValues<"encrypted"> = {
+    const savedSettings = {
       adyen: {
         clientKey: {
           encrypted: true,
@@ -321,10 +327,11 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
 
     const mergedSettings = mergePrivateSettingsValues(
       defaultSettings,
-      savedSettings
+      savedSettings,
+      false
     );
 
-    const expectedSettings: PaymentProviderSettingsValues<"unencrypted"> = {
+    const expectedSettings = {
       adyen: {
         clientKey: "adyen_unencrypted_key",
         merchantAccount: "adyen_unencrypted_value",

@@ -8,7 +8,8 @@
         "$REACT_APP_SALEOR_API_URL",
         "$REACT_APP_CHECKOUT_API_URL",
         "$SALEOR_APP_TOKEN",
-        "$NEXT_PUBLIC_SALEOR_API_URL"
+        "$NEXT_PUBLIC_SALEOR_API_URL",
+        "$SETTINGS_ENCRYPTION_SECRET"
       ],
       "outputs": ["dist/**", ".next/**", "build/**"]
     },

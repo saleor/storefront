@@ -23,11 +23,7 @@ export const requireAuthorization =
   (fn: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     const authenticated = await isAuthenticated(req);
-    console.log(
-      authenticated
-        ? "JWT check: authenticated"
-        : "JWT check: not authenticated"
-    ); // for deployment debug pusposes
+
     if (!authenticated) {
       return res.status(401).json({
         error: {
@@ -37,9 +33,7 @@ export const requireAuthorization =
     }
 
     const authorized = await isAuthorized(req);
-    console.log(
-      authorized ? "JWT check: authorized" : "JWT check: not authorized"
-    ); // for deployment debug pusposes
+
     if (!authorized) {
       return res.status(403).json({
         error: {

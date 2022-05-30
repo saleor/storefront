@@ -10,7 +10,8 @@ import reduce from "lodash-es/reduce";
 import { decryptSetting } from "./encryption";
 
 const readSettingsValues = (
-  subSettings: Record<string, SettingValue | string | undefined>
+  subSettings: Record<string, SettingValue | string | undefined>,
+  obfuscateEncryptedData: boolean
 ) => {
   return reduce(
     subSettings,
@@ -35,7 +36,7 @@ const readSettingsValues = (
       return {
         ...subSettings,
         [subSettingKey]: subSetting.encrypted
-          ? decryptSetting(subSetting as SettingValue)
+          ? decryptSetting(subSetting as SettingValue, obfuscateEncryptedData)
           : subSetting.value,
       };
     },
@@ -51,7 +52,8 @@ const readSettingsValues = (
  */
 export const mergeSettingsValues = (
   defaultSettings: UnknownPrivateSettingsValues<"unencrypted">,
-  savedSettings: UnknownPrivateSettingsValues<"encrypted">
+  savedSettings: UnknownPrivateSettingsValues<"encrypted">,
+  obfuscateEncryptedData: boolean
 ) => {
   return reduce(
     defaultSettings,
@@ -61,7 +63,10 @@ export const mergeSettingsValues = (
       const udpatedSetting = hasSettingInBothSettings
         ? { ...defaultSetting, ...savedSetting }
         : defaultSetting;
-      const setting = readSettingsValues(udpatedSetting);
+      const setting = readSettingsValues(
+        udpatedSetting,
+        obfuscateEncryptedData
+      );
 
       return {
         ...result,
@@ -73,7 +78,8 @@ export const mergeSettingsValues = (
 };
 
 export const mapPrivateMetafieldsToSettings = (
-  metafields: PrivateMetafieldsValues
+  metafields: PrivateMetafieldsValues,
+  obfuscateEncryptedData: boolean
 ): PrivateSettingsValues<"unencrypted"> => {
   return reduce(
     metafields,
@@ -84,22 +90,16 @@ export const mapPrivateMetafieldsToSettings = (
         return settings;
       }
 
-      try {
-        const metadataItemSettings = JSON.parse(metafield || "");
+      const metadataItemSettings = JSON.parse(metafield || "");
 
-        return {
-          ...settings,
-          [settingsKey]: mergeSettingsValues(
-            settings[settingsKey],
-            metadataItemSettings
-          ) as PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">],
-        };
-      } catch (e) {
-        return {
-          ...settings,
-          [settingsKey]: settings[settingsKey] || {},
-        };
-      }
+      return {
+        ...settings,
+        [settingsKey]: mergeSettingsValues(
+          settings[settingsKey],
+          metadataItemSettings,
+          obfuscateEncryptedData
+        ) as PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">],
+      };
     },
     defaultPrivateSettings
   );

@@ -15,9 +15,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const apiUrl = `https://${tokenDomain}/graphql/`;
 
   try {
-    const settings = await getPrivateSettings(apiUrl);
-
-    console.log(settings); // for deployment debug pusposes
+    const settings = await getPrivateSettings(apiUrl, true);
 
     res.status(200).json({
       data: settings.paymentProviders,

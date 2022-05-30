@@ -12,16 +12,17 @@ import {
 } from "@/backend/payments/providers/adyen";
 import { getOrderTransactions } from "@/backend/payments/getOrderTransactions";
 import { updateTransaction } from "@/backend/payments/updateTransaction";
-
-const HMAC = process.env.ADYEN_HMAC!;
+import { getPrivateSettings } from "@/backend/configuration/settings";
+import { envVars } from "@/constants";
 
 const validator = new hmacValidator();
 
-const validateNotificationItems = ({
-  NotificationRequestItem,
-}: Types.notification.NotificationItem) => {
+const validateNotificationItems = (
+  { NotificationRequestItem }: Types.notification.NotificationItem,
+  hmacKey: string
+) => {
   // first validate the origin
-  const valid = validator.validateHMAC(NotificationRequestItem, HMAC);
+  const valid = validator.validateHMAC(NotificationRequestItem, hmacKey);
 
   if (!valid) {
     throw "Invalid HMAC key";
@@ -31,10 +32,11 @@ const validateNotificationItems = ({
 };
 
 const notificationHandler = async (
-  notification: Types.notification.NotificationRequestItem
+  notification: Types.notification.NotificationRequestItem,
+  apiKey: string
 ) => {
   // Get order id from webhook metadata
-  const orderId = await getOrderId(notification);
+  const orderId = await getOrderId(notification, apiKey);
 
   if (!orderId) {
     return;
@@ -77,9 +79,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const {
+    paymentProviders: { adyen },
+  } = await getPrivateSettings(envVars.apiUrl, false);
+
   // Get basic auth token
   const encodedCredentials = Buffer.from(
-    process.env.ADYEN_BASIC_USERNAME + ":" + process.env.ADYEN_BASIC_PASSWORD,
+    adyen.username + ":" + adyen.password,
     "ascii"
   ).toString("base64");
 
@@ -91,12 +97,15 @@ export default async function handler(
   try {
     // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
     // notificationItem will always contain a single item for HTTP POST
-    notificationItem = validateNotificationItems(req.body.notificationItems[0]);
+    notificationItem = validateNotificationItems(
+      req.body.notificationItems[0],
+      adyen.hmac!
+    );
   } catch (error) {
     return res.status(401).send(error);
   }
 
   res.status(200).send("[accepted]");
 
-  notificationHandler(notificationItem);
+  notificationHandler(notificationItem, adyen.apiKey!);
 }

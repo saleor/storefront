@@ -2,6 +2,19 @@ import { serverEnvVars } from "@/constants";
 import { SettingValue } from "@/types/api";
 import CryptoJS from "crypto-js";
 
+export const obfuscateValue = (value: string) => {
+  const unobfuscatedLength = Math.min(4, value.length - 4);
+
+  // if value is 4 characters or less, obfuscate entire value
+  if (unobfuscatedLength <= 0) {
+    return "****";
+  }
+
+  const unobfuscatedValue = value.slice(-unobfuscatedLength);
+
+  return "****" + " " + unobfuscatedValue;
+};
+
 export const encryptSetting = (settingValue: string): SettingValue => ({
   encrypted: true,
   value:
@@ -11,8 +24,19 @@ export const encryptSetting = (settingValue: string): SettingValue => ({
     ).toString() || "",
 });
 
-export const decryptSetting = (settingValue: SettingValue) =>
-  CryptoJS.AES.decrypt(
-    settingValue.value,
-    serverEnvVars.settingsEncryptionSecret
-  ).toString(CryptoJS.enc.Utf8) || "";
+export const decryptSetting = (
+  settingValue: SettingValue,
+  obfuscateEncryptedData: boolean
+) => {
+  const decrypted =
+    CryptoJS.AES.decrypt(
+      settingValue.value,
+      serverEnvVars.settingsEncryptionSecret
+    ).toString(CryptoJS.enc.Utf8) || "";
+
+  if (obfuscateEncryptedData) {
+    return obfuscateValue(decrypted);
+  }
+
+  return decrypted;
+};

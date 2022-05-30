@@ -18,6 +18,8 @@ const AppProvider: React.FC = (props) => {
 
   useEffect(() => {
     if (app) {
+      setIsAuthorized(!!app.getState().token);
+
       const unsubscribe = app.subscribe("handshake", (payload) => {
         setIsAuthorized(!!payload.token);
       });

@@ -6,7 +6,6 @@ import { mapPrivateMetafieldsToSettings } from "@/backend/configuration/mapPriva
 import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
 import {
   PrivateMetafieldsValues,
-  PrivateSettingsValues,
   PublicMetafieldsValues,
   PublicSettingsValues,
 } from "@/types/api";
@@ -40,15 +39,37 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
         '{"mollie":{"partnerId":{"encrypted":false,"value":"some_not_encrypted_id"},"liveApiKey":{"encrypted":true,"value":"U2FsdGVkX18zfzUyZy2f00/5BoS3s3WtAOo7wY0yELlwuW6hX0R/zCn/ppPnsBRk"}}}',
     };
 
-    const mergedSettings = mapPrivateMetafieldsToSettings(metafields);
+    const mergedSettings = mapPrivateMetafieldsToSettings(metafields, false);
 
-    const expectedSettings: PrivateSettingsValues<"unencrypted"> = {
+    const expectedSettings = {
       ...defaultPrivateSettings,
       paymentProviders: {
         adyen: {},
         mollie: {
           partnerId: "some_not_encrypted_id",
           liveApiKey: "some_decrypted_key",
+        },
+      },
+    };
+
+    expect(mergedSettings).toEqual(expectedSettings);
+  });
+
+  it("maps private metadata to settings with obfuscated data", async () => {
+    const metafields: PrivateMetafieldsValues = {
+      paymentProviders:
+        '{"mollie":{"partnerId":{"encrypted":false,"value":"some_not_encrypted_id"},"liveApiKey":{"encrypted":true,"value":"U2FsdGVkX18zfzUyZy2f00/5BoS3s3WtAOo7wY0yELlwuW6hX0R/zCn/ppPnsBRk"}}}',
+    };
+
+    const mergedSettings = mapPrivateMetafieldsToSettings(metafields, true);
+
+    const expectedSettings = {
+      ...defaultPrivateSettings,
+      paymentProviders: {
+        adyen: {},
+        mollie: {
+          partnerId: "some_not_encrypted_id",
+          liveApiKey: "**** _key",
         },
       },
     };

@@ -16,7 +16,7 @@ import {
   UpdatePrivateMetadataMutationVariables,
 } from "@/graphql";
 import { getClient } from "@/backend/client";
-import { defaultActiveChannelPaymentProviders } from "config/defaults";
+import { defaultActiveChannelPaymentProviders } from "@/config/defaults";
 import { mergeChannelsWithPaymentProvidersSettings } from "./utils";
 import { envVars, serverEnvVars } from "@/constants";
 import { PrivateSettingsValues } from "@/types/api";
@@ -25,7 +25,10 @@ import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings
 import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
 import { allPrivateSettingID, allPublicSettingID } from "@/types/common";
 
-export const getPrivateSettings = async (apiUrl: string) => {
+export const getPrivateSettings = async (
+  apiUrl: string,
+  obfuscateEncryptedData: boolean
+) => {
   const { data, error } = await getClient(apiUrl, serverEnvVars.appToken)
     .query<PrivateMetafieldsQuery, PrivateMetafieldsQueryVariables>(
       PrivateMetafieldsDocument,
@@ -33,16 +36,13 @@ export const getPrivateSettings = async (apiUrl: string) => {
     )
     .toPromise();
 
-  console.log(data, error); // for deployment debug pusposes
-
   if (error) {
     throw error;
   }
 
-  console.log(data?.app?.privateMetafields); // for deployment debug pusposes
-
   const settingsValues = mapPrivateMetafieldsToSettings(
-    data?.app?.privateMetafields || {}
+    data?.app?.privateMetafields || {},
+    obfuscateEncryptedData
   );
 
   return settingsValues;
@@ -149,7 +149,8 @@ export const setPrivateSettings = async (
   console.log(data?.updatePrivateMetadata?.item?.privateMetafields); // for deployment debug pusposes
 
   const settingsValues = mapPrivateMetafieldsToSettings(
-    data?.updatePrivateMetadata?.item?.privateMetafields || {}
+    data?.updatePrivateMetadata?.item?.privateMetafields || {},
+    true
   );
 
   return settingsValues;

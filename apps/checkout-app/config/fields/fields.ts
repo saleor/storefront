@@ -47,17 +47,12 @@ const molliePaymentProvider: Omit<
   "label"
 >[] = [
   {
-    id: "partnerId",
+    id: "profileId",
     type: "string",
-    encrypt: true,
+    encrypt: false,
   },
   {
-    id: "liveApiKey",
-    type: "string",
-    encrypt: true,
-  },
-  {
-    id: "testApiKey",
+    id: "apiKey",
     type: "string",
     encrypt: true,
   },
@@ -68,15 +63,30 @@ const adyenPaymentProvider: Omit<PaymentProviderSettings<"adyen">, "label">[] =
     {
       id: "merchantAccount",
       type: "string",
-      encrypt: true,
+      encrypt: false,
     },
     {
-      id: "clientKey",
+      id: "apiKey",
       type: "string",
       encrypt: true,
     },
     {
-      id: "supportedCurrencies",
+      id: "hmac",
+      type: "string",
+      encrypt: true,
+    },
+    {
+      id: "username",
+      type: "string",
+      encrypt: true,
+    },
+    {
+      id: "password",
+      type: "string",
+      encrypt: true,
+    },
+    {
+      id: "clientKey",
       type: "string",
       encrypt: false,
     },

@@ -18,16 +18,12 @@ export const paymentProvidersMessages = defineMessages<PaymentProviderID>({
 
 export const molliePaymentProviderMessages =
   defineMessages<MollieProviderSettingID>({
-    partnerId: {
-      defaultMessage: "Partner ID",
+    profileId: {
+      defaultMessage: "Profile ID",
       description: "payment provider setting",
     },
-    liveApiKey: {
-      defaultMessage: "Live API key",
-      description: "payment provider setting",
-    },
-    testApiKey: {
-      defaultMessage: "Test API key",
+    apiKey: {
+      defaultMessage: "API key",
       description: "payment provider setting",
     },
   });
@@ -35,15 +31,27 @@ export const molliePaymentProviderMessages =
 export const adyenPaymentProviderMessages =
   defineMessages<AdyenProviderSettingID>({
     merchantAccount: {
-      defaultMessage: "Merchant Account",
+      defaultMessage: "Merchant account",
+      description: "payment provider setting",
+    },
+    apiKey: {
+      defaultMessage: "Private API key",
+      description: "payment provider setting",
+    },
+    hmac: {
+      defaultMessage: "Webhook HMAC key",
+      description: "payment provider setting",
+    },
+    username: {
+      defaultMessage: "Webhook username",
+      description: "payment provider setting",
+    },
+    password: {
+      defaultMessage: "Webhook password",
       description: "payment provider setting",
     },
     clientKey: {
-      defaultMessage: "Client Key",
-      description: "payment provider setting",
-    },
-    supportedCurrencies: {
-      defaultMessage: "Supported Currencies",
+      defaultMessage: "Public client key",
       description: "payment provider setting",
     },
   });

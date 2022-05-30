@@ -26,14 +26,7 @@ export const createOrder = async (
   )
     .mutation<OrderCreateMutation, OrderCreateMutationVariables>(
       OrderCreateDocument,
-      { id: checkoutId },
-      {
-        fetchOptions: {
-          headers: {
-            "authorization-bearer": process.env.SALEOR_APP_TOKEN || "",
-          },
-        },
-      }
+      { id: checkoutId }
     )
     .toPromise();
 

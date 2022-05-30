@@ -1,5 +1,4 @@
 import { parseAmountToString } from "@/backend/payments/providers/mollie/utils";
-import { TransactionEventFragment } from "@/graphql";
 
 describe("@/backend/payments/providers/mollie/utils", () => {
   describe("parseAmountToString", () => {

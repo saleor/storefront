@@ -16,14 +16,16 @@ export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProviders
 export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unencrypted"> =
   {
     mollie: {
-      partnerId: "",
-      liveApiKey: "",
-      testApiKey: "",
+      apiKey: "",
+      profileId: "",
     },
     adyen: {
       merchantAccount: "",
       clientKey: "",
-      supportedCurrencies: "",
+      apiKey: "",
+      hmac: "",
+      password: "",
+      username: "",
     },
   };
 

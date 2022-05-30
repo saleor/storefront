@@ -19,8 +19,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const data = req.body;
 
-  console.log("data:", data); // for deployment debug pusposes
-
   if (!data) {
     return res.status(400).json({
       error: {
@@ -30,9 +28,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const settings = await getPrivateSettings(apiUrl);
-
-    console.log(settings); // for deployment debug pusposes
+    const settings = await getPrivateSettings(apiUrl, false);
 
     const updatedSettings = await setPrivateSettings(apiUrl, {
       ...settings,
