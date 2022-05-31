@@ -1,6 +1,9 @@
 {
   "name": "@saleor/ui-kit",
   "version": "0.0.0",
+  "description": "UI kit for Saleor Checkout and React Storefront",
+  "author": "Saleor Commerce",
+  "private": false,
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
@@ -14,7 +17,13 @@
     "lint": "eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "release": "np"
+  },
+  "np": {
+    "yarn": false,
+    "contents": "dist",
+    "test-script": "lint"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -45,6 +54,7 @@
     "config": "*",
     "css-loader": "^3.6.0",
     "css-modules-typescript-loader": "^4.0.1",
+    "np": "^7.6.1",
     "postcss": "^8.4.12",
     "postcss-loader": "4.3.0",
     "react": "^18.1.0",
