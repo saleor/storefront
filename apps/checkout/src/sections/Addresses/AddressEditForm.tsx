@@ -5,6 +5,7 @@ import { useErrors } from "@/providers/ErrorsProvider";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
 import { UserAddressFormData } from "./types";
+import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { getAddressInputData } from "./utils";
 
 interface AddressEditFormProps
@@ -19,6 +20,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   defaultValues,
 }) => {
   const [, userAddressUpdate] = useUserAddressUpdateMutation();
+  const { updateShippingAddress } = useCheckoutAddressUpdate();
 
   const { countryCode } = useCountrySelect();
 
@@ -37,6 +39,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
+      updateShippingAddress(address);
       onClose();
       return;
     }

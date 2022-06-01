@@ -1,51 +1,50 @@
 import { AddressFragment } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useBillingSameAsShipping } from "@/providers/BillingSameAsShippingProvider";
 import { useCountrySelect } from "@/providers/CountrySelectProvider";
 import { useAuthState } from "@saleor/sdk";
 import React, { useEffect, useRef } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import {
-  BillingSameAsShippingAddressProps,
-  UserDefaultAddressFragment,
-} from "./types";
+import { UserDefaultAddressFragment } from "./types";
 import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
 
-interface BillingAddressSectionProps extends BillingSameAsShippingAddressProps {
+interface BillingAddressSectionProps {
   addresses?: AddressFragment[] | null;
   defaultBillingAddress: UserDefaultAddressFragment;
 }
 
 export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
-  isBillingSameAsShippingAddress,
   defaultBillingAddress,
   addresses = [],
 }) => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
-  const hasIsBillingSameAsShippingAddressChanged = useRef(false);
+  const {
+    isBillingSameAsShippingAddress,
+    hasBillingSameAsShippingAddressChanged,
+    setHasBillingSameAsShippingAddressChanged,
+  } = useBillingSameAsShipping();
 
   const { setCountryCodeFromAddress } = useCountrySelect();
 
-  const { updateBillingAddress } = useCheckoutAddressUpdate({
-    isBillingSameAsShippingAddress,
-  });
+  const { updateBillingAddress } = useCheckoutAddressUpdate();
 
   const defaultAddress = checkout?.shippingAddress || defaultBillingAddress;
 
   useEffect(() => {
     if (
       isBillingSameAsShippingAddress ||
-      hasIsBillingSameAsShippingAddressChanged.current
+      hasBillingSameAsShippingAddressChanged
     ) {
       return;
     }
 
     setCountryCodeFromAddress(checkout?.shippingAddress);
 
-    hasIsBillingSameAsShippingAddressChanged.current = true;
+    setHasBillingSameAsShippingAddressChanged(true);
   }, [isBillingSameAsShippingAddress]);
 
   if (checkout?.isShippingRequired && isBillingSameAsShippingAddress) {
@@ -58,7 +57,7 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
       type="BILLING"
       onAddressSelect={updateBillingAddress}
       addresses={addresses as AddressFragment[]}
-      defaultAddress={defaultAddress}
+      defaultAddressId={defaultAddress?.id}
     />
   ) : (
     <GuestAddressSection

@@ -5,22 +5,18 @@ import {
 } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
 import { extractMutationErrors, getDataWithToken } from "@/lib/utils";
+import { useBillingSameAsShipping } from "@/providers/BillingSameAsShippingProvider";
 import { useErrors } from "@/providers/ErrorsProvider";
 import { useEffect } from "react";
-import { AddressFormData, BillingSameAsShippingAddressProps } from "./types";
+import { AddressFormData } from "./types";
 import { getAddressFormDataFromAddress, getAddressInputData } from "./utils";
 
 export type UseAddressUpdateFn = (address: AddressFormData) => Promise<void>;
 
-type UseCheckoutAddressUpdateProps = Pick<
-  BillingSameAsShippingAddressProps,
-  "isBillingSameAsShippingAddress"
->;
-
-export const useCheckoutAddressUpdate = ({
-  isBillingSameAsShippingAddress,
-}: UseCheckoutAddressUpdateProps) => {
+export const useCheckoutAddressUpdate = () => {
   const { checkout } = useCheckout();
+  const { isBillingSameAsShippingAddress } = useBillingSameAsShipping();
+
   const { setApiErrors: setShippingApiErrors } = useErrors<AddressFormData>(
     "checkoutShippingUpdate"
   );

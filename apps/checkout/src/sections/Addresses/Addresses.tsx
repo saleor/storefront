@@ -1,18 +1,15 @@
 import { CountryCode, useUserQuery } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
+import { BillingSameAsShippingProvider } from "@/providers/BillingSameAsShippingProvider";
 import { CountrySelectProvider } from "@/providers/CountrySelectProvider";
 import { useAuthState } from "@saleor/sdk";
-import React, { useState } from "react";
+import React from "react";
 import { BillingAddressSection } from "./BillingAddressSection";
 import { ShippingAddressSection } from "./ShippingAddressSection";
-import { BillingSameAsShippingAddressProps } from "./types";
 
 export const Addresses: React.FC = () => {
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
-
-  const [isBillingSameAsShippingAddress, setIsBillingSameAsShippingAddress] =
-    useState(!checkout?.billingAddress);
 
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
@@ -21,13 +18,8 @@ export const Addresses: React.FC = () => {
   const user = data?.me;
   const userAddresses = user?.addresses;
 
-  const billingSameAsShippingProps: BillingSameAsShippingAddressProps = {
-    isBillingSameAsShippingAddress,
-    setIsBillingSameAsShippingAddress,
-  };
-
   return (
-    <div>
+    <BillingSameAsShippingProvider>
       {checkout.isShippingRequired && (
         <CountrySelectProvider
           selectedCountryCode={
@@ -35,7 +27,6 @@ export const Addresses: React.FC = () => {
           }
         >
           <ShippingAddressSection
-            {...billingSameAsShippingProps}
             addresses={userAddresses}
             defaultShippingAddress={user?.defaultShippingAddress}
           />
@@ -47,11 +38,10 @@ export const Addresses: React.FC = () => {
         }
       >
         <BillingAddressSection
-          {...billingSameAsShippingProps}
           addresses={userAddresses}
           defaultBillingAddress={user?.defaultBillingAddress}
         />
       </CountrySelectProvider>
-    </div>
+    </BillingSameAsShippingProvider>
   );
 };

@@ -5,7 +5,7 @@ import {
   CountryDisplay,
 } from "@/graphql";
 import { AddressField } from "@/lib/globalTypes";
-import { intersection, omit } from "lodash-es";
+import { intersection, isEqual, omit } from "lodash-es";
 import { AddressFormData } from "./types";
 
 export const getAddressInputData = ({
@@ -66,3 +66,8 @@ export const getAddressFormLayout = (orderedAdressFields: AddressField[]) =>
 
     return result;
   }, [] as AddressFormLayout);
+
+export const isMatchingAddress =
+  (address?: AddressFragment | null) =>
+  (addressToMatch?: AddressFragment | null) =>
+    isEqual(omit(address, "id"), omit(addressToMatch, "id"));
