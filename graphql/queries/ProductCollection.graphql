@@ -1,13 +1,14 @@
 query ProductCollection(
   $before: String
   $after: String
+  $first: Int = 4
   $filter: ProductFilterInput
   $sortBy: ProductOrder
   $channel: String!
   $locale: LanguageCodeEnum!
 ) {
   products(
-    first: 4
+    first: $first
     channel: $channel
     after: $after
     before: $before

@@ -23,6 +23,7 @@ export interface ProductCollectionProps {
     direction?: OrderDirection;
   };
   allowMore?: boolean;
+  perPage?: number;
   setCounter?: (value: number) => void;
 }
 
@@ -31,11 +32,13 @@ export function ProductCollection({
   sortBy,
   setCounter,
   allowMore = true,
+  perPage = 4,
 }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
   const variables: ProductCollectionQueryVariables = {
     filter,
+    first: perPage,
     ...query,
   };
 
