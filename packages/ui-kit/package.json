@@ -4,6 +4,9 @@
   "description": "UI kit for Saleor Checkout and React Storefront",
   "author": "Saleor Commerce",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
