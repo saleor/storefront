@@ -26,6 +26,7 @@
     "@headlessui/react": "^1.6.0",
     "@heroicons/react": "^1.0.6",
     "@saleor/sdk": "^0.4.4",
+    "@saleor/ui-kit": "^0.0.1",
     "@stripe/react-stripe-js": "^1.7.0",
     "@stripe/stripe-js": "^1.26.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",

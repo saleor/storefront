@@ -16,6 +16,7 @@ specifiers:
   '@heroicons/react': ^1.0.6
   '@next/bundle-analyzer': ^12.1.4
   '@saleor/sdk': ^0.4.4
+  '@saleor/ui-kit': ^0.0.1
   '@stripe/react-stripe-js': ^1.7.0
   '@stripe/stripe-js': ^1.26.0
   '@svgr/webpack': ^6.2.1
@@ -69,6 +70,7 @@ dependencies:
   '@headlessui/react': 1.6.0_zpnidt7m3osuk7shl3s4oenomq
   '@heroicons/react': 1.0.6_react@18.0.0
   '@saleor/sdk': 0.4.4_hhgebqlept3qidt3npebvaseca
+  '@saleor/ui-kit': 0.0.1_zpnidt7m3osuk7shl3s4oenomq
   '@stripe/react-stripe-js': 1.7.0_np7xwilp6dgyjgzr5twne5e6de
   '@stripe/stripe-js': 1.26.0
   '@tailwindcss/aspect-ratio': 0.4.0_tailwindcss@3.0.23
@@ -2382,6 +2384,20 @@ packages:
       react: 18.0.0
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@saleor/ui-kit/0.0.1_zpnidt7m3osuk7shl3s4oenomq:
+    resolution: {integrity: sha512-m2CW0f25rCifMZexxrNSZUTaqKYZVY7uUjF3h194DP2ZfEm8jhB9TjFMas1VzAsWtZpXt9DlbMb2KCsbR5DqxA==}
+    peerDependencies:
+      react: ^18.0.0 || 18
+      react-dom: ^18.0.0 || 18
+    dependencies:
+      '@headlessui/react': 1.6.0_zpnidt7m3osuk7shl3s4oenomq
+      clsx: 1.1.1
+      react: 18.0.0
+      react-dom: 18.0.0_react@18.0.0
+      rollup: 2.75.5
+      tslib: 2.4.0
     dev: false
 
   /@samverschueren/stream-to-observable/0.3.1_rxjs@6.6.7:
@@ -6692,6 +6708,14 @@ packages:
     dependencies:
       glob: 7.2.0
     dev: true
+
+  /rollup/2.75.5:
+    resolution: {integrity: sha512-JzNlJZDison3o2mOxVmb44Oz7t74EfSd1SQrplQk0wSaXV7uLQXtVdHbxlcT3w+8tZ1TL4r/eLfc7nAbz38BBA==}
+    engines: {node: '>=10.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
 
   /rtl-css-js/1.15.0:
     resolution: {integrity: sha512-99Cu4wNNIhrI10xxUaABHsdDqzalrSRTie4GeCmbGVuehm4oj+fIy8fTzB+16pmKe8Bv9rl+hxIBez6KxExTew==}
