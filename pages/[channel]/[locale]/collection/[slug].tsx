@@ -8,6 +8,7 @@ import { FilteredProductList } from "@/components/productList/FilteredProductLis
 import { CollectionPageSeo } from "@/components/seo/CollectionPageSeo";
 import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
+import { translate } from "@/lib/translations";
 import {
   AttributeFilterFragment,
   CollectionBySlugDocument,
@@ -68,7 +69,10 @@ function CollectionPage({
       <CollectionPageSeo collection={collection} />
       <header className="mb-4 pt-4">
         <div className="container px-8">
-          <PageHero entity={collection} />
+          <PageHero
+            title={translate(collection, "name")}
+            description={translate(collection, "description") || ""}
+          />
         </div>
       </header>
       <div className="container px-8 mt-4">

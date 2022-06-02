@@ -1,5 +1,6 @@
 import { ApolloQueryResult } from "@apollo/client";
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { useRouter } from "next/router";
 import Custom404 from "pages/404";
 import React, { ReactElement } from "react";
 
@@ -7,7 +8,9 @@ import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList/FilteredProductList";
 import { CategoryPageSeo } from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
+import { usePaths } from "@/lib/paths";
 import { contextToRegionQuery } from "@/lib/regions";
+import { translate } from "@/lib/translations";
 import {
   AttributeFilterFragment,
   CategoryBySlugDocument,
@@ -60,16 +63,32 @@ function CategoryPage({
   category,
   attributeFiltersData,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const paths = usePaths();
+  const router = useRouter();
+
   if (!category) {
     return <Custom404 />;
   }
+
+  const subcategories = category.children?.edges.map((edge) => edge.node) || [];
+
+  const navigateToCategory = (categorySlug: string) => {
+    router.push(paths.category._slug(categorySlug).$url());
+  };
 
   return (
     <>
       <CategoryPageSeo category={category} />
       <header className="mb-4 pt-4">
         <div className="container px-8">
-          <PageHero entity={category} />
+          <PageHero
+            title={translate(category, "name")}
+            description={translate(category, "description") || ""}
+            pills={subcategories.map((subcategory) => ({
+              label: subcategory.name,
+              onClick: () => navigateToCategory(subcategory.slug),
+            }))}
+          />
         </div>
       </header>
       <main>
