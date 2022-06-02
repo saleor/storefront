@@ -34,12 +34,12 @@ export type AdyenResponse = {
 export type SuccessResponse = {
   provider: PaymentProviderID;
   ok: true;
-  orderToken: string;
+  orderId: string;
 } & (MollieResponse | AdyenResponse);
 
 export type ErrorResponse = {
   ok: false;
-  orderToken?: string;
+  orderId?: string;
   errors: Errors;
 };
 
@@ -77,7 +77,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       response = {
         ok: true,
         provider: "mollie",
-        orderToken: order.data.token,
+        orderId: order.data.id,
         data: {
           paymentUrl: url.href,
         },
@@ -92,7 +92,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       response = {
         ok: true,
         provider: "adyen",
-        orderToken: order.data.token,
+        orderId: order.data.id,
         data: {
           paymentUrl,
         },
@@ -102,7 +102,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 
-  res.status(400).json({ ok: false, orderToken: order.data.token });
+  res.status(400).json({ ok: false, orderId: order.data.id });
 }
 
 export default allowCors(handler);

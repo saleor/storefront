@@ -6,6 +6,7 @@ export const getPaymentProviders = () =>
   fetch(`${envVars.checkoutAppUrl}/active-payment-providers/channel-1`);
 
 export interface PayResult {
+  orderId: string;
   data: {
     paymentUrl: string;
   };

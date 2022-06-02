@@ -38,7 +38,7 @@ export const createAdyenPayment = async (
       value: getAdyenAmountFromSaleor(total.amount),
     },
     reference: data.number || data.id,
-    returnUrl: formatRedirectUrl(redirectUrl, data.token),
+    returnUrl: formatRedirectUrl(redirectUrl, data.id),
     merchantAccount: adyen.merchantAccount,
     countryCode: data.billingAddress?.country.code,
     metadata: {

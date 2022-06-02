@@ -30,7 +30,7 @@ const saleorClient = createSaleorClient({
 });
 
 export const Root = () => {
-  const orderToken = getQueryVariables().orderToken;
+  const orderId = getQueryVariables().orderId;
 
   return (
     // @ts-ignore React 17 <-> 18 type mismatch
@@ -42,8 +42,8 @@ export const Root = () => {
               <div className="app">
                 {/* @ts-ignore React 17 <-> 18 type mismatch */}
                 <ErrorBoundary FallbackComponent={PageNotFound}>
-                  {orderToken ? (
-                    <OrderConfirmation orderToken={orderToken} />
+                  {orderId ? (
+                    <OrderConfirmation orderId={orderId} />
                   ) : (
                     <Checkout />
                   )}

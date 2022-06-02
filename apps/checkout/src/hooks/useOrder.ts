@@ -1,13 +1,9 @@
 import { useOrderQuery } from "@/graphql";
-import { useAuthState } from "@saleor/sdk";
 
-export const useOrder = (token: string) => {
-  const { authenticating } = useAuthState();
-
+export const useOrder = (id: string) => {
   const [{ data, fetching: loading }] = useOrderQuery({
-    variables: { token },
-    pause: authenticating,
+    variables: { id },
   });
 
-  return { order: data?.orderByToken!, loading };
+  return { order: data?.order!, loading };
 };

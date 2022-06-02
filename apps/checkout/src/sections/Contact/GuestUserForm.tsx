@@ -1,6 +1,6 @@
 import { useCheckoutEmailUpdateMutation } from "@/graphql";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { getDataWithToken, useValidationResolver } from "@/lib/utils";
+import { useValidationResolver } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { PasswordInput } from "@/components/PasswordInput";
 import {
@@ -13,6 +13,7 @@ import { useGetInputProps } from "@/hooks/useGetInputProps";
 import { useErrorMessages } from "@/hooks/useErrorMessages";
 import { Checkbox } from "@/components/Checkbox";
 import { TextInput } from "@/components/TextInput";
+import { useCheckout } from "@/hooks/useCheckout";
 
 type AnonymousCustomerFormProps = Pick<
   SignInFormContainerProps,
@@ -26,6 +27,7 @@ interface FormData {
 export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   onSectionChange,
 }) => {
+  const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const [createAccountSelected, setCreateAccountSelected] = useState(false);
@@ -53,7 +55,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
 
   const onSubmit = ({ email }: FormData) =>
-    updateEmail(getDataWithToken({ email }));
+    updateEmail({ id: checkout.id, email });
 
   const emailValue = watch("email");
 

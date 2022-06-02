@@ -8,7 +8,7 @@ import { Text } from "@saleor/ui-kit";
 import { useAuth, useAuthState } from "@saleor/sdk";
 import { Button } from "@/components/Button";
 import { useCheckoutCustomerDetachMutation } from "@/graphql";
-import { getDataWithToken } from "@/lib/utils";
+import { useCheckout } from "@/hooks/useCheckout";
 
 type SignedInUserProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -19,9 +19,10 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
   const { logout } = useAuth();
   const { user } = useAuthState();
   const [, customerDetach] = useCheckoutCustomerDetachMutation();
+  const { checkout } = useCheckout();
 
   const handleLogout = async () => {
-    await customerDetach(getDataWithToken());
+    await customerDetach({ id: checkout.id });
     await logout();
   };
 

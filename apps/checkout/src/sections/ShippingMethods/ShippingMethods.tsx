@@ -5,7 +5,6 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/graphql";
 import { useCheckout } from "@/hooks/useCheckout";
-import { getDataWithToken } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { getFormattedMoney } from "@/hooks/useFormattedMoney";
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
@@ -24,9 +23,10 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
 
   useEffect(() => {
     if (selectedMethodId) {
-      updateDeliveryMethod(
-        getDataWithToken({ deliveryMethodId: selectedMethodId })
-      );
+      updateDeliveryMethod({
+        id: checkout.id,
+        deliveryMethodId: selectedMethodId,
+      });
     }
   }, [selectedMethodId]);
 

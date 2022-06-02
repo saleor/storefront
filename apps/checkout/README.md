@@ -7,7 +7,7 @@ Saleor checkout is a [CRA](https://create-react-app.dev/) for connecting Saleor 
 First, setup necessary environment variables:
 
 ```
-REACT_APP_CHECKOUT_APP_URL=https://your-checkout-app-url.app/api
+REACT_APP_CHECKOUT_API_URL=https://your-checkout-app-url.app/api
 REACT_APP_SALEOR_API_URL=https://your-saleor-instance.saleor.cloud/graphql/
 ```
 
@@ -27,7 +27,7 @@ You'll need checkout token in order to use the checkout. You can generate new ch
 
 > ⚠️ Note that if a given checkout has customer already attached, it'll become private and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
 
-Open [localhost:8001?checkoutToken=yourToken](http://localhost:8001?checkoutToken=) with your browser and add the your token to the url.
+Open [localhost:8001?checkout=<ID>](http://localhost:8001?checkout=) with your browser and add the your token to the url.
 
 ## Project structure
 

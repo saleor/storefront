@@ -56,7 +56,6 @@ fragment OrderLine on OrderLine {
 fragment Order on Order {
   id
   number
-  token
   userEmail
   billingAddress {
     ...Address

@@ -11,8 +11,8 @@ import { Divider } from "@/components/Divider";
 import { SummarySkeleton } from "@/sections/Summary/SummarySkeleton";
 import "./OrderConfirmationStyles.css";
 
-export const OrderConfirmation = ({ orderToken }: { orderToken: string }) => {
-  const { order } = useOrder(orderToken);
+export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
+  const { order } = useOrder(orderId);
   const formatMessage = useFormattedMessages();
 
   return (

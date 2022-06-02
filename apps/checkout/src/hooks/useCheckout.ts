@@ -1,12 +1,15 @@
+import { useMemo } from "react";
+
 import { useCheckoutQuery } from "@/graphql";
-import { getDataWithToken } from "@/lib/utils";
+import { extractCheckoutIdFromUrl } from "@/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 
 export const useCheckout = () => {
   const { authenticating } = useAuthState();
+  const id = useMemo(() => extractCheckoutIdFromUrl(), []);
 
   const [{ data, fetching: loading }] = useCheckoutQuery({
-    variables: getDataWithToken(),
+    variables: { id },
     pause: authenticating,
   });
 

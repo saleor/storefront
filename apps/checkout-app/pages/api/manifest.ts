@@ -9,7 +9,12 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
     name: appName,
     about:
       "Saleor checkout app to quickly configure and customize checkout in your store.",
-    permissions: ["HANDLE_PAYMENTS", "HANDLE_CHECKOUTS", "MANAGE_ORDERS"],
+    permissions: [
+      "HANDLE_PAYMENTS",
+      "HANDLE_CHECKOUTS",
+      "MANAGE_ORDERS",
+      "MANAGE_CHECKOUTS",
+    ],
     userPermissions: [],
     appUrl: `${envVars.appUrl}/channels`,
     dataPrivacyUrl: `${envVars.appUrl}/data-privacy`,

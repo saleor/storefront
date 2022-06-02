@@ -13,7 +13,7 @@ import {
 import { useFormattedMessages } from "@/hooks/useFormattedMessages";
 import { useFormattedMoney } from "@/hooks/useFormattedMoney";
 import { Money } from "@/components/Money";
-import { getDataWithToken } from "@/lib/utils";
+import { useCheckout } from "@/hooks/useCheckout";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -29,18 +29,19 @@ export const SummaryItemMoneyEditableSection: React.FC<
   const [quantity, setQuantity] = useState(line.quantity);
   const previousQuantity = useRef(line.quantity);
   const [, updateLines] = useCheckoutLinesUpdateMutation();
+  const { checkout } = useCheckout();
 
   const getUpdateLineVars = (
     quantity: number
-  ): CheckoutLinesUpdateMutationVariables =>
-    getDataWithToken({
-      lines: [
-        {
-          quantity,
-          variantId,
-        },
-      ],
-    });
+  ): CheckoutLinesUpdateMutationVariables => ({
+    id: checkout.id,
+    lines: [
+      {
+        quantity,
+        variantId,
+      },
+    ],
+  });
 
   const handleSubmit = (quantity: number) => {
     updateLines(getUpdateLineVars(quantity));

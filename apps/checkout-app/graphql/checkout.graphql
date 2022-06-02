@@ -1,5 +1,5 @@
-query Checkout($token: UUID!) {
-  checkout(token: $token) {
+query Checkout($id: ID!) {
+  checkout(id: $id) {
     id
     totalPrice {
       gross {

@@ -23,7 +23,7 @@ export const createMolliePayment = async (
     orderNumber: data.number!,
     webhookUrl: `${envVars.appUrl}/api/webhooks/mollie`,
     locale: "en_US",
-    redirectUrl: formatRedirectUrl(redirectUrl, data.token),
+    redirectUrl: formatRedirectUrl(redirectUrl, data.id),
     metadata: {
       orderId: data.id,
     },

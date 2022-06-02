@@ -2,26 +2,14 @@ import { reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
 import { OperationResult } from "urql";
-import { envVars } from "./environment";
 
 export const getById =
   <T extends { id: string }>(idToCompare: string | undefined) =>
   (obj: T) =>
     obj.id === idToCompare;
 
-export const getDataWithToken = <TData extends {} = {}>(
-  data: TData = {} as TData
-) => ({
-  token: extractCheckoutTokenFromUrl(),
-  ...data,
-});
-
 export type QueryVariables = Record<
-  | "checkoutToken"
-  | "passwordResetToken"
-  | "email"
-  | "orderToken"
-  | "redirectUrl",
+  "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl",
   string
 >;
 
@@ -29,24 +17,22 @@ export const getQueryVariables = (): Partial<QueryVariables> => {
   const vars = queryString.parse(location.search);
   return {
     ...vars,
-    orderToken: vars.order as string | undefined,
+    checkoutId: vars.checkout as string | undefined,
+    orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
   };
 };
 
 export const getCurrentHref = () => location.href;
 
-const extractCheckoutTokenFromUrl = (): string => {
-  const { checkoutToken } = getQueryVariables();
+export const extractCheckoutIdFromUrl = (): string => {
+  const { checkoutId } = getQueryVariables();
 
-  // for development & preview purposes
-  const token = checkoutToken || envVars.devCheckoutToken;
-
-  if (typeof token !== "string") {
+  if (typeof checkoutId !== "string") {
     throw new Error("Checkout token does not exist");
   }
 
-  return token;
+  return checkoutId;
 };
 
 export const extractMutationErrors = <TData extends Object, TVars = any>(

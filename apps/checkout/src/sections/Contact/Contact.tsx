@@ -1,5 +1,5 @@
 import { useCheckout } from "@/hooks/useCheckout";
-import { getDataWithToken, getQueryVariables } from "@/lib/utils";
+import { getQueryVariables } from "@/lib/utils";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
@@ -41,7 +41,7 @@ export const Contact = () => {
       setCurrentSection("signedInUser");
 
       if (checkout?.user?.id !== user?.id) {
-        customerAttach(getDataWithToken());
+        customerAttach({ id: checkout.id });
       }
 
       return;

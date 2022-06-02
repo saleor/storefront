@@ -38,7 +38,14 @@ export const useCheckoutFinalize = () => {
     });
 
     if (result?.data?.paymentUrl) {
-      window.location.replace(result?.data?.paymentUrl);
+      const newUrl = `?order=${result.orderId}`;
+
+      window.history.replaceState(
+        { ...window.history.state, as: newUrl, url: newUrl },
+        "",
+        newUrl
+      );
+      window.location.href = result.data.paymentUrl;
     }
   };
 
