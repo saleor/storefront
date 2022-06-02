@@ -1,4 +1,5 @@
 {
+  "app.cart.checkoutButton": "Przejdź do kasy",
   "app.checkout.addressField": "Address",
   "app.checkout.billingAddressCardHeader": "Billing Address",
   "app.checkout.billingMethodCardHeader": "Billing Method",
@@ -48,8 +49,8 @@
   "app.preferences.changePassword.header": "Repeat new password",
   "app.preferences.changePassword.newPasswordFieldLabel": "New password",
   "app.preferences.changePassword.oldPasswordFieldLabel": "Old password",
-  "app.product.addToCart": "Add to cart",
   "app.product.adding": "Adding...",
+  "app.product.addToCart": "Add to cart",
   "app.product.attributes": "Attributes",
   "app.product.soldOut": "Sold out!",
   "app.product.variantNotChosen": "Please chose the variant",
