@@ -48,7 +48,7 @@ specifiers:
   next: 12.1.5
   next-seo: ^5.3.0
   next-sitemap: ^2.4.3
-  next-usequerystate: 1.7.0
+  next-usequerystate: ^1.7.2
   nextjs-progressbar: ^0.0.14
   pathpida: ^0.18.1
   postcss: 8.4.12
@@ -85,7 +85,7 @@ dependencies:
   next: 12.1.5_zpnidt7m3osuk7shl3s4oenomq
   next-seo: 5.3.0_dtzmyspcyj3erncazrhasijzmy
   next-sitemap: 2.4.3_next@12.1.5
-  next-usequerystate: 1.7.0_dtzmyspcyj3erncazrhasijzmy
+  next-usequerystate: 1.7.2_dtzmyspcyj3erncazrhasijzmy
   nextjs-progressbar: 0.0.14_next@12.1.5+react@18.0.0
   react: 18.0.0
   react-dom: 18.0.0_react@18.0.0
@@ -5895,8 +5895,8 @@ packages:
       next: 12.1.5_zpnidt7m3osuk7shl3s4oenomq
     dev: false
 
-  /next-usequerystate/1.7.0_dtzmyspcyj3erncazrhasijzmy:
-    resolution: {integrity: sha512-OAR+4zgWCz1P5XnrbCrhTBf/UfJIoj17mXRDB5daUq5yYZyYETWQnJFuqEFB9qEd8KrpjBNF2aSmrQpqVXdLUA==}
+  /next-usequerystate/1.7.2_dtzmyspcyj3erncazrhasijzmy:
+    resolution: {integrity: sha512-5ChbGoG/TGYRuKtpI4fKf1wsePYrO75srXwLcuPR0Nnbm7Tspfbx0L6215PRmUb9ZJCRLoXy6J3CqJRZYCot3w==}
     peerDependencies:
       next: '*'
       react: '*'
