@@ -85,7 +85,7 @@ function CategoryPage({
             title={translate(category, "name")}
             description={translate(category, "description") || ""}
             pills={subcategories.map((subcategory) => ({
-              label: subcategory.name,
+              label: translate(subcategory, "name"),
               onClick: () => navigateToCategory(subcategory.slug),
             }))}
           />

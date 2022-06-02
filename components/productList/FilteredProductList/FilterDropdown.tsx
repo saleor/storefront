@@ -17,7 +17,7 @@ export interface FilterDropdownProps {
   optionToggle: (attributeSlug: string, choiceSlug: string) => void;
 }
 
-export default function FilterDropdown({
+export function FilterDropdown({
   label,
   attributeSlug,
   optionToggle,
@@ -65,3 +65,5 @@ export default function FilterDropdown({
     </Menu>
   );
 }
+
+export default FilterDropdown;

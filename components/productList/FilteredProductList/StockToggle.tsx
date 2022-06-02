@@ -6,7 +6,7 @@ export interface StockToggleProps {
   onChange: (checked: boolean) => void;
 }
 
-export default function StockToggle({ enabled, onChange }: StockToggleProps) {
+export function StockToggle({ enabled, onChange }: StockToggleProps) {
   return (
     <div className="inline-block py-2 px-2">
       <Switch.Group>
@@ -27,3 +27,5 @@ export default function StockToggle({ enabled, onChange }: StockToggleProps) {
     </div>
   );
 }
+
+export default StockToggle;

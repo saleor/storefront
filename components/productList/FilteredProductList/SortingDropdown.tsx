@@ -19,7 +19,7 @@ export interface SortingDropdownProps {
   chosen: UrlSorting | null;
 }
 
-export default function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) {
+export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) {
   const options: SortingOption[] = [
     { label: "Popularity", chosen: false },
     { label: "Name ascending", field: "NAME", direction: "ASC", chosen: false },
@@ -80,3 +80,5 @@ export default function SortingDropdown({ optionToggle, chosen }: SortingDropdow
     </Menu>
   );
 }
+
+export default SortingDropdown;

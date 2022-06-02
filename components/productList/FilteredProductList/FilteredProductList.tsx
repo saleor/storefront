@@ -1,7 +1,8 @@
-import { queryTypes, useQueryState } from "next-usequerystate";
+import { queryTypes, TransitionOptions, useQueryState } from "next-usequerystate";
 import { useEffect, useState } from "react";
 
 import { ProductCollection } from "@/components/ProductCollection";
+import { translate } from "@/lib/translations";
 import {
   AttributeFilterFragment,
   OrderDirection,
@@ -15,11 +16,12 @@ import {
   parseQuerySort,
   serializeQueryAttributeFilters,
   serializeQuerySort,
+  UrlSorting,
 } from "./attributes";
-import FilterDropdown from "./FilterDropdown";
+import { FilterDropdown } from "./FilterDropdown";
 import { FilterPill, FilterPills } from "./FilterPills";
-import SortingDropdown from "./SortingDropdown";
-import StockToggle from "./StockToggle";
+import { SortingDropdown } from "./SortingDropdown";
+import { StockToggle } from "./StockToggle";
 
 export interface FilteredProductListProps {
   attributeFiltersData: AttributeFilterFragment[];
@@ -49,11 +51,13 @@ export function FilteredProductList({
 
   const [itemsCounter, setItemsCounter] = useState(0);
 
-  const [sortBy, setSortBy] = useQueryState("sortBy", {
-    parse: parseQuerySort,
-    serialize: serializeQuerySort,
-    defaultValue: null,
-  });
+  const [sortByQuery, setSortByQuery] = useQueryState("sortBy", {});
+
+  const sortBy = parseQuerySort(sortByQuery);
+  const setSortBy = (
+    value: UrlSorting | undefined | null,
+    transitionOptions?: TransitionOptions | undefined
+  ) => setSortByQuery(serializeQuerySort(value), transitionOptions);
 
   const [inStockFilter, setInStockFilter] = useQueryState(
     "inStock",
@@ -71,6 +75,8 @@ export function FilteredProductList({
       ...(collectionIDs?.length && { collections: collectionIDs }),
       ...(inStockFilter && { stockAvailability: "IN_STOCK" }),
     });
+    // Eslint does not recognize stringified queryFilters, so we have to ignore it
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inStockFilter, JSON.stringify(queryFilters), categoryIDs, collectionIDs]);
 
   const removeAttributeFilter = (attributeSlug: string, choiceSlug: string) => {
@@ -148,7 +154,7 @@ export function FilteredProductList({
             {attributeFiltersData.map((attribute) => (
               <FilterDropdown
                 key={attribute.id}
-                label={attribute.name!}
+                label={translate(attribute, "name") || ""}
                 optionToggle={addAttributeFilter}
                 attributeSlug={attribute.slug!}
                 options={attribute.choices?.edges.map((choiceEdge) => {
@@ -159,7 +165,7 @@ export function FilteredProductList({
                         pill.attributeSlug === attribute.slug && pill.choiceSlug === choice.slug
                     ),
                     id: choice.id,
-                    label: choice.name || choice.id,
+                    label: translate(choice, "name") || choice.id,
                     slug: choice.slug || choice.id,
                   };
                 })}

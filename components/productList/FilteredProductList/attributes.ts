@@ -49,7 +49,10 @@ export const parseQueryAttributeFilters = (query: string): UrlFilter[] => {
 export const serializeQueryAttributeFilters = (value: UrlFilter[]): string =>
   value.map((v) => [v.slug, ...v.values].join(".")).join(";");
 
-export const parseQuerySort = (query: string): UrlSorting | null => {
+export const parseQuerySort = (query: string | null): UrlSorting | null => {
+  if (!query) {
+    return null;
+  }
   const [field, direction] = query.split("_");
   if (!field || !direction) {
     return null;
@@ -62,9 +65,9 @@ export const parseQuerySort = (query: string): UrlSorting | null => {
   return sorting;
 };
 
-export const serializeQuerySort = (value?: UrlSorting) => {
+export const serializeQuerySort = (value?: UrlSorting | null) => {
   if (value?.direction && value?.field) {
     return `${value.field}_${value.direction}`;
   }
-  return undefined;
+  return null;
 };
