@@ -64,7 +64,7 @@ function Cart() {
                   {externalCheckoutUrl ? (
                     <a
                       className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700"
-                      href={`${externalCheckoutUrl}?checkoutToken=${checkout.token}`}
+                      href={`${externalCheckoutUrl}?checkout=${checkout.id}`}
                       target="_self"
                     >
                       {t.formatMessage(messages.checkoutButton)}
