@@ -78,53 +78,53 @@ export function FilteredProductList({
   }, [inStockFilter, JSON.stringify(queryFilters), categoryIDs, collectionIDs]);
 
   const removeAttributeFilter = (attributeSlug: string, choiceSlug: string) => {
-    const newFilters = [];
-    for (const fa of queryFilters) {
-      if (fa.slug !== attributeSlug) {
-        newFilters.push(fa);
-        continue;
-      }
-      fa.values = fa.values.filter((v) => v !== choiceSlug);
-      if (fa.values.length > 0) {
-        newFilters.push(fa);
-      }
+    const existingFilter = queryFilters.find((f) => f.slug === attributeSlug);
+    if (!existingFilter) {
+      return;
     }
-    setQueryFilters(newFilters.length ? newFilters : null, {
+
+    // if it is last choice value, remove whole attribute from the list
+    if (existingFilter.values.length === 1) {
+      const updatedFilters = queryFilters.filter((f) => f.slug !== attributeSlug);
+      setQueryFilters(updatedFilters.length ? updatedFilters : null, {
+        scroll: false,
+        shallow: true,
+      });
+      return;
+    }
+
+    // if there are other values, just remove selected one
+    existingFilter.values = existingFilter.values.filter((v) => v !== choiceSlug);
+    setQueryFilters(queryFilters, {
       scroll: false,
       shallow: true,
     });
   };
 
   const addAttributeFilter = (attributeSlug: string, choiceSlug: string) => {
+    // if given attribute and value has been already chosen, remove it
     if (
       pills.find((pill) => pill.attributeSlug === attributeSlug && pill.choiceSlug === choiceSlug)
     ) {
       removeAttributeFilter(attributeSlug, choiceSlug);
       return;
     }
-    const newFilters = [];
-    let modified = false;
-    for (const fa of queryFilters) {
-      if (fa.slug !== attributeSlug) {
-        newFilters.push(fa);
-        continue;
-      }
-      if (!fa.values.includes(choiceSlug)) {
-        fa.values.push(choiceSlug);
-        newFilters.push(fa);
-        modified = true;
-      } else {
-        newFilters.push(fa);
-        modified = true;
-      }
-    }
-    if (!modified) {
-      newFilters.push({ slug: attributeSlug, values: [choiceSlug] });
+
+    // if attribute was not used before, add it
+    const existingFilter = queryFilters.find((f) => f.slug === attributeSlug);
+    if (!existingFilter) {
+      setQueryFilters([...queryFilters, { slug: attributeSlug, values: [choiceSlug] }], {
+        scroll: false,
+        shallow: true,
+      });
+      return;
     }
 
-    setQueryFilters(newFilters, {
+    // if its already here, modify values list
+    existingFilter.values = [...existingFilter.values, choiceSlug];
+    setQueryFilters(queryFilters, {
       scroll: false,
-      shallow: true, // Don't run getStaticProps / getServerSideProps / getInitialProps
+      shallow: true,
     });
   };
 
