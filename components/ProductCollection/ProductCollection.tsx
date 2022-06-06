@@ -36,18 +36,19 @@ export function ProductCollection({
 }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
+
   const variables: ProductCollectionQueryVariables = {
     filter,
     first: perPage,
     ...query,
+    ...(sortBy?.field &&
+      sortBy?.direction && {
+        sortBy: {
+          direction: sortBy.direction,
+          field: sortBy.field,
+        },
+      }),
   };
-
-  if (sortBy?.field && sortBy?.direction) {
-    variables.sortBy = {
-      direction: sortBy.direction,
-      field: sortBy.field,
-    };
-  }
 
   const { loading, error, data, fetchMore } = useProductCollectionQuery({
     variables,
