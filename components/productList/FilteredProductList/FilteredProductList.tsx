@@ -13,13 +13,11 @@ import {
 import {
   getPillsData,
   parseQueryAttributeFilters,
-  parseQuerySort,
   serializeQueryAttributeFilters,
-  serializeQuerySort,
-  UrlSorting,
 } from "./attributes";
 import { FilterDropdown } from "./FilterDropdown";
 import { FilterPill, FilterPills } from "./FilterPills";
+import { parseQuerySort, serializeQuerySort, UrlSorting } from "./sorting";
 import { SortingDropdown } from "./SortingDropdown";
 import { StockToggle } from "./StockToggle";
 

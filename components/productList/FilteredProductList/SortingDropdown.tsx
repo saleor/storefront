@@ -5,14 +5,7 @@ import { Fragment } from "react";
 
 import { OrderDirection, ProductOrderField } from "@/saleor/api";
 
-import { UrlSorting } from "./attributes";
-
-export interface SortingOption {
-  label: string;
-  field?: ProductOrderField;
-  direction?: OrderDirection;
-  chosen: boolean;
-}
+import { getSortingOptions, UrlSorting } from "./sorting";
 
 export interface SortingDropdownProps {
   optionToggle: (field?: ProductOrderField, direction?: OrderDirection) => void;
@@ -20,23 +13,7 @@ export interface SortingDropdownProps {
 }
 
 export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) {
-  const options: SortingOption[] = [
-    { label: "Popularity", chosen: false },
-    { label: "Name ascending", field: "NAME", direction: "ASC", chosen: false },
-    { label: "Name descending", field: "NAME", direction: "DESC", chosen: false },
-  ];
-
-  let isChosenSet = false;
-  for (const option of options) {
-    if (option.field === chosen?.field && option.direction === chosen?.direction) {
-      option.chosen = true;
-      isChosenSet = true;
-      break;
-    }
-  }
-  if (!isChosenSet) {
-    options[0].chosen = true;
-  }
+  const options = getSortingOptions(chosen);
 
   return (
     <Menu as="div" className="relative inline-block text-left">
