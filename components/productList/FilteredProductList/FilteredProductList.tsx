@@ -68,7 +68,7 @@ export function FilteredProductList({
 
   useEffect(() => {
     setProductsFilter({
-      attributes: queryFilters.filter((f) => f.values?.length),
+      attributes: queryFilters.filter((filter) => filter.values?.length),
       ...(categoryIDs?.length && { categories: categoryIDs }),
       ...(collectionIDs?.length && { collections: collectionIDs }),
       ...(inStockFilter && { stockAvailability: "IN_STOCK" }),
@@ -78,14 +78,14 @@ export function FilteredProductList({
   }, [inStockFilter, JSON.stringify(queryFilters), categoryIDs, collectionIDs]);
 
   const removeAttributeFilter = (attributeSlug: string, choiceSlug: string) => {
-    const existingFilter = queryFilters.find((f) => f.slug === attributeSlug);
+    const existingFilter = queryFilters.find((filter) => filter.slug === attributeSlug);
     if (!existingFilter) {
       return;
     }
 
     // if it is last choice value, remove whole attribute from the list
     if (existingFilter.values.length === 1) {
-      const updatedFilters = queryFilters.filter((f) => f.slug !== attributeSlug);
+      const updatedFilters = queryFilters.filter((filter) => filter.slug !== attributeSlug);
       setQueryFilters(updatedFilters.length ? updatedFilters : null, {
         scroll: false,
         shallow: true,
@@ -94,7 +94,7 @@ export function FilteredProductList({
     }
 
     // if there are other values, just remove selected one
-    existingFilter.values = existingFilter.values.filter((v) => v !== choiceSlug);
+    existingFilter.values = existingFilter.values.filter((value) => value !== choiceSlug);
     setQueryFilters(queryFilters, {
       scroll: false,
       shallow: true,
@@ -111,7 +111,7 @@ export function FilteredProductList({
     }
 
     // if attribute was not used before, add it
-    const existingFilter = queryFilters.find((f) => f.slug === attributeSlug);
+    const existingFilter = queryFilters.find((filter) => filter.slug === attributeSlug);
     if (!existingFilter) {
       setQueryFilters([...queryFilters, { slug: attributeSlug, values: [choiceSlug] }], {
         scroll: false,
