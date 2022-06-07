@@ -2,6 +2,7 @@ import { Text } from "@saleor/ui-kit";
 import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
 
+import { mapEdgesToItems } from "@/lib/maps";
 import {
   OrderDirection,
   ProductCollectionQueryVariables,
@@ -71,7 +72,7 @@ export function ProductCollection({
   if (loading) return <Spinner />;
   if (error) return <p>Error</p>;
 
-  const products = data?.products?.edges.map((edge) => edge.node) || [];
+  const products = mapEdgesToItems(data?.products);
   if (products.length === 0) {
     return (
       <Text size="xl" color="secondary">

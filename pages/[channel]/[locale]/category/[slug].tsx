@@ -8,6 +8,7 @@ import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList/FilteredProductList";
 import { CategoryPageSeo } from "@/components/seo/CategoryPageSeo";
 import apolloClient from "@/lib/graphql";
+import { mapEdgesToItems } from "@/lib/maps";
 import { usePaths } from "@/lib/paths";
 import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
@@ -47,8 +48,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
   });
 
-  let attributes: AttributeFilterFragment[] =
-    attributesResponse.data.attributes?.edges.map((e) => e.node) || [];
+  let attributes: AttributeFilterFragment[] = mapEdgesToItems(attributesResponse.data.attributes);
   attributes = attributes.filter((attribute) => attribute.choices?.edges.length);
 
   return {
@@ -70,7 +70,7 @@ function CategoryPage({
     return <Custom404 />;
   }
 
-  const subcategories = category.children?.edges.map((edge) => edge.node) || [];
+  const subcategories = mapEdgesToItems(category.children);
 
   const navigateToCategory = (categorySlug: string) => {
     router.push(paths.category._slug(categorySlug).$url());

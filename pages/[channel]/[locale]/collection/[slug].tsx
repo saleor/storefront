@@ -7,6 +7,7 @@ import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList";
 import { CollectionPageSeo } from "@/components/seo/CollectionPageSeo";
 import apolloClient from "@/lib/graphql";
+import { mapEdgesToItems } from "@/lib/maps";
 import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import {
@@ -45,8 +46,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
   });
 
-  let attributes: AttributeFilterFragment[] =
-    attributesResponse.data.attributes?.edges.map((e) => e.node) || [];
+  let attributes: AttributeFilterFragment[] = mapEdgesToItems(attributesResponse.data.attributes);
   attributes = attributes.filter((attribute) => attribute.choices?.edges.length);
 
   return {
