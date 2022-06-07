@@ -188,7 +188,7 @@ export function FilteredProductList({
               }
             />
           </div>
-          <div className="flex-none">
+          <div className="flex-none text-base">
             <div>{itemsCounter} items</div>
           </div>
         </div>

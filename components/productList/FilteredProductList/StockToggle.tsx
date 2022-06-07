@@ -22,7 +22,7 @@ export function StockToggle({ enabled, onChange }: StockToggleProps) {
             )}
           />
         </Switch>
-        <Switch.Label className="ml-2">In stock</Switch.Label>
+        <Switch.Label className="ml-2 text-base">In stock</Switch.Label>
       </Switch.Group>
     </div>
   );
