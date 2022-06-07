@@ -20298,6 +20298,8 @@ export type _Service = {
 
 export type AddressDetailsFragment = { __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } };
 
+export type AttributeFilterChoiceFragment = { __typename?: 'AttributeValue', id: string, name?: string | null, slug?: string | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null };
+
 export type AttributeFilterFragment = { __typename?: 'Attribute', id: string, inputType?: AttributeInputTypeEnum | null, name?: string | null, slug?: string | null, withChoices: boolean, translation?: { __typename?: 'AttributeTranslation', id: string, name: string } | null, choices?: { __typename?: 'AttributeValueCountableConnection', edges: Array<{ __typename?: 'AttributeValueCountableEdge', cursor: string, node: { __typename?: 'AttributeValue', id: string, name?: string | null, slug?: string | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null } }> } | null };
 
 export type CategoryBasicFragment = { __typename?: 'Category', id: string, name: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null };
@@ -20637,6 +20639,16 @@ export type CurrentUserAddressesQueryVariables = Exact<{ [key: string]: never; }
 
 export type CurrentUserAddressesQuery = { __typename?: 'Query', me?: { __typename?: 'User', addresses?: Array<{ __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } }> | null } | null };
 
+export const AttributeFilterChoiceFragmentDoc = gql`
+    fragment AttributeFilterChoiceFragment on AttributeValue {
+  id
+  name
+  slug
+  translation(languageCode: $locale) {
+    name
+  }
+}
+    `;
 export const AttributeFilterFragmentDoc = gql`
     fragment AttributeFilterFragment on Attribute {
   id
@@ -20651,18 +20663,13 @@ export const AttributeFilterFragmentDoc = gql`
   choices(first: 20) {
     edges {
       node {
-        id
-        name
-        slug
-        translation(languageCode: $locale) {
-          name
-        }
+        ...AttributeFilterChoiceFragment
       }
       cursor
     }
   }
 }
-    `;
+    ${AttributeFilterChoiceFragmentDoc}`;
 export const CategoryBasicFragmentDoc = gql`
     fragment CategoryBasicFragment on Category {
   id

@@ -11,9 +11,11 @@ import {
 } from "@/saleor/api";
 
 import {
+  getFilterOptions,
   getPillsData,
   parseQueryAttributeFilters,
   serializeQueryAttributeFilters,
+  UrlFilter,
 } from "./attributes";
 import { FilterDropdown } from "./FilterDropdown";
 import { FilterPill, FilterPills } from "./FilterPills";
@@ -78,24 +80,18 @@ export function FilteredProductList({
   }, [inStockFilter, JSON.stringify(queryFilters), categoryIDs, collectionIDs]);
 
   const removeAttributeFilter = (attributeSlug: string, choiceSlug: string) => {
-    const existingFilter = queryFilters.find((filter) => filter.slug === attributeSlug);
-    if (!existingFilter) {
-      return;
-    }
+    const newFilters = queryFilters.reduce((result: UrlFilter[], filter: UrlFilter) => {
+      if (filter.slug !== attributeSlug) {
+        return [...result, filter];
+      }
+      const newFilterValues = filter.values.filter((value) => value !== choiceSlug);
+      if (newFilterValues?.length) {
+        return [...result, { ...filter, values: newFilterValues }];
+      }
+      return result;
+    }, []);
 
-    // if it is last choice value, remove whole attribute from the list
-    if (existingFilter.values.length === 1) {
-      const updatedFilters = queryFilters.filter((filter) => filter.slug !== attributeSlug);
-      setQueryFilters(updatedFilters.length ? updatedFilters : null, {
-        scroll: false,
-        shallow: true,
-      });
-      return;
-    }
-
-    // if there are other values, just remove selected one
-    existingFilter.values = existingFilter.values.filter((value) => value !== choiceSlug);
-    setQueryFilters(queryFilters, {
+    setQueryFilters(newFilters.length ? newFilters : null, {
       scroll: false,
       shallow: true,
     });
@@ -155,18 +151,7 @@ export function FilteredProductList({
                 label={translate(attribute, "name") || ""}
                 optionToggle={addAttributeFilter}
                 attributeSlug={attribute.slug!}
-                options={attribute.choices?.edges.map((choiceEdge) => {
-                  const choice = choiceEdge.node;
-                  return {
-                    chosen: !!pills.find(
-                      (pill) =>
-                        pill.attributeSlug === attribute.slug && pill.choiceSlug === choice.slug
-                    ),
-                    id: choice.id,
-                    label: translate(choice, "name") || choice.id,
-                    slug: choice.slug || choice.id,
-                  };
-                })}
+                options={getFilterOptions(attribute, pills)}
               />
             ))}
             <SortingDropdown

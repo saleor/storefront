@@ -1,0 +1,8 @@
+fragment AttributeFilterChoiceFragment on AttributeValue {
+  id
+  name
+  slug
+  translation(languageCode: $locale) {
+    name
+  }
+}

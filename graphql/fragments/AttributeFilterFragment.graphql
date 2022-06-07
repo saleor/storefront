@@ -11,12 +11,7 @@ fragment AttributeFilterFragment on Attribute {
   choices(first: 20) {
     edges {
       node {
-        id
-        name
-        slug
-        translation(languageCode: $locale) {
-          name
-        }
+        ...AttributeFilterChoiceFragment
       }
       cursor
     }

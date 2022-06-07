@@ -1,5 +1,8 @@
+import { mapEdgesToItems } from "@/lib/maps";
+import { translate } from "@/lib/translations";
 import { AttributeFilterFragment } from "@/saleor/api";
 
+import { FilterDropdownOption } from "./FilterDropdown";
 import { FilterPill } from "./FilterPills";
 
 export interface UrlFilter {
@@ -27,6 +30,22 @@ export const getPillsData = (
     });
     return [...result, ...newPills];
   }, []);
+
+export const getFilterOptions = (
+  attribute: AttributeFilterFragment,
+  appliedFilters: FilterPill[]
+): FilterDropdownOption[] => {
+  const choices = mapEdgesToItems(attribute.choices);
+
+  return choices.map((choice) => ({
+    chosen: !!appliedFilters.find(
+      (pill) => pill.attributeSlug === attribute.slug && pill.choiceSlug === choice.slug
+    ),
+    id: choice.id,
+    label: translate(choice, "name") || choice.id,
+    slug: choice.slug || choice.id,
+  }));
+};
 
 export const parseQueryAttributeFilters = (query: string): UrlFilter[] => {
   const filters: UrlFilter[] = [];
