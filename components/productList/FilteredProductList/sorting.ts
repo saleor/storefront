@@ -12,7 +12,7 @@ export interface SortingOption {
   chosen: boolean;
 }
 
-export const getSortingOptions = (chosen: UrlSorting | null) => {
+export const getSortingOptions = (chosenSorting: UrlSorting | null) => {
   const options: SortingOption[] = [
     { label: "Popularity", chosen: false },
     { label: "Name ascending", field: "NAME", direction: "ASC", chosen: false },
@@ -21,7 +21,7 @@ export const getSortingOptions = (chosen: UrlSorting | null) => {
 
   let isChosenSet = false;
   for (const option of options) {
-    if (option.field === chosen?.field && option.direction === chosen?.direction) {
+    if (option.field === chosenSorting?.field && option.direction === chosenSorting?.direction) {
       option.chosen = true;
       isChosenSet = true;
       break;

@@ -102,10 +102,10 @@ export function FilteredProductList({
   };
 
   const addAttributeFilter = (attributeSlug: string, choiceSlug: string) => {
-    // if given attribute and value has been already chosen, remove it
-    if (
-      pills.find((pill) => pill.attributeSlug === attributeSlug && pill.choiceSlug === choiceSlug)
-    ) {
+    const isFilterAlreadyApplied = !!pills.find(
+      (pill) => pill.attributeSlug === attributeSlug && pill.choiceSlug === choiceSlug
+    );
+    if (isFilterAlreadyApplied) {
       removeAttributeFilter(attributeSlug, choiceSlug);
       return;
     }
@@ -181,7 +181,7 @@ export function FilteredProductList({
             <StockToggle
               enabled={inStockFilter}
               onChange={(value: boolean) =>
-                setInStockFilter(value ? true : null, {
+                setInStockFilter(!!value || null, {
                   scroll: false,
                   shallow: true,
                 })

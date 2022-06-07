@@ -8,34 +8,25 @@ export interface UrlFilter {
 }
 
 export const getPillsData = (
-  filters: UrlFilter[],
+  urlFilters: UrlFilter[],
   attributeFiltersData: AttributeFilterFragment[]
-) => {
-  const pills: FilterPill[] = [];
-  for (const filter of filters) {
-    const choiceAttribute = attributeFiltersData.find(
-      (attribute) => attribute.slug === filter.slug
-    );
+): FilterPill[] =>
+  urlFilters.reduce((result: FilterPill[], filter: UrlFilter) => {
+    const choiceAttribute = attributeFiltersData.find((attr) => attr.slug === filter.slug);
     const attrName = choiceAttribute ? choiceAttribute.name : filter.slug;
-    for (const value of filter.values) {
-      let choiceName = value;
-      if (choiceAttribute) {
-        const attrChoice = choiceAttribute.choices?.edges.find(
-          (choice) => choice.node.slug === value
-        );
-        if (attrChoice?.node.name) {
-          choiceName = attrChoice.node.name;
-        }
-      }
-      pills.push({
+    const newPills = filter.values.map((value) => {
+      const attrChoice = choiceAttribute?.choices?.edges.find(
+        (choice) => choice.node.slug === value
+      );
+      const choiceName = attrChoice?.node.name || value;
+      return {
         label: `${attrName}: ${choiceName}`,
         choiceSlug: value,
         attributeSlug: filter.slug,
-      });
-    }
-  }
-  return pills;
-};
+      };
+    });
+    return [...result, ...newPills];
+  }, []);
 
 export const parseQueryAttributeFilters = (query: string): UrlFilter[] => {
   const filters: UrlFilter[] = [];
