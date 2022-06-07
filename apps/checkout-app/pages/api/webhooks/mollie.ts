@@ -13,9 +13,9 @@ export default async function handler(
     const paymentData = await verifyPayment(req.body.id);
 
     if (paymentData) {
-      res.status(200).send("ok");
+      await createTransaction(paymentData);
 
-      createTransaction(paymentData);
+      res.status(200).send("ok");
 
       return;
     }

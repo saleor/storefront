@@ -53,6 +53,7 @@ export const getOrderId = async (
 
   try {
     const { metadata } = await checkout.getPaymentLinks(paymentLinkId);
+
     return metadata?.orderId;
   } catch (e) {
     // INFO: checkout.getPaymentLinks method fails randomly

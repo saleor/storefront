@@ -63,7 +63,7 @@ const notificationHandler = async (
 
     const data = await getUpdatedTransactionData(transaction, notification);
 
-    updateTransaction(data);
+    await updateTransaction(data);
   } else {
     const data = await getNewTransactionData(orderId, notification);
 
@@ -71,7 +71,7 @@ const notificationHandler = async (
       return;
     }
 
-    createTransaction(data);
+    await createTransaction(data);
   }
 };
 
@@ -105,7 +105,7 @@ export default async function handler(
     return res.status(401).send(error);
   }
 
-  res.status(200).send("[accepted]");
+  await notificationHandler(notificationItem, adyen.apiKey!);
 
-  notificationHandler(notificationItem, adyen.apiKey!);
+  res.status(200).send("[accepted]");
 }
