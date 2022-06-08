@@ -13,7 +13,7 @@ export function StockToggle({ enabled, onChange }: StockToggleProps) {
         <Switch
           checked={enabled}
           onChange={onChange}
-          className="bg-transparent relative inline-flex items-center h-4 rounded-3xl w-7 transition-colors border-[1.5px] border-gray-200 bg-white"
+          className="bg-transparent relative inline-flex items-center h-4 rounded-3xl w-[2.7rem] transition-colors border-[1.5px] border-gray-200 bg-white"
         >
           <span
             className={clsx(
