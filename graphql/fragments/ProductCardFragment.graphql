@@ -17,19 +17,17 @@ fragment ProductCardFragment on Product {
       name
     }
   }
-  pricing {
-    onSale
-    priceRange {
-      start {
-        gross {
-          ...PriceFragment
-        }
-      }
-      stop {
-        gross {
-          ...PriceFragment
-        }
-      }
+  media {
+    url
+    alt
+    type
+  }
+  attributes {
+    attribute {
+      slug
+    }
+    values {
+      name
     }
   }
 }
