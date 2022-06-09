@@ -1,15 +1,15 @@
-import { Title } from "@/components/Title";
+import { Title } from "@/checkout/components/Title";
 import { Text } from "@saleor/ui-kit";
 import {
   ShippingMethod,
   useCheckoutDeliveryMethodUpdateMutation,
-} from "@/graphql";
-import { useCheckout } from "@/hooks/useCheckout";
+} from "@/checkout/graphql";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 import React, { useEffect, useState } from "react";
-import { getFormattedMoney } from "@/hooks/useFormattedMoney";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { RadioBox } from "@/components/RadioBox";
-import { RadioBoxGroup } from "@/components/RadioBoxGroup";
+import { getFormattedMoney } from "@/checkout/hooks/useFormattedMoney";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { RadioBox } from "@/checkout/components/RadioBox";
+import { RadioBoxGroup } from "@/checkout/components/RadioBoxGroup";
 
 interface ShippingMethodsProps {}
 

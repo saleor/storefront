@@ -1,9 +1,9 @@
 import { CheckoutAPI, Client } from "@adyen/api-library";
 
-import { getPrivateSettings } from "@/backend/configuration/settings";
-import { envVars } from "@/constants";
-import { OrderFragment } from "@/graphql";
-import { formatRedirectUrl } from "@/backend/payments/utils";
+import { getPrivateSettings } from "@/checkout-app/backend/configuration/settings";
+import { envVars } from "@/checkout-app/constants";
+import { OrderFragment } from "@/checkout-app/graphql";
+import { formatRedirectUrl } from "@/checkout-app/backend/payments/utils";
 
 import { getAdyenAmountFromSaleor, getLineItems } from "./utils";
 

@@ -1,5 +1,5 @@
-import AppNavigation from "@/frontend/components/elements/AppNavigation";
-import AppSavebar from "@/frontend/components/elements/AppSavebar";
+import AppNavigation from "@/checkout-app/frontend/components/elements/AppNavigation";
+import AppSavebar from "@/checkout-app/frontend/components/elements/AppSavebar";
 import {
   Typography,
   Accordion,
@@ -18,11 +18,14 @@ import { useStyles } from "./styles";
 import { FormattedMessage } from "react-intl";
 import { useForm, Controller } from "react-hook-form";
 import { messages } from "./messages";
-import Setting from "@/frontend/components/elements/Setting";
-import { flattenSettingId, unflattenSettings } from "@/frontend/utils";
+import Setting from "@/checkout-app/frontend/components/elements/Setting";
+import {
+  flattenSettingId,
+  unflattenSettings,
+} from "@/checkout-app/frontend/utils";
 import Skeleton from "@material-ui/lab/Skeleton";
-import { MetadataErrorFragment } from "@/graphql";
-import { getMetadataErrorMessage } from "@/frontend/misc/errors";
+import { MetadataErrorFragment } from "@/checkout-app/graphql";
+import { getMetadataErrorMessage } from "@/checkout-app/frontend/misc/errors";
 import ErrorAlert from "../../elements/ErrorAlert";
 
 interface CustomizationDetailsProps {

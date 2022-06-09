@@ -1,4 +1,4 @@
-import { MetadataErrorCode } from "@/graphql";
+import { MetadataErrorCode } from "@/checkout-app/graphql";
 import { IntlShape } from "react-intl";
 import { commonErrorMessages } from "./errorMessages";
 import camelCase from "lodash-es/camelCase";

@@ -1,8 +1,8 @@
 import { Text } from "@saleor/ui-kit";
-import { OrderLineFragment } from "@/graphql";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useFormattedMoney } from "@/hooks/useFormattedMoney";
-import { Money } from "@/components/Money";
+import { OrderLineFragment } from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useFormattedMoney } from "@/checkout/hooks/useFormattedMoney";
+import { Money } from "@/checkout/components/Money";
 import clsx from "clsx";
 
 interface LineItemQuantitySelectorProps {

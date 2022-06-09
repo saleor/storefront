@@ -1,14 +1,14 @@
 import { Suspense } from "react";
 
-import PageHeader from "@/sections/PageHeader";
-import { FinalizedSummary } from "@/sections/Summary";
-import { OrderInfo } from "@/sections/OrderInfo";
-import { Title } from "@/components/Title";
+import PageHeader from "@/checkout/sections/PageHeader";
+import { FinalizedSummary } from "@/checkout/sections/Summary";
+import { OrderInfo } from "@/checkout/sections/OrderInfo";
+import { Title } from "@/checkout/components/Title";
 import { Text } from "@saleor/ui-kit";
-import { useOrder } from "@/hooks/useOrder";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { Divider } from "@/components/Divider";
-import { SummarySkeleton } from "@/sections/Summary/SummarySkeleton";
+import { useOrder } from "@/checkout/hooks/useOrder";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { Divider } from "@/checkout/components/Divider";
+import { SummarySkeleton } from "@/checkout/sections/Summary/SummarySkeleton";
 import "./OrderConfirmationStyles.css";
 
 export const OrderConfirmation = ({ orderId }: { orderId: string }) => {

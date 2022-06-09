@@ -1,6 +1,6 @@
-import { CommonField, fields } from "@/config/fields";
-import { PrivateSettingsValues, SettingValue } from "@/types/api";
-import { PrivateSettingID } from "@/types/common";
+import { CommonField, fields } from "@/checkout-app/config/fields";
+import { PrivateSettingsValues, SettingValue } from "@/checkout-app/types/api";
+import { PrivateSettingID } from "@/checkout-app/types/common";
 import reduce from "lodash-es/reduce";
 import { encryptSetting } from "./encryption";
 

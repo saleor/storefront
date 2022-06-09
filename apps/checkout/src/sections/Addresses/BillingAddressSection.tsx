@@ -1,8 +1,8 @@
-import { AddressFragment } from "@/graphql";
-import { useCheckout } from "@/hooks/useCheckout";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useBillingSameAsShipping } from "@/providers/BillingSameAsShippingProvider";
-import { useCountrySelect } from "@/providers/CountrySelectProvider";
+import { AddressFragment } from "@/checkout/graphql";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useBillingSameAsShipping } from "@/checkout/providers/BillingSameAsShippingProvider";
+import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
 import { useAuthState } from "@saleor/sdk";
 import React, { useEffect, useRef } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";

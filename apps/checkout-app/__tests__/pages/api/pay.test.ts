@@ -1,13 +1,18 @@
-import pay, { Body, ErrorResponse, SuccessResponse } from "@/pages/api/pay";
-import { mockRequest } from "@/test-utils";
+import {
+  PayRequestBody,
+  PayRequestErrorResponse,
+  PayRequestSuccessResponse,
+} from "@/checkout-app/types/api/pay";
+import pay from "@/checkout-app/pages/api/pay";
+import { mockRequest } from "@/checkout-app/test-utils";
 
-import { createMolliePayment } from "@/backend/payments/providers/mollie";
-import { createAdyenPayment } from "@/backend/payments/providers/adyen";
-import { createOrder } from "@/backend/payments/createOrder";
+import { createMolliePayment } from "@/checkout-app/backend/payments/providers/mollie";
+import { createAdyenPayment } from "@/checkout-app/backend/payments/providers/adyen";
+import { createOrder } from "@/checkout-app/backend/payments/createOrder";
 
-jest.mock("@/backend/payments/createOrder");
-jest.mock("@/backend/payments/providers/mollie");
-jest.mock("@/backend/payments/providers/adyen");
+jest.mock("@/checkout-app/backend/payments/createOrder");
+jest.mock("@/checkout-app/backend/payments/providers/mollie");
+jest.mock("@/checkout-app/backend/payments/providers/adyen");
 jest.mock("@mollie/api-client");
 jest.mock("urql");
 
@@ -44,7 +49,7 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).not.toHaveBeenCalled();
     expect(mockedCreateMolliePayment).not.toHaveBeenCalled();
 
-    const data: ErrorResponse = res._getJSONData();
+    const data: PayRequestErrorResponse = res._getJSONData();
     expect(res.statusCode).toBe(400);
     expect(data.ok).toBe(false);
     expect(data.errors.length).toBe(1);
@@ -65,7 +70,7 @@ describe("/api/pay", () => {
       provider: "mollie",
       totalAmount: 100,
       redirectUrl: "example.com",
-    } as Body;
+    } as PayRequestBody;
 
     // @ts-ignore
     await pay(req, res);
@@ -79,7 +84,7 @@ describe("/api/pay", () => {
     );
     expect(mockedCreateMolliePayment).toHaveBeenCalledTimes(1);
 
-    const data: SuccessResponse = res._getJSONData();
+    const data: PayRequestSuccessResponse = res._getJSONData();
     expect(res.statusCode).toBe(200);
     expect(data.ok).toBe(true);
     expect(data.provider).toBe("mollie");
@@ -98,7 +103,7 @@ describe("/api/pay", () => {
       provider: "adyen",
       totalAmount: 100,
       redirectUrl: "example.com",
-    } as Body;
+    } as PayRequestBody;
 
     // @ts-ignore
     await pay(req, res);
@@ -112,7 +117,7 @@ describe("/api/pay", () => {
     );
     expect(mockedCreateAdyenPayment).toHaveBeenCalledTimes(1);
 
-    const data: SuccessResponse = res._getJSONData();
+    const data: PayRequestSuccessResponse = res._getJSONData();
     expect(res.statusCode).toBe(200);
     expect(data.ok).toBe(true);
     expect(data.provider).toBe("adyen");

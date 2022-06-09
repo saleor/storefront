@@ -1,4 +1,4 @@
-import { ThemeVariant } from "@/types/common";
+import { ThemeVariant } from "@/checkout-app/types/common";
 import { createSvgIcon, SvgIconProps } from "@material-ui/core";
 import React from "react";
 

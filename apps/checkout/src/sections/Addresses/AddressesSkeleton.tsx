@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/Skeleton";
+import { Skeleton } from "@/checkout/components/Skeleton";
 import React from "react";
 
 export const AddressesSkeleton: React.FC = () => {

@@ -1,5 +1,5 @@
-import AppNavigation from "@/frontend/components/elements/AppNavigation";
-import VerticalSpacer from "@/frontend/components/elements/VerticalSpacer";
+import AppNavigation from "@/checkout-app/frontend/components/elements/AppNavigation";
+import VerticalSpacer from "@/checkout-app/frontend/components/elements/VerticalSpacer";
 import { Typography } from "@material-ui/core";
 import { Alert } from "@saleor/macaw-ui";
 import { useIntl } from "react-intl";

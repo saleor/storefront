@@ -1,8 +1,8 @@
-import { Title } from "@/components/Title";
+import { Title } from "@/checkout/components/Title";
 import React, { PropsWithChildren } from "react";
 import { countries } from "./countries";
 import { Select } from "@saleor/ui-kit";
-import { useCountrySelect } from "@/providers/CountrySelectProvider";
+import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
 
 interface UserAddressSectionContainerProps {
   title: string;

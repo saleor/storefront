@@ -1,7 +1,7 @@
-import { useUserAddressCreateMutation } from "@/graphql";
-import { extractMutationErrors } from "@/lib/utils";
-import { useCountrySelect } from "@/providers/CountrySelectProvider";
-import { useErrors } from "@/providers/ErrorsProvider";
+import { useUserAddressCreateMutation } from "@/checkout/graphql";
+import { extractMutationErrors } from "@/checkout/lib/utils";
+import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
+import { useErrors } from "@/checkout/providers/ErrorsProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
 import { AddressForm } from "./AddressForm";

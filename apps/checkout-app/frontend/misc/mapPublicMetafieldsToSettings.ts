@@ -1,10 +1,10 @@
-import { defaultPublicSettings } from "@/config/defaults";
+import { defaultPublicSettings } from "@/checkout-app/config/defaults";
 import {
   PublicMetafieldsValues,
   PublicSettingsValues,
   UnknownPublicSettingsValues,
-} from "@/types/api";
-import { allPublicSettingID } from "@/types/common";
+} from "@/checkout-app/types/api";
+import { allPublicSettingID } from "@/checkout-app/types/common";
 import reduce from "lodash-es/reduce";
 
 /**

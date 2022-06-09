@@ -1,6 +1,6 @@
-import { useGetFormErrorsFromApiErrors } from "@/lib/utils";
+import { useGetFormErrorsFromApiErrors } from "@/checkout/lib/utils";
 import { PropsWithChildren, useState } from "react";
-import { createSafeContext } from "@/providers/createSafeContext";
+import { createSafeContext } from "@/checkout/providers/createSafeContext";
 import {
   ApiErrors,
   Errors,

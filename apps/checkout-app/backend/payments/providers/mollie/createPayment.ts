@@ -1,6 +1,6 @@
-import { envVars } from "@/constants";
-import { OrderFragment } from "@/graphql";
-import { formatRedirectUrl } from "@/backend/payments/utils";
+import { envVars } from "@/checkout-app/constants";
+import { OrderFragment } from "@/checkout-app/graphql";
+import { formatRedirectUrl } from "@/checkout-app/backend/payments/utils";
 
 import {
   getDiscountLines,

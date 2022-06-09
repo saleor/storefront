@@ -1,4 +1,4 @@
-import { useOrderQuery } from "@/graphql";
+import { useOrderQuery } from "@/checkout/graphql";
 
 export const useOrder = (id: string) => {
   const [{ data, fetching: loading }] = useOrderQuery({

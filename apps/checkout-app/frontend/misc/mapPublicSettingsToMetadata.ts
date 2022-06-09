@@ -1,4 +1,4 @@
-import { PublicSettingsValues } from "@/types/api";
+import { PublicSettingsValues } from "@/checkout-app/types/api";
 
 export const mapPublicSettingsToMetadata = (
   settingsValues: Partial<PublicSettingsValues>

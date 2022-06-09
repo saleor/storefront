@@ -1,6 +1,9 @@
-import { useErrorMessages } from "@/hooks/useErrorMessages";
-import { ValidationError, ValidationErrorCode } from "@/lib/globalTypes";
-import { ApiErrors } from "@/providers/ErrorsProvider";
+import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
+import {
+  ValidationError,
+  ValidationErrorCode,
+} from "@/checkout/lib/globalTypes";
+import { ApiErrors } from "@/checkout/providers/ErrorsProvider";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
 import { ValidationError as ValidationErrorObject } from "yup";

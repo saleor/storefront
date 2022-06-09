@@ -1,5 +1,5 @@
-import { serverEnvVars } from "@/constants";
-import { SettingValue } from "@/types/api";
+import { serverEnvVars } from "@/checkout-app/constants";
+import { SettingValue } from "@/checkout-app/types/api";
 import CryptoJS from "crypto-js";
 
 export const obfuscateValue = (value: string) => {

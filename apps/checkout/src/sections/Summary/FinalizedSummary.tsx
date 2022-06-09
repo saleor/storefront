@@ -1,9 +1,9 @@
 import { Text } from "@saleor/ui-kit";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
-import { OrderFragment } from "@/graphql";
-import { Divider } from "@/components/Divider";
-import { Money } from "@/components/Money";
+import { OrderFragment } from "@/checkout/graphql";
+import { Divider } from "@/checkout/components/Divider";
+import { Money } from "@/checkout/components/Money";
 
 import { getTaxPercentage } from "./utils";
 

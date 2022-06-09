@@ -1,20 +1,20 @@
-import { Divider } from "@/components/Divider";
-import { useCheckout } from "@/hooks/useCheckout";
-import { Contact, ContactSkeleton } from "@/sections/Contact";
+import { Divider } from "@/checkout/components/Divider";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { Contact, ContactSkeleton } from "@/checkout/sections/Contact";
 import {
   ShippingMethods,
   ShippingMethodsSkeleton,
-} from "@/sections/ShippingMethods";
-import { Addresses, AddressesSkeleton } from "@/sections/Addresses";
-import { useErrorMessages } from "@/hooks/useErrorMessages";
-import { useValidationResolver } from "@/lib/utils";
+} from "@/checkout/sections/ShippingMethods";
+import { Addresses, AddressesSkeleton } from "@/checkout/sections/Addresses";
+import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
+import { useValidationResolver } from "@/checkout/lib/utils";
 import { Suspense } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
-import { Button } from "@/components/Button";
+import { Button } from "@/checkout/components/Button";
 import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { FormData } from "./types";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import "./CheckoutFormStyles.css";
 

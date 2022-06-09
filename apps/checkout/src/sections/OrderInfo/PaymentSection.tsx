@@ -1,41 +1,55 @@
-import { PaymentChargeStatusEnum } from "@/graphql";
-import { Text } from "@saleor/ui-kit";
+import { Button, Text } from "@saleor/ui-kit";
+
+import {
+  OrderAuthorizeStatusEnum,
+  OrderChargeStatusEnum,
+  PaymentChargeStatusEnum,
+} from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { usePay } from "@/checkout/hooks/usePay";
 
 import { Section, SectionTitle } from "./Section";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-
-const unpaidStatuses: PaymentChargeStatusEnum[] = [
-  "CANCELLED",
-  "NOT_CHARGED",
-  "REFUSED",
-];
-const paidStatuses: PaymentChargeStatusEnum[] = ["FULLY_CHARGED", "PENDING"];
 
 export const PaymentSection = ({
+  orderId,
   isPaid,
-  paymentStatus,
+  chargeStatus,
+  authorizeStatus,
 }: {
+  orderId: string;
   isPaid: boolean;
   paymentStatus: PaymentChargeStatusEnum;
+  chargeStatus: OrderChargeStatusEnum;
+  authorizeStatus: OrderAuthorizeStatusEnum;
 }) => {
+  const { loading, orderPay } = usePay();
   const formatMessage = useFormattedMessages();
 
-  const renderPaymentDetails = () => {
-    if (unpaidStatuses.includes(paymentStatus)) {
-      return (
-        <>
-          <Text color="error">{formatMessage("unpaidOrderMessage")}</Text>
-        </>
-      );
-    }
+  const handlePay = () => {
+    orderPay({
+      provider: "adyen",
+      orderId,
+    });
+  };
 
-    if (isPaid || paidStatuses.includes(paymentStatus)) {
+  const renderPaymentDetails = () => {
+    if (isPaid || chargeStatus === "FULL" || authorizeStatus === "FULL") {
       return <Text color="success">{formatMessage("paidOrderMessage")}</Text>;
     }
 
-    // TODO: Add support for partial payments
+    return (
+      <div>
+        <Text color="error">{formatMessage("unpaidOrderMessage")}</Text>
+        <Button
+          className="mt-2"
+          label="Pay for the order"
+          onClick={handlePay}
+          disabled={loading}
+        />
+      </div>
+    );
 
-    return null;
+    // TODO: Add support for partial payments
   };
 
   return (

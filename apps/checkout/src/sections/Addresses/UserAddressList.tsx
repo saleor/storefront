@@ -1,7 +1,10 @@
 import React from "react";
-import { AddressFragment, useUserAddressDeleteMutation } from "@/graphql";
+import {
+  AddressFragment,
+  useUserAddressDeleteMutation,
+} from "@/checkout/graphql";
 import { AddressRadioBox } from "../AddressRadioBox";
-import { RadioBoxGroup } from "@/components/RadioBoxGroup";
+import { RadioBoxGroup } from "@/checkout/components/RadioBoxGroup";
 
 interface UserAddressListProps {
   onAddressSelect: (id: string) => void;

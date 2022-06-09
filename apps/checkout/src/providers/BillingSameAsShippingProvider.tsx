@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useRef, useState } from "react";
-import { createSafeContext } from "@/providers/createSafeContext";
-import { useCheckout } from "@/hooks/useCheckout";
+import { createSafeContext } from "@/checkout/providers/createSafeContext";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 interface BillingSameAsShippingContextConsumerProps {
   isBillingSameAsShippingAddress: boolean;

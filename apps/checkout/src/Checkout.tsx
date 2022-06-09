@@ -1,9 +1,9 @@
-import PageHeader from "@/sections/PageHeader";
-import { Summary } from "@/sections/Summary";
-import { CheckoutForm } from "@/sections/CheckoutForm";
+import PageHeader from "@/checkout/sections/PageHeader";
+import { Summary } from "@/checkout/sections/Summary";
+import { CheckoutForm } from "@/checkout/sections/CheckoutForm";
 import { Suspense } from "react";
-import { SummarySkeleton } from "@/sections/Summary/SummarySkeleton";
-import { PageNotFound } from "@/sections/PageNotFound";
+import { SummarySkeleton } from "@/checkout/sections/Summary/SummarySkeleton";
+import { PageNotFound } from "@/checkout/sections/PageNotFound";
 import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "./hooks/useCheckout";
 import { useAuthState } from "@saleor/sdk";

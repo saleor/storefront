@@ -1,4 +1,4 @@
-import { AriaLabel } from "@/lib/globalTypes";
+import { AriaLabel } from "@/checkout/lib/globalTypes";
 import {
   IconButton as UiKitIconButton,
   IconButtonProps as UiKitIconButtonProps,

@@ -1,5 +1,5 @@
 import { useMessageFormatter } from "@react-aria/i18n";
-import english from "@/lib/translations/en-US.json";
+import english from "@/checkout/lib/translations/en-US.json";
 
 export type MessageKey = keyof typeof english;
 

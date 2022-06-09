@@ -1,8 +1,8 @@
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { Text } from "@saleor/ui-kit";
-import { Button } from "@/components/Button";
-import { SaleorLogo } from "@/images";
-import { Title } from "@/components/Title";
+import { Button } from "@/checkout/components/Button";
+import { SaleorLogo } from "@/checkout/images";
+import { Title } from "@/checkout/components/Title";
 
 export const PageNotFound = () => {
   const formatMessage = useFormattedMessages();

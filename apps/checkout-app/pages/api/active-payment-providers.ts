@@ -1,5 +1,5 @@
-import { getActivePaymentProvidersSettings } from "@/backend/configuration/settings";
-import { allowCors } from "@/backend/utils";
+import { getActivePaymentProvidersSettings } from "@/checkout-app/backend/configuration/settings";
+import { allowCors } from "@/checkout-app/backend/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {

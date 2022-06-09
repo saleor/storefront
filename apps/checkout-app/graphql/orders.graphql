@@ -104,6 +104,12 @@ mutation OrderCreate($id: ID!) {
   }
 }
 
+query OrderDetails($id: ID!) {
+  order(id: $id) {
+    ...Order
+  }
+}
+
 fragment TransactionEvent on TransactionEvent {
   name
   reference

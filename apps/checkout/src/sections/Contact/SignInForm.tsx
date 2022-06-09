@@ -1,7 +1,7 @@
-import { Button } from "@/components/Button";
-import { PasswordInput } from "@/components/PasswordInput";
+import { Button } from "@/checkout/components/Button";
+import { PasswordInput } from "@/checkout/components/PasswordInput";
 import { Text } from "@saleor/ui-kit";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
 import {
@@ -12,14 +12,14 @@ import {
   extractValidationError,
   getCurrentHref,
   useValidationResolver,
-} from "@/lib/utils";
+} from "@/checkout/lib/utils";
 import { useState } from "react";
 import { useForm, useFormContext } from "react-hook-form";
-import { useGetInputProps } from "@/hooks/useGetInputProps";
+import { useGetInputProps } from "@/checkout/hooks/useGetInputProps";
 import { object, string, ValidationError } from "yup";
-import { useErrorMessages } from "@/hooks/useErrorMessages";
+import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 import { useEffect } from "react";
-import { TextInput } from "@/components/TextInput";
+import { TextInput } from "@/checkout/components/TextInput";
 
 type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 

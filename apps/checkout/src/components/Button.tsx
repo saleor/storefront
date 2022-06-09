@@ -3,7 +3,7 @@ import {
   Button as UiKitButton,
   ButtonProps as UiKitButtonProps,
 } from "@saleor/ui-kit";
-import { AriaLabel } from "@/lib/globalTypes";
+import { AriaLabel } from "@/checkout/lib/globalTypes";
 
 export type ButtonProps = UiKitButtonProps & AriaLabel;
 

@@ -1,5 +1,5 @@
-import ColorInput from "@/frontend/components/elements/ColorInput";
-import FileInput from "@/frontend/components/elements/FileInput";
+import ColorInput from "@/checkout-app/frontend/components/elements/ColorInput";
+import FileInput from "@/checkout-app/frontend/components/elements/FileInput";
 import { TextField } from "@material-ui/core";
 import { SettingType } from "types/common";
 

@@ -1,19 +1,19 @@
-import { useCheckoutEmailUpdateMutation } from "@/graphql";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useValidationResolver } from "@/lib/utils";
+import { useCheckoutEmailUpdateMutation } from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useValidationResolver } from "@/checkout/lib/utils";
 import React, { useEffect, useState } from "react";
-import { PasswordInput } from "@/components/PasswordInput";
+import { PasswordInput } from "@/checkout/components/PasswordInput";
 import {
   SignInFormContainer,
   SignInFormContainerProps,
 } from "./SignInFormContainer";
 import { object, string } from "yup";
 import { useForm, useFormContext } from "react-hook-form";
-import { useGetInputProps } from "@/hooks/useGetInputProps";
-import { useErrorMessages } from "@/hooks/useErrorMessages";
-import { Checkbox } from "@/components/Checkbox";
-import { TextInput } from "@/components/TextInput";
-import { useCheckout } from "@/hooks/useCheckout";
+import { useGetInputProps } from "@/checkout/hooks/useGetInputProps";
+import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
+import { Checkbox } from "@/checkout/components/Checkbox";
+import { TextInput } from "@/checkout/components/TextInput";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 type AnonymousCustomerFormProps = Pick<
   SignInFormContainerProps,

@@ -1,5 +1,5 @@
-import { envVars } from "@/constants";
-import { PaymentProviderSettingsValues } from "@/types/api";
+import { envVars } from "@/checkout-app/constants";
+import { PaymentProviderSettingsValues } from "@/checkout-app/types/api";
 import { FetchResponse } from "../hooks/useFetch";
 import { getAuthHeaders } from "../misc/auth";
 

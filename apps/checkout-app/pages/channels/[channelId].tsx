@@ -1,17 +1,17 @@
-import { serverEnvVars } from "@/constants";
-import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
-import { useChannelPaymentOptions } from "@/frontend/data";
-import { useAuthData } from "@/frontend/hooks/useAuthData";
-import { notFoundMessages } from "@/frontend/misc/errorMessages";
-import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
-import { mapPublicSettingsToMetadata } from "@/frontend/misc/mapPublicSettingsToMetadata";
-import { getCommonErrors } from "@/frontend/utils";
+import { serverEnvVars } from "@/checkout-app/constants";
+import ErrorDetails from "@/checkout-app/frontend/components/templates/ErrorDetails";
+import { useChannelPaymentOptions } from "@/checkout-app/frontend/data";
+import { useAuthData } from "@/checkout-app/frontend/hooks/useAuthData";
+import { notFoundMessages } from "@/checkout-app/frontend/misc/errorMessages";
+import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
+import { mapPublicSettingsToMetadata } from "@/checkout-app/frontend/misc/mapPublicSettingsToMetadata";
+import { getCommonErrors } from "@/checkout-app/frontend/utils";
 import {
   useChannelsQuery,
   usePublicMetafieldsQuery,
   useUpdatePublicMetadataMutation,
-} from "@/graphql";
-import { PublicSettingID } from "@/types/common";
+} from "@/checkout-app/graphql";
+import { PublicSettingID } from "@/checkout-app/types/common";
 import ChannelDetails from "frontend/components/templates/ChannelDetails";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";

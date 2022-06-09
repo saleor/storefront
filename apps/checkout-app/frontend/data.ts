@@ -1,10 +1,10 @@
-import { ChannelFragment } from "@/graphql";
-import { findById } from "@/utils";
+import { ChannelFragment } from "@/checkout-app/graphql";
+import { findById } from "@/checkout-app/utils";
 import {
   useCustomizations,
   usePaymentMethods,
   usePaymentProviders,
-} from "@/config/fields";
+} from "@/checkout-app/config/fields";
 import {
   ChannelActivePaymentProviders,
   ChannelPaymentOptions,

@@ -14,16 +14,19 @@ import {
   UpdatePrivateMetadataDocument,
   UpdatePrivateMetadataMutation,
   UpdatePrivateMetadataMutationVariables,
-} from "@/graphql";
-import { getClient } from "@/backend/client";
-import { defaultActiveChannelPaymentProviders } from "@/config/defaults";
+} from "@/checkout-app/graphql";
+import { getClient } from "@/checkout-app/backend/client";
+import { defaultActiveChannelPaymentProviders } from "@/checkout-app/config/defaults";
 import { mergeChannelsWithPaymentProvidersSettings } from "./utils";
-import { envVars, serverEnvVars } from "@/constants";
-import { PrivateSettingsValues } from "@/types/api";
+import { envVars, serverEnvVars } from "@/checkout-app/constants";
+import { PrivateSettingsValues } from "@/checkout-app/types/api";
 import { mapPrivateSettingsToMetadata } from "./mapPrivateSettingsToMetadata";
 import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings";
-import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
-import { allPrivateSettingID, allPublicSettingID } from "@/types/common";
+import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
+import {
+  allPrivateSettingID,
+  allPublicSettingID,
+} from "@/checkout-app/types/common";
 
 export const getPrivateSettings = async (
   apiUrl: string,

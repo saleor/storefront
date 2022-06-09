@@ -1,17 +1,23 @@
-import { Button } from "@/components/Button";
-import { TextInput } from "@/components/TextInput";
-import { CountryCode, useAddressValidationRulesQuery } from "@/graphql";
-import { useErrorMessages } from "@/hooks/useErrorMessages";
-import { MessageKey, useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useGetInputProps } from "@/hooks/useGetInputProps";
-import { AddressField } from "@/lib/globalTypes";
+import { Button } from "@/checkout/components/Button";
+import { TextInput } from "@/checkout/components/TextInput";
+import {
+  CountryCode,
+  useAddressValidationRulesQuery,
+} from "@/checkout/graphql";
+import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
+import {
+  MessageKey,
+  useFormattedMessages,
+} from "@/checkout/hooks/useFormattedMessages";
+import { useGetInputProps } from "@/checkout/hooks/useGetInputProps";
+import { AddressField } from "@/checkout/lib/globalTypes";
 import {
   getRequiredAddressFields,
   getSortedAddressFields,
   useValidationResolver,
-} from "@/lib/utils";
-import { useCountrySelect } from "@/providers/CountrySelectProvider";
-import { UseErrorsProps } from "@/providers/ErrorsProvider";
+} from "@/checkout/lib/utils";
+import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
+import { UseErrorsProps } from "@/checkout/providers/ErrorsProvider";
 import { forEach } from "lodash-es";
 import { ReactNode, useEffect } from "react";
 import {

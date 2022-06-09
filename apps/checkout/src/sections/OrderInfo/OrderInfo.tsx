@@ -1,5 +1,5 @@
-import { OrderFragment } from "@/graphql";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { OrderFragment } from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 import { Address } from "./Address";
 import { DeliverySection } from "./DeliverySection";
@@ -12,8 +12,11 @@ export const OrderInfo = ({ order }: { order: OrderFragment }) => {
   return (
     <section className="flex-grow">
       <PaymentSection
+        orderId={order.id}
         isPaid={order.isPaid}
         paymentStatus={order.paymentStatus}
+        authorizeStatus={order.authorizeStatus}
+        chargeStatus={order.chargeStatus}
       />
       <DeliverySection deliveryMethod={order.deliveryMethod} />
       {order.shippingAddress && (

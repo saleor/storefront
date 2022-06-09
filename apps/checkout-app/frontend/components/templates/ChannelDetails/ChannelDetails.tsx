@@ -24,22 +24,22 @@ import {
 import { useStyles } from "./styles";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
 import { messages } from "./messages";
-import AppLayout from "@/frontend/components/elements/AppLayout";
+import AppLayout from "@/checkout-app/frontend/components/elements/AppLayout";
 import {
   flattenSettingId,
   mapNodesToItems,
   mapNodeToItem,
-} from "@/frontend/utils";
+} from "@/checkout-app/frontend/utils";
 import { Item } from "types/common";
 import Skeleton from "@material-ui/lab/Skeleton";
-import AppSavebar from "@/frontend/components/elements/AppSavebar";
+import AppSavebar from "@/checkout-app/frontend/components/elements/AppSavebar";
 import { Controller, useForm } from "react-hook-form";
 import { getActivePaymentProvider, getFormDefaultValues } from "./data";
 import { useEffect } from "react";
-import { ChannelFragment, MetadataErrorFragment } from "@/graphql";
-import { getMetadataErrorMessage } from "@/frontend/misc/errors";
+import { ChannelFragment, MetadataErrorFragment } from "@/checkout-app/graphql";
+import { getMetadataErrorMessage } from "@/checkout-app/frontend/misc/errors";
 import ErrorAlert from "../../elements/ErrorAlert";
-import { usePaymentProviders } from "@/config/fields";
+import { usePaymentProviders } from "@/checkout-app/config/fields";
 import Image from "next/image";
 
 interface ChannelDetailsProps {

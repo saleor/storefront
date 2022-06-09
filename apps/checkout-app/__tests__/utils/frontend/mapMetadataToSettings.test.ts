@@ -1,14 +1,14 @@
 import {
   defaultPrivateSettings,
   defaultPublicSettings,
-} from "@/config/defaults";
-import { mapPrivateMetafieldsToSettings } from "@/backend/configuration/mapPrivateMetafieldsToSettings";
-import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
+} from "@/checkout-app/config/defaults";
+import { mapPrivateMetafieldsToSettings } from "@/checkout-app/backend/configuration/mapPrivateMetafieldsToSettings";
+import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
 import {
   PrivateMetafieldsValues,
   PublicMetafieldsValues,
   PublicSettingsValues,
-} from "@/types/api";
+} from "@/checkout-app/types/api";
 
 describe("/utils/frontend/misc/mapMetadataToSettings", () => {
   it("maps public metadata to settings", async () => {

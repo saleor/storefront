@@ -3,17 +3,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { hmacValidator, Types } from "@adyen/api-library";
 
-import { createTransaction } from "@/backend/payments/createTransaction";
+import { createTransaction } from "@/checkout-app/backend/payments/createTransaction";
 import {
   getNewTransactionData,
   getOrderId,
   getUpdatedTransactionData,
   isNotificationDuplicate,
-} from "@/backend/payments/providers/adyen";
-import { getOrderTransactions } from "@/backend/payments/getOrderTransactions";
-import { updateTransaction } from "@/backend/payments/updateTransaction";
-import { getPrivateSettings } from "@/backend/configuration/settings";
-import { envVars } from "@/constants";
+} from "@/checkout-app/backend/payments/providers/adyen";
+import { getOrderTransactions } from "@/checkout-app/backend/payments/getOrderTransactions";
+import { updateTransaction } from "@/checkout-app/backend/payments/updateTransaction";
+import { getPrivateSettings } from "@/checkout-app/backend/configuration/settings";
+import { envVars } from "@/checkout-app/constants";
 
 const validator = new hmacValidator();
 

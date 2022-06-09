@@ -1,4 +1,4 @@
-import { envVars } from "@/constants";
+import { envVars } from "@/checkout-app/constants";
 import { authExchange } from "@urql/exchange-auth";
 import {
   createClient,

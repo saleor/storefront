@@ -1,13 +1,13 @@
 import PaymentProviderDetails from "frontend/components/templates/PaymentProviderDetails";
 import { PaymentProviderSettingsValues } from "types/api";
 import { useRouter } from "next/router";
-import { getCommonErrors } from "@/frontend/utils";
-import { usePaymentProviderSettings } from "@/frontend/data";
-import ErrorDetails from "@/frontend/components/templates/ErrorDetails";
+import { getCommonErrors } from "@/checkout-app/frontend/utils";
+import { usePaymentProviderSettings } from "@/checkout-app/frontend/data";
+import ErrorDetails from "@/checkout-app/frontend/components/templates/ErrorDetails";
 import { useIntl } from "react-intl";
-import { notFoundMessages } from "@/frontend/misc/errorMessages";
-import { useGetPaymentProviderSettings } from "@/frontend/hooks/useGetPaymentProviderSettings";
-import { useSetPaymentProviderSettings } from "@/frontend/hooks/useSetPaymentProviderSettings";
+import { notFoundMessages } from "@/checkout-app/frontend/misc/errorMessages";
+import { useGetPaymentProviderSettings } from "@/checkout-app/frontend/hooks/useGetPaymentProviderSettings";
+import { useSetPaymentProviderSettings } from "@/checkout-app/frontend/hooks/useSetPaymentProviderSettings";
 
 const PaymentProvider = () => {
   const router = useRouter();

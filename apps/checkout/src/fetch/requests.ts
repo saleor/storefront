@@ -1,6 +1,7 @@
-import { FetchResponse } from "@/hooks/useFetch";
-import { envVars } from "@/lib/utils";
-import { AppConfig } from "@/providers/AppConfigProvider/types";
+import { FetchResponse } from "@/checkout/hooks/useFetch";
+import { envVars } from "@/checkout/lib/utils";
+import { AppConfig } from "@/checkout/providers/AppConfigProvider/types";
+import { PayRequestBody } from "checkout-app/types/api/pay";
 
 export const getPaymentProviders = () =>
   fetch(`${envVars.checkoutAppUrl}/active-payment-providers/channel-1`);
@@ -12,25 +13,10 @@ export interface PayResult {
   };
 }
 
-export const pay = ({
-  checkoutId,
-  totalAmount,
-  provider,
-  redirectUrl,
-}: {
-  checkoutId: string;
-  totalAmount: number;
-  provider: string;
-  redirectUrl: string;
-}): FetchResponse<PayResult> =>
+export const pay = (body: PayRequestBody): FetchResponse<PayResult> =>
   fetch(`${envVars.checkoutAppUrl}/pay`, {
     method: "POST",
-    body: JSON.stringify({
-      provider,
-      checkoutId,
-      totalAmount,
-      redirectUrl,
-    }),
+    body: JSON.stringify(body),
   });
 
 export const getAppConfig = (): FetchResponse<AppConfig> =>

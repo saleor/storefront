@@ -1,6 +1,6 @@
-import { OrderFragment, ShippingFragment } from "@/graphql";
+import { OrderFragment, ShippingFragment } from "@/checkout/graphql";
 import { Text } from "@saleor/ui-kit";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 import { Section, SectionTitle } from "./Section";
 

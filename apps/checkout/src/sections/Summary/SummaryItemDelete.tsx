@@ -1,9 +1,12 @@
-import { IconButton } from "@/components/IconButton";
+import { IconButton } from "@/checkout/components/IconButton";
 import React from "react";
-import { CloseIcon as DeleteIcon } from "@/icons";
-import { CheckoutLineFragment, useCheckoutLineDeleteMutation } from "@/graphql";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useCheckout } from "@/hooks/useCheckout";
+import { CloseIcon as DeleteIcon } from "@/checkout/icons";
+import {
+  CheckoutLineFragment,
+  useCheckoutLineDeleteMutation,
+} from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 interface LineItemDeleteProps {
   line: CheckoutLineFragment;

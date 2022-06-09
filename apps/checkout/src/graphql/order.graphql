@@ -54,10 +54,13 @@ fragment Shipping on ShippingMethod {
 }
 
 fragment Order on Order {
+  id
   number
   userEmail
   isPaid
   paymentStatus
+  authorizeStatus
+  chargeStatus
   shippingAddress {
     ...AddressFragment
   }

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
-import { useCheckoutQuery } from "@/graphql";
-import { extractCheckoutIdFromUrl } from "@/lib/utils";
+import { useCheckoutQuery } from "@/checkout/graphql";
+import { extractCheckoutIdFromUrl } from "@/checkout/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 
 export const useCheckout = () => {

@@ -2,10 +2,10 @@ import {
   createEventUniqueKey,
   getSaleorAmountFromAdyen,
   getAdyenAmountFromSaleor,
-} from "@/backend/payments/providers/adyen/utils";
-import { TransactionEventFragment } from "@/graphql";
+} from "@/checkout-app/backend/payments/providers/adyen/utils";
+import { TransactionEventFragment } from "@/checkout-app/graphql";
 
-describe("@/backend/payments/providers/adyen/utils", () => {
+describe("@/checkout-app/backend/payments/providers/adyen/utils", () => {
   describe("createEventUniqueKey", () => {
     it("creates the same key for single event", () => {
       const event: TransactionEventFragment = {

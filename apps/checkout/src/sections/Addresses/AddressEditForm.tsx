@@ -1,7 +1,7 @@
-import { useUserAddressUpdateMutation } from "@/graphql";
-import { extractMutationErrors } from "@/lib/utils";
-import { useCountrySelect } from "@/providers/CountrySelectProvider";
-import { useErrors } from "@/providers/ErrorsProvider";
+import { useUserAddressUpdateMutation } from "@/checkout/graphql";
+import { extractMutationErrors } from "@/checkout/lib/utils";
+import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
+import { useErrors } from "@/checkout/providers/ErrorsProvider";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
 import { UserAddressFormData } from "./types";

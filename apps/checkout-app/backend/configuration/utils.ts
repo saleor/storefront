@@ -1,9 +1,9 @@
-import { defaultActiveChannelPaymentProviders } from "@/config/defaults";
-import { ChannelFragment } from "@/graphql";
+import { defaultActiveChannelPaymentProviders } from "@/checkout-app/config/defaults";
+import { ChannelFragment } from "@/checkout-app/graphql";
 import {
   ChannelActivePaymentProviders,
   PublicSettingsValues,
-} from "@/types/api";
+} from "@/checkout-app/types/api";
 
 export const mergeChannelsWithPaymentProvidersSettings = (
   settings: PublicSettingsValues,

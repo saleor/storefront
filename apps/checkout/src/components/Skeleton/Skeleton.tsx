@@ -1,4 +1,4 @@
-import { Classes } from "@/lib/globalTypes";
+import { Classes } from "@/checkout/lib/globalTypes";
 import clsx from "clsx";
 import React, { PropsWithChildren } from "react";
 import "./SkeletonStyles.css";

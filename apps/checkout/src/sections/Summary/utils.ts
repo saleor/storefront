@@ -1,4 +1,8 @@
-import { CheckoutLineFragment, Money, OrderLineFragment } from "@/graphql";
+import {
+  CheckoutLineFragment,
+  Money,
+  OrderLineFragment,
+} from "@/checkout/graphql";
 
 export const getTaxPercentage = (taxCost: Money, totalPrice: Money): string => {
   if (!totalPrice?.amount || !taxCost?.amount) {

@@ -1,11 +1,11 @@
-import { defaultPrivateSettings } from "@/config/defaults";
+import { defaultPrivateSettings } from "@/checkout-app/config/defaults";
 import {
   PrivateMetafieldsValues,
   PrivateSettingsValues,
   SettingValue,
   UnknownPrivateSettingsValues,
-} from "@/types/api";
-import { allSettingID } from "@/types/common";
+} from "@/checkout-app/types/api";
+import { allSettingID } from "@/checkout-app/types/common";
 import reduce from "lodash-es/reduce";
 import { decryptSetting } from "./encryption";
 

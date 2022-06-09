@@ -1,11 +1,11 @@
-import { CheckoutLineFragment, OrderLineFragment } from "@/graphql";
+import { CheckoutLineFragment, OrderLineFragment } from "@/checkout/graphql";
 import React from "react";
 import { Text } from "@saleor/ui-kit";
 import { SummaryItemMoneySection } from "./SummaryItemMoneySection";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
 import { SummaryItemDelete } from "./SummaryItemDelete";
-import { PhotoIcon } from "@/icons";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { PhotoIcon } from "@/checkout/icons";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getSummaryLineProps, isCheckoutLine } from "./utils";
 
 interface LineItemProps {

@@ -1,9 +1,9 @@
-import { getTokenDataFromRequest } from "@/backend/auth";
+import { getTokenDataFromRequest } from "@/checkout-app/backend/auth";
 import {
   getPrivateSettings,
   setPrivateSettings,
-} from "@/backend/configuration/settings";
-import { allowCors, requireAuthorization } from "@/backend/utils";
+} from "@/checkout-app/backend/configuration/settings";
+import { allowCors, requireAuthorization } from "@/checkout-app/backend/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {

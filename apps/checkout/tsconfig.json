@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "paths": {
-      "@/icons": ["./src/assets/icons"],
-      "@/images": ["./src/assets/images"],
-      "@/*": ["./src/*"]
+      "@/checkout/icons": ["./src/assets/icons"],
+      "@/checkout/images": ["./src/assets/images"],
+      "@/checkout/*": ["./src/*"],
+      "@/checkout-app/*": ["../checkout-app/*"]
     },
     "types": ["react/next", "react-dom"],
     "target": "es5",

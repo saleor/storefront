@@ -2,18 +2,18 @@ import clsx from "clsx";
 import { debounce } from "lodash-es";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { IconButton } from "@/components/IconButton";
-import { MinusIcon, PlusIcon } from "@/icons";
+import { IconButton } from "@/checkout/components/IconButton";
+import { MinusIcon, PlusIcon } from "@/checkout/icons";
 import { Text } from "@saleor/ui-kit";
 import {
   CheckoutLineFragment,
   CheckoutLinesUpdateMutationVariables,
   useCheckoutLinesUpdateMutation,
-} from "@/graphql";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useFormattedMoney } from "@/hooks/useFormattedMoney";
-import { Money } from "@/components/Money";
-import { useCheckout } from "@/hooks/useCheckout";
+} from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useFormattedMoney } from "@/checkout/hooks/useFormattedMoney";
+import { Money } from "@/checkout/components/Money";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;

@@ -1,8 +1,8 @@
-import { Checkbox } from "@/components/Checkbox";
-import { AddressFragment } from "@/graphql";
-import { useCheckout } from "@/hooks/useCheckout";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useBillingSameAsShipping } from "@/providers/BillingSameAsShippingProvider";
+import { Checkbox } from "@/checkout/components/Checkbox";
+import { AddressFragment } from "@/checkout/graphql";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useBillingSameAsShipping } from "@/checkout/providers/BillingSameAsShippingProvider";
 import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { GuestAddressSection } from "./GuestAddressSection";

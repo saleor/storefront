@@ -1,6 +1,6 @@
-import { AddressFragment, AddressTypeEnum } from "@/graphql";
-import { useCheckout } from "@/hooks/useCheckout";
-import { getById } from "@/lib/utils";
+import { AddressFragment, AddressTypeEnum } from "@/checkout/graphql";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { getById } from "@/checkout/lib/utils";
 import { useEffect, useState } from "react";
 import { isMatchingAddress } from "./utils";
 

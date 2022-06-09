@@ -1,6 +1,6 @@
-import { parseAmountToString } from "@/backend/payments/providers/mollie/utils";
+import { parseAmountToString } from "@/checkout-app/backend/payments/providers/mollie/utils";
 
-describe("@/backend/payments/providers/mollie/utils", () => {
+describe("@/checkout-app/backend/payments/providers/mollie/utils", () => {
   describe("parseAmountToString", () => {
     it("parses integer values to string", () => {
       expect(parseAmountToString(10)).toBe("10.00");

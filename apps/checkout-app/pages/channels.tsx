@@ -1,6 +1,6 @@
 import ChannelList from "frontend/components/templates/ChannelList";
-import { useChannelsQuery } from "@/graphql";
-import { useAuthData } from "@/frontend/hooks/useAuthData";
+import { useChannelsQuery } from "@/checkout-app/graphql";
+import { useAuthData } from "@/checkout-app/frontend/hooks/useAuthData";
 
 const Channels = () => {
   const { isAuthorized } = useAuthData();

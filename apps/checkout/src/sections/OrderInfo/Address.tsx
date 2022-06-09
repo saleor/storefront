@@ -1,4 +1,4 @@
-import { AddressFragment } from "@/graphql";
+import { AddressFragment } from "@/checkout/graphql";
 import { Text } from "@saleor/ui-kit";
 
 export const Address = ({ address }: { address: AddressFragment }) => {

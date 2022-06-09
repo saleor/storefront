@@ -7,7 +7,7 @@ import {
   TransactionStatus,
   TransactionUpdateInput,
   TransactionUpdateMutationVariables,
-} from "@/graphql";
+} from "@/checkout-app/graphql";
 
 import {
   getSaleorAmountFromAdyen,

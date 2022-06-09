@@ -1,17 +1,17 @@
 import { useRouter } from "next/router";
-import CustomizationDetails from "@/frontend/components/templates/CustomizationDetails";
+import CustomizationDetails from "@/checkout-app/frontend/components/templates/CustomizationDetails";
 import { CustomizationSettingsValues } from "types/api";
 import {
   usePublicMetafieldsQuery,
   useUpdatePublicMetadataMutation,
-} from "@/graphql";
-import { getCommonErrors } from "@/frontend/utils";
-import { useCustomizationSettings } from "@/frontend/data";
-import { useAuthData } from "@/frontend/hooks/useAuthData";
-import { serverEnvVars } from "@/constants";
-import { mapPublicSettingsToMetadata } from "@/frontend/misc/mapPublicSettingsToMetadata";
-import { mapPublicMetafieldsToSettings } from "@/frontend/misc/mapPublicMetafieldsToSettings";
-import { PublicSettingID } from "@/types/common";
+} from "@/checkout-app/graphql";
+import { getCommonErrors } from "@/checkout-app/frontend/utils";
+import { useCustomizationSettings } from "@/checkout-app/frontend/data";
+import { useAuthData } from "@/checkout-app/frontend/hooks/useAuthData";
+import { serverEnvVars } from "@/checkout-app/constants";
+import { mapPublicSettingsToMetadata } from "@/checkout-app/frontend/misc/mapPublicSettingsToMetadata";
+import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
+import { PublicSettingID } from "@/checkout-app/types/common";
 
 const Customization = () => {
   const router = useRouter();

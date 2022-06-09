@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useState } from "react";
-import { createSafeContext } from "@/providers/createSafeContext";
-import { AddressFragment, CountryCode } from "@/graphql";
+import { createSafeContext } from "@/checkout/providers/createSafeContext";
+import { AddressFragment, CountryCode } from "@/checkout/graphql";
 
 const defaultCountryCode: CountryCode = "PL";
 

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Text } from "@saleor/ui-kit";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
-import { Divider } from "@/components/Divider";
-import { Money } from "@/components/Money";
-import { ChevronDownIcon } from "@/icons";
+import { Divider } from "@/checkout/components/Divider";
+import { Money } from "@/checkout/components/Money";
+import { ChevronDownIcon } from "@/checkout/icons";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { useCheckout } from "@/hooks/useCheckout";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { compact } from "lodash-es";
 import "./SummaryStyles.css";
 

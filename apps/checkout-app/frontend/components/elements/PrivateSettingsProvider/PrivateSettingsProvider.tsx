@@ -1,6 +1,6 @@
-import { defaultPrivateSettings } from "@/config/defaults";
-import createSafeContext from "@/frontend/misc/createSafeContext";
-import { PrivateSettingsValues } from "@/types/api";
+import { defaultPrivateSettings } from "@/checkout-app/config/defaults";
+import createSafeContext from "@/checkout-app/frontend/misc/createSafeContext";
+import { PrivateSettingsValues } from "@/checkout-app/types/api";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface PrivateSettingsProviderContext {

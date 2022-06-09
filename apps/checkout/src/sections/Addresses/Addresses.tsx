@@ -1,7 +1,7 @@
-import { CountryCode, useUserQuery } from "@/graphql";
-import { useCheckout } from "@/hooks/useCheckout";
-import { BillingSameAsShippingProvider } from "@/providers/BillingSameAsShippingProvider";
-import { CountrySelectProvider } from "@/providers/CountrySelectProvider";
+import { CountryCode, useUserQuery } from "@/checkout/graphql";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { BillingSameAsShippingProvider } from "@/checkout/providers/BillingSameAsShippingProvider";
+import { CountrySelectProvider } from "@/checkout/providers/CountrySelectProvider";
 import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { BillingAddressSection } from "./BillingAddressSection";

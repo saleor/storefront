@@ -1,10 +1,10 @@
-import { getClient } from "@/backend/client";
-import { envVars, serverEnvVars } from "@/constants";
+import { getClient } from "@/checkout-app/backend/client";
+import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   TransactionUpdateDocument,
   TransactionUpdateMutation,
   TransactionUpdateMutationVariables,
-} from "@/graphql";
+} from "@/checkout-app/graphql";
 
 export const updateTransaction = async (
   args: TransactionUpdateMutationVariables

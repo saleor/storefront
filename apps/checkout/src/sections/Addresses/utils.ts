@@ -3,8 +3,8 @@ import {
   AddressInput,
   CountryCode,
   CountryDisplay,
-} from "@/graphql";
-import { AddressField } from "@/lib/globalTypes";
+} from "@/checkout/graphql";
+import { AddressField } from "@/checkout/lib/globalTypes";
 import { intersection, isEqual, omit } from "lodash-es";
 import { AddressFormData } from "./types";
 

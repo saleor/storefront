@@ -1,5 +1,5 @@
 import React, { AllHTMLAttributes, ForwardedRef, forwardRef } from "react";
-import { Classes } from "@/lib/globalTypes";
+import { Classes } from "@/checkout/lib/globalTypes";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
 import {
   Control,
@@ -12,8 +12,8 @@ import {
   UseFormRegisterReturn,
   useWatch,
 } from "react-hook-form";
-import { ControlFormData } from "@/hooks/useGetInputProps";
-import { Errors } from "@/providers/ErrorsProvider";
+import { ControlFormData } from "@/checkout/hooks/useGetInputProps";
+import { Errors } from "@/checkout/providers/ErrorsProvider";
 
 export interface TextInputProps<
   TControl extends Control<any, any>,

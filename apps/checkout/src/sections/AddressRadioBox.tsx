@@ -1,16 +1,16 @@
 import { Radio, Text } from "@saleor/ui-kit";
 import React from "react";
-import { IconButton } from "@/components/IconButton";
-import { PenIcon, TrashIcon } from "@/icons";
-import { AddressField } from "@/lib/globalTypes";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { getSortedAddressFieldsFromAddress } from "@/lib/utils";
+import { IconButton } from "@/checkout/components/IconButton";
+import { PenIcon, TrashIcon } from "@/checkout/icons";
+import { AddressField } from "@/checkout/lib/globalTypes";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { getSortedAddressFieldsFromAddress } from "@/checkout/lib/utils";
 import { pull } from "lodash-es";
 import {
   getRadioPropsFromRadioBoxProps,
   RadioBoxProps,
   useRadioBoxStyles,
-} from "@/components/RadioBox";
+} from "@/checkout/components/RadioBox";
 
 interface AddressRadioBoxProps extends RadioBoxProps {
   address: Partial<Record<AddressField, any>>;

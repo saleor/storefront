@@ -1,6 +1,6 @@
-import { mergeSettingsValues as mergePrivateSettingsValues } from "@/backend/configuration/mapPrivateMetafieldsToSettings";
-import { mergeSettingsValues as mergePublicSettingsValues } from "@/frontend/misc/mapPublicMetafieldsToSettings";
-import { PaymentProviderSettingsValues } from "@/types/api";
+import { mergeSettingsValues as mergePrivateSettingsValues } from "@/checkout-app/backend/configuration/mapPrivateMetafieldsToSettings";
+import { mergeSettingsValues as mergePublicSettingsValues } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
+import { PaymentProviderSettingsValues } from "@/checkout-app/types/api";
 
 describe("/utils/frontend/misc/mergeSettingsValues", () => {
   it("overrides default values", async () => {

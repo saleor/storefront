@@ -1,7 +1,7 @@
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { Text } from "@saleor/ui-kit";
-import { Skeleton } from "@/components/Skeleton";
-import { Divider } from "@/components/Divider";
+import { Skeleton } from "@/checkout/components/Skeleton";
+import { Divider } from "@/checkout/components/Divider";
 
 export const SummarySkeleton = () => {
   const formatMessage = useFormattedMessages();

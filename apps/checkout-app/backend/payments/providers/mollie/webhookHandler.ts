@@ -1,6 +1,6 @@
 import { OrderStatus } from "@mollie/api-client";
 
-import { TransactionCreateMutationVariables } from "@/graphql";
+import { TransactionCreateMutationVariables } from "@/checkout-app/graphql";
 
 import { getMollieClient } from "./utils";
 

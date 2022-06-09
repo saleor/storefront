@@ -3,9 +3,9 @@ import createMollieClient, {
   OrderLineType,
 } from "@mollie/api-client";
 
-import { getPrivateSettings } from "@/backend/configuration/settings";
-import { envVars } from "@/constants";
-import { OrderFragment, OrderLineFragment } from "@/graphql";
+import { getPrivateSettings } from "@/checkout-app/backend/configuration/settings";
+import { envVars } from "@/checkout-app/constants";
+import { OrderFragment, OrderLineFragment } from "@/checkout-app/graphql";
 
 export const getMollieClient = async () => {
   const metadata = await getPrivateSettings(envVars.apiUrl, false);

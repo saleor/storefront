@@ -4,11 +4,11 @@ import { AppProps } from "next/app";
 import { ThemeProvider } from "@saleor/macaw-ui";
 import { IntlProvider } from "react-intl";
 import { Provider as ClientProvider } from "urql";
-import { useFormattedMessages } from "@/frontend/hooks/useFormattedMessages";
-import AppContainer from "@/frontend/components/elements/AppContainer";
-import AppProvider from "@/frontend/components/elements/AppProvider";
-import { client } from "@/frontend/misc/client";
-import PrivateSettingsProvider from "@/frontend/components/elements/PrivateSettingsProvider";
+import { useFormattedMessages } from "@/checkout-app/frontend/hooks/useFormattedMessages";
+import AppContainer from "@/checkout-app/frontend/components/elements/AppContainer";
+import AppProvider from "@/checkout-app/frontend/components/elements/AppProvider";
+import { client } from "@/checkout-app/frontend/misc/client";
+import PrivateSettingsProvider from "@/checkout-app/frontend/components/elements/PrivateSettingsProvider";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;

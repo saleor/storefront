@@ -1,9 +1,9 @@
-import { Button } from "@/components/Button";
-import { PasswordInput } from "@/components/PasswordInput";
-import { useErrorMessages } from "@/hooks/useErrorMessages";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { useGetInputProps } from "@/hooks/useGetInputProps";
-import { getQueryVariables, useValidationResolver } from "@/lib/utils";
+import { Button } from "@/checkout/components/Button";
+import { PasswordInput } from "@/checkout/components/PasswordInput";
+import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { useGetInputProps } from "@/checkout/hooks/useGetInputProps";
+import { getQueryVariables, useValidationResolver } from "@/checkout/lib/utils";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
 import { useForm } from "react-hook-form";

@@ -1,4 +1,4 @@
-import { ChannelFragment } from "@/graphql";
+import { ChannelFragment } from "@/checkout-app/graphql";
 import {
   CustomizationID,
   CustomizationSettingID,

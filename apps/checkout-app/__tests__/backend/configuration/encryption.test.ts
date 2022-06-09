@@ -1,6 +1,6 @@
-import { obfuscateValue } from "@/backend/configuration/encryption";
+import { obfuscateValue } from "@/checkout-app/backend/configuration/encryption";
 
-describe("@/backend/configuration/encryption", () => {
+describe("@/checkout-app/backend/configuration/encryption", () => {
   describe("obfuscateValue", () => {
     it("obfuscates first part of value", () => {
       expect(obfuscateValue("12345")).toBe("**** 5");

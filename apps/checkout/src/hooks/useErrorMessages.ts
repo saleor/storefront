@@ -1,4 +1,4 @@
-import { ValidationErrorCode } from "@/lib/globalTypes";
+import { ValidationErrorCode } from "@/checkout/lib/globalTypes";
 import { useFormattedMessages } from "./useFormattedMessages";
 
 export const useErrorMessages = () => {

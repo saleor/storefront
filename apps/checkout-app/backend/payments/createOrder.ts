@@ -1,5 +1,5 @@
-import { getClient } from "@/backend/client";
-import { envVars, serverEnvVars } from "@/constants";
+import { getClient } from "@/checkout-app/backend/client";
+import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   CheckoutDocument,
   CheckoutQuery,
@@ -8,7 +8,7 @@ import {
   OrderCreateMutation,
   OrderCreateMutationVariables,
   OrderFragment,
-} from "@/graphql";
+} from "@/checkout-app/graphql";
 
 import { Errors } from "./types";
 

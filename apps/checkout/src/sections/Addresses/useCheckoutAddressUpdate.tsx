@@ -2,11 +2,11 @@ import {
   AddressInput,
   useCheckoutBillingAddressUpdateMutation,
   useCheckoutShippingAddressUpdateMutation,
-} from "@/graphql";
-import { useCheckout } from "@/hooks/useCheckout";
-import { extractMutationErrors } from "@/lib/utils";
-import { useBillingSameAsShipping } from "@/providers/BillingSameAsShippingProvider";
-import { useErrors } from "@/providers/ErrorsProvider";
+} from "@/checkout/graphql";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { extractMutationErrors } from "@/checkout/lib/utils";
+import { useBillingSameAsShipping } from "@/checkout/providers/BillingSameAsShippingProvider";
+import { useErrors } from "@/checkout/providers/ErrorsProvider";
 import { useEffect } from "react";
 import { AddressFormData } from "./types";
 import { getAddressFormDataFromAddress, getAddressInputData } from "./utils";

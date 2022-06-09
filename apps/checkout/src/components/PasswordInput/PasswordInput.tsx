@@ -1,10 +1,10 @@
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { ControlFormData } from "@/hooks/useGetInputProps";
-import { EyeHiddenIcon, EyeIcon } from "@/icons";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { ControlFormData } from "@/checkout/hooks/useGetInputProps";
+import { EyeHiddenIcon, EyeIcon } from "@/checkout/icons";
 import { ForwardedRef, forwardRef, useState } from "react";
 import { Control } from "react-hook-form";
-import { IconButton } from "@/components/IconButton";
-import { TextInput, TextInputProps } from "@/components/TextInput";
+import { IconButton } from "@/checkout/components/IconButton";
+import { TextInput, TextInputProps } from "@/checkout/components/TextInput";
 import "./PasswordInputStyles.css";
 
 const PasswordInputComponent = <

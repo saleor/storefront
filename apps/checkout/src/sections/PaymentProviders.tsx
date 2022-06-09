@@ -1,11 +1,11 @@
-import { Title } from "@/components/Title";
-import { useFetch } from "@/hooks/useFetch";
-import { MessageKey, useFormattedMessages } from "@/hooks/useFormattedMessages";
+import { Title } from "@/checkout/components/Title";
+import { useFetch } from "@/checkout/hooks/useFetch";
+import { MessageKey, useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import React from "react";
-import { getPaymentProviders } from "@/fetch";
+import { getPaymentProviders } from "@/checkout/fetch";
 import { camelCase, map } from "lodash-es";
-import { RadioBoxGroup } from "@/components/RadioBoxGroup";
-import { RadioBox, RadioBoxProps } from "@/components/RadioBox";
+import { RadioBoxGroup } from "@/checkout/components/RadioBoxGroup";
+import { RadioBox, RadioBoxProps } from "@/checkout/components/RadioBox";
 
 export const PaymentProviders: React.FC<
   Pick<RadioBoxProps, "onSelect" | "value" | "selectedValue">

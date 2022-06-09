@@ -1,7 +1,7 @@
-import { Button } from "@/components/Button";
-import { AddressFragment, CountryCode } from "@/graphql";
-import { useFormattedMessages } from "@/hooks/useFormattedMessages";
-import { getById } from "@/lib/utils";
+import { Button } from "@/checkout/components/Button";
+import { AddressFragment, CountryCode } from "@/checkout/graphql";
+import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
+import { getById } from "@/checkout/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React, { Suspense, useEffect, useState } from "react";
 import { UserAddressFormData } from "./types";
@@ -10,7 +10,7 @@ import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
 import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
-import { useCountrySelect } from "@/providers/CountrySelectProvider";
+import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
 import {
   useUserAddressSelect,
   UseUserAddressSelectProps,

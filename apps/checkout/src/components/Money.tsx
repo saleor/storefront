@@ -3,8 +3,8 @@ import { Text, TextProps } from "@saleor/ui-kit";
 import {
   Money as MoneyType,
   useFormattedMoney,
-} from "@/hooks/useFormattedMoney";
-import { AriaLabel, Classes } from "@/lib/globalTypes";
+} from "@/checkout/hooks/useFormattedMoney";
+import { AriaLabel, Classes } from "@/checkout/lib/globalTypes";
 
 export interface MoneyProps<TMoney extends MoneyType>
   extends TextProps,

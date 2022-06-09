@@ -276,6 +276,26 @@ export type AddressCreate = {
   user?: Maybe<User>;
 };
 
+export type AddressCreated = Event & {
+  __typename?: 'AddressCreated';
+  /**
+   * The address the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  address?: Maybe<Address>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars['DateTime']>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars['String']>;
+};
+
 /**
  * Deletes an address.
  *
@@ -289,6 +309,26 @@ export type AddressDelete = {
   errors: Array<AccountError>;
   /** A user instance for which the address was deleted. */
   user?: Maybe<User>;
+};
+
+export type AddressDeleted = Event & {
+  __typename?: 'AddressDeleted';
+  /**
+   * The address the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  address?: Maybe<Address>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars['DateTime']>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars['String']>;
 };
 
 export type AddressInput = {
@@ -348,6 +388,26 @@ export type AddressUpdate = {
   errors: Array<AccountError>;
   /** A user object for which the address was edited. */
   user?: Maybe<User>;
+};
+
+export type AddressUpdated = Event & {
+  __typename?: 'AddressUpdated';
+  /**
+   * The address the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  address?: Maybe<Address>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars['DateTime']>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars['String']>;
 };
 
 export type AddressValidationData = {
@@ -1278,6 +1338,7 @@ export type AttributeInputTypeEnum =
   | 'FILE'
   | 'MULTISELECT'
   | 'NUMERIC'
+  | 'PLAIN_TEXT'
   | 'REFERENCE'
   | 'RICH_TEXT'
   | 'SWATCH';
@@ -1423,6 +1484,8 @@ export type AttributeValue = Node & {
   inputType?: Maybe<AttributeInputTypeEnum>;
   /** Name of a value displayed in the interface. */
   name?: Maybe<Scalars['String']>;
+  /** Represents the text of the attribute value, plain text without formating. */
+  plainText?: Maybe<Scalars['String']>;
   /** The ID of the attribute reference. */
   reference?: Maybe<Scalars['ID']>;
   /**
@@ -1498,6 +1561,8 @@ export type AttributeValueCreateInput = {
   fileUrl?: InputMaybe<Scalars['String']>;
   /** Name of a value displayed in the interface. */
   name: Scalars['String'];
+  /** Represents the text of the attribute value, plain text without formating. */
+  plainText?: InputMaybe<Scalars['String']>;
   /**
    * Represents the text of the attribute value, includes formatting.
    *
@@ -1541,6 +1606,8 @@ export type AttributeValueInput = {
   file?: InputMaybe<Scalars['String']>;
   /** ID of the selected attribute. */
   id?: InputMaybe<Scalars['ID']>;
+  /** Plain text content. */
+  plainText?: InputMaybe<Scalars['String']>;
   /** List of entity IDs that will be used as references. */
   references?: InputMaybe<Array<Scalars['ID']>>;
   /** Text content in JSON format. */
@@ -1558,6 +1625,8 @@ export type AttributeValueTranslatableContent = Node & {
   attributeValue?: Maybe<AttributeValue>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  /** Attribute plain text value. */
+  plainText?: Maybe<Scalars['String']>;
   /**
    * Attribute value.
    *
@@ -1592,6 +1661,8 @@ export type AttributeValueTranslation = Node & {
   /** Translation language. */
   language: LanguageDisplay;
   name: Scalars['String'];
+  /** Attribute plain text value. */
+  plainText?: Maybe<Scalars['String']>;
   /**
    * Attribute value.
    *
@@ -1602,6 +1673,8 @@ export type AttributeValueTranslation = Node & {
 
 export type AttributeValueTranslationInput = {
   name?: InputMaybe<Scalars['String']>;
+  /** Translated text. */
+  plainText?: InputMaybe<Scalars['String']>;
   /**
    * Translated text.
    *
@@ -1632,6 +1705,8 @@ export type AttributeValueUpdateInput = {
   fileUrl?: InputMaybe<Scalars['String']>;
   /** Name of a value displayed in the interface. */
   name?: InputMaybe<Scalars['String']>;
+  /** Represents the text of the attribute value, plain text without formating. */
+  plainText?: InputMaybe<Scalars['String']>;
   /**
    * Represents the text of the attribute value, includes formatting.
    *
@@ -12948,6 +13023,26 @@ export type PageTypeCreateInput = {
   slug?: InputMaybe<Scalars['String']>;
 };
 
+export type PageTypeCreated = Event & {
+  __typename?: 'PageTypeCreated';
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars['DateTime']>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * The page type the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  pageType?: Maybe<PageType>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars['String']>;
+};
+
 /**
  * Delete a page type.
  *
@@ -12959,6 +13054,26 @@ export type PageTypeDelete = {
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   pageErrors: Array<PageError>;
   pageType?: Maybe<PageType>;
+};
+
+export type PageTypeDeleted = Event & {
+  __typename?: 'PageTypeDeleted';
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars['DateTime']>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * The page type the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  pageType?: Maybe<PageType>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars['String']>;
 };
 
 export type PageTypeFilterInput = {
@@ -13014,6 +13129,26 @@ export type PageTypeUpdateInput = {
   removeAttributes?: InputMaybe<Array<Scalars['ID']>>;
   /** Page type slug. */
   slug?: InputMaybe<Scalars['String']>;
+};
+
+export type PageTypeUpdated = Event & {
+  __typename?: 'PageTypeUpdated';
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars['DateTime']>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * The page type the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  pageType?: Maybe<PageType>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars['String']>;
 };
 
 /**
@@ -20535,6 +20670,12 @@ export type WebhookEventSync = {
 
 /** Enum determining type of webhook. */
 export type WebhookEventTypeAsyncEnum =
+  /** A new address created. */
+  | 'ADDRESS_CREATED'
+  /** An address deleted. */
+  | 'ADDRESS_DELETED'
+  /** An address updated. */
+  | 'ADDRESS_UPDATED'
   /** All the events. */
   | 'ANY_EVENTS'
   /** An app deleted. */
@@ -20626,6 +20767,12 @@ export type WebhookEventTypeAsyncEnum =
   | 'PAGE_CREATED'
   /** A page is deleted. */
   | 'PAGE_DELETED'
+  /** A new page type is created. */
+  | 'PAGE_TYPE_CREATED'
+  /** A page type is deleted. */
+  | 'PAGE_TYPE_DELETED'
+  /** A page type is updated. */
+  | 'PAGE_TYPE_UPDATED'
   /** A page is updated. */
   | 'PAGE_UPDATED'
   /** A new product is created. */
@@ -20675,6 +20822,12 @@ export type WebhookEventTypeAsyncEnum =
 
 /** Enum determining type of webhook. */
 export type WebhookEventTypeEnum =
+  /** A new address created. */
+  | 'ADDRESS_CREATED'
+  /** An address deleted. */
+  | 'ADDRESS_DELETED'
+  /** An address updated. */
+  | 'ADDRESS_UPDATED'
   /** All the events. */
   | 'ANY_EVENTS'
   /** An app deleted. */
@@ -20768,6 +20921,12 @@ export type WebhookEventTypeEnum =
   | 'PAGE_CREATED'
   /** A page is deleted. */
   | 'PAGE_DELETED'
+  /** A new page type is created. */
+  | 'PAGE_TYPE_CREATED'
+  /** A page type is deleted. */
+  | 'PAGE_TYPE_DELETED'
+  /** A page type is updated. */
+  | 'PAGE_TYPE_UPDATED'
   /** A page is updated. */
   | 'PAGE_UPDATED'
   | 'PAYMENT_AUTHORIZE'
@@ -20838,6 +20997,9 @@ export type WebhookEventTypeSyncEnum =
 
 /** An enumeration. */
 export type WebhookSampleEventTypeEnum =
+  | 'ADDRESS_CREATED'
+  | 'ADDRESS_DELETED'
+  | 'ADDRESS_UPDATED'
   | 'APP_DELETED'
   | 'APP_INSTALLED'
   | 'APP_STATUS_CHANGED'
@@ -20884,6 +21046,9 @@ export type WebhookSampleEventTypeEnum =
   | 'ORDER_UPDATED'
   | 'PAGE_CREATED'
   | 'PAGE_DELETED'
+  | 'PAGE_TYPE_CREATED'
+  | 'PAGE_TYPE_DELETED'
+  | 'PAGE_TYPE_UPDATED'
   | 'PAGE_UPDATED'
   | 'PRODUCT_CREATED'
   | 'PRODUCT_DELETED'
@@ -21060,6 +21225,13 @@ export type OrderCreateMutationVariables = Exact<{
 
 
 export type OrderCreateMutation = { __typename?: 'Mutation', orderCreateFromCheckout?: { __typename?: 'OrderCreateFromCheckout', order?: { __typename?: 'Order', id: string, number: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', category?: { __typename?: 'Category', name: string } | null, productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', url: string } | null }> } | null, errors: Array<{ __typename?: 'OrderCreateFromCheckoutError', code: OrderCreateFromCheckoutErrorCode, message?: string | null }> } | null };
+
+export type OrderDetailsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OrderDetailsQuery = { __typename?: 'Query', order?: { __typename?: 'Order', id: string, number: string, userEmail?: string | null, shippingTaxRate: number, shippingMethodName?: string | null, billingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, shippingAddress?: { __typename?: 'Address', companyName: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, postalCode: string, city: string, countryArea: string, phone?: string | null, country: { __typename?: 'CountryDisplay', code: string } } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, discounts: Array<{ __typename?: 'OrderDiscount', name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }>, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, taxRate: number, variant?: { __typename?: 'ProductVariant', product: { __typename?: 'Product', category?: { __typename?: 'Category', name: string } | null, productType: { __typename?: 'ProductType', isDigital: boolean, kind: ProductTypeKindEnum } } } | null, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', url: string } | null }> } | null };
 
 export type TransactionEventFragment = { __typename?: 'TransactionEvent', name?: string | null, reference: string };
 
@@ -21354,6 +21526,17 @@ export const OrderCreateDocument = gql`
 
 export function useOrderCreateMutation() {
   return Urql.useMutation<OrderCreateMutation, OrderCreateMutationVariables>(OrderCreateDocument);
+};
+export const OrderDetailsDocument = gql`
+    query OrderDetails($id: ID!) {
+  order(id: $id) {
+    ...Order
+  }
+}
+    ${OrderFragmentDoc}`;
+
+export function useOrderDetailsQuery(options: Omit<Urql.UseQueryArgs<OrderDetailsQueryVariables>, 'query'>) {
+  return Urql.useQuery<OrderDetailsQuery>({ query: OrderDetailsDocument, ...options });
 };
 export const OrderTransactionsDocument = gql`
     query OrderTransactions($id: ID!) {

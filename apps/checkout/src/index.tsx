@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 
-import { Root } from "@/Root";
+import { Root } from "@/checkout/Root";
 
 import reportWebVitals from "./reportWebVitals";
 

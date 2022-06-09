@@ -1,4 +1,4 @@
-import { commonErrorMessages } from "@/frontend/misc/errorMessages";
+import { commonErrorMessages } from "@/checkout-app/frontend/misc/errorMessages";
 import { Typography } from "@material-ui/core";
 import { Alert } from "@saleor/macaw-ui";
 import { IntlShape, useIntl } from "react-intl";

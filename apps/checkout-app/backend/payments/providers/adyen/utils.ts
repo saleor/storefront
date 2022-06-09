@@ -3,7 +3,7 @@ import {
   OrderFragment,
   TransactionActionEnum,
   TransactionEventFragment,
-} from "@/graphql";
+} from "@/checkout-app/graphql";
 import { Types } from "@adyen/api-library";
 
 export const getAdyenAmountFromSaleor = (float: number) =>

@@ -1,4 +1,4 @@
-import { handleInputChange } from "@/lib/utils";
+import { handleInputChange } from "@/checkout/lib/utils";
 import { RadioProps, RadioClassNames } from "@saleor/ui-kit";
 import clsx from "clsx";
 import { RadioBoxProps } from "./RadioBox";

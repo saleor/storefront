@@ -1,4 +1,4 @@
-import { CountryCode } from "@/graphql";
+import { CountryCode } from "@/checkout/graphql";
 
 export interface Country {
   name: string;

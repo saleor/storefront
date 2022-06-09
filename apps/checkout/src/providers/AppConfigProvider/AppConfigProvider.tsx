@@ -1,6 +1,6 @@
-import { useFetch } from "@/hooks/useFetch";
-import { createSafeContext } from "@/providers/createSafeContext";
-import { getAppConfig } from "@/fetch";
+import { useFetch } from "@/checkout/hooks/useFetch";
+import { createSafeContext } from "@/checkout/providers/createSafeContext";
+import { getAppConfig } from "@/checkout/fetch";
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { AppConfig, BrandingColors, BrandingColorsData } from "./types";
 import { getParsedCssBody } from "./utils";
