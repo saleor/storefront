@@ -45,13 +45,11 @@ export function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
           </div>
-          <p className="block mt-2 text-md font-extrabold text-gray-900 truncate">
+          <p className="block mt-2 text-md font-extrabold text-main truncate">
             {translate(product, "name")}
           </p>
           {secondaryDescription && (
-            <p className="block text-base font-medium text-gray-500 underline">
-              {secondaryDescription}
-            </p>
+            <p className="block text-md font-normal text-main underline">{secondaryDescription}</p>
           )}
         </a>
       </Link>
