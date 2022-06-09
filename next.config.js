@@ -4,6 +4,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 const apiURL = new URL(process.env.NEXT_PUBLIC_API_URI);
+const mediaURL = new URL(process.env.MEDIA_URL);
 const allowedImageDomains = process.env.NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS
   ? process.env.NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS.split(",")
   : [];
@@ -15,7 +16,7 @@ module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: [apiURL.hostname, ...allowedImageDomains],
+    domains: [apiURL.hostname,mediaURL.hostname, ...allowedImageDomains],
     formats: imageConversionFormats,
   },
   webpack(config) {
