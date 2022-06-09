@@ -24,7 +24,8 @@ export const getProductAttributes = (
 
 export const getSelectedVariantID = (product: ProductDetailsFragment, router?: NextRouter) => {
   // Check, if variant is already in the url
-  const urlVariant = process.browser && router ? router.query.variant?.toString() : undefined;
+  const urlVariant =
+    typeof window !== "undefined" && router ? router.query.variant?.toString() : undefined;
   if (!!urlVariant && product.variants?.find((p) => p?.id === urlVariant)) {
     // case, where url contain valid variant id
     return urlVariant;

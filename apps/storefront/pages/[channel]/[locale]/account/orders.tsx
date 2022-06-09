@@ -2,6 +2,7 @@ import { useAuthState } from "@saleor/sdk";
 import React, { ReactElement } from "react";
 
 import { AccountLayout, OrdersTable, Pagination, Spinner } from "@/components";
+import { mapEdgesToItems } from "@/lib/maps";
 import { useOrdersQuery } from "@/saleor/api";
 
 function OrdersPage() {
@@ -28,7 +29,7 @@ function OrdersPage() {
     );
   }
 
-  const orders = ordersCollection?.me?.orders?.edges.map((order) => order.node) || [];
+  const orders = mapEdgesToItems(ordersCollection?.me?.orders);
 
   const onLoadMore = () => {
     fetchMore({

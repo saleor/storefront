@@ -18,4 +18,11 @@ fragment CategoryDetailsFragment on Category {
       }
     }
   }
+  children(first: 10) {
+    edges {
+      node {
+        ...CategoryBasicFragment
+      }
+    }
+  }
 }

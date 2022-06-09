@@ -1,33 +1,38 @@
+import { ChipButton } from "@saleor/ui-kit";
 import React from "react";
 
-import { translate } from "@/lib/translations";
-import { CategoryDetailsFragment, CollectionDetailsFragment } from "@/saleor/api";
-
+import { Box } from "../Box";
 import { RichText } from "../RichText";
 
 export interface PageHeroProps {
-  entity: CollectionDetailsFragment | CategoryDetailsFragment;
+  title: string;
+  description?: string;
+  pills?: {
+    label: string;
+    onClick: () => void;
+  }[];
 }
 
-export function PageHero({ entity }: PageHeroProps) {
-  const style: React.CSSProperties = {};
-  if (entity.backgroundImage?.url) {
-    style.backgroundImage = `url(${entity.backgroundImage?.url})`;
-  }
-
-  const description = translate(entity, "description");
+export function PageHero({ title, description, pills = [] }: PageHeroProps) {
   return (
-    <div className="container mx-auto bg-gray-400 h-96 rounded-md flex items-center" style={style}>
-      <div className="sm:ml-20 text-gray-50 text-center sm:text-left">
-        <h1 className="text-5xl font-bold mb-4">{translate(entity, "name")}</h1>
+    <Box>
+      <div className="sm:ml-20 sm:text-left">
+        <h1 className="text-5xl font-bold mb-4">{title}</h1>
 
         {description && (
-          <p className="text-lg inline-block sm:block">
+          <div className="text-lg inline-block sm:block my-6 text-main-1">
             <RichText jsonStringData={description} />
-          </p>
+          </div>
+        )}
+        {pills.length > 0 && (
+          <div className="flex gap-2 flex-wrap">
+            {pills.map((pill) => (
+              <ChipButton key={pill.label} label={pill.label} onClick={pill.onClick} />
+            ))}
+          </div>
         )}
       </div>
-    </div>
+    </Box>
   );
 }
 
