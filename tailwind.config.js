@@ -52,7 +52,7 @@ module.exports = {
         normal: 400,
         regular: 500,
         semibold: 600,
-        bold: 700,
+        bold: 800,
       },
       fontSize: {
         xs: ["1.1rem", "1.6rem"],
