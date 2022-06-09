@@ -20,7 +20,7 @@ export function PageHero({ title, description, pills = [] }: PageHeroProps) {
         <h1 className="text-5xl font-bold mb-4">{title}</h1>
 
         {description && (
-          <div className="text-lg inline-block sm:block">
+          <div className="text-lg inline-block sm:block my-6 text-main-1">
             <RichText jsonStringData={description} />
           </div>
         )}
