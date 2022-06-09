@@ -1,4 +1,4 @@
-import { Button, Chip } from "@saleor/ui-kit";
+import { Chip } from "@saleor/ui-kit";
 
 export interface FilterPill {
   label: string;
@@ -28,7 +28,9 @@ export function FilterPills({ pills, onRemoveAttribute, onClearFilters }: Filter
           ))}
       </div>
       <div>
-        <Button label="Clear all" onClick={onClearFilters} variant="tertiary" />
+        <button onClick={onClearFilters} className="text-main-2 text-base" type="button">
+          Clear all
+        </button>
       </div>
     </div>
   );

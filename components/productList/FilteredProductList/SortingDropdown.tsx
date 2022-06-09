@@ -32,7 +32,7 @@ export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) 
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="focus:outline-none absolute right-0 w-56 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
+        <Menu.Items className="focus:outline-none absolute left-0 w-56 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
           {options?.map((option) => (
             <Menu.Item key={option.label}>
               {({ active }) => (
