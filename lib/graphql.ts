@@ -13,7 +13,7 @@ const httpLink = createHttpLink({
 const apolloClient = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache({ typePolicies }),
-  ssrMode: !process.browser,
+  ssrMode: typeof window === "undefined",
 });
 
 export const saleorClient = createSaleorClient({

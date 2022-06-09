@@ -31,7 +31,7 @@ export function CheckoutProvider({ children }: { children: ReactChildren | React
     error: checkoutError,
   } = useCheckoutByTokenQuery({
     variables: { checkoutToken, locale: localeToEnum(locale) },
-    skip: !checkoutToken || !process.browser,
+    skip: !checkoutToken || typeof window === "undefined",
   });
 
   const resetCheckoutToken = () => setCheckoutToken("");
