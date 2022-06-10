@@ -1,4 +1,4 @@
-import { PermissionEnum } from "@/graphql";
+import { PermissionEnum } from "@/checkout-app/graphql";
 import { decode, JwtPayload, verify } from "jsonwebtoken";
 import JwksClient from "jwks-rsa";
 import { NextApiRequest } from "next";

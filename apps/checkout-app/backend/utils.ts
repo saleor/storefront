@@ -1,4 +1,4 @@
-import { PermissionEnum } from "@/graphql";
+import { PermissionEnum } from "@/checkout-app/graphql";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isAuthenticated, isAuthorized } from "./auth";
 
