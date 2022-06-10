@@ -26,6 +26,16 @@ module.exports = {
         },
       },
       colors: {
+        action: {
+          1: "#5B68E4",
+          2: "rgba(91, 104, 228, 0.8)",
+          3: "rgba(91, 104, 228, 0.6)",
+          4: "rgba(91, 104, 228, 0.4)",
+          5: "rgba(91, 104, 228, 0.2)",
+        },
+        disabled: {
+          DEFAULT: "#C2D1E4",
+        },
         brand: {
           DEFAULT: "#5B68E4",
         },
