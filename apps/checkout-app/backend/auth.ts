@@ -1,4 +1,5 @@
-import { decode, verify } from "jsonwebtoken";
+import { PermissionEnum } from "@/graphql";
+import { decode, JwtPayload, verify } from "jsonwebtoken";
 import JwksClient from "jwks-rsa";
 import { NextApiRequest } from "next";
 
@@ -80,11 +81,42 @@ export const isAuthenticated = async (req: NextApiRequest) => {
   return await jwtVerifier.verify(token);
 };
 
-export const isAuthorized = async (req: NextApiRequest) => {
+export const hasPermissionsInToken = (
+  tokenData?: JwtPayload,
+  permissionsToCheckAgainst?: PermissionEnum[]
+) => {
+  if (!permissionsToCheckAgainst?.length) {
+    return true;
+  }
+
+  const userPermissions = tokenData?.["user_permissions"] as
+    | PermissionEnum[]
+    | undefined;
+
+  if (!userPermissions?.length) {
+    return false;
+  }
+
+  return permissionsToCheckAgainst.every((permission) =>
+    userPermissions.includes(permission)
+  );
+};
+
+export const isAuthorized = (
+  req: NextApiRequest,
+  requiredPermissions?: PermissionEnum[]
+) => {
   const tokenData = getTokenDataFromRequest(req);
 
   if (!tokenData?.["is_staff"]) {
     return false;
   }
+
+  const withPermissions = hasPermissionsInToken(tokenData, requiredPermissions);
+
+  if (!withPermissions) {
+    return false;
+  }
+
   return true;
 };

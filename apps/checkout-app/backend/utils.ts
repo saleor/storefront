@@ -1,3 +1,4 @@
+import { PermissionEnum } from "@/graphql";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isAuthenticated, isAuthorized } from "./auth";
 
@@ -20,7 +21,10 @@ export const allowCors =
   };
 
 export const requireAuthorization =
-  (fn: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) =>
+  (
+    fn: (req: NextApiRequest, res: NextApiResponse) => Promise<void>,
+    requiredPermissions?: PermissionEnum[]
+  ) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     const authenticated = await isAuthenticated(req);
 
@@ -32,7 +36,7 @@ export const requireAuthorization =
       });
     }
 
-    const authorized = await isAuthorized(req);
+    const authorized = isAuthorized(req, requiredPermissions);
 
     if (!authorized) {
       return res.status(403).json({

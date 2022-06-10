@@ -24,4 +24,4 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).json({ error });
   }
 }
-export default allowCors(requireAuthorization(handler));
+export default allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"]));
