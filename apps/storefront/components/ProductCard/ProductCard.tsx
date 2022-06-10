@@ -1,3 +1,5 @@
+import { PhotographIcon } from "@heroicons/react/outline";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -5,61 +7,50 @@ import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
 
-import { useRegions } from "../RegionsProvider";
-
-const styles = {
-  grid: "grid grid-cols-4 gap-4",
-  product: {
-    name: "block text-lg text-gray-900 truncate",
-    category: "block text-sm font-medium text-gray-500",
-    price: "block text-base font-medium text-gray-900",
-    details: "px-4 py-2 border-gray-100 bg-gray-50 border-t",
-  },
-};
-
 export interface ProductCardProps {
   product: ProductCardFragment;
 }
 
+const getCardSecondaryDescription = (product: ProductCardFragment) => {
+  const artistAttribute = product.attributes.find(
+    (attribute) => attribute.attribute.slug === "artist"
+  );
+  const mainValue = artistAttribute?.values[0];
+  if (mainValue?.name) {
+    return mainValue.name;
+  }
+  if (product.category) {
+    return translate(product.category, "name");
+  }
+  return "";
+};
+
 export function ProductCard({ product }: ProductCardProps) {
   const paths = usePaths();
-  const { formatPrice } = useRegions();
+  const secondaryDescription = getCardSecondaryDescription(product);
+  const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
 
-  let priceDisplay = formatPrice(product.pricing?.priceRange?.start?.gross);
-  if (
-    product.pricing?.priceRange?.start?.gross.amount !==
-    product.pricing?.priceRange?.stop?.gross.amount
-  ) {
-    priceDisplay = `from ${priceDisplay}`;
-  }
-  const imageStyle: React.CSSProperties = {};
-  if (product.thumbnail?.url) {
-    imageStyle.backgroundImage = `url(${product.thumbnail?.url})`;
-    imageStyle.backgroundSize = "auto";
-    imageStyle.backgroundRepeat = "no-repeat";
-    imageStyle.backgroundPosition = "center";
-  }
   return (
-    <li key={product.id} className="relative bg-white border shadow-md hover:shadow-2xl">
+    <li key={product.id} className="w-full">
       <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
         <a href="pass">
-          <div className="flex rounded flex-col  w-full h-60 bg-gray-200" style={imageStyle}>
-            {!!product.pricing?.onSale && (
-              <>
-                <br />
-                <div className="bg-red-600 text-white w-1/4 text-center rounded-r-xl shadow-lg">
-                  Sale
+          <div className="bg-main active:bg-brand w-full aspect-1">
+            <div className="bg-white w-full h-full relative hover:translate-y-[-10px] hover:translate-x-[-10px] transition-transform object-contain ">
+              {thumbnailUrl ? (
+                <Image src={thumbnailUrl} width={512} height={512} />
+              ) : (
+                <div className="grid justify-items-center content-center h-full w-full">
+                  <PhotographIcon className="h-10 w-10 content-center" />
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
-          <div className={styles.product.details}>
-            <p className={styles.product.name}>{translate(product, "name")}</p>
-            {!!product.category && (
-              <p className={styles.product.category}>{translate(product.category, "name")}</p>
-            )}
-            <p className={styles.product.price}>{priceDisplay}</p>
-          </div>
+          <p className="block mt-2 text-md font-extrabold text-main truncate">
+            {translate(product, "name")}
+          </p>
+          {secondaryDescription && (
+            <p className="block text-md font-normal text-main underline">{secondaryDescription}</p>
+          )}
         </a>
       </Link>
     </li>

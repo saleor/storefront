@@ -20332,7 +20332,7 @@ export type PageInfoFragment = { __typename?: 'PageInfo', hasNextPage: boolean, 
 
 export type PriceFragment = { __typename?: 'Money', currency: string, amount: number };
 
-export type ProductCardFragment = { __typename?: 'Product', id: string, slug: string, name: string, translation?: { __typename?: 'ProductTranslation', id: string, name?: string | null } | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, category?: { __typename?: 'Category', id: string, name: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } | null, pricing?: { __typename?: 'ProductPricingInfo', onSale?: boolean | null, priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null } | null };
+export type ProductCardFragment = { __typename?: 'Product', id: string, slug: string, name: string, translation?: { __typename?: 'ProductTranslation', id: string, name?: string | null } | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, category?: { __typename?: 'Category', id: string, name: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } | null, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null }> }> };
 
 export type ProductDetailsFragment = { __typename?: 'Product', id: string, name: string, slug: string, description?: string | null, seoDescription?: string | null, seoTitle?: string | null, isAvailableForPurchase?: boolean | null, translation?: { __typename?: 'ProductTranslation', id: string, description?: string | null, name?: string | null } | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: string | null, type?: AttributeTypeEnum | null, unit?: MeasurementUnitsEnum | null, translation?: { __typename?: 'AttributeTranslation', id: string, name: string } | null }, values: Array<{ __typename?: 'AttributeValue', id: string, name?: string | null, value?: string | null, translation?: { __typename?: 'AttributeValueTranslation', id: string, name: string, richText?: string | null } | null }> }>, category?: { __typename?: 'Category', name: string, id: string, slug: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } | null, variants?: Array<{ __typename?: 'ProductVariant', id: string, name: string, quantityAvailable?: number | null, translation?: { __typename?: 'ProductVariantTranslation', id: string, name: string } | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: string | null, type?: AttributeTypeEnum | null, unit?: MeasurementUnitsEnum | null, translation?: { __typename?: 'AttributeTranslation', id: string, name: string } | null }, values: Array<{ __typename?: 'AttributeValue', id: string, name?: string | null, value?: string | null, translation?: { __typename?: 'AttributeValueTranslation', id: string, name: string, richText?: string | null } | null }> }>, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, pricing?: { __typename?: 'VariantPricingInfo', price?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null }> | null, pricing?: { __typename?: 'ProductPricingInfo', priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null } | null, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null };
 
@@ -20624,7 +20624,7 @@ export type ProductCollectionQueryVariables = Exact<{
 }>;
 
 
-export type ProductCollectionQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, slug: string, name: string, translation?: { __typename?: 'ProductTranslation', id: string, name?: string | null } | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, category?: { __typename?: 'Category', id: string, name: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } | null, pricing?: { __typename?: 'ProductPricingInfo', onSale?: boolean | null, priceRange?: { __typename?: 'TaxedMoneyRange', start?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null, stop?: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } | null } | null } | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null };
+export type ProductCollectionQuery = { __typename?: 'Query', products?: { __typename?: 'ProductCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'ProductCountableEdge', cursor: string, node: { __typename?: 'Product', id: string, slug: string, name: string, translation?: { __typename?: 'ProductTranslation', id: string, name?: string | null } | null, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, category?: { __typename?: 'Category', id: string, name: string, translation?: { __typename?: 'CategoryTranslation', id: string, name?: string | null } | null } | null, media?: Array<{ __typename?: 'ProductMedia', url: string, alt: string, type: ProductMediaType }> | null, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: string | null }, values: Array<{ __typename?: 'AttributeValue', name?: string | null }> }> } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null };
 
 export type ProductPathsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']>;
@@ -21014,24 +21014,21 @@ export const ProductCardFragmentDoc = gql`
       name
     }
   }
-  pricing {
-    onSale
-    priceRange {
-      start {
-        gross {
-          ...PriceFragment
-        }
-      }
-      stop {
-        gross {
-          ...PriceFragment
-        }
-      }
+  media {
+    url
+    alt
+    type
+  }
+  attributes {
+    attribute {
+      slug
+    }
+    values {
+      name
     }
   }
 }
-    ${ImageFragmentDoc}
-${PriceFragmentDoc}`;
+    ${ImageFragmentDoc}`;
 export const SelectedAttributeDetailsFragmentDoc = gql`
     fragment SelectedAttributeDetailsFragment on SelectedAttribute {
   attribute {
