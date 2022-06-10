@@ -294,7 +294,13 @@ Click deploy and wait until the app is deployed
 
 Checkout app supports two payment gateways that you can configure:
 
-[![Mollie](./docs/logos/mollie_light.svg#gh-dark-mode-only) ![Mollie](./docs/logos/mollie_dark.svg#gh-light-mode-only)](https://www.mollie.com/en)
+<a href="https://www.mollie.com/en">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/logos/mollie_light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./docs/logos/mollie_dark.svg">
+    <img alt="Mollie" src="./docs/logos/mollie_dark.svg">
+  </picture>
+</a>
 
 <br>
 
