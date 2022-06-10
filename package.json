@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:checkout": "turbo run build --filter=checkout",
+    "build:checkout-app": "turbo run build --filter=checkout-app",
     "dev": "env-cmd turbo run dev --parallel",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",

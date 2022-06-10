@@ -70,6 +70,7 @@ describe("/api/pay", () => {
       provider: "mollie",
       totalAmount: 100,
       redirectUrl: "example.com",
+      host: "app.com",
     } as PayRequestBody;
 
     // @ts-ignore
@@ -78,10 +79,11 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateMolliePayment).toHaveBeenCalledWith(
-      mockOrderData,
-      "example.com"
-    );
+    expect(mockedCreateMolliePayment).toHaveBeenCalledWith({
+      data: mockOrderData,
+      redirectUrl: "example.com",
+      appUrl: "http://app.com",
+    });
     expect(mockedCreateMolliePayment).toHaveBeenCalledTimes(1);
 
     const data: PayRequestSuccessResponse = res._getJSONData();
@@ -103,6 +105,7 @@ describe("/api/pay", () => {
       provider: "adyen",
       totalAmount: 100,
       redirectUrl: "example.com",
+      host: "app.com",
     } as PayRequestBody;
 
     // @ts-ignore
@@ -111,10 +114,11 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(
-      mockOrderData,
-      "example.com"
-    );
+    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith({
+      datA: mockOrderData,
+      redirectUrl: "example.com",
+      appUrl: "http://app.com",
+    });
     expect(mockedCreateAdyenPayment).toHaveBeenCalledTimes(1);
 
     const data: PayRequestSuccessResponse = res._getJSONData();

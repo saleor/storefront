@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { createMolliePayment } from "@/checkout-app/backend/payments/providers/mollie";
 import { createOrder } from "@/checkout-app/backend/payments/createOrder";
-import { allowCors } from "@/checkout-app/backend/utils";
 import { PaymentProviderID } from "@/checkout-app/types/common";
 import { createAdyenPayment } from "@/checkout-app/backend/payments/providers/adyen";
 import { OrderFragment } from "@/checkout-app/graphql";
@@ -12,6 +11,7 @@ import {
   PayRequestResponse,
   PayRequestErrorResponse,
 } from "@/checkout-app/types/api/pay";
+import { allowCors, getBaseUrl } from "@/checkout-app/backend/utils";
 
 const paymentProviders: PaymentProviderID[] = ["mollie", "adyen"];
 
@@ -66,7 +66,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   let response: PayRequestResponse;
 
   if (body.provider === "mollie") {
-    const url = await createMolliePayment(order, body.redirectUrl);
+    const appUrl = getBaseUrl(req);
+    const url = await createMolliePayment({
+      order,
+      redirectUrl: body.redirectUrl,
+      appUrl,
+    });
 
     if (url) {
       response = {

@@ -10,49 +10,56 @@ import {
   getMollieClient,
 } from "./utils";
 
-export const createMolliePayment = async (
-  data: OrderFragment,
-  redirectUrl: string
-) => {
-  const discountLines = getDiscountLines(data.discounts);
-  const shippingLines = getShippingLines(data);
-  const lines = getLines(data.lines);
+export interface CreateMolliePaymentData {
+  order: OrderFragment;
+  redirectUrl: string;
+  appUrl: string;
+}
+
+export const createMolliePayment = async ({
+  order,
+  redirectUrl,
+  appUrl,
+}: CreateMolliePaymentData) => {
+  const discountLines = getDiscountLines(order.discounts);
+  const shippingLines = getShippingLines(order);
+  const lines = getLines(order.lines);
   const mollieClient = await getMollieClient();
 
   const mollieData = await mollieClient.orders.create({
-    orderNumber: data.number!,
-    webhookUrl: `${envVars.appUrl}/api/webhooks/mollie`,
+    orderNumber: order.number!,
+    webhookUrl: `${appUrl}/api/webhooks/mollie`,
     locale: "en_US",
-    redirectUrl: formatRedirectUrl(redirectUrl, data.id),
+    redirectUrl: formatRedirectUrl(redirectUrl, order.id),
     metadata: {
-      orderId: data.id,
+      orderId: order.id,
     },
     lines: [...discountLines, ...shippingLines, ...lines],
     billingAddress: {
-      city: data.billingAddress!.city,
-      country: data.billingAddress!.country.code,
-      email: data.userEmail!,
-      givenName: data.billingAddress!.firstName,
-      familyName: data.billingAddress!.lastName,
-      postalCode: data.billingAddress!.postalCode,
-      streetAndNumber: data.billingAddress!.streetAddress1,
-      organizationName: data.billingAddress?.companyName,
+      city: order.billingAddress!.city,
+      country: order.billingAddress!.country.code,
+      email: order.userEmail!,
+      givenName: order.billingAddress!.firstName,
+      familyName: order.billingAddress!.lastName,
+      postalCode: order.billingAddress!.postalCode,
+      streetAndNumber: order.billingAddress!.streetAddress1,
+      organizationName: order.billingAddress?.companyName,
     },
     amount: {
-      value: parseAmountToString(data.total.gross.amount),
-      currency: data.total.gross.currency,
+      value: parseAmountToString(order.total.gross.amount),
+      currency: order.total.gross.currency,
     },
-    shippingAddress: data.shippingAddress
+    shippingAddress: order.shippingAddress
       ? {
-          city: data.shippingAddress.city,
-          country: data.shippingAddress.country.code,
-          email: data.userEmail!,
-          givenName: data.shippingAddress.firstName,
-          familyName: data.shippingAddress.lastName,
-          postalCode: data.shippingAddress.postalCode,
-          streetAndNumber: data.shippingAddress.streetAddress1,
-          organizationName: data.shippingAddress.companyName,
-        }
+        city: order.shippingAddress.city,
+        country: order.shippingAddress.country.code,
+        email: order.userEmail!,
+        givenName: order.shippingAddress.firstName,
+        familyName: order.shippingAddress.lastName,
+        postalCode: order.shippingAddress.postalCode,
+        streetAndNumber: order.shippingAddress.streetAddress1,
+        organizationName: order.shippingAddress.companyName,
+      }
       : undefined,
   });
 

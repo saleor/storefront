@@ -44,3 +44,9 @@ export const requireAuthorization =
 
     return await fn(req, res);
   };
+
+export const getBaseUrl = (req: NextApiRequest) => {
+  const { host, "x-forwarded-proto": protocol = "http" } = req.headers;
+
+  return `${protocol}://${host}`;
+};
