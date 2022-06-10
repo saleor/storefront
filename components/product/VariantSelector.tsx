@@ -61,9 +61,9 @@ export function VariantSelector({ product, selectedVariantID }: VariantSelectorP
                   )}
                 >
                   <RadioGroup.Label as="div" className="w-full justify-between p-4">
-                    <div className="flex flex-row gap-2 w-full font-semibold">
-                      <div className="grow text-md">{translate(variant, "name")}</div>
-                      <div className=" text-md ">{formatPrice(variant.pricing?.price?.gross)}</div>
+                    <div className="flex flex-row gap-2 w-full font-semibold text-md">
+                      <div className="grow">{translate(variant, "name")}</div>
+                      <div>{formatPrice(variant.pricing?.price?.gross)}</div>
                     </div>
                   </RadioGroup.Label>
                 </div>
