@@ -72,14 +72,30 @@ export const useStyles = makeStyles(
       flex: "2",
       marginTop: theme.spacing(2),
     },
+    designUrlInput: {
+      margin: theme.spacing(2),
+    },
+    designNoPreview: {
+      display: "flex",
+      justifyContent: "center",
+      margin: theme.spacing(2),
+    },
     designPreview: {
       background: "#fff",
       minHeight: "500px", // TEMPORARY VALUE
       boxShadow: "0px 6px 30px rgba(0, 0, 0, 0.16)",
       margin: "1rem 0 0 0",
+      display: "flex",
+      flexDirection: "column",
+    },
+    designPreviewFrame: {
+      flex: "1",
     },
     optionSkeleton: {
       width: "100%",
+    },
+    designSkeleton: {
+      margin: theme.spacing(4),
     },
   }),
   { name: "DesignDetails" }

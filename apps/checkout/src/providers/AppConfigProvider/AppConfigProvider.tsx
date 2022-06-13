@@ -6,6 +6,7 @@ import { AppConfig, BrandingColors, BrandingColorsData } from "./types";
 import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
 import { isEqual } from "lodash-es";
+import { useDynamicAppConfig } from "@/checkout/hooks/useDynamicAppConfig";
 
 interface AppConfigContextConsumerProps {
   config?: AppConfig | null;
@@ -18,7 +19,9 @@ export const [useContext, Provider] =
 export const AppConfigProvider: React.FC<PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const [{ data: appConfig, loading }] = useFetch(getAppConfig);
+  const [{ data: storedAppConfig, loading }] = useFetch(getAppConfig);
+  const dynamicAppConfig = useDynamicAppConfig<AppConfig>();
+  const appConfig = dynamicAppConfig || storedAppConfig;
   const stylingRef = useRef(appConfig?.branding);
 
   const fulfillStyling = (

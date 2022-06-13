@@ -176,6 +176,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
                               <OffsettedListItemCell padding="action">
                                 <Switch
                                   name={flattenSettingId(
+                                    "channelActivePaymentProviders",
                                     paymentOptionIdx,
                                     provider.id
                                   )}

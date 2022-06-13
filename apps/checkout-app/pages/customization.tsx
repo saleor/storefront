@@ -5,13 +5,16 @@ import {
   usePublicMetafieldsQuery,
   useUpdatePublicMetadataMutation,
 } from "@/checkout-app/graphql";
-import { getCommonErrors } from "@/checkout-app/frontend/utils";
+import { getCommonErrors, getMetafield } from "@/checkout-app/frontend/utils";
 import { useCustomizationSettings } from "@/checkout-app/frontend/data";
 import { useAuthData } from "@/checkout-app/frontend/hooks/useAuthData";
 import { serverEnvVars } from "@/checkout-app/constants";
-import { mapPublicSettingsToMetadata } from "@/checkout-app/frontend/misc/mapPublicSettingsToMetadata";
+import {
+  mapPublicMetafieldsToMetadata,
+  mapPublicSettingsToMetadata,
+} from "@/checkout-app/frontend/misc/mapPublicSettingsToMetadata";
 import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
-import { PublicSettingID } from "@/checkout-app/types/common";
+import { PublicMetafieldID } from "@/checkout-app/types/common";
 
 const Customization = () => {
   const router = useRouter();
@@ -19,7 +22,10 @@ const Customization = () => {
   const [metafieldsQuery] = usePublicMetafieldsQuery({
     variables: {
       id: appId || serverEnvVars.appId,
-      keys: ["customizations"] as PublicSettingID[number][],
+      keys: [
+        "customizations",
+        "customizationsCheckoutUrl",
+      ] as PublicMetafieldID[number][],
     },
     pause: !isAuthorized,
   });
@@ -33,14 +39,27 @@ const Customization = () => {
     settingsValues.customizations
   );
 
+  const checkoutUrl = getMetafield(
+    metafieldsQuery.data?.app?.metafields || {},
+    "customizationsCheckoutUrl"
+  );
+
   const handleCancel = () => {
     router.back();
   };
 
-  const handleSubmit = (data: CustomizationSettingsValues) => {
-    const metadata = mapPublicSettingsToMetadata({
-      customizations: data,
-    });
+  const handleSubmit = (
+    data: CustomizationSettingsValues,
+    checkoutUrl?: string
+  ) => {
+    const metadata = [
+      ...mapPublicSettingsToMetadata({
+        customizations: data,
+      }),
+      ...mapPublicMetafieldsToMetadata({
+        customizationsCheckoutUrl: checkoutUrl,
+      }),
+    ];
 
     setPublicMetadata({
       id: appId || serverEnvVars.appId,
@@ -56,6 +75,7 @@ const Customization = () => {
   return (
     <CustomizationDetails
       options={customizationSettings}
+      checkoutUrl={checkoutUrl}
       loading={metafieldsQuery.fetching || metadataMutation.fetching}
       saveButtonBarState="default"
       errors={errors}

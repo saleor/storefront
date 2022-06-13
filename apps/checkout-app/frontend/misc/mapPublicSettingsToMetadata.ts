@@ -1,4 +1,7 @@
-import { PublicSettingsValues } from "@/checkout-app/types/api";
+import {
+  PublicMetafieldsValues,
+  PublicSettingsValues,
+} from "@/checkout-app/types/api";
 
 export const mapPublicSettingsToMetadata = (
   settingsValues: Partial<PublicSettingsValues>
@@ -14,6 +17,29 @@ export const mapPublicSettingsToMetadata = (
         {
           key: settingsValuesKey,
           value: settingsValuesValue,
+        },
+      ];
+    },
+    [] as Array<{
+      key: string;
+      value: string;
+    }>
+  );
+};
+
+export const mapPublicMetafieldsToMetadata = (
+  metafieldsValues: Partial<PublicMetafieldsValues>
+) => {
+  return Object.keys(metafieldsValues).reduce(
+    (metadata, metafieldsValuesKey) => {
+      const metafieldsValuesValue =
+        metafieldsValues[metafieldsValuesKey as keyof PublicMetafieldsValues];
+
+      return [
+        ...metadata,
+        {
+          key: metafieldsValuesKey,
+          value: metafieldsValuesValue || "",
         },
       ];
     },

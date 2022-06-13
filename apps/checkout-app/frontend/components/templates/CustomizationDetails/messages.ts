@@ -5,4 +5,12 @@ export const messages = defineMessages({
     defaultMessage: "Customization preview",
     description: "section title",
   },
+  checkoutUrl: {
+    defaultMessage: "Checkout URL",
+    description: "input label",
+  },
+  noCheckoutUrl: {
+    defaultMessage: "Please provide valid checkout URL",
+    description: "information",
+  },
 });

@@ -1,32 +1,56 @@
-import { UnknownPublicSettingsValues } from "@/checkout-app/types/api";
+import {
+  PublicMetafieldsValues,
+  UnknownPublicSettingsValues,
+} from "@/checkout-app/types/api";
 import {
   Item,
   NamedNode,
   Node,
-  PaymentProvider,
-  PaymentProviderID,
+  PublicMetafieldID,
+  PublicSettingID,
 } from "@/checkout-app/types/common";
 import { CombinedError } from "urql";
 
-export const flattenSettingId = (optionIdx: number, settingId: string) =>
-  `${optionIdx}-${settingId}`;
+export const flattenSettingId = (
+  groupId: PublicSettingID[number],
+  optionIdx: number,
+  settingId: string
+) => `${groupId}-${optionIdx}-${settingId}`;
+
+export const unflattenValue = (
+  valueId: PublicMetafieldID[number],
+  flattenedValues: Record<string, string>
+) => {
+  const valueKey = Object.keys(flattenedValues).find((flattedKey) => {
+    const keys = flattedKey.split("-");
+
+    return keys[0] === valueId;
+  });
+
+  return valueKey && flattenedValues[valueKey];
+};
 
 export const unflattenSettings = <S extends Node>(
-  flattenedSettings: Record<string, string>,
+  groupId: PublicSettingID[number],
+  flattenedValues: Record<string, string>,
   options: S[]
 ) => {
   const unflattenedSettings: UnknownPublicSettingsValues = {};
 
-  Object.keys(flattenedSettings).forEach((flattedKey) => {
-    const keys = flattedKey.split(/-(.+)/);
+  Object.keys(flattenedValues).forEach((flattedKey) => {
+    const keys = flattedKey.split("-");
 
-    const mainKey = options[Number(keys[0])]?.id;
-    const subKey = keys[1];
+    if (keys[0] !== groupId) {
+      return;
+    }
+
+    const mainKey = options[Number(keys[1])]?.id;
+    const subKey = keys[2];
 
     if (mainKey && subKey) {
       unflattenedSettings[mainKey] = {
         ...unflattenedSettings[mainKey],
-        [subKey]: flattenedSettings[flattedKey],
+        [subKey]: flattenedValues[flattedKey],
       };
     }
   });
@@ -48,3 +72,8 @@ export const getCommonErrors = (error?: Partial<CombinedError>) =>
         ...(error?.networkError ? [error.networkError] : []),
       ]
     : [...(error ? [error] : [])];
+
+export const getMetafield = (
+  metafields: PublicMetafieldsValues,
+  metafieldId: PublicMetafieldID[number]
+) => metafields[metafieldId];

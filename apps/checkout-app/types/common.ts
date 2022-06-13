@@ -2,6 +2,7 @@ import { SvgIconTypeMap } from "@material-ui/core";
 import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 
 export type SettingsType = "public" | "private";
+export const allPublicMetafieldID = ["customizationsCheckoutUrl"] as const;
 export const allPublicSettingID = [
   "customizations",
   "channelActivePaymentProviders",
@@ -11,8 +12,10 @@ export const allSettingID = [
   ...allPublicSettingID,
   ...allPrivateSettingID,
 ] as const;
+export type PublicMetafieldID = typeof allPublicMetafieldID;
 export type PublicSettingID = typeof allPublicSettingID;
 export type PrivateSettingID = typeof allPrivateSettingID;
+export type MetafieldID = PublicMetafieldID;
 export type SettingID = PublicSettingID | PrivateSettingID;
 export type SettingType = "string" | "color" | "image";
 

@@ -5,6 +5,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  TextField,
 } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 import {
@@ -12,48 +13,70 @@ import {
   OffsettedListBody,
   ConfirmButtonTransitionState,
 } from "@saleor/macaw-ui";
-import { Customization, CustomizationID } from "types/common";
+import {
+  Customization,
+  CustomizationID,
+  PublicMetafieldID,
+} from "types/common";
 import { CustomizationSettingsValues } from "types/api";
 import { useStyles } from "./styles";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useForm, Controller } from "react-hook-form";
 import { messages } from "./messages";
 import Setting from "@/checkout-app/frontend/components/elements/Setting";
 import {
   flattenSettingId,
   unflattenSettings,
+  unflattenValue,
 } from "@/checkout-app/frontend/utils";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { MetadataErrorFragment } from "@/checkout-app/graphql";
 import { getMetadataErrorMessage } from "@/checkout-app/frontend/misc/errors";
 import ErrorAlert from "../../elements/ErrorAlert";
+import CheckoutPreviewFrame from "../../elements/CheckoutPreviewFrame";
+import { isValidHttpUrl, useSettingsFromValues } from "./data";
+import { useState } from "react";
+import { debounce } from "lodash-es";
 
 interface CustomizationDetailsProps {
   options: Customization<CustomizationID>[];
+  checkoutUrl?: string;
   loading: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
   errors?: Partial<MetadataErrorFragment>[];
   onCancel: () => void;
-  onSubmit: (data: CustomizationSettingsValues) => void;
+  onSubmit: (data: CustomizationSettingsValues, checkoutUrl?: string) => void;
 }
 
 const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
   options,
+  checkoutUrl,
   loading,
   saveButtonBarState,
   errors,
   onCancel,
   onSubmit,
 }) => {
+  const intl = useIntl();
   const classes = useStyles();
-  const { control, handleSubmit: handleSubmitForm, formState } = useForm();
+  const {
+    control,
+    handleSubmit: handleSubmitForm,
+    formState,
+    watch,
+  } = useForm();
 
-  const handleSubmit = (flattenedSettings: Record<string, string>) => {
+  const previewSettings = useSettingsFromValues(options, watch);
+  const [previewUrl, setPreviewUrl] = useState(checkoutUrl);
+
+  const handleSubmit = (flattenedValues: Record<string, string>) => {
     onSubmit(
       unflattenSettings(
-        flattenedSettings,
+        "customizations",
+        flattenedValues,
         options
-      ) as CustomizationSettingsValues
+      ) as CustomizationSettingsValues,
+      unflattenValue("customizationsCheckoutUrl", flattenedValues)
     );
   };
 
@@ -83,7 +106,11 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                       option.settings?.map(({ id, type, label, value }) => (
                         <Controller
                           key={id}
-                          name={flattenSettingId(optionIdx, id)}
+                          name={flattenSettingId(
+                            "customizations",
+                            optionIdx,
+                            id
+                          )}
                           control={control}
                           defaultValue={value}
                           render={({ field }) => (
@@ -117,7 +144,51 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
           <Typography variant="subtitle1">
             <FormattedMessage {...messages.customizationPreview} />
           </Typography>
-          <div className={classes.designPreview}>Customization</div>
+          <div className={classes.designPreview}>
+            {loading ? (
+              <Skeleton className={classes.designSkeleton} />
+            ) : (
+              <>
+                <Controller
+                  name={
+                    "customizationsCheckoutUrl" as PublicMetafieldID[number]
+                  }
+                  control={control}
+                  defaultValue={checkoutUrl}
+                  render={({ field }) => (
+                    <TextField
+                      name={field.name}
+                      value={field.value}
+                      label={intl.formatMessage(messages.checkoutUrl)}
+                      className={classes.designUrlInput}
+                      onChange={(event) => {
+                        field.onChange(event);
+                        debounce(
+                          () => setPreviewUrl(event.target.value),
+                          1000
+                        )();
+                      }}
+                      onBlur={field.onBlur}
+                    />
+                  )}
+                />
+                {previewUrl && isValidHttpUrl(previewUrl) ? (
+                  <CheckoutPreviewFrame
+                    checkoutUrl={previewUrl}
+                    settings={previewSettings}
+                    className={classes.designPreviewFrame}
+                  />
+                ) : (
+                  <Typography
+                    variant="body1"
+                    className={classes.designNoPreview}
+                  >
+                    <FormattedMessage {...messages.noCheckoutUrl} />
+                  </Typography>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       <AppSavebar
