@@ -10,7 +10,6 @@ export default defineConfig({
   viewportWidth: 1400,
   viewportHeight: 660,
   e2e: {
-    API_URL: "http://localhost:8000/graphql/",
     baseUrl: "http://localhost:3001/",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
   },
