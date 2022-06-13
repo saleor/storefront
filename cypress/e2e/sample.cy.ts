@@ -3,5 +3,3 @@ describe("empty spec", () => {
     expect(true).to.equal(true);
   });
 });
-
-export {};
