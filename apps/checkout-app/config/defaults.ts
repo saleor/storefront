@@ -32,8 +32,8 @@ export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unen
 export const defaultCustomizationSettings: CustomizationSettingsValues = {
   branding: {
     buttonBgColorPrimary: "#394052",
-    buttonBgColorHover: "#394052",
-    borderColorPrimary: "#FAFAFA",
+    buttonBgColorHover: "#FAFAFA",
+    borderColorPrimary: "#394052",
     errorColor: "#B65757",
     successColor: "#2C9B2A",
     buttonTextColor: "#ffffff",
