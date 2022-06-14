@@ -69,7 +69,7 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
         adyen: {},
         mollie: {
           partnerId: "some_not_encrypted_id",
-          liveApiKey: "**** _key",
+          liveApiKey: "•••• _key",
         },
       },
     };
