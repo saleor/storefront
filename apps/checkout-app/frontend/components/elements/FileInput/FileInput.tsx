@@ -1,7 +1,7 @@
 import { Typography } from "@material-ui/core";
 import { Button, DeleteIcon, IconButton, PlusIcon } from "@saleor/macaw-ui";
 import Image from "next/image";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useStyles } from "./styles";
 import clsx from "clsx";
 import { FormattedMessage } from "react-intl";
@@ -29,6 +29,12 @@ const FileInput: React.FC<FileInputProps> = ({
   const classes = useStyles();
   const anchor = useRef<HTMLInputElement>(null);
   const [src, setSrc] = React.useState<string | undefined>(value);
+
+  useEffect(() => {
+    if (value !== src) {
+      setSrc(value);
+    }
+  }, [value]);
 
   const handleFileUploadButtonClick = () => anchor.current!.click();
 

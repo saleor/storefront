@@ -13,6 +13,7 @@ interface SettingProps {
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | React.DragEvent<HTMLDivElement>
   ) => void;
+  onFileChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
@@ -22,13 +23,27 @@ const Setting: React.FC<SettingProps> = ({
   label,
   value,
   onChange,
+  onFileChange,
   onBlur,
 }) => {
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | React.DragEvent<HTMLDivElement>
+  ) => {
+    onChange(event);
+
+    if (type === "image") {
+      onFileChange &&
+        onFileChange(event as React.ChangeEvent<HTMLInputElement>);
+    }
+  };
+
   const commonProps = {
     name,
     label,
     value,
-    onChange,
+    onChange: handleChange,
     onBlur,
   };
 

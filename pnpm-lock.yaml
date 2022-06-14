@@ -143,6 +143,7 @@ importers:
       '@types/react': 17.0.37
       '@types/react-dom': 17.0.11
       '@urql/exchange-auth': ^0.1.7
+      '@urql/exchange-multipart-fetch': ^0.1.14
       babel-plugin-formatjs: ^10.3.18
       clsx: ^1.1.1
       config: workspace:*
@@ -182,6 +183,7 @@ importers:
       '@saleor/app-sdk': 0.5.0
       '@saleor/macaw-ui': 0.4.0_dtofy765xmqwrloztbonstq6rm
       '@urql/exchange-auth': 0.1.7_graphql@16.5.0
+      '@urql/exchange-multipart-fetch': 0.1.14_graphql@16.5.0
       clsx: 1.1.1
       crypto-js: 4.1.1
       eslint-plugin-react: 7.30.0_eslint@7.32.0
@@ -6619,6 +6621,17 @@ packages:
       wonka: 4.0.15
     dev: false
 
+  /@urql/exchange-multipart-fetch/0.1.14_graphql@16.5.0:
+    resolution: {integrity: sha512-JdffZtfsJHQ4v0IevimPWbteXT1C5OH3PPbNJrbLigC9aCZB9dp2ZOjMXTvpP+3SIjJRFRguuRaL7hAGB04vgw==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@urql/core': 2.5.0_graphql@16.5.0
+      extract-files: 11.0.0
+      graphql: 16.5.0
+      wonka: 4.0.15
+    dev: false
+
   /@urql/introspection/0.3.1_graphql@16.5.0:
     resolution: {integrity: sha512-4Srr45lA00cVlfRGtGJqYlc2vcPN6BZwFW9EVY20yROaoADCGNxm6xmScZhxuCRQPhOB9DXtuYs2KNrOo84ZeA==}
     peerDependencies:
@@ -10853,7 +10866,6 @@ packages:
   /extract-files/11.0.0:
     resolution: {integrity: sha512-FuoE1qtbJ4bBVvv94CC7s0oTnKUGvQs+Rjf1L2SJFfS+HTVVjhPFtehPdQ0JiGPqVNfSSZvL5yzHHQq2Z4WNhQ==}
     engines: {node: ^12.20 || >= 14.13}
-    dev: true
 
   /extract-files/9.0.0:
     resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}

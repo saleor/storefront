@@ -21175,6 +21175,15 @@ export type CheckoutQueryVariables = Exact<{
 
 export type CheckoutQuery = { __typename?: 'Query', checkout?: { __typename?: 'Checkout', id: string, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } } } | null };
 
+export type FileUploadErrorFragment = { __typename?: 'UploadError', code: UploadErrorCode, message?: string | null, field?: string | null };
+
+export type FileUploadMutationVariables = Exact<{
+  file: Scalars['Upload'];
+}>;
+
+
+export type FileUploadMutation = { __typename?: 'Mutation', fileUpload?: { __typename?: 'FileUpload', uploadedFile?: { __typename?: 'File', url: string, contentType?: string | null } | null, errors: Array<{ __typename?: 'UploadError', code: UploadErrorCode, message?: string | null, field?: string | null }> } | null };
+
 export type MetadataErrorFragment = { __typename?: 'MetadataError', code: MetadataErrorCode, message?: string | null, field?: string | null };
 
 export type PublicMetafieldsQueryVariables = Exact<{
@@ -21267,6 +21276,13 @@ export const ChannelFragmentDoc = gql`
   id
   name
   slug
+}
+    `;
+export const FileUploadErrorFragmentDoc = gql`
+    fragment FileUploadErrorFragment on UploadError {
+  code
+  message
+  field
 }
     `;
 export const MetadataErrorFragmentDoc = gql`
@@ -21453,6 +21469,23 @@ export const CheckoutDocument = gql`
 
 export function useCheckoutQuery(options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, 'query'>) {
   return Urql.useQuery<CheckoutQuery>({ query: CheckoutDocument, ...options });
+};
+export const FileUploadDocument = gql`
+    mutation FileUpload($file: Upload!) {
+  fileUpload(file: $file) {
+    uploadedFile {
+      url
+      contentType
+    }
+    errors {
+      ...FileUploadErrorFragment
+    }
+  }
+}
+    ${FileUploadErrorFragmentDoc}`;
+
+export function useFileUploadMutation() {
+  return Urql.useMutation<FileUploadMutation, FileUploadMutationVariables>(FileUploadDocument);
 };
 export const PublicMetafieldsDocument = gql`
     query PublicMetafields($id: ID!, $keys: [String!]) {

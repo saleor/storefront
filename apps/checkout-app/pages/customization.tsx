@@ -1,7 +1,11 @@
 import { useRouter } from "next/router";
 import CustomizationDetails from "@/checkout-app/frontend/components/templates/CustomizationDetails";
-import { CustomizationSettingsValues } from "types/api";
 import {
+  CustomizationSettingsFiles,
+  CustomizationSettingsValues,
+} from "types/api";
+import {
+  useFileUploadMutation,
   usePublicMetafieldsQuery,
   useUpdatePublicMetadataMutation,
 } from "@/checkout-app/graphql";
@@ -15,6 +19,8 @@ import {
 } from "@/checkout-app/frontend/misc/mapPublicSettingsToMetadata";
 import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
 import { PublicMetafieldID } from "@/checkout-app/types/common";
+import { reduce } from "lodash-es";
+import { uploadSettingsFiles } from "@/checkout-app/frontend/handlers";
 
 const Customization = () => {
   const router = useRouter();
@@ -31,6 +37,7 @@ const Customization = () => {
   });
   const [metadataMutation, setPublicMetadata] =
     useUpdatePublicMetadataMutation();
+  const [uploadFileState, uploadFile] = useFileUploadMutation();
 
   const settingsValues = mapPublicMetafieldsToSettings(
     metafieldsQuery.data?.app?.metafields || {}
@@ -48,20 +55,23 @@ const Customization = () => {
     router.back();
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     data: CustomizationSettingsValues,
+    dataFiles?: CustomizationSettingsFiles,
     checkoutUrl?: string
   ) => {
+    const newData = await uploadSettingsFiles({ data, dataFiles, uploadFile });
+
     const metadata = [
       ...mapPublicSettingsToMetadata({
-        customizations: data,
+        customizations: newData,
       }),
       ...mapPublicMetafieldsToMetadata({
         customizationsCheckoutUrl: checkoutUrl,
       }),
     ];
 
-    setPublicMetadata({
+    await setPublicMetadata({
       id: appId || serverEnvVars.appId,
       input: metadata,
     });
@@ -76,7 +86,11 @@ const Customization = () => {
     <CustomizationDetails
       options={customizationSettings}
       checkoutUrl={checkoutUrl}
-      loading={metafieldsQuery.fetching || metadataMutation.fetching}
+      loading={
+        metafieldsQuery.fetching ||
+        metadataMutation.fetching ||
+        uploadFileState.fetching
+      }
       saveButtonBarState="default"
       errors={errors}
       onCancel={handleCancel}

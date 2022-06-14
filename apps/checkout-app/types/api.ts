@@ -53,6 +53,11 @@ export type CustomizationSettingsValues = {
     [K in CustomizationSettingID<P>]: string;
   };
 };
+export type CustomizationSettingsFiles = {
+  [P in CustomizationID]?: {
+    [K in CustomizationSettingID<P>]?: File;
+  };
+};
 export type UnknownPublicSettingsValues = {
   [P in string]: {
     [K in string]: string;

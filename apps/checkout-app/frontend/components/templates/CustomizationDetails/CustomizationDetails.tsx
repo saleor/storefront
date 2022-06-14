@@ -17,8 +17,12 @@ import {
   Customization,
   CustomizationID,
   PublicMetafieldID,
+  CustomizationSettingID,
 } from "types/common";
-import { CustomizationSettingsValues } from "types/api";
+import {
+  CustomizationSettingsFiles,
+  CustomizationSettingsValues,
+} from "types/api";
 import { useStyles } from "./styles";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useForm, Controller } from "react-hook-form";
@@ -45,7 +49,11 @@ interface CustomizationDetailsProps {
   saveButtonBarState: ConfirmButtonTransitionState;
   errors?: Partial<MetadataErrorFragment>[];
   onCancel: () => void;
-  onSubmit: (data: CustomizationSettingsValues, checkoutUrl?: string) => void;
+  onSubmit: (
+    data: CustomizationSettingsValues,
+    dataFiles?: CustomizationSettingsFiles,
+    checkoutUrl?: string
+  ) => Promise<void>;
 }
 
 const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
@@ -65,19 +73,38 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
     formState,
     watch,
   } = useForm();
+  const [files, setFiles] = useState<CustomizationSettingsFiles>();
 
   const previewSettings = useSettingsFromValues(options, watch);
   const [previewUrl, setPreviewUrl] = useState(checkoutUrl);
 
-  const handleSubmit = (flattenedValues: Record<string, string>) => {
-    onSubmit(
+  const handleFileChange = <T extends CustomizationID>(
+    optionId: T,
+    settingId: CustomizationSettingID<T>,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const inputFiles = event.target.files;
+    if (!!inputFiles?.length) {
+      setFiles({
+        ...files,
+        [optionId]: {
+          [settingId]: inputFiles[0],
+        },
+      });
+    }
+  };
+
+  const handleSubmit = async (flattenedValues: Record<string, string>) => {
+    await onSubmit(
       unflattenSettings(
         "customizations",
         flattenedValues,
         options
       ) as CustomizationSettingsValues,
+      files,
       unflattenValue("customizationsCheckoutUrl", flattenedValues)
     );
+    setFiles(undefined);
   };
 
   return (
@@ -118,8 +145,11 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                               name={field.name}
                               type={type}
                               label={label}
-                              value={field.value}
+                              value={type === "image" ? value : field.value}
                               onChange={field.onChange}
+                              onFileChange={(event) =>
+                                handleFileChange(option.id, id, event)
+                              }
                               onBlur={field.onBlur}
                             />
                           )}

@@ -1,12 +1,12 @@
 import { envVars } from "@/checkout-app/constants";
 import { authExchange } from "@urql/exchange-auth";
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import {
   createClient,
   makeOperation,
   cacheExchange,
   ClientOptions,
   dedupExchange,
-  fetchExchange,
   Operation,
 } from "urql";
 import { app } from "./app";
@@ -68,7 +68,7 @@ const authConfig: ClientOptions = {
       willAuthError,
       addAuthToOperation,
     }),
-    fetchExchange,
+    multipartFetchExchange,
   ],
 };
 

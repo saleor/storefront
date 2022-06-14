@@ -6,7 +6,7 @@ export const getParsedCssBody = (brandingColors: BrandingColors) => {
   const bodyCSS = reduce(
     brandingColors,
     (cssString, hexColor, varName) => {
-      if (!hexColor) {
+      if (!hexColor || !/^#[0-9A-F]{6}$/i.test(hexColor)) {
         return cssString;
       }
 
