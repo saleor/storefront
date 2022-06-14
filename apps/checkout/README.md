@@ -13,6 +13,7 @@ cp .env.template .env.local
 Fill out each empty env variable in `.env.local` file
 
 > Note: For development environment variables are applied in this order:
+>
 > - `.env`
 > - `.env.local`
 
@@ -92,19 +93,22 @@ By default those environment variables values are taken from `.env` file in root
 
 Checkout uses the following environment variables:
 
-- `REACT_APP_CHECKOUT_API_URL` — URL of the deployed [Checkout App](../checkout-app/README.md) API endpoint
+- `REACT_APP_CHECKOUT_APP_URL` — URL of the deployed [Checkout App](../checkout-app/README.md)
 
 > Example:
+>
 > ```
-> REACT_APP_CHECKOUT_API_URL=https://saleor-checkout-app.vercel.app/api
+> REACT_APP_CHECKOUT_APP_URL=https://saleor-checkout-app.vercel.app
 > ```
 
 - `REACT_APP_SALEOR_API_URL` — URL of Saleor GraphQL API endpoint
 
 > **PROTIP 💡**: If you need Saleor instance for tesitng, create one using [Saleor CLI](https://github.com/saleor/saleor-cli):
+>
 > ```bash
 > npx saleor project create && npx saleor environment create
 > ```
+>
 > This will create new Saleor sandbox in [Saleor Cloud](https://cloud.saleor.io/)
-> 
-> ⚠️  You need to use the same Saleor instance in `checkout-app`. Make sure you have the same value of `NEXT_PUBLIC_SALEOR_API_URL` variable in `apps/checkout-app/.env.local`
+>
+> ⚠️ You need to use the same Saleor instance in `checkout-app`. Make sure you have the same value of `NEXT_PUBLIC_SALEOR_API_URL` variable in `apps/checkout-app/.env.local`

@@ -7,32 +7,23 @@
         "$SALEOR_API_URL",
         "$CHECKOUT_API_URL",
         "$REACT_APP_SALEOR_API_URL",
-        "$REACT_APP_CHECKOUT_API_URL",
+        "$REACT_APP_CHECKOUT_APP_URL",
         "$SALEOR_APP_TOKEN",
         "$NEXT_PUBLIC_SALEOR_API_URL",
         "$SETTINGS_ENCRYPTION_SECRET"
       ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "build/**"
-      ]
+      "outputs": ["dist/**", ".next/**", "build/**"]
     },
     "lint": {
       "outputs": []
     },
     "check-types": {
-      "dependsOn": [
-        "@saleor/ui-kit#build"
-      ]
+      "dependsOn": ["@saleor/ui-kit#build"]
     },
     "test": {},
     "dev": {
       "cache": false
     }
   },
-  "globalDependencies": [
-    ".env",
-    ".env.local"
-  ]
+  "globalDependencies": [".env", ".env.local"]
 }

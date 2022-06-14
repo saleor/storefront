@@ -22,6 +22,7 @@ Here's the list of each app and shared package in the monorepo (click to see a R
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
 
 ### Install dependencies
+
 ```
 pnpm i
 ```
@@ -53,6 +54,7 @@ cd apps/checkout-app && npx saleor app tunnel 3000
 > Note: the process needs to be running in the background
 
 Before you start the server, you need to change default environment variables. Create `.env.local` file in each app:
+
 - [`apps/checkout-app`](./apps/checkout-app/README.md#env-variables)
 - [`apps/checkout`](./apps/checkout/README.md#local-development)
 
@@ -73,25 +75,32 @@ cd apps/checkout && pnpm dev
 ### Env variables
 
 Change environment variables inside `.env` file:
-  - `SALEOR_API_URL` — GraphQL endpoint of your Saleor
 
-    Example:
+- `SALEOR_API_URL` — GraphQL endpoint of your Saleor
 
-    ```
-    https://my-env.eu.saleor.cloud/graphql/
-    ```
-    > To run sandbox Saleor environment in [Saleor Cloud](https://cloud.saleor.io/) use this command:
-    > ```bash
-    > npx saleor project create && npx saleor environment create
-    > ```
-    > You can also run Saleor locally. See [Saleor docs](https://docs.saleor.io/docs/3.x/developer/installation) for more instructions
-  - `CHECKOUT_API_URL` — API endpoint of deployed Checkout App
+  Example:
 
-    Example:
-    ```
-    https://saleor-checkout-app.vercel.app/api
-    ```
-    > See [guide below](#checkout-app) on how to deploy the Checkout App
+  ```
+  https://my-env.eu.saleor.cloud/graphql/
+  ```
+
+  > To run sandbox Saleor environment in [Saleor Cloud](https://cloud.saleor.io/) use this command:
+  >
+  > ```bash
+  > npx saleor project create && npx saleor environment create
+  > ```
+  >
+  > You can also run Saleor locally. See [Saleor docs](https://docs.saleor.io/docs/3.x/developer/installation) for more instructions
+
+- `CHECKOUT_APP_URL` — URL of deployed Checkout App
+
+  Example:
+
+  ```
+  https://saleor-checkout-app.vercel.app
+  ```
+
+  > See [guide below](#checkout-app) on how to deploy the Checkout App
 
 There are more environment variables available in each app. Go to their README's to learn more
 
@@ -113,7 +122,6 @@ pnpm dlx turbo link
 
 > Remote Caching drastically reduces build times if you work in a team. Learn more about it at [Turborepo documentation](https://turborepo.org/docs/core-concepts/remote-caching) and [Vercel documentation](https://vercel.com/docs/concepts/monorepos/remote-caching)
 
-
 #### Checkout App
 
 1. Start [creating new project](https://vercel.com/docs/concepts/projects/overview#creating-a-project) on Vercel and select your forked GitHub repo
@@ -123,19 +131,19 @@ pnpm dlx turbo link
 ![Create project on Vercel by selecting your cloned GitHub repository in the menu](./docs/setup-vercel-1.png)
 
 2. From the configuration page:
-  - Provide your project name (for example `saleor-checkout-app`)
-  - Select framework to Next.js
-  - Choose the root directory to be `apps/checkout-app`
-  - Override the build command to:
+
+- Provide your project name (for example `saleor-checkout-app`)
+- Select framework to Next.js
+- Choose the root directory to be `apps/checkout-app`
+- Override the build command to:
 
 ```bash
 cd ../.. && pnpm run build:checkout-app
 ```
 
-  - Add environment variables:
-    - `SETTINGS_ENCRYPTION_SECRET` — Random string used for encrypting apps configuration (you can generate it using `openssl rand -hex 256`)
-    - *Optional*: `NEXT_PUBLIC_SALEOR_API_URL` — if you want to override the value of `SALEOR_API_URL` stored inside `.env` file in the root of the repository
-
+- Add environment variables:
+  - `SETTINGS_ENCRYPTION_SECRET` — Random string used for encrypting apps configuration (you can generate it using `openssl rand -hex 256`)
+  - _Optional_: `NEXT_PUBLIC_SALEOR_API_URL` — if you want to override the value of `SALEOR_API_URL` stored inside `.env` file in the root of the repository
 
 Here's the final result on configuration page:
 
@@ -145,12 +153,12 @@ Click deploy and wait until the app is deployed
 
 3. Update environment variables in repository
 
-Update `CHECKOUT_API_URL` in `.env` file located at the root of monorepo to be your deployment URL + `/api`
+Update `CHECKOUT_APP_URL` in `.env` file located at the root of monorepo to be your deployment URL
 
 Example:
 
 ```
-https://saleor-checkout-app.vercel.app/api
+https://saleor-checkout-app.vercel.app
 ```
 
 4. Install the app in Saleor
@@ -158,6 +166,7 @@ https://saleor-checkout-app.vercel.app/api
 Grab the deployed app URL from Vercel and add `/api/manifest`. This URL points to the manifest file that is required for installing the app in Saleor
 
 > Example manifest URL:
+>
 > ```
 > https://saleor-checkout-xyz-myusername.vercel.app/api/manifest
 > ```
@@ -180,15 +189,19 @@ saleor app install
 - [Saleor GraphQL API](https://docs.saleor.io/docs/3.x/developer/extending/apps/installing-apps#installation-using-graphql-api)
 
 > **PROTIP 💡**: If you want your app to automatically update whenever you push changes to the `main` branch, make sure to use **production** domain from Vercel (not deployment domain) for your manifest URL.
-> 
+>
 > ❌ Deployment domain (won't update app after push):
+>
 > ```
 > https://saleor-checkout-app-jluy793b2-myusername.vercel.app/api/manifest
 > ```
+>
 > ✅ Production domain:
+>
 > ```
 > https://saleor-checkout-app.vercel.app/api/manifest
 > ```
+>
 > To see which domain is used for production go to [Vercel Dashboard](https://vercel.com) > Settings > Domains:
 > ![Vercel dashboard settings page that shows which domain is connected to production deployment](./docs/setup-vercel-domain.png)
 
@@ -206,7 +219,7 @@ saleor app token
 
 ```graphql
 mutation {
-  appTokenCreate(input: {name: "Vercel", app: "<MY_APP_ID>"}) {
+  appTokenCreate(input: { name: "Vercel", app: "<MY_APP_ID>" }) {
     authToken
   }
 }
@@ -228,6 +241,7 @@ query {
 ```
 
 outputs this:
+
 ```jsonc
 {
   "data": {
@@ -241,13 +255,14 @@ outputs this:
         }
       ]
     }
-  },
+  }
 }
 ```
 
 6. Update environment variables in Vercel
 
 You have to add additional environment variables for Checkout App in Vercel:
+
 - `SALEOR_APP_ID` — ID of the app
 - `SALEOR_APP_TOKEN` — Token you've just generated
 
@@ -260,7 +275,7 @@ Here's how the configuration should look like in the end:
 
 After you're done, re-deploy the app
 
-> ⚠️  Make sure that you **didn't** select the "Redeploy with existing Build Cache."  option
+> ⚠️ Make sure that you **didn't** select the "Redeploy with existing Build Cache." option
 
 7. 🥳 Congrats! Payment app is now ready to be used!
 
@@ -269,18 +284,19 @@ After you're done, re-deploy the app
 1. Start by creating another project on Vercel, just like we did in [Checkout App setup](#checkout-app), select the same repository
 
 2. On the configuration page:
-  - Provide your project name (for example `saleor-checkout`)
-  - Select framework to Create React App
-  - Choose the root directory to be `apps/checkout`
-  - Override the build command to:
+
+- Provide your project name (for example `saleor-checkout`)
+- Select framework to Create React App
+- Choose the root directory to be `apps/checkout`
+- Override the build command to:
 
 ```bash
 cd ../.. && pnpm run build:checkout
 ```
 
-  - *Optional*: customise [environment variables](./apps/checkout/README.md#env-variables):
-    - `REACT_APP_CHECKOUT_API_URL` — URL of the deployed [Checkout App](#checkout-app) API root.
-    - `REACT_APP_SALEOR_API_URL` — URL of Saleor GraphQL API endpoint
+- _Optional_: customise [environment variables](./apps/checkout/README.md#env-variables):
+  - `REACT_APP_CHECKOUT_APP_URL` — URL of the deployed [Checkout App](#checkout-app).
+  - `REACT_APP_SALEOR_API_URL` — URL of Saleor GraphQL API endpoint
 
 > By default, those environment variables are taken from [`.env`](./.env) file in root of the monorepo. You don't need to provide env variables in Vercel if you want to use the values from `.env` file.
 
@@ -322,8 +338,9 @@ To use payment gateway, you need to provide its credentials. You can do that by 
 1. [Sign up for Mollie account](https://www.mollie.com/dashboard/signup?lang=en)
 
 2. In your Mollie dashboard, select: Developers > API keys and copy **API key** and **Profile ID**
-  - **Live API key** - for production environment
-  - **Test API key** - for development environment
+
+- **Live API key** - for production environment
+- **Test API key** - for development environment
 
 3. In Checkout app configuration, enter the data you've just copied
 
@@ -375,10 +392,10 @@ Fill out the webhook details:
 <YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen
 ```
 
-  - Other settings should be set to default:
-    - **Method**: JSON
-    - **SSL version**: TLSv1.2
-    - **Service version** - 1
+- Other settings should be set to default:
+  - **Method**: JSON
+  - **SSL version**: TLSv1.2
+  - **Service version** - 1
 
 ![Webhook Server configuration config](./docs/setup-adyen-webhook-1.png)
 
@@ -427,4 +444,3 @@ If the response failed because of invalid configuration in Adyen, Checkout App w
 ![Enabling the webhook in Adyen](./docs/setup-adyen-webhook-6.png)
 
 12. 🥳 Congrats! You've finished configuration of Adyen payment gateway
-
