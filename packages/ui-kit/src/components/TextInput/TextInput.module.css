@@ -4,7 +4,7 @@
 
 :local(.text-input-label) {
   transition: all 0.2s ease-out;
-  @apply absolute top-4 left-0 text-text-secondary text-base ml-3;
+  @apply absolute top-4 left-0 text-text-secondary text-base ml-3 pointer-events-none;
 }
 
 :local .text-input-container:focus-within .text-input-label,
