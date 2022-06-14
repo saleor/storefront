@@ -20670,7 +20670,16 @@ export type CheckoutFragment = {
           gross: { __typename?: "Money"; currency: string; amount: number };
         } | null;
       } | null;
-      product: { __typename?: "Product"; name: string };
+      product: {
+        __typename?: "Product";
+        name: string;
+        media?: Array<{
+          __typename?: "ProductMedia";
+          alt: string;
+          type: ProductMediaType;
+          url: string;
+        }> | null;
+      };
       media?: Array<{
         __typename?: "ProductMedia";
         alt: string;
@@ -20705,7 +20714,16 @@ export type CheckoutLineFragment = {
         gross: { __typename?: "Money"; currency: string; amount: number };
       } | null;
     } | null;
-    product: { __typename?: "Product"; name: string };
+    product: {
+      __typename?: "Product";
+      name: string;
+      media?: Array<{
+        __typename?: "ProductMedia";
+        alt: string;
+        type: ProductMediaType;
+        url: string;
+      }> | null;
+    };
     media?: Array<{
       __typename?: "ProductMedia";
       alt: string;
@@ -20827,7 +20845,16 @@ export type CheckoutQuery = {
             gross: { __typename?: "Money"; currency: string; amount: number };
           } | null;
         } | null;
-        product: { __typename?: "Product"; name: string };
+        product: {
+          __typename?: "Product";
+          name: string;
+          media?: Array<{
+            __typename?: "ProductMedia";
+            alt: string;
+            type: ProductMediaType;
+            url: string;
+          }> | null;
+        };
         media?: Array<{
           __typename?: "ProductMedia";
           alt: string;
@@ -20908,7 +20935,16 @@ export type CheckoutLinesUpdateMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -20963,7 +20999,16 @@ export type CheckoutLineDeleteMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -21089,7 +21134,16 @@ export type CheckoutEmailUpdateMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -21214,7 +21268,16 @@ export type CheckoutCustomerAttachMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -21339,7 +21402,16 @@ export type CheckoutCustomerDetachMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -21563,7 +21635,16 @@ export type CheckoutShippingAddressUpdateMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -21689,7 +21770,16 @@ export type CheckoutBillingAddressUpdateMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -21815,7 +21905,16 @@ export type CheckoutDeliveryMethodUpdateMutation = {
               gross: { __typename?: "Money"; currency: string; amount: number };
             } | null;
           } | null;
-          product: { __typename?: "Product"; name: string };
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -22120,6 +22219,11 @@ export const CheckoutLineFragmentDoc = gql`
       name
       product {
         name
+        media {
+          alt
+          type
+          url(size: 72)
+        }
       }
       media {
         alt

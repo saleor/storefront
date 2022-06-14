@@ -127,6 +127,11 @@ fragment CheckoutLineFragment on CheckoutLine {
     name
     product {
       name
+      media {
+        alt
+        type
+        url(size: 72)
+      }
     }
     media {
       alt
