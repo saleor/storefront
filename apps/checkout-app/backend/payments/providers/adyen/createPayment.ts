@@ -32,7 +32,7 @@ export const createAdyenPayment = async (
 
   const total = data.total.gross;
 
-  const { url } = await checkout.paymentLinks({
+  const { url, id } = await checkout.paymentLinks({
     amount: {
       currency: total.currency,
       value: getAdyenAmountFromSaleor(total.amount),
@@ -77,5 +77,5 @@ export const createAdyenPayment = async (
       : undefined,
   });
 
-  return url;
+  return { url, id };
 };

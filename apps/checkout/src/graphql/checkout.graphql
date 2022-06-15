@@ -40,8 +40,7 @@ fragment CheckoutFragment on Checkout {
     id
     name
     price {
-      amount
-      currency
+      ...Money
     }
   }
   totalPrice {
@@ -65,16 +64,14 @@ fragment CheckoutFragment on Checkout {
     id
     name
     price {
-      amount
-      currency
+      ...Money
     }
     maximumDeliveryDays
     minimumDeliveryDays
   }
   totalPrice {
     gross {
-      amount
-      currency
+      ...Money
     }
     tax {
       currency
@@ -83,14 +80,12 @@ fragment CheckoutFragment on Checkout {
   }
   shippingPrice {
     gross {
-      amount
-      currency
+      ...Money
     }
   }
   subtotalPrice {
     gross {
-      amount
-      currency
+      ...Money
     }
   }
   lines {
@@ -107,22 +102,18 @@ fragment CheckoutLineFragment on CheckoutLine {
       amount
     }
   }
+  unitPrice {
+    gross {
+      ...Money
+    }
+  }
+  undiscountedUnitPrice {
+    ...Money
+  }
   variant {
     id
     pricing {
       onSale
-      price {
-        gross {
-          currency
-          amount
-        }
-      }
-      priceUndiscounted {
-        gross {
-          currency
-          amount
-        }
-      }
     }
     name
     product {

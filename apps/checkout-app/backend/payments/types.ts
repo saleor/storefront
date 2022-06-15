@@ -5,7 +5,8 @@ type InternalErrorCodes =
   | "TOTAL_AMOUNT_MISMATCH"
   | "UNKNOWN_PROVIDER"
   | "MISSING_CHECKOUT_OR_ORDER_ID"
-  | "ORDER_DOES_NOT_EXIST";
+  | "ORDER_DOES_NOT_EXIST"
+  | "ALREADY_PAID";
 
 export type ErrorCode = InternalErrorCodes | OrderCreateFromCheckoutErrorCode;
 

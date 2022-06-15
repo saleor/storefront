@@ -51,17 +51,17 @@ export const createMolliePayment = async ({
     },
     shippingAddress: order.shippingAddress
       ? {
-        city: order.shippingAddress.city,
-        country: order.shippingAddress.country.code,
-        email: order.userEmail!,
-        givenName: order.shippingAddress.firstName,
-        familyName: order.shippingAddress.lastName,
-        postalCode: order.shippingAddress.postalCode,
-        streetAndNumber: order.shippingAddress.streetAddress1,
-        organizationName: order.shippingAddress.companyName,
-      }
+          city: order.shippingAddress.city,
+          country: order.shippingAddress.country.code,
+          email: order.userEmail!,
+          givenName: order.shippingAddress.firstName,
+          familyName: order.shippingAddress.lastName,
+          postalCode: order.shippingAddress.postalCode,
+          streetAndNumber: order.shippingAddress.streetAddress1,
+          organizationName: order.shippingAddress.companyName,
+        }
       : undefined,
   });
 
-  return mollieData._links.checkout;
+  return { url: mollieData._links.checkout?.href, id: mollieData.id };
 };

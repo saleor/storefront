@@ -1,8 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { Types as AdyenTypes } from "@adyen/api-library";
+import { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
 
 import { createMolliePayment } from "@/checkout-app/backend/payments/providers/mollie";
 import { createOrder } from "@/checkout-app/backend/payments/createOrder";
-import { PaymentProviderID } from "@/checkout-app/types/common";
+import {
+  OrderPaymentMetafield,
+  PaymentProviderID,
+} from "@/checkout-app/types/common";
 import { createAdyenPayment } from "@/checkout-app/backend/payments/providers/adyen";
 import { OrderFragment } from "@/checkout-app/graphql";
 import { getOrderDetails } from "@/checkout-app/backend/payments/getOrderDetails";
@@ -12,8 +17,81 @@ import {
   PayRequestErrorResponse,
 } from "@/checkout-app/types/api/pay";
 import { allowCors, getBaseUrl } from "@/checkout-app/backend/utils";
+import { updatePaymentMetafield } from "@/checkout-app/backend/payments/updatePaymentMetafield";
+import { verifyMollieSession } from "@/checkout-app/backend/payments/providers/mollie/verifySession";
+import { verifyAdyenSession } from "@/checkout-app/backend/payments/providers/adyen/verifySession";
 
 const paymentProviders: PaymentProviderID[] = ["mollie", "adyen"];
+
+const reuseExistingSession = async ({
+  orderId,
+  provider,
+  privateMetafield,
+}: {
+  orderId: string;
+  provider: PaymentProviderID;
+  privateMetafield: string;
+}): Promise<PayRequestResponse | undefined> => {
+  const payment: OrderPaymentMetafield = JSON.parse(privateMetafield);
+
+  if (payment.provider === provider && payment.session) {
+    if (payment.provider === "mollie") {
+      const session = await verifyMollieSession(payment.session);
+
+      if (session.status === MollieOrderStatus.created && session.url) {
+        return {
+          ok: true,
+          provider: payment.provider,
+          orderId,
+          data: {
+            paymentUrl: session.url,
+          },
+        };
+      } else if (
+        [
+          MollieOrderStatus.authorized,
+          MollieOrderStatus.completed,
+          MollieOrderStatus.paid,
+          MollieOrderStatus.pending,
+          MollieOrderStatus.shipping,
+        ].includes(session.status)
+      ) {
+        return {
+          ok: false,
+          provider: payment.provider,
+          orderId,
+          errors: ["ALREADY_PAID"],
+        };
+      }
+    } else if (payment.provider === "adyen") {
+      const session = await verifyAdyenSession(payment.session);
+      const StatusEnum = AdyenTypes.checkout.PaymentLinkResource.StatusEnum;
+
+      if (session.status === StatusEnum.Active) {
+        return {
+          ok: true,
+          provider: payment.provider,
+          orderId,
+          data: {
+            paymentUrl: session.url,
+          },
+        };
+      } else if (
+        // Session was successfully completed but Saleor has not yet registered the payment
+        [StatusEnum.Completed, StatusEnum.PaymentPending].includes(
+          session.status
+        )
+      ) {
+        return {
+          ok: false,
+          provider: payment.provider,
+          orderId,
+          errors: ["ALREADY_PAID"],
+        };
+      }
+    }
+  }
+};
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -63,11 +141,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     } as PayRequestErrorResponse);
   }
 
+  if (order.privateMetafield) {
+    const existingSessionResponse = await reuseExistingSession({
+      orderId: order.id,
+      privateMetafield: order.privateMetafield,
+      provider: body.provider,
+    });
+
+    if (existingSessionResponse) {
+      return res.status(200).json(existingSessionResponse);
+    }
+  }
+
   let response: PayRequestResponse;
 
   if (body.provider === "mollie") {
     const appUrl = getBaseUrl(req);
-    const url = await createMolliePayment({
+    const { url, id } = await createMolliePayment({
       order,
       redirectUrl: body.redirectUrl,
       appUrl,
@@ -79,24 +169,38 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         provider: "mollie",
         orderId: order.id,
         data: {
-          paymentUrl: url.href,
+          paymentUrl: url,
         },
       };
+
+      const payment: OrderPaymentMetafield = {
+        provider: body.provider,
+        session: id,
+      };
+
+      await updatePaymentMetafield(order.id, payment);
 
       return res.status(200).json(response);
     }
   } else if (body.provider === "adyen") {
-    const paymentUrl = await createAdyenPayment(order, body.redirectUrl);
+    const { url, id } = await createAdyenPayment(order, body.redirectUrl);
 
-    if (paymentUrl) {
+    if (url) {
       response = {
         ok: true,
         provider: "adyen",
         orderId: order.id,
         data: {
-          paymentUrl,
+          paymentUrl: url,
         },
       };
+
+      const payment: OrderPaymentMetafield = {
+        provider: body.provider,
+        session: id,
+      };
+
+      await updatePaymentMetafield(order.id, payment);
 
       return res.status(200).json(response);
     }

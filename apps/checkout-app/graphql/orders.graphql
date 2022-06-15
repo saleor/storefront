@@ -87,6 +87,7 @@ fragment Order on Order {
   }
   shippingTaxRate
   shippingMethodName
+  privateMetafield(key: "payment")
   lines {
     ...OrderLine
   }
@@ -107,6 +108,24 @@ mutation OrderCreate($id: ID!) {
 query OrderDetails($id: ID!) {
   order(id: $id) {
     ...Order
+  }
+}
+
+query OrderPaymentDetails($id: ID!) {
+  order(id: $id) {
+    authorizeStatus
+    chargeStatus
+    isPaid
+    status
+    privateMetafield(key: "payment")
+  }
+}
+
+mutation OrderUpdatePaymentMetafield($orderId: ID!, $data: String!) {
+  updatePrivateMetadata(id: $orderId, input: { key: "payment", value: $data }) {
+    errors {
+      code
+    }
   }
 }
 

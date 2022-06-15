@@ -111,3 +111,8 @@ export interface Item {
   label: string;
   logo?: IconComponent;
 }
+
+export type OrderPaymentMetafield = {
+  session: string;
+  provider: PaymentProviderID;
+};

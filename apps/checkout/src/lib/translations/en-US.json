@@ -90,6 +90,9 @@
   "shippingDeliveryEstimate": "{deliveryDaysRange} business days",
   "unpaidOrderMessage": "The order has not been paid for. If you ordered a payment - check for the confirmation.",
   "paidOrderMessage": "We've received your payment.",
+  "pendingPaymentOrderMessage": "Your payment is being processed.",
+  "missingPaymentStatusOrderMessage": "We could not fetch information about your payment. If you ordered a payment - check for the confirmation and contact the store.",
   "paymentSection": "Payment",
-  "shippingMethodNotApplicable": "Not applicable"
+  "shippingMethodNotApplicable": "Not applicable",
+  "orderPayButtonLabel": "Pay for the order"
 }

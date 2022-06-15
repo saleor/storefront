@@ -23,6 +23,8 @@ export const SummaryItemMoneyEditableSection: React.FC<
   LineItemQuantitySelectorProps
 > = ({ line }) => {
   const {
+    unitPrice,
+    undiscountedUnitPrice,
     variant: { id: variantId, pricing },
   } = line;
 
@@ -63,7 +65,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
     debouncedSubmit(quantity);
   }, [quantity, debouncedSubmit]);
 
-  const piecePrice = pricing?.price?.gross;
+  const piecePrice = unitPrice.gross;
   const formatMessage = useFormattedMessages();
   const formattedPiecePrice = useFormattedMoney(piecePrice);
 
@@ -97,9 +99,8 @@ export const SummaryItemMoneyEditableSection: React.FC<
           <Money
             ariaLabel={formatMessage("undiscountedPriceLabel")}
             money={{
-              currency: pricing?.priceUndiscounted?.gross.currency as string,
-              amount:
-                (pricing?.priceUndiscounted?.gross.amount || 0) * quantity,
+              currency: undiscountedUnitPrice.currency,
+              amount: undiscountedUnitPrice.amount * quantity,
             }}
             className="line-through mr-1"
           />

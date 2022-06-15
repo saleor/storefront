@@ -1,55 +1,64 @@
 import { Button, Text } from "@saleor/ui-kit";
 
-import {
-  OrderAuthorizeStatusEnum,
-  OrderChargeStatusEnum,
-  PaymentChargeStatusEnum,
-} from "@/checkout/graphql";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { usePay } from "@/checkout/hooks/usePay";
+import { useFetch } from "@/checkout/hooks/useFetch";
+import { getOrderPaymentStatus } from "@/checkout/fetch";
+import { Skeleton } from "@/checkout/components/Skeleton";
 
 import { Section, SectionTitle } from "./Section";
 
-export const PaymentSection = ({
-  orderId,
-  isPaid,
-  chargeStatus,
-  authorizeStatus,
-}: {
-  orderId: string;
-  isPaid: boolean;
-  paymentStatus: PaymentChargeStatusEnum;
-  chargeStatus: OrderChargeStatusEnum;
-  authorizeStatus: OrderAuthorizeStatusEnum;
-}) => {
-  const { loading, orderPay } = usePay();
+export const PaymentSection = ({ orderId }: { orderId: string }) => {
+  const { loading: orderPayLoading, orderPay } = usePay();
+  const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(
+    getOrderPaymentStatus,
+    { args: { orderId } }
+  );
   const formatMessage = useFormattedMessages();
 
   const handlePay = () => {
     orderPay({
-      provider: "adyen",
+      provider: "mollie", // TODO: Hardcoded payment provider
       orderId,
     });
   };
 
   const renderPaymentDetails = () => {
-    if (isPaid || chargeStatus === "FULL" || authorizeStatus === "FULL") {
+    if (paymentStatusLoading) {
+      return <Skeleton className="w-1/2" />;
+    }
+
+    if (paymentData?.status === "PAID") {
       return <Text color="success">{formatMessage("paidOrderMessage")}</Text>;
     }
 
-    return (
-      <div>
-        <Text color="error">{formatMessage("unpaidOrderMessage")}</Text>
-        <Button
-          className="mt-2"
-          label="Pay for the order"
-          onClick={handlePay}
-          disabled={loading}
-        />
-      </div>
-    );
+    if (paymentData?.status === "PENDING") {
+      return (
+        <Text color="success">
+          {formatMessage("pendingPaymentOrderMessage")}
+        </Text>
+      );
+    }
 
-    // TODO: Add support for partial payments
+    if (paymentData?.status === "UNPAID") {
+      return (
+        <div>
+          <Text color="error">{formatMessage("unpaidOrderMessage")}</Text>
+          <Button
+            className="mt-2"
+            label={formatMessage("orderPayButtonLabel")}
+            onClick={handlePay}
+            disabled={orderPayLoading}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <Text color="error">
+        {formatMessage("missingPaymentStatusOrderMessage")}
+      </Text>
+    );
   };
 
   return (
