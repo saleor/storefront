@@ -36,3 +36,7 @@ yarn-error.log*
 
 # localcache
 .eslintcache
+
+#cypress
+cypress/screenshots
+cypress/videos
