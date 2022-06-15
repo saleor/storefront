@@ -7,7 +7,7 @@ Saleor checkout is a [CRA](https://create-react-app.dev/) for connecting Saleor 
 First, setup necessary [environment variables](#env-variables):
 
 ```
-cp .env.template .env.local
+cp .env .env.local
 ```
 
 Fill out each empty env variable in `.env.local` file
