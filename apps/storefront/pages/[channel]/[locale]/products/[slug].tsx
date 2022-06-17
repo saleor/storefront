@@ -18,7 +18,7 @@ import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
-import { contextToRegionQuery, DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
+import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import {
   CheckoutError,
@@ -61,13 +61,12 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
-  const { currentChannel, formatPrice } = useRegions();
+  const { currentChannel, formatPrice, query } = useRegions();
 
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
 
   const [createCheckout] = useCreateCheckoutMutation();
   const { user } = useAuthState();
-  const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
@@ -99,7 +98,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
         variables: {
           checkoutToken,
           variantId: selectedVariantID,
-          locale: localeToEnum(locale),
+          locale: query.locale,
         },
       });
       addToCartData?.checkoutLinesAdd?.errors.forEach((e) => {
@@ -149,7 +148,8 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
 
   const description = translate(product, "description");
 
-  const price = selectedVariant?.pricing?.price?.gross || product.pricing?.priceRange?.start?.gross;
+  const price = product.pricing?.priceRange?.start?.gross;
+  const shouldDisplayPrice = product.variants?.length === 1 && price;
 
   return (
     <>
@@ -162,12 +162,12 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
         <div className="col-span-2">
           <ProductGallery product={product} selectedVariant={selectedVariant} />
         </div>
-        <div className="space-y-8 mt-10 md:mt-0">
+        <div className="space-y-5 mt-10 md:mt-0">
           <div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-800">
               {translate(product, "name")}
             </h1>
-            {price && (
+            {shouldDisplayPrice && (
               <h2 className="text-xl font-bold tracking-tight text-gray-800">
                 {formatPrice(price)}
               </h2>
@@ -188,8 +188,8 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             type="submit"
             disabled={isAddToCartButtonDisabled}
             className={clsx(
-              "w-full bg-blue-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-md text-white hover:bg-blue-700 focus:outline-none",
-              isAddToCartButtonDisabled && "bg-gray-400 hover:bg-gray-400"
+              "w-full py-3 px-8 flex items-center justify-center text-base bg-action-1 text-white disabled:bg-disabled hover:bg-white  border-2 border-transparent  focus:outline-none",
+              !isAddToCartButtonDisabled && "hover:border-action-1 hover:text-action-1"
             )}
           >
             {loadingAddToCheckout
