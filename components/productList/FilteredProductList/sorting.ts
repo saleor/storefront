@@ -37,7 +37,9 @@ export const parseQuerySort = (query: string | null): UrlSorting | null => {
   if (!query) {
     return null;
   }
-  const [field, direction] = query.split("_");
+  const splitIndex = query.lastIndexOf("_");
+  const field = query.substring(0, splitIndex);
+  const direction = query.substring(splitIndex + 1);
   if (!field || !direction) {
     return null;
   }
