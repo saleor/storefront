@@ -4,6 +4,7 @@ import {
   ValidationErrorCode,
 } from "@/checkout/lib/globalTypes";
 import { ApiErrors } from "@/checkout/providers/ErrorsProvider";
+import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
 import { ValidationError as ValidationErrorObject } from "yup";
@@ -79,7 +80,7 @@ export const useGetFormErrorsFromApiErrors = (): (<TFormData>(
     }
 
     return apiErrors.reduce((result, { field, code }) => {
-      const errorCode = code.toLowerCase() as ValidationErrorCode;
+      const errorCode = camelCase(code) as ValidationErrorCode;
 
       return {
         ...result,

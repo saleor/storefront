@@ -20,7 +20,6 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   title,
   errorScope,
 }) => {
-  const errorProps = useErrors(errorScope);
   const { countryCode } = useCountrySelect();
 
   const handleSave = (address: AddressFormData) =>
@@ -31,7 +30,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
       <AddressForm
         onSave={handleSave}
         defaultValues={getAddressFormDataFromAddress(address)}
-        {...errorProps}
+        errorScope={errorScope}
       />
     </UserAddressSectionContainer>
   );

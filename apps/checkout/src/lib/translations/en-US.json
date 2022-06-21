@@ -94,5 +94,9 @@
   "missingPaymentStatusOrderMessage": "We could not fetch information about your payment. If you ordered a payment - check for the confirmation and contact the store.",
   "paymentSection": "Payment",
   "shippingMethodNotApplicable": "Not applicable",
+  "passwordTooShort": "Provided password is too short. Minimum of 8 characters is required.",
+  "passwordTooSimilar": "Provided password is too similar to last one used.",
+  "passwordTooCommon": "Provided password is too common.",
+  "passwordInvalid": "Invalid password",
   "orderPayButtonLabel": "Pay for the order"
 }

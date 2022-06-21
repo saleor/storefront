@@ -1,5 +1,5 @@
 import { ValidationErrorCode } from "@/checkout/lib/globalTypes";
-import { useFormattedMessages } from "./useFormattedMessages";
+import { useFormattedMessages, MessageKey } from "./useFormattedMessages";
 
 export const useErrorMessages = () => {
   const formatMessage = useFormattedMessages();
@@ -18,7 +18,7 @@ export const useErrorMessages = () => {
         return errorMessages.invalidValue;
 
       default:
-        break;
+        return formatMessage(errorCode as MessageKey);
     }
   };
 

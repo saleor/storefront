@@ -1,7 +1,7 @@
 import { useUserAddressCreateMutation } from "@/checkout/graphql";
 import { extractMutationErrors } from "@/checkout/lib/utils";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
-import { useErrors } from "@/checkout/providers/ErrorsProvider";
+import { ErrorScope, useErrors } from "@/checkout/providers/ErrorsProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
 import { AddressForm } from "./AddressForm";
@@ -14,6 +14,8 @@ export interface AddressCreateFormProps {
   onClose: () => void;
 }
 
+const ERROR_SCOPE: ErrorScope = "userAddressCreate";
+
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   show,
   type,
@@ -23,8 +25,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
 
   const { countryCode } = useCountrySelect();
 
-  const { setApiErrors, ...errorsRest } =
-    useErrors<AddressFormData>("userAddressCreate");
+  const { setApiErrors } = useErrors<AddressFormData>(ERROR_SCOPE);
 
   const handleSubmit = async (address: AddressFormData) => {
     const result = await userAddressCreate({
@@ -50,6 +51,10 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   }
 
   return (
-    <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />
+    <AddressForm
+      onSave={handleSubmit}
+      onCancel={onClose}
+      errorScope={ERROR_SCOPE}
+    />
   );
 };

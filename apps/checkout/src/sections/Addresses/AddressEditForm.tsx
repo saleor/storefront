@@ -1,7 +1,7 @@
 import { useUserAddressUpdateMutation } from "@/checkout/graphql";
 import { extractMutationErrors } from "@/checkout/lib/utils";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
-import { useErrors } from "@/checkout/providers/ErrorsProvider";
+import { ErrorScope, useErrors } from "@/checkout/providers/ErrorsProvider";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
 import { UserAddressFormData } from "./types";
@@ -14,6 +14,8 @@ interface AddressEditFormProps
   show: boolean;
 }
 
+const ERROR_SCOPE: ErrorScope = "userAddressUpdate";
+
 export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
   show,
@@ -24,8 +26,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
   const { countryCode } = useCountrySelect();
 
-  const { setApiErrors, ...errorsRest } =
-    useErrors<UserAddressFormData>("userAddressUpdate");
+  const { setApiErrors } = useErrors<UserAddressFormData>(ERROR_SCOPE);
 
   const handleSubmit = async (address: UserAddressFormData) => {
     const result = await userAddressUpdate({
@@ -56,7 +57,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
       onSave={handleSubmit}
       defaultValues={defaultValues}
       onCancel={onClose}
-      {...errorsRest}
+      errorScope={ERROR_SCOPE}
     />
   );
 };

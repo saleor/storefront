@@ -17,12 +17,11 @@ import {
   useValidationResolver,
 } from "@/checkout/lib/utils";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
-import { UseErrorsProps } from "@/checkout/providers/ErrorsProvider";
-import { forEach } from "lodash-es";
-import { ReactNode, useEffect } from "react";
+import { ErrorScope, useErrors } from "@/checkout/providers/ErrorsProvider";
+import { useSetFormErrors } from "@/checkout/providers/ErrorsProvider/useSetFormErrors";
+import { ReactNode } from "react";
 import {
   DefaultValues,
-  FieldError,
   Path,
   Resolver,
   SubmitHandler,
@@ -37,11 +36,8 @@ import {
   isAddressFieldRow,
 } from "./utils";
 
-export interface AddressFormProps<TFormData extends AddressFormData>
-  extends Pick<
-    UseErrorsProps<TFormData>,
-    "errors" | "hasErrors" | "setErrors" | "clearErrors"
-  > {
+export interface AddressFormProps<TFormData extends AddressFormData> {
+  errorScope: ErrorScope;
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
   onSave: SubmitHandler<TFormData>;
@@ -51,10 +47,9 @@ export const AddressForm = <TFormData extends AddressFormData>({
   defaultValues,
   onCancel,
   onSave,
-  hasErrors,
-  errors,
-  clearErrors: onCleanErrors,
+  errorScope,
 }: AddressFormProps<TFormData>) => {
+  const { clearErrors: clearContextErrors } = useErrors(errorScope);
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { countryCode } = useCountrySelect();
@@ -83,15 +78,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
     defaultValues: defaultValues as DefaultValues<TFormData>,
   });
 
-  useEffect(() => {
-    if (hasErrors) {
-      forEach(errors, (error, key) => {
-        setError(key as Path<TFormData>, {
-          message: (error as unknown as FieldError).message,
-        });
-      });
-    }
-  }, [errors]);
+  useSetFormErrors<TFormData>({ errorScope, setError });
 
   const getInputProps = useGetInputProps({ ...rest, formState });
 
@@ -108,7 +95,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const handleCancel = () => {
     clearErrors();
-    onCleanErrors();
+    clearContextErrors();
 
     if (onCancel) {
       onCancel();
@@ -116,7 +103,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   };
 
   const handleSave = (address: UnpackNestedValue<TFormData>) => {
-    onCleanErrors();
+    clearContextErrors();
     onSave(address);
   };
 
