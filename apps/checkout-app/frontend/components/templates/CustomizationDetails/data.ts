@@ -43,6 +43,7 @@ export const useSettingsFromValues = (
       setPreviewSettings(updatedSettings);
     });
     return () => subscription.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return previewSettings;

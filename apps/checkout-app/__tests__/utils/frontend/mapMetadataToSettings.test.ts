@@ -11,7 +11,7 @@ import {
 } from "@/checkout-app/types/api";
 
 describe("/utils/frontend/misc/mapMetadataToSettings", () => {
-  it("maps public metadata to settings", async () => {
+  it("maps public metadata to settings", () => {
     const metafields: PublicMetafieldsValues = {
       customizations:
         '{"branding":{"buttonBgColorPrimary":"#fff","buttonBgColorHover":"#fff"}}',
@@ -33,7 +33,7 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
     expect(mergedSettings).toEqual(expectedSettings);
   });
 
-  it("maps private metadata to settings", async () => {
+  it("maps private metadata to settings", () => {
     const metafields: PrivateMetafieldsValues = {
       paymentProviders:
         '{"mollie":{"partnerId":{"encrypted":false,"value":"some_not_encrypted_id"},"liveApiKey":{"encrypted":true,"value":"U2FsdGVkX18zfzUyZy2f00/5BoS3s3WtAOo7wY0yELlwuW6hX0R/zCn/ppPnsBRk"}}}',
@@ -55,7 +55,7 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
     expect(mergedSettings).toEqual(expectedSettings);
   });
 
-  it("maps private metadata to settings with obfuscated data", async () => {
+  it("maps private metadata to settings with obfuscated data", () => {
     const metafields: PrivateMetafieldsValues = {
       paymentProviders:
         '{"mollie":{"partnerId":{"encrypted":false,"value":"some_not_encrypted_id"},"liveApiKey":{"encrypted":true,"value":"U2FsdGVkX18zfzUyZy2f00/5BoS3s3WtAOo7wY0yELlwuW6hX0R/zCn/ppPnsBRk"}}}',

@@ -5,7 +5,7 @@ import { Response } from "retes/response";
 import { toNextHandler } from "retes/adapter";
 import { withBaseURL } from "@saleor/app-sdk/middleware";
 
-const handler: Handler = async (request) => {
+const handler: Handler = (request) => {
   const { baseURL } = request.context;
 
   const manifest = {

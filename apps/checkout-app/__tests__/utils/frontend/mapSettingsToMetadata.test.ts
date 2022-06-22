@@ -7,7 +7,7 @@ import { mapPublicSettingsToMetadata } from "@/checkout-app/frontend/misc/mapPub
 import { PublicSettingsValues } from "@/checkout-app/types/api";
 
 describe("/utils/frontend/misc/mapSettingsToMetadata", () => {
-  it("maps settings to public metadata", async () => {
+  it("maps settings to public metadata", () => {
     const settingsValues: PublicSettingsValues = {
       ...defaultPublicSettings,
       customizations: {
@@ -40,7 +40,7 @@ describe("/utils/frontend/misc/mapSettingsToMetadata", () => {
     expect(mappedMetadata).toEqual(expectedMetadata);
   });
 
-  it("maps settings to private metadata", async () => {
+  it("maps settings to private metadata", () => {
     const settingsValues = {
       ...defaultPrivateSettings,
       paymentProviders: {

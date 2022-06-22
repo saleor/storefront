@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { saleorDomainHeader } from "../../constants";
 
-const handler = async (
+const handler = (
   request: NextApiRequest,
   response: NextApiResponse
-): Promise<undefined> => {
+): undefined => {
   console.log(request); // for deployment debug pusposes
 
   const saleor_domain = request.headers[saleorDomainHeader];

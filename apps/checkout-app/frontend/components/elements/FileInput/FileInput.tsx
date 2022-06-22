@@ -34,6 +34,7 @@ const FileInput: React.FC<FileInputProps> = ({
     if (value !== src) {
       setSrc(value);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const handleFileUploadButtonClick = () => anchor.current!.click();

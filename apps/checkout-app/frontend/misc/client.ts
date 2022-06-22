@@ -15,6 +15,7 @@ interface AuthState {
   token: string;
 }
 
+// eslint-disable-next-line require-await
 const getAuth = async ({ authState }: { authState?: AuthState | null }) => {
   if (!authState) {
     const token = app?.getState().token;

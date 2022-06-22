@@ -29,6 +29,7 @@ export const useGetPaymentProviderSettings = <TArgs>(
         },
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data]);
 
   return {

@@ -18,7 +18,7 @@ import {
 
 const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
 
-export const isNotificationDuplicate = async (
+export const isNotificationDuplicate = (
   transactions: TransactionFragment[],
   notificationItem: Types.notification.NotificationRequestItem
 ) => {

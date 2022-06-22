@@ -3,7 +3,7 @@ import { mergeSettingsValues as mergePublicSettingsValues } from "@/checkout-app
 import { PaymentProviderSettingsValues } from "@/checkout-app/types/api";
 
 describe("/utils/frontend/misc/mergeSettingsValues", () => {
-  it("overrides default values", async () => {
+  it("overrides default values", () => {
     const defaultSettings = {
       foo: {
         bar: "baz",
@@ -50,7 +50,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(expectedSettings);
   });
 
-  it("adds default values when no corresponding saved values", async () => {
+  it("adds default values when no corresponding saved values", () => {
     const defaultSettings = {
       foo: {
         bar: "baz",
@@ -73,7 +73,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(defaultSettings);
   });
 
-  it("adds saved values when no corresponding default value (only not encrypted)", async () => {
+  it("adds saved values when no corresponding default value (only not encrypted)", () => {
     const defaultSettings = {};
     const savedSettings = {
       foo: {
@@ -108,7 +108,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(defaultSettings);
   });
 
-  it("merges default and saved values", async () => {
+  it("merges default and saved values", () => {
     const defaultSettings = {
       foo: {
         fooOne: "one",
@@ -157,7 +157,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(expectedSettings);
   });
 
-  it("overrides default, adds default, adds saved values", async () => {
+  it("overrides default, adds default, adds saved values", () => {
     const defaultSettings = {
       foo: {
         fooOne: "one",
@@ -220,7 +220,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(expectedSettings);
   });
 
-  it("merges default and saved sub-settings", async () => {
+  it("merges default and saved sub-settings", () => {
     const defaultSettings = {
       foo: {
         abc: "123",
@@ -279,7 +279,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     expect(privateMergedSettings).toEqual(defaultSettings);
   });
 
-  it("merges sample payment provider values", async () => {
+  it("merges sample payment provider values", () => {
     const defaultSettings = {
       adyen: {
         clientKey: "",

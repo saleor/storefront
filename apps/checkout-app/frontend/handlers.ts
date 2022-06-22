@@ -71,7 +71,7 @@ export const uploadSettingsFiles = async ({
     async (settings, subSettings, idx) => {
       const uploadedSettings = await settings;
       const uploadedSubSettings = await Promise.all(
-        mapSettingsObjectToArray(subSettings).map(async (setting) =>
+        mapSettingsObjectToArray(subSettings).map((setting) =>
           uploadSettingFile(setting, uploadFile)
         )
       );
