@@ -346,13 +346,15 @@ To use payment gateway, you need to provide its credentials. You can do that by 
 
 ![Mollie config inside Saleor dashboard after env variable and profile id were pasted](./docs/config-dashboard-mollie.png)
 
+4. Enable `Payment methods` in your Mollie dashboard, select: Settings -> Website Profiles -> Payment methods
+
 ### Adyen
 
 Saleor Checkout uses Adyen's [Pay by Link flow](https://docs.adyen.com/unified-commerce/pay-by-link)
 
 1. [Sign up for Adyen test account](https://www.adyen.com/signup)
 
-2. In [test Customer Area](https://ca-test.adyen.com/) create [new merchan account](https://ca-test.adyen.com/ca/ca/accounts/show.shtml)
+2. In [test Customer Area](https://ca-test.adyen.com/) create [new merchant account](https://ca-test.adyen.com/ca/ca/accounts/show.shtml)
 
 3. [Create new API credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml). Go to Developers > API credentials > Create new credential
 
@@ -378,7 +380,7 @@ Select "Web service user" and enter some description (for example "Saleor Checko
 
 7. **Save changes** you've made to API credential
 
-8. [Create standard notification webhook](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#webhooks). Go to Developers > [Webhooks](https://ca-test.adyen.com/ca/ca/config/showthirdparty.shtml) > "+ Webook" > ["Standard notification"](https://ca-test.adyen.com/ca/ca/config/configurethirdparty.shtml?method:add&selectedMimetype=notifications)
+8. [Create standard notification webhook](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#webhooks). Go to Developers > [Webhooks](https://ca-test.adyen.com/ca/ca/config/showthirdparty.shtml) > "+ Webhook" > ["Standard notification"](https://ca-test.adyen.com/ca/ca/config/configurethirdparty.shtml?method:add&selectedMimetype=notifications)
 
 ![Creating new Standard notification webhook in Adyen portal](./docs/setup-adyen-7.png)
 
@@ -429,7 +431,7 @@ Select **"AUTHORISATION"** from the list and click "Test"
 
 ![Selecting what webhook event should be sent to Checkout App](./docs/setup-adyen-webhook-test-1.png)
 
-Adyen will make a call to your webhook. If everythign is configured properly you'll see that the test was successful:
+Adyen will make a call to your webhook. If everything is configured properly you'll see that the test was successful:
 
 ![Successful webhook test in Adyen](./docs/setup-adyen-webhook-test-2.png)
 
