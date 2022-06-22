@@ -28,7 +28,12 @@
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/ban-types": "off",
-    "no-console": ["error", { "allow": ["warn", "error", "debug"] }],
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error", "debug"]
+      }
+    ],
     "no-continue": "off",
     "operator-linebreak": "off",
     "max-len": "off",
@@ -40,6 +45,7 @@
     "no-restricted-exports": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     // TO FIX:
-    "import/no-cycle": "off" // pathpidia issue
+    "import/no-cycle": "off", // pathpidia issue
+    "import/prefer-default-export": "off"
   }
 }
