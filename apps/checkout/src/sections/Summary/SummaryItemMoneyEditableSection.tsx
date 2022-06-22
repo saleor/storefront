@@ -14,9 +14,15 @@ import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useFormattedMoney } from "@/checkout/hooks/useFormattedMoney";
 import { Money } from "@/checkout/components/Money";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { useAlerts } from "@/checkout/hooks/useAlerts";
+import { extractMutationErrors } from "@/checkout/lib/utils";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
+}
+
+interface FormData {
+  quantity: number;
 }
 
 export const SummaryItemMoneyEditableSection: React.FC<
@@ -32,11 +38,12 @@ export const SummaryItemMoneyEditableSection: React.FC<
   const previousQuantity = useRef(line.quantity);
   const [, updateLines] = useCheckoutLinesUpdateMutation();
   const { checkout } = useCheckout();
+  const { showErrors, showSuccess } = useAlerts("checkoutLinesUpdate");
 
-  const getUpdateLineVars = (
-    quantity: number
-  ): CheckoutLinesUpdateMutationVariables => ({
-    id: checkout.id,
+  const getUpdateLineVars = ({
+    quantity,
+  }: FormData): CheckoutLinesUpdateMutationVariables => ({
+    checkoutId: checkout.id,
     lines: [
       {
         quantity,
@@ -45,13 +52,22 @@ export const SummaryItemMoneyEditableSection: React.FC<
     ],
   });
 
-  const handleSubmit = (quantity: number) => {
-    updateLines(getUpdateLineVars(quantity));
+  const handleSubmit = async ({ quantity }: FormData) => {
+    const result = await updateLines(getUpdateLineVars({ quantity }));
+
+    const [hasErrors, errors] = extractMutationErrors(result);
+
+    if (!hasErrors) {
+      showSuccess();
+      return;
+    }
+
+    showErrors(errors);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSubmit = useCallback(
-    debounce((quantity) => handleSubmit(quantity), 250),
+    debounce((quantity) => handleSubmit({ quantity }), 250),
     []
   );
 

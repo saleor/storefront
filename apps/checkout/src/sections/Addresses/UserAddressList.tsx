@@ -5,6 +5,8 @@ import {
 } from "@/checkout/graphql";
 import { AddressRadioBox } from "../AddressRadioBox";
 import { RadioBoxGroup } from "@/checkout/components/RadioBoxGroup";
+import { extractMutationErrors } from "@/checkout/lib/utils";
+import { useAlerts } from "@/checkout/hooks/useAlerts";
 
 interface UserAddressListProps {
   onAddressSelect: (id: string) => void;
@@ -20,6 +22,20 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
   onEditChange,
 }) => {
   const [, deleteAddress] = useUserAddressDeleteMutation();
+  const { showErrors, showSuccess } = useAlerts("userAddressDelete");
+
+  const handleAddressDelete = async (id: string) => {
+    const result = await deleteAddress({ id });
+
+    const [hasErrors, errors] = extractMutationErrors(result);
+
+    if (hasErrors) {
+      showErrors(errors);
+      return;
+    }
+
+    showSuccess();
+  };
 
   return (
     <RadioBoxGroup label="user addresses">
@@ -30,7 +46,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
           selectedValue={selectedAddressId}
           onSelect={() => onAddressSelect(id)}
           address={rest}
-          onDelete={() => deleteAddress({ id })}
+          onDelete={() => handleAddressDelete(id)}
           onEdit={() => onEditChange(id)}
         />
       ))}

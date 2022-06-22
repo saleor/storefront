@@ -171,8 +171,11 @@ query user {
   }
 }
 
-mutation checkoutLinesUpdate($id: ID!, $lines: [CheckoutLineUpdateInput!]!) {
-  checkoutLinesUpdate(id: $id, lines: $lines) {
+mutation checkoutLinesUpdate(
+  $checkoutId: ID!
+  $lines: [CheckoutLineUpdateInput!]!
+) {
+  checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -185,8 +188,8 @@ mutation checkoutLinesUpdate($id: ID!, $lines: [CheckoutLineUpdateInput!]!) {
   }
 }
 
-mutation checkoutLineDelete($id: ID!, $lineId: ID) {
-  checkoutLineDelete(id: $id, lineId: $lineId) {
+mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
+  checkoutLineDelete(id: $checkoutId, lineId: $lineId) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -199,8 +202,8 @@ mutation checkoutLineDelete($id: ID!, $lineId: ID) {
   }
 }
 
-mutation checkoutEmailUpdate($email: String!, $id: ID!) {
-  checkoutEmailUpdate(email: $email, id: $id) {
+mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
+  checkoutEmailUpdate(email: $email, id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -210,8 +213,8 @@ mutation checkoutEmailUpdate($email: String!, $id: ID!) {
   }
 }
 
-mutation checkoutCustomerAttach($id: ID!) {
-  checkoutCustomerAttach(id: $id) {
+mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
+  checkoutCustomerAttach(id: $checkoutId, checkoutId: $customerId) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -221,8 +224,8 @@ mutation checkoutCustomerAttach($id: ID!) {
   }
 }
 
-mutation checkoutCustomerDetach($id: ID!) {
-  checkoutCustomerDetach(id: $id) {
+mutation checkoutCustomerDetach($checkoutId: ID!) {
+  checkoutCustomerDetach(id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -265,10 +268,13 @@ mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
 }
 
 mutation checkoutShippingAddressUpdate(
-  $id: ID!
+  $checkoutId: ID!
   $shippingAddress: AddressInput!
 ) {
-  checkoutShippingAddressUpdate(id: $id, shippingAddress: $shippingAddress) {
+  checkoutShippingAddressUpdate(
+    id: $checkoutId
+    shippingAddress: $shippingAddress
+  ) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -279,10 +285,13 @@ mutation checkoutShippingAddressUpdate(
 }
 
 mutation checkoutBillingAddressUpdate(
-  $id: ID!
+  $checkoutId: ID!
   $billingAddress: AddressInput!
 ) {
-  checkoutBillingAddressUpdate(id: $id, billingAddress: $billingAddress) {
+  checkoutBillingAddressUpdate(
+    id: $checkoutId
+    billingAddress: $billingAddress
+  ) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -292,8 +301,14 @@ mutation checkoutBillingAddressUpdate(
   }
 }
 
-mutation checkoutDeliveryMethodUpdate($id: ID!, $deliveryMethodId: ID!) {
-  checkoutDeliveryMethodUpdate(id: $id, deliveryMethodId: $deliveryMethodId) {
+mutation checkoutDeliveryMethodUpdate(
+  $checkoutId: ID!
+  $deliveryMethodId: ID!
+) {
+  checkoutDeliveryMethodUpdate(
+    id: $checkoutId
+    deliveryMethodId: $deliveryMethodId
+  ) {
     errors {
       ...CheckoutErrorFragment
     }

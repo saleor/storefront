@@ -1,12 +1,17 @@
 import { AddressFragment } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { UseErrors } from "@/checkout/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useBillingSameAsShipping } from "@/checkout/providers/BillingSameAsShippingProvider";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
 import { useAuthState } from "@saleor/sdk";
 import React, { useEffect, useRef } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { UserDefaultAddressFragment } from "./types";
+import {
+  AddressFormData,
+  UserAddressFormData,
+  UserDefaultAddressFragment,
+} from "./types";
 import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
 
@@ -30,7 +35,8 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
 
   const { setCountryCodeFromAddress } = useCountrySelect();
 
-  const { updateBillingAddress } = useCheckoutAddressUpdate();
+  const { updateBillingAddress, billingErrorProps } =
+    useCheckoutAddressUpdate();
 
   const defaultAddress = checkout?.shippingAddress || defaultBillingAddress;
 
@@ -53,6 +59,7 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
 
   return authUser ? (
     <UserAddressSection
+      {...(billingErrorProps as UseErrors<UserAddressFormData>)}
       title={formatMessage("billingAddress")}
       type="BILLING"
       onAddressSelect={updateBillingAddress}
@@ -61,10 +68,10 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
     />
   ) : (
     <GuestAddressSection
+      {...billingErrorProps}
       address={checkout?.billingAddress as AddressFragment}
       title={formatMessage("billingAddress")}
       onSubmit={updateBillingAddress}
-      errorScope="checkoutBillingUpdate"
     />
   );
 };

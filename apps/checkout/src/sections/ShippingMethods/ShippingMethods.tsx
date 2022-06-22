@@ -5,28 +5,47 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getFormattedMoney } from "@/checkout/hooks/useFormattedMoney";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { RadioBox } from "@/checkout/components/RadioBox";
 import { RadioBoxGroup } from "@/checkout/components/RadioBoxGroup";
+import { useAlerts } from "@/checkout/hooks/useAlerts";
+import { extractMutationErrors } from "@/checkout/lib/utils";
 
 interface ShippingMethodsProps {}
 
 export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
+  const { showErrors, showSuccess } = useAlerts("checkoutDeliveryMethodUpdate");
   const [selectedMethodId, setSelectedMethodId] = useState(
     checkout?.deliveryMethod?.id
   );
+
+  const selectedMethodIdRef = useRef(selectedMethodId);
+
   const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
 
+  const handleSubmit = async () => {
+    const result = await updateDeliveryMethod({
+      deliveryMethodId: selectedMethodId as string,
+      checkoutId: checkout.id,
+    });
+
+    const [hasErrors, errors] = extractMutationErrors(result);
+
+    if (!hasErrors) {
+      showSuccess();
+      return;
+    }
+
+    showErrors(errors);
+  };
+
   useEffect(() => {
-    if (selectedMethodId) {
-      updateDeliveryMethod({
-        id: checkout.id,
-        deliveryMethodId: selectedMethodId,
-      });
+    if (selectedMethodId && selectedMethodId !== selectedMethodIdRef.current) {
+      handleSubmit();
     }
   }, [selectedMethodId]);
 

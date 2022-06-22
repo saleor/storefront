@@ -3,17 +3,12 @@ import { Classes } from "@/checkout/lib/globalTypes";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
 import {
   Control,
-  FieldElement,
-  FieldError,
-  FieldErrors,
   FieldPath,
-  FormState,
-  Path,
   UseFormRegisterReturn,
   useWatch,
 } from "react-hook-form";
 import { ControlFormData } from "@/checkout/hooks/useGetInputProps";
-import { Errors } from "@/checkout/providers/ErrorsProvider";
+import { Errors } from "../hooks/useErrors";
 
 export interface TextInputProps<
   TControl extends Control<any, any>,

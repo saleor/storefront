@@ -1,4 +1,4 @@
-import { pay as payRequest } from "@/checkout/fetch";
+import { pay as payRequest, PaySuccessResult } from "@/checkout/fetch";
 import { useFetch } from "@/checkout/hooks/useFetch";
 import { OrderBody, CheckoutBody } from "checkout-app/types/api/pay";
 
@@ -31,15 +31,20 @@ export const usePay = () => {
       redirectUrl,
     });
 
-    if (result?.data?.paymentUrl) {
-      const newUrl = `?order=${result.orderId}`;
+    if ((result as PaySuccessResult)?.data?.paymentUrl) {
+      const {
+        orderId,
+        data: { paymentUrl },
+      } = result as PaySuccessResult;
+
+      const newUrl = `?order=${orderId}`;
 
       window.history.replaceState(
         { ...window.history.state, as: newUrl, url: newUrl },
         "",
         newUrl
       );
-      window.location.href = result.data.paymentUrl;
+      window.location.href = paymentUrl;
     }
 
     return result;
@@ -56,8 +61,8 @@ export const usePay = () => {
       redirectUrl,
     });
 
-    if (result?.data?.paymentUrl) {
-      window.location.href = result.data.paymentUrl;
+    if ((result as PaySuccessResult)?.data?.paymentUrl) {
+      window.location.href = (result as PaySuccessResult).data.paymentUrl;
     }
 
     return result;

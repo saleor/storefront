@@ -1,7 +1,8 @@
 import { useUserAddressCreateMutation } from "@/checkout/graphql";
+import { useAlerts } from "@/checkout/hooks/useAlerts";
+import { useErrors } from "@/checkout/hooks/useErrors";
 import { extractMutationErrors } from "@/checkout/lib/utils";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
-import { ErrorScope, useErrors } from "@/checkout/providers/ErrorsProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
 import { AddressForm } from "./AddressForm";
@@ -14,18 +15,17 @@ export interface AddressCreateFormProps {
   onClose: () => void;
 }
 
-const ERROR_SCOPE: ErrorScope = "userAddressCreate";
-
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   show,
   type,
   onClose,
 }) => {
+  const { showSuccess, showErrors } = useAlerts("userAddressCreate");
   const [, userAddressCreate] = useUserAddressCreateMutation();
 
   const { countryCode } = useCountrySelect();
 
-  const { setApiErrors } = useErrors<AddressFormData>(ERROR_SCOPE);
+  const { setApiErrors, ...errorsRest } = useErrors<AddressFormData>();
 
   const handleSubmit = async (address: AddressFormData) => {
     const result = await userAddressCreate({
@@ -39,10 +39,12 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
+      showSuccess();
       onClose();
       return;
     }
 
+    showErrors(errors);
     setApiErrors(errors);
   };
 
@@ -51,10 +53,6 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   }
 
   return (
-    <AddressForm
-      onSave={handleSubmit}
-      onCancel={onClose}
-      errorScope={ERROR_SCOPE}
-    />
+    <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />
   );
 };

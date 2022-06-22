@@ -1,9 +1,6 @@
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
-import {
-  ValidationError,
-  ValidationErrorCode,
-} from "@/checkout/lib/globalTypes";
-import { ApiErrors } from "@/checkout/providers/ErrorsProvider";
+import { ApiErrors, Errors, Error } from "@/checkout/hooks/useErrors";
+import { ValidationError, ErrorCode } from "@/checkout/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
@@ -29,7 +26,7 @@ export const extractValidationError = <TFormData>({
   ValidationErrorObject,
   "type" | "path" | "message"
 >): ValidationError<TFormData> => ({
-  type: type as ValidationErrorCode,
+  type: type as ErrorCode,
   path: path as keyof TFormData,
   message,
 });
@@ -71,22 +68,32 @@ export const useValidationResolver = <
 
 export const useGetFormErrorsFromApiErrors = (): (<TFormData>(
   apiErrors: ApiErrors<TFormData>
-) => FieldErrors<TFormData>) => {
+) => Errors<TFormData>) => {
   const { getMessageByErrorCode } = useErrorMessages();
 
   const getErrorsFromApi = <TFormData>(apiErrors: ApiErrors<TFormData>) => {
     if (!apiErrors) {
-      return {} as FieldErrors<TFormData>;
+      return {} as Errors<TFormData>;
     }
 
-    return apiErrors.reduce((result, { field, code }) => {
-      const errorCode = camelCase(code) as ValidationErrorCode;
+    return apiErrors.reduce(
+      (
+        result: Errors<TFormData>,
+        { field, code }: { field: keyof TFormData; code: string }
+      ) => {
+        const errorCode = camelCase(code) as ErrorCode;
 
-      return {
-        ...result,
-        [field]: { code: errorCode, message: getMessageByErrorCode(errorCode) },
-      };
-    }, {} as FieldErrors<TFormData>);
+        return {
+          ...result,
+          [field]: {
+            field,
+            code: errorCode,
+            message: getMessageByErrorCode(errorCode),
+          } as Error<TFormData>,
+        };
+      },
+      {} as Errors<TFormData>
+    );
   };
 
   return getErrorsFromApi;

@@ -1,6 +1,9 @@
 import { useCheckoutEmailUpdateMutation } from "@/checkout/graphql";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
-import { useValidationResolver } from "@/checkout/lib/utils";
+import {
+  extractMutationErrors,
+  useValidationResolver,
+} from "@/checkout/lib/utils";
 import React, { useEffect, useState } from "react";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
 import {
@@ -14,7 +17,8 @@ import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 import { Checkbox } from "@/checkout/components/Checkbox";
 import { TextInput } from "@/checkout/components/TextInput";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useSetFormErrors } from "@/checkout/providers/ErrorsProvider/useSetFormErrors";
+import { useAlerts } from "@/checkout/hooks/useAlerts";
+import { useSetFormErrors } from "@/checkout/hooks/useSetFormErrors";
 
 type AnonymousCustomerFormProps = Pick<
   SignInFormContainerProps,
@@ -31,36 +35,58 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
+  const { showSuccess, showErrors } = useAlerts("checkoutEmailUpdate");
   const [createAccountSelected, setCreateAccountSelected] = useState(false);
+  const formContext = useFormContext();
   const {
     getValues: getContextValues,
     setValue: setContextValue,
-    setError: setContextError,
-    ...contextPropsRest
-  } = useFormContext();
-
-  useSetFormErrors({ errorScope: "userRegister", setError: setContextError });
+    formState: contextFormState,
+  } = formContext;
 
   const schema = object({
     email: string()
-      .email(errorMessages.invalidValue)
-      .required(errorMessages.requiredValue),
+      .email(errorMessages.invalid)
+      .required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);
-  const { handleSubmit, watch, getValues, ...rest } = useForm<FormData>({
-    resolver,
-    mode: "onBlur",
-    defaultValues: { email: getContextValues("email") },
+  const { handleSubmit, watch, getValues, setError, ...rest } =
+    useForm<FormData>({
+      resolver,
+      mode: "onBlur",
+      defaultValues: { email: getContextValues("email") },
+    });
+  const getInputProps = useGetInputProps(rest);
+  const getContextInputProps = useGetInputProps(formContext);
+
+  useSetFormErrors({
+    setError: setError,
+    errors: contextFormState.errors,
   });
 
-  const getInputProps = useGetInputProps(rest);
-  const getContextInputProps = useGetInputProps(contextPropsRest);
+  const [{ fetching: updatingEmail }, updateEmail] =
+    useCheckoutEmailUpdateMutation();
 
-  const [, updateEmail] = useCheckoutEmailUpdateMutation();
+  const onSubmit = async ({ email }: FormData) => {
+    if (!email || updatingEmail || email === checkout.email) {
+      return;
+    }
 
-  const onSubmit = ({ email }: FormData) =>
-    updateEmail({ id: checkout.id, email });
+    const result = await updateEmail({
+      email,
+      checkoutId: checkout.id,
+    });
+
+    const [hasErrors, errors] = extractMutationErrors(result);
+
+    if (!hasErrors) {
+      showSuccess();
+      return;
+    }
+
+    showErrors(errors);
+  };
 
   const emailValue = watch("email");
 

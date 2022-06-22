@@ -3,7 +3,7 @@ import { AddressFragment, CountryCode } from "@/checkout/graphql";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getById } from "@/checkout/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { UserAddressFormData } from "./types";
 import { UserAddressList } from "./UserAddressList";
 import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
@@ -16,8 +16,11 @@ import {
   UseUserAddressSelectProps,
 } from "./useUserAddressSelect";
 import { AddressesSkeleton } from ".";
+import { UseErrors } from "@/checkout/hooks/useErrors";
 
-export interface UserAddressSectionProps extends UseUserAddressSelectProps {
+export interface UserAddressSectionProps
+  extends UseUserAddressSelectProps,
+    UseErrors<UserAddressFormData> {
   onAddressSelect: (address: UserAddressFormData) => void;
   addresses: AddressFragment[];
   title: string;
@@ -38,6 +41,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
       type,
       defaultAddressId,
       addresses,
+      onAddressSelect,
     });
 
   const { setCountryCode } = useCountrySelect();
@@ -58,12 +62,6 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   useEffect(handleSelectCountry(selectedAddress), [selectedAddress]);
 
   useEffect(handleSelectCountry(editedAddress), [editedAddress]);
-
-  useEffect(() => {
-    if (!!selectedAddress) {
-      onAddressSelect(selectedAddress as unknown as UserAddressFormData);
-    }
-  }, [selectedAddressId]);
 
   return (
     <Suspense fallback={<AddressesSkeleton />}>

@@ -17,13 +17,18 @@ import { FormData } from "./types";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import "./CheckoutFormStyles.css";
+import { useSetFormErrors } from "@/checkout/hooks/useSetFormErrors";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { checkout, loading } = useCheckout();
   const { authenticating } = useAuthState();
-  const { checkoutFinalize, submitting } = useCheckoutFinalize();
+  const {
+    checkoutFinalize,
+    submitting,
+    errors: userRegisterErrors,
+  } = useCheckoutFinalize();
 
   const isLoading = loading || authenticating;
 
@@ -32,10 +37,10 @@ export const CheckoutForm = () => {
   //   useState<string>();
 
   const schema = object({
-    password: string().required(errorMessages.requiredValue),
+    password: string().required(errorMessages.required),
     email: string()
-      .email(errorMessages.invalidValue)
-      .required(errorMessages.requiredValue),
+      .email(errorMessages.invalid)
+      .required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);
@@ -44,6 +49,11 @@ export const CheckoutForm = () => {
     resolver,
     mode: "onBlur",
     defaultValues: { email: checkout?.email || "", createAccount: false },
+  });
+
+  useSetFormErrors({
+    setError: methods.setError,
+    errors: userRegisterErrors,
   });
 
   const { getValues } = methods;

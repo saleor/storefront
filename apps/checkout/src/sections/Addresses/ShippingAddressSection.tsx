@@ -1,12 +1,13 @@
 import { Checkbox } from "@/checkout/components/Checkbox";
 import { AddressFragment } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { UseErrors } from "@/checkout/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useBillingSameAsShipping } from "@/checkout/providers/BillingSameAsShippingProvider";
 import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { UserDefaultAddressFragment } from "./types";
+import { UserAddressFormData, UserDefaultAddressFragment } from "./types";
 import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
 
@@ -27,12 +28,14 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
 
   const defaultAddress = checkout?.shippingAddress || defaultShippingAddress;
 
-  const { updateShippingAddress } = useCheckoutAddressUpdate();
+  const { updateShippingAddress, shippingErrorProps } =
+    useCheckoutAddressUpdate();
 
   return (
     <>
       {authUser ? (
         <UserAddressSection
+          {...(shippingErrorProps as UseErrors<UserAddressFormData>)}
           title={formatMessage("shippingAddress")}
           type="SHIPPING"
           onAddressSelect={updateShippingAddress}
@@ -45,7 +48,7 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
           address={checkout?.shippingAddress as AddressFragment}
           title={formatMessage("shippingAddress")}
           onSubmit={updateShippingAddress}
-          errorScope="checkoutShippingUpdate"
+          {...shippingErrorProps}
         />
       )}
       <Checkbox

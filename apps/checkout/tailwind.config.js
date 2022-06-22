@@ -12,8 +12,8 @@ const spacing = getSpacing(
   0.4,
   "rem",
   [
-    0, 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 14, 16, 18, 19, 20, 21, 22, 28, 85, 256,
-    350,
+    0, 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 14, 16, 18, 19, 20, 21, 22, 28, 85, 90,
+    256, 350,
   ]
 );
 
@@ -25,6 +25,8 @@ const theme = {
       primary: "#FAFAFA",
       secondary: "#FFFFFF",
       tertiary: "#EEF1F7",
+      error: "rgba(var(--error-color-rgb), 0.4)",
+      success: "rgba(var(--success-color-rgb), 0.4)",
     },
     text: {
       primary: "var(--text-color)",
@@ -32,6 +34,7 @@ const theme = {
       tertiary: "rgba(var(--text-color-rgb), 0.4)",
       button: "var(--button-text-color)",
       error: "var(--error-color)",
+      success: "var(--success-color)",
     },
     button: {
       primary: "var(--button-bg-color-primary)",
@@ -80,6 +83,14 @@ const theme = {
     minWidth: spacing,
     top: spacing,
     borderWidth: spacing,
+    zIndex: { 1000: 1000 },
+    transitionDuration: { 1500: "1500ms", 400: "400ms" },
+    transitionProperty: {
+      top: "top",
+    },
+    borderRadius: {
+      DEFAULT: "0.4rem",
+    },
   },
 };
 

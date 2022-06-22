@@ -1,15 +1,14 @@
 import { Button } from "@/checkout/components/Button";
 import { TextInput } from "@/checkout/components/TextInput";
-import {
-  CountryCode,
-  useAddressValidationRulesQuery,
-} from "@/checkout/graphql";
+import { useAddressValidationRulesQuery } from "@/checkout/graphql";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
+import { UseErrors } from "@/checkout/hooks/useErrors";
 import {
   MessageKey,
   useFormattedMessages,
 } from "@/checkout/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout/hooks/useGetInputProps";
+import { useSetFormErrors } from "@/checkout/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout/lib/globalTypes";
 import {
   getRequiredAddressFields,
@@ -17,11 +16,11 @@ import {
   useValidationResolver,
 } from "@/checkout/lib/utils";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
-import { ErrorScope, useErrors } from "@/checkout/providers/ErrorsProvider";
-import { useSetFormErrors } from "@/checkout/providers/ErrorsProvider/useSetFormErrors";
-import { ReactNode } from "react";
+import { forEach } from "lodash-es";
+import { ReactNode, useEffect } from "react";
 import {
   DefaultValues,
+  FieldError,
   Path,
   Resolver,
   SubmitHandler,
@@ -36,8 +35,8 @@ import {
   isAddressFieldRow,
 } from "./utils";
 
-export interface AddressFormProps<TFormData extends AddressFormData> {
-  errorScope: ErrorScope;
+export interface AddressFormProps<TFormData extends AddressFormData>
+  extends Omit<UseErrors<TFormData>, "setApiErrors"> {
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
   onSave: SubmitHandler<TFormData>;
@@ -47,19 +46,19 @@ export const AddressForm = <TFormData extends AddressFormData>({
   defaultValues,
   onCancel,
   onSave,
-  errorScope,
+  errors,
+  clearErrors: onClearErrors,
 }: AddressFormProps<TFormData>) => {
-  const { clearErrors: clearContextErrors } = useErrors(errorScope);
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { countryCode } = useCountrySelect();
 
   const schema = object({
-    firstName: string().required(errorMessages.requiredValue),
-    lastName: string().required(errorMessages.requiredValue),
-    streetAddress1: string().required(errorMessages.requiredValue),
-    postalCode: string().required(errorMessages.requiredValue),
-    city: string().required(errorMessages.requiredValue),
+    firstName: string().required(errorMessages.required),
+    lastName: string().required(errorMessages.required),
+    streetAddress1: string().required(errorMessages.required),
+    postalCode: string().required(errorMessages.required),
+    city: string().required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);
@@ -78,7 +77,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
     defaultValues: defaultValues as DefaultValues<TFormData>,
   });
 
-  useSetFormErrors<TFormData>({ errorScope, setError });
+  useSetFormErrors({ setError, errors });
 
   const getInputProps = useGetInputProps({ ...rest, formState });
 
@@ -95,7 +94,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const handleCancel = () => {
     clearErrors();
-    clearContextErrors();
+    onClearErrors();
 
     if (onCancel) {
       onCancel();
@@ -103,7 +102,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   };
 
   const handleSave = (address: UnpackNestedValue<TFormData>) => {
-    clearContextErrors();
+    onClearErrors();
     onSave(address);
   };
 

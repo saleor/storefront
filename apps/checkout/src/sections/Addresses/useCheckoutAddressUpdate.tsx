@@ -3,10 +3,11 @@ import {
   useCheckoutBillingAddressUpdateMutation,
   useCheckoutShippingAddressUpdateMutation,
 } from "@/checkout/graphql";
+import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { useErrors } from "@/checkout/hooks/useErrors";
 import { extractMutationErrors } from "@/checkout/lib/utils";
 import { useBillingSameAsShipping } from "@/checkout/providers/BillingSameAsShippingProvider";
-import { useErrors } from "@/checkout/providers/ErrorsProvider";
 import { useEffect } from "react";
 import { AddressFormData } from "./types";
 import { getAddressFormDataFromAddress, getAddressInputData } from "./utils";
@@ -17,28 +18,31 @@ export const useCheckoutAddressUpdate = () => {
   const { checkout } = useCheckout();
   const { isBillingSameAsShippingAddress } = useBillingSameAsShipping();
 
-  const { setApiErrors: setShippingApiErrors } = useErrors<AddressFormData>(
-    "checkoutShippingUpdate"
-  );
-  const { setApiErrors: setBillingApiErrors } = useErrors<AddressFormData>(
-    "checkoutBillingUpdate"
-  );
+  const shippingErrorProps = useErrors<AddressFormData>();
+  const { setApiErrors: setShippingErrors } = shippingErrorProps;
+  const billingErrorProps = useErrors<AddressFormData>();
+  const { setApiErrors: setBillingErrors } = shippingErrorProps;
+
+  const { showSuccess, showErrors } = useAlerts();
 
   const [, checkoutShippingAddressUpdate] =
     useCheckoutShippingAddressUpdateMutation();
 
   const updateShippingAddress = async (address: AddressFormData) => {
     const result = await checkoutShippingAddressUpdate({
-      id: checkout.id,
+      checkoutId: checkout.id,
       shippingAddress: getAddressInputData(address),
     });
 
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (hasErrors) {
-      setShippingApiErrors(errors);
+      showErrors(errors, "checkoutShippingUpdate");
+      setShippingErrors(errors);
       return;
     }
+
+    showSuccess("checkoutShippingUpdate");
 
     if (isBillingSameAsShippingAddress) {
       handleUpdateBillingAddress(address);
@@ -50,15 +54,19 @@ export const useCheckoutAddressUpdate = () => {
 
   const updateBillingAddress = async (addressInput: AddressInput) => {
     const result = await checkoutBillingAddressUpdate({
-      id: checkout.id,
+      checkoutId: checkout.id,
       billingAddress: addressInput,
     });
 
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (hasErrors) {
-      setBillingApiErrors(errors);
+      showErrors(errors, "checkoutBillingUpdate");
+      setBillingErrors(errors);
+      return;
     }
+
+    showSuccess("checkoutBillingUpdate");
   };
 
   const setBillingAddressWhenSameAsShipping = () => {
@@ -88,5 +96,7 @@ export const useCheckoutAddressUpdate = () => {
   return {
     updateShippingAddress,
     updateBillingAddress: handleUpdateBillingAddress,
+    shippingErrorProps,
+    billingErrorProps,
   };
 };

@@ -21,7 +21,7 @@ export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({
 
   const handleLineDelete = () =>
     deleteLine({
-      id: checkout.id,
+      checkoutId: checkout.id,
       lineId,
     });
 

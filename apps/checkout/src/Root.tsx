@@ -9,9 +9,13 @@ import { Checkout } from "@/checkout/Checkout";
 import { getCurrentRegion } from "@/checkout/lib/regions";
 import { envVars, getQueryVariables } from "@/checkout/lib/utils";
 import { AppConfigProvider } from "@/checkout/providers/AppConfigProvider";
-import { ErrorsProvider } from "@/checkout/providers/ErrorsProvider";
 import { OrderConfirmation } from "@/checkout/sections/OrderConfirmation";
 import { PageNotFound } from "@/checkout/sections/PageNotFound";
+import "react-toastify/dist/ReactToastify.css";
+import "@/checkout/hooks/useAlerts/AlertStyles.css";
+import clsx from "clsx";
+import { ToastContainer, TypeOptions } from "react-toastify";
+import { alertsContainerProps } from "./hooks/useAlerts/consts";
 
 const authorizedFetch = createFetch();
 
@@ -38,18 +42,17 @@ export const Root = () => {
       <I18nProvider locale={getCurrentRegion()}>
         <UrqlProvider value={client}>
           <AppConfigProvider>
-            <ErrorsProvider>
-              <div className="app">
-                {/* @ts-ignore React 17 <-> 18 type mismatch */}
-                <ErrorBoundary FallbackComponent={PageNotFound}>
-                  {orderId ? (
-                    <OrderConfirmation orderId={orderId} />
-                  ) : (
-                    <Checkout />
-                  )}
-                </ErrorBoundary>
-              </div>
-            </ErrorsProvider>
+            <div className="app">
+              <ToastContainer {...alertsContainerProps} />
+              {/* @ts-ignore React 17 <-> 18 type mismatch */}
+              <ErrorBoundary FallbackComponent={PageNotFound}>
+                {orderId ? (
+                  <OrderConfirmation orderId={orderId} />
+                ) : (
+                  <Checkout />
+                )}
+              </ErrorBoundary>
+            </div>
           </AppConfigProvider>
         </UrqlProvider>
       </I18nProvider>
