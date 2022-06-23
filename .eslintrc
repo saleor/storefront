@@ -28,12 +28,7 @@
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/ban-types": "off",
-    "no-console": [
-      "error",
-      {
-        "allow": ["warn", "error", "debug"]
-      }
-    ],
+    "no-console": ["error", { "allow": ["warn", "error", "debug"] }],
     "no-continue": "off",
     "operator-linebreak": "off",
     "max-len": "off",
