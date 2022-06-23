@@ -1,19 +1,17 @@
 import { NAVIGATION } from "../elements/navigation";
 import { SEARCH_PAGE_SELECTORS } from "../elements/search-page";
+import { navigateAndSearch } from "../support/pages/search";
+
+let typedText;
 
 describe("Search for products", () => {
   beforeEach(() => {
     cy.visit("/");
   });
   it("should search for products SRS_0405", () => {
-    const typedText = "polo";
-    cy.get(NAVIGATION.searchIcon)
-      .click()
-      .get(SEARCH_PAGE_SELECTORS.searchInput)
-      .type(typedText, { delay: 100 })
-      .should("have.value", typedText)
-      .url()
-      .should("include", `/search?q=${typedText}`);
+    typedText = "polo";
+    navigateAndSearch(typedText);
+    cy.url().should("include", `/search?q=${typedText}`);
   });
 
   it("should see no errors on search page SRS_0404", () => {
@@ -21,20 +19,16 @@ describe("Search for products", () => {
       .click()
       .url()
       .should("include", "/search")
-      .get(SEARCH_PAGE_SELECTORS.productCollection)
+      .get(SEARCH_PAGE_SELECTORS.collection)
       .should("be.visible");
   });
 
   it("should see no results message SRS_0405", () => {
-    const typedText = "!@#$";
-    cy.get(NAVIGATION.searchIcon)
-      .click()
-      .get(SEARCH_PAGE_SELECTORS.searchInput)
-      .type(typedText, { delay: 100 })
-      .should("have.value", typedText)
-      .get(SEARCH_PAGE_SELECTORS.noResultsText)
+    typedText = "!@#$";
+    navigateAndSearch(typedText);
+    cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
       .should("contain", "Search query didn't return any viable results")
-      .get(SEARCH_PAGE_SELECTORS.productCollection)
+      .get(SEARCH_PAGE_SELECTORS.collection)
       .should("not.exist");
   });
 });
