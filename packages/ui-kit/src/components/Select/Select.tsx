@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import clsx from "clsx";
 import { Combobox } from "@headlessui/react";
 
@@ -32,6 +32,7 @@ export interface SelectProps<TData extends string = string> {
     | "option"
   >;
   onChange: SelectOnChangeHandler<TData>;
+  placeholder?: string;
 }
 
 export const Select = <TData extends string = string>({
@@ -41,6 +42,7 @@ export const Select = <TData extends string = string>({
   disabled,
   classNames,
   onChange,
+  placeholder = "",
 }: SelectProps<TData>) => {
   const selectedOption = options.find(({ value }) => value === selectedValue);
 
@@ -73,7 +75,7 @@ export const Select = <TData extends string = string>({
                     {selectedOption?.icon}
                   </div>
                 )}
-                {selectedOption?.label}
+                {selectedOption?.label || placeholder}
                 {!disabled && (
                   <span
                     className={clsx(

@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
 import { ApiErrors, useGetParsedApiErrors } from "@/checkout/hooks/useErrors";
 import { ErrorCode } from "@/checkout/lib/globalTypes";
+import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 
 export interface ScopedAlertsProps {
   showSuccess: () => void;
@@ -42,7 +43,7 @@ function useAlerts(globalScope?: any): any {
 
       return fullMessage;
     } catch (e) {
-      console.warn(`Missing translation for key: ${messageKey}`);
+      warnAboutMissingTranslation(messageKey);
 
       return `${getMessageByErrorCode(code)}: ${formatMessage(
         field as MessageKey

@@ -1,5 +1,6 @@
 import { ErrorCode } from "@/checkout/lib/globalTypes";
 import { MessageKey, useFormattedMessages } from "./useFormattedMessages";
+import { warnAboutMissingTranslation } from "./useFormattedMessages/utils";
 
 export type ErrorMessages = Record<ErrorCode, string>;
 
@@ -18,7 +19,7 @@ export const useErrorMessages = (): UseErrorMessages => {
       const formattedMessage = formatMessage(errorCode as MessageKey);
       return formattedMessage;
     } catch (e) {
-      console.warn(`Missing translation for key: ${errorCode}`);
+      warnAboutMissingTranslation(errorCode);
       return "";
     }
   };

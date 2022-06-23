@@ -1,4 +1,4 @@
-import { AddressTypeEnum, CountryCode } from "@/checkout/graphql";
+import { CountryCode } from "@/checkout/graphql";
 import { AddressField } from "@/checkout/lib/globalTypes";
 
 export interface AddressFormData

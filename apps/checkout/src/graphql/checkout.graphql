@@ -323,5 +323,12 @@ query addressValidationRules($countryCode: CountryCode!) {
     addressFormat
     allowedFields
     requiredFields
+    countryAreaType
+    postalCodeType
+    cityType
+    countryAreaChoices {
+      raw
+      verbose
+    }
   }
 }

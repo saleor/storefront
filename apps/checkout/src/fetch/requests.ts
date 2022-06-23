@@ -6,7 +6,7 @@ import { PaymentStatusResponse } from "checkout-app/types/api/payment-status";
 import { PayResult } from "./types";
 
 export const getPaymentProviders = () =>
-  fetch(`${envVars.checkoutApiUrl}/active-payment-providers/channel-1`);
+  fetch(`${envVars.checkoutApiUrl}/active-payment-providers/default-channel`);
 
 export const pay = (body: PayRequestBody): FetchResponse<PayResult> =>
   fetch(`${envVars.checkoutApiUrl}/pay`, {

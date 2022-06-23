@@ -16,11 +16,9 @@ import {
   useValidationResolver,
 } from "@/checkout/lib/utils";
 import { useCountrySelect } from "@/checkout/providers/CountrySelectProvider";
-import { forEach } from "lodash-es";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useState } from "react";
 import {
   DefaultValues,
-  FieldError,
   Path,
   Resolver,
   SubmitHandler,
@@ -34,6 +32,8 @@ import {
   getAddressFormLayout,
   isAddressFieldRow,
 } from "./utils";
+import { Select } from "@saleor/ui-kit";
+import { warnAboutMissingTranslation } from "@/checkout/hooks/useFormattedMessages/utils";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors"> {
@@ -52,6 +52,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { countryCode } = useCountrySelect();
+  const [countryArea, setCountryArea] = useState<string>("");
 
   const schema = object({
     firstName: string().required(errorMessages.required),
@@ -87,8 +88,8 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const validationRules = data?.addressValidationRules;
 
-  const isFieldOptional = (field: AddressField) =>
-    !getRequiredAddressFields(
+  const isRequiredField = (field: AddressField) =>
+    getRequiredAddressFields(
       validationRules?.requiredFields! as AddressField[]
     ).includes(field);
 
@@ -103,7 +104,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const handleSave = (address: UnpackNestedValue<TFormData>) => {
     onClearErrors();
-    onSave(address);
+    onSave(countryArea ? { ...address, countryArea } : address);
   };
 
   const addressFormLayout = getAddressFormLayout(
@@ -126,16 +127,69 @@ export const AddressForm = <TFormData extends AddressFormData>({
       return renderFn(layoutField as AddressField);
     });
 
+  const getLocalizedFieldName = (
+    field: AddressField,
+    localizedField?: string | null
+  ) => {
+    try {
+      const translatedLabel = formatMessage(localizedField as MessageKey);
+      return translatedLabel;
+    } catch (e) {
+      warnAboutMissingTranslation(localizedField as string);
+      return formatMessage(field as MessageKey);
+    }
+  };
+
+  const getFieldLabel = (field: AddressField) => {
+    const { countryAreaType, postalCodeType, cityType } = validationRules || {};
+
+    const localizedFields: Partial<Record<AddressField, string | undefined>> = {
+      countryArea: countryAreaType,
+      city: cityType,
+      postalCode: postalCodeType,
+    };
+
+    const isLocalizedField = Object.keys(localizedFields).includes(field);
+
+    if (!isLocalizedField) {
+      return formatMessage(field as MessageKey);
+    }
+
+    return getLocalizedFieldName(field, localizedFields[field]);
+  };
+
   return (
     <div>
-      {mapAddressFields((field: AddressField) => (
-        <TextInput
-          key={field}
-          label={formatMessage(field as MessageKey)}
-          {...getInputProps(field as Path<TFormData>)}
-          optional={isFieldOptional(field)}
-        />
-      ))}
+      {mapAddressFields((field: AddressField) => {
+        const isRequired = isRequiredField(field);
+        const label = getFieldLabel(field);
+
+        if (field === "countryArea" && isRequired) {
+          return (
+            <Select
+              classNames={{ container: "mb-4" }}
+              placeholder={label}
+              onChange={setCountryArea}
+              selectedValue={countryArea}
+              options={
+                validationRules?.countryAreaChoices.map(({ verbose, raw }) => ({
+                  label: verbose as string,
+                  value: raw as string,
+                })) || []
+              }
+            />
+          );
+        }
+
+        return (
+          <TextInput
+            key={field}
+            label={label}
+            {...getInputProps(field as Path<TFormData>)}
+            optional={!isRequired}
+          />
+        );
+      })}
       <div>
         {onCancel && (
           <Button

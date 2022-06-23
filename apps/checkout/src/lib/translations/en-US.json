@@ -82,7 +82,6 @@
   "firstName": "First name",
   "lastName": "Last name",
   "country": "Country",
-  "countryArea": "Country area",
   "cityArea": "City area",
   "postalCode": "Postal code",
   "companyName": "Company",
@@ -131,5 +130,14 @@
   "passwordTooSimilar": "Provided password is too similar to last one used.",
   "passwordTooCommon": "Provided password is too common.",
   "passwordInvalid": "Invalid password",
-  "requestPasswordResetEmailNotFoundError": "User with provided email has not been found"
+  "requestPasswordResetEmailNotFoundError": "User with provided email has not been found",
+  "countryArea": "Country area",
+  "province": "Province",
+  "district": "District",
+  "state": "State",
+  "zip": "Zip code",
+  "postal": "Postal code",
+  "post_town": "Post town",
+  "checkoutShippingUpdateCountryAreaRequiredError": "Please select country area for shipping address",
+  "checkoutBillingUpdateCountryAreaRequiredError": "Please select country area for billing address"
 }

@@ -43,7 +43,7 @@
 }
 
 .options {
-  @apply absolute shadow-modal z-20 bg-background-primary w-full;
+  @apply absolute shadow-modal z-50 bg-background-primary w-full;
 }
 
 .option {

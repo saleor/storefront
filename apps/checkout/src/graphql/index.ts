@@ -22024,6 +22024,14 @@ export type AddressValidationRulesQuery = {
     addressFormat: string;
     allowedFields: Array<string>;
     requiredFields: Array<string>;
+    countryAreaType: string;
+    postalCodeType: string;
+    cityType: string;
+    countryAreaChoices: Array<{
+      __typename?: "ChoiceValue";
+      raw?: string | null;
+      verbose?: string | null;
+    }>;
   } | null;
 };
 
@@ -22778,6 +22786,13 @@ export const AddressValidationRulesDocument = gql`
       addressFormat
       allowedFields
       requiredFields
+      countryAreaType
+      postalCodeType
+      cityType
+      countryAreaChoices {
+        raw
+        verbose
+      }
     }
   }
 `;

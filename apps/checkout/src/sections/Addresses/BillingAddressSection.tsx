@@ -42,6 +42,7 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
 
   useEffect(() => {
     if (
+      !checkout?.shippingAddress ||
       isBillingSameAsShippingAddress ||
       hasBillingSameAsShippingAddressChanged
     ) {
