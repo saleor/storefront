@@ -28,7 +28,7 @@ describe("Search for products", () => {
     typedText = productsToSearch.nonExistingProduct;
     navigateAndSearch(typedText);
     cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
-      .should("contain", "Search query didn't return any viable results")
+      .should("contain", productsToSearch.noProductsInfo)
       .get(SEARCH_PAGE_SELECTORS.collection)
       .should("not.exist");
   });
