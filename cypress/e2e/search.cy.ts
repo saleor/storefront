@@ -1,5 +1,6 @@
 import { NAVIGATION } from "../elements/navigation";
 import { SEARCH_PAGE_SELECTORS } from "../elements/search-page";
+import { productsToSearch } from "../fixtures/search";
 import { navigateAndSearch } from "../support/pages/search";
 
 let typedText;
@@ -9,7 +10,7 @@ describe("Search for products", () => {
     cy.visit("/");
   });
   it("should search for products SRS_0405", () => {
-    typedText = "polo";
+    typedText = productsToSearch.polo;
     navigateAndSearch(typedText);
     cy.url().should("include", `/search?q=${typedText}`);
   });
@@ -24,7 +25,7 @@ describe("Search for products", () => {
   });
 
   it("should see no results message SRS_0405", () => {
-    typedText = "!@#$";
+    typedText = productsToSearch.nonExistingProduct;
     navigateAndSearch(typedText);
     cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
       .should("contain", "Search query didn't return any viable results")

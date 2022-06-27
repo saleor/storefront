@@ -5,6 +5,6 @@ export function navigateAndSearch(typedText) {
   cy.get(NAVIGATION.searchIcon)
     .click()
     .get(SEARCH_PAGE_SELECTORS.searchInput)
-    .type(typedText, { delay: 100 })
+    .type(typedText, { delay: 500 })
     .should("have.value", typedText);
 }
