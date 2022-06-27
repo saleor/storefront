@@ -4,9 +4,14 @@ import { AppConfig } from "@/checkout/providers/AppConfigProvider/types";
 import { PayRequestBody } from "checkout-app/types/api/pay";
 import { PaymentStatusResponse } from "checkout-app/types/api/payment-status";
 import { PayResult } from "./types";
+import { ChannelActivePaymentProvidersByChannel } from "checkout-app/types";
 
-export const getPaymentProviders = () =>
-  fetch(`${envVars.checkoutApiUrl}/active-payment-providers/default-channel`);
+export const getPaymentMethods =
+  (): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
+    fetch(
+      // TODO: Remove hardcoded channel name
+      `${envVars.checkoutApiUrl}/active-payment-providers/Q2hhbm5lbDoyMjQz`
+    );
 
 export const pay = (body: PayRequestBody): FetchResponse<PayResult> =>
   fetch(`${envVars.checkoutApiUrl}/pay`, {

@@ -71,7 +71,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
   }
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 mb-8">
       <Title>{formatMessage("deliveryMethod")}</Title>
       {!checkout?.shippingAddress && (
         <Text>

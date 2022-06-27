@@ -45,7 +45,7 @@ export const useCheckoutFinalize = () => {
 
     if (userRegisterSuccessOrPassed) {
       const result = await checkoutPay({
-        provider: "mollie", // TODO: Hardcoded payment provider
+        provider: formData.paymentProviderId,
         checkoutId: checkout?.id,
         totalAmount: checkout?.totalPrice?.gross?.amount as number,
       });

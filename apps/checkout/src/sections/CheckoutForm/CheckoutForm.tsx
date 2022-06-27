@@ -18,6 +18,9 @@ import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import "./CheckoutFormStyles.css";
 import { useSetFormErrors } from "@/checkout/hooks/useSetFormErrors";
+import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
+import { PaymentMethods } from "../PaymentMethods";
+import { PaymentProviderID } from "@/checkout-app/types";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -31,10 +34,8 @@ export const CheckoutForm = () => {
   } = useCheckoutFinalize();
 
   const isLoading = loading || authenticating;
-
-  // TMP
-  // const [selectedPaymentProvider, setSelectedPaymentProvider] =
-  //   useState<string>();
+  const usePaymentProvidersProps = usePaymentMethods();
+  const { selectedPaymentProvider } = usePaymentProvidersProps;
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -59,12 +60,17 @@ export const CheckoutForm = () => {
   const { getValues } = methods;
 
   // not using form handleSubmit on purpose
-  const handleSubmit = () => checkoutFinalize(getValues());
+  const handleSubmit = () =>
+    checkoutFinalize({
+      ...getValues(),
+      paymentProviderId: selectedPaymentProvider as PaymentProviderID,
+    });
 
   const payButtonDisabled =
     submitting ||
     (checkout?.isShippingRequired && !checkout?.shippingAddress) ||
-    !checkout?.billingAddress;
+    !checkout?.billingAddress ||
+    !selectedPaymentProvider;
 
   return (
     <div className="checkout-form">
@@ -78,11 +84,7 @@ export const CheckoutForm = () => {
       <Suspense fallback={<ShippingMethodsSkeleton />}>
         {isLoading ? <ShippingMethodsSkeleton /> : <ShippingMethods />}
       </Suspense>
-      {/* TMP */}
-      {/* <PaymentProviders
-            onSelect={setSelectedPaymentProvider}
-            selectedValue={selectedPaymentProvider}
-          /> */}
+      <PaymentMethods {...usePaymentProvidersProps} />
       {isLoading ? (
         <Button
           ariaLabel={formatMessage("finalizeCheckoutLabel")}
