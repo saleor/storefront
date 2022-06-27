@@ -21,6 +21,7 @@ export function FilterPills({ pills, onRemoveAttribute, onClearFilters }: Filter
             <Chip
               key={`${attributeSlug}-${choiceSlug}`}
               label={label}
+              data-testid={`filterPill${choiceSlug}`}
               onClick={() => {
                 onRemoveAttribute(attributeSlug, choiceSlug);
               }}
@@ -28,7 +29,12 @@ export function FilterPills({ pills, onRemoveAttribute, onClearFilters }: Filter
           ))}
       </div>
       <div>
-        <button onClick={onClearFilters} className="text-main-2 text-base" type="button">
+        <button
+          onClick={onClearFilters}
+          className="text-main-2 text-base"
+          type="button"
+          data-testid="clearFilters"
+        >
           Clear all
         </button>
       </div>

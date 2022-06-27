@@ -34,7 +34,10 @@ export function HomepageBlock({ menuItem }: HomepageBlockProps) {
   }
   return (
     <div className="pb-8">
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 pb-4">
+      <h1
+        className="text-3xl font-extrabold tracking-tight text-gray-900 pb-4"
+        data-testid={`category${menuItem.name}`}
+      >
         {translate(menuItem, "name")}
       </h1>
       <ProductCollection filter={filter} allowMore={false} />
