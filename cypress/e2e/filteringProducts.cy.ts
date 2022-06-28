@@ -8,16 +8,16 @@ describe("Filter products", () => {
     cy.visit("/");
   });
 
-  it("should filter products by variant attribute", () => {
+  it("should filter products by variant attribute SRS_0306", () => {
     waitForProgressBarToNotBeVisible();
-    filterProducts(NAVIGATION.categoryList, CATEGORY.categoryTitle);
+    filterProducts(NAVIGATION.categoriesList, CATEGORY.categoryTitle);
     cy.get(FILTERS.filtersMenu).first().click();
     filterProducts(FILTERS.filterList, FILTERS.filterPill);
   });
 
-  it("should clear selected filters", () => {
+  it("should clear selected filters SRS_0308", () => {
     waitForProgressBarToNotBeVisible();
-    filterProducts(NAVIGATION.categoryList, CATEGORY.categoryTitle);
+    filterProducts(NAVIGATION.categoriesList, CATEGORY.categoryTitle);
     cy.get(FILTERS.filtersMenu).first().click();
     filterProducts(FILTERS.filterList, FILTERS.filterPill);
     cy.get(FILTERS.clearAllFilters)
