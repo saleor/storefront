@@ -75,14 +75,17 @@ export function ProductCollection({
   const products = mapEdgesToItems(data?.products);
   if (products.length === 0) {
     return (
-      <Text size="xl" color="secondary">
+      <Text size="xl" color="secondary" data-testid="noResultsText">
         {t.formatMessage(messages.noProducts)}
       </Text>
     );
   }
   return (
     <div>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+      <ul
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12"
+        data-testid="collection"
+      >
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

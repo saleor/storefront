@@ -33,6 +33,7 @@ function SearchPage() {
         value={searchQuery || ""}
         placeholder={t.formatMessage(messages.searchFieldPlaceholder)}
         onChange={(e) => setSearchQuery(e.target.value, { scroll: false, shallow: true })}
+        data-testid="searchInput"
       />
       <ProductCollection filter={debouncedFilter} />
     </main>

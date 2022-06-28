@@ -40,6 +40,7 @@
     "no-restricted-exports": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     // TO FIX:
-    "import/no-cycle": "off" // pathpidia issue
+    "import/no-cycle": "off", // pathpidia issue
+    "import/prefer-default-export": "off"
   }
 }
