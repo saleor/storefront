@@ -10,15 +10,15 @@ describe("Filter products", () => {
 
   it("should filter products by variant attribute SRS_0306", () => {
     waitForProgressBarToNotBeVisible();
-    filterProducts(NAVIGATION.categoriesList, CATEGORY.categoryTitle);
-    cy.get(FILTERS.filtersMenu).first().click();
+    filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
+    cy.get(FILTERS.filtersMenuButtons).first().click();
     filterProducts(FILTERS.filterList, FILTERS.filterPill);
   });
 
   it("should clear selected filters SRS_0308", () => {
     waitForProgressBarToNotBeVisible();
-    filterProducts(NAVIGATION.categoriesList, CATEGORY.categoryTitle);
-    cy.get(FILTERS.filtersMenu).first().click();
+    filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
+    cy.get(FILTERS.filtersMenuButtons).first().click();
     filterProducts(FILTERS.filterList, FILTERS.filterPill);
     cy.get(FILTERS.clearAllFilters)
       .click()

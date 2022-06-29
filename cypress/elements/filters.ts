@@ -1,6 +1,6 @@
 export const FILTERS = {
-  filtersMenu: "[data-testid*='filterAttribute']",
+  filtersMenuButtons: "[data-testid*='filterAttribute']",
   filterList: "[data-testid*='filterAttributeValue']",
   filterPill: "[data-testid*='filterPill']",
-  clearAllFilters: "[data-testid='clearFilters']",
+  clearAllFiltersButton: "[data-testid='clearFilters']",
 };

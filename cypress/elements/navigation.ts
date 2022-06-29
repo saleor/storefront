@@ -1,3 +1,3 @@
 export const NAVIGATION = {
-  categoriesList: "[data-testid*='categoriesList']",
+  categoriesListButtons: "[data-testid*='categoriesList']",
 };
