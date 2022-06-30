@@ -12,18 +12,32 @@
         "$NEXT_PUBLIC_SALEOR_API_URL",
         "$SETTINGS_ENCRYPTION_SECRET"
       ],
-      "outputs": ["dist/**", ".next/**", "build/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "build/**"
+      ]
     },
     "lint": {
       "outputs": []
     },
     "check-types": {
-      "dependsOn": ["@saleor/ui-kit#build"]
+      "dependsOn": [
+        "@saleor/ui-kit#build"
+      ]
     },
     "test": {},
     "dev": {
       "cache": false
+    },
+    "generate": {
+      "dependsOn": [
+        "$SALEOR_API_URL"
+      ]
     }
   },
-  "globalDependencies": [".env", ".env.local"]
+  "globalDependencies": [
+    ".env",
+    ".env.local"
+  ]
 }

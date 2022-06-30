@@ -13,6 +13,9 @@ fragment CheckoutErrorFragment on CheckoutError {
 fragment CheckoutFragment on Checkout {
   id
   email
+  channel {
+    id
+  }
   shippingAddress {
     ...AddressFragment
   }

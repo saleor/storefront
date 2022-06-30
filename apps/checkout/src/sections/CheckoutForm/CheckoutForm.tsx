@@ -34,7 +34,7 @@ export const CheckoutForm = () => {
   } = useCheckoutFinalize();
 
   const isLoading = loading || authenticating;
-  const usePaymentProvidersProps = usePaymentMethods();
+  const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
   const { selectedPaymentProvider } = usePaymentProvidersProps;
 
   const schema = object({

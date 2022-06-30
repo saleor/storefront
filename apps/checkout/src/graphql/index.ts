@@ -1249,6 +1249,26 @@ export type AttributeCreateInput = {
   visibleInStorefront?: InputMaybe<Scalars["Boolean"]>;
 };
 
+export type AttributeCreated = Event & {
+  __typename?: "AttributeCreated";
+  /**
+   * The attribute the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  attribute?: Maybe<Attribute>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
 /**
  * Deletes an attribute.
  *
@@ -1260,6 +1280,26 @@ export type AttributeDelete = {
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   attributeErrors: Array<AttributeError>;
   errors: Array<AttributeError>;
+};
+
+export type AttributeDeleted = Event & {
+  __typename?: "AttributeDeleted";
+  /**
+   * The attribute the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  attribute?: Maybe<Attribute>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** An enumeration. */
@@ -1454,6 +1494,26 @@ export type AttributeUpdateInput = {
   valueRequired?: InputMaybe<Scalars["Boolean"]>;
   /** Whether the attribute should be visible or not in storefront. */
   visibleInStorefront?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type AttributeUpdated = Event & {
+  __typename?: "AttributeUpdated";
+  /**
+   * The attribute the event relates to.
+   *
+   * Added in Saleor 3.5.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  attribute?: Maybe<Attribute>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** Represents a value of an attribute. */
@@ -20162,6 +20222,12 @@ export type WebhookEventTypeAsyncEnum =
   | "APP_STATUS_CHANGED"
   /** An app updated. */
   | "APP_UPDATED"
+  /** A new attribute is created. */
+  | "ATTRIBUTE_CREATED"
+  /** An attribute is deleted. */
+  | "ATTRIBUTE_DELETED"
+  /** An attribute is updated. */
+  | "ATTRIBUTE_UPDATED"
   /** A new category created. */
   | "CATEGORY_CREATED"
   /** A category is deleted. */
@@ -20318,6 +20384,12 @@ export type WebhookEventTypeEnum =
   | "APP_STATUS_CHANGED"
   /** An app updated. */
   | "APP_UPDATED"
+  /** A new attribute is created. */
+  | "ATTRIBUTE_CREATED"
+  /** An attribute is deleted. */
+  | "ATTRIBUTE_DELETED"
+  /** An attribute is updated. */
+  | "ATTRIBUTE_UPDATED"
   /** A new category created. */
   | "CATEGORY_CREATED"
   /** A category is deleted. */
@@ -20488,6 +20560,9 @@ export type WebhookSampleEventTypeEnum =
   | "APP_INSTALLED"
   | "APP_STATUS_CHANGED"
   | "APP_UPDATED"
+  | "ATTRIBUTE_CREATED"
+  | "ATTRIBUTE_DELETED"
+  | "ATTRIBUTE_UPDATED"
   | "CATEGORY_CREATED"
   | "CATEGORY_DELETED"
   | "CATEGORY_UPDATED"
@@ -20659,6 +20734,7 @@ export type CheckoutFragment = {
   id: string;
   email?: string | null;
   isShippingRequired: boolean;
+  channel: { __typename?: "Channel"; id: string };
   shippingAddress?: {
     __typename?: "Address";
     id: string;
@@ -20836,6 +20912,7 @@ export type CheckoutQuery = {
     id: string;
     email?: string | null;
     isShippingRequired: boolean;
+    channel: { __typename?: "Channel"; id: string };
     shippingAddress?: {
       __typename?: "Address";
       id: string;
@@ -21120,6 +21197,7 @@ export type CheckoutEmailUpdateMutation = {
       id: string;
       email?: string | null;
       isShippingRequired: boolean;
+      channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
         id: string;
@@ -21256,6 +21334,7 @@ export type CheckoutCustomerAttachMutation = {
       id: string;
       email?: string | null;
       isShippingRequired: boolean;
+      channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
         id: string;
@@ -21391,6 +21470,7 @@ export type CheckoutCustomerDetachMutation = {
       id: string;
       email?: string | null;
       isShippingRequired: boolean;
+      channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
         id: string;
@@ -21625,6 +21705,7 @@ export type CheckoutShippingAddressUpdateMutation = {
       id: string;
       email?: string | null;
       isShippingRequired: boolean;
+      channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
         id: string;
@@ -21761,6 +21842,7 @@ export type CheckoutBillingAddressUpdateMutation = {
       id: string;
       email?: string | null;
       isShippingRequired: boolean;
+      channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
         id: string;
@@ -21897,6 +21979,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
       id: string;
       email?: string | null;
       isShippingRequired: boolean;
+      channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
         id: string;
@@ -22326,6 +22409,9 @@ export const CheckoutFragmentDoc = gql`
   fragment CheckoutFragment on Checkout {
     id
     email
+    channel {
+      id
+    }
     shippingAddress {
       ...AddressFragment
     }

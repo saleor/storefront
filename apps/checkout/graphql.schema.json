@@ -6631,6 +6631,83 @@
       },
       {
         "kind": "OBJECT",
+        "name": "AttributeCreated",
+        "description": null,
+        "fields": [
+          {
+            "name": "attribute",
+            "description": "The attribute the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Attribute",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "AttributeDelete",
         "description": "Deletes an attribute. \n\nRequires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.",
         "fields": [
@@ -6697,6 +6774,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AttributeDeleted",
+        "description": null,
+        "fields": [
+          {
+            "name": "attribute",
+            "description": "The attribute the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Attribute",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -7843,6 +7997,83 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AttributeUpdated",
+        "description": null,
+        "fields": [
+          {
+            "name": "attribute",
+            "description": "The attribute the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Attribute",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -23736,6 +23967,21 @@
           {
             "kind": "OBJECT",
             "name": "AppUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeUpdated",
             "ofType": null
           },
           {
@@ -100649,6 +100895,24 @@
             "deprecationReason": null
           },
           {
+            "name": "ATTRIBUTE_CREATED",
+            "description": "A new attribute is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_DELETED",
+            "description": "An attribute is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_UPDATED",
+            "description": "An attribute is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CATEGORY_CREATED",
             "description": "A new category created.",
             "isDeprecated": false,
@@ -101154,6 +101418,24 @@
           {
             "name": "APP_UPDATED",
             "description": "An app updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_CREATED",
+            "description": "A new attribute is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_DELETED",
+            "description": "An attribute is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_UPDATED",
+            "description": "An attribute is updated.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -101787,6 +102069,24 @@
           },
           {
             "name": "APP_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_UPDATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

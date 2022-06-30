@@ -72,6 +72,16 @@ cd apps/checkout && pnpm dev
 
 ## Deployment
 
+### GraphQL Schema
+
+To generate GraphQL code based on latest schema from Saleor instance defined in `SALEOR_API_URL` env variable run this command:
+
+```
+pnpm run generate
+```
+
+You need to run this command after each change in `*.graphql` files
+
 ### Env variables
 
 Change environment variables inside `.env` file:
