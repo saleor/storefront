@@ -3,7 +3,7 @@ import { FILTERS } from "cypress/elements/filters";
 import { NAVIGATION } from "cypress/elements/navigation";
 import { filterProducts, waitForProgressBarToNotBeVisible } from "cypress/support/shared";
 
-describe("Filter products", () => {
+describe("Using filters on products list", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -20,11 +20,11 @@ describe("Filter products", () => {
     filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
     cy.get(FILTERS.filtersMenuButtons).first().click();
     filterProducts(FILTERS.filterList, FILTERS.filterPill);
-    cy.get(FILTERS.clearAllFilters)
+    cy.get(FILTERS.clearAllFiltersButton)
       .click()
       .get(FILTERS.filterPill)
       .should("not.exist")
-      .get(FILTERS.clearAllFilters)
+      .get(FILTERS.clearAllFiltersButton)
       .should("not.exist");
   });
 });
