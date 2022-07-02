@@ -1,6 +1,6 @@
 # saleor-checkout
 
-Extensible, powerful checkout powered by Saleor API.
+Extensible, checkout and payment integrations powered by Saleor API.
 
 ## Setup
 
