@@ -19,7 +19,13 @@ export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps)
 
   if (menuItem.url) {
     return (
-      <a href={menuItem.url} target="_blank" rel="noreferrer" className={className}>
+      <a
+        href={menuItem.url}
+        target="_blank"
+        rel="noreferrer"
+        className={className}
+        data-testid={`categoriesList${menuItem.name}`}
+      >
         {translate(menuItem, "name")}
       </a>
     );
@@ -27,7 +33,7 @@ export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps)
 
   return (
     <Link href={getLinkPath(menuItem, slug, currentLocale)} passHref>
-      <a href="pass" className={className}>
+      <a href="pass" className={className} data-testid={`categoriesList${menuItem.name}`}>
         {translate(menuItem, "name")}
       </a>
     </Link>
