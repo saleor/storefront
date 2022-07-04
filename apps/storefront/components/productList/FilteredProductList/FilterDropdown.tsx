@@ -26,7 +26,10 @@ export function FilterDropdown({
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-left px-2 py-2 text-base font-medium  hover:bg-opacity-30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button
+          className="inline-flex w-full justify-left px-2 py-2 text-base font-medium  hover:bg-opacity-30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          data-testid={`filterAttribute${label}`}
+        >
           {label}
           <ChevronDownIcon className="ml-2 -mr-1 h-5 w-5 " aria-hidden="true" />
         </Menu.Button>
@@ -51,6 +54,7 @@ export function FilterDropdown({
                     active ? "border-brand text-brand" : "border-transparent text-gray-900",
                     "group flex w-full items-center px-2 py-2 text-base border-2"
                   )}
+                  data-testid={`filterAttributeValue${option.label}`}
                 >
                   <div className="flex-grow text-left">{option.label}</div>
                   {option.chosen && (

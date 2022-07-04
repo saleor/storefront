@@ -5,6 +5,7 @@
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["cypress", "node"],
-    "isolatedModules": false
+    "isolatedModules": false,
+    "noImplicitAny": false
   }
 }
