@@ -1,5 +1,4 @@
 import { getClient } from "@/checkout-app/backend/client";
-import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   OrderPaymentDetailsQuery,
   OrderPaymentDetailsQueryVariables,
@@ -11,10 +10,7 @@ import { Errors } from "./types";
 export const getOrderPaymentDetails = async (
   id: OrderPaymentDetailsQueryVariables["id"]
 ) => {
-  const { data, error } = await getClient(
-    envVars.apiUrl,
-    serverEnvVars.appToken
-  )
+  const { data, error } = await getClient()
     .query<OrderPaymentDetailsQuery, OrderPaymentDetailsQueryVariables>(
       OrderPaymentDetailsDocument,
       { id }

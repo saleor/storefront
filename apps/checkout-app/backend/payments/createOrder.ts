@@ -1,5 +1,4 @@
 import { getClient } from "@/checkout-app/backend/client";
-import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   CheckoutDocument,
   CheckoutQuery,
@@ -17,14 +16,14 @@ export const createOrder = async (
   totalAmount: number
 ): Promise<
   | {
-      data: OrderFragment;
-    }
+    data: OrderFragment;
+  }
   | {
-      errors: Errors;
-    }
+    errors: Errors;
+  }
 > => {
   // Start by checking if total amount is correct
-  const client = await getClient(envVars.apiUrl, serverEnvVars.appToken);
+  const client = getClient();
   const checkout = await client
     .query<CheckoutQuery, CheckoutQueryVariables>(CheckoutDocument, {
       id: checkoutId,

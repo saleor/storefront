@@ -1,5 +1,4 @@
 import { getClient } from "@/checkout-app/backend/client";
-import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   OrderDetailsQuery,
   OrderDetailsQueryVariables,
@@ -13,16 +12,13 @@ export const getOrderDetails = async (
   id: OrderDetailsQueryVariables["id"]
 ): Promise<
   | {
-      data: OrderFragment;
-    }
+    data: OrderFragment;
+  }
   | {
-      errors: Errors;
-    }
+    errors: Errors;
+  }
 > => {
-  const { data, error } = await getClient(
-    envVars.apiUrl,
-    serverEnvVars.appToken
-  )
+  const { data, error } = await getClient()
     .query<OrderDetailsQuery, OrderDetailsQueryVariables>(
       OrderDetailsDocument,
       { id }

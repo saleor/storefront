@@ -1,4 +1,3 @@
-import { serverEnvVars } from "@/checkout-app/constants";
 import ErrorDetails from "@/checkout-app/frontend/components/templates/ErrorDetails";
 import { useChannelPaymentOptions } from "@/checkout-app/frontend/data";
 import { useAuthData } from "@/checkout-app/frontend/hooks/useAuthData";
@@ -25,7 +24,7 @@ const Channel = () => {
   const { appId, isAuthorized } = useAuthData();
   const [metafieldsQuery] = usePublicMetafieldsQuery({
     variables: {
-      id: appId || serverEnvVars.appId,
+      id: appId,
       keys: ["channelActivePaymentProviders"] as PublicSettingID[number][],
     },
     pause: !isAuthorized,
@@ -61,7 +60,7 @@ const Channel = () => {
     });
 
     setPublicMetadata({
-      id: appId || serverEnvVars.appId,
+      id: appId,
       input: metadata,
     });
   };

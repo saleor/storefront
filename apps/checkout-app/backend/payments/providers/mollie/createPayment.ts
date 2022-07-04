@@ -1,4 +1,3 @@
-import { envVars } from "@/checkout-app/constants";
 import { OrderFragment } from "@/checkout-app/graphql";
 import { formatRedirectUrl } from "@/checkout-app/backend/payments/utils";
 

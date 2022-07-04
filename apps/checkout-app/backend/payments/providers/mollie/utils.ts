@@ -104,3 +104,7 @@ export const getLines = (lines: OrderFragment["lines"]) =>
     },
     type: getProductType(line),
   }));
+
+export const getMollieEventName = (status: string) => {
+  return `Mollie status update: ${status}`;
+};

@@ -1,5 +1,4 @@
 import { getClient } from "@/checkout-app/backend/client";
-import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   OrderUpdatePaymentMetafieldDocument,
   OrderUpdatePaymentMetafieldMutation,
@@ -11,10 +10,7 @@ export const updatePaymentMetafield = async (
   orderId: OrderUpdatePaymentMetafieldMutationVariables["orderId"],
   payment: OrderPaymentMetafield
 ) => {
-  const { data, error } = await getClient(
-    envVars.apiUrl,
-    serverEnvVars.appToken
-  )
+  const { data, error } = await getClient()
     .mutation<
       OrderUpdatePaymentMetafieldMutation,
       OrderUpdatePaymentMetafieldMutationVariables

@@ -15,7 +15,7 @@ generates:
         JSONString: string
         UUID: string
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
-      enumsAsTypes: true
+      enumsAsTypes: true # note: this doesn't work with @saleor/app-sdk webhook inference
   ./graphql.schema.json:
     plugins:
       - "introspection"

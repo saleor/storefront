@@ -1,5 +1,5 @@
-query App($id: ID) {
-  app(id: $id) {
+query App {
+  app {
     id
     name
   }

@@ -1,6 +1,4 @@
-import { isSsr } from "@/checkout-app/constants";
 import { app, AppBridge } from "@/checkout-app/frontend/misc/app";
-import { createApp } from "@saleor/app-bridge";
 import { createContext, useEffect, useState } from "react";
 
 interface IAppContext {

@@ -12,14 +12,12 @@ import {
 import { getCommonErrors, getMetafield } from "@/checkout-app/frontend/utils";
 import { useCustomizationSettings } from "@/checkout-app/frontend/data";
 import { useAuthData } from "@/checkout-app/frontend/hooks/useAuthData";
-import { serverEnvVars } from "@/checkout-app/constants";
 import {
   mapPublicMetafieldsToMetadata,
   mapPublicSettingsToMetadata,
 } from "@/checkout-app/frontend/misc/mapPublicSettingsToMetadata";
 import { mapPublicMetafieldsToSettings } from "@/checkout-app/frontend/misc/mapPublicMetafieldsToSettings";
 import { PublicMetafieldID } from "@/checkout-app/types/common";
-import { reduce } from "lodash-es";
 import { uploadSettingsFiles } from "@/checkout-app/frontend/handlers";
 
 const Customization = () => {
@@ -27,7 +25,7 @@ const Customization = () => {
   const { appId, isAuthorized } = useAuthData();
   const [metafieldsQuery] = usePublicMetafieldsQuery({
     variables: {
-      id: appId || serverEnvVars.appId,
+      id: appId,
       keys: [
         "customizations",
         "customizationsCheckoutUrl",
@@ -72,7 +70,7 @@ const Customization = () => {
     ];
 
     await setPublicMetadata({
-      id: appId || serverEnvVars.appId,
+      id: appId,
       input: metadata,
     });
   };

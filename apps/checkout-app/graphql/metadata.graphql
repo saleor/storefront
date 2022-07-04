@@ -18,6 +18,20 @@ query PrivateMetafields($id: ID!, $keys: [String!]) {
   }
 }
 
+query PublicMetafieldsInfered($keys: [String!]) {
+  app {
+    id
+    metafields(keys: $keys)
+  }
+}
+
+query PrivateMetafieldsInfered($keys: [String!]) {
+  app {
+    id
+    privateMetafields(keys: $keys)
+  }
+}
+
 mutation UpdatePublicMetadata(
   $id: ID!
   $input: [MetadataInput!]!

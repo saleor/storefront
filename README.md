@@ -273,7 +273,6 @@ outputs this:
 
 You have to add additional environment variables for Checkout App in Vercel:
 
-- `SALEOR_APP_ID` — ID of the app
 - `SALEOR_APP_TOKEN` — Token you've just generated
 
 > 🚨 These values are secrets — don't store them inside your git repository

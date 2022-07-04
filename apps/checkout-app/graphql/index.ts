@@ -21296,9 +21296,7 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type AppQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
-}>;
+export type AppQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, name?: string | null } | null };
@@ -21350,6 +21348,20 @@ export type PrivateMetafieldsQueryVariables = Exact<{
 
 
 export type PrivateMetafieldsQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetafields?: any | null } | null };
+
+export type PublicMetafieldsInferedQueryVariables = Exact<{
+  keys?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type PublicMetafieldsInferedQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, metafields?: any | null } | null };
+
+export type PrivateMetafieldsInferedQueryVariables = Exact<{
+  keys?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type PrivateMetafieldsInferedQuery = { __typename?: 'Query', app?: { __typename?: 'App', id: string, privateMetafields?: any | null } | null };
 
 export type UpdatePublicMetadataMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -21434,6 +21446,28 @@ export type TransactionUpdateMutationVariables = Exact<{
 
 
 export type TransactionUpdateMutation = { __typename?: 'Mutation', transactionUpdate?: { __typename?: 'TransactionUpdate', transaction?: { __typename?: 'TransactionItem', id: string } | null, errors: Array<{ __typename?: 'TransactionUpdateError', code: TransactionUpdateErrorCode, message?: string | null }> } | null };
+
+export type TransactionActionRequestSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TransactionActionRequestSubscription = { __typename?: 'Subscription', event?: { __typename?: 'AddressCreated' } | { __typename?: 'AddressDeleted' } | { __typename?: 'AddressUpdated' } | { __typename?: 'AppDeleted' } | { __typename?: 'AppInstalled' } | { __typename?: 'AppStatusChanged' } | { __typename?: 'AppUpdated' } | { __typename?: 'AttributeCreated' } | { __typename?: 'AttributeDeleted' } | { __typename?: 'AttributeUpdated' } | { __typename?: 'CategoryCreated' } | { __typename?: 'CategoryDeleted' } | { __typename?: 'CategoryUpdated' } | { __typename?: 'ChannelCreated' } | { __typename?: 'ChannelDeleted' } | { __typename?: 'ChannelStatusChanged' } | { __typename?: 'ChannelUpdated' } | { __typename?: 'CheckoutCreated' } | { __typename?: 'CheckoutUpdated' } | { __typename?: 'CollectionCreated' } | { __typename?: 'CollectionDeleted' } | { __typename?: 'CollectionUpdated' } | { __typename?: 'CustomerCreated' } | { __typename?: 'CustomerUpdated' } | { __typename?: 'DraftOrderCreated' } | { __typename?: 'DraftOrderDeleted' } | { __typename?: 'DraftOrderUpdated' } | { __typename?: 'FulfillmentCanceled' } | { __typename?: 'FulfillmentCreated' } | { __typename?: 'GiftCardCreated' } | { __typename?: 'GiftCardDeleted' } | { __typename?: 'GiftCardStatusChanged' } | { __typename?: 'GiftCardUpdated' } | { __typename?: 'InvoiceDeleted' } | { __typename?: 'InvoiceRequested' } | { __typename?: 'InvoiceSent' } | { __typename?: 'MenuCreated' } | { __typename?: 'MenuDeleted' } | { __typename?: 'MenuItemCreated' } | { __typename?: 'MenuItemDeleted' } | { __typename?: 'MenuItemUpdated' } | { __typename?: 'MenuUpdated' } | { __typename?: 'OrderCancelled' } | { __typename?: 'OrderConfirmed' } | { __typename?: 'OrderCreated' } | { __typename?: 'OrderFulfilled' } | { __typename?: 'OrderFullyPaid' } | { __typename?: 'OrderUpdated' } | { __typename?: 'PageCreated' } | { __typename?: 'PageDeleted' } | { __typename?: 'PageTypeCreated' } | { __typename?: 'PageTypeDeleted' } | { __typename?: 'PageTypeUpdated' } | { __typename?: 'PageUpdated' } | { __typename?: 'ProductCreated' } | { __typename?: 'ProductDeleted' } | { __typename?: 'ProductUpdated' } | { __typename?: 'ProductVariantBackInStock' } | { __typename?: 'ProductVariantCreated' } | { __typename?: 'ProductVariantDeleted' } | { __typename?: 'ProductVariantOutOfStock' } | { __typename?: 'ProductVariantUpdated' } | { __typename?: 'SaleCreated' } | { __typename?: 'SaleDeleted' } | { __typename?: 'SaleUpdated' } | { __typename?: 'ShippingPriceCreated' } | { __typename?: 'ShippingPriceDeleted' } | { __typename?: 'ShippingPriceUpdated' } | { __typename?: 'ShippingZoneCreated' } | { __typename?: 'ShippingZoneDeleted' } | { __typename?: 'ShippingZoneUpdated' } | { __typename?: 'StaffCreated' } | { __typename?: 'StaffDeleted' } | { __typename?: 'StaffUpdated' } | { __typename?: 'TransactionActionRequest', transaction?: { __typename?: 'TransactionItem', id: string, reference: string, type: string, authorizedAmount: { __typename?: 'Money', amount: number, currency: string }, chargedAmount: { __typename?: 'Money', amount: number }, voidedAmount: { __typename?: 'Money', amount: number }, refundedAmount: { __typename?: 'Money', amount: number } } | null, action: { __typename?: 'TransactionAction', actionType: TransactionActionEnum, amount?: any | null } } | { __typename?: 'TranslationCreated' } | { __typename?: 'TranslationUpdated' } | { __typename?: 'VoucherCreated' } | { __typename?: 'VoucherDeleted' } | { __typename?: 'VoucherUpdated' } | { __typename?: 'WarehouseCreated' } | { __typename?: 'WarehouseDeleted' } | { __typename?: 'WarehouseUpdated' } | null };
+
+export type TransactionActionPayloadFragment = { __typename?: 'TransactionActionRequest', transaction?: { __typename?: 'TransactionItem', id: string, reference: string, type: string, authorizedAmount: { __typename?: 'Money', amount: number, currency: string }, chargedAmount: { __typename?: 'Money', amount: number }, voidedAmount: { __typename?: 'Money', amount: number }, refundedAmount: { __typename?: 'Money', amount: number } } | null, action: { __typename?: 'TransactionAction', actionType: TransactionActionEnum, amount?: any | null } };
+
+export type CreateWebhooksMutationVariables = Exact<{
+  targetUrl?: InputMaybe<Scalars['String']>;
+  query?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateWebhooksMutation = { __typename?: 'Mutation', webhookCreate?: { __typename?: 'WebhookCreate', errors: Array<{ __typename?: 'WebhookError', message?: string | null, field?: string | null, code: WebhookErrorCode }> } | null };
+
+export type CheckWebhooksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CheckWebhooksQuery = { __typename?: 'Query', app?: { __typename?: 'App', webhooks?: Array<{ __typename?: 'Webhook', id: string, targetUrl: string }> | null } | null };
+
+export type WebhookErrorFragment = { __typename?: 'WebhookError', message?: string | null, field?: string | null, code: WebhookErrorCode };
 
 export const ChannelFragmentDoc = gql`
     fragment ChannelFragment on Channel {
@@ -21585,9 +21619,42 @@ export const TransactionFragmentDoc = gql`
 }
     ${MoneyFragmentDoc}
 ${TransactionEventFragmentDoc}`;
+export const TransactionActionPayloadFragmentDoc = gql`
+    fragment TransactionActionPayload on TransactionActionRequest {
+  transaction {
+    id
+    reference
+    type
+    authorizedAmount {
+      amount
+      currency
+    }
+    chargedAmount {
+      amount
+    }
+    voidedAmount {
+      amount
+    }
+    refundedAmount {
+      amount
+    }
+  }
+  action {
+    actionType
+    amount
+  }
+}
+    `;
+export const WebhookErrorFragmentDoc = gql`
+    fragment WebhookErrorFragment on WebhookError {
+  message
+  field
+  code
+}
+    `;
 export const AppDocument = gql`
-    query App($id: ID) {
-  app(id: $id) {
+    query App {
+  app {
     id
     name
   }
@@ -21675,6 +21742,30 @@ export const PrivateMetafieldsDocument = gql`
 
 export function usePrivateMetafieldsQuery(options: Omit<Urql.UseQueryArgs<PrivateMetafieldsQueryVariables>, 'query'>) {
   return Urql.useQuery<PrivateMetafieldsQuery>({ query: PrivateMetafieldsDocument, ...options });
+};
+export const PublicMetafieldsInferedDocument = gql`
+    query PublicMetafieldsInfered($keys: [String!]) {
+  app {
+    id
+    metafields(keys: $keys)
+  }
+}
+    `;
+
+export function usePublicMetafieldsInferedQuery(options?: Omit<Urql.UseQueryArgs<PublicMetafieldsInferedQueryVariables>, 'query'>) {
+  return Urql.useQuery<PublicMetafieldsInferedQuery>({ query: PublicMetafieldsInferedDocument, ...options });
+};
+export const PrivateMetafieldsInferedDocument = gql`
+    query PrivateMetafieldsInfered($keys: [String!]) {
+  app {
+    id
+    privateMetafields(keys: $keys)
+  }
+}
+    `;
+
+export function usePrivateMetafieldsInferedQuery(options?: Omit<Urql.UseQueryArgs<PrivateMetafieldsInferedQueryVariables>, 'query'>) {
+  return Urql.useQuery<PrivateMetafieldsInferedQuery>({ query: PrivateMetafieldsInferedDocument, ...options });
 };
 export const UpdatePublicMetadataDocument = gql`
     mutation UpdatePublicMetadata($id: ID!, $input: [MetadataInput!]!, $keys: [String!]) {
@@ -21822,4 +21913,44 @@ export const TransactionUpdateDocument = gql`
 
 export function useTransactionUpdateMutation() {
   return Urql.useMutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(TransactionUpdateDocument);
+};
+export const TransactionActionRequestSubscriptionDocument = gql`
+    subscription TransactionActionRequestSubscription {
+  event {
+    ...TransactionActionPayload
+  }
+}
+    ${TransactionActionPayloadFragmentDoc}`;
+
+export function useTransactionActionRequestSubscription<TData = TransactionActionRequestSubscription>(options: Omit<Urql.UseSubscriptionArgs<TransactionActionRequestSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<TransactionActionRequestSubscription, TData>) {
+  return Urql.useSubscription<TransactionActionRequestSubscription, TData, TransactionActionRequestSubscriptionVariables>({ query: TransactionActionRequestSubscriptionDocument, ...options }, handler);
+};
+export const CreateWebhooksDocument = gql`
+    mutation CreateWebhooks($targetUrl: String, $query: String) {
+  webhookCreate(
+    input: {name: "Checkout app payment notifications", targetUrl: $targetUrl, events: [TRANSACTION_ACTION_REQUEST], isActive: true, query: $query}
+  ) {
+    errors {
+      ...WebhookErrorFragment
+    }
+  }
+}
+    ${WebhookErrorFragmentDoc}`;
+
+export function useCreateWebhooksMutation() {
+  return Urql.useMutation<CreateWebhooksMutation, CreateWebhooksMutationVariables>(CreateWebhooksDocument);
+};
+export const CheckWebhooksDocument = gql`
+    query CheckWebhooks {
+  app {
+    webhooks {
+      id
+      targetUrl
+    }
+  }
+}
+    `;
+
+export function useCheckWebhooksQuery(options?: Omit<Urql.UseQueryArgs<CheckWebhooksQueryVariables>, 'query'>) {
+  return Urql.useQuery<CheckWebhooksQuery>({ query: CheckWebhooksDocument, ...options });
 };

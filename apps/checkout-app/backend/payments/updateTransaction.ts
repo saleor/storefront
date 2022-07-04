@@ -1,5 +1,4 @@
 import { getClient } from "@/checkout-app/backend/client";
-import { envVars, serverEnvVars } from "@/checkout-app/constants";
 import {
   TransactionUpdateDocument,
   TransactionUpdateMutation,
@@ -9,10 +8,7 @@ import {
 export const updateTransaction = async (
   args: TransactionUpdateMutationVariables
 ) => {
-  const { data, error } = await getClient(
-    envVars.apiUrl,
-    serverEnvVars.appToken
-  )
+  const { data, error } = await getClient()
     .mutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(
       TransactionUpdateDocument,
       args
