@@ -48,8 +48,9 @@ export const useFetch = <
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip, ...useFetchArgsDeps]);
 
   return [{ data: result, loading, error }, fetchData];

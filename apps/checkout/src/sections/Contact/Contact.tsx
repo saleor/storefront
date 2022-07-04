@@ -62,19 +62,19 @@ export const Contact = () => {
     showSuccess("checkoutEmailUpdate");
   };
 
-  const updateEmailAfterSignIn = () => {
+  const updateEmailAfterSignIn = async () => {
     if (!user?.email || user?.email === checkout?.email) {
       return;
     }
 
-    handleEmailUpdate(user?.email as string);
+    await handleEmailUpdate(user?.email as string);
   };
 
-  const updateEmailAfterSectionChange = () => {
+  const updateEmailAfterSectionChange = async () => {
     const formEmail = getValues("email");
 
     if (formEmail !== checkout.email) {
-      handleEmailUpdate(formEmail);
+      await handleEmailUpdate(formEmail);
     }
   };
 
@@ -83,7 +83,7 @@ export const Contact = () => {
       return;
     }
 
-    customerAttach({
+    await customerAttach({
       checkoutId: checkout.id,
       customerId: user?.id as string,
     });
@@ -91,8 +91,8 @@ export const Contact = () => {
 
   useEffect(() => {
     if (authenticated && !hasAuthenticated.current) {
-      updateEmailAfterSignIn();
-      handleCustomerAttatch();
+      void updateEmailAfterSignIn();
+      void handleCustomerAttatch();
       hasAuthenticated.current = true;
     }
   }, [authenticated]);
@@ -103,7 +103,7 @@ export const Contact = () => {
     }
 
     if (isCurrentSection("guestUser")) {
-      updateEmailAfterSectionChange();
+      void updateEmailAfterSectionChange();
     }
   }, [currentSection]);
 

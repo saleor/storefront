@@ -24,7 +24,7 @@ const ChannelList: React.FC<ChannelListProps> = ({ channels, loading }) => {
   const classes = useStyles();
 
   const onChannelClick = (channel: ChannelFragment) => {
-    router.push({
+    void router.push({
       pathname: channelPath,
       query: { channelId: channel.id },
     });

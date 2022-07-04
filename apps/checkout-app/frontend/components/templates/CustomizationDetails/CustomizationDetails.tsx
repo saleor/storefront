@@ -225,6 +225,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
         disabled={loading || !formState.isDirty}
         state={saveButtonBarState}
         onCancel={onCancel}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={handleSubmitForm(handleSubmit)}
       />
     </form>

@@ -31,7 +31,7 @@ const PaymentProvider = () => {
   };
 
   const handleSubmit = (data: PaymentProviderSettingsValues<"unencrypted">) => {
-    setPaymentProviderSettingsRequest(data);
+    void setPaymentProviderSettingsRequest(data);
   };
 
   const errors = [

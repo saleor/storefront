@@ -55,20 +55,20 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
 
   const onBackClick = () => {
     if (channelId) {
-      router.push({
+      void router.push({
         pathname: channelPath,
         query: {
           channelId: channelId,
         },
       });
     } else {
-      router.push(channelListPath);
+      void router.push(channelListPath);
     }
   };
 
   const onPaymentProviderClick = (paymentProvider: Item) => {
     if (channelId) {
-      router.push({
+      void router.push({
         pathname: paymentProviderPath,
         query: {
           paymentProviderId: paymentProvider.id,
@@ -76,7 +76,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
         },
       });
     } else {
-      router.push({
+      void router.push({
         pathname: paymentProviderPath,
         query: {
           paymentProviderId: paymentProvider.id,
@@ -149,6 +149,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
         disabled={loading || !formState.isDirty}
         state={saveButtonBarState}
         onCancel={onCancel}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={handleSubmitForm(handleSubmit)}
       />
     </form>

@@ -63,7 +63,9 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
       {...(billingErrorProps as UseErrors<UserAddressFormData>)}
       title={formatMessage("billingAddress")}
       type="BILLING"
-      onAddressSelect={updateBillingAddress}
+      onAddressSelect={(address) => {
+        void updateBillingAddress(address);
+      }}
       addresses={addresses as AddressFragment[]}
       defaultAddressId={defaultAddress?.id}
     />
@@ -72,7 +74,9 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
       {...billingErrorProps}
       address={checkout?.billingAddress as AddressFragment}
       title={formatMessage("billingAddress")}
-      onSubmit={updateBillingAddress}
+      onSubmit={(address) => {
+        void updateBillingAddress(address);
+      }}
     />
   );
 };

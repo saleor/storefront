@@ -59,7 +59,7 @@ const Channel = () => {
       },
     });
 
-    setPublicMetadata({
+    void setPublicMetadata({
       id: appId,
       input: metadata,
     });

@@ -41,7 +41,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
     if (!hasErrors) {
       showSuccess();
-      updateShippingAddress(address);
+      await updateShippingAddress(address);
       onClose();
       return;
     }

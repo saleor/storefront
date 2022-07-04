@@ -46,7 +46,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
           selectedValue={selectedAddressId}
           onSelect={() => onAddressSelect(id)}
           address={rest}
-          onDelete={() => handleAddressDelete(id)}
+          onDelete={() => void handleAddressDelete(id)}
           onEdit={() => onEditChange(id)}
         />
       ))}

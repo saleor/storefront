@@ -45,7 +45,7 @@ export const useFetch = <
       return;
     }
 
-    fetchData();
+    void fetchData();
   }, [skip, ...useFetchArgsDeps]);
 
   return [{ data: result, loading, error }, fetchData];

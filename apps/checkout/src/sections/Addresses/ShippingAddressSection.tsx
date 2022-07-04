@@ -38,7 +38,9 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
           {...(shippingErrorProps as UseErrors<UserAddressFormData>)}
           title={formatMessage("shippingAddress")}
           type="SHIPPING"
-          onAddressSelect={updateShippingAddress}
+          onAddressSelect={(address) => {
+            void updateShippingAddress(address);
+          }}
           // @ts-ignore TMP
           addresses={addresses as UserAddressFormData[]}
           defaultAddressId={defaultAddress?.id}
@@ -47,7 +49,9 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
         <GuestAddressSection
           address={checkout?.shippingAddress as AddressFragment}
           title={formatMessage("shippingAddress")}
-          onSubmit={updateShippingAddress}
+          onSubmit={(address) => {
+            void updateShippingAddress(address);
+          }}
           {...shippingErrorProps}
         />
       )}

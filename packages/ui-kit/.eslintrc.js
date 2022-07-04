@@ -1,4 +1,7 @@
 module.exports = {
-  parser: "@typescript-eslint/parser",
-  extends: ["../../packages/config/eslint-preset"],
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+    project: ["./tsconfig.json"],
+  },
+  extends: ["checkout"],
 };

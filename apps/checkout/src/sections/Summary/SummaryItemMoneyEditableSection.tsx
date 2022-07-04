@@ -78,7 +78,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
 
     previousQuantity.current = quantity;
 
-    debouncedSubmit(quantity);
+    void debouncedSubmit(quantity);
   }, [quantity, debouncedSubmit]);
 
   const piecePrice = unitPrice.gross;

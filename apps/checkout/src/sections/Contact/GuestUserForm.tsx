@@ -109,7 +109,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
         {...getInputProps("email", {
           // for some reason using handleSubmit here
           // disallows password input to focus
-          onBlur: () => onSubmit(getValues()),
+          onBlur: () => void onSubmit(getValues()),
         })}
       />
       <Checkbox

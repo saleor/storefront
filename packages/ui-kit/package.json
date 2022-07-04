@@ -49,7 +49,7 @@
     "@types/tailwindcss": "^3.0.9",
     "autoprefixer": "^10.4.4",
     "babel-loader": "^8.2.4",
-    "config": "*",
+    "eslint-config-checkout": "workspace:*",
     "css-loader": "^3.6.0",
     "css-modules-typescript-loader": "^4.0.1",
     "postcss": "^8.4.12",

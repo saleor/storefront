@@ -12,7 +12,9 @@ const AppNavigation: React.FC = () => {
 
   return (
     <PageTabs
-      onChange={router.push}
+      onChange={(route) => {
+        void router.push(route);
+      }}
       value={router.pathname}
       className={classes.tabs}
     >

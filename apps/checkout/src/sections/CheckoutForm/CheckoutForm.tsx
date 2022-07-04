@@ -52,7 +52,7 @@ export const CheckoutForm = () => {
     defaultValues: { email: checkout?.email || "", createAccount: false },
   });
 
-  useSetFormErrors({
+  useSetFormErrors<FormData>({
     setError: methods.setError,
     errors: userRegisterErrors,
   });
@@ -61,7 +61,7 @@ export const CheckoutForm = () => {
 
   // not using form handleSubmit on purpose
   const handleSubmit = () =>
-    checkoutFinalize({
+    void checkoutFinalize({
       ...getValues(),
       paymentProviderId: selectedPaymentProvider as PaymentProviderID,
     });

@@ -16,8 +16,8 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   );
   const formatMessage = useFormattedMessages();
 
-  const handlePay = () => {
-    orderPay({
+  const handlePay = async () => {
+    await orderPay({
       provider: "mollie", // TODO: Hardcoded payment provider
       orderId,
     });
@@ -47,7 +47,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
           <Button
             className="mt-2"
             label={formatMessage("orderPayButtonLabel")}
-            onClick={handlePay}
+            onClick={void handlePay}
             disabled={orderPayLoading}
           />
         </div>

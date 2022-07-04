@@ -19,7 +19,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
 
   const { checkout } = useCheckout();
   const { logout } = useAuth();
-  const { authenticated, user } = useAuthState();
+  const { user } = useAuthState();
 
   const [, customerDetach] = useCheckoutCustomerDetachMutation();
 
@@ -40,7 +40,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
         <Button
           ariaLabel={formatMessage("signOutLabel")}
           variant="tertiary"
-          onClick={handleLogout}
+          onClick={void handleLogout}
           label={formatMessage("signOut")}
         />
       </div>

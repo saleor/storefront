@@ -45,7 +45,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
 
   useEffect(() => {
     if (selectedMethodId && selectedMethodId !== selectedMethodIdRef.current) {
-      handleSubmit();
+      void handleSubmit();
     }
   }, [selectedMethodId]);
 

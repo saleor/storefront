@@ -45,7 +45,7 @@ export const useCheckoutAddressUpdate = () => {
     showSuccess("checkoutShippingUpdate");
 
     if (isBillingSameAsShippingAddress) {
-      handleUpdateBillingAddress(address);
+      await handleUpdateBillingAddress(address);
     }
   };
 
@@ -69,7 +69,7 @@ export const useCheckoutAddressUpdate = () => {
     showSuccess("checkoutBillingUpdate");
   };
 
-  const setBillingAddressWhenSameAsShipping = () => {
+  const setBillingAddressWhenSameAsShipping = async () => {
     if (!checkout) {
       return;
     }
@@ -80,7 +80,7 @@ export const useCheckoutAddressUpdate = () => {
       isBillingSameAsShippingAddress && !!shippingAddress;
 
     if (shouldUpdateBillingAddress) {
-      updateBillingAddress(
+      await updateBillingAddress(
         getAddressInputData(getAddressFormDataFromAddress(shippingAddress))
       );
     }
@@ -89,9 +89,9 @@ export const useCheckoutAddressUpdate = () => {
   const handleUpdateBillingAddress = (address: AddressFormData) =>
     updateBillingAddress(getAddressInputData(address));
 
-  useEffect(setBillingAddressWhenSameAsShipping, [
-    isBillingSameAsShippingAddress,
-  ]);
+  useEffect(() => {
+    void setBillingAddressWhenSameAsShipping();
+  }, [isBillingSameAsShippingAddress]);
 
   return {
     updateShippingAddress,

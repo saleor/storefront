@@ -1,5 +1,4 @@
 import {
-  Alert,
   ConfirmButtonTransitionState,
   OffsettedList,
   OffsettedListBody,
@@ -40,7 +39,6 @@ import { ChannelFragment, MetadataErrorFragment } from "@/checkout-app/graphql";
 import { getMetadataErrorMessage } from "@/checkout-app/frontend/misc/errors";
 import ErrorAlert from "../../elements/ErrorAlert";
 import { usePaymentProviders } from "@/checkout-app/config/fields";
-import Image from "next/image";
 
 interface ChannelDetailsProps {
   channelPaymentOptions: ChannelPaymentOptions;
@@ -79,11 +77,11 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
   }, [channelPaymentOptions, resetForm]);
 
   const onBackClick = () => {
-    router.push(channelListPath);
+    void router.push(channelListPath);
   };
 
   const onSettingsClick = () => {
-    router.push({
+    void router.push({
       pathname: paymentProviderPath,
       query: {
         channelId: channelPaymentOptions.channel.id,
@@ -93,7 +91,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
   };
 
   const onChannelClick = (channel: Item) => {
-    router.push({
+    void router.push({
       pathname: channelPath,
       query: { channelId: channel.id },
     });
@@ -211,6 +209,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
         disabled={loading || !formState.isDirty}
         state={saveButtonBarState}
         onCancel={onCancel}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={handleSubmitForm(handleSubmit)}
       />
     </form>
