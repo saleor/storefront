@@ -21,7 +21,7 @@ const handler: Handler = (request) => {
       "MANAGE_CHECKOUTS",
     ],
     userPermissions: [],
-    appUrl: `${baseURL}/channels`,
+    appUrl: baseURL,
     dataPrivacyUrl: `${baseURL}/data-privacy`,
     supportUrl: `${baseURL}/support`,
     tokenTargetUrl: `${baseURL}/api/register`,

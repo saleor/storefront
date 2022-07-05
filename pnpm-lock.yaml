@@ -140,7 +140,7 @@ importers:
       '@material-ui/lab': ^4.0.0-alpha.60
       '@material-ui/styles': ^4.11.5
       '@mollie/api-client': ^3.6.0
-      '@saleor/app-bridge': ^0.1.7
+      '@saleor/app-bridge': ^0.1.9
       '@saleor/app-sdk': ^0.5.0
       '@saleor/macaw-ui': ^0.4.0
       '@types/content-type': ^1.1.5
@@ -938,7 +938,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.12.9
-      '@babel/helper-plugin-utils': 7.10.4
+      '@babel/helper-plugin-utils': 7.18.6
       '@babel/plugin-syntax-object-rest-spread': 7.8.3_@babel+core@7.12.9
       '@babel/plugin-transform-parameters': 7.18.6_@babel+core@7.12.9
     dev: true
@@ -19792,7 +19792,7 @@ packages:
     dev: true
 
   /trim/0.0.1:
-    resolution: {integrity: sha1-WFhUf2spB1fulczMZm+1AITEYN0=}
+    resolution: {integrity: sha512-YzQV+TZg4AxpKxaTHK3c3D+kRDCGVEE7LemdlQZoQXn0iennk10RsIoY6ikzAqJTc9Xjl9C1/waHom/J86ziAQ==}
     dev: true
 
   /trough/1.0.5:
