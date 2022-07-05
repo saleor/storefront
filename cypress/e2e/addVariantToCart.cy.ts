@@ -1,5 +1,4 @@
 import { CART } from "cypress/elements/cart";
-
 import { PRODUCT } from "../elements/product";
 import { SHARED } from "../elements/shared";
 import { productsToSearch } from "../fixtures/search";
