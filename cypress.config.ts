@@ -12,5 +12,8 @@ export default defineConfig({
   e2e: {
     baseUrl: "http://localhost:3001/",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
+    env: {
+      API_URI: "https://vercel.saleor.cloud/graphql/",
+    },
   },
 });

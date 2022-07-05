@@ -1,5 +1,4 @@
-export const SEARCH_PAGE_SELECTORS = {
-  searchInput: "[data-testid=searchInput]",
-  noResultsText: "[data-testid=noResultsText]",
-  collection: "[data-testid=collection]",
+export const SEARCH = {
+  searchInput: "[data-testid='searchInput']",
+  noResultsText: "[data-testid='noResultsText']",
 };

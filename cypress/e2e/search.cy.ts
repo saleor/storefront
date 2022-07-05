@@ -1,7 +1,8 @@
 import { NAVIGATION } from "../elements/navigation";
-import { SEARCH_PAGE_SELECTORS } from "../elements/search-page";
+import { SEARCH } from "../elements/search-page";
+import { SHARED } from "../elements/shared";
 import { productsToSearch } from "../fixtures/search";
-import { navigateAndSearch } from "../support/pages/search";
+import { navigateAndSearch, waitForSearchedProducts } from "../support/pages/search";
 
 let typedText;
 
@@ -13,6 +14,7 @@ describe("Search for products", () => {
     typedText = productsToSearch.polo;
     navigateAndSearch(typedText);
     cy.url().should("include", `/search?q=${typedText}`);
+    waitForSearchedProducts(typedText);
   });
 
   it("should see no errors on search page SRS_0404", () => {
@@ -20,16 +22,16 @@ describe("Search for products", () => {
       .click()
       .url()
       .should("include", "/search")
-      .get(SEARCH_PAGE_SELECTORS.collection)
+      .get(SHARED.productsList)
       .should("be.visible");
   });
 
   it("should see no results message SRS_0405", () => {
     typedText = productsToSearch.nonExistingProduct;
     navigateAndSearch(typedText);
-    cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
+    cy.get(SEARCH.noResultsText)
       .should("contain", productsToSearch.noProductsInfo)
-      .get(SEARCH_PAGE_SELECTORS.collection)
+      .get(SHARED.productsList)
       .should("not.exist");
   });
 });

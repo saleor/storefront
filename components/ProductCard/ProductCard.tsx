@@ -31,7 +31,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
 
   return (
-    <li key={product.id} className="w-full">
+    <li key={product.id} className="w-full" data-testid={`productCard-${product.slug}`}>
       <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
         <a href="pass">
           <div className="bg-main active:bg-brand w-full aspect-1">
