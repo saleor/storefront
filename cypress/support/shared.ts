@@ -1,3 +1,4 @@
+import { PRODUCT } from "cypress/elements/product";
 import { SHARED } from "cypress/elements/shared";
 
 export function waitForProgressBarToNotBeVisible() {
@@ -15,4 +16,15 @@ export function filterProducts(filterProductsBy, selectedFilter) {
         .get(selectedFilter)
         .should("contain.text", elementName);
     });
+}
+
+export function addItemToCart(selectedItem, selectedItemText) {
+  cy.get(PRODUCT.addToCartButton)
+    .should("be.enabled")
+    .click()
+    .url()
+    .should("include", "/cart")
+    .get(selectedItem)
+    .first()
+    .should("contain.text", selectedItemText);
 }
