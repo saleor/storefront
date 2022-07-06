@@ -31,19 +31,19 @@ export function sortingProductsByName(sortOrder: string) {
   const sortedListOfProducts: string[] = [];
   let listOfProductsNames: string[] = [];
 
+  cy.addAliasToGraphRequest("ProductCollection");
   getListOfProducts(listOfProductsNames);
   cy.get(CATEGORY.sorting.sortByButton)
     .click()
     .get(CATEGORY.sorting.sortingOption)
     .contains(sortOrder)
     .click()
-    .wait(1000); // it will be changed when we will add function for waiting for request
+    .wait("@ProductCollection");
   getListOfProducts(sortedListOfProducts);
   cy.then(() => {
+    listOfProductsNames = listOfProductsNames.sort();
     if (sortOrder === "Name descending") {
       listOfProductsNames = listOfProductsNames.sort().reverse();
-    } else {
-      listOfProductsNames = listOfProductsNames.sort();
     }
     expect(
       JSON.stringify(listOfProductsNames) === JSON.stringify(sortedListOfProducts)
