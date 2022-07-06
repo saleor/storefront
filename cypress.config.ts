@@ -13,7 +13,7 @@ export default defineConfig({
   viewportWidth: 1400,
   viewportHeight: 660,
   env: {
-    API_URL: process.env.CYPRESS_API_URL,
+    API_URL: process.env.NEXT_PUBLIC_API_URI,
   },
   e2e: {
     baseUrl: "http://localhost:3001/",
