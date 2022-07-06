@@ -1,30 +1,54 @@
 import { CATEGORY } from "cypress/elements/category";
-import { FILTERS } from "cypress/elements/filters";
+import { MAIN_PAGE } from "cypress/elements/main-page";
 import { NAVIGATION } from "cypress/elements/navigation";
-import { filterProducts, waitForProgressBarToNotBeVisible } from "cypress/support/shared";
+import { SHARED } from "cypress/elements/shared";
+import { filterProducts, sortingProductsByName } from "cypress/support/pages/category";
+import { waitForProgressBarToNotBeVisible } from "cypress/support/shared";
 
-describe("Using filters on products list", () => {
+describe("Using filters and sorting on products list", () => {
+  const sortByList = ["Name descending", "Name ascending"];
+
   beforeEach(() => {
     cy.visit("/");
+  });
+
+  sortByList.forEach((sortBy) => {
+    it(`Should be able to sort products by ${sortBy} SRS_0303`, () => {
+      waitForProgressBarToNotBeVisible();
+      cy.get(MAIN_PAGE.categorySection)
+        .find(SHARED.collection)
+        .first()
+        .parents(MAIN_PAGE.categorySection)
+        .children(MAIN_PAGE.categoryName)
+        .invoke("text")
+        .then((categoryTitle) => {
+          cy.get(NAVIGATION.categoriesListButtons)
+            .contains(categoryTitle)
+            .click()
+            .get(CATEGORY.categoryTitle)
+            .should("contain.text", categoryTitle);
+        });
+      sortingProductsByName(`${sortBy}`);
+    });
   });
 
   it("should filter products by variant attribute SRS_0306", () => {
     waitForProgressBarToNotBeVisible();
     filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
-    cy.get(FILTERS.filtersMenuButtons).first().click();
-    filterProducts(FILTERS.filterList, FILTERS.filterPill);
+    cy.get(CATEGORY.filters.filtersMenuButtons).first().click();
+    filterProducts(CATEGORY.filters.filterList, CATEGORY.filters.filterPill);
   });
 
   it("should clear selected filters SRS_0308", () => {
     waitForProgressBarToNotBeVisible();
     filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
-    cy.get(FILTERS.filtersMenuButtons).first().click();
-    filterProducts(FILTERS.filterList, FILTERS.filterPill);
-    cy.get(FILTERS.clearAllFiltersButton)
+    cy.get(CATEGORY.filters.filtersMenuButtons).first().click();
+    filterProducts(CATEGORY.filters.filterList, CATEGORY.filters.filterPill);
+    cy.get(CATEGORY.filters.clearAllFiltersButton)
       .click()
-      .get(FILTERS.filterPill)
+      .get(CATEGORY.filters.filterPill)
       .should("not.exist")
-      .get(FILTERS.clearAllFiltersButton)
+      .get(CATEGORY.filters.clearAllFiltersButton)
       .should("not.exist");
   });
 });
