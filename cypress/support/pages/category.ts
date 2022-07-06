@@ -3,6 +3,7 @@ import { CATEGORY } from "../../elements/category";
 import { SHARED } from "../../elements/shared";
 
 export function filterProducts(filterProductsBy, selectedFilter) {
+  cy.addAliasToGraphRequest("ProductCollection");
   cy.get(filterProductsBy)
     .first()
     .invoke("text")
@@ -10,6 +11,7 @@ export function filterProducts(filterProductsBy, selectedFilter) {
       cy.get(filterProductsBy)
         .first()
         .click()
+        .wait("@ProductCollection")
         .get(selectedFilter)
         .should("contain.text", elementName);
     });

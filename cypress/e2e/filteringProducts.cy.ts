@@ -12,14 +12,14 @@ describe("Using filters and sorting on products list", () => {
   });
 
   sortByList.forEach((sortBy) => {
-    it(`should be able to sort products by ${sortBy} SRS_0303`, () => {
+    xit(`should be able to sort products by ${sortBy} SRS_0303`, () => {
       waitForProgressBarToNotBeVisible();
       selectNotEmptyCategory();
       sortingProductsByName(`${sortBy}`);
     });
   });
 
-  it("should be able to sort products by in stock SRS_0305", () => {
+  xit("should be able to sort products by in stock SRS_0305", () => {
     waitForProgressBarToNotBeVisible();
     selectNotEmptyCategory();
     cy.get(CATEGORY.sorting.sortByInStock).click().url().should("contain", "?inStock=true");
@@ -32,7 +32,7 @@ describe("Using filters and sorting on products list", () => {
     filterProducts(CATEGORY.filters.filterList, CATEGORY.filters.filterPill);
   });
 
-  it("should clear selected filters SRS_0308", () => {
+  xit("should clear selected filters SRS_0308", () => {
     waitForProgressBarToNotBeVisible();
     filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
     cy.get(CATEGORY.filters.filtersMenuButtons).first().click();
