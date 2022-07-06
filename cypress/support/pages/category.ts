@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { CATEGORY } from "cypress/elements/category";
-import { SHARED } from "cypress/elements/shared";
+import { CATEGORY } from "../../elements/category";
+import { SHARED } from "../../elements/shared";
 
 export function filterProducts(filterProductsBy, selectedFilter) {
   cy.get(filterProductsBy)
@@ -40,8 +40,7 @@ export function sortingProductsByName(sortOrder: string) {
   cy.then(() => {
     if (sortOrder === "Name descending") {
       listOfProductsNames = listOfProductsNames.sort().reverse();
-    }
-    if (sortOrder === "Name ascending") {
+    } else {
       listOfProductsNames = listOfProductsNames.sort();
     }
     expect(

@@ -1,5 +1,5 @@
 export const SHARED = {
   spinner: "[data-testid='spinner']",
-  collection: "[data-testid='collection']",
+  productsList: "[data-testid='productsList']",
   productName: "[data-testid*='productName']",
 };

@@ -21,7 +21,7 @@ describe("Search for products", () => {
       .click()
       .url()
       .should("include", "/search")
-      .get(SHARED.collection)
+      .get(SHARED.productsList)
       .should("be.visible");
   });
 
@@ -30,7 +30,7 @@ describe("Search for products", () => {
     navigateAndSearch(typedText);
     cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
       .should("contain", productsToSearch.noProductsInfo)
-      .get(SHARED.collection)
+      .get(SHARED.productsList)
       .should("not.exist");
   });
 });

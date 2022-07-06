@@ -1,9 +1,8 @@
-import { CATEGORY } from "cypress/elements/category";
-import { MAIN_PAGE } from "cypress/elements/main-page";
-import { NAVIGATION } from "cypress/elements/navigation";
-import { SHARED } from "cypress/elements/shared";
-import { filterProducts, sortingProductsByName } from "cypress/support/pages/category";
-import { waitForProgressBarToNotBeVisible } from "cypress/support/shared";
+import { CATEGORY } from "../elements/category";
+import { NAVIGATION } from "../elements/navigation";
+import { filterProducts, sortingProductsByName } from "../support/pages/category";
+import { selectNotEmptyCategory } from "../support/pages/main-page";
+import { waitForProgressBarToNotBeVisible } from "../support/shared";
 
 describe("Using filters and sorting on products list", () => {
   const sortByList = ["Name descending", "Name ascending"];
@@ -13,23 +12,17 @@ describe("Using filters and sorting on products list", () => {
   });
 
   sortByList.forEach((sortBy) => {
-    it(`Should be able to sort products by ${sortBy} SRS_0303`, () => {
+    it(`should be able to sort products by ${sortBy} SRS_0303`, () => {
       waitForProgressBarToNotBeVisible();
-      cy.get(MAIN_PAGE.categorySection)
-        .find(SHARED.collection)
-        .first()
-        .parents(MAIN_PAGE.categorySection)
-        .children(MAIN_PAGE.categoryName)
-        .invoke("text")
-        .then((categoryTitle) => {
-          cy.get(NAVIGATION.categoriesListButtons)
-            .contains(categoryTitle)
-            .click()
-            .get(CATEGORY.categoryTitle)
-            .should("contain.text", categoryTitle);
-        });
+      selectNotEmptyCategory();
       sortingProductsByName(`${sortBy}`);
     });
+  });
+
+  it("should be able to sort products by in stock SRS_0305", () => {
+    waitForProgressBarToNotBeVisible();
+    selectNotEmptyCategory();
+    cy.get(CATEGORY.sorting.sortByInStock).click().url().should("contain", "?inStock=true");
   });
 
   it("should filter products by variant attribute SRS_0306", () => {
