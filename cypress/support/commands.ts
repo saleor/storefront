@@ -2,7 +2,6 @@
 
 Cypress.Commands.add("addAliasToGraphRequest", (operationName) => {
   cy.intercept("POST", Cypress.env("API_URL"), (req) => {
-    // req.statusCode = 200;
     const requestBody = req.body;
     if (Array.isArray(requestBody)) {
       requestBody.forEach((element) => {
