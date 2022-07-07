@@ -45,7 +45,10 @@ export function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
           </div>
-          <p className="block mt-2 text-md font-extrabold text-main truncate">
+          <p
+            className="block mt-2 text-md font-extrabold text-main truncate"
+            data-testid={`productName${product.name}`}
+          >
             {translate(product, "name")}
           </p>
           {secondaryDescription && (
