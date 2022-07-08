@@ -2,7 +2,7 @@ import { CATEGORY } from "../elements/category";
 import { NAVIGATION } from "../elements/navigation";
 import { filterProducts, sortingProductsByName } from "../support/pages/category";
 import { selectNotEmptyCategory } from "../support/pages/main-page";
-import { waitForProgressBarToNotBeVisible } from "../support/shared";
+import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
 
 describe("Using filters and sorting on products list", () => {
   const sortByList = ["Name descending", "Name ascending"];

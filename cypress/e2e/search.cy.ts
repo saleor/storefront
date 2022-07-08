@@ -1,15 +1,16 @@
 import { NAVIGATION } from "../elements/navigation";
 import { SEARCH_PAGE_SELECTORS } from "../elements/search-page";
-import { SHARED } from "../elements/shared";
+import { SHARED_ELEMENTS } from "../elements/shared-elements";
 import { productsToSearch } from "../fixtures/search";
 import { navigateAndSearch } from "../support/pages/search";
 
-let typedText;
-
 describe("Search for products", () => {
+  let typedText;
+
   beforeEach(() => {
     cy.visit("/");
   });
+
   it("should search for products SRS_0405", () => {
     typedText = productsToSearch.polo;
     navigateAndSearch(typedText);
@@ -21,7 +22,7 @@ describe("Search for products", () => {
       .click()
       .url()
       .should("include", "/search")
-      .get(SHARED.productsList)
+      .get(SHARED_ELEMENTS.productsList)
       .should("be.visible");
   });
 
@@ -30,7 +31,7 @@ describe("Search for products", () => {
     navigateAndSearch(typedText);
     cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
       .should("contain", productsToSearch.noProductsInfo)
-      .get(SHARED.productsList)
+      .get(SHARED_ELEMENTS.productsList)
       .should("not.exist");
   });
 });
