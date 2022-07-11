@@ -5,16 +5,15 @@ import { productsToSearch } from "../fixtures/search";
 import { navigateAndSearch } from "../support/pages/search";
 
 describe("Search for products", () => {
-  let typedText;
-
   beforeEach(() => {
     cy.visit("/");
   });
 
   it("should search for products SRS_0405", () => {
-    typedText = productsToSearch.polo;
-    navigateAndSearch(typedText);
-    cy.url().should("include", `/search?q=${typedText}`);
+    const searchQuery = productsToSearch.polo;
+
+    navigateAndSearch(searchQuery);
+    cy.url().should("include", `/search?q=${searchQuery}`);
   });
 
   it("should see no errors on search page SRS_0404", () => {
@@ -27,8 +26,9 @@ describe("Search for products", () => {
   });
 
   it("should see no results message SRS_0405", () => {
-    typedText = productsToSearch.nonExistingProduct;
-    navigateAndSearch(typedText);
+    const searchQuery = productsToSearch.nonExistingProduct;
+
+    navigateAndSearch(searchQuery);
     cy.get(SEARCH_PAGE_SELECTORS.noResultsText)
       .should("contain", productsToSearch.noProductsInfo)
       .get(SHARED_ELEMENTS.productsList)
