@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { CATEGORY } from "../../elements/category";
-import { SHARED } from "../../elements/shared";
+import { SHARED_ELEMENTS } from "../../elements/shared-elements";
 
 export function filterProducts(filterProductsBy, selectedFilter) {
   cy.addAliasToGraphRequest("ProductCollection");
@@ -18,7 +18,7 @@ export function filterProducts(filterProductsBy, selectedFilter) {
 }
 
 export function getListOfProducts(productsArray) {
-  cy.get(SHARED.productName).each(($listOfProducts) => {
+  cy.get(SHARED_ELEMENTS.productName).each(($listOfProducts) => {
     cy.wrap($listOfProducts)
       .invoke("text")
       .then((productsNames) => {
@@ -43,7 +43,7 @@ export function sortingProductsByName(sortOrder: string) {
   cy.then(() => {
     listOfProductsNames = listOfProductsNames.sort();
     if (sortOrder === "Name descending") {
-      listOfProductsNames = listOfProductsNames.sort().reverse();
+      listOfProductsNames = listOfProductsNames.reverse();
     }
     expect(
       JSON.stringify(listOfProductsNames) === JSON.stringify(sortedListOfProducts)
