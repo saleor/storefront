@@ -16,7 +16,9 @@
     "lint": "prettier --write . && next lint --fix",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
     "paths": "pathpida --ignorePath .gitignore",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@apollo/client": "3.5.10",
