@@ -1,6 +1,6 @@
 import { PRODUCT_ELEMENTS } from "../elements/product-page";
 import { productsToSearch } from "../fixtures/search";
-import { addItemToCart,openProductPage } from "../support/pages/product";
+import { addItemToCart, openProductPage } from "../support/pages/product-page";
 
 describe("Select variant and add to cart", () => {
   beforeEach(() => {
