@@ -84,13 +84,20 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
             <div className="pr-6">
               <h3 className="text-md md:text-xl font-bold">
                 <Link href={paths.products._slug(line?.variant?.product?.slug).$url()} passHref>
-                  <a href="pass" className="font-medium text-gray-700 hover:text-gray-800">
+                  <a
+                    href="pass"
+                    className="font-medium text-gray-700 hover:text-gray-800"
+                    data-testid={`cartProductItem${line?.variant.product.name}`}
+                  >
                     {translate(line?.variant.product, "name")}
                   </a>
                 </Link>
               </h3>
               <h4 className="text-md font-regular">
-                <p className="text-gray-700 hover:text-gray-800">
+                <p
+                  className="text-gray-700 hover:text-gray-800"
+                  data-testid={`cartVariantItem${line?.variant.name}`}
+                >
                   {translate(line?.variant, "name")}
                 </p>
               </h4>
