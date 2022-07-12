@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React from "react";
 
-import { Navbar } from "@/components/Navbar";
 import { NotFoundSeo } from "@/components/seo/NotFoundSeo";
 import { usePaths } from "@/lib/paths";
 
@@ -12,7 +11,6 @@ function Custom404() {
     <>
       <NotFoundSeo />
       <div className="min-h-screen bg-gray-100">
-        <Navbar />
 
         <div className="py-10">
           <header className="mb-4">
