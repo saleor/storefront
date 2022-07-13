@@ -164,7 +164,10 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
         </div>
         <div className="space-y-5 mt-10 md:mt-0">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-800">
+            <h1
+              className="text-4xl font-bold tracking-tight text-gray-800"
+              data-testid="productName"
+            >
               {translate(product, "name")}
             </h1>
             {shouldDisplayPrice && (
@@ -191,6 +194,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
               "w-full py-3 px-8 flex items-center justify-center text-base bg-action-1 text-white disabled:bg-disabled hover:bg-white  border-2 border-transparent  focus:outline-none",
               !isAddToCartButtonDisabled && "hover:border-action-1 hover:text-action-1"
             )}
+            data-testid="addToCartButton"
           >
             {loadingAddToCheckout
               ? t.formatMessage(messages.adding)
@@ -204,7 +208,9 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           )}
 
           {selectedVariant?.quantityAvailable === 0 && (
-            <p className="text-base text-yellow-600">{t.formatMessage(messages.soldOut)}</p>
+            <p className="text-base text-yellow-600" data-testid="soldOut">
+              {t.formatMessage(messages.soldOut)}
+            </p>
           )}
 
           {!!addToCartError && <p>{addToCartError}</p>}
