@@ -5,7 +5,7 @@
       "dependsOn": [
         "^build",
         "$SALEOR_API_URL",
-        "$CHECKOUT_API_URL",
+        "$CHECKOUT_APP_URL",
         "$REACT_APP_SALEOR_API_URL",
         "$REACT_APP_CHECKOUT_APP_URL",
         "$SALEOR_APP_TOKEN",
