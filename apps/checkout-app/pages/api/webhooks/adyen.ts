@@ -102,7 +102,8 @@ export default async function handler(
       adyen.hmac!
     );
   } catch (error) {
-    return res.status(401).send(error);
+    console.error(error);
+    return res.status(401).send("Error while handling webhook");
   }
 
   await notificationHandler(notificationItem, adyen.apiKey!);

@@ -18,7 +18,8 @@ const CheckoutPreviewFrame: React.FC<CheckoutPreviewFrameProps> = ({
   const [appMounted, setAppMounted] = useState(false);
   const classes = useStyles();
 
-  const checkoutOrigin = new URL(checkoutUrl).origin;
+  const parsedCheckoutUrl = new URL(checkoutUrl);
+  const checkoutOrigin = parsedCheckoutUrl.origin;
 
   const sendMessage = () => {
     if (iframeRef.current) {
@@ -56,7 +57,7 @@ const CheckoutPreviewFrame: React.FC<CheckoutPreviewFrameProps> = ({
   return (
     <iframe
       ref={iframeRef}
-      src={checkoutUrl}
+      src={parsedCheckoutUrl.toString()}
       className={clsx(classes.iframe, className)}
     />
   );
