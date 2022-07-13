@@ -9,10 +9,4 @@ export function navigateAndSearch(typedText) {
     .type(typedText, { delay: 500 })
     .should("have.value", typedText)
     .wait("@ProductCollection");
-  cy.get(NAVIGATION.searchIcon)
-    .click()
-    .get(SEARCH_PAGE_SELECTORS.searchInput)
-    .type(typedText, { delay: 500 })
-    .should("have.value", typedText);
-  cy.wait("@ProductCollection");
 }
