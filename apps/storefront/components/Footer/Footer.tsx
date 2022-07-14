@@ -66,12 +66,17 @@ export function Footer({ className, ...rest }: FooterProps) {
                           target="_blank"
                           rel="noreferrer"
                           className={styles["menu-link"]}
+                          data-testid={`footerExternalLinks${sub?.name}`}
                         >
                           {sub?.name}
                         </a>
                       ) : (
                         <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
-                          <a href="pass" className={styles["menu-link"]}>
+                          <a
+                            href="pass"
+                            className={styles["menu-link"]}
+                            data-testid={`footerInternalLinks${sub?.name}`}
+                          >
                             {sub?.name}
                           </a>
                         </Link>
