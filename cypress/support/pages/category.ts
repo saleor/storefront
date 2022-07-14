@@ -42,6 +42,7 @@ export function sortingProductsByName(sortOrder: string) {
   getListOfProducts(sortedListOfProducts);
   cy.then(() => {
     listOfProductsNames = listOfProductsNames.sort();
+
     if (sortOrder === "Name descending") {
       listOfProductsNames = listOfProductsNames.reverse();
     }
