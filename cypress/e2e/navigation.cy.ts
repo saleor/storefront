@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import { SHARED_ELEMENTS } from "cypress/elements/shared-elements";
 
 import { clickOnTheFooterInternalLink } from "../support/shared-operations";
@@ -11,21 +12,26 @@ describe("Navigation - checking links", () => {
     clickOnTheFooterInternalLink(SHARED_ELEMENTS.footer.internalLinks);
   });
 
-  it("should open external link SRS_0403", () => {
-    let pageName;
-
+  it("should open external links SRS_0403", () => {
     cy.get(SHARED_ELEMENTS.footer.externalLinks)
-      .first()
-      .invoke("attr", "href")
-      .then((newPageName) => {
-        pageName = newPageName;
-
-        cy.get(SHARED_ELEMENTS.footer.externalLinks)
-          .first()
-          .invoke("removeAttr", "target")
-          .click()
-          .url()
-          .should("contain", pageName);
+      .its("length")
+      .then((length) => {
+        for (let i = 0; i < length; i += 1) {
+          cy.get(SHARED_ELEMENTS.footer.externalLinks)
+            .eq(i)
+            .then(($el) => {
+              cy.wrap($el)
+                .invoke("attr", "href")
+                .then((pageName) => {
+                  cy.wrap($el)
+                    .invoke("removeAttr", "target")
+                    .click()
+                    .url()
+                    .should("contain", pageName)
+                    .visit("/");
+                });
+            });
+        }
       });
   });
 });
