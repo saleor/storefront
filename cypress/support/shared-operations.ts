@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import { SHARED_ELEMENTS } from "../elements/shared-elements";
 
 export function waitForProgressBarToNotBeVisible() {
@@ -16,4 +17,27 @@ export function clickOnTheFooterInternalLink(listOfInternalLinks) {
         cy.wrap($el).click().url().should("contain", pageName);
       });
   });
+}
+
+export function clickOnTheFooterExternalLink(listOfExternalLinks) {
+  cy.get(listOfExternalLinks)
+    .its("length")
+    .then((length) => {
+      for (let i = 0; i < length; i += 1) {
+        cy.get(listOfExternalLinks)
+          .eq(i)
+          .then(($el) => {
+            cy.wrap($el)
+              .invoke("attr", "href")
+              .then((pageName) => {
+                cy.wrap($el)
+                  .invoke("removeAttr", "target")
+                  .click()
+                  .url()
+                  .should("contain", pageName)
+                  .visit("/");
+              });
+          });
+      }
+    });
 }
