@@ -38,7 +38,7 @@ export function AddressForm({
       firstName: existingAddressData?.firstName || "",
       lastName: existingAddressData?.lastName || "",
       phone: existingAddressData?.phone || "",
-      country: "PL",
+      country: "ZA",
       streetAddress1: existingAddressData?.streetAddress1 || "",
       city: existingAddressData?.city || "",
       postalCode: existingAddressData?.postalCode || "",
