@@ -32,7 +32,7 @@ Start by [creating new project](https://vercel.com/docs/concepts/projects/overvi
 
 ![Create project on Vercel by selecting your cloned GitHub repository in the menu](./screenshots/setup-vercel-1.png)
 
-### 2. Configuring new project
+### 2. Configuring new project for checkout-app
 
 On the configuration page:
 
@@ -188,7 +188,7 @@ After you're done, re-deploy the app
 
 Start by creating another project on Vercel, just like we did in [Checkout App setup](#checkout-app), select the same repository
 
-### 2. Configure new project
+### 2. Configure new project for checkout
 
 On the configuration page:
 
