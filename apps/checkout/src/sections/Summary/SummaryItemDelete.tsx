@@ -29,7 +29,9 @@ export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({
     <div className="delete-row-button">
       <IconButton
         variant="bare"
-        onClick={void handleLineDelete}
+        onClick={() => {
+          void handleLineDelete()
+        }}
         ariaLabel={formatMessage("deleteItemLabel")}
         icon={<img src={DeleteIcon} alt="delete icon" />}
       />

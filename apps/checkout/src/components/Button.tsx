@@ -5,8 +5,26 @@ import {
 } from "@saleor/ui-kit";
 import { AriaLabel } from "@/checkout/lib/globalTypes";
 
-export type ButtonProps = UiKitButtonProps & AriaLabel;
+export interface ButtonProps extends UiKitButtonProps, AriaLabel {
+  onClick?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void | Promise<void>;
+}
 
-export const Button: React.FC<ButtonProps> = ({ ariaLabel, ...rest }) => {
-  return <UiKitButton {...rest} aria-label={ariaLabel} />;
+export const Button: React.FC<ButtonProps> = ({
+  ariaLabel,
+  onClick,
+  ...rest
+}) => {
+  return (
+    <UiKitButton
+      {...rest}
+      aria-label={ariaLabel}
+      onClick={
+        onClick as (
+          event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        ) => void
+      }
+    />
+  );
 };
