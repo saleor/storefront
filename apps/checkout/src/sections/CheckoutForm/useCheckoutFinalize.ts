@@ -2,7 +2,6 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useErrors } from "@/checkout/hooks/useErrors";
 import { extractMutationErrors } from "@/checkout/lib/utils";
 import { useAuth, useAuthState } from "@saleor/sdk";
-import { omit } from "lodash-es";
 
 import { FormData } from "./types";
 import { usePay } from "@/checkout/hooks/usePay";
@@ -18,11 +17,14 @@ export const useCheckoutFinalize = () => {
   const { errors, setApiErrors } = useErrors();
 
   const userRegister = async (formData: FormData): Promise<boolean> => {
-    if (user || !formData.createAccount) {
+    const { createAccount, email, password } = formData;
+
+    if (user || !createAccount) {
       return true;
     }
 
-    const registerFormData = omit(formData, "createAccount");
+    const registerFormData = { email, password };
+
     // adding redirect url because some saleor envs require it
     const result = await register({
       ...registerFormData,
@@ -34,10 +36,10 @@ export const useCheckoutFinalize = () => {
     if (hasErrors) {
       showErrors(errors, "userRegister");
       setApiErrors(errors);
-      return hasErrors;
+      return !hasErrors;
     }
 
-    return false;
+    return true;
   };
 
   const checkoutFinalize = async (formData: FormData) => {
