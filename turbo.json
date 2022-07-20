@@ -19,7 +19,7 @@
       "outputs": []
     },
     "check-types": {
-      "dependsOn": ["@saleor/ui-kit#build"]
+      "dependsOn": ["^build"]
     },
     "test": {},
     "dev": {
