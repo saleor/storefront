@@ -1,5 +1,5 @@
-import { ComponentMeta } from "@storybook/react";
-import { useState } from "react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { ReactNode, useState } from "react";
 
 import { Radio } from "./Radio";
 
@@ -13,8 +13,16 @@ const options = [
   { label: "Banana", value: "banana" },
 ];
 
-const Template = ({ customOptions = [] }) => {
-  const [selected, setSelected] = useState(null);
+const Template = ({
+  customOptions = [],
+}: {
+  customOptions: Array<{
+    value: string;
+    label: ReactNode;
+    classNames: Record<string, string>;
+  }>;
+}) => {
+  const [selected, setSelected] = useState<string | null>(null);
 
   const radioOptions = [...options, ...customOptions];
 
@@ -35,7 +43,7 @@ const Template = ({ customOptions = [] }) => {
   );
 };
 
-export const CustomLook = Template.bind({});
+export const CustomLook: ComponentStory<typeof Template> = Template.bind({});
 
 CustomLook.args = {
   customOptions: [

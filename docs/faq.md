@@ -53,9 +53,9 @@ Check solutions for ["Unauthorized" error](#i-get-unauthorized-error-message-in-
 ## I don't get any payment methods
 
 - Make sure you've enabled payment methods in Checkout App configuration
-  ![](./screenshots/faq/checkout-app-payment-methods.png)
+  ![](./screenshots/faq/saleor-app-checkout-payment-methods.png)
 - Make sure you've configured payment gateway API keys
-  ![](./screenshots/faq/checkout-app-payment-api-keys.png)
+  ![](./screenshots/faq/saleor-app-checkout-payment-api-keys.png)
 - Make sure you're using correct App token in your Vercel configuration
   - Check solutions for ["Unauthorized" error](#i-get-unauthorized-error-message-in-saleor-dashboard)
 
@@ -63,7 +63,7 @@ Check solutions for ["Unauthorized" error](#i-get-unauthorized-error-message-in-
 
 The checkout was turned into an order in Saleor, thus deleting checkout session. You need to create a new checkout session.
 
-## I get `No matching version found for checkout-app@* inside the workspace` in Vercel deployment
+## I get `No matching version found for saleor-app-checkout@* inside the workspace` in Vercel deployment
 
 Check in your project settings if you have "Include source files outside of the Root Directory in the Build Step" option enabled:
 
@@ -76,4 +76,4 @@ Check in your project settings if you've correctly selected the Root Directory.
 If you need to know what Root Directory should be set, check the [deployment guide](./vercel.md) for:
 
 - [checkout](./vercel.md#2-configure-new-project-for-checkout)
-- [checkout-app](./vercel.md#2-configuring-new-project-for-checkout-app)
+- [saleor-app-checkout](./vercel.md#2-configuring-new-project-for-saleor-app-checkout)

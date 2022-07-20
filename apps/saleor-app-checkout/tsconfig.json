@@ -1,0 +1,19 @@
+{
+  "_comment": "https://github.com/facebook/react/issues/24304. Remove compilerOptions.paths.react when this gets updated to React 18",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "strict": true,
+    "noEmit": true,
+    "paths": {
+      "@/saleor-app-checkout/*": ["./*"],
+      "react": ["./node_modules/@types/react"]
+    },
+    "declaration": false,
+    "declarationMap": false,
+    "noImplicitReturns": false,
+    "noUncheckedIndexedAccess": false
+  },
+  "extends": "tsconfig/nextjs.json",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "setupTests.js"],
+  "exclude": ["node_modules"]
+}

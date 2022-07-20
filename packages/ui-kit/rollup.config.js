@@ -5,7 +5,6 @@ import { terser } from "rollup-plugin-terser";
 import external from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 import dts from "rollup-plugin-dts";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 const packageJson = require("./package.json");
 
@@ -28,12 +27,13 @@ export default [
     external: ["react", "react-dom"],
     plugins: [
       external(),
-      resolve(),
+      resolve({
+        browser: true,
+      }),
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
       postcss(require("tailwindcss")(), require("autoprefixer")()),
       terser(),
-      nodeResolve(),
     ],
   },
   {

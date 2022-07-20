@@ -32,17 +32,17 @@ Start by [creating new project](https://vercel.com/docs/concepts/projects/overvi
 
 ![Create project on Vercel by selecting your cloned GitHub repository in the menu](./screenshots/setup-vercel-1.png)
 
-### 2. Configuring new project for checkout-app
+### 2. Configuring new project for saleor-app-checkout
 
 On the configuration page:
 
-- Provide your project name (for example `saleor-checkout-app`)
+- Provide your project name (for example `saleor-app-checkout`)
 - Select framework to Next.js
-- Choose the root directory to be `apps/checkout-app`
+- Choose the root directory to be `apps/saleor-app-checkout`
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build:checkout-app
+cd ../.. && pnpm run build:saleor-app-checkout
 ```
 
 - Add environment variables:
@@ -62,7 +62,7 @@ Update `CHECKOUT_APP_URL` in `.env` file located at the root of monorepo to be y
 Example:
 
 ```
-CHECKOUT_APP_URL=https://saleor-checkout-app.vercel.app
+CHECKOUT_APP_URL=https://saleor-app-checkout.vercel.app
 ```
 
 ### 4. Install the app in Saleor
@@ -97,13 +97,13 @@ saleor app install
 > ❌ Deployment domain (won't update app after push):
 >
 > ```
-> https://saleor-checkout-app-jluy793b2-myusername.vercel.app/api/manifest
+> https://saleor-app-checkout-jluy793b2-myusername.vercel.app/api/manifest
 > ```
 >
 > ✅ Production domain:
 >
 > ```
-> https://saleor-checkout-app.vercel.app/api/manifest
+> https://saleor-app-checkout.vercel.app/api/manifest
 > ```
 >
 > To see which domain is used for production go to [Vercel Dashboard](https://vercel.com) > Settings > Domains:
@@ -186,7 +186,7 @@ After you're done, re-deploy the app
 
 ### 1. Create another project on Vercel
 
-Start by creating another project on Vercel, just like we did in [Checkout App setup](#checkout-app), select the same repository
+Start by creating another project on Vercel, just like we did in [Checkout App setup](#saleor-app-checkout), select the same repository
 
 ### 2. Configure new project for checkout
 
@@ -202,7 +202,7 @@ cd ../.. && pnpm run build:checkout
 ```
 
 - _Optional_: customise [environment variables](../apps/checkout/README.md#env-variables):
-  - `REACT_APP_CHECKOUT_APP_URL` — URL of the deployed [Checkout App](#checkout-app).
+  - `REACT_APP_CHECKOUT_APP_URL` — URL of the deployed [Checkout App](#saleor-app-checkout).
   - `REACT_APP_SALEOR_API_URL` — URL of Saleor GraphQL API endpoint
 
 > By default, those environment variables are taken from [`.env`](../.env) file in root of the monorepo. You don't need to provide env variables in Vercel if you want to use the values from `.env` file.

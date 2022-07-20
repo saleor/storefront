@@ -35,3 +35,6 @@ dist
 
 #editor
 .vscode
+
+# TypeScript build files
+*.tsbuildinfo

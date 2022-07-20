@@ -3,8 +3,8 @@ name: Checkout app checks
 on:
   push:
     paths:
-      - "apps/checkout-app/**/*"
-      - ".github/workflows/checkout-app.yaml"
+      - "apps/saleor-app-checkout/**/*"
+      - ".github/workflows/saleor-app-checkout.yaml"
 
 jobs:
   tsc-and-linters:
@@ -28,12 +28,12 @@ jobs:
 
       - name: Run tsc
         run: |
-          pnpm run check-types --scope="checkout-app"
+          pnpm run check-types --scope="saleor-app-checkout"
 
       - name: Run lint
         run: |
-          pnpm run lint --scope="checkout-app"
+          pnpm run lint --scope="saleor-app-checkout"
 
       - name: Run tests
         run: |
-          pnpm run test --scope="checkout-app"
+          pnpm run test --scope="saleor-app-checkout"

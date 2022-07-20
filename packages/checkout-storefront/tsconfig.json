@@ -1,0 +1,18 @@
+{
+  "extends": "tsconfig/react-library.json",
+  "include": ["src", "types.d.ts"],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "lib": ["dom"],
+    "paths": {
+      "@/checkout-storefront/icons": ["./src/assets/icons"],
+      "@/checkout-storefront/images": ["./src/assets/images"],
+      "@/checkout-storefront/*": ["./src/*"]
+    },
+    "declaration": true,
+    "declarationMap": false,
+    "declarationDir": "types",
+    "outDir": "dist",
+    "composite": false
+  }
+}

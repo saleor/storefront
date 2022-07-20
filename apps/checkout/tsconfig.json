@@ -1,27 +1,18 @@
 {
+  "extends": "tsconfig/nextjs.json",
   "compilerOptions": {
-    "paths": {
-      "@/checkout/icons": ["./src/assets/icons"],
-      "@/checkout/images": ["./src/assets/images"],
-      "@/checkout/*": ["./src/*"],
-      "@/checkout-app/*": ["../checkout-app/*"]
-    },
-    "types": ["react/next", "react-dom"],
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "target": "ES2022",
+    "lib": ["DOM", "es2022"],
+    "jsx": "preserve",
+    "module": "commonjs",
+
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

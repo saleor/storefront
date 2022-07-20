@@ -71,6 +71,6 @@ const countries = [
 ];
 
 Countries.args = {
-  selected: countries[0],
+  selectedValue: countries[0].value,
   options: countries,
 };
