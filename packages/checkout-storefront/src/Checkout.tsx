@@ -15,8 +15,6 @@ export const Checkout = () => {
 
   const isCheckoutInvalid = !loading && !checkout && !authenticating;
 
-  const isLoading = loading || authenticating;
-
   return (
     <div className="app">
       {isCheckoutInvalid ? (
@@ -30,7 +28,7 @@ export const Checkout = () => {
               <CheckoutForm />
               <div className="page-divider" />
               <Suspense fallback={<SummarySkeleton />}>
-                {isLoading ? <SummarySkeleton /> : <Summary />}
+                <Summary />
               </Suspense>
             </div>
           </div>

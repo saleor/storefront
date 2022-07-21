@@ -81,27 +81,30 @@ export const CheckoutForm = () => {
   return (
     <div className="checkout-form">
       <FormProvider {...methods}>
-        {isLoading ? <ContactSkeleton /> : <Contact />}
+        <Suspense fallback={<ContactSkeleton />}>
+          <Contact />
+        </Suspense>
       </FormProvider>
       <Divider className="mt-4" />
       <Suspense fallback={<AddressesSkeleton />}>
-        {isLoading ? <AddressesSkeleton /> : <Addresses />}
+        <Addresses />
       </Suspense>
       <Suspense fallback={<ShippingMethodsSkeleton />}>
-        {isLoading ? <ShippingMethodsSkeleton /> : <ShippingMethods />}
+        <ShippingMethods />
       </Suspense>
       <PaymentMethods {...usePaymentProvidersProps} />
       {isLoading ? (
         <Button
+          disabled
           ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          label=""
+          label={formatMessage("pay")}
           className="pay-button"
         />
       ) : (
         <Button
           disabled={payButtonDisabled}
           ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          label="Pay"
+          label={formatMessage("pay")}
           onClick={handleSubmit}
           className="pay-button"
         />

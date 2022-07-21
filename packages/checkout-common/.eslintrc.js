@@ -4,7 +4,6 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["./tsconfig.json"],
   },
-  plugins: [],
   extends: ["checkout"],
-  ignorePatterns: "*.js",
+  ignorePatterns: [".eslintrc.js"],
 };

@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
 import type { AppEnv } from "./providers/AppConfigProvider/types";
+import { CheckoutSkeleton } from "./CheckoutSkeleton";
 
 export interface RootProps {
   env: AppEnv;
@@ -61,7 +62,7 @@ export const Root = ({ env }: RootProps) => {
                 {orderId ? (
                   <OrderConfirmation orderId={orderId} />
                 ) : (
-                  <Suspense fallback={null}>
+                  <Suspense fallback={<CheckoutSkeleton />}>
                     <Checkout />
                   </Suspense>
                 )}

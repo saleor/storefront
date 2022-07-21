@@ -139,5 +139,6 @@
   "postal": "Postal code",
   "post_town": "Post town",
   "checkoutShippingUpdateCountryAreaRequiredError": "Please select country area for shipping address",
-  "checkoutBillingUpdateCountryAreaRequiredError": "Please select country area for billing address"
+  "checkoutBillingUpdateCountryAreaRequiredError": "Please select country area for billing address",
+  "pay": "Pay"
 }
