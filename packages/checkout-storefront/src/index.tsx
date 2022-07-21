@@ -1,3 +1,4 @@
+import "./index.css";
 export { Root } from "./Root";
 export type {
   BrandingColors,

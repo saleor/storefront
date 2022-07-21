@@ -45,7 +45,7 @@ pnpm run build --filter=checkout
 
 In this example, we'll only build `apps/checkout`
 
-### Develop
+### Develop Saleor App
 
 Create a tunnel for `saleor-app-checkout`:
 
@@ -62,8 +62,14 @@ Before you start the server, you need to change default environment variables. C
 To run the development server for all the apps, use the following command:
 
 ```
-pnpm run dev
+pnpm run dev --filter=saleor-app-checkout...
 ```
+
+### Develop Checkout Storefront
+
+When in dev, a special development server is also running for `checkout-storefront` on port 3001. Check out [localhost:3001/checkout-spa?checkout=<ID>](http://localhost:3001/checkout-spa?checkout=) and add the your token to the url.
+
+### Other
 
 You can also run only a specific app by running this command:
 

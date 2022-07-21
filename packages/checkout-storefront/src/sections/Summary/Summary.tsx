@@ -9,9 +9,9 @@ import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { compact } from "lodash-es";
-import "./SummaryStyles.css";
 
 import { getTaxPercentage } from "./utils";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 export const Summary = () => {
   const [isOpen, setOpen] = useState(true);
@@ -31,7 +31,7 @@ export const Summary = () => {
             {formatMessage("summary")}
           </Text>
           <img
-            src={ChevronDownIcon}
+            src={getSvgSrc(ChevronDownIcon)}
             alt="chevron-down"
             onClick={() => setOpen(!isOpen)}
           />

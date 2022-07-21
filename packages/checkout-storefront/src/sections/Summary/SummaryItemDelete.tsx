@@ -7,6 +7,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 interface LineItemDeleteProps {
   line: CheckoutLineFragment;
@@ -30,10 +31,10 @@ export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({
       <IconButton
         variant="bare"
         onClick={() => {
-          void handleLineDelete()
+          void handleLineDelete();
         }}
         ariaLabel={formatMessage("deleteItemLabel")}
-        icon={<img src={DeleteIcon} alt="delete icon" />}
+        icon={<img src={getSvgSrc(DeleteIcon)} alt="delete icon" />}
       />
     </div>
   );

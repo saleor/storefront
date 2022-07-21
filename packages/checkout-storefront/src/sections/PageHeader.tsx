@@ -1,9 +1,10 @@
 import { SaleorLogo } from "@/checkout-storefront/images";
+import { getSvgSrc } from "../lib/svgSrc";
 
 const PageHeader = () => {
   return (
     <div className="page-header">
-      <img src={SaleorLogo} alt="logo" className="logo" />
+      <img src={getSvgSrc(SaleorLogo)} alt="logo" className="logo" />
     </div>
   );
 };

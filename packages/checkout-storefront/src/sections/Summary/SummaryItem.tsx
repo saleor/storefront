@@ -10,6 +10,7 @@ import { SummaryItemDelete } from "./SummaryItemDelete";
 import { PhotoIcon } from "@/checkout-storefront/icons";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getSummaryLineProps, isCheckoutLine } from "./utils";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 interface LineItemProps {
   line: CheckoutLineFragment | OrderLineFragment;
@@ -36,7 +37,7 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
             <img
               className="object-cover"
               alt="product placeholder"
-              src={PhotoIcon}
+              src={getSvgSrc(PhotoIcon)}
             />
           )}
         </div>

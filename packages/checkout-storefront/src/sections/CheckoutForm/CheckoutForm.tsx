@@ -22,7 +22,6 @@ import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { FormData } from "./types";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
-import "./CheckoutFormStyles.css";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
 import { PaymentMethods } from "../PaymentMethods";

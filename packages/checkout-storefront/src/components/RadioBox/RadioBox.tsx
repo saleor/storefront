@@ -5,7 +5,6 @@ import {
   RadioProps as UiKitRadioProps,
 } from "@saleor/ui-kit";
 import { getRadioPropsFromRadioBoxProps, useRadioBoxStyles } from "./utils";
-import "./RadioBoxStyles.css";
 
 export interface RadioBoxProps
   extends Omit<UiKitRadioProps, "onSelect" | "label"> {

@@ -38,3 +38,5 @@ dist
 
 # TypeScript build files
 *.tsbuildinfo
+
+.rollup.cache

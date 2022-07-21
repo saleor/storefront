@@ -1,5 +1,3 @@
-import "./index.css";
-
 import { createClient, Provider as UrqlProvider, ClientOptions } from "urql";
 import { ErrorBoundary } from "react-error-boundary";
 import { I18nProvider } from "@react-aria/i18n";
@@ -11,8 +9,6 @@ import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
 import { OrderConfirmation } from "@/checkout-storefront/sections/OrderConfirmation";
 import { PageNotFound } from "@/checkout-storefront/sections/PageNotFound";
-import "react-toastify/dist/ReactToastify.css";
-import "./hooks/useAlerts/AlertStyles.css";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";

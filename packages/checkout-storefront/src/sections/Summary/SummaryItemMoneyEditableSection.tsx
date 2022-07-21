@@ -16,6 +16,7 @@ import { Money } from "@/checkout-storefront/components/Money";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -96,7 +97,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
           onClick={() => {
             setQuantity(quantity - 1);
           }}
-          icon={<img src={MinusIcon} alt="remove" />}
+          icon={<img src={getSvgSrc(MinusIcon)} alt="remove" />}
         />
         <Text weight="bold" className="mx-3">
           {quantity}
@@ -107,7 +108,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
           onClick={() => {
             setQuantity(quantity + 1);
           }}
-          icon={<img src={PlusIcon} alt="add" />}
+          icon={<img src={getSvgSrc(PlusIcon)} alt="add" />}
         />
       </div>
       <div className="flex flex-row justify-end">

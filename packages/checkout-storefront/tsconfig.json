@@ -3,6 +3,7 @@
   "include": ["src", "types.d.ts"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
+    "baseUrl": ".",
     "lib": ["dom"],
     "paths": {
       "@/checkout-storefront/icons": ["./src/assets/icons"],
@@ -13,6 +14,10 @@
     "declarationMap": false,
     "declarationDir": "types",
     "outDir": "dist",
-    "composite": false
+    "composite": false,
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "jsx": "preserve"
   }
 }

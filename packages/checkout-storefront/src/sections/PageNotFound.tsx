@@ -3,6 +3,7 @@ import { Text } from "@saleor/ui-kit";
 import { Button } from "@/checkout-storefront/components/Button";
 import { SaleorLogo } from "@/checkout-storefront/images";
 import { Title } from "@/checkout-storefront/components/Title";
+import { getSvgSrc } from "../lib/svgSrc";
 
 export const PageNotFound = () => {
   const formatMessage = useFormattedMessages();
@@ -13,7 +14,7 @@ export const PageNotFound = () => {
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center pt-12">
       <div className="w-full flex justify-center">
-        <img src={SaleorLogo} alt="logo" className="logo" />
+        <img src={getSvgSrc(SaleorLogo)} alt="logo" className="logo" />
       </div>
       <div className="h-full flex flex-col items-center justify-center mb-22">
         <Title className="text-center">{formatMessage("problemTitle")}</Title>

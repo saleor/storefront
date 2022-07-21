@@ -1,7 +1,6 @@
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
 import clsx from "clsx";
 import React, { PropsWithChildren } from "react";
-import "./SkeletonStyles.css";
 
 export interface SkeletonProps extends Classes {
   variant?: "paragraph" | "title";

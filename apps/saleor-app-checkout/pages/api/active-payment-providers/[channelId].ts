@@ -7,6 +7,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   console.log(channelId); // for deployment debug pusposes
 
+  if (!channelId) {
+    res.status(400).send(`Missing channelId`);
+    return;
+  }
+
   const channelProvidersSettings =
     await getChannelActivePaymentProvidersSettings(channelId?.toString());
 

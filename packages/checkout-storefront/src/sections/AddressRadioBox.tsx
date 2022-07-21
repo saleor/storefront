@@ -11,6 +11,7 @@ import {
   RadioBoxProps,
   useRadioBoxStyles,
 } from "@/checkout-storefront/components/RadioBox";
+import { getSvgSrc } from "../lib/svgSrc";
 
 interface AddressRadioBoxProps extends RadioBoxProps {
   address: Partial<Record<AddressField, any>>;
@@ -53,7 +54,7 @@ export const AddressRadioBox: React.FC<AddressRadioBoxProps> = ({
             <div>
               <IconButton
                 variant="bare"
-                icon={<img src={PenIcon} />}
+                icon={<img src={getSvgSrc(PenIcon)} />}
                 onClick={onEdit}
                 ariaLabel={formatMessage("editAddressLabel")}
                 className="mr-2"
@@ -62,7 +63,7 @@ export const AddressRadioBox: React.FC<AddressRadioBoxProps> = ({
                 variant="bare"
                 onClick={onDelete}
                 ariaLabel={formatMessage("deleteAddressLabel")}
-                icon={<img src={TrashIcon} />}
+                icon={<img src={getSvgSrc(TrashIcon)} />}
               />
             </div>
           </div>

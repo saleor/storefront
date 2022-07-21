@@ -8,7 +8,7 @@ import {
   TextInput,
   TextInputProps,
 } from "@/checkout-storefront/components/TextInput";
-import "./PasswordInputStyles.css";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 const PasswordInputComponent = <
   TControl extends Control<any, any>,
@@ -32,7 +32,14 @@ const PasswordInputComponent = <
           variant="bare"
           ariaLabel={formatMessage("passwordVisibilityLabel")}
           onClick={() => setPasswordVisible(!passwordVisible)}
-          icon={<img src={passwordVisible ? EyeIcon : EyeHiddenIcon} alt="" />}
+          icon={
+            <img
+              src={
+                passwordVisible ? getSvgSrc(EyeIcon) : getSvgSrc(EyeHiddenIcon)
+              }
+              alt=""
+            />
+          }
         />
       </div>
     </div>
