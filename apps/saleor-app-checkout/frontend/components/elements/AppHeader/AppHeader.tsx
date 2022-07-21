@@ -1,4 +1,5 @@
 import { IconButton, ArrowRightIcon } from "@saleor/macaw-ui";
+import { PropsWithChildren } from "react";
 import { useStyles } from "./styles";
 
 interface AppHeaderProps {
@@ -6,7 +7,11 @@ interface AppHeaderProps {
   menu?: React.ReactNode;
 }
 
-const AppHeader: React.FC<AppHeaderProps> = ({ children, menu, onBack }) => {
+const AppHeader: React.FC<PropsWithChildren<AppHeaderProps>> = ({
+  children,
+  menu,
+  onBack,
+}) => {
   const classes = useStyles();
 
   return (

@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./hooks/useAlerts/AlertStyles.css";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import type { AppEnv } from "./providers/AppConfigProvider/types";
 
 export interface RootProps {
@@ -57,12 +57,13 @@ export const Root = ({ env }: RootProps) => {
           <AppConfigProvider env={env}>
             <div className="app">
               <ToastContainer {...alertsContainerProps} />
-              {/* @ts-ignore React 17 <-> 18 type mismatch */}
               <ErrorBoundary FallbackComponent={PageNotFound}>
                 {orderId ? (
                   <OrderConfirmation orderId={orderId} />
                 ) : (
-                  <Checkout />
+                  <Suspense fallback={null}>
+                    <Checkout />
+                  </Suspense>
                 )}
               </ErrorBoundary>
             </div>

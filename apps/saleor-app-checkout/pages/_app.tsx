@@ -9,6 +9,7 @@ import AppContainer from "@/saleor-app-checkout/frontend/components/elements/App
 import AppProvider from "@/saleor-app-checkout/frontend/components/elements/AppProvider";
 import { client } from "@/saleor-app-checkout/frontend/misc/client";
 import PrivateSettingsProvider from "@/saleor-app-checkout/frontend/components/elements/PrivateSettingsProvider";
+import "@saleor/checkout-storefront/dist/esm/index.css";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -31,6 +32,7 @@ export default function App(props: AppProps) {
               messages={messages}
               onError={() => null} // Hide missing translation warnings
             >
+              {/* @ts-expect-error React 17 <-> 18 types mismatch */}
               <ThemeProvider ssr={true}>
                 <AppContainer>
                   <Component {...pageProps} />

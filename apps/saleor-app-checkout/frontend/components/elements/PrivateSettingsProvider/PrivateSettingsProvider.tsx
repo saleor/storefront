@@ -1,7 +1,7 @@
 import { defaultPrivateSettings } from "@/saleor-app-checkout/config/defaults";
 import createSafeContext from "@/saleor-app-checkout/frontend/misc/createSafeContext";
 import { PrivateSettingsValues } from "@/saleor-app-checkout/types/api";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
 
 interface PrivateSettingsProviderContext {
   privateSettings: PrivateSettingsValues<"unencrypted">;
@@ -13,7 +13,7 @@ interface PrivateSettingsProviderContext {
 export const [usePrivateSettingsContext, Provider] =
   createSafeContext<PrivateSettingsProviderContext>();
 
-const PrivateSettingsProvider: React.FC = (props) => {
+const PrivateSettingsProvider: React.FC<PropsWithChildren<{}>> = (props) => {
   const [privateSettings, setPrivateSettings] = useState(
     defaultPrivateSettings
   );

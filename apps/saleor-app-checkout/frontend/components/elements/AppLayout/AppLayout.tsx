@@ -3,6 +3,7 @@ import AppHeader from "@/saleor-app-checkout/frontend/components/elements/AppHea
 import AppSidebar from "@/saleor-app-checkout/frontend/components/elements/AppSidebar";
 import { useStyles } from "./styles";
 import { Item } from "types/common";
+import { PropsWithChildren } from "react";
 
 interface AppLayoutProps {
   title: string;
@@ -14,7 +15,7 @@ interface AppLayoutProps {
   onItemClick: (item: Item) => void;
 }
 
-const AppLayout: React.FC<AppLayoutProps> = ({
+const AppLayout: React.FC<PropsWithChildren<AppLayoutProps>> = ({
   title,
   items,
   selectedItem,

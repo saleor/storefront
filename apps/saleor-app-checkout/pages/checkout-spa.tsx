@@ -1,5 +1,4 @@
 import Dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 const CheckoutStoreFront = Dynamic(
   async () => {

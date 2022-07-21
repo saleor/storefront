@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "typescript": "4.7.4",
+    "eslint-config-checkout": "workspace:*",
     "tsconfig": "workspace:*"
   }
 }
