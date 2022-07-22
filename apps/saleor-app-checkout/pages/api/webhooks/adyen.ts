@@ -1,6 +1,5 @@
 // https://docs.adyen.com/development-resources/webhooks
 
-import { NextApiRequest, NextApiResponse } from "next";
 import { hmacValidator, Types } from "@adyen/api-library";
 
 import { createTransaction } from "@/saleor-app-checkout/backend/payments/createTransaction";
@@ -14,8 +13,17 @@ import { getOrderTransactions } from "@/saleor-app-checkout/backend/payments/get
 import { updateTransaction } from "@/saleor-app-checkout/backend/payments/updateTransaction";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { envVars } from "@/saleor-app-checkout/constants";
+import { toNextHandler } from "retes/adapter";
+import { Handler } from "retes";
+import { Response } from "retes/response";
 
 const validator = new hmacValidator();
+
+const isAdyenNotification = (params: {
+  [key: string]: any;
+}): params is Types.notification.Notification => {
+  return typeof params?.live === "string" && Array.isArray(params?.notificationItems);
+};
 
 const validateNotificationItems = (
   { NotificationRequestItem }: Types.notification.NotificationItem,
@@ -75,10 +83,19 @@ const notificationHandler = async (
   }
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler: Handler = async (req) => {
   const {
     paymentProviders: { adyen },
   } = await getPrivateSettings(envVars.apiUrl, false);
+
+  if (!adyen.username || !adyen.password) {
+    console.error("(from Adyen webhook) Missing Adyen configuration - no username or password");
+    return Response.InternalServerError("Missing Adyen API config");
+  }
+
+  if (!isAdyenNotification(req.params)) {
+    return Response.BadRequest();
+  }
 
   // Get basic auth token
   const encodedCredentials = Buffer.from(adyen.username + ":" + adyen.password, "ascii").toString(
@@ -86,20 +103,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
 
   if (req.headers.authorization !== `Basic ${encodedCredentials}`) {
-    return res.status(401).send("Invalid credentials");
+    return Response.Unauthorized();
   }
 
   let notificationItem: Types.notification.NotificationRequestItem;
   try {
     // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
     // notificationItem will always contain a single item for HTTP POST
-    notificationItem = validateNotificationItems(req.body.notificationItems[0], adyen.hmac!);
+    notificationItem = validateNotificationItems(req.params.notificationItems[0], adyen.hmac!);
   } catch (error) {
-    console.error(error);
-    return res.status(401).send("Error while handling webhook");
+    console.error("Error while validating Adyen webhook", error);
+    return Response.Unauthorized();
   }
 
   await notificationHandler(notificationItem, adyen.apiKey!);
 
-  res.status(200).send("[accepted]");
-}
+  return Response.OK("[accepted]");
+};
+
+export default toNextHandler([handler]);
