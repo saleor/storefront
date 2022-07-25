@@ -16,6 +16,7 @@ import { envVars } from "@/saleor-app-checkout/constants";
 import { toNextHandler } from "retes/adapter";
 import { Handler } from "retes";
 import { Response } from "retes/response";
+import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 
 const validator = new hmacValidator();
 
@@ -25,15 +26,16 @@ const isAdyenNotification = (params: {
   return typeof params?.live === "string" && Array.isArray(params?.notificationItems);
 };
 
-const validateNotificationItems = (
+const validateNotificationItems = async (
   { NotificationRequestItem }: Types.notification.NotificationItem,
   hmacKey: string
+  // eslint-disable-next-line require-await
 ) => {
   // first validate the origin
   const valid = validator.validateHMAC(NotificationRequestItem, hmacKey);
 
   if (!valid) {
-    throw "Invalid HMAC key";
+    throw new Error("Invalid HMAC key");
   }
 
   return NotificationRequestItem;
@@ -106,13 +108,13 @@ const handler: Handler = async (req) => {
     return Response.Unauthorized();
   }
 
-  let notificationItem: Types.notification.NotificationRequestItem;
-  try {
-    // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
-    // notificationItem will always contain a single item for HTTP POST
-    notificationItem = validateNotificationItems(req.params.notificationItems[0], adyen.hmac!);
-  } catch (error) {
-    console.error("Error while validating Adyen webhook", error);
+  // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
+  // notificationItem will always contain a single item for HTTP POST
+  const [validationError, notificationItem] = await unpackPromise(
+    validateNotificationItems(req.params.notificationItems[0], adyen.hmac!)
+  );
+  if (validationError) {
+    console.error("Error while validating Adyen webhook", validationError);
     return Response.Unauthorized();
   }
 
