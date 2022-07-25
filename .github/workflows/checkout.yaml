@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.5.2 # version used by Vercel
 
       - name: Turbo Cache
         id: turbo-cache
@@ -23,7 +26,6 @@ jobs:
 
       - name: Install deps
         run: |
-          npm install -g pnpm
           pnpm i
 
       - name: Run tsc

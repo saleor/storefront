@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.5.2 # version used by Vercel
 
       - name: Turbo Cache
         id: turbo-cache
@@ -23,7 +26,6 @@ jobs:
 
       - name: Install deps
         run: |
-          npm install -g pnpm
           pnpm i
 
       - name: Run tsc
@@ -35,5 +37,9 @@ jobs:
           pnpm run lint --scope="saleor-app-checkout"
 
       - name: Run tests
+        env:
+          TEST_MOLLIE_KEY: ${{ secrets.TEST_MOLLIE_KEY }}
+          TEST_MOLLIE_PROFILE_ID: ${{ secrets.TEST_MOLLIE_PROFILE_ID }}
+          SETTINGS_ENCRYPTION_SECRET: "testng"
         run: |
           pnpm run test --scope="saleor-app-checkout"

@@ -9,7 +9,7 @@ export type ServerEnvVar = "appToken" | "settingsEncryptionSecret";
 export type DebugEnvVar = "appUrl";
 
 export type EnvVars = Record<EnvVar, string>;
-export type ServerEnvVars = Record<ServerEnvVar, string>;
+export type ServerEnvVars = Record<ServerEnvVar, string | undefined>;
 export type DebugEnvVars = Record<DebugEnvVar, string | undefined>;
 
 // Need to use `var variable = process.env.VARIABLE;`, not `var env = process.env; var variable = env.VARIABLE;`
@@ -20,12 +20,12 @@ export const envVars: EnvVars = {
 
 export const serverEnvVars: ServerEnvVars = {
   appToken: process.env.SALEOR_APP_TOKEN!,
-  settingsEncryptionSecret: process.env.SETTINGS_ENCRYPTION_SECRET!,
+  settingsEncryptionSecret: process.env.SETTINGS_ENCRYPTION_SECRET,
 };
 
 export const debugEnvVars: DebugEnvVars | null =
   process.env.NODE_ENV !== "development"
     ? null
     : {
-      appUrl: process.env.DEBUG_APP_URL,
-    };
+        appUrl: process.env.DEBUG_APP_URL,
+      };

@@ -1,14 +1,14 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 
-import { Radio } from "./Radio";
+import { Radio, RadioProps } from "./Radio";
 
 export default {
   title: "Components/Radio",
   component: Radio,
 } as ComponentMeta<typeof Radio>;
 
-const options = [
+const options: RadioProps[] = [
   { label: "Apple", value: "apple" },
   { label: "Banana", value: "banana" },
 ];
@@ -18,7 +18,7 @@ const Template = ({
 }: {
   customOptions: Array<{
     value: string;
-    label: ReactNode;
+    label: React.ReactNode;
     classNames: Record<string, string>;
   }>;
 }) => {
@@ -31,7 +31,7 @@ const Template = ({
       {radioOptions.map((option) => (
         <Radio
           {...option}
-          key={option.value}
+          key={option.value as string}
           checked={option.value === selected}
           onChange={(event) => {
             console.log(event.target);

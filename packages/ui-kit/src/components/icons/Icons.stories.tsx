@@ -1,4 +1,3 @@
-import { FC, ReactHTML } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { Text } from "../Text";
@@ -11,9 +10,9 @@ export default {
 
 const icons = Object.entries(exportedIcons);
 
-const IconWrapper = (props: JSX.IntrinsicElements['div']) => (
+const IconWrapper = (props: JSX.IntrinsicElements["div"]) => (
   <div
-    className='flex items-center	justify-center flex-col p-8 bg-[#ffffff]'
+    className="flex items-center	justify-center flex-col p-8 bg-[#ffffff]"
     {...props}
   />
 );
@@ -31,16 +30,16 @@ Colored.args = {
 };
 
 const ListTemplate = () => (
-  <div className='grid grid-cols-4 gap-4 p-4 bg-button-tertiary'>
+  <div className="grid grid-cols-4 gap-4 p-4 bg-button-tertiary">
     {icons.map(([key, icon]) => {
       const Icon = icon;
 
       return (
         <IconWrapper key={key}>
-          <div className='mb-4'>
+          <div className="mb-4">
             <Icon />
           </div>
-          <Text size='sm' weight='semibold'>
+          <Text size="sm" weight="semibold">
             {`<${key} />`}
           </Text>
         </IconWrapper>

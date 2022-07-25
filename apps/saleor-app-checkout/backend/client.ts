@@ -9,6 +9,7 @@ interface ClientParams {
 
 export const getClient = (params: ClientParams = {}) => {
   const { apiUrl = envVars.apiUrl, appToken = getAuthToken() } = params;
+  console.log(apiUrl, appToken);
 
   return createClient({
     url: apiUrl!,

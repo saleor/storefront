@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import { Select } from "./Select";
+import { Option, Select, SelectProps } from "./Select";
 
 export default {
   title: "Components/Select",
@@ -37,8 +37,10 @@ const users = [
   { label: "Katelyn Rohan", value: "Katelyn Rohan", id: "5" },
 ];
 
-const commonArgs = {
-  selected: users[0],
+type StoriesArgs = Omit<SelectProps, "onChange">;
+
+const commonArgs: StoriesArgs = {
+  selectedValue: users[0].value,
   options: users,
 };
 
@@ -62,7 +64,7 @@ Disabled.args = {
 
 export const Countries = Template.bind({});
 
-const countries = [
+const countries: Option[] = [
   { label: "Polska", value: "Polska", icon: "🇵🇱", id: "1" },
   { label: "Niemcy", value: "Niemcy", icon: "🇩🇪", id: "2" },
   { label: "USA", value: "USA", icon: "🇺🇸", id: "3" },

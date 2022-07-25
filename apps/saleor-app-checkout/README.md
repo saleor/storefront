@@ -90,17 +90,39 @@ Each variable starting with [`NEXT_PUBLIC`](https://nextjs.org/docs/basic-featur
 - `NEXT_PUBLIC_SALEOR_API_URL` — URL of your Saleor GraphQL API
 - `NEXT_PUBLIC_CHECKOUT_APP_URL` – URL of this application (i.e. https://saleor-app-checkout.vercel.app)
 
-> Note: by default `SALEOR_API_URL` and `CHECKOUT_APP_URL` env variables from the root of the monorepo are used for these values. If you want to customise them, you can add a separate `.env.local` file which won't be stored in the git repository.
+> Note: by default `SALEOR_API_URL` env variable from root of monorepo is used for the value. If you want to customise it, you can add a separate `.env.local` file, which won't be stored in git repository
 
-> **PROTIP 💡**: If you need Saleor instance for tesitng, create one using [Saleor CLI](https://github.com/saleor/saleor-cli):
->
-> ```bash
-> npx saleor project create && npx saleor environment create
-> ```
->
-> This will create new Saleor sandbox in [Saleor Cloud](https://cloud.saleor.io/)
->
-> ⚠️ You need to use the same Saleor instance in `saleor-app-checkout`. Make sure you have the same value of `NEXT_PUBLIC_SALEOR_API_URL` variable in `apps/saleor-app-checkout/.env.local`
+## Testing
+
+To test React components you must use `jsdom` runtime (the default is `node`). Add this comment at the top of the test file:
+
+```js
+/** @jest-environment setup-polly-jest/jest-environment-node */
+```
+
+### Mocking requests
+
+Mocking configuration works both in browser and Node environment
+
+#### Recording
+
+For mocking requests made in tests we use [Polly.js](https://netflix.github.io/pollyjs/#/). By default, if requests are made in tests and are not mocked the test will fail.
+
+To record requests run tests by using the `test:record` command:
+
+```
+pnpm run test:record
+```
+
+This command sets `POLLY_MODE` env variable to `record`.
+
+Recordings are stored in `recordings` folder.
+
+#### Manual mocks
+
+To write manual mocks we use [Mock Service Worker](https://mswjs.io/) library. Any REST API route or GraphQL operation that is mocked using `msw` won't be recorded by Polly.js.
+
+Mocks for msw are located in `mocks/handlers`
 
 ## Checkout Storefront
 

@@ -1,6 +1,7 @@
 import fs from "fs";
 import { envVars, serverEnvVars } from "../constants";
 import { AppDocument, AppQuery, AppQueryVariables } from "../graphql";
+import { IS_TEST } from "../test-utils";
 import { getClient } from "./client";
 
 const maskToken = (token: string) =>
@@ -12,8 +13,13 @@ export const getAuthToken = () => {
     token = serverEnvVars.appToken;
   }
 
-  if (!token && process.env.VERCEL !== "1") {
+  if (!token && process.env.VERCEL !== "1" && fs.existsSync(".auth_token")) {
     token = fs.readFileSync(".auth_token", "utf-8");
+  }
+
+  if (IS_TEST) {
+    // Allows to use real appToken to record requests in development
+    token = "TEST";
   }
 
   if (!token) {
