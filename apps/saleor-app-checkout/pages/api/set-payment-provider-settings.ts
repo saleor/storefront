@@ -7,9 +7,9 @@ import {
   allowCors,
   requireAuthorization,
 } from "@/saleor-app-checkout/backend/utils";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler: NextApiHandler = async (req, res) => {
   const tokenData = getTokenDataFromRequest(req);
 
   const tokenDomain = tokenData?.["iss"];
@@ -47,5 +47,5 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   } catch (error) {
     return res.status(500).json({ error });
   }
-}
+};
 export default allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"]));

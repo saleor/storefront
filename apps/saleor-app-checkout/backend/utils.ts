@@ -1,11 +1,11 @@
 import { PermissionEnum } from "@/saleor-app-checkout/graphql";
-import { NextApiRequest, NextApiResponse } from "next";
-import { debugEnvVars } from "../constants";
+import { NextApiHandler, NextApiRequest } from "next";
+import { debugEnvVars, envVars, envVarsNames } from "../constants";
 import { isAuthenticated, isAuthorized } from "./auth";
 
 export const allowCors =
-  (fn: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) =>
-  async (req: NextApiRequest, res: NextApiResponse) => {
+  (fn: NextApiHandler): NextApiHandler =>
+  async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,POST");
     res.setHeader(
@@ -23,10 +23,10 @@ export const allowCors =
 
 export const requireAuthorization =
   (
-    fn: (req: NextApiRequest, res: NextApiResponse) => Promise<void>,
+    fn: NextApiHandler,
     requiredPermissions?: PermissionEnum[]
-  ) =>
-  async (req: NextApiRequest, res: NextApiResponse) => {
+  ): NextApiHandler =>
+  async (req, res) => {
     const authenticated = await isAuthenticated(req);
 
     if (!authenticated) {
@@ -59,4 +59,14 @@ export const getBaseUrl = (req: NextApiRequest) => {
   const { host, "x-forwarded-proto": protocol = "http" } = req.headers;
 
   return `${protocol}://${host}`;
+};
+
+export const getSaleorDomain = (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (!envVars.apiUrl) {
+      return reject(`Missing ${envVarsNames.apiUrl} environment variable`);
+    }
+    const url = new URL(envVars.apiUrl);
+    return resolve(url.hostname);
+  });
 };

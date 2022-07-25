@@ -77,7 +77,7 @@ importers:
       '@pollyjs/core': ^6.0.5
       '@pollyjs/persister-fs': ^6.0.5
       '@saleor/app-bridge': ^0.1.9
-      '@saleor/app-sdk': ^0.5.0
+      '@saleor/app-sdk': ^0.7.0
       '@saleor/checkout-storefront': workspace:*
       '@saleor/macaw-ui': ^0.4.0
       '@types/content-type': ^1.1.5
@@ -124,7 +124,7 @@ importers:
       react-hook-form: ^7.27.1
       react-intl: ^5.24.6
       react-is: ^17.0.2
-      retes: ^0.27.1
+      retes: ^0.30.0
       setup-polly-jest: ^0.11.0
       ts-invariant: 0.10.3
       ts-jest: ^27.1.4
@@ -141,7 +141,7 @@ importers:
       '@material-ui/styles': 4.11.5_bb2bxwco6ptpubzwpazr52qf6i
       '@mollie/api-client': 3.6.0
       '@saleor/app-bridge': 0.1.9
-      '@saleor/app-sdk': 0.5.0
+      '@saleor/app-sdk': 0.7.0
       '@saleor/checkout-storefront': link:../../packages/checkout-storefront
       '@saleor/macaw-ui': 0.4.0_2y22cl4s2qbk2dsjoypyjtjdfu
       '@urql/exchange-auth': 0.1.7_graphql@15.8.0
@@ -165,7 +165,7 @@ importers:
       react-hook-form: 7.33.1_react@18.2.0
       react-intl: 5.25.1_qtbnez4q7bzoc4eqybg3efzzxe
       react-is: 17.0.2
-      retes: 0.27.2
+      retes: 0.30.1
       ts-invariant: 0.10.3
       url-join: 5.0.0
       urql: 2.2.3_o264z5epwuajru7y4dsijkqr44
@@ -4439,12 +4439,13 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /@saleor/app-sdk/0.5.0:
-    resolution: {integrity: sha512-leC0xb8hdBHzwZ8FHwJfGANxy3JzDjJL5t+vNa/7YLa51MerSHPOGvvr0bJUVMDbpHs+8RzKTfVbFuwBMpAqTg==}
+  /@saleor/app-sdk/0.7.0:
+    resolution: {integrity: sha512-e2an48MV7608xJIewQzaUaqN8fwmZmQrQx9rY25cjEWjvbM6TuF3YdkZyGH/1M8dsIFaQJmJnv0+uZIChOyywQ==}
     dependencies:
       fast-glob: 3.2.11
       graphql: 16.5.0
-      retes: 0.27.2
+      jose: 4.8.3
+      retes: 0.29.4
     dev: false
 
   /@saleor/macaw-ui/0.4.0_2y22cl4s2qbk2dsjoypyjtjdfu:
@@ -18802,8 +18803,14 @@ packages:
     engines: {node: '>=0.12'}
     dev: true
 
-  /retes/0.27.2:
-    resolution: {integrity: sha512-O+d+L/MyvbB4fJjMUiSzU1z3vPUn1z5lwUkkNfI+tiULmJFREP+0OVcn7jbSyTs3oQTzVcTOW+3uN35lSUnnbQ==}
+  /retes/0.29.4:
+    resolution: {integrity: sha512-c6Ji2oGfXN/abuLRVLUT0/eklLuAlargjBR0Ru/FAhgmL2TtEhNl2OQ3UnFSUYXa8a6v9qrEb6UvIp0A6KlJ5w==}
+    dependencies:
+      busboy: 1.6.0
+    dev: false
+
+  /retes/0.30.1:
+    resolution: {integrity: sha512-+zXCyrOT22WjM9ayT3riudhmFDJVTeGshfgKWSuyOPV+ez2R6Fi2OtM1hfGteGZrAv/gATEMgdiCPdJOaDvIEw==}
     dependencies:
       busboy: 1.6.0
     dev: false

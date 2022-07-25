@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 import { Types as AdyenTypes } from "@adyen/api-library";
 import { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
 
@@ -75,7 +75,7 @@ const mollieHandler = async (
   }
 };
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "GET") {
     res.status(405).send({ message: "Only GET requests allowed" });
     return;
@@ -114,6 +114,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   res.status(200).json(response);
-}
+};
 
 export default allowCors(handler);

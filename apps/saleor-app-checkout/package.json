@@ -24,7 +24,7 @@
     "@material-ui/styles": "^4.11.5",
     "@mollie/api-client": "^3.6.0",
     "@saleor/app-bridge": "^0.1.9",
-    "@saleor/app-sdk": "^0.5.0",
+    "@saleor/app-sdk": "^0.7.0",
     "@saleor/checkout-storefront": "workspace:*",
     "@saleor/macaw-ui": "^0.4.0",
     "@urql/exchange-auth": "^0.1.7",
@@ -48,7 +48,7 @@
     "react-hook-form": "^7.27.1",
     "react-intl": "^5.24.6",
     "react-is": "^17.0.2",
-    "retes": "^0.27.1",
+    "retes": "^0.30.0",
     "ts-invariant": "0.10.3",
     "url-join": "^5.0.0",
     "urql": "^2.2.0"
