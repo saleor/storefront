@@ -25,8 +25,8 @@ export const SignInFormContainer: React.FC<
   const formatMessage = useFormattedMessages();
 
   return (
-    <div>
-      <div className="flex flex-col mb-4">
+    <div className="section">
+      <div className="flex flex-col mb-2">
         <div className="flex flex-row justify-between items-baseline">
           <Title>{title}</Title>
           <div className="flex flex-row">

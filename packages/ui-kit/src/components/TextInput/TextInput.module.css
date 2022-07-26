@@ -16,7 +16,7 @@
 
 .text-input {
   transition: border 0.2s ease-in-out;
-  @apply h-14  text-base border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary py-3 pt-5 pb-2;
+  @apply h-14 rounded text-base border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary py-3 pt-5 pb-2;
   padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
   padding-right: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
 }

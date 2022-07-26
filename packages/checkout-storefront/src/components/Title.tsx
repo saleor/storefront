@@ -1,12 +1,13 @@
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
 import clsx from "clsx";
 import React, { PropsWithChildren } from "react";
+import { Text } from "@saleor/ui-kit";
 
 export const Title: React.FC<PropsWithChildren<Classes>> = ({
   className,
   children,
 }) => (
-  <h2 className={clsx("text-text-primary text-xl font-bold mb-4", className)}>
+  <Text className={clsx(className)} weight="bold">
     {children}
-  </h2>
+  </Text>
 );

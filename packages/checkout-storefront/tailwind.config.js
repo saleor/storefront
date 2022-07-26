@@ -56,26 +56,9 @@ const theme = {
       success: "#EDF9F0",
     },
   },
-  fontFamily: {
-    sans: ["Inter"],
-  },
   spacing: {
     px: "1px",
     ...spacing,
-  },
-  fontWeight: {
-    normal: 400,
-    regular: 500,
-    semibold: 600,
-    bold: 700,
-  },
-  fontSize: {
-    xs: ["1.1rem", "1.6rem"],
-    sm: ["1.2rem", "2.1rem"],
-    base: ["1.4rem", "2.1rem"],
-    md: ["1.6rem", "2.3rem"],
-    lg: ["2.4rem", "3.2rem"],
-    xl: ["3.2rem", "4.6rem"],
   },
   extend: {
     minHeight: spacing,
@@ -89,7 +72,7 @@ const theme = {
       top: "top",
     },
     borderRadius: {
-      DEFAULT: "0.4rem",
+      lg: "0.8rem",
     },
   },
 };

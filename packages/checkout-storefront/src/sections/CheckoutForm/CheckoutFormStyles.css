@@ -2,7 +2,11 @@
 
 @layer components {
   .checkout-form {
-    @apply flex flex-col w-full lg:w-1/2 xl:w-2/3;
+    @apply border border-border-secondary rounded-lg flex flex-col w-full lg:w-1/2 xl:w-2/3;
+  }
+
+  .section {
+    @apply px-4 pt-5 pb-6;
   }
 
   .actions {
