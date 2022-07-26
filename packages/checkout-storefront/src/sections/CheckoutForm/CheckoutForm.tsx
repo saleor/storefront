@@ -1,9 +1,9 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact, ContactSkeleton } from "@/checkout-storefront/sections/Contact";
 import {
-  ShippingMethods,
-  ShippingMethodsSkeleton,
-} from "@/checkout-storefront/sections/ShippingMethods";
+  DeliveryMethods,
+  DeliveryMethodsSkeleton,
+} from "@/checkout-storefront/sections/DeliveryMethods";
 import { AddressesSkeleton } from "@/checkout-storefront/sections/Addresses";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
@@ -80,13 +80,16 @@ export const CheckoutForm = () => {
         </Suspense>
       </FormProvider>
       <>
-        <Suspense fallback={<AddressesSkeleton />}>
-          {/* for now commenting this out because it crashed because of the structure change */}
-          {/* will fix before merging */}
-          {/* <ShippingAddressSection collapsed={showOnlyContact} /> */}
-        </Suspense>
-        <Suspense fallback={<ShippingMethodsSkeleton />}>
-          <ShippingMethods collapsed={showOnlyContact} />
+        {checkout?.isShippingRequired && (
+          <Suspense fallback={<AddressesSkeleton />}>
+            {!showOnlyContact && "SHIPPING SECTION MOCK"}
+            {/* for now commenting this out because it crashed because of the structure change */}
+            {/* will fix before merging */}
+            {/* <ShippingAddressSection collapsed={showOnlyContact} /> */}
+          </Suspense>
+        )}
+        <Suspense fallback={<DeliveryMethodsSkeleton />}>
+          <DeliveryMethods collapsed={showOnlyContact} />
         </Suspense>
         <PaymentMethods {...usePaymentProvidersProps} collapsed={showOnlyContact} />
         {!showOnlyContact &&

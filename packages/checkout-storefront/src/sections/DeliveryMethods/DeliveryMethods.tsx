@@ -14,7 +14,7 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { CommonSectionProps } from "../Addresses/types";
 
-export const ShippingMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
+export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { showErrors, showSuccess } = useAlerts("checkoutDeliveryMethodUpdate");
@@ -67,7 +67,7 @@ export const ShippingMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       {!checkout?.shippingAddress && (
         <Text>Please fill in shipping address to see available shipping methods</Text>
       )}
-      <RadioBoxGroup label={formatMessage("shippingMethodsLabel")}>
+      <RadioBoxGroup label={formatMessage("deliveryMethodsLabel")}>
         {(checkout?.shippingMethods as ShippingMethod[])?.map(
           ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
             <RadioBox
