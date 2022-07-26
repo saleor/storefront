@@ -11,13 +11,6 @@ export const Addresses: React.FC = () => {
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
 
-  const [{ data }] = useUserQuery({
-    pause: !authUser?.id,
-  });
-
-  const user = data?.me;
-  const userAddresses = user?.addresses;
-
   return (
     <BillingSameAsShippingProvider>
       {checkout.isShippingRequired && (
