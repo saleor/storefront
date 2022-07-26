@@ -15,7 +15,7 @@ export const UserAddressSectionContainer: React.FC<
   const { countryCode, setCountryCode } = useCountrySelect();
 
   return (
-    <div className="my-6">
+    <>
       <div className="flex flex-row justify-between items-baseline mb-3">
         <Title>{title}</Title>
         {displayCountrySelect && (
@@ -31,6 +31,6 @@ export const UserAddressSectionContainer: React.FC<
         )}
       </div>
       {children}
-    </div>
+    </>
   );
 };

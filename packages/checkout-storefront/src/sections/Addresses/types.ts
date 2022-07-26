@@ -7,6 +7,7 @@ export interface AddressFormData
     "country" | "countryCode" | "name"
   > {
   countryCode: CountryCode;
+  autoSave?: boolean;
 }
 
 export interface UserAddressFormData extends AddressFormData {

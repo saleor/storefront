@@ -273,10 +273,12 @@ mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
 mutation checkoutShippingAddressUpdate(
   $checkoutId: ID!
   $shippingAddress: AddressInput!
+  $validationRules: CheckoutAddressValidationRules
 ) {
   checkoutShippingAddressUpdate(
     id: $checkoutId
     shippingAddress: $shippingAddress
+    validationRules: $validationRules
   ) {
     errors {
       ...CheckoutErrorFragment

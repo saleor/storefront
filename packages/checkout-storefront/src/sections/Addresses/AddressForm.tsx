@@ -26,11 +26,6 @@ import {
 } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
-import {
-  AddressFormLayoutField,
-  getAddressFormLayout,
-  isAddressFieldRow,
-} from "./utils";
 import { Select } from "@saleor/ui-kit";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
 
@@ -39,6 +34,7 @@ export interface AddressFormProps<TFormData extends AddressFormData>
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
   onSave: SubmitHandler<TFormData>;
+  autoSave?: boolean;
 }
 
 export const AddressForm = <TFormData extends AddressFormData>({
@@ -47,6 +43,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   onSave,
   errors,
   clearErrors: onClearErrors,
+  autoSave = false,
 }: AddressFormProps<TFormData>) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
@@ -79,7 +76,10 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   useSetFormErrors({ setError, errors });
 
-  const getInputProps = useGetInputProps({ ...rest, formState });
+  const getInputProps = useGetInputProps({
+    ...rest,
+    formState,
+  });
 
   const [{ data }] = useAddressValidationRulesQuery({
     variables: { countryCode },
@@ -105,26 +105,6 @@ export const AddressForm = <TFormData extends AddressFormData>({
     onClearErrors();
     onSave(countryArea ? { ...address, countryArea } : address);
   };
-
-  const addressFormLayout = getAddressFormLayout(
-    getSortedAddressFields(validationRules?.allowedFields! as AddressField[])
-  );
-
-  const mapAddressFields = (renderFn: (field: AddressField) => ReactNode) =>
-    addressFormLayout.map((layoutField: AddressFormLayoutField) => {
-      if (isAddressFieldRow(layoutField)) {
-        return (
-          <div
-            key={(layoutField as AddressField[]).join()}
-            className="w-full flex flex-row gap-3 justify-between"
-          >
-            {(layoutField as AddressField[]).map(renderFn)}
-          </div>
-        );
-      }
-
-      return renderFn(layoutField as AddressField);
-    });
 
   const getLocalizedFieldName = (
     field: AddressField,
@@ -157,9 +137,18 @@ export const AddressForm = <TFormData extends AddressFormData>({
     return getLocalizedFieldName(field, localizedFields[field]);
   };
 
+  const sortedAddressFields = getSortedAddressFields(
+    validationRules?.allowedFields! as AddressField[]
+  );
+
+  const handleAutoSave = () => {
+    const formData = getValues();
+    onSave(formData);
+  };
+
   return (
     <div>
-      {mapAddressFields((field: AddressField) => {
+      {sortedAddressFields.map((field: AddressField) => {
         const isRequired = isRequiredField(field);
         const label = getFieldLabel(field);
 
@@ -184,13 +173,15 @@ export const AddressForm = <TFormData extends AddressFormData>({
           <TextInput
             key={field}
             label={label}
-            {...getInputProps(field as Path<TFormData>)}
+            {...getInputProps(field as Path<TFormData>, {
+              onBlur: handleAutoSave,
+            })}
             optional={!isRequired}
           />
         );
       })}
-      <div>
-        {onCancel && (
+      {!autoSave && (
+        <div className="flex flex-row justify-end">
           <Button
             className="mr-4"
             ariaLabel={formatMessage("cancelLabel")}
@@ -198,14 +189,14 @@ export const AddressForm = <TFormData extends AddressFormData>({
             onClick={handleCancel}
             label={formatMessage("cancel")}
           />
-        )}
-        <Button
-          ariaLabel={formatMessage("saveLabel")}
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={handleSubmit(handleSave)}
-          label={formatMessage("saveAddress")}
-        />
-      </div>
+          <Button
+            ariaLabel={formatMessage("saveLabel")}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={handleSubmit(handleSave)}
+            label={formatMessage("saveAddress")}
+          />
+        </div>
+      )}
     </div>
   );
 };

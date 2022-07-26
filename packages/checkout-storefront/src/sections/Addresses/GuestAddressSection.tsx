@@ -22,11 +22,12 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   const { countryCode } = useCountrySelect();
 
   const handleSave = (address: AddressFormData) =>
-    onSubmit({ ...address, countryCode });
+    onSubmit({ ...address, countryCode, autoSave: true });
 
   return (
     <UserAddressSectionContainer title={title} displayCountrySelect>
       <AddressForm
+        autoSave
         onSave={handleSave}
         defaultValues={getAddressFormDataFromAddress(address)}
         {...errorProps}
