@@ -14,8 +14,6 @@ declare module "next" {
   } & NextApiResponse;
 }
 
-export const IS_TEST = typeof jest !== "undefined";
-
 export const mockRequest = (method: RequestMethod = "GET") => {
   const { req, res } = createMocks({ method });
   req.headers = {
