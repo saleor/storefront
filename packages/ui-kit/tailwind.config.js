@@ -88,7 +88,8 @@ const theme = {
     xl: ["3.2rem", "4.6rem"],
   },
   borderRadius: {
-    DEFAULT: "4px",
+    DEFAULT: "0.4rem",
+    sm: "0.2rem",
     full: "50%",
   },
   boxShadow: {

@@ -3,7 +3,7 @@
 }
 
 :local(.trigger) {
-  @apply h-10 border border-border-primary hover:border-border-active text-base items-center cursor-pointer w-full text-left whitespace-nowrap text-ellipsis overflow-hidden;
+  @apply h-10 border rounded border-border-primary hover:border-border-active text-base items-center cursor-pointer w-full text-left whitespace-nowrap text-ellipsis overflow-hidden;
   padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
   padding-right: calc(theme("spacing.11") - theme("borderWidth.DEFAULT"));
 }
