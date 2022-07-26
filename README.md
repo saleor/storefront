@@ -50,7 +50,7 @@ In this example, we'll only build `apps/checkout`
 Create a tunnel for `saleor-app-checkout`:
 
 ```bash
-cd apps/saleor-app-checkout && npx saleor app tunnel 3000
+cd apps/saleor-app-checkout && npx saleor app tunnel 3001
 ```
 
 > Note: the process needs to be running in the background
@@ -67,7 +67,7 @@ pnpm run dev --filter=saleor-app-checkout...
 
 ### Develop Checkout Storefront
 
-When in dev, a special development server is also running for `checkout-storefront` on port 3001. Check out [localhost:3001/checkout-spa?checkout=<ID>](http://localhost:3001/checkout-spa?checkout=) and add the your token to the url.
+When in dev, a special development server is also running for `checkout-storefront` on port 3002. Check out [localhost:3002?checkout=<ID>](http://localhost:3002?checkout=) and add the your token to the url.
 
 ### Other
 
@@ -163,3 +163,11 @@ Read setup guide in [docs/adyen.md](./docs/adyen.md)
 ## FAQ
 
 Read FAQ in [docs/faq.md](./docs/faq.md)
+
+## Ports
+
+- `apps/react-storefront`: **3000**
+- `apps/saleor-app-checkout`: **3001**
+- `packages/checkout-storefront`: **3002**
+- `apps/checkout`: **3003**
+- `packages/ui-kit storybook`: **6006**

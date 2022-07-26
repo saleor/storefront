@@ -6,7 +6,7 @@
   "module": "dist/esm/index.js",
   "types": "./dist/esm/types/index.d.ts",
   "scripts": {
-    "dev": "concurrently --kill-others 'next dev -p 3001' 'rollup -w -c'",
+    "dev": "concurrently --kill-others 'next dev -p 3002' 'rollup -w -c'",
     "build": "NODE_ENV=production rollup -c",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
     "check-types": "tsc --noEmit",

@@ -14,11 +14,11 @@ export type DebugEnvVars = Record<DebugEnvVar, string | undefined>;
 
 // Need to use `var variable = process.env.VARIABLE;`, not `var env = process.env; var variable = env.VARIABLE;`
 // https://github.com/vercel/next.js/issues/19420
+export const envVars: EnvVars = {
+  apiUrl: process.env["NEXT_PUBLIC_SALEOR_API_URL"]!,
+};
 export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
-};
-export const envVars: EnvVars = {
-  apiUrl: process.env[envVarsNames.apiUrl]!,
 };
 
 export const serverEnvVarNames: Record<ServerEnvVar, string> = {

@@ -9,7 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "generate": "turbo run generate",
-    "dev": "env-cmd turbo run dev --parallel",
+    "dev": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run dev --parallel",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "test": "turbo run test",

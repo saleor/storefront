@@ -17,15 +17,15 @@ Start tunnel, so that Checkout App is available from Internet for webhooks:
 > Note: Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GrpahQL API endpoint
 
 ```bash
-npx saleor app tunnel 3000
+npx saleor app tunnel 3001
 ```
 
 Choose **Yes** when asked if the app should be installed.
 
-> Warning: Make sure that the app is running on port 3000 otherwise it won't be available from the tunnel
+> Warning: Make sure that the app is running on port 3001 otherwise it won't be available from the tunnel
 >
 > ```bash
-> lsof -i :3000
+> lsof -i :3001
 > ```
 
 > Note: You can also use [`ngrok`](https://ngrok.com/), but you would need to update env variables each time you open tunnel (on free plan) with new domain `ngrok` assigned you.
@@ -151,7 +151,7 @@ mutation {
 
 Learn more about creating checkout sessions in [Saleor docs](https://docs.saleor.io/docs/3.x/developer/checkout#creating-a-checkout-session)
 
-Open [localhost:3000/checkout-spa?checkout=<ID>](http://localhost:3000/checkout-spa?checkout=) in your browser and add the your token to the url.
+Open [localhost:3001/checkout-spa?checkout=<ID>](http://localhost:3001/checkout-spa?checkout=) in your browser and add the your token to the url.
 
 ### More info
 
