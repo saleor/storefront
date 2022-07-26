@@ -4,8 +4,8 @@ import { Divider } from "./components/Divider";
 import { useFormattedMessages } from "./hooks/useFormattedMessages";
 import { AddressesSkeleton } from "./sections/Addresses";
 import { ContactSkeleton } from "./sections/Contact";
-import { ShippingMethodsSkeleton } from "./sections/ShippingMethods";
-import { SummarySkeleton } from "./sections/Summary/SummarySkeleton";
+import { SummarySkeleton } from "./sections/Summary";
+import { DeliveryMethodsSkeleton } from "./sections/DeliveryMethods";
 
 interface CheckoutSkeletonProps {}
 
@@ -20,7 +20,7 @@ export const CheckoutSkeleton: React.FC<CheckoutSkeletonProps> = ({}) => {
             <ContactSkeleton />
             <Divider className="mt-4" />
             <AddressesSkeleton />
-            <ShippingMethodsSkeleton />
+            <DeliveryMethodsSkeleton />
             <Button
               disabled
               ariaLabel={formatMessage("finalizeCheckoutLabel")}
