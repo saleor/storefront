@@ -6,7 +6,7 @@
   }
 
   .select-box {
-    @apply flex flex-row items-center justify-start border rounded border-border-secondary mb-2 py-2 px-3 cursor-auto;
+    @apply flex flex-row items-center justify-start border rounded border-border-secondary mb-2 py-2 px-3 cursor-default;
   }
 
   .select-box:hover {
