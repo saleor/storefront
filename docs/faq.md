@@ -77,3 +77,57 @@ If you need to know what Root Directory should be set, check the [deployment gui
 
 - [checkout](./vercel.md#2-configure-new-project-for-checkout)
 - [saleor-app-checkout](./vercel.md#2-configuring-new-project-for-saleor-app-checkout)
+
+## For contributors
+
+### My env vars are empty / don't have correct values
+
+#### In Next.js
+
+By default `.env` file uses environment variables that are when the project is run from the root of monorepo (e.g. `pnpm run dev --filter=saleor-app-checkout`).
+If the project is run from this directory (e.g. `cd apps/saleor-app-checkout && pnpm run dev`) then those variables wouldn't be available. That's why `env-vars` package is used for loading both env variables from root of monorepo and from the project directory.
+
+For more details check `env-vars` package.
+
+- Check order of your env variables. They are loaded in this order:
+  - `apps/**/.env.local`
+  - `apps/**/.env.development`
+  - `apps/**/.env`
+  - `.env.local` (root of monorepo)
+  - `.env` (root of monorepo)
+If you define a variable with the same name in `.env.local` and in `.env` then the variable from `.env.local` takes precedence.
+
+- Check order of your env variables in the file. Variables defined later in the file, override already defined variables.
+For example:
+```bash
+MY_ENV=initial_value
+# ...
+MY_ENV=overriden_value # this overrides `initial_value` with `overriden_value`
+```
+
+- Check if you're accessing the variables in correct way: dynamic lookups to `process.env` won't work in the browser. [Read more in Next.js docs](https://nextjs.org/docs/basic-features/environment-variables#exposing-environment-variables-to-the-browser)
+
+#### In Node
+
+To load environment variables in other packages, that don't use Next.js make sure to import `env-vars` package.
+
+You can do this by:
+- using `--require` parameter in Node CLI:
+
+```bash
+node --require 'env-vars' index.js
+```
+
+- Using `NODE_OPTIONS` env variable to pass parameters like you would do with Node CLI:
+
+```bash
+NODE_OPTIONS='--require 'env-vars'' my_command
+```
+
+- Import the package at the top of your entry file (ex. `index.js`)
+
+```js
+import "env-vars"
+// or with CommonJS
+require("env-vars")
+```
