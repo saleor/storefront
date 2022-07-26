@@ -1,11 +1,5 @@
 import { encryptSetting } from "@/saleor-app-checkout/backend/configuration/encryption";
-import { serverEnvVars } from "@/saleor-app-checkout/constants";
-import { invariant } from "ts-invariant";
 import { testingVars } from "../consts";
-
-invariant(testingVars.mollieKey, "TEST_MOLLIE_KEY is not defined");
-invariant(testingVars.mollieProfileId, "TEST_MOLLIE_PROFILE_ID is not defined");
-invariant(serverEnvVars.settingsEncryptionSecret, "SETTINGS_ENCRYPTION_SECRET is not defined");
 
 export const paymentProviders = {
   mollie: {

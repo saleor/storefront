@@ -1,7 +1,6 @@
 import fs from "fs";
-import { envVars, serverEnvVars } from "../constants";
+import { envVars, serverEnvVars, IS_TEST } from "../constants";
 import { AppDocument, AppQuery, AppQueryVariables } from "../graphql";
-import { IS_TEST } from "../test-utils";
 import { getClient } from "./client";
 
 const maskToken = (token: string) => "*".repeat(Math.max(token.length - 4, 0)) + token.slice(-4);
