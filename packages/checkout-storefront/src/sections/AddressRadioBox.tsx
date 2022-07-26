@@ -10,7 +10,7 @@ import {
   getRadioPropsFromRadioBoxProps,
   RadioBoxProps,
   useRadioBoxStyles,
-} from "@/checkout-storefront/components/RadioBox";
+} from "@/checkout-storefront/components/SelectBox";
 import { getSvgSrc } from "../lib/svgSrc";
 
 interface AddressRadioBoxProps extends RadioBoxProps {
@@ -32,9 +32,9 @@ export const AddressRadioBox: React.FC<AddressRadioBoxProps> = ({
 
   return (
     <div
-      className={
-        getRadioBoxClasses({ container: "address-radio-box" }).container
-      }
+    // className={
+    // getRadioBoxClasses({ container: "address-radio-box" }).container
+    // }
     >
       <Radio
         {...radioProps}

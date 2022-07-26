@@ -22,7 +22,6 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
 import { PaymentMethods } from "../PaymentMethods";
 import { PaymentProviderID } from "checkout-common";
-import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -76,46 +75,48 @@ export const CheckoutForm = () => {
     !selectedPaymentProvider;
 
   return (
-    <div className="checkout-form">
-      <FormProvider {...methods}>
-        <Suspense fallback={<ContactSkeleton />}>
-          <Contact setShowOnlyContact={setShowOnlyContact} />
-        </Suspense>
-      </FormProvider>
-      <>
-        {checkout?.isShippingRequired && (
-          <Suspense fallback={<AddressesSkeleton />}>
-            {!showOnlyContact && "SHIPPING SECTION MOCK"}
-            {/* for now commenting this out because it crashed because of the structure change */}
-            {/* will fix before merging */}
-            {/* <ShippingAddressSection collapsed={showOnlyContact} /> */}
+    <div className="checkout-form-container">
+      <div className="checkout-form">
+        <FormProvider {...methods}>
+          <Suspense fallback={<ContactSkeleton />}>
+            <Contact setShowOnlyContact={setShowOnlyContact} />
           </Suspense>
-        )}
-        <Suspense fallback={<DeliveryMethodsSkeleton />}>
-          <DeliveryMethods collapsed={showOnlyContact} />
-        </Suspense>
-        <PaymentMethods
-          {...usePaymentProvidersProps}
-          collapsed={showOnlyContact}
-        />
-        {!showOnlyContact &&
-          (isLoading ? (
-            <Button
-              disabled
-              ariaLabel={formatMessage("finalizeCheckoutLabel")}
-              label={formatMessage("pay")}
-              className="pay-button"
-            />
-          ) : (
-            <Button
-              disabled={payButtonDisabled}
-              ariaLabel={formatMessage("finalizeCheckoutLabel")}
-              label={formatMessage("pay")}
-              onClick={handleSubmit}
-              className="pay-button"
-            />
-          ))}
-      </>
+        </FormProvider>
+        <>
+          {checkout?.isShippingRequired && (
+            <Suspense fallback={<AddressesSkeleton />}>
+              {!showOnlyContact && "SHIPPING SECTION MOCK"}
+              {/* for now commenting this out because it crashed because of the structure change */}
+              {/* will fix before merging */}
+              {/* <ShippingAddressSection collapsed={showOnlyContact} /> */}
+            </Suspense>
+          )}
+          <Suspense fallback={<DeliveryMethodsSkeleton />}>
+            <DeliveryMethods collapsed={showOnlyContact} />
+          </Suspense>
+          <PaymentMethods
+            {...usePaymentProvidersProps}
+            collapsed={showOnlyContact}
+          />
+        </>
+      </div>
+      {!showOnlyContact &&
+        (isLoading ? (
+          <Button
+            disabled
+            ariaLabel={formatMessage("finalizeCheckoutLabel")}
+            label={formatMessage("pay")}
+            className="pay-button"
+          />
+        ) : (
+          <Button
+            disabled={payButtonDisabled}
+            ariaLabel={formatMessage("finalizeCheckoutLabel")}
+            label={formatMessage("pay")}
+            onClick={handleSubmit}
+            className="pay-button"
+          />
+        ))}
     </div>
   );
 };
