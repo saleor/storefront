@@ -62,6 +62,7 @@
   "addItemQuantityLabel": "add item quantity",
   "subtractItemQuantityLabel": "subtract item quantity",
   "error": "error",
+  "edit": "Edit",
   "deliveryMethod": "Delivery method",
   "businessDays": "{min}-{max} business days",
   "finalizeCheckoutLabel": "finalize checkout",

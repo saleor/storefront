@@ -121,6 +121,10 @@ export const AddressForm = <TFormData extends AddressFormData>({
   );
 
   const handleAutoSave = () => {
+    if (!autoSave) {
+      return;
+    }
+
     const formData = getValues();
     onSave(formData);
   };

@@ -1,6 +1,6 @@
 import React from "react";
 import { AddressFragment, useUserAddressDeleteMutation } from "@/checkout-storefront/graphql";
-import { AddressRadioBox } from "../AddressRadioBox";
+import { AddressSelectBox } from "./AddressSelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
@@ -37,7 +37,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
   return (
     <SelectBoxGroup label="user addresses">
       {addresses.map(({ id, ...rest }: AddressFragment) => (
-        <AddressRadioBox
+        <AddressSelectBox
           key={id}
           value={id}
           selectedValue={selectedAddressId}
