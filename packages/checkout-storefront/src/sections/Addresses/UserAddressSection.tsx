@@ -79,6 +79,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
           show={displayAddressEdit}
           onClose={() => setEditedAddressId(null)}
           defaultValues={getAddressFormDataFromAddress(editedAddress)}
+          onSuccess={setSelectedAddressId}
         />
 
         {displayAddressList && (

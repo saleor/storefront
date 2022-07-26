@@ -20,7 +20,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   type,
   onClose,
 }) => {
-  const { showSuccess, showErrors } = useAlerts("userAddressCreate");
+  const { showErrors } = useAlerts("userAddressCreate");
   const [, userAddressCreate] = useUserAddressCreateMutation();
 
   const { countryCode } = useCountrySelect();
@@ -39,7 +39,6 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
-      showSuccess();
       onClose();
       return;
     }

@@ -5,7 +5,6 @@ import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
 import { UserAddressFormData } from "./types";
-import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { getAddressInputData } from "./utils";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 
@@ -13,16 +12,17 @@ interface AddressEditFormProps
   extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues"> {
   onClose: () => void;
   show: boolean;
+  onSuccess: (addressId: string) => void;
 }
 
 export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
   show,
   defaultValues,
+  onSuccess,
 }) => {
   const [, userAddressUpdate] = useUserAddressUpdateMutation();
-  const { updateShippingAddress } = useCheckoutAddressUpdate();
-  const { showErrors, showSuccess } = useAlerts("userAddressUpdate");
+  const { showErrors } = useAlerts("userAddressUpdate");
 
   const { countryCode } = useCountrySelect();
 
@@ -40,8 +40,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
-      showSuccess();
-      await updateShippingAddress(address);
+      onSuccess(address.id);
       onClose();
       return;
     }

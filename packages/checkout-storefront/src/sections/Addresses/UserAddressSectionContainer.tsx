@@ -20,7 +20,7 @@ export const UserAddressSectionContainer: React.FC<
         <Title>{title}</Title>
         {displayCountrySelect && (
           <Select
-            classNames={{ container: "!w-1/3" }}
+            classNames={{ container: "!w-1/2" }}
             onChange={setCountryCode}
             selectedValue={countryCode}
             options={countries.map(({ name, code }) => ({
