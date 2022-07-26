@@ -21,18 +21,18 @@ export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
 };
 
+export const serverEnvVars: ServerEnvVars = {
+  appToken: process.env["SALEOR_APP_TOKEN"]!,
+  settingsEncryptionSecret: process.env["SETTINGS_ENCRYPTION_SECRET"],
+};
 export const serverEnvVarNames: Record<ServerEnvVar, string> = {
   appToken: "SALEOR_APP_TOKEN",
   settingsEncryptionSecret: "SETTINGS_ENCRYPTION_SECRET",
-};
-export const serverEnvVars: ServerEnvVars = {
-  appToken: process.env[serverEnvVarNames.appToken]!,
-  settingsEncryptionSecret: process.env[serverEnvVarNames.settingsEncryptionSecret],
 };
 
 export const debugEnvVars: DebugEnvVars | null =
   process.env.NODE_ENV !== "development"
     ? null
     : {
-        appUrl: process.env.DEBUG_APP_URL,
-      };
+      appUrl: process.env.DEBUG_APP_URL,
+    };
