@@ -12,10 +12,9 @@ import { RadioBox } from "@/checkout-storefront/components/RadioBox";
 import { RadioBoxGroup } from "@/checkout-storefront/components/RadioBoxGroup";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { CommonSectionProps } from "../Addresses/types";
 
-interface ShippingMethodsProps {}
-
-export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
+export const ShippingMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { showErrors, showSuccess } = useAlerts("checkoutDeliveryMethodUpdate");
@@ -58,7 +57,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
     });
   };
 
-  if (!checkout?.isShippingRequired) {
+  if (!checkout?.isShippingRequired || collapsed) {
     return null;
   }
 

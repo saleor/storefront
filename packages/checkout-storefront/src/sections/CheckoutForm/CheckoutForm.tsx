@@ -1,14 +1,13 @@
-import { Divider } from "@/checkout-storefront/components/Divider";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact, ContactSkeleton } from "@/checkout-storefront/sections/Contact";
 import {
   ShippingMethods,
   ShippingMethodsSkeleton,
 } from "@/checkout-storefront/sections/ShippingMethods";
-import { Addresses, AddressesSkeleton } from "@/checkout-storefront/sections/Addresses";
+import { AddressesSkeleton } from "@/checkout-storefront/sections/Addresses";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { Button } from "@/checkout-storefront/components/Button";
@@ -21,6 +20,7 @@ import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
 import { PaymentMethods } from "../PaymentMethods";
 import { PaymentProviderID } from "checkout-common";
 import invariant from "ts-invariant";
+import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -32,6 +32,7 @@ export const CheckoutForm = () => {
   const isLoading = loading || authenticating;
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
   const { selectedPaymentProvider, selectedPaymentMethod } = usePaymentProvidersProps;
+  const [showOnlyContact, setShowOnlyContact] = useState(false);
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -75,33 +76,37 @@ export const CheckoutForm = () => {
     <div className="checkout-form">
       <FormProvider {...methods}>
         <Suspense fallback={<ContactSkeleton />}>
-          <Contact />
+          <Contact setShowOnlyContact={setShowOnlyContact} />
         </Suspense>
       </FormProvider>
-      <Divider />
-      <Suspense fallback={<AddressesSkeleton />}>
-        <Addresses />
-      </Suspense>
-      <Suspense fallback={<ShippingMethodsSkeleton />}>
-        <ShippingMethods />
-      </Suspense>
-      <PaymentMethods {...usePaymentProvidersProps} />
-      {isLoading ? (
-        <Button
-          disabled
-          ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          label={formatMessage("pay")}
-          className="pay-button"
-        />
-      ) : (
-        <Button
-          disabled={payButtonDisabled}
-          ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          label={formatMessage("pay")}
-          onClick={handleSubmit}
-          className="pay-button"
-        />
-      )}
+      <>
+        <Suspense fallback={<AddressesSkeleton />}>
+          {/* for now commenting this out because it crashed because of the structure change */}
+          {/* will fix before merging */}
+          {/* <ShippingAddressSection collapsed={showOnlyContact} /> */}
+        </Suspense>
+        <Suspense fallback={<ShippingMethodsSkeleton />}>
+          <ShippingMethods collapsed={showOnlyContact} />
+        </Suspense>
+        <PaymentMethods {...usePaymentProvidersProps} collapsed={showOnlyContact} />
+        {!showOnlyContact &&
+          (isLoading ? (
+            <Button
+              disabled
+              ariaLabel={formatMessage("finalizeCheckoutLabel")}
+              label={formatMessage("pay")}
+              className="pay-button"
+            />
+          ) : (
+            <Button
+              disabled={payButtonDisabled}
+              ariaLabel={formatMessage("finalizeCheckoutLabel")}
+              label={formatMessage("pay")}
+              onClick={handleSubmit}
+              className="pay-button"
+            />
+          ))}
+      </>
     </div>
   );
 };
