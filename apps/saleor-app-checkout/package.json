@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev -p 3001",
+    "dev": "NODE_OPTIONS='--inspect --require env-vars' next dev -p 3001",
     "test": "jest",
     "test:record": "POLLY_MODE=record jest --runInBand --verbose",
     "build": "npm run i18n && next build",
