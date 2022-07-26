@@ -105,10 +105,12 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         onChange={setCreateAccountSelected}
       />
       {createAccountSelected && (
-        <PasswordInput
-          label={formatMessage("passwordLabel")}
-          {...getContextInputProps("password")}
-        />
+        <div className="mt-2">
+          <PasswordInput
+            label={formatMessage("passwordLabel")}
+            {...getContextInputProps("password")}
+          />
+        </div>
       )}
     </SignInFormContainer>
   );

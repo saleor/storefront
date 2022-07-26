@@ -7,7 +7,7 @@ const getSpacing = (base /* number */, unit /* "px" | "rem" */, values /* number
 const spacing = getSpacing(
   0.4,
   "rem",
-  [0, 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 14, 16, 18, 19, 20, 21, 22, 28, 85, 90, 256, 350]
+  [0, 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 14, 16, 18, 19, 20, 21, 22, 28, 85, 90, 220, 256, 350]
 );
 
 const theme = {
@@ -66,6 +66,7 @@ const theme = {
     },
     borderRadius: {
       lg: "0.8rem",
+      DEFAULT: "0.4rem",
     },
   },
 };

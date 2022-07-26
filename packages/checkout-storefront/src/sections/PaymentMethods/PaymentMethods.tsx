@@ -2,8 +2,6 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React from "react";
 import { camelCase } from "lodash-es";
-import { RadioBoxGroup } from "@/checkout-storefront/components/RadioBoxGroup";
-import { RadioBox } from "@/checkout-storefront/components/RadioBox";
 import { UsePaymentMethods } from "./usePaymentMethods";
 import { PaymentMethodID } from "checkout-common";
 import { CommonSectionProps } from "../Addresses/types";
@@ -25,9 +23,9 @@ export const PaymentMethods: React.FC<UsePaymentMethods & CommonSectionProps> = 
   }
 
   return (
-    <div className="mb-10">
+    <div className="section">
       <Title>{formatMessage("paymentProviders")}</Title>
-      <RadioBoxGroup label={formatMessage("paymentProvidersLabel")}>
+      {/* <Select label={formatMessage("paymentProvidersLabel")}>
         {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => {
           return (
             <RadioBox
@@ -38,7 +36,7 @@ export const PaymentMethods: React.FC<UsePaymentMethods & CommonSectionProps> = 
             />
           );
         })}
-      </RadioBoxGroup>
+      </RadioBoxGroup> */}
     </div>
   );
 };
