@@ -5,6 +5,10 @@ import { camelCase } from "lodash-es";
 import { UsePaymentMethods } from "./usePaymentMethods";
 import { PaymentMethodID } from "checkout-common";
 import { CommonSectionProps } from "../Addresses/types";
+import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
+import { SelectBox } from "@/checkout-storefront/components/SelectBox";
+import { Text } from "@saleor/ui-kit";
+import { Divider } from "@/checkout-storefront/components/Divider";
 
 export const PaymentMethods: React.FC<UsePaymentMethods & CommonSectionProps> = ({
   // availablePaymentMethods,
@@ -23,20 +27,32 @@ export const PaymentMethods: React.FC<UsePaymentMethods & CommonSectionProps> = 
   }
 
   return (
-    <div className="section">
-      <Title>{formatMessage("paymentProviders")}</Title>
-      {/* <Select label={formatMessage("paymentProvidersLabel")}>
-        {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => {
-          return (
-            <RadioBox
-              value={paymentMethodId}
-              title={formatMessage(camelCase(paymentMethodId) as MessageKey)}
-              selectedValue={selectedPaymentMethod}
-              onSelect={(value: string) => setSelectedPaymentMethod(value as PaymentMethodID)}
-            />
-          );
-        })}
-      </RadioBoxGroup> */}
-    </div>
+    <>
+      <Divider />
+      <div className="section">
+        <Title>{formatMessage("paymentProviders")}</Title>
+        <SelectBoxGroup
+          label={formatMessage("paymentProvidersLabel")}
+          className="flex flex-row gap-2"
+        >
+          {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => {
+            return (
+              <SelectBox
+                className="shrink"
+                value={paymentMethodId}
+                selectedValue={selectedPaymentMethod}
+                onSelect={(value: string) =>
+                  setSelectedPaymentMethod(value as PaymentMethodID)
+                }
+              >
+                <Text>
+                  {formatMessage(camelCase(paymentMethodId) as MessageKey)}
+                </Text>
+              </SelectBox>
+            );
+          })}
+        </SelectBoxGroup>
+      </div>
+    </>
   );
 };
