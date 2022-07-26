@@ -18,7 +18,7 @@ export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
 };
 export const envVars: EnvVars = {
-  apiUrl: process.env[envVarsNames.apiUrl]!,
+  apiUrl: process.env.NEXT_PUBLIC_SALEOR_API_URL!,
 };
 
 export const serverEnvVarNames: Record<ServerEnvVar, string> = {
@@ -26,9 +26,8 @@ export const serverEnvVarNames: Record<ServerEnvVar, string> = {
   settingsEncryptionSecret: "SETTINGS_ENCRYPTION_SECRET",
 };
 export const serverEnvVars: ServerEnvVars = {
-  appToken: process.env[serverEnvVarNames.appToken]!,
-  settingsEncryptionSecret:
-    process.env[serverEnvVarNames.settingsEncryptionSecret],
+  appToken: process.env.SALEOR_APP_TOKEN!,
+  settingsEncryptionSecret: process.env.SETTINGS_ENCRYPTION_SECRET,
 };
 
 export const debugEnvVars: DebugEnvVars | null =
