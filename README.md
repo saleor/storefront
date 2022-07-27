@@ -1,6 +1,8 @@
 # saleor-checkout
 
-Extensible, checkout and payment integrations powered by Saleor API.
+Extensible, checkout and payment integrations powered by [Saleor API](https://github.com/saleor/saleor).
+
+Project is in active development ([see backlog](https://github.com/orgs/saleor/projects/5)).
 
 ## Setup
 
