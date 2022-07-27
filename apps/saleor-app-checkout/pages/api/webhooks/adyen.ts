@@ -1,6 +1,6 @@
 // https://docs.adyen.com/development-resources/webhooks
 
-import { hmacValidator, Types } from "@adyen/api-library";
+import { Types } from "@adyen/api-library";
 
 import { createTransaction } from "@/saleor-app-checkout/backend/payments/createTransaction";
 import {
@@ -11,35 +11,18 @@ import {
 } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { getOrderTransactions } from "@/saleor-app-checkout/backend/payments/getOrderTransactions";
 import { updateTransaction } from "@/saleor-app-checkout/backend/payments/updateTransaction";
-import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 import { toNextHandler } from "retes/adapter";
 import { Handler } from "retes";
 import { Response } from "retes/response";
+import {
+  AdyenRequestContext,
+  AdyenRequestParams,
+  isAdyenNotification,
+  isAdyenWebhookAuthenticated,
+  isAdyenWebhookHmacValid,
+  withAdyenWebhookCredentials,
+} from "@/saleor-app-checkout/backend/payments/providers/adyen/middlewares";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
-
-const validator = new hmacValidator();
-
-const isAdyenNotification = (params: {
-  [key: string]: any;
-}): params is Types.notification.Notification => {
-  return typeof params?.live === "string" && Array.isArray(params?.notificationItems);
-};
-
-const validateNotificationItems = async (
-  { NotificationRequestItem }: Types.notification.NotificationItem,
-  hmacKey: string
-  // eslint-disable-next-line require-await
-) => {
-  // first validate the origin
-  const valid = validator.validateHMAC(NotificationRequestItem, hmacKey);
-
-  if (!valid) {
-    throw new Error("Invalid HMAC key");
-  }
-
-  return NotificationRequestItem;
-};
 
 const notificationHandler = async (
   notification: Types.notification.NotificationRequestItem,
@@ -71,11 +54,11 @@ const notificationHandler = async (
       throw "originalReference does not exist in transactions";
     }
 
-    const data = await getUpdatedTransactionData(transaction, notification);
+    const data = getUpdatedTransactionData(transaction, notification);
 
     await updateTransaction(data);
   } else {
-    const data = await getNewTransactionData(orderId, notification);
+    const data = getNewTransactionData(orderId, notification);
 
     if (!data) {
       return;
@@ -86,41 +69,25 @@ const notificationHandler = async (
 };
 
 const handler: Handler = async (req) => {
-  const {
-    paymentProviders: { adyen },
-  } = await getPrivateSettings(envVars.apiUrl, false);
+  const { apiKey } = req.context as AdyenRequestContext;
+  const params = req.params as AdyenRequestParams;
 
-  if (!adyen.username || !adyen.password) {
-    console.error("(from Adyen webhook) Missing Adyen configuration - no username or password");
-    return Response.InternalServerError("Missing Adyen API config");
+  const notificationItem = params?.notificationItems?.[0]?.NotificationRequestItem;
+
+  const [error] = await unpackPromise(notificationHandler(notificationItem, apiKey));
+
+  if (error) {
+    console.warn("Error while saving Adyen notification");
+    // Silent error - return OK, so Adyen won't send the webhook again
   }
-
-  if (!isAdyenNotification(req.params)) {
-    return Response.BadRequest();
-  }
-
-  // Get basic auth token
-  const encodedCredentials = Buffer.from(adyen.username + ":" + adyen.password, "ascii").toString(
-    "base64"
-  );
-
-  if (req.headers.authorization !== `Basic ${encodedCredentials}`) {
-    return Response.Unauthorized();
-  }
-
-  // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
-  // notificationItem will always contain a single item for HTTP POST
-  const [validationError, notificationItem] = await unpackPromise(
-    validateNotificationItems(req.params.notificationItems[0], adyen.hmac!)
-  );
-  if (validationError) {
-    console.error("Error while validating Adyen webhook", validationError);
-    return Response.Unauthorized();
-  }
-
-  await notificationHandler(notificationItem, adyen.apiKey!);
 
   return Response.OK("[accepted]");
 };
 
-export default toNextHandler([handler]);
+export default toNextHandler([
+  withAdyenWebhookCredentials,
+  isAdyenWebhookAuthenticated,
+  isAdyenNotification,
+  isAdyenWebhookHmacValid,
+  handler,
+]);

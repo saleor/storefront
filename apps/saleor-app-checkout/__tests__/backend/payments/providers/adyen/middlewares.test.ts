@@ -1,0 +1,225 @@
+import {
+  AdyenRequestContext,
+  isAdyenNotification,
+  isAdyenWebhookAuthenticated,
+  isAdyenWebhookHmacValid,
+  withAdyenWebhookCredentials,
+} from "@/saleor-app-checkout/backend/payments/providers/adyen/middlewares";
+import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
+import type { Request } from "retes";
+import { Response } from "retes/response";
+import { adyenHmacValidator } from "@/saleor-app-checkout/backend/payments/providers/adyen/validator";
+
+jest.mock("@/saleor-app-checkout/backend/configuration/settings");
+jest.mock("@/saleor-app-checkout/backend/payments/providers/adyen/validator");
+
+const mockedGetPrivateSettings = getPrivateSettings as jest.MockedFunction<
+  typeof getPrivateSettings
+>;
+const mockedAdyenHmacValidator = adyenHmacValidator as jest.Mocked<
+  typeof adyenHmacValidator
+>;
+
+// TODO: Add actual domain used by adyen
+const TEST_ADYEN_DOMAIN = "adyen.com";
+const TEST_ADYEN_PASSWORD = "password";
+const TEST_ADYEN_USERNAME = "adyen_webhook";
+
+const mockRequest: Request = {
+  params: {},
+  url: "",
+  // @ts-expect-error Expects IncomingMessage, but object will do fine
+  body: {},
+  host: TEST_ADYEN_DOMAIN,
+  method: "POST",
+  context: {},
+  headers: {},
+};
+const adyenConfig = {
+  hmac: "123",
+  apiKey: "123",
+  password: TEST_ADYEN_PASSWORD,
+  username: TEST_ADYEN_USERNAME,
+  clientKey: "123",
+  merchantAccount: "Saleor",
+};
+
+const requestWithNotification = {
+  ...mockRequest,
+  context: {
+    ...adyenConfig,
+  } as AdyenRequestContext,
+  params: {
+    live: "false",
+    notificationItems: [
+      {
+        NotificationRequestItem: {},
+      },
+    ],
+  },
+};
+
+const mockPrivateSettings = (returnMockedSettings: boolean = true) => {
+  if (!returnMockedSettings) {
+    mockedGetPrivateSettings.mockResolvedValueOnce({
+      paymentProviders: {
+        adyen: {},
+        mollie: {},
+      },
+    });
+  }
+
+  return mockedGetPrivateSettings.mockResolvedValueOnce({
+    paymentProviders: {
+      adyen: {
+        hmac: "123",
+        apiKey: "123",
+        password: TEST_ADYEN_PASSWORD,
+        username: TEST_ADYEN_USERNAME,
+        clientKey: "123",
+        merchantAccount: "Saleor",
+      },
+      mollie: {},
+    },
+  });
+};
+
+const handler = jest.fn(() => Response.OK("[accepted]"));
+
+afterEach(() => {
+  jest.clearAllMocks();
+  handler.mockClear();
+});
+
+describe("withAdyenWebhookCredentials", () => {
+  it("returns an error if it cannot fetch Adyen configuration", async () => {
+    mockedGetPrivateSettings.mockRejectedValueOnce(
+      "Error while making request"
+    );
+
+    const res = await withAdyenWebhookCredentials(handler)(mockRequest);
+    expect(res.status).toBe(Response.InternalServerError().status);
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("returns an error if it has missing Adyen configuration", async () => {
+    mockPrivateSettings(false);
+
+    const res = await withAdyenWebhookCredentials(handler)(mockRequest);
+    expect(res.status).toBe(Response.InternalServerError().status);
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("passes Adyen configuration as request context", async () => {
+    mockedGetPrivateSettings.mockResolvedValueOnce({
+      paymentProviders: {
+        adyen: adyenConfig,
+        mollie: {},
+      },
+    });
+
+    await withAdyenWebhookCredentials(handler)(mockRequest);
+    expect(handler).toHaveBeenCalledWith({
+      ...mockRequest,
+      context: {
+        ...mockRequest.context,
+        ...adyenConfig,
+      },
+    });
+  });
+});
+
+describe("isAdyenNotification middleware", () => {
+  it("rejects invalid request shape", async () => {
+    const res = await isAdyenNotification(handler)(mockRequest);
+    expect(res.status).toBe(Response.BadRequest().status);
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("calls handler if request has correct shape", async () => {
+    await isAdyenNotification(handler)(requestWithNotification);
+    expect(handler).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("isAdyenWebhookAuthenticated middleware", () => {
+  it("returns error when request is missing auth header", async () => {
+    mockPrivateSettings();
+
+    const res = await isAdyenWebhookAuthenticated(handler)(mockRequest);
+    expect(res.status).toBe(Response.Unauthorized().status);
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("returns an error when authorization token is invalid", async () => {
+    mockPrivateSettings();
+
+    const res = await isAdyenWebhookAuthenticated(handler)({
+      ...mockRequest,
+      headers: {
+        authorization: "Basic invalid_key",
+      },
+    });
+    expect(res.status).toBe(Response.Unauthorized().status);
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("passes request when authorization header is valid", async () => {
+    mockPrivateSettings();
+
+    const authToken = Buffer.from(
+      TEST_ADYEN_USERNAME + ":" + TEST_ADYEN_PASSWORD,
+      "ascii"
+    ).toString("base64");
+
+    const request = {
+      ...mockRequest,
+      context: adyenConfig,
+      headers: {
+        authorization: `Basic ${authToken}`,
+      },
+    };
+
+    await isAdyenWebhookAuthenticated(handler)(request);
+    expect(handler).toHaveBeenCalled();
+    expect(handler).toHaveBeenCalledWith(request);
+  });
+});
+
+describe("isAdyenWebhookHmacValid middleware", () => {
+  beforeEach(() => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+    jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  it("returns an error if notificationRequestItem is not present", async () => {
+    const res = await isAdyenWebhookHmacValid(handler)(mockRequest);
+
+    expect(res.status).toBe(Response.BadRequest().status);
+    expect(handler).not.toHaveBeenCalled();
+  });
+  it("returns an error when hmac in request is invalid", async () => {
+    mockedAdyenHmacValidator.validateHMAC.mockImplementationOnce(() => false);
+
+    const res = await isAdyenWebhookHmacValid(handler)(requestWithNotification);
+
+    expect(res.status).toBe(Response.Unauthorized().status);
+    expect(handler).not.toHaveBeenCalled();
+    expect(mockedAdyenHmacValidator.validateHMAC).toHaveBeenCalledWith(
+      expect.anything(),
+      adyenConfig.hmac
+    );
+  });
+
+  it("passes request when hmac is valid", async () => {
+    mockedAdyenHmacValidator.validateHMAC.mockImplementationOnce(() => true);
+
+    await isAdyenWebhookHmacValid(handler)(requestWithNotification);
+
+    expect(handler).toHaveBeenCalled();
+    expect(mockedAdyenHmacValidator.validateHMAC).toHaveBeenCalledWith(
+      expect.anything(),
+      adyenConfig.hmac
+    );
+  });
+});
