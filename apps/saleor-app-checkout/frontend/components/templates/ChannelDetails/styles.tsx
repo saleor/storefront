@@ -63,6 +63,7 @@ export const useStyles = makeStyles(
     },
     paymentMethod: {
       height: "70px",
+      display: "flex",
     },
     paymentMethodLogo: {
       width: "2.4em",
