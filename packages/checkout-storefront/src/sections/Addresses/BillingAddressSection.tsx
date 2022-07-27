@@ -1,76 +1,111 @@
-import { AddressFragment } from "@/checkout-storefront/graphql";
+import { Checkbox } from "@/checkout-storefront/components/Checkbox";
+import {
+  AddressFragment,
+  useCheckoutBillingAddressUpdateMutation,
+  useUserQuery,
+} from "@/checkout-storefront/graphql";
+import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
+import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
+import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { AddressFormData, UserAddressFormData, UserDefaultAddressFragment } from "./types";
-import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
+import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
+import { getAddressFormDataFromAddress, getAddressInputData, isMatchingAddress } from "./utils";
 
-interface BillingAddressSectionProps {
-  addresses?: AddressFragment[] | null;
-  defaultBillingAddress: UserDefaultAddressFragment;
-}
-
-export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
-  defaultBillingAddress,
-  addresses = [],
-}) => {
+export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
-  // const {
-  //   isBillingSameAsShippingAddress,
-  //   hasBillingSameAsShippingAddressChanged,
-  //   setHasBillingSameAsShippingAddressChanged,
-  // } = useBillingSameAsShipping();
 
-  const { setCountryCodeFromAddress } = useCountrySelect();
+  const hasBillingSameAsShipping = isMatchingAddress(
+    checkout.shippingAddress,
+    checkout.billingAddress
+  );
 
-  const { updateBillingAddress, billingErrorProps } = useCheckoutAddressUpdate();
+  const [useBillingSameAsShipping, setUseBillingSameAsShipping] =
+    useState<boolean>(hasBillingSameAsShipping);
 
-  const defaultAddress = checkout?.shippingAddress || defaultBillingAddress;
+  const [{ data }] = useUserQuery({
+    pause: !authUser?.id,
+  });
 
-  // useEffect(() => {
-  //   if (
-  //     !checkout?.shippingAddress ||
-  //     isBillingSameAsShippingAddress ||
-  //     hasBillingSameAsShippingAddressChanged
-  //   ) {
-  //     return;
-  //   }
+  const user = data?.me;
+  const addresses = user?.addresses;
+  const defaultBillingAddress = user?.defaultBillingAddress;
+  const errorProps = useErrors<AddressFormData>();
+  const { setApiErrors } = errorProps;
 
-  //   setCountryCodeFromAddress(checkout?.shippingAddress);
+  const defaultAddress = defaultBillingAddress;
 
-  //   setHasBillingSameAsShippingAddressChanged(true);
-  // }, [isBillingSameAsShippingAddress]);
+  const { showErrors } = useAlerts();
 
-  // if (checkout?.isShippingRequired && isBillingSameAsShippingAddress) {
-  //   return null;
-  // }
+  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
-  return authUser ? (
-    <UserAddressSection
-      {...(billingErrorProps as UseErrors<UserAddressFormData>)}
-      title={formatMessage("billingAddress")}
-      type="BILLING"
-      onAddressSelect={(address) => {
-        void updateBillingAddress(address);
-      }}
-      addresses={addresses as AddressFragment[]}
-      defaultAddressId={defaultAddress?.id}
-    />
-  ) : (
-    <GuestAddressSection
-      {...billingErrorProps}
-      address={checkout?.billingAddress as AddressFragment}
-      title={formatMessage("billingAddress")}
-      onSubmit={(address) => {
-        void updateBillingAddress(address);
-      }}
-    />
+  const updateBillingAddress = async (addressInput: AddressFormData) => {
+    const result = await checkoutBillingAddressUpdate({
+      checkoutId: checkout.id,
+      billingAddress: getAddressInputData(addressInput),
+    });
+
+    const [hasErrors, errors] = extractMutationErrors(result);
+
+    if (hasErrors) {
+      showErrors(errors, "checkoutBillingUpdate");
+      setApiErrors(errors);
+    }
+  };
+
+  const handleSetBillingSameAsShipping = async () => {
+    console.log({ useBillingSameAsShipping, hasBillingSameAsShipping });
+    if (useBillingSameAsShipping && !hasBillingSameAsShipping) {
+      await updateBillingAddress(
+        getAddressFormDataFromAddress(checkout.shippingAddress) as AddressFormData
+      );
+    }
+  };
+
+  useEffect(() => {
+    void handleSetBillingSameAsShipping();
+  }, [useBillingSameAsShipping]);
+
+  return (
+    <div className="mt-2">
+      <Checkbox
+        classNames={{ container: "!mb-0" }}
+        value="useShippingAsBilling"
+        checked={useBillingSameAsShipping}
+        onChange={setUseBillingSameAsShipping}
+        label={formatMessage("useShippingAsBilling")}
+      />
+      {!useBillingSameAsShipping && (
+        <div className="mt-4">
+          {authUser ? (
+            <UserAddressSection
+              {...(errorProps as UseErrors<UserAddressFormData>)}
+              title={formatMessage("billingAddress")}
+              type="BILLING"
+              onAddressSelect={(address) => {
+                void updateBillingAddress(address);
+              }}
+              addresses={addresses as AddressFragment[]}
+              defaultAddressId={defaultAddress?.id}
+            />
+          ) : (
+            <GuestAddressSection
+              {...errorProps}
+              address={checkout?.billingAddress as AddressFragment}
+              title={formatMessage("billingAddress")}
+              onSubmit={(address) => {
+                void updateBillingAddress(address);
+              }}
+            />
+          )}
+        </div>
+      )}
+    </div>
   );
 };

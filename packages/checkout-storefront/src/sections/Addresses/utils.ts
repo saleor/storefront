@@ -36,6 +36,7 @@ export const getAddressFormDataFromAddress = (
   } as Partial<AddressFormData>;
 };
 
-export const isMatchingAddress =
-  (address?: AddressFragment | null) => (addressToMatch?: AddressFragment | null) =>
-    isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+export const isMatchingAddress = (
+  address?: AddressFragment | null,
+  addressToMatch?: AddressFragment | null
+) => isEqual(omit(address, "id"), omit(addressToMatch, "id"));

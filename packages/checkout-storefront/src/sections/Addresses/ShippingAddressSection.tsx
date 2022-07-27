@@ -55,7 +55,6 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
     if (hasErrors) {
       showErrors(errors, "checkoutShippingUpdate");
       setApiErrors(errors);
-      return;
     }
   };
 
@@ -89,12 +88,6 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
             {...errorProps}
           />
         )}
-        {/* <Checkbox
-        value="useShippingAsBilling"
-        checked={isBillingSameAsShippingAddress}
-        onChange={setIsBillingSameAsShippingAddress}
-        label={formatMessage("useShippingAsBilling")}
-      /> */}
       </div>
     </>
   );

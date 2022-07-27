@@ -37,7 +37,7 @@ export const useUserAddressSelect = ({
   const selectedAddressRef = useRef<AddressFragment>();
 
   useEffect(() => {
-    const matchingAddress = addresses.find(isMatchingAddress(addressToWatch));
+    const matchingAddress = addresses.find((address) => isMatchingAddress(address, addressToWatch));
 
     selectedAddressRef.current = matchingAddress;
     setSelectedAddressId(matchingAddress?.id);

@@ -16,8 +16,8 @@ import { FormData } from "./types";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
-import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
-import { PaymentMethods } from "../PaymentMethods";
+import { usePaymentMethods } from "../PaymentSection/usePaymentMethods";
+import { PaymentSection } from "../PaymentSection";
 import { PaymentProviderID } from "checkout-common";
 import invariant from "ts-invariant";
 import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
@@ -94,7 +94,7 @@ export const CheckoutForm = () => {
             <Suspense fallback={<DeliveryMethodsSkeleton />}>
               <DeliveryMethods collapsed={showOnlyContact} />
             </Suspense>
-            <PaymentMethods {...usePaymentProvidersProps} collapsed={showOnlyContact} />
+            <PaymentSection {...usePaymentProvidersProps} collapsed={showOnlyContact} />
           </>
         </CountrySelectProvider>
       </div>
