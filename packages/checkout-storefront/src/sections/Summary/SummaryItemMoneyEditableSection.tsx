@@ -26,9 +26,9 @@ interface FormData {
   quantity: number;
 }
 
-export const SummaryItemMoneyEditableSection: React.FC<
-  LineItemQuantitySelectorProps
-> = ({ line }) => {
+export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
+  line,
+}) => {
   const {
     unitPrice,
     undiscountedUnitPrice,
@@ -41,9 +41,7 @@ export const SummaryItemMoneyEditableSection: React.FC<
   const { checkout } = useCheckout();
   const { showErrors, showSuccess } = useAlerts("checkoutLinesUpdate");
 
-  const getUpdateLineVars = ({
-    quantity,
-  }: FormData): CheckoutLinesUpdateMutationVariables => ({
+  const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables => ({
     checkoutId: checkout.id,
     lines: [
       {

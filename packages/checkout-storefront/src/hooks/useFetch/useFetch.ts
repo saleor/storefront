@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  FetchFn,
-  GetArgsType,
-  GetDataType,
-  UseFetchOptionalProps,
-  UseFetchResult,
-} from "./types";
+import { FetchFn, GetArgsType, GetDataType, UseFetchOptionalProps, UseFetchResult } from "./types";
 
 export const useFetch = <
   TError,

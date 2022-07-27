@@ -33,7 +33,5 @@ export default function CheckoutSpa() {
     return null;
   }
 
-  return (
-    <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl, checkoutAppUrl }} />
-  );
+  return <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl, checkoutAppUrl }} />;
 }

@@ -63,10 +63,7 @@ export const mergeSettingsValues = (
       const udpatedSetting = hasSettingInBothSettings
         ? { ...defaultSetting, ...savedSetting }
         : defaultSetting;
-      const setting = readSettingsValues(
-        udpatedSetting,
-        obfuscateEncryptedData
-      );
+      const setting = readSettingsValues(udpatedSetting, obfuscateEncryptedData);
 
       return {
         ...result,

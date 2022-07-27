@@ -33,10 +33,11 @@ npm-debug.log*
 # build
 dist
 
-#editor
-.vscode
-
 # TypeScript build files
 *.tsbuildinfo
 
 .rollup.cache
+
+#cypress
+cypress/screenshots
+cypress/videos

@@ -1,18 +1,23 @@
-{
-  "parser": "@typescript-eslint/parser",
-  "extends": [
+module.exports = {
+  root: true,
+  parser: "@typescript-eslint/parser",
+  extends: [
+    "storefront",
     "next",
     "next/core-web-vitals",
     "airbnb",
     "plugin:@typescript-eslint/recommended",
-    "prettier" // prettier *has* to be the last one, to avoid conflicting rules
+    "prettier", // prettier *has* to be the last one, to avoid conflicting rules
   ],
-  "ignorePatterns": ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json", "lib/$path.ts"],
-  "plugins": ["simple-import-sort", "formatjs", "@typescript-eslint"],
-  "rules": {
-    "quotes": ["error", "double"],
+
+  // @todo: get rid of most of it
+  ignorePatterns: ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json", "lib/$path.ts"],
+  plugins: ["simple-import-sort", "formatjs", "@typescript-eslint"],
+  rules: {
+    quotes: ["error", "double"],
     "react/react-in-jsx-scope": "off", // next does not require react imports
     "import/extensions": "off", // file extension not required when importing
+    "import/no-unresolved": "off", // doesn't work with monorepo, see https://github.com/import-js/eslint-import-resolver-typescript
     "react/jsx-filename-extension": "off",
     "no-restricted-syntax": "off",
     "no-underscore-dangle": "off",
@@ -31,8 +36,8 @@
     "no-console": [
       "error",
       {
-        "allow": ["warn", "error", "debug"]
-      }
+        allow: ["warn", "error", "debug"],
+      },
     ],
     "no-continue": "off",
     "operator-linebreak": "off",
@@ -46,6 +51,6 @@
     "@typescript-eslint/ban-ts-comment": "off",
     // TO FIX:
     "import/no-cycle": "off", // pathpidia issue
-    "import/prefer-default-export": "off"
-  }
-}
+    "import/prefer-default-export": "off",
+  },
+};

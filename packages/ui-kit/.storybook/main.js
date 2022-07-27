@@ -27,15 +27,13 @@ module.exports = {
     reactDocgen: "react-docgen-typescript",
     reactDocgenTypescriptOptions: {
       shouldExtractLiteralValuesFromEnum: true,
-      propFilter: (prop) =>
-        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
+      propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
     },
   },
   framework: "@storybook/react",
   webpackFinal: async (config, options) => {
-    config.module.rules.find(
-      (rule) => rule.test.toString() === "/\\.css$/"
-    ).exclude = /\.module\.css$/;
+    config.module.rules.find((rule) => rule.test.toString() === "/\\.css$/").exclude =
+      /\.module\.css$/;
 
     config.module.rules.push({
       test: /\.module\.css$/,

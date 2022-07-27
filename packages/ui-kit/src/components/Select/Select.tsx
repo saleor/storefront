@@ -13,9 +13,7 @@ export interface Option<TData extends string = string> {
   [key: string]: unknown;
 }
 
-export type SelectOnChangeHandler<TData extends string = string> = (
-  value: TData
-) => void;
+export type SelectOnChangeHandler<TData extends string = string> = (value: TData) => void;
 
 export interface SelectProps<TData extends string = string> {
   options: Option<TData>[];
@@ -23,13 +21,7 @@ export interface SelectProps<TData extends string = string> {
   error?: boolean;
   disabled?: boolean;
   classNames?: ClassNames<
-    | "container"
-    | "triggerIcon"
-    | "trigger"
-    | "triggerArrow"
-    | "options"
-    | "optionIcon"
-    | "option"
+    "container" | "triggerIcon" | "trigger" | "triggerArrow" | "options" | "optionIcon" | "option"
   >;
   onChange: SelectOnChangeHandler<TData>;
   placeholder?: string;
@@ -48,10 +40,7 @@ export const Select = <TData extends string = string>({
 
   return (
     <div className={clsx(styles.container, classNames?.container)}>
-      <Combobox
-        value={selectedOption}
-        onChange={({ value }: Option<TData>) => onChange(value)}
-      >
+      <Combobox value={selectedOption} onChange={({ value }: Option<TData>) => onChange(value)}>
         <Combobox.Button
           className={clsx(
             styles.trigger,
@@ -66,12 +55,7 @@ export const Select = <TData extends string = string>({
             return (
               <>
                 {selectedOption?.icon && (
-                  <div
-                    className={clsx(
-                      styles["trigger-icon"],
-                      classNames?.triggerIcon
-                    )}
-                  >
+                  <div className={clsx(styles["trigger-icon"], classNames?.triggerIcon)}>
                     {selectedOption?.icon}
                   </div>
                 )}
@@ -102,12 +86,7 @@ export const Select = <TData extends string = string>({
                 className={clsx(styles.option, classNames?.option)}
               >
                 {option?.icon && (
-                  <div
-                    className={clsx(
-                      styles["option-icon"],
-                      classNames?.optionIcon
-                    )}
-                  >
+                  <div className={clsx(styles["option-icon"], classNames?.optionIcon)}>
                     {option?.icon}
                   </div>
                 )}

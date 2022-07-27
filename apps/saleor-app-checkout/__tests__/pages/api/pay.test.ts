@@ -17,12 +17,8 @@ jest.mock("@/saleor-app-checkout/backend/payments/createOrder");
 jest.mock("@/saleor-app-checkout/backend/payments/providers/mollie");
 jest.mock("@/saleor-app-checkout/backend/payments/providers/adyen");
 jest.mock("@/saleor-app-checkout/backend/payments/updatePaymentMetafield");
-jest.mock(
-  "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession"
-);
-jest.mock(
-  "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession"
-);
+jest.mock("@/saleor-app-checkout/backend/payments/providers/adyen/verifySession");
+jest.mock("@/saleor-app-checkout/backend/payments/providers/mollie/verifySession");
 jest.mock("@mollie/api-client");
 jest.mock("urql");
 
@@ -178,10 +174,7 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(
-      mockOrderData,
-      "example.com"
-    );
+    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(mockOrderData, "example.com");
     expect(mockedCreateAdyenPayment).toHaveBeenCalledTimes(1);
 
     const data = res._getJSONData<PayRequestSuccessResponse>();

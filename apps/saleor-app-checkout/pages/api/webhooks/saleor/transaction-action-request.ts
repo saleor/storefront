@@ -5,17 +5,13 @@ import { TransactionRefund } from "@/saleor-app-checkout/types/refunds";
 import { handleMolieRefund } from "@/saleor-app-checkout/backend/payments/providers/mollie";
 import { handleAdyenRefund } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { toNextHandler } from "retes/adapter";
-import {
-  withSaleorEventMatch,
-  withWebhookSignatureVerified,
-} from "@saleor/app-sdk/middleware";
+import { withSaleorEventMatch, withWebhookSignatureVerified } from "@saleor/app-sdk/middleware";
 import { Handler, HTTPMethod } from "retes";
 import { Response } from "retes/response";
 import { withMethod } from "retes/middleware";
 import { withSaleorDomainMatch } from "@/saleor-app-checkout/backend/middlewares";
 
-export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT =
-  "api/webhooks/saleor/transaction-action-request";
+export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transaction-action-request";
 
 export const config = {
   api: {

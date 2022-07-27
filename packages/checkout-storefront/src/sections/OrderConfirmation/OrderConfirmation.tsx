@@ -18,9 +18,7 @@ export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
     <div className="page">
       <header className="order-header">
         <PageHeader />
-        <Title>
-          {formatMessage("orderConfirmationTitle", { number: order.number })}
-        </Title>
+        <Title>{formatMessage("orderConfirmationTitle", { number: order.number })}</Title>
         <Text size="md" className="max-w-[692px]">
           {formatMessage("orderConfirmationSubtitle", {
             email: order.userEmail!,

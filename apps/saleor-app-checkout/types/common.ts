@@ -2,15 +2,9 @@ import { IconComponent, PaymentProviderID, SettingType } from "checkout-common";
 
 export type SettingsType = "public" | "private";
 export const allPublicMetafieldID = ["customizationsCheckoutUrl"] as const;
-export const allPublicSettingID = [
-  "customizations",
-  "channelActivePaymentProviders",
-] as const;
+export const allPublicSettingID = ["customizations", "channelActivePaymentProviders"] as const;
 export const allPrivateSettingID = ["paymentProviders"] as const;
-export const allSettingID = [
-  ...allPublicSettingID,
-  ...allPrivateSettingID,
-] as const;
+export const allSettingID = [...allPublicSettingID, ...allPrivateSettingID] as const;
 export type PublicMetafieldID = typeof allPublicMetafieldID;
 export type PublicSettingID = typeof allPublicSettingID;
 export type PrivateSettingID = typeof allPrivateSettingID;
@@ -33,12 +27,11 @@ export type BrandingCustomizationSettingID =
   | "buttonTextColor"
   | "logoUrl";
 export type ProductCustomizationSettingID = "lowStockThreshold";
-export type CustomizationSettingID<P extends CustomizationID> =
-  P extends "branding"
-    ? BrandingCustomizationSettingID
-    : P extends "productSettings"
-    ? ProductCustomizationSettingID
-    : never;
+export type CustomizationSettingID<P extends CustomizationID> = P extends "branding"
+  ? BrandingCustomizationSettingID
+  : P extends "productSettings"
+  ? ProductCustomizationSettingID
+  : never;
 
 export interface CustomizationSettings<P extends CustomizationID> {
   id: CustomizationSettingID<P>;

@@ -10,7 +10,7 @@ export interface RemoveButtonProps extends Omit<ButtonProps, "label"> {}
 export const RemoveButton: FC<RemoveButtonProps> = ({ className, ...rest }) => (
   <Button
     label={<RemoveIcon />}
-    variant='secondary'
+    variant="secondary"
     className={clsx(styles["remove-button"], className)}
     {...rest}
   />

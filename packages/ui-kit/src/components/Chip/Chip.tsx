@@ -13,25 +13,14 @@ export interface ChipProps {
   onClick: (e?: MouseEvent) => void;
 }
 
-export const Chip: FC<ChipProps> = ({
-  label,
-  icon,
-  classNames,
-  onClick,
-  ...rest
-}) => (
+export const Chip: FC<ChipProps> = ({ label, icon, classNames, onClick, ...rest }) => (
   <div className={clsx(styles.chip, classNames?.container)} {...rest}>
     {icon}
     <ButtonLabel
       content={label}
-      className={clsx(
-        { [styles["chip-label-margin"]]: !!icon },
-        classNames?.label
-      )}
+      className={clsx({ [styles["chip-label-margin"]]: !!icon }, classNames?.label)}
     />
-    <button
-      className={clsx(styles["chip-button"], classNames?.button)}
-      onClick={onClick}>
+    <button className={clsx(styles["chip-button"], classNames?.button)} onClick={onClick}>
       <RemoveIcon />
     </button>
   </div>

@@ -9,11 +9,8 @@ interface LineItemQuantitySelectorProps {
   line: OrderLineFragment;
 }
 
-export const SummaryItemMoneySection: React.FC<
-  LineItemQuantitySelectorProps
-> = ({ line }) => {
-  const onSale =
-    line.undiscountedUnitPrice.gross.amount !== line.unitPrice.gross.amount;
+export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = ({ line }) => {
+  const onSale = line.undiscountedUnitPrice.gross.amount !== line.unitPrice.gross.amount;
   const piecePrice = line.unitPrice.gross;
   const formatMessage = useFormattedMessages();
   const formattedPiecePrice = useFormattedMoney(piecePrice);
@@ -28,8 +25,7 @@ export const SummaryItemMoneySection: React.FC<
             ariaLabel={formatMessage("undiscountedPriceLabel")}
             money={{
               currency: line.undiscountedUnitPrice.gross.currency as string,
-              amount:
-                (line.undiscountedUnitPrice.gross.amount || 0) * line.quantity,
+              amount: (line.undiscountedUnitPrice.gross.amount || 0) * line.quantity,
             }}
             className="line-through mr-1"
           />

@@ -13,8 +13,7 @@ import {
 describe("/utils/frontend/misc/mapMetadataToSettings", () => {
   it("maps public metadata to settings", () => {
     const metafields: PublicMetafieldsValues = {
-      customizations:
-        '{"branding":{"buttonBgColorPrimary":"#fff","buttonBgColorHover":"#fff"}}',
+      customizations: '{"branding":{"buttonBgColorPrimary":"#fff","buttonBgColorHover":"#fff"}}',
     };
     const mergedSettings = mapPublicMetafieldsToSettings(metafields);
 

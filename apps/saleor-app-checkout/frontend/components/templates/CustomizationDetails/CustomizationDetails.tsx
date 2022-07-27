@@ -8,21 +8,14 @@ import {
   TextField,
 } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
-import {
-  OffsettedList,
-  OffsettedListBody,
-  ConfirmButtonTransitionState,
-} from "@saleor/macaw-ui";
+import { OffsettedList, OffsettedListBody, ConfirmButtonTransitionState } from "@saleor/macaw-ui";
 import {
   Customization,
   CustomizationID,
   PublicMetafieldID,
   CustomizationSettingID,
 } from "types/common";
-import {
-  CustomizationSettingsFiles,
-  CustomizationSettingsValues,
-} from "types/api";
+import { CustomizationSettingsFiles, CustomizationSettingsValues } from "types/api";
 import { useStyles } from "./styles";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useForm, Controller } from "react-hook-form";
@@ -67,12 +60,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
 }) => {
   const intl = useIntl();
   const classes = useStyles();
-  const {
-    control,
-    handleSubmit: handleSubmitForm,
-    formState,
-    watch,
-  } = useForm();
+  const { control, handleSubmit: handleSubmitForm, formState, watch } = useForm();
   const [files, setFiles] = useState<CustomizationSettingsFiles>();
 
   const previewSettings = useSettingsFromValues(options, watch);
@@ -96,11 +84,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
 
   const handleSubmit = async (flattenedValues: Record<string, string>) => {
     await onSubmit(
-      unflattenSettings(
-        "customizations",
-        flattenedValues,
-        options
-      ) as CustomizationSettingsValues,
+      unflattenSettings("customizations", flattenedValues, options) as CustomizationSettingsValues,
       files,
       unflattenValue("customizationsCheckoutUrl", flattenedValues)
     );
@@ -114,11 +98,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
         <OffsettedList gridTemplate={["1fr"]} className={classes.optionList}>
           <OffsettedListBody>
             {options.map((option, optionIdx) => (
-              <Accordion
-                key={option.id}
-                className={classes.option}
-                elevation={0}
-              >
+              <Accordion key={option.id} className={classes.option} elevation={0}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   className={classes.optionExpander}
@@ -133,11 +113,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                       option.settings?.map(({ id, type, label, value }) => (
                         <Controller
                           key={id}
-                          name={flattenSettingId(
-                            "customizations",
-                            optionIdx,
-                            id
-                          )}
+                          name={flattenSettingId("customizations", optionIdx, id)}
                           control={control}
                           defaultValue={value}
                           render={({ field }) => (
@@ -147,9 +123,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                               label={label}
                               value={type === "image" ? value : field.value}
                               onChange={field.onChange}
-                              onFileChange={(event) =>
-                                handleFileChange(option.id, id, event)
-                              }
+                              onFileChange={(event) => handleFileChange(option.id, id, event)}
                               onBlur={field.onBlur}
                             />
                           )}
@@ -166,9 +140,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
           <ErrorAlert
             errors={errors}
             getErrorMessage={(error, intl) =>
-              error.code
-                ? getMetadataErrorMessage(error.code, intl)
-                : error.message
+              error.code ? getMetadataErrorMessage(error.code, intl) : error.message
             }
           />
           <Typography variant="subtitle1">
@@ -180,9 +152,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
             ) : (
               <>
                 <Controller
-                  name={
-                    "customizationsCheckoutUrl" as PublicMetafieldID[number]
-                  }
+                  name={"customizationsCheckoutUrl" as PublicMetafieldID[number]}
                   control={control}
                   defaultValue={checkoutUrl}
                   render={({ field }) => (
@@ -193,10 +163,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                       className={classes.designUrlInput}
                       onChange={(event) => {
                         field.onChange(event);
-                        debounce(
-                          () => setPreviewUrl(event.target.value),
-                          1000
-                        )();
+                        debounce(() => setPreviewUrl(event.target.value), 1000)();
                       }}
                       onBlur={field.onBlur}
                     />
@@ -209,10 +176,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                     className={classes.designPreviewFrame}
                   />
                 ) : (
-                  <Typography
-                    variant="body1"
-                    className={classes.designNoPreview}
-                  >
+                  <Typography variant="body1" className={classes.designNoPreview}>
                     <FormattedMessage {...messages.noCheckoutUrl} />
                   </Typography>
                 )}

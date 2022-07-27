@@ -7,10 +7,7 @@ import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils"
 
 import { getAdyenAmountFromSaleor, getLineItems } from "./utils";
 
-export const createAdyenPayment = async (
-  data: OrderFragment,
-  redirectUrl: string
-) => {
+export const createAdyenPayment = async (data: OrderFragment, redirectUrl: string) => {
   const {
     paymentProviders: { adyen },
   } = await getPrivateSettings(envVars.apiUrl, false);
@@ -53,8 +50,7 @@ export const createAdyenPayment = async (
         }
       : undefined,
     shopperLocale: "EN", //TODO: get from checkout and pass here
-    telephoneNumber:
-      data.shippingAddress?.phone || data.billingAddress?.phone || undefined,
+    telephoneNumber: data.shippingAddress?.phone || data.billingAddress?.phone || undefined,
     billingAddress: data.billingAddress
       ? {
           city: data.billingAddress.city,

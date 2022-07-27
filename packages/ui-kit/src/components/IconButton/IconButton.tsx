@@ -37,18 +37,14 @@ export const IconButton: FC<IconButtonProps> = ({
           {typeof label === "string" && (
             <ButtonLabel
               className={
-                styles[
-                  alignment === "right"
-                    ? "icon-button-label-reverse"
-                    : "icon-button-label"
-                ]
+                styles[alignment === "right" ? "icon-button-label-reverse" : "icon-button-label"]
               }
               content={label}
             />
           )}
         </>
       }
-      variant='secondary'
+      variant="secondary"
       className={clsx(
         styles["icon-button"],
         {

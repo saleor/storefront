@@ -2,12 +2,7 @@ import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { getAppConfig } from "@/checkout-storefront/fetch";
 import { PropsWithChildren, useEffect, useRef } from "react";
-import type {
-  AppConfig,
-  AppEnv,
-  BrandingColors,
-  BrandingColorsData,
-} from "./types";
+import type { AppConfig, AppEnv, BrandingColors, BrandingColorsData } from "./types";
 import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
 import { isEqual } from "lodash-es";
@@ -18,13 +13,13 @@ interface AppConfigContextConsumerProps {
   env: AppEnv;
 }
 
-const [useAppConfig, Provider] =
-  createSafeContext<AppConfigContextConsumerProps>();
+const [useAppConfig, Provider] = createSafeContext<AppConfigContextConsumerProps>();
 export { useAppConfig };
 
-export const AppConfigProvider: React.FC<
-  PropsWithChildren<{ env: AppEnv }>
-> = ({ children, env }) => {
+export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = ({
+  children,
+  env,
+}) => {
   const [{ data: storedAppConfig, loading }] = useFetch(getAppConfig, {
     args: { checkoutApiUrl: env.checkoutApiUrl },
   });
@@ -34,9 +29,10 @@ export const AppConfigProvider: React.FC<
   const appConfig = dynamicAppConfig || storedAppConfig;
   const stylingRef = useRef(appConfig?.branding);
 
-  const fulfillStyling = (
-    brandingColors: BrandingColorsData
-  ): BrandingColors => ({ ...defaultAppColors, ...brandingColors });
+  const fulfillStyling = (brandingColors: BrandingColorsData): BrandingColors => ({
+    ...defaultAppColors,
+    ...brandingColors,
+  });
 
   const getOrCreateStyleEl = () => {
     const existingStyleElement = document.getElementById(STYLE_ELEMENT_ID);
@@ -61,10 +57,7 @@ export const AppConfigProvider: React.FC<
   };
 
   const handleAppStylingUpdate = () => {
-    const hasStylingConfigChanged = !isEqual(
-      appConfig?.branding,
-      stylingRef.current
-    );
+    const hasStylingConfigChanged = !isEqual(appConfig?.branding, stylingRef.current);
 
     if (hasStylingConfigChanged) {
       appendStylingToBody(appConfig?.branding as BrandingColors);
@@ -73,14 +66,11 @@ export const AppConfigProvider: React.FC<
     stylingRef.current = appConfig?.branding;
   };
 
-  const handleAppDefaultStylingSetup = () =>
-    appendStylingToBody(defaultAppColors);
+  const handleAppDefaultStylingSetup = () => appendStylingToBody(defaultAppColors);
 
   useEffect(handleAppDefaultStylingSetup, []);
 
   useEffect(handleAppStylingUpdate, [appConfig]);
 
-  return (
-    <Provider value={{ config: appConfig, env, loading }}>{children}</Provider>
-  );
+  return <Provider value={{ config: appConfig, env, loading }}>{children}</Provider>;
 };

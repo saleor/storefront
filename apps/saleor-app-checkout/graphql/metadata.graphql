@@ -32,11 +32,7 @@ query PrivateMetafieldsInfered($keys: [String!]) {
   }
 }
 
-mutation UpdatePublicMetadata(
-  $id: ID!
-  $input: [MetadataInput!]!
-  $keys: [String!]
-) {
+mutation UpdatePublicMetadata($id: ID!, $input: [MetadataInput!]!, $keys: [String!]) {
   updateMetadata(id: $id, input: $input) {
     item {
       metafields(keys: $keys)
@@ -47,11 +43,7 @@ mutation UpdatePublicMetadata(
   }
 }
 
-mutation UpdatePrivateMetadata(
-  $id: ID!
-  $input: [MetadataInput!]!
-  $keys: [String!]
-) {
+mutation UpdatePrivateMetadata($id: ID!, $input: [MetadataInput!]!, $keys: [String!]) {
   updatePrivateMetadata(id: $id, input: $input) {
     item {
       privateMetafields(keys: $keys)

@@ -3,9 +3,7 @@ import React from "react";
 
 interface ShippingMethodsSkeletonProps {}
 
-export const ShippingMethodsSkeleton: React.FC<
-  ShippingMethodsSkeletonProps
-> = ({}) => {
+export const ShippingMethodsSkeleton: React.FC<ShippingMethodsSkeletonProps> = ({}) => {
   return (
     <div className="my-12">
       <Skeleton variant="title" className="w-1/3" />

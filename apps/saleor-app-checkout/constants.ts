@@ -27,8 +27,7 @@ export const serverEnvVarNames: Record<ServerEnvVar, string> = {
 };
 export const serverEnvVars: ServerEnvVars = {
   appToken: process.env[serverEnvVarNames.appToken]!,
-  settingsEncryptionSecret:
-    process.env[serverEnvVarNames.settingsEncryptionSecret],
+  settingsEncryptionSecret: process.env[serverEnvVarNames.settingsEncryptionSecret],
 };
 
 export const debugEnvVars: DebugEnvVars | null =

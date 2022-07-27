@@ -7,9 +7,7 @@ const TEST_SALEOR_DOMAIN = "master.staging.saleor.cloud";
 
 jest.mock("@/saleor-app-checkout/backend/utils.ts");
 
-const mockedGetSaleorDomain = getSaleorDomain as jest.MockedFunction<
-  typeof getSaleorDomain
->;
+const mockedGetSaleorDomain = getSaleorDomain as jest.MockedFunction<typeof getSaleorDomain>;
 
 const mockRequest: Request = {
   params: {},

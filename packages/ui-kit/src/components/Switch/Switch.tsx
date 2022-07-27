@@ -13,12 +13,7 @@ export interface SwitchProps {
   onChange(checked: boolean): void;
 }
 
-export const Switch: FC<SwitchProps> = ({
-  checked = false,
-  label,
-  classNames,
-  onChange,
-}) => (
+export const Switch: FC<SwitchProps> = ({ checked = false, label, classNames, onChange }) => (
   <div className={classNames?.container}>
     <HeadlessSwitch.Group>
       <HeadlessSwitch
@@ -30,17 +25,17 @@ export const Switch: FC<SwitchProps> = ({
             [styles["toggle-active"]]: checked,
           },
           classNames?.toggle
-        )}>
+        )}
+      >
         <span
-          aria-hidden='true'
+          aria-hidden="true"
           className={clsx(styles.dot, {
             [styles["dot-active"]]: checked,
           })}
         />
       </HeadlessSwitch>
       {label && (
-        <HeadlessSwitch.Label
-          className={clsx(labelStyles.label, styles.label, classNames?.label)}>
+        <HeadlessSwitch.Label className={clsx(labelStyles.label, styles.label, classNames?.label)}>
           {label}
         </HeadlessSwitch.Label>
       )}

@@ -13,10 +13,7 @@ import { useAuth } from "@saleor/sdk";
 import React from "react";
 import { Control, useForm } from "react-hook-form";
 import { object, string } from "yup";
-import {
-  SignInFormContainer,
-  SignInFormContainerProps,
-} from "./SignInFormContainer";
+import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 
 type ResetPasswordProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -24,9 +21,7 @@ interface FormData {
   password: string;
 }
 
-export const ResetPassword: React.FC<ResetPasswordProps> = ({
-  onSectionChange,
-}) => {
+export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange }) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { setPassword: resetPassword } = useAuth();
@@ -71,10 +66,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
       onSectionChange={onSectionChange}
       subtitle={formatMessage("providePassword")}
     >
-      <PasswordInput
-        label={formatMessage("passwordLabel")}
-        {...getInputProps("password")}
-      />
+      <PasswordInput label={formatMessage("passwordLabel")} {...getInputProps("password")} />
       <div className="mt-4 actions">
         <Button
           ariaLabel={formatMessage("resetPasswordLabel")}

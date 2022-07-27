@@ -11,14 +11,9 @@ export interface InfoTipProps {
   alignment?: HorizontalAlignment;
 }
 
-export const InfoTip: FC<InfoTipProps> = ({
-  content,
-  className,
-  alignment = "left",
-  ...rest
-}) => (
+export const InfoTip: FC<InfoTipProps> = ({ content, className, alignment = "left", ...rest }) => (
   <Text
-    as='div'
+    as="div"
     className={clsx(
       styles.infotip,
       {
@@ -27,7 +22,8 @@ export const InfoTip: FC<InfoTipProps> = ({
       },
       className
     )}
-    {...rest}>
+    {...rest}
+  >
     {content}
   </Text>
 );

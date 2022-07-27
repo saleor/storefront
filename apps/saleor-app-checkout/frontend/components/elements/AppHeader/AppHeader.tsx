@@ -7,11 +7,7 @@ interface AppHeaderProps {
   menu?: React.ReactNode;
 }
 
-const AppHeader: React.FC<PropsWithChildren<AppHeaderProps>> = ({
-  children,
-  menu,
-  onBack,
-}) => {
+const AppHeader: React.FC<PropsWithChildren<AppHeaderProps>> = ({ children, menu, onBack }) => {
   const classes = useStyles();
 
   return (

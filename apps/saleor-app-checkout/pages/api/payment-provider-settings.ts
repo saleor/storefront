@@ -1,9 +1,6 @@
 import { getTokenDataFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import {
-  allowCors,
-  requireAuthorization,
-} from "@/saleor-app-checkout/backend/utils";
+import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {

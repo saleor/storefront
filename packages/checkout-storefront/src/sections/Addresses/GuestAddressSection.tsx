@@ -21,8 +21,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
 }) => {
   const { countryCode } = useCountrySelect();
 
-  const handleSave = (address: AddressFormData) =>
-    onSubmit({ ...address, countryCode });
+  const handleSave = (address: AddressFormData) => onSubmit({ ...address, countryCode });
 
   return (
     <UserAddressSectionContainer title={title} displayCountrySelect>

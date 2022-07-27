@@ -92,12 +92,8 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
     } as PaymentProviderSettingsValues<"unencrypted">);
   };
 
-  const {
-    encryptedSettings,
-    publicSettings,
-    hasEncryptedSettings,
-    hasPublicSettings,
-  } = extractSettingsData(selectedPaymentProvider);
+  const { encryptedSettings, publicSettings, hasEncryptedSettings, hasPublicSettings } =
+    extractSettingsData(selectedPaymentProvider);
 
   return (
     <form>
@@ -112,9 +108,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
         <ErrorAlert
           errors={errors}
           getErrorMessage={(error, intl) =>
-            error.code
-              ? getMetadataErrorMessage(error.code, intl)
-              : error.message
+            error.code ? getMetadataErrorMessage(error.code, intl) : error.message
           }
         />
         <Card>

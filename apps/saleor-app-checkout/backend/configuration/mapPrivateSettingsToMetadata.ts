@@ -1,8 +1,5 @@
 import { CommonField, fields } from "@/saleor-app-checkout/config/fields";
-import {
-  PrivateSettingsValues,
-  SettingValue,
-} from "@/saleor-app-checkout/types/api";
+import { PrivateSettingsValues, SettingValue } from "@/saleor-app-checkout/types/api";
 import { PrivateSettingID } from "@/saleor-app-checkout/types/common";
 import reduce from "lodash-es/reduce";
 import { encryptSetting } from "./encryption";
@@ -14,9 +11,7 @@ const encryptSubSettings = (
   const encryptedSubSetting = reduce(
     subSetting,
     (result, value, valueKey) => {
-      const setting = subSettingsFields?.find(
-        (setting) => setting.id === valueKey
-      );
+      const setting = subSettingsFields?.find((setting) => setting.id === valueKey);
 
       if (setting?.encrypt && value) {
         return {
@@ -47,19 +42,14 @@ const encryptSettings = (
     (result, subSetting, settingKey) => {
       const subSettingsFields = settingsFields[settingKey];
 
-      const encryptedSubSetting = encryptSubSettings(
-        subSetting,
-        subSettingsFields
-      );
+      const encryptedSubSetting = encryptSubSettings(subSetting, subSettingsFields);
 
       return {
         ...result,
         [settingKey]: encryptedSubSetting,
       };
     },
-    {} as Partial<
-      PrivateSettingsValues<"encrypted">[keyof PrivateSettingsValues<"unencrypted">]
-    >
+    {} as Partial<PrivateSettingsValues<"encrypted">[keyof PrivateSettingsValues<"unencrypted">]>
   );
   return encrypteSettings;
 };
@@ -70,9 +60,7 @@ export const mapPrivateSettingsToMetadata = (
   return Object.keys(settingsValues).reduce(
     (metadata, settingsValuesKey) => {
       const settingsValuesObject = encryptSettings(
-        settingsValues[
-          settingsValuesKey as keyof PrivateSettingsValues<"unencrypted">
-        ],
+        settingsValues[settingsValuesKey as keyof PrivateSettingsValues<"unencrypted">],
         fields[settingsValuesKey as PrivateSettingID[number]]
       );
       const settingsValuesValue = JSON.stringify(settingsValuesObject);

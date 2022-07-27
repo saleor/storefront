@@ -7,9 +7,7 @@ const getSaleorDomain = () => {
   return url.origin;
 };
 
-const JWKS = jose.createRemoteJWKSet(
-  new URL(getSaleorDomain() + "/.well-known/jwks.json")
-);
+const JWKS = jose.createRemoteJWKSet(new URL(getSaleorDomain() + "/.well-known/jwks.json"));
 
 /** Validates Saleor webhook request.
  * Saleor version 3.5+ is required

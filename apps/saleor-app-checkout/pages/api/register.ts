@@ -14,23 +14,15 @@ import {
 } from "@/saleor-app-checkout/graphql";
 import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { SALEOR_WEBHOOK_TRANSACTION_ENDPOINT } from "./webhooks/saleor/transaction-action-request";
-import {
-  getAppDomain,
-  setAuthToken,
-} from "@/saleor-app-checkout/backend/environment";
+import { getAppDomain, setAuthToken } from "@/saleor-app-checkout/backend/environment";
 import urlJoin from "url-join";
 
-const handler = async (
-  request: NextApiRequest,
-  response: NextApiResponse
-): Promise<undefined> => {
+const handler = async (request: NextApiRequest, response: NextApiResponse): Promise<undefined> => {
   console.debug(request);
 
   const saleorDomain = request.headers[saleorDomainHeader];
   if (!saleorDomain) {
-    response
-      .status(400)
-      .json({ success: false, message: "Missing saleor domain token." });
+    response.status(400).json({ success: false, message: "Missing saleor domain token." });
     return;
   }
 
@@ -41,17 +33,14 @@ Received: ${saleorDomain}`);
 
     response.status(400).json({
       success: false,
-      message:
-        "Saleor domain doesn't match configured NEXT_PUBLIC_SALEOR_API_URL domain",
+      message: "Saleor domain doesn't match configured NEXT_PUBLIC_SALEOR_API_URL domain",
     });
     return;
   }
 
   const authToken = request.body?.auth_token as string;
   if (!authToken) {
-    response
-      .status(400)
-      .json({ success: false, message: "Missing auth token." });
+    response.status(400).json({ success: false, message: "Missing auth token." });
     return;
   }
 
@@ -59,9 +48,7 @@ Received: ${saleorDomain}`);
   const client = getClient({ appToken: authToken });
 
   const { data, error } = await client
-    .query<CheckWebhooksQuery, CheckWebhooksQueryVariables>(
-      CheckWebhooksDocument
-    )
+    .query<CheckWebhooksQuery, CheckWebhooksQueryVariables>(CheckWebhooksDocument)
     .toPromise();
 
   if (error) {
@@ -74,29 +61,19 @@ Received: ${saleorDomain}`);
   }
 
   const webhooks = data?.app?.webhooks ?? [];
-  const webhookUrl = urlJoin(
-    getBaseUrl(request),
-    SALEOR_WEBHOOK_TRANSACTION_ENDPOINT
-  );
-  const existingWebhook = webhooks.find(
-    (webhook) => webhook.targetUrl === webhookUrl
-  );
+  const webhookUrl = urlJoin(getBaseUrl(request), SALEOR_WEBHOOK_TRANSACTION_ENDPOINT);
+  const existingWebhook = webhooks.find((webhook) => webhook.targetUrl === webhookUrl);
 
   if (webhooks.length === 0 && !existingWebhook) {
     const { error } = await client
-      .mutation<CreateWebhooksMutation, CreateWebhooksMutationVariables>(
-        CreateWebhooksDocument,
-        {
-          targetUrl: webhookUrl,
-          query: print(TransactionActionRequestSubscriptionDocument),
-        }
-      )
+      .mutation<CreateWebhooksMutation, CreateWebhooksMutationVariables>(CreateWebhooksDocument, {
+        targetUrl: webhookUrl,
+        query: print(TransactionActionRequestSubscriptionDocument),
+      })
       .toPromise();
     if (error) {
       console.error("Error while adding app's webhooks", error);
-      response
-        .status(500)
-        .json({ success: false, message: "Error while adding app's webhooks" });
+      response.status(500).json({ success: false, message: "Error while adding app's webhooks" });
       return;
     }
   } else {

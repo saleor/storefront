@@ -10,10 +10,9 @@ import { Section, SectionTitle } from "./Section";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
-  const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(
-    getOrderPaymentStatus,
-    { args: { orderId } }
-  );
+  const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(getOrderPaymentStatus, {
+    args: { orderId },
+  });
   const formatMessage = useFormattedMessages();
 
   const handlePay = () => {
@@ -33,11 +32,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
     }
 
     if (paymentData?.status === "PENDING") {
-      return (
-        <Text color="success">
-          {formatMessage("pendingPaymentOrderMessage")}
-        </Text>
-      );
+      return <Text color="success">{formatMessage("pendingPaymentOrderMessage")}</Text>;
     }
 
     if (paymentData?.status === "UNPAID") {
@@ -57,11 +52,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
       );
     }
 
-    return (
-      <Text color="error">
-        {formatMessage("missingPaymentStatusOrderMessage")}
-      </Text>
-    );
+    return <Text color="error">{formatMessage("missingPaymentStatusOrderMessage")}</Text>;
   };
 
   return (

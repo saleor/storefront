@@ -1,14 +1,8 @@
-import createMollieClient, {
-  OrderCreateParams,
-  OrderLineType,
-} from "@mollie/api-client";
+import createMollieClient, { OrderCreateParams, OrderLineType } from "@mollie/api-client";
 
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { envVars } from "@/saleor-app-checkout/constants";
-import {
-  OrderFragment,
-  OrderLineFragment,
-} from "@/saleor-app-checkout/graphql";
+import { OrderFragment, OrderLineFragment } from "@/saleor-app-checkout/graphql";
 
 export const getMollieClient = async () => {
   const metadata = await getPrivateSettings(envVars.apiUrl, false);
@@ -65,9 +59,7 @@ export const getDiscountLines = (
       }))
     : [];
 
-export const getShippingLines = (
-  data: OrderFragment
-): OrderCreateParams["lines"] => [
+export const getShippingLines = (data: OrderFragment): OrderCreateParams["lines"] => [
   {
     name: data.shippingMethodName || "Shipping",
     quantity: 1,

@@ -5,9 +5,7 @@ import {
   TransactionUpdateMutationVariables,
 } from "@/saleor-app-checkout/graphql";
 
-export const updateTransaction = async (
-  args: TransactionUpdateMutationVariables
-) => {
+export const updateTransaction = async (args: TransactionUpdateMutationVariables) => {
   const { data, error } = await getClient()
     .mutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(
       TransactionUpdateDocument,
@@ -17,10 +15,7 @@ export const updateTransaction = async (
 
   console.log(data?.transactionUpdate?.errors, error);
 
-  if (
-    data?.transactionUpdate?.transaction?.id &&
-    data.transactionUpdate.errors.length === 0
-  ) {
+  if (data?.transactionUpdate?.transaction?.id && data.transactionUpdate.errors.length === 0) {
     return true;
   }
 

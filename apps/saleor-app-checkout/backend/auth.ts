@@ -89,23 +89,16 @@ export const hasPermissionsInToken = (
     return true;
   }
 
-  const userPermissions = tokenData?.["user_permissions"] as
-    | PermissionEnum[]
-    | undefined;
+  const userPermissions = tokenData?.["user_permissions"] as PermissionEnum[] | undefined;
 
   if (!userPermissions?.length) {
     return false;
   }
 
-  return permissionsToCheckAgainst.every((permission) =>
-    userPermissions.includes(permission)
-  );
+  return permissionsToCheckAgainst.every((permission) => userPermissions.includes(permission));
 };
 
-export const isAuthorized = (
-  req: NextApiRequest,
-  requiredPermissions?: PermissionEnum[]
-) => {
+export const isAuthorized = (req: NextApiRequest, requiredPermissions?: PermissionEnum[]) => {
   const tokenData = getTokenDataFromRequest(req);
 
   if (!tokenData?.["is_staff"]) {

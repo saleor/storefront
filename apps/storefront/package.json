@@ -6,19 +6,22 @@
     "node": "^14 || ^16 || ^18"
   },
   "scripts": {
-    "debug": "NODE_OPTIONS='--inspect' next dev --port 3001",
-    "dev": "next dev --port 3001",
+    "debug": "NODE_OPTIONS='--inspect' next dev --port 3000",
+    "dev": "next dev --port 3000",
     "build": "next build",
     "postbuild": "next-sitemap",
     "translations": "formatjs extract './{components,pages}/**/*.{ts,tsx}' --out-file temp.json --flatten --id-interpolation-pattern '[sha512:contenthash:base64:6]' && formatjs compile 'temp.json' --out-file locale/en-US.json && rm ./temp.json",
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "prettier --write . && next lint --fix",
+    "lint": "next lint",
+    "lint:staged": "next lint --fix",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
     "paths": "pathpida --ignorePath .gitignore",
-    "prepare": "husky install",
     "cy:run": "cypress run",
     "cy:open": "cypress open"
+  },
+  "resolutions": {
+    "eslint-plugin-react-hooks": "^4.5.0"
   },
   "dependencies": {
     "@apollo/client": "3.5.10",
@@ -28,7 +31,7 @@
     "@headlessui/react": "^1.6.0",
     "@heroicons/react": "^1.0.6",
     "@saleor/sdk": "^0.4.4",
-    "@saleor/ui-kit": "^0.0.1",
+    "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "^1.7.0",
     "@stripe/stripe-js": "^1.26.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",
@@ -70,15 +73,15 @@
     "cypress": "^10.1.0",
     "eslint": "8.15.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-next": "^12.1.6",
+    "eslint-config-next": "^12.2.3",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-config-storefront": "workspace:*",
     "eslint-plugin-formatjs": "^3.1.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^7.0.4",
     "pathpida": "^0.18.1",
     "postcss": "8.4.12",
     "prettier": "2.6.2",
@@ -95,9 +98,5 @@
         "graphql": "16"
       }
     }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx}": "eslint --cache --fix",
-    "*.{js,ts,tsx,css,md,json}": "prettier --write"
   }
 }

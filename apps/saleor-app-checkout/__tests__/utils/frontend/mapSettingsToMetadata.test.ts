@@ -61,19 +61,11 @@ describe("/utils/frontend/misc/mapSettingsToMetadata", () => {
     )?.value;
 
     // These metadata are private and encrypted
-    expect(providersMetadata).not.toContain(
-      settingsValues.paymentProviders.adyen.apiKey
-    );
+    expect(providersMetadata).not.toContain(settingsValues.paymentProviders.adyen.apiKey);
 
     // These metadata are public and unencrypted
-    expect(providersMetadata).toContain(
-      settingsValues.paymentProviders.adyen.clientKey
-    );
-    expect(providersMetadata).toContain(
-      settingsValues.paymentProviders.adyen.merchantAccount
-    );
-    expect(providersMetadata).toContain(
-      settingsValues.paymentProviders.adyen.supportedCurrencies
-    );
+    expect(providersMetadata).toContain(settingsValues.paymentProviders.adyen.clientKey);
+    expect(providersMetadata).toContain(settingsValues.paymentProviders.adyen.merchantAccount);
+    expect(providersMetadata).toContain(settingsValues.paymentProviders.adyen.supportedCurrencies);
   });
 });

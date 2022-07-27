@@ -8,9 +8,7 @@ export default {
   component: IconButton,
 } as ComponentMeta<typeof IconButton>;
 
-const Template: ComponentStory<typeof IconButton> = (args) => (
-  <IconButton {...args} />
-);
+const Template: ComponentStory<typeof IconButton> = (args) => <IconButton {...args} />;
 
 export const Basic = Template.bind({});
 
@@ -43,6 +41,6 @@ Bare.args = {
 export const BareWithImage = Template.bind({});
 
 BareWithImage.args = {
-  icon: <img src='/plus.svg' alt='Samle img' />, // eslint-disable-line
+  icon: <img src="/plus.svg" alt="Samle img" />, // eslint-disable-line
   variant: "bare",
 };

@@ -28,6 +28,4 @@ export type PayRequestErrorResponse = {
   errors: Errors;
 };
 
-export type PayRequestResponse =
-  | PayRequestSuccessResponse
-  | PayRequestErrorResponse;
+export type PayRequestResponse = PayRequestSuccessResponse | PayRequestErrorResponse;

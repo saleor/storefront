@@ -47,10 +47,9 @@ export const createOrder = async (
   }
 
   const { data, error } = await client
-    .mutation<OrderCreateMutation, OrderCreateMutationVariables>(
-      OrderCreateDocument,
-      { id: checkoutId }
-    )
+    .mutation<OrderCreateMutation, OrderCreateMutationVariables>(OrderCreateDocument, {
+      id: checkoutId,
+    })
     .toPromise();
 
   if (error) {

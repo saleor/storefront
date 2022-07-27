@@ -22,23 +22,17 @@ import { PrivateSettingsValues } from "@/saleor-app-checkout/types/api";
 import { mapPrivateSettingsToMetadata } from "./mapPrivateSettingsToMetadata";
 import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings";
 import { mapPublicMetafieldsToSettings } from "@/saleor-app-checkout/frontend/misc/mapPublicMetafieldsToSettings";
-import {
-  allPrivateSettingID,
-  allPublicSettingID,
-} from "@/saleor-app-checkout/types/common";
+import { allPrivateSettingID, allPublicSettingID } from "@/saleor-app-checkout/types/common";
 import { getAppId } from "../environment";
 
-export const getPrivateSettings = async (
-  apiUrl: string,
-  obfuscateEncryptedData: boolean
-) => {
+export const getPrivateSettings = async (apiUrl: string, obfuscateEncryptedData: boolean) => {
   const { data, error } = await getClient({ apiUrl })
-    .query<
-      PrivateMetafieldsInferedQuery,
-      PrivateMetafieldsInferedQueryVariables
-    >(PrivateMetafieldsInferedDocument, {
-      keys: [...allPrivateSettingID],
-    })
+    .query<PrivateMetafieldsInferedQuery, PrivateMetafieldsInferedQueryVariables>(
+      PrivateMetafieldsInferedDocument,
+      {
+        keys: [...allPrivateSettingID],
+      }
+    )
     .toPromise();
 
   if (error) {
@@ -69,9 +63,7 @@ export const getPublicSettings = async () => {
 
   console.log(data?.app?.metafields); // for deployment debug pusposes
 
-  const settingsValues = mapPublicMetafieldsToSettings(
-    data?.app?.metafields || {}
-  );
+  const settingsValues = mapPublicMetafieldsToSettings(data?.app?.metafields || {});
 
   return settingsValues;
 };
@@ -89,15 +81,15 @@ export const getActivePaymentProvidersSettings = async () => {
     throw error;
   }
 
-  const activePaymentProvidersSettings =
-    mergeChannelsWithPaymentProvidersSettings(settings, data?.channels);
+  const activePaymentProvidersSettings = mergeChannelsWithPaymentProvidersSettings(
+    settings,
+    data?.channels
+  );
 
   return activePaymentProvidersSettings;
 };
 
-export const getChannelActivePaymentProvidersSettings = async (
-  channelId: string
-) => {
+export const getChannelActivePaymentProvidersSettings = async (channelId: string) => {
   const settings = await getPublicSettings();
 
   const { data, error } = await getClient()
@@ -113,8 +105,7 @@ export const getChannelActivePaymentProvidersSettings = async (
   }
 
   const channelActivePaymentProvidersSettings =
-    settings.channelActivePaymentProviders?.[channelId] ||
-    defaultActiveChannelPaymentProviders;
+    settings.channelActivePaymentProviders?.[channelId] || defaultActiveChannelPaymentProviders;
 
   return channelActivePaymentProvidersSettings;
 };
@@ -128,14 +119,14 @@ export const setPrivateSettings = async (
   const appId = await getAppId();
 
   const { data, error } = await getClient({ apiUrl })
-    .mutation<
-      UpdatePrivateMetadataMutation,
-      UpdatePrivateMetadataMutationVariables
-    >(UpdatePrivateMetadataDocument, {
-      id: appId,
-      input: metadata,
-      keys: [...allPrivateSettingID],
-    })
+    .mutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(
+      UpdatePrivateMetadataDocument,
+      {
+        id: appId,
+        input: metadata,
+        keys: [...allPrivateSettingID],
+      }
+    )
     .toPromise();
 
   console.log(data, error); // for deployment debug pusposes

@@ -11,16 +11,10 @@ interface UnknownError<T> {
 
 interface ErrorAlertProps<T> {
   errors?: UnknownError<T>[];
-  getErrorMessage: (
-    error: UnknownError<T>,
-    intl: IntlShape
-  ) => string | null | undefined;
+  getErrorMessage: (error: UnknownError<T>, intl: IntlShape) => string | null | undefined;
 }
 
-const ErrorAlert = <T extends any>({
-  errors,
-  getErrorMessage,
-}: ErrorAlertProps<T>) => {
+const ErrorAlert = <T extends any>({ errors, getErrorMessage }: ErrorAlertProps<T>) => {
   const intl = useIntl();
   const classes = useStyles();
 
@@ -37,8 +31,7 @@ const ErrorAlert = <T extends any>({
       >
         {errors.map((error, idx) => (
           <Typography key={idx}>
-            {getErrorMessage(error, intl) ||
-              intl.formatMessage(commonErrorMessages.unknownError)}
+            {getErrorMessage(error, intl) || intl.formatMessage(commonErrorMessages.unknownError)}
           </Typography>
         ))}
       </Alert>

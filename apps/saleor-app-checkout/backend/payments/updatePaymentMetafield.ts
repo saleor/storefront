@@ -11,13 +11,13 @@ export const updatePaymentMetafield = async (
   payment: OrderPaymentMetafield
 ) => {
   const { data, error } = await getClient()
-    .mutation<
-      OrderUpdatePaymentMetafieldMutation,
-      OrderUpdatePaymentMetafieldMutationVariables
-    >(OrderUpdatePaymentMetafieldDocument, {
-      orderId,
-      data: JSON.stringify(payment),
-    })
+    .mutation<OrderUpdatePaymentMetafieldMutation, OrderUpdatePaymentMetafieldMutationVariables>(
+      OrderUpdatePaymentMetafieldDocument,
+      {
+        orderId,
+        data: JSON.stringify(payment),
+      }
+    )
     .toPromise();
 
   if (error || data?.updatePrivateMetadata?.errors) {

@@ -62,15 +62,11 @@ export const mapNodeToItem = (node: NamedNode): Item => ({
   id: node.id,
   label: node.name,
 });
-export const mapNodesToItems = (nodes?: NamedNode[]): Item[] =>
-  nodes?.map(mapNodeToItem) || [];
+export const mapNodesToItems = (nodes?: NamedNode[]): Item[] => nodes?.map(mapNodeToItem) || [];
 
 export const getCommonErrors = (error?: Partial<CombinedError>) =>
   error?.graphQLErrors || error?.networkError
-    ? [
-        ...(error?.graphQLErrors || []),
-        ...(error?.networkError ? [error.networkError] : []),
-      ]
+    ? [...(error?.graphQLErrors || []), ...(error?.networkError ? [error.networkError] : [])]
     : [...(error ? [error] : [])];
 
 export const getMetafield = (
@@ -81,10 +77,7 @@ export const getMetafield = (
 export const getRawAppPath = (path: string): string => {
   const trimmedQueryParams = path.split("?")[0];
 
-  const trimmedLanguage = trimmedQueryParams.replace(
-    /^\/[a-z]{2}(-[A-Z]{2})?(\/|$)/,
-    "/"
-  );
+  const trimmedLanguage = trimmedQueryParams.replace(/^\/[a-z]{2}(-[A-Z]{2})?(\/|$)/, "/");
 
   return trimmedLanguage;
 };

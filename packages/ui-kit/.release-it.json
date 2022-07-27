@@ -1,11 +1,11 @@
 {
-    "git": {
-        "commitMessage": "Release ${version}"
-    },
-    "github": {
-        "release": false
-    },
-    "npm": {
-        "publish": true
-    }
+  "git": {
+    "commitMessage": "Release ${version}"
+  },
+  "github": {
+    "release": false
+  },
+  "npm": {
+    "publish": true
+  }
 }

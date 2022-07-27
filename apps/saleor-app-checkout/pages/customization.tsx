@@ -1,18 +1,12 @@
 import { useRouter } from "next/router";
 import CustomizationDetails from "@/saleor-app-checkout/frontend/components/templates/CustomizationDetails";
-import {
-  CustomizationSettingsFiles,
-  CustomizationSettingsValues,
-} from "types/api";
+import { CustomizationSettingsFiles, CustomizationSettingsValues } from "types/api";
 import {
   useFileUploadMutation,
   usePublicMetafieldsQuery,
   useUpdatePublicMetadataMutation,
 } from "@/saleor-app-checkout/graphql";
-import {
-  getCommonErrors,
-  getMetafield,
-} from "@/saleor-app-checkout/frontend/utils";
+import { getCommonErrors, getMetafield } from "@/saleor-app-checkout/frontend/utils";
 import { useCustomizationSettings } from "@/saleor-app-checkout/frontend/data";
 import { useAuthData } from "@/saleor-app-checkout/frontend/hooks/useAuthData";
 import {
@@ -29,23 +23,15 @@ const Customization = () => {
   const [metafieldsQuery] = usePublicMetafieldsQuery({
     variables: {
       id: appId,
-      keys: [
-        "customizations",
-        "customizationsCheckoutUrl",
-      ] as PublicMetafieldID[number][],
+      keys: ["customizations", "customizationsCheckoutUrl"] as PublicMetafieldID[number][],
     },
     pause: !isAuthorized,
   });
-  const [metadataMutation, setPublicMetadata] =
-    useUpdatePublicMetadataMutation();
+  const [metadataMutation, setPublicMetadata] = useUpdatePublicMetadataMutation();
   const [uploadFileState, uploadFile] = useFileUploadMutation();
 
-  const settingsValues = mapPublicMetafieldsToSettings(
-    metafieldsQuery.data?.app?.metafields || {}
-  );
-  const customizationSettings = useCustomizationSettings(
-    settingsValues.customizations
-  );
+  const settingsValues = mapPublicMetafieldsToSettings(metafieldsQuery.data?.app?.metafields || {});
+  const customizationSettings = useCustomizationSettings(settingsValues.customizations);
 
   const checkoutUrl = getMetafield(
     metafieldsQuery.data?.app?.metafields || {},
@@ -87,11 +73,7 @@ const Customization = () => {
     <CustomizationDetails
       options={customizationSettings}
       checkoutUrl={checkoutUrl}
-      loading={
-        metafieldsQuery.fetching ||
-        metadataMutation.fetching ||
-        uploadFileState.fetching
-      }
+      loading={metafieldsQuery.fetching || metadataMutation.fetching || uploadFileState.fetching}
       saveButtonBarState="default"
       errors={errors}
       onCancel={handleCancel}

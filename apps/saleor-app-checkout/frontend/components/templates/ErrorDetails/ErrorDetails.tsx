@@ -16,11 +16,7 @@ const ErrorDetails: React.FC<ErrorDetailsProps> = ({ error }) => {
     <>
       <AppNavigation />
       <VerticalSpacer />
-      <Alert
-        title={intl.formatMessage(messages.somethingWentWrong)}
-        variant="error"
-        close={false}
-      >
+      <Alert title={intl.formatMessage(messages.somethingWentWrong)} variant="error" close={false}>
         <Typography>{error}</Typography>
       </Alert>
     </>

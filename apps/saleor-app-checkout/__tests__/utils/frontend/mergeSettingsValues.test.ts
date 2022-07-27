@@ -29,10 +29,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       },
     };
 
-    const mergedSettings = mergePublicSettingsValues(
-      defaultSettings,
-      savedSettings
-    );
+    const mergedSettings = mergePublicSettingsValues(defaultSettings, savedSettings);
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
       savedPrivateSettings,
@@ -59,15 +56,8 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
     };
     const savedSettings = {};
 
-    const mergedSettings = mergePublicSettingsValues(
-      defaultSettings,
-      savedSettings
-    );
-    const privateMergedSettings = mergePrivateSettingsValues(
-      defaultSettings,
-      savedSettings,
-      false
-    );
+    const mergedSettings = mergePublicSettingsValues(defaultSettings, savedSettings);
+    const privateMergedSettings = mergePrivateSettingsValues(defaultSettings, savedSettings, false);
 
     expect(mergedSettings).toEqual(defaultSettings);
     expect(privateMergedSettings).toEqual(defaultSettings);
@@ -94,10 +84,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       },
     };
 
-    const mergedSettings = mergePublicSettingsValues(
-      defaultSettings,
-      savedSettings
-    );
+    const mergedSettings = mergePublicSettingsValues(defaultSettings, savedSettings);
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
       savedPrivateSettings,
@@ -134,10 +121,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       },
     };
 
-    const mergedSettings = mergePublicSettingsValues(
-      defaultSettings,
-      savedSettings
-    );
+    const mergedSettings = mergePublicSettingsValues(defaultSettings, savedSettings);
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
       savedPrivateSettings,
@@ -195,10 +179,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       },
     };
 
-    const mergedSettings = mergePublicSettingsValues(
-      defaultSettings,
-      savedSettings
-    );
+    const mergedSettings = mergePublicSettingsValues(defaultSettings, savedSettings);
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
       savedPrivateSettings,
@@ -252,10 +233,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       },
     };
 
-    const mergedSettings = mergePublicSettingsValues(
-      defaultSettings,
-      savedSettings
-    );
+    const mergedSettings = mergePublicSettingsValues(defaultSettings, savedSettings);
     const privateMergedSettings = mergePrivateSettingsValues(
       defaultSettings,
       savedPrivateSettings,
@@ -296,13 +274,11 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       adyen: {
         clientKey: {
           encrypted: true,
-          value:
-            "U2FsdGVkX1/DpBetYEcOpf55fq9JoAa/fTUFzTq8zgh5IqTErE4YL8j1VD4KPBUN",
+          value: "U2FsdGVkX1/DpBetYEcOpf55fq9JoAa/fTUFzTq8zgh5IqTErE4YL8j1VD4KPBUN",
         },
         merchantAccount: {
           encrypted: true,
-          value:
-            "U2FsdGVkX182nG081Vfy9CdwO+ZDM2pgPCQuQ2foyPwWmh21JWaI33Gz5Fp5q+18",
+          value: "U2FsdGVkX182nG081Vfy9CdwO+ZDM2pgPCQuQ2foyPwWmh21JWaI33Gz5Fp5q+18",
         },
         supportedCurrencies: {
           encrypted: false,
@@ -325,11 +301,7 @@ describe("/utils/frontend/misc/mergeSettingsValues", () => {
       },
     };
 
-    const mergedSettings = mergePrivateSettingsValues(
-      defaultSettings,
-      savedSettings,
-      false
-    );
+    const mergedSettings = mergePrivateSettingsValues(defaultSettings, savedSettings, false);
 
     const expectedSettings = {
       adyen: {

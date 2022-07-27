@@ -18,15 +18,11 @@
     "lint": {
       "outputs": []
     },
-    "check-types": {
-      "dependsOn": ["^build"]
+    "lint:staged": {
+      "outputs": []
     },
-    "test": {},
     "dev": {
       "cache": false
-    },
-    "generate": {
-      "dependsOn": ["$SALEOR_API_URL"]
     }
   },
   "globalDependencies": [".env", ".env.local"]

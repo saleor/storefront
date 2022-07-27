@@ -16,10 +16,7 @@ import {
   Switch,
   Typography,
 } from "@material-ui/core";
-import {
-  ChannelActivePaymentProviders,
-  ChannelPaymentOptions,
-} from "types/api";
+import { ChannelActivePaymentProviders, ChannelPaymentOptions } from "types/api";
 import { useStyles } from "./styles";
 import { channelListPath, channelPath, paymentProviderPath } from "routes";
 import { messages } from "./messages";
@@ -35,10 +32,7 @@ import AppSavebar from "@/saleor-app-checkout/frontend/components/elements/AppSa
 import { Controller, useForm } from "react-hook-form";
 import { getActivePaymentProvider, getFormDefaultValues } from "./data";
 import { useEffect } from "react";
-import {
-  ChannelFragment,
-  MetadataErrorFragment,
-} from "@/saleor-app-checkout/graphql";
+import { ChannelFragment, MetadataErrorFragment } from "@/saleor-app-checkout/graphql";
 import { getMetadataErrorMessage } from "@/saleor-app-checkout/frontend/misc/errors";
 import ErrorAlert from "../../elements/ErrorAlert";
 import { usePaymentProviders } from "@/saleor-app-checkout/config/fields";
@@ -120,9 +114,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
         <ErrorAlert
           errors={errors}
           getErrorMessage={(error, intl) =>
-            error.code
-              ? getMetadataErrorMessage(error.code, intl)
-              : error.message
+            error.code ? getMetadataErrorMessage(error.code, intl) : error.message
           }
         />
         <Typography variant="subtitle1">
@@ -131,81 +123,69 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
         {loading ? (
           <Skeleton className={classes.skeleton} />
         ) : (
-          channelPaymentOptions.paymentOptions.map(
-            (paymentOption, paymentOptionIdx) => (
-              <Accordion
-                key={paymentOption.method.id}
-                className={classes.paymentOption}
-                elevation={0}
+          channelPaymentOptions.paymentOptions.map((paymentOption, paymentOptionIdx) => (
+            <Accordion
+              key={paymentOption.method.id}
+              className={classes.paymentOption}
+              elevation={0}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                className={classes.paymentOptionExpander}
               >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  className={classes.paymentOptionExpander}
-                >
-                  {paymentOption.method.logo && (
-                    <div className={classes.paymentOptionLogo}>
-                      <paymentOption.method.logo />
-                    </div>
-                  )}
-                  <Typography variant="subtitle2">
-                    {paymentOption.method.name}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.paymentOptionDetails}>
-                  <OffsettedList gridTemplate={["1fr", actions(1)]}>
-                    <Controller
-                      key={paymentOption.id}
-                      name={paymentOption.id}
-                      control={control}
-                      defaultValue={getActivePaymentProvider(paymentOption)}
-                      render={({ field }) => (
-                        <OffsettedListBody>
-                          {paymentOption.availableProviders.map((provider) => (
-                            <OffsettedListItem
-                              key={provider.id}
-                              className={classes.paymentMethod}
-                            >
-                              <OffsettedListItemCell>
-                                {provider.logo ? (
-                                  <provider.logo
-                                    className={classes.paymentMethodLogo}
-                                  />
-                                ) : (
-                                  provider.label
+                {paymentOption.method.logo && (
+                  <div className={classes.paymentOptionLogo}>
+                    <paymentOption.method.logo />
+                  </div>
+                )}
+                <Typography variant="subtitle2">{paymentOption.method.name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.paymentOptionDetails}>
+                <OffsettedList gridTemplate={["1fr", actions(1)]}>
+                  <Controller
+                    key={paymentOption.id}
+                    name={paymentOption.id}
+                    control={control}
+                    defaultValue={getActivePaymentProvider(paymentOption)}
+                    render={({ field }) => (
+                      <OffsettedListBody>
+                        {paymentOption.availableProviders.map((provider) => (
+                          <OffsettedListItem key={provider.id} className={classes.paymentMethod}>
+                            <OffsettedListItemCell>
+                              {provider.logo ? (
+                                <provider.logo className={classes.paymentMethodLogo} />
+                              ) : (
+                                provider.label
+                              )}
+                            </OffsettedListItemCell>
+                            <OffsettedListItemCell padding="action">
+                              <Switch
+                                name={flattenSettingId(
+                                  "channelActivePaymentProviders",
+                                  paymentOptionIdx,
+                                  provider.id
                                 )}
-                              </OffsettedListItemCell>
-                              <OffsettedListItemCell padding="action">
-                                <Switch
-                                  name={flattenSettingId(
-                                    "channelActivePaymentProviders",
-                                    paymentOptionIdx,
-                                    provider.id
-                                  )}
-                                  checked={field.value === provider.id}
-                                  onChange={() =>
-                                    field.onChange({
-                                      target: {
-                                        name: paymentOption.id,
-                                        value:
-                                          field.value === provider.id
-                                            ? ""
-                                            : provider.id,
-                                      },
-                                    })
-                                  }
-                                  onBlur={field.onBlur}
-                                />
-                              </OffsettedListItemCell>
-                            </OffsettedListItem>
-                          ))}
-                        </OffsettedListBody>
-                      )}
-                    />
-                  </OffsettedList>
-                </AccordionDetails>
-              </Accordion>
-            )
-          )
+                                checked={field.value === provider.id}
+                                onChange={() =>
+                                  field.onChange({
+                                    target: {
+                                      name: paymentOption.id,
+                                      value: field.value === provider.id ? "" : provider.id,
+                                    },
+                                  })
+                                }
+                                onBlur={field.onBlur}
+                              />
+                            </OffsettedListItemCell>
+                          </OffsettedListItem>
+                        ))}
+                      </OffsettedListBody>
+                    )}
+                  />
+                </OffsettedList>
+              </AccordionDetails>
+            </Accordion>
+          ))
         )}
       </AppLayout>
       <AppSavebar

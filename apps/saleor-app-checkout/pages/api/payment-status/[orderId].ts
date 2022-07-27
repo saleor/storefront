@@ -9,9 +9,7 @@ import { verifyAdyenSession } from "@/saleor-app-checkout/backend/payments/provi
 import { PaymentStatusResponse } from "checkout-common";
 import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
 
-const adyenHandler = async (
-  sessionId: string
-): Promise<PaymentStatusResponse> => {
+const adyenHandler = async (sessionId: string): Promise<PaymentStatusResponse> => {
   const session = await verifyAdyenSession(sessionId);
 
   const StatusEnum = AdyenTypes.checkout.PaymentLinkResource.StatusEnum;
@@ -22,9 +20,7 @@ const adyenHandler = async (
       status: "UNPAID",
       sessionLink: session.url,
     };
-  } else if (
-    [StatusEnum.Completed, StatusEnum.PaymentPending].includes(session.status)
-  ) {
+  } else if ([StatusEnum.Completed, StatusEnum.PaymentPending].includes(session.status)) {
     // Session was successfully completed but Saleor has not yet registered the payment
     return {
       status: "PENDING",
@@ -38,9 +34,7 @@ const adyenHandler = async (
   }
 };
 
-const mollieHandler = async (
-  sessionId: string
-): Promise<PaymentStatusResponse> => {
+const mollieHandler = async (sessionId: string): Promise<PaymentStatusResponse> => {
   const session = await verifyMollieSession(sessionId);
 
   if (session.status === MollieOrderStatus.created) {
@@ -62,11 +56,7 @@ const mollieHandler = async (
     return {
       status: "PENDING",
     };
-  } else if (
-    [MollieOrderStatus.expired, MollieOrderStatus.canceled].includes(
-      session.status
-    )
-  ) {
+  } else if ([MollieOrderStatus.expired, MollieOrderStatus.canceled].includes(session.status)) {
     return {
       status: "UNPAID",
     };

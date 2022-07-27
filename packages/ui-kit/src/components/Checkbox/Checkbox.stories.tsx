@@ -8,18 +8,11 @@ export default {
   component: Checkbox,
 } as ComponentMeta<typeof Checkbox>;
 
-const Template: ComponentStory<typeof Checkbox> = ({
-  checked = false,
-  ...args
-}) => {
+const Template: ComponentStory<typeof Checkbox> = ({ checked = false, ...args }) => {
   const [enabled, setEnabled] = useState(checked);
 
   return (
-    <Checkbox
-      {...args}
-      checked={enabled}
-      onChange={(event) => setEnabled(event.target.checked)}
-    />
+    <Checkbox {...args} checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />
   );
 };
 
@@ -37,10 +30,7 @@ Checked.args = {
   checked: true,
 };
 
-const TemplateWithoutLabel: ComponentStory<typeof Checkbox> = ({
-  checked,
-  ...args
-}) => {
+const TemplateWithoutLabel: ComponentStory<typeof Checkbox> = ({ checked, ...args }) => {
   const [enabled, setEnabled] = useState(checked);
 
   useEffect(() => {
@@ -49,11 +39,7 @@ const TemplateWithoutLabel: ComponentStory<typeof Checkbox> = ({
 
   return (
     <label>
-      <Checkbox
-        {...args}
-        checked={enabled}
-        onChange={() => setEnabled(!enabled)}
-      />
+      <Checkbox {...args} checked={enabled} onChange={() => setEnabled(!enabled)} />
     </label>
   );
 };

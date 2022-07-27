@@ -5,9 +5,7 @@ export const getActivePaymentProvider = (paymentOption: PaymentOption) =>
     (provider) => provider.id === paymentOption.activeProvider?.id
   )?.id || "";
 
-export const getFormDefaultValues = (
-  channelPaymentOptions: ChannelPaymentOptions | undefined
-) =>
+export const getFormDefaultValues = (channelPaymentOptions: ChannelPaymentOptions | undefined) =>
   channelPaymentOptions?.paymentOptions.reduce(
     (values, paymentOption) => ({
       ...values,

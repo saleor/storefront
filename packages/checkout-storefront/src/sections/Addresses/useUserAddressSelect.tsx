@@ -1,7 +1,4 @@
-import {
-  AddressFragment,
-  AddressTypeEnum,
-} from "@/checkout-storefront/graphql";
+import { AddressFragment, AddressTypeEnum } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { getById } from "@/checkout-storefront/lib/utils";
 import { useEffect, useRef, useState } from "react";
@@ -29,8 +26,7 @@ export const useUserAddressSelect = ({
 }: UseUserAddressSelectProps): UseUserAddressSelect => {
   const { checkout } = useCheckout();
 
-  const addressToWatch =
-    type === "SHIPPING" ? checkout?.shippingAddress : checkout?.billingAddress;
+  const addressToWatch = type === "SHIPPING" ? checkout?.shippingAddress : checkout?.billingAddress;
 
   const [selectedAddressId, setSelectedAddressId] = useState(
     addressToWatch?.id || defaultAddressId

@@ -28,8 +28,7 @@ export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
 
   const defaultAddress = checkout?.shippingAddress || defaultShippingAddress;
 
-  const { updateShippingAddress, shippingErrorProps } =
-    useCheckoutAddressUpdate();
+  const { updateShippingAddress, shippingErrorProps } = useCheckoutAddressUpdate();
 
   return (
     <>

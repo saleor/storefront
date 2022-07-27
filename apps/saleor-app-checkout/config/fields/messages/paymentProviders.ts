@@ -16,42 +16,40 @@ export const paymentProvidersMessages = defineMessages<PaymentProviderID>({
   },
 });
 
-export const molliePaymentProviderMessages =
-  defineMessages<MollieProviderSettingID>({
-    profileId: {
-      defaultMessage: "Profile ID",
-      description: "payment provider setting",
-    },
-    apiKey: {
-      defaultMessage: "API key",
-      description: "payment provider setting",
-    },
-  });
+export const molliePaymentProviderMessages = defineMessages<MollieProviderSettingID>({
+  profileId: {
+    defaultMessage: "Profile ID",
+    description: "payment provider setting",
+  },
+  apiKey: {
+    defaultMessage: "API key",
+    description: "payment provider setting",
+  },
+});
 
-export const adyenPaymentProviderMessages =
-  defineMessages<AdyenProviderSettingID>({
-    merchantAccount: {
-      defaultMessage: "Merchant account",
-      description: "payment provider setting",
-    },
-    apiKey: {
-      defaultMessage: "Private API key",
-      description: "payment provider setting",
-    },
-    hmac: {
-      defaultMessage: "Webhook HMAC key",
-      description: "payment provider setting",
-    },
-    username: {
-      defaultMessage: "Webhook username",
-      description: "payment provider setting",
-    },
-    password: {
-      defaultMessage: "Webhook password",
-      description: "payment provider setting",
-    },
-    clientKey: {
-      defaultMessage: "Public client key",
-      description: "payment provider setting",
-    },
-  });
+export const adyenPaymentProviderMessages = defineMessages<AdyenProviderSettingID>({
+  merchantAccount: {
+    defaultMessage: "Merchant account",
+    description: "payment provider setting",
+  },
+  apiKey: {
+    defaultMessage: "Private API key",
+    description: "payment provider setting",
+  },
+  hmac: {
+    defaultMessage: "Webhook HMAC key",
+    description: "payment provider setting",
+  },
+  username: {
+    defaultMessage: "Webhook username",
+    description: "payment provider setting",
+  },
+  password: {
+    defaultMessage: "Webhook password",
+    description: "payment provider setting",
+  },
+  clientKey: {
+    defaultMessage: "Public client key",
+    description: "payment provider setting",
+  },
+});

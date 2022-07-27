@@ -17,12 +17,11 @@ export type AdyenProviderSettingID =
   | "apiKey"
   | "clientKey";
 
-export type PaymentProviderSettingID<P extends PaymentProviderID> =
-  P extends "mollie"
-    ? MollieProviderSettingID
-    : P extends "adyen"
-    ? AdyenProviderSettingID
-    : never;
+export type PaymentProviderSettingID<P extends PaymentProviderID> = P extends "mollie"
+  ? MollieProviderSettingID
+  : P extends "adyen"
+  ? AdyenProviderSettingID
+  : never;
 
 export interface PaymentProviderSettings<P extends PaymentProviderID> {
   id: PaymentProviderSettingID<P>;

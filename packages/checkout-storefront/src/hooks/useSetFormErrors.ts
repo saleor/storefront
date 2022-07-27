@@ -11,8 +11,7 @@ function useSetFormErrors<TFormData>(data: {
 function useSetFormErrors<TFormData>({ setError, errors }: any) {
   const setFormErrors = () => {
     // because we don't get this prop when setting errors from hook form
-    const hasErrors =
-      typeof errors === "object" ? !!Object.keys(errors).length : false;
+    const hasErrors = typeof errors === "object" ? !!Object.keys(errors).length : false;
 
     if (hasErrors) {
       forEach(errors, (error, key) => {

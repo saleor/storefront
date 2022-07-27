@@ -3,13 +3,9 @@ import { camelCase } from "lodash-es";
 import { useErrorMessages } from "../useErrorMessages";
 import { Error, ApiErrors } from "./types";
 
-type GetErrorsFromApiErrors<TFormData> = (
-  apiErrors: ApiErrors<TFormData>
-) => Error<TFormData>[];
+type GetErrorsFromApiErrors<TFormData> = (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];
 
-export const useGetParsedApiErrors = <
-  TFormData
->(): GetErrorsFromApiErrors<TFormData> => {
+export const useGetParsedApiErrors = <TFormData>(): GetErrorsFromApiErrors<TFormData> => {
   const { getMessageByErrorCode } = useErrorMessages();
 
   const getParsedApiErrors = (apiErrors: ApiErrors<TFormData>) =>

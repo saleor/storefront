@@ -6,8 +6,7 @@ import { Section, SectionTitle } from "./Section";
 
 const isShipping = (
   deliveryMethod: OrderFragment["deliveryMethod"]
-): deliveryMethod is ShippingFragment =>
-  deliveryMethod?.__typename === "ShippingMethod";
+): deliveryMethod is ShippingFragment => deliveryMethod?.__typename === "ShippingMethod";
 
 export const DeliverySection = ({
   deliveryMethod,
@@ -18,11 +17,7 @@ export const DeliverySection = ({
 
   const renderContent = () => {
     if (!isShipping(deliveryMethod)) {
-      return (
-        <Text color="secondary">
-          {formatMessage("shippingMethodNotApplicable")}
-        </Text>
-      );
+      return <Text color="secondary">{formatMessage("shippingMethodNotApplicable")}</Text>;
     }
 
     const deliveryDaysRange = [

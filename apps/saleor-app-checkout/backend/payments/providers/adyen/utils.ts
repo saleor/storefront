@@ -6,42 +6,29 @@ import {
 } from "@/saleor-app-checkout/graphql";
 import { Types } from "@adyen/api-library";
 
-export const getAdyenAmountFromSaleor = (float: number) =>
-  parseInt((float * 100).toFixed(0), 10);
-export const getSaleorAmountFromAdyen = (integer: number) =>
-  parseFloat((integer / 100).toFixed(2));
+export const getAdyenAmountFromSaleor = (float: number) => parseInt((float * 100).toFixed(0), 10);
+export const getSaleorAmountFromAdyen = (integer: number) => parseFloat((integer / 100).toFixed(2));
 
 export const mapAvailableActions = (
   operations: Types.notification.NotificationRequestItem.OperationsEnum[]
 ): TransactionActionEnum[] =>
   operations.map((operation) => {
-    if (
-      operation ===
-      Types.notification.NotificationRequestItem.OperationsEnum.Capture
-    ) {
+    if (operation === Types.notification.NotificationRequestItem.OperationsEnum.Capture) {
       return "CHARGE";
     }
 
-    if (
-      operation ===
-      Types.notification.NotificationRequestItem.OperationsEnum.Refund
-    ) {
+    if (operation === Types.notification.NotificationRequestItem.OperationsEnum.Refund) {
       return "REFUND";
     }
 
-    if (
-      operation ===
-      Types.notification.NotificationRequestItem.OperationsEnum.Cancel
-    ) {
+    if (operation === Types.notification.NotificationRequestItem.OperationsEnum.Cancel) {
       return "VOID";
     }
 
     throw "OperationsEnum out of bounds";
   });
 
-export const getLineItems = (
-  lines: OrderFragment["lines"]
-): Types.checkout.LineItem[] =>
+export const getLineItems = (lines: OrderFragment["lines"]): Types.checkout.LineItem[] =>
   lines.map((line) => ({
     description: line.productName + " - " + line.variantName,
     quantity: line.quantity,
@@ -57,10 +44,7 @@ export const getLineItems = (
 export const createEventUniqueKey = (event: TransactionEventFragment) =>
   [event.name, event.reference].join();
 
-export const getAmountAfterRefund = (
-  money: MoneyFragment,
-  refundAmount: number
-) => {
+export const getAmountAfterRefund = (money: MoneyFragment, refundAmount: number) => {
   const chargedAmount = money.amount - refundAmount;
 
   if (chargedAmount < 0) {

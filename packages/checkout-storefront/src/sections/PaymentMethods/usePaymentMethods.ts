@@ -17,8 +17,7 @@ export const usePaymentMethods = (channelId: string) => {
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentMethodID>();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodID>();
 
   const [{ data: allPaymentMethods, loading }] = useFetch(getPaymentMethods, {
     args: { channelId, checkoutApiUrl },
@@ -40,8 +39,7 @@ export const usePaymentMethods = (channelId: string) => {
     }
   }, [loading]);
 
-  const selectedPaymentProvider =
-    allPaymentMethods?.[selectedPaymentMethod as PaymentMethodID];
+  const selectedPaymentProvider = allPaymentMethods?.[selectedPaymentMethod as PaymentMethodID];
 
   return {
     selectedPaymentMethod,

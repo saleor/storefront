@@ -22,10 +22,7 @@ export const allowCors =
   };
 
 export const requireAuthorization =
-  (
-    fn: NextApiHandler,
-    requiredPermissions?: PermissionEnum[]
-  ): NextApiHandler =>
+  (fn: NextApiHandler, requiredPermissions?: PermissionEnum[]): NextApiHandler =>
   async (req, res) => {
     const authenticated = await isAuthenticated(req);
 

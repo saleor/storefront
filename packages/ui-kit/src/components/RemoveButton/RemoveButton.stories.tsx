@@ -8,9 +8,7 @@ export default {
   component: RemoveButton,
 } as ComponentMeta<typeof RemoveButton>;
 
-const Template: ComponentStory<typeof RemoveButton> = (args) => (
-  <RemoveButton {...args} />
-);
+const Template: ComponentStory<typeof RemoveButton> = (args) => <RemoveButton {...args} />;
 
 export const Basic = Template.bind({});
 

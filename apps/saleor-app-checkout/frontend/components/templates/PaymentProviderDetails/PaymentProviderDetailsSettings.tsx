@@ -16,9 +16,13 @@ interface PaymentProviderDetailsSettingsProps {
   formControl?: Control<FieldValues, any>;
 }
 
-const PaymentProviderDetailsSettings: React.FC<
-  PaymentProviderDetailsSettingsProps
-> = ({ settings, showHeader, description, loading = false, formControl }) => {
+const PaymentProviderDetailsSettings: React.FC<PaymentProviderDetailsSettingsProps> = ({
+  settings,
+  showHeader,
+  description,
+  loading = false,
+  formControl,
+}) => {
   const classes = useStyles();
 
   return (

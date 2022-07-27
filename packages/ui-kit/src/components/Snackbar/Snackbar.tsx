@@ -11,9 +11,7 @@ export interface SnackbarProps {
   className?: string;
 }
 
-const selectIcon = (
-  variant: SnackbarProps["variant"]
-): ReactNode | undefined => {
+const selectIcon = (variant: SnackbarProps["variant"]): ReactNode | undefined => {
   switch (variant) {
     case "success":
       return <SuccessIcon />;
@@ -24,26 +22,13 @@ const selectIcon = (
   }
 };
 
-export const Snackbar: FC<SnackbarProps> = ({
-  content,
-  variant,
-  className,
-  ...rest
-}) => {
+export const Snackbar: FC<SnackbarProps> = ({ content, variant, className, ...rest }) => {
   const icon = selectIcon(variant);
 
   return (
-    <div
-      className={clsx(
-        styles.snackbar,
-        styles[`snackbar-${variant}`],
-        className
-      )}
-      {...rest}>
+    <div className={clsx(styles.snackbar, styles[`snackbar-${variant}`], className)} {...rest}>
       {icon}
-      <Text className={clsx({ [styles["snackbar-label-margin"]]: !!icon })}>
-        {content}
-      </Text>
+      <Text className={clsx({ [styles["snackbar-label-margin"]]: !!icon })}>{content}</Text>
     </div>
   );
 };

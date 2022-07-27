@@ -16,9 +16,7 @@ const addressFieldsOrder: AddressField[] = [
 
 // api doesn't approve of "name" so we replace it with "firstName"
 // and "lastName"
-export const getFilteredAddressFields = (
-  addressFields: ApiAddressField[]
-): AddressField[] => {
+export const getFilteredAddressFields = (addressFields: ApiAddressField[]): AddressField[] => {
   const filteredAddressFields = addressFields.filter(
     (addressField: ApiAddressField) => addressField !== "name"
   ) as AddressField[];
@@ -27,9 +25,7 @@ export const getFilteredAddressFields = (
 };
 
 // api doesn't order the fields but we want to
-export const getSortedAddressFields = (
-  addressFields: AddressField[] = []
-): AddressField[] => {
+export const getSortedAddressFields = (addressFields: AddressField[] = []): AddressField[] => {
   const filteredAddressFields = getFilteredAddressFields(addressFields);
 
   return addressFieldsOrder.reduce((result, orderedAddressField) => {
@@ -41,10 +37,11 @@ export const getSortedAddressFields = (
   }, [] as AddressField[]);
 };
 
-export const getSortedAddressFieldsFromAddress = (
-  address: Partial<Record<AddressField, any>>
-) => getSortedAddressFields(Object.keys(address) as AddressField[]);
+export const getSortedAddressFieldsFromAddress = (address: Partial<Record<AddressField, any>>) =>
+  getSortedAddressFields(Object.keys(address) as AddressField[]);
 
-export const getRequiredAddressFields = (
-  requiredFields: AddressField[]
-): AddressField[] => [...requiredFields, "firstName", "lastName"];
+export const getRequiredAddressFields = (requiredFields: AddressField[]): AddressField[] => [
+  ...requiredFields,
+  "firstName",
+  "lastName",
+];

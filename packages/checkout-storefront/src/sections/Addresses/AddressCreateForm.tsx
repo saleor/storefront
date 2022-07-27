@@ -15,11 +15,7 @@ export interface AddressCreateFormProps {
   onClose: () => void;
 }
 
-export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
-  show,
-  type,
-  onClose,
-}) => {
+export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ show, type, onClose }) => {
   const { showSuccess, showErrors } = useAlerts("userAddressCreate");
   const [, userAddressCreate] = useUserAddressCreateMutation();
 
@@ -52,7 +48,5 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
     return null;
   }
 
-  return (
-    <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />
-  );
+  return <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />;
 };

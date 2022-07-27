@@ -11,28 +11,18 @@ import {
   UnknownPrivateSettingsValues,
   UnknownPublicSettingsValues,
 } from "types/api";
-import {
-  Customization,
-  CustomizationID,
-  CustomizationSettings,
-} from "types/common";
-import {
-  PaymentProvider,
-  PaymentProviderID,
-  PaymentProviderSettings,
-} from "checkout-common";
+import { Customization, CustomizationID, CustomizationSettings } from "types/common";
+import { PaymentProvider, PaymentProviderID, PaymentProviderSettings } from "checkout-common";
 
 export const useCustomizationSettings = (
   settingsValues: UnknownPublicSettingsValues
 ): Customization<CustomizationID>[] =>
   useCustomizations().map((customization) => ({
     ...customization,
-    settings: customization.settings.map(
-      (setting: CustomizationSettings<CustomizationID>) => ({
-        ...setting,
-        value: settingsValues[customization.id][setting.id],
-      })
-    ),
+    settings: customization.settings.map((setting: CustomizationSettings<CustomizationID>) => ({
+      ...setting,
+      value: settingsValues[customization.id][setting.id],
+    })),
   }));
 
 export const usePaymentProviderSettings = (
@@ -40,12 +30,10 @@ export const usePaymentProviderSettings = (
 ): PaymentProvider<PaymentProviderID>[] =>
   usePaymentProviders().map((provider) => ({
     ...provider,
-    settings: provider.settings.map(
-      (setting: PaymentProviderSettings<PaymentProviderID>) => ({
-        ...setting,
-        value: settingsValues[provider.id][setting.id],
-      })
-    ),
+    settings: provider.settings.map((setting: PaymentProviderSettings<PaymentProviderID>) => ({
+      ...setting,
+      value: settingsValues[provider.id][setting.id],
+    })),
   }));
 
 export const useChannelPaymentOptionsList = (
@@ -61,10 +49,7 @@ export const useChannelPaymentOptionsList = (
     paymentOptions: paymentMethods.map((method) => {
       const activeProvider =
         (activePaymentProviders?.[channel.id]?.[method.id] &&
-          findById(
-            paymentProviders,
-            activePaymentProviders[channel.id][method.id]
-          )) ||
+          findById(paymentProviders, activePaymentProviders[channel.id][method.id])) ||
         null;
 
       return {

@@ -52,10 +52,7 @@ export const mapPublicMetafieldsToSettings = (
 
         return {
           ...settings,
-          [settingsKey]: mergeSettingsValues(
-            settings[settingsKey],
-            metadataItemSettings
-          ),
+          [settingsKey]: mergeSettingsValues(settings[settingsKey], metadataItemSettings),
         };
       } catch (e) {
         return {

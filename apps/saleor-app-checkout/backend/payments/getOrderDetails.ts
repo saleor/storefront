@@ -19,10 +19,7 @@ export const getOrderDetails = async (
     }
 > => {
   const { data, error } = await getClient()
-    .query<OrderDetailsQuery, OrderDetailsQueryVariables>(
-      OrderDetailsDocument,
-      { id }
-    )
+    .query<OrderDetailsQuery, OrderDetailsQueryVariables>(OrderDetailsDocument, { id })
     .toPromise();
 
   if (error) {

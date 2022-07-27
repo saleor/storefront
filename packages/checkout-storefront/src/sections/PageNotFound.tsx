@@ -18,9 +18,7 @@ export const PageNotFound = () => {
       </div>
       <div className="h-full flex flex-col items-center justify-center mb-22">
         <Title className="text-center">{formatMessage("problemTitle")}</Title>
-        <Text className="mb-6 max-w-85 text-center">
-          {formatMessage("problemDescription")}
-        </Text>
+        <Text className="mb-6 max-w-85 text-center">{formatMessage("problemDescription")}</Text>
         <Button
           ariaLabel={formatMessage("goBackToStoreLabel")}
           onClick={goBack}

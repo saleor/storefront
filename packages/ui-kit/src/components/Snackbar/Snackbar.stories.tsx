@@ -7,9 +7,7 @@ export default {
   component: Snackbar,
 } as ComponentMeta<typeof Snackbar>;
 
-const Template: ComponentStory<typeof Snackbar> = (args) => (
-  <Snackbar {...args} />
-);
+const Template: ComponentStory<typeof Snackbar> = (args) => <Snackbar {...args} />;
 
 export const Success = Template.bind({});
 

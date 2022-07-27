@@ -1,10 +1,5 @@
 import { useIntl } from "react-intl";
-import {
-  Customization,
-  CustomizationSettings,
-  SettingID,
-  CustomizationID,
-} from "types/common";
+import { Customization, CustomizationSettings, SettingID, CustomizationID } from "types/common";
 import {
   PaymentMethod,
   PaymentProvider,
@@ -44,10 +39,7 @@ const paymentMethods: Omit<PaymentMethod, "name">[] = [
   },
 ];
 
-const molliePaymentProvider: Omit<
-  PaymentProviderSettings<"mollie">,
-  "label"
->[] = [
+const molliePaymentProvider: Omit<PaymentProviderSettings<"mollie">, "label">[] = [
   {
     id: "profileId",
     type: "string",
@@ -60,44 +52,40 @@ const molliePaymentProvider: Omit<
   },
 ];
 
-const adyenPaymentProvider: Omit<PaymentProviderSettings<"adyen">, "label">[] =
-  [
-    {
-      id: "merchantAccount",
-      type: "string",
-      encrypt: false,
-    },
-    {
-      id: "apiKey",
-      type: "string",
-      encrypt: true,
-    },
-    {
-      id: "hmac",
-      type: "string",
-      encrypt: true,
-    },
-    {
-      id: "username",
-      type: "string",
-      encrypt: true,
-    },
-    {
-      id: "password",
-      type: "string",
-      encrypt: true,
-    },
-    {
-      id: "clientKey",
-      type: "string",
-      encrypt: false,
-    },
-  ];
+const adyenPaymentProvider: Omit<PaymentProviderSettings<"adyen">, "label">[] = [
+  {
+    id: "merchantAccount",
+    type: "string",
+    encrypt: false,
+  },
+  {
+    id: "apiKey",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "hmac",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "username",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "password",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "clientKey",
+    type: "string",
+    encrypt: false,
+  },
+];
 
-const brandingCustomization: Omit<
-  CustomizationSettings<"branding">,
-  "label"
->[] = [
+const brandingCustomization: Omit<CustomizationSettings<"branding">, "label">[] = [
   {
     id: "buttonBgColorPrimary",
     type: "color",
@@ -132,10 +120,7 @@ const brandingCustomization: Omit<
   },
 ];
 
-const sectionsCustomization: Omit<
-  CustomizationSettings<"productSettings">,
-  "label"
->[] = [
+const sectionsCustomization: Omit<CustomizationSettings<"productSettings">, "label">[] = [
   {
     id: "lowStockThreshold",
     type: "string",
@@ -155,10 +140,7 @@ const paymentProviderFields: Record<PaymentProviderID, any> = {
 };
 
 export type CommonField = { id: string } & Record<string, any>;
-export const fields: Record<
-  SettingID[number],
-  Record<string, CommonField[]>
-> = {
+export const fields: Record<SettingID[number], Record<string, CommonField[]>> = {
   channelActivePaymentProviders: channelActivePaymentProvidersFields,
   customizations: customizationsFields,
   paymentProviders: paymentProviderFields,
@@ -177,11 +159,7 @@ export const useMolliePaymentProvider = (): PaymentProvider<"mollie"> => {
     id: "mollie",
     label: intl.formatMessage(paymentProvidersMessages.mollie),
     logo: MollieIcon,
-    settings: withLabels(
-      intl,
-      molliePaymentProviderMessages,
-      molliePaymentProvider
-    ),
+    settings: withLabels(intl, molliePaymentProviderMessages, molliePaymentProvider),
   };
 };
 
@@ -192,18 +170,11 @@ export const useAdyenPaymentProvider = (): PaymentProvider<"adyen"> => {
     id: "adyen",
     label: intl.formatMessage(paymentProvidersMessages.adyen),
     logo: AdyenIcon,
-    settings: withLabels(
-      intl,
-      adyenPaymentProviderMessages,
-      adyenPaymentProvider
-    ),
+    settings: withLabels(intl, adyenPaymentProviderMessages, adyenPaymentProvider),
   };
 };
 
-export const usePaymentProviders = () => [
-  useMolliePaymentProvider(),
-  useAdyenPaymentProvider(),
-];
+export const usePaymentProviders = () => [useMolliePaymentProvider(), useAdyenPaymentProvider()];
 
 export const useBrandingCustomization = (): Customization<"branding"> => {
   const intl = useIntl();
@@ -211,30 +182,18 @@ export const useBrandingCustomization = (): Customization<"branding"> => {
   return {
     id: "branding",
     label: intl.formatMessage(customizationMessages.branding),
-    settings: withLabels(
-      intl,
-      brandingCustomizationMessages,
-      brandingCustomization
-    ),
+    settings: withLabels(intl, brandingCustomizationMessages, brandingCustomization),
   };
 };
 
-export const useSectionsCustomization =
-  (): Customization<"productSettings"> => {
-    const intl = useIntl();
+export const useSectionsCustomization = (): Customization<"productSettings"> => {
+  const intl = useIntl();
 
-    return {
-      id: "productSettings",
-      label: intl.formatMessage(customizationMessages.productSettings),
-      settings: withLabels(
-        intl,
-        sectionsCustomizationMessages,
-        sectionsCustomization
-      ),
-    };
+  return {
+    id: "productSettings",
+    label: intl.formatMessage(customizationMessages.productSettings),
+    settings: withLabels(intl, sectionsCustomizationMessages, sectionsCustomization),
   };
+};
 
-export const useCustomizations = () => [
-  useBrandingCustomization(),
-  useSectionsCustomization(),
-];
+export const useCustomizations = () => [useBrandingCustomization(), useSectionsCustomization()];

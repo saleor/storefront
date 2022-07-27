@@ -1,7 +1,4 @@
-import {
-  CheckoutLineFragment,
-  OrderLineFragment,
-} from "@/checkout-storefront/graphql";
+import { CheckoutLineFragment, OrderLineFragment } from "@/checkout-storefront/graphql";
 import React from "react";
 import { Text } from "@saleor/ui-kit";
 import { SummaryItemMoneySection } from "./SummaryItemMoneySection";
@@ -34,33 +31,21 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
               src={productImage?.url}
             />
           ) : (
-            <img
-              className="object-cover"
-              alt="product placeholder"
-              src={getSvgSrc(PhotoIcon)}
-            />
+            <img className="object-cover" alt="product placeholder" src={getSvgSrc(PhotoIcon)} />
           )}
         </div>
       </div>
       <div className="summary-row w-full">
         <div className="flex flex-col">
-          <Text
-            weight="bold"
-            aria-label={formatMessage("itemNameLabel")}
-            className="mb-2"
-          >
+          <Text weight="bold" aria-label={formatMessage("itemNameLabel")} className="mb-2">
             {productName}
           </Text>
-          <Text aria-label={formatMessage("variantNameLabel")}>
-            {variantName}
-          </Text>
+          <Text aria-label={formatMessage("variantNameLabel")}>{variantName}</Text>
         </div>
         {readOnly ? (
           <SummaryItemMoneySection line={line as OrderLineFragment} />
         ) : (
-          <SummaryItemMoneyEditableSection
-            line={line as CheckoutLineFragment}
-          />
+          <SummaryItemMoneyEditableSection line={line as CheckoutLineFragment} />
         )}
       </div>
     </li>

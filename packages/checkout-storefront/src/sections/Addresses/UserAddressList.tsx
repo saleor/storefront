@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  AddressFragment,
-  useUserAddressDeleteMutation,
-} from "@/checkout-storefront/graphql";
+import { AddressFragment, useUserAddressDeleteMutation } from "@/checkout-storefront/graphql";
 import { AddressRadioBox } from "../AddressRadioBox";
 import { RadioBoxGroup } from "@/checkout-storefront/components/RadioBoxGroup";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";

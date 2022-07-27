@@ -12,7 +12,7 @@ export const SvgContainer = ({ size, ...rest }: SvgContainerProps) => (
     width={size}
     height={size}
     viewBox={size ? `0 0 ${size} ${size}` : undefined}
-    xmlns='http://www.w3.org/2000/svg'
+    xmlns="http://www.w3.org/2000/svg"
     {...rest}
   />
 );

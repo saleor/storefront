@@ -4,10 +4,7 @@ import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
-import {
-  SignInFormContainer,
-  SignInFormContainerProps,
-} from "./SignInFormContainer";
+import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 import {
   extractMutationErrors,
   extractValidationError,
@@ -36,24 +33,20 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
   const { errorMessages } = useErrorMessages();
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
-  const { getValues: getContextValues, setValue: setContextValue } =
-    useFormContext();
+  const { getValues: getContextValues, setValue: setContextValue } = useFormContext();
 
   const schema = object({
     password: string().required(errorMessages.required),
-    email: string()
-      .email(errorMessages.invalid)
-      .required(errorMessages.required),
+    email: string().email(errorMessages.invalid).required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);
 
-  const { handleSubmit, getValues, watch, setError, clearErrors, ...rest } =
-    useForm<FormData>({
-      resolver,
-      mode: "onBlur",
-      defaultValues: { email: getContextValues("email") },
-    });
+  const { handleSubmit, getValues, watch, setError, clearErrors, ...rest } = useForm<FormData>({
+    resolver,
+    mode: "onBlur",
+    defaultValues: { email: getContextValues("email") },
+  });
 
   // @todo this used to work before making the typescript config more strict
   // please, fix me
@@ -96,9 +89,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
         setPasswordResetSent(true);
       }
     } catch (error) {
-      const { path, type, message } = extractValidationError(
-        error as ValidationError
-      );
+      const { path, type, message } = extractValidationError(error as ValidationError);
 
       setError(path, { type, message });
     }
@@ -116,14 +107,8 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
       redirectButtonLabel={formatMessage("guestCheckout")}
       onSectionChange={onSectionChange}
     >
-      <TextInput
-        label={formatMessage("emailLabel")}
-        {...getInputProps("email")}
-      />
-      <PasswordInput
-        label={formatMessage("passwordLabel")}
-        {...getInputProps("password")}
-      />
+      <TextInput label={formatMessage("emailLabel")} {...getInputProps("email")} />
+      <PasswordInput label={formatMessage("passwordLabel")} {...getInputProps("password")} />
       <div className="actions">
         {passwordResetSent && (
           <Text>{formatMessage("linkSent", { email: getValues().email })}</Text>

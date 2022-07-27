@@ -56,8 +56,7 @@ const addAuthToOperation = ({
   });
 };
 
-const willAuthError = ({ authState }: { authState?: AuthState | null }) =>
-  !authState?.token;
+const willAuthError = ({ authState }: { authState?: AuthState | null }) => !authState?.token;
 
 const authConfig: ClientOptions = {
   url: envVars.apiUrl,

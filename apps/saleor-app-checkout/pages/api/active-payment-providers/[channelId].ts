@@ -12,8 +12,9 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const channelProvidersSettings =
-    await getChannelActivePaymentProvidersSettings(channelId?.toString());
+  const channelProvidersSettings = await getChannelActivePaymentProvidersSettings(
+    channelId?.toString()
+  );
 
   console.log(channelProvidersSettings); // for deployment debug pusposes
 

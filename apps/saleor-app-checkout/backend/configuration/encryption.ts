@@ -24,26 +24,19 @@ export const encryptSetting = (settingValue: string): SettingValue => {
   return {
     encrypted: true,
     value:
-      CryptoJS.AES.encrypt(
-        settingValue,
-        serverEnvVars.settingsEncryptionSecret
-      ).toString() || "",
+      CryptoJS.AES.encrypt(settingValue, serverEnvVars.settingsEncryptionSecret).toString() || "",
   };
 };
 
-export const decryptSetting = (
-  settingValue: SettingValue,
-  obfuscateEncryptedData: boolean
-) => {
+export const decryptSetting = (settingValue: SettingValue, obfuscateEncryptedData: boolean) => {
   invariant(
     serverEnvVars.settingsEncryptionSecret,
     "Cannot decrypt settings when SETTINGS_ENCRYPTION_SECRET is not configured"
   );
   const decrypted =
-    CryptoJS.AES.decrypt(
-      settingValue.value,
-      serverEnvVars.settingsEncryptionSecret
-    ).toString(CryptoJS.enc.Utf8) || "";
+    CryptoJS.AES.decrypt(settingValue.value, serverEnvVars.settingsEncryptionSecret).toString(
+      CryptoJS.enc.Utf8
+    ) || "";
 
   if (obfuscateEncryptedData) {
     return obfuscateValue(decrypted);

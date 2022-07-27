@@ -19,10 +19,7 @@ export const getPaymentMethods = ({
 }: PaymentMethodsRequestArgs): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
   fetch(urlJoin(checkoutApiUrl, "active-payment-providers", channelId));
 
-export const pay = ({
-  checkoutApiUrl,
-  ...body
-}: PayRequestBody): FetchResponse<PayResult> =>
+export const pay = ({ checkoutApiUrl, ...body }: PayRequestBody): FetchResponse<PayResult> =>
   fetch(urlJoin(checkoutApiUrl, "pay"), {
     method: "POST",
     body: JSON.stringify(body),
@@ -32,8 +29,7 @@ export const getAppConfig = ({
   checkoutApiUrl,
 }: {
   checkoutApiUrl: string;
-}): FetchResponse<AppConfig> =>
-  fetch(urlJoin(checkoutApiUrl, "customization-settings"));
+}): FetchResponse<AppConfig> => fetch(urlJoin(checkoutApiUrl, "customization-settings"));
 
 export const getOrderPaymentStatus = ({
   orderId,

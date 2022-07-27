@@ -31,15 +31,10 @@ export const getTransactionAmount = (amounts: Amounts) => {
       case "voided":
         return currency(voided).value;
       case "charged":
-        return notNegative(
-          currency(charged).subtract(refunded).subtract(voided).value
-        );
+        return notNegative(currency(charged).subtract(refunded).subtract(voided).value);
       case "authorized":
         return notNegative(
-          currency(authorized)
-            .subtract(charged)
-            .subtract(refunded)
-            .subtract(voided).value
+          currency(authorized).subtract(charged).subtract(refunded).subtract(voided).value
         );
     }
   };

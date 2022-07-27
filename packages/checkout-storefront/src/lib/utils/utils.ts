@@ -55,9 +55,7 @@ export const extractMutationErrors = <TData extends Object, TVars = any>(
 };
 
 export const handleInputChange =
-  <TData>(
-    callback: (value: TData) => void
-  ): ReactEventHandler<HTMLInputElement> =>
+  <TData>(callback: (value: TData) => void): ReactEventHandler<HTMLInputElement> =>
   (event: ChangeEvent<HTMLInputElement>) => {
     callback(event.target.value as unknown as TData);
   };

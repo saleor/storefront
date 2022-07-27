@@ -1,8 +1,4 @@
-const getSpacing = (
-  base /* number */,
-  unit /* "px" | "rem" */,
-  values /* number[] */
-) => {
+const getSpacing = (base /* number */, unit /* "px" | "rem" */, values /* number[] */) => {
   return values.reduce((acc, value) => {
     return { ...acc, [value]: base * value + unit };
   }, {});
@@ -12,8 +8,8 @@ const spacing = getSpacing(
   0.4,
   "rem",
   [
-    0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 6.5, 7, 8, 10, 11, 12, 14, 16, 18, 19,
-    21, 22, 28, 85, 256, 350,
+    0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 6.5, 7, 8, 10, 11, 12, 14, 16, 18, 19, 21, 22, 28, 85, 256,
+    350,
   ]
 );
 

@@ -86,10 +86,9 @@ export type PrivateSettingsValues<E extends SettingReadMode> = {
     ? PaymentProviderSettingsValues<E>
     : UnknownPrivateSettingsValues<E>;
 };
-export type SettingsValues<
-  T extends SettingsType,
-  E extends SettingReadMode
-> = T extends "public" ? PublicSettingsValues : PrivateSettingsValues<E>;
+export type SettingsValues<T extends SettingsType, E extends SettingReadMode> = T extends "public"
+  ? PublicSettingsValues
+  : PrivateSettingsValues<E>;
 
 export type PublicMetafieldsValues = {
   [P in PublicSettingID[number] | PublicMetafieldID[number]]?: string;

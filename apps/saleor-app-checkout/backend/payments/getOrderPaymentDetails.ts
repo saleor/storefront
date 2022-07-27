@@ -7,9 +7,7 @@ import {
 
 import { Errors } from "./types";
 
-export const getOrderPaymentDetails = async (
-  id: OrderPaymentDetailsQueryVariables["id"]
-) => {
+export const getOrderPaymentDetails = async (id: OrderPaymentDetailsQueryVariables["id"]) => {
   const { data, error } = await getClient()
     .query<OrderPaymentDetailsQuery, OrderPaymentDetailsQueryVariables>(
       OrderPaymentDetailsDocument,

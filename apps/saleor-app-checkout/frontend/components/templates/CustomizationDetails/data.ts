@@ -25,8 +25,9 @@ export const useSettingsFromValues = (
   options: Customization<CustomizationID>[],
   watch: UseFormWatch<FieldValues>
 ) => {
-  const [previewSettings, setPreviewSettings] =
-    useState<CustomizationSettingsValues>(getFormDefaultValues(options));
+  const [previewSettings, setPreviewSettings] = useState<CustomizationSettingsValues>(
+    getFormDefaultValues(options)
+  );
 
   useEffect(() => {
     setPreviewSettings(getFormDefaultValues(options));

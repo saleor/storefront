@@ -6,12 +6,11 @@ export interface PaymentProviderSettingsResult {
   data: PaymentProviderSettingsValues<"unencrypted">;
 }
 
-export const requestGetPaymentProviderSettings =
-  (): FetchResponse<PaymentProviderSettingsResult> =>
-    fetch(`/api/payment-provider-settings`, {
-      method: "GET",
-      headers: getAuthHeaders(),
-    });
+export const requestGetPaymentProviderSettings = (): FetchResponse<PaymentProviderSettingsResult> =>
+  fetch(`/api/payment-provider-settings`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
 
 export const requestSetPaymentProviderSettings = (
   data: PaymentProviderSettingsValues<"unencrypted">

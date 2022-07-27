@@ -5,9 +5,7 @@ export interface Money {
   amount: number;
 }
 
-export const useFormattedMoney = <TMoney extends Money>(
-  money: TMoney | undefined
-) => {
+export const useFormattedMoney = <TMoney extends Money>(money: TMoney | undefined) => {
   if (!money) return "";
 
   const formatter = useNumberFormatter({
@@ -19,9 +17,7 @@ export const useFormattedMoney = <TMoney extends Money>(
   return formatter.format(money.amount);
 };
 
-export const getFormattedMoney = <TMoney extends Money>(
-  money: TMoney | undefined
-) => {
+export const getFormattedMoney = <TMoney extends Money>(money: TMoney | undefined) => {
   if (!money) {
     return "";
   }

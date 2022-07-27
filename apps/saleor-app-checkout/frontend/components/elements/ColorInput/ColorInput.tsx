@@ -9,13 +9,7 @@ interface ColorInputProps {
   onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
-const ColorInput: React.FC<ColorInputProps> = ({
-  name,
-  label,
-  value,
-  onChange,
-  onBlur,
-}) => {
+const ColorInput: React.FC<ColorInputProps> = ({ name, label, value, onChange, onBlur }) => {
   const classes = useStyles();
 
   return (

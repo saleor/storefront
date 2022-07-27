@@ -12,14 +12,8 @@ const handler: Handler = (request) => {
     id: "saleor.checkout.app",
     version: version,
     name: appName,
-    about:
-      "Saleor checkout app to quickly configure and customize checkout in your store.",
-    permissions: [
-      "HANDLE_PAYMENTS",
-      "HANDLE_CHECKOUTS",
-      "MANAGE_ORDERS",
-      "MANAGE_CHECKOUTS",
-    ],
+    about: "Saleor checkout app to quickly configure and customize checkout in your store.",
+    permissions: ["HANDLE_PAYMENTS", "HANDLE_CHECKOUTS", "MANAGE_ORDERS", "MANAGE_CHECKOUTS"],
     userPermissions: [],
     appUrl: baseURL,
     dataPrivacyUrl: `${baseURL}/data-privacy`,

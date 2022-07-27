@@ -16,12 +16,7 @@ interface AppSidebarProps {
   onItemClick: (item: Item) => void;
 }
 
-const AppSidebar: React.FC<AppSidebarProps> = ({
-  items,
-  selectedItem,
-  loading,
-  onItemClick,
-}) => {
+const AppSidebar: React.FC<AppSidebarProps> = ({ items, selectedItem, loading, onItemClick }) => {
   const classes = useStyles();
 
   return (
@@ -41,11 +36,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
               onClick={() => onItemClick(item)}
             >
               <OffsettedListItemCell>
-                {item.logo ? (
-                  <item.logo className={classes.itemListItemLogo} />
-                ) : (
-                  item.label
-                )}
+                {item.logo ? <item.logo className={classes.itemListItemLogo} /> : item.label}
               </OffsettedListItemCell>
             </OffsettedListItem>
           ))

@@ -9,13 +9,10 @@ export const useSetPaymentProviderSettings = <TArgs>(
 ) => {
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const [{ data, loading, error }, request] = useFetch(
-    requestSetPaymentProviderSettings,
-    {
-      skip: true,
-      ...optionalProps,
-    }
-  );
+  const [{ data, loading, error }, request] = useFetch(requestSetPaymentProviderSettings, {
+    skip: true,
+    ...optionalProps,
+  });
 
   useEffect(() => {
     if (data?.data) {
@@ -27,7 +24,7 @@ export const useSetPaymentProviderSettings = <TArgs>(
         },
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data]);
 
   return [

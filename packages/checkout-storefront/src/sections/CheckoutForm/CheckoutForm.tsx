@@ -1,17 +1,11 @@
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import {
-  Contact,
-  ContactSkeleton,
-} from "@/checkout-storefront/sections/Contact";
+import { Contact, ContactSkeleton } from "@/checkout-storefront/sections/Contact";
 import {
   ShippingMethods,
   ShippingMethodsSkeleton,
 } from "@/checkout-storefront/sections/ShippingMethods";
-import {
-  Addresses,
-  AddressesSkeleton,
-} from "@/checkout-storefront/sections/Addresses";
+import { Addresses, AddressesSkeleton } from "@/checkout-storefront/sections/Addresses";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { Suspense } from "react";
@@ -32,11 +26,7 @@ export const CheckoutForm = () => {
   const { errorMessages } = useErrorMessages();
   const { checkout, loading } = useCheckout();
   const { authenticating } = useAuthState();
-  const {
-    checkoutFinalize,
-    submitting,
-    errors: userRegisterErrors,
-  } = useCheckoutFinalize();
+  const { checkoutFinalize, submitting, errors: userRegisterErrors } = useCheckoutFinalize();
 
   const isLoading = loading || authenticating;
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
@@ -44,9 +34,7 @@ export const CheckoutForm = () => {
 
   const schema = object({
     password: string().required(errorMessages.required),
-    email: string()
-      .email(errorMessages.invalid)
-      .required(errorMessages.required),
+    email: string().email(errorMessages.invalid).required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);

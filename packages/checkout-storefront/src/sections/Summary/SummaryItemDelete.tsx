@@ -1,10 +1,7 @@
 import { IconButton } from "@/checkout-storefront/components/IconButton";
 import React from "react";
 import { CloseIcon as DeleteIcon } from "@/checkout-storefront/icons";
-import {
-  CheckoutLineFragment,
-  useCheckoutLineDeleteMutation,
-} from "@/checkout-storefront/graphql";
+import { CheckoutLineFragment, useCheckoutLineDeleteMutation } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
@@ -13,9 +10,7 @@ interface LineItemDeleteProps {
   line: CheckoutLineFragment;
 }
 
-export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({
-  line: { id: lineId },
-}) => {
+export const SummaryItemDelete: React.FC<LineItemDeleteProps> = ({ line: { id: lineId } }) => {
   const formatMessage = useFormattedMessages();
   const [, deleteLine] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();

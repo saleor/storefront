@@ -7,9 +7,7 @@ export default {
   component: ChipButton,
 } as ComponentMeta<typeof ChipButton>;
 
-const Template: ComponentStory<typeof ChipButton> = (args) => (
-  <ChipButton {...args} />
-);
+const Template: ComponentStory<typeof ChipButton> = (args) => <ChipButton {...args} />;
 
 export const Basic = Template.bind({});
 

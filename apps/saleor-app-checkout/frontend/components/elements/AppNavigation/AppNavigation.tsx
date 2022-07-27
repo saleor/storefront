@@ -18,10 +18,7 @@ const AppNavigation: React.FC = () => {
       value={router.pathname}
       className={classes.tabs}
     >
-      <PageTab
-        value={channelListPath}
-        label={intl.formatMessage(sectionMessages.channels)}
-      />
+      <PageTab value={channelListPath} label={intl.formatMessage(sectionMessages.channels)} />
       <PageTab
         value={customizationPath}
         label={intl.formatMessage(sectionMessages.customization)}

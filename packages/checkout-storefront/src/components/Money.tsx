@@ -6,10 +6,7 @@ import {
 } from "@/checkout-storefront/hooks/useFormattedMoney";
 import { AriaLabel, Classes } from "@/checkout-storefront/lib/globalTypes";
 
-export interface MoneyProps<TMoney extends MoneyType>
-  extends TextProps,
-    Classes,
-    AriaLabel {
+export interface MoneyProps<TMoney extends MoneyType> extends TextProps, Classes, AriaLabel {
   money?: TMoney;
 }
 
@@ -26,11 +23,7 @@ export const Money = <TMoney extends MoneyType>({
   }
 
   return (
-    <Text
-      {...textProps}
-      aria-label={ariaLabel}
-      className={clsx("money", className)}
-    >
+    <Text {...textProps} aria-label={ariaLabel} className={clsx("money", className)}>
       {formattedMoney}
     </Text>
   );

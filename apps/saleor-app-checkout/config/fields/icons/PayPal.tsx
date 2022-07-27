@@ -20,8 +20,6 @@ const PayPalIcon = createSvgIcon(
   "PayPal"
 );
 
-const PayPal = (props: SvgIconProps) => (
-  <PayPalIcon {...props} viewBox="0 0 512 512" />
-);
+const PayPal = (props: SvgIconProps) => <PayPalIcon {...props} viewBox="0 0 512 512" />;
 
 export default PayPal;

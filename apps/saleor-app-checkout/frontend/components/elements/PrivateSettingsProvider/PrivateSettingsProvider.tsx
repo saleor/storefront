@@ -5,18 +5,14 @@ import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
 
 interface PrivateSettingsProviderContext {
   privateSettings: PrivateSettingsValues<"unencrypted">;
-  setPrivateSettings: Dispatch<
-    SetStateAction<PrivateSettingsValues<"unencrypted">>
-  >;
+  setPrivateSettings: Dispatch<SetStateAction<PrivateSettingsValues<"unencrypted">>>;
 }
 
 export const [usePrivateSettingsContext, Provider] =
   createSafeContext<PrivateSettingsProviderContext>();
 
 const PrivateSettingsProvider: React.FC<PropsWithChildren<{}>> = (props) => {
-  const [privateSettings, setPrivateSettings] = useState(
-    defaultPrivateSettings
-  );
+  const [privateSettings, setPrivateSettings] = useState(defaultPrivateSettings);
 
   return (
     <Provider

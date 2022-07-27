@@ -3,10 +3,7 @@ import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAddressValidationRulesQuery } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
-import {
-  MessageKey,
-  useFormattedMessages,
-} from "@/checkout-storefront/hooks/useFormattedMessages";
+import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
@@ -17,20 +14,10 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { ReactNode, useState } from "react";
-import {
-  DefaultValues,
-  Path,
-  Resolver,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { DefaultValues, Path, Resolver, SubmitHandler, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
-import {
-  AddressFormLayoutField,
-  getAddressFormLayout,
-  isAddressFieldRow,
-} from "./utils";
+import { AddressFormLayoutField, getAddressFormLayout, isAddressFieldRow } from "./utils";
 import { Select } from "@saleor/ui-kit";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
 
@@ -63,19 +50,12 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const resolver = useValidationResolver(schema);
 
-  const {
-    handleSubmit,
-    watch,
-    getValues,
-    setError,
-    formState,
-    clearErrors,
-    ...rest
-  } = useForm<TFormData>({
-    resolver: resolver as unknown as Resolver<TFormData, any>,
-    mode: "onBlur",
-    defaultValues: defaultValues as DefaultValues<TFormData>,
-  });
+  const { handleSubmit, watch, getValues, setError, formState, clearErrors, ...rest } =
+    useForm<TFormData>({
+      resolver: resolver as unknown as Resolver<TFormData, any>,
+      mode: "onBlur",
+      defaultValues: defaultValues as DefaultValues<TFormData>,
+    });
 
   useSetFormErrors({ setError, errors });
 
@@ -88,9 +68,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   const validationRules = data?.addressValidationRules;
 
   const isRequiredField = (field: AddressField) =>
-    getRequiredAddressFields(
-      validationRules?.requiredFields! as AddressField[]
-    ).includes(field);
+    getRequiredAddressFields(validationRules?.requiredFields! as AddressField[]).includes(field);
 
   const handleCancel = () => {
     clearErrors();
@@ -126,10 +104,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
       return renderFn(layoutField as AddressField);
     });
 
-  const getLocalizedFieldName = (
-    field: AddressField,
-    localizedField?: string | null
-  ) => {
+  const getLocalizedFieldName = (field: AddressField, localizedField?: string | null) => {
     try {
       const translatedLabel = formatMessage(localizedField as MessageKey);
       return translatedLabel;

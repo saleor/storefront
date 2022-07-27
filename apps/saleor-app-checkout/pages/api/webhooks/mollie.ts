@@ -9,14 +9,9 @@ import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
   It's called after any change in the payment (paid, expired, failed, refunded, etc.)
   https://docs.mollie.com/overview/webhooks
 */
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if ("id" in req.body) {
-    const [paymentError, paymentData] = await unpackPromise(
-      verifyPayment(req.body.id)
-    );
+    const [paymentError, paymentData] = await unpackPromise(verifyPayment(req.body.id));
 
     if (paymentError) {
       res.status(500).json({ error: "error while validating payment" });

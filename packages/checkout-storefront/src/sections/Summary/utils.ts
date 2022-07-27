@@ -1,8 +1,4 @@
-import {
-  CheckoutLineFragment,
-  Money,
-  OrderLineFragment,
-} from "@/checkout-storefront/graphql";
+import { CheckoutLineFragment, Money, OrderLineFragment } from "@/checkout-storefront/graphql";
 
 export const getTaxPercentage = (taxCost: Money, totalPrice: Money): string => {
   if (!totalPrice?.amount || !taxCost?.amount) {
@@ -20,9 +16,7 @@ export const getThumbnailFromLine = (line: CheckoutLineFragment) =>
   line.variant.media?.find(({ type }) => type === "IMAGE") ||
   line.variant.product.media?.find(({ type }) => type === "IMAGE");
 
-export const getSummaryLineProps = (
-  line: OrderLineFragment | CheckoutLineFragment
-) =>
+export const getSummaryLineProps = (line: OrderLineFragment | CheckoutLineFragment) =>
   isCheckoutLine(line)
     ? {
         variantName: line.variant.name,

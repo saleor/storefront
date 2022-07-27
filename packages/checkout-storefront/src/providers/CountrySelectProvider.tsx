@@ -14,18 +14,17 @@ export interface CountrySelectContextConsumerProps {
   setCountryCodeFromAddress: (address?: AddressFragment | null) => void;
 }
 
-export const [useCountrySelect, Provider] =
-  createSafeContext<CountrySelectContextConsumerProps>();
+export const [useCountrySelect, Provider] = createSafeContext<CountrySelectContextConsumerProps>();
 
-export const CountrySelectProvider: React.FC<
-  PropsWithChildren<CountrySelectProviderProps>
-> = ({ children, selectedCountryCode }) => {
+export const CountrySelectProvider: React.FC<PropsWithChildren<CountrySelectProviderProps>> = ({
+  children,
+  selectedCountryCode,
+}) => {
   const [countryCode, setCountryCode] = useState<CountryCode>(
     selectedCountryCode || defaultCountryCode
   );
 
-  const handleSetCountryCode = (code: CountryCode = defaultCountryCode) =>
-    setCountryCode(code);
+  const handleSetCountryCode = (code: CountryCode = defaultCountryCode) => setCountryCode(code);
 
   const setCountryCodeFromAddress = (address?: AddressFragment | null) =>
     setCountryCode(address?.country?.code as CountryCode);

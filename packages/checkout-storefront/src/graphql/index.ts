@@ -907,13 +907,7 @@ export type AppUpdated = Event & {
 };
 
 /** An enumeration. */
-export type AreaUnitsEnum =
-  | "SQ_CM"
-  | "SQ_FT"
-  | "SQ_INCH"
-  | "SQ_KM"
-  | "SQ_M"
-  | "SQ_YD";
+export type AreaUnitsEnum = "SQ_CM" | "SQ_FT" | "SQ_INCH" | "SQ_KM" | "SQ_M" | "SQ_YD";
 
 /**
  * Assigns storefront's navigation menus.
@@ -4494,11 +4488,7 @@ export type ExportError = {
 };
 
 /** An enumeration. */
-export type ExportErrorCode =
-  | "GRAPHQL_ERROR"
-  | "INVALID"
-  | "NOT_FOUND"
-  | "REQUIRED";
+export type ExportErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED";
 
 /** History log of export file. */
 export type ExportEvent = Node & {
@@ -4572,11 +4562,7 @@ export type ExportFileFilterInput = {
   user?: InputMaybe<Scalars["String"]>;
 };
 
-export type ExportFileSortField =
-  | "CREATED_AT"
-  | "LAST_MODIFIED_AT"
-  | "STATUS"
-  | "UPDATED_AT";
+export type ExportFileSortField = "CREATED_AT" | "LAST_MODIFIED_AT" | "STATUS" | "UPDATED_AT";
 
 export type ExportFileSortingInput = {
   /** Specifies the direction in which to sort products. */
@@ -5662,10 +5648,7 @@ export type GiftCardSettingsError = {
 };
 
 /** An enumeration. */
-export type GiftCardSettingsErrorCode =
-  | "GRAPHQL_ERROR"
-  | "INVALID"
-  | "REQUIRED";
+export type GiftCardSettingsErrorCode = "GRAPHQL_ERROR" | "INVALID" | "REQUIRED";
 
 /** An enumeration. */
 export type GiftCardSettingsExpiryTypeEnum = "EXPIRY_PERIOD" | "NEVER_EXPIRE";
@@ -17048,9 +17031,7 @@ export type ShippingPriceExcludeProductsInput = {
 
 export type ShippingPriceInput = {
   /** Postal code rules to add. */
-  addPostalCodeRules?: InputMaybe<
-    Array<ShippingPostalCodeRulesCreateInputRange>
-  >;
+  addPostalCodeRules?: InputMaybe<Array<ShippingPostalCodeRulesCreateInputRange>>;
   /** Postal code rules to delete. */
   deletePostalCodeRules?: InputMaybe<Array<Scalars["ID"]>>;
   /** Shipping method description. */
@@ -18513,11 +18494,7 @@ export type TranslationError = {
 };
 
 /** An enumeration. */
-export type TranslationErrorCode =
-  | "GRAPHQL_ERROR"
-  | "INVALID"
-  | "NOT_FOUND"
-  | "REQUIRED";
+export type TranslationErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED";
 
 export type TranslationInput = {
   /**
@@ -18884,10 +18861,7 @@ export type Vat = {
   standardRate?: Maybe<Scalars["Float"]>;
 };
 
-export type VariantAttributeScope =
-  | "ALL"
-  | "NOT_VARIANT_SELECTION"
-  | "VARIANT_SELECTION";
+export type VariantAttributeScope = "ALL" | "NOT_VARIANT_SELECTION" | "VARIANT_SELECTION";
 
 /**
  * Assign an media to a product variant.
@@ -19880,12 +19854,7 @@ export type WebhookError = {
 };
 
 /** An enumeration. */
-export type WebhookErrorCode =
-  | "GRAPHQL_ERROR"
-  | "INVALID"
-  | "NOT_FOUND"
-  | "REQUIRED"
-  | "UNIQUE";
+export type WebhookErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED" | "UNIQUE";
 
 /** Webhook event. */
 export type WebhookEvent = {
@@ -22257,16 +22226,11 @@ export const UserDocument = gql`
   ${AddressFragmentDoc}
 `;
 
-export function useUserQuery(
-  options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">
-) {
+export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
   return Urql.useQuery<UserQuery>({ query: UserDocument, ...options });
 }
 export const CheckoutLinesUpdateDocument = gql`
-  mutation checkoutLinesUpdate(
-    $checkoutId: ID!
-    $lines: [CheckoutLineUpdateInput!]!
-  ) {
+  mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
     checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
       errors {
         ...CheckoutErrorFragment
@@ -22284,10 +22248,9 @@ export const CheckoutLinesUpdateDocument = gql`
 `;
 
 export function useCheckoutLinesUpdateMutation() {
-  return Urql.useMutation<
-    CheckoutLinesUpdateMutation,
-    CheckoutLinesUpdateMutationVariables
-  >(CheckoutLinesUpdateDocument);
+  return Urql.useMutation<CheckoutLinesUpdateMutation, CheckoutLinesUpdateMutationVariables>(
+    CheckoutLinesUpdateDocument
+  );
 }
 export const CheckoutLineDeleteDocument = gql`
   mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
@@ -22308,10 +22271,9 @@ export const CheckoutLineDeleteDocument = gql`
 `;
 
 export function useCheckoutLineDeleteMutation() {
-  return Urql.useMutation<
-    CheckoutLineDeleteMutation,
-    CheckoutLineDeleteMutationVariables
-  >(CheckoutLineDeleteDocument);
+  return Urql.useMutation<CheckoutLineDeleteMutation, CheckoutLineDeleteMutationVariables>(
+    CheckoutLineDeleteDocument
+  );
 }
 export const CheckoutEmailUpdateDocument = gql`
   mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
@@ -22329,10 +22291,9 @@ export const CheckoutEmailUpdateDocument = gql`
 `;
 
 export function useCheckoutEmailUpdateMutation() {
-  return Urql.useMutation<
-    CheckoutEmailUpdateMutation,
-    CheckoutEmailUpdateMutationVariables
-  >(CheckoutEmailUpdateDocument);
+  return Urql.useMutation<CheckoutEmailUpdateMutation, CheckoutEmailUpdateMutationVariables>(
+    CheckoutEmailUpdateDocument
+  );
 }
 export const CheckoutCustomerAttachDocument = gql`
   mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
@@ -22350,10 +22311,9 @@ export const CheckoutCustomerAttachDocument = gql`
 `;
 
 export function useCheckoutCustomerAttachMutation() {
-  return Urql.useMutation<
-    CheckoutCustomerAttachMutation,
-    CheckoutCustomerAttachMutationVariables
-  >(CheckoutCustomerAttachDocument);
+  return Urql.useMutation<CheckoutCustomerAttachMutation, CheckoutCustomerAttachMutationVariables>(
+    CheckoutCustomerAttachDocument
+  );
 }
 export const CheckoutCustomerDetachDocument = gql`
   mutation checkoutCustomerDetach($checkoutId: ID!) {
@@ -22371,10 +22331,9 @@ export const CheckoutCustomerDetachDocument = gql`
 `;
 
 export function useCheckoutCustomerDetachMutation() {
-  return Urql.useMutation<
-    CheckoutCustomerDetachMutation,
-    CheckoutCustomerDetachMutationVariables
-  >(CheckoutCustomerDetachDocument);
+  return Urql.useMutation<CheckoutCustomerDetachMutation, CheckoutCustomerDetachMutationVariables>(
+    CheckoutCustomerDetachDocument
+  );
 }
 export const UserAddressDeleteDocument = gql`
   mutation userAddressDelete($id: ID!) {
@@ -22392,10 +22351,9 @@ export const UserAddressDeleteDocument = gql`
 `;
 
 export function useUserAddressDeleteMutation() {
-  return Urql.useMutation<
-    UserAddressDeleteMutation,
-    UserAddressDeleteMutationVariables
-  >(UserAddressDeleteDocument);
+  return Urql.useMutation<UserAddressDeleteMutation, UserAddressDeleteMutationVariables>(
+    UserAddressDeleteDocument
+  );
 }
 export const UserAddressUpdateDocument = gql`
   mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
@@ -22413,10 +22371,9 @@ export const UserAddressUpdateDocument = gql`
 `;
 
 export function useUserAddressUpdateMutation() {
-  return Urql.useMutation<
-    UserAddressUpdateMutation,
-    UserAddressUpdateMutationVariables
-  >(UserAddressUpdateDocument);
+  return Urql.useMutation<UserAddressUpdateMutation, UserAddressUpdateMutationVariables>(
+    UserAddressUpdateDocument
+  );
 }
 export const UserAddressCreateDocument = gql`
   mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
@@ -22434,20 +22391,13 @@ export const UserAddressCreateDocument = gql`
 `;
 
 export function useUserAddressCreateMutation() {
-  return Urql.useMutation<
-    UserAddressCreateMutation,
-    UserAddressCreateMutationVariables
-  >(UserAddressCreateDocument);
+  return Urql.useMutation<UserAddressCreateMutation, UserAddressCreateMutationVariables>(
+    UserAddressCreateDocument
+  );
 }
 export const CheckoutShippingAddressUpdateDocument = gql`
-  mutation checkoutShippingAddressUpdate(
-    $checkoutId: ID!
-    $shippingAddress: AddressInput!
-  ) {
-    checkoutShippingAddressUpdate(
-      id: $checkoutId
-      shippingAddress: $shippingAddress
-    ) {
+  mutation checkoutShippingAddressUpdate($checkoutId: ID!, $shippingAddress: AddressInput!) {
+    checkoutShippingAddressUpdate(id: $checkoutId, shippingAddress: $shippingAddress) {
       errors {
         ...CheckoutErrorFragment
       }
@@ -22467,14 +22417,8 @@ export function useCheckoutShippingAddressUpdateMutation() {
   >(CheckoutShippingAddressUpdateDocument);
 }
 export const CheckoutBillingAddressUpdateDocument = gql`
-  mutation checkoutBillingAddressUpdate(
-    $checkoutId: ID!
-    $billingAddress: AddressInput!
-  ) {
-    checkoutBillingAddressUpdate(
-      id: $checkoutId
-      billingAddress: $billingAddress
-    ) {
+  mutation checkoutBillingAddressUpdate($checkoutId: ID!, $billingAddress: AddressInput!) {
+    checkoutBillingAddressUpdate(id: $checkoutId, billingAddress: $billingAddress) {
       errors {
         ...CheckoutErrorFragment
       }
@@ -22494,14 +22438,8 @@ export function useCheckoutBillingAddressUpdateMutation() {
   >(CheckoutBillingAddressUpdateDocument);
 }
 export const CheckoutDeliveryMethodUpdateDocument = gql`
-  mutation checkoutDeliveryMethodUpdate(
-    $checkoutId: ID!
-    $deliveryMethodId: ID!
-  ) {
-    checkoutDeliveryMethodUpdate(
-      id: $checkoutId
-      deliveryMethodId: $deliveryMethodId
-    ) {
+  mutation checkoutDeliveryMethodUpdate($checkoutId: ID!, $deliveryMethodId: ID!) {
+    checkoutDeliveryMethodUpdate(id: $checkoutId, deliveryMethodId: $deliveryMethodId) {
       errors {
         ...CheckoutErrorFragment
       }
@@ -22538,10 +22476,7 @@ export const AddressValidationRulesDocument = gql`
 `;
 
 export function useAddressValidationRulesQuery(
-  options: Omit<
-    Urql.UseQueryArgs<AddressValidationRulesQueryVariables>,
-    "query"
-  >
+  options: Omit<Urql.UseQueryArgs<AddressValidationRulesQueryVariables>, "query">
 ) {
   return Urql.useQuery<AddressValidationRulesQuery>({
     query: AddressValidationRulesDocument,
@@ -22557,8 +22492,6 @@ export const OrderDocument = gql`
   ${OrderFragmentDoc}
 `;
 
-export function useOrderQuery(
-  options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">
-) {
+export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
   return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
 }

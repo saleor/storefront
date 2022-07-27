@@ -18,9 +18,7 @@ const PaymentProvider = () => {
   const [setPaymentProviderSettings, setPaymentProviderSettingsRequest] =
     useSetPaymentProviderSettings();
 
-  const paymentProviders = usePaymentProviderSettings(
-    getPaymentProviderSettings.data
-  );
+  const paymentProviders = usePaymentProviderSettings(getPaymentProviderSettings.data);
 
   const paymentProvider = paymentProviders.find(
     (paymentMethod) => paymentMethod.id === paymentProviderId
@@ -40,11 +38,7 @@ const PaymentProvider = () => {
   ];
 
   if (!paymentProvider) {
-    return (
-      <ErrorDetails
-        error={intl.formatMessage(notFoundMessages.paymentProviderNotFound)}
-      />
-    );
+    return <ErrorDetails error={intl.formatMessage(notFoundMessages.paymentProviderNotFound)} />;
   }
 
   return (
@@ -52,9 +46,7 @@ const PaymentProvider = () => {
       selectedPaymentProvider={paymentProvider}
       channelId={channelId?.toString()}
       saveButtonBarState="default"
-      loading={
-        getPaymentProviderSettings.loading || setPaymentProviderSettings.loading
-      }
+      loading={getPaymentProviderSettings.loading || setPaymentProviderSettings.loading}
       errors={errors}
       onCancel={handleCancel}
       onSubmit={handleSubmit}

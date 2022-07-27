@@ -12,18 +12,15 @@ interface BillingSameAsShippingContextConsumerProps {
 export const [useBillingSameAsShipping, Provider] =
   createSafeContext<BillingSameAsShippingContextConsumerProps>();
 
-export const BillingSameAsShippingProvider: React.FC<PropsWithChildren<{}>> = ({
-  children,
-}) => {
+export const BillingSameAsShippingProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const { checkout } = useCheckout();
 
-  const [isBillingSameAsShippingAddress, setIsBillingSameAsShippingAddress] =
-    useState(!checkout?.billingAddress);
+  const [isBillingSameAsShippingAddress, setIsBillingSameAsShippingAddress] = useState(
+    !checkout?.billingAddress
+  );
 
-  const [
-    hasBillingSameAsShippingAddressChanged,
-    setHasBillingSameAsShippingAddressChanged,
-  ] = useState(false);
+  const [hasBillingSameAsShippingAddressChanged, setHasBillingSameAsShippingAddressChanged] =
+    useState(false);
 
   const providerValues: BillingSameAsShippingContextConsumerProps = {
     isBillingSameAsShippingAddress,

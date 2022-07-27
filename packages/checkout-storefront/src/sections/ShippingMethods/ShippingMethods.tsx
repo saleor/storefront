@@ -19,9 +19,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { showErrors, showSuccess } = useAlerts("checkoutDeliveryMethodUpdate");
-  const [selectedMethodId, setSelectedMethodId] = useState(
-    checkout?.deliveryMethod?.id
-  );
+  const [selectedMethodId, setSelectedMethodId] = useState(checkout?.deliveryMethod?.id);
 
   const selectedMethodIdRef = useRef(selectedMethodId);
 
@@ -49,13 +47,7 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
     }
   }, [selectedMethodId]);
 
-  const getSubtitle = ({
-    min,
-    max,
-  }: {
-    min?: number | null;
-    max?: number | null;
-  }) => {
+  const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
       return undefined;
     }
@@ -74,19 +66,11 @@ export const ShippingMethods: React.FC<ShippingMethodsProps> = ({}) => {
     <div className="mt-6 mb-8">
       <Title>{formatMessage("deliveryMethod")}</Title>
       {!checkout?.shippingAddress && (
-        <Text>
-          Please fill in shipping address to see available shipping methods
-        </Text>
+        <Text>Please fill in shipping address to see available shipping methods</Text>
       )}
       <RadioBoxGroup label={formatMessage("shippingMethodsLabel")}>
         {(checkout?.shippingMethods as ShippingMethod[])?.map(
-          ({
-            id,
-            name,
-            price,
-            minimumDeliveryDays: min,
-            maximumDeliveryDays: max,
-          }) => (
+          ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
             <RadioBox
               value={id}
               title={`${name} - ${getFormattedMoney(price)}`}

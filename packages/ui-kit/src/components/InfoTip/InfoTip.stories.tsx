@@ -7,9 +7,7 @@ export default {
   component: InfoTip,
 } as ComponentMeta<typeof InfoTip>;
 
-const Template: ComponentStory<typeof InfoTip> = (args) => (
-  <InfoTip {...args} />
-);
+const Template: ComponentStory<typeof InfoTip> = (args) => <InfoTip {...args} />;
 
 export const Basic = Template.bind({});
 

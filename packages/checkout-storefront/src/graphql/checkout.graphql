@@ -174,10 +174,7 @@ query user {
   }
 }
 
-mutation checkoutLinesUpdate(
-  $checkoutId: ID!
-  $lines: [CheckoutLineUpdateInput!]!
-) {
+mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
   checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
     errors {
       ...CheckoutErrorFragment
@@ -270,14 +267,8 @@ mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
   }
 }
 
-mutation checkoutShippingAddressUpdate(
-  $checkoutId: ID!
-  $shippingAddress: AddressInput!
-) {
-  checkoutShippingAddressUpdate(
-    id: $checkoutId
-    shippingAddress: $shippingAddress
-  ) {
+mutation checkoutShippingAddressUpdate($checkoutId: ID!, $shippingAddress: AddressInput!) {
+  checkoutShippingAddressUpdate(id: $checkoutId, shippingAddress: $shippingAddress) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -287,14 +278,8 @@ mutation checkoutShippingAddressUpdate(
   }
 }
 
-mutation checkoutBillingAddressUpdate(
-  $checkoutId: ID!
-  $billingAddress: AddressInput!
-) {
-  checkoutBillingAddressUpdate(
-    id: $checkoutId
-    billingAddress: $billingAddress
-  ) {
+mutation checkoutBillingAddressUpdate($checkoutId: ID!, $billingAddress: AddressInput!) {
+  checkoutBillingAddressUpdate(id: $checkoutId, billingAddress: $billingAddress) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -304,14 +289,8 @@ mutation checkoutBillingAddressUpdate(
   }
 }
 
-mutation checkoutDeliveryMethodUpdate(
-  $checkoutId: ID!
-  $deliveryMethodId: ID!
-) {
-  checkoutDeliveryMethodUpdate(
-    id: $checkoutId
-    deliveryMethodId: $deliveryMethodId
-  ) {
+mutation checkoutDeliveryMethodUpdate($checkoutId: ID!, $deliveryMethodId: ID!) {
+  checkoutDeliveryMethodUpdate(id: $checkoutId, deliveryMethodId: $deliveryMethodId) {
     errors {
       ...CheckoutErrorFragment
     }

@@ -1,15 +1,9 @@
 import { useCheckoutEmailUpdateMutation } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import {
-  extractMutationErrors,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import React, { useEffect, useState } from "react";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
-import {
-  SignInFormContainer,
-  SignInFormContainerProps,
-} from "./SignInFormContainer";
+import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 import { object, string } from "yup";
 import { useForm, useFormContext } from "react-hook-form";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
@@ -20,18 +14,13 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 
-type AnonymousCustomerFormProps = Pick<
-  SignInFormContainerProps,
-  "onSectionChange"
->;
+type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
 interface FormData {
   email: string;
 }
 
-export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
-  onSectionChange,
-}) => {
+export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionChange }) => {
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
@@ -45,18 +34,15 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
   } = formContext;
 
   const schema = object({
-    email: string()
-      .email(errorMessages.invalid)
-      .required(errorMessages.required),
+    email: string().email(errorMessages.invalid).required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);
-  const { handleSubmit, watch, getValues, setError, ...rest } =
-    useForm<FormData>({
-      resolver,
-      mode: "onBlur",
-      defaultValues: { email: getContextValues("email") },
-    });
+  const { handleSubmit, watch, getValues, setError, ...rest } = useForm<FormData>({
+    resolver,
+    mode: "onBlur",
+    defaultValues: { email: getContextValues("email") },
+  });
 
   // @todo this used to work before making the typescript config more strict
   // please, fix me
@@ -69,8 +55,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
     errors: contextFormState.errors,
   });
 
-  const [{ fetching: updatingEmail }, updateEmail] =
-    useCheckoutEmailUpdateMutation();
+  const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
 
   const onSubmit = async ({ email }: FormData) => {
     if (!email || updatingEmail || email === checkout.email) {
@@ -96,10 +81,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({
 
   useEffect(() => setContextValue("email", emailValue), [emailValue]);
 
-  useEffect(
-    () => setContextValue("createAccount", createAccountSelected),
-    [createAccountSelected]
-  );
+  useEffect(() => setContextValue("createAccount", createAccountSelected), [createAccountSelected]);
 
   return (
     <SignInFormContainer

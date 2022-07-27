@@ -31,11 +31,7 @@ export const AddressRadioBox: React.FC<AddressRadioBoxProps> = ({
   const getRadioBoxClasses = useRadioBoxStyles(radioProps.checked);
 
   return (
-    <div
-      className={
-        getRadioBoxClasses({ container: "address-radio-box" }).container
-      }
-    >
+    <div className={getRadioBoxClasses({ container: "address-radio-box" }).container}>
       <Radio
         {...radioProps}
         classNames={{ label: getRadioBoxClasses("w-full").label }}
@@ -43,13 +39,11 @@ export const AddressRadioBox: React.FC<AddressRadioBoxProps> = ({
           <div className="w-full flex flex-row justify-between">
             <div className="flex flex-col">
               <Text weight="semibold">{name}</Text>
-              {pull(
-                getSortedAddressFieldsFromAddress(address),
-                "firstName",
-                "lastName"
-              ).map((field: AddressField) => (
-                <Text key={field}>{address[field] as string}</Text>
-              ))}
+              {pull(getSortedAddressFieldsFromAddress(address), "firstName", "lastName").map(
+                (field: AddressField) => (
+                  <Text key={field}>{address[field] as string}</Text>
+                )
+              )}
             </div>
             <div>
               <IconButton

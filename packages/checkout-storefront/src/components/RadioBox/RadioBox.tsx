@@ -1,13 +1,8 @@
 import React from "react";
-import {
-  Text,
-  Radio as UiKitRadio,
-  RadioProps as UiKitRadioProps,
-} from "@saleor/ui-kit";
+import { Text, Radio as UiKitRadio, RadioProps as UiKitRadioProps } from "@saleor/ui-kit";
 import { getRadioPropsFromRadioBoxProps, useRadioBoxStyles } from "./utils";
 
-export interface RadioBoxProps
-  extends Omit<UiKitRadioProps, "onSelect" | "label"> {
+export interface RadioBoxProps extends Omit<UiKitRadioProps, "onSelect" | "label"> {
   onSelect: (value: string) => void;
   selectedValue: string | undefined;
   subtitle?: string;

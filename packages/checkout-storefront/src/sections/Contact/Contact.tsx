@@ -1,8 +1,5 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import {
-  extractMutationErrors,
-  getQueryVariables,
-} from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
@@ -21,10 +18,8 @@ type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
 export const Contact = () => {
   const [currentSection, setCurrentSection] = useState<Section>("guestUser");
-  const [{ fetching: attachingCustomer }, customerAttach] =
-    useCheckoutCustomerAttachMutation();
-  const [{ fetching: updatingEmail }, updateEmail] =
-    useCheckoutEmailUpdateMutation();
+  const [{ fetching: attachingCustomer }, customerAttach] = useCheckoutCustomerAttachMutation();
+  const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
   const { showErrors, showSuccess } = useAlerts();
   const { authenticated, user } = useAuthState();
   const hasAuthenticated = useRef(false);
@@ -133,13 +128,9 @@ export const Contact = () => {
 
   return (
     <div>
-      {isCurrentSection("guestUser") && (
-        <GuestUserForm onSectionChange={changeSection("signIn")} />
-      )}
+      {isCurrentSection("guestUser") && <GuestUserForm onSectionChange={changeSection("signIn")} />}
 
-      {isCurrentSection("signIn") && (
-        <SignInForm onSectionChange={changeSection("guestUser")} />
-      )}
+      {isCurrentSection("signIn") && <SignInForm onSectionChange={changeSection("guestUser")} />}
 
       {isCurrentSection("signedInUser") && (
         <SignedInUser onSectionChange={changeSection("guestUser")} />

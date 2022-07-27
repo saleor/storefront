@@ -6,19 +6,13 @@ import { CheckIcon } from "../icons";
 import { Label } from "../Label";
 import { ClassNames } from "@lib/globalTypes";
 
-export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   label?: string | ReactNode;
-  classNames?: ClassNames<
-    "container" | "inputContainer" | "input" | "checkbox" | "label"
-  >;
+  classNames?: ClassNames<"container" | "inputContainer" | "input" | "checkbox" | "label">;
 }
 
 export const Checkbox = forwardRef(
-  (
-    { label, checked, value, classNames, ...rest }: CheckboxProps,
-    ref: Ref<HTMLInputElement>
-  ) => {
+  ({ label, checked, value, classNames, ...rest }: CheckboxProps, ref: Ref<HTMLInputElement>) => {
     const generaredId = useId();
     const id = rest?.id || generaredId;
 
@@ -36,9 +30,7 @@ export const Checkbox = forwardRef(
                 id={id}
                 className={classNames?.input}
               />
-              <div
-                className={clsx(styles["checkbox-input"], classNames?.checkbox)}
-              >
+              <div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
                 <CheckIcon />
               </div>
             </div>

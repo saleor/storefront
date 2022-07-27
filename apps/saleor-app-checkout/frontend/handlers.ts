@@ -14,10 +14,7 @@ type FileSetting = {
   [x: string]: File;
 };
 
-const uploadSettingFile = async (
-  setting: FileSetting,
-  uploadFile: UploadFileFunction
-) => {
+const uploadSettingFile = async (setting: FileSetting, uploadFile: UploadFileFunction) => {
   const settingIdx = Object.keys(setting)[0];
   const uploadFileResult = await uploadFile({
     file: setting[settingIdx],
@@ -33,9 +30,7 @@ const uploadSettingFile = async (
 };
 
 const mapSettingsObjectToArray = (
-  settingList?: Partial<
-    CustomizationSettingsFiles[keyof CustomizationSettingsFiles]
-  >
+  settingList?: Partial<CustomizationSettingsFiles[keyof CustomizationSettingsFiles]>
 ) =>
   reduce(
     settingList,

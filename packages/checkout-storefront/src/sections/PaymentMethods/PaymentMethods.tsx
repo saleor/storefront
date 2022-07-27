@@ -1,8 +1,5 @@
 import { Title } from "@/checkout-storefront/components/Title";
-import {
-  MessageKey,
-  useFormattedMessages,
-} from "@/checkout-storefront/hooks/useFormattedMessages";
+import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React from "react";
 import { camelCase } from "lodash-es";
 import { RadioBoxGroup } from "@/checkout-storefront/components/RadioBoxGroup";
@@ -27,9 +24,7 @@ export const PaymentMethods: React.FC<UsePaymentMethods> = ({
               value={paymentMethodId}
               title={formatMessage(camelCase(paymentMethodId) as MessageKey)}
               selectedValue={selectedPaymentMethod}
-              onSelect={(value: string) =>
-                setSelectedPaymentMethod(value as PaymentMethodID)
-              }
+              onSelect={(value: string) => setSelectedPaymentMethod(value as PaymentMethodID)}
             />
           );
         })}

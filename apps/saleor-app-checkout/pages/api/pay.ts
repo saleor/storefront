@@ -9,10 +9,7 @@ import { PaymentProviderID } from "checkout-common";
 import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { getOrderDetails } from "@/saleor-app-checkout/backend/payments/getOrderDetails";
-import {
-  PayRequestResponse,
-  PayRequestErrorResponse,
-} from "@/saleor-app-checkout/types/api/pay";
+import { PayRequestResponse, PayRequestErrorResponse } from "@/saleor-app-checkout/types/api/pay";
 import { PayRequestBody } from "checkout-common";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
@@ -76,9 +73,7 @@ const reuseExistingSession = async ({
         };
       } else if (
         // Session was successfully completed but Saleor has not yet registered the payment
-        [StatusEnum.Completed, StatusEnum.PaymentPending].includes(
-          session.status
-        )
+        [StatusEnum.Completed, StatusEnum.PaymentPending].includes(session.status)
       ) {
         return {
           ok: false,
@@ -97,8 +92,7 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  let body: PayRequestBody =
-    typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+  let body: PayRequestBody = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
 
   // check if correct provider was passed
   if (!paymentProviders.includes(body.provider)) {

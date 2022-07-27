@@ -9,17 +9,13 @@ export type RadioClassNames = ClassNames<
   "container" | "inputContainer" | "input" | "radio" | "label"
 >;
 
-export interface RadioProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
+export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   label: string | ReactNode;
   classNames?: RadioClassNames;
 }
 
 export const Radio = forwardRef(
-  (
-    { label, checked, value, classNames, ...rest }: RadioProps,
-    ref: Ref<HTMLInputElement>
-  ) => {
+  ({ label, checked, value, classNames, ...rest }: RadioProps, ref: Ref<HTMLInputElement>) => {
     const generatedId = useId();
     const id = rest?.id || generatedId;
 

@@ -7,9 +7,7 @@ import {
   FieldErrors,
 } from "react-hook-form";
 
-export type ControlFormData<FormControl> = FormControl extends Control<
-  infer FormData
->
+export type ControlFormData<FormControl> = FormControl extends Control<infer FormData>
   ? FormData
   : never;
 

@@ -29,12 +29,9 @@ const Channel = () => {
     },
     pause: !isAuthorized,
   });
-  const [metadataMutation, setPublicMetadata] =
-    useUpdatePublicMetadataMutation();
+  const [metadataMutation, setPublicMetadata] = useUpdatePublicMetadataMutation();
 
-  const settingsValues = mapPublicMetafieldsToSettings(
-    metafieldsQuery.data?.app?.metafields || {}
-  );
+  const settingsValues = mapPublicMetafieldsToSettings(metafieldsQuery.data?.app?.metafields || {});
 
   const [channelsQuery] = useChannelsQuery({
     pause: !isAuthorized,
@@ -72,11 +69,7 @@ const Channel = () => {
 
   if (!channelPaymentOptions) {
     return (
-      <ErrorDetails
-        error={intl.formatMessage(
-          notFoundMessages.channelPaymentOptionsNotFound
-        )}
-      />
+      <ErrorDetails error={intl.formatMessage(notFoundMessages.channelPaymentOptionsNotFound)} />
     );
   }
 
@@ -85,11 +78,7 @@ const Channel = () => {
       channelPaymentOptions={channelPaymentOptions}
       channels={channels}
       saveButtonBarState="default"
-      loading={
-        channelsQuery.fetching ||
-        metafieldsQuery.fetching ||
-        metadataMutation.fetching
-      }
+      loading={channelsQuery.fetching || metafieldsQuery.fetching || metadataMutation.fetching}
       errors={errors}
       onCancel={handleCancel}
       onSubmit={handleSubmit}

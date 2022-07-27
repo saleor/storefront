@@ -6,28 +6,26 @@ import {
 } from "types/api";
 import { ChannelActivePaymentProvidersByChannel } from "checkout-common";
 
-export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProvidersByChannel =
-  {
-    applePay: "",
-    creditCard: "",
-    paypal: "",
-  };
+export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProvidersByChannel = {
+  applePay: "",
+  creditCard: "",
+  paypal: "",
+};
 
-export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unencrypted"> =
-  {
-    mollie: {
-      apiKey: "",
-      profileId: "",
-    },
-    adyen: {
-      merchantAccount: "",
-      clientKey: "",
-      apiKey: "",
-      hmac: "",
-      password: "",
-      username: "",
-    },
-  };
+export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unencrypted"> = {
+  mollie: {
+    apiKey: "",
+    profileId: "",
+  },
+  adyen: {
+    merchantAccount: "",
+    clientKey: "",
+    apiKey: "",
+    hmac: "",
+    password: "",
+    username: "",
+  },
+};
 
 export const defaultCustomizationSettings: CustomizationSettingsValues = {
   branding: {

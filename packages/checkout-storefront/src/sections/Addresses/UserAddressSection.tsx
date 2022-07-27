@@ -11,10 +11,7 @@ import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
 import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
-import {
-  useUserAddressSelect,
-  UseUserAddressSelectProps,
-} from "./useUserAddressSelect";
+import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
 import { AddressesSkeleton } from "./AddressesSkeleton";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 
@@ -36,13 +33,12 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
 }) => {
   const formatMessage = useFormattedMessages();
 
-  const { selectedAddress, selectedAddressId, setSelectedAddressId } =
-    useUserAddressSelect({
-      type,
-      defaultAddressId,
-      addresses,
-      onAddressSelect,
-    });
+  const { selectedAddress, selectedAddressId, setSelectedAddressId } = useUserAddressSelect({
+    type,
+    defaultAddressId,
+    addresses,
+    onAddressSelect,
+  });
 
   const { setCountryCode } = useCountrySelect();
 

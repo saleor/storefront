@@ -15,7 +15,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const ButtonLabel: FC<ButtonLabelProps> = ({ content, ...rest }) => (
-  <Text as='span' weight='semibold' {...rest}>
+  <Text as="span" weight="semibold" {...rest}>
     {content}
   </Text>
 );

@@ -11,13 +11,10 @@ export const useGetPaymentProviderSettings = <TArgs>(
   const { isAuthorized } = useAuthData();
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const [{ data, loading, error }] = useFetch(
-    requestGetPaymentProviderSettings,
-    {
-      skip: !isAuthorized,
-      ...optionalProps,
-    }
-  );
+  const [{ data, loading, error }] = useFetch(requestGetPaymentProviderSettings, {
+    skip: !isAuthorized,
+    ...optionalProps,
+  });
 
   useEffect(() => {
     if (data?.data) {
@@ -29,7 +26,7 @@ export const useGetPaymentProviderSettings = <TArgs>(
         },
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data]);
 
   return {

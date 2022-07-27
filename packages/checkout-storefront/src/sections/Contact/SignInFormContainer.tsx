@@ -12,9 +12,7 @@ export interface SignInFormContainerProps {
   onSectionChange: () => void;
 }
 
-export const SignInFormContainer: React.FC<
-  PropsWithChildren<SignInFormContainerProps>
-> = ({
+export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainerProps>> = ({
   title,
   redirectButtonLabel,
   redirectSubtitle,

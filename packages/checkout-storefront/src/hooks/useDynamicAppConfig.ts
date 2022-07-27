@@ -8,11 +8,7 @@ const inIframe = () => {
   }
 };
 
-export const useDynamicAppConfig = <T>({
-  checkoutAppUrl,
-}: {
-  checkoutAppUrl: string;
-}) => {
+export const useDynamicAppConfig = <T>({ checkoutAppUrl }: { checkoutAppUrl: string }) => {
   const [previewSettings, setPreviewSettings] = useState<T>();
 
   useEffect(() => {

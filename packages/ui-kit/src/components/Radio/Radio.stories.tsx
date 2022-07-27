@@ -49,8 +49,7 @@ CustomLook.args = {
   customOptions: [
     {
       classNames: {
-        container:
-          "flex !flex-col px-[15px] py-[21px] border hover:border-border-active",
+        container: "flex !flex-col px-[15px] py-[21px] border hover:border-border-active",
         radio: "!border-sky-500",
       },
       value: "extended",

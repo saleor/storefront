@@ -7,11 +7,7 @@ import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectP
 import { useAuthState } from "@saleor/sdk";
 import React, { useEffect, useRef } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import {
-  AddressFormData,
-  UserAddressFormData,
-  UserDefaultAddressFragment,
-} from "./types";
+import { AddressFormData, UserAddressFormData, UserDefaultAddressFragment } from "./types";
 import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
 import { UserAddressSection } from "./UserAddressSection";
 
@@ -35,8 +31,7 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
 
   const { setCountryCodeFromAddress } = useCountrySelect();
 
-  const { updateBillingAddress, billingErrorProps } =
-    useCheckoutAddressUpdate();
+  const { updateBillingAddress, billingErrorProps } = useCheckoutAddressUpdate();
 
   const defaultAddress = checkout?.shippingAddress || defaultBillingAddress;
 

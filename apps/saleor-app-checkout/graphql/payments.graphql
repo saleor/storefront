@@ -3,11 +3,7 @@ mutation TransactionCreate(
   $transaction: TransactionCreateInput!
   $transactionEvent: TransactionEventInput
 ) {
-  transactionCreate(
-    id: $id
-    transaction: $transaction
-    transactionEvent: $transactionEvent
-  ) {
+  transactionCreate(id: $id, transaction: $transaction, transactionEvent: $transactionEvent) {
     transaction {
       id
     }
@@ -23,11 +19,7 @@ mutation TransactionUpdate(
   $transaction: TransactionUpdateInput!
   $transactionEvent: TransactionEventInput
 ) {
-  transactionUpdate(
-    id: $id
-    transaction: $transaction
-    transactionEvent: $transactionEvent
-  ) {
+  transactionUpdate(id: $id, transaction: $transaction, transactionEvent: $transactionEvent) {
     transaction {
       id
     }

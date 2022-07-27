@@ -10,12 +10,10 @@ export const mergeChannelsWithPaymentProvidersSettings = (
   channels?: ChannelFragment[] | null
 ): ChannelActivePaymentProviders =>
   channels?.reduce((assignedSettings, channel) => {
-    const channelSettings =
-      assignedSettings[channel.id] || defaultActiveChannelPaymentProviders;
+    const channelSettings = assignedSettings[channel.id] || defaultActiveChannelPaymentProviders;
 
     return {
       ...assignedSettings,
       [channel.id]: channelSettings,
     };
-  }, settings.channelActivePaymentProviders) ||
-  settings.channelActivePaymentProviders;
+  }, settings.channelActivePaymentProviders) || settings.channelActivePaymentProviders;

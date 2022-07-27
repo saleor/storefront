@@ -75,19 +75,15 @@ const notificationHandler = async (
   }
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
     paymentProviders: { adyen },
   } = await getPrivateSettings(envVars.apiUrl, false);
 
   // Get basic auth token
-  const encodedCredentials = Buffer.from(
-    adyen.username + ":" + adyen.password,
-    "ascii"
-  ).toString("base64");
+  const encodedCredentials = Buffer.from(adyen.username + ":" + adyen.password, "ascii").toString(
+    "base64"
+  );
 
   if (req.headers.authorization !== `Basic ${encodedCredentials}`) {
     return res.status(401).send("Invalid credentials");
@@ -97,10 +93,7 @@ export default async function handler(
   try {
     // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
     // notificationItem will always contain a single item for HTTP POST
-    notificationItem = validateNotificationItems(
-      req.body.notificationItems[0],
-      adyen.hmac!
-    );
+    notificationItem = validateNotificationItems(req.body.notificationItems[0], adyen.hmac!);
   } catch (error) {
     console.error(error);
     return res.status(401).send("Error while handling webhook");

@@ -34,8 +34,7 @@ const Setting: React.FC<SettingProps> = ({
     onChange(event);
 
     if (type === "image") {
-      onFileChange &&
-        onFileChange(event as React.ChangeEvent<HTMLInputElement>);
+      onFileChange && onFileChange(event as React.ChangeEvent<HTMLInputElement>);
     }
   };
 

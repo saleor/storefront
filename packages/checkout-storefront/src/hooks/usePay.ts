@@ -1,7 +1,4 @@
-import {
-  pay as payRequest,
-  PaySuccessResult,
-} from "@/checkout-storefront/fetch";
+import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { OrderBody, CheckoutBody } from "checkout-common";
 import { useAppConfig } from "../providers/AppConfigProvider";
@@ -47,11 +44,7 @@ export const usePay = () => {
 
       const newUrl = `?order=${orderId}`;
 
-      window.history.replaceState(
-        { ...window.history.state, as: newUrl, url: newUrl },
-        "",
-        newUrl
-      );
+      window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, "", newUrl);
       window.location.href = paymentUrl;
     }
 

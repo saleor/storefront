@@ -25,8 +25,7 @@ export const useCheckoutAddressUpdate = () => {
 
   const { showSuccess, showErrors } = useAlerts();
 
-  const [, checkoutShippingAddressUpdate] =
-    useCheckoutShippingAddressUpdateMutation();
+  const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
   const updateShippingAddress = async (address: AddressFormData) => {
     const result = await checkoutShippingAddressUpdate({
@@ -49,8 +48,7 @@ export const useCheckoutAddressUpdate = () => {
     }
   };
 
-  const [, checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation();
+  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
   const updateBillingAddress = async (addressInput: AddressInput) => {
     const result = await checkoutBillingAddressUpdate({
@@ -76,8 +74,7 @@ export const useCheckoutAddressUpdate = () => {
 
     const { shippingAddress } = checkout;
 
-    const shouldUpdateBillingAddress =
-      isBillingSameAsShippingAddress && !!shippingAddress;
+    const shouldUpdateBillingAddress = isBillingSameAsShippingAddress && !!shippingAddress;
 
     if (shouldUpdateBillingAddress) {
       await updateBillingAddress(

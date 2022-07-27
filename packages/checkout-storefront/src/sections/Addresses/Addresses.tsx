@@ -22,9 +22,7 @@ export const Addresses: React.FC = () => {
     <BillingSameAsShippingProvider>
       {checkout.isShippingRequired && (
         <CountrySelectProvider
-          selectedCountryCode={
-            checkout?.shippingAddress?.country?.code as CountryCode
-          }
+          selectedCountryCode={checkout?.shippingAddress?.country?.code as CountryCode}
         >
           <ShippingAddressSection
             addresses={userAddresses}
@@ -33,9 +31,7 @@ export const Addresses: React.FC = () => {
         </CountrySelectProvider>
       )}
       <CountrySelectProvider
-        selectedCountryCode={
-          checkout?.billingAddress?.country?.code as CountryCode
-        }
+        selectedCountryCode={checkout?.billingAddress?.country?.code as CountryCode}
       >
         <BillingAddressSection
           addresses={userAddresses}

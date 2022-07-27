@@ -1,13 +1,6 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import {
-  ApiErrors,
-  Errors,
-  Error,
-} from "@/checkout-storefront/hooks/useErrors";
-import {
-  ValidationError,
-  ErrorCode,
-} from "@/checkout-storefront/lib/globalTypes";
+import { ApiErrors, Errors, Error } from "@/checkout-storefront/hooks/useErrors";
+import { ValidationError, ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
@@ -29,10 +22,7 @@ export const extractValidationError = <TFormData>({
   type,
   path,
   message,
-}: Pick<
-  ValidationErrorObject,
-  "type" | "path" | "message"
->): ValidationError<TFormData> => ({
+}: Pick<ValidationErrorObject, "type" | "path" | "message">): ValidationError<TFormData> => ({
   type: type as ErrorCode,
   path: path as keyof TFormData,
   message,
@@ -64,9 +54,7 @@ export const useValidationResolver = <
           errors: {},
         };
       } catch (error) {
-        const errors = getErrorsAsObject(
-          getAllValidationErrors(error as ValidationErrorObject)
-        );
+        const errors = getErrorsAsObject(getAllValidationErrors(error as ValidationErrorObject));
         return { values: {}, errors };
       }
     },
@@ -84,10 +72,7 @@ export const useGetFormErrorsFromApiErrors = (): (<TFormData>(
     }
 
     return apiErrors.reduce(
-      (
-        result: Errors<TFormData>,
-        { field, code }: { field: keyof TFormData; code: string }
-      ) => {
+      (result: Errors<TFormData>, { field, code }: { field: keyof TFormData; code: string }) => {
         const errorCode = camelCase(code) as ErrorCode;
 
         return {

@@ -4,10 +4,7 @@ import { EyeHiddenIcon, EyeIcon } from "@/checkout-storefront/icons";
 import { ForwardedRef, forwardRef, useState } from "react";
 import { Control } from "react-hook-form";
 import { IconButton } from "@/checkout-storefront/components/IconButton";
-import {
-  TextInput,
-  TextInputProps,
-} from "@/checkout-storefront/components/TextInput";
+import { TextInput, TextInputProps } from "@/checkout-storefront/components/TextInput";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 const PasswordInputComponent = <
@@ -22,23 +19,14 @@ const PasswordInputComponent = <
 
   return (
     <div className="relative">
-      <TextInput
-        ref={ref}
-        {...props}
-        type={passwordVisible ? "text" : "password"}
-      />
+      <TextInput ref={ref} {...props} type={passwordVisible ? "text" : "password"} />
       <div className="password-input-icon">
         <IconButton
           variant="bare"
           ariaLabel={formatMessage("passwordVisibilityLabel")}
           onClick={() => setPasswordVisible(!passwordVisible)}
           icon={
-            <img
-              src={
-                passwordVisible ? getSvgSrc(EyeIcon) : getSvgSrc(EyeHiddenIcon)
-              }
-              alt=""
-            />
+            <img src={passwordVisible ? getSvgSrc(EyeIcon) : getSvgSrc(EyeHiddenIcon)} alt="" />
           }
         />
       </div>

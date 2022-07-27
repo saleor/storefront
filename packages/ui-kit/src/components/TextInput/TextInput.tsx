@@ -6,8 +6,7 @@ import { Text } from "../Text";
 
 import styles from "./TextInput.module.css";
 
-export interface TextInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "checked"> {
+export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "checked"> {
   label?: string;
   error?: string;
 }
@@ -22,7 +21,8 @@ export const TextInput = forwardRef(
         <Label
           className={clsx(styles["text-input-label"], {
             [styles["text-input-filled-label"]]: value || placeholder,
-          })}>
+          })}
+        >
           {label}
           {required && "*"}
         </Label>
@@ -39,10 +39,7 @@ export const TextInput = forwardRef(
         {...rest}
       />
       {error && (
-        <Text
-          size='sm'
-          color='error'
-          className={styles["text-input-error-caption"]}>
+        <Text size="sm" color="error" className={styles["text-input-error-caption"]}>
           {error}
         </Text>
       )}

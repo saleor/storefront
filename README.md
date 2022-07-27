@@ -1,8 +1,6 @@
 # saleor-checkout
 
-Extensible, checkout and payment integrations powered by [Saleor API](https://github.com/saleor/saleor).
-
-Project is in active development ([see backlog](https://github.com/orgs/saleor/projects/5)).
+Extensible, checkout and payment integrations powered by Saleor API.
 
 ## Setup
 
@@ -168,8 +166,8 @@ Read FAQ in [docs/faq.md](./docs/faq.md)
 
 ## Ports
 
-- `apps/react-storefront`: **3000**
-- `apps/saleor-app-checkout`: **3001**
-- `packages/checkout-storefront`: **3002**
-- `apps/checkout`: **3003**
-- `packages/ui-kit storybook`: **6006**
+- apps/react-storefront: 3000
+- apps/saleor-app-checkout: 3001
+- packages/checkout-storefront: 3002
+- apps/checkout: 3003
+- packages/ui-kit storybook: 6006

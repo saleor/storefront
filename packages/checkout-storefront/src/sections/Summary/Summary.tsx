@@ -36,11 +36,7 @@ export const Summary = () => {
             onClick={() => setOpen(!isOpen)}
           />
         </div>
-        <Money
-          ariaLabel={formatMessage("totalPriceLabel")}
-          weight="bold"
-          money={totalPrice}
-        />
+        <Money ariaLabel={formatMessage("totalPriceLabel")} weight="bold" money={totalPrice} />
       </div>
       <Transition
         show={isOpen}
@@ -82,22 +78,14 @@ export const Summary = () => {
                 taxPercentage,
               })}
             </Text>
-            <Money
-              ariaLabel={formatMessage("taxCostLabel")}
-              color="secondary"
-              money={taxCost}
-            />
+            <Money ariaLabel={formatMessage("taxCostLabel")} color="secondary" money={taxCost} />
           </div>
           <Divider className="my-4" />
           <div className="summary-row">
             <Text size="md" weight="bold">
               {formatMessage("total")}
             </Text>
-            <Money
-              ariaLabel={formatMessage("totalLabel")}
-              weight="bold"
-              money={totalPrice}
-            />
+            <Money ariaLabel={formatMessage("totalLabel")} weight="bold" money={totalPrice} />
           </div>
         </div>
       </Transition>

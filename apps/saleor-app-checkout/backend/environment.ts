@@ -4,8 +4,7 @@ import { AppDocument, AppQuery, AppQueryVariables } from "../graphql";
 import { IS_TEST } from "../test-utils";
 import { getClient } from "./client";
 
-const maskToken = (token: string) =>
-  "*".repeat(Math.max(token.length - 4, 0)) + token.slice(-4);
+const maskToken = (token: string) => "*".repeat(Math.max(token.length - 4, 0)) + token.slice(-4);
 
 export const getAuthToken = () => {
   let token;

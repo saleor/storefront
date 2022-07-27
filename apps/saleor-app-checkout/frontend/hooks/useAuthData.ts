@@ -24,9 +24,7 @@ If you want to use appId in SSR you need to:
         return "";
       }
       if (!appId) {
-        console.warn(
-          "appId is undefined - check if app-bridge was initialized correctly"
-        );
+        console.warn("appId is undefined - check if app-bridge was initialized correctly");
       }
       return appId || "";
     },
