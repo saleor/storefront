@@ -37,4 +37,4 @@ export const debugEnvVars: DebugEnvVars | null =
         appUrl: process.env.DEBUG_APP_URL,
       };
 
-export const IS_TEST = typeof jest !== "undefined";
+export const IS_TEST = process.env.NODE_ENV === 'test';
