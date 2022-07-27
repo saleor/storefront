@@ -16,7 +16,7 @@ export const UserAddressSectionContainer: React.FC<
 
   return (
     <>
-      <div className="flex flex-row justify-between items-baseline mb-3">
+      <div className="flex flex-row justify-between items-baseline">
         <Title>{title}</Title>
         {displayCountrySelect && (
           <Select
