@@ -28,7 +28,7 @@ pnpm dlx turbo link
 
 Start by [creating new project](https://vercel.com/docs/concepts/projects/overview#creating-a-project) on Vercel and select your forked GitHub repo
 
-> Note: Vercel doesn't support importing the entire monorepo at the moment, you will need to set up a project yourself for each app inside `/apps` folder
+> Note: Vercel doesn't currently support importing the entire monorepo, you will need to set up a project yourself for each app inside `/apps` folder
 
 ![Create project on Vercel by selecting your cloned GitHub repository in the menu](./screenshots/setup-vercel-1.png)
 
@@ -42,7 +42,7 @@ On the configuration page:
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build:saleor-app-checkout
+cd ../.. && pnpm run build --filter=saleor-app-checkout...
 ```
 
 - Add environment variables:
@@ -106,7 +106,7 @@ saleor app install
 > https://saleor-app-checkout.vercel.app/api/manifest
 > ```
 >
-> To see which domain is used for production go to [Vercel Dashboard](https://vercel.com) > Settings > Domains:
+> To see, which domain is used for production, go to [Vercel Dashboard](https://vercel.com) > Settings > Domains:
 > ![Vercel dashboard settings page that shows which domain is connected to production deployment](./screenshots/setup-vercel-domain.png)
 
 ### 5. Generate app token
@@ -184,9 +184,11 @@ After you're done, re-deploy the app
 
 ## Deploying Checkout SPA
 
+> Note: This app will be soon deprecated in favor of single Next.js. Learn more [in the RFC](https://github.com/saleor/saleor-checkout/discussions/137).
+
 ### 1. Create another project on Vercel
 
-Start by creating another project on Vercel, just like we did in [Checkout App setup](#saleor-app-checkout), select the same repository
+Start by creating another project on Vercel, like we did in [Checkout App setup](#saleor-app-checkout), select the same repository
 
 ### 2. Configure new project for checkout
 
@@ -198,7 +200,7 @@ On the configuration page:
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build:checkout
+cd ../.. && pnpm run build --filter=checkout...
 ```
 
 - _Optional_: customise [environment variables](../apps/checkout/README.md#env-variables):
