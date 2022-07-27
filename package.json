@@ -7,13 +7,13 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "generate": "turbo run generate",
-    "dev": "env-cmd -f .env env-cmd -f .env.local turbo run dev --parallel",
-    "lint": "turbo run lint",
-    "lint:staged": "env-cmd -f .env env-cmd -f .env.local turbo run lint:staged",
+    "build": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run build",
+    "generate": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run generate",
+    "dev": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run dev --parallel",
+    "lint": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint",
+    "lint:staged": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint:staged",
     "check-types": "turbo run check-types",
-    "test": "turbo run test",
+    "test": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run test",
     "format": "prettier --write .",
     "prepare": "husky install"
   },

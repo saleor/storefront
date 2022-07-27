@@ -18,6 +18,12 @@
     "lint": {
       "outputs": []
     },
+    "check-types": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": []
+    },
     "lint:staged": {
       "outputs": []
     },
