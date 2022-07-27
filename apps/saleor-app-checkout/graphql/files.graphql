@@ -1,0 +1,17 @@
+fragment FileUploadErrorFragment on UploadError {
+  code
+  message
+  field
+}
+
+mutation FileUpload($file: Upload!) {
+  fileUpload(file: $file) {
+    uploadedFile {
+      url
+      contentType
+    }
+    errors {
+      ...FileUploadErrorFragment
+    }
+  }
+}

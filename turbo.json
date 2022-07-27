@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": [
+        "^build",
+        "$SALEOR_API_URL",
+        "$CHECKOUT_APP_URL",
+        "$REACT_APP_SALEOR_API_URL",
+        "$REACT_APP_CHECKOUT_APP_URL",
+        "$SALEOR_APP_TOKEN",
+        "$NEXT_PUBLIC_SALEOR_API_URL",
+        "$NEXT_PUBLIC_CHECKOUT_APP_URL",
+        "$SETTINGS_ENCRYPTION_SECRET"
+      ],
+      "outputs": ["dist/**", ".next/**", "build/**"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "check-types": {
+      "dependsOn": ["^build"]
+    },
+    "test": {},
+    "dev": {
+      "cache": false
+    },
+    "generate": {
+      "dependsOn": ["$SALEOR_API_URL"]
+    }
+  },
+  "globalDependencies": [".env", ".env.local"]
+}

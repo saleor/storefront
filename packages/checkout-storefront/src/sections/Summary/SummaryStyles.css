@@ -1,0 +1,47 @@
+@tailwind components;
+
+@layer components {
+  .summary {
+    @apply flex flex-col w-full mb-8 lg:w-1/2 bg-background-secondary py-8 overflow-hidden;
+  }
+
+  .summary-title {
+    @apply flex flex-row px-6 justify-between items-center bg-background-secondary z-50;
+  }
+
+  .summary-title .text {
+    @apply text-lg font-bold;
+  }
+
+  .summary-title .money {
+    @apply sm:hidden;
+  }
+
+  .summary-title img {
+    @apply lg:hidden transition-all;
+  }
+
+  .summary-title.open img {
+    @apply origin-center rotate-180;
+  }
+
+  .summary-items {
+    @apply overflow-visible sm:overflow-scroll;
+  }
+
+  .summary-row {
+    @apply flex flex-row justify-between;
+  }
+
+  .summary-item-image {
+    @apply w-18 h-18 flex items-center justify-center;
+  }
+
+  .summary .delete-row-button {
+    @apply absolute -left-4 top-1 border border-border-primary bg-button-secondary hover:border-border-active active:border-border-active active:bg-button-tertiary w-8 h-8 flex items-center justify-center rounded-full;
+  }
+
+  .summary-recap {
+    @apply flex flex-col max-w-full px-6 ml-0 md:ml-22;
+  }
+}

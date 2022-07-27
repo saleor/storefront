@@ -1,0 +1,27 @@
+:local(.radio) {
+  @apply relative flex flex-row pl-6.5 w-full;
+}
+
+:local(.box) {
+  @apply absolute left-0 h-5 w-5 pointer-events-none inline-flex;
+}
+
+:local(.label) {
+  @apply w-full cursor-pointer;
+}
+
+:local([type="radio"]) {
+  @apply opacity-0 absolute z-10;
+}
+
+:local .label:hover .radio-input {
+  @apply border-border-active;
+}
+
+:local([type="radio"]:checked + .radio-input) {
+  @apply border-border-active border-[6px];
+}
+
+:local(.radio-input) {
+  @apply w-5 h-5 border rounded-full border-border-primary absolute top-0 left-0 z-50;
+}

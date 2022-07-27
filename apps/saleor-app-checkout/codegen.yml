@@ -1,0 +1,21 @@
+overwrite: true
+schema: ${NEXT_PUBLIC_SALEOR_API_URL}
+documents: "graphql/**/*.graphql"
+generates:
+  graphql/index.ts:
+    plugins:
+      - add:
+          content:
+            - "// THIS FILE IS GENERATED WITH `pnpm generate`"
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      scalars:
+        JSONString: string
+        UUID: string
+      dedupeOperationSuffix: true # Prevent suffix duplication in generated names
+      enumsAsTypes: true # note: this doesn't work with @saleor/app-sdk webhook inference
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"

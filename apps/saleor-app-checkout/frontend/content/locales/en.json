@@ -1,0 +1,42 @@
+{
+  "ChannelDetails/messages/1+HS9r": {
+    "developer_comment": "section title",
+    "string": "Select payment methods"
+  },
+  "ChannelList/messages/vOL1vk": {
+    "developer_comment": "label",
+    "string": "Channel name"
+  },
+  "CustomizationDetails/messages/CAoP49": {
+    "developer_comment": "section title",
+    "string": "Customization preview"
+  },
+  "FileInput/messages/AlmJPi": {
+    "developer_comment": "button",
+    "string": "Upload file"
+  },
+  "FileInput/messages/Zr2A5Y": {
+    "developer_comment": "description",
+    "string": "Max size 1GB"
+  },
+  "FileInput/messages/h6LHdF": {
+    "developer_comment": "description",
+    "string": "Drag an image here"
+  },
+  "PaymentProviderDetails/messages/n3PNHM": {
+    "developer_comment": "section title",
+    "string": "Payment provider settings"
+  },
+  "misc/commonMessages/95qy1d": {
+    "developer_comment": "section name",
+    "string": "Channels"
+  },
+  "misc/commonMessages/g8hTTQ": {
+    "developer_comment": "section name",
+    "string": "Settings"
+  },
+  "misc/commonMessages/gnUZny": {
+    "developer_comment": "section name",
+    "string": "Customization"
+  }
+}

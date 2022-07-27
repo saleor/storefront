@@ -1,0 +1,63 @@
+fragment MetadataErrorFragment on MetadataError {
+  code
+  message
+  field
+}
+
+query PublicMetafields($id: ID!, $keys: [String!]) {
+  app(id: $id) {
+    id
+    metafields(keys: $keys)
+  }
+}
+
+query PrivateMetafields($id: ID!, $keys: [String!]) {
+  app(id: $id) {
+    id
+    privateMetafields(keys: $keys)
+  }
+}
+
+query PublicMetafieldsInfered($keys: [String!]) {
+  app {
+    id
+    metafields(keys: $keys)
+  }
+}
+
+query PrivateMetafieldsInfered($keys: [String!]) {
+  app {
+    id
+    privateMetafields(keys: $keys)
+  }
+}
+
+mutation UpdatePublicMetadata(
+  $id: ID!
+  $input: [MetadataInput!]!
+  $keys: [String!]
+) {
+  updateMetadata(id: $id, input: $input) {
+    item {
+      metafields(keys: $keys)
+    }
+    errors {
+      ...MetadataErrorFragment
+    }
+  }
+}
+
+mutation UpdatePrivateMetadata(
+  $id: ID!
+  $input: [MetadataInput!]!
+  $keys: [String!]
+) {
+  updatePrivateMetadata(id: $id, input: $input) {
+    item {
+      privateMetafields(keys: $keys)
+    }
+    errors {
+      ...MetadataErrorFragment
+    }
+  }
+}

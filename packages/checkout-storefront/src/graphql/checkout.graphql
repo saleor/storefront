@@ -1,0 +1,337 @@
+fragment AccountErrorFragment on AccountError {
+  message
+  field
+  code
+}
+
+fragment CheckoutErrorFragment on CheckoutError {
+  message
+  field
+  code
+}
+
+fragment CheckoutFragment on Checkout {
+  id
+  email
+  channel {
+    id
+  }
+  shippingAddress {
+    ...AddressFragment
+  }
+  billingAddress {
+    ...AddressFragment
+  }
+  isShippingRequired
+  user {
+    id
+    email
+  }
+  availablePaymentGateways {
+    id
+    name
+  }
+  deliveryMethod {
+    ... on ShippingMethod {
+      id
+    }
+    ... on Warehouse {
+      id
+    }
+  }
+  shippingMethods {
+    id
+    name
+    price {
+      ...Money
+    }
+  }
+  totalPrice {
+    gross {
+      amount
+    }
+  }
+  availablePaymentGateways {
+    id
+    name
+  }
+  deliveryMethod {
+    ... on ShippingMethod {
+      id
+    }
+    ... on Warehouse {
+      id
+    }
+  }
+  shippingMethods {
+    id
+    name
+    price {
+      ...Money
+    }
+    maximumDeliveryDays
+    minimumDeliveryDays
+  }
+  totalPrice {
+    gross {
+      ...Money
+    }
+    tax {
+      currency
+      amount
+    }
+  }
+  shippingPrice {
+    gross {
+      ...Money
+    }
+  }
+  subtotalPrice {
+    gross {
+      ...Money
+    }
+  }
+  lines {
+    ...CheckoutLineFragment
+  }
+}
+
+fragment CheckoutLineFragment on CheckoutLine {
+  id
+  quantity
+  totalPrice {
+    gross {
+      currency
+      amount
+    }
+  }
+  unitPrice {
+    gross {
+      ...Money
+    }
+  }
+  undiscountedUnitPrice {
+    ...Money
+  }
+  variant {
+    id
+    pricing {
+      onSale
+    }
+    name
+    product {
+      name
+      media {
+        alt
+        type
+        url(size: 72)
+      }
+    }
+    media {
+      alt
+      type
+      url(size: 72)
+    }
+  }
+}
+
+fragment AddressFragment on Address {
+  id
+  city
+  phone
+  postalCode
+  companyName
+  cityArea
+  streetAddress1
+  streetAddress2
+  countryArea
+  country {
+    country
+    code
+  }
+  firstName
+  lastName
+}
+
+query checkout($id: ID!) {
+  checkout(id: $id) {
+    ...CheckoutFragment
+  }
+}
+
+query user {
+  me {
+    id
+    addresses {
+      ...AddressFragment
+    }
+    defaultBillingAddress {
+      id
+    }
+    defaultShippingAddress {
+      id
+    }
+  }
+}
+
+mutation checkoutLinesUpdate(
+  $checkoutId: ID!
+  $lines: [CheckoutLineUpdateInput!]!
+) {
+  checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      id
+      lines {
+        ...CheckoutLineFragment
+      }
+    }
+  }
+}
+
+mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
+  checkoutLineDelete(id: $checkoutId, lineId: $lineId) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      id
+      lines {
+        ...CheckoutLineFragment
+      }
+    }
+  }
+}
+
+mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
+  checkoutEmailUpdate(email: $email, id: $checkoutId) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
+  checkoutCustomerAttach(id: $checkoutId, checkoutId: $customerId) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutCustomerDetach($checkoutId: ID!) {
+  checkoutCustomerDetach(id: $checkoutId) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation userAddressDelete($id: ID!) {
+  accountAddressDelete(id: $id) {
+    errors {
+      ...AccountErrorFragment
+    }
+    address {
+      ...AddressFragment
+    }
+  }
+}
+mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
+  accountAddressUpdate(id: $id, input: $address) {
+    errors {
+      ...AccountErrorFragment
+    }
+    address {
+      ...AddressFragment
+    }
+  }
+}
+
+mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
+  accountAddressCreate(type: $type, input: $address) {
+    errors {
+      ...AccountErrorFragment
+    }
+    address {
+      ...AddressFragment
+    }
+  }
+}
+
+mutation checkoutShippingAddressUpdate(
+  $checkoutId: ID!
+  $shippingAddress: AddressInput!
+) {
+  checkoutShippingAddressUpdate(
+    id: $checkoutId
+    shippingAddress: $shippingAddress
+  ) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutBillingAddressUpdate(
+  $checkoutId: ID!
+  $billingAddress: AddressInput!
+) {
+  checkoutBillingAddressUpdate(
+    id: $checkoutId
+    billingAddress: $billingAddress
+  ) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutDeliveryMethodUpdate(
+  $checkoutId: ID!
+  $deliveryMethodId: ID!
+) {
+  checkoutDeliveryMethodUpdate(
+    id: $checkoutId
+    deliveryMethodId: $deliveryMethodId
+  ) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+query addressValidationRules($countryCode: CountryCode!) {
+  addressValidationRules(countryCode: $countryCode) {
+    addressFormat
+    allowedFields
+    requiredFields
+    countryAreaType
+    postalCodeType
+    cityType
+    countryAreaChoices {
+      raw
+      verbose
+    }
+  }
+}

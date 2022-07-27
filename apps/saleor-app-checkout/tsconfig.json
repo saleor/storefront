@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "paths": {
+      "@/saleor-app-checkout/*": [
+        "./*"
+      ],
+      // https://github.com/facebook/react/issues/24304.
+      // Remove when this gets updated to React 18"
+      "react": [
+        "./node_modules/@types/react"
+      ],
+      // Types mismatch between setup-polly-jest and @pollyjs/core
+      "@pollyjs/core": [
+        "./node_modules/@pollyjs/core"
+      ]
+    },
+    "declaration": false,
+    "declarationMap": false,
+    "noImplicitReturns": false,
+    "noUncheckedIndexedAccess": false
+  },
+  "extends": "tsconfig/nextjs.json",
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

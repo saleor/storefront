@@ -1,0 +1,167 @@
+fragment Address on Address {
+  companyName
+  firstName
+  lastName
+  streetAddress1
+  streetAddress2
+  postalCode
+  city
+  country {
+    code
+  }
+  countryArea
+  phone
+}
+
+fragment Money on Money {
+  currency
+  amount
+}
+
+fragment OrderLine on OrderLine {
+  id
+  productName
+  variantName
+  quantity
+  taxRate
+  variant {
+    product {
+      category {
+        name
+      }
+      productType {
+        isDigital
+        kind
+      }
+    }
+  }
+  unitPrice {
+    gross {
+      ...Money
+    }
+  }
+  totalPrice {
+    gross {
+      ...Money
+    }
+    tax {
+      ...Money
+    }
+  }
+  thumbnail {
+    url
+  }
+}
+
+fragment Order on Order {
+  id
+  number
+  userEmail
+  billingAddress {
+    ...Address
+  }
+  shippingAddress {
+    ...Address
+  }
+  total {
+    gross {
+      ...Money
+    }
+  }
+  discounts {
+    name
+    amount {
+      ...Money
+    }
+  }
+  shippingPrice {
+    gross {
+      ...Money
+    }
+    net {
+      ...Money
+    }
+    tax {
+      ...Money
+    }
+  }
+  shippingTaxRate
+  shippingMethodName
+  privateMetafield(key: "payment")
+  lines {
+    ...OrderLine
+  }
+}
+
+mutation OrderCreate($id: ID!) {
+  orderCreateFromCheckout(id: $id) {
+    order {
+      ...Order
+    }
+    errors {
+      code
+      message
+    }
+  }
+}
+
+query OrderDetails($id: ID!) {
+  order(id: $id) {
+    ...Order
+  }
+}
+
+query OrderPaymentDetails($id: ID!) {
+  order(id: $id) {
+    authorizeStatus
+    chargeStatus
+    isPaid
+    status
+    privateMetafield(key: "payment")
+  }
+}
+
+mutation OrderUpdatePaymentMetafield($orderId: ID!, $data: String!) {
+  updatePrivateMetadata(id: $orderId, input: { key: "payment", value: $data }) {
+    errors {
+      code
+    }
+  }
+}
+
+fragment TransactionEvent on TransactionEvent {
+  name
+  reference
+}
+
+fragment Transaction on TransactionItem {
+  id
+  reference
+  voidedAmount {
+    ...Money
+  }
+  refundedAmount {
+    ...Money
+  }
+  chargedAmount {
+    ...Money
+  }
+  authorizedAmount {
+    ...Money
+  }
+  events {
+    ...TransactionEvent
+  }
+}
+
+query OrderTransactions($id: ID!) {
+  order(id: $id) {
+    transactions {
+      ...Transaction
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

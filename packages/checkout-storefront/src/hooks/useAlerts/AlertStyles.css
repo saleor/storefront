@@ -1,0 +1,20 @@
+@tailwind components;
+
+@layer components {
+  .alert-container {
+    @apply rounded shadow-none mb-2 p-0 flex text-text-primary font-sans text-base text-text-primary min-h-0;
+    background: #ffffff;
+  }
+
+  .alert {
+    @apply py-3 px-5 flex items-start w-full;
+  }
+
+  .alert-error {
+    @apply bg-background-error;
+  }
+
+  .alert-success {
+    @apply bg-background-success;
+  }
+}

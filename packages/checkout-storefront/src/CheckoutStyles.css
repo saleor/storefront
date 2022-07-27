@@ -1,0 +1,31 @@
+@tailwind components;
+
+@layer components {
+  .app {
+    @apply bg-background-primary;
+  }
+
+  .page-horizontal-spacing {
+    @apply px-4 md:px-12 xl:px-18 2xl:w-350;
+  }
+
+  .page {
+    @apply min-h-screen mx-auto flex flex-col page-horizontal-spacing pt-8 md:pt-10;
+  }
+
+  .page-header {
+    @apply mb-6 md:mb-12;
+  }
+
+  .logo {
+    @apply h-10;
+  }
+
+  .page-content {
+    @apply flex flex-col-reverse lg:items-start lg:flex-row w-full box-border;
+  }
+
+  .page-divider {
+    @apply h-6 md:h-full w-full md:w-12 xl:w-18;
+  }
+}

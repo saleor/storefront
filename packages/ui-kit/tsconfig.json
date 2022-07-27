@@ -1,0 +1,18 @@
+{
+  "extends": "tsconfig/react-library.json",
+  "include": ["src"],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "lib": ["dom"],
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@lib/*": ["./src/lib/*"]
+    },
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "declarationDir": "types",
+    "outDir": "dist",
+    "composite": false,
+    "noUncheckedIndexedAccess": false
+  }
+}
