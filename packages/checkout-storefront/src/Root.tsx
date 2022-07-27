@@ -29,7 +29,7 @@ export const Root = ({ env }: RootProps) => {
       createClient({
         url: env.apiUrl,
         suspense: true,
-        requestPolicy: "network-only",
+        requestPolicy: "cache-first",
         fetch: authorizedFetch as ClientOptions["fetch"],
       }),
     []
