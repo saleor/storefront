@@ -13,7 +13,7 @@ export const paymentProviders = {
   adyen: {
     merchantAccount: {
       encrypted: false,
-      value: testingVars.adyenMarchantAccount,
+      value: testingVars.adyenMerchantAccount,
     },
     clientKey: {
       encrypted: false,
