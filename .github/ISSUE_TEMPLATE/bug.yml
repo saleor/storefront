@@ -16,6 +16,7 @@ body:
         Include what you expected to happen, and what actually happened.
     validations:
       required: true
+
   - type: textarea
     id: steps-to-reproduce
     attributes:
@@ -28,6 +29,7 @@ body:
         4. See error
     validations:
       required: true
+
   - type: input
     id: link-to-reproduction
     attributes:
@@ -35,57 +37,13 @@ body:
       description: The fastest way to describe your bug is to provide a reproduction repository.
       placeholder: https://github.com/project/link-to-your-reproduction-repo
 
-  - type: dropdown
-    id: which-os
-    attributes:
-      label: What OS are you using?
-      description: What OS are you using?
-      options:
-        - Windows
-        - Mac OS
-        - Linux
-        - Other
-
   - type: textarea
-    id: next-config
+    id: env
     attributes:
-      label: Your `next.config.js` file
-      description: Please provide a copy of your `next.config.js` file.
-      value: |
-        <details>
-          <summary>`next.config.js`</summary>
+      label: Output from envinfo
+      description: |
+        To get the environment information from your desktop use this command and paste it here:
+        `npx envinfo --system --binaries --browsers --markdown`
 
-        ```toml
-        # Paste content of your `next.config.js` file here. Check there is no private info in there.
-        ```
-
-        </details>
-
-  - type: textarea
-    id: build-logs
-    attributes:
-      label: Builds logs (or link to your logs)
-      value: |
-        <details>
-          <summary>Build logs</summary>
-
-        ```
-        # Paste logs here
-        ```
-
-        </details>
-
-  - type: textarea
-    id: function-logs
-    attributes:
-      label: Function logs
-      description: If it is a runtime error, please provide a copy of the relevant function logs.
-      value: |
-        <details>
-          <summary>Function logs</summary>
-
-        ```
-        # Paste logs here
-        ```
-
-        </details>
+        Please also provide the version of pnpm you're using:
+        `pnpm --version`
