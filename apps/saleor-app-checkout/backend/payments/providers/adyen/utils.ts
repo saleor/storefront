@@ -53,3 +53,16 @@ export const getAmountAfterRefund = (money: MoneyFragment, refundAmount: number)
 
   return chargedAmount;
 };
+
+export const encodeBasicAuth = (username: string, password: string) => {
+  return Buffer.from(username + ":" + password, "ascii").toString("base64");
+};
+
+export const verifyBasicAuth = (
+  username: string,
+  password: string,
+  token: string
+) => {
+  const credentials = encodeBasicAuth(username, password);
+  return token === `Basic ${credentials}`;
+};

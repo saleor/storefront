@@ -5,6 +5,7 @@ import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import { Types } from "@adyen/api-library";
 import type { Middleware } from "retes";
 import { Response } from "retes/response";
+import { verifyBasicAuth } from "./utils";
 import { adyenHmacValidator, validateHmac } from "./validator";
 
 export type AdyenRequestContext = Required<
@@ -75,13 +76,7 @@ export const isAdyenWebhookAuthenticated: Middleware =
   (handler) => (request) => {
     const { username, password } = request.context as AdyenRequestContext;
 
-    // Get basic auth token
-    const encodedCredentials = Buffer.from(
-      username + ":" + password,
-      "ascii"
-    ).toString("base64");
-
-    if (request.headers.authorization !== `Basic ${encodedCredentials}`) {
+    if (!verifyBasicAuth(username, password, request.headers.authorization)) {
       return Response.Unauthorized();
     }
 
