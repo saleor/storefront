@@ -16,6 +16,7 @@ export function SaleorProviderWithChannels({ children }: PropsWithChildren<{}>) 
     setChannel(currentChannel.slug);
   }, [currentChannel, setChannel]);
 
+  // @ts-expect-error React 17 <-> 18 types mismatch
   return <SaleorProvider client={saleorClient}>{children}</SaleorProvider>;
 }
 

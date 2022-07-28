@@ -1,6 +1,6 @@
 import { ApolloError } from "@apollo/client";
 import { useRouter } from "next/router";
-import { ReactChildren, ReactNode } from "react";
+import { ReactNode } from "react";
 
 import { CHECKOUT_TOKEN } from "@/lib/const";
 import { useLocalStorage } from "@/lib/hooks/useLocalStorage";
@@ -19,7 +19,7 @@ export interface CheckoutConsumerProps {
 
 export const [useCheckout, Provider] = createSafeContext<CheckoutConsumerProps>();
 
-export function CheckoutProvider({ children }: { children: ReactChildren | ReactNode }) {
+export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
