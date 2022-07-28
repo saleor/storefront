@@ -10,6 +10,7 @@ import { formatAsMoney } from "@/lib/util";
 import { LanguageCodeEnum, PriceFragment } from "@/saleor/api";
 
 import * as sourceOfTruth from "../../locale/en-US.json";
+import * as fr from "../../locale/fr-FR.json";
 import * as pl from "../../locale/pl-PL.json";
 
 export interface RegionsConsumerProps {
@@ -35,6 +36,8 @@ export function importMessages(locale: string): LocaleMessages {
       return sourceOfTruth;
     case "pl-PL":
       return pl;
+    case "fr-FR":
+      return fr;
     default:
       return sourceOfTruth;
   }
