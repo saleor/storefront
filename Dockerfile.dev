@@ -2,7 +2,7 @@ FROM node:16
 WORKDIR /app
 
 # Setup pnpm package manager
-RUN npm install -g pnpm
+RUN npm install -g pnpm@7.5.2
 
 # Setup proxy to API used in saleor-platform
 RUN apt-get update && apt-get install -y nginx
