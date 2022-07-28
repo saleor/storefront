@@ -41,3 +41,5 @@ dist
 #cypress
 cypress/screenshots
 cypress/videos
+
+.idea
