@@ -5,7 +5,7 @@ import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import { Types } from "@adyen/api-library";
 import type { Middleware } from "retes";
 import { Response } from "retes/response";
-import { adyenHmacValidator } from "./validator";
+import { adyenHmacValidator, validateHmac } from "./validator";
 
 export type AdyenRequestContext = Required<
   PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">]["adyen"]
@@ -88,29 +88,32 @@ export const isAdyenWebhookAuthenticated: Middleware =
     return handler(request);
   };
 
-export const isAdyenWebhookHmacValid: Middleware = (handler) => (request) => {
-  const { hmac } = request.context as AdyenRequestContext;
-  const params = request.params as AdyenRequestParams;
+export const isAdyenWebhookHmacValid: Middleware =
+  (handler) => async (request) => {
+    const { hmac } = request.context as AdyenRequestContext;
+    const params = request.params as AdyenRequestParams;
 
-  // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
-  // notificationItem will always contain a single item for HTTP POST
-  const notificationRequestItem =
-    params?.notificationItems?.[0]?.NotificationRequestItem;
+    // https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure
+    // notificationItem will always contain a single item for HTTP POST
+    const notificationRequestItem =
+      params?.notificationItems?.[0]?.NotificationRequestItem;
 
-  if (!notificationRequestItem) {
-    console.error("Invalid call from adyen - no NotificationRequestItem");
-    return Response.BadRequest(
-      "NotificationRequestItem is not present in the request"
+    if (!notificationRequestItem) {
+      console.error("Invalid call from adyen - no NotificationRequestItem");
+      return Response.BadRequest(
+        "NotificationRequestItem is not present in the request"
+      );
+    }
+
+    // first validate the origin
+    const [validationError, isValid] = await unpackPromise(
+      validateHmac(notificationRequestItem, hmac)
     );
-  }
 
-  // first validate the origin
-  const valid = adyenHmacValidator.validateHMAC(notificationRequestItem, hmac);
+    if (!isValid || validationError) {
+      console.error("Invalid hmac in Adyen webhook request", validationError);
+      return Response.Unauthorized();
+    }
 
-  if (!valid) {
-    console.error("Invalid hmac in Adyen webhook request");
-    return Response.Unauthorized();
-  }
-
-  return handler(request);
-};
+    return handler(request);
+  };
