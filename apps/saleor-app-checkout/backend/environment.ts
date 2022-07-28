@@ -7,17 +7,18 @@ const maskToken = (token: string) => "*".repeat(Math.max(token.length - 4, 0)) +
 
 export const getAuthToken = () => {
   let token;
+
+  if (IS_TEST) {
+    // Allows to use real appToken to record requests in development
+    token = "TEST";
+  }
+
   if (serverEnvVars.appToken) {
     token = serverEnvVars.appToken;
   }
 
   if (!token && process.env.VERCEL !== "1" && fs.existsSync(".auth_token")) {
     token = fs.readFileSync(".auth_token", "utf-8");
-  }
-
-  if (IS_TEST) {
-    // Allows to use real appToken to record requests in development
-    token = "TEST";
   }
 
   if (!token) {
