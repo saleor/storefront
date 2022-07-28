@@ -7,6 +7,6 @@ export const adyenHmacValidator = new hmacValidator();
 export const validateHmac: (
   ...params: Parameters<HmacValidator["validateHMAC"]>
 ) => // eslint-disable-next-line require-await
-  Promise<boolean> = async (notificationRequestItem, hmac) => {
-    return adyenHmacValidator.validateHMAC(notificationRequestItem, hmac);
-  };
+Promise<boolean> = async (notificationRequestItem, hmac) => {
+  return adyenHmacValidator.validateHMAC(notificationRequestItem, hmac);
+};
