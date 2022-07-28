@@ -1,77 +1,92 @@
-# Turborepo starter with pnpm
+# Saleor React Storefront
 
-This is an official starter turborepo.
+### GraphQL queries
 
-## What's inside?
+Graphql queries are located under the `./graphql`. We strongly encourage use of [fragments](https://graphql.org/learn/queries/#fragments), which minimizes code duplication and plays nicely with the TypeScript, during transformation of incoming data.
 
-This turborepo uses [pnpm](https://pnpm.io) as a packages manager. It includes the following packages/apps:
+Our client of choice is [Apollo](https://www.apollographql.com/docs/react/), which provides excellent cache and features out of the box. To get fully typed requests and responses, [GraphQL Code Generator](https://www.graphql-code-generator.com/) transforms all `.graphql` files into ready to use hooks. Generated code is located at `./saleor/api.tsx` file.
 
-### Apps and Packages
+API endpoint can be configured via `.env` file as described in [docs](docs/configuration.md).
 
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-storefront`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+#### Workflow
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- Modify or create GraphQL file. For example, new query at `./graphql/queries/FeaturedProducts.graphql`
+- Run `pnpm generate` command
+- New query will be added to the `./saleor/api.tsx` file
+- Import generated hook (`import { useFeaturedProductsQuery } from "@/saleor/api";`) in your component code
 
-### Utilities
+Script will start the [GraphQL Code Generator](https://www.graphql-code-generator.com/) in the watch mode, so changes in the queries will be automatically updated.
 
-This turborepo has some additional tools already setup for you:
+### React and Next.js code structure
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+When creating new components, please follow the [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components/).
 
-## Setup
+Code for the payment gateways can be found at `./components/checkout/payments`. At the moment we support [Saleor test gateway](https://docs.saleor.io/docs/3.0/developer/available-plugins/dummy-credit-card) and basic flow for Stripe.
 
-This repository is used in the `npx create-turbo@latest` command, and selected when choosing which package manager you wish to use with your monorepo (pnpm).
+#### Routing and urls
 
-### Build
+Project use [file based routing](https://nextjs.org/docs/routing/introduction). Available routes can be found at `./pages`. Dynamic routes (for example `./pages/product/[slug].tsx`) are generated at build time based on [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation).
 
-To build all apps and packages, run the following command:
+To ensure, that Link components use only the existing URLs with required arguments, we use [pathpida](https://github.com/aspida/pathpida). It is used to automatically generate the `./lib/$path.ts` file with all available routes. File should not be updated manually, instead run:
 
-```
-cd my-turborepo
-pnpm run build
+```bash
+pnpm paths
 ```
 
-### Develop
+Since routes require additional arguments with current locale and channel, you should use `usePaths` hook which will automatically add those. Let's create example component with link to the product page:
 
-To develop all apps and packages, run the following command:
+```tsx
+import Link from "next/link";
+import { usePaths } from "@/lib/paths";
 
-```
-cd my-turborepo
-pnpm run dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-pnpx turbo login
+export const ProductLinkComponent = () => {
+  const paths = usePaths();
+  return (
+    <Link href={paths.products._slug(line?.variant?.product?.slug).$url()}>
+      <a>Product link</a>
+    </Link>
+  );
+};
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Saleor Checkout
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
+React Storefront uses the new [Saleor Checkout](../saleor-app-checkout/) for checkout and payments. The setup is as easy as:
 
+1. Deploy Saleor Checkout
+2. Set the `NEXT_PUBLIC_CHECKOUT_URL` environment variable with Saleor Checkout URL
+
+### Bundle metrics
+
+If you want to check how your changes impact page size, use command:
+
+```bash
+pnpm analyze-build
 ```
-pnpx turbo link
+
+After the build, report will open in your browser.
+
+## Deployment
+
+### Vercel & Netlify
+
+This application is optimized for deployments on Vercel and Netlify. You can use the following deploy buttons
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Freact-storefront&project-name=my-react-storefront&repo-name=my-react-storefront)
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/saleor/react-storefront)
+
+or, configure it directly in the respective cloud provider.
+
+### Heroku
+
+For Heroku, you need to specify a LTS version of Node.js in your `package.json` explicitly. Add the following snippet in `package.json`:
+
+```json
+"engines": {
+  "node": ">=14 <17",
+  "npm": ">=6.11.0 <8"
+}
 ```
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+We don't add this in this codebase as we prefer to target the latest Node.js version.
