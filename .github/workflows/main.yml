@@ -33,7 +33,7 @@ jobs:
 
       - name: Validate paths
         run: |
-          pnpm --filter react-storefront paths
+          pnpm --filter=storefront paths
           git diff --exit-code ./lib/\$path.ts
 
       - name: Check linters
