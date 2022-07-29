@@ -13,7 +13,7 @@
     "lint": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint --cache-dir=.turbo",
     "lint:staged": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint:staged",
     "check-types": "turbo run check-types --cache-dir=.turbo",
-    "test": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run test --cache-dir=.turbo",
+    "test": "env-cmd -f .env turbo run test --cache-dir=.turbo",
     "format": "prettier --write .",
     "prepare": "husky install"
   },
