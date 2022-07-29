@@ -122,7 +122,7 @@ export const setupPollyMiddleware = (server: PollyServer) => {
       const isHandledByMsw = handlers.some((handler) => handler.test(fakeReq));
 
       if (isHandledByMsw) {
-        console.debug("(from Polly.js) Passing request to msw\n", body);
+        console.debug("(from Polly.js) Passing request to msw\n", fakeReq);
       }
 
       return isHandledByMsw;
