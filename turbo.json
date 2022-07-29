@@ -13,7 +13,13 @@
         "$NEXT_PUBLIC_CHECKOUT_APP_URL",
         "$SETTINGS_ENCRYPTION_SECRET"
       ],
-      "outputs": ["dist/**", ".next/**", "build/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "build/**",
+        "content/locales/**",
+        "content/compiled-locales/**"
+      ]
     },
     "lint": {
       "outputs": []

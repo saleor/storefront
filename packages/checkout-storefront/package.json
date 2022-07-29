@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "types": "./dist/esm/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "concurrently --kill-others 'next dev -p 3002' 'rollup -w -c'",
     "build": "NODE_ENV=production rollup -c",
