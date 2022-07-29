@@ -7,13 +7,13 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run build",
-    "generate": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run generate",
-    "dev": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run dev --parallel",
-    "lint": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint",
+    "build": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run build --cache-dir=.turbo",
+    "generate": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run generate --cache-dir=.turbo",
+    "dev": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run dev --parallel --cache-dir=.turbo",
+    "lint": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint --cache-dir=.turbo",
     "lint:staged": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint:staged",
-    "check-types": "turbo run check-types",
-    "test": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run test",
+    "check-types": "turbo run check-types --cache-dir=.turbo",
+    "test": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run test --cache-dir=.turbo",
     "format": "prettier --write .",
     "prepare": "husky install"
   },

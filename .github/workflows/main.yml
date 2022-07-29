@@ -32,6 +32,8 @@ jobs:
         run: pnpm run build
 
       - name: Validate paths
+        env:
+          SALEOR_API_URL: https://master.staging.saleor.cloud/graphql/
         run: |
           pnpm --filter=storefront paths
           git diff --exit-code ./lib/\$path.ts
