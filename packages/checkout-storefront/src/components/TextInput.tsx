@@ -9,6 +9,7 @@ import {
 } from "react-hook-form";
 import { ControlFormData } from "@/checkout-storefront/hooks/useGetInputProps";
 import { Errors } from "../hooks/useErrors";
+import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
 
 export interface TextInputProps<
   TControl extends Control<any, any>,
@@ -18,7 +19,7 @@ export interface TextInputProps<
       "onBlur" | "onChange" | "name" | "ref"
     >,
     Omit<UseFormRegisterReturn, "ref">,
-    Classes {
+    Pick<UiKitTextInputProps, "classNames"> {
   errors: Errors<TFormData>;
   control: TControl;
   name: FieldPath<TFormData>;

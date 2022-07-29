@@ -23034,7 +23034,7 @@ export function useCheckoutEmailUpdateMutation() {
 }
 export const CheckoutCustomerAttachDocument = gql`
   mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
-    checkoutCustomerAttach(id: $checkoutId, checkoutId: $customerId) {
+    checkoutCustomerAttach(id: $checkoutId, customerId: $customerId) {
       errors {
         ...CheckoutErrorFragment
       }

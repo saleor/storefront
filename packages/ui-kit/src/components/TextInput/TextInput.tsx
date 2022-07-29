@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Ref, InputHTMLAttributes, forwardRef } from "react";
+import { ClassNames } from "../..";
 
 import { Label } from "../Label";
 import { Text } from "../Text";
@@ -10,29 +11,43 @@ export interface TextInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "checked"> {
   label?: string;
   error?: string;
+  classNames: ClassNames<"container" | "input">;
 }
 
 export const TextInput = forwardRef(
   (
-    { label, error, required, placeholder, value, ...rest }: TextInputProps,
+    {
+      label,
+      error,
+      required,
+      placeholder,
+      value,
+      classNames = {},
+      ...rest
+    }: TextInputProps,
     ref: Ref<HTMLInputElement>
   ) => (
-    <div className={clsx(styles["text-input-container"])}>
+    <div className={clsx(styles["text-input-container"], classNames.container)}>
       {label && (
         <Label
           className={clsx(styles["text-input-label"], {
             [styles["text-input-filled-label"]]: value || placeholder,
-          })}>
+          })}
+        >
           {label}
           {required && "*"}
         </Label>
       )}
       <input
         ref={ref}
-        className={clsx(styles["text-input"], {
-          [styles["text-input-error"]]: error,
-          [styles["text-input-nolabel"]]: !label,
-        })}
+        className={clsx(
+          styles["text-input"],
+          {
+            [styles["text-input-error"]]: error,
+            [styles["text-input-nolabel"]]: !label,
+          },
+          classNames.input
+        )}
         placeholder={placeholder}
         value={value}
         required={required}
@@ -40,9 +55,10 @@ export const TextInput = forwardRef(
       />
       {error && (
         <Text
-          size='sm'
-          color='error'
-          className={styles["text-input-error-caption"]}>
+          size="sm"
+          color="error"
+          className={styles["text-input-error-caption"]}
+        >
           {error}
         </Text>
       )}
