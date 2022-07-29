@@ -15,7 +15,7 @@ export const Checkout = () => {
   const isCheckoutInvalid = !loading && !checkout && !authenticating;
 
   return (
-    <div className="app">
+    <div>
       {isCheckoutInvalid ? (
         <PageNotFound />
       ) : (
