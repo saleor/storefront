@@ -36,7 +36,7 @@ jobs:
           SALEOR_API_URL: https://master.staging.saleor.cloud/graphql/
         run: |
           pnpm --filter=storefront paths
-          git diff --exit-code ./lib/\$path.ts
+          git diff --exit-code ./apps/storefront/lib/\$path.ts
 
       - name: Check linters
         run: pnpm run lint
