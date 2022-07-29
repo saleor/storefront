@@ -28,6 +28,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build
+        run: pnpm run build
+
+      - name: Validate paths
+        run: |
+          pnpm --filter react-storefront paths
+          git diff --exit-code ./lib/\$path.ts
+
       - name: Check linters
         run: pnpm run lint
 
@@ -40,38 +48,3 @@ jobs:
           TEST_MOLLIE_PROFILE_ID: ${{ secrets.TEST_MOLLIE_PROFILE_ID }}
           SETTINGS_ENCRYPTION_SECRET: "testng"
         run: pnpm run test
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7.5.2 # version used by Vercel
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: "pnpm"
-
-      # @todo: cache this on Vercel https://turborepo.org/docs/ci/github-actions
-      - name: Turbo Cache
-        id: turbo-cache
-        uses: actions/cache@v2
-        with:
-          path: .turbo
-          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            turbo-${{ github.job }}-${{ github.ref_name }}-
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build
-        run: pnpm run build
-
-      - name: Validate paths
-        run: |
-          pnpm --filter react-storefront paths
-          git diff --exit-code ./lib/\$path.ts
