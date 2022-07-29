@@ -16,7 +16,7 @@
     "lint": "next lint",
     "lint:staged": "next lint --fix",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
-    "paths": "pathpida --ignorePath .gitignore",
+    "paths": "pathpida --ignorePath ../../.gitignore",
     "cy:run": "cypress run",
     "cy:open": "cypress open"
   },
@@ -43,7 +43,7 @@
     "editorjs-blocks-react-renderer": "^1.2.4",
     "graphql": "16.3.0",
     "graphql-tag": "^2.12.6",
-    "next": "12.1.5",
+    "next": "12.2.3",
     "next-seo": "^5.3.0",
     "next-sitemap": "^2.4.3",
     "next-usequerystate": "^1.7.2",

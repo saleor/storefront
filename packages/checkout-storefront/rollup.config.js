@@ -6,6 +6,7 @@ import external from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 import json from "@rollup/plugin-json";
 import image from "@rollup/plugin-image";
+import dts from "rollup-plugin-dts";
 
 const packageJson = require("./package.json");
 
@@ -48,5 +49,11 @@ export default [
         plugins: [require("tailwindcss")(), require("autoprefixer")(), require("postcss-import")()],
       }),
     ]),
+  },
+  {
+    input: "./dist/esm/index.d.ts",
+    output: [{ file: "dist/index.d.ts", format: "esm" }],
+    external: [/\.css$/],
+    plugins: [dts()],
   },
 ];
