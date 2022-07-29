@@ -2,7 +2,7 @@
 
 @layer components {
   .app {
-    @apply bg-background-primary;
+    @apply bg-background-primary px-4 lg:px-0;
   }
 
   .page-horizontal-spacing {
@@ -26,6 +26,6 @@
   }
 
   .page-divider {
-    @apply h-6 md:h-full w-full md:w-12;
+    @apply h-6 w-full lg:h-full lg:w-8;
   }
 }
