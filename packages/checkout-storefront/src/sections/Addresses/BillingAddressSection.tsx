@@ -60,7 +60,6 @@ export const BillingAddressSection = () => {
   };
 
   const handleSetBillingSameAsShipping = async () => {
-    console.log({ useBillingSameAsShipping, hasBillingSameAsShipping });
     if (useBillingSameAsShipping && !hasBillingSameAsShipping) {
       await updateBillingAddress(
         getAddressFormDataFromAddress(checkout.shippingAddress) as AddressFormData

@@ -1,9 +1,4 @@
 import clsx from "clsx";
-import { debounce } from "lodash-es";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-
-import { IconButton } from "@/checkout-storefront/components/IconButton";
-import { MinusIcon, PlusIcon } from "@/checkout-storefront/icons";
 import { Text } from "@saleor/ui-kit";
 import {
   CheckoutLineFragment,
@@ -13,17 +8,26 @@ import {
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useFormattedMoney } from "@/checkout-storefront/hooks/useFormattedMoney";
 import { Money } from "@/checkout-storefront/components/Money";
+import { TextInput } from "@/checkout-storefront/components/TextInput";
+
+import { useEffect } from "react";
+import {
+  extractMutationErrors,
+  useValidationResolver,
+} from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { object, string } from "yup";
+import { useForm } from "react-hook-form";
+import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
+import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
 }
 
-interface FormData {
-  quantity: number;
+export interface FormData {
+  quantity: string;
 }
 
 export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
@@ -32,81 +36,91 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const {
     unitPrice,
     undiscountedUnitPrice,
-    variant: { id: variantId, pricing },
+    variant: { pricing },
   } = line;
 
-  const [quantity, setQuantity] = useState(line.quantity);
-  const previousQuantity = useRef(line.quantity);
-  const [, updateLines] = useCheckoutLinesUpdateMutation();
+  const [{ fetching }, updateLines] = useCheckoutLinesUpdateMutation();
   const { checkout } = useCheckout();
-  const { showErrors, showSuccess } = useAlerts("checkoutLinesUpdate");
+  const { showErrors } = useAlerts("checkoutLinesUpdate");
+  const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
+
+  const schema = object({
+    quantity: string(),
+  });
+
+  const resolver = useValidationResolver(schema);
+  const methods = useForm<FormData>({
+    resolver,
+    defaultValues: { quantity: line.quantity.toString() },
+  });
+
+  const { watch, setValue } = methods;
+
+  const getQuantityValue = () => watch("quantity");
+  const getQuantity = () => Number(getQuantityValue());
+
+  const onSubmit = async ({ quantity }: FormData) => {
+    const result = await updateLines(getUpdateLineVars({ quantity }));
+    const [hasMutationErrors, errors] = extractMutationErrors(result);
+
+    if (!hasMutationErrors) {
+      clearErrors();
+      return;
+    }
+
+    setApiErrors(errors);
+    showErrors(errors);
+  };
+
+  //@ts-ignore
+  const getInputProps = useGetInputProps(methods);
 
   const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables => ({
     checkoutId: checkout.id,
     lines: [
       {
-        quantity,
-        variantId,
+        quantity: Number(quantity),
+        variantId: line.variant.id,
       },
     ],
   });
-
-  const handleSubmit = async ({ quantity }: FormData) => {
-    const result = await updateLines(getUpdateLineVars({ quantity }));
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (!hasErrors) {
-      showSuccess();
-      return;
-    }
-
-    showErrors(errors);
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSubmit = useCallback(
-    debounce((quantity) => handleSubmit({ quantity }), 250),
-    []
-  );
-
-  useEffect(() => {
-    if (quantity === previousQuantity.current) {
-      return;
-    }
-
-    previousQuantity.current = quantity;
-
-    void debouncedSubmit(quantity);
-  }, [quantity, debouncedSubmit]);
 
   const piecePrice = unitPrice.gross;
   const formatMessage = useFormattedMessages();
   const formattedPiecePrice = useFormattedMoney(piecePrice);
 
-  const multiplePieces = quantity > 1;
+  const multiplePieces = getQuantity() > 1;
+
+  const handleQuantityInputBlur = () => {
+    if (getQuantity() === line.quantity) {
+      return;
+    }
+
+    if (getQuantityValue() === "") {
+      setValue("quantity", String(line.quantity));
+      return;
+    }
+
+    void onSubmit({ quantity: getQuantityValue() });
+  };
+
+  useEffect(() => {
+    if (fetching || !hasErrors) {
+      return;
+    }
+
+    if (line.quantity !== getQuantity()) {
+      setValue("quantity", line.quantity.toString());
+    }
+  }, [fetching]);
 
   return (
-    <div className="flex flex-col items-end">
-      <div className="flex flex-row mb-3">
-        <IconButton
-          variant="bare"
-          ariaLabel={formatMessage("addItemQuantityLabel")}
-          onClick={() => {
-            setQuantity(quantity - 1);
-          }}
-          icon={<img src={getSvgSrc(MinusIcon)} alt="remove" />}
-        />
-        <Text weight="bold" className="mx-3">
-          {quantity}
-        </Text>
-        <IconButton
-          variant="bare"
-          ariaLabel={formatMessage("subtractItemQuantityLabel")}
-          onClick={() => {
-            setQuantity(quantity + 1);
-          }}
-          icon={<img src={getSvgSrc(PlusIcon)} alt="add" />}
+    <div className="flex flex-col items-end h-20">
+      <div className="flex flex-row">
+        <TextInput
+          classNames={{ container: "max-w-12 !mb-2", input: "text-right !h-8" }}
+          label=""
+          {...getInputProps("quantity", { onBlur: handleQuantityInputBlur })}
         />
       </div>
       <div className="flex flex-row justify-end">
@@ -115,7 +129,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
             ariaLabel={formatMessage("undiscountedPriceLabel")}
             money={{
               currency: undiscountedUnitPrice.currency,
-              amount: undiscountedUnitPrice.amount * quantity,
+              amount: undiscountedUnitPrice.amount * getQuantity(),
             }}
             className="line-through mr-1"
           />
@@ -124,7 +138,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           ariaLabel={formatMessage("totalPriceLabel")}
           money={{
             currency: piecePrice?.currency as string,
-            amount: (piecePrice?.amount || 0) * quantity,
+            amount: (piecePrice?.amount || 0) * getQuantity(),
           }}
           weight="bold"
           className={clsx({

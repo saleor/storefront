@@ -2,11 +2,11 @@
 
 @layer components {
   .summary {
-    @apply flex flex-col w-full mb-8 lg:w-1/2 bg-background-secondary py-8 overflow-hidden;
+    @apply flex flex-col w-full lg:w-1/2 border border-border-secondary rounded-lg lg:border-none overflow-hidden;
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-center bg-background-secondary z-50;
+    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0;
   }
 
   .summary-title .text {
@@ -42,6 +42,10 @@
   }
 
   .summary-recap {
-    @apply flex flex-col max-w-full px-6 ml-0 md:ml-22;
+    @apply flex flex-col max-w-full ml-0 md:ml-22;
+  }
+
+  .summary-recap > .summary-row {
+    @apply px-6;
   }
 }

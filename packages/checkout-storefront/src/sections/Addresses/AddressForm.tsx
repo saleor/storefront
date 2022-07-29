@@ -130,7 +130,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   };
 
   return (
-    <div>
+    <div className="mt-2">
       {sortedAddressFields.map((field: AddressField) => {
         const isRequired = isRequiredField(field);
         const label = getFieldLabel(field);

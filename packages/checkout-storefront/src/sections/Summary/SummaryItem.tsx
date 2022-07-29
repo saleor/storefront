@@ -20,9 +20,9 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
   const formatMessage = useFormattedMessages();
 
   return (
-    <li className="flex flex-row px-6 mb-6">
+    <li className="flex flex-row px-6 mb-4">
       <div className="relative flex flex-row">
-        {!readOnly && <SummaryItemDelete line={line as CheckoutLineFragment} />}
+        {/* {!readOnly && <SummaryItemDelete line={line as CheckoutLineFragment} />} */}
         <div className="summary-item-image mr-4 z-1">
           {productImage ? (
             <img

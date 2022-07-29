@@ -12,6 +12,7 @@ import { compact } from "lodash-es";
 
 import { getTaxPercentage } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { Title } from "@/checkout-storefront/components/Title";
 
 export const Summary = () => {
   const [isOpen, setOpen] = useState(true);
@@ -26,17 +27,20 @@ export const Summary = () => {
   return (
     <div className="summary">
       <div className={clsx("summary-title", isOpen && "open")}>
-        <div className="flex flex-row items-center">
-          <Text size="lg" weight="bold">
-            {formatMessage("summary")}
-          </Text>
-          <img
-            src={getSvgSrc(ChevronDownIcon)}
-            alt="chevron-down"
-            onClick={() => setOpen(!isOpen)}
-          />
+        <div
+          className="flex flex-row items-center"
+          onClick={() => setOpen(!isOpen)}
+        >
+          <Title className="mb-0">{formatMessage("summary")}</Title>
+          <img src={getSvgSrc(ChevronDownIcon)} alt="chevron-down" />
         </div>
-        <Money ariaLabel={formatMessage("totalPriceLabel")} weight="bold" money={totalPrice} />
+        {!isOpen && (
+          <Money
+            ariaLabel={formatMessage("totalPriceLabel")}
+            weight="bold"
+            money={totalPrice}
+          />
+        )}
       </div>
       <Transition
         show={isOpen}
@@ -48,7 +52,7 @@ export const Summary = () => {
         leaveFrom="transform scale-100 opacity-100"
         leaveTo="transform scale-95 opacity-0"
       >
-        <div className="w-full h-12" />
+        <div className="w-full h-2" />
         <ul className="summary-items">
           {compact(checkout?.lines)?.map((line) => (
             <SummaryItem line={line} key={line?.id} />
@@ -81,7 +85,7 @@ export const Summary = () => {
             <Money ariaLabel={formatMessage("taxCostLabel")} color="secondary" money={taxCost} />
           </div>
           <Divider className="my-4" />
-          <div className="summary-row">
+          <div className="summary-row pb-4">
             <Text size="md" weight="bold">
               {formatMessage("total")}
             </Text>

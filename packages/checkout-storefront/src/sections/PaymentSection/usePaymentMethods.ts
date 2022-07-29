@@ -52,8 +52,6 @@ export const usePaymentMethods = (channelId: string) => {
   const selectedPaymentProvider =
     selectedPaymentMethod && allPaymentMethods?.[selectedPaymentMethod];
 
-  console.log({ selectedPaymentMethod, selectedPaymentProvider });
-
   return {
     selectedPaymentMethod,
     setSelectedPaymentMethod,
