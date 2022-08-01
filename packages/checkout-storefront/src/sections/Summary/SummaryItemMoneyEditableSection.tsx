@@ -116,9 +116,12 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
 
   return (
     <div className="flex flex-col items-end h-20">
-      <div className="flex flex-row">
+      <div className="flex flex-row items-baseline relative -top-2">
+        <Text size="xs" className="mr-2">
+          {formatMessage("quantity")}:
+        </Text>
         <TextInput
-          classNames={{ container: "max-w-12 !mb-2", input: "text-right !h-8" }}
+          classNames={{ container: "!w-12 !mb-0", input: "text-center !h-8" }}
           label=""
           {...getInputProps("quantity", { onBlur: handleQuantityInputBlur })}
         />

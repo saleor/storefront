@@ -2260,11 +2260,34 @@ export type CategoryUpdated = Event & {
 /** Represents channel. */
 export type Channel = Node & {
   __typename?: "Channel";
+  /**
+   * Shipping methods that are available for the channel.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  availableShippingMethodsPerCountry?: Maybe<Array<ShippingMethodsPerCountry>>;
+  /**
+   * List of shippable countries for the channel.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  countries?: Maybe<Array<CountryDisplay>>;
+  /**
+   * A currency that is assigned to the channel.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
+   */
   currencyCode: Scalars["String"];
   /**
    * Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided.
    *
    * Added in Saleor 3.1.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
    */
   defaultCountry: CountryDisplay;
   /**
@@ -2274,8 +2297,19 @@ export type Channel = Node & {
    */
   hasOrders: Scalars["Boolean"];
   id: Scalars["ID"];
+  /**
+   * Whether the channel is active.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
+   */
   isActive: Scalars["Boolean"];
+  /**
+   * Name of the channel.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
+   */
   name: Scalars["String"];
+  /** Slug of the channel. */
   slug: Scalars["String"];
   /**
    * List of warehouses assigned to this channel.
@@ -2283,8 +2317,15 @@ export type Channel = Node & {
    * Added in Saleor 3.5.
    *
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
    */
   warehouses: Array<Warehouse>;
+};
+
+/** Represents channel. */
+export type ChannelAvailableShippingMethodsPerCountryArgs = {
+  countries?: InputMaybe<Array<CountryCode>>;
 };
 
 /**
@@ -13442,6 +13483,7 @@ export type Permission = {
 export type PermissionEnum =
   | "HANDLE_CHECKOUTS"
   | "HANDLE_PAYMENTS"
+  | "HANDLE_TAXES"
   | "IMPERSONATE_USER"
   | "MANAGE_APPS"
   | "MANAGE_CHANNELS"
@@ -13484,6 +13526,26 @@ export type PermissionGroupCreateInput = {
   name: Scalars["String"];
 };
 
+export type PermissionGroupCreated = Event & {
+  __typename?: "PermissionGroupCreated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * The permission group the event relates to.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  permissionGroup?: Maybe<Group>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
 /**
  * Delete permission group. Apps are not allowed to perform this mutation.
  *
@@ -13495,6 +13557,26 @@ export type PermissionGroupDelete = {
   group?: Maybe<Group>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   permissionGroupErrors: Array<PermissionGroupError>;
+};
+
+export type PermissionGroupDeleted = Event & {
+  __typename?: "PermissionGroupDeleted";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * The permission group the event relates to.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  permissionGroup?: Maybe<Group>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 export type PermissionGroupError = {
@@ -13562,6 +13644,26 @@ export type PermissionGroupUpdateInput = {
   removePermissions?: InputMaybe<Array<PermissionEnum>>;
   /** List of users to unassign from this group. */
   removeUsers?: InputMaybe<Array<Scalars["ID"]>>;
+};
+
+export type PermissionGroupUpdated = Event & {
+  __typename?: "PermissionGroupUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * The permission group the event relates to.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  permissionGroup?: Maybe<Group>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** Plugin. */
@@ -14297,18 +14399,22 @@ export type ProductFilterInput = {
    */
   channel?: InputMaybe<Scalars["String"]>;
   collections?: InputMaybe<Array<Scalars["ID"]>>;
+  /** Filter on whether product is a gift card or not. */
   giftCard?: InputMaybe<Scalars["Boolean"]>;
   hasCategory?: InputMaybe<Scalars["Boolean"]>;
   hasPreorderedVariants?: InputMaybe<Scalars["Boolean"]>;
   ids?: InputMaybe<Array<Scalars["ID"]>>;
   isPublished?: InputMaybe<Scalars["Boolean"]>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
+  /** Filter by the lowest variant price after discounts. */
   minimalPrice?: InputMaybe<PriceRangeInput>;
   price?: InputMaybe<PriceRangeInput>;
   productTypes?: InputMaybe<Array<Scalars["ID"]>>;
   search?: InputMaybe<Scalars["String"]>;
+  /** Filter by variants having specific stock status. */
   stockAvailability?: InputMaybe<StockAvailability>;
   stocks?: InputMaybe<ProductStockFilterInput>;
+  /** Filter by when was the most recent update. */
   updatedAt?: InputMaybe<DateTimeRangeInput>;
 };
 
@@ -15713,11 +15819,7 @@ export type Query = {
   categories?: Maybe<CategoryCountableConnection>;
   /** Look up a category by ID or slug. */
   category?: Maybe<Category>;
-  /**
-   * Look up a channel by ID.
-   *
-   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
-   */
+  /** Look up a channel by ID or slug. */
   channel?: Maybe<Channel>;
   /**
    * List of all channels.
@@ -16103,6 +16205,7 @@ export type QueryCategoryArgs = {
 
 export type QueryChannelArgs = {
   id?: InputMaybe<Scalars["ID"]>;
+  slug?: InputMaybe<Scalars["String"]>;
 };
 
 export type QueryCheckoutArgs = {
@@ -17427,6 +17530,21 @@ export type ShippingMethodTypeTranslationArgs = {
 
 /** An enumeration. */
 export type ShippingMethodTypeEnum = "PRICE" | "WEIGHT";
+
+/**
+ * List of shipping methods available for the country.
+ *
+ * Added in Saleor 3.6.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ShippingMethodsPerCountry = {
+  __typename?: "ShippingMethodsPerCountry";
+  /** The country code. */
+  countryCode: CountryCode;
+  /** List of available shipping methods. */
+  shippingMethods?: Maybe<Array<ShippingMethod>>;
+};
 
 export type ShippingPostalCodeRulesCreateInputRange = {
   /** End range of the postal code. */
@@ -20561,8 +20679,11 @@ export type WebhookEventTypeAsyncEnum =
   | "CUSTOMER_DELETED"
   /** A customer account is updated. */
   | "CUSTOMER_UPDATED"
+  /** A draft order is created. */
   | "DRAFT_ORDER_CREATED"
+  /** A draft order is deleted. */
   | "DRAFT_ORDER_DELETED"
+  /** A draft order is updated. */
   | "DRAFT_ORDER_UPDATED"
   /** A fulfillment is cancelled. */
   | "FULFILLMENT_CANCELED"
@@ -20622,23 +20743,35 @@ export type WebhookEventTypeAsyncEnum =
   | "PAGE_TYPE_UPDATED"
   /** A page is updated. */
   | "PAGE_UPDATED"
+  /** A new permission group is created. */
+  | "PERMISSION_GROUP_CREATED"
+  /** A permission group is deleted. */
+  | "PERMISSION_GROUP_DELETED"
+  /** A permission group is updated. */
+  | "PERMISSION_GROUP_UPDATED"
   /** A new product is created. */
   | "PRODUCT_CREATED"
   /** A product is deleted. */
   | "PRODUCT_DELETED"
   /** A product is updated. */
   | "PRODUCT_UPDATED"
+  /** A product variant is back in stock. */
   | "PRODUCT_VARIANT_BACK_IN_STOCK"
   /** A new product variant is created. */
   | "PRODUCT_VARIANT_CREATED"
   /** A product variant is deleted. */
   | "PRODUCT_VARIANT_DELETED"
+  /** A product variant is out of stock. */
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
   /** A product variant is updated. */
   | "PRODUCT_VARIANT_UPDATED"
+  /** A sale is created. */
   | "SALE_CREATED"
+  /** A sale is deleted. */
   | "SALE_DELETED"
+  /** A sale is activated or deactivated. */
   | "SALE_TOGGLE"
+  /** A sale is updated. */
   | "SALE_UPDATED"
   /** A new shipping price is created. */
   | "SHIPPING_PRICE_CREATED"
@@ -20652,12 +20785,17 @@ export type WebhookEventTypeAsyncEnum =
   | "SHIPPING_ZONE_DELETED"
   /** A shipping zone is updated. */
   | "SHIPPING_ZONE_UPDATED"
-  /** A staff user is deleted */
+  /** A new staff user is created. */
   | "STAFF_CREATED"
+  /** A staff user is deleted. */
   | "STAFF_DELETED"
+  /** A staff user is updated. */
   | "STAFF_UPDATED"
+  /** An action requested for transaction. */
   | "TRANSACTION_ACTION_REQUEST"
+  /** A new translation is created. */
   | "TRANSLATION_CREATED"
+  /** A translation is updated. */
   | "TRANSLATION_UPDATED"
   /** A new voucher created. */
   | "VOUCHER_CREATED"
@@ -20716,8 +20854,17 @@ export type WebhookEventTypeEnum =
   | "CHANNEL_STATUS_CHANGED"
   /** A channel is updated. */
   | "CHANNEL_UPDATED"
+  /**
+   * Event called for checkout tax calculation.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "CHECKOUT_CALCULATE_TAXES"
   /** A new checkout is created. */
   | "CHECKOUT_CREATED"
+  /** Filter shipping methods for checkout. */
   | "CHECKOUT_FILTER_SHIPPING_METHODS"
   /** A checkout is updated. It also triggers all updates related to the checkout. */
   | "CHECKOUT_UPDATED"
@@ -20733,8 +20880,11 @@ export type WebhookEventTypeEnum =
   | "CUSTOMER_DELETED"
   /** A customer account is updated. */
   | "CUSTOMER_UPDATED"
+  /** A draft order is created. */
   | "DRAFT_ORDER_CREATED"
+  /** A draft order is deleted. */
   | "DRAFT_ORDER_DELETED"
+  /** A draft order is updated. */
   | "DRAFT_ORDER_UPDATED"
   /** A fulfillment is cancelled. */
   | "FULFILLMENT_CANCELED"
@@ -20770,12 +20920,21 @@ export type WebhookEventTypeEnum =
   | "NOTIFY_USER"
   /** An observability event is created. */
   | "OBSERVABILITY"
+  /**
+   * Event called for order tax calculation.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "ORDER_CALCULATE_TAXES"
   /** An order is cancelled. */
   | "ORDER_CANCELLED"
   /** An order is confirmed (status change unconfirmed -> unfulfilled) by a staff user using the OrderConfirm mutation. It also triggers when the user completes the checkout and the shop setting `automatically_confirm_all_new_orders` is enabled. */
   | "ORDER_CONFIRMED"
   /** A new order is placed. */
   | "ORDER_CREATED"
+  /** Filter shipping methods for order. */
   | "ORDER_FILTER_SHIPPING_METHODS"
   /** An order is fulfilled. */
   | "ORDER_FULFILLED"
@@ -20795,31 +20954,51 @@ export type WebhookEventTypeEnum =
   | "PAGE_TYPE_UPDATED"
   /** A page is updated. */
   | "PAGE_UPDATED"
+  /** Authorize payment. */
   | "PAYMENT_AUTHORIZE"
+  /** Capture payment. */
   | "PAYMENT_CAPTURE"
+  /** Confirm payment. */
   | "PAYMENT_CONFIRM"
+  /** Listing available payment gateways. */
   | "PAYMENT_LIST_GATEWAYS"
+  /** Process payment. */
   | "PAYMENT_PROCESS"
+  /** Refund payment. */
   | "PAYMENT_REFUND"
+  /** Void payment. */
   | "PAYMENT_VOID"
+  /** A new permission group is created. */
+  | "PERMISSION_GROUP_CREATED"
+  /** A permission group is deleted. */
+  | "PERMISSION_GROUP_DELETED"
+  /** A permission group is updated. */
+  | "PERMISSION_GROUP_UPDATED"
   /** A new product is created. */
   | "PRODUCT_CREATED"
   /** A product is deleted. */
   | "PRODUCT_DELETED"
   /** A product is updated. */
   | "PRODUCT_UPDATED"
+  /** A product variant is back in stock. */
   | "PRODUCT_VARIANT_BACK_IN_STOCK"
   /** A new product variant is created. */
   | "PRODUCT_VARIANT_CREATED"
   /** A product variant is deleted. */
   | "PRODUCT_VARIANT_DELETED"
+  /** A product variant is out of stock. */
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
   /** A product variant is updated. */
   | "PRODUCT_VARIANT_UPDATED"
+  /** A sale is created. */
   | "SALE_CREATED"
+  /** A sale is deleted. */
   | "SALE_DELETED"
+  /** A sale is activated or deactivated. */
   | "SALE_TOGGLE"
+  /** A sale is updated. */
   | "SALE_UPDATED"
+  /** Fetch external shipping methods for checkout. */
   | "SHIPPING_LIST_METHODS_FOR_CHECKOUT"
   /** A new shipping price is created. */
   | "SHIPPING_PRICE_CREATED"
@@ -20833,12 +21012,17 @@ export type WebhookEventTypeEnum =
   | "SHIPPING_ZONE_DELETED"
   /** A shipping zone is updated. */
   | "SHIPPING_ZONE_UPDATED"
-  /** A staff user is deleted */
+  /** A new staff user is created. */
   | "STAFF_CREATED"
+  /** A staff user is deleted. */
   | "STAFF_DELETED"
+  /** A staff user is updated. */
   | "STAFF_UPDATED"
+  /** An action requested for transaction. */
   | "TRANSACTION_ACTION_REQUEST"
+  /** A new translation is created. */
   | "TRANSLATION_CREATED"
+  /** A translation is updated. */
   | "TRANSLATION_UPDATED"
   /** A new voucher created. */
   | "VOUCHER_CREATED"
@@ -20855,15 +21039,41 @@ export type WebhookEventTypeEnum =
 
 /** Enum determining type of webhook. */
 export type WebhookEventTypeSyncEnum =
+  /**
+   * Event called for checkout tax calculation.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "CHECKOUT_CALCULATE_TAXES"
+  /** Filter shipping methods for checkout. */
   | "CHECKOUT_FILTER_SHIPPING_METHODS"
+  /**
+   * Event called for order tax calculation.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "ORDER_CALCULATE_TAXES"
+  /** Filter shipping methods for order. */
   | "ORDER_FILTER_SHIPPING_METHODS"
+  /** Authorize payment. */
   | "PAYMENT_AUTHORIZE"
+  /** Capture payment. */
   | "PAYMENT_CAPTURE"
+  /** Confirm payment. */
   | "PAYMENT_CONFIRM"
+  /** Listing available payment gateways. */
   | "PAYMENT_LIST_GATEWAYS"
+  /** Process payment. */
   | "PAYMENT_PROCESS"
+  /** Refund payment. */
   | "PAYMENT_REFUND"
+  /** Void payment. */
   | "PAYMENT_VOID"
+  /** Fetch external shipping methods for checkout. */
   | "SHIPPING_LIST_METHODS_FOR_CHECKOUT";
 
 /** An enumeration. */
@@ -20928,6 +21138,9 @@ export type WebhookSampleEventTypeEnum =
   | "PAGE_TYPE_DELETED"
   | "PAGE_TYPE_UPDATED"
   | "PAGE_UPDATED"
+  | "PERMISSION_GROUP_CREATED"
+  | "PERMISSION_GROUP_DELETED"
+  | "PERMISSION_GROUP_UPDATED"
   | "PRODUCT_CREATED"
   | "PRODUCT_DELETED"
   | "PRODUCT_UPDATED"
@@ -21137,6 +21350,10 @@ export type CheckoutFragment = {
       __typename?: "ProductVariant";
       id: string;
       name: string;
+      attributes: Array<{
+        __typename?: "SelectedAttribute";
+        values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+      }>;
       pricing?: {
         __typename?: "VariantPricingInfo";
         onSale?: boolean | null;
@@ -21182,6 +21399,10 @@ export type CheckoutLineFragment = {
     __typename?: "ProductVariant";
     id: string;
     name: string;
+    attributes: Array<{
+      __typename?: "SelectedAttribute";
+      values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+    }>;
     pricing?: {
       __typename?: "VariantPricingInfo";
       onSale?: boolean | null;
@@ -21315,6 +21536,13 @@ export type CheckoutQuery = {
         __typename?: "ProductVariant";
         id: string;
         name: string;
+        attributes: Array<{
+          __typename?: "SelectedAttribute";
+          values: Array<{
+            __typename?: "AttributeValue";
+            name?: string | null;
+          }>;
+        }>;
         pricing?: {
           __typename?: "VariantPricingInfo";
           onSale?: boolean | null;
@@ -21406,6 +21634,13 @@ export type CheckoutLinesUpdateMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -21471,6 +21706,13 @@ export type CheckoutLineDeleteMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -21608,6 +21850,13 @@ export type CheckoutEmailUpdateMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -21745,6 +21994,13 @@ export type CheckoutCustomerAttachMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -21881,6 +22137,13 @@ export type CheckoutCustomerDetachMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -22117,6 +22380,13 @@ export type CheckoutShippingAddressUpdateMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -22254,6 +22524,13 @@ export type CheckoutBillingAddressUpdateMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -22391,6 +22668,13 @@ export type CheckoutDeliveryMethodUpdateMutation = {
           __typename?: "ProductVariant";
           id: string;
           name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+            }>;
+          }>;
           pricing?: {
             __typename?: "VariantPricingInfo";
             onSale?: boolean | null;
@@ -22451,6 +22735,14 @@ export type OrderLineFragment = {
   quantity: number;
   productName: string;
   variantName: string;
+  variant?: {
+    __typename?: "ProductVariant";
+    name: string;
+    attributes: Array<{
+      __typename?: "SelectedAttribute";
+      values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+    }>;
+  } | null;
   totalPrice: {
     __typename?: "TaxedMoney";
     gross: { __typename?: "Money"; currency: string; amount: number };
@@ -22536,6 +22828,14 @@ export type OrderFragment = {
     quantity: number;
     productName: string;
     variantName: string;
+    variant?: {
+      __typename?: "ProductVariant";
+      name: string;
+      attributes: Array<{
+        __typename?: "SelectedAttribute";
+        values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+      }>;
+    } | null;
     totalPrice: {
       __typename?: "TaxedMoney";
       gross: { __typename?: "Money"; currency: string; amount: number };
@@ -22625,6 +22925,17 @@ export type OrderQuery = {
       quantity: number;
       productName: string;
       variantName: string;
+      variant?: {
+        __typename?: "ProductVariant";
+        name: string;
+        attributes: Array<{
+          __typename?: "SelectedAttribute";
+          values: Array<{
+            __typename?: "AttributeValue";
+            name?: string | null;
+          }>;
+        }>;
+      } | null;
       totalPrice: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
@@ -22704,6 +23015,11 @@ export const CheckoutLineFragmentDoc = gql`
       ...Money
     }
     variant {
+      attributes(variantSelection: ALL) {
+        values {
+          name
+        }
+      }
       id
       pricing {
         onSale
@@ -22827,6 +23143,14 @@ export const OrderLineFragmentDoc = gql`
   fragment OrderLineFragment on OrderLine {
     id
     quantity
+    variant {
+      name
+      attributes(variantSelection: ALL) {
+        values {
+          name
+        }
+      }
+    }
     totalPrice {
       gross {
         ...Money

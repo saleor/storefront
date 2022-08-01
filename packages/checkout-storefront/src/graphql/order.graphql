@@ -6,6 +6,14 @@ fragment Money on Money {
 fragment OrderLineFragment on OrderLine {
   id
   quantity
+  variant {
+    name
+    attributes(variantSelection: ALL) {
+      values {
+        name
+      }
+    }
+  }
   totalPrice {
     gross {
       ...Money

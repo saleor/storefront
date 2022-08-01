@@ -2,11 +2,11 @@
 
 @layer components {
   .summary {
-    @apply flex flex-col w-full lg:w-1/2 border border-border-secondary rounded-lg lg:border-none overflow-hidden;
+    @apply flex flex-col w-full lg:w-1/2 lg:max-w-100 border border-border-secondary rounded-lg lg:border-none overflow-hidden lg:overflow-visible;
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0;
+    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:px-0;
   }
 
   .summary-title .text {
@@ -26,7 +26,7 @@
   }
 
   .summary-items {
-    @apply overflow-visible sm:overflow-scroll;
+    @apply overflow-scroll px-4 lg:overflow-visible;
   }
 
   .summary-row {
@@ -42,10 +42,10 @@
   }
 
   .summary-recap {
-    @apply flex flex-col max-w-full ml-0 md:ml-22;
+    @apply flex flex-col max-w-full;
   }
 
   .summary-recap > .summary-row {
-    @apply px-6;
+    @apply px-4;
   }
 }

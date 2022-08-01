@@ -3,7 +3,7 @@
   "subtotal": "Subtotal",
   "addDiscount": "Add gift card or discount code",
   "shippingCost": "Shipping",
-  "taxCost": "Sales tax ({taxPercentage}%)",
+  "taxCost": "includes {taxCost} tax",
   "total": "Total",
   "each": "each",
   "expressCheckout": "Express Checkout",
