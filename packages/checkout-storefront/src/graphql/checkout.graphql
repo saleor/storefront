@@ -114,6 +114,11 @@ fragment CheckoutLineFragment on CheckoutLine {
     ...Money
   }
   variant {
+    attributes(variantSelection: ALL) {
+      values {
+        name
+      }
+    }
     id
     pricing {
       onSale

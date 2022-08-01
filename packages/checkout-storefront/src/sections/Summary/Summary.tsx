@@ -13,6 +13,7 @@ import { compact } from "lodash-es";
 import { getTaxPercentage } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { Title } from "@/checkout-storefront/components/Title";
+import { useFormattedMoney } from "@/checkout-storefront/hooks/useFormattedMoney";
 
 export const Summary = () => {
   const [isOpen, setOpen] = useState(true);
@@ -22,7 +23,7 @@ export const Summary = () => {
 
   const totalPrice = checkout?.totalPrice?.gross;
   const taxCost = checkout?.totalPrice?.tax;
-  const taxPercentage = getTaxPercentage(taxCost, totalPrice);
+  const formattedTaxCost = useFormattedMoney(taxCost);
 
   return (
     <div className="summary">
@@ -52,23 +53,23 @@ export const Summary = () => {
         leaveFrom="transform scale-100 opacity-100"
         leaveTo="transform scale-95 opacity-0"
       >
-        <div className="w-full h-2" />
+        {/* <div className="w-full h-2" /> */}
         <ul className="summary-items">
           {compact(checkout?.lines)?.map((line) => (
             <SummaryItem line={line} key={line?.id} />
           ))}
         </ul>
         <div className="summary-recap">
-          <div className="summary-row">
-            <Text weight="bold">{formatMessage("subtotal")}</Text>
+          <Divider className="my-4" />
+          <div className="summary-row mb-2">
+            <Text color="secondary">{formatMessage("subtotal")}</Text>
             <Money
+              color="secondary"
               ariaLabel={formatMessage("subtotalLabel")}
-              weight="bold"
               money={checkout?.subtotalPrice?.gross}
             />
           </div>
-          <Divider className="my-4" />
-          <div className="summary-row mb-2">
+          <div className="summary-row">
             <Text color="secondary">{formatMessage("shippingCost")}</Text>
             <Money
               ariaLabel={formatMessage("shippingCostLabel")}
@@ -76,23 +77,19 @@ export const Summary = () => {
               money={checkout?.shippingPrice?.gross}
             />
           </div>
-          <div className="summary-row">
-            <Text color="secondary">
-              {formatMessage("taxCost", {
-                taxPercentage,
-              })}
-            </Text>
-            <Money
-              ariaLabel={formatMessage("taxCostLabel")}
-              color="secondary"
-              money={taxCost}
-            />
-          </div>
+          <div className="summary-row"></div>
           <Divider className="my-4" />
-          <div className="summary-row pb-4">
-            <Text size="md" weight="bold">
-              {formatMessage("total")}
-            </Text>
+          <div className="summary-row pb-4 items-baseline">
+            <div className="flex flex-row items-baseline">
+              <Text weight="bold">{formatMessage("total")}</Text>
+              {
+                <Text color="secondary" className="ml-2">
+                  {formatMessage("taxCost", {
+                    taxCost: formattedTaxCost,
+                  })}
+                </Text>
+              }
+            </div>
             <Money
               ariaLabel={formatMessage("totalLabel")}
               weight="bold"

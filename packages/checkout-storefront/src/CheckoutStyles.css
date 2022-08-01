@@ -26,6 +26,6 @@
   }
 
   .page-divider {
-    @apply h-6 w-full lg:h-full lg:w-8;
+    @apply h-6 w-full lg:h-full lg:w-10;
   }
 }

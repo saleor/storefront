@@ -6,7 +6,6 @@ import React from "react";
 import { Text } from "@saleor/ui-kit";
 import { SummaryItemMoneySection } from "./SummaryItemMoneySection";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
-import { SummaryItemDelete } from "./SummaryItemDelete";
 import { PhotoIcon } from "@/checkout-storefront/icons";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getSummaryLineProps, isCheckoutLine } from "./utils";
@@ -18,14 +17,21 @@ interface LineItemProps {
 
 export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
   const readOnly = !isCheckoutLine(line);
-  const { variantName, productName, productImage } = getSummaryLineProps(line);
+  const { productName, productImage } = getSummaryLineProps(line);
 
   const formatMessage = useFormattedMessages();
+  const attributesText =
+    (
+      line.variant?.attributes.reduce(
+        (result: string[], { values }) =>
+          [...result, ...values.map(({ name }) => name)] as string[],
+        []
+      ) as string[]
+    ).join(", ") || "";
 
   return (
-    <li className="flex flex-row px-6 mb-4">
+    <li className="flex flex-row mb-6">
       <div className="relative flex flex-row">
-        {/* {!readOnly && <SummaryItemDelete line={line as CheckoutLineFragment} />} */}
         <div className="summary-item-image mr-4 z-1">
           {productImage ? (
             <img
@@ -47,12 +53,16 @@ export const SummaryItem: React.FC<LineItemProps> = ({ line }) => {
           <Text
             weight="bold"
             aria-label={formatMessage("itemNameLabel")}
-            className="mb-2"
+            className="mb-3"
           >
             {productName}
           </Text>
-          <Text aria-label={formatMessage("variantNameLabel")}>
-            {variantName}
+          <Text
+            size="xs"
+            aria-label={formatMessage("variantNameLabel")}
+            className="max-w-38"
+          >
+            {attributesText}
           </Text>
         </div>
         {readOnly ? (
