@@ -24,10 +24,34 @@ import {
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/middlewares";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 
-const notificationHandler = async (
+const handler: Handler = async (req) => {
+  const { apiKey } = req.context as AdyenRequestContext;
+  const params = req.params as AdyenRequestParams;
+
+  const notificationItem = params?.notificationItems?.[0]?.NotificationRequestItem;
+
+  const [error] = await unpackPromise(notificationHandler(notificationItem, apiKey));
+
+  if (error) {
+    console.warn("Error while saving Adyen notification");
+    // Silent error - return OK, so Adyen won't send the webhook again
+  }
+
+  return Response.OK("[accepted]");
+};
+
+export default toNextHandler([
+  withAdyenWebhookCredentials,
+  isAdyenWebhookAuthenticated,
+  isAdyenNotification,
+  isAdyenWebhookHmacValid,
+  handler,
+]);
+
+async function notificationHandler(
   notification: Types.notification.NotificationRequestItem,
   apiKey: string
-) => {
+) {
   // Get order id from webhook metadata
   const orderId = await getOrderId(notification, apiKey);
 
@@ -38,9 +62,10 @@ const notificationHandler = async (
   // Get order transactions and run deduplication
   // https://docs.adyen.com/development-resources/webhooks/best-practices#handling-duplicates
   const transactions = await getOrderTransactions({ id: orderId });
-  const duplicate = await isNotificationDuplicate(transactions, notification);
+  const duplicate = isNotificationDuplicate(transactions, notification);
 
   if (duplicate) {
+    console.log("Ignored duplicated Adyen notification", notification);
     return;
   }
 
@@ -66,28 +91,4 @@ const notificationHandler = async (
 
     await createTransaction(data);
   }
-};
-
-const handler: Handler = async (req) => {
-  const { apiKey } = req.context as AdyenRequestContext;
-  const params = req.params as AdyenRequestParams;
-
-  const notificationItem = params?.notificationItems?.[0]?.NotificationRequestItem;
-
-  const [error] = await unpackPromise(notificationHandler(notificationItem, apiKey));
-
-  if (error) {
-    console.warn("Error while saving Adyen notification");
-    // Silent error - return OK, so Adyen won't send the webhook again
-  }
-
-  return Response.OK("[accepted]");
-};
-
-export default toNextHandler([
-  withAdyenWebhookCredentials,
-  isAdyenWebhookAuthenticated,
-  isAdyenNotification,
-  isAdyenWebhookHmacValid,
-  handler,
-]);
+}
