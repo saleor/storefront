@@ -1,6 +1,7 @@
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useErrorMessages } from "../useErrorMessages";
+import { MessageKey } from "../useFormattedMessages";
 import { Error, ApiErrors } from "./types";
 
 type GetErrorsFromApiErrors<TFormData> = (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];

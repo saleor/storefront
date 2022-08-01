@@ -6,15 +6,15 @@ import {
   useCheckoutLinesUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useFormattedMoney } from "@/checkout-storefront/hooks/useFormattedMoney";
+import {
+  getFormattedMoney,
+  useFormattedMoney,
+} from "@/checkout-storefront/hooks/useFormattedMoney";
 import { Money } from "@/checkout-storefront/components/Money";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
 import { useEffect } from "react";
-import {
-  extractMutationErrors,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { object, string } from "yup";
@@ -87,7 +87,6 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
 
   const piecePrice = unitPrice.gross;
   const formatMessage = useFormattedMessages();
-  const formattedPiecePrice = useFormattedMoney(piecePrice);
 
   const multiplePieces = getQuantity() > 1;
 
@@ -115,8 +114,8 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   }, [fetching]);
 
   return (
-    <div className="flex flex-col items-end h-20">
-      <div className="flex flex-row items-baseline relative -top-2">
+    <div className="flex flex-col items-end h-20 relative -top-2">
+      <div className="flex flex-row items-baseline">
         <Text size="xs" className="mr-2">
           {formatMessage("quantity")}:
         </Text>
@@ -126,7 +125,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           {...getInputProps("quantity", { onBlur: handleQuantityInputBlur })}
         />
       </div>
-      <div className="flex flex-row justify-end">
+      <div className="flex flex-row justify-end mt-2">
         {pricing?.onSale && (
           <Money
             ariaLabel={formatMessage("undiscountedPriceLabel")}
@@ -145,7 +144,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           }}
           weight="bold"
           className={clsx({
-            "text-text-error": pricing?.onSale,
+            "!text-text-error": pricing?.onSale,
           })}
         />
       </div>
@@ -156,7 +155,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           color="secondary"
           className="ml-4"
         >
-          {`${formattedPiecePrice} ${formatMessage("each")}`}
+          {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
         </Text>
       )}
     </div>

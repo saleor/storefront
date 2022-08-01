@@ -13,6 +13,19 @@ fragment CheckoutErrorFragment on CheckoutError {
 fragment CheckoutFragment on Checkout {
   id
   email
+  discount {
+    ...Money
+  }
+  voucherCode
+  discountName
+  translatedDiscountName
+  giftCards {
+    displayCode
+    id
+    currentBalance {
+      ...Money
+    }
+  }
   channel {
     id
   }
@@ -324,6 +337,32 @@ query addressValidationRules($countryCode: CountryCode!) {
     countryAreaChoices {
       raw
       verbose
+    }
+  }
+}
+
+mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!) {
+  checkoutAddPromoCode(checkoutId: $checkoutId, promoCode: $promoCode) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutRemovePromoCode($checkoutId: ID, $promoCode: String, $promoCodeId: ID) {
+  checkoutRemovePromoCode(
+    checkoutId: $checkoutId
+    promoCode: $promoCode
+    promoCodeId: $promoCodeId
+  ) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
     }
   }
 }

@@ -21,7 +21,7 @@
   padding-right: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
 }
 
-.text-input-error:focus-within {
+.text-input-error {
   @apply border-border-error;
 }
 

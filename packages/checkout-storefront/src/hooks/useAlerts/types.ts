@@ -21,6 +21,7 @@ export interface Alert {
 export type CheckoutScope =
   | "checkoutShippingUpdate"
   | "checkoutBillingUpdate"
+  | "checkoutAddPromoCode"
   | "checkoutDeliveryMethodUpdate"
   | "userAddressCreate"
   | "userAddressUpdate"

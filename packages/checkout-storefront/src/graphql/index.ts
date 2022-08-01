@@ -3,15 +3,9 @@ import gql from "graphql-tag";
 import * as Urql from "urql";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -21266,7 +21260,17 @@ export type CheckoutFragment = {
   __typename?: "Checkout";
   id: string;
   email?: string | null;
+  voucherCode?: string | null;
+  discountName?: string | null;
+  translatedDiscountName?: string | null;
   isShippingRequired: boolean;
+  discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+  giftCards: Array<{
+    __typename?: "GiftCard";
+    displayCode: string;
+    id: string;
+    currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+  }>;
   channel: { __typename?: "Channel"; id: string };
   shippingAddress?: {
     __typename?: "Address";
@@ -21299,11 +21303,7 @@ export type CheckoutFragment = {
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   user?: { __typename?: "User"; id: string; email: string } | null;
-  availablePaymentGateways: Array<{
-    __typename?: "PaymentGateway";
-    id: string;
-    name: string;
-  }>;
+  availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
   deliveryMethod?:
     | { __typename?: "ShippingMethod"; id: string }
     | { __typename?: "Warehouse"; id: string }
@@ -21341,11 +21341,7 @@ export type CheckoutFragment = {
       __typename?: "TaxedMoney";
       gross: { __typename?: "Money"; currency: string; amount: number };
     };
-    undiscountedUnitPrice: {
-      __typename?: "Money";
-      currency: string;
-      amount: number;
-    };
+    undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
     variant: {
       __typename?: "ProductVariant";
       id: string;
@@ -21354,10 +21350,7 @@ export type CheckoutFragment = {
         __typename?: "SelectedAttribute";
         values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
       }>;
-      pricing?: {
-        __typename?: "VariantPricingInfo";
-        onSale?: boolean | null;
-      } | null;
+      pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
       product: {
         __typename?: "Product";
         name: string;
@@ -21390,11 +21383,7 @@ export type CheckoutLineFragment = {
     __typename?: "TaxedMoney";
     gross: { __typename?: "Money"; currency: string; amount: number };
   };
-  undiscountedUnitPrice: {
-    __typename?: "Money";
-    currency: string;
-    amount: number;
-  };
+  undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
   variant: {
     __typename?: "ProductVariant";
     id: string;
@@ -21403,10 +21392,7 @@ export type CheckoutLineFragment = {
       __typename?: "SelectedAttribute";
       values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
     }>;
-    pricing?: {
-      __typename?: "VariantPricingInfo";
-      onSale?: boolean | null;
-    } | null;
+    pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
     product: {
       __typename?: "Product";
       name: string;
@@ -21452,7 +21438,17 @@ export type CheckoutQuery = {
     __typename?: "Checkout";
     id: string;
     email?: string | null;
+    voucherCode?: string | null;
+    discountName?: string | null;
+    translatedDiscountName?: string | null;
     isShippingRequired: boolean;
+    discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+    giftCards: Array<{
+      __typename?: "GiftCard";
+      displayCode: string;
+      id: string;
+      currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+    }>;
     channel: { __typename?: "Channel"; id: string };
     shippingAddress?: {
       __typename?: "Address";
@@ -21485,11 +21481,7 @@ export type CheckoutQuery = {
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     user?: { __typename?: "User"; id: string; email: string } | null;
-    availablePaymentGateways: Array<{
-      __typename?: "PaymentGateway";
-      id: string;
-      name: string;
-    }>;
+    availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
     deliveryMethod?:
       | { __typename?: "ShippingMethod"; id: string }
       | { __typename?: "Warehouse"; id: string }
@@ -21527,26 +21519,16 @@ export type CheckoutQuery = {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
       };
-      undiscountedUnitPrice: {
-        __typename?: "Money";
-        currency: string;
-        amount: number;
-      };
+      undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
       variant: {
         __typename?: "ProductVariant";
         id: string;
         name: string;
         attributes: Array<{
           __typename?: "SelectedAttribute";
-          values: Array<{
-            __typename?: "AttributeValue";
-            name?: string | null;
-          }>;
+          values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
         }>;
-        pricing?: {
-          __typename?: "VariantPricingInfo";
-          onSale?: boolean | null;
-        } | null;
+        pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
         product: {
           __typename?: "Product";
           name: string;
@@ -21625,26 +21607,16 @@ export type CheckoutLinesUpdateMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -21697,26 +21669,16 @@ export type CheckoutLineDeleteMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -21758,7 +21720,17 @@ export type CheckoutEmailUpdateMutation = {
       __typename?: "Checkout";
       id: string;
       email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
       isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
       channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
@@ -21773,11 +21745,7 @@ export type CheckoutEmailUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
         __typename?: "Address";
@@ -21792,18 +21760,10 @@ export type CheckoutEmailUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{
-        __typename?: "PaymentGateway";
-        id: string;
-        name: string;
-      }>;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -21841,26 +21801,16 @@ export type CheckoutEmailUpdateMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -21902,7 +21852,17 @@ export type CheckoutCustomerAttachMutation = {
       __typename?: "Checkout";
       id: string;
       email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
       isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
       channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
@@ -21917,11 +21877,7 @@ export type CheckoutCustomerAttachMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
         __typename?: "Address";
@@ -21936,18 +21892,10 @@ export type CheckoutCustomerAttachMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{
-        __typename?: "PaymentGateway";
-        id: string;
-        name: string;
-      }>;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -21985,26 +21933,16 @@ export type CheckoutCustomerAttachMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22045,7 +21983,17 @@ export type CheckoutCustomerDetachMutation = {
       __typename?: "Checkout";
       id: string;
       email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
       isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
       channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
@@ -22060,11 +22008,7 @@ export type CheckoutCustomerDetachMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
         __typename?: "Address";
@@ -22079,18 +22023,10 @@ export type CheckoutCustomerDetachMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{
-        __typename?: "PaymentGateway";
-        id: string;
-        name: string;
-      }>;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -22128,26 +22064,16 @@ export type CheckoutCustomerDetachMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22288,7 +22214,17 @@ export type CheckoutShippingAddressUpdateMutation = {
       __typename?: "Checkout";
       id: string;
       email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
       isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
       channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
@@ -22303,11 +22239,7 @@ export type CheckoutShippingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
         __typename?: "Address";
@@ -22322,18 +22254,10 @@ export type CheckoutShippingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{
-        __typename?: "PaymentGateway";
-        id: string;
-        name: string;
-      }>;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -22371,26 +22295,16 @@ export type CheckoutShippingAddressUpdateMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22432,7 +22346,17 @@ export type CheckoutBillingAddressUpdateMutation = {
       __typename?: "Checkout";
       id: string;
       email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
       isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
       channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
@@ -22447,11 +22371,7 @@ export type CheckoutBillingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
         __typename?: "Address";
@@ -22466,18 +22386,10 @@ export type CheckoutBillingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{
-        __typename?: "PaymentGateway";
-        id: string;
-        name: string;
-      }>;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -22515,26 +22427,16 @@ export type CheckoutBillingAddressUpdateMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22576,7 +22478,17 @@ export type CheckoutDeliveryMethodUpdateMutation = {
       __typename?: "Checkout";
       id: string;
       email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
       isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
       channel: { __typename?: "Channel"; id: string };
       shippingAddress?: {
         __typename?: "Address";
@@ -22591,11 +22503,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
         __typename?: "Address";
@@ -22610,18 +22518,10 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
-        country: {
-          __typename?: "CountryDisplay";
-          country: string;
-          code: string;
-        };
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{
-        __typename?: "PaymentGateway";
-        id: string;
-        name: string;
-      }>;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -22659,26 +22559,16 @@ export type CheckoutDeliveryMethodUpdateMutation = {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
         };
-        undiscountedUnitPrice: {
-          __typename?: "Money";
-          currency: string;
-          amount: number;
-        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
         variant: {
           __typename?: "ProductVariant";
           id: string;
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-            }>;
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: {
-            __typename?: "VariantPricingInfo";
-            onSale?: boolean | null;
-          } | null;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22723,11 +22613,272 @@ export type AddressValidationRulesQuery = {
   } | null;
 };
 
-export type MoneyFragment = {
-  __typename?: "Money";
-  currency: string;
-  amount: number;
+export type CheckoutAddPromoCodeMutationVariables = Exact<{
+  checkoutId?: InputMaybe<Scalars["ID"]>;
+  promoCode: Scalars["String"];
+}>;
+
+export type CheckoutAddPromoCodeMutation = {
+  __typename?: "Mutation";
+  checkoutAddPromoCode?: {
+    __typename?: "CheckoutAddPromoCode";
+    errors: Array<{
+      __typename?: "CheckoutError";
+      message?: string | null;
+      field?: string | null;
+      code: CheckoutErrorCode;
+    }>;
+    checkout?: {
+      __typename?: "Checkout";
+      id: string;
+      email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
+      isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
+      channel: { __typename?: "Channel"; id: string };
+      shippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      billingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      user?: { __typename?: "User"; id: string; email: string } | null;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      deliveryMethod?:
+        | { __typename?: "ShippingMethod"; id: string }
+        | { __typename?: "Warehouse"; id: string }
+        | null;
+      shippingMethods: Array<{
+        __typename?: "ShippingMethod";
+        id: string;
+        name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
+        price: { __typename?: "Money"; currency: string; amount: number };
+      }>;
+      totalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      };
+      shippingPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
+      subtotalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
+      lines: Array<{
+        __typename?: "CheckoutLine";
+        id: string;
+        quantity: number;
+        totalPrice: {
+          __typename?: "TaxedMoney";
+          gross: { __typename?: "Money"; currency: string; amount: number };
+        };
+        unitPrice: {
+          __typename?: "TaxedMoney";
+          gross: { __typename?: "Money"; currency: string; amount: number };
+        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
+        variant: {
+          __typename?: "ProductVariant";
+          id: string;
+          name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+          }>;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
+          media?: Array<{
+            __typename?: "ProductMedia";
+            alt: string;
+            type: ProductMediaType;
+            url: string;
+          }> | null;
+        };
+      }>;
+    } | null;
+  } | null;
 };
+
+export type CheckoutRemovePromoCodeMutationVariables = Exact<{
+  checkoutId?: InputMaybe<Scalars["ID"]>;
+  promoCode?: InputMaybe<Scalars["String"]>;
+  promoCodeId?: InputMaybe<Scalars["ID"]>;
+}>;
+
+export type CheckoutRemovePromoCodeMutation = {
+  __typename?: "Mutation";
+  checkoutRemovePromoCode?: {
+    __typename?: "CheckoutRemovePromoCode";
+    errors: Array<{
+      __typename?: "CheckoutError";
+      message?: string | null;
+      field?: string | null;
+      code: CheckoutErrorCode;
+    }>;
+    checkout?: {
+      __typename?: "Checkout";
+      id: string;
+      email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
+      isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance?: { __typename?: "Money"; currency: string; amount: number } | null;
+      }>;
+      channel: { __typename?: "Channel"; id: string };
+      shippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      billingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      user?: { __typename?: "User"; id: string; email: string } | null;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      deliveryMethod?:
+        | { __typename?: "ShippingMethod"; id: string }
+        | { __typename?: "Warehouse"; id: string }
+        | null;
+      shippingMethods: Array<{
+        __typename?: "ShippingMethod";
+        id: string;
+        name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
+        price: { __typename?: "Money"; currency: string; amount: number };
+      }>;
+      totalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      };
+      shippingPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
+      subtotalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
+      lines: Array<{
+        __typename?: "CheckoutLine";
+        id: string;
+        quantity: number;
+        totalPrice: {
+          __typename?: "TaxedMoney";
+          gross: { __typename?: "Money"; currency: string; amount: number };
+        };
+        unitPrice: {
+          __typename?: "TaxedMoney";
+          gross: { __typename?: "Money"; currency: string; amount: number };
+        };
+        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
+        variant: {
+          __typename?: "ProductVariant";
+          id: string;
+          name: string;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+          }>;
+          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
+          product: {
+            __typename?: "Product";
+            name: string;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              alt: string;
+              type: ProductMediaType;
+              url: string;
+            }> | null;
+          };
+          media?: Array<{
+            __typename?: "ProductMedia";
+            alt: string;
+            type: ProductMediaType;
+            url: string;
+          }> | null;
+        };
+      }>;
+    } | null;
+  } | null;
+};
+
+export type MoneyFragment = { __typename?: "Money"; currency: string; amount: number };
 
 export type OrderLineFragment = {
   __typename?: "OrderLine";
@@ -22848,11 +22999,7 @@ export type OrderFragment = {
       __typename?: "TaxedMoney";
       gross: { __typename?: "Money"; currency: string; amount: number };
     };
-    thumbnail?: {
-      __typename?: "Image";
-      alt?: string | null;
-      url: string;
-    } | null;
+    thumbnail?: { __typename?: "Image"; alt?: string | null; url: string } | null;
   }>;
 };
 
@@ -22930,10 +23077,7 @@ export type OrderQuery = {
         name: string;
         attributes: Array<{
           __typename?: "SelectedAttribute";
-          values: Array<{
-            __typename?: "AttributeValue";
-            name?: string | null;
-          }>;
+          values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
         }>;
       } | null;
       totalPrice: {
@@ -22948,11 +23092,7 @@ export type OrderQuery = {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
       };
-      thumbnail?: {
-        __typename?: "Image";
-        alt?: string | null;
-        url: string;
-      } | null;
+      thumbnail?: { __typename?: "Image"; alt?: string | null; url: string } | null;
     }>;
   } | null;
 };
@@ -22969,6 +23109,12 @@ export const CheckoutErrorFragmentDoc = gql`
     message
     field
     code
+  }
+`;
+export const MoneyFragmentDoc = gql`
+  fragment Money on Money {
+    currency
+    amount
   }
 `;
 export const AddressFragmentDoc = gql`
@@ -22988,12 +23134,6 @@ export const AddressFragmentDoc = gql`
     }
     firstName
     lastName
-  }
-`;
-export const MoneyFragmentDoc = gql`
-  fragment Money on Money {
-    currency
-    amount
   }
 `;
 export const CheckoutLineFragmentDoc = gql`
@@ -23046,6 +23186,19 @@ export const CheckoutFragmentDoc = gql`
   fragment CheckoutFragment on Checkout {
     id
     email
+    discount {
+      ...Money
+    }
+    voucherCode
+    discountName
+    translatedDiscountName
+    giftCards {
+      displayCode
+      id
+      currentBalance {
+        ...Money
+      }
+    }
     channel {
       id
     }
@@ -23128,8 +23281,8 @@ export const CheckoutFragmentDoc = gql`
       ...CheckoutLineFragment
     }
   }
-  ${AddressFragmentDoc}
   ${MoneyFragmentDoc}
+  ${AddressFragmentDoc}
   ${CheckoutLineFragmentDoc}
 `;
 export const ShippingFragmentDoc = gql`
@@ -23512,6 +23665,51 @@ export function useAddressValidationRulesQuery(
     query: AddressValidationRulesDocument,
     ...options,
   });
+}
+export const CheckoutAddPromoCodeDocument = gql`
+  mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!) {
+    checkoutAddPromoCode(checkoutId: $checkoutId, promoCode: $promoCode) {
+      errors {
+        ...CheckoutErrorFragment
+      }
+      checkout {
+        ...CheckoutFragment
+      }
+    }
+  }
+  ${CheckoutErrorFragmentDoc}
+  ${CheckoutFragmentDoc}
+`;
+
+export function useCheckoutAddPromoCodeMutation() {
+  return Urql.useMutation<CheckoutAddPromoCodeMutation, CheckoutAddPromoCodeMutationVariables>(
+    CheckoutAddPromoCodeDocument
+  );
+}
+export const CheckoutRemovePromoCodeDocument = gql`
+  mutation checkoutRemovePromoCode($checkoutId: ID, $promoCode: String, $promoCodeId: ID) {
+    checkoutRemovePromoCode(
+      checkoutId: $checkoutId
+      promoCode: $promoCode
+      promoCodeId: $promoCodeId
+    ) {
+      errors {
+        ...CheckoutErrorFragment
+      }
+      checkout {
+        ...CheckoutFragment
+      }
+    }
+  }
+  ${CheckoutErrorFragmentDoc}
+  ${CheckoutFragmentDoc}
+`;
+
+export function useCheckoutRemovePromoCodeMutation() {
+  return Urql.useMutation<
+    CheckoutRemovePromoCodeMutation,
+    CheckoutRemovePromoCodeMutationVariables
+  >(CheckoutRemovePromoCodeDocument);
 }
 export const OrderDocument = gql`
   query order($id: ID!) {

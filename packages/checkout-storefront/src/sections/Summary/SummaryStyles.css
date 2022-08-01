@@ -6,7 +6,7 @@
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:px-0;
+    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:pb-6 lg:px-0;
   }
 
   .summary-title .text {
@@ -29,8 +29,16 @@
     @apply overflow-scroll px-4 lg:overflow-visible;
   }
 
+  .summary-item {
+    @apply flex flex-row items-start mb-6 relative;
+  }
+
+  .summary-item:last-of-type {
+    @apply mb-4;
+  }
+
   .summary-row {
-    @apply flex flex-row justify-between;
+    @apply flex flex-row justify-between items-center;
   }
 
   .summary-item-image {

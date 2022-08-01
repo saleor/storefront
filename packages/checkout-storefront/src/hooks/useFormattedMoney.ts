@@ -1,23 +1,16 @@
-import { useNumberFormatter } from "@react-aria/i18n";
-
 export interface Money {
   currency: string;
   amount: number;
 }
 
-export const useFormattedMoney = <TMoney extends Money>(money: TMoney | undefined) => {
-  if (!money) return "";
-
-  const formatter = useNumberFormatter({
-    style: "currency",
-    currency: money.currency,
-    minimumFractionDigits: 2,
-  });
-
-  return formatter.format(money.amount);
-};
-
-export const getFormattedMoney = <TMoney extends Money>(money: TMoney | undefined) => {
+export const getFormattedMoney = <TMoney extends Money>(
+  money: TMoney | undefined | null,
+  {
+    negative = false,
+  }: {
+    negative: boolean;
+  } = { negative: false }
+) => {
   if (!money) {
     return "";
   }
@@ -28,5 +21,5 @@ export const getFormattedMoney = <TMoney extends Money>(money: TMoney | undefine
     style: "currency",
     currency,
     currencyDisplay: "symbol",
-  }).format(amount);
+  }).format(negative ? -amount : amount);
 };
