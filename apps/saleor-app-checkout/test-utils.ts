@@ -173,7 +173,7 @@ export const setupRecording = () => {
   return setupPolly({
     // Fix for Jest runtime issues (inline require)
     // https://github.com/gribnoysup/setup-polly-jest/issues/23#issuecomment-890494186
-    adapters: [require("@pollyjs/adapter-fetch")],
+    adapters: [require("@pollyjs/adapter-node-http")],
     persister: require("@pollyjs/persister-fs"),
     mode,
     recordIfMissing,

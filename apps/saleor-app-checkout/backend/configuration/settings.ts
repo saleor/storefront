@@ -24,8 +24,21 @@ import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings
 import { mapPublicMetafieldsToSettings } from "@/saleor-app-checkout/frontend/misc/mapPublicMetafieldsToSettings";
 import { allPrivateSettingID, allPublicSettingID } from "@/saleor-app-checkout/types/common";
 import { getAppId } from "../environment";
+import { testingVars } from "@/saleor-app-checkout/mocks/consts";
+import { IS_TEST } from "@/saleor-app-checkout/constants";
 
 export const getPrivateSettings = async (apiUrl: string, obfuscateEncryptedData: boolean) => {
+  if (IS_TEST) {
+    // TODO: use jest.mock + mock adyen values
+    return {
+      paymentProviders: {
+        mollie: {
+          apiKey: testingVars.mollieKey,
+          profileId: testingVars.mollieProfileId,
+        },
+      },
+    };
+  }
   const { data, error } = await getClient({ apiUrl })
     .query<PrivateMetafieldsInferedQuery, PrivateMetafieldsInferedQueryVariables>(
       PrivateMetafieldsInferedDocument,
@@ -48,6 +61,7 @@ export const getPrivateSettings = async (apiUrl: string, obfuscateEncryptedData:
 };
 
 export const getPublicSettings = async () => {
+  // TODO: Mock in tests
   const { data, error } = await getClient()
     .query<PublicMetafieldsInferedQuery, PublicMetafieldsInferedQueryVariables>(
       PublicMetafieldsInferedDocument,
