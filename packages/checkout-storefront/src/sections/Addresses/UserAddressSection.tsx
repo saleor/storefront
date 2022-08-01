@@ -12,8 +12,8 @@ import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
 import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
-import { AddressesSkeleton } from "./AddressesSkeleton";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
+import { AddressesSkeleton } from "../Skeletons/AddressesSkeleton";
 
 export interface UserAddressSectionProps
   extends UseUserAddressSelectProps,

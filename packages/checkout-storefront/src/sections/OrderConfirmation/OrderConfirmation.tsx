@@ -8,7 +8,7 @@ import { Text } from "@saleor/ui-kit";
 import { useOrder } from "@/checkout-storefront/hooks/useOrder";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { Divider } from "@/checkout-storefront/components/Divider";
-import { SummarySkeleton } from "@/checkout-storefront/sections/Summary/SummarySkeleton";
+import { SummarySkeleton } from "../Skeletons/SummarySkeleton";
 
 export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
   const { order } = useOrder(orderId);

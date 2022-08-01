@@ -2,7 +2,7 @@
 
 @layer components {
   .skeleton {
-    @apply min-h-3 bg-skeleton mb-2;
+    @apply min-w-8 min-h-3 bg-skeleton mb-2;
   }
 
   .skeleton-horiznontal-spacer {

@@ -2,11 +2,11 @@ import PageHeader from "@/checkout-storefront/sections/PageHeader";
 import { Summary } from "@/checkout-storefront/sections/Summary";
 import { CheckoutForm } from "@/checkout-storefront/sections/CheckoutForm";
 import { Suspense } from "react";
-import { SummarySkeleton } from "@/checkout-storefront/sections/Summary/SummarySkeleton";
 import { PageNotFound } from "@/checkout-storefront/sections/PageNotFound";
 import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "./hooks/useCheckout";
 import { useAuthState } from "@saleor/sdk";
+import { SummarySkeleton } from "./sections/Skeletons/SummarySkeleton";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();

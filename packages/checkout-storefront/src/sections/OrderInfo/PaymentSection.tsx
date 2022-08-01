@@ -4,10 +4,10 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { getOrderPaymentStatus } from "@/checkout-storefront/fetch";
-import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 
 import { Section, SectionTitle } from "./Section";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
+import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();

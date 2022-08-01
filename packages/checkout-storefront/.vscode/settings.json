@@ -3,6 +3,7 @@
     "**/.git": true,
     "**/node_modules": true,
     "**/bower_components": true,
-    "**/.rollup.cache": true
+    "**/.rollup.cache": true,
+    "**/*.code-search": true
   }
 }

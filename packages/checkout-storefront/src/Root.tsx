@@ -13,9 +13,8 @@ import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
 import type { AppEnv } from "./providers/AppConfigProvider/types";
-import { CheckoutSkeleton } from "./CheckoutSkeleton";
-import { SummarySkeleton } from "./sections/Summary/SummarySkeleton";
 import { OrderConfirmationSkeleton } from "./sections/OrderConfirmation/OrderConfirmationSkeleton";
+import { CheckoutSkeleton } from "./sections/Skeletons/CheckoutSkeleton";
 
 export interface RootProps {
   env: AppEnv;
