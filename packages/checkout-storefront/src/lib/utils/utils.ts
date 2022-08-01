@@ -9,7 +9,7 @@ export const getById =
     obj.id === idToCompare;
 
 export type QueryVariables = Record<
-  "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl",
+  "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl" | "countryCode",
   string
 >;
 

@@ -1,6 +1,7 @@
 import {
   AddressFragment,
   AddressInput,
+  CheckoutAddressValidationRules,
   CountryCode,
   CountryDisplay,
 } from "@/checkout-storefront/graphql";
@@ -40,3 +41,12 @@ export const isMatchingAddress = (
   address?: AddressFragment | null,
   addressToMatch?: AddressFragment | null
 ) => isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+
+export const getAddressVlidationRulesVariables = (
+  autoSave: boolean = false
+): CheckoutAddressValidationRules =>
+  autoSave
+    ? {
+        checkRequiredFields: false,
+      }
+    : {};

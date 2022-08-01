@@ -14,17 +14,21 @@ import React, { useEffect, useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
-import { getAddressFormDataFromAddress, getAddressInputData, isMatchingAddress } from "./utils";
+import {
+  getAddressFormDataFromAddress,
+  getAddressInputData,
+  isMatchingAddress,
+  getAddressVlidationRulesVariables,
+} from "./utils";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
+  const { billingAddress, shippingAddress, id: checkoutId } = checkout;
 
-  const hasBillingSameAsShipping = isMatchingAddress(
-    checkout.shippingAddress,
-    checkout.billingAddress
-  );
+  const hasBillingSameAsShipping =
+    !billingAddress || isMatchingAddress(shippingAddress, billingAddress);
 
   const [useBillingSameAsShipping, setUseBillingSameAsShipping] =
     useState<boolean>(hasBillingSameAsShipping);
@@ -45,10 +49,11 @@ export const BillingAddressSection = () => {
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
-  const updateBillingAddress = async (addressInput: AddressFormData) => {
+  const updateBillingAddress = async ({ autoSave, ...addressInput }: AddressFormData) => {
     const result = await checkoutBillingAddressUpdate({
-      checkoutId: checkout.id,
+      checkoutId,
       billingAddress: getAddressInputData(addressInput),
+      validationRules: getAddressVlidationRulesVariables(autoSave),
     });
 
     const [hasErrors, errors] = extractMutationErrors(result);

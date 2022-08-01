@@ -1,7 +1,6 @@
 import { Divider } from "@/checkout-storefront/components/Divider";
 import {
   AddressFragment,
-  CheckoutAddressValidationRules,
   useCheckoutShippingAddressUpdateMutation,
   useUserQuery,
 } from "@/checkout-storefront/graphql";
@@ -15,7 +14,7 @@ import React from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, CommonSectionProps, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
-import { getAddressInputData } from "./utils";
+import { getAddressInputData, getAddressVlidationRulesVariables } from "./utils";
 
 export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -36,18 +35,11 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
-  const updateShippingAddress = async ({ autoSave = false, ...address }: AddressFormData) => {
-    const autoSaveData: CheckoutAddressValidationRules = autoSave
-      ? {
-          checkRequiredFields: false,
-          // checkFieldsFormat
-        }
-      : {};
-
+  const updateShippingAddress = async ({ autoSave, ...address }: AddressFormData) => {
     const result = await checkoutShippingAddressUpdate({
       checkoutId: checkout.id,
       shippingAddress: getAddressInputData(address),
-      validationRules: autoSaveData,
+      validationRules: getAddressVlidationRulesVariables(autoSave),
     });
 
     const [hasErrors, errors] = extractMutationErrors(result);

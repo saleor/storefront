@@ -22330,6 +22330,7 @@ export type CheckoutShippingAddressUpdateMutation = {
 export type CheckoutBillingAddressUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   billingAddress: AddressInput;
+  validationRules?: InputMaybe<CheckoutAddressValidationRules>;
 }>;
 
 export type CheckoutBillingAddressUpdateMutation = {
@@ -23600,8 +23601,16 @@ export function useCheckoutShippingAddressUpdateMutation() {
   >(CheckoutShippingAddressUpdateDocument);
 }
 export const CheckoutBillingAddressUpdateDocument = gql`
-  mutation checkoutBillingAddressUpdate($checkoutId: ID!, $billingAddress: AddressInput!) {
-    checkoutBillingAddressUpdate(id: $checkoutId, billingAddress: $billingAddress) {
+  mutation checkoutBillingAddressUpdate(
+    $checkoutId: ID!
+    $billingAddress: AddressInput!
+    $validationRules: CheckoutAddressValidationRules
+  ) {
+    checkoutBillingAddressUpdate(
+      id: $checkoutId
+      billingAddress: $billingAddress
+      validationRules: $validationRules
+    ) {
       errors {
         ...CheckoutErrorFragment
       }

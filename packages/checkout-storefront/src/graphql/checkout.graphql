@@ -304,8 +304,16 @@ mutation checkoutShippingAddressUpdate(
   }
 }
 
-mutation checkoutBillingAddressUpdate($checkoutId: ID!, $billingAddress: AddressInput!) {
-  checkoutBillingAddressUpdate(id: $checkoutId, billingAddress: $billingAddress) {
+mutation checkoutBillingAddressUpdate(
+  $checkoutId: ID!
+  $billingAddress: AddressInput!
+  $validationRules: CheckoutAddressValidationRules
+) {
+  checkoutBillingAddressUpdate(
+    id: $checkoutId
+    billingAddress: $billingAddress
+    validationRules: $validationRules
+  ) {
     errors {
       ...CheckoutErrorFragment
     }
