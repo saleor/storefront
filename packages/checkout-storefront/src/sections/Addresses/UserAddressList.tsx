@@ -19,7 +19,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
   onEditChange,
 }) => {
   const [, deleteAddress] = useUserAddressDeleteMutation();
-  const { showErrors, showSuccess } = useAlerts("userAddressDelete");
+  const { showErrors } = useAlerts("userAddressDelete");
 
   const handleAddressDelete = async (id: string) => {
     const result = await deleteAddress({ id });
@@ -30,8 +30,6 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({
       showErrors(errors);
       return;
     }
-
-    showSuccess();
   };
 
   return (

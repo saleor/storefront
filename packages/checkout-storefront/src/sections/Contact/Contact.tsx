@@ -29,7 +29,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   );
   const [{ fetching: attachingCustomer }, customerAttach] = useCheckoutCustomerAttachMutation();
   const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
-  const { showErrors, showSuccess } = useAlerts();
+  const { showErrors } = useAlerts();
   const { authenticated, user } = useAuthState();
   const hasAuthenticated = useRef(false);
   const { checkout, loading } = useCheckout();
@@ -62,8 +62,6 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       showErrors(errors, "checkoutEmailUpdate");
       return;
     }
-
-    showSuccess("checkoutEmailUpdate");
   };
 
   const updateEmailAfterSignIn = async () => {

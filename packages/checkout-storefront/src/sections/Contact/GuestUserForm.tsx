@@ -24,7 +24,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const { showSuccess, showErrors } = useAlerts("checkoutEmailUpdate");
+  const { showErrors } = useAlerts("checkoutEmailUpdate");
   const [createAccountSelected, setCreateAccountSelected] = useState(false);
   const formContext = useFormContext();
   const {
@@ -66,12 +66,9 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
     const [hasErrors, errors] = extractMutationErrors(result);
 
-    if (!hasErrors) {
-      showSuccess();
-      return;
+    if (hasErrors) {
+      showErrors(errors);
     }
-
-    showErrors(errors);
   };
 
   const emailValue = watch("email");

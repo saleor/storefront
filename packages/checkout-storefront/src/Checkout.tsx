@@ -7,6 +7,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "./hooks/useCheckout";
 import { useAuthState } from "@saleor/sdk";
 import { SummarySkeleton } from "./sections/Skeletons/SummarySkeleton";
+import { CheckoutFormSkeleton } from "./sections/Skeletons/CheckoutFormSkeleton";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
@@ -24,7 +25,9 @@ export const Checkout = () => {
           <div className="page">
             <PageHeader />
             <div className="page-content">
-              <CheckoutForm />
+              <Suspense fallback={<CheckoutFormSkeleton />}>
+                <CheckoutForm />
+              </Suspense>
               <div className="page-divider" />
               <Suspense fallback={<SummarySkeleton />}>
                 <Summary />

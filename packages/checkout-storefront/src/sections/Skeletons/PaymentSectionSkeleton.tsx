@@ -1,4 +1,3 @@
-import { Divider } from "@/checkout-storefront/components/Divider";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 import React from "react";
 
