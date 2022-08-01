@@ -18,7 +18,7 @@ import { Divider } from "@/checkout-storefront/components/Divider";
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
-  const { showErrors, showSuccess } = useAlerts("checkoutDeliveryMethodUpdate");
+  const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
   const [selectedMethodId, setSelectedMethodId] = useState(checkout?.deliveryMethod?.id);
 
   const selectedMethodIdRef = useRef(selectedMethodId);
@@ -34,7 +34,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
-      showSuccess();
       return;
     }
 

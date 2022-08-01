@@ -1394,6 +1394,83 @@
       },
       {
         "kind": "OBJECT",
+        "name": "AddressCreated",
+        "description": null,
+        "fields": [
+          {
+            "name": "address",
+            "description": "The address the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Address",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "AddressDelete",
         "description": "Deletes an address. \n\nRequires one of the following permissions: MANAGE_USERS.",
         "fields": [
@@ -1472,6 +1549,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AddressDeleted",
+        "description": null,
+        "fields": [
+          {
+            "name": "address",
+            "description": "The address the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Address",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -1792,6 +1946,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AddressUpdated",
+        "description": null,
+        "fields": [
+          {
+            "name": "address",
+            "description": "The address the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Address",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -2238,7 +2469,7 @@
           },
           {
             "name": "appUrl",
-            "description": "Url to iframe with the app.",
+            "description": "URL to iframe with the app.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2250,15 +2481,15 @@
           },
           {
             "name": "configurationUrl",
-            "description": "Url to iframe with the configuration for the app.",
+            "description": "URL to iframe with the configuration for the app.",
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use `appUrl` instead."
           },
           {
             "name": "created",
@@ -2281,12 +2512,12 @@
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use `dataPrivacyUrl` instead."
           },
           {
             "name": "dataPrivacyUrl",
-            "description": "Url to details about the privacy policy on the app owner page.",
+            "description": "URL to details about the privacy policy on the app owner page.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2355,6 +2586,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "manifestUrl",
+            "description": "URL to manifest used during app's installation.\n\nAdded in Saleor 3.5.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3674,6 +3917,24 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "CUSTOMER_DETAILS_MORE_ACTIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CUSTOMER_OVERVIEW_CREATE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CUSTOMER_OVERVIEW_MORE_ACTIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "NAVIGATION_CATALOG",
             "description": null,
             "isDeprecated": false,
@@ -4357,6 +4618,105 @@
           {
             "name": "url",
             "description": "URL of a view where extension's iframe is placed.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AppManifestWebhook",
+        "description": null,
+        "fields": [
+          {
+            "name": "asyncEvents",
+            "description": "The asynchronous events that webhook wants to subscribe.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "WebhookEventTypeAsyncEnum",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "The name of the webhook.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "query",
+            "description": "Subscription query of a webhook",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "syncEvents",
+            "description": "The synchronous events that webhook wants to subscribe.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "WebhookEventTypeSyncEnum",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "targetUrl",
+            "description": "The url to receive the payload.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -6400,6 +6760,83 @@
       },
       {
         "kind": "OBJECT",
+        "name": "AttributeCreated",
+        "description": null,
+        "fields": [
+          {
+            "name": "attribute",
+            "description": "The attribute the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Attribute",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "AttributeDelete",
         "description": "Deletes an attribute. \n\nRequires one of the following permissions: MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.",
         "fields": [
@@ -6466,6 +6903,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AttributeDeleted",
+        "description": null,
+        "fields": [
+          {
+            "name": "attribute",
+            "description": "The attribute the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Attribute",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -6914,6 +7428,12 @@
           },
           {
             "name": "NUMERIC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PLAIN_TEXT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -7611,6 +8131,83 @@
       },
       {
         "kind": "OBJECT",
+        "name": "AttributeUpdated",
+        "description": null,
+        "fields": [
+          {
+            "name": "attribute",
+            "description": "The attribute the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Attribute",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "AttributeValue",
         "description": "Represents a value of an attribute.",
         "fields": [
@@ -7693,6 +8290,18 @@
           {
             "name": "name",
             "description": "Name of a value displayed in the interface.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "plainText",
+            "description": "Represents the text of the attribute value, plain text without formating.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -8102,6 +8711,18 @@
             "deprecationReason": null
           },
           {
+            "name": "plainText",
+            "description": "Represents the text of the attribute value, plain text without formating.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "richText",
             "description": "Represents the text of the attribute value, includes formatting.\n\nRich text format. For reference see https://editorjs.io/",
             "type": {
@@ -8127,6 +8748,83 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AttributeValueCreated",
+        "description": null,
+        "fields": [
+          {
+            "name": "attributeValue",
+            "description": "The attribute value the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "AttributeValue",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -8210,6 +8908,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AttributeValueDeleted",
+        "description": null,
+        "fields": [
+          {
+            "name": "attributeValue",
+            "description": "The attribute value the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "AttributeValue",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -8335,6 +9110,18 @@
             "deprecationReason": null
           },
           {
+            "name": "plainText",
+            "description": "Plain text content.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "references",
             "description": "List of entity IDs that will be used as references.",
             "type": {
@@ -8436,6 +9223,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "plainText",
+            "description": "Attribute plain text value.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -8618,6 +9417,18 @@
             "deprecationReason": null
           },
           {
+            "name": "plainText",
+            "description": "Attribute plain text value.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "richText",
             "description": "Attribute value.\n\nRich text format. For reference see https://editorjs.io/",
             "args": [],
@@ -8650,6 +9461,18 @@
           {
             "name": "name",
             "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "plainText",
+            "description": "Translated text.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -8802,6 +9625,18 @@
             "deprecationReason": null
           },
           {
+            "name": "plainText",
+            "description": "Represents the text of the attribute value, plain text without formating.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "richText",
             "description": "Represents the text of the attribute value, includes formatting.\n\nRich text format. For reference see https://editorjs.io/",
             "type": {
@@ -8827,6 +9662,83 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AttributeValueUpdated",
+        "description": null,
+        "fields": [
+          {
+            "name": "attributeValue",
+            "description": "The attribute value the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "AttributeValue",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -9358,8 +10270,20 @@
             "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of the image.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -11143,6 +12067,30 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "warehouses",
+            "description": "List of warehouses assigned to this channel.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Warehouse",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -11325,6 +12273,26 @@
             "deprecationReason": null
           },
           {
+            "name": "addWarehouses",
+            "description": "List of warehouses to assign to the channel.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "currencyCode",
             "description": "Currency of the channel.",
             "type": {
@@ -11342,7 +12310,7 @@
           },
           {
             "name": "defaultCountry",
-            "description": "Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided.\n\nAdded in Saleor 3.1.",
+            "description": "Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided.\n\nAdded in Saleor 3.1.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -11792,6 +12760,26 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "warehouses",
+            "description": "List of warehouses IDs which causes the error.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -12039,6 +13027,26 @@
             "deprecationReason": null
           },
           {
+            "name": "addWarehouses",
+            "description": "List of warehouses to assign to the channel.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "defaultCountry",
             "description": "Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided.\n\nAdded in Saleor 3.1.",
             "type": {
@@ -12077,6 +13085,26 @@
           {
             "name": "removeShippingZones",
             "description": "List of shipping zones to unassign from the channel.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "removeWarehouses",
+            "description": "List of warehouses to unassign from the channel.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -12942,6 +13970,53 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "CheckoutAddressValidationRules",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "checkFieldsFormat",
+            "description": "Determines if an error should be raised when the provided address doesn't match the expected format. Example: using letters for postal code when the numbers are expected.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": "true",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "checkRequiredFields",
+            "description": "Determines if an error should be raised when the provided address doesn't have all the required fields. The list of required fields is dynamic and depends on the country code (use the `addressValidationRules` query to fetch them). Note: country code is mandatory for all addresses regardless of the rules provided in this input.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": "true",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "enableFieldsNormalization",
+            "description": "Determines if Saleor should apply normalization on address fields. Example: converting city field to uppercase letters.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": "true",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "CheckoutBillingAddressUpdate",
         "description": "Update billing address in the existing checkout.",
@@ -13384,6 +14459,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "AddressInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "validationRules",
+            "description": "The checkout validation rules that can be changed.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CheckoutValidationRules",
               "ofType": null
             },
             "defaultValue": null,
@@ -14188,6 +15275,178 @@
             "deprecationReason": null
           },
           {
+            "name": "metadata",
+            "description": "List of public metadata items. Can be accessed without permissions.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MetadataItem",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metafield",
+            "description": "A single key from public metadata.\n\nTip: Use GraphQL aliases to fetch multiple keys.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "key",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metafields",
+            "description": "Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "keys",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Metadata",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetadata",
+            "description": "List of private metadata items. Requires staff permissions to access.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MetadataItem",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetafield",
+            "description": "A single key from private metadata. Requires staff permissions to access.\n\nTip: Use GraphQL aliases to fetch multiple keys.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "key",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetafields",
+            "description": "Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "keys",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Metadata",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "quantity",
             "description": null,
             "args": [],
@@ -14305,6 +15564,11 @@
           {
             "kind": "INTERFACE",
             "name": "Node",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "ObjectWithMetadata",
             "ofType": null
           }
         ],
@@ -15229,6 +16493,41 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "CheckoutValidationRules",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "billingAddress",
+            "description": "The validation rules that can be applied to provided billing address data.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CheckoutAddressValidationRules",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shippingAddress",
+            "description": "The validation rules that can be applied to provided shipping address data.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CheckoutAddressValidationRules",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "ChoiceValue",
         "description": null,
@@ -15273,8 +16572,20 @@
             "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of the image.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -20321,7 +21632,19 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ACCOUNT_ACTIVATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ACCOUNT_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ACCOUNT_DEACTIVATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -23384,6 +24707,21 @@
         "possibleTypes": [
           {
             "kind": "OBJECT",
+            "name": "AddressCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AddressDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AddressUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "AppDeleted",
             "ofType": null
           },
@@ -23400,6 +24738,36 @@
           {
             "kind": "OBJECT",
             "name": "AppUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeValueCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeValueDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AttributeValueUpdated",
             "ofType": null
           },
           {
@@ -23604,6 +24972,21 @@
           },
           {
             "kind": "OBJECT",
+            "name": "PageTypeCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "PageTypeDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "PageTypeUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "PageUpdated",
             "ofType": null
           },
@@ -23659,6 +25042,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "SaleToggle",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "SaleUpdated",
             "ofType": null
           },
@@ -23690,6 +25078,21 @@
           {
             "kind": "OBJECT",
             "name": "ShippingZoneUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "StaffCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "StaffDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "StaffUpdated",
             "ofType": null
           },
           {
@@ -37175,27 +38578,27 @@
           },
           {
             "name": "configurationUrl",
-            "description": null,
+            "description": "URL to iframe with the configuration for the app.",
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use `appUrl` instead."
           },
           {
             "name": "dataPrivacy",
-            "description": null,
+            "description": "Description of the data privacy defined for this app.",
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use `dataPrivacyUrl` instead."
           },
           {
             "name": "dataPrivacyUrl",
@@ -37332,6 +38735,30 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "webhooks",
+            "description": "List of the app's webhooks.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AppManifestWebhook",
+                    "ofType": null
+                  }
+                }
               }
             },
             "isDeprecated": false,
@@ -42797,6 +44224,18 @@
                 "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null
+              },
+              {
+                "name": "validationRules",
+                "description": "The rules for changing validation for received billing address data.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CheckoutAddressValidationRules",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -43269,7 +44708,7 @@
               "ofType": null
             },
             "isDeprecated": true,
-            "deprecationReason": "DEPRECATED: Will be removed in Saleor 4.0. Use `checkoutLinesDelete` instead."
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use `checkoutLinesDelete` instead."
           },
           {
             "name": "checkoutLinesAdd",
@@ -43666,6 +45105,18 @@
                 "type": {
                   "kind": "SCALAR",
                   "name": "UUID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "validationRules",
+                "description": "The rules for changing validation for received shipping address data.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CheckoutAddressValidationRules",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -48221,7 +49672,7 @@
           },
           {
             "name": "permissionGroupCreate",
-            "description": "Create new permission group. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Create new permission group. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "input",
@@ -48250,7 +49701,7 @@
           },
           {
             "name": "permissionGroupDelete",
-            "description": "Delete permission group. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Delete permission group. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "id",
@@ -48279,7 +49730,7 @@
           },
           {
             "name": "permissionGroupUpdate",
-            "description": "Update permission group. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Update permission group. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "id",
@@ -51062,7 +52513,7 @@
           },
           {
             "name": "staffBulkDelete",
-            "description": "Deletes staff users. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Deletes staff users. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "ids",
@@ -51099,7 +52550,7 @@
           },
           {
             "name": "staffCreate",
-            "description": "Creates a new staff user. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Creates a new staff user. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "input",
@@ -51128,7 +52579,7 @@
           },
           {
             "name": "staffDelete",
-            "description": "Deletes a staff user. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Deletes a staff user. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "id",
@@ -51260,7 +52711,7 @@
           },
           {
             "name": "staffUpdate",
-            "description": "Updates an existing staff user. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+            "description": "Updates an existing staff user. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
             "args": [
               {
                 "name": "id",
@@ -53119,6 +54570,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "CheckoutLine",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "Collection",
             "ofType": null
           },
@@ -53155,6 +54611,11 @@
           {
             "kind": "OBJECT",
             "name": "Order",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "OrderLine",
             "ofType": null
           },
           {
@@ -57994,6 +59455,178 @@
             "deprecationReason": null
           },
           {
+            "name": "metadata",
+            "description": "List of public metadata items. Can be accessed without permissions.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MetadataItem",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metafield",
+            "description": "A single key from public metadata.\n\nTip: Use GraphQL aliases to fetch multiple keys.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "key",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metafields",
+            "description": "Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "keys",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Metadata",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetadata",
+            "description": "List of private metadata items. Requires staff permissions to access.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MetadataItem",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetafield",
+            "description": "A single key from private metadata. Requires staff permissions to access.\n\nTip: Use GraphQL aliases to fetch multiple keys.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "key",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetafields",
+            "description": "Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.\n\nAdded in Saleor 3.3.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "keys",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Metadata",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "productName",
             "description": null,
             "args": [],
@@ -58099,11 +59732,23 @@
           },
           {
             "name": "thumbnail",
-            "description": "The main thumbnail for the ordered product.",
+            "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of thumbnail.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -58292,6 +59937,11 @@
           {
             "kind": "INTERFACE",
             "name": "Node",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "ObjectWithMetadata",
             "ofType": null
           }
         ],
@@ -59584,6 +61234,12 @@
           {
             "name": "PAYMENT",
             "description": "Sort orders by payment.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RANK",
+            "description": "Sort orders by rank. Note: This option is available only with the `search` filter.",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -62976,6 +64632,83 @@
       },
       {
         "kind": "OBJECT",
+        "name": "PageTypeCreated",
+        "description": null,
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "pageType",
+            "description": "The page type the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageType",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "PageTypeDelete",
         "description": "Delete a page type. \n\nRequires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES.",
         "fields": [
@@ -63042,6 +64775,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PageTypeDeleted",
+        "description": null,
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "pageType",
+            "description": "The page type the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageType",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -63348,6 +65158,83 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PageTypeUpdated",
+        "description": null,
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "pageType",
+            "description": "The page type the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageType",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -65341,7 +67228,7 @@
       {
         "kind": "OBJECT",
         "name": "PermissionGroupCreate",
-        "description": "Create new permission group. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Create new permission group. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "errors",
@@ -65479,7 +67366,7 @@
       {
         "kind": "OBJECT",
         "name": "PermissionGroupDelete",
-        "description": "Delete permission group. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Delete permission group. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "errors",
@@ -65803,7 +67690,7 @@
       {
         "kind": "OBJECT",
         "name": "PermissionGroupUpdate",
-        "description": "Update permission group. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Update permission group. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "errors",
@@ -67492,11 +69379,23 @@
           },
           {
             "name": "thumbnail",
-            "description": "The main thumbnail for a product.",
+            "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of thumbnail.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -69860,11 +71759,23 @@
           },
           {
             "name": "url",
-            "description": "The URL of the image.",
+            "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of the image.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -70135,11 +72046,23 @@
           },
           {
             "name": "url",
-            "description": "The URL of the media.",
+            "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of the image.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -79905,6 +81828,35 @@
             "deprecationReason": null
           },
           {
+            "name": "transaction",
+            "description": "Look up a transaction by ID.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.\n\nRequires one of the following permissions: HANDLE_PAYMENTS.",
+            "args": [
+              {
+                "name": "id",
+                "description": "ID of a transaction.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "TransactionItem",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "translation",
             "description": "Lookup a translatable item by ID.\n\nRequires one of the following permissions: MANAGE_TRANSLATIONS.",
             "args": [
@@ -82594,6 +84546,96 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SaleToggle",
+        "description": "The event informs about the start or end of the sale.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sale",
+            "description": "The sale the event relates to.\n\nAdded in Saleor 3.5.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "channel",
+                "description": "Slug of a channel for which the data should be returned.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Sale",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -88690,7 +90732,7 @@
       {
         "kind": "OBJECT",
         "name": "StaffBulkDelete",
-        "description": "Deletes staff users. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Deletes staff users. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "count",
@@ -88765,7 +90807,7 @@
       {
         "kind": "OBJECT",
         "name": "StaffCreate",
-        "description": "Creates a new staff user. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Creates a new staff user. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "errors",
@@ -88938,8 +90980,85 @@
       },
       {
         "kind": "OBJECT",
+        "name": "StaffCreated",
+        "description": null,
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": "The user the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "StaffDelete",
-        "description": "Deletes a staff user. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Deletes a staff user. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "errors",
@@ -89004,6 +91123,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "StaffDeleted",
+        "description": null,
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": "The user the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -89485,7 +91681,7 @@
       {
         "kind": "OBJECT",
         "name": "StaffUpdate",
-        "description": "Updates an existing staff user. \n\nRequires one of the following permissions: MANAGE_STAFF.",
+        "description": "Updates an existing staff user. Apps are not allowed to perform this mutation. \n\nRequires one of the following permissions: MANAGE_STAFF.",
         "fields": [
           {
             "name": "errors",
@@ -89661,6 +91857,83 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "StaffUpdated",
+        "description": null,
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": "The user the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -90342,6 +92615,23 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "ThumbnailFormatEnum",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "WEBP",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -91440,6 +93730,18 @@
                 "name": "DateTime",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "order",
+            "description": "The related order.\n\nAdded in Saleor 3.6.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Order",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -93063,8 +95365,20 @@
             "description": null,
             "args": [
               {
+                "name": "format",
+                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ThumbnailFormatEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "size",
-                "description": "Size of the avatar.",
+                "description": "Size of the image. If not provided, the original image will be returned.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -96561,6 +98875,26 @@
             "deprecationReason": null
           },
           {
+            "name": "ids",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "metadata",
             "description": null,
             "type": {
@@ -98481,6 +100815,26 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "channels",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "clickAndCollectOption",
             "description": null,
             "type": {
@@ -99178,7 +101532,7 @@
           },
           {
             "name": "secretKey",
-            "description": "Used to create a hash signature with each payload.",
+            "description": "Used to create a hash signature with each payload.\n\nIf not set, since Saleor 3.5, your payload will be signed using private key used also to sign JWT tokens.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -99767,6 +102121,24 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ADDRESS_CREATED",
+            "description": "A new address created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ADDRESS_DELETED",
+            "description": "An address deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ADDRESS_UPDATED",
+            "description": "An address updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ANY_EVENTS",
             "description": "All the events.",
             "isDeprecated": false,
@@ -99793,6 +102165,42 @@
           {
             "name": "APP_UPDATED",
             "description": "An app updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_CREATED",
+            "description": "A new attribute is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_DELETED",
+            "description": "An attribute is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_UPDATED",
+            "description": "An attribute is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_CREATED",
+            "description": "A new attribute value is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_DELETED",
+            "description": "An attribute value is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_UPDATED",
+            "description": "An attribute value is updated.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -99871,6 +102279,12 @@
           {
             "name": "CUSTOMER_CREATED",
             "description": "A new customer account is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CUSTOMER_DELETED",
+            "description": "A customer account is deleted.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -100049,6 +102463,24 @@
             "deprecationReason": null
           },
           {
+            "name": "PAGE_TYPE_CREATED",
+            "description": "A new page type is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PAGE_TYPE_DELETED",
+            "description": "A page type is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PAGE_TYPE_UPDATED",
+            "description": "A page type is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PAGE_UPDATED",
             "description": "A page is updated.",
             "isDeprecated": false,
@@ -100115,6 +102547,12 @@
             "deprecationReason": null
           },
           {
+            "name": "SALE_TOGGLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "SALE_UPDATED",
             "description": null,
             "isDeprecated": false,
@@ -100153,6 +102591,24 @@
           {
             "name": "SHIPPING_ZONE_UPDATED",
             "description": "A shipping zone is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_CREATED",
+            "description": "A staff user is deleted",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_UPDATED",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -100222,6 +102678,24 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ADDRESS_CREATED",
+            "description": "A new address created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ADDRESS_DELETED",
+            "description": "An address deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ADDRESS_UPDATED",
+            "description": "An address updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ANY_EVENTS",
             "description": "All the events.",
             "isDeprecated": false,
@@ -100248,6 +102722,42 @@
           {
             "name": "APP_UPDATED",
             "description": "An app updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_CREATED",
+            "description": "A new attribute is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_DELETED",
+            "description": "An attribute is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_UPDATED",
+            "description": "An attribute is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_CREATED",
+            "description": "A new attribute value is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_DELETED",
+            "description": "An attribute value is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_UPDATED",
+            "description": "An attribute value is updated.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -100332,6 +102842,12 @@
           {
             "name": "CUSTOMER_CREATED",
             "description": "A new customer account is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CUSTOMER_DELETED",
+            "description": "A customer account is deleted.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -100516,6 +103032,24 @@
             "deprecationReason": null
           },
           {
+            "name": "PAGE_TYPE_CREATED",
+            "description": "A new page type is created.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PAGE_TYPE_DELETED",
+            "description": "A page type is deleted.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PAGE_TYPE_UPDATED",
+            "description": "A page type is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PAGE_UPDATED",
             "description": "A page is updated.",
             "isDeprecated": false,
@@ -100624,6 +103158,12 @@
             "deprecationReason": null
           },
           {
+            "name": "SALE_TOGGLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "SALE_UPDATED",
             "description": null,
             "isDeprecated": false,
@@ -100668,6 +103208,24 @@
           {
             "name": "SHIPPING_ZONE_UPDATED",
             "description": "A shipping zone is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_CREATED",
+            "description": "A staff user is deleted",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_UPDATED",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -100808,6 +103366,24 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ADDRESS_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ADDRESS_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ADDRESS_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "APP_DELETED",
             "description": null,
             "isDeprecated": false,
@@ -100827,6 +103403,42 @@
           },
           {
             "name": "APP_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ATTRIBUTE_VALUE_UPDATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -100905,6 +103517,12 @@
           },
           {
             "name": "CUSTOMER_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CUSTOMER_DELETED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -101084,6 +103702,24 @@
             "deprecationReason": null
           },
           {
+            "name": "PAGE_TYPE_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PAGE_TYPE_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PAGE_TYPE_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PAGE_UPDATED",
             "description": null,
             "isDeprecated": false,
@@ -101150,6 +103786,12 @@
             "deprecationReason": null
           },
           {
+            "name": "SALE_TOGGLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "SALE_UPDATED",
             "description": null,
             "isDeprecated": false,
@@ -101187,6 +103829,24 @@
           },
           {
             "name": "SHIPPING_ZONE_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STAFF_UPDATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

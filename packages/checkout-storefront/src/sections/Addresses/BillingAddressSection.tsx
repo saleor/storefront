@@ -2,7 +2,6 @@ import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useBillingSameAsShipping } from "@/checkout-storefront/providers/BillingSameAsShippingProvider";
 import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { useAuthState } from "@saleor/sdk";
 import React, { useEffect, useRef } from "react";
@@ -23,11 +22,11 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
-  const {
-    isBillingSameAsShippingAddress,
-    hasBillingSameAsShippingAddressChanged,
-    setHasBillingSameAsShippingAddressChanged,
-  } = useBillingSameAsShipping();
+  // const {
+  //   isBillingSameAsShippingAddress,
+  //   hasBillingSameAsShippingAddressChanged,
+  //   setHasBillingSameAsShippingAddressChanged,
+  // } = useBillingSameAsShipping();
 
   const { setCountryCodeFromAddress } = useCountrySelect();
 
@@ -35,23 +34,23 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
 
   const defaultAddress = checkout?.shippingAddress || defaultBillingAddress;
 
-  useEffect(() => {
-    if (
-      !checkout?.shippingAddress ||
-      isBillingSameAsShippingAddress ||
-      hasBillingSameAsShippingAddressChanged
-    ) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (
+  //     !checkout?.shippingAddress ||
+  //     isBillingSameAsShippingAddress ||
+  //     hasBillingSameAsShippingAddressChanged
+  //   ) {
+  //     return;
+  //   }
 
-    setCountryCodeFromAddress(checkout?.shippingAddress);
+  //   setCountryCodeFromAddress(checkout?.shippingAddress);
 
-    setHasBillingSameAsShippingAddressChanged(true);
-  }, [isBillingSameAsShippingAddress]);
+  //   setHasBillingSameAsShippingAddressChanged(true);
+  // }, [isBillingSameAsShippingAddress]);
 
-  if (checkout?.isShippingRequired && isBillingSameAsShippingAddress) {
-    return null;
-  }
+  // if (checkout?.isShippingRequired && isBillingSameAsShippingAddress) {
+  //   return null;
+  // }
 
   return authUser ? (
     <UserAddressSection
