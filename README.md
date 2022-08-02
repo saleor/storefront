@@ -100,7 +100,7 @@ pnpm dev
 
 ### Configuration
 
-Instructions how to configure the application (e.g. change the graphql API URL) can be found [here](docs/configuration.md).
+Instructions how to configure the application (e.g. change the graphql API URL) can be found [here](apps/storefront/docs/configuration.md).
 
 ### Build
 
