@@ -29,6 +29,8 @@
     "@react-types/button": "^3.4.1",
     "@saleor/sdk": "^0.4.3",
     "@saleor/ui-kit": "workspace:*",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.26.0",
     "checkout-common": "workspace:*",
     "clsx": "^1.1.1",
     "concurrently": "7.3.0",
