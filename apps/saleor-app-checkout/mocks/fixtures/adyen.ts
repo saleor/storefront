@@ -39,10 +39,7 @@ const getNotificationWithHmac =
       ...notificationItem,
       additionalData: {
         ...notificationItem.additionalData,
-        hmacSignature: adyenHmacValidator.calculateHmac(
-          notificationItem,
-          testingVars.adyenHmac
-        ),
+        hmacSignature: adyenHmacValidator.calculateHmac(notificationItem, testingVars.adyenHmac),
       },
     });
   };
@@ -59,11 +56,10 @@ export const getPaymentRequest = getNotificationWithHmac({
     cvcResult: "1 Matches",
     expiryDate: "03/2030",
     "threeds2.cardEnrolled": "false",
-    "metadata.orderId":
-      "T3JkZXI6MGQ4NDRiZDMtYTA5YS00NzUyLWE0ODktYzFlMzM2Y2I4ZjU4",
+    "metadata.orderId": "T3JkZXI6MGQ4NDRiZDMtYTA5YS00NzUyLWE0ODktYzFlMzM2Y2I4ZjU4",
   },
   amount: { currency: "USD", value: 4292 },
-  eventCode: NotificationRequestItem.EventCodeEnum.Authorisation,
+  eventCode: AdyenNotificationRequestItem.EventCodeEnum.Authorisation,
   eventDate: "2022-07-28T14:08:36+02:00",
   merchantAccountCode: "SaleorECOM",
   merchantReference: "3394",
@@ -75,7 +71,7 @@ export const getPaymentRequest = getNotificationWithHmac({
   paymentMethod: "mc",
   pspReference: "LD65H2FVNXSKGK82",
   reason: "085117:0004:03/2030",
-  success: NotificationRequestItem.SuccessEnum.True,
+  success: AdyenNotificationRequestItem.SuccessEnum.True,
 });
 
 export const getPaymentCapture = getNotificationWithHmac({
@@ -92,21 +88,20 @@ export const getPaymentCapture = getNotificationWithHmac({
   paymentMethod: "mc",
   pspReference: "NP5DFGQGJRWZNN82",
   reason: "",
-  success: NotificationRequestItem.SuccessEnum.True,
+  success: AdyenNotificationRequestItem.SuccessEnum.True,
 });
 
 export const getPaymentRefund = getNotificationWithHmac({
   additionalData: {
     bookingDate: "2022-07-28T16:17:47Z",
     paymentLinkId: "PLEBC2E2F868C9BE80",
-    "metadata.orderId":
-      "T3JkZXI6MGQ4NDRiZDMtYTA5YS00NzUyLWE0ODktYzFlMzM2Y2I4ZjU4",
+    "metadata.orderId": "T3JkZXI6MGQ4NDRiZDMtYTA5YS00NzUyLWE0ODktYzFlMzM2Y2I4ZjU4",
   },
   amount: {
     currency: "USD",
     value: 4292,
   },
-  eventCode: NotificationRequestItem.EventCodeEnum.Refund,
+  eventCode: AdyenNotificationRequestItem.EventCodeEnum.Refund,
   eventDate: "2022-07-28T16:17:01+02:00",
   merchantAccountCode: "SaleorECOM",
   merchantReference: "3394",
@@ -114,5 +109,5 @@ export const getPaymentRefund = getNotificationWithHmac({
   paymentMethod: "mc",
   pspReference: "NP5DFGQGJRWZNN82",
   reason: "Item returned",
-  success: NotificationRequestItem.SuccessEnum.True,
+  success: AdyenNotificationRequestItem.SuccessEnum.True,
 });

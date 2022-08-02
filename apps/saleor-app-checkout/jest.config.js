@@ -10,14 +10,22 @@ module.exports = {
   collectCoverage: false,
   coverageDirectory: "coverage",
   coverageProvider: "v8",
+  preset: "ts-jest/presets/default-esm",
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
+  globals: {
+    "ts-jest": {
+      useESM: true,
+    },
+  },
   moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: "<rootDir>/",
     }),
     "^lodash-es/(.*)$": "lodash/$1",
   },
-  setupFiles: ["./setupTestsBeforeEnv"],
-  setupFilesAfterEnv: ["./setupTestsAfterEnv"],
+  setupFiles: ["./setupTestsBeforeEnv.ts"],
+  setupFilesAfterEnv: ["./setupTestsAfterEnv.ts"],
   testEnvironment: "setup-polly-jest/jest-environment-node",
   transformIgnorePatterns: ["<rootDir>/node_modules/(?!lodash-es)"],
 };
