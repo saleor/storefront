@@ -1,5 +1,5 @@
-import { CheckoutFormSkeleton } from "./CheckoutFormSkeleton";
-import { SummarySkeleton } from "./SummarySkeleton";
+import { CheckoutFormSkeleton } from "@/checkout-storefront/sections/CheckoutForm";
+import { SummarySkeleton } from "@/checkout-storefront/sections/Summary";
 
 export const CheckoutSkeleton = () => (
   <div className="app">

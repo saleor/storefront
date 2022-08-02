@@ -1,14 +1,12 @@
 import { Suspense } from "react";
 
 import PageHeader from "@/checkout-storefront/sections/PageHeader";
-import { FinalizedSummary } from "@/checkout-storefront/sections/Summary";
+import { FinalizedSummary, SummarySkeleton } from "@/checkout-storefront/sections/Summary";
 import { OrderInfo } from "@/checkout-storefront/sections/OrderInfo";
-import { Title } from "@/checkout-storefront/components/Title";
 import { Text } from "@saleor/ui-kit";
-import { useOrder } from "@/checkout-storefront/hooks/useOrder";
-import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { Divider } from "@/checkout-storefront/components/Divider";
-import { SummarySkeleton } from "../Skeletons/SummarySkeleton";
+import { useFormattedMessages } from "@/checkout-storefront/hooks";
+import { Divider, Title } from "@/checkout-storefront/components";
+import { useOrder } from "@/checkout-storefront/hooks";
 
 export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
   const { order } = useOrder(orderId);

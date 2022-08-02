@@ -1,4 +1,4 @@
-import { Skeleton } from "@/checkout-storefront/components/Skeleton";
+import { Skeleton } from "@/checkout-storefront/components";
 import React from "react";
 
 interface ContactSkeletonProps {}

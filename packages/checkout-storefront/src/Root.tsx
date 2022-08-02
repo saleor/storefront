@@ -3,18 +3,19 @@ import { ErrorBoundary } from "react-error-boundary";
 import { I18nProvider } from "@react-aria/i18n";
 import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 
-import { Checkout } from "@/checkout-storefront/Checkout";
+import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/layouts/Checkout";
 import { getCurrentRegion } from "@/checkout-storefront/lib/regions";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
-import { OrderConfirmation } from "@/checkout-storefront/sections/OrderConfirmation";
-import { PageNotFound } from "@/checkout-storefront/sections/PageNotFound";
+import {
+  OrderConfirmation,
+  OrderConfirmationSkeleton,
+} from "@/checkout-storefront/layouts/OrderConfirmation";
+import { PageNotFound } from "@/checkout-storefront/layouts/PageNotFound";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
 import type { AppEnv } from "./providers/AppConfigProvider/types";
-import { OrderConfirmationSkeleton } from "./sections/OrderConfirmation/OrderConfirmationSkeleton";
-import { CheckoutSkeleton } from "./sections/Skeletons/CheckoutSkeleton";
 
 export interface RootProps {
   env: AppEnv;

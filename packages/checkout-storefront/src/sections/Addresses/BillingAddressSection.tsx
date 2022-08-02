@@ -15,12 +15,8 @@ import React, { useEffect, useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
-import {
-  getAddressFormDataFromAddress,
-  getAddressInputData,
-  isMatchingAddress,
-  getAddressVlidationRulesVariables,
-} from "./utils";
+import { getAddressFormDataFromAddress, getAddressInputData, isMatchingAddress } from "./utils";
+import { getAddressVlidationRulesVariables } from "./utils";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();

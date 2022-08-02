@@ -3,6 +3,7 @@ import { Text } from "@saleor/ui-kit";
 import {
   CheckoutLineFragment,
   CheckoutLinesUpdateMutationVariables,
+  useCheckoutLineDeleteMutation,
   useCheckoutLinesUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
@@ -40,6 +41,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   } = line;
 
   const [{ fetching }, updateLines] = useCheckoutLinesUpdateMutation();
+  const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutLinesUpdate");
   const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
@@ -59,7 +61,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const getQuantityValue = () => watch("quantity");
   const getQuantity = () => Number(getQuantityValue());
 
-  const onSubmit = async ({ quantity }: FormData) => {
+  const onLineQuantityUpdate = async ({ quantity }: FormData) => {
     const result = await updateLines(getUpdateLineVars({ quantity }));
     const [hasMutationErrors, errors] = extractMutationErrors(result);
 
@@ -85,6 +87,19 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     ],
   });
 
+  const onLineDelete = async () => {
+    const result = await deleteLines({ checkoutId: checkout.id, lineId: line.id });
+    const [hasMutationErrors, errors] = extractMutationErrors(result);
+
+    if (!hasMutationErrors) {
+      clearErrors();
+      return;
+    }
+
+    setApiErrors(errors);
+    showErrors(errors);
+  };
+
   const piecePrice = unitPrice.gross;
   const formatMessage = useFormattedMessages();
 
@@ -100,7 +115,12 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
       return;
     }
 
-    void onSubmit({ quantity: getQuantityValue() });
+    if (getQuantity() === 0) {
+      void onLineDelete();
+      return;
+    }
+
+    void onLineQuantityUpdate({ quantity: getQuantityValue() });
   };
 
   useEffect(() => {

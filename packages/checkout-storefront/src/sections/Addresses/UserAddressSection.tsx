@@ -11,7 +11,7 @@ import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
 import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
-import { AddressesSkeleton } from "../Skeletons/AddressesSkeleton";
+import { AddressesSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSkeleton";
 import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 import { Title } from "@/checkout-storefront/components/Title";
 

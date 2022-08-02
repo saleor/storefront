@@ -17,9 +17,9 @@ import { PaymentSection } from "../PaymentSection";
 import { PaymentProviderID } from "checkout-common";
 import invariant from "ts-invariant";
 import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
-import { ContactSkeleton } from "../Skeletons/ContactSkeleton";
-import { AddressesSkeleton } from "../Skeletons/AddressesSkeleton";
-import { DeliveryMethodsSkeleton } from "../Skeletons/DeliveryMethodsSkeleton";
+import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
+import { AddressesSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSkeleton";
+import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();

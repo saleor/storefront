@@ -1,5 +1,4 @@
-import { Skeleton } from "@/checkout-storefront/components/Skeleton";
-import { Divider } from "@/checkout-storefront/components/Divider";
+import { Divider, Skeleton } from "@/checkout-storefront/components";
 
 export const SummarySkeleton = () => (
   <div className="summary px-6">

@@ -3,8 +3,8 @@ import { Text } from "@saleor/ui-kit";
 import { Button } from "@/checkout-storefront/components/Button";
 import { SaleorLogo } from "@/checkout-storefront/images";
 import { Title } from "@/checkout-storefront/components/Title";
-import { getSvgSrc } from "../lib/svgSrc";
 import { FallbackProps } from "react-error-boundary";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
   console.error(error);

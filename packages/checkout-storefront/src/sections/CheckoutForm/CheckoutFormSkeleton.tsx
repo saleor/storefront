@@ -1,11 +1,10 @@
 import React from "react";
-import { Button } from "@/checkout-storefront/components/Button";
-import { Divider } from "@/checkout-storefront/components/Divider";
-import { AddressesSkeleton } from "./AddressesSkeleton";
-import { ContactSkeleton } from "./ContactSkeleton";
-import { DeliveryMethodsSkeleton } from "./DeliveryMethodsSkeleton";
-import { PaymentSectionSkeleton } from "./PaymentSectionSkeleton";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { ContactSkeleton } from "@/checkout-storefront/sections/Contact";
+import { AddressesSkeleton } from "@/checkout-storefront/sections/Addresses";
+import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods";
+import { PaymentSectionSkeleton } from "@/checkout-storefront/sections/PaymentSection";
+import { Button, Divider } from "@/checkout-storefront/components";
 
 export const CheckoutFormSkeleton = () => {
   const formatMessage = useFormattedMessages();

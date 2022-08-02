@@ -5,7 +5,7 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
@@ -17,14 +17,29 @@ import { Divider } from "@/checkout-storefront/components/Divider";
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
+  const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
   const [selectedMethodId, setSelectedMethodId] = useState(checkout?.deliveryMethod?.id);
 
-  const selectedMethodIdRef = useRef(selectedMethodId);
-
   const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    if (selectedMethodId || !shippingMethods.length) {
+      return;
+    }
+
+    const cheapestMethod = shippingMethods.reduce(
+      (resultMethod, currentMethod) =>
+        currentMethod.price.amount < resultMethod.price.amount ? currentMethod : resultMethod,
+      shippingMethods[0] as ShippingMethod
+    );
+
+    setSelectedMethodId(cheapestMethod.id);
+  }, [shippingAddress]);
+
+  const handleSubmit = async (selectedMethodId: string) => {
+    setSelectedMethodId(selectedMethodId);
+
     const result = await updateDeliveryMethod({
       deliveryMethodId: selectedMethodId as string,
       checkoutId: checkout.id,
@@ -40,10 +55,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   };
 
   useEffect(() => {
-    if (selectedMethodId && selectedMethodId !== selectedMethodIdRef.current) {
-      void handleSubmit();
+    if (!deliveryMethod) {
+      return;
     }
-  }, [selectedMethodId]);
+
+    setSelectedMethodId(deliveryMethod.id);
+  }, [deliveryMethod]);
 
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -65,13 +82,19 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       <Divider />
       <div className="section">
         <Title className="mb-2">{formatMessage("deliveryMethod")}</Title>
-        {!checkout?.shippingAddress && (
+        {!shippingAddress && (
           <Text>Please fill in shipping address to see available shipping methods</Text>
         )}
         <SelectBoxGroup label={formatMessage("deliveryMethodsLabel")}>
-          {(checkout?.shippingMethods as ShippingMethod[])?.map(
+          {(shippingMethods as ShippingMethod[])?.map(
             ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
-              <SelectBox value={id} selectedValue={selectedMethodId} onSelect={setSelectedMethodId}>
+              <SelectBox
+                value={id}
+                selectedValue={selectedMethodId}
+                onSelect={(methodId: string) => {
+                  void handleSubmit(methodId);
+                }}
+              >
                 <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
                   <div className="flex flex-row justify-between self-stretch items-center">
                     <Text>{name}</Text>
