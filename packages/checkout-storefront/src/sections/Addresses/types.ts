@@ -12,7 +12,3 @@ export interface UserAddressFormData extends AddressFormData {
 }
 
 export type UserDefaultAddressFragment = null | undefined | { __typename?: "Address"; id: string };
-
-export interface CommonSectionProps {
-  collapsed: boolean;
-}

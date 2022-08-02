@@ -1,12 +1,12 @@
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { Title } from "@/checkout-storefront/components/Title";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { PaymentMethods, PaymentMethodsProps } from "./PaymentMethods";
 import React from "react";
 import { BillingAddressSection } from "../Addresses/BillingAddressSection";
-import { CommonSectionProps } from "../Addresses/types";
-import { PaymentMethods, PaymentMethodsProps } from "./PaymentMethods";
+import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 
-interface PaymentSectionProps extends PaymentMethodsProps, CommonSectionProps {}
+type PaymentSectionProps = PaymentMethodsProps & CommonSectionProps;
 
 export const PaymentSection: React.FC<PaymentSectionProps> = ({ collapsed, ...rest }) => {
   const formatMessage = useFormattedMessages();

@@ -42,3 +42,7 @@ export type AddressField =
   | "phone";
 
 export type ApiAddressField = AddressField | "name";
+
+export interface CommonSectionProps {
+  collapsed: boolean;
+}
