@@ -11,13 +11,11 @@ export const Skeleton: React.FC<PropsWithChildren<SkeletonProps>> = ({
   className,
   variant = "paragraph",
 }) => {
-  if (children) return <>{children}</>;
-
   const classes = clsx(
     "skeleton",
     { "h-5 mb-6": variant === "title", "h-3": variant === "paragraph" },
     className
   );
 
-  return <div className={classes} />;
+  return <div className={classes} children={children} />;
 };

@@ -1,14 +1,29 @@
-export const testingVars = {
-  mollieKey: process.env.TEST_MOLLIE_KEY,
-  mollieProfileId: process.env.TEST_MOLLIE_PROFILE_ID,
+import invariant from "ts-invariant";
+import { IS_TEST } from "../constants";
 
-  adyenMarchantAccount: process.env.TEST_ADYEN_MERCHANT_ACCOUNT ?? "",
-  adyenClientKey: process.env.TEST_ADYEN_CLIENT_KEY ?? "",
-  adyenApiKey: process.env.TEST_ADYEN_API_KEY ?? "",
-  adyenHmac: process.env.TEST_ADYEN_HMAC ?? "",
-  adyenWebhookPassword: process.env.TEST_ADYEN_WEBHOOK_PASSWORD ?? "",
-  adyenWebhookUsername: process.env.TEST_ADYEN_WEBHOOK_USERNAME ?? "",
+export const testingVars = {
+  mollieKey: process.env.TEST_MOLLIE_KEY!,
+  mollieProfileId: process.env.TEST_MOLLIE_PROFILE_ID!,
+
+  adyenMerchantAccount: process.env.TEST_ADYEN_MERCHANT_ACCOUNT!,
+  adyenClientKey: process.env.TEST_ADYEN_CLIENT_KEY!,
+  adyenApiKey: process.env.TEST_ADYEN_API_KEY!,
+  adyenHmac: process.env.TEST_ADYEN_HMAC!,
+  adyenWebhookPassword: process.env.TEST_ADYEN_WEBHOOK_PASSWORD!,
+  adyenWebhookUsername: process.env.TEST_ADYEN_WEBHOOK_USERNAME!,
 };
+
+if (IS_TEST) {
+  invariant(testingVars.mollieKey, "TEST_MOLLIE_KEY is not defined");
+  invariant(testingVars.mollieProfileId,"TEST_MOLLIE_PROFILE_ID is not defined");
+
+  invariant(testingVars.adyenMerchantAccount, "TEST_ADYEN_MERCHANT_ACCOUNT is not defined")
+  invariant(testingVars.adyenClientKey, "TEST_ADYEN_CLIENT_KEY is not defined")
+  invariant(testingVars.adyenApiKey, "TEST_ADYEN_API_KEY is not defined")
+  invariant(testingVars.adyenHmac, "TEST_ADYEN_HMAC is not defined")
+  invariant(testingVars.adyenWebhookPassword, "TEST_ADYEN_WEBHOOK_PASSWORD is not defined")
+  invariant(testingVars.adyenWebhookUsername, "TEST_ADYEN_WEBHOOK_USERNAME is not defined")
+}
 
 export type TestingEnvVar = keyof typeof testingVars;
 
