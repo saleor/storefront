@@ -6,7 +6,7 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { getSvgSrc } from "../lib/svgSrc";
 import { FallbackProps } from "react-error-boundary";
 
-export const PageNotFound = ({ error }: FallbackProps) => {
+export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
   console.error(error);
   const formatMessage = useFormattedMessages();
 
