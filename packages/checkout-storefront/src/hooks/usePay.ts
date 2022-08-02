@@ -17,7 +17,7 @@ const getRedirectUrl = () => {
 };
 
 export const usePay = () => {
-  const [{ loading }, pay] = useFetch(payRequest, { skip: true });
+  const [{ loading, error, data }, pay] = useFetch(payRequest, { skip: true });
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();
@@ -70,5 +70,5 @@ export const usePay = () => {
     return result;
   };
 
-  return { orderPay, checkoutPay, loading };
+  return { orderPay, checkoutPay, loading, error, data };
 };

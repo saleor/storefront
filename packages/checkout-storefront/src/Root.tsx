@@ -14,6 +14,8 @@ import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
 import type { AppEnv } from "./providers/AppConfigProvider/types";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
+import { SummarySkeleton } from "./sections/Summary/SummarySkeleton";
+import { OrderConfirmationSkeleton } from "./sections/OrderConfirmation/OrderConfirmationSkeleton";
 
 export interface RootProps {
   env: AppEnv;
@@ -56,7 +58,9 @@ export const Root = ({ env }: RootProps) => {
               <ToastContainer {...alertsContainerProps} />
               <ErrorBoundary FallbackComponent={PageNotFound}>
                 {orderId ? (
-                  <OrderConfirmation orderId={orderId} />
+                  <Suspense fallback={<OrderConfirmationSkeleton />}>
+                    <OrderConfirmation orderId={orderId} />
+                  </Suspense>
                 ) : (
                   <Suspense fallback={<CheckoutSkeleton />}>
                     <Checkout />
