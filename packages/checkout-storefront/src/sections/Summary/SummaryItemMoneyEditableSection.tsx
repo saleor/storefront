@@ -6,15 +6,15 @@ import {
   useCheckoutLinesUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import {
-  getFormattedMoney,
-  useFormattedMoney,
-} from "@/checkout-storefront/hooks/useFormattedMoney";
 import { Money } from "@/checkout-storefront/components/Money";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
 import { useEffect } from "react";
-import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  getFormattedMoney,
+  useValidationResolver,
+} from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { object, string } from "yup";

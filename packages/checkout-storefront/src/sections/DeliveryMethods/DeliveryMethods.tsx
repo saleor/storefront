@@ -6,12 +6,11 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import React, { useEffect, useRef, useState } from "react";
-import { getFormattedMoney } from "@/checkout-storefront/hooks/useFormattedMoney";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { CommonSectionProps } from "../Addresses/types";
 import { Divider } from "@/checkout-storefront/components/Divider";
 

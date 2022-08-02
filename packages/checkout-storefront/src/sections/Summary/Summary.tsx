@@ -12,11 +12,11 @@ import { compact } from "lodash-es";
 
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { Title } from "@/checkout-storefront/components/Title";
-import { getFormattedMoney } from "@/checkout-storefront/hooks/useFormattedMoney";
 import { PromoCodeAdd } from "./PromoCodeAdd";
 import { SummaryMoneyRow } from "./SummaryMoneyRow";
 import { SummaryPromoCodeRow } from "./SummaryPromoCodeRow";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
+import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
 
 export const Summary = () => {
   const [isOpen, setOpen] = useState(true);
@@ -67,6 +67,7 @@ export const Summary = () => {
           {voucherCode && (
             <SummaryPromoCodeRow
               promoCode={voucherCode}
+              ariaLabel={formatMessage("voucherLabel")}
               label={formatMessage("voucher", { voucherCode })}
               money={discount}
               negative
@@ -75,6 +76,7 @@ export const Summary = () => {
           {checkout.giftCards.map(({ currentBalance, displayCode, id }) => (
             <SummaryPromoCodeRow
               promoCodeId={id}
+              ariaLabel={formatMessage("giftCardLabel")}
               label={formatMessage("giftCard", { giftCardCode: `•••• •••• ${displayCode}` })}
               money={currentBalance}
               negative

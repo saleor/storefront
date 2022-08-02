@@ -1,44 +1,49 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
-import { useAddressValidationRulesQuery } from "@/checkout-storefront/graphql";
+import {
+  AddressValidationData,
+  useAddressValidationRulesQuery,
+} from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
-import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
-import {
-  getRequiredAddressFields,
-  getSortedAddressFields,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
-import { ReactNode, useState } from "react";
+import { useValidationResolver } from "@/checkout-storefront/lib/utils";
+import { useEffect, useState } from "react";
 import { DefaultValues, Path, Resolver, SubmitHandler, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
 import { Select } from "@saleor/ui-kit";
-import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
+import { Title } from "@/checkout-storefront/components/Title";
+import { UseCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { countries } from "./countries";
+import { useAddressFormUtils } from "./useAddressFormUtils";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
-  extends Omit<UseErrors<TFormData>, "setApiErrors"> {
+  extends Omit<UseErrors<TFormData>, "setApiErrors">,
+    Pick<UseCountrySelect, "countryCode" | "setCountryCode"> {
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
-  onSave: SubmitHandler<TFormData>;
+  onSubmit: SubmitHandler<TFormData>;
   autoSave?: boolean;
+  title: string;
 }
 
 export const AddressForm = <TFormData extends AddressFormData>({
   defaultValues,
   onCancel,
-  onSave,
+  onSubmit,
   errors,
   clearErrors: onClearErrors,
   autoSave = false,
+  countryCode,
+  setCountryCode,
+  title,
 }: AddressFormProps<TFormData>) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const { countryCode } = useCountrySelect();
   const [countryArea, setCountryArea] = useState<string>("");
 
   const schema = object({
@@ -71,8 +76,9 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const validationRules = data?.addressValidationRules;
 
-  const isRequiredField = (field: AddressField) =>
-    getRequiredAddressFields(validationRules?.requiredFields! as AddressField[]).includes(field);
+  const { sortedAddressFields, getFieldLabel, isRequiredField } = useAddressFormUtils(
+    validationRules as AddressValidationData
+  );
 
   const handleCancel = () => {
     clearErrors();
@@ -85,40 +91,8 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const handleSave = (address: TFormData) => {
     onClearErrors();
-    onSave(countryArea ? { ...address, countryArea } : address);
+    onSubmit(countryArea ? { ...address, countryCode, countryArea } : { ...address, countryCode });
   };
-
-  const getLocalizedFieldName = (field: AddressField, localizedField?: string | null) => {
-    try {
-      const translatedLabel = formatMessage(localizedField as MessageKey);
-      return translatedLabel;
-    } catch (e) {
-      warnAboutMissingTranslation(localizedField as string);
-      return formatMessage(field as MessageKey);
-    }
-  };
-
-  const getFieldLabel = (field: AddressField) => {
-    const { countryAreaType, postalCodeType, cityType } = validationRules || {};
-
-    const localizedFields: Partial<Record<AddressField, string | undefined>> = {
-      countryArea: countryAreaType,
-      city: cityType,
-      postalCode: postalCodeType,
-    };
-
-    const isLocalizedField = Object.keys(localizedFields).includes(field);
-
-    if (!isLocalizedField) {
-      return formatMessage(field as MessageKey);
-    }
-
-    return getLocalizedFieldName(field, localizedFields[field]);
-  };
-
-  const sortedAddressFields = getSortedAddressFields(
-    validationRules?.allowedFields! as AddressField[]
-  );
 
   const handleAutoSave = () => {
     if (!autoSave) {
@@ -126,60 +100,81 @@ export const AddressForm = <TFormData extends AddressFormData>({
     }
 
     const formData = getValues();
-    onSave(formData);
+    onSubmit({ ...formData, countryCode });
   };
 
-  return (
-    <div className="mt-2">
-      {sortedAddressFields.map((field: AddressField) => {
-        const isRequired = isRequiredField(field);
-        const label = getFieldLabel(field);
+  useEffect(() => {
+    if (autoSave) {
+      const formData = getValues();
+      onSubmit({ ...formData, countryCode });
+    }
+  }, [countryCode]);
 
-        if (field === "countryArea" && isRequired) {
+  return (
+    <>
+      <div className="flex flex-row justify-between items-baseline">
+        <Title>{title}</Title>
+        <Select
+          classNames={{ container: "!w-1/2" }}
+          onChange={setCountryCode}
+          selectedValue={countryCode}
+          options={countries.map(({ name, code }) => ({
+            label: name,
+            value: code,
+          }))}
+        />
+      </div>
+      <div className="mt-2">
+        {sortedAddressFields.map((field: AddressField) => {
+          const isRequired = isRequiredField(field);
+          const label = getFieldLabel(field);
+
+          if (field === "countryArea" && isRequired) {
+            return (
+              <Select
+                classNames={{ container: "mb-4" }}
+                placeholder={label}
+                onChange={setCountryArea}
+                selectedValue={countryArea}
+                options={
+                  validationRules?.countryAreaChoices.map(({ verbose, raw }) => ({
+                    label: verbose as string,
+                    value: raw as string,
+                  })) || []
+                }
+              />
+            );
+          }
+
           return (
-            <Select
-              classNames={{ container: "mb-4" }}
-              placeholder={label}
-              onChange={setCountryArea}
-              selectedValue={countryArea}
-              options={
-                validationRules?.countryAreaChoices.map(({ verbose, raw }) => ({
-                  label: verbose as string,
-                  value: raw as string,
-                })) || []
-              }
+            <TextInput
+              key={field}
+              label={label}
+              {...getInputProps(field as Path<TFormData>, {
+                onBlur: handleAutoSave,
+              })}
+              optional={!isRequired}
             />
           );
-        }
-
-        return (
-          <TextInput
-            key={field}
-            label={label}
-            {...getInputProps(field as Path<TFormData>, {
-              onBlur: handleAutoSave,
-            })}
-            optional={!isRequired}
-          />
-        );
-      })}
-      {!autoSave && (
-        <div className="flex flex-row justify-end">
-          <Button
-            className="mr-4"
-            ariaLabel={formatMessage("cancelLabel")}
-            variant="secondary"
-            onClick={handleCancel}
-            label={formatMessage("cancel")}
-          />
-          <Button
-            ariaLabel={formatMessage("saveLabel")}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={handleSubmit(handleSave)}
-            label={formatMessage("saveAddress")}
-          />
-        </div>
-      )}
-    </div>
+        })}
+        {!autoSave && (
+          <div className="flex flex-row justify-end">
+            <Button
+              className="mr-4"
+              ariaLabel={formatMessage("cancelLabel")}
+              variant="secondary"
+              onClick={handleCancel}
+              label={formatMessage("cancel")}
+            />
+            <Button
+              ariaLabel={formatMessage("saveLabel")}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={handleSubmit(handleSave)}
+              label={formatMessage("saveAddress")}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };

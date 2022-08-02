@@ -3,17 +3,17 @@ import { AddressFragment, CountryCode } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getById } from "@/checkout-storefront/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useState } from "react";
 import { UserAddressFormData } from "./types";
 import { UserAddressList } from "./UserAddressList";
-import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
 import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { AddressesSkeleton } from "../Skeletons/AddressesSkeleton";
+import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { Title } from "@/checkout-storefront/components/Title";
 
 export interface UserAddressSectionProps
   extends UseUserAddressSelectProps,
@@ -40,8 +40,6 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
     onAddressSelect,
   });
 
-  const { setCountryCode } = useCountrySelect();
-
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
   const [editedAddressId, setEditedAddressId] = useState<string | null>();
@@ -52,50 +50,52 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
 
   const editedAddress = addresses.find(getById(editedAddressId as string));
 
-  const handleSelectCountry = (address?: AddressFragment) => () =>
-    setCountryCode(address?.country.code as CountryCode);
-
-  useEffect(handleSelectCountry(selectedAddress), [selectedAddress]);
-
-  useEffect(handleSelectCountry(editedAddress), [editedAddress]);
+  const countrySelectProps = useCountrySelect({
+    autoSelect:
+      displayAddressCreate ||
+      (displayAddressEdit && !getAddressFormDataFromAddress(editedAddress)?.countryCode),
+    selectedCountryCode: displayAddressEdit
+      ? (selectedAddress?.country.code as CountryCode)
+      : undefined,
+  });
 
   return (
     <Suspense fallback={<AddressesSkeleton />}>
-      <UserAddressSectionContainer
+      <AddressCreateForm
         title={title}
-        displayCountrySelect={displayAddressEdit || displayAddressCreate}
-      >
-        <AddressCreateForm
-          show={displayAddressCreate}
-          type={type}
-          onClose={() => setDisplayAddressCreate(false)}
-        />
+        show={displayAddressCreate}
+        type={type}
+        onClose={() => setDisplayAddressCreate(false)}
+        {...countrySelectProps}
+      />
 
-        <AddressEditForm
-          show={displayAddressEdit}
-          onClose={() => setEditedAddressId(null)}
-          defaultValues={getAddressFormDataFromAddress(editedAddress)}
-          onSuccess={setSelectedAddressId}
-        />
+      <AddressEditForm
+        title={title}
+        show={displayAddressEdit}
+        onClose={() => setEditedAddressId(null)}
+        defaultValues={getAddressFormDataFromAddress(editedAddress)}
+        onSuccess={setSelectedAddressId}
+        {...countrySelectProps}
+      />
 
-        {displayAddressList && (
-          <>
-            <Button
-              variant="secondary"
-              ariaLabel={formatMessage("addAddressLabel")}
-              onClick={() => setDisplayAddressCreate(true)}
-              label={formatMessage("addAddress")}
-              className="mb-4 w-full"
-            />
-            <UserAddressList
-              addresses={addresses as AddressFragment[]}
-              onAddressSelect={setSelectedAddressId}
-              selectedAddressId={selectedAddressId}
-              onEditChange={(id: string) => setEditedAddressId(id)}
-            />
-          </>
-        )}
-      </UserAddressSectionContainer>
+      {displayAddressList && (
+        <div className="flex flex-col">
+          <Title>{title}</Title>
+          <Button
+            variant="secondary"
+            ariaLabel={formatMessage("addAddressLabel")}
+            onClick={() => setDisplayAddressCreate(true)}
+            label={formatMessage("addAddress")}
+            className="mb-4 w-full"
+          />
+          <UserAddressList
+            addresses={addresses as AddressFragment[]}
+            onAddressSelect={setSelectedAddressId}
+            selectedAddressId={selectedAddressId}
+            onEditChange={(id: string) => setEditedAddressId(id)}
+          />
+        </div>
+      )}
     </Suspense>
   );
 };

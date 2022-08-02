@@ -1,16 +1,14 @@
 import clsx from "clsx";
 import { Text, TextProps } from "@saleor/ui-kit";
-import {
-  getFormattedMoney,
-  Money as MoneyType,
-} from "@/checkout-storefront/hooks/useFormattedMoney";
+import { Money as MoneyType, getFormattedMoney } from "@/checkout-storefront/lib/utils";
+
 import { AriaLabel, Classes } from "@/checkout-storefront/lib/globalTypes";
 
 export interface MoneyProps<TMoney extends MoneyType = MoneyType>
   extends TextProps,
     Classes,
     AriaLabel {
-  money?: TMoney;
+  money?: TMoney | null;
   negative?: boolean;
 }
 

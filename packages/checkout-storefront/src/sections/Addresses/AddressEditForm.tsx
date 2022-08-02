@@ -1,15 +1,15 @@
-import { useUserAddressUpdateMutation } from "@/checkout-storefront/graphql";
+import { CountryCode, useUserAddressUpdateMutation } from "@/checkout-storefront/graphql";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
-import { UserAddressFormData } from "./types";
+import { AddressFormData, UserAddressFormData } from "./types";
 import { getAddressInputData } from "./utils";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 
 interface AddressEditFormProps
-  extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues"> {
+  extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues">,
+    Pick<AddressFormProps<AddressFormData>, "countryCode" | "setCountryCode" | "title"> {
   onClose: () => void;
   show: boolean;
   onSuccess: (addressId: string) => void;
@@ -20,11 +20,10 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   show,
   defaultValues,
   onSuccess,
+  ...rest
 }) => {
   const [, userAddressUpdate] = useUserAddressUpdateMutation();
   const { showErrors } = useAlerts("userAddressUpdate");
-
-  const { countryCode } = useCountrySelect();
 
   const { setApiErrors, ...errorsRest } = useErrors<UserAddressFormData>();
 
@@ -32,7 +31,6 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     const result = await userAddressUpdate({
       address: getAddressInputData({
         ...address,
-        countryCode,
       }),
       id: address.id,
     });
@@ -55,10 +53,11 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
   return (
     <AddressForm
-      onSave={handleSubmit}
+      onSubmit={handleSubmit}
       defaultValues={defaultValues}
       onCancel={onClose}
       {...errorsRest}
+      {...rest}
     />
   );
 };

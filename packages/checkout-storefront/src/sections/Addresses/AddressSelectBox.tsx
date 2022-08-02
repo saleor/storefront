@@ -1,13 +1,10 @@
-import { Radio, Text } from "@saleor/ui-kit";
+import { Text } from "@saleor/ui-kit";
 import React from "react";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { getSortedAddressFieldsFromAddress } from "@/checkout-storefront/lib/utils";
-import { pull } from "lodash-es";
 import { SelectBox, SelectBoxProps } from "@/checkout-storefront/components/SelectBox";
 import { Button } from "@/checkout-storefront/components/Button";
 import { compact } from "lodash-es";
-// import { getSvgSrc } from "../lib/svgSrc";
 
 interface AddressSelectBoxProps extends SelectBoxProps {
   address: Partial<Record<AddressField, any>>;

@@ -1,25 +1,29 @@
-import { useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
+import { CountryCode, useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
-import { AddressForm } from "./AddressForm";
+import { AddressForm, AddressFormProps } from "./AddressForm";
 import { AddressFormData } from "./types";
 import { getAddressInputData } from "./utils";
 
-export interface AddressCreateFormProps {
+export interface AddressCreateFormProps
+  extends Pick<AddressFormProps<AddressFormData>, "countryCode" | "setCountryCode" | "title"> {
   show: boolean;
   type: AddressTypeEnum;
   onClose: () => void;
+  countryCode: CountryCode;
 }
 
-export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ show, type, onClose }) => {
+export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
+  show,
+  type,
+  onClose,
+  ...rest
+}) => {
   const { showErrors } = useAlerts("userAddressCreate");
   const [, userAddressCreate] = useUserAddressCreateMutation();
-
-  const { countryCode } = useCountrySelect();
 
   const { setApiErrors, ...errorsRest } = useErrors<AddressFormData>();
 
@@ -27,7 +31,6 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ show, type
     const result = await userAddressCreate({
       address: getAddressInputData({
         ...address,
-        countryCode,
       }),
       type,
     });
@@ -47,5 +50,5 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ show, type
     return null;
   }
 
-  return <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />;
+  return <AddressForm onSubmit={handleSubmit} onCancel={onClose} {...errorsRest} {...rest} />;
 };

@@ -17,8 +17,6 @@ import { PaymentSection } from "../PaymentSection";
 import { PaymentProviderID } from "checkout-common";
 import invariant from "ts-invariant";
 import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
-import { CountrySelectProvider } from "@/checkout-storefront/providers/CountrySelectProvider";
-import { CountryCode } from "@/checkout-storefront/graphql";
 import { ContactSkeleton } from "../Skeletons/ContactSkeleton";
 import { AddressesSkeleton } from "../Skeletons/AddressesSkeleton";
 import { DeliveryMethodsSkeleton } from "../Skeletons/DeliveryMethodsSkeleton";
@@ -76,26 +74,22 @@ export const CheckoutForm = () => {
   return (
     <div className="checkout-form-container">
       <div className="checkout-form">
-        <CountrySelectProvider
-          selectedCountryCode={checkout?.shippingAddress?.country?.code as CountryCode}
-        >
-          <FormProvider {...methods}>
-            <Suspense fallback={<ContactSkeleton />}>
-              <Contact setShowOnlyContact={setShowOnlyContact} />
+        <FormProvider {...methods}>
+          <Suspense fallback={<ContactSkeleton />}>
+            <Contact setShowOnlyContact={setShowOnlyContact} />
+          </Suspense>
+        </FormProvider>
+        <>
+          {checkout?.isShippingRequired && (
+            <Suspense fallback={<AddressesSkeleton />}>
+              <ShippingAddressSection collapsed={showOnlyContact} />
             </Suspense>
-          </FormProvider>
-          <>
-            {checkout?.isShippingRequired && (
-              <Suspense fallback={<AddressesSkeleton />}>
-                <ShippingAddressSection collapsed={showOnlyContact} />
-              </Suspense>
-            )}
-            <Suspense fallback={<DeliveryMethodsSkeleton />}>
-              <DeliveryMethods collapsed={showOnlyContact} />
-            </Suspense>
-            <PaymentSection {...usePaymentProvidersProps} collapsed={showOnlyContact} />
-          </>
-        </CountrySelectProvider>
+          )}
+          <Suspense fallback={<DeliveryMethodsSkeleton />}>
+            <DeliveryMethods collapsed={showOnlyContact} />
+          </Suspense>
+          <PaymentSection {...usePaymentProvidersProps} collapsed={showOnlyContact} />
+        </>
       </div>
       {!showOnlyContact &&
         (isLoading ? (
