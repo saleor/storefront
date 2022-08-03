@@ -1,8 +1,8 @@
 {
   "extends": "tsconfig/nextjs.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["DOM", "es2022"],
+    "target": "ES2021",
+    "lib": ["DOM", "ES2021"],
     "jsx": "preserve",
     "module": "commonjs",
 

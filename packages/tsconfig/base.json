@@ -3,7 +3,7 @@
   "display": "Default",
   "compilerOptions": {
     "lib": ["ES2021"],
-    "target": "es2021",
+    "target": "ES2021",
     "composite": false,
     "declaration": true,
     "declarationMap": true,
