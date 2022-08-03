@@ -15,7 +15,8 @@
     "declaration": false,
     "declarationMap": false,
     "noImplicitReturns": false,
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
+    "jsx": "react-jsx"
   },
   "extends": "tsconfig/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

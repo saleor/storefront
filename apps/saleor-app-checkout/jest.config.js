@@ -11,7 +11,6 @@ module.exports = {
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   preset: "ts-jest/presets/default-esm",
-  extensionsToTreatAsEsm: [".ts", ".tsx"],
   globals: {
     "ts-jest": {
       useESM: true,

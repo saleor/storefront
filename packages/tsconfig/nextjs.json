@@ -4,11 +4,7 @@
   "extends": "./base.json",
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -17,13 +13,8 @@
     "esModuleInterop": true,
     "module": "esnext",
     "isolatedModules": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "next-env.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "next-env.d.ts"],
+  "exclude": ["node_modules"]
 }
