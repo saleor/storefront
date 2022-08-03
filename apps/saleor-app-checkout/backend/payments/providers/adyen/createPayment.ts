@@ -2,12 +2,12 @@ import { CheckoutAPI, Client } from "@adyen/api-library";
 
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { envVars } from "@/saleor-app-checkout/constants";
-import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
 
 import { getAdyenAmountFromSaleor, getLineItems } from "./utils";
+import { CreatePaymentData } from "../../types";
 
-export const createAdyenPayment = async (data: OrderFragment, redirectUrl: string) => {
+export const createAdyenPayment = async ({ order, redirectUrl }: CreatePaymentData) => {
   const {
     paymentProviders: { adyen },
   } = await getPrivateSettings(envVars.apiUrl, false);
@@ -27,48 +27,48 @@ export const createAdyenPayment = async (data: OrderFragment, redirectUrl: strin
 
   const checkout = new CheckoutAPI(client);
 
-  const total = data.total.gross;
+  const total = order.total.gross;
 
   const { url, id } = await checkout.paymentLinks({
     amount: {
       currency: total.currency,
       value: getAdyenAmountFromSaleor(total.amount),
     },
-    reference: data.number || data.id,
-    returnUrl: formatRedirectUrl(redirectUrl, data.id),
+    reference: order.number || order.id,
+    returnUrl: formatRedirectUrl(redirectUrl, order.id),
     merchantAccount: adyen.merchantAccount,
-    countryCode: data.billingAddress?.country.code,
+    countryCode: order.billingAddress?.country.code,
     metadata: {
-      orderId: data.id,
+      orderId: order.id,
     },
-    lineItems: getLineItems(data.lines),
-    shopperEmail: data.userEmail!,
-    shopperName: data.billingAddress
+    lineItems: getLineItems(order.lines),
+    shopperEmail: order.userEmail!,
+    shopperName: order.billingAddress
       ? {
-          firstName: data.billingAddress.firstName,
-          lastName: data.billingAddress.lastName,
+          firstName: order.billingAddress.firstName,
+          lastName: order.billingAddress.lastName,
         }
       : undefined,
     shopperLocale: "EN", //TODO: get from checkout and pass here
-    telephoneNumber: data.shippingAddress?.phone || data.billingAddress?.phone || undefined,
-    billingAddress: data.billingAddress
+    telephoneNumber: order.shippingAddress?.phone || order.billingAddress?.phone || undefined,
+    billingAddress: order.billingAddress
       ? {
-          city: data.billingAddress.city,
-          country: data.billingAddress.country.code,
-          street: data.billingAddress.streetAddress1,
-          houseNumberOrName: data.billingAddress.streetAddress2,
-          postalCode: data.billingAddress.postalCode,
-          stateOrProvince: data.billingAddress.countryArea,
+          city: order.billingAddress.city,
+          country: order.billingAddress.country.code,
+          street: order.billingAddress.streetAddress1,
+          houseNumberOrName: order.billingAddress.streetAddress2,
+          postalCode: order.billingAddress.postalCode,
+          stateOrProvince: order.billingAddress.countryArea,
         }
       : undefined,
-    deliveryAddress: data.shippingAddress
+    deliveryAddress: order.shippingAddress
       ? {
-          city: data.shippingAddress.city,
-          country: data.shippingAddress.country.code,
-          street: data.shippingAddress.streetAddress1,
-          houseNumberOrName: data.shippingAddress.streetAddress2,
-          postalCode: data.shippingAddress.postalCode,
-          stateOrProvince: data.shippingAddress.countryArea,
+          city: order.shippingAddress.city,
+          country: order.shippingAddress.country.code,
+          street: order.shippingAddress.streetAddress1,
+          houseNumberOrName: order.shippingAddress.streetAddress2,
+          postalCode: order.shippingAddress.postalCode,
+          stateOrProvince: order.shippingAddress.countryArea,
         }
       : undefined,
   });

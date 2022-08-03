@@ -123,7 +123,10 @@ const createOrderFromBodyOrId = async (body: PayRequestBody): Promise<OrderFragm
   throw new KnownPaymentError(provider, ["MISSING_CHECKOUT_OR_ORDER_ID"]);
 };
 
-const newHandler = async (body: PayRequestBody): Promise<PayRequestResponse> => {
+const getPaymentResponse = async (
+  body: PayRequestBody,
+  appUrl: string
+): Promise<PayRequestResponse> => {
   if (!PaymentProviders.includes(body.provider)) {
     throw new KnownPaymentError(body.provider, ["UNKNOWN_PROVIDER"]);
   }
@@ -142,7 +145,7 @@ const newHandler = async (body: PayRequestBody): Promise<PayRequestResponse> => 
     }
   }
 
-  const { url, id } = await getPaymentUrlIdForProvider(body, order);
+  const { url, id } = await getPaymentUrlIdForProvider(body, order, appUrl);
 
   if (!url) {
     throw new MissingUrlError(body.provider, order);
@@ -175,7 +178,8 @@ const handler: NextApiHandler = async (req, res) => {
   const body: PayRequestBody = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
 
   try {
-    const response = await newHandler(body);
+    const appUrl = getBaseUrl(req);
+    const response = await getPaymentResponse(body, appUrl);
     return res.status(200).json(response);
   } catch (err) {
     if (err instanceof KnownPaymentError) {
@@ -196,13 +200,14 @@ const handler: NextApiHandler = async (req, res) => {
 
 const getPaymentUrlIdForProvider = (
   body: PayRequestBody,
-  order: OrderFragment
+  order: OrderFragment,
+  appUrl: string
 ): Promise<{ url?: string | undefined; id: string }> => {
   switch (body.provider) {
     case "mollie":
-      return createAdyenPayment(order, body.redirectUrl);
+      return createMolliePayment({ order, redirectUrl: body.redirectUrl, appUrl });
     case "adyen":
-      return createAdyenPayment(order, body.redirectUrl);
+      return createAdyenPayment({ order, redirectUrl: body.redirectUrl, appURl });
     case "stripe":
       // @todo
       return {} as any;

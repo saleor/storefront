@@ -1,4 +1,4 @@
-import { OrderCreateFromCheckoutErrorCode } from "@/saleor-app-checkout/graphql";
+import { OrderCreateFromCheckoutErrorCode, OrderFragment } from "@/saleor-app-checkout/graphql";
 
 type InternalErrorCodes =
   | "COULD_NOT_CREATE_ORDER_FROM_CHECKOUT"
@@ -11,3 +11,9 @@ type InternalErrorCodes =
 export type ErrorCode = InternalErrorCodes | OrderCreateFromCheckoutErrorCode;
 
 export type Errors = ErrorCode[];
+
+export interface CreatePaymentData {
+  order: OrderFragment;
+  redirectUrl: string;
+  appUrl: string;
+}
