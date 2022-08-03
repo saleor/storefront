@@ -33,6 +33,7 @@ export type PayRequestErrorResponse = {
   ok: false;
   orderId?: string;
   errors: Errors;
+  provider?: PaymentProviderID;
 };
 
 export type PayRequestResponse = PayRequestSuccessResponse | PayRequestErrorResponse;
