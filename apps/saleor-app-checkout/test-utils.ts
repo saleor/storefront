@@ -11,6 +11,7 @@ import { MockedRequest } from "msw";
 declare module "next" {
   type NextApiResponse = {
     _getJSONData: <T extends Object>() => T;
+    _getData: <T extends string>() => T;
   } & NextApiResponse;
 }
 

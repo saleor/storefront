@@ -6,6 +6,7 @@ import {
   TransactionAmounts,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
 import { TransactionEventFragment, TransactionFragment } from "@/saleor-app-checkout/graphql";
+import { prepareSaleorTransaction } from "@/saleor-app-checkout/mocks/fixtures/saleor";
 import { Types } from "@adyen/api-library";
 
 type NotificationRequestItem = Types.notification.NotificationRequestItem;
@@ -81,49 +82,6 @@ describe("getTransactionAmountFromAdyen", () => {
     paymentMethod: "visa",
     originalReference: "PAYMENT ID",
   });
-
-  const prepareSaleorTransaction = (
-    type: "voided" | "charged" | "authorized" | "refunded",
-    amount: number,
-    currency: string = DEFAULT_CURRENCY
-  ): TransactionFragment => {
-    const common: Pick<
-      TransactionFragment,
-      "voidedAmount" | "chargedAmount" | "authorizedAmount" | "refundedAmount"
-    > = {
-      refundedAmount: {
-        amount: 0,
-        currency,
-      },
-      authorizedAmount: { amount: 0, currency },
-      chargedAmount: { amount: 0, currency },
-      voidedAmount: { amount: 0, currency },
-    };
-
-    const amounts = { ...common };
-
-    switch (type) {
-      case "authorized":
-        amounts.authorizedAmount.amount = amount;
-        break;
-      case "charged":
-        amounts.chargedAmount.amount = amount;
-        break;
-      case "refunded":
-        amounts.refundedAmount.amount = amount;
-        break;
-      case "voided":
-        amounts.voidedAmount.amount = amount;
-        break;
-    }
-
-    return {
-      ...amounts,
-      reference: "123",
-      events: [],
-      id: "123",
-    };
-  };
 
   it("returns nothing when notification is failed", () => {
     const notification = {
@@ -204,7 +162,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when existing transaction was captured", () => {
     const notification = prepareAdyenNotification(12_00, EventCodeEnum.Capture);
-    const transaction = prepareSaleorTransaction("authorized", 12.0);
+    const transaction = prepareSaleorTransaction("authorized", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -221,7 +179,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when existing transaction was partially captured", () => {
     const notification = prepareAdyenNotification(10_00, EventCodeEnum.Capture);
-    const transaction = prepareSaleorTransaction("authorized", 12.0);
+    const transaction = prepareSaleorTransaction("authorized", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -239,7 +197,7 @@ describe("getTransactionAmountFromAdyen", () => {
   it("returns amounts when transaction was cancelled", () => {
     // amount from notification doesn't matter - it has to be always fully voided (all or nothing)
     const notification = prepareAdyenNotification(0, EventCodeEnum.Cancellation);
-    const transaction = prepareSaleorTransaction("authorized", 12.0);
+    const transaction = prepareSaleorTransaction("authorized", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -256,7 +214,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when transaction capture failed", () => {
     const notification = prepareAdyenNotification(12_00, EventCodeEnum.CaptureFailed);
-    const transaction = prepareSaleorTransaction("charged", 12.0);
+    const transaction = prepareSaleorTransaction("charged", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -273,7 +231,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when transaction was fully refunded", () => {
     const notification = prepareAdyenNotification(12_00, EventCodeEnum.Refund);
-    const transaction = prepareSaleorTransaction("charged", 12.0);
+    const transaction = prepareSaleorTransaction("charged", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -290,7 +248,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when transaction was partialy refunded", () => {
     const notification = prepareAdyenNotification(10_00, EventCodeEnum.Refund);
-    const transaction = prepareSaleorTransaction("charged", 12.0);
+    const transaction = prepareSaleorTransaction("charged", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -307,7 +265,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when transaction was chargebacked", () => {
     const notification = prepareAdyenNotification(12_00, EventCodeEnum.Chargeback);
-    const transaction = prepareSaleorTransaction("charged", 12.0);
+    const transaction = prepareSaleorTransaction("charged", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -324,7 +282,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when transaction refund failed", () => {
     const notification = prepareAdyenNotification(12_00, EventCodeEnum.RefundFailed);
-    const transaction = prepareSaleorTransaction("refunded", 12.0);
+    const transaction = prepareSaleorTransaction("refunded", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -342,8 +300,8 @@ describe("getTransactionAmountFromAdyen", () => {
   it("returns amounts when transaction partial refund fails", () => {
     const notification = prepareAdyenNotification(10_00, EventCodeEnum.RefundFailed);
     const transaction: TransactionFragment = {
-      ...prepareSaleorTransaction("refunded", 10.0),
-      ...prepareSaleorTransaction("charged", 2.0),
+      ...prepareSaleorTransaction("refunded", 10.0, DEFAULT_CURRENCY),
+      ...prepareSaleorTransaction("charged", 2.0, DEFAULT_CURRENCY),
     };
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
@@ -361,7 +319,7 @@ describe("getTransactionAmountFromAdyen", () => {
 
   it("returns amounts when transaction chargeback was reversed", () => {
     const notification = prepareAdyenNotification(12_00, EventCodeEnum.ChargebackReversed);
-    const transaction = prepareSaleorTransaction("refunded", 12.0);
+    const transaction = prepareSaleorTransaction("refunded", 12.0, DEFAULT_CURRENCY);
 
     const result = getTransactionAmountFromAdyen(notification, transaction);
     expect(result).toStrictEqual<TransactionAmounts>({
@@ -386,7 +344,7 @@ describe("getTransactionAmountFromAdyen", () => {
         "modification.action": "refund",
       },
     };
-    const transactionRefund = prepareSaleorTransaction("charged", 12.0);
+    const transactionRefund = prepareSaleorTransaction("charged", 12.0, DEFAULT_CURRENCY);
     const resultRefund = getTransactionAmountFromAdyen(notificationRefund, transactionRefund);
 
     expect(resultRefund).toStrictEqual<TransactionAmounts>({
@@ -406,7 +364,7 @@ describe("getTransactionAmountFromAdyen", () => {
         "modification.action": "cancel",
       },
     };
-    const transactionCancel = prepareSaleorTransaction("authorized", 12.0);
+    const transactionCancel = prepareSaleorTransaction("authorized", 12.0, DEFAULT_CURRENCY);
     const resultCancel = getTransactionAmountFromAdyen(notificationCancel, transactionCancel);
     expect(resultCancel).toStrictEqual<TransactionAmounts>({
       amountAuthorized: {
