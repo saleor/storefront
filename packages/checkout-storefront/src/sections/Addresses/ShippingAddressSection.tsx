@@ -8,11 +8,12 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { AddressFormData, CommonSectionProps, UserAddressFormData } from "./types";
+import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
 import { getAddressInputData, getAddressVlidationRulesVariables } from "./utils";
 

@@ -11,7 +11,7 @@ import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
@@ -39,14 +39,19 @@ export const BillingAddressSection = () => {
   const defaultBillingAddress = user?.defaultBillingAddress;
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
+  const [passDefaultFormDataAddress, setPassDefaultFormDataAddress] = useState<boolean>(
+    !!billingAddress
+  );
 
   const defaultAddress = defaultBillingAddress;
 
   const { showErrors } = useAlerts();
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
+  const useBillingSameAsShippingRef = useRef<boolean>(useBillingSameAsShipping);
 
   const updateBillingAddress = async ({ autoSave, ...addressInput }: AddressFormData) => {
+    console.log("SUBMITTIN", { ...getAddressFormDataFromAddress(shippingAddress) });
     const result = await checkoutBillingAddressUpdate({
       checkoutId,
       billingAddress: getAddressInputData(addressInput),
@@ -61,18 +66,38 @@ export const BillingAddressSection = () => {
     }
   };
 
-  const handleSetBillingSameAsShipping = async () => {
-    if (useBillingSameAsShipping && !hasBillingSameAsShipping) {
-      await updateBillingAddress(
-        getAddressFormDataFromAddress(checkout.shippingAddress) as AddressFormData
-      );
+  const setBillingSameAsShipping = async () => {
+    if (!hasBillingSameAsShipping) {
+      console.log("SAME AS", { ...getAddressFormDataFromAddress(shippingAddress) });
+      await updateBillingAddress({
+        ...getAddressFormDataFromAddress(shippingAddress),
+        autoSave: true,
+      } as AddressFormData);
     }
   };
 
   useEffect(() => {
-    void handleSetBillingSameAsShipping();
-  }, [useBillingSameAsShipping]);
+    const hasBillingSameAsShippingChangedToTrue =
+      useBillingSameAsShipping && !useBillingSameAsShippingRef.current;
+    const hasBillingSameAsShippingChangedToFalse =
+      !useBillingSameAsShipping && useBillingSameAsShippingRef.current;
 
+    if (hasBillingSameAsShippingChangedToTrue) {
+      void setBillingSameAsShipping();
+    } else if (hasBillingSameAsShippingChangedToFalse) {
+      setPassDefaultFormDataAddress(false);
+    }
+
+    useBillingSameAsShippingRef.current = useBillingSameAsShipping;
+  }, [useBillingSameAsShipping, shippingAddress]);
+
+  // console.log({
+  //   useBillingSameAsShipping,
+  //   passDefaultFormDataAddress,
+  //   matching: isMatchingAddress(shippingAddress, billingAddress),
+  // });
+
+  console.log({ passDefaultFormDataAddress });
   return (
     <div className="mt-2">
       <Checkbox
@@ -99,7 +124,11 @@ export const BillingAddressSection = () => {
             <GuestAddressSection
               {...errorProps}
               selectedCountryCode={checkout?.shippingAddress?.country.code as CountryCode}
-              address={checkout?.billingAddress as AddressFragment}
+              address={
+                passDefaultFormDataAddress
+                  ? (checkout?.billingAddress as AddressFragment)
+                  : undefined
+              }
               title={formatMessage("billingAddress")}
               onSubmit={(address) => {
                 void updateBillingAddress(address);

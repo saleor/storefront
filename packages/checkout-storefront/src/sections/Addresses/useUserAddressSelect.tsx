@@ -39,11 +39,13 @@ export const useUserAddressSelect = ({
   useEffect(() => {
     const matchingAddress = addresses.find((address) => isMatchingAddress(address, addressToWatch));
 
+    console.log({ matchingAddress });
     selectedAddressRef.current = matchingAddress;
     setSelectedAddressId(matchingAddress?.id);
   }, [addressToWatch]);
 
   useEffect(() => {
+    console.log({ selectedAddress, selectedAddressRef, addresses });
     if (selectedAddress && selectedAddress !== selectedAddressRef.current) {
       onAddressSelect(selectedAddress as unknown as UserAddressFormData);
       selectedAddressRef.current = selectedAddress;

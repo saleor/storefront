@@ -13,6 +13,7 @@ export interface AddressCreateFormProps
   show: boolean;
   type: AddressTypeEnum;
   onClose: () => void;
+  onSuccess: (createdAddressId: string) => void;
   countryCode: CountryCode;
 }
 
@@ -20,6 +21,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
   show,
   type,
   onClose,
+  onSuccess,
   ...rest
 }) => {
   const { showErrors } = useAlerts("userAddressCreate");
@@ -38,6 +40,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
+      onSuccess(result.data?.accountAddressCreate?.address?.id as string);
       onClose();
       return;
     }

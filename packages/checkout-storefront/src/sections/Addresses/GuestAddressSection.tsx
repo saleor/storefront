@@ -13,7 +13,7 @@ interface GuestAddressSectionProps
   extends UseErrors<AddressFormData>,
     Pick<UseCountrySelectProps, "selectedCountryCode"> {
   onSubmit: (address: AddressFormData) => void;
-  address: AddressFragment;
+  address?: AddressFragment;
   title: string;
 }
 

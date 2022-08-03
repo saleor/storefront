@@ -11,7 +11,7 @@ import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DefaultValues, Path, Resolver, SubmitHandler, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
@@ -20,6 +20,14 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { UseCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 import { countries } from "./countries";
 import { useAddressFormUtils } from "./useAddressFormUtils";
+import { isMainThread } from "worker_threads";
+import {
+  getAddressFormDataFromAddress,
+  getAddressInputData,
+  isMatchingAddress,
+  isMatchingAddressFormData,
+} from "@/checkout-storefront/sections/Addresses/utils";
+import { isEqual } from "lodash-es";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors">,
@@ -32,7 +40,7 @@ export interface AddressFormProps<TFormData extends AddressFormData>
 }
 
 export const AddressForm = <TFormData extends AddressFormData>({
-  defaultValues,
+  defaultValues = {},
   onCancel,
   onSubmit,
   errors,
@@ -45,6 +53,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const [countryArea, setCountryArea] = useState<string>("");
+  const defaultValuesRef = useRef<Partial<TFormData> | undefined>(defaultValues);
 
   const schema = object({
     firstName: string().required(errorMessages.required),
@@ -56,19 +65,17 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const resolver = useValidationResolver(schema);
 
-  const { handleSubmit, watch, getValues, setError, formState, clearErrors, ...rest } =
-    useForm<TFormData>({
-      resolver: resolver as unknown as Resolver<TFormData, any>,
-      mode: "onBlur",
-      defaultValues: defaultValues as DefaultValues<TFormData>,
-    });
+  const formProps = useForm<TFormData>({
+    resolver: resolver as unknown as Resolver<TFormData, any>,
+    mode: "onBlur",
+    defaultValues: defaultValues as DefaultValues<TFormData>,
+  });
+
+  const { watch, handleSubmit, getValues, setError, clearErrors, reset } = formProps;
 
   useSetFormErrors({ setError, errors });
 
-  const getInputProps = useGetInputProps({
-    ...rest,
-    formState,
-  });
+  const getInputProps = useGetInputProps(formProps);
 
   const [{ data }] = useAddressValidationRulesQuery({
     variables: { countryCode },
@@ -100,15 +107,34 @@ export const AddressForm = <TFormData extends AddressFormData>({
     }
 
     const formData = getValues();
+    console.log("AUTOSAVE", { autoSave, formData, countryCode, defaultValues });
     onSubmit({ ...formData, countryCode });
   };
 
   useEffect(() => {
-    if (autoSave) {
-      const formData = getValues();
+    const formData = getValues();
+    const submitData = { ...formData, countryCode };
+    if (autoSave && !isMatchingAddressFormData(submitData, defaultValues)) {
       onSubmit({ ...formData, countryCode });
     }
   }, [countryCode]);
+
+  useEffect(() => {
+    if (!Object.keys(defaultValues).length && !isEqual(defaultValues, defaultValuesRef.current)) {
+      reset({
+        firstName: "",
+        lastName: "",
+        streetAddress1: "",
+        streetAddress2: "",
+        companyName: "",
+        city: "",
+        cityArea: "",
+        countryArea: "",
+        postalCode: "",
+      });
+      defaultValuesRef.current = defaultValues;
+    }
+  }, [defaultValues]);
 
   return (
     <>

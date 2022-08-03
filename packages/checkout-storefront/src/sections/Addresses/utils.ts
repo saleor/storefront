@@ -42,6 +42,11 @@ export const isMatchingAddress = (
   addressToMatch?: AddressFragment | null
 ) => isEqual(omit(address, "id"), omit(addressToMatch, "id"));
 
+export const isMatchingAddressFormData = (
+  address?: Partial<AddressFormData> | null,
+  addressToMatch?: Partial<AddressFormData> | null
+) => isEqual(omit(address, ["id", "autoSave"]), omit(addressToMatch, ["id", "autoSave"]));
+
 export const getAddressVlidationRulesVariables = (
   autoSave: boolean = false
 ): CheckoutAddressValidationRules =>

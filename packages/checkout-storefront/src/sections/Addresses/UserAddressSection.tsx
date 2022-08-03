@@ -40,6 +40,8 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
     onAddressSelect,
   });
 
+  console.log({ selectedAddressId });
+
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
   const [editedAddressId, setEditedAddressId] = useState<string | null>();
@@ -63,6 +65,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
     <Suspense fallback={<AddressesSkeleton />}>
       <AddressCreateForm
         title={title}
+        onSuccess={(addressId: string) => setSelectedAddressId(addressId)}
         show={displayAddressCreate}
         type={type}
         onClose={() => setDisplayAddressCreate(false)}
