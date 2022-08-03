@@ -1,5 +1,5 @@
 {
-  "app.cart.checkoutButton": "Przejdź do kasy",
+  "app.cart.checkoutButton": "Checkout",
   "app.checkout.addressField": "Address",
   "app.checkout.billingAddressCardHeader": "Billing Address",
   "app.checkout.billingMethodCardHeader": "Billing Method",
