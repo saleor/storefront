@@ -1,6 +1,11 @@
-import { CountryCode, useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
+import {
+  AddressFragment,
+  CountryCode,
+  useUserAddressCreateMutation,
+} from "@/checkout-storefront/graphql";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
+import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
@@ -8,17 +13,13 @@ import { AddressForm, AddressFormProps } from "./AddressForm";
 import { AddressFormData } from "./types";
 import { getAddressInputData } from "./utils";
 
-export interface AddressCreateFormProps
-  extends Pick<AddressFormProps<AddressFormData>, "countryCode" | "setCountryCode" | "title"> {
-  show: boolean;
+export interface AddressCreateFormProps extends Pick<AddressFormProps<AddressFormData>, "title"> {
   type: AddressTypeEnum;
   onClose: () => void;
-  onSuccess: (createdAddressId: string) => void;
-  countryCode: CountryCode;
+  onSuccess: (createdAddress: AddressFragment) => void;
 }
 
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
-  show,
   type,
   onClose,
   onSuccess,
@@ -26,8 +27,11 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
 }) => {
   const { showErrors } = useAlerts("userAddressCreate");
   const [, userAddressCreate] = useUserAddressCreateMutation();
-
   const { setApiErrors, ...errorsRest } = useErrors<AddressFormData>();
+
+  const countrySelectProps = useCountrySelect({
+    autoSelect: true,
+  });
 
   const handleSubmit = async (address: AddressFormData) => {
     const result = await userAddressCreate({
@@ -40,7 +44,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
-      onSuccess(result.data?.accountAddressCreate?.address?.id as string);
+      onSuccess(result.data?.accountAddressCreate?.address as AddressFragment);
       onClose();
       return;
     }
@@ -49,9 +53,13 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
     setApiErrors(errors);
   };
 
-  if (!show) {
-    return null;
-  }
-
-  return <AddressForm onSubmit={handleSubmit} onCancel={onClose} {...errorsRest} {...rest} />;
+  return (
+    <AddressForm
+      onSubmit={handleSubmit}
+      onCancel={onClose}
+      {...countrySelectProps}
+      {...errorsRest}
+      {...rest}
+    />
+  );
 };

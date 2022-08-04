@@ -10,6 +10,7 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
+import { TrashIcon } from "@/checkout-storefront/icons";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { DefaultValues, Path, Resolver, SubmitHandler, useForm } from "react-hook-form";
@@ -20,20 +21,31 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { UseCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 import { countries } from "./countries";
 import { useAddressFormUtils } from "./useAddressFormUtils";
-import { isMainThread } from "worker_threads";
-import {
-  getAddressFormDataFromAddress,
-  getAddressInputData,
-  isMatchingAddress,
-  isMatchingAddressFormData,
-} from "@/checkout-storefront/sections/Addresses/utils";
+import { IconButton } from "@/checkout-storefront/components";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { isMatchingAddressFormData } from "@/checkout-storefront/sections/Addresses/utils";
 import { isEqual } from "lodash-es";
+
+const emptyFormData = {
+  firstName: "",
+  lastName: "",
+  streetAddress1: "",
+  streetAddress2: "",
+  companyName: "",
+  city: "",
+  cityArea: "",
+  countryArea: "",
+  postalCode: "",
+  phone: "",
+};
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors">,
     Pick<UseCountrySelect, "countryCode" | "setCountryCode"> {
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
+  onDelete?: () => void;
+  loading?: boolean;
   onSubmit: SubmitHandler<TFormData>;
   autoSave?: boolean;
   title: string;
@@ -48,11 +60,13 @@ export const AddressForm = <TFormData extends AddressFormData>({
   autoSave = false,
   countryCode,
   setCountryCode,
+  onDelete,
+  loading = false,
   title,
 }: AddressFormProps<TFormData>) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const [countryArea, setCountryArea] = useState<string>("");
+  const [countryArea, setCountryArea] = useState<string>(defaultValues.countryArea || "");
   const defaultValuesRef = useRef<Partial<TFormData> | undefined>(defaultValues);
 
   const schema = object({
@@ -71,7 +85,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
     defaultValues: defaultValues as DefaultValues<TFormData>,
   });
 
-  const { watch, handleSubmit, getValues, setError, clearErrors, reset } = formProps;
+  const { handleSubmit, getValues, setError, clearErrors, reset } = formProps;
 
   useSetFormErrors({ setError, errors });
 
@@ -107,7 +121,6 @@ export const AddressForm = <TFormData extends AddressFormData>({
     }
 
     const formData = getValues();
-    console.log("AUTOSAVE", { autoSave, formData, countryCode, defaultValues });
     onSubmit({ ...formData, countryCode });
   };
 
@@ -115,23 +128,14 @@ export const AddressForm = <TFormData extends AddressFormData>({
     const formData = getValues();
     const submitData = { ...formData, countryCode };
     if (autoSave && !isMatchingAddressFormData(submitData, defaultValues)) {
-      onSubmit({ ...formData, countryCode });
+      onSubmit(submitData);
     }
   }, [countryCode]);
 
   useEffect(() => {
     if (!Object.keys(defaultValues).length && !isEqual(defaultValues, defaultValuesRef.current)) {
-      reset({
-        firstName: "",
-        lastName: "",
-        streetAddress1: "",
-        streetAddress2: "",
-        companyName: "",
-        city: "",
-        cityArea: "",
-        countryArea: "",
-        postalCode: "",
-      });
+      reset(emptyFormData as TFormData);
+
       defaultValuesRef.current = defaultValues;
     }
   }, [defaultValues]);
@@ -185,19 +189,38 @@ export const AddressForm = <TFormData extends AddressFormData>({
         })}
         {!autoSave && (
           <div className="flex flex-row justify-end">
+            {onDelete && (
+              <IconButton
+                className="mr-2"
+                ariaLabel={formatMessage("deleteAddressLabel")}
+                onClick={onDelete}
+                icon={<img src={getSvgSrc(TrashIcon)} alt="" />}
+              />
+            )}
+
             <Button
-              className="mr-4"
+              className="mr-2"
               ariaLabel={formatMessage("cancelLabel")}
               variant="secondary"
               onClick={handleCancel}
               label={formatMessage("cancel")}
             />
-            <Button
-              ariaLabel={formatMessage("saveLabel")}
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={handleSubmit(handleSave)}
-              label={formatMessage("saveAddress")}
-            />
+            {loading ? (
+              <Button
+                disabled
+                ariaLabel={formatMessage("saveLabel")}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={handleSubmit(handleSave)}
+                label={formatMessage("processing")}
+              />
+            ) : (
+              <Button
+                ariaLabel={formatMessage("saveLabel")}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={handleSubmit(handleSave)}
+                label={formatMessage("saveAddress")}
+              />
+            )}
           </div>
         )}
       </div>

@@ -18,7 +18,7 @@ export const useCountrySelect = ({
   autoSelect,
   selectedCountryCode,
 }: UseCountrySelectProps): UseCountrySelect => {
-  const getAutoSelectedCode = () => {
+  const getInitialCountryCode = () => {
     const defaultCountryCode = (countries[0] as Country).code;
 
     if (!autoSelect && selectedCountryCode) {
@@ -34,10 +34,14 @@ export const useCountrySelect = ({
     return countryCodeFromUrl;
   };
 
-  const [countryCode, setCountryCode] = useState<CountryCode>(getAutoSelectedCode());
+  const [countryCode, setCountryCode] = useState<CountryCode>(getInitialCountryCode());
 
   const setCountryCodeFromAddress = (address?: AddressFragment | null) =>
     setCountryCode(address?.country?.code as CountryCode);
 
-  return { countryCode, setCountryCode, setCountryCodeFromAddress };
+  return {
+    countryCode,
+    setCountryCode,
+    setCountryCodeFromAddress,
+  };
 };

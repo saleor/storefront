@@ -1,14 +1,13 @@
-import { AddressFragment, AddressTypeEnum } from "@/checkout-storefront/graphql";
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { AddressFragment } from "@/checkout-storefront/graphql";
+import { useCheckout } from "@/checkout-storefront/hooks";
 import { getById } from "@/checkout-storefront/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { UserAddressFormData } from "./types";
 import { isMatchingAddress } from "./utils";
 
 export interface UseUserAddressSelectProps {
-  defaultAddressId?: string;
+  defaultAddress?: AddressFragment | null;
   addresses: AddressFragment[];
-  type: AddressTypeEnum;
   onAddressSelect: (data: UserAddressFormData) => void;
 }
 
@@ -19,38 +18,44 @@ interface UseUserAddressSelect {
 }
 
 export const useUserAddressSelect = ({
-  type,
-  defaultAddressId,
+  defaultAddress,
   onAddressSelect,
   addresses,
 }: UseUserAddressSelectProps): UseUserAddressSelect => {
-  const { checkout } = useCheckout();
+  const [selectedAddressId, setSelectedAddressId] = useState(defaultAddress?.id);
 
-  const addressToWatch = type === "SHIPPING" ? checkout?.shippingAddress : checkout?.billingAddress;
-
-  const [selectedAddressId, setSelectedAddressId] = useState(
-    addressToWatch?.id || defaultAddressId
-  );
+  const selectedAddressIdRef = useRef<string>();
 
   const selectedAddress = addresses.find(getById(selectedAddressId));
 
-  const selectedAddressRef = useRef<AddressFragment>();
-
   useEffect(() => {
-    const matchingAddress = addresses.find((address) => isMatchingAddress(address, addressToWatch));
-
-    console.log({ matchingAddress });
-    selectedAddressRef.current = matchingAddress;
-    setSelectedAddressId(matchingAddress?.id);
-  }, [addressToWatch]);
-
-  useEffect(() => {
-    console.log({ selectedAddress, selectedAddressRef, addresses });
-    if (selectedAddress && selectedAddress !== selectedAddressRef.current) {
+    if (
+      selectedAddressId &&
+      selectedAddressId !== selectedAddressIdRef.current &&
+      selectedAddress &&
+      !isMatchingAddress(selectedAddress, defaultAddress)
+    ) {
       onAddressSelect(selectedAddress as unknown as UserAddressFormData);
-      selectedAddressRef.current = selectedAddress;
+      selectedAddressIdRef.current = selectedAddressId;
     }
-  }, [selectedAddressId]);
+  }, [selectedAddressId, selectedAddress]);
+
+  useEffect(() => {
+    const matchingAddressInAddresses = addresses.find((address) =>
+      isMatchingAddress(address, defaultAddress)
+    );
+
+    if (matchingAddressInAddresses) {
+      setSelectedAddressId(matchingAddressInAddresses.id);
+      return;
+    }
+
+    const selectedAddressInAddresses = addresses.find(getById(selectedAddressId));
+
+    if (selectedAddressInAddresses) {
+      setSelectedAddressId(selectedAddressInAddresses.id);
+    }
+  }, [defaultAddress, selectedAddressId]);
 
   return {
     selectedAddress,

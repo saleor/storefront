@@ -47,11 +47,11 @@ export const BillingAddressSection = () => {
 
   const { showErrors } = useAlerts();
 
-  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
+  const [{ fetching: updating }, checkoutBillingAddressUpdate] =
+    useCheckoutBillingAddressUpdateMutation();
   const useBillingSameAsShippingRef = useRef<boolean>(useBillingSameAsShipping);
 
   const updateBillingAddress = async ({ autoSave, ...addressInput }: AddressFormData) => {
-    console.log("SUBMITTIN", { ...getAddressFormDataFromAddress(shippingAddress) });
     const result = await checkoutBillingAddressUpdate({
       checkoutId,
       billingAddress: getAddressInputData(addressInput),
@@ -68,7 +68,6 @@ export const BillingAddressSection = () => {
 
   const setBillingSameAsShipping = async () => {
     if (!hasBillingSameAsShipping) {
-      console.log("SAME AS", { ...getAddressFormDataFromAddress(shippingAddress) });
       await updateBillingAddress({
         ...getAddressFormDataFromAddress(shippingAddress),
         autoSave: true,
@@ -91,13 +90,6 @@ export const BillingAddressSection = () => {
     useBillingSameAsShippingRef.current = useBillingSameAsShipping;
   }, [useBillingSameAsShipping, shippingAddress]);
 
-  // console.log({
-  //   useBillingSameAsShipping,
-  //   passDefaultFormDataAddress,
-  //   matching: isMatchingAddress(shippingAddress, billingAddress),
-  // });
-
-  console.log({ passDefaultFormDataAddress });
   return (
     <div className="mt-2">
       <Checkbox
@@ -117,8 +109,9 @@ export const BillingAddressSection = () => {
               onAddressSelect={(address) => {
                 void updateBillingAddress(address);
               }}
+              updating={updating}
               addresses={addresses as AddressFragment[]}
-              defaultAddressId={defaultAddress?.id}
+              defaultAddress={(checkout?.billingAddress || defaultAddress) as AddressFragment}
             />
           ) : (
             <GuestAddressSection

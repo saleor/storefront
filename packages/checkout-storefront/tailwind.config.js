@@ -8,15 +8,15 @@ const spacing = getSpacing(
   0.4,
   "rem",
   [
-    0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 14, 16, 18, 19, 20, 21, 22, 28, 30,
-    38, 85, 90, 100, 220, 256, 350,
+    0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 14, 16, 18, 19, 20, 21, 22, 28, 30, 38, 85, 90, 100, 220,
+    256, 350,
   ]
 );
 
 const theme = {
   colors: {
     transparent: "transparent",
-    skeleton: "#DEE4EF",
+    skeleton: "rgba(var(--border-color-primary-rgb), 0.1)",
     background: {
       primary: "#FAFAFA",
       secondary: "#FFFFFF",

@@ -1,4 +1,9 @@
-import { CountryCode, useUserAddressUpdateMutation } from "@/checkout-storefront/graphql";
+import {
+  AddressFragment,
+  CountryCode,
+  useUserAddressDeleteMutation,
+  useUserAddressUpdateMutation,
+} from "@/checkout-storefront/graphql";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
@@ -6,28 +11,32 @@ import { AddressForm, AddressFormProps } from "./AddressForm";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { getAddressInputData } from "./utils";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 
 interface AddressEditFormProps
   extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues">,
-    Pick<AddressFormProps<AddressFormData>, "countryCode" | "setCountryCode" | "title"> {
+    Pick<AddressFormProps<AddressFormData>, "title"> {
   onClose: () => void;
-  show: boolean;
-  onSuccess: (addressId: string) => void;
+  onSuccess: (address: AddressFragment) => void;
 }
 
 export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
-  show,
   defaultValues,
   onSuccess,
   ...rest
 }) => {
-  const [, userAddressUpdate] = useUserAddressUpdateMutation();
+  const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
+  const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
   const { showErrors } = useAlerts("userAddressUpdate");
-
   const { setApiErrors, ...errorsRest } = useErrors<UserAddressFormData>();
 
-  const handleSubmit = async (address: UserAddressFormData) => {
+  const countrySelectProps = useCountrySelect({
+    autoSelect: !defaultValues?.countryCode,
+    selectedCountryCode: defaultValues?.countryCode,
+  });
+
+  const onUpdate = async (address: UserAddressFormData) => {
     const result = await userAddressUpdate({
       address: getAddressInputData({
         ...address,
@@ -38,7 +47,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (!hasErrors) {
-      onSuccess(address.id);
+      onSuccess(result.data?.accountAddressUpdate?.address as AddressFragment);
       onClose();
       return;
     }
@@ -47,15 +56,32 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     setApiErrors(errors);
   };
 
-  if (!show) {
-    return null;
-  }
+  const onDelete = async () => {
+    const result = await userAddressDelete({
+      id: defaultValues?.id as string,
+    });
+
+    const [hasErrors, errors] = extractMutationErrors(result);
+
+    if (!hasErrors) {
+      onClose();
+      return;
+    }
+
+    showErrors(errors);
+    setApiErrors(errors);
+  };
 
   return (
     <AddressForm
-      onSubmit={handleSubmit}
+      loading={updating || deleting}
+      onSubmit={onUpdate}
+      onDelete={() => {
+        void onDelete();
+      }}
       defaultValues={defaultValues}
       onCancel={onClose}
+      {...countrySelectProps}
       {...errorsRest}
       {...rest}
     />

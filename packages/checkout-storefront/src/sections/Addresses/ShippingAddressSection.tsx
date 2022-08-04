@@ -34,7 +34,8 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const defaultAddress = checkout?.shippingAddress || defaultShippingAddress;
 
-  const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
+  const [{ fetching: updating }, checkoutShippingAddressUpdate] =
+    useCheckoutShippingAddressUpdateMutation();
 
   const updateShippingAddress = async ({ autoSave, ...address }: AddressFormData) => {
     const result = await checkoutShippingAddressUpdate({
@@ -67,9 +68,9 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
             onAddressSelect={(address) => {
               void updateShippingAddress(address);
             }}
-            // @ts-ignore TMP
-            addresses={addresses as UserAddressFormData[]}
-            defaultAddressId={defaultAddress?.id}
+            addresses={addresses as AddressFragment[]}
+            defaultAddress={(checkout?.shippingAddress || defaultAddress) as AddressFragment}
+            updating={updating}
           />
         ) : (
           <GuestAddressSection

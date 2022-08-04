@@ -11,9 +11,8 @@ import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
 import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
-import { AddressesSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSkeleton";
-import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 import { Title } from "@/checkout-storefront/components/Title";
+import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
 
 export interface UserAddressSectionProps
   extends UseUserAddressSelectProps,
@@ -22,25 +21,24 @@ export interface UserAddressSectionProps
   addresses: AddressFragment[];
   title: string;
   type: AddressTypeEnum;
+  updating: boolean;
 }
 
 export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
-  defaultAddressId,
+  defaultAddress,
   addresses = [],
   onAddressSelect,
+  updating,
   title,
   type,
 }) => {
   const formatMessage = useFormattedMessages();
 
-  const { selectedAddress, selectedAddressId, setSelectedAddressId } = useUserAddressSelect({
-    type,
-    defaultAddressId,
+  const { selectedAddressId, setSelectedAddressId } = useUserAddressSelect({
+    defaultAddress,
     addresses,
     onAddressSelect,
   });
-
-  console.log({ selectedAddressId });
 
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
@@ -52,34 +50,29 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
 
   const editedAddress = addresses.find(getById(editedAddressId as string));
 
-  const countrySelectProps = useCountrySelect({
-    autoSelect:
-      displayAddressCreate ||
-      (displayAddressEdit && !getAddressFormDataFromAddress(editedAddress)?.countryCode),
-    selectedCountryCode: displayAddressEdit
-      ? (selectedAddress?.country.code as CountryCode)
-      : undefined,
-  });
+  const handleCreateEditSucess = (address: AddressFragment) => {
+    void onAddressSelect(getAddressFormDataFromAddress(address) as UserAddressFormData);
+  };
 
   return (
-    <Suspense fallback={<AddressesSkeleton />}>
-      <AddressCreateForm
-        title={title}
-        onSuccess={(addressId: string) => setSelectedAddressId(addressId)}
-        show={displayAddressCreate}
-        type={type}
-        onClose={() => setDisplayAddressCreate(false)}
-        {...countrySelectProps}
-      />
+    <Suspense fallback={<AddressSectionSkeleton />}>
+      {displayAddressCreate && (
+        <AddressCreateForm
+          title={title}
+          onSuccess={handleCreateEditSucess}
+          type={type}
+          onClose={() => setDisplayAddressCreate(false)}
+        />
+      )}
 
-      <AddressEditForm
-        title={title}
-        show={displayAddressEdit}
-        onClose={() => setEditedAddressId(null)}
-        defaultValues={getAddressFormDataFromAddress(editedAddress)}
-        onSuccess={setSelectedAddressId}
-        {...countrySelectProps}
-      />
+      {displayAddressEdit && (
+        <AddressEditForm
+          title={title}
+          onClose={() => setEditedAddressId(null)}
+          defaultValues={getAddressFormDataFromAddress(editedAddress)}
+          onSuccess={handleCreateEditSucess}
+        />
+      )}
 
       {displayAddressList && (
         <div className="flex flex-col">
@@ -92,6 +85,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
             className="mb-4 w-full"
           />
           <UserAddressList
+            loading={updating}
             addresses={addresses as AddressFragment[]}
             onAddressSelect={setSelectedAddressId}
             selectedAddressId={selectedAddressId}
