@@ -22,11 +22,12 @@ export const config = {
 const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const { transaction, action } = req.params;
 
-  if (action.actionType === "REFUND") {
-    if (!transaction?.type || !transaction.reference || !action.amount) {
-      throw new Error("Missing transaction data");
-    }
+  if (!transaction?.type || !transaction.reference || !action.amount) {
+    console.warn("Received webhook call without transaction data", req.params);
+    return Response.BadRequest({ success: false, message: "Missing transaction data" });
+  }
 
+  if (action.actionType === "REFUND") {
     const refund: TransactionRefund = {
       id: transaction.reference,
       amount: action.amount,
@@ -38,7 +39,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
         await handleMolieRefund(refund, transaction);
       }
       if (transaction.type.includes(ADYEN_PAYMENT_PREFIX)) {
-        await handleAdyenRefund(refund);
+        await handleAdyenRefund(refund, transaction);
       }
     } catch (e) {
       console.error("Error while creating refund", e);

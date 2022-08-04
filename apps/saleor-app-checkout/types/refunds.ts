@@ -1,5 +1,5 @@
 export type TransactionRefund = {
   id: string;
-  amount: string;
+  amount: number;
   currency: string;
 };
