@@ -61,7 +61,7 @@ importers:
 
   apps/saleor-app-checkout:
     specifiers:
-      '@adyen/api-library': ^10.2.0
+      '@adyen/api-library': ^11.0.0
       '@babel/eslint-parser': ^7.17.0
       '@formatjs/cli': ^4.8.2
       '@graphql-codegen/add': ^3.2.0
@@ -137,7 +137,7 @@ importers:
       url-join: ^5.0.0
       urql: ^2.2.0
     dependencies:
-      '@adyen/api-library': 10.3.0
+      '@adyen/api-library': 11.0.0
       '@babel/eslint-parser': 7.18.9_o5peei4wpze5egwf42u76kwdva
       '@material-ui/core': 4.12.4_bb2bxwco6ptpubzwpazr52qf6i
       '@material-ui/icons': 4.11.3_bwmjarvqzurtv5mstbscvdl3qm
@@ -632,9 +632,9 @@ importers:
 
 packages:
 
-  /@adyen/api-library/10.3.0:
-    resolution: {integrity: sha512-SibndC1ttEWcnYeX26+EJI7EXspBH5fStA3/v6qD5DrD48fIgdu9oiKR3GCj51M3WR/xUHk5C59d2TKUgM8W6Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@adyen/api-library/-/api-library-10.3.0.tgz}
-    engines: {node: '>=10'}
+  /@adyen/api-library/11.0.0:
+    resolution: {integrity: sha512-kw3ywZor6HI8mR3cF4Nzqhda13zy1oKgIVEcDs46LtfH39VOMrNWZYYZAs/caxMRuFfsp8MC0Zje94h2y6g9ww==}
+    engines: {node: '>=12'}
     dependencies:
       https-proxy-agent: 5.0.1
     optionalDependencies:
@@ -2781,7 +2781,7 @@ packages:
         optional: true
     dependencies:
       '@formatjs/icu-messageformat-parser': 2.1.0
-      '@types/node': 14.18.22
+      '@types/node': 17.0.45
       chalk: 4.1.2
       ts-jest: 27.1.5_jm6546ohpm4h5jsgaz4ra4shga
       tslib: 2.4.0
@@ -4049,7 +4049,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       chalk: 4.1.2
       jest-message-util: 27.5.1
       jest-util: 27.5.1
@@ -4127,7 +4127,7 @@ packages:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.8.1
@@ -4164,7 +4164,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       jest-mock: 27.5.1
     dev: true
 
@@ -4174,7 +4174,7 @@ packages:
     dependencies:
       '@jest/types': 27.5.1
       '@sinonjs/fake-timers': 8.1.0
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       jest-message-util: 27.5.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
@@ -4203,7 +4203,7 @@ packages:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -7737,7 +7737,7 @@ packages:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/body-parser/-/body-parser-1.19.2.tgz}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
 
   /@types/bonjour/3.5.10:
     resolution: {integrity: sha512-p7ienRMiS41Nu2/igbJxxLDWrSZ0WxM8UQgCeO9KhoVF7cOVFkrKsiDr1EsJIla8vV3oEEjGcz11jc5yimhzZw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/bonjour/-/bonjour-3.5.10.tgz}
@@ -7764,7 +7764,7 @@ packages:
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/connect/-/connect-3.4.35.tgz}
     dependencies:
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
 
   /@types/content-type/1.1.5:
     resolution: {integrity: sha512-dgMN+syt1xb7Hk8LU6AODOfPlvz5z1CbXpPuJE5ZrX9STfBOIXF09pEB8N7a97WT9dbngt3ksDCm6GW6yMrxfQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/content-type/-/content-type-1.1.5.tgz}
@@ -7811,7 +7811,7 @@ packages:
   /@types/express-serve-static-core/4.17.30:
     resolution: {integrity: sha512-gstzbTWro2/nFed1WXtf+TtrpwxH7Ggs4RLYTLbeVgIkUQOI3WG/JKjgeOU1zXDvezllupjrf8OPIdvTbIaVOQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.30.tgz}
     dependencies:
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
 
@@ -8125,7 +8125,7 @@ packages:
   /@types/set-cookie-parser/2.4.2:
     resolution: {integrity: sha512-fBZgytwhYAUkj/jC/FAV4RQ5EerRup1YQsXQCh8rZfiHkc4UahC192oH0smGwsXol3cL3A5oETuAHeQHmhXM4w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/set-cookie-parser/-/set-cookie-parser-2.4.2.tgz}
     dependencies:
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
     dev: true
 
   /@types/setup-polly-jest/0.5.1:
@@ -9105,7 +9105,7 @@ packages:
     dev: true
 
   /agent-base/6.0.2:
-    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/agent-base/-/agent-base-6.0.2.tgz}
+    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
       debug: 4.3.4
@@ -12808,7 +12808,6 @@ packages:
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - supports-color
-    dev: false
 
   /eslint-config-next/12.2.3_c3alnx6mxv77hhhkcvisj3heci:
     resolution: {integrity: sha512-xAQqAqwa2bu9ZMRypz58ym4tNCo22Wc6LuoLpbpf3yW5c4ZkVib9934AgGDDvh2zKrP56Z6X0Pp6gNnuuZzcRw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/eslint-config-next/-/eslint-config-next-12.2.3.tgz}
@@ -12858,7 +12857,6 @@ packages:
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - supports-color
-    dev: false
 
   /eslint-config-next/12.2.3_hxadhbs2xogijvk7vq4t2azzbu:
     resolution: {integrity: sha512-xAQqAqwa2bu9ZMRypz58ym4tNCo22Wc6LuoLpbpf3yW5c4ZkVib9934AgGDDvh2zKrP56Z6X0Pp6gNnuuZzcRw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/eslint-config-next/-/eslint-config-next-12.2.3.tgz}
@@ -12900,7 +12898,6 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 8.20.0
-    dev: false
 
   /eslint-config-react-app/7.0.1_qzs7qtef7jzbqpoev3vzlexeim:
     resolution: {integrity: sha512-K6rNzvkIeHaTd8m/QEh1Zko0KI7BACWkkneSs6s9cKZC/J27X3eZR6Upt1jkmZ/4FK+XUOPPxMEN7+lbUXfSlA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/eslint-config-react-app/-/eslint-config-react-app-7.0.1.tgz}
@@ -15594,7 +15591,7 @@ packages:
     dev: true
 
   /https-proxy-agent/5.0.1:
-    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz}
+    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
@@ -16529,7 +16526,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -16735,7 +16732,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       jest-mock: 27.5.1
       jest-util: 27.5.1
       jsdom: 16.7.0
@@ -16753,7 +16750,7 @@ packages:
       '@jest/environment': 27.5.1
       '@jest/fake-timers': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       jest-mock: 27.5.1
       jest-util: 27.5.1
     dev: true
@@ -16819,7 +16816,7 @@ packages:
       '@jest/source-map': 27.5.1
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       chalk: 4.1.2
       co: 4.6.0
       expect: 27.5.1
@@ -16965,7 +16962,7 @@ packages:
       '@jest/test-result': 27.5.1
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       chalk: 4.1.2
       emittery: 0.8.1
       graceful-fs: 4.2.10
@@ -17030,7 +17027,7 @@ packages:
     resolution: {integrity: sha512-jZCyo6iIxO1aqUxpuBlwTDMkzOAJS4a3eYz3YzgxxVQFwLeSA7Jfq5cbqCY+JLvTDrWirgusI/0KwxKMgrdf7w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/jest-serializer/-/jest-serializer-27.5.1.tgz}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       graceful-fs: 4.2.10
     dev: true
 
@@ -17081,7 +17078,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       chalk: 4.1.2
       ci-info: 3.3.2
       graceful-fs: 4.2.10
@@ -17134,7 +17131,7 @@ packages:
     dependencies:
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
-      '@types/node': 16.11.46
+      '@types/node': 18.6.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       jest-util: 27.5.1
@@ -22023,7 +22020,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   /require-from-string/2.0.2:
-    resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
+    resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/require-from-string/-/require-from-string-2.0.2.tgz}
     engines: {node: '>=0.10.0'}
 
   /require-main-filename/2.0.0:
