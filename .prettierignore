@@ -2,3 +2,4 @@
 pnpm-lock.yaml
 .rollup-cache
 _next
+.turbo

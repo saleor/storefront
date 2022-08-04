@@ -13,7 +13,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "isolatedModules": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve"
   },
   "include": ["src", "next-env.d.ts"],
   "exclude": ["node_modules"]

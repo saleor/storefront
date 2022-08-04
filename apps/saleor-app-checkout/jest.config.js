@@ -15,7 +15,10 @@ module.exports = {
   globals: {
     "ts-jest": {
       useESM: true,
-      tsconfig: compilerOptions,
+      tsconfig: {
+        ...compilerOptions,
+        jsx: "react-jsx",
+      },
     },
   },
   moduleNameMapper: {
