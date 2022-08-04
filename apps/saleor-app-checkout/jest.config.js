@@ -1,4 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 const { pathsToModuleNameMapper } = require("ts-jest");
 const requireJSON = require("json-easy-strip");
 const { compilerOptions } = requireJSON("./tsconfig.json");
@@ -14,6 +15,7 @@ module.exports = {
   globals: {
     "ts-jest": {
       useESM: true,
+      tsconfig: compilerOptions,
     },
   },
   moduleNameMapper: {
@@ -26,5 +28,5 @@ module.exports = {
   setupFiles: ["./setupTestsBeforeEnv.ts"],
   setupFilesAfterEnv: ["./setupTestsAfterEnv.ts"],
   testEnvironment: "setup-polly-jest/jest-environment-node",
-  transformIgnorePatterns: ["<rootDir>/node_modules/(?!lodash-es)"],
+  // transformIgnorePatterns: ["<rootDir>/node_modules/(?!lodash-es)"],
 };
