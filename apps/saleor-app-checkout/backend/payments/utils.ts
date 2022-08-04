@@ -1,3 +1,7 @@
+import {
+  TransactionActionEnum,
+  TransactionActionPayloadFragment,
+} from "@/saleor-app-checkout/graphql";
 import currency from "currency.js";
 
 export const formatRedirectUrl = (redirectUrl: string, orderId: string) => {
@@ -42,3 +46,29 @@ export const getTransactionAmountGetter = (amounts: Amounts) => {
 
 export const getTransactionAmountGetterAsMoney = (amounts: Amounts) => (type: keyof Amounts) =>
   currency(getTransactionAmountGetter(amounts)(type));
+
+export const getActionsAfterRefund = (
+  transaction: TransactionActionPayloadFragment["transaction"],
+  refundAmount: number
+) => {
+  const getTransactionAmount = getTransactionAmountGetter({
+    voided: transaction?.voidedAmount.amount,
+    charged: transaction?.chargedAmount.amount,
+    refunded: transaction?.refundedAmount.amount,
+    authorized: transaction?.authorizedAmount.amount,
+  });
+
+  const transactionActions: TransactionActionEnum[] = [];
+
+  if (getTransactionAmount("charged") < Number(refundAmount)) {
+    // Some money in transaction was not refunded
+    transactionActions.push("REFUND");
+  }
+
+  if (Number(refundAmount) > getTransactionAmount("charged")) {
+    // Refunded more than charged
+    throw new Error("Cannot refund more than charged in transaction");
+  }
+
+  return transactionActions;
+};

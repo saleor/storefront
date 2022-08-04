@@ -11,8 +11,12 @@ import {
   TransactionUpdateMutationVariables,
 } from "@/saleor-app-checkout/graphql";
 import { PaymentStatus } from "@mollie/api-client";
-import { getTransactionAmountGetter } from "@/saleor-app-checkout/backend/payments/utils";
+import {
+  getActionsAfterRefund,
+  getTransactionAmountGetter,
+} from "@/saleor-app-checkout/backend/payments/utils";
 import { getClient } from "@/saleor-app-checkout/backend/client";
+import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 
 export async function handleMolieRefund(
   refund: TransactionRefund,
@@ -39,32 +43,17 @@ export async function handleMolieRefund(
   // TODO: Check duplicate webhook invocations
   // based on Saleor-Signature header and metadata saved in transaction
 
-  const getTransactionAmount = getTransactionAmountGetter({
-    voided: transaction?.voidedAmount.amount,
-    charged: transaction?.chargedAmount.amount,
-    refunded: transaction?.refundedAmount.amount,
-    authorized: transaction?.authorizedAmount.amount,
-  });
+  const transactionActions = getActionsAfterRefund(transaction, amount);
 
-  const transactionActions: TransactionActionEnum[] = [];
-
-  if (getTransactionAmount("charged") < Number(amount)) {
-    // Some money in transaction was not refunded
-    transactionActions.push("REFUND");
-  }
-
-  if (Number(amount) > getTransactionAmount("charged")) {
-    // Refunded more than charged
-    throw new Error("Cannot refund more than charged in transaction");
-  }
-
-  const mollieRefund = await mollieClient.payments_refunds.create({
-    paymentId: payment?.id,
-    amount: {
-      value: String(amount),
-      currency,
-    },
-  });
+  const [refundError, mollieRefund] = await unpackPromise(
+    mollieClient.payments_refunds.create({
+      paymentId: payment?.id,
+      amount: {
+        value: String(amount),
+        currency,
+      },
+    })
+  );
 
   const { error } = await saleorClient
     .mutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(
@@ -75,9 +64,9 @@ export async function handleMolieRefund(
           availableActions: transactionActions,
         },
         transactionEvent: {
-          status: "PENDING",
+          status: refundError ? "FAILURE" : "PENDING",
           name: getMollieEventName("refund requested"),
-          reference: mollieRefund.id,
+          reference: refundError?.message ?? mollieRefund?.id,
         },
       }
     )
