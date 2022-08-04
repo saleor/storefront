@@ -1,31 +1,12 @@
-import { CheckoutAPI, Client } from "@adyen/api-library";
-
-import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
 
-import { getAdyenAmountFromSaleor, getLineItems } from "./utils";
+import { getAdyenAmountFromSaleor, getAdyenClient, getLineItems } from "./utils";
+import invariant from "ts-invariant";
 
 export const createAdyenPayment = async (data: OrderFragment, redirectUrl: string) => {
-  const {
-    paymentProviders: { adyen },
-  } = await getPrivateSettings(envVars.apiUrl, false);
-
-  if (!adyen.apiKey) {
-    throw "API key not defined";
-  }
-
-  if (!adyen.merchantAccount) {
-    throw "Merchant account not defined";
-  }
-
-  const client = new Client({
-    apiKey: adyen.apiKey,
-    environment: "TEST",
-  });
-
-  const checkout = new CheckoutAPI(client);
+  const { config, checkout } = await getAdyenClient();
+  invariant(config.merchantAccount, "Missing merchant account configuration");
 
   const total = data.total.gross;
 
@@ -36,7 +17,7 @@ export const createAdyenPayment = async (data: OrderFragment, redirectUrl: strin
     },
     reference: data.number || data.id,
     returnUrl: formatRedirectUrl(redirectUrl, data.id),
-    merchantAccount: adyen.merchantAccount,
+    merchantAccount: config.merchantAccount,
     countryCode: data.billingAddress?.country.code,
     metadata: {
       orderId: data.id,
