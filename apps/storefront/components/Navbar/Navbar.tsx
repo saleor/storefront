@@ -1,4 +1,4 @@
-import { useAuthState } from "@saleor/sdk";
+// import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -13,14 +13,14 @@ import { Menu } from "./Menu";
 import styles from "./Navbar.module.css";
 import NavIconButton from "./NavIconButton";
 import Stamp from "./Stamp";
-import UserMenu from "./UserMenu";
+// import UserMenu from "./UserMenu";
 
 export function Navbar() {
   const paths = usePaths();
   const router = useRouter();
 
   const [isBurgerOpen, setBurgerOpen] = useState(false);
-  const { authenticated } = useAuthState();
+  // const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
 
   useEffect(() => {
@@ -54,15 +54,16 @@ export function Navbar() {
             </Link>
           </div>
           <div className="flex-1 flex justify-end">
-            {!authenticated ? (
-              <Link href={paths.account.login.$url()} passHref>
-                <a href="pass">
-                  <NavIconButton icon="user" aria-hidden="true" />
-                </a>
-              </Link>
-            ) : (
-              <UserMenu />
-            )}
+            {/* FIXME: Temporary disable autentication */}
+            {/* {!authenticated ? ( */}
+            {/*   <Link href={paths.account.login.$url()} passHref> */}
+            {/*     <a href="pass"> */}
+            {/*       <NavIconButton icon="user" aria-hidden="true" /> */}
+            {/*     </a> */}
+            {/*   </Link> */}
+            {/* ) : ( */}
+            {/*   <UserMenu /> */}
+            {/* )} */}
             <Link href={paths.cart.$url()} passHref>
               <a href="pass" className="ml-2 hidden xs:flex">
                 <NavIconButton icon="bag" aria-hidden="true" counter={counter} />
