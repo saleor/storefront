@@ -1,62 +1,38 @@
-import {
-  AddressFragment,
-  CountryCode,
-  useUserAddressCreateMutation,
-} from "@/checkout-storefront/graphql";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
 import { AddressFormData } from "./types";
-import { getAddressInputData } from "./utils";
 
 export interface AddressCreateFormProps extends Pick<AddressFormProps<AddressFormData>, "title"> {
   type: AddressTypeEnum;
   onClose: () => void;
-  onSuccess: (createdAddress: AddressFragment) => void;
 }
 
-export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
-  type,
-  onClose,
-  onSuccess,
-  ...rest
-}) => {
-  const { showErrors } = useAlerts("userAddressCreate");
-  const [, userAddressCreate] = useUserAddressCreateMutation();
+export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ type, onClose, ...rest }) => {
+  const { addressCreate, creating } = useAddressList();
   const { setApiErrors, ...errorsRest } = useErrors<AddressFormData>();
 
   const countrySelectProps = useCountrySelect({
     autoSelect: true,
   });
 
-  const handleSubmit = async (address: AddressFormData) => {
-    const result = await userAddressCreate({
-      address: getAddressInputData({
-        ...address,
-      }),
-      type,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
+  const handleSubmit = async (formData: AddressFormData) => {
+    const { hasErrors, errors } = await addressCreate(formData);
 
     if (!hasErrors) {
-      onSuccess(result.data?.accountAddressCreate?.address as AddressFragment);
+      setApiErrors(errors);
       onClose();
-      return;
     }
-
-    showErrors(errors);
-    setApiErrors(errors);
   };
 
   return (
     <AddressForm
       onSubmit={handleSubmit}
       onCancel={onClose}
+      loading={creating}
       {...countrySelectProps}
       {...errorsRest}
       {...rest}

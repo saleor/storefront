@@ -9,15 +9,9 @@ import { compact } from "lodash-es";
 interface AddressSelectBoxProps extends SelectBoxProps {
   address: Partial<Record<AddressField, any>>;
   onEdit: () => void;
-  onDelete: () => void;
 }
 
-export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
-  address,
-  onDelete,
-  onEdit,
-  ...rest
-}) => {
+export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({ address, onEdit, ...rest }) => {
   const formatMessage = useFormattedMessages();
   const name = `${address.firstName} ${address.lastName}`;
 

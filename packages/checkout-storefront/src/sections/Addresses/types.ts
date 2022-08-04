@@ -1,4 +1,4 @@
-import { CountryCode } from "@/checkout-storefront/graphql";
+import { AddressFragment, CountryCode } from "@/checkout-storefront/graphql";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 
 export interface AddressFormData

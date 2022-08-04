@@ -1,5 +1,5 @@
 import { Button } from "@/checkout-storefront/components/Button";
-import { AddressFragment, CountryCode } from "@/checkout-storefront/graphql";
+import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getById } from "@/checkout-storefront/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
@@ -9,36 +9,27 @@ import { UserAddressList } from "./UserAddressList";
 import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
 import { getAddressFormDataFromAddress } from "./utils";
-import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { Title } from "@/checkout-storefront/components/Title";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
+import { AddressListProvider } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
 
-export interface UserAddressSectionProps
-  extends UseUserAddressSelectProps,
-    UseErrors<UserAddressFormData> {
+export interface UserAddressSectionProps extends UseErrors<UserAddressFormData> {
+  defaultAddress: AddressFragment | null;
   onAddressSelect: (address: UserAddressFormData) => void;
   addresses: AddressFragment[];
   title: string;
   type: AddressTypeEnum;
-  updating: boolean;
 }
 
 export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   defaultAddress,
   addresses = [],
   onAddressSelect,
-  updating,
   title,
   type,
 }) => {
   const formatMessage = useFormattedMessages();
-
-  const { selectedAddressId, setSelectedAddressId } = useUserAddressSelect({
-    defaultAddress,
-    addresses,
-    onAddressSelect,
-  });
 
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
@@ -50,49 +41,42 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
 
   const editedAddress = addresses.find(getById(editedAddressId as string));
 
-  const handleCreateEditSucess = (address: AddressFragment) => {
-    void onAddressSelect(getAddressFormDataFromAddress(address) as UserAddressFormData);
-  };
-
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
-      {displayAddressCreate && (
-        <AddressCreateForm
-          title={title}
-          onSuccess={handleCreateEditSucess}
-          type={type}
-          onClose={() => setDisplayAddressCreate(false)}
-        />
-      )}
-
-      {displayAddressEdit && (
-        <AddressEditForm
-          title={title}
-          onClose={() => setEditedAddressId(null)}
-          defaultValues={getAddressFormDataFromAddress(editedAddress)}
-          onSuccess={handleCreateEditSucess}
-        />
-      )}
-
-      {displayAddressList && (
-        <div className="flex flex-col">
-          <Title>{title}</Title>
-          <Button
-            variant="secondary"
-            ariaLabel={formatMessage("addAddressLabel")}
-            onClick={() => setDisplayAddressCreate(true)}
-            label={formatMessage("addAddress")}
-            className="mb-4 w-full"
+      <AddressListProvider
+        onCheckoutAddressUpdate={onAddressSelect}
+        defaultAddress={defaultAddress}
+      >
+        {displayAddressCreate && (
+          <AddressCreateForm
+            title={title}
+            type={type}
+            onClose={() => setDisplayAddressCreate(false)}
           />
-          <UserAddressList
-            loading={updating}
-            addresses={addresses as AddressFragment[]}
-            onAddressSelect={setSelectedAddressId}
-            selectedAddressId={selectedAddressId}
-            onEditChange={(id: string) => setEditedAddressId(id)}
+        )}
+
+        {displayAddressEdit && (
+          <AddressEditForm
+            title={title}
+            onClose={() => setEditedAddressId(null)}
+            defaultValues={getAddressFormDataFromAddress(editedAddress)}
           />
-        </div>
-      )}
+        )}
+
+        {displayAddressList && (
+          <div className="flex flex-col">
+            <Title>{title}</Title>
+            <Button
+              variant="secondary"
+              ariaLabel={formatMessage("addAddressLabel")}
+              onClick={() => setDisplayAddressCreate(true)}
+              label={formatMessage("addAddress")}
+              className="mb-4 w-full"
+            />
+            <UserAddressList onEditChange={(id: string) => setEditedAddressId(id)} />
+          </div>
+        )}
+      </AddressListProvider>
     </Suspense>
   );
 };

@@ -1,83 +1,54 @@
-import {
-  AddressFragment,
-  CountryCode,
-  useUserAddressDeleteMutation,
-  useUserAddressUpdateMutation,
-} from "@/checkout-storefront/graphql";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
 import { AddressFormData, UserAddressFormData } from "./types";
-import { getAddressInputData } from "./utils";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
 
 interface AddressEditFormProps
   extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues">,
     Pick<AddressFormProps<AddressFormData>, "title"> {
   onClose: () => void;
-  onSuccess: (address: AddressFragment) => void;
 }
 
 export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
   defaultValues,
-  onSuccess,
   ...rest
 }) => {
-  const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
-  const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
-  const { showErrors } = useAlerts("userAddressUpdate");
   const { setApiErrors, ...errorsRest } = useErrors<UserAddressFormData>();
+  const { addressUpdate, addressDelete, updating, deleting } = useAddressList();
 
   const countrySelectProps = useCountrySelect({
     autoSelect: !defaultValues?.countryCode,
     selectedCountryCode: defaultValues?.countryCode,
   });
 
-  const onUpdate = async (address: UserAddressFormData) => {
-    const result = await userAddressUpdate({
-      address: getAddressInputData({
-        ...address,
-      }),
-      id: address.id,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
+  const handleUpdate = async (formData: UserAddressFormData) => {
+    const { hasErrors, errors } = await addressUpdate(formData);
 
     if (!hasErrors) {
-      onSuccess(result.data?.accountAddressUpdate?.address as AddressFragment);
+      setApiErrors(errors);
       onClose();
-      return;
     }
-
-    showErrors(errors);
-    setApiErrors(errors);
   };
 
-  const onDelete = async () => {
-    const result = await userAddressDelete({
-      id: defaultValues?.id as string,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
+  const handleDelete = async () => {
+    const { hasErrors, errors } = await addressDelete(defaultValues?.id as string);
 
     if (!hasErrors) {
+      setApiErrors(errors);
       onClose();
-      return;
     }
-
-    showErrors(errors);
-    setApiErrors(errors);
   };
 
   return (
     <AddressForm
       loading={updating || deleting}
-      onSubmit={onUpdate}
+      onSubmit={handleUpdate}
       onDelete={() => {
-        void onDelete();
+        void handleDelete();
       }}
       defaultValues={defaultValues}
       onCancel={onClose}

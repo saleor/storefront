@@ -9,6 +9,11 @@ export const getById =
   (obj: T) =>
     obj.id === idToCompare;
 
+export const getByUnmatchingId =
+  <T extends { id: string }>(idToCompare: string | undefined) =>
+  (obj: T) =>
+    obj.id !== idToCompare;
+
 export type QueryVariables = Record<
   "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl",
   string

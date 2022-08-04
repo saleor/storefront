@@ -47,9 +47,9 @@ export const BillingAddressSection = () => {
 
   const { showErrors } = useAlerts();
 
-  const [{ fetching: updating }, checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation();
+  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
   const useBillingSameAsShippingRef = useRef<boolean>(useBillingSameAsShipping);
+  const shippingAddressRef = useRef<AddressFragment | null | undefined>(shippingAddress);
 
   const updateBillingAddress = async ({ autoSave, ...addressInput }: AddressFormData) => {
     const result = await checkoutBillingAddressUpdate({
@@ -76,19 +76,29 @@ export const BillingAddressSection = () => {
   };
 
   useEffect(() => {
-    const hasBillingSameAsShippingChangedToTrue =
-      useBillingSameAsShipping && !useBillingSameAsShippingRef.current;
-    const hasBillingSameAsShippingChangedToFalse =
+    const billingSetDifferentThanShipping =
       !useBillingSameAsShipping && useBillingSameAsShippingRef.current;
 
-    if (hasBillingSameAsShippingChangedToTrue) {
-      void setBillingSameAsShipping();
-    } else if (hasBillingSameAsShippingChangedToFalse) {
+    if (billingSetDifferentThanShipping) {
       setPassDefaultFormDataAddress(false);
+      useBillingSameAsShippingRef.current = useBillingSameAsShipping;
     }
+  }, [useBillingSameAsShipping]);
 
-    useBillingSameAsShippingRef.current = useBillingSameAsShipping;
-  }, [useBillingSameAsShipping, shippingAddress]);
+  useEffect(() => {
+    const billingSetSameAsShipping =
+      useBillingSameAsShipping && !useBillingSameAsShippingRef.current;
+
+    const hasShippingAddressChanged =
+      shippingAddress && shippingAddress !== shippingAddressRef.current;
+
+    if (hasShippingAddressChanged && billingSetSameAsShipping) {
+      void setBillingSameAsShipping();
+      shippingAddressRef.current = shippingAddress;
+      useBillingSameAsShippingRef.current = useBillingSameAsShipping;
+      return;
+    }
+  }, [shippingAddress, useBillingSameAsShipping]);
 
   return (
     <div className="mt-2">
@@ -109,7 +119,6 @@ export const BillingAddressSection = () => {
               onAddressSelect={(address) => {
                 void updateBillingAddress(address);
               }}
-              updating={updating}
               addresses={addresses as AddressFragment[]}
               defaultAddress={(checkout?.billingAddress || defaultAddress) as AddressFragment}
             />
