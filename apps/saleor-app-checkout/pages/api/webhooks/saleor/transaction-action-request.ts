@@ -27,11 +27,18 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
     return Response.BadRequest({ success: false, message: "Missing transaction data" });
   }
 
+  const { "saleor-signature": payloadSignature } = req.headers;
+
+  if (!payloadSignature) {
+    return Response.BadRequest({ success: false, message: "Missing signature" });
+  }
+
   if (action.actionType === "REFUND") {
     const refund: TransactionRefund = {
       id: transaction.reference,
       amount: action.amount,
       currency: transaction.authorizedAmount.currency,
+      signature: payloadSignature,
     };
 
     try {
