@@ -33,9 +33,9 @@
         "$TEST_ADYEN_WEBHOOK_USERNAME",
         "$TEST_MOLLIE_KEY",
         "$TEST_MOLLIE_PROFILE_ID",
+        "$TEST_STRIPE_PUBLISHABLE_KEY",
         "$TEST_STRIPE_SECRET_KEY",
-        "$TEST_STRIPE_WEBHOOK_SECRET",
-        "$TEST_STRIPE_PUBLISHABLE_KEY"
+        "$TEST_STRIPE_WEBHOOK_SECRET"
       ],
       "outputs": [
         "dist/**",
@@ -58,6 +58,9 @@
       "outputs": []
     },
     "dev": {
+      "cache": false
+    },
+    "start": {
       "cache": false
     }
   },
