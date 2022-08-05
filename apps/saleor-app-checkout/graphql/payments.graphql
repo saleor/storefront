@@ -29,3 +29,14 @@ mutation TransactionUpdate(
     }
   }
 }
+
+query TransactionEvents($id: ID!) {
+  transaction(id: $id) {
+    events {
+      id
+      name
+      reference
+      status
+    }
+  }
+}

@@ -22351,6 +22351,24 @@ export type TransactionUpdateMutation = {
   } | null;
 };
 
+export type TransactionEventsQueryVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type TransactionEventsQuery = {
+  __typename?: "Query";
+  transaction?: {
+    __typename?: "TransactionItem";
+    events: Array<{
+      __typename?: "TransactionEvent";
+      id: string;
+      name?: string | null;
+      reference: string;
+      status: TransactionStatus;
+    }>;
+  } | null;
+};
+
 export type TransactionActionRequestSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type TransactionActionRequestSubscription = {
@@ -23023,6 +23041,24 @@ export function useTransactionUpdateMutation() {
   return Urql.useMutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(
     TransactionUpdateDocument
   );
+}
+export const TransactionEventsDocument = gql`
+  query TransactionEvents($id: ID!) {
+    transaction(id: $id) {
+      events {
+        id
+        name
+        reference
+        status
+      }
+    }
+  }
+`;
+
+export function useTransactionEventsQuery(
+  options: Omit<Urql.UseQueryArgs<TransactionEventsQueryVariables>, "query">
+) {
+  return Urql.useQuery<TransactionEventsQuery>({ query: TransactionEventsDocument, ...options });
 }
 export const TransactionActionRequestSubscriptionDocument = gql`
   subscription TransactionActionRequestSubscription {
