@@ -1,4 +1,4 @@
-import { TransactionRefund } from "@/saleor-app-checkout/types/refunds";
+import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import {
   getMollieEventName,
   getMollieClient,
@@ -10,12 +10,12 @@ import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import { updateTransaction } from "../../updateTransaction";
 
 export async function handleMolieRefund(
-  refund: TransactionRefund,
+  refund: TransactionReversal,
   transaction: TransactionActionPayloadFragment["transaction"]
 ) {
   const mollieClient = await getMollieClient();
 
-  const { id, amount, currency, signature } = refund;
+  const { id, amount, currency } = refund;
   if (!transaction?.id) {
     throw new Error("Transaction id was not provided");
   }
@@ -29,9 +29,6 @@ export async function handleMolieRefund(
   if (!payment) {
     throw new Error("Couldn't find Mollie payment to refund");
   }
-
-  // TODO: Check duplicate webhook invocations
-  // based on Saleor-Signature header and metadata saved in transaction
 
   const transactionActions = getActionsAfterRefund(transaction, amount);
 

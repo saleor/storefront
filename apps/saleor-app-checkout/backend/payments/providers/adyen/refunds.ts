@@ -1,5 +1,5 @@
 import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
-import { TransactionRefund } from "@/saleor-app-checkout/types/refunds";
+import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import invariant from "ts-invariant";
 import { updateTransaction } from "../../updateTransaction";
@@ -7,7 +7,7 @@ import { getActionsAfterRefund } from "../../utils";
 import { getAdyenAmountFromSaleor, getAdyenClient } from "./utils";
 
 export async function handleAdyenRefund(
-  refund: TransactionRefund,
+  refund: TransactionReversal,
   transaction: TransactionActionPayloadFragment["transaction"]
 ) {
   const { id, amount, currency } = refund;

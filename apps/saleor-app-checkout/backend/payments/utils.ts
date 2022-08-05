@@ -1,8 +1,12 @@
 import {
   TransactionActionEnum,
   TransactionActionPayloadFragment,
+  TransactionFragment,
+  TransactionItem,
 } from "@/saleor-app-checkout/graphql";
 import currency from "currency.js";
+import { ADYEN_PAYMENT_PREFIX } from "./providers/adyen";
+import { MOLLIE_PAYMENT_PREFIX } from "./providers/mollie";
 
 export const formatRedirectUrl = (redirectUrl: string, orderId: string) => {
   const url = new URL(redirectUrl);
@@ -71,4 +75,14 @@ export const getActionsAfterRefund = (
   }
 
   return transactionActions;
+};
+
+type TransactionWithType = Pick<TransactionItem, "type">;
+
+export const isMollieTransaction = (transaction: TransactionWithType) => {
+  return transaction.type.includes(MOLLIE_PAYMENT_PREFIX);
+};
+
+export const isAdyenTransaction = (transaction: TransactionWithType) => {
+  return transaction.type.includes(ADYEN_PAYMENT_PREFIX);
 };
