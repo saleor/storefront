@@ -10,6 +10,8 @@ import { Handler, HTTPMethod } from "retes";
 import { Response } from "retes/response";
 import { withMethod } from "retes/middleware";
 import { withSaleorDomainMatch } from "@/saleor-app-checkout/backend/middlewares";
+import { getTransactionProcessedEvents } from "@/saleor-app-checkout/backend/payments/getTransactionProcessedEvents";
+import { updateTransactionProcessedEvents } from "@/saleor-app-checkout/backend/payments/updateTransactionProcessedEvents";
 
 export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transaction-action-request";
 
@@ -31,6 +33,13 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
 
   if (!payloadSignature) {
     return Response.BadRequest({ success: false, message: "Missing signature" });
+  }
+
+  const processedEvents = await getTransactionProcessedEvents({ id: transaction.id });
+  const eventProcessed = processedEvents.some((signature) => signature === payloadSignature);
+
+  if (eventProcessed) {
+    return Response.OK({ success: true, message: "Event already processed" });
   }
 
   if (action.actionType === "REFUND") {
@@ -56,6 +65,11 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
       });
     }
   }
+
+  await updateTransactionProcessedEvents({
+    id: transaction.id,
+    input: JSON.stringify([...processedEvents, payloadSignature]),
+  });
 
   return Response.OK({ success: true });
 };

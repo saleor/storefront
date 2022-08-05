@@ -15,7 +15,7 @@ export async function handleMolieRefund(
 ) {
   const mollieClient = await getMollieClient();
 
-  const { id, amount, currency } = refund;
+  const { id, amount, currency, signature } = refund;
   if (!transaction?.id) {
     throw new Error("Transaction id was not provided");
   }
