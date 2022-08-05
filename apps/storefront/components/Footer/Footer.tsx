@@ -15,6 +15,11 @@ import styles from "./Footer.module.css";
 
 export type FooterProps = HTMLAttributes<HTMLElement>;
 
+// Saleor Cloud currently doesn't support relative URLs in the footer.
+// This is a workaround to make the links work.
+// @todo remove this when the issue is fixed.
+const fixMenuItemLocalhostUrl = (url: string) => url.replace(/^https?:\/\/localhost:8000\//, "/");
+
 export function Footer({ className, ...rest }: FooterProps) {
   const paths = usePaths();
   const { query, currentChannel, currentLocale } = useRegions();
@@ -62,7 +67,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                     <li key={sub?.id}>
                       {sub?.url ? (
                         <a
-                          href={sub.url}
+                          href={fixMenuItemLocalhostUrl(sub.url)}
                           target="_blank"
                           rel="noreferrer"
                           className={styles["menu-link"]}
