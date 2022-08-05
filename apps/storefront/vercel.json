@@ -1,5 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/grpahql",
+      "destination": "/graphql/"
+    }
+  ],
   "rewrites": [
     {
       "source": "/media/:match*",
@@ -12,6 +18,10 @@
     {
       "source": "/graphql/:match*",
       "destination": "https://dck24t1mwc0h.cloudfront.net/graphql/:match*"
+    },
+    {
+      "source": "/graphql/",
+      "destination": "https://dck24t1mwc0h.cloudfront.net/graphql/"
     },
     {
       "source": "/plugins/:match*",
