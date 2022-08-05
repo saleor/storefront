@@ -30,13 +30,18 @@ mutation TransactionUpdate(
   }
 }
 
-query TransactionEvents($id: ID!) {
+query TransactionProcessedEvents($id: ID!) {
   transaction(id: $id) {
-    events {
-      id
-      name
-      reference
-      status
+    processedEvents: metafield(key: "processedEvents")
+  }
+}
+
+mutation TransactionUpdateProcessedEvents($id: ID!, $input: String!) {
+  updateMetadata(id: $id, input: { key: "processedEvents", value: $input }) {
+    errors {
+      code
+      field
+      message
     }
   }
 }

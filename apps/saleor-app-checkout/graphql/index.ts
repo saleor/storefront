@@ -22351,20 +22351,29 @@ export type TransactionUpdateMutation = {
   } | null;
 };
 
-export type TransactionEventsQueryVariables = Exact<{
+export type TransactionProcessedEventsQueryVariables = Exact<{
   id: Scalars["ID"];
 }>;
 
-export type TransactionEventsQuery = {
+export type TransactionProcessedEventsQuery = {
   __typename?: "Query";
-  transaction?: {
-    __typename?: "TransactionItem";
-    events: Array<{
-      __typename?: "TransactionEvent";
-      id: string;
-      name?: string | null;
-      reference: string;
-      status: TransactionStatus;
+  transaction?: { __typename?: "TransactionItem"; processedEvents?: string | null } | null;
+};
+
+export type TransactionUpdateProcessedEventsMutationVariables = Exact<{
+  id: Scalars["ID"];
+  input: Scalars["String"];
+}>;
+
+export type TransactionUpdateProcessedEventsMutation = {
+  __typename?: "Mutation";
+  updateMetadata?: {
+    __typename?: "UpdateMetadata";
+    errors: Array<{
+      __typename?: "MetadataError";
+      code: MetadataErrorCode;
+      field?: string | null;
+      message?: string | null;
     }>;
   } | null;
 };
@@ -23042,23 +23051,39 @@ export function useTransactionUpdateMutation() {
     TransactionUpdateDocument
   );
 }
-export const TransactionEventsDocument = gql`
-  query TransactionEvents($id: ID!) {
+export const TransactionProcessedEventsDocument = gql`
+  query TransactionProcessedEvents($id: ID!) {
     transaction(id: $id) {
-      events {
-        id
-        name
-        reference
-        status
+      processedEvents: metafield(key: "processedEvents")
+    }
+  }
+`;
+
+export function useTransactionProcessedEventsQuery(
+  options: Omit<Urql.UseQueryArgs<TransactionProcessedEventsQueryVariables>, "query">
+) {
+  return Urql.useQuery<TransactionProcessedEventsQuery>({
+    query: TransactionProcessedEventsDocument,
+    ...options,
+  });
+}
+export const TransactionUpdateProcessedEventsDocument = gql`
+  mutation TransactionUpdateProcessedEvents($id: ID!, $input: String!) {
+    updateMetadata(id: $id, input: { key: "processedEvents", value: $input }) {
+      errors {
+        code
+        field
+        message
       }
     }
   }
 `;
 
-export function useTransactionEventsQuery(
-  options: Omit<Urql.UseQueryArgs<TransactionEventsQueryVariables>, "query">
-) {
-  return Urql.useQuery<TransactionEventsQuery>({ query: TransactionEventsDocument, ...options });
+export function useTransactionUpdateProcessedEventsMutation() {
+  return Urql.useMutation<
+    TransactionUpdateProcessedEventsMutation,
+    TransactionUpdateProcessedEventsMutationVariables
+  >(TransactionUpdateProcessedEventsDocument);
 }
 export const TransactionActionRequestSubscriptionDocument = gql`
   subscription TransactionActionRequestSubscription {
