@@ -27,7 +27,8 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
       <div className="flex flex-col mb-4">
         <div className="flex flex-row justify-between items-baseline">
           <Title>{title}</Title>
-          <div className="flex flex-row">
+          {/* @todo auth is broken */}
+          {/* <div className="flex flex-row">
             {redirectSubtitle && (
               <Text color="secondary" className="mr-2">
                 {redirectSubtitle}
@@ -41,7 +42,7 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
                 label={redirectButtonLabel}
               />
             )}
-          </div>
+          </div> */}
         </div>
         {subtitle && (
           <Text color="secondary" className="mt-3">
