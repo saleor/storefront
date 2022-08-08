@@ -21,7 +21,7 @@ export const config = {
   api: {
     bodyParser: false,
   },
-};
+} as const;
 
 const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const { transaction, action } = req.params;
