@@ -12,8 +12,6 @@ export const useAddressAvailability = (
     pause,
   });
 
-  console.log({ data });
-
   const availableShippingCountries: CountryCode[] =
     (data?.channel?.countries?.map(({ code }) => code) as CountryCode[]) || [];
 

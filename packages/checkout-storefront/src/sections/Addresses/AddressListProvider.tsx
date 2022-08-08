@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback, useEffect, useState } from "react";
+import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils";
 import {
@@ -73,6 +73,8 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   const [selectedAddressId, setSelectedAddressId] = useState<string | undefined>(
     defaultAddress?.id
   );
+
+  const defaultAddressRef = useRef<AddressFragment | null | undefined>(null);
 
   const handleCheckoutAddressUpdate = (address: AddressFragment) =>
     onCheckoutAddressUpdate(getAddressFormDataFromAddress(address) as UserAddressFormData);
@@ -160,7 +162,10 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   };
 
   useEffect(() => {
-    if (isMatchingAddress(defaultAddress, getSelectedAddress())) {
+    if (
+      (getSelectedAddress() && isMatchingAddress(defaultAddress, getSelectedAddress())) ||
+      defaultAddress === defaultAddressRef.current
+    ) {
       return;
     }
 
@@ -168,6 +173,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       isMatchingAddress(defaultAddress, address)
     );
 
+    defaultAddressRef.current = defaultAddress;
     setSelectedAddressId(matchingAddress?.id as string);
   }, [defaultAddress]);
 
@@ -183,17 +189,19 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     debouncedUpdate(getSelectedAddress(addressId) as AddressFragment);
   };
 
-  const providerValues: ContextConsumerProps = {
-    addressList,
-    setSelectedAddressId: handleAddressSelect,
-    selectedAddressId,
-    addressCreate,
-    addressUpdate,
-    addressDelete,
-    deleting,
-    updating,
-    creating,
-  };
+  const providerValues: ContextConsumerProps = useMemo(() => {
+    return {
+      addressList,
+      setSelectedAddressId: handleAddressSelect,
+      selectedAddressId,
+      addressCreate,
+      addressUpdate,
+      addressDelete,
+      deleting,
+      updating,
+      creating,
+    };
+  }, [addressList, deleting, updating, creating, selectedAddressId]);
 
   return <Provider value={providerValues}>{children}</Provider>;
 };

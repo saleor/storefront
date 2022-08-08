@@ -86,13 +86,17 @@ export const BillingAddressSection = () => {
   }, [useBillingSameAsShipping]);
 
   useEffect(() => {
+    if (!useBillingSameAsShipping) {
+      return;
+    }
+
     const billingSetSameAsShipping =
       useBillingSameAsShipping && !useBillingSameAsShippingRef.current;
 
     const hasShippingAddressChanged =
       shippingAddress && shippingAddress !== shippingAddressRef.current;
 
-    if (hasShippingAddressChanged && billingSetSameAsShipping) {
+    if (hasShippingAddressChanged || billingSetSameAsShipping) {
       void setBillingSameAsShipping();
       shippingAddressRef.current = shippingAddress;
       useBillingSameAsShippingRef.current = useBillingSameAsShipping;
