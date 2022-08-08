@@ -4,7 +4,7 @@
   "extends": "./base.json",
   "compilerOptions": {
     "target": "ES2021",
-    "lib": ["dom", "dom.iterable", "ES2021"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

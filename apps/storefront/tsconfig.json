@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true, // https://nextjs.org/docs/basic-features/typescript#incremental-type-checking
     "target": "ES2021",
-    "lib": ["dom", "dom.iterable", "ES2021"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

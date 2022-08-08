@@ -3,7 +3,7 @@
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "lib": ["dom"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {
       "@components/*": ["./src/components/*"],
       "@lib/*": ["./src/lib/*"]
