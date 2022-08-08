@@ -22,6 +22,7 @@ import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
+import { Skeleton } from "@/checkout-storefront/components";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -40,7 +41,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     variant: { pricing },
   } = line;
 
-  const [{ fetching }, updateLines] = useCheckoutLinesUpdateMutation();
+  const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutLinesUpdate");
@@ -124,14 +125,14 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   };
 
   useEffect(() => {
-    if (fetching || !hasErrors) {
+    if (updating || !hasErrors) {
       return;
     }
 
     if (line.quantity !== getQuantity()) {
       setValue("quantity", line.quantity.toString());
     }
-  }, [fetching]);
+  }, [updating]);
 
   return (
     <div className="flex flex-col items-end h-20 relative -top-2">
@@ -145,38 +146,47 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           {...getInputProps("quantity", { onBlur: handleQuantityInputBlur })}
         />
       </div>
-      <div className="flex flex-row justify-end mt-2">
-        {pricing?.onSale && (
-          <Money
-            ariaLabel={formatMessage("undiscountedPriceLabel")}
-            money={{
-              currency: undiscountedUnitPrice.currency,
-              amount: undiscountedUnitPrice.amount * getQuantity(),
-            }}
-            className="line-through mr-1"
-          />
-        )}
-        <Money
-          ariaLabel={formatMessage("totalPriceLabel")}
-          money={{
-            currency: piecePrice?.currency as string,
-            amount: (piecePrice?.amount || 0) * getQuantity(),
-          }}
-          weight="bold"
-          className={clsx({
-            "!text-text-error": pricing?.onSale,
-          })}
-        />
-      </div>
-      {multiplePieces && (
-        <Text
-          aria-label={formatMessage("singlePiecePriceLabel")}
-          size="sm"
-          color="secondary"
-          className="ml-4"
-        >
-          {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
-        </Text>
+      {updating ? (
+        <div className="flex flex-col items-end mt-3 w-full">
+          <Skeleton className="w-full" />
+          <Skeleton className="w-2/3" />
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-row justify-end mt-2">
+            {pricing?.onSale && (
+              <Money
+                ariaLabel={formatMessage("undiscountedPriceLabel")}
+                money={{
+                  currency: undiscountedUnitPrice.currency,
+                  amount: undiscountedUnitPrice.amount * getQuantity(),
+                }}
+                className="line-through mr-1"
+              />
+            )}
+            <Money
+              ariaLabel={formatMessage("totalPriceLabel")}
+              money={{
+                currency: piecePrice?.currency as string,
+                amount: (piecePrice?.amount || 0) * getQuantity(),
+              }}
+              weight="bold"
+              className={clsx({
+                "!text-text-error": pricing?.onSale,
+              })}
+            />
+          </div>
+          {multiplePieces && (
+            <Text
+              aria-label={formatMessage("singlePiecePriceLabel")}
+              size="sm"
+              color="secondary"
+              className="ml-4"
+            >
+              {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
+            </Text>
+          )}
+        </>
       )}
     </div>
   );

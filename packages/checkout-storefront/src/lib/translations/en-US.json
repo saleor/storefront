@@ -55,7 +55,7 @@
   "required": "Required field",
   "invalid": "Invalid value",
   "unique": "Value must be unique",
-  "quantity": "Quantity",
+  "quantity": "quantity",
   "quantityGreaterThanLimit": "Quantity over allowed limit",
   "invalidCredentials": "Invalid credentials",
   "insufficientStock": "Insufficient stock",
