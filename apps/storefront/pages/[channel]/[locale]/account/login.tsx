@@ -18,6 +18,7 @@ export interface LoginFormData {
   password: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function LoginPage() {
   const router = useRouter();
   const paths = usePaths();
@@ -53,6 +54,7 @@ function LoginPage() {
       setErrorForm("email", { message: "Invalid credentials" });
     }
   });
+
   if (authenticated) {
     // User signed in successfully.
     router.push(redirectURL);
@@ -127,4 +129,16 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+// FIXME: Temporary disable authentication
+function TemporaryLoginPage() {
+  const router = useRouter();
+  const paths = usePaths();
+  const redirectURL = router.query.next?.toString() || paths.$url();
+
+  if (typeof window !== "undefined") {
+    router.push(redirectURL);
+  }
+  return null;
+}
+
+export default TemporaryLoginPage;

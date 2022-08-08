@@ -14,8 +14,6 @@ declare module "next" {
   } & NextApiResponse;
 }
 
-export const IS_TEST = typeof jest !== "undefined";
-
 export const mockRequest = (method: RequestMethod = "GET") => {
   const { req, res } = createMocks({ method });
   req.headers = {
@@ -47,19 +45,35 @@ const VARIABLES_BLACKLIST = [
   "csrfToken",
 ];
 
-export const removeBlacklistedVariables = (obj: {}): {} => {
+export const removeBlacklistedVariables = (
+  obj: {} | undefined | string
+): {} | undefined | string => {
+  if (!obj || typeof obj === "string") return obj;
+
   return omitDeep(obj, ...VARIABLES_BLACKLIST);
+};
+
+const tryParse = (text: string | undefined) => {
+  if (!text) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return text;
+  }
 };
 
 export const setupPollyMiddleware = (server: PollyServer) => {
   // Hide sensitive data in headers or in body
   server.any().on("beforePersist", (_, recording, event) => {
-    const requestJson = JSON.parse(recording.request.postData.text);
+    console.log(recording.request.postData);
+    const requestJson = tryParse(recording.request.postData?.text);
     const requestHeaders = recording.request.headers.filter(
       (el: Record<string, string>) => !HEADERS_BLACKLIST.has(el.name)
     );
 
-    const responseJson = JSON.parse(recording.response.content.text);
+    const responseJson = tryParse(recording.response.content?.text);
     const responseHeaders = recording.response.headers.filter(
       (el: Record<string, string>) => !HEADERS_BLACKLIST.has(el.name)
     );
@@ -67,10 +81,14 @@ export const setupPollyMiddleware = (server: PollyServer) => {
     const filteredRequestJson = removeBlacklistedVariables(requestJson);
     const filteredResponseJson = removeBlacklistedVariables(responseJson);
 
-    recording.request.postData.text = JSON.stringify(filteredRequestJson);
+    if (filteredRequestJson) {
+      recording.request.postData.text = JSON.stringify(filteredRequestJson);
+    }
+    if (filteredResponseJson) {
+      recording.response.content.text = JSON.stringify(filteredResponseJson);
+    }
     recording.request.headers = requestHeaders;
     recording.response.cookies = [];
-    recording.response.content.text = JSON.stringify(filteredResponseJson);
     recording.response.headers = responseHeaders;
   });
 

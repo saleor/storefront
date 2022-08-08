@@ -8,17 +8,23 @@ import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { PayErrorResult } from "@/checkout-storefront/fetch";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
+import { useEffect } from "react";
 
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
   const { register } = useAuth();
   const { user } = useAuthState();
-  const { checkoutPay, loading } = usePay();
+  const { checkoutPay, loading, error: payError, data: _payData } = usePay();
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();
   const { showErrors, showCustomErrors } = useAlerts();
   const { errors, setApiErrors } = useErrors();
+
+  useEffect(() => {
+    // @todo should this show a notification?
+    console.error(payError);
+  }, [payError]);
 
   const userRegister = async (formData: FormData): Promise<boolean> => {
     const { createAccount, email, password } = formData;
@@ -56,8 +62,14 @@ export const useCheckoutFinalize = () => {
         checkoutId: checkout?.id,
         totalAmount: checkout?.totalPrice?.gross?.amount as number,
       });
-      if (!(result as PayErrorResult)?.ok) {
-        const { errors } = result as PayErrorResult;
+
+      if (!result) {
+        console.error("Unexpected empty result!", { result });
+        return;
+      }
+
+      if ("ok" in result && result.ok === false) {
+        const { errors } = result;
         showCustomErrors(errors, "checkoutPay");
       }
     }

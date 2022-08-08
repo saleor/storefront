@@ -1,13 +1,14 @@
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 
-export type PayResult = PaySuccessResult | PayErrorResult;
+export type PayResult = PaySuccessResult | PayErrorResult | null;
 
 export interface PayErrorResult {
-  ok?: boolean;
+  ok: false;
   errors: ErrorCode[];
 }
 
 export interface PaySuccessResult {
+  ok?: undefined;
   orderId: string;
   data: {
     paymentUrl: string;
