@@ -13,7 +13,7 @@ export const Checkout = () => {
 
   const isCheckoutInvalid = !loading && !checkout && !authenticating;
 
-  const isEmptyCart = !checkout?.lines.length;
+  const isEmptyCart = checkout && !checkout?.lines.length;
 
   return isCheckoutInvalid ? (
     <PageNotFound />
