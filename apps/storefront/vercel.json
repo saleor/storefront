@@ -1,11 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "redirects": [
-    {
-      "source": "/graphql",
-      "destination": "/graphql/"
-    }
-  ],
+  "redirects": [],
   "rewrites": [
     {
       "source": "/media/:match*",
