@@ -6,6 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useAuthState } from "@saleor/sdk";
 import { useCheckout } from "@/checkout-storefront/hooks";
 import { EmptyCartPage, PageNotFound } from "@/checkout-storefront/layouts";
+import { CheckoutSkeleton } from "./CheckoutSkeleton";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
@@ -17,6 +18,8 @@ export const Checkout = () => {
 
   return isCheckoutInvalid ? (
     <PageNotFound />
+  ) : authenticating ? (
+    <CheckoutSkeleton />
   ) : (
     <ErrorBoundary FallbackComponent={PageNotFound}>
       <div className="page">
