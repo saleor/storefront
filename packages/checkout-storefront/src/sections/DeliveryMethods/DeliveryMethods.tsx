@@ -1,18 +1,19 @@
 import { Title } from "@/checkout-storefront/components/Title";
 import { Text } from "@saleor/ui-kit";
 import {
+  CountryCode,
   ShippingMethod,
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { extractMutationErrors, getFormattedMoney } from "@/checkout-storefront/lib/utils";
-import { CommonSectionProps } from "../Addresses/types";
+import { extractMutationErrors, getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
+import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -20,21 +21,40 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
   const [selectedMethodId, setSelectedMethodId] = useState(checkout?.deliveryMethod?.id);
+  const shippingCountryRef = useRef<CountryCode | undefined | null>(
+    shippingAddress?.country?.code as CountryCode
+  );
 
   const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
 
-  useEffect(() => {
-    if (selectedMethodId || !shippingMethods.length) {
-      return;
-    }
+  const hasValidMethodSelected =
+    selectedMethodId && shippingMethods.some(getById(selectedMethodId));
 
+  const handleAutoSetMethod = () => {
     const cheapestMethod = shippingMethods.reduce(
       (resultMethod, currentMethod) =>
         currentMethod.price.amount < resultMethod.price.amount ? currentMethod : resultMethod,
       shippingMethods[0] as ShippingMethod
     );
 
-    setSelectedMethodId(cheapestMethod.id);
+    void handleSubmit(cheapestMethod.id);
+  };
+
+  useEffect(() => {
+    if (hasValidMethodSelected || !shippingMethods.length) {
+      return;
+    }
+
+    handleAutoSetMethod();
+  }, [shippingMethods]);
+
+  useEffect(() => {
+    const hasShippingCountryChanged = shippingAddress?.country?.code !== shippingCountryRef.current;
+
+    if (hasShippingCountryChanged && !hasValidMethodSelected) {
+      handleAutoSetMethod();
+      shippingCountryRef.current = shippingAddress?.country?.code as CountryCode;
+    }
   }, [shippingAddress]);
 
   const handleSubmit = async (selectedMethodId: string) => {

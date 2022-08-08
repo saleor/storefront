@@ -192,6 +192,14 @@ query user {
   }
 }
 
+query channel($slug: String!) {
+  channel(slug: $slug) {
+    countries {
+      code
+    }
+  }
+}
+
 mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
   checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
     errors {

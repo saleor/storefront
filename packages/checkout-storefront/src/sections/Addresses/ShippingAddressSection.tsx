@@ -9,9 +9,9 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import React from "react";
+import React, { useEffect } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
@@ -21,6 +21,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
+  const shippingAddress = checkout?.shippingAddress;
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
   });
@@ -36,7 +37,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
-  const updateShippingAddress = async ({ autoSave, ...address }: AddressFormData) => {
+  const updateShippingAddress = async ({ autoSave, ...address }: Partial<AddressFormData>) => {
     const result = await checkoutShippingAddressUpdate({
       checkoutId: checkout.id,
       shippingAddress: getAddressInputData(address),
@@ -50,6 +51,12 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
       setApiErrors(errors);
     }
   };
+
+  useEffect(() => {
+    if (!shippingAddress) {
+      void updateShippingAddress({ autoSave: true, countryCode: getQueryVariables().countryCode });
+    }
+  }, [shippingAddress]);
 
   if (collapsed) {
     return null;

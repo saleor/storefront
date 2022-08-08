@@ -14,19 +14,18 @@ export const getByUnmatchingId =
   (obj: T) =>
     obj.id !== idToCompare;
 
-export type QueryVariables = Record<
-  "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl",
-  string
+export type QueryVariables = Partial<
+  Record<"checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl", string>
 > & { countryCode: CountryCode };
 
-export const getQueryVariables = (): Partial<QueryVariables> => {
+export const getQueryVariables = (): QueryVariables => {
   const vars = queryString.parse(location.search);
   return {
     ...vars,
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
-  };
+  } as QueryVariables;
 };
 
 export const getCurrentHref = () => location.href;
