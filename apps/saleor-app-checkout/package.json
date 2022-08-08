@@ -86,6 +86,7 @@
     "jest": "^27.5.1",
     "json-easy-strip": "^1.0.6",
     "msw": "^0.43.1",
+    "next-test-api-route-handler": "^3.1.7",
     "next-transpile-modules": "9.0.0",
     "node-mocks-http": "^1.11.0",
     "omit-deep-lodash": "^1.1.7",
