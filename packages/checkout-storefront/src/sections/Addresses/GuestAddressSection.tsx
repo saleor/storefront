@@ -11,7 +11,7 @@ import {
 
 interface GuestAddressSectionProps
   extends UseErrors<AddressFormData>,
-    Pick<UseCountrySelectProps, "selectedCountryCode"> {
+    Pick<UseCountrySelectProps, "selectedCountryCode" | "checkAddressAvailability"> {
   onSubmit: (address: AddressFormData) => void;
   address?: AddressFragment;
   title: string;
@@ -22,6 +22,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   address,
   title,
   selectedCountryCode,
+  checkAddressAvailability,
   ...errorProps
 }) => {
   const addressFormData = getAddressFormDataFromAddress(address);
@@ -29,6 +30,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   const countrySelectProps = useCountrySelect({
     autoSelect: !addressFormData?.countryCode && !selectedCountryCode,
     selectedCountryCode: addressFormData?.countryCode || selectedCountryCode,
+    checkAddressAvailability,
   });
 
   const handleSave = (address: AddressFormData) => onSubmit({ ...address, autoSave: true });

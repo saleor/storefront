@@ -6,6 +6,7 @@ export interface SelectBoxProps extends Classes {
   value: string;
   onSelect: (value: string) => void;
   selectedValue: string | undefined;
+  disabled?: boolean;
 }
 
 export const SelectBox: React.FC<PropsWithChildren<SelectBoxProps>> = ({
@@ -14,13 +15,21 @@ export const SelectBox: React.FC<PropsWithChildren<SelectBoxProps>> = ({
   onSelect,
   selectedValue,
   className,
+  disabled = false,
 }) => {
   const selected = selectedValue === value;
 
+  const handleClick = () => {
+    if (disabled) {
+      return;
+    }
+    onSelect(value);
+  };
+
   return (
     <div
-      className={clsx("select-box", selected && "selected", className)}
-      onClick={() => onSelect(value)}
+      className={clsx("select-box", selected && "selected", disabled && "disabled", className)}
+      onClick={handleClick}
     >
       <div className="grow">{children}</div>
     </div>

@@ -79,6 +79,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
           />
         ) : (
           <GuestAddressSection
+            checkAddressAvailability={true}
             address={checkout?.shippingAddress as AddressFragment}
             title={formatMessage("shippingAddress")}
             onSubmit={(address) => {

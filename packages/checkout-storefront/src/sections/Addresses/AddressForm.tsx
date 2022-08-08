@@ -19,7 +19,6 @@ import { AddressFormData } from "./types";
 import { Select } from "@saleor/ui-kit";
 import { Title } from "@/checkout-storefront/components/Title";
 import { UseCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
-import { countries } from "./countries";
 import { useAddressFormUtils } from "./useAddressFormUtils";
 import { IconButton } from "@/checkout-storefront/components";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
@@ -41,7 +40,7 @@ const emptyFormData = {
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors">,
-    Pick<UseCountrySelect, "countryCode" | "setCountryCode"> {
+    Pick<UseCountrySelect, "countryCode" | "setCountryCode" | "countryOptions"> {
   defaultValues?: Partial<TFormData>;
   onCancel?: () => void;
   onDelete?: () => void;
@@ -58,6 +57,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   errors,
   clearErrors: onClearErrors,
   autoSave = false,
+  countryOptions,
   countryCode,
   setCountryCode,
   onDelete,
@@ -148,10 +148,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
           classNames={{ container: "!w-1/2" }}
           onChange={setCountryCode}
           selectedValue={countryCode}
-          options={countries.map(({ name, code }) => ({
-            label: name,
-            value: code,
-          }))}
+          options={countryOptions}
         />
       </div>
       <div className="mt-2">

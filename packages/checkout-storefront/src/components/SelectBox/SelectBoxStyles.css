@@ -17,6 +17,10 @@
     @apply border border-border-active;
   }
 
+  div.select-box.disabled:hover {
+    @apply border-border-secondary;
+  }
+
   .address-select-box {
     @apply flex flex-row justify-between;
   }

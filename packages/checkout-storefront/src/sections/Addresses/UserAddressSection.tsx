@@ -46,6 +46,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
       <AddressListProvider
         onCheckoutAddressUpdate={onAddressSelect}
         defaultAddress={defaultAddress}
+        checkAddressAvailability={type === "SHIPPING"}
       >
         {displayAddressCreate && (
           <AddressCreateForm
@@ -73,7 +74,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
               label={formatMessage("addAddress")}
               className="mb-4 w-full"
             />
-            <UserAddressList onEditChange={(id: string) => setEditedAddressId(id)} />
+            <UserAddressList type={type} onEditChange={(id: string) => setEditedAddressId(id)} />
           </div>
         )}
       </AddressListProvider>

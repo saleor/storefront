@@ -21,10 +21,12 @@ import {
 } from "@/checkout-storefront/sections/Addresses/utils";
 import { useAlerts } from "@/checkout-storefront/hooks";
 import { debounce, findIndex } from "lodash-es";
+import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
 
 interface AddressListProviderProps {
   onCheckoutAddressUpdate: (address: UserAddressFormData) => void;
   defaultAddress: AddressFragment | undefined | null;
+  checkAddressAvailability: boolean;
 }
 
 type SubmitReturnWithErrors = Promise<{ hasErrors: boolean; errors?: any[] }>;
@@ -49,11 +51,14 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   children,
   onCheckoutAddressUpdate,
   defaultAddress,
+  checkAddressAvailability,
 }) => {
   const { user: authUser } = useAuthState();
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
   });
+
+  const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
 
   const { showErrors } = useAlerts();
 
@@ -96,11 +101,14 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
     const updatedList = [...addressList];
     updatedList.splice(addressIndex, 1, address);
-
     setAddressList(updatedList);
-    setSelectedAddressId(address.id);
 
-    handleCheckoutAddressUpdate(address);
+    if (isAvailable(address)) {
+      setSelectedAddressId(address.id);
+
+      handleCheckoutAddressUpdate(address);
+    }
+
     return { hasErrors: false };
   };
 
@@ -141,8 +149,11 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       const address = result?.data?.accountAddressCreate?.address as AddressFragment;
 
       setAddressList([...addressList, address]);
-      setSelectedAddressId(address.id);
-      handleCheckoutAddressUpdate(address);
+
+      if (isAvailable(address)) {
+        setSelectedAddressId(address.id);
+        handleCheckoutAddressUpdate(address);
+      }
     }
 
     return { hasErrors, errors };
