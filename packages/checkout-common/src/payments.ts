@@ -9,13 +9,16 @@ export interface PaymentMethod {
 }
 export type PaymentProviderID = "mollie" | "adyen";
 export type MollieProviderSettingID = "profileId" | "apiKey";
-export type AdyenProviderSettingID =
-  | "merchantAccount"
-  | "hmac"
-  | "username"
-  | "password"
-  | "apiKey"
-  | "clientKey";
+
+export const adyenProviderSettingIDs = [
+  "merchantAccount",
+  "hmac",
+  "username",
+  "password",
+  "apiKey",
+  "clientKey",
+] as const;
+export type AdyenProviderSettingID = typeof adyenProviderSettingIDs[number];
 
 export type PaymentProviderSettingID<P extends PaymentProviderID> = P extends "mollie"
   ? MollieProviderSettingID
