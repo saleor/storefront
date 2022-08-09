@@ -4,6 +4,7 @@ import {
   getAdyenAmountFromSaleor,
   getTransactionAmountFromAdyen,
   TransactionAmounts,
+  nonNegative,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
 import { TransactionEventFragment, TransactionFragment } from "@/saleor-app-checkout/graphql";
 import { prepareSaleorTransaction } from "@/saleor-app-checkout/mocks/fixtures/saleor";
@@ -13,6 +14,20 @@ type NotificationRequestItem = Types.notification.NotificationRequestItem;
 const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
 type EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
 const SuccessEnum = Types.notification.NotificationRequestItem.SuccessEnum;
+
+describe("nonNegative", () => {
+  it("returns value if more than 0", () => {
+    expect(nonNegative(10)).toBe(10);
+    expect(nonNegative(10.21)).toBe(10.21);
+  });
+
+  it("returns 0 if value is less than 0", () => {
+    expect(nonNegative(-1)).toBe(0);
+    expect(nonNegative(-21.11)).toBe(0);
+    expect(nonNegative(-0.21)).toBe(0);
+    expect(nonNegative(-0)).toBe(0);
+  });
+});
 
 describe("createEventUniqueKey", () => {
   it("creates the same key for single event", () => {

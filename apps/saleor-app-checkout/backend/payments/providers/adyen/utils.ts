@@ -83,7 +83,7 @@ export type TransactionAmounts = Pick<
   "amountRefunded" | "amountAuthorized" | "amountCharged" | "amountVoided"
 >;
 
-const nonNegative = (amount: number) => (amount <= 0 ? 0 : amount);
+export const nonNegative = (amount: number) => (amount <= 0 ? 0 : amount);
 
 const getCurrencyFromTransaction = (transaction: TransactionFragment | null) => {
   if (!transaction) {
