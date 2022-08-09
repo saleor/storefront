@@ -22,7 +22,6 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: "<rootDir>/",
     }),
@@ -31,5 +30,4 @@ module.exports = {
   setupFiles: ["./setupTestsBeforeEnv.ts"],
   setupFilesAfterEnv: ["./setupTestsAfterEnv.ts"],
   testEnvironment: "setup-polly-jest/jest-environment-node",
-  // transformIgnorePatterns: ["<rootDir>/node_modules/(?!lodash-es)"],
 };
