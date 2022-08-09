@@ -105,11 +105,11 @@ describe("getTransactionAmountFromAdyen", () => {
     const notification = {
       ...prepareAdyenNotification(12_00, EventCodeEnum.Authorisation),
       amount: undefined,
-    };
+    } as Omit<Types.notification.NotificationRequestItem, "amount">;
 
     expect(() => {
       return getTransactionAmountFromAdyen(
-        // @ts-expect-error
+        // @ts-expect-error We check for runtime errors that TypeScript will complain about
         notification,
         null
       );
