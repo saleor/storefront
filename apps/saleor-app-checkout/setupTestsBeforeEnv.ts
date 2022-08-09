@@ -1,6 +1,7 @@
 import "env-vars";
 
 process.env.SETTINGS_ENCRYPTION_SECRET = "test_salt"; // Change will affect tests fixtures
+process.env.SALEOR_APP_TOKEN = "TEST";
 
 // Fix for jose missing TextEncoder error
 // https://github.com/inrupt/solid-client-authn-js/issues/1676

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { envVars, serverEnvVars, IS_TEST } from "../constants";
+import { envVars, serverEnvVars } from "../constants";
 import { AppDocument, AppQuery, AppQueryVariables } from "../graphql";
 import { getClient } from "./client";
 
@@ -7,11 +7,6 @@ const maskToken = (token: string) => "*".repeat(Math.max(token.length - 4, 0)) +
 
 export const getAuthToken = () => {
   let token;
-
-  if (IS_TEST) {
-    // Allows to use real appToken to record requests in development
-    token = "TEST";
-  }
 
   if (serverEnvVars.appToken) {
     token = serverEnvVars.appToken;
