@@ -1,11 +1,11 @@
 /* eslint-disable import/no-anonymous-default-export */
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 const { pathsToModuleNameMapper } = require("ts-jest");
 const requireJSON = require("json-easy-strip");
 const { compilerOptions } = requireJSON("./tsconfig.json");
 
 delete compilerOptions.paths["react"];
 
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   clearMocks: false,
   collectCoverage: false,
