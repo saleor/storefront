@@ -1,4 +1,3 @@
-/* eslint-disable require-await */
 import {
   encodeBasicAuth,
   getSaleorAmountFromAdyen,
@@ -103,9 +102,7 @@ describe("/api/webhooks/adyen", () => {
     req.headers = getReqHeaders();
     req.body = getPaymentRequest();
 
-    mockedGetOrderTransactions.mockImplementationOnce(async () => {
-      return [];
-    });
+    mockedGetOrderTransactions.mockResolvedValueOnce([]);
 
     await handler(req, res);
 
@@ -139,9 +136,7 @@ describe("/api/webhooks/adyen", () => {
     req.headers = getReqHeaders();
     req.body = getFirstPaymentCapture();
 
-    mockedGetOrderTransactions.mockImplementationOnce(async () => {
-      return [];
-    });
+    mockedGetOrderTransactions.mockResolvedValueOnce([]);
 
     await handler(req, res);
 

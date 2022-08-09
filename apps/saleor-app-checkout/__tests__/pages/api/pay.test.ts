@@ -73,7 +73,7 @@ describe("/api/pay", () => {
       url: "mollie-redirect-url",
       id: "test-id",
     }));
-    mockedUpdatePaymentMetafield.mockImplementationOnce(async () => true);
+    mockedUpdatePaymentMetafield.mockResolvedValueOnce(true);
     const { req, res } = mockRequest("POST");
 
     req.body = {
@@ -117,10 +117,10 @@ describe("/api/pay", () => {
     };
 
     mockedCreateOrder.mockImplementationOnce(() => ({ data: mockOrderData }));
-    mockedVerifyMollieSession.mockImplementationOnce(async () => ({
+    mockedVerifyMollieSession.mockResolvedValueOnce({
       status: "created",
       url: "mollie-redirect-url",
-    }));
+    });
     const { req, res } = mockRequest("POST");
 
     req.body = {
@@ -158,7 +158,7 @@ describe("/api/pay", () => {
       url: "adyen-redirect-url",
       id: "test-id",
     }));
-    mockedUpdatePaymentMetafield.mockImplementationOnce(async () => true);
+    mockedUpdatePaymentMetafield.mockResolvedValueOnce(true);
     const { req, res } = mockRequest("POST");
 
     req.body = {
@@ -193,10 +193,10 @@ describe("/api/pay", () => {
     };
 
     mockedCreateOrder.mockImplementationOnce(() => ({ data: mockOrderData }));
-    mockedVerifyAdyenSession.mockImplementationOnce(async () => ({
+    mockedVerifyAdyenSession.mockResolvedValueOnce({
       status: "active",
       url: "adyen-redirect-url",
-    }));
+    });
     const { req, res } = mockRequest("POST");
 
     req.body = {
