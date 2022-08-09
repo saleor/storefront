@@ -8,12 +8,10 @@ import { handlers } from "./mocks/handlers";
 import { Headers } from "headers-polyfill";
 import { MockedRequest } from "msw";
 
-declare module "next" {
-  type NextApiResponse = {
-    _getJSONData: <T extends Object>() => T;
-    _getData: <T extends string>() => T;
-  } & NextApiResponse;
-}
+export type TestNextApiResponse = NextApiResponse & {
+  _getJSONData: <T extends Object>() => T;
+  _getData: <T extends string>() => T;
+};
 
 export const mockRequest = (method: RequestMethod = "GET") => {
   const { req, res } = createMocks({ method });
@@ -23,7 +21,7 @@ export const mockRequest = (method: RequestMethod = "GET") => {
 
   return {
     req: req as unknown as NextApiRequest,
-    res: res as unknown as NextApiResponse,
+    res: res as unknown as TestNextApiResponse,
   };
 };
 

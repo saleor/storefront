@@ -37,7 +37,6 @@ describe("/api/pay", () => {
   it("rejects when wrong request method is used", async () => {
     const { req, res } = mockRequest("GET");
 
-    // @ts-ignore
     await pay(req, res);
 
     expect(res.statusCode).toBe(405);
@@ -52,7 +51,6 @@ describe("/api/pay", () => {
       totalAmount: 100,
     };
 
-    // @ts-ignore
     await pay(req, res);
 
     expect(mockedCreateOrder).not.toHaveBeenCalled();
@@ -87,7 +85,6 @@ describe("/api/pay", () => {
       host: "app.com",
     };
 
-    // @ts-ignore
     await pay(req, res);
 
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
@@ -134,7 +131,6 @@ describe("/api/pay", () => {
       host: "app.com",
     };
 
-    // @ts-ignore
     await pay(req, res);
 
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
@@ -168,7 +164,6 @@ describe("/api/pay", () => {
       redirectUrl: "example.com",
     } as PayRequestBody;
 
-    // @ts-ignore
     await pay(req, res);
 
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
@@ -210,7 +205,6 @@ describe("/api/pay", () => {
       host: "app.com",
     };
 
-    // @ts-ignore
     await pay(req, res);
 
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
