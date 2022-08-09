@@ -23,19 +23,19 @@ export const mapAvailableActions = (
   if (!operations) return [];
 
   return operations.map((operation) => {
-    if (operation === OperationsEnum.Capture) {
-      return "CHARGE";
-    }
+    switch (operation) {
+      case OperationsEnum.Capture:
+        return "CHARGE";
 
-    if (operation === OperationsEnum.Refund) {
-      return "REFUND";
-    }
+      case OperationsEnum.Refund:
+        return "REFUND";
 
-    if (operation === OperationsEnum.Cancel) {
-      return "VOID";
-    }
+      case OperationsEnum.Cancel:
+        return "VOID";
 
-    throw "OperationsEnum out of bounds";
+      default:
+        throw "OperationsEnum out of bounds";
+    }
   });
 };
 
