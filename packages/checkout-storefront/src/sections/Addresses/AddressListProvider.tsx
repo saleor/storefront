@@ -19,7 +19,7 @@ import {
   getAddressInputData,
   isMatchingAddress,
 } from "@/checkout-storefront/sections/Addresses/utils";
-import { useAlerts } from "@/checkout-storefront/hooks";
+import { ApiErrors, useAlerts } from "@/checkout-storefront/hooks";
 import { debounce, findIndex } from "lodash-es";
 import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
 
@@ -29,7 +29,10 @@ interface AddressListProviderProps {
   checkAddressAvailability: boolean;
 }
 
-type SubmitReturnWithErrors = Promise<{ hasErrors: boolean; errors?: any[] }>;
+type SubmitReturnWithErrors = Promise<{
+  hasErrors: boolean;
+  errors: ApiErrors<AddressFormData>;
+}>;
 
 interface ContextConsumerProps {
   addressList: AddressFragment[];
@@ -111,7 +114,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       handleCheckoutAddressUpdate(address);
     }
 
-    return { hasErrors: false };
+    return { hasErrors: false, errors: [] };
   };
 
   const addressDelete = async (id: string) => {

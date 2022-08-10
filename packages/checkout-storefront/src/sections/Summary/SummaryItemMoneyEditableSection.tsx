@@ -104,7 +104,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const piecePrice = unitPrice.gross;
   const formatMessage = useFormattedMessages();
 
-  const multiplePieces = getQuantity() > 1;
+  const multiplePieces = line.quantity > 1;
 
   const handleQuantityInputBlur = () => {
     if (getQuantity() === line.quantity) {
@@ -159,7 +159,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
                 ariaLabel={formatMessage("undiscountedPriceLabel")}
                 money={{
                   currency: undiscountedUnitPrice.currency,
-                  amount: undiscountedUnitPrice.amount * getQuantity(),
+                  amount: undiscountedUnitPrice.amount * line.quantity,
                 }}
                 className="line-through mr-1"
               />
@@ -168,7 +168,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
               ariaLabel={formatMessage("totalPriceLabel")}
               money={{
                 currency: piecePrice?.currency as string,
-                amount: (piecePrice?.amount || 0) * getQuantity(),
+                amount: (piecePrice?.amount || 0) * line.quantity,
               }}
               weight="bold"
               className={clsx({

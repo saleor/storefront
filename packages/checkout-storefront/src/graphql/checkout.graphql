@@ -206,10 +206,7 @@ mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!
       ...CheckoutErrorFragment
     }
     checkout {
-      id
-      lines {
-        ...CheckoutLineFragment
-      }
+      ...CheckoutFragment
     }
   }
 }
@@ -220,10 +217,7 @@ mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
       ...CheckoutErrorFragment
     }
     checkout {
-      id
-      lines {
-        ...CheckoutLineFragment
-      }
+      ...CheckoutFragment
     }
   }
 }

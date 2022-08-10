@@ -22100,6 +22100,76 @@ export type CheckoutLinesUpdateMutation = {
     checkout?: {
       __typename?: "Checkout";
       id: string;
+      email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
+      isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance: { __typename?: "Money"; currency: string; amount: number };
+      }>;
+      channel: { __typename?: "Channel"; id: string };
+      shippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      billingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      user?: { __typename?: "User"; id: string; email: string } | null;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      deliveryMethod?:
+        | { __typename?: "ShippingMethod"; id: string }
+        | { __typename?: "Warehouse"; id: string }
+        | null;
+      shippingMethods: Array<{
+        __typename?: "ShippingMethod";
+        id: string;
+        name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
+        price: { __typename?: "Money"; currency: string; amount: number };
+      }>;
+      totalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      };
+      shippingPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
+      subtotalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
       lines: Array<{
         __typename?: "CheckoutLine";
         id: string;
@@ -22162,6 +22232,76 @@ export type CheckoutLineDeleteMutation = {
     checkout?: {
       __typename?: "Checkout";
       id: string;
+      email?: string | null;
+      voucherCode?: string | null;
+      discountName?: string | null;
+      translatedDiscountName?: string | null;
+      isShippingRequired: boolean;
+      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
+      giftCards: Array<{
+        __typename?: "GiftCard";
+        displayCode: string;
+        id: string;
+        currentBalance: { __typename?: "Money"; currency: string; amount: number };
+      }>;
+      channel: { __typename?: "Channel"; id: string };
+      shippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      billingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      user?: { __typename?: "User"; id: string; email: string } | null;
+      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      deliveryMethod?:
+        | { __typename?: "ShippingMethod"; id: string }
+        | { __typename?: "Warehouse"; id: string }
+        | null;
+      shippingMethods: Array<{
+        __typename?: "ShippingMethod";
+        id: string;
+        name: string;
+        maximumDeliveryDays?: number | null;
+        minimumDeliveryDays?: number | null;
+        price: { __typename?: "Money"; currency: string; amount: number };
+      }>;
+      totalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; amount: number; currency: string };
+        tax: { __typename?: "Money"; currency: string; amount: number };
+      };
+      shippingPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
+      subtotalPrice: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      };
       lines: Array<{
         __typename?: "CheckoutLine";
         id: string;
@@ -23930,15 +24070,12 @@ export const CheckoutLinesUpdateDocument = gql`
         ...CheckoutErrorFragment
       }
       checkout {
-        id
-        lines {
-          ...CheckoutLineFragment
-        }
+        ...CheckoutFragment
       }
     }
   }
   ${CheckoutErrorFragmentDoc}
-  ${CheckoutLineFragmentDoc}
+  ${CheckoutFragmentDoc}
 `;
 
 export function useCheckoutLinesUpdateMutation() {
@@ -23953,15 +24090,12 @@ export const CheckoutLineDeleteDocument = gql`
         ...CheckoutErrorFragment
       }
       checkout {
-        id
-        lines {
-          ...CheckoutLineFragment
-        }
+        ...CheckoutFragment
       }
     }
   }
   ${CheckoutErrorFragmentDoc}
-  ${CheckoutLineFragmentDoc}
+  ${CheckoutFragmentDoc}
 `;
 
 export function useCheckoutLineDeleteMutation() {
