@@ -60,7 +60,7 @@ const reuseExistingSession = async ({
       }
     } else if (payment.provider === "adyen") {
       const session = await verifyAdyenSession(payment.session);
-      const StatusEnum = AdyenTypes.checkout.PaymentLinkResource.StatusEnum;
+      const StatusEnum = AdyenTypes.checkout.PaymentLinkResponse.StatusEnum;
 
       if (session.status === StatusEnum.Active) {
         return {
