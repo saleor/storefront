@@ -42,7 +42,7 @@ On the configuration page:
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build:saleor-app-checkout
+cd ../.. && pnpm run build --filter=saleor-app-checkout
 ```
 
 - Add environment variables:
@@ -198,7 +198,7 @@ On the configuration page:
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build:checkout
+cd ../.. && pnpm run build --filter=checkout
 ```
 
 - _Optional_: customise [environment variables](../apps/checkout/README.md#env-variables):
@@ -212,3 +212,23 @@ Here's the final result on configuration page:
 ![Vercel "Configure project" page with all settings filled out for Checkout frontend deployment](./screenshots/setup-vercel-4.png)
 
 Click deploy and wait until the app is deployed
+
+
+## Deploying Storefront SPA
+
+### 1. Create another project on Vercel
+
+Start by creating another project on Vercel, just like we did in [Checkout App setup](#saleor-app-checkout), select the same repository
+
+### 2. Configure new project for Storefront
+
+On the configuration page:
+
+- Provide your project name (for example `saleor-storefront`)
+- Select framework to Next.js
+- Choose the root directory to be `apps/storefront`
+- Override the build command to:
+
+```bash
+cd ../.. && pnpm run build --filter=storefront
+```
