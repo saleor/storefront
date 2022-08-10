@@ -101,18 +101,42 @@ const getCurrencyFromTransaction = (transaction: TransactionFragment | null) => 
   return currencies.find((item) => typeof item === "string");
 };
 
+export const isNotificationAmountValid = (
+  notification: Partial<Pick<Types.notification.NotificationRequestItem, "amount">>
+) => {
+  if (
+    typeof notification?.amount?.currency !== "string" ||
+    typeof notification?.amount?.value !== "number"
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export const isNotificationCurrencyMatchingTransaction = (
+  notificationCurrency: string,
+  transaction: TransactionFragment | null
+) => {
+  const transactionCurrency = getCurrencyFromTransaction(transaction);
+  if (!transactionCurrency) {
+    // Transaction is not created or doesn't have amounts set yet
+    return true;
+  }
+
+  return notificationCurrency === transactionCurrency;
+};
+
 export const getTransactionAmountFromAdyen = (
   notification: Types.notification.NotificationRequestItem,
   transaction: TransactionFragment | null
 ): TransactionAmounts => {
   const getTransactionAmount = getTransactionAmountGetterAsMoney({
-    voided: transaction?.voidedAmount?.amount ?? 0,
-    charged: transaction?.chargedAmount?.amount ?? 0,
-    refunded: transaction?.refundedAmount?.amount ?? 0,
-    authorized: transaction?.authorizedAmount?.amount ?? 0,
+    voided: transaction?.voidedAmount?.amount,
+    charged: transaction?.chargedAmount?.amount,
+    refunded: transaction?.refundedAmount?.amount,
+    authorized: transaction?.authorizedAmount?.amount,
   });
-  const transactionCurrency = getCurrencyFromTransaction(transaction);
-
   const notificationAmount = currency(getSaleorAmountFromAdyen(notification.amount.value ?? 0));
   const notificationCurrency = notification.amount.currency!;
 
@@ -120,24 +144,20 @@ export const getTransactionAmountFromAdyen = (
     return {};
   }
 
-  if (notification.eventCode === EventCodeEnum.Pending) {
-    return {};
-  }
-
-  if (
-    typeof notification.amount.currency !== "string" ||
-    typeof notification.amount.value !== "number"
-  ) {
+  if (!isNotificationAmountValid(notification)) {
     console.error("(Adyen webhook) Notification without amount or currency");
     throw new Error("Notification doesn't contain amount or currency");
   }
 
-  if (transactionCurrency && transactionCurrency !== notification.amount.currency) {
+  if (!isNotificationCurrencyMatchingTransaction(notificationCurrency, transaction)) {
     console.error("(Adyen webhook) Mistmatch between notification and transaction currency");
     throw new Error("Mismatch between notification and transaction currency");
   }
 
   switch (notification.eventCode) {
+    case EventCodeEnum.Pending:
+      return {};
+
     case EventCodeEnum.Authorisation:
     case EventCodeEnum.AuthorisationAdjustment:
       return {
