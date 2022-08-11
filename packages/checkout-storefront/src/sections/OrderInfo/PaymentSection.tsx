@@ -7,6 +7,7 @@ import { getOrderPaymentStatus } from "@/checkout-storefront/fetch";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 
 import { Section, SectionTitle } from "./Section";
+import { PaymentMethodID } from "checkout-common";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
@@ -19,6 +20,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
     return orderPay({
       provider: "mollie", // TODO: Hardcoded payment provider
       orderId,
+      paymentMethod: "creditCard" as PaymentMethodID, // TODO: Hardcoded payment method
     });
   };
 

@@ -19,7 +19,7 @@ import { useAuthState } from "@saleor/sdk";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
 import { PaymentMethods } from "../PaymentMethods";
-import { PaymentProviderID } from "checkout-common";
+import { PaymentMethodID, PaymentProviderID } from "checkout-common";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -30,7 +30,7 @@ export const CheckoutForm = () => {
 
   const isLoading = loading || authenticating;
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
-  const { selectedPaymentProvider } = usePaymentProvidersProps;
+  const { selectedPaymentProvider, selectedPaymentMethod } = usePaymentProvidersProps;
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -57,7 +57,10 @@ export const CheckoutForm = () => {
     void checkoutFinalize({
       ...getValues(),
       paymentProviderId: selectedPaymentProvider as PaymentProviderID,
+      paymentMethod: selectedPaymentMethod as PaymentMethodID,
     });
+
+  console.log(selectedPaymentMethod);
 
   const payButtonDisabled =
     submitting ||
