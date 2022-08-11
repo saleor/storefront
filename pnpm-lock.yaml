@@ -350,13 +350,33 @@ importers:
   packages/checkout-common:
     specifiers:
       '@material-ui/core': ^4.12.3
+      '@rollup/plugin-commonjs': ^22.0.1
+      '@rollup/plugin-image': 2.1.1
+      '@rollup/plugin-json': 4.1.0
+      '@rollup/plugin-node-resolve': ^13.3.0
+      '@rollup/plugin-typescript': ^8.3.3
       eslint-config-checkout: workspace:*
+      rollup: ^2.70.2
+      rollup-plugin-dts: ^4.2.2
+      rollup-plugin-peer-deps-external: ^2.2.4
+      rollup-plugin-postcss: ^4.0.2
+      rollup-plugin-terser: ^7.0.2
       tsconfig: workspace:*
       typescript: 4.7.4
     dependencies:
       '@material-ui/core': registry.npmjs.org/@material-ui/core/4.12.4_sfoxds7t5ydpegc3knd667wn6m
     devDependencies:
+      '@rollup/plugin-commonjs': registry.npmjs.org/@rollup/plugin-commonjs/22.0.1_rollup@2.77.2
+      '@rollup/plugin-image': registry.npmjs.org/@rollup/plugin-image/2.1.1_rollup@2.77.2
+      '@rollup/plugin-json': registry.npmjs.org/@rollup/plugin-json/4.1.0_rollup@2.77.2
+      '@rollup/plugin-node-resolve': registry.npmjs.org/@rollup/plugin-node-resolve/13.3.0_rollup@2.77.2
+      '@rollup/plugin-typescript': registry.npmjs.org/@rollup/plugin-typescript/8.3.4_oo3i3f3qmqiztdz5qgxrrjmd5e
       eslint-config-checkout: link:../eslint-config-checkout
+      rollup: registry.npmjs.org/rollup/2.77.2
+      rollup-plugin-dts: registry.npmjs.org/rollup-plugin-dts/4.2.2_oo3i3f3qmqiztdz5qgxrrjmd5e
+      rollup-plugin-peer-deps-external: registry.npmjs.org/rollup-plugin-peer-deps-external/2.2.4_rollup@2.77.2
+      rollup-plugin-postcss: registry.npmjs.org/rollup-plugin-postcss/4.0.2_postcss@8.4.14
+      rollup-plugin-terser: registry.npmjs.org/rollup-plugin-terser/7.0.2_rollup@2.77.2
       tsconfig: link:../tsconfig
       typescript: registry.npmjs.org/typescript/4.7.4
 
@@ -6485,6 +6505,26 @@ packages:
       resolve: registry.npmjs.org/resolve/1.22.1
       rollup: registry.npmjs.org/rollup/2.77.2
       tslib: registry.npmjs.org/tslib/2.4.0
+      typescript: registry.npmjs.org/typescript/4.7.4
+    dev: true
+
+  registry.npmjs.org/@rollup/plugin-typescript/8.3.4_oo3i3f3qmqiztdz5qgxrrjmd5e:
+    resolution: {integrity: sha512-wt7JnYE9antX6BOXtsxGoeVSu4dZfw0dU3xykfOQ4hC3EddxRbVG/K0xiY1Wup7QOHJcjLYXWAn0Kx9Z1SBHHg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@rollup/plugin-typescript/-/plugin-typescript-8.3.4.tgz}
+    id: registry.npmjs.org/@rollup/plugin-typescript/8.3.4
+    name: '@rollup/plugin-typescript'
+    version: 8.3.4
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      rollup: ^2.14.0
+      tslib: '*'
+      typescript: '>=3.7.0'
+    peerDependenciesMeta:
+      tslib:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': registry.npmjs.org/@rollup/pluginutils/3.1.0_rollup@2.77.2
+      resolve: registry.npmjs.org/resolve/1.22.1
+      rollup: registry.npmjs.org/rollup/2.77.2
       typescript: registry.npmjs.org/typescript/4.7.4
     dev: true
 
@@ -15371,6 +15411,7 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: registry.npmjs.org/eslint/8.20.0
+    dev: false
 
   registry.npmjs.org/eslint-config-react-app/7.0.1_qzs7qtef7jzbqpoev3vzlexeim:
     resolution: {integrity: sha512-K6rNzvkIeHaTd8m/QEh1Zko0KI7BACWkkneSs6s9cKZC/J27X3eZR6Upt1jkmZ/4FK+XUOPPxMEN7+lbUXfSlA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-react-app/-/eslint-config-react-app-7.0.1.tgz}
@@ -15439,6 +15480,7 @@ packages:
       tsconfig-paths: registry.npmjs.org/tsconfig-paths/3.14.1
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   registry.npmjs.org/eslint-import-resolver-typescript/2.7.1_gwd37gqv3vjv3xlpl7ju3ag2qu:
     resolution: {integrity: sha512-00UbgGwV8bSgUv34igBDbTOtKhqoRMy9bFjNehT40bXg6585PNIct8HhXZ0SybqB9rWtXj9crcku8ndDn/gIqQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-import-resolver-typescript/-/eslint-import-resolver-typescript-2.7.1.tgz}
@@ -15502,10 +15544,10 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_he2ccbldppg44uulnyq4rwocfa
+      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_4hx5bygx4rxgd7xwyndf6ymwce
       debug: registry.npmjs.org/debug/3.2.7
       eslint-import-resolver-node: registry.npmjs.org/eslint-import-resolver-node/0.3.6
-      eslint-import-resolver-typescript: registry.npmjs.org/eslint-import-resolver-typescript/2.7.1_afl3vkhn63baibzal45igheroq
+      eslint-import-resolver-typescript: registry.npmjs.org/eslint-import-resolver-typescript/2.7.1_gwd37gqv3vjv3xlpl7ju3ag2qu
       find-up: registry.npmjs.org/find-up/2.1.0
     transitivePeerDependencies:
       - supports-color
@@ -15531,7 +15573,7 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_he2ccbldppg44uulnyq4rwocfa
+      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_4hx5bygx4rxgd7xwyndf6ymwce
       debug: registry.npmjs.org/debug/3.2.7
       eslint-import-resolver-node: registry.npmjs.org/eslint-import-resolver-node/0.3.6
       find-up: registry.npmjs.org/find-up/2.1.0
@@ -15745,6 +15787,7 @@ packages:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
+    dev: false
 
   registry.npmjs.org/eslint-plugin-jest/25.7.0_waswk4n5fz7niofdypscj7dneu:
     resolution: {integrity: sha512-PWLUEXeeF7C9QGKqvdSbzLOiLTx+bno7/HC9eefePfEb257QFHg7ye3dh80AZVkaa/RQsBB1Q/ORQvg2X7F0NQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-jest/-/eslint-plugin-jest-25.7.0.tgz}
