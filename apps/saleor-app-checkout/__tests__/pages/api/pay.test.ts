@@ -174,7 +174,7 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(mockOrderData, "example.com");
+    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(mockOrderData, "example.com", undefined);
     expect(mockedCreateAdyenPayment).toHaveBeenCalledTimes(1);
 
     const data = res._getJSONData<PayRequestSuccessResponse>();
