@@ -19,7 +19,6 @@ jobs:
           node-version: "16"
           cache: "pnpm"
 
-      # @todo: cache this on Vercel https://turborepo.org/docs/ci/github-actions
       - name: Turbo Cache
         id: turbo-cache
         uses: actions/cache@v2

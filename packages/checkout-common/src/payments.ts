@@ -1,7 +1,8 @@
 import type { IconComponent } from "./icon";
 import type { SettingType } from "./settings";
 
-export type PaymentMethodID = "creditCard" | "applePay" | "paypal";
+export const PaymentMethods = ["creditCard", "applePay", "paypal"] as const;
+export type PaymentMethodID = typeof PaymentMethods[number];
 export interface PaymentMethod {
   id: PaymentMethodID;
   name: string;

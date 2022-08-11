@@ -24,6 +24,7 @@ export const usePay = () => {
 
   const checkoutPay = async ({
     provider,
+    method,
     checkoutId,
     totalAmount,
   }: Omit<CheckoutBody, "redirectUrl">) => {
@@ -31,6 +32,7 @@ export const usePay = () => {
     const result = await pay({
       checkoutApiUrl,
       provider,
+      method,
       checkoutId,
       totalAmount,
       redirectUrl,

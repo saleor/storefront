@@ -2,11 +2,17 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { Types as AdyenTypes } from "@adyen/api-library";
 import { Order, OrderStatus as MollieOrderStatus } from "@mollie/api-client";
 
+import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
 import { createOrder } from "@/saleor-app-checkout/backend/payments/createOrder";
 import { OrderPaymentMetafield } from "@/saleor-app-checkout/types/common";
-import { assertUnreachable, PaymentProviderID, PaymentProviders } from "checkout-common";
-import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
+import {
+  assertUnreachable,
+  PaymentMethodID,
+  PaymentMethods,
+  PaymentProviderID,
+  PaymentProviders,
+} from "checkout-common";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { getOrderDetails } from "@/saleor-app-checkout/backend/payments/getOrderDetails";
 import { PayRequestResponse, PayRequestErrorResponse } from "@/saleor-app-checkout/types/api/pay";
@@ -15,7 +21,8 @@ import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
 import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
 import { verifyAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
-import { Errors } from "@/saleor-app-checkout/backend/payments/types";
+import { CreatePaymentResult, Errors } from "@/saleor-app-checkout/backend/payments/types";
+import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
 
 class MissingUrlError extends Error {
   constructor(public provider: PaymentProviderID, public order: OrderFragment) {
@@ -26,7 +33,7 @@ class MissingUrlError extends Error {
 
 class KnownPaymentError extends Error {
   constructor(public provider: PaymentProviderID, public errors: Errors) {
-    super(`Missing url! Provider: ${provider} | Errors: ${errors.join(", ")}`);
+    super(`Error! Provider: ${provider} | Errors: ${errors.join(", ")}`);
     Object.setPrototypeOf(this, MissingUrlError.prototype);
   }
 }
@@ -34,10 +41,12 @@ class KnownPaymentError extends Error {
 const reuseExistingSession = async ({
   orderId,
   provider,
+  method,
   privateMetafield,
 }: {
   orderId: string;
   provider: PaymentProviderID;
+  method: PaymentMethodID;
   privateMetafield: string;
 }): Promise<PayRequestResponse | undefined> => {
   const payment: OrderPaymentMetafield = JSON.parse(privateMetafield);
@@ -96,6 +105,8 @@ const reuseExistingSession = async ({
         };
       }
     }
+
+    assertUnreachable(payment.provider);
   }
 };
 
@@ -130,6 +141,9 @@ const getPaymentResponse = async (
   if (!PaymentProviders.includes(body.provider)) {
     throw new KnownPaymentError(body.provider, ["UNKNOWN_PROVIDER"]);
   }
+  if (!PaymentMethods.includes(body.method)) {
+    throw new KnownPaymentError(body.provider, ["UNKNOWN_METHOD"]);
+  }
 
   const order = await createOrderFromBodyOrId(body);
 
@@ -138,6 +152,7 @@ const getPaymentResponse = async (
       orderId: order.id,
       privateMetafield: order.privateMetafield,
       provider: body.provider,
+      method: body.method,
     });
 
     if (existingSessionResponse) {
@@ -202,15 +217,29 @@ const getPaymentUrlIdForProvider = (
   body: PayRequestBody,
   order: OrderFragment,
   appUrl: string
-): Promise<{ url?: string | undefined; id: string }> => {
+): Promise<CreatePaymentResult> => {
   switch (body.provider) {
     case "mollie":
-      return createMolliePayment({ order, redirectUrl: body.redirectUrl, appUrl });
+      return createMolliePayment({
+        order,
+        redirectUrl: body.redirectUrl,
+        method: body.method,
+        appUrl,
+      });
     case "adyen":
-      return createAdyenPayment({ order, redirectUrl: body.redirectUrl, appURl });
+      return createAdyenPayment({
+        order,
+        redirectUrl: body.redirectUrl,
+        method: body.method,
+        appUrl,
+      });
     case "stripe":
-      // @todo
-      return {} as any;
+      return createStripePayment({
+        order,
+        redirectUrl: body.redirectUrl,
+        method: body.method,
+        appUrl,
+      });
     default:
       assertUnreachable(body.provider);
   }

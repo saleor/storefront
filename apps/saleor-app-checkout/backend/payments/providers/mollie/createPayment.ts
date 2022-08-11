@@ -1,4 +1,5 @@
 import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
+import { CreatePaymentData } from "../../types";
 
 import {
   getDiscountLines,
@@ -6,7 +7,6 @@ import {
   getLines,
   parseAmountToString,
   getMollieClient,
-  CreatePaymentData,
 } from "./utils";
 
 export const createMolliePayment = async ({ order, redirectUrl, appUrl }: CreatePaymentData) => {
