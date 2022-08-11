@@ -1,6 +1,4 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { Types as AdyenTypes } from "@adyen/api-library";
-import { Order, OrderStatus as MollieOrderStatus } from "@mollie/api-client";
+import { NextApiHandler } from "next";
 
 import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
@@ -8,7 +6,6 @@ import { createOrder } from "@/saleor-app-checkout/backend/payments/createOrder"
 import { OrderPaymentMetafield } from "@/saleor-app-checkout/types/common";
 import {
   assertUnreachable,
-  PaymentMethodID,
   PaymentMethods,
   PaymentProviderID,
   PaymentProviders,
@@ -19,10 +16,16 @@ import { PayRequestResponse, PayRequestErrorResponse } from "@/saleor-app-checko
 import { PayRequestBody } from "checkout-common";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
-import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
-import { verifyAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
-import { CreatePaymentResult, Errors } from "@/saleor-app-checkout/backend/payments/types";
+import { reuseExistingMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
+import { reuseExistingAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
+import {
+  CreatePaymentResult,
+  Errors,
+  ReuseExistingSessionParams,
+  ReuseExistingSessionResult,
+} from "@/saleor-app-checkout/backend/payments/types";
 import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
+import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
 
 class MissingUrlError extends Error {
   constructor(public provider: PaymentProviderID, public order: OrderFragment) {
@@ -38,75 +41,35 @@ class KnownPaymentError extends Error {
   }
 }
 
-const reuseExistingSession = async ({
+const reuseExistingSession = ({
   orderId,
   provider,
   method,
   privateMetafield,
-}: {
-  orderId: string;
-  provider: PaymentProviderID;
-  method: PaymentMethodID;
-  privateMetafield: string;
-}): Promise<PayRequestResponse | undefined> => {
+}: ReuseExistingSessionParams): ReuseExistingSessionResult => {
   const payment: OrderPaymentMetafield = JSON.parse(privateMetafield);
 
-  if (payment.provider === provider && payment.session) {
-    if (payment.provider === "mollie") {
-      const session = await verifyMollieSession(payment.session);
+  if (payment.provider !== provider || payment.method !== method || payment.session) {
+    return;
+  }
 
-      if (session.status === MollieOrderStatus.created && session.url) {
-        return {
-          ok: true,
-          provider: payment.provider,
-          orderId,
-          data: {
-            paymentUrl: session.url,
-          },
-        };
-      } else if (
-        [
-          MollieOrderStatus.authorized,
-          MollieOrderStatus.completed,
-          MollieOrderStatus.paid,
-          MollieOrderStatus.pending,
-          MollieOrderStatus.shipping,
-        ].includes(session.status)
-      ) {
-        return {
-          ok: false,
-          provider: payment.provider,
-          orderId,
-          errors: ["ALREADY_PAID"],
-        };
-      }
-    } else if (payment.provider === "adyen") {
-      const session = await verifyAdyenSession(payment.session);
-      const StatusEnum = AdyenTypes.checkout.PaymentLinkResource.StatusEnum;
+  const params = {
+    payment,
+    orderId,
+    provider,
+    method,
+    privateMetafield,
+  };
 
-      if (session.status === StatusEnum.Active) {
-        return {
-          ok: true,
-          provider: payment.provider,
-          orderId,
-          data: {
-            paymentUrl: session.url,
-          },
-        };
-      } else if (
-        // Session was successfully completed but Saleor has not yet registered the payment
-        [StatusEnum.Completed, StatusEnum.PaymentPending].includes(session.status)
-      ) {
-        return {
-          ok: false,
-          provider: payment.provider,
-          orderId,
-          errors: ["ALREADY_PAID"],
-        };
-      }
-    }
-
-    assertUnreachable(payment.provider);
+  switch (payment.provider) {
+    case "mollie":
+      return reuseExistingMollieSession(params);
+    case "adyen":
+      return reuseExistingAdyenSession(params);
+    case "stripe":
+      return reuseExistingStripeSession(params);
+    default:
+      assertUnreachable(payment.provider);
   }
 };
 
@@ -176,6 +139,7 @@ const getPaymentResponse = async (
   };
   const payment: OrderPaymentMetafield = {
     provider: body.provider,
+    method: body.method,
     session: id,
   };
 
