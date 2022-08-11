@@ -8,17 +8,34 @@ import {
   parseAmountToString,
   getMollieClient,
 } from "./utils";
+import { PaymentMethod as MolliePaymentMethod } from "@mollie/api-client";
+import { PaymentMethodID } from "checkout-common";
 
 export interface CreateMolliePaymentData {
   order: OrderFragment;
   redirectUrl: string;
   appUrl: string;
+  paymentMethod: PaymentMethodID;
 }
+
+export const mapPaymentMethodToMollie = (
+  paymentMethod: PaymentMethodID
+): MolliePaymentMethod | MolliePaymentMethod[] => {
+  switch (paymentMethod) {
+    case "creditCard":
+      return [MolliePaymentMethod.creditcard, MolliePaymentMethod.directdebit];
+    case "applePay":
+      return MolliePaymentMethod.applepay;
+    case "paypal":
+      return MolliePaymentMethod.paypal;
+  }
+};
 
 export const createMolliePayment = async ({
   order,
   redirectUrl,
   appUrl,
+  paymentMethod,
 }: CreateMolliePaymentData) => {
   const discountLines = getDiscountLines(order.discounts);
   const shippingLines = getShippingLines(order);
@@ -30,6 +47,7 @@ export const createMolliePayment = async ({
     webhookUrl: `${appUrl}/api/webhooks/mollie`,
     locale: "en_US",
     redirectUrl: formatRedirectUrl(redirectUrl, order.id),
+    method: mapPaymentMethodToMollie(paymentMethod),
     metadata: {
       orderId: order.id,
     },

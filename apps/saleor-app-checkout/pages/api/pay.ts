@@ -151,6 +151,7 @@ const handler: NextApiHandler = async (req, res) => {
       order,
       redirectUrl: body.redirectUrl,
       appUrl,
+      paymentMethod: body.paymentMethod,
     });
 
     if (url) {
@@ -173,7 +174,7 @@ const handler: NextApiHandler = async (req, res) => {
       return res.status(200).json(response);
     }
   } else if (body.provider === "adyen") {
-    const { url, id } = await createAdyenPayment(order, body.redirectUrl);
+    const { url, id } = await createAdyenPayment(order, body.redirectUrl, body.paymentMethod);
 
     if (url) {
       const response: PayRequestResponse = {

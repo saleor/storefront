@@ -4,6 +4,7 @@ type BaseBody = {
   checkoutApiUrl: string;
   provider: PaymentProviderID;
   redirectUrl: string;
+  paymentMethod: PaymentMethodID;
   // captureAmount?: number; // support for partial payments
 };
 

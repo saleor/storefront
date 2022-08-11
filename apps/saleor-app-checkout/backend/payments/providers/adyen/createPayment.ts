@@ -6,8 +6,25 @@ import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
 
 import { getAdyenAmountFromSaleor, getLineItems } from "./utils";
+import { PaymentMethodID } from "checkout-common";
 
-export const createAdyenPayment = async (data: OrderFragment, redirectUrl: string) => {
+const mapPaymentMethodToAdyen = (paymentMethod: PaymentMethodID): string[] => {
+  switch (paymentMethod) {
+    // paymentMethod.type from https://docs.adyen.com/payment-methods
+    case "creditCard":
+      return ["scheme"];
+    case "applePay":
+      return ["applepay"];
+    case "paypal":
+      return ["paypal"];
+  }
+};
+
+export const createAdyenPayment = async (
+  data: OrderFragment,
+  redirectUrl: string,
+  paymentMethod: PaymentMethodID
+) => {
   const {
     paymentProviders: { adyen },
   } = await getPrivateSettings(envVars.apiUrl, false);
@@ -34,6 +51,7 @@ export const createAdyenPayment = async (data: OrderFragment, redirectUrl: strin
       currency: total.currency,
       value: getAdyenAmountFromSaleor(total.amount),
     },
+    allowedPaymentMethods: mapPaymentMethodToAdyen(paymentMethod),
     reference: data.number || data.id,
     returnUrl: formatRedirectUrl(redirectUrl, data.id),
     merchantAccount: adyen.merchantAccount,
