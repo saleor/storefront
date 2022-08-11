@@ -56,11 +56,13 @@ export const usePay = () => {
   const orderPay = async ({
     provider,
     orderId,
+    method,
   }: Omit<OrderBody, "redirectUrl" | "checkoutApiUrl">) => {
     const redirectUrl = getRedirectUrl();
     const result = await pay({
       checkoutApiUrl,
       provider,
+      method,
       orderId,
       redirectUrl,
     });

@@ -18,6 +18,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const handlePay = () => {
     return orderPay({
       provider: "mollie", // TODO: Hardcoded payment provider
+      method: "creditCard", // TODO: Hardcoded payment provider
       orderId,
     });
   };

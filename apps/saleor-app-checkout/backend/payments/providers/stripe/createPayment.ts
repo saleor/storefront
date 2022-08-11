@@ -4,7 +4,7 @@ import invariant from "ts-invariant";
 import { CreatePaymentData, CreatePaymentResult } from "../../types";
 import Stripe from "stripe";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
-import { getIntegerAmountFromSaleor } from "../../utils";
+import { formatRedirectUrl, getIntegerAmountFromSaleor } from "../../utils";
 import { PaymentMethodID } from "@/saleor-app-checkout/../../packages/checkout-common";
 
 export const createStripePayment = async ({
@@ -63,8 +63,8 @@ export const createStripePayment = async ({
     payment_method_types: stripePaymentMethod ? [stripePaymentMethod] : undefined,
     customer: stripeCheckoutCustomer.id,
     mode: "payment",
-    cancel_url: redirectUrl,
-    success_url: redirectUrl,
+    cancel_url: formatRedirectUrl(redirectUrl, order.id),
+    success_url: formatRedirectUrl(redirectUrl, order.id),
     metadata: {
       orderId: order.id,
     },
