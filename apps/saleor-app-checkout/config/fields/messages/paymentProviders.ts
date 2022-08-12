@@ -68,4 +68,8 @@ export const stripePaymentProviderMessages = defineMessages<StripeProviderSettin
     defaultMessage: "Secret Key",
     description: "payment provider setting",
   },
+  webhookSecret: {
+    defaultMessage: "Webhookd Secret",
+    description: "payment provider setting",
+  },
 });

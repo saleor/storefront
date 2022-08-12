@@ -98,6 +98,11 @@ const stripePaymentProvider: Omit<PaymentProviderSettings<"stripe">, "label">[] 
     type: "string",
     encrypt: true,
   },
+  {
+    id: "webhookSecret",
+    type: "string",
+    encrypt: true,
+  },
 ];
 
 const brandingCustomization: Omit<CustomizationSettings<"branding">, "label">[] = [

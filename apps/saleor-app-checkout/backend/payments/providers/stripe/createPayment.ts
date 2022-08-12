@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { formatRedirectUrl, getIntegerAmountFromSaleor } from "../../utils";
 import { PaymentMethodID } from "checkout-common";
+import { getStripeClient } from "./stripeClient";
 
 export const createStripePayment = async ({
   order,
@@ -13,14 +14,7 @@ export const createStripePayment = async ({
   appUrl,
   method,
 }: CreatePaymentData): Promise<CreatePaymentResult> => {
-  const {
-    paymentProviders: { stripe },
-  } = await getPrivateSettings(envVars.apiUrl, false);
-
-  invariant(stripe.publishableKey, "Publishable key not defined");
-  invariant(stripe.secretKey, "Secret key not defined");
-
-  const stripeClient = new Stripe(stripe.secretKey, { apiVersion: "2022-08-01" });
+  const stripeClient = await getStripeClient();
 
   const stripeCheckoutCustomer = await stripeClient.customers.create({
     email: order.userEmail ?? undefined,

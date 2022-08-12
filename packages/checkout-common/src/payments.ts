@@ -16,7 +16,7 @@ export type AdyenProviderSettingID =
   | "password"
   | "apiKey"
   | "clientKey";
-export type StripeProviderSettingID = "publishableKey" | "secretKey";
+export type StripeProviderSettingID = "publishableKey" | "secretKey" | "webhookSecret";
 
 export const PaymentProviders: readonly (keyof PaymentProviderToSettings)[] = [
   "mollie",

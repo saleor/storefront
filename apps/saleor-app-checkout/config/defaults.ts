@@ -28,6 +28,7 @@ export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unen
   stripe: {
     publishableKey: "",
     secretKey: "",
+    webhookSecret: "",
   },
 };
 
