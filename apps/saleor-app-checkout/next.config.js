@@ -3,7 +3,7 @@ const withTM = require("next-transpile-modules")();
 /** @type {import('next').NextConfig} */
 module.exports = withTM({
   i18n: {
-    locales: ["en-US", "pl-PL"],
+    locales: ["en-US", "pl-PL", "vi-VN"],
     defaultLocale: "en-US",
   },
   reactStrictMode: true,
