@@ -165,7 +165,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
         <div className="space-y-5 mt-10 md:mt-0">
           <div>
             <h1
-              className="text-4xl font-bold tracking-tight text-gray-800"
+              className="text-4xl font-bold tracking-tight text-red-500"
               data-testid="productName"
             >
               {translate(product, "name")}
