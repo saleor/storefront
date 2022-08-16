@@ -8,5 +8,10 @@
     "source.fixAll": true
   },
   "css.validate": true,
-  "editor.quickSuggestions": { "strings": true }
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "docwriter.progress.trackMethods": false,
+  "docwriter.progress.trackFunctions": true,
+  "docwriter.style": "Auto-detect"
 }

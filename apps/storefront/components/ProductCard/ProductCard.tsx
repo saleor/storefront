@@ -33,11 +33,11 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <li key={product.id} className="w-full">
       <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
-        <a href="pass" className="flex flex-col-reverse">
-          <div className="bg-orange-500 active:bg-brand w-full aspect-1">
-            <div className="bg-emerald-200 w-full h-full relative hover:translate-y-[+20px] transition-transform object-contain ">
+        <a href="pass" className="flex flex-col">
+          <div className="bg-main active:bg-brand w-full aspect-1">
+            <div className="bg-white w-full h-full relative hover:translate-y-[-10px] hover:translate-x-[-10px] transition-transform object-contain ">
               {thumbnailUrl ? (
-                <Image src={thumbnailUrl} width={256} height={256} />
+                <Image src={thumbnailUrl} width={512} height={512} />
               ) : (
                 <div className="grid justify-items-center content-center h-full w-full">
                   <PhotographIcon className="h-10 w-10 content-center" />
@@ -46,7 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
           <p
-            className="block mt-2 text-md font-extrabold text-rose-400 truncate"
+            className="block mt-2 text-md font-extrabold text-main truncate"
             data-testid={`productName${product.name}`}
           >
             {translate(product, "name")}

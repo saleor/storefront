@@ -27,7 +27,7 @@ export function FilterDropdown({
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button
-          className="inline-flex w-full justify-left px-2 py-2 text-base font-medium  hover:bg-opacity-30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          className="inline-flex w-full justify-left pr-2 py-2 text-base font-medium  hover:bg-opacity-30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
           data-testid={`filterAttribute${label}`}
         >
           {label}
