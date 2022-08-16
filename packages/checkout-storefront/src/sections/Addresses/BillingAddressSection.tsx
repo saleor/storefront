@@ -24,11 +24,11 @@ export const BillingAddressSection = () => {
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress, id: checkoutId } = checkout;
 
-  const hasBillingSameAsShipping =
-    !billingAddress || isMatchingAddress(shippingAddress, billingAddress);
+  const hasBillingSameAsShipping = isMatchingAddress(shippingAddress, billingAddress);
 
-  const [useBillingSameAsShipping, setUseBillingSameAsShipping] =
-    useState<boolean>(hasBillingSameAsShipping);
+  const [useBillingSameAsShipping, setUseBillingSameAsShipping] = useState<boolean>(
+    !billingAddress || hasBillingSameAsShipping
+  );
 
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
