@@ -58,4 +58,6 @@ jobs:
           TEST_STRIPE_WEBHOOK_SECRET: ${{ secrets.TEST_STRIPE_WEBHOOK_SECRET }}
 
           SETTINGS_ENCRYPTION_SECRET: "testng"
+
+          SALEOR_APP_TOKEN: "test"
         run: pnpm run test
