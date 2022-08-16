@@ -38,7 +38,7 @@
 }
 
 .collapse-sub {
-  @apply text-main text-[2rem] leading-[1.2em] font-bold flex w-full;
+  @apply text-main text-[2rem] leading-[1.2em] flex w-full;
 }
 
 .collapse-sub svg {
