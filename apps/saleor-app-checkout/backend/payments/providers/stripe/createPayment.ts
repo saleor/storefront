@@ -1,6 +1,3 @@
-import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
-import invariant from "ts-invariant";
 import { CreatePaymentData, CreatePaymentResult } from "../../types";
 import Stripe from "stripe";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
@@ -48,8 +45,14 @@ export const createStripePayment = async ({
 
   const stripePaymentMethod = saleorPaymentMethodIdToStripePaymentMethodId(method);
 
+  order.discounts;
+
   const stripeCheckoutSession = await stripeClient.checkout.sessions.create({
-    line_items: order.lines.map(saleorLineToStripeLine),
+    line_items: [
+      ...order.lines.map(saleorLineToStripeLine),
+      ...order.discounts.map(saleorDiscountToStripeLine),
+      saleorOrderShippingToStripeLine(order),
+    ],
 
     // @todo
     locale: "en",
@@ -74,7 +77,7 @@ type SaleorLine = OrderFragment["lines"][number];
 const saleorLineToStripeLine = (line: SaleorLine): Stripe.Checkout.SessionCreateParams.LineItem => {
   return {
     price_data: {
-      currency: line.unitPrice.gross.currency,
+      currency: line.unitPrice.gross.currency.toUpperCase(),
       unit_amount: getIntegerAmountFromSaleor(line.unitPrice.gross.amount),
       product_data: {
         name: line.productName + "-" + line.variantName,
@@ -82,6 +85,38 @@ const saleorLineToStripeLine = (line: SaleorLine): Stripe.Checkout.SessionCreate
       },
     },
     quantity: line.quantity,
+  };
+};
+type SaleorDiscount = OrderFragment["discounts"][number];
+const saleorDiscountToStripeLine = (
+  discount: SaleorDiscount
+): Stripe.Checkout.SessionCreateParams.LineItem => {
+  return {
+    price_data: {
+      currency: discount.amount.currency.toUpperCase(),
+      unit_amount: getIntegerAmountFromSaleor(discount.amount.amount),
+      product_data: {
+        name: "Discount " + (discount.name || ""),
+        images: [],
+      },
+    },
+    quantity: 1,
+  };
+};
+
+const saleorOrderShippingToStripeLine = (
+  order: OrderFragment
+): Stripe.Checkout.SessionCreateParams.LineItem => {
+  return {
+    quantity: 1,
+    price_data: {
+      currency: order.shippingPrice.gross.currency.toUpperCase(),
+      unit_amount: getIntegerAmountFromSaleor(order.shippingPrice.gross.amount),
+      product_data: {
+        name: "Shipping " + (order.shippingMethodName || ""),
+        images: [],
+      },
+    },
   };
 };
 

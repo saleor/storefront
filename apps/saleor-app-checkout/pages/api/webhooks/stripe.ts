@@ -7,6 +7,16 @@ import {
   verifyStripeEventSignature,
   stripeWebhookEventToTransactionCreateMutationVariables,
 } from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
+import type { Readable } from "node:stream";
+
+// https://github.com/vercel/next.js/discussions/12517#discussioncomment-2929922
+async function buffer(readable: Readable) {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
 
 const stripeWebhook: NextApiHandler = async (req, res) => {
   const { webhookSecret } = await getStripeSecrets();
@@ -16,9 +26,11 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
     return res.status(400).json({ message: '"stripe-signature" header is missing' });
   }
 
-  const [err, event] = await unpackPromise(
-    verifyStripeEventSignature(req.body, sig, webhookSecret)
-  );
+  const body = await buffer(req);
+
+  const [err, event] = await unpackPromise(verifyStripeEventSignature(body, sig, webhookSecret));
+
+  console.log({ err, event, body });
 
   if (err || !event) {
     return res.status(500).json({ message: err.message });

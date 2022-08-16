@@ -132,7 +132,7 @@ importers:
       react-is: ^17.0.2
       retes: ^0.30.0
       setup-polly-jest: ^0.11.0
-      stripe: 10.0.0
+      stripe: 10.2.0
       ts-invariant: 0.10.3
       ts-jest: ^27.1.4
       tsconfig: workspace:*
@@ -173,7 +173,7 @@ importers:
       react-intl: registry.npmjs.org/react-intl/5.25.1_qtbnez4q7bzoc4eqybg3efzzxe
       react-is: registry.npmjs.org/react-is/17.0.2
       retes: registry.npmjs.org/retes/0.30.1
-      stripe: registry.npmjs.org/stripe/10.0.0
+      stripe: registry.npmjs.org/stripe/10.2.0
       ts-invariant: registry.npmjs.org/ts-invariant/0.10.3
       url-join: registry.npmjs.org/url-join/5.0.0
       urql: registry.npmjs.org/urql/2.2.3_o264z5epwuajru7y4dsijkqr44
@@ -3272,7 +3272,7 @@ packages:
         optional: true
     dependencies:
       '@formatjs/icu-messageformat-parser': registry.npmjs.org/@formatjs/icu-messageformat-parser/2.1.0
-      '@types/node': registry.npmjs.org/@types/node/14.18.22
+      '@types/node': registry.npmjs.org/@types/node/17.0.45
       chalk: registry.npmjs.org/chalk/4.1.2
       ts-jest: registry.npmjs.org/ts-jest/27.1.5_jm6546ohpm4h5jsgaz4ra4shga
       tslib: registry.npmjs.org/tslib/2.4.0
@@ -9988,7 +9988,6 @@ packages:
       typescript: registry.npmjs.org/typescript/4.7.4
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   registry.npmjs.org/@typescript-eslint/scope-manager/5.31.0:
     resolution: {integrity: sha512-8jfEzBYDBG88rcXFxajdVavGxb5/XKXyvWgvD8Qix3EEJLCFIdVloJw+r9ww0wbyNLOTYyBsR+4ALNGdlalLLg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-5.31.0.tgz}
@@ -15361,6 +15360,7 @@ packages:
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - supports-color
+    dev: false
 
   registry.npmjs.org/eslint-config-next/12.2.3_hxadhbs2xogijvk7vq4t2azzbu:
     resolution: {integrity: sha512-xAQqAqwa2bu9ZMRypz58ym4tNCo22Wc6LuoLpbpf3yW5c4ZkVib9934AgGDDvh2zKrP56Z6X0Pp6gNnuuZzcRw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-next/-/eslint-config-next-12.2.3.tgz}
@@ -15521,7 +15521,6 @@ packages:
       tsconfig-paths: registry.npmjs.org/tsconfig-paths/3.14.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   registry.npmjs.org/eslint-module-utils/2.7.3_tl7yzo5qhybg5tc7vdth5gpmla:
     resolution: {integrity: sha512-088JEC7O3lDZM9xGe0RerkOMd0EjFl+Yvd1jPWIkMT5u3H9+HC34mWWPnqPrN13gieT9pBOO+Qt07Nb/6TresQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-module-utils/-/eslint-module-utils-2.7.3.tgz}
@@ -15544,10 +15543,10 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_4hx5bygx4rxgd7xwyndf6ymwce
+      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_hxadhbs2xogijvk7vq4t2azzbu
       debug: registry.npmjs.org/debug/3.2.7
       eslint-import-resolver-node: registry.npmjs.org/eslint-import-resolver-node/0.3.6
-      eslint-import-resolver-typescript: registry.npmjs.org/eslint-import-resolver-typescript/2.7.1_gwd37gqv3vjv3xlpl7ju3ag2qu
+      eslint-import-resolver-typescript: registry.npmjs.org/eslint-import-resolver-typescript/2.7.1_hpmu7kn6tcn2vnxpfzvv33bxmy
       find-up: registry.npmjs.org/find-up/2.1.0
     transitivePeerDependencies:
       - supports-color
@@ -15573,7 +15572,7 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_4hx5bygx4rxgd7xwyndf6ymwce
+      '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.31.0_he2ccbldppg44uulnyq4rwocfa
       debug: registry.npmjs.org/debug/3.2.7
       eslint-import-resolver-node: registry.npmjs.org/eslint-import-resolver-node/0.3.6
       find-up: registry.npmjs.org/find-up/2.1.0
@@ -15652,7 +15651,6 @@ packages:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
-    dev: true
 
   registry.npmjs.org/eslint-plugin-import/2.26.0_lk4jzqfx6okcqz3fdbchlhyg6m:
     resolution: {integrity: sha512-hYfi3FXaM8WPLf4S1cikh/r4IxnO6zrhZbEGz2b660EJRbuxgpDS5gkCuYgGWg2xxh2rBuIr4Pvhve/7c31koA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-import/-/eslint-plugin-import-2.26.0.tgz}
@@ -28557,10 +28555,10 @@ packages:
     version: 3.1.1
     engines: {node: '>=8'}
 
-  registry.npmjs.org/stripe/10.0.0:
-    resolution: {integrity: sha512-Tk40Q6eZVQbghG6RVhT6oTiL95MZR58QA1/de+q94pfKxaMHiuLE1p1SGHqfPzAZEFAXoxiPVkGVLTfPKlXDLA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/stripe/-/stripe-10.0.0.tgz}
+  registry.npmjs.org/stripe/10.2.0:
+    resolution: {integrity: sha512-y0tW31r8rk0cGAVN+lxZUU0yqcFq7y+Kmi0SKuNPxDVKRx1aCvU1xpnVR9mZv5wNQOKpsx5C14UpeenoYu8+7A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/stripe/-/stripe-10.2.0.tgz}
     name: stripe
-    version: 10.0.0
+    version: 10.2.0
     engines: {node: ^8.1 || >=10.*}
     dependencies:
       '@types/node': registry.npmjs.org/@types/node/18.6.2
