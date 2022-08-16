@@ -10,15 +10,11 @@ import { UsePaymentMethods } from "./usePaymentMethods";
 export type PaymentMethodsProps = UsePaymentMethods;
 
 export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
-  // availablePaymentMethods,
+  availablePaymentMethods,
   selectedPaymentMethod,
   setSelectedPaymentMethod,
 }) => {
   const formatMessage = useFormattedMessages();
-
-  // TMP mock before this is fixed https://github.com/saleor/saleor-checkout/issues/171
-  // and payment providers work again
-  const availablePaymentMethods: PaymentMethodID[] = ["creditCard", "applePay", "paypal"];
 
   return (
     <SelectBoxGroup label={formatMessage("paymentProvidersLabel")} className="flex flex-row gap-2">

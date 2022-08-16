@@ -233,8 +233,8 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
   }
 }
 
-mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
-  checkoutCustomerAttach(id: $checkoutId, customerId: $customerId) {
+mutation checkoutCustomerAttach($checkoutId: ID!) {
+  checkoutCustomerAttach(id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
     }

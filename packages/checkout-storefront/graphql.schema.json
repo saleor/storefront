@@ -15917,6 +15917,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "forceNewLine",
+            "description": "Flag that allow force splitting the same variant into multiple lines by skipping the matching logic. \n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": "false",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "price",
             "description": "Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.\n\nAdded in Saleor 3.1.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
@@ -15972,6 +15984,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "lineId",
+            "description": "ID of the line.\n\nAdded in Saleor 3.6.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "price",
             "description": "Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.\n\nAdded in Saleor 3.1.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
@@ -15997,15 +16021,11 @@
           },
           {
             "name": "variantId",
-            "description": "ID of the product variant.",
+            "description": "ID of the product variant. \n\nDEPRECATED: this field will be removed in Saleor 4.0. Use `lineId` instead.",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -60282,6 +60302,18 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "forceNewLine",
+            "description": "Flag that allow force splitting the same variant into multiple lines by skipping the matching logic. \n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": "false",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "quantity",
             "description": "Number of variant items ordered.",

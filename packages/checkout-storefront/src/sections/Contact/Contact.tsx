@@ -87,7 +87,6 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
 
     await customerAttach({
       checkoutId: checkout.id,
-      customerId: user?.id as string,
     });
   };
 

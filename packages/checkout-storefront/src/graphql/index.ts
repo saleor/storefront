@@ -3097,6 +3097,14 @@ export type CheckoutLineDelete = {
 
 export type CheckoutLineInput = {
   /**
+   * Flag that allow force splitting the same variant into multiple lines by skipping the matching logic.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  forceNewLine?: InputMaybe<Scalars["Boolean"]>;
+  /**
    * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
    *
    * Added in Saleor 3.1.
@@ -3112,6 +3120,12 @@ export type CheckoutLineInput = {
 
 export type CheckoutLineUpdateInput = {
   /**
+   * ID of the line.
+   *
+   * Added in Saleor 3.6.
+   */
+  lineId?: InputMaybe<Scalars["ID"]>;
+  /**
    * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
    *
    * Added in Saleor 3.1.
@@ -3121,8 +3135,12 @@ export type CheckoutLineUpdateInput = {
   price?: InputMaybe<Scalars["PositiveDecimal"]>;
   /** The number of items purchased. Optional for apps, required for any other users. */
   quantity?: InputMaybe<Scalars["Int"]>;
-  /** ID of the product variant. */
-  variantId: Scalars["ID"];
+  /**
+   * ID of the product variant.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use `lineId` instead.
+   */
+  variantId?: InputMaybe<Scalars["ID"]>;
 };
 
 /** Adds a checkout line to the existing checkout.If line was already in checkout, its quantity will be increased. */
@@ -12166,6 +12184,14 @@ export type OrderLineThumbnailArgs = {
 };
 
 export type OrderLineCreateInput = {
+  /**
+   * Flag that allow force splitting the same variant into multiple lines by skipping the matching logic.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  forceNewLine?: InputMaybe<Scalars["Boolean"]>;
   /** Number of variant items ordered. */
   quantity: Scalars["Int"];
   /** Product variant ID. */
@@ -22480,7 +22506,6 @@ export type CheckoutEmailUpdateMutation = {
 
 export type CheckoutCustomerAttachMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
-  customerId: Scalars["ID"];
 }>;
 
 export type CheckoutCustomerAttachMutation = {
@@ -24124,8 +24149,8 @@ export function useCheckoutEmailUpdateMutation() {
   );
 }
 export const CheckoutCustomerAttachDocument = gql`
-  mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
-    checkoutCustomerAttach(id: $checkoutId, customerId: $customerId) {
+  mutation checkoutCustomerAttach($checkoutId: ID!) {
+    checkoutCustomerAttach(id: $checkoutId) {
       errors {
         ...CheckoutErrorFragment
       }

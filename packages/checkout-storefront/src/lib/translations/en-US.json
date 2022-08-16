@@ -141,6 +141,7 @@
   "passwordTooCommon": "Provided password is too common.",
   "passwordInvalid": "Invalid password",
   "requestPasswordResetEmailNotFoundError": "User with provided email has not been found",
+  "requestPasswordResetEmailInactiveError": "User account with provided email is inactive",
   "countryArea": "Country area",
   "province": "Province",
   "district": "District",
