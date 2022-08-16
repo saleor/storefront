@@ -5,9 +5,7 @@ import {
   TransactionEventFragment,
 } from "@/saleor-app-checkout/graphql";
 import { Types } from "@adyen/api-library";
-
-export const getAdyenAmountFromSaleor = (float: number) => parseInt((float * 100).toFixed(0), 10);
-export const getSaleorAmountFromAdyen = (integer: number) => parseFloat((integer / 100).toFixed(2));
+import { getIntegerAmountFromSaleor } from "../../utils";
 
 export const mapAvailableActions = (
   operations: Types.notification.NotificationRequestItem.OperationsEnum[]
@@ -33,9 +31,9 @@ export const getLineItems = (lines: OrderFragment["lines"]): Types.checkout.Line
     description: line.productName + " - " + line.variantName,
     quantity: line.quantity,
     taxPercentage: line.taxRate * 100,
-    taxAmount: getAdyenAmountFromSaleor(line.totalPrice.tax.amount),
-    amountExcludingTax: getAdyenAmountFromSaleor(line.totalPrice.tax.amount),
-    amountIncludingTax: getAdyenAmountFromSaleor(line.totalPrice.gross.amount),
+    taxAmount: getIntegerAmountFromSaleor(line.totalPrice.tax.amount),
+    amountExcludingTax: getIntegerAmountFromSaleor(line.totalPrice.tax.amount),
+    amountIncludingTax: getIntegerAmountFromSaleor(line.totalPrice.gross.amount),
     id: line.id,
     imageUrl: line.thumbnail?.url,
     itemCategory: line.variant?.product.category?.name,

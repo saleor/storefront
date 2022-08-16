@@ -4,7 +4,7 @@ import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/
 import { envVars } from "@/saleor-app-checkout/constants";
 import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
 
-import { getAdyenAmountFromSaleor, getLineItems } from "./utils";
+import { getIntegerAmountFromSaleor, getLineItems } from "./utils";
 import { CreatePaymentData } from "../../types";
 
 export const createAdyenPayment = async ({ order, redirectUrl }: CreatePaymentData) => {
@@ -32,7 +32,7 @@ export const createAdyenPayment = async ({ order, redirectUrl }: CreatePaymentDa
   const { url, id } = await checkout.paymentLinks({
     amount: {
       currency: total.currency,
-      value: getAdyenAmountFromSaleor(total.amount),
+      value: getIntegerAmountFromSaleor(total.amount),
     },
     reference: order.number || order.id,
     returnUrl: formatRedirectUrl(redirectUrl, order.id),

@@ -30,8 +30,6 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
 
   const [err, event] = await unpackPromise(verifyStripeEventSignature(body, sig, webhookSecret));
 
-  console.log({ err, event, body });
-
   if (err || !event) {
     return res.status(500).json({ message: err?.message });
   }

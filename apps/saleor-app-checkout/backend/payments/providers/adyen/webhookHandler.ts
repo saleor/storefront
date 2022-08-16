@@ -9,12 +9,8 @@ import {
   TransactionUpdateMutationVariables,
 } from "@/saleor-app-checkout/graphql";
 
-import {
-  getSaleorAmountFromAdyen,
-  mapAvailableActions,
-  createEventUniqueKey,
-  getAmountAfterRefund,
-} from "./utils";
+import { mapAvailableActions, createEventUniqueKey, getAmountAfterRefund } from "./utils";
+import { getSaleorAmountFromInteger } from "../../utils";
 
 const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
 
@@ -97,7 +93,7 @@ export const getUpdatedTransactionData = (
       if (!amount.currency || !amount.value) {
         throw "Amount not specified for a refund notification";
       }
-      const refundAmount = getSaleorAmountFromAdyen(amount.value);
+      const refundAmount = getSaleorAmountFromInteger(amount.value);
 
       if (transaction.chargedAmount.amount !== 0) {
         const chargedAmount = getAmountAfterRefund(transaction.chargedAmount, refundAmount);
@@ -174,7 +170,7 @@ export const getNewTransactionData = (
         status: eventCode.toString(),
         type: `${ADYEN_PAYMENT_PREFIX}-${paymentMethod}`,
         amountAuthorized: {
-          amount: getSaleorAmountFromAdyen(amount.value!),
+          amount: getSaleorAmountFromInteger(amount.value!),
           currency: amount.currency!,
         },
         reference: pspReference,
@@ -191,7 +187,7 @@ export const getNewTransactionData = (
         status: eventCode.toString(),
         type: `${ADYEN_PAYMENT_PREFIX}-${paymentMethod}`,
         amountCharged: {
-          amount: getSaleorAmountFromAdyen(amount.value!),
+          amount: getSaleorAmountFromInteger(amount.value!),
           currency: amount.currency!,
         },
         reference: pspReference,

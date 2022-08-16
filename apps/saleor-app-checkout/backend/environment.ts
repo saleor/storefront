@@ -15,11 +15,6 @@ export const getAuthToken = () => {
     token = fs.readFileSync(".auth_token", "utf-8");
   }
 
-  if (IS_TEST) {
-    // Allows to use real appToken to record requests in development
-    token = "TEST";
-  }
-
   if (!token) {
     if (process.env.VERCEL) {
       console.warn(
@@ -33,7 +28,6 @@ export const getAuthToken = () => {
     token = "";
   }
 
-  console.log("Using authToken: ", maskToken(token));
   return token;
 };
 

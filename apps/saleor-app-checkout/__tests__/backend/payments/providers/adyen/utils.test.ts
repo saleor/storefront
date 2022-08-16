@@ -1,8 +1,4 @@
-import {
-  createEventUniqueKey,
-  getSaleorAmountFromAdyen,
-  getAdyenAmountFromSaleor,
-} from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
+import { createEventUniqueKey } from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
 import { TransactionEventFragment } from "@/saleor-app-checkout/graphql";
 
 describe("@/saleor-app-checkout/backend/payments/providers/adyen/utils", () => {
@@ -33,22 +29,6 @@ describe("@/saleor-app-checkout/backend/payments/providers/adyen/utils", () => {
       const key2 = createEventUniqueKey(event2);
 
       expect(key1).not.toEqual(key2);
-    });
-  });
-
-  describe("getSaleorAmountFromAdyen", () => {
-    it("parses integer into float value", () => {
-      expect(getSaleorAmountFromAdyen(1922)).toBe(19.22);
-      expect(getSaleorAmountFromAdyen(1000)).toBe(10);
-      expect(getSaleorAmountFromAdyen(837)).toBe(8.37);
-    });
-  });
-
-  describe("getAdyenAmountFromSaleor", () => {
-    it("parses float into integer value", () => {
-      expect(getAdyenAmountFromSaleor(19.22)).toBe(1922);
-      expect(getAdyenAmountFromSaleor(10)).toBe(1000);
-      expect(getAdyenAmountFromSaleor(8.37)).toBe(837);
     });
   });
 });
