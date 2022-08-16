@@ -1,25 +1,12 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
-import { StripeWebhookEvents } from "@/saleor-app-checkout/backend/payments/providers/stripe/stripeWebhookTypes";
+import { getStripeSecrets } from "@/saleor-app-checkout/backend/payments/providers/stripe/stripeClient";
 import {
-  getStripeClient,
-  getStripeSecrets,
-} from "@/saleor-app-checkout/backend/payments/providers/stripe/stripeClient";
-
-/**
- * https://stripe.com/docs/webhooks
- */
-
-const verifyStripeEventSignature = async (
-  body: string | Buffer,
-  signature: string,
-  secret: string
-) => {
-  const stripeClient = await getStripeClient();
-  return stripeClient.webhooks.constructEvent(body, signature, secret) as StripeWebhookEvents;
-};
+  verifyStripeEventSignature,
+  stripeWebhookEventToTransactionCreateMutationVariables,
+} from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
 
 const stripeWebhook: NextApiHandler = async (req, res) => {
   const { webhookSecret } = await getStripeSecrets();
@@ -37,14 +24,11 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 
-  switch (event.type) {
-    case "checkout.session.completed":
-    case "checkout.session.async_payment_failed":
-    case "checkout.session.async_payment_succeeded":
-    case "checkout.session.expired":
-      // event.data.object.id;
-      // @todo update order status
-      return;
+  const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables(event);
+
+  if (transactionData?.id) {
+    const id = transactionData.id;
+    await updateOrCreateTransaction(id, { ...transactionData, id });
   }
 
   return res.status(204).end();
