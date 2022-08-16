@@ -5,11 +5,7 @@ export interface Money {
 
 export const getFormattedMoney = <TMoney extends Money>(
   money: TMoney | undefined | null,
-  {
-    negative = false,
-  }: {
-    negative: boolean;
-  } = { negative: false }
+  negative: boolean = false
 ) => {
   if (!money) {
     return "";

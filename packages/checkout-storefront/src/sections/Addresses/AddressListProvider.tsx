@@ -164,7 +164,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     return { hasErrors, errors };
   };
 
-  useEffect(() => {
+  const handleAutoAddressSelectFromDefaultAddress = () => {
     if (
       (getSelectedAddress() && isMatchingAddress(defaultAddress, getSelectedAddress())) ||
       defaultAddress === defaultAddressRef.current
@@ -178,7 +178,17 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
     defaultAddressRef.current = defaultAddress;
     setSelectedAddressId(matchingAddress?.id as string);
-  }, [defaultAddress]);
+  };
+
+  useEffect(handleAutoAddressSelectFromDefaultAddress, [defaultAddress]);
+
+  const handleAutoAddressSelectFromAddressList = () => {
+    if (!selectedAddressId && addressList.length) {
+      setSelectedAddressId(addressList?.[0]?.id);
+    }
+  };
+
+  useEffect(handleAutoAddressSelectFromAddressList, [addressList]);
 
   const debouncedUpdate = useCallback(
     debounce((address: AddressFragment) => {

@@ -91,23 +91,15 @@ export const CheckoutForm = () => {
           <PaymentSection {...usePaymentProvidersProps} collapsed={showOnlyContact} />
         </>
       </div>
-      {!showOnlyContact &&
-        (isLoading ? (
-          <Button
-            disabled
-            ariaLabel={formatMessage("finalizeCheckoutLabel")}
-            label={formatMessage("pay")}
-            className="pay-button"
-          />
-        ) : (
-          <Button
-            disabled={payButtonDisabled}
-            ariaLabel={formatMessage("finalizeCheckoutLabel")}
-            label={formatMessage("pay")}
-            onClick={handleSubmit}
-            className="pay-button"
-          />
-        ))}
+      {!showOnlyContact && (
+        <Button
+          disabled={isLoading || payButtonDisabled}
+          ariaLabel={formatMessage("finalizeCheckoutLabel")}
+          label={formatMessage("pay")}
+          className="pay-button"
+          onClick={handleSubmit}
+        />
+      )}
     </div>
   );
 };

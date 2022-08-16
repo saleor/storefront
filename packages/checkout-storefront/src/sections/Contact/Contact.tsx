@@ -132,7 +132,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
     if (isCurrentSection("resetPassword")) {
       setShowOnlyContact(true);
     }
-  });
+  }, []);
 
   return (
     <div>

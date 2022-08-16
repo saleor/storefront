@@ -33,16 +33,12 @@ export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
     <SelectBox {...rest} disabled={unavailable}>
       <div className="w-full flex flex-row justify-between">
         <div className="flex flex-col pointer-events-none">
-          <Text {...unavailableTextProps} weight="semibold">
+          <Text {...textProps} weight="semibold">
             {name}
           </Text>
-          <Text {...unavailableTextProps}>{phone}</Text>
-          <Text {...unavailableTextProps}>
-            {compact([streetAddress1, city, postalCode]).join(", ")}
-          </Text>
-          <Text {...unavailableTextProps}>
-            {compact([countryArea, country.country]).join(", ")}
-          </Text>
+          <Text {...textProps}>{phone}</Text>
+          <Text {...textProps}>{compact([streetAddress1, city, postalCode]).join(", ")}</Text>
+          <Text {...textProps}>{compact([countryArea, country.country]).join(", ")}</Text>
           {unavailable && (
             <Text size="xs" className="my-1">
               {formatMessage("cantShipToAddress")}

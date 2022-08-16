@@ -16,10 +16,10 @@ export const Money = <TMoney extends MoneyType>({
   money,
   className,
   ariaLabel,
-  negative = false,
+  negative,
   ...textProps
 }: MoneyProps<TMoney>) => {
-  const formattedMoney = getFormattedMoney(money, { negative });
+  const formattedMoney = getFormattedMoney(money, negative);
 
   if (!money) {
     return null;

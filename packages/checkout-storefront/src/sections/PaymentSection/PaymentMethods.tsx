@@ -18,14 +18,16 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 
   return (
     <SelectBoxGroup label={formatMessage("paymentProvidersLabel")} className="flex flex-row gap-2">
-      {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => 
-(
-          <SelectBox
-            className="shrink"
-            value={paymentMethodId}
-            selectedValue={selectedPaymentMethod}
-            onSelect={(value: string) => setSelectedPaymentMethod(value as PaymentMethodID)}
-          >
-            <Text>{formatMessage(camelCase(paymentMethodId) as MessageKey)}</Text>
-          </SelectBox>
-        )}
+      {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => (
+        <SelectBox
+          className="shrink"
+          value={paymentMethodId}
+          selectedValue={selectedPaymentMethod}
+          onSelect={(value: string) => setSelectedPaymentMethod(value as PaymentMethodID)}
+        >
+          <Text>{formatMessage(camelCase(paymentMethodId) as MessageKey)}</Text>
+        </SelectBox>
+      ))}
+    </SelectBoxGroup>
+  );
+};

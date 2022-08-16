@@ -52,11 +52,13 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
     }
   };
 
-  useEffect(() => {
+  const handleAutoSetShippingCountry = () => {
     if (!shippingAddress) {
       void updateShippingAddress({ autoSave: true, countryCode: getQueryVariables().countryCode });
     }
-  }, [shippingAddress]);
+  };
+
+  useEffect(handleAutoSetShippingCountry, [shippingAddress]);
 
   if (collapsed) {
     return null;

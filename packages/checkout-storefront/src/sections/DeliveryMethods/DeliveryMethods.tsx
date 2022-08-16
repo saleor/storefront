@@ -40,22 +40,36 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     void handleSubmit(cheapestMethod.id);
   };
 
-  useEffect(() => {
+  const handleAutoSetMethodAfterMethodsListChange = () => {
     if (hasValidMethodSelected || !shippingMethods.length) {
       return;
     }
 
     handleAutoSetMethod();
-  }, [shippingMethods]);
+  };
 
-  useEffect(() => {
+  useEffect(handleAutoSetMethodAfterMethodsListChange, [shippingMethods]);
+
+  const handleAutoSetMethodAfterShippingCountryChange = () => {
     const hasShippingCountryChanged = shippingAddress?.country?.code !== shippingCountryRef.current;
 
     if (hasShippingCountryChanged && !hasValidMethodSelected) {
       handleAutoSetMethod();
       shippingCountryRef.current = shippingAddress?.country?.code as CountryCode;
     }
-  }, [shippingAddress]);
+  };
+
+  useEffect(handleAutoSetMethodAfterShippingCountryChange, [shippingAddress]);
+
+  const handleAutoSetMethodAfterApiMethodChange = () => {
+    if (!deliveryMethod) {
+      return;
+    }
+
+    setSelectedMethodId(deliveryMethod.id);
+  };
+
+  useEffect(handleAutoSetMethodAfterApiMethodChange, [deliveryMethod]);
 
   const handleSubmit = async (selectedMethodId: string) => {
     setSelectedMethodId(selectedMethodId);
@@ -73,14 +87,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
     showErrors(errors);
   };
-
-  useEffect(() => {
-    if (!deliveryMethod) {
-      return;
-    }
-
-    setSelectedMethodId(deliveryMethod.id);
-  }, [deliveryMethod]);
 
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
