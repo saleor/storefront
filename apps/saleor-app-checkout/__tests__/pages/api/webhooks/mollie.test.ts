@@ -1,4 +1,7 @@
-import { paymentProviders } from "@/saleor-app-checkout/mocks/fixtures/saleor";
+import {
+  mollieCompletedOrderId,
+  paymentProviders,
+} from "@/saleor-app-checkout/mocks/fixtures/saleor";
 import handler from "@/saleor-app-checkout/pages/api/webhooks/mollie";
 import {
   mockRequest,
@@ -38,7 +41,7 @@ describe("/api/webhooks/mollie", () => {
     const { req, res } = mockRequest("POST");
 
     req.body = {
-      id: paymentProviders.mollie.completedOrderId,
+      id: mollieCompletedOrderId,
     };
 
     await handler(req, res);
