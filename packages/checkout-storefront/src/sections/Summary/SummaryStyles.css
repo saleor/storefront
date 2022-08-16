@@ -2,11 +2,15 @@
 
 @layer components {
   .summary {
-    @apply flex flex-col w-full lg:w-1/2 lg:max-w-100 border border-border-secondary rounded-lg lg:border-none overflow-hidden lg:overflow-visible;
+    @apply flex flex-col w-full lg:w-1/2 h-fit border border-border-secondary rounded-lg lg:border-none overflow-hidden lg:overflow-visible lg:summary-with-bottom-margin;
+  }
+
+  .summary-with-bottom-margin {
+    height: calc(100vh - 168px);
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:pb-6 lg:px-0;
+    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:pb-6 lg:px-0 lg:pointer-events-none;
   }
 
   .summary-title .text {
@@ -26,7 +30,7 @@
   }
 
   .summary-items {
-    @apply overflow-scroll px-4 lg:overflow-visible;
+    @apply px-4 overflow-visible lg:pt-2 lg:overflow-scroll;
   }
 
   .summary-item {
@@ -34,7 +38,7 @@
   }
 
   .summary-item:last-of-type {
-    @apply mb-4;
+    @apply mb-0;
   }
 
   .summary-row {
