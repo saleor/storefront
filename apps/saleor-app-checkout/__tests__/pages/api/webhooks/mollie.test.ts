@@ -1,7 +1,4 @@
-import {
-  mollieCompletedOrderId,
-  paymentProviders,
-} from "@/saleor-app-checkout/mocks/fixtures/saleor";
+import { mollieCompletedOrderId } from "@/saleor-app-checkout/mocks/fixtures/saleor";
 import handler from "@/saleor-app-checkout/pages/api/webhooks/mollie";
 import {
   mockRequest,

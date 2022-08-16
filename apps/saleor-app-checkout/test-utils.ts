@@ -7,6 +7,8 @@ import { createMocks, RequestMethod } from "node-mocks-http";
 import { handlers } from "./mocks/handlers";
 import { Headers } from "headers-polyfill";
 import { MockedRequest } from "msw";
+import { Readable } from "node:stream";
+import { testingVars } from "./mocks/consts";
 
 export type TestNextApiResponse = NextApiResponse & { _getJSONData: <T extends Object>() => T };
 
@@ -19,6 +21,29 @@ export const mockRequest = (method: RequestMethod = "GET") => {
   return {
     req: req as unknown as NextApiRequest,
     res: res as unknown as TestNextApiResponse,
+  };
+};
+
+interface MockRequestStreamParams {
+  headers?: Record<string, string>;
+  body?: any;
+}
+/**
+ * Use this for routes with bodyParser = false
+ */
+export const mockRequestStream = (
+  method: RequestMethod = "GET",
+  { body, ...params }: MockRequestStreamParams = { body: undefined }
+) => {
+  const { req, res } = mockRequest(method);
+
+  const bodyStr = body ? JSON.stringify(body) : "";
+
+  const reqStream = Object.assign(Readable.from([bodyStr]), req, params);
+
+  return {
+    req: reqStream as unknown as Readonly<NextApiRequest> & Readable,
+    res: res as unknown as Readonly<TestNextApiResponse>,
   };
 };
 

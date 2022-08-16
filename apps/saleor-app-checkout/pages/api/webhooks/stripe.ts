@@ -33,7 +33,7 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
   console.log({ err, event, body });
 
   if (err || !event) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err?.message });
   }
 
   const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables(event);
