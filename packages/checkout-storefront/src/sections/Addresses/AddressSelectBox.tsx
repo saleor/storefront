@@ -23,7 +23,7 @@ export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
 
   const { phone, city, countryArea, postalCode, streetAddress1, country } = address;
 
-  const unavailableTextProps: Pick<TextProps, "color"> = unavailable
+  const textProps: Pick<TextProps, "color"> = unavailable
     ? {
         color: "secondary",
       }
