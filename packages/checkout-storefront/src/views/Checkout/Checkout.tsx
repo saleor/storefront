@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuthState } from "@saleor/sdk";
 import { useCheckout } from "@/checkout-storefront/hooks";
-import { EmptyCartPage, PageNotFound } from "@/checkout-storefront/layouts";
+import { EmptyCartPage, PageNotFound } from "@/checkout-storefront/views";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
 
 export const Checkout = () => {

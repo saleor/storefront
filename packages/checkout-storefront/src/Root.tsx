@@ -3,15 +3,15 @@ import { ErrorBoundary } from "react-error-boundary";
 import { I18nProvider } from "@react-aria/i18n";
 import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 
-import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/layouts/Checkout";
+import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/views/Checkout";
 import { getCurrentRegion } from "@/checkout-storefront/lib/regions";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
 import {
   OrderConfirmation,
   OrderConfirmationSkeleton,
-} from "@/checkout-storefront/layouts/OrderConfirmation";
-import { PageNotFound } from "@/checkout-storefront/layouts/PageNotFound";
+} from "@/checkout-storefront/views/OrderConfirmation";
+import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
