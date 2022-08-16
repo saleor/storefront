@@ -18,8 +18,6 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   });
   const formatMessage = useFormattedMessages();
 
-  console.log({ paymentData, paymentStatusLoading });
-
   const handlePay = () => {
     return orderPay({
       provider: "mollie", // TODO: Hardcoded payment provider

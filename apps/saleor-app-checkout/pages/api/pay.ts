@@ -28,8 +28,8 @@ import { createStripePayment } from "@/saleor-app-checkout/backend/payments/prov
 import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
 
 class MissingUrlError extends Error {
-  constructor(public provider: PaymentProviderID, public order: OrderFragment) {
-    super(`Missing url! Provider: ${provider} | Order ID: ${order.id}`);
+  constructor(public provider: PaymentProviderID, public order?: OrderFragment) {
+    super(`Missing url! Provider: ${provider} | Order ID: ${order?.id}`);
     Object.setPrototypeOf(this, MissingUrlError.prototype);
   }
 }
@@ -170,7 +170,7 @@ const handler: NextApiHandler = async (req, res) => {
     }
 
     if (err instanceof MissingUrlError) {
-      return res.status(503).json({ ok: false, provider: err.provider, orderId: err.order.id });
+      return res.status(503).json({ ok: false, provider: err.provider, orderId: err.order?.id });
     }
 
     return res.status(500).json({ ok: false, provider: body.provider });
