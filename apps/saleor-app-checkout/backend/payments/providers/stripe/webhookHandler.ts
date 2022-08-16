@@ -23,9 +23,7 @@ export const verifyStripeEventSignature = async (
   return stripeClient.webhooks.constructEvent(body, signature, secret) as StripeWebhookEvents;
 };
 
-export const getPaymentIntentFromCheckoutSession = async (
-  checkoutSession: Stripe.Checkout.Session
-) => {
+const getPaymentIntentFromCheckoutSession = async (checkoutSession: Stripe.Checkout.Session) => {
   if (!checkoutSession.payment_intent) {
     return null;
   }

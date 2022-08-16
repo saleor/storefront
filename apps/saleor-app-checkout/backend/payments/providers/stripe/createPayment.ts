@@ -13,35 +13,7 @@ export const createStripePayment = async ({
 }: CreatePaymentData): Promise<CreatePaymentResult> => {
   const stripeClient = await getStripeClient();
 
-  const stripeCheckoutCustomer = await stripeClient.customers.create({
-    email: order.userEmail ?? undefined,
-    name: order.billingAddress?.firstName + " " + order.billingAddress?.lastName,
-    address: order.billingAddress
-      ? {
-          city: order.billingAddress.city,
-          country: order.billingAddress.country.code,
-          line1: order.billingAddress.streetAddress1,
-          line2: order.billingAddress.streetAddress2,
-          postal_code: order.billingAddress.postalCode,
-          state: order.billingAddress.countryArea,
-        }
-      : null,
-    phone: order.billingAddress?.phone || order.shippingAddress?.phone || undefined,
-    shipping: order.shippingAddress
-      ? {
-          name: order.shippingAddress.firstName + " " + order.shippingAddress.lastName,
-          phone: order.shippingAddress.phone ?? undefined,
-          address: {
-            city: order.shippingAddress.city,
-            country: order.shippingAddress.country.code,
-            line1: order.shippingAddress.streetAddress1,
-            line2: order.shippingAddress.streetAddress2,
-            postal_code: order.shippingAddress.postalCode,
-            state: order.shippingAddress.countryArea,
-          },
-        }
-      : null,
-  });
+  const stripeCheckoutCustomer = await createStripeCustomerFromOrder(stripeClient, order);
 
   const stripePaymentMethod = saleorPaymentMethodIdToStripePaymentMethodId(method);
 
@@ -87,6 +59,7 @@ const saleorLineToStripeLine = (line: SaleorLine): Stripe.Checkout.SessionCreate
     quantity: line.quantity,
   };
 };
+
 type SaleorDiscount = OrderFragment["discounts"][number];
 const saleorDiscountToStripeLine = (
   discount: SaleorDiscount
@@ -133,4 +106,36 @@ const saleorPaymentMethodIdToStripePaymentMethodId = (
       // @todo ?
       return null;
   }
+};
+
+const createStripeCustomerFromOrder = (stripeClient: Stripe, order: OrderFragment) => {
+  return stripeClient.customers.create({
+    email: order.userEmail ?? undefined,
+    name: order.billingAddress?.firstName + " " + order.billingAddress?.lastName,
+    address: order.billingAddress
+      ? {
+          city: order.billingAddress.city,
+          country: order.billingAddress.country.code,
+          line1: order.billingAddress.streetAddress1,
+          line2: order.billingAddress.streetAddress2,
+          postal_code: order.billingAddress.postalCode,
+          state: order.billingAddress.countryArea,
+        }
+      : null,
+    phone: order.billingAddress?.phone || order.shippingAddress?.phone || undefined,
+    shipping: order.shippingAddress
+      ? {
+          name: order.shippingAddress.firstName + " " + order.shippingAddress.lastName,
+          phone: order.shippingAddress.phone ?? undefined,
+          address: {
+            city: order.shippingAddress.city,
+            country: order.shippingAddress.country.code,
+            line1: order.shippingAddress.streetAddress1,
+            line2: order.shippingAddress.streetAddress2,
+            postal_code: order.shippingAddress.postalCode,
+            state: order.shippingAddress.countryArea,
+          },
+        }
+      : null,
+  });
 };
