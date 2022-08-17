@@ -17,8 +17,6 @@ export const createStripePayment = async ({
 
   const stripePaymentMethod = saleorPaymentMethodIdToStripePaymentMethodId(method);
 
-  order.discounts;
-
   const stripeCheckoutSession = await stripeClient.checkout.sessions.create({
     line_items: [
       ...order.lines.map(saleorLineToStripeLine),
@@ -100,10 +98,10 @@ const saleorPaymentMethodIdToStripePaymentMethodId = (
     case "creditCard":
       return "card";
     case "applePay":
-      // @todo ?
+      // @todo https://github.com/saleor/react-storefront/issues/390
       return null;
     case "paypal":
-      // @todo ?
+      // @todo https://github.com/saleor/react-storefront/issues/390
       return null;
   }
 };
