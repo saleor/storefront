@@ -31,13 +31,13 @@ export function ProductCard({ product }: ProductCardProps) {
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
 
   return (
-    <li key={product.id} className="w-full">
+    <li key={product.id} className="w-full first:col-span-2">
       <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
-        <a href="pass" className="flex flex-col">
-          <div className="bg-main active:bg-brand w-full aspect-1">
-            <div className="bg-white w-full h-full relative object-contain ">
+        <a href="pass" className="flex flex-col w-full">
+          <div className="bg-main active:bg-brand w-ful">
+            <div className="bg-white w-full h-full relative transition-transform object-contain ">
               {thumbnailUrl ? (
-                <Image src={thumbnailUrl} width={512} height={512} />
+                <Image src={thumbnailUrl} layout="responsive" width="67%" height="100%" />
               ) : (
                 <div className="grid justify-items-center content-center h-full w-full">
                   <PhotographIcon className="h-10 w-10 content-center" />
