@@ -1,14 +1,27 @@
-# React Storefront & Checkout
+![React Storefront](https://user-images.githubusercontent.com/44495184/185137947-ef303c22-84a2-4069-9a5c-310e6b9d98c0.png)
 
-![alt text](https://og-image.vercel.app/React%20Storefront.png?theme=light&md=1&fontSize=100px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg&images=https%3A%2F%2Fsaleor.io%2Fstatic%2Flogo-ad1b99aa7c6f5acf58a61640af760cfd.svg)
+<div align="center">
+  <h1>React Storefront</h1>
+</div>
+
+<div align="center">
+  <p><b>React Storefront</b>: Open-source frontend e-commerce platform from the <a href="https://github.com/saleor/saleor">Saleor</a> team.</p>
+  <p><b>Saleor Checkout</b>: Extensible, checkout and payment integrations powered by Saleor API.</p>
+</div>
+
+<div align="center">
+  <a href="https://saleor.io/">🏠 Website</a>
+  <span> • </span>
+  <a href="https://docs.saleor.io/docs/3.x/">📚 Docs</a>
+  <span> • </span>
+  <a href="https://saleor.io/blog/">📰 Blog</a>
+  <span> • </span>
+  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
+</div>
 
 <p align="center">
   <a href="https://demo.saleor.io/">Live demo</a> / <a href="https://githubbox.com/saleor/react-storefront">Explore and run the code in CodeSandbox</a>
 </p>
-
-**React Storefront**: Open-source frontend e-commerce platform from the [Saleor](https://saleor.io) team.
-
-**Saleor Checkout**: Extensible, checkout and payment integrations powered by Saleor API.
 
 ## Motivation
 
