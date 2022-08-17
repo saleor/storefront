@@ -19,6 +19,8 @@ describe("/api/webhooks/stripe", () => {
     setupPollyMiddleware(context.polly.server);
   });
 
+  afterEach(() => context.polly.flush());
+
   afterEach(() => {
     jest.clearAllMocks();
   });

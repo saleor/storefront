@@ -37,7 +37,7 @@ class MissingUrlError extends Error {
 class KnownPaymentError extends Error {
   constructor(public provider: PaymentProviderID, public errors: Errors) {
     super(`Error! Provider: ${provider} | Errors: ${errors.join(", ")}`);
-    Object.setPrototypeOf(this, MissingUrlError.prototype);
+    Object.setPrototypeOf(this, KnownPaymentError.prototype);
   }
 }
 
@@ -49,7 +49,7 @@ const reuseExistingSession = ({
 }: ReuseExistingSessionParams): ReuseExistingSessionResult => {
   const payment: OrderPaymentMetafield = JSON.parse(privateMetafield);
 
-  if (payment.provider !== provider || payment.method !== method || payment.session) {
+  if (payment.provider !== provider || payment.method !== method || !payment.session) {
     return;
   }
 
@@ -172,6 +172,8 @@ const handler: NextApiHandler = async (req, res) => {
     if (err instanceof MissingUrlError) {
       return res.status(503).json({ ok: false, provider: err.provider, orderId: err.order?.id });
     }
+
+    console.error(err);
 
     return res.status(500).json({ ok: false, provider: body.provider });
   }

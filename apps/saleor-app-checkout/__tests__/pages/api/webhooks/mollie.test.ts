@@ -9,9 +9,9 @@ import {
 describe("/api/webhooks/mollie", () => {
   const context = setupRecording();
 
-  beforeEach(() => {
-    setupPollyMiddleware(context.polly.server);
-  });
+  beforeEach(() => setupPollyMiddleware(context.polly.server));
+
+  afterEach(() => context.polly.flush());
 
   it("handles invalid (empty) requests payments", async () => {
     const { req, res } = mockRequest("POST");
