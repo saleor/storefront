@@ -1,15 +1,11 @@
 @tailwind components;
 
 @layer components {
-  .order-header {
-    @apply mb-8;
-  }
-
   .order-content {
-    @apply flex flex-col lg:flex-row w-full mt-8;
+    @apply flex flex-col lg:flex-row lg:items-start w-full mt-8;
   }
 
   .order-divider {
-    @apply h-6 md:h-full w-full md:w-12 xl:w-18;
+    @apply h-6 lg:h-full w-full lg:w-18;
   }
 }

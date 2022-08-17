@@ -1,7 +1,7 @@
-export interface Money {
+export type Money = {
   currency: string;
   amount: number;
-}
+} | null;
 
 export const getFormattedMoney = <TMoney extends Money>(
   money: TMoney | undefined | null,

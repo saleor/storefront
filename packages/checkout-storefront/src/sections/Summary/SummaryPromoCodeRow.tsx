@@ -10,11 +10,13 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 interface SummaryPromoCodeRowProps extends SummaryMoneyRowProps {
   promoCode?: string;
   promoCodeId?: string;
+  editable: boolean;
 }
 
 export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
   promoCode,
   promoCodeId,
+  editable,
   ...rest
 }) => {
   const { checkout } = useCheckout();
@@ -34,13 +36,15 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 
   return (
     <SummaryMoneyRow {...rest}>
-      <IconButton
-        color="secondary"
-        onClick={onDelete}
-        ariaLabel={formatMessage("removePromoCodeLabel")}
-        variant="bare"
-        icon={<img src={getSvgSrc(RemoveIcon)} />}
-      />
+      {editable && (
+        <IconButton
+          color="secondary"
+          onClick={onDelete}
+          ariaLabel={formatMessage("removePromoCodeLabel")}
+          variant="bare"
+          icon={<img src={getSvgSrc(RemoveIcon)} />}
+        />
+      )}
     </SummaryMoneyRow>
   );
 };

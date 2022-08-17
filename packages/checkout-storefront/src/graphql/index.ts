@@ -21775,6 +21775,13 @@ export type CheckoutErrorFragment = {
   code: CheckoutErrorCode;
 };
 
+export type GiftCardFragment = {
+  __typename?: "GiftCard";
+  displayCode: string;
+  id: string;
+  currentBalance: { __typename?: "Money"; currency: string; amount: number };
+};
+
 export type CheckoutFragment = {
   __typename?: "Checkout";
   id: string;
@@ -23816,6 +23823,16 @@ export const MoneyFragmentDoc = gql`
     amount
   }
 `;
+export const GiftCardFragmentDoc = gql`
+  fragment GiftCardFragment on GiftCard {
+    displayCode
+    id
+    currentBalance {
+      ...Money
+    }
+  }
+  ${MoneyFragmentDoc}
+`;
 export const AddressFragmentDoc = gql`
   fragment AddressFragment on Address {
     id
@@ -23892,11 +23909,7 @@ export const CheckoutFragmentDoc = gql`
     discountName
     translatedDiscountName
     giftCards {
-      displayCode
-      id
-      currentBalance {
-        ...Money
-      }
+      ...GiftCardFragment
     }
     channel {
       id
@@ -23981,6 +23994,7 @@ export const CheckoutFragmentDoc = gql`
     }
   }
   ${MoneyFragmentDoc}
+  ${GiftCardFragmentDoc}
   ${AddressFragmentDoc}
   ${CheckoutLineFragmentDoc}
 `;

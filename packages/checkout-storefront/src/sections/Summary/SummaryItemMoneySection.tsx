@@ -17,6 +17,7 @@ export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = 
 
   return (
     <div className="flex flex-col items-end">
+      <Text>{`${formatMessage("quantity")}: ${line.quantity}`}</Text>
       <div className="flex flex-row justify-end">
         {onSale && (
           <Money
@@ -40,9 +41,7 @@ export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = 
           })}
         />
       </div>
-      <Text>
-        qty: <b>{line.quantity}</b>
-      </Text>
+
       {multiplePieces && (
         <Text
           aria-label={formatMessage("singlePiecePriceLabel")}

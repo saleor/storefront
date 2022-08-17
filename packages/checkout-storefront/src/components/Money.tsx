@@ -8,7 +8,7 @@ export interface MoneyProps<TMoney extends MoneyType = MoneyType>
   extends TextProps,
     Classes,
     AriaLabel {
-  money?: TMoney | null;
+  money?: TMoney;
   negative?: boolean;
 }
 

@@ -5,8 +5,8 @@ import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { getOrderPaymentStatus } from "@/checkout-storefront/fetch";
 
-import { Section, SectionTitle } from "./Section";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
+import { Section } from "./Section";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
@@ -16,6 +16,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(getOrderPaymentStatus, {
     args: { orderId, checkoutApiUrl: env.checkoutApiUrl },
   });
+
   const formatMessage = useFormattedMessages();
 
   const handlePay = () => {
@@ -60,8 +61,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   };
 
   return (
-    <Section>
-      <SectionTitle>{formatMessage("paymentSection")}</SectionTitle>
+    <Section title={formatMessage("paymentSection")}>
       <div>{renderPaymentDetails()}</div>
     </Section>
   );
