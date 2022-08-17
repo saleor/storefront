@@ -37,7 +37,7 @@ function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
           <div className="container" />
         </header>
         <main>
-          <div className="container flex flex-row gap-4 flex-wrap">
+          <div className="container flex flex-row gap-4 flex-wrap w-full">
             {menuData?.menu?.items?.map((m) => {
               if (!m) {
                 return null;

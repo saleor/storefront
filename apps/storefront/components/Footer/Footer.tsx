@@ -95,7 +95,7 @@ export function Footer({ className, ...rest }: FooterProps) {
         </div>
         <div className="flex items-center">
           <p className="text-sm text-main-3 flex-grow">
-            © Copyright 2018 - {new Date().getFullYear()} Saleor Commerce
+            © Copyright {new Date().getFullYear()} Bibotta Studio
           </p>
           {/* <div className="invisible md:visible flex gap-4">
             <ChannelDropdown horizontalAlignment="right" />
