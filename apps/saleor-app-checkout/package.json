@@ -9,6 +9,7 @@
     "build": "npm run i18n && next build",
     "start": "next start -p 3001",
     "lint": "next lint",
+    "lint:staged": "next lint --fix",
     "check-types": "tsc --noEmit",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
     "extract:i18n": "formatjs extract '{pages,components,hooks,misc}/**/*.{js,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",

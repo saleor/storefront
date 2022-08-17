@@ -12,7 +12,8 @@
     "check-types": "tsc --noEmit",
     "dev": "rollup -w -c",
     "build": "NODE_ENV=production rollup -c",
-    "lint": "eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix"
+    "lint": "eslint --fix",
+    "lint:staged": "eslint"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3"

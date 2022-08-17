@@ -4,7 +4,5 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["./tsconfig.json"],
   },
-  plugins: ["react", "react-hooks"],
   extends: ["checkout"],
-  ignorePatterns: "*.js",
 };

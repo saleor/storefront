@@ -5,7 +5,7 @@ import styles from "./RemoveButton.module.css";
 import { Button, ButtonProps } from "../Button";
 import { RemoveIcon } from "../icons";
 
-export interface RemoveButtonProps extends Omit<ButtonProps, "label"> {}
+export type RemoveButtonProps = Omit<ButtonProps, "label">;
 
 export const RemoveButton: FC<RemoveButtonProps> = ({ className, ...rest }) => (
   <Button

@@ -61,7 +61,7 @@ export const useCheckoutFinalize = () => {
         provider: formData.paymentProviderId,
         method: formData.paymentMethodId,
         checkoutId: checkout?.id,
-        totalAmount: checkout?.totalPrice?.gross?.amount as number,
+        totalAmount: checkout?.totalPrice?.gross?.amount,
       });
 
       if (!result) {

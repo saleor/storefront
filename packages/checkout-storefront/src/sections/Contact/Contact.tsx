@@ -62,7 +62,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       return;
     }
 
-    await handleEmailUpdate(user?.email as string);
+    await handleEmailUpdate(user?.email);
   };
 
   const updateEmailAfterSectionChange = async () => {

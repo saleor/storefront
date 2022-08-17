@@ -1,16 +1,10 @@
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
-  extends: [
-    "storefront",
-    "airbnb",
-    "plugin:@typescript-eslint/recommended",
-    "prettier", // prettier *has* to be the last one, to avoid conflicting rules
-  ],
+  extends: ["checkout"],
 
   // @todo: get rid of most of it
   ignorePatterns: ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json", "lib/$path.ts"],
-  plugins: ["simple-import-sort", "formatjs", "@typescript-eslint"],
+  plugins: ["simple-import-sort", "formatjs"],
   rules: {
     quotes: ["error", "double"],
     "react/react-in-jsx-scope": "off", // next does not require react imports
