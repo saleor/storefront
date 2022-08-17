@@ -65,14 +65,14 @@ Received: ${saleorDomain}`);
   const existingWebhook = webhooks.find((webhook) => webhook.targetUrl === webhookUrl);
 
   if (webhooks.length === 0 && !existingWebhook) {
-    const { error } = await client
+    const { data, error } = await client
       .mutation<CreateWebhooksMutation, CreateWebhooksMutationVariables>(CreateWebhooksDocument, {
         targetUrl: webhookUrl,
         query: print(TransactionActionRequestSubscriptionDocument),
       })
       .toPromise();
-    if (error) {
-      console.error("Error while adding app's webhooks", error);
+    if (error || data?.webhookCreate?.errors) {
+      console.error("Error while adding app's webhooks", error ?? data?.webhookCreate?.errors);
       response.status(500).json({ success: false, message: "Error while adding app's webhooks" });
       return;
     }
