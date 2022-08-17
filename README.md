@@ -61,13 +61,12 @@ Here's the list of each app and shared package in the monorepo (click to see a R
 
 #### Apps
 
-- **[`apps/storefront`](apps/storefront/README.md): frontend e-commerce platform**
+- [`apps/storefront`](apps/storefront/README.md): Next.js e-commerce storefront starter pack
 - [`apps/saleor-app-checkout`](apps/saleor-app-checkout/README.md): a Next.js Saleor app with dashboard for managing settings and theme, backend for Checkout, and the Checkout Storefront – ready to be extended/modified
-- [`apps/checkout`](apps/checkout/README.md): an SPA React 18 checkout app, currently deprecated (kept for backward compatibility)
 
 #### Packages
 
-- `packages/ui-kit`: UI kit for checkout and [React Storefront](https://github.com/saleor/react-storefront)
+- `packages/ui-kit`: UI kit for Storefront and Checkout
 - `packages/config-checkout`: `eslint` configuration
 - `packages/config-storefront`: `eslint` configuration
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
@@ -190,7 +189,7 @@ Change environment variables inside `.env` file:
   >
   > You can also run Saleor locally. See [Saleor docs](https://docs.saleor.io/docs/3.x/developer/installation) for more instructions
 
-- `CHECKOUT_APP_URL` — URL of deployed Checkout App
+- `CHECKOUT_APP_URL` — URL of deployed Saleor App Checkout
 
   Example:
 
@@ -198,7 +197,7 @@ Change environment variables inside `.env` file:
   https://saleor-app-checkout.vercel.app
   ```
 
-  > See [guide below](#vercel) on how to deploy the Checkout App
+  > See [guide below](#vercel) on how to deploy the Saleor App Checkout
 
 There are more environment variables available in each app. Go to their README's to learn more
 
@@ -228,7 +227,7 @@ Read Vercel deployment guide in [docs/vercel.md](./docs/vercel.md)
 
 ## Payment gateways configuration
 
-Checkout app supports two payment gateways that you can configure:
+Saleor App Checkout supports two payment gateways that you can configure:
 
 <a href="https://www.mollie.com/en">
   <picture>
@@ -242,12 +241,12 @@ Checkout app supports two payment gateways that you can configure:
 
 [![Adyen](./docs/logos/adyen.svg)](https://www.adyen.com/)
 
-Payment gateways can be configured in the Checkout app inside Saleor dashboard.
+Payment gateways can be configured in the Saleor App Checkout inside Saleor dashboard.
 Go to **Apps > Third party apps > Checkout**.
 
 You can toggle, which payment gateway handles each different payment options per channel:
 
-![Configuration options: Credit Card, Apple Pay, PayPal that are available in checkout app dashboard](./docs/screenshots/config-dashboard-1.png)
+![Configuration options: Credit Card, Apple Pay, PayPal that are available in Saleor App Checkout dashboard](./docs/screenshots/config-dashboard-1.png)
 
 To use payment gateway, you need to provide its credentials. You can do that by clicking settings icon in channel configuration page
 
@@ -270,5 +269,4 @@ Read FAQ in [docs/faq.md](./docs/faq.md)
 - apps/react-storefront: **http://localhost:3000**
 - apps/saleor-app-checkout: **http://localhost:3001**
 - packages/checkout-storefront: **http://localhost:3002**
-- apps/checkout: **http://localhost:3003**
 - packages/ui-kit storybook: **http://localhost:6006**

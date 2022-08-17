@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "build": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run build --cache-dir=.turbo",
+    "build:saleor-app-checkout": "pnpm run build --filter=saleor-app-checkout...",
+    "build:storefront": "pnpm run build --filter=storefront...",
     "generate": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run generate --cache-dir=.turbo",
     "dev": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run dev --parallel --cache-dir=.turbo",
     "lint": "env-cmd -f .env env-cmd -f .env.local --fallback turbo run lint --cache-dir=.turbo",
