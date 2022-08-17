@@ -66,7 +66,7 @@ Here's the list of each app and shared package in the monorepo (click to see a R
 
 #### Packages
 
-- `packages/ui-kit`: UI kit for checkout and Storefront
+- `packages/ui-kit`: UI kit for Storefront and Checkout
 - `packages/config-checkout`: `eslint` configuration
 - `packages/config-storefront`: `eslint` configuration
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
@@ -227,7 +227,7 @@ Read Vercel deployment guide in [docs/vercel.md](./docs/vercel.md)
 
 ## Payment gateways configuration
 
-Checkout app supports two payment gateways that you can configure:
+Checkout App supports two payment gateways that you can configure:
 
 <a href="https://www.mollie.com/en">
   <picture>
@@ -241,12 +241,12 @@ Checkout app supports two payment gateways that you can configure:
 
 [![Adyen](./docs/logos/adyen.svg)](https://www.adyen.com/)
 
-Payment gateways can be configured in the Checkout app inside Saleor dashboard.
+Payment gateways can be configured in the Checkout App inside Saleor dashboard.
 Go to **Apps > Third party apps > Checkout**.
 
 You can toggle, which payment gateway handles each different payment options per channel:
 
-![Configuration options: Credit Card, Apple Pay, PayPal that are available in checkout app dashboard](./docs/screenshots/config-dashboard-1.png)
+![Configuration options: Credit Card, Apple Pay, PayPal that are available in checkout App dashboard](./docs/screenshots/config-dashboard-1.png)
 
 To use payment gateway, you need to provide its credentials. You can do that by clicking settings icon in channel configuration page
 
