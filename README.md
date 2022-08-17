@@ -61,13 +61,12 @@ Here's the list of each app and shared package in the monorepo (click to see a R
 
 #### Apps
 
-- **[`apps/storefront`](apps/storefront/README.md): frontend e-commerce platform**
+- [`apps/storefront`](apps/storefront/README.md): Next.js e-commerce storefront starter pack
 - [`apps/saleor-app-checkout`](apps/saleor-app-checkout/README.md): a Next.js Saleor app with dashboard for managing settings and theme, backend for Checkout, and the Checkout Storefront – ready to be extended/modified
-- [`apps/checkout`](apps/checkout/README.md): an SPA React 18 checkout app, currently deprecated (kept for backward compatibility)
 
 #### Packages
 
-- `packages/ui-kit`: UI kit for checkout and [React Storefront](https://github.com/saleor/react-storefront)
+- `packages/ui-kit`: UI kit for checkout and Storefront
 - `packages/config-checkout`: `eslint` configuration
 - `packages/config-storefront`: `eslint` configuration
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
