@@ -42,7 +42,7 @@ On the configuration page:
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build --filter=saleor-app-checkout
+cd ../.. && pnpm run build:saleor-app-checkout
 ```
 
 - Add environment variables:
@@ -180,47 +180,17 @@ After you're done, re-deploy the app
 
 > ⚠️ Make sure that you **didn't** select the "Redeploy with existing Build Cache." option
 
-7. 🥳 Congrats! Payment app is now ready to be used!
+7. 🥳 Congrats! saleor-app-checkout is now ready to be used!
 
-## Deploying Checkout SPA
+## Checkout SPA
 
-### 1. Create another project on Vercel
-
-Start by creating another project on Vercel, just like we did in [Checkout App setup](#saleor-app-checkout), select the same repository
-
-### 2. Configure new project for checkout
-
-On the configuration page:
-
-- Provide your project name (for example `saleor-checkout`)
-- Select framework to Create React App
-- Choose the root directory to be `apps/checkout`
-- Override the build command to:
-
-```bash
-cd ../.. && pnpm run build --filter=checkout
-```
-
-- _Optional_: customise [environment variables](../apps/checkout/README.md#env-variables):
-  - `REACT_APP_CHECKOUT_APP_URL` — URL of the deployed [Checkout App](#saleor-app-checkout).
-  - `REACT_APP_SALEOR_API_URL` — URL of Saleor GraphQL API endpoint
-
-> By default, those environment variables are taken from [`.env`](../.env) file in root of the monorepo. You don't need to provide env variables in Vercel if you want to use the values from `.env` file.
-
-Here's the final result on configuration page:
-
-![Vercel "Configure project" page with all settings filled out for Checkout frontend deployment](./screenshots/setup-vercel-4.png)
-
-Click deploy and wait until the app is deployed
-
+Checkout SPA (user-facing interface for Checkout) is available on the same URL as the saleor-app-checkout under the `/checkout-spa` path.
 
 ## Deploying Storefront SPA
 
 ### 1. Create another project on Vercel
 
-Start by creating another project on Vercel, just like we did in [Checkout App setup](#saleor-app-checkout), select the same repository
-
-### 2. Configure new project for Storefront
+Start by creating another project on Vercel [similar to saleor-app-checkout](#2-configuring-new-project-for-saleor-app-checkout).
 
 On the configuration page:
 
@@ -230,5 +200,5 @@ On the configuration page:
 - Override the build command to:
 
 ```bash
-cd ../.. && pnpm run build --filter=storefront
+cd ../.. && pnpm run build:storefront
 ```

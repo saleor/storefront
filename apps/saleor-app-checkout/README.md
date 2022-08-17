@@ -43,7 +43,7 @@ Open the app by using the tunnel URL received from `saleor app tunnel` (example:
 To build for production, run the following command:
 
 ```bash
-cd ../.. && pnpm run build:payments-app
+cd ../.. && pnpm run build:saleor-app-checkout
 ```
 
 > Note: The command needs to be run from root of the monorepo. Otherwise Turborepo won't be able to build the app
