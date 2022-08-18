@@ -22,7 +22,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
   const [selectedMethodId, setSelectedMethodId] = useState(checkout?.deliveryMethod?.id);
   const shippingCountryRef = useRef<CountryCode | undefined | null>(
-    shippingAddress?.country?.code as CountryCode
+    shippingAddress?.country?.code as CountryCode | undefined
   );
 
   const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
@@ -31,6 +31,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     selectedMethodId && shippingMethods.some(getById(selectedMethodId));
 
   const handleAutoSetMethod = () => {
+    if (!shippingMethods.length) {
+      return;
+    }
+
     const cheapestMethod = shippingMethods.reduce(
       (resultMethod, currentMethod) =>
         currentMethod.price.amount < resultMethod.price.amount ? currentMethod : resultMethod,
@@ -40,36 +44,31 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     void handleSubmit(cheapestMethod.id);
   };
 
-  const handleAutoSetMethodAfterMethodsListChange = () => {
-    if (hasValidMethodSelected || !shippingMethods.length) {
+  const handleAutoSetMethodAfterMethodsListChange = () => {};
+
+  useEffect(handleAutoSetMethodAfterMethodsListChange, [shippingMethods]);
+
+  useEffect(() => {
+    const hasShippingCountryChanged = shippingAddress?.country?.code !== shippingCountryRef.current;
+
+    if (hasValidMethodSelected) {
       return;
     }
 
     handleAutoSetMethod();
-  };
 
-  useEffect(handleAutoSetMethodAfterMethodsListChange, [shippingMethods]);
-
-  const handleAutoSetMethodAfterShippingCountryChange = () => {
-    const hasShippingCountryChanged = shippingAddress?.country?.code !== shippingCountryRef.current;
-
-    if (hasShippingCountryChanged && !hasValidMethodSelected) {
-      handleAutoSetMethod();
+    if (hasShippingCountryChanged) {
       shippingCountryRef.current = shippingAddress?.country?.code as CountryCode;
     }
-  };
+  }, [shippingAddress, shippingMethods]);
 
-  useEffect(handleAutoSetMethodAfterShippingCountryChange, [shippingAddress]);
-
-  const handleAutoSetMethodAfterApiMethodChange = () => {
+  useEffect(() => {
     if (!deliveryMethod) {
       return;
     }
 
     setSelectedMethodId(deliveryMethod.id);
-  };
-
-  useEffect(handleAutoSetMethodAfterApiMethodChange, [deliveryMethod]);
+  }, [deliveryMethod]);
 
   const handleSubmit = async (selectedMethodId: string) => {
     setSelectedMethodId(selectedMethodId);

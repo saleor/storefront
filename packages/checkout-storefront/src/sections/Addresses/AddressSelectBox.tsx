@@ -6,7 +6,7 @@ import { SelectBox, SelectBoxProps } from "@/checkout-storefront/components/Sele
 import { Button } from "@/checkout-storefront/components/Button";
 import { compact } from "lodash-es";
 
-interface AddressSelectBoxProps extends SelectBoxProps {
+interface AddressSelectBoxProps extends Omit<SelectBoxProps, "children"> {
   address: Partial<Record<AddressField, any>>;
   onEdit: () => void;
   unavailable: boolean;

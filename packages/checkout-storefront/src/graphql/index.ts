@@ -22091,8 +22091,36 @@ export type UserQuery = {
       lastName: string;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     }> | null;
-    defaultBillingAddress?: { __typename?: "Address"; id: string } | null;
-    defaultShippingAddress?: { __typename?: "Address"; id: string } | null;
+    defaultBillingAddress?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+    defaultShippingAddress?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
   } | null;
 };
 
@@ -24062,10 +24090,10 @@ export const UserDocument = gql`
         ...AddressFragment
       }
       defaultBillingAddress {
-        id
+        ...AddressFragment
       }
       defaultShippingAddress {
-        id
+        ...AddressFragment
       }
     }
   }

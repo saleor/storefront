@@ -28,12 +28,12 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const user = data?.me;
   const addresses = user?.addresses;
-  const defaultShippingAddress = user?.defaultShippingAddress;
   const { showErrors } = useAlerts();
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
 
-  const defaultAddress = checkout?.shippingAddress || defaultShippingAddress;
+  const userDefaultAddress = user?.defaultShippingAddress;
+  const defaultAddress = checkout?.shippingAddress || userDefaultAddress;
 
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
@@ -53,7 +53,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   };
 
   const handleAutoSetShippingCountry = () => {
-    if (!shippingAddress) {
+    if (!shippingAddress && !userDefaultAddress) {
       void updateShippingAddress({ autoSave: true, countryCode: getQueryVariables().countryCode });
     }
   };
@@ -77,12 +77,12 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
               void updateShippingAddress(formData);
             }}
             addresses={addresses as AddressFragment[]}
-            defaultAddress={(checkout?.shippingAddress || defaultAddress) as AddressFragment}
+            defaultAddress={defaultAddress}
           />
         ) : (
           <GuestAddressSection
             checkAddressAvailability={true}
-            address={checkout?.shippingAddress as AddressFragment}
+            address={checkout?.shippingAddress}
             title={formatMessage("shippingAddress")}
             onSubmit={(address) => {
               void updateShippingAddress(address);

@@ -21,13 +21,9 @@ const addressFieldsOrder: AddressField[] = [
 const getSortedAddressFields = (addressFields: AddressField[] = []): AddressField[] => {
   const filteredAddressFields = getFilteredAddressFields(addressFields);
 
-  return addressFieldsOrder.reduce((result, orderedAddressField) => {
-    if (!filteredAddressFields.includes(orderedAddressField)) {
-      return result;
-    }
-
-    return [...result, orderedAddressField];
-  }, [] as AddressField[]);
+  return addressFieldsOrder.filter((orderedAddressField) =>
+    filteredAddressFields.includes(orderedAddressField)
+  );
 };
 
 export const getSortedAddressFieldsFromAddress = (address: Partial<Record<AddressField, any>>) =>

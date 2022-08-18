@@ -184,10 +184,10 @@ query user {
       ...AddressFragment
     }
     defaultBillingAddress {
-      id
+      ...AddressFragment
     }
     defaultShippingAddress {
-      id
+      ...AddressFragment
     }
   }
 }

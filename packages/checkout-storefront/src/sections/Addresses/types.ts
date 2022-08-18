@@ -11,4 +11,4 @@ export interface UserAddressFormData extends AddressFormData {
   id: string;
 }
 
-export type UserDefaultAddressFragment = null | undefined | { __typename?: "Address"; id: string };
+export type Address = AddressFragment | undefined | null;

@@ -86,6 +86,7 @@ const theme = {
     md: ["1.6rem", "2.3rem"],
     lg: ["2.4rem", "3.2rem"],
     xl: ["3.2rem", "4.6rem"],
+    xxl: ["5.6rem", "6.8rem"],
   },
   borderRadius: {
     DEFAULT: "0.4rem",
@@ -99,7 +100,6 @@ const theme = {
 
 module.exports = {
   content: ["./src/**/*.tsx"],
-  mode: "jit",
   theme: {
     extend: theme,
   },

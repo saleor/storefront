@@ -2,20 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SummaryItem } from "./SummaryItem";
-import { Divider } from "@/checkout-storefront/components/Divider";
-import { Money } from "@/checkout-storefront/components/Money";
 import { ChevronDownIcon } from "@/checkout-storefront/icons";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import { Title } from "@/checkout-storefront/components/Title";
 import { PromoCodeAdd } from "./PromoCodeAdd";
 import { SummaryMoneyRow } from "./SummaryMoneyRow";
 import { SummaryPromoCodeRow } from "./SummaryPromoCodeRow";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
 import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
+import { Divider, Money, Title } from "@/checkout-storefront/components";
 
 /* temporary solution */
 const PAGE_MARGINS_HEIGHT = 320;

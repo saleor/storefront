@@ -1,6 +1,6 @@
-import { AddressFragment, CountryCode } from "@/checkout-storefront/graphql";
+import { CountryCode } from "@/checkout-storefront/graphql";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
-import { countries, Country } from "@/checkout-storefront/sections/Addresses/countries";
+import { countries } from "@/checkout-storefront/sections/Addresses/countries";
 import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
 import { useMemo, useState } from "react";
 import { Option } from "@saleor/ui-kit";
@@ -19,7 +19,6 @@ export interface UseCountrySelectProps {
 export interface UseCountrySelect {
   countryCode: CountryCode;
   setCountryCode: (countryCode: CountryCode) => void;
-  setCountryCodeFromAddress: (address: AddressFragment) => void;
   countryOptions: CountryOption[];
 }
 
@@ -43,31 +42,27 @@ export const useCountrySelect = ({
     []
   );
 
-  const getInitialCountryCode = () => {
-    const defaultCountryCode = (countries[0] as Country).code;
+  const getInitialCountryCode = (): CountryCode => {
+    const defaultCountryCode = countries[0]?.code;
 
     if (!autoSelect && selectedCountryCode) {
-      return selectedCountryCode as CountryCode;
+      return selectedCountryCode;
     }
 
     const countryCodeFromUrl = getQueryVariables().countryCode;
 
     if (!countryCodeFromUrl || !countries.map(({ code }) => code).includes(countryCodeFromUrl)) {
-      return defaultCountryCode;
+      return defaultCountryCode as CountryCode;
     }
 
     return countryCodeFromUrl;
   };
 
-  const [countryCode, setCountryCode] = useState<CountryCode>(getInitialCountryCode());
-
-  const setCountryCodeFromAddress = (address?: AddressFragment | null) =>
-    setCountryCode(address?.country?.code as CountryCode);
+  const [countryCode, setCountryCode] = useState(getInitialCountryCode());
 
   return {
     countryOptions,
     countryCode,
     setCountryCode,
-    setCountryCodeFromAddress,
   };
 };

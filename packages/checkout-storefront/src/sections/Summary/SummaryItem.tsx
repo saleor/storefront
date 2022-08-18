@@ -5,6 +5,7 @@ import { PhotoIcon } from "@/checkout-storefront/icons";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getSummaryLineProps } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { compact } from "lodash-es";
 
 interface LineItemProps {
   line: CheckoutLineFragment | OrderLineFragment;
@@ -15,10 +16,12 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
 
   const formatMessage = useFormattedMessages();
   const attributesText =
-    (
+    compact(
       line.variant?.attributes.reduce(
-        (result: string[], { values }) =>
-          [...result, ...values.map(({ name }) => name)] as string[],
+        (result: Array<string | undefined | null>, { values }) => [
+          ...result,
+          ...values.map(({ name }) => name),
+        ],
         []
       ) as string[]
     ).join(", ") || "";

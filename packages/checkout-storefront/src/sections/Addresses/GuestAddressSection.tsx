@@ -1,4 +1,3 @@
-import { AddressFragment } from "@/checkout-storefront/graphql";
 import React from "react";
 import { AddressFormData } from "./types";
 import { AddressForm } from "./AddressForm";
@@ -8,12 +7,13 @@ import {
   useCountrySelect,
   UseCountrySelectProps,
 } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { Address } from "@/checkout-storefront/lib/globalTypes";
 
 interface GuestAddressSectionProps
   extends UseErrors<AddressFormData>,
     Pick<UseCountrySelectProps, "selectedCountryCode" | "checkAddressAvailability"> {
   onSubmit: (address: AddressFormData) => void;
-  address?: AddressFragment;
+  address: Address;
   title: string;
 }
 

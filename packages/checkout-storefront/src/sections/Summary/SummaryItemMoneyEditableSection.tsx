@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { Skeleton } from "@/checkout-storefront/components";
+import { useErrorMessages } from "@/checkout-storefront/hooks";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -46,9 +47,10 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutLinesUpdate");
   const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
+  const { errorMessages } = useErrorMessages();
 
   const schema = object({
-    quantity: string(),
+    quantity: string().required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);

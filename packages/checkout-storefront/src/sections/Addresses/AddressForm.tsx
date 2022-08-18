@@ -22,21 +22,11 @@ import { UseCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCount
 import { useAddressFormUtils } from "./useAddressFormUtils";
 import { IconButton } from "@/checkout-storefront/components";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import { isMatchingAddressFormData } from "@/checkout-storefront/sections/Addresses/utils";
+import {
+  emptyFormData,
+  isMatchingAddressFormData,
+} from "@/checkout-storefront/sections/Addresses/utils";
 import { isEqual } from "lodash-es";
-
-const emptyFormData = {
-  firstName: "",
-  lastName: "",
-  streetAddress1: "",
-  streetAddress2: "",
-  companyName: "",
-  city: "",
-  cityArea: "",
-  countryArea: "",
-  postalCode: "",
-  phone: "",
-};
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors">,

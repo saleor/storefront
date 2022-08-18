@@ -1,15 +1,15 @@
-import React, { PropsWithChildren } from "react";
 import clsx from "clsx";
-import { Classes } from "@/checkout-storefront/lib/globalTypes";
+import { Children, Classes } from "@/checkout-storefront/lib/globalTypes";
+import { FC } from "react";
 
-export interface SelectBoxProps extends Classes {
+export interface SelectBoxProps extends Classes, Children {
   value: string;
   onSelect: (value: string) => void;
   selectedValue: string | undefined;
   disabled?: boolean;
 }
 
-export const SelectBox: React.FC<PropsWithChildren<SelectBoxProps>> = ({
+export const SelectBox: FC<SelectBoxProps> = ({
   children,
   value,
   onSelect,
@@ -27,10 +27,7 @@ export const SelectBox: React.FC<PropsWithChildren<SelectBoxProps>> = ({
   };
 
   return (
-    <div
-      className={clsx("select-box", selected && "selected", disabled && "disabled", className)}
-      onClick={handleClick}
-    >
+    <div className={clsx("select-box", { selected, disabled }, className)} onClick={handleClick}>
       <div className="grow">{children}</div>
     </div>
   );

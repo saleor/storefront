@@ -5,8 +5,22 @@ import {
   CountryCode,
   CountryDisplay,
 } from "@/checkout-storefront/graphql";
-import { isEqual, omit } from "lodash-es";
-import { AddressFormData } from "./types";
+import { isEqual, omit, reduce } from "lodash-es";
+import { Address, AddressFormData, UserAddressFormData } from "./types";
+
+export const emptyFormData = {
+  firstName: "",
+  lastName: "",
+  streetAddress1: "",
+  streetAddress2: "",
+  companyName: "",
+  city: "",
+  cityArea: "",
+  countryArea: "",
+  postalCode: "",
+  phone: "",
+  countryCode: "",
+};
 
 export const getAddressInputData = ({
   countryCode,
@@ -22,25 +36,48 @@ export const getAddressInputData = ({
   country: countryCode || (country?.code as CountryCode),
 });
 
-export const getAddressFormDataFromAddress = (
-  address?: AddressFragment | null
-): Partial<AddressFormData> => {
+export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
-    return {};
+    return emptyFormData as AddressFormData;
   }
 
   const { country, ...rest } = address;
 
+  const defaultValues = reduce(
+    rest,
+    (result, val, key) => ({ ...result, [key]: val || "" }),
+    {}
+  ) as Omit<AddressFormData, "countryCode">;
+
   return {
-    ...rest,
+    ...defaultValues,
     countryCode: country.code as CountryCode,
-  } as Partial<AddressFormData>;
+  };
+};
+
+export const getUserAddressFormDataFromAddress = (
+  address: AddressFragment
+): UserAddressFormData => {
+  const { id } = address;
+  const formData = getAddressFormDataFromAddress(address);
+  return { id, ...formData };
 };
 
 export const isMatchingAddress = (
   address?: AddressFragment | null,
   addressToMatch?: AddressFragment | null
-) => isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+) => {
+  const isTheSameAddressById =
+    typeof address?.id === "string" &&
+    typeof addressToMatch?.id === "string" &&
+    address.id === addressToMatch.id;
+
+  if (isTheSameAddressById) {
+    return true;
+  }
+
+  return isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+};
 
 export const isMatchingAddressFormData = (
   address?: Partial<AddressFormData> | null,

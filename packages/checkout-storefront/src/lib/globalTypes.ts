@@ -1,5 +1,12 @@
+import { AddressFragment } from "@/checkout-storefront/graphql";
+import { ReactNode } from "react";
+
 export interface Classes {
   className?: string;
+}
+
+export interface Children {
+  children: ReactNode | ReactNode[];
 }
 
 export interface AriaLabel {
