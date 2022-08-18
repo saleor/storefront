@@ -82,7 +82,7 @@ export function ProductCollection({
   }
   return (
     <div>
-      <ul className="grid grid-cols-2 lg:grid-cols-4 gap-5" data-testid="productsList">
+      <ul className="grid grid-cols-2  gap-5" data-testid="productsList">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

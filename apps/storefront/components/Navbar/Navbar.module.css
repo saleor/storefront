@@ -1,5 +1,5 @@
 .navbar {
-  @apply bg-white text-main sticky top-0 z-50;
+  @apply bg-white text-main sticky top-0 z-50 border-b-2;
 }
 
 .inner {

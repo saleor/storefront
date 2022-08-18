@@ -156,13 +156,13 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
       <ProductPageSeo product={product} />
       <main
         className={clsx(
-          "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden container pt-8 px-8 md:grid-cols-3"
+          "grid grid-cols-1 gap-4 max-h-full overflow-auto md:overflow-hidden md:grid-cols-3 bg-slate-500"
         )}
       >
         <div className="col-span-2">
           <ProductGallery product={product} selectedVariant={selectedVariant} />
         </div>
-        <div className="space-y-5 mt-10 md:mt-0">
+        <div className="space-y-5 mt-10 md:mt-0 px-2">
           <div>
             <h1
               className="text-4xl font-bold tracking-tight text-gray-800"
