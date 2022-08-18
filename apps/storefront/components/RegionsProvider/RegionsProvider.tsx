@@ -13,6 +13,7 @@ import * as sourceOfTruth from "../../locale/en-US.json";
 import * as fr from "../../locale/fr-FR.json";
 import * as pl from "../../locale/pl-PL.json";
 import * as vi from "../../locale/vi-VN.json";
+import * as en_IN from "../../locale/en-IN.json"; // Used en_IN as `in` is reserved keyword
 
 export interface RegionsConsumerProps {
   channels: Channel[];
@@ -41,6 +42,8 @@ export function importMessages(locale: string): LocaleMessages {
       return fr;
     case "vi-VN":
       return vi;
+    case "en-IN":
+      return en_IN;
     default:
       return sourceOfTruth;
   }

@@ -2,6 +2,7 @@ export const regions = {
   "en-US": "United States",
   "pl-PL": "Polska",
   "fr-FR": "France",
+  "en-IN": "India",
 };
 
 const DEFAULT_REGION = "en-US";
