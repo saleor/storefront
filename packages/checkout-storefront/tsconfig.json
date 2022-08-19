@@ -4,7 +4,7 @@
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "baseUrl": ".",
-    "lib": ["dom"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {
       "@/checkout-storefront/icons": ["./src/assets/icons"],
       "@/checkout-storefront/images": ["./src/assets/images"],

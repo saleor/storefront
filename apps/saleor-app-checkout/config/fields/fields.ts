@@ -16,6 +16,7 @@ import {
   adyenPaymentProviderMessages,
   molliePaymentProviderMessages,
   paymentProvidersMessages,
+  stripePaymentProviderMessages,
 } from "./messages/paymentProviders";
 import { withLabels, withNames } from "./utils";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
@@ -23,6 +24,7 @@ import AppleIcon from "@material-ui/icons/Apple";
 import PayPalIcon from "./icons/PayPal";
 import MollieIcon from "./icons/Mollie";
 import AdyenIcon from "./icons/Adyen";
+import StripeIcon from "./icons/Stripe";
 
 const paymentMethods: Omit<PaymentMethod, "name">[] = [
   {
@@ -85,6 +87,24 @@ const adyenPaymentProvider: Omit<PaymentProviderSettings<"adyen">, "label">[] = 
   },
 ];
 
+const stripePaymentProvider: Omit<PaymentProviderSettings<"stripe">, "label">[] = [
+  {
+    id: "publishableKey",
+    type: "string",
+    encrypt: false,
+  },
+  {
+    id: "secretKey",
+    type: "string",
+    encrypt: true,
+  },
+  {
+    id: "webhookSecret",
+    type: "string",
+    encrypt: true,
+  },
+];
+
 const brandingCustomization: Omit<CustomizationSettings<"branding">, "label">[] = [
   {
     id: "buttonBgColorPrimary",
@@ -137,6 +157,7 @@ const customizationsFields: Record<CustomizationID, any> = {
 const paymentProviderFields: Record<PaymentProviderID, any> = {
   mollie: molliePaymentProvider,
   adyen: adyenPaymentProvider,
+  stripe: stripePaymentProvider,
 };
 
 export type CommonField = { id: string } & Record<string, any>;
@@ -174,7 +195,22 @@ export const useAdyenPaymentProvider = (): PaymentProvider<"adyen"> => {
   };
 };
 
-export const usePaymentProviders = () => [useMolliePaymentProvider(), useAdyenPaymentProvider()];
+export const useStripePaymentProvider = (): PaymentProvider<"stripe"> => {
+  const intl = useIntl();
+
+  return {
+    id: "stripe",
+    label: intl.formatMessage(paymentProvidersMessages.stripe),
+    logo: StripeIcon,
+    settings: withLabels(intl, stripePaymentProviderMessages, stripePaymentProvider),
+  };
+};
+
+export const usePaymentProviders = () => [
+  useMolliePaymentProvider(),
+  useAdyenPaymentProvider(),
+  useStripePaymentProvider(),
+];
 
 export const useBrandingCustomization = (): Customization<"branding"> => {
   const intl = useIntl();

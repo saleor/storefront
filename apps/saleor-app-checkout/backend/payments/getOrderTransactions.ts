@@ -10,8 +10,6 @@ export const getOrderTransactions = async (args: OrderTransactionsQueryVariables
     .query<OrderTransactionsQuery, OrderTransactionsQueryVariables>(OrderTransactionsDocument, args)
     .toPromise();
 
-  console.log(data?.order?.errors, error);
-
   if (data?.order?.errors.length === 0) {
     return data.order.transactions;
   }

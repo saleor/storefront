@@ -1,14 +1,16 @@
 import { encryptSetting } from "@/saleor-app-checkout/backend/configuration/encryption";
+import { PaymentProviderSettingsValues } from "@/saleor-app-checkout/types";
 import { testingVars } from "../consts";
 
-export const paymentProviders = {
+export const mollieCompletedOrderId = "ord_kr6ltl";
+
+export const paymentProviders: PaymentProviderSettingsValues<"encrypted"> = {
   mollie: {
     apiKey: encryptSetting(testingVars.mollieKey),
     profileId: {
       encrypted: false,
       value: testingVars.mollieProfileId,
     },
-    completedOrderId: "ord_kr6ltl",
   },
   adyen: {
     merchantAccount: {
@@ -23,6 +25,14 @@ export const paymentProviders = {
     hmac: encryptSetting(testingVars.adyenHmac),
     password: encryptSetting(testingVars.adyenWebhookPassword),
     username: encryptSetting(testingVars.adyenWebhookUsername),
+  },
+  stripe: {
+    secretKey: encryptSetting(testingVars.stripeSecretKey),
+    webhookSecret: encryptSetting(testingVars.stripeWebhookSecret),
+    publishableKey: {
+      encrypted: false,
+      value: testingVars.stripePublishableKey,
+    },
   },
 };
 

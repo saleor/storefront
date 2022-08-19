@@ -3,7 +3,7 @@
   "include": ["./**/*.ts"],
   "exclude": [],
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["cypress", "node"],
     "isolatedModules": false,
     "noImplicitAny": false

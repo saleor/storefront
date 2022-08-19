@@ -1,8 +1,7 @@
-import { PaymentMethodID } from "checkout-common";
+import { ChannelActivePaymentProvidersByChannel, PaymentMethodID } from "checkout-common";
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
-import { reduce } from "lodash-es";
 import { useEffect, useState } from "react";
 
 type AvailablePaymentMethods = PaymentMethodID[];
@@ -12,6 +11,24 @@ export interface UsePaymentMethods {
   setSelectedPaymentMethod: (value: PaymentMethodID) => void;
   availablePaymentMethods: AvailablePaymentMethods;
 }
+
+const entries = <T extends object>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
+
+const getAllPaymentMethods = (
+  allPaymentMethods: ChannelActivePaymentProvidersByChannel | null | undefined
+) => {
+  if (!allPaymentMethods) {
+    return [];
+  }
+  return entries(allPaymentMethods).reduce<AvailablePaymentMethods>(
+    (availablePaymentMethods, [paymentMethodId, paymentProviderId]) => {
+      return paymentProviderId
+        ? [...availablePaymentMethods, paymentMethodId]
+        : availablePaymentMethods;
+    },
+    []
+  );
+};
 
 export const usePaymentMethods = (channelId: string) => {
   const {
@@ -24,14 +41,7 @@ export const usePaymentMethods = (channelId: string) => {
     skip: !channelId,
   });
 
-  const availablePaymentMethods = reduce(
-    allPaymentMethods,
-    (result, paymentProviderId, paymentMethodId) =>
-      (!!paymentProviderId.length
-        ? [...result, paymentMethodId]
-        : result) as AvailablePaymentMethods,
-    [] as AvailablePaymentMethods
-  );
+  const availablePaymentMethods = getAllPaymentMethods(allPaymentMethods);
 
   useEffect(() => {
     if (!loading && allPaymentMethods && !availablePaymentMethods.length) {
@@ -39,7 +49,8 @@ export const usePaymentMethods = (channelId: string) => {
     }
   }, [loading]);
 
-  const selectedPaymentProvider = allPaymentMethods?.[selectedPaymentMethod as PaymentMethodID];
+  const selectedPaymentProvider =
+    selectedPaymentMethod && allPaymentMethods?.[selectedPaymentMethod];
 
   return {
     selectedPaymentMethod,

@@ -59,6 +59,7 @@ export const useCheckoutFinalize = () => {
       const result = await checkoutPay({
         checkoutApiUrl,
         provider: formData.paymentProviderId,
+        method: formData.paymentMethodId,
         checkoutId: checkout?.id,
         totalAmount: checkout?.totalPrice?.gross?.amount as number,
       });
