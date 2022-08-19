@@ -20,6 +20,7 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
 import { PaymentMethods } from "../PaymentMethods";
 import { PaymentProviderID } from "checkout-common";
+import invariant from "ts-invariant";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -30,7 +31,7 @@ export const CheckoutForm = () => {
 
   const isLoading = loading || authenticating;
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
-  const { selectedPaymentProvider } = usePaymentProvidersProps;
+  const { selectedPaymentProvider, selectedPaymentMethod } = usePaymentProvidersProps;
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -53,11 +54,16 @@ export const CheckoutForm = () => {
   const { getValues } = methods;
 
   // not using form handleSubmit on purpose
-  const handleSubmit = () =>
+  const handleSubmit = () => {
+    invariant(selectedPaymentProvider);
+    invariant(selectedPaymentMethod);
+
     void checkoutFinalize({
       ...getValues(),
-      paymentProviderId: selectedPaymentProvider as PaymentProviderID,
+      paymentProviderId: selectedPaymentProvider,
+      paymentMethodId: selectedPaymentMethod,
     });
+  };
 
   const payButtonDisabled =
     submitting ||

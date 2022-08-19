@@ -34,7 +34,7 @@ export const debugEnvVars: DebugEnvVars | null =
   process.env.NODE_ENV !== "development"
     ? null
     : {
-      appUrl: process.env.DEBUG_APP_URL,
-    };
+        appUrl: process.env.DEBUG_APP_URL,
+      };
 
-export const IS_TEST = process.env.NODE_ENV === 'test';
+export const IS_TEST = process.env.NODE_ENV === "test";

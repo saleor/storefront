@@ -19,7 +19,6 @@ jobs:
           node-version: "16"
           cache: "pnpm"
 
-      # @todo: cache this on Vercel https://turborepo.org/docs/ci/github-actions
       - name: Turbo Cache
         id: turbo-cache
         uses: actions/cache@v2
@@ -53,5 +52,12 @@ jobs:
         env:
           TEST_MOLLIE_KEY: ${{ secrets.TEST_MOLLIE_KEY }}
           TEST_MOLLIE_PROFILE_ID: ${{ secrets.TEST_MOLLIE_PROFILE_ID }}
+
+          TEST_STRIPE_SECRET_KEY: ${{ secrets.TEST_STRIPE_SECRET_KEY }}
+          TEST_STRIPE_PUBLISHABLE_KEY: ${{ secrets.TEST_STRIPE_PUBLISHABLE_KEY }}
+          TEST_STRIPE_WEBHOOK_SECRET: ${{ secrets.TEST_STRIPE_WEBHOOK_SECRET }}
+
           SETTINGS_ENCRYPTION_SECRET: "testng"
+
+          SALEOR_APP_TOKEN: "test"
         run: pnpm run test

@@ -7,17 +7,21 @@ import { getOrderPaymentStatus } from "@/checkout-storefront/fetch";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 
 import { Section, SectionTitle } from "./Section";
+import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
+  const { env } = useAppConfig();
+
   const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(getOrderPaymentStatus, {
-    args: { orderId },
+    args: { orderId, checkoutApiUrl: env.checkoutApiUrl },
   });
   const formatMessage = useFormattedMessages();
 
   const handlePay = () => {
     return orderPay({
       provider: "mollie", // TODO: Hardcoded payment provider
+      method: "creditCard", // TODO: Hardcoded payment provider
       orderId,
     });
   };

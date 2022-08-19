@@ -39,3 +39,13 @@ export const getTransactionAmount = (amounts: Amounts) => {
     }
   };
 };
+
+// Some payment methods expect the amount to be in cents (integers)
+// Saleor provides and expects the amount to be in dollars (decimal format / floats)
+export const getIntegerAmountFromSaleor = (dollars: number) =>
+  Number.parseInt((dollars * 100).toFixed(0), 10);
+
+// Some payment methods expect the amount to be in cents (integers)
+// Saleor provides and expects the amount to be in dollars (decimal format / floats)
+export const getSaleorAmountFromInteger = (cents: number) =>
+  Number.parseFloat((cents / 100).toFixed(2));

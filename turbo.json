@@ -32,7 +32,10 @@
         "$TEST_ADYEN_WEBHOOK_PASSWORD",
         "$TEST_ADYEN_WEBHOOK_USERNAME",
         "$TEST_MOLLIE_KEY",
-        "$TEST_MOLLIE_PROFILE_ID"
+        "$TEST_MOLLIE_PROFILE_ID",
+        "$TEST_STRIPE_SECRET_KEY",
+        "$TEST_STRIPE_WEBHOOK_SECRET",
+        "$TEST_STRIPE_PUBLISHABLE_KEY"
       ],
       "outputs": [
         "dist/**",
