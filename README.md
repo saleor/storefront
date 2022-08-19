@@ -19,9 +19,11 @@
   <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
 </div>
 
-<p align="center">
-  <a href="https://demo.saleor.io/">Live demo</a> / <a href="https://githubbox.com/saleor/react-storefront">Explore and run the code in CodeSandbox</a>
-</p>
+<div align="center">
+  <a href="https://demo.saleor.io/">▶️ Demo</a>
+   <span> • </span>
+  <a href="https://githubbox.com/saleor/react-storefront">🔎 Explore Code</a>
+</div>
 
 ## Motivation
 
