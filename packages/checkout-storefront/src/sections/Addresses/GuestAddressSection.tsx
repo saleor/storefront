@@ -1,5 +1,5 @@
 import React from "react";
-import { AddressFormData } from "./types";
+import { Address, AddressFormData } from "./types";
 import { AddressForm } from "./AddressForm";
 import { getAddressFormDataFromAddress } from "./utils";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
@@ -7,7 +7,6 @@ import {
   useCountrySelect,
   UseCountrySelectProps,
 } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
-import { Address } from "@/checkout-storefront/lib/globalTypes";
 
 interface GuestAddressSectionProps
   extends UseErrors<AddressFormData>,
