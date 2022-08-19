@@ -35,3 +35,31 @@ html {
   font-size: 62.5%;
   font-family: "Roboto", sans-serif;
 }
+
+.each-slide-effect > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+  height: 100vh;
+}
+
+@media (max-width: 414px) {
+  .each-slide-effect > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 100vh;
+  }
+}

@@ -34,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <li key={product.id} className="w-full first:col-span-2">
       <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
         <a href="pass" className="flex flex-col w-full">
-          <div className="bg-main active:bg-brand w-ful">
+          <div className="bg-main active:bg-brand w-full">
             <div className="bg-white w-full h-full relative transition-transform object-contain ">
               {thumbnailUrl ? (
                 <Image src={thumbnailUrl} layout="responsive" width="67%" height="100%" />
