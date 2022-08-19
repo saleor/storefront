@@ -8,7 +8,7 @@
 
 **React Storefront**: Open-source frontend e-commerce platform from the [Saleor](https://saleor.io) team.
 
-**Saleor Checkout**: Extensible, checkout and payment integrations powered by Saleor API.
+**Saleor Checkout**: Extensible checkout and payment integrations powered by Saleor API. Includes following gateways: **Adyen**, **Mollie**, **Stripe** and more coming soon.
 
 ## Motivation
 
