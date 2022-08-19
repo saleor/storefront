@@ -28,5 +28,11 @@
     "rollup": "^2.70.2",
     "tsconfig": "workspace:*",
     "typescript": "4.7.4"
-  }
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0",
+    "pnpm": "^7.5.0"
+  },
+  "packageManager": "pnpm@7.5.2"
 }

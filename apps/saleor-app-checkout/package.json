@@ -95,5 +95,11 @@
     "ts-jest": "^27.1.4",
     "tsconfig": "workspace:*",
     "typescript": "4.7.4"
-  }
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0",
+    "pnpm": "^7.5.0"
+  },
+  "packageManager": "pnpm@7.5.2"
 }
