@@ -14,7 +14,6 @@ import { useAuthState } from "@saleor/sdk";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "../PaymentSection/usePaymentMethods";
 import { PaymentSection } from "../PaymentSection";
-import { PaymentProviderID } from "checkout-common";
 import invariant from "ts-invariant";
 import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
