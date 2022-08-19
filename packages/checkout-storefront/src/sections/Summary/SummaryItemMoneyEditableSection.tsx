@@ -184,7 +184,6 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
               color="secondary"
               className="ml-4"
             >
-              getFormattedMoney,
               {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
             </Text>
           )}
