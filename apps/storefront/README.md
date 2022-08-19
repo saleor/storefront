@@ -1,7 +1,7 @@
-![React Storefront](https://user-images.githubusercontent.com/44495184/185604657-fd63f2e2-ceb7-4a4e-9244-51bbfe6c1425.png)
+![Nextjs Storefront](https://user-images.githubusercontent.com/44495184/185604657-fd63f2e2-ceb7-4a4e-9244-51bbfe6c1425.png)
 
 <div align="center">
-  <h1>Storefront</h1>
+  <h1>Next.js Storefront</h1>
 </div>
 
 <div align="center">
