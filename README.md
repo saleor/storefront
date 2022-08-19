@@ -1,11 +1,11 @@
 ![React Storefront](https://user-images.githubusercontent.com/44495184/185137947-ef303c22-84a2-4069-9a5c-310e6b9d98c0.png)
 
 <div align="center">
-  <h1>React Storefront</h1>
+  <h1>Next.js Storefront</h1>
 </div>
 
 <div align="center">
-  <p><b>React Storefront</b>: Open-source frontend e-commerce platform from the <a href="https://github.com/saleor/saleor">Saleor</a> team.</p>
+  <p><b>Next.js Storefront</b>: Open-source frontend e-commerce platform from the <a href="https://github.com/saleor/saleor">Saleor</a> team.</p>
   <p><b>Saleor Checkout</b>: Extensible, checkout and payment integrations powered by Saleor API.</p>
 </div>
 
