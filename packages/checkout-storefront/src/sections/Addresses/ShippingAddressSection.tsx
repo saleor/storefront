@@ -11,7 +11,7 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
@@ -37,20 +37,23 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
-  const updateShippingAddress = async ({ autoSave, ...address }: Partial<AddressFormData>) => {
-    const result = await checkoutShippingAddressUpdate({
-      checkoutId: checkout.id,
-      shippingAddress: getAddressInputData(address),
-      validationRules: getAddressVlidationRulesVariables(autoSave),
-    });
+  const updateShippingAddress = useCallback(
+    async ({ autoSave, ...address }: Partial<AddressFormData>) => {
+      const result = await checkoutShippingAddressUpdate({
+        checkoutId: checkout.id,
+        shippingAddress: getAddressInputData(address),
+        validationRules: getAddressVlidationRulesVariables(autoSave),
+      });
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+      const [hasErrors, errors] = extractMutationErrors(result);
 
-    if (hasErrors) {
-      showErrors(errors, "checkoutShippingUpdate");
-      setApiErrors(errors);
-    }
-  };
+      if (hasErrors) {
+        showErrors(errors, "checkoutShippingUpdate");
+        setApiErrors(errors);
+      }
+    },
+    [checkout.id]
+  );
 
   const handleAutoSetShippingCountry = () => {
     if (!shippingAddress && !userDefaultAddress) {

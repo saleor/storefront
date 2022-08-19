@@ -60,7 +60,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
       <TextInput label={formatMessage("addDiscount")} {...getInputProps("promoCode")} optional />
       {showApplyButton && (
         <Button
-          className="absolute right-3 top-3"
+          className="absolute right-7 top-7"
           variant="tertiary"
           ariaLabel={formatMessage("applyButtonLabel")}
           label={formatMessage("apply")}
