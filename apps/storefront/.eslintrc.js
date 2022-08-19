@@ -3,8 +3,6 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [
     "storefront",
-    "next",
-    "next/core-web-vitals",
     "airbnb",
     "plugin:@typescript-eslint/recommended",
     "prettier", // prettier *has* to be the last one, to avoid conflicting rules
