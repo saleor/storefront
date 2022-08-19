@@ -1,6 +1,22 @@
-# Checkout App
+![Checkout App](https://user-images.githubusercontent.com/44495184/185607710-75fbb620-1d94-4168-9137-4f7841cbce4c.png)
 
-[Saleor App](https://docs.saleor.io/docs/3.x/developer/extending/apps/key-concepts) for payment gateways configuration and layout customisation of [Saleor Checkout](https://github.com/saleor/saleor-checkout/blob/main/apps/checkout/README.md)
+<div align="center">
+  <h1>Checkout App</h1>
+</div>
+
+<div align="center">
+  <p>Extensible, checkout and payment integrations powered by Saleor API.</p>
+</div>
+
+<div align="center">
+  <a href="https://saleor.io/">🏠 Website</a>
+  <span> • </span>
+  <a href="https://docs.saleor.io/docs/3.x/">📚 Docs</a>
+  <span> • </span>
+  <a href="https://saleor.io/blog/">📰 Blog</a>
+  <span> • </span>
+  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
+</div>
 
 ## Setup
 
