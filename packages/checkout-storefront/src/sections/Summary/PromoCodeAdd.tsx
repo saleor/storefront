@@ -33,8 +33,8 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
 
   const formProps = useForm<FormData>({ resolver, defaultValues: { promoCode: "" } });
   const { handleSubmit, watch, setError, reset } = formProps;
-  // @ts-ignore
   // @todo this used to work before making the typescript config more strict
+  // @ts-expect-error
   const getInputProps = useGetInputProps(formProps);
 
   const showApplyButton = !!watch("promoCode");

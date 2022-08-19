@@ -23,7 +23,7 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
           ...values.map(({ name }) => name),
         ],
         []
-      ) as string[]
+      )
     ).join(", ") || "";
 
   return (
