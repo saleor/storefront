@@ -58,7 +58,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
     }
   };
 
-  useEffect(handleAutoSetShippingCountry, [shippingAddress]);
+  useEffect(handleAutoSetShippingCountry, [shippingAddress, updateShippingAddress]);
 
   if (collapsed) {
     return null;

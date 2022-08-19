@@ -35,14 +35,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   const { checkout, loading } = useCheckout();
   const { getValues } = useFormContext();
 
-  const changeSection = (section: Section) => {
-    const shouldShowOnlyContact = section === "resetPassword" || section === "signIn";
-
-    setShowOnlyContact(shouldShowOnlyContact);
-    setCurrentSection(section);
-  };
-
-  const handleChangeSection = (section: Section) => () => changeSection(section);
+  const handleChangeSection = (section: Section) => () => setCurrentSection(section);
 
   const isCurrentSection = (section: Section) => currentSection === section;
 
@@ -114,7 +107,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
     }
 
     if (authenticated) {
-      changeSection("signedInUser");
+      setCurrentSection("signedInUser");
       hasAuthenticated.current = true;
       return;
     }
@@ -124,15 +117,14 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       return;
     }
 
-    changeSection("guestUser");
+    setCurrentSection("guestUser");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, checkout?.user, authenticated]);
 
   useEffect(() => {
-    if (isCurrentSection("resetPassword")) {
-      setShowOnlyContact(true);
-    }
-  }, []);
+    const shouldShowOnlyContact = isCurrentSection("resetPassword") || isCurrentSection("signIn");
+    setShowOnlyContact(shouldShowOnlyContact);
+  }, [currentSection]);
 
   return (
     <div>
