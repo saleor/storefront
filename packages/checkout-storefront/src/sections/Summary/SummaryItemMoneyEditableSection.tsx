@@ -77,8 +77,6 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     showErrors(errors);
   };
 
-  // @todo this used to work before making the typescript config more strict
-  // @ts-expect-error
   const getInputProps = useGetInputProps(methods);
 
   const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables => ({
@@ -186,6 +184,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
               color="secondary"
               className="ml-4"
             >
+              getFormattedMoney,
               {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
             </Text>
           )}
