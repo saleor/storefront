@@ -4,6 +4,10 @@ import Link from "next/link";
 import React from "react";
 import { useIntl } from "react-intl";
 
+// import { IconButton } from "@/checkout-storefront/components/IconButton";
+// import { MinusIcon, PlusIcon } from "~/work/react-test/react-storefront/packages/checkout-storefront/src/assets/icons";
+// import { Text } from "@saleor/ui-kit";
+// import { getSvgSrc } from "~/packages/checkout-storefront/lib/svgSrc";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { translate } from "@/lib/translations";
 import {
@@ -150,6 +154,27 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                 disabled={loadingLineUpdate}
                 pattern="[0-9]*"
               />
+              {/* <div className="flex flex-row mb-3">
+                <IconButton
+                  variant="bare"
+                  ariaLabel={formatMessage("addItemQuantityLabel")}
+                  onClick={() => {
+                    setQuantity(quantity - 1);
+                  }}
+                  icon={<img src={getSvgSrc(MinusIcon)} alt="remove" />}
+                />
+                <Text weight="bold" className="mx-3">
+                  {quantity}
+                </Text>
+                <IconButton
+                  variant="bare"
+                  ariaLabel={formatMessage("subtractItemQuantityLabel")}
+                  onClick={() => {
+                    setQuantity(quantity + 1);
+                  }}
+                  icon={<img src={getSvgSrc(PlusIcon)} alt="add" />}
+                />
+              </div> */}
               <p className="text-md md:text-xl text-gray-900 text-right">
                 {formatPrice(line?.totalPrice?.gross)}
               </p>
