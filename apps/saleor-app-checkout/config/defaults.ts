@@ -25,6 +25,11 @@ export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unen
     password: "",
     username: "",
   },
+  stripe: {
+    publishableKey: "",
+    secretKey: "",
+    webhookSecret: "",
+  },
 };
 
 export const defaultCustomizationSettings: CustomizationSettingsValues = {

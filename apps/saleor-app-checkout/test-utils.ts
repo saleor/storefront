@@ -7,12 +7,9 @@ import { createMocks, RequestMethod } from "node-mocks-http";
 import { handlers } from "./mocks/handlers";
 import { Headers } from "headers-polyfill";
 import { MockedRequest } from "msw";
+import { Readable } from "node:stream";
 
-declare module "next" {
-  type NextApiResponse = {
-    _getJSONData: <T extends Object>() => T;
-  } & NextApiResponse;
-}
+export type TestNextApiResponse = NextApiResponse & { _getJSONData: <T extends Object>() => T };
 
 export const mockRequest = (method: RequestMethod = "GET") => {
   const { req, res } = createMocks({ method });
@@ -22,7 +19,30 @@ export const mockRequest = (method: RequestMethod = "GET") => {
 
   return {
     req: req as unknown as NextApiRequest,
-    res: res as unknown as NextApiResponse,
+    res: res as unknown as TestNextApiResponse,
+  };
+};
+
+interface MockRequestStreamParams {
+  headers?: Record<string, string>;
+  body?: any;
+}
+/**
+ * Use this for routes with bodyParser = false
+ */
+export const mockRequestStream = (
+  method: RequestMethod = "GET",
+  { body, ...params }: MockRequestStreamParams = { body: undefined }
+) => {
+  const { req, res } = mockRequest(method);
+
+  const bodyStr = body ? JSON.stringify(body) : "";
+
+  const reqStream = Object.assign(Readable.from([bodyStr]), req, params);
+
+  return {
+    req: reqStream as unknown as Readonly<NextApiRequest> & Readable,
+    res: res as unknown as Readonly<TestNextApiResponse>,
   };
 };
 
@@ -67,7 +87,6 @@ const tryParse = (text: string | undefined) => {
 export const setupPollyMiddleware = (server: PollyServer) => {
   // Hide sensitive data in headers or in body
   server.any().on("beforePersist", (_, recording, event) => {
-    console.log(recording.request.postData);
     const requestJson = tryParse(recording.request.postData?.text);
     const requestHeaders = recording.request.headers.filter(
       (el: Record<string, string>) => !HEADERS_BLACKLIST.has(el.name)
@@ -140,7 +159,7 @@ export const setupPollyMiddleware = (server: PollyServer) => {
       const isHandledByMsw = handlers.some((handler) => handler.test(fakeReq));
 
       if (isHandledByMsw) {
-        console.debug("(from Polly.js) Passing request to msw\n", fakeReq);
+        console.debug("(from Polly.js) Passing request to MSW:\n", JSON.stringify(fakeReq));
       }
 
       return isHandledByMsw;
@@ -150,35 +169,26 @@ export const setupPollyMiddleware = (server: PollyServer) => {
 
 export const setupRecording = () => {
   // use replay mode by default, override if POLLY_MODE env variable is passed
-  let mode: PollyConfig["mode"] = "replay";
-  let recordIfMissing = false;
-  let recordFailedRequests = false;
-
-  switch (process.env.POLLY_MODE) {
-    case "record":
-      mode = "record";
-      recordIfMissing = true;
-      recordFailedRequests = true;
-      break;
-    case "replay":
-      mode = "replay";
-      break;
-  }
-
-  if (process.env.CI) {
-    mode = "replay";
-    recordIfMissing = false;
-  }
+  const opts: PollyConfig =
+    process.env.POLLY_MODE === "record" && !process.env.CI
+      ? {
+          mode: "record",
+          recordIfMissing: true,
+          recordFailedRequests: true,
+        }
+      : {
+          mode: "replay",
+          recordIfMissing: false,
+          recordFailedRequests: false,
+        };
 
   return setupPolly({
+    ...opts,
     // Fix for Jest runtime issues (inline require)
     // https://github.com/gribnoysup/setup-polly-jest/issues/23#issuecomment-890494186
     adapters: [require("@pollyjs/adapter-fetch")],
     persister: require("@pollyjs/persister-fs"),
-    mode,
-    recordIfMissing,
     flushRequestsOnStop: true,
-    recordFailedRequests,
     adapterOptions: {
       fetch: {
         context: globalThis,
