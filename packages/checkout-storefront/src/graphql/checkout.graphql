@@ -136,9 +136,6 @@ fragment CheckoutLineFragment on CheckoutLine {
       }
     }
     id
-    pricing {
-      onSale
-    }
     name
     product {
       name

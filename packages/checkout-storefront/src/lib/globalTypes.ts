@@ -11,6 +11,7 @@ export interface Children {
 }
 
 export type GrossMoney = Pick<TaxedMoney, "gross">;
+export type GrossMoneyWithTax = Pick<TaxedMoney, "gross" | "tax">;
 
 export interface AriaLabel {
   ariaLabel: string;

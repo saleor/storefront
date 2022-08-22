@@ -21882,7 +21882,6 @@ export type CheckoutFragment = {
         __typename?: "SelectedAttribute";
         values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
       }>;
-      pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
       product: {
         __typename?: "Product";
         name: string;
@@ -21924,7 +21923,6 @@ export type CheckoutLineFragment = {
       __typename?: "SelectedAttribute";
       values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
     }>;
-    pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
     product: {
       __typename?: "Product";
       name: string;
@@ -22060,7 +22058,6 @@ export type CheckoutQuery = {
           __typename?: "SelectedAttribute";
           values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
         }>;
-        pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
         product: {
           __typename?: "Product";
           name: string;
@@ -22258,7 +22255,6 @@ export type CheckoutLinesUpdateMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22390,7 +22386,6 @@ export type CheckoutLineDeleteMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22522,7 +22517,6 @@ export type CheckoutEmailUpdateMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22653,7 +22647,6 @@ export type CheckoutCustomerAttachMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -22784,7 +22777,6 @@ export type CheckoutCustomerDetachMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -23015,7 +23007,6 @@ export type CheckoutShippingAddressUpdateMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -23148,7 +23139,6 @@ export type CheckoutBillingAddressUpdateMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -23280,7 +23270,6 @@ export type CheckoutDeliveryMethodUpdateMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -23434,7 +23423,6 @@ export type CheckoutAddPromoCodeMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -23567,7 +23555,6 @@ export type CheckoutRemovePromoCodeMutation = {
             __typename?: "SelectedAttribute";
             values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
           }>;
-          pricing?: { __typename?: "VariantPricingInfo"; onSale?: boolean | null } | null;
           product: {
             __typename?: "Product";
             name: string;
@@ -23897,9 +23884,6 @@ export const CheckoutLineFragmentDoc = gql`
         }
       }
       id
-      pricing {
-        onSale
-      }
       name
       product {
         name

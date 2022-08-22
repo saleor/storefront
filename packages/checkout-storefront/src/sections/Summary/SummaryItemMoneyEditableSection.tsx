@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { Text } from "@saleor/ui-kit";
 import {
   CheckoutLineFragment,
@@ -7,15 +6,10 @@ import {
   useCheckoutLinesUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { Money } from "@/checkout-storefront/components/Money";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
 import { useEffect } from "react";
-import {
-  extractMutationErrors,
-  getFormattedMoney,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { object, string } from "yup";
@@ -24,6 +18,7 @@ import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { Skeleton } from "@/checkout-storefront/components";
 import { useErrorMessages } from "@/checkout-storefront/hooks";
+import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -36,18 +31,13 @@ export interface FormData {
 export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
   line,
 }) => {
-  const {
-    unitPrice,
-    undiscountedUnitPrice,
-    variant: { pricing },
-  } = line;
-
   const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutLinesUpdate");
   const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
   const { errorMessages } = useErrorMessages();
+  const formatMessage = useFormattedMessages();
 
   const schema = object({
     quantity: string().required(errorMessages.required),
@@ -102,11 +92,6 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     showErrors(errors);
   };
 
-  const piecePrice = unitPrice.gross;
-  const formatMessage = useFormattedMessages();
-
-  const multiplePieces = line.quantity > 1;
-
   const handleQuantityInputBlur = () => {
     if (getQuantity() === line.quantity) {
       return;
@@ -153,41 +138,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           <Skeleton className="w-2/3" />
         </div>
       ) : (
-        <>
-          <div className="flex flex-row justify-end mt-2">
-            {pricing?.onSale && (
-              <Money
-                ariaLabel={formatMessage("undiscountedPriceLabel")}
-                money={{
-                  currency: undiscountedUnitPrice.currency,
-                  amount: undiscountedUnitPrice.amount * line.quantity,
-                }}
-                className="line-through mr-1"
-              />
-            )}
-            <Money
-              ariaLabel={formatMessage("totalPriceLabel")}
-              money={{
-                currency: piecePrice?.currency as string,
-                amount: (piecePrice?.amount || 0) * line.quantity,
-              }}
-              weight="bold"
-              className={clsx({
-                "!text-text-error": pricing?.onSale,
-              })}
-            />
-          </div>
-          {multiplePieces && (
-            <Text
-              aria-label={formatMessage("singlePiecePriceLabel")}
-              size="sm"
-              color="secondary"
-              className="ml-4"
-            >
-              {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
-            </Text>
-          )}
-        </>
+        <SummaryItemMoneyInfo {...line} classNames={{ container: "mt-1" }} />
       )}
     </div>
   );

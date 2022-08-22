@@ -21,7 +21,7 @@ import {
   TaxedMoney,
 } from "@/checkout-storefront/graphql";
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
-import { GrossMoney } from "@/checkout-storefront/lib/globalTypes";
+import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";
 
 /* temporary solution */
 const PAGE_MARGINS_HEIGHT = 320;
@@ -31,7 +31,7 @@ const LG_BREAKPOINT = 1024;
 interface SummaryProps {
   editable?: boolean;
   lines: SummaryLine[];
-  totalPrice?: Pick<TaxedMoney, "gross" | "tax">;
+  totalPrice?: GrossMoneyWithTax;
   subtotalPrice?: GrossMoney;
   giftCards?: GiftCardFragment[];
   voucherCode?: string | null;
