@@ -5,14 +5,11 @@ import { OrderFragment } from "@/checkout-storefront/graphql";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { Money } from "@/checkout-storefront/components/Money";
 
-import { getTaxPercentage } from "./utils";
-
 export const FinalizedSummary = ({ order }: { order: OrderFragment }) => {
   const formatMessage = useFormattedMessages();
 
   const totalPrice = order.total.gross;
   const taxCost = order.total.tax;
-  const taxPercentage = getTaxPercentage(taxCost, totalPrice);
 
   return (
     <div className="summary w-[594px]">
@@ -49,11 +46,6 @@ export const FinalizedSummary = ({ order }: { order: OrderFragment }) => {
           />
         </div>
         <div className="summary-row">
-          <Text color="secondary">
-            {formatMessage("taxCost", {
-              taxPercentage,
-            })}
-          </Text>
           <Money ariaLabel={formatMessage("taxCostLabel")} color="secondary" money={taxCost} />
         </div>
         <Divider className="my-4" />

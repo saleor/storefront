@@ -1,52 +1,34 @@
 import React from "react";
-import { AddressFragment, useUserAddressDeleteMutation } from "@/checkout-storefront/graphql";
-import { AddressRadioBox } from "../AddressRadioBox";
-import { RadioBoxGroup } from "@/checkout-storefront/components/RadioBoxGroup";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { AddressFragment } from "@/checkout-storefront/graphql";
+import { AddressSelectBox } from "./AddressSelectBox";
+import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
+import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
+import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
+import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
 
 interface UserAddressListProps {
-  onAddressSelect: (id: string) => void;
-  addresses: AddressFragment[];
-  selectedAddressId?: string;
   onEditChange: (id: string) => void;
+  type: AddressTypeEnum;
 }
 
-export const UserAddressList: React.FC<UserAddressListProps> = ({
-  onAddressSelect,
-  selectedAddressId,
-  addresses = [],
-  onEditChange,
-}) => {
-  const [, deleteAddress] = useUserAddressDeleteMutation();
-  const { showErrors, showSuccess } = useAlerts("userAddressDelete");
-
-  const handleAddressDelete = async (id: string) => {
-    const result = await deleteAddress({ id });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      showErrors(errors);
-      return;
-    }
-
-    showSuccess();
-  };
+export const UserAddressList: React.FC<UserAddressListProps> = ({ onEditChange, type }) => {
+  const isShippingAddressList = type === "SHIPPING";
+  const { addressList, selectedAddressId, setSelectedAddressId } = useAddressList();
+  const { isAvailable } = useAddressAvailability({ pause: !isShippingAddressList });
 
   return (
-    <RadioBoxGroup label="user addresses">
-      {addresses.map(({ id, ...rest }: AddressFragment) => (
-        <AddressRadioBox
+    <SelectBoxGroup label="user addresses">
+      {addressList.map(({ id, ...rest }: AddressFragment) => (
+        <AddressSelectBox
           key={id}
           value={id}
           selectedValue={selectedAddressId}
-          onSelect={() => onAddressSelect(id)}
-          address={rest}
-          onDelete={() => void handleAddressDelete(id)}
+          onSelect={() => setSelectedAddressId(id)}
+          address={{ ...rest }}
           onEdit={() => onEditChange(id)}
+          unavailable={!isAvailable(rest)}
         />
       ))}
-    </RadioBoxGroup>
+    </SelectBoxGroup>
   );
 };

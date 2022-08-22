@@ -43,7 +43,7 @@ export const DeliverySection = ({
 
   return (
     <Section>
-      <SectionTitle>{formatMessage("shippingMethodSection")}</SectionTitle>
+      <SectionTitle>{formatMessage("deliveryMethodSection")}</SectionTitle>
       <div>{renderContent()}</div>
     </Section>
   );

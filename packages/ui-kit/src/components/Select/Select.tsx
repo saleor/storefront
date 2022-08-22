@@ -9,6 +9,7 @@ import { ClassNames } from "@lib/globalTypes";
 export interface Option<TData extends string = string> {
   label: string | ReactNode;
   value: TData;
+  disabled?: boolean;
   icon?: string | ReactNode;
   [key: string]: unknown;
 }
@@ -83,7 +84,12 @@ export const Select = <TData extends string = string>({
               <Combobox.Option
                 key={option.value}
                 value={option}
-                className={clsx(styles.option, classNames?.option)}
+                disabled={option.disabled}
+                className={clsx(
+                  styles.option,
+                  classNames?.option,
+                  option.disabled && styles.disabled
+                )}
               >
                 {option?.icon && (
                   <div className={clsx(styles["option-icon"], classNames?.optionIcon)}>

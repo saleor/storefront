@@ -4,7 +4,7 @@ import ChevronDownIcon from "./chevron.svg";
 import PlusIcon from "./plus.svg";
 import MinusIcon from "./minus.svg";
 import TrashIcon from "./trash.svg";
-import CloseIcon from "./remove.svg";
+import RemoveIcon from "./remove.svg";
 import CheckIcon from "./success.svg";
 import ExclamationIcon from "./alert.svg";
 import GiftCardIcon from "./giftCard.svg";
@@ -24,7 +24,7 @@ export {
   PlusIcon,
   MinusIcon,
   CheckIcon,
-  CloseIcon,
+  RemoveIcon,
   ErrorIcon,
   TrashIcon,
   GiftCardIcon,

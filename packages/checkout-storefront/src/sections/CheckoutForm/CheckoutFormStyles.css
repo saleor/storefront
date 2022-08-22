@@ -1,8 +1,15 @@
 @tailwind components;
 
 @layer components {
+  .checkout-form-container {
+    @apply flex flex-col items-end lg:w-1/2;
+  }
   .checkout-form {
-    @apply flex flex-col w-full lg:w-1/2 xl:w-2/3;
+    @apply border border-border-secondary rounded-lg flex flex-col w-full;
+  }
+
+  .section {
+    @apply px-4 pt-5 pb-6;
   }
 
   .actions {
@@ -10,6 +17,6 @@
   }
 
   .pay-button {
-    @apply w-full md:w-28 self-end mt-6 mb-14;
+    @apply w-full md:w-28 self-end mt-5;
   }
 }

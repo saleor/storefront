@@ -1,65 +1,58 @@
-import { useUserAddressUpdateMutation } from "@/checkout-storefront/graphql";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
 import { AddressForm, AddressFormProps } from "./AddressForm";
-import { UserAddressFormData } from "./types";
-import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
-import { getAddressInputData } from "./utils";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { AddressFormData, UserAddressFormData } from "./types";
+import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
 
-interface AddressEditFormProps
-  extends Pick<AddressFormProps<UserAddressFormData>, "defaultValues"> {
+interface AddressEditFormProps extends Pick<AddressFormProps<AddressFormData>, "title"> {
+  defaultValues: UserAddressFormData;
   onClose: () => void;
-  show: boolean;
 }
 
 export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
-  show,
   defaultValues,
+  ...rest
 }) => {
-  const [, userAddressUpdate] = useUserAddressUpdateMutation();
-  const { updateShippingAddress } = useCheckoutAddressUpdate();
-  const { showErrors, showSuccess } = useAlerts("userAddressUpdate");
-
-  const { countryCode } = useCountrySelect();
-
   const { setApiErrors, ...errorsRest } = useErrors<UserAddressFormData>();
+  const { addressUpdate, addressDelete, updating, deleting } = useAddressList();
 
-  const handleSubmit = async (address: UserAddressFormData) => {
-    const result = await userAddressUpdate({
-      address: getAddressInputData({
-        ...address,
-        countryCode,
-      }),
-      id: address.id,
-    });
+  const countrySelectProps = useCountrySelect({
+    autoSelect: !defaultValues.countryCode,
+    selectedCountryCode: defaultValues.countryCode,
+  });
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+  const handleUpdate = async (formData: UserAddressFormData) => {
+    const { hasErrors, errors } = await addressUpdate(formData);
 
     if (!hasErrors) {
-      showSuccess();
-      await updateShippingAddress(address);
+      setApiErrors(errors);
       onClose();
-      return;
     }
-
-    showErrors(errors);
-    setApiErrors(errors);
   };
 
-  if (!show) {
-    return null;
-  }
+  const handleDelete = async () => {
+    const { hasErrors, errors } = await addressDelete(defaultValues.id);
+
+    if (!hasErrors) {
+      setApiErrors(errors);
+      onClose();
+    }
+  };
 
   return (
     <AddressForm
-      onSave={handleSubmit}
+      loading={updating || deleting}
+      onSubmit={handleUpdate}
+      onDelete={() => {
+        void handleDelete();
+      }}
       defaultValues={defaultValues}
       onCancel={onClose}
+      {...countrySelectProps}
       {...errorsRest}
+      {...rest}
     />
   );
 };

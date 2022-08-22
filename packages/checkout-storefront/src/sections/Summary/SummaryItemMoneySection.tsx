@@ -1,7 +1,6 @@
 import { Text } from "@saleor/ui-kit";
 import { OrderLineFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useFormattedMoney } from "@/checkout-storefront/hooks/useFormattedMoney";
 import { Money } from "@/checkout-storefront/components/Money";
 import clsx from "clsx";
 
@@ -13,7 +12,6 @@ export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = 
   const onSale = line.undiscountedUnitPrice.gross.amount !== line.unitPrice.gross.amount;
   const piecePrice = line.unitPrice.gross;
   const formatMessage = useFormattedMessages();
-  const formattedPiecePrice = useFormattedMoney(piecePrice);
 
   const multiplePieces = line.quantity > 1;
 
@@ -52,7 +50,7 @@ export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = 
           color="secondary"
           className="ml-4"
         >
-          {`${formattedPiecePrice} ${formatMessage("each")}`}
+          {`${piecePrice} ${formatMessage("each")}`}
         </Text>
       )}
     </div>

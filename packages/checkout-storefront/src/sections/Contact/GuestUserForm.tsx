@@ -24,7 +24,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const { showSuccess, showErrors } = useAlerts("checkoutEmailUpdate");
+  const { showErrors } = useAlerts("checkoutEmailUpdate");
   const [createAccountSelected, setCreateAccountSelected] = useState(false);
   const formContext = useFormContext();
   const {
@@ -66,12 +66,9 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
     const [hasErrors, errors] = extractMutationErrors(result);
 
-    if (!hasErrors) {
-      showSuccess();
-      return;
+    if (hasErrors) {
+      showErrors(errors);
     }
-
-    showErrors(errors);
   };
 
   const emailValue = watch("email");
@@ -98,16 +95,19 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         })}
       />
       <Checkbox
+        classNames={{ container: "!mb-0" }}
         value="createAccount"
         label={formatMessage("wantToCreateAccountLabel")}
         checked={createAccountSelected}
         onChange={setCreateAccountSelected}
       />
       {createAccountSelected && (
-        <PasswordInput
-          label={formatMessage("passwordLabel")}
-          {...getContextInputProps("password")}
-        />
+        <div className="mt-2">
+          <PasswordInput
+            label={formatMessage("passwordLabel")}
+            {...getContextInputProps("password")}
+          />
+        </div>
       )}
     </SignInFormContainer>
   );

@@ -1,5 +1,5 @@
 .button {
-  @apply py-3 h-12 inline-flex items-center whitespace-nowrap border focus:outline-none active:outline-none justify-center;
+  @apply py-2 h-10 rounded inline-flex items-center whitespace-nowrap border focus:outline-none active:outline-none justify-center;
   padding-left: calc(theme("spacing.4") - theme("borderWidth.DEFAULT"));
   padding-right: calc(theme("spacing.4") - theme("borderWidth.DEFAULT"));
 }

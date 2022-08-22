@@ -1,52 +1,41 @@
-import { useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
+import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React from "react";
-import { AddressForm } from "./AddressForm";
+import { AddressForm, AddressFormProps } from "./AddressForm";
 import { AddressFormData } from "./types";
-import { getAddressInputData } from "./utils";
 
-export interface AddressCreateFormProps {
-  show: boolean;
+export interface AddressCreateFormProps extends Pick<AddressFormProps<AddressFormData>, "title"> {
   type: AddressTypeEnum;
   onClose: () => void;
 }
 
-export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ show, type, onClose }) => {
-  const { showSuccess, showErrors } = useAlerts("userAddressCreate");
-  const [, userAddressCreate] = useUserAddressCreateMutation();
-
-  const { countryCode } = useCountrySelect();
-
+export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ type, onClose, ...rest }) => {
+  const { addressCreate, creating } = useAddressList();
   const { setApiErrors, ...errorsRest } = useErrors<AddressFormData>();
 
-  const handleSubmit = async (address: AddressFormData) => {
-    const result = await userAddressCreate({
-      address: getAddressInputData({
-        ...address,
-        countryCode,
-      }),
-      type,
-    });
+  const countrySelectProps = useCountrySelect({
+    autoSelect: true,
+  });
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+  const handleSubmit = async (formData: AddressFormData) => {
+    const { hasErrors, errors } = await addressCreate(formData);
 
     if (!hasErrors) {
-      showSuccess();
+      setApiErrors(errors);
       onClose();
-      return;
     }
-
-    showErrors(errors);
-    setApiErrors(errors);
   };
 
-  if (!show) {
-    return null;
-  }
-
-  return <AddressForm onSave={handleSubmit} onCancel={onClose} {...errorsRest} />;
+  return (
+    <AddressForm
+      onSubmit={handleSubmit}
+      onCancel={onClose}
+      loading={creating}
+      {...countrySelectProps}
+      {...errorsRest}
+      {...rest}
+    />
+  );
 };
