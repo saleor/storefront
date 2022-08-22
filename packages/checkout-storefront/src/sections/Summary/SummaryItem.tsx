@@ -7,8 +7,10 @@ import { getSummaryLineProps } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { compact } from "lodash-es";
 
+export type SummaryLine = CheckoutLineFragment | OrderLineFragment;
+
 interface LineItemProps {
-  line: CheckoutLineFragment | OrderLineFragment;
+  line: SummaryLine;
 }
 
 export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, children }) => {

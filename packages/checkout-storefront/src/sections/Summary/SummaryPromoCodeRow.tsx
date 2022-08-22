@@ -6,18 +6,21 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { useCheckoutRemovePromoCodeMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { isOrderConfirmationPage } from "@/checkout-storefront/lib/utils";
 
 interface SummaryPromoCodeRowProps extends SummaryMoneyRowProps {
   promoCode?: string;
   promoCodeId?: string;
+  editable: boolean;
 }
 
 export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
   promoCode,
   promoCodeId,
+  editable,
   ...rest
 }) => {
-  const { checkout } = useCheckout();
+  const { checkout } = useCheckout({ pause: isOrderConfirmationPage() });
   const formatMessage = useFormattedMessages();
   const [, checkoutRemovePromoCode] = useCheckoutRemovePromoCodeMutation();
 
@@ -34,13 +37,15 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 
   return (
     <SummaryMoneyRow {...rest}>
-      <IconButton
-        color="secondary"
-        onClick={onDelete}
-        ariaLabel={formatMessage("removePromoCodeLabel")}
-        variant="bare"
-        icon={<img src={getSvgSrc(RemoveIcon)} />}
-      />
+      {editable && (
+        <IconButton
+          color="secondary"
+          onClick={onDelete}
+          ariaLabel={formatMessage("removePromoCodeLabel")}
+          variant="bare"
+          icon={<img src={getSvgSrc(RemoveIcon)} />}
+        />
+      )}
     </SummaryMoneyRow>
   );
 };

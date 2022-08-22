@@ -4,7 +4,8 @@ import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox, SelectBoxProps } from "@/checkout-storefront/components/SelectBox";
 import { Button } from "@/checkout-storefront/components/Button";
-import { compact } from "lodash-es";
+import { Address } from "@/checkout-storefront/components/Address";
+import { AddressFragment } from "@/checkout-storefront/graphql";
 
 interface AddressSelectBoxProps extends Omit<SelectBoxProps, "children"> {
   address: Partial<Record<AddressField, any>>;
@@ -19,9 +20,6 @@ export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
   ...rest
 }) => {
   const formatMessage = useFormattedMessages();
-  const name = `${address.firstName} ${address.lastName}`;
-
-  const { phone, city, countryArea, postalCode, streetAddress1, country } = address;
 
   const textProps: Pick<TextProps, "color"> = unavailable
     ? {
@@ -32,19 +30,13 @@ export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
   return (
     <SelectBox {...rest} disabled={unavailable}>
       <div className="w-full flex flex-row justify-between">
-        <div className="flex flex-col pointer-events-none">
-          <Text {...textProps} weight="semibold">
-            {name}
-          </Text>
-          <Text {...textProps}>{phone}</Text>
-          <Text {...textProps}>{compact([streetAddress1, city, postalCode]).join(", ")}</Text>
-          <Text {...textProps}>{compact([countryArea, country.country]).join(", ")}</Text>
+        <Address address={address as AddressFragment} {...textProps}>
           {unavailable && (
             <Text size="xs" className="my-1">
               {formatMessage("cantShipToAddress")}
             </Text>
           )}
-        </div>
+        </Address>
         <div>
           <Button
             variant="tertiary"

@@ -34,7 +34,7 @@ export const Checkout = () => {
               </Suspense>
               <div className="page-divider" />
               <Suspense fallback={<SummarySkeleton />}>
-                <Summary />
+                <Summary {...checkout} />
               </Suspense>
             </>
           )}

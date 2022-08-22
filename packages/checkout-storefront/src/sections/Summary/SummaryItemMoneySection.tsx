@@ -1,58 +1,19 @@
 import { Text } from "@saleor/ui-kit";
 import { OrderLineFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { Money } from "@/checkout-storefront/components/Money";
-import clsx from "clsx";
+import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 
 interface LineItemQuantitySelectorProps {
   line: OrderLineFragment;
 }
 
 export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = ({ line }) => {
-  const onSale = line.undiscountedUnitPrice.gross.amount !== line.unitPrice.gross.amount;
-  const piecePrice = line.unitPrice.gross;
   const formatMessage = useFormattedMessages();
-
-  const multiplePieces = line.quantity > 1;
 
   return (
     <div className="flex flex-col items-end">
-      <div className="flex flex-row justify-end">
-        {onSale && (
-          <Money
-            ariaLabel={formatMessage("undiscountedPriceLabel")}
-            money={{
-              currency: line.undiscountedUnitPrice.gross.currency as string,
-              amount: (line.undiscountedUnitPrice.gross.amount || 0) * line.quantity,
-            }}
-            className="line-through mr-1"
-          />
-        )}
-        <Money
-          ariaLabel={formatMessage("totalPriceLabel")}
-          money={{
-            currency: piecePrice?.currency as string,
-            amount: (piecePrice?.amount || 0) * line.quantity,
-          }}
-          weight="bold"
-          className={clsx({
-            "text-text-error": onSale,
-          })}
-        />
-      </div>
-      <Text>
-        qty: <b>{line.quantity}</b>
-      </Text>
-      {multiplePieces && (
-        <Text
-          aria-label={formatMessage("singlePiecePriceLabel")}
-          size="sm"
-          color="secondary"
-          className="ml-4"
-        >
-          {`${piecePrice} ${formatMessage("each")}`}
-        </Text>
-      )}
+      <Text>{`${formatMessage("quantity")}: ${line.quantity}`}</Text>
+      <SummaryItemMoneyInfo {...line} undiscountedUnitPrice={line.undiscountedUnitPrice.gross} />
     </div>
   );
 };

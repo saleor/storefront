@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { SummaryItem } from "./SummaryItem";
+import { SummaryItem, SummaryLine } from "./SummaryItem";
 import { ChevronDownIcon } from "@/checkout-storefront/icons";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { PromoCodeAdd } from "./PromoCodeAdd";
@@ -14,25 +13,47 @@ import { SummaryPromoCodeRow } from "./SummaryPromoCodeRow";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
 import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider, Money, Title } from "@/checkout-storefront/components";
+import {
+  CheckoutLineFragment,
+  GiftCardFragment,
+  Money as MoneyType,
+  OrderLineFragment,
+  TaxedMoney,
+} from "@/checkout-storefront/graphql";
+import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
+import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";
 
 /* temporary solution */
 const PAGE_MARGINS_HEIGHT = 320;
 const LINE_HEIGHT = 104;
 const LG_BREAKPOINT = 1024;
 
-export const Summary = () => {
+interface SummaryProps {
+  editable?: boolean;
+  lines: SummaryLine[];
+  totalPrice?: GrossMoneyWithTax;
+  subtotalPrice?: GrossMoney;
+  giftCards?: GiftCardFragment[];
+  voucherCode?: string | null;
+  discount?: MoneyType | null;
+  shippingPrice: GrossMoney;
+}
+
+export const Summary: FC<SummaryProps> = ({
+  editable = true,
+  lines,
+  totalPrice,
+  subtotalPrice,
+  giftCards = [],
+  voucherCode,
+  shippingPrice,
+  discount,
+}) => {
   const [isOpen, setOpen] = useState(true);
-  const { checkout } = useCheckout();
-  const { voucherCode, discount } = checkout;
   const recapRef = useRef<HTMLDivElement>(null);
   const [maxSummaryHeight, setMaxSummaryHeight] = useState<number>(0);
 
   const formatMessage = useFormattedMessages();
-
-  const totalPrice = checkout?.totalPrice?.gross;
-  const taxCost = checkout?.totalPrice?.tax;
-
-  const lines = checkout?.lines;
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -69,7 +90,11 @@ export const Summary = () => {
           <img src={getSvgSrc(ChevronDownIcon)} alt="chevron-down" />
         </div>
         {!isOpen && (
-          <Money ariaLabel={formatMessage("totalPriceLabel")} weight="bold" money={totalPrice} />
+          <Money
+            ariaLabel={formatMessage("totalPriceLabel")}
+            weight="bold"
+            money={totalPrice?.gross}
+          />
         )}
       </div>
       <Transition
@@ -83,29 +108,33 @@ export const Summary = () => {
         leaveTo="transform scale-95 opacity-0"
       >
         <ul
-          className="summary-items"
           style={{ maxHeight: maxSummaryHeight ? `${maxSummaryHeight}px` : "" }}
+          className={clsx(
+            "summary-items",
+            lines.length * LINE_HEIGHT > maxSummaryHeight ? "border-b border-border-secondary" : ""
+          )}
         >
           {lines.map((line) => (
             <SummaryItem line={line} key={line?.id}>
-              <SummaryItemMoneyEditableSection line={line} />
+              {editable ? (
+                <SummaryItemMoneyEditableSection line={line as CheckoutLineFragment} />
+              ) : (
+                <SummaryItemMoneySection line={line as OrderLineFragment} />
+              )}
             </SummaryItem>
           ))}
         </ul>
-        <PromoCodeAdd
-          className={clsx(
-            lines.length * LINE_HEIGHT > maxSummaryHeight ? "border-t border-border-secondary" : ""
-          )}
-        />
+        {editable && <PromoCodeAdd />}
         <div className="summary-recap" ref={recapRef}>
           <Divider className="mt-1 mb-4" />
           <SummaryMoneyRow
             label={formatMessage("subtotal")}
-            money={checkout?.subtotalPrice?.gross}
+            money={subtotalPrice?.gross}
             ariaLabel={formatMessage("subtotalLabel")}
           />
           {voucherCode && (
             <SummaryPromoCodeRow
+              editable={editable}
               promoCode={voucherCode}
               ariaLabel={formatMessage("voucherLabel")}
               label={formatMessage("voucher", { voucherCode })}
@@ -113,8 +142,9 @@ export const Summary = () => {
               negative
             />
           )}
-          {checkout.giftCards.map(({ currentBalance, displayCode, id }) => (
+          {giftCards.map(({ currentBalance, displayCode, id }) => (
             <SummaryPromoCodeRow
+              editable={editable}
               promoCodeId={id}
               ariaLabel={formatMessage("giftCardLabel")}
               label={formatMessage("giftCard", { giftCardCode: `•••• •••• ${displayCode}` })}
@@ -125,21 +155,23 @@ export const Summary = () => {
           <SummaryMoneyRow
             label={formatMessage("shippingCost")}
             ariaLabel={formatMessage("shippingCostLabel")}
-            money={checkout?.shippingPrice?.gross}
+            money={shippingPrice?.gross}
           />
           <Divider className="my-4" />
           <div className="summary-row pb-4 items-baseline">
             <div className="flex flex-row items-baseline">
               <Text weight="bold">{formatMessage("total")}</Text>
-              {
-                <Text color="secondary" className="ml-2">
-                  {formatMessage("taxCost", {
-                    taxCost: getFormattedMoney(taxCost),
-                  })}
-                </Text>
-              }
+              <Text color="secondary" className="ml-2">
+                {formatMessage("taxCost", {
+                  taxCost: getFormattedMoney(totalPrice?.tax),
+                })}
+              </Text>
             </div>
-            <Money ariaLabel={formatMessage("totalLabel")} weight="bold" money={totalPrice} />
+            <Money
+              ariaLabel={formatMessage("totalLabel")}
+              weight="bold"
+              money={totalPrice?.gross}
+            />
           </div>
         </div>
       </Transition>
