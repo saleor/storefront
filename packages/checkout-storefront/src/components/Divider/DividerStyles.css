@@ -2,6 +2,6 @@
 
 @layer components {
   .divider {
-    @apply h-px w-full bg-border-primary;
+    @apply h-px w-full border-t border-border-secondary;
   }
 }

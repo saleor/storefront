@@ -1,2 +1,2 @@
-export type { SelectProps } from "./Select";
+export type { SelectProps, Option } from "./Select";
 export { Select } from "./Select";

@@ -5,9 +5,7 @@ export interface Country {
   code: CountryCode;
 }
 
-export type Countries = Country[];
-
-export const countries: Countries = [
+export const countries: Country[] = [
   {
     code: "PL",
     name: "Poland",

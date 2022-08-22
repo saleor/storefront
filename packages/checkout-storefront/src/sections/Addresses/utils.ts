@@ -1,12 +1,26 @@
 import {
   AddressFragment,
   AddressInput,
+  CheckoutAddressValidationRules,
   CountryCode,
   CountryDisplay,
 } from "@/checkout-storefront/graphql";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
-import { intersection, isEqual, omit } from "lodash-es";
-import { AddressFormData } from "./types";
+import { isEqual, omit, reduce } from "lodash-es";
+import { Address, AddressFormData, UserAddressFormData } from "./types";
+
+export const emptyFormData = {
+  firstName: "",
+  lastName: "",
+  streetAddress1: "",
+  streetAddress2: "",
+  companyName: "",
+  city: "",
+  cityArea: "",
+  countryArea: "",
+  postalCode: "",
+  phone: "",
+  countryCode: "",
+};
 
 export const getAddressInputData = ({
   countryCode,
@@ -22,51 +36,59 @@ export const getAddressInputData = ({
   country: countryCode || (country?.code as CountryCode),
 });
 
-export const getAddressFormDataFromAddress = (
-  address?: AddressFragment | null
-): Partial<AddressFormData> => {
+export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
-    return {};
+    return emptyFormData as AddressFormData;
   }
 
   const { country, ...rest } = address;
 
+  const defaultValues = reduce(
+    rest,
+    (result, val, key) => ({ ...result, [key]: val || "" }),
+    {}
+  ) as Omit<AddressFormData, "countryCode">;
+
   return {
-    ...rest,
+    ...defaultValues,
     countryCode: country.code as CountryCode,
-  } as Partial<AddressFormData>;
+  };
 };
 
-export type AddressFormLayout = AddressFormLayoutField[];
-export type AddressFormLayoutField = AddressField | AddressField[];
+export const getUserAddressFormDataFromAddress = (
+  address: AddressFragment
+): UserAddressFormData => {
+  const { id } = address;
+  const formData = getAddressFormDataFromAddress(address);
+  return { id, ...formData };
+};
 
-const addressFormLayout: AddressFormLayout = [
-  ["firstName", "lastName"],
-  "companyName",
-  "phone",
-  "streetAddress1",
-  "streetAddress2",
-  ["city", "postalCode"],
-  "cityArea",
-  "countryArea",
-];
+export const isMatchingAddress = (
+  address?: AddressFragment | null,
+  addressToMatch?: AddressFragment | null
+) => {
+  const isTheSameAddressById =
+    typeof address?.id === "string" &&
+    typeof addressToMatch?.id === "string" &&
+    address.id === addressToMatch.id;
 
-export const isAddressFieldRow = (formLayoutField: AddressFormLayoutField) =>
-  Array.isArray(formLayoutField);
+  if (isTheSameAddressById) {
+    return true;
+  }
 
-export const getAddressFormLayout = (orderedAdressFields: AddressField[]) =>
-  addressFormLayout.reduce((result, layoutField) => {
-    const shouldIncludeAddressField = isAddressFieldRow(layoutField)
-      ? !!intersection(orderedAdressFields, layoutField).length
-      : orderedAdressFields.includes(layoutField as AddressField);
+  return isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+};
 
-    if (shouldIncludeAddressField) {
-      return [...result, layoutField];
-    }
+export const isMatchingAddressFormData = (
+  address?: Partial<AddressFormData> | null,
+  addressToMatch?: Partial<AddressFormData> | null
+) => isEqual(omit(address, ["id", "autoSave"]), omit(addressToMatch, ["id", "autoSave"]));
 
-    return result;
-  }, [] as AddressFormLayout);
-
-export const isMatchingAddress =
-  (address?: AddressFragment | null) => (addressToMatch?: AddressFragment | null) =>
-    isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+export const getAddressVlidationRulesVariables = (
+  autoSave: boolean = false
+): CheckoutAddressValidationRules =>
+  autoSave
+    ? {
+        checkRequiredFields: false,
+      }
+    : {};

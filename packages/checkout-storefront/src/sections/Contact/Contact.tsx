@@ -1,6 +1,6 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
-import React, { useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
 import { SignedInUser } from "./SignedInUser";
@@ -16,29 +16,28 @@ import { useFormContext } from "react-hook-form";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
-export const Contact = () => {
-  const [currentSection, setCurrentSection] = useState<Section>("guestUser");
+interface ContactProps {
+  setShowOnlyContact: (value: boolean) => void;
+}
+
+export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
+  const [passwordResetShown, setPasswordResetShown] = useState(false);
+  const passwordResetToken = getQueryVariables().passwordResetToken;
+  const shouldShowPasswordReset = passwordResetToken && !passwordResetShown;
+  const [currentSection, setCurrentSection] = useState<Section>(
+    shouldShowPasswordReset ? "resetPassword" : "guestUser"
+  );
   const [{ fetching: attachingCustomer }, customerAttach] = useCheckoutCustomerAttachMutation();
   const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
-  const { showErrors, showSuccess } = useAlerts();
+  const { showErrors } = useAlerts();
   const { authenticated, user } = useAuthState();
   const hasAuthenticated = useRef(false);
   const { checkout, loading } = useCheckout();
   const { getValues } = useFormContext();
 
-  const changeSection = (section: Section) => () => {
-    if (isCurrentSection(section)) {
-      return;
-    }
-
-    setCurrentSection(section);
-  };
+  const handleChangeSection = (section: Section) => () => setCurrentSection(section);
 
   const isCurrentSection = (section: Section) => currentSection === section;
-
-  const [passwordResetShown, setPasswordResetShown] = useState(false);
-
-  const passwordResetToken = getQueryVariables().passwordResetToken;
 
   const handleEmailUpdate = async (email: string) => {
     if (updatingEmail || !email?.length) {
@@ -56,8 +55,6 @@ export const Contact = () => {
       showErrors(errors, "checkoutEmailUpdate");
       return;
     }
-
-    showSuccess("checkoutEmailUpdate");
   };
 
   const updateEmailAfterSignIn = async () => {
@@ -83,7 +80,6 @@ export const Contact = () => {
 
     await customerAttach({
       checkoutId: checkout.id,
-      customerId: user?.id as string,
     });
   };
 
@@ -116,28 +112,36 @@ export const Contact = () => {
       return;
     }
 
-    if (passwordResetToken && !passwordResetShown) {
-      setCurrentSection("resetPassword");
+    if (shouldShowPasswordReset) {
       setPasswordResetShown(true);
       return;
     }
 
     setCurrentSection("guestUser");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, checkout?.user, authenticated, passwordResetToken]);
+  }, [loading, checkout?.user, authenticated]);
+
+  useEffect(() => {
+    const shouldShowOnlyContact = isCurrentSection("resetPassword") || isCurrentSection("signIn");
+    setShowOnlyContact(shouldShowOnlyContact);
+  }, [currentSection]);
 
   return (
     <div>
-      {isCurrentSection("guestUser") && <GuestUserForm onSectionChange={changeSection("signIn")} />}
+      {isCurrentSection("guestUser") && (
+        <GuestUserForm onSectionChange={handleChangeSection("signIn")} />
+      )}
 
-      {isCurrentSection("signIn") && <SignInForm onSectionChange={changeSection("guestUser")} />}
+      {isCurrentSection("signIn") && (
+        <SignInForm onSectionChange={handleChangeSection("guestUser")} />
+      )}
 
       {isCurrentSection("signedInUser") && (
-        <SignedInUser onSectionChange={changeSection("guestUser")} />
+        <SignedInUser onSectionChange={handleChangeSection("guestUser")} />
       )}
 
       {isCurrentSection("resetPassword") && (
-        <ResetPassword onSectionChange={changeSection("signIn")} />
+        <ResetPassword onSectionChange={handleChangeSection("signIn")} />
       )}
     </div>
   );

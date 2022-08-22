@@ -1,2 +1,3 @@
-export * from "./Addresses";
-export * from "./AddressesSkeleton";
+export * from "./AddressSkeleton";
+export * from "./ShippingAddressSection";
+export * from "./BillingAddressSection";

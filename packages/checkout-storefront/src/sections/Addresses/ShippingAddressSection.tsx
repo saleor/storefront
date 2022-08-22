@@ -1,65 +1,99 @@
-import { Checkbox } from "@/checkout-storefront/components/Checkbox";
-import { AddressFragment } from "@/checkout-storefront/graphql";
+import { Divider } from "@/checkout-storefront/components/Divider";
+import {
+  AddressFragment,
+  useCheckoutShippingAddressUpdateMutation,
+  useUserQuery,
+} from "@/checkout-storefront/graphql";
+import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
+import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useBillingSameAsShipping } from "@/checkout-storefront/providers/BillingSameAsShippingProvider";
+import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
+import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
-import { UserAddressFormData, UserDefaultAddressFragment } from "./types";
-import { useCheckoutAddressUpdate } from "./useCheckoutAddressUpdate";
+import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
+import { getAddressInputData, getAddressVlidationRulesVariables } from "./utils";
 
-export interface ShippingAddressSectionProps {
-  addresses?: AddressFragment[] | null;
-  defaultShippingAddress: UserDefaultAddressFragment;
-}
-
-export const ShippingAddressSection: React.FC<ShippingAddressSectionProps> = ({
-  defaultShippingAddress,
-  addresses = [],
-}) => {
+export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
-  const { isBillingSameAsShippingAddress, setIsBillingSameAsShippingAddress } =
-    useBillingSameAsShipping();
+  const shippingAddress = checkout?.shippingAddress;
+  const [{ data }] = useUserQuery({
+    pause: !authUser?.id,
+  });
 
-  const defaultAddress = checkout?.shippingAddress || defaultShippingAddress;
+  const user = data?.me;
+  const addresses = user?.addresses;
+  const { showErrors } = useAlerts();
+  const errorProps = useErrors<AddressFormData>();
+  const { setApiErrors } = errorProps;
 
-  const { updateShippingAddress, shippingErrorProps } = useCheckoutAddressUpdate();
+  const userDefaultAddress = user?.defaultShippingAddress;
+  const defaultAddress = checkout?.shippingAddress || userDefaultAddress;
+
+  const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
+
+  const updateShippingAddress = useCallback(
+    async ({ autoSave, ...address }: Partial<AddressFormData>) => {
+      const result = await checkoutShippingAddressUpdate({
+        checkoutId: checkout.id,
+        shippingAddress: getAddressInputData(address),
+        validationRules: getAddressVlidationRulesVariables(autoSave),
+      });
+
+      const [hasErrors, errors] = extractMutationErrors(result);
+
+      if (hasErrors) {
+        showErrors(errors, "checkoutShippingUpdate");
+        setApiErrors(errors);
+      }
+    },
+    [checkout.id]
+  );
+
+  const handleAutoSetShippingCountry = () => {
+    if (!shippingAddress && !userDefaultAddress) {
+      void updateShippingAddress({ autoSave: true, countryCode: getQueryVariables().countryCode });
+    }
+  };
+
+  useEffect(handleAutoSetShippingCountry, [shippingAddress, updateShippingAddress]);
+
+  if (collapsed) {
+    return null;
+  }
 
   return (
     <>
-      {authUser ? (
-        <UserAddressSection
-          {...(shippingErrorProps as UseErrors<UserAddressFormData>)}
-          title={formatMessage("shippingAddress")}
-          type="SHIPPING"
-          onAddressSelect={(address) => {
-            void updateShippingAddress(address);
-          }}
-          // @ts-ignore TMP
-          addresses={addresses as UserAddressFormData[]}
-          defaultAddressId={defaultAddress?.id}
-        />
-      ) : (
-        <GuestAddressSection
-          address={checkout?.shippingAddress as AddressFragment}
-          title={formatMessage("shippingAddress")}
-          onSubmit={(address) => {
-            void updateShippingAddress(address);
-          }}
-          {...shippingErrorProps}
-        />
-      )}
-      <Checkbox
-        value="useShippingAsBilling"
-        checked={isBillingSameAsShippingAddress}
-        onChange={setIsBillingSameAsShippingAddress}
-        label={formatMessage("useShippingAsBilling")}
-      />
+      <Divider />
+      <div className="section">
+        {authUser ? (
+          <UserAddressSection
+            {...(errorProps as UseErrors<UserAddressFormData>)}
+            title={formatMessage("shippingAddress")}
+            type="SHIPPING"
+            onAddressSelect={(formData: AddressFormData) => {
+              void updateShippingAddress(formData);
+            }}
+            addresses={addresses as AddressFragment[]}
+            defaultAddress={defaultAddress}
+          />
+        ) : (
+          <GuestAddressSection
+            checkAddressAvailability={true}
+            address={checkout?.shippingAddress}
+            title={formatMessage("shippingAddress")}
+            onSubmit={(address) => {
+              void updateShippingAddress(address);
+            }}
+            {...errorProps}
+          />
+        )}
+      </div>
     </>
   );
 };

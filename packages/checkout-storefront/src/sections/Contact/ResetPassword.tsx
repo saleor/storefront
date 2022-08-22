@@ -25,7 +25,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { setPassword: resetPassword } = useAuth();
-  const { showErrors, showSuccess } = useAlerts("resetPassword");
+  const { showErrors } = useAlerts("resetPassword");
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -49,10 +49,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
 
     if (hasErrors) {
       showErrors(errors);
-      return;
     }
-
-    showSuccess();
   };
 
   return (
