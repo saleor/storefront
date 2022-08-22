@@ -34,6 +34,8 @@
   },
   "packageManager": "pnpm@7.5.2",
   "dependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
     "react-slideshow-image": "^4.0.4"
   }
 }

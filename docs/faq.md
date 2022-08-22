@@ -90,15 +90,17 @@ If the project is run from this directory (e.g. `cd apps/saleor-app-checkout && 
 For more details check `env-vars` package.
 
 - Check order of your env variables. They are loaded in this order:
+
   - `apps/**/.env.local`
   - `apps/**/.env.development`
   - `apps/**/.env`
   - `.env.local` (root of monorepo)
   - `.env` (root of monorepo)
-If you define a variable with the same name in `.env.local` and in `.env` then the variable from `.env.local` takes precedence.
+    If you define a variable with the same name in `.env.local` and in `.env` then the variable from `.env.local` takes precedence.
 
 - Check order of your env variables in the file. Variables defined later in the file, override already defined variables.
-For example:
+  For example:
+
 ```bash
 MY_ENV=initial_value
 # ...
@@ -112,6 +114,7 @@ MY_ENV=overriden_value # this overrides `initial_value` with `overriden_value`
 To load environment variables in other packages, that don't use Next.js make sure to import `env-vars` package.
 
 You can do this by:
+
 - using `--require` parameter in Node CLI:
 
 ```bash
@@ -127,7 +130,7 @@ NODE_OPTIONS='--require 'env-vars'' my_command
 - Import the package at the top of your entry file (ex. `index.js`)
 
 ```js
-import "env-vars"
+import "env-vars";
 // or with CommonJS
-require("env-vars")
+require("env-vars");
 ```

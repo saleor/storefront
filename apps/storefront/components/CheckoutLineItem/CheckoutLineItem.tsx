@@ -1,13 +1,8 @@
-import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
-// import { IconButton } from "@/checkout-storefront/components/IconButton";
-// import { MinusIcon, PlusIcon } from "~/work/react-test/react-storefront/packages/checkout-storefront/src/assets/icons";
-// import { Text } from "@saleor/ui-kit";
-// import { getSvgSrc } from "~/packages/checkout-storefront/lib/svgSrc";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { translate } from "@/lib/translations";
 import {
@@ -20,21 +15,20 @@ import {
 import { usePaths } from "../../lib/paths";
 import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
+import { IconButton } from "./IconButton";
 
 interface CheckoutLineItemProps {
   line: CheckoutLineDetailsFragment;
 }
 
-export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
+export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
   const paths = usePaths();
   const t = useIntl();
   const { query, formatPrice } = useRegions();
   const { checkoutToken: token } = useCheckout();
-  const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
-    useCheckoutLineUpdateMutation();
+  const [checkoutLineUpdateMutation] = useCheckoutLineUpdateMutation();
   const [removeProductFromCheckout] = useRemoveProductFromCheckoutMutation();
-
-  const [quantity, setQuantity] = React.useState<number>();
+  const [quantity, setQuantity] = useState(line.quantity);
   const [errors, setErrors] = React.useState<ErrorDetailsFragment[] | null>(null);
 
   React.useEffect(() => {
@@ -42,31 +36,78 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
     setQuantity(line.quantity);
   }, [line]);
 
-  const changeLineState = (event: any) => {
-    if (!event?.target?.validity?.valid) return;
-    setQuantity(event.target.value);
+  // const changeLineState = (event: any) => {
+  //   if (!event?.target?.validity?.valid) return;
+  //   setQuantity(event.target.value);
+  // };
+
+  const changeLineState = (data: number) => {
+    setQuantity(data);
   };
 
-  const onQuantityUpdate = async (event: any) => {
-    changeLineState(event);
-    if (!event?.target?.validity?.valid || event?.target?.value === "") return;
-    const result = await checkoutLineUpdateMutation({
+  const setQuantityWithButtonPlus = async (type: string) => {
+    let result = await checkoutLineUpdateMutation({
       variables: {
         token,
-        lines: [
-          {
-            quantity: parseFloat(event.target.value),
-            variantId: line?.variant.id || "",
-          },
-        ],
+        lines: [],
         locale: query.locale,
       },
     });
+    if (type === "plus") {
+      changeLineState(quantity + 1);
+      result = await checkoutLineUpdateMutation({
+        variables: {
+          token,
+          lines: [
+            {
+              quantity: quantity + 1,
+              variantId: line?.variant.id || "",
+            },
+          ],
+          locale: query.locale,
+        },
+      });
+    } else if (type === "minus") {
+      changeLineState(quantity - 1);
+      result = await checkoutLineUpdateMutation({
+        variables: {
+          token,
+          lines: [
+            {
+              quantity: quantity - 1,
+              variantId: line?.variant.id || "",
+            },
+          ],
+          locale: query.locale,
+        },
+      });
+    }
     const mutationErrors = result.data?.checkoutLinesUpdate?.errors;
     if (mutationErrors && mutationErrors.length > 0) {
       setErrors(mutationErrors);
     }
   };
+
+  // const onQuantityUpdate = async (event: any) => {
+  //   changeLineState(event);
+  //   if (!event?.target?.validity?.valid || event?.target?.value === "") return;
+  //   const result = await checkoutLineUpdateMutation({
+  //     variables: {
+  //       token,
+  //       lines: [
+  //         {
+  //           quantity: parseFloat(event.target.value),
+  //           variantId: line?.variant.id || "",
+  //         },
+  //       ],
+  //       locale: query.locale,
+  //     },
+  //   });
+  //   const mutationErrors = result.data?.checkoutLinesUpdate?.errors;
+  //   if (mutationErrors && mutationErrors.length > 0) {
+  //     setErrors(mutationErrors);
+  //   }
+  // };
 
   if (!line) return null;
 
@@ -84,7 +125,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
 
       <div className="ml-8 flex-1 flex flex-col justify-center">
         <div>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <div className="pr-6">
               <h3 className="text-md md:text-xl font-bold">
                 <Link href={paths.products._slug(line?.variant?.product?.slug).$url()} passHref>
@@ -132,49 +173,48 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
               )}
             </div>
             <div className="flex justify-items-end space-x-4 ">
-              <input
-                type="number"
-                className={clsx(
-                  "h-8 md:mt-2 w-10 md:w-16 block border-gray-300 rounded-md shadow-sm text-base",
-                  errors && "border-red-500"
-                )}
-                defaultValue={quantity}
-                onFocus={() => {
-                  setErrors(null);
-                }}
-                onChange={(ev) => changeLineState(ev)}
-                onBlur={(ev) => onQuantityUpdate(ev)}
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
-                    onQuantityUpdate(ev);
+              <div className="flex flex-row items-center mb-3">
+                <IconButton
+                  variant="bare"
+                  onClick={() => {
+                    setQuantityWithButtonPlus("minus");
+                  }}
+                  icon={
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M17 12L7 12" stroke="#394052" strokeLinecap="round" />
+                    </svg>
                   }
-                }}
-                min={1}
-                required
-                disabled={loadingLineUpdate}
-                pattern="[0-9]*"
-              />
-              {/* <div className="flex flex-row mb-3">
+                />
+                <p className="text-md md:text-xl text-gray-900">{quantity}</p>
                 <IconButton
                   variant="bare"
-                  ariaLabel={formatMessage("addItemQuantityLabel")}
                   onClick={() => {
-                    setQuantity(quantity - 1);
+                    setQuantityWithButtonPlus("plus");
                   }}
-                  icon={<img src={getSvgSrc(MinusIcon)} alt="remove" />}
+                  icon={
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M12.5 7C12.5 6.72386 12.2761 6.5 12 6.5C11.7239 6.5 11.5 6.72386 11.5 7V11.5H7C6.72386 11.5 6.5 11.7239 6.5 12C6.5 12.2761 6.72386 12.5 7 12.5H11.5V17C11.5 17.2761 11.7239 17.5 12 17.5C12.2761 17.5 12.5 17.2761 12.5 17V12.5H17C17.2761 12.5 17.5 12.2761 17.5 12C17.5 11.7239 17.2761 11.5 17 11.5H12.5V7Z"
+                        fill="#394052"
+                      />
+                    </svg>
+                  }
                 />
-                <Text weight="bold" className="mx-3">
-                  {quantity}
-                </Text>
-                <IconButton
-                  variant="bare"
-                  ariaLabel={formatMessage("subtractItemQuantityLabel")}
-                  onClick={() => {
-                    setQuantity(quantity + 1);
-                  }}
-                  icon={<img src={getSvgSrc(PlusIcon)} alt="add" />}
-                />
-              </div> */}
+              </div>
               <p className="text-md md:text-xl text-gray-900 text-right">
                 {formatPrice(line?.totalPrice?.gross)}
               </p>

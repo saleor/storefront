@@ -47,6 +47,13 @@ module.exports = {
     "no-restricted-imports": "off",
     "no-restricted-exports": "off",
     "@typescript-eslint/ban-ts-comment": "off",
+    "react/function-component-definition": [
+      2,
+      {
+        namedComponents: "arrow-function",
+        unnamedComponents: "arrow-function",
+      },
+    ],
     // TO FIX:
     "import/no-cycle": "off", // pathpidia issue
     "import/prefer-default-export": "off",
