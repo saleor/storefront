@@ -30,6 +30,9 @@ export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
         <Suspense fallback={<SummarySkeleton />}>
           <Summary
             {...order}
+            // for now there can only be one voucher per order in the api
+            discount={order?.discounts?.find(({ type }) => type === "VOUCHER")?.amount}
+            voucherCode={order?.voucher?.code}
             totalPrice={order?.total}
             subtotalPrice={order?.subtotal}
             editable={false}

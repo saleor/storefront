@@ -18,6 +18,7 @@ import {
   GiftCardFragment,
   Money as MoneyType,
   OrderLineFragment,
+  TaxedMoney,
 } from "@/checkout-storefront/graphql";
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
 import { GrossMoney } from "@/checkout-storefront/lib/globalTypes";
@@ -30,9 +31,8 @@ const LG_BREAKPOINT = 1024;
 interface SummaryProps {
   editable?: boolean;
   lines: SummaryLine[];
-  totalPrice?: GrossMoney;
+  totalPrice?: TaxedMoney;
   subtotalPrice?: GrossMoney;
-  taxCost?: MoneyType;
   giftCards?: GiftCardFragment[];
   voucherCode?: string | null;
   discount?: MoneyType | null;
@@ -43,7 +43,6 @@ export const Summary: FC<SummaryProps> = ({
   editable = true,
   lines,
   totalPrice,
-  taxCost,
   subtotalPrice,
   giftCards = [],
   voucherCode,
@@ -162,13 +161,11 @@ export const Summary: FC<SummaryProps> = ({
           <div className="summary-row pb-4 items-baseline">
             <div className="flex flex-row items-baseline">
               <Text weight="bold">{formatMessage("total")}</Text>
-              {taxCost && (
-                <Text color="secondary" className="ml-2">
-                  {formatMessage("taxCost", {
-                    taxCost: getFormattedMoney(taxCost),
-                  })}
-                </Text>
-              )}
+              <Text color="secondary" className="ml-2">
+                {formatMessage("taxCost", {
+                  taxCost: getFormattedMoney(totalPrice?.tax),
+                })}
+              </Text>
             </div>
             <Money
               ariaLabel={formatMessage("totalLabel")}

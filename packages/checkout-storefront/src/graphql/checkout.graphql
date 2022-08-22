@@ -94,8 +94,7 @@ fragment CheckoutFragment on Checkout {
       ...Money
     }
     tax {
-      currency
-      amount
+      ...Money
     }
   }
   shippingPrice {

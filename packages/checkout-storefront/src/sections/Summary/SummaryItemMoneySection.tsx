@@ -3,6 +3,7 @@ import { OrderLineFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { Money } from "@/checkout-storefront/components/Money";
 import clsx from "clsx";
+import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
 
 interface LineItemQuantitySelectorProps {
   line: OrderLineFragment;
@@ -49,7 +50,7 @@ export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = 
           color="secondary"
           className="ml-4"
         >
-          {`${piecePrice} ${formatMessage("each")}`}
+          {`${getFormattedMoney(piecePrice)} ${formatMessage("each")}`}
         </Text>
       )}
     </div>

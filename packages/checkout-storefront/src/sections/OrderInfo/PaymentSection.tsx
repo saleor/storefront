@@ -8,6 +8,8 @@ import { getOrderPaymentStatus } from "@/checkout-storefront/fetch";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { Section } from "./Section";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
+import { CheckIcon } from "@/checkout-storefront/icons";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
@@ -33,7 +35,14 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
     }
 
     if (paymentData?.status === "PAID") {
-      return <Text color="success">{formatMessage("paidOrderMessage")}</Text>;
+      return (
+        <div className="flex flex-row items-center">
+          <Text color="success" className="mr-1">
+            {formatMessage("paidOrderMessage")}
+          </Text>
+          <img src={getSvgSrc(CheckIcon)} />
+        </div>
+      );
     }
 
     if (paymentData?.status === "PENDING") {

@@ -6,6 +6,7 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { useCheckoutRemovePromoCodeMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { isOrderConfirmationPage } from "@/checkout-storefront/lib/utils";
 
 interface SummaryPromoCodeRowProps extends SummaryMoneyRowProps {
   promoCode?: string;
@@ -19,7 +20,7 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
   editable,
   ...rest
 }) => {
-  const { checkout } = useCheckout();
+  const { checkout } = useCheckout({ pause: isOrderConfirmationPage() });
   const formatMessage = useFormattedMessages();
   const [, checkoutRemovePromoCode] = useCheckoutRemovePromoCodeMutation();
 

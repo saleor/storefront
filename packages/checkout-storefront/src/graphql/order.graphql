@@ -65,6 +65,13 @@ fragment Order on Order {
   id
   number
   userEmail
+  discounts {
+    type
+    name
+    amount {
+      ...Money
+    }
+  }
   shippingAddress {
     ...AddressFragment
   }
@@ -81,6 +88,9 @@ fragment Order on Order {
     tax {
       ...Money
     }
+  }
+  voucher {
+    code
   }
   shippingPrice {
     gross {

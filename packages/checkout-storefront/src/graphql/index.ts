@@ -12011,6 +12011,12 @@ export type OrderFulfillInput = {
   lines: Array<OrderFulfillLineInput>;
   /** If true, send an email notification to the customer. */
   notifyCustomer?: InputMaybe<Scalars["Boolean"]>;
+  /**
+   * Fulfillment tracking number.
+   *
+   * Added in Saleor 3.6.
+   */
+  trackingNumber?: InputMaybe<Scalars["String"]>;
 };
 
 export type OrderFulfillLineInput = {
@@ -19799,7 +19805,7 @@ export type User = Node &
   ObjectWithMetadata & {
     __typename?: "User";
     /** List of all user's addresses. */
-    addresses?: Maybe<Array<Address>>;
+    addresses: Array<Address>;
     avatar?: Maybe<Image>;
     /**
      * Returns the last open checkout of this user.
@@ -22083,7 +22089,7 @@ export type UserQuery = {
   me?: {
     __typename?: "User";
     id: string;
-    addresses?: Array<{
+    addresses: Array<{
       __typename?: "Address";
       id: string;
       city: string;
@@ -22097,7 +22103,7 @@ export type UserQuery = {
       firstName: string;
       lastName: string;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
-    }> | null;
+    }>;
     defaultBillingAddress?: {
       __typename?: "Address";
       id: string;
@@ -23627,6 +23633,12 @@ export type OrderFragment = {
   id: string;
   number: string;
   userEmail?: string | null;
+  discounts: Array<{
+    __typename?: "OrderDiscount";
+    type: OrderDiscountType;
+    name?: string | null;
+    amount: { __typename?: "Money"; currency: string; amount: number };
+  }>;
   shippingAddress?: {
     __typename?: "Address";
     id: string;
@@ -23671,6 +23683,7 @@ export type OrderFragment = {
     gross: { __typename?: "Money"; currency: string; amount: number };
     tax: { __typename?: "Money"; currency: string; amount: number };
   };
+  voucher?: { __typename?: "Voucher"; code: string } | null;
   shippingPrice: {
     __typename?: "TaxedMoney";
     gross: { __typename?: "Money"; currency: string; amount: number };
@@ -23720,6 +23733,12 @@ export type OrderQuery = {
     id: string;
     number: string;
     userEmail?: string | null;
+    discounts: Array<{
+      __typename?: "OrderDiscount";
+      type: OrderDiscountType;
+      name?: string | null;
+      amount: { __typename?: "Money"; currency: string; amount: number };
+    }>;
     shippingAddress?: {
       __typename?: "Address";
       id: string;
@@ -23764,6 +23783,7 @@ export type OrderQuery = {
       gross: { __typename?: "Money"; currency: string; amount: number };
       tax: { __typename?: "Money"; currency: string; amount: number };
     };
+    voucher?: { __typename?: "Voucher"; code: string } | null;
     shippingPrice: {
       __typename?: "TaxedMoney";
       gross: { __typename?: "Money"; currency: string; amount: number };
@@ -23975,8 +23995,7 @@ export const CheckoutFragmentDoc = gql`
         ...Money
       }
       tax {
-        currency
-        amount
+        ...Money
       }
     }
     shippingPrice {
@@ -24046,6 +24065,13 @@ export const OrderFragmentDoc = gql`
     id
     number
     userEmail
+    discounts {
+      type
+      name
+      amount {
+        ...Money
+      }
+    }
     shippingAddress {
       ...AddressFragment
     }
@@ -24063,6 +24089,9 @@ export const OrderFragmentDoc = gql`
         ...Money
       }
     }
+    voucher {
+      code
+    }
     shippingPrice {
       gross {
         ...Money
@@ -24077,9 +24106,9 @@ export const OrderFragmentDoc = gql`
       ...OrderLineFragment
     }
   }
+  ${MoneyFragmentDoc}
   ${AddressFragmentDoc}
   ${ShippingFragmentDoc}
-  ${MoneyFragmentDoc}
   ${OrderLineFragmentDoc}
 `;
 export const CheckoutDocument = gql`
@@ -24094,7 +24123,10 @@ export const CheckoutDocument = gql`
 export function useCheckoutQuery(
   options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, "query">
 ) {
-  return Urql.useQuery<CheckoutQuery>({ query: CheckoutDocument, ...options });
+  return Urql.useQuery<CheckoutQuery, CheckoutQueryVariables>({
+    query: CheckoutDocument,
+    ...options,
+  });
 }
 export const UserDocument = gql`
   query user {
@@ -24115,7 +24147,7 @@ export const UserDocument = gql`
 `;
 
 export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
-  return Urql.useQuery<UserQuery>({ query: UserDocument, ...options });
+  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options });
 }
 export const ChannelDocument = gql`
   query channel($slug: String!) {
@@ -24128,7 +24160,7 @@ export const ChannelDocument = gql`
 `;
 
 export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryVariables>, "query">) {
-  return Urql.useQuery<ChannelQuery>({ query: ChannelDocument, ...options });
+  return Urql.useQuery<ChannelQuery, ChannelQueryVariables>({ query: ChannelDocument, ...options });
 }
 export const CheckoutLinesUpdateDocument = gql`
   mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
@@ -24389,7 +24421,7 @@ export const AddressValidationRulesDocument = gql`
 export function useAddressValidationRulesQuery(
   options: Omit<Urql.UseQueryArgs<AddressValidationRulesQueryVariables>, "query">
 ) {
-  return Urql.useQuery<AddressValidationRulesQuery>({
+  return Urql.useQuery<AddressValidationRulesQuery, AddressValidationRulesQueryVariables>({
     query: AddressValidationRulesDocument,
     ...options,
   });
@@ -24449,5 +24481,5 @@ export const OrderDocument = gql`
 `;
 
 export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
-  return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
+  return Urql.useQuery<OrderQuery, OrderQueryVariables>({ query: OrderDocument, ...options });
 }

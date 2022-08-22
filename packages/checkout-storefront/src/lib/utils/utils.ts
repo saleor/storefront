@@ -30,8 +30,17 @@ export const getQueryVariables = (): QueryVariables => {
 
 export const getCurrentHref = () => location.href;
 
+export const isOrderConfirmationPage = () => {
+  const { orderId } = getQueryVariables();
+  return typeof orderId === "string";
+};
+
 export const extractCheckoutIdFromUrl = (): string => {
   const { checkoutId } = getQueryVariables();
+
+  if (isOrderConfirmationPage()) {
+    return "";
+  }
 
   if (typeof checkoutId !== "string") {
     throw new Error("Checkout token does not exist");

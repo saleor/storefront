@@ -27,6 +27,7 @@ const theme = {
       secondary: "#8A919F",
       tertiary: "#EEF1F7",
       error: "#B65757",
+      success: "#2C9B2A",
       inverted: "#FFFFFF",
       disabled: "rgba(57, 64, 82, 0.4)",
     },
