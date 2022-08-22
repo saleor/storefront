@@ -43,5 +43,13 @@ module.exports = withBundleAnalyzer({
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/checkout",
+        destination: `${process.env.NEXT_PUBLIC_CHECKOUT_URL}`,
+      },
+    ];
+  },
   experimental: {},
 });
