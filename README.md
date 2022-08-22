@@ -5,8 +5,8 @@
 </div>
 
 <div align="center">
-  <p><b>Next.js Storefront</b>: Open-source frontend e-commerce platform from the <a href="https://github.com/saleor/saleor">Saleor</a> team.</p>
-  <p><b>Saleor Checkout</b>: Extensible, checkout and payment integrations powered by Saleor API.</p>
+  <p><b>Next.js Storefront</b>: Your open-source frontend starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
+  <p><b>Saleor Checkout</b>: Extensible Next.js checkout application and payment integrations powered by Saleor API.</p>
 </div>
 
 <div align="center">
