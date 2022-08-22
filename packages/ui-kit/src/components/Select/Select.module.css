@@ -3,7 +3,7 @@
 }
 
 :local(.trigger) {
-  @apply h-10 border border-border-primary hover:border-border-active text-base items-center cursor-pointer w-full text-left whitespace-nowrap text-ellipsis overflow-hidden;
+  @apply h-10 border rounded border-border-primary hover:border-border-active text-base items-center cursor-default w-full text-left whitespace-nowrap text-ellipsis overflow-hidden;
   padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
   padding-right: calc(theme("spacing.11") - theme("borderWidth.DEFAULT"));
 }
@@ -47,9 +47,13 @@
 }
 
 .option {
-  @apply px-4 pt-[14px] pb-[13px] text-base cursor-pointer flex items-center;
+  @apply px-4 pt-[14px] pb-[13px] text-base cursor-default flex items-center;
 }
 
 .option-icon {
   @apply mr-3;
+}
+
+.disabled {
+  @apply text-text-secondary;
 }

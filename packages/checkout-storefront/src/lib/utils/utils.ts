@@ -1,3 +1,4 @@
+import { CountryCode } from "@/checkout-storefront/graphql";
 import { reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -8,19 +9,23 @@ export const getById =
   (obj: T) =>
     obj.id === idToCompare;
 
-export type QueryVariables = Record<
-  "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl",
-  string
->;
+export const getByUnmatchingId =
+  <T extends { id: string }>(idToCompare: string | undefined) =>
+  (obj: T) =>
+    obj.id !== idToCompare;
 
-export const getQueryVariables = (): Partial<QueryVariables> => {
+export type QueryVariables = Partial<
+  Record<"checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl", string>
+> & { countryCode: CountryCode };
+
+export const getQueryVariables = (): QueryVariables => {
   const vars = queryString.parse(location.search);
   return {
     ...vars,
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
-  };
+  } as QueryVariables;
 };
 
 export const getCurrentHref = () => location.href;

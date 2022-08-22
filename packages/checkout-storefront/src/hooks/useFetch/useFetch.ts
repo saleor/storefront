@@ -12,8 +12,6 @@ export const useFetch = <
 ): UseFetchResult<TError, TData, TArgs> => {
   const { args, skip = false } = optionalProps || {};
 
-  console.log({ skip, args });
-
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TData | null>(null);
   const [error, setError] = useState<TError | null>(null);

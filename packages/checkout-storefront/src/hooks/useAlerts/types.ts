@@ -1,10 +1,6 @@
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 
-export type AlertType = "success" | "error";
-
-export interface AlertSuccessData {
-  scope: CheckoutScope;
-}
+export type AlertType = "error";
 
 export interface AlertErrorData {
   scope: CheckoutScope;
@@ -20,7 +16,9 @@ export interface Alert {
 
 export type CheckoutScope =
   | "checkoutShippingUpdate"
+  | "checkoutCustomerAttach"
   | "checkoutBillingUpdate"
+  | "checkoutAddPromoCode"
   | "checkoutDeliveryMethodUpdate"
   | "userAddressCreate"
   | "userAddressUpdate"

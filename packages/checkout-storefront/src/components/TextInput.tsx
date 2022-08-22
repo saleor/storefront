@@ -4,13 +4,14 @@ import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
 import { Control, FieldPath, UseFormRegisterReturn, useWatch } from "react-hook-form";
 import { ControlFormData } from "@/checkout-storefront/hooks/useGetInputProps";
 import { Errors } from "../hooks/useErrors";
+import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
 
 export interface TextInputProps<
   TControl extends Control<any, any>,
   TFormData extends ControlFormData<TControl>
 > extends Omit<AllHTMLAttributes<HTMLInputElement>, "onBlur" | "onChange" | "name" | "ref">,
     Omit<UseFormRegisterReturn, "ref">,
-    Classes {
+    Pick<UiKitTextInputProps, "classNames"> {
   errors: Errors<TFormData>;
   control: TControl;
   name: FieldPath<TFormData>;

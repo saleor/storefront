@@ -2,11 +2,15 @@
 
 @layer components {
   .summary {
-    @apply flex flex-col w-full mb-8 lg:w-1/2 bg-background-secondary py-8 overflow-hidden;
+    @apply flex flex-col w-full lg:w-1/2 h-fit border border-border-secondary rounded-lg lg:border-none overflow-hidden lg:overflow-visible lg:summary-with-bottom-margin;
+  }
+
+  .summary-with-bottom-margin {
+    height: calc(100vh - 168px);
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-center bg-background-secondary z-50;
+    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:pb-6 lg:px-0 lg:pointer-events-none;
   }
 
   .summary-title .text {
@@ -26,11 +30,19 @@
   }
 
   .summary-items {
-    @apply overflow-visible sm:overflow-scroll;
+    @apply px-4 overflow-visible lg:pt-2 lg:overflow-scroll;
+  }
+
+  .summary-item {
+    @apply flex flex-row items-start mb-6 relative;
+  }
+
+  .summary-item:last-of-type {
+    @apply mb-0;
   }
 
   .summary-row {
-    @apply flex flex-row justify-between;
+    @apply flex flex-row justify-between items-center;
   }
 
   .summary-item-image {
@@ -42,6 +54,10 @@
   }
 
   .summary-recap {
-    @apply flex flex-col max-w-full px-6 ml-0 md:ml-22;
+    @apply flex flex-col max-w-full;
+  }
+
+  .summary-recap > .summary-row {
+    @apply px-4;
   }
 }

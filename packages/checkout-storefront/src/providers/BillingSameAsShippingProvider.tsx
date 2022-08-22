@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useRef, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 

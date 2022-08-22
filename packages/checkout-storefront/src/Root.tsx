@@ -3,19 +3,19 @@ import { ErrorBoundary } from "react-error-boundary";
 import { I18nProvider } from "@react-aria/i18n";
 import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 
-import { Checkout } from "@/checkout-storefront/Checkout";
+import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/views/Checkout";
 import { getCurrentRegion } from "@/checkout-storefront/lib/regions";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
-import { OrderConfirmation } from "@/checkout-storefront/sections/OrderConfirmation";
-import { PageNotFound } from "@/checkout-storefront/sections/PageNotFound";
+import {
+  OrderConfirmation,
+  OrderConfirmationSkeleton,
+} from "@/checkout-storefront/views/OrderConfirmation";
+import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
 import type { AppEnv } from "./providers/AppConfigProvider/types";
-import { CheckoutSkeleton } from "./CheckoutSkeleton";
-import { SummarySkeleton } from "./sections/Summary/SummarySkeleton";
-import { OrderConfirmationSkeleton } from "./sections/OrderConfirmation/OrderConfirmationSkeleton";
 
 export interface RootProps {
   env: AppEnv;
@@ -31,7 +31,7 @@ export const Root = ({ env }: RootProps) => {
       createClient({
         url: env.apiUrl,
         suspense: true,
-        requestPolicy: "network-only",
+        requestPolicy: "cache-first",
         fetch: authorizedFetch as ClientOptions["fetch"],
       }),
     []

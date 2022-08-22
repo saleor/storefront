@@ -1,14 +1,9 @@
-import { Divider } from "@/checkout-storefront/components/Divider";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { Contact, ContactSkeleton } from "@/checkout-storefront/sections/Contact";
-import {
-  ShippingMethods,
-  ShippingMethodsSkeleton,
-} from "@/checkout-storefront/sections/ShippingMethods";
-import { Addresses, AddressesSkeleton } from "@/checkout-storefront/sections/Addresses";
+import { Contact } from "@/checkout-storefront/sections/Contact";
+import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { Button } from "@/checkout-storefront/components/Button";
@@ -17,10 +12,13 @@ import { FormData } from "./types";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
-import { usePaymentMethods } from "../PaymentMethods/usePaymentMethods";
-import { PaymentMethods } from "../PaymentMethods";
-import { PaymentProviderID } from "checkout-common";
+import { usePaymentMethods } from "../PaymentSection/usePaymentMethods";
+import { PaymentSection } from "../PaymentSection";
 import invariant from "ts-invariant";
+import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
+import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
+import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
+import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -32,6 +30,7 @@ export const CheckoutForm = () => {
   const isLoading = loading || authenticating;
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
   const { selectedPaymentProvider, selectedPaymentMethod } = usePaymentProvidersProps;
+  const [showOnlyContact, setShowOnlyContact] = useState(false);
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -72,34 +71,32 @@ export const CheckoutForm = () => {
     !selectedPaymentProvider;
 
   return (
-    <div className="checkout-form">
-      <FormProvider {...methods}>
-        <Suspense fallback={<ContactSkeleton />}>
-          <Contact />
-        </Suspense>
-      </FormProvider>
-      <Divider className="mt-4" />
-      <Suspense fallback={<AddressesSkeleton />}>
-        <Addresses />
-      </Suspense>
-      <Suspense fallback={<ShippingMethodsSkeleton />}>
-        <ShippingMethods />
-      </Suspense>
-      <PaymentMethods {...usePaymentProvidersProps} />
-      {isLoading ? (
+    <div className="checkout-form-container">
+      <div className="checkout-form">
+        <FormProvider {...methods}>
+          <Suspense fallback={<ContactSkeleton />}>
+            <Contact setShowOnlyContact={setShowOnlyContact} />
+          </Suspense>
+        </FormProvider>
+        <>
+          {checkout?.isShippingRequired && (
+            <Suspense fallback={<AddressSectionSkeleton />}>
+              <ShippingAddressSection collapsed={showOnlyContact} />
+            </Suspense>
+          )}
+          <Suspense fallback={<DeliveryMethodsSkeleton />}>
+            <DeliveryMethods collapsed={showOnlyContact} />
+          </Suspense>
+          <PaymentSection {...usePaymentProvidersProps} collapsed={showOnlyContact} />
+        </>
+      </div>
+      {!showOnlyContact && (
         <Button
-          disabled
+          disabled={isLoading || payButtonDisabled}
           ariaLabel={formatMessage("finalizeCheckoutLabel")}
           label={formatMessage("pay")}
           className="pay-button"
-        />
-      ) : (
-        <Button
-          disabled={payButtonDisabled}
-          ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          label={formatMessage("pay")}
           onClick={handleSubmit}
-          className="pay-button"
         />
       )}
     </div>
