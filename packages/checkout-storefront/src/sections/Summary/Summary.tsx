@@ -31,7 +31,7 @@ const LG_BREAKPOINT = 1024;
 interface SummaryProps {
   editable?: boolean;
   lines: SummaryLine[];
-  totalPrice?: TaxedMoney;
+  totalPrice?: Pick<TaxedMoney, "gross" | "tax">;
   subtotalPrice?: GrossMoney;
   giftCards?: GiftCardFragment[];
   voucherCode?: string | null;
