@@ -4,7 +4,7 @@ import { useCheckoutQuery } from "@/checkout-storefront/graphql";
 import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 
-export const useCheckout = ({ pause = false }: { pause?: boolean }) => {
+export const useCheckout = ({ pause }: { pause?: boolean } = { pause: false }) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);
   const { authenticating } = useAuthState();
 
