@@ -50,7 +50,7 @@ export interface RegionsProviderProps {
   children: React.ReactNode;
 }
 
-export function RegionsProvider({ children }: PropsWithChildren<{}>) {
+export const RegionsProvider = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter();
   const { resetCheckoutToken } = useCheckout();
 
@@ -92,7 +92,7 @@ export function RegionsProvider({ children }: PropsWithChildren<{}>) {
       </IntlProvider>
     </Provider>
   );
-}
+};
 
 export const useRegions = useContext;
 

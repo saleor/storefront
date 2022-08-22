@@ -29,13 +29,11 @@ const getIcon = (iconName: NavIconButtonProps["icon"]) => {
   }
 };
 
-function NavIconButton({ icon, counter, ...rest }: NavIconButtonProps) {
-  return (
-    <button type="button" className={styles["nav-icon-button"]} {...rest}>
-      {getIcon(icon)}
-      {!!counter && <span className={styles["nav-icon-counter"]}>{counter}</span>}
-    </button>
-  );
-}
+const NavIconButton = ({ icon, counter, ...rest }: NavIconButtonProps) => (
+  <button type="button" className={styles["nav-icon-button"]} {...rest}>
+    {getIcon(icon)}
+    {!!counter && <span className={styles["nav-icon-counter"]}>{counter}</span>}
+  </button>
+);
 
 export default NavIconButton;

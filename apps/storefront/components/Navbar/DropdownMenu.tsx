@@ -11,7 +11,7 @@ interface DropdownProps {
   menuItem: MenuItemWithChildrenFragment;
 }
 
-function Dropdown({ menuItem }: DropdownProps) {
+const Dropdown = ({ menuItem }: DropdownProps) => {
   const {
     currentChannel: { slug },
     currentLocale,
@@ -63,6 +63,6 @@ function Dropdown({ menuItem }: DropdownProps) {
       )}
     </div>
   );
-}
+};
 
 export default Dropdown;

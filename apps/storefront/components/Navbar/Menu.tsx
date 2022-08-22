@@ -6,7 +6,7 @@ import { useRegions } from "../RegionsProvider";
 import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
 
-export function Menu() {
+export const Menu = () => {
   const { query } = useRegions();
 
   const { error, data } = useMainMenuQuery({
@@ -30,6 +30,6 @@ export function Menu() {
       </ol>
     </nav>
   );
-}
+};
 
 export default Menu;

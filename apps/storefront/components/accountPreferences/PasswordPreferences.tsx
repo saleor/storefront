@@ -12,7 +12,7 @@ interface PasswordChangeFormData {
   newPasswordRepeat: string;
 }
 
-export function PasswordPreferences() {
+export const PasswordPreferences = () => {
   const t = useIntl();
   const [passwordChangeMutation] = usePasswordChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<string>("");
@@ -125,6 +125,6 @@ export function PasswordPreferences() {
       </form>
     </div>
   );
-}
+};
 
 export default PasswordPreferences;

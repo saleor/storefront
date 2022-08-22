@@ -19,7 +19,7 @@ export interface LoginFormData {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function LoginPage() {
+const LoginPage = () => {
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
@@ -127,10 +127,10 @@ function LoginPage() {
       </div>
     </div>
   );
-}
+};
 
 // FIXME: Temporary disable authentication
-function TemporaryLoginPage() {
+const TemporaryLoginPage = () => {
   const router = useRouter();
   const paths = usePaths();
   const redirectURL = router.query.next?.toString() || paths.$url();
@@ -139,6 +139,6 @@ function TemporaryLoginPage() {
     router.push(redirectURL);
   }
   return null;
-}
+};
 
 export default TemporaryLoginPage;

@@ -22,11 +22,11 @@ export interface AddressFormProps {
   updateAddressMutation: (address: AddressFormData) => Promise<CheckoutError[]>;
 }
 
-export function AddressForm({
+export const AddressForm = ({
   existingAddressData,
   toggleEdit,
   updateAddressMutation,
-}: AddressFormProps) {
+}: AddressFormProps) => {
   const t = useIntl();
   const {
     register: registerAddress,
@@ -190,4 +190,4 @@ export function AddressForm({
       </div>
     </form>
   );
-}
+};

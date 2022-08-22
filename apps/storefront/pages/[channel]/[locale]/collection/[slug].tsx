@@ -56,10 +56,10 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
   };
 };
-function CollectionPage({
+const CollectionPage = ({
   collection,
   attributeFiltersData,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   if (!collection) {
     return <Custom404 />;
   }
@@ -83,7 +83,7 @@ function CollectionPage({
       </div>
     </>
   );
-}
+};
 
 export default CollectionPage;
 

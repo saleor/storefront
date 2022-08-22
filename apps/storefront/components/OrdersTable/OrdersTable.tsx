@@ -9,7 +9,7 @@ export interface OrdersTableProps {
   orders: OrderDetailsFragment[];
 }
 
-export function OrdersTable({ orders }: OrdersTableProps) {
+export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const router = useRouter();
   const paths = usePaths();
   const { formatPrice } = useRegions();
@@ -42,4 +42,4 @@ export function OrdersTable({ orders }: OrdersTableProps) {
       </tbody>
     </table>
   );
-}
+};

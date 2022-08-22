@@ -17,7 +17,7 @@ export interface LocaleDropdownProps {
   horizontalAlignment?: HorizontalAlignment;
 }
 
-export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
+export const LocaleDropdown = ({ horizontalAlignment }: LocaleDropdownProps) => {
   const router = useRouter();
   const { currentLocale, currentChannel } = useRegions();
 
@@ -55,6 +55,6 @@ export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
       ))}
     </BaseRegionsDropdown>
   );
-}
+};
 
 export default LocaleDropdown;

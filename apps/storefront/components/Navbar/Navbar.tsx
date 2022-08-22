@@ -15,7 +15,7 @@ import NavIconButton from "./NavIconButton";
 import Stamp from "./Stamp";
 // import UserMenu from "./UserMenu";
 
-export function Navbar() {
+export const Navbar = () => {
   const paths = usePaths();
   const router = useRouter();
 
@@ -86,6 +86,6 @@ export function Navbar() {
       <BurgerMenu open={isBurgerOpen} onCloseClick={() => setBurgerOpen(false)} />
     </>
   );
-}
+};
 
 export default Navbar;

@@ -12,7 +12,7 @@ export interface SliderProps {
   product: ProductDetailsFragment;
 }
 
-export function Slider({ product }: SliderProps) {
+export const Slider = ({ product }: SliderProps) => {
   const galleryMedia = getGalleryMedia({ product });
   return (
     <Slide autoplay={false} transitionDuration={250}>
@@ -23,6 +23,6 @@ export function Slider({ product }: SliderProps) {
       ))}
     </Slide>
   );
-}
+};
 
 export default Slider;

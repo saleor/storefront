@@ -14,7 +14,7 @@ export interface VariantSelectorProps {
   selectedVariantID?: string;
 }
 
-export function VariantSelector({ product, selectedVariantID }: VariantSelectorProps) {
+export const VariantSelector = ({ product, selectedVariantID }: VariantSelectorProps) => {
   const paths = usePaths();
   const router = useRouter();
   const { formatPrice } = useRegions();
@@ -76,6 +76,6 @@ export function VariantSelector({ product, selectedVariantID }: VariantSelectorP
       </RadioGroup>
     </div>
   );
-}
+};
 
 export default VariantSelector;

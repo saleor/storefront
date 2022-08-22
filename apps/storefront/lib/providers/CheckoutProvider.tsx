@@ -19,7 +19,7 @@ export interface CheckoutConsumerProps {
 
 export const [useCheckout, Provider] = createSafeContext<CheckoutConsumerProps>();
 
-export function CheckoutProvider({ children }: { children: ReactNode }) {
+export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;
 
@@ -46,4 +46,4 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   };
 
   return <Provider value={providerValues}>{children}</Provider>;
-}
+};

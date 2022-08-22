@@ -59,10 +59,10 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   };
 };
 
-function CategoryPage({
+const CategoryPage = ({
   category,
   attributeFiltersData,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const paths = usePaths();
   const router = useRouter();
 
@@ -101,7 +101,7 @@ function CategoryPage({
       </main>
     </>
   );
-}
+};
 
 export default CategoryPage;
 

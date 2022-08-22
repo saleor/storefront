@@ -6,7 +6,7 @@ import { AccountLayout, AddressBookCard, Spinner } from "@/components";
 import { messages } from "@/components/translations";
 import { useCurrentUserAddressesQuery } from "@/saleor/api";
 
-function AddressBookPage() {
+const AddressBookPage = () => {
   const t = useIntl();
   const { authenticated } = useAuthState();
   const { loading, error, data, refetch } = useCurrentUserAddressesQuery({
@@ -34,7 +34,7 @@ function AddressBookPage() {
       ))}
     </div>
   );
-}
+};
 
 export default AddressBookPage;
 

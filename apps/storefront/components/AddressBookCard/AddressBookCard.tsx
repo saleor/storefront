@@ -15,7 +15,7 @@ export interface AddressBookCardProps {
   onRefreshBook: () => void;
 }
 
-export function AddressBookCard({ address, onRefreshBook }: AddressBookCardProps) {
+export const AddressBookCard = ({ address, onRefreshBook }: AddressBookCardProps) => {
   const t = useIntl();
   const [setAddressDefaultMutation] = useSetAddressDefaultMutation();
   const [deleteAddressMutation] = useAddressDeleteMutation();
@@ -69,4 +69,4 @@ export function AddressBookCard({ address, onRefreshBook }: AddressBookCardProps
       </Button>
     </div>
   );
-}
+};

@@ -12,7 +12,7 @@ interface EmailChangeFormData {
   redirectUrl: string;
 }
 
-export function EmailPreferences() {
+export const EmailPreferences = () => {
   const t = useIntl();
   const [requestEmailChange] = useRequestEmailChangeMutation({});
   const [successMessage, setSuccessMessage] = React.useState<string>();
@@ -100,6 +100,6 @@ export function EmailPreferences() {
       </form>
     </div>
   );
-}
+};
 
 export default EmailPreferences;

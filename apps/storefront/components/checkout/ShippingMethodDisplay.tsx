@@ -7,7 +7,7 @@ export interface ShippingMethodDisplayProps {
   method: DeliveryMethodFragment;
 }
 
-export function ShippingMethodDisplay({ method }: ShippingMethodDisplayProps) {
+export const ShippingMethodDisplay = ({ method }: ShippingMethodDisplayProps) => {
   const { formatPrice } = useRegions();
   return (
     <div>
@@ -18,6 +18,6 @@ export function ShippingMethodDisplay({ method }: ShippingMethodDisplayProps) {
       <div className="mt-6 text-sm font-medium text-gray-900">{formatPrice(method.price)}</div>
     </div>
   );
-}
+};
 
 export default ShippingMethodDisplay;

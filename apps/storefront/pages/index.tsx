@@ -1,5 +1,3 @@
-export function HomeRedirection() {
-  return null;
-}
+export const HomeRedirection = () => null;
 
 export default HomeRedirection;

@@ -13,7 +13,7 @@ export interface PaymentSectionProps {
   active: boolean;
 }
 
-export function PaymentSection({ checkout, active }: PaymentSectionProps) {
+export const PaymentSection = ({ checkout, active }: PaymentSectionProps) => {
   const t = useIntl();
   const existingGateways = [STRIPE_GATEWAY, DUMMY_CREDIT_CARD_GATEWAY];
   const availableGateways = checkout.availablePaymentGateways.filter((g) =>
@@ -62,6 +62,6 @@ export function PaymentSection({ checkout, active }: PaymentSectionProps) {
       )}
     </>
   );
-}
+};
 
 export default PaymentSection;

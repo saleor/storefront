@@ -17,7 +17,7 @@ export interface BillingAddressSection {
   checkout: CheckoutDetailsFragment;
 }
 
-export function BillingAddressSection({ active, checkout }: BillingAddressSection) {
+export const BillingAddressSection = ({ active, checkout }: BillingAddressSection) => {
   const t = useIntl();
   const { authenticated } = useAuthState();
   const [editing, setEditing] = useState(!checkout.billingAddress);
@@ -72,6 +72,6 @@ export function BillingAddressSection({ active, checkout }: BillingAddressSectio
         ))}
     </>
   );
-}
+};
 
 export default BillingAddressSection;

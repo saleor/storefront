@@ -11,7 +11,7 @@ interface NavigationAnchorProps {
   className: string;
 }
 
-export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps) {
+export const NavigationAnchor = ({ menuItem, className }: NavigationAnchorProps) => {
   const {
     currentChannel: { slug },
     currentLocale,
@@ -38,6 +38,6 @@ export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps)
       </a>
     </Link>
   );
-}
+};
 
 export default NavigationAnchor;

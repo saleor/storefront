@@ -22,7 +22,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
 
   return (
@@ -39,6 +39,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       </CheckoutProvider>
     </ApolloProvider>
   );
-}
+};
 
 export default MyApp;

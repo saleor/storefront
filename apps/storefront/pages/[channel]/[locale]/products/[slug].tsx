@@ -58,7 +58,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     revalidate: 60, // value in seconds, how often ISR will trigger on the server
   };
 };
-function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>) {
+const ProductPage = ({ product }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const paths = usePaths();
   const t = useIntl();
@@ -224,7 +224,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
       </main>
     </>
   );
-}
+};
 
 export default ProductPage;
 

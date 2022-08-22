@@ -28,13 +28,13 @@ export interface ProductCollectionProps {
   setCounter?: (value: number) => void;
 }
 
-export function ProductCollection({
+export const ProductCollection = ({
   filter,
   sortBy,
   setCounter,
   allowMore = true,
   perPage = 4,
-}: ProductCollectionProps) {
+}: ProductCollectionProps) => {
   const t = useIntl();
   const { query } = useRegions();
 
@@ -97,6 +97,6 @@ export function ProductCollection({
       )}
     </div>
   );
-}
+};
 
 export default ProductCollection;

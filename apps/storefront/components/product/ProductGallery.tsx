@@ -17,7 +17,7 @@ export interface ProductGalleryProps {
   selectedVariant?: ProductVariantDetailsFragment;
 }
 
-export function ProductGallery({ product, selectedVariant }: ProductGalleryProps) {
+export const ProductGallery = ({ product, selectedVariant }: ProductGalleryProps) => {
   const [expandedImage, setExpandedImage] = useState<ProductMediaFragment | undefined>(undefined);
   const [videoToPlay, setVideoToPlay] = useState<ProductMediaFragment | undefined>(undefined);
 
@@ -94,4 +94,4 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
       )}
     </>
   );
-}
+};

@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { NotFoundSeo } from "@/components/seo/NotFoundSeo";
 import { usePaths } from "@/lib/paths";
 
-function Custom404() {
+const Custom404 = () => {
   const paths = usePaths();
 
   return (
@@ -29,6 +29,6 @@ function Custom404() {
       </div>
     </>
   );
-}
+};
 
 export default Custom404;

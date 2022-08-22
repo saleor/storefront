@@ -7,7 +7,7 @@ import { Layout, ProductCollection } from "@/components";
 import { messages } from "@/components/translations";
 import { ProductFilterInput } from "@/saleor/api";
 
-function SearchPage() {
+const SearchPage = () => {
   const t = useIntl();
   const [searchQuery, setSearchQuery] = useQueryState("q");
   const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({});
@@ -38,7 +38,7 @@ function SearchPage() {
       <ProductCollection filter={debouncedFilter} />
     </main>
   );
-}
+};
 
 SearchPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

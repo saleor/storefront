@@ -9,7 +9,7 @@ interface VideoExpandProps {
   onRemoveExpand: () => void;
 }
 
-export function VideoExpand({ video, onRemoveExpand }: VideoExpandProps) {
+export const VideoExpand = ({ video, onRemoveExpand }: VideoExpandProps) => {
   if (!video) {
     return null;
   }
@@ -40,6 +40,6 @@ export function VideoExpand({ video, onRemoveExpand }: VideoExpandProps) {
       </div>
     </div>
   );
-}
+};
 
 export default VideoExpand;

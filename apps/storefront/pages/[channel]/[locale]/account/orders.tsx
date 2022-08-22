@@ -5,7 +5,7 @@ import { AccountLayout, OrdersTable, Pagination, Spinner } from "@/components";
 import { mapEdgesToItems } from "@/lib/maps";
 import { useOrdersQuery } from "@/saleor/api";
 
-function OrdersPage() {
+const OrdersPage = () => {
   const { authenticated } = useAuthState();
   const {
     data: ordersCollection,
@@ -50,7 +50,7 @@ function OrdersPage() {
       />
     </>
   );
-}
+};
 
 export default OrdersPage;
 

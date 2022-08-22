@@ -6,7 +6,7 @@ import { BaseSeo } from "@/components/seo/BaseSeo";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
-function CheckoutPage() {
+const CheckoutPage = () => {
   const router = useRouter();
   const paths = usePaths();
   const { checkout, loading } = useCheckout();
@@ -46,7 +46,7 @@ function CheckoutPage() {
       </main>
     </>
   );
-}
+};
 
 export default CheckoutPage;
 

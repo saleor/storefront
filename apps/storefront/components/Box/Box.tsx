@@ -7,8 +7,8 @@ export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
   shadowless?: boolean;
 }
 
-export function Box({ className, ...rest }: BoxProps) {
-  return <div className={clsx(styles.box, className)} {...rest} />;
-}
+export const Box = ({ className, ...rest }: BoxProps) => (
+  <div className={clsx(styles.box, className)} {...rest} />
+);
 
 export default Box;

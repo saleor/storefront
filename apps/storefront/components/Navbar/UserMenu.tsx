@@ -12,7 +12,7 @@ import NavIconButton from "./NavIconButton";
 
 type UserMenuProps = Pick<HTMLAttributes<HTMLDivElement>, "className">;
 
-function UserMenu({ className, ...rest }: UserMenuProps) {
+const UserMenu = ({ className, ...rest }: UserMenuProps) => {
   const paths = usePaths();
   const t = useIntl();
 
@@ -33,6 +33,6 @@ function UserMenu({ className, ...rest }: UserMenuProps) {
       </div>
     </div>
   );
-}
+};
 
 export default UserMenu;

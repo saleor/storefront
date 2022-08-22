@@ -10,7 +10,7 @@ import { useMainMenuQuery } from "@/saleor/api";
 import { HamburgerButton } from "../HamburgerButton";
 import { useRegions } from "../RegionsProvider";
 
-export function MainMenu() {
+export const MainMenu = () => {
   const { query, currentChannel, currentLocale } = useRegions();
 
   const { loading, error, data } = useMainMenuQuery({
@@ -89,6 +89,6 @@ export function MainMenu() {
       </div>
     </div>
   );
-}
+};
 
 export default MainMenu;

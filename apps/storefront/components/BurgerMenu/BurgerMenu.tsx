@@ -21,7 +21,7 @@ export interface BurgerMenuProps {
   onCloseClick?: () => void;
 }
 
-export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
+export const BurgerMenu = ({ open, onCloseClick }: BurgerMenuProps) => {
   // const paths = usePaths();
   const { query } = useRegions();
   // const t = useIntl();
@@ -92,6 +92,6 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
       </div>
     </div>
   );
-}
+};
 
 export default BurgerMenu;

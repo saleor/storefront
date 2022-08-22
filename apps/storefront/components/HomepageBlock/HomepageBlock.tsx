@@ -15,7 +15,7 @@ export interface HomepageBlockProps {
   menuItem: HomepageBlockFragment;
 }
 
-export function HomepageBlock({ menuItem }: HomepageBlockProps) {
+export const HomepageBlock = ({ menuItem }: HomepageBlockProps) => {
   const paths = usePaths();
   const t = useIntl();
   const filter: ProductFilterInput = {};
@@ -50,6 +50,6 @@ export function HomepageBlock({ menuItem }: HomepageBlockProps) {
       </div>
     </div>
   );
-}
+};
 
 export default HomepageBlock;

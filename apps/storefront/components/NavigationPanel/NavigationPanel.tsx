@@ -5,7 +5,7 @@ import { useIntl } from "react-intl";
 import { usePaths } from "../../lib/paths";
 import { messages } from "../translations";
 
-export function NavigationPanel() {
+export const NavigationPanel = () => {
   const paths = usePaths();
   const t = useIntl();
 
@@ -30,6 +30,6 @@ export function NavigationPanel() {
       </Link>
     </div>
   );
-}
+};
 
 export default NavigationPanel;

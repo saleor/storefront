@@ -21,7 +21,7 @@ export interface ShippingAddressSectionProps {
   checkout: CheckoutDetailsFragment;
 }
 
-export function ShippingAddressSection({ active, checkout }: ShippingAddressSectionProps) {
+export const ShippingAddressSection = ({ active, checkout }: ShippingAddressSectionProps) => {
   const t = useIntl();
   const { query } = useRegions();
 
@@ -109,6 +109,6 @@ export function ShippingAddressSection({ active, checkout }: ShippingAddressSect
         ))}
     </>
   );
-}
+};
 
 export default ShippingAddressSection;

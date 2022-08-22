@@ -8,7 +8,7 @@ interface ImageExpandProps {
   image?: ProductMediaFragment;
   onRemoveExpand: () => void;
 }
-export function ImageExpand({ image, onRemoveExpand }: ImageExpandProps) {
+export const ImageExpand = ({ image, onRemoveExpand }: ImageExpandProps) => {
   if (!image) {
     return null;
   }
@@ -26,6 +26,6 @@ export function ImageExpand({ image, onRemoveExpand }: ImageExpandProps) {
       </div>
     </div>
   );
-}
+};
 
 export default ImageExpand;

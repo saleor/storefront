@@ -20,7 +20,7 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 // @todo remove this when the issue is fixed.
 const fixMenuItemLocalhostUrl = (url: string) => url.replace(/^https?:\/\/localhost:8000\//, "/");
 
-export function Footer({ className, ...rest }: FooterProps) {
+export const Footer = ({ className, ...rest }: FooterProps) => {
   const paths = usePaths();
   const { query, currentChannel, currentLocale } = useRegions();
 
@@ -105,6 +105,6 @@ export function Footer({ className, ...rest }: FooterProps) {
       </Box>
     </footer>
   );
-}
+};
 
 export default Footer;

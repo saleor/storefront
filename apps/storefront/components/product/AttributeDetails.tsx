@@ -11,7 +11,7 @@ export interface AttributeDetailsProps {
   selectedVariant?: ProductVariantDetailsFragment;
 }
 
-export function AttributeDetails({ product, selectedVariant }: AttributeDetailsProps) {
+export const AttributeDetails = ({ product, selectedVariant }: AttributeDetailsProps) => {
   const t = useIntl();
   const attributes = getProductAttributes(product, selectedVariant);
   if (attributes.length === 0) {
@@ -48,4 +48,4 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
       </div>
     </div>
   );
-}
+};

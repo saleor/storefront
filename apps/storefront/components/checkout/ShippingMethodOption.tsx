@@ -10,7 +10,7 @@ export interface ShippingMethodOptionProps {
   method: DeliveryMethodFragment;
 }
 
-export function ShippingMethodOption({ method }: ShippingMethodOptionProps) {
+export const ShippingMethodOption = ({ method }: ShippingMethodOptionProps) => {
   const { formatPrice } = useRegions();
 
   return (
@@ -55,4 +55,4 @@ export function ShippingMethodOption({ method }: ShippingMethodOptionProps) {
       )}
     </RadioGroup.Option>
   );
-}
+};

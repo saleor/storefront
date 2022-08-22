@@ -25,7 +25,7 @@ const getCardSecondaryDescription = (product: ProductCardFragment) => {
   return "";
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = ({ product }: ProductCardProps) => {
   const paths = usePaths();
   const secondaryDescription = getCardSecondaryDescription(product);
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
@@ -58,4 +58,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
     </li>
   );
-}
+};

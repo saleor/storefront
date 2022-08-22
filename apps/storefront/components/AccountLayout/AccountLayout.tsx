@@ -8,7 +8,7 @@ import { usePaths } from "@/lib/paths";
 
 export type AccountLayoutProps = PropsWithChildren<{}>;
 
-export function AccountLayout({ children }: AccountLayoutProps) {
+export const AccountLayout = ({ children }: AccountLayoutProps) => {
   const router = useRouter();
   const paths = usePaths();
   const { authenticated, authenticating } = useAuthState();
@@ -39,4 +39,4 @@ export function AccountLayout({ children }: AccountLayoutProps) {
       </div>
     </Layout>
   );
-}
+};

@@ -224,6 +224,6 @@ export const CheckoutLineItem = ({ line }: CheckoutLineItemProps) => {
       </div>
     </>
   );
-}
+};
 
 export default CheckoutLineItem;
