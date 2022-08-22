@@ -1,4 +1,5 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
+import { getCountryByCountryCode } from "@/checkout-storefront/sections/Addresses/countries";
 import { reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -33,6 +34,18 @@ export const getCurrentHref = () => location.href;
 export const isOrderConfirmationPage = () => {
   const { orderId } = getQueryVariables();
   return typeof orderId === "string";
+};
+
+export const getLocalizationDataFromUrl = () => {
+  const [, , /*channel*/ locale] = location.pathname.split("/");
+
+  if (typeof locale !== "string") {
+    throw new Error("Invalid url");
+  }
+
+  const [, /*language*/ countryCode] = locale?.split("-");
+
+  return { country: getCountryByCountryCode(countryCode as CountryCode) };
 };
 
 export const extractCheckoutIdFromUrl = (): string => {

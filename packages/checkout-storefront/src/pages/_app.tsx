@@ -6,7 +6,7 @@ import "../index.css";
 
 const CheckoutStoreFront = Dynamic(
   async () => {
-    const { Root } = await import("../Root");
+    const { Root } = await import("./[channel]/[locale]/Root");
     return Root;
   },
   {

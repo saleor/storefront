@@ -13,9 +13,9 @@ import {
 } from "@/checkout-storefront/views/OrderConfirmation";
 import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
 import { ToastContainer } from "react-toastify";
-import { alertsContainerProps } from "./hooks/useAlerts/consts";
+import { alertsContainerProps } from "../../../hooks/useAlerts/consts";
 import { Suspense, useMemo } from "react";
-import type { AppEnv } from "./providers/AppConfigProvider/types";
+import { AppEnv } from "@/checkout-storefront/providers/AppConfigProvider/types";
 
 export interface RootProps {
   env: AppEnv;
