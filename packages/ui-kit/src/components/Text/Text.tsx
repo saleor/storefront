@@ -24,7 +24,7 @@ export const Text: FC<TextProps> = ({
       [styles["txt-secondary"]]: color === "secondary",
       [styles["txt-tertiary"]]: color === "tertiary",
       [styles["txt-error"]]: color === "error",
-      [styles["txt-success"]]: color === "error",
+      [styles["txt-success"]]: color === "success",
       [styles["txt-xs"]]: size === "xs",
       [styles["txt-sm"]]: size === "sm",
       [styles["txt-md"]]: size === "md",

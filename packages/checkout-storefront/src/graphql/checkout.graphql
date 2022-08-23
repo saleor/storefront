@@ -10,6 +10,14 @@ fragment CheckoutErrorFragment on CheckoutError {
   code
 }
 
+fragment GiftCardFragment on GiftCard {
+  displayCode
+  id
+  currentBalance {
+    ...Money
+  }
+}
+
 fragment CheckoutFragment on Checkout {
   id
   email
@@ -20,11 +28,7 @@ fragment CheckoutFragment on Checkout {
   discountName
   translatedDiscountName
   giftCards {
-    displayCode
-    id
-    currentBalance {
-      ...Money
-    }
+    ...GiftCardFragment
   }
   channel {
     id
@@ -90,8 +94,7 @@ fragment CheckoutFragment on Checkout {
       ...Money
     }
     tax {
-      currency
-      amount
+      ...Money
     }
   }
   shippingPrice {
@@ -133,9 +136,6 @@ fragment CheckoutLineFragment on CheckoutLine {
       }
     }
     id
-    pricing {
-      onSale
-    }
     name
     product {
       name

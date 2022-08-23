@@ -5,9 +5,11 @@ import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { getOrderPaymentStatus } from "@/checkout-storefront/fetch";
 
-import { Section, SectionTitle } from "./Section";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
+import { Section } from "./Section";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
+import { CheckIcon } from "@/checkout-storefront/icons";
+import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
@@ -16,6 +18,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(getOrderPaymentStatus, {
     args: { orderId, checkoutApiUrl: env.checkoutApiUrl },
   });
+
   const formatMessage = useFormattedMessages();
 
   const handlePay = () => {
@@ -32,7 +35,14 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
     }
 
     if (paymentData?.status === "PAID") {
-      return <Text color="success">{formatMessage("paidOrderMessage")}</Text>;
+      return (
+        <div className="flex flex-row items-center">
+          <Text color="success" className="mr-1">
+            {formatMessage("paidOrderMessage")}
+          </Text>
+          <img src={getSvgSrc(CheckIcon)} />
+        </div>
+      );
     }
 
     if (paymentData?.status === "PENDING") {
@@ -60,8 +70,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   };
 
   return (
-    <Section>
-      <SectionTitle>{formatMessage("paymentSection")}</SectionTitle>
+    <Section title={formatMessage("paymentSection")}>
       <div>{renderPaymentDetails()}</div>
     </Section>
   );

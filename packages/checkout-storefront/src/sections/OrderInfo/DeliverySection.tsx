@@ -2,7 +2,7 @@ import { OrderFragment, ShippingFragment } from "@/checkout-storefront/graphql";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
-import { Section, SectionTitle } from "./Section";
+import { Section } from "./Section";
 
 const isShipping = (
   deliveryMethod: OrderFragment["deliveryMethod"]
@@ -15,36 +15,30 @@ export const DeliverySection = ({
 }) => {
   const formatMessage = useFormattedMessages();
 
-  const renderContent = () => {
-    if (!isShipping(deliveryMethod)) {
-      return <Text color="secondary">{formatMessage("shippingMethodNotApplicable")}</Text>;
+  const getDeliveryEstimateText = () => {
+    const { minimumDeliveryDays: min, maximumDeliveryDays: max } =
+      deliveryMethod as ShippingFragment;
+
+    if (!min || !max) {
+      return undefined;
     }
 
-    const deliveryDaysRange = [
-      deliveryMethod.minimumDeliveryDays,
-      deliveryMethod.maximumDeliveryDays,
-    ]
-      .filter(Boolean)
-      .join(" - ");
-
-    return (
-      <>
-        <Text color="secondary">{deliveryMethod.name}</Text>
-        {deliveryDaysRange && (
-          <Text color="secondary">
-            {formatMessage("shippingDeliveryEstimate", {
-              deliveryDaysRange,
-            })}
-          </Text>
-        )}
-      </>
-    );
+    return formatMessage("businessDays", {
+      min: min.toString(),
+      max: max.toString(),
+    });
   };
 
   return (
-    <Section>
-      <SectionTitle>{formatMessage("deliveryMethodSection")}</SectionTitle>
-      <div>{renderContent()}</div>
+    <Section title={formatMessage("deliveryMethodSection")}>
+      {!isShipping(deliveryMethod) ? (
+        <Text color="secondary">{formatMessage("shippingMethodNotApplicable")}</Text>
+      ) : (
+        <>
+          <Text>{deliveryMethod.name}</Text>
+          <Text>{getDeliveryEstimateText()}</Text>
+        </>
+      )}
     </Section>
   );
 };
