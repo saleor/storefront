@@ -1,9 +1,5 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  parserOptions: {
-    tsconfigRootDir: "./",
-    project: ["./tsconfig.json"],
-  },
   plugins: ["@typescript-eslint", "formatjs"],
   extends: [
     "next",
@@ -12,6 +8,9 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier",
   ],
+  parserOptions: {
+    project: ["tsconfig.json"],
+  },
   settings: {
     next: {
       rootDir: ["apps/*/", "packages/*/"],
@@ -27,16 +26,18 @@ module.exports = {
     "no-alert": ["error"],
     "no-debugger": ["error"],
     eqeqeq: ["error", "always", { null: "ignore" }],
-    "require-await": ["error"],
-    "no-restricted-syntax": [
-      "error",
-      {
-        selector: "ForInStatement",
-        message: "for ... in disallowed, use for ... of instead",
-      },
-    ],
     "@typescript-eslint/no-misused-promises": ["error"],
     "@typescript-eslint/no-floating-promises": ["error"],
+
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        types: {
+          // allow {} even though it's unsafe but comes handy
+          "{}": false,
+        },
+      },
+    ],
 
     // we allow empty interfaces
     "no-empty-pattern": "off",
@@ -50,7 +51,6 @@ module.exports = {
     "react/no-children-prop": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
-    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
@@ -64,7 +64,6 @@ module.exports = {
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/await-thenable": "off",
     "@typescript-eslint/no-floating-promises": "off",
-    "require-await": "off",
     "@typescript-eslint/no-misused-promises": "off",
   },
 };

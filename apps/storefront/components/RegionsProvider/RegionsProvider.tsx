@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { PropsWithChildren, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { IntlProvider } from "react-intl";
 
 import apolloClient from "@/lib/graphql";
@@ -50,7 +50,7 @@ export interface RegionsProviderProps {
   children: React.ReactNode;
 }
 
-export function RegionsProvider({ children }: PropsWithChildren<{}>) {
+export function RegionsProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { resetCheckoutToken } = useCheckout();
 

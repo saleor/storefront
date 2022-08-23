@@ -34,10 +34,6 @@ export interface Filters {
   attributes: Record<string, Array<string>>;
 }
 
-export interface ListFilters {
-  attributes: {};
-}
-
 export function FilteredProductList({
   attributeFiltersData,
   collectionIDs,
