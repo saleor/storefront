@@ -16,7 +16,10 @@ export const getByUnmatchingId =
     obj.id !== idToCompare;
 
 export type QueryVariables = Partial<
-  Record<"checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl", string>
+  Record<
+    "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl" | "locale",
+    string
+  >
 > & { countryCode: CountryCode };
 
 export const getQueryVariables = (): QueryVariables => {
@@ -37,7 +40,7 @@ export const isOrderConfirmationPage = () => {
 };
 
 export const getLocalizationDataFromUrl = () => {
-  const [, , /*channel*/ locale] = location.pathname.split("/");
+  const { /*channel*/ locale } = getQueryVariables();
 
   if (typeof locale !== "string") {
     throw new Error("Invalid url");
