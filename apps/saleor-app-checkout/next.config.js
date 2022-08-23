@@ -24,4 +24,5 @@ module.exports = withTM({
   eslint: {
     dirs: ["pages", "backend", "frontend", "config"],
   },
+  assetPrefix: process.env.NEXT_PUBLIC_CHECKOUT_APP_URL,
 });
