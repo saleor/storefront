@@ -4,7 +4,7 @@ module.exports = {
     tsconfigRootDir: "./",
     project: ["./tsconfig.json"],
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "formatjs"],
   extends: [
     "next",
     "next/core-web-vitals",

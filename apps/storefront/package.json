@@ -17,9 +17,6 @@
     "cy:run": "cypress run",
     "cy:open": "cypress open"
   },
-  "resolutions": {
-    "eslint-plugin-react-hooks": "^4.5.0"
-  },
   "dependencies": {
     "@apollo/client": "3.5.10",
     "@formatjs/swc-plugin": "^1.4.0",
@@ -66,21 +63,9 @@
     "@types/qs": "^6.9.7",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "@typescript-eslint/parser": "^5.17.0",
     "autoprefixer": "10.4.2",
     "cypress": "^10.1.0",
-    "eslint": "8.15.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-next": "^12.2.3",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-config-checkout": "workspace:*",
-    "eslint-plugin-formatjs": "^3.1.1",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.5.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint": "^8.22.0",
     "pathpida": "^0.18.1",
     "postcss": "8.4.12",
     "prettier": "2.6.2",
