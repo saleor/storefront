@@ -1,14 +1,29 @@
-# React Storefront & Checkout
+![Nextjs Storefront](https://user-images.githubusercontent.com/44495184/185616229-5eadcddb-9170-404f-be57-91c66ffe3bae.png)
 
-![alt text](https://og-image.vercel.app/React%20Storefront.png?theme=light&md=1&fontSize=100px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg&images=https%3A%2F%2Fsaleor.io%2Fstatic%2Flogo-ad1b99aa7c6f5acf58a61640af760cfd.svg)
+<div align="center">
+  <h1>Next.js Storefront</h1>
+</div>
 
-<p align="center">
-  <a href="https://demo.saleor.io/">Live demo</a> / <a href="https://githubbox.com/saleor/react-storefront">Explore and run the code in CodeSandbox</a>
-</p>
+<div align="center">
+  <p><b>Next.js Storefront</b>: Your open-source frontend starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
+  <p><b>Saleor Checkout</b>: Extensible Next.js checkout application and payment integrations powered by Saleor API.</p>
+</div>
 
-**React Storefront**: Open-source frontend e-commerce platform from the [Saleor](https://saleor.io) team.
+<div align="center">
+  <a href="https://saleor.io/">🏠 Website</a>
+  <span> • </span>
+  <a href="https://docs.saleor.io/docs/3.x/">📚 Docs</a>
+  <span> • </span>
+  <a href="https://saleor.io/blog/">📰 Blog</a>
+  <span> • </span>
+  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
+</div>
 
-**Saleor Checkout**: Extensible checkout and payment integrations powered by Saleor API. Includes following gateways: **Adyen**, **Mollie**, **Stripe** and more coming soon.
+<div align="center">
+  <a href="https://demo.saleor.io/">▶️ Demo</a>
+   <span> • </span>
+  <a href="https://githubbox.com/saleor/react-storefront">🔎 Explore Code</a>
+</div>
 
 ## Motivation
 
