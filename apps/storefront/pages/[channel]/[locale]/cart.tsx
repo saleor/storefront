@@ -22,7 +22,7 @@ function Cart() {
   const isCheckoutLoading = loading || typeof window === "undefined";
   const products = checkout?.lines || [];
 
-  const externalCheckoutUrl = `${externalCheckoutBaseUrl}/${currentChannel.slug}/${currentLocale}/?checkout=${checkout?.id}`;
+  const externalCheckoutUrl = `${externalCheckoutBaseUrl}?checkout=${checkout?.id}&locale=${currentLocale}&channel=${currentChannel.slug}`;
 
   return (
     <>
