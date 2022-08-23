@@ -1,10 +1,10 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
-import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { countries } from "@/checkout-storefront/sections/Addresses/countries";
 import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
 import { useMemo, useState } from "react";
 import { Option } from "@saleor/ui-kit";
 import sortBy from "lodash-es/sortBy";
+import { getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
 
 interface CountryOption extends Option {
   value: CountryCode;
@@ -43,19 +43,11 @@ export const useCountrySelect = ({
   );
 
   const getInitialCountryCode = (): CountryCode => {
-    const defaultCountryCode = countries[0]?.code;
-
     if (!autoSelect && selectedCountryCode) {
       return selectedCountryCode;
     }
 
-    const countryCodeFromUrl = getQueryVariables().countryCode;
-
-    if (!countryCodeFromUrl || !countries.map(({ code }) => code).includes(countryCodeFromUrl)) {
-      return defaultCountryCode as CountryCode;
-    }
-
-    return countryCodeFromUrl;
+    return getLocalizationDataFromUrl().country.code;
   };
 
   const [countryCode, setCountryCode] = useState(getInitialCountryCode());

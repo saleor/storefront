@@ -3,22 +3,26 @@ import React, { ReactElement } from "react";
 import { useIntl } from "react-intl";
 
 import { CartSummary, CheckoutLineItem, Layout, Spinner } from "@/components";
+import { useRegions } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 
-const externalCheckoutUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL;
+const externalCheckoutBaseUrl = process.env.NEXT_PUBLIC_CHECKOUT_URL;
 
 function Cart() {
   const t = useIntl();
   const paths = usePaths();
   const { loading, checkoutError, checkout, checkoutToken } = useCheckout();
+  const { currentChannel, currentLocale } = useRegions();
 
   if (checkoutError) return <p>Error</p>;
 
   const isCheckoutLoading = loading || typeof window === "undefined";
   const products = checkout?.lines || [];
+
+  const externalCheckoutUrl = `${externalCheckoutBaseUrl}/${currentChannel.slug}/${currentLocale}/?checkout=${checkout?.id}`;
 
   return (
     <>
@@ -61,10 +65,10 @@ function Cart() {
               <div>
                 <CartSummary checkout={checkout} />
                 <div className="mt-12">
-                  {externalCheckoutUrl ? (
+                  {externalCheckoutBaseUrl ? (
                     <a
                       className="block w-full bg-blue-500 border border-transparent rounded-md shadow-sm py-3 px-4 text-center font-medium text-white hover:bg-blue-700"
-                      href={`/checkout?checkout=${checkout.id}`}
+                      href={externalCheckoutUrl}
                       target="_self"
                     >
                       {t.formatMessage(messages.checkoutButton)}

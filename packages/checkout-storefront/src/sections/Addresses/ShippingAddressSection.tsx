@@ -9,7 +9,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React, { useCallback, useEffect } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
@@ -57,7 +57,10 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const handleAutoSetShippingCountry = () => {
     if (!shippingAddress && !userDefaultAddress) {
-      void updateShippingAddress({ autoSave: true, countryCode: getQueryVariables().countryCode });
+      void updateShippingAddress({
+        autoSave: true,
+        countryCode: getLocalizationDataFromUrl().country.code,
+      });
     }
   };
 
