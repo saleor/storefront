@@ -22,7 +22,8 @@ function Cart() {
   const isCheckoutLoading = loading || typeof window === "undefined";
   const products = checkout?.lines || [];
 
-  const externalCheckoutUrl = `${externalCheckoutBaseUrl}?checkout=${checkout?.id}&locale=${currentLocale}&channel=${currentChannel.slug}`;
+  // we rewrite `/checkout` to the checkout domain to keep cookies
+  const externalCheckoutUrl = `/checkout?checkout=${checkout?.id}&locale=${currentLocale}&channel=${currentChannel.slug}`;
 
   return (
     <>
