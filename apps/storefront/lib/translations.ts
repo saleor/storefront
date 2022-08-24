@@ -1,11 +1,11 @@
-type Translated = {
-  translation?: object | undefined | null;
-};
-
-export function translate<T extends Translated, K extends keyof T>(obj: T, key: K): T[K] {
-  // TODO: better types
-  // @ts-ignore
-  return obj.translation?.[key] || obj[key];
+export function translate<
+  Obj extends {
+    translation?:
+      | { [TranslationKey in K]?: Obj[TranslationKey] | undefined | null }
+      | undefined
+      | null;
+  },
+  K extends keyof Obj
+>(obj: Obj, key: K): Obj[K] {
+  return (obj.translation?.[key] || obj[key]) as Obj[K];
 }
-
-export default translate;
