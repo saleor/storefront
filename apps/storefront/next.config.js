@@ -15,6 +15,7 @@ module.exports = withBundleAnalyzer({
     domains: [apiURL.hostname, ...allowedImageDomains],
     formats: ["image/avif", "image/webp"],
   },
+  trailingSlash: true,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
