@@ -1,7 +1,4 @@
-import {
-  encodeBasicAuth,
-  getSaleorAmountFromAdyen,
-} from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
+import { encodeBasicAuth } from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
 import { updateTransaction } from "@/saleor-app-checkout/backend/payments/updateTransaction";
 import { testingVars } from "@/saleor-app-checkout/mocks/consts";
 import {
@@ -25,6 +22,7 @@ import { Response } from "retes/response";
 import { getOrderTransactions } from "@/saleor-app-checkout/backend/payments/getOrderTransactions";
 import { createTransaction } from "@/saleor-app-checkout/backend/payments/createTransaction";
 import { prepareSaleorTransaction } from "@/saleor-app-checkout/mocks/fixtures/saleor";
+import { getSaleorAmountFromInteger } from "@/saleor-app-checkout/backend/payments/utils";
 
 jest.mock("@/saleor-app-checkout/backend/payments/updateTransaction");
 jest.mock("@/saleor-app-checkout/backend/payments/createTransaction");
@@ -122,7 +120,7 @@ describe("/api/webhooks/adyen", () => {
           reference: "LD65H2FVNXSKGK82",
           availableActions: ["VOID", "CHARGE"],
           amountAuthorized: {
-            amount: getSaleorAmountFromAdyen(ADYEN_TRANSACTION_AMOUNT),
+            amount: getSaleorAmountFromInteger(ADYEN_TRANSACTION_AMOUNT),
             currency: ADYEN_TRANSACTION_CURRENCY,
           },
         },
@@ -160,7 +158,7 @@ describe("/api/webhooks/adyen", () => {
             currency: ADYEN_TRANSACTION_CURRENCY,
           },
           amountCharged: {
-            amount: getSaleorAmountFromAdyen(ADYEN_TRANSACTION_AMOUNT),
+            amount: getSaleorAmountFromInteger(ADYEN_TRANSACTION_AMOUNT),
             currency: ADYEN_TRANSACTION_CURRENCY,
           },
         },
@@ -177,7 +175,7 @@ describe("/api/webhooks/adyen", () => {
     mockedGetOrderTransactions.mockResolvedValueOnce([
       prepareSaleorTransaction(
         "authorized",
-        getSaleorAmountFromAdyen(ADYEN_TRANSACTION_AMOUNT),
+        getSaleorAmountFromInteger(ADYEN_TRANSACTION_AMOUNT),
         ADYEN_TRANSACTION_CURRENCY,
         { reference: ADYEN_ORIGINAL_REFERENCE, id: ADYEN_ORDER_ID }
       ),
@@ -198,7 +196,7 @@ describe("/api/webhooks/adyen", () => {
             currency: ADYEN_TRANSACTION_CURRENCY,
           },
           amountCharged: {
-            amount: getSaleorAmountFromAdyen(ADYEN_TRANSACTION_AMOUNT),
+            amount: getSaleorAmountFromInteger(ADYEN_TRANSACTION_AMOUNT),
             currency: ADYEN_TRANSACTION_CURRENCY,
           },
         },
@@ -220,7 +218,7 @@ describe("/api/webhooks/adyen", () => {
     mockedGetOrderTransactions.mockResolvedValueOnce([
       prepareSaleorTransaction(
         "charged",
-        getSaleorAmountFromAdyen(ADYEN_TRANSACTION_AMOUNT),
+        getSaleorAmountFromInteger(ADYEN_TRANSACTION_AMOUNT),
         ADYEN_TRANSACTION_CURRENCY,
         { reference: ADYEN_ORIGINAL_REFERENCE, id: ADYEN_ORDER_ID }
       ),
@@ -237,7 +235,7 @@ describe("/api/webhooks/adyen", () => {
           status: "REFUND",
           availableActions: [],
           amountRefunded: {
-            amount: getSaleorAmountFromAdyen(ADYEN_TRANSACTION_AMOUNT),
+            amount: getSaleorAmountFromInteger(ADYEN_TRANSACTION_AMOUNT),
             currency: ADYEN_TRANSACTION_CURRENCY,
           },
           amountCharged: {
