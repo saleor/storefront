@@ -56,7 +56,7 @@ function LoginPage() {
 
   if (authenticated) {
     // User signed in successfully.
-    router.push(redirectURL);
+    void router.push(redirectURL);
     return null;
   }
 

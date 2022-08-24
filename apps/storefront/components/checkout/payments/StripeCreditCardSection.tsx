@@ -35,7 +35,7 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
   const redirectToOrderDetailsPage = () => {
     resetCheckoutToken();
 
-    router.push(paths.order.$url());
+    void router.push(paths.order.$url());
   };
 
   const handleSubmit = async (event: FormEvent) => {

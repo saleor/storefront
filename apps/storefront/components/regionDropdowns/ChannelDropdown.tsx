@@ -29,10 +29,10 @@ export function ChannelDropdown({ horizontalAlignment }: ChannelDropdownProps) {
     if (channelSlug === currentChannel.slug) {
       return;
     }
-    setCurrentChannel(channelSlug);
+    setCurrentChannel(channelSlug).catch(console.error);
 
     // Update current URL to use the chosen channel
-    router.push({
+    void router.push({
       pathname: router.pathname,
       query: {
         ...router.query,

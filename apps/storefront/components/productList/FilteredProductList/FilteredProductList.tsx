@@ -87,7 +87,7 @@ export function FilteredProductList({
       return result;
     }, []);
 
-    setQueryFilters(newFilters.length ? newFilters : null, {
+    return setQueryFilters(newFilters.length ? newFilters : null, {
       scroll: false,
       shallow: true,
     });
@@ -98,23 +98,21 @@ export function FilteredProductList({
       (pill) => pill.attributeSlug === attributeSlug && pill.choiceSlug === choiceSlug
     );
     if (isFilterAlreadyApplied) {
-      removeAttributeFilter(attributeSlug, choiceSlug);
-      return;
+      return removeAttributeFilter(attributeSlug, choiceSlug);
     }
 
     // if attribute was not used before, add it
     const existingFilter = queryFilters.find((filter) => filter.slug === attributeSlug);
     if (!existingFilter) {
-      setQueryFilters([...queryFilters, { slug: attributeSlug, values: [choiceSlug] }], {
+      return setQueryFilters([...queryFilters, { slug: attributeSlug, values: [choiceSlug] }], {
         scroll: false,
         shallow: true,
       });
-      return;
     }
 
     // if its already here, modify values list
     existingFilter.values = [...existingFilter.values, choiceSlug];
-    setQueryFilters(queryFilters, {
+    return setQueryFilters(queryFilters, {
       scroll: false,
       shallow: true,
     });
@@ -152,7 +150,7 @@ export function FilteredProductList({
             ))}
             <SortingDropdown
               optionToggle={(field?: ProductOrderField, direction?: OrderDirection) => {
-                setSortBy(field && direction ? { field, direction } : null, {
+                return setSortBy(field && direction ? { field, direction } : null, {
                   scroll: false,
                   shallow: true,
                 });

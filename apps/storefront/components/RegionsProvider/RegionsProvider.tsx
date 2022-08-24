@@ -23,7 +23,7 @@ export interface RegionsConsumerProps {
     channel: string;
     locale: LanguageCodeEnum;
   };
-  setCurrentChannel: (slug: string) => void;
+  setCurrentChannel: (slug: string) => Promise<void>;
   formatPrice: (price?: PriceFragment) => string;
 }
 
@@ -59,7 +59,7 @@ export function RegionsProvider({ children }: { children: ReactNode }) {
   const setCurrentChannel = (channel: string) => {
     resetCheckoutToken();
     setCurrentChannelSlug(channel);
-    apolloClient.resetStore();
+    return apolloClient.resetStore();
   };
 
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;

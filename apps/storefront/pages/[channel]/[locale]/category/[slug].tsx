@@ -73,7 +73,7 @@ function CategoryPage({
   const subcategories = mapEdgesToItems(category.children);
 
   const navigateToCategory = (categorySlug: string) => {
-    router.push(paths.category._slug(categorySlug).$url());
+    void router.push(paths.category._slug(categorySlug).$url());
   };
 
   return (

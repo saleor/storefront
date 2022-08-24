@@ -21,7 +21,7 @@ export function AccountLayout({ children }: AccountLayoutProps) {
   }
 
   if (!authenticated && typeof window !== "undefined") {
-    router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
+    void router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
     return null;
   }
 

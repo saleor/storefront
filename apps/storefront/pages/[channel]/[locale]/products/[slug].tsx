@@ -134,7 +134,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
 
     if (errors.length === 0) {
       // Product successfully added, redirect to cart page
-      router.push(paths.cart.$url());
+      void router.push(paths.cart.$url());
       return;
     }
 

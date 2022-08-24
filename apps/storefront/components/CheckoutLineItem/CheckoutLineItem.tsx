@@ -142,7 +142,7 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                 onBlur={onQuantityUpdate}
                 onKeyPress={(ev) => {
                   if (ev.key === "Enter") {
-                    onQuantityUpdate(ev);
+                    return onQuantityUpdate(ev);
                   }
                 }}
                 min={1}
