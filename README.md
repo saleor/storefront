@@ -44,7 +44,7 @@ Pre-configured tools for DX.
 - Tailwind CSS
 - Saleor Checkout
 
-## Quick Setup
+## Quickstart
 
 Supercharge your development with our CLI tool and free developer account at [Saleor Cloud](https://cloud.saleor.io/). To download and install Saleor CLI, run the following command:
 
