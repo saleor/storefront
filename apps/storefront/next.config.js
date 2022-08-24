@@ -66,13 +66,21 @@ module.exports = withBundleAnalyzer({
         source: "/dashboard/:match*",
         destination: "https://dck24t1mwc0h.cloudfront.net/dashboard/:match*",
       },
+      // {
+      //   source: "/graphql/:match*",
+      //   destination: "https://dck24t1mwc0h.cloudfront.net/graphql/:match*",
+      // },
+      // {
+      //   source: "/graphql/",
+      //   destination: "https://dck24t1mwc0h.cloudfront.net/graphql/",
+      // },
       {
         source: "/graphql/:match*",
-        destination: "https://dck24t1mwc0h.cloudfront.net/graphql/:match*",
+        destination: "https://demo.saleor.io/graphql/:match*",
       },
       {
         source: "/graphql/",
-        destination: "https://dck24t1mwc0h.cloudfront.net/graphql/",
+        destination: "https://demo.saleor.io/graphql/",
       },
       {
         source: "/plugins/:match*",
