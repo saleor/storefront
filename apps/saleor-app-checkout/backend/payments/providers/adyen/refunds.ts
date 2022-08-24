@@ -3,8 +3,8 @@ import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import invariant from "ts-invariant";
 import { updateTransaction } from "../../updateTransaction";
-import { getActionsAfterRefund } from "../../utils";
-import { getAdyenAmountFromSaleor, getAdyenClient } from "./utils";
+import { getActionsAfterRefund, getIntegerAmountFromSaleor } from "../../utils";
+import { getAdyenClient } from "./utils";
 
 export async function handleAdyenRefund(
   refund: TransactionReversal,
@@ -22,7 +22,7 @@ export async function handleAdyenRefund(
     modification.refunds(id, {
       amount: {
         currency,
-        value: getAdyenAmountFromSaleor(amount),
+        value: getIntegerAmountFromSaleor(amount),
       },
       merchantAccount: config.merchantAccount,
     })
