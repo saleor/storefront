@@ -46,6 +46,9 @@ module.exports = {
     // we allow empty functions
     "@typescript-eslint/no-empty-function": "off",
 
+    // we sometimes use async functions that don't await anything
+    "@typescript-eslint/require-await": "off",
+
     // @todo
     "react/display-name": "off",
     "react/no-children-prop": "off",
@@ -55,9 +58,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-return": "off",
-    "@typescript-eslint/require-await": "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/restrict-plus-operands": "off",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/await-thenable": "off",

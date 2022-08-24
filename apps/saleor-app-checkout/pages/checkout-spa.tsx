@@ -12,7 +12,9 @@ const CheckoutStoreFront = Dynamic(
 );
 
 const apiUrl = process.env["NEXT_PUBLIC_SALEOR_API_URL"];
-const checkoutApiUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"] + `/api`;
+const checkoutApiUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]
+  ? process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"] + `/api`
+  : "";
 const checkoutAppUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"];
 
 export default function CheckoutSpa() {

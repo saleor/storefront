@@ -107,9 +107,13 @@ const saleorPaymentMethodIdToStripePaymentMethodId = (
 };
 
 const createStripeCustomerFromOrder = (stripeClient: Stripe, order: OrderFragment) => {
+  const name = [order.billingAddress?.firstName.trim(), order.billingAddress?.lastName.trim()]
+    .filter(Boolean)
+    .join(" ");
+
   return stripeClient.customers.create({
     email: order.userEmail ?? undefined,
-    name: order.billingAddress?.firstName + " " + order.billingAddress?.lastName,
+    name,
     address: order.billingAddress
       ? {
           city: order.billingAddress.city,
