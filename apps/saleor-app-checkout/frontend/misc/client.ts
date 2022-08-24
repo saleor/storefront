@@ -63,11 +63,15 @@ const authConfig: ClientOptions = {
   exchanges: [
     dedupExchange,
     cacheExchange,
+    // TODO: fix urql version mismatch
+    // @ts-expect-error
     authExchange({
       getAuth,
       willAuthError,
+      // @ts-expect-error
       addAuthToOperation,
     }),
+    // @ts-expect-error
     multipartFetchExchange,
   ],
 };
