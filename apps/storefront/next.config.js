@@ -58,6 +58,38 @@ module.exports = withBundleAnalyzer({
         source: "/saleor-app-checkout/:path*",
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
       },
+      {
+        source: "/media/:match*",
+        destination: "https://dck24t1mwc0h.cloudfront.net/media/:match*",
+      },
+      {
+        source: "/dashboard/:match*",
+        destination: "https://dck24t1mwc0h.cloudfront.net/dashboard/:match*",
+      },
+      {
+        source: "/graphql/:match*",
+        destination: "https://dck24t1mwc0h.cloudfront.net/graphql/:match*",
+      },
+      {
+        source: "/graphql/",
+        destination: "https://dck24t1mwc0h.cloudfront.net/graphql/",
+      },
+      {
+        source: "/plugins/:match*",
+        destination: "https://dck24t1mwc0h.cloudfront.net/plugins/:match*",
+      },
+      {
+        source: "/digital-download/:match*",
+        destination: "https://dck24t1mwc0h.cloudfront.net/digital-download/:match*",
+      },
+      {
+        source: "/thumbnail/:match*",
+        destination: "https://dck24t1mwc0h.cloudfront.net/thumbnail/:match*",
+      },
+      {
+        source: "/.well-known/jwks.json",
+        destination: "https://dck24t1mwc0h.cloudfront.net/.well-known/jwks.json",
+      },
     ];
   },
   experimental: {},
