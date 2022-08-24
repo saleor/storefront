@@ -19,6 +19,7 @@ export const withAdyenWebhookCredentials: Middleware = (handler) => async (reque
   const [error, settings] = await unpackPromise(getPrivateSettings(envVars.apiUrl, false));
 
   if (error) {
+    console.error("Cannot fetch Adyen API configuration", error);
     return Response.InternalServerError("Cannot fetch Adyen API configuration");
   }
 
