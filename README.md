@@ -31,7 +31,7 @@
 The project focuses on best practices for e-commerce, like: SSR & ISR, image optimization.
 
 **easily customizable**:
-TailwindCSS can be easily extended and tweaked, or completely adjusted to your favorite CSS solution.
+TailwindCSS can be easily extended and tweaked, or completely replaced with your favorite CSS solution.
 
 **works out-of-the-box**:
 Pre-configured tools for DX.
