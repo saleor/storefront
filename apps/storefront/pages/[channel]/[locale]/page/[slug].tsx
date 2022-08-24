@@ -20,8 +20,17 @@ export const getStaticPaths: GetStaticPaths = () => ({
   fallback: "blocking",
 });
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const pageSlug = context.params?.slug?.toString()!;
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
+) => {
+  if (!context.params) {
+    return {
+      props: {},
+      notFound: true,
+    };
+  }
+
+  const pageSlug = context.params.slug.toString();
   const response: ApolloQueryResult<PageQuery> = await apolloClient.query<
     PageQuery,
     PageQueryVariables
