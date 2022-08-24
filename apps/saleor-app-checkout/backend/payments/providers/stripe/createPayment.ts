@@ -8,7 +8,7 @@ import { getStripeClient } from "./stripeClient";
 export const createStripePayment = async ({
   order,
   redirectUrl,
-  appUrl,
+  appUrl: _appUrl,
   method,
 }: CreatePaymentData): Promise<CreatePaymentResult> => {
   const stripeClient = await getStripeClient();

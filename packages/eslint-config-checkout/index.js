@@ -49,13 +49,19 @@ module.exports = {
     // we sometimes use async functions that don't await anything
     "@typescript-eslint/require-await": "off",
 
+    // allow unused vars prefixed with `_`
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+    ],
+
     // @todo
     "react/display-name": "off",
     "react/no-children-prop": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/ban-ts-comment": "off",
