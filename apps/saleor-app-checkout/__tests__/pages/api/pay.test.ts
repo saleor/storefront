@@ -10,8 +10,16 @@ import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/prov
 import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { createOrder } from "@/saleor-app-checkout/backend/payments/createOrder";
 import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
-import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
-import { verifyAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
+import {
+  verifyMollieSession,
+  reuseExistingMollieSession,
+} from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
+import {
+  verifyAdyenSession,
+  reuseExistingAdyenSession,
+} from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
+import { OrderFragment } from "@/saleor-app-checkout/graphql";
+import type { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
 
 jest.mock("@/saleor-app-checkout/backend/payments/createOrder");
 jest.mock("@/saleor-app-checkout/backend/payments/providers/mollie");
@@ -27,7 +35,9 @@ const mockedCreateMolliePayment = <jest.Mock>createMolliePayment;
 const mockedCreateAdyenPayment = <jest.Mock>createAdyenPayment;
 const mockedUpdatePaymentMetafield = <jest.Mock>updatePaymentMetafield;
 const mockedVerifyAdyenSession = <jest.Mock>verifyAdyenSession;
+const mockReuseExistingAdyenSession = <jest.Mock>reuseExistingAdyenSession;
 const mockedVerifyMollieSession = <jest.Mock>verifyMollieSession;
+const mockReuseExistingMollieSession = <jest.Mock>reuseExistingMollieSession;
 
 describe("/api/pay", () => {
   afterEach(() => {
@@ -48,6 +58,7 @@ describe("/api/pay", () => {
     req.body = {
       checkoutId: "id",
       provider: "unknown",
+      method: "creditCard",
       totalAmount: 100,
     };
 
@@ -64,19 +75,21 @@ describe("/api/pay", () => {
   });
 
   it("accepts and processes new payment: mollie", async () => {
-    const mockOrderData = {};
+    const mockOrderData = {} as OrderFragment;
 
-    mockedCreateOrder.mockImplementationOnce(() => ({ data: mockOrderData }));
-    mockedCreateMolliePayment.mockImplementationOnce(() => ({
+    mockedCreateOrder.mockResolvedValueOnce({ data: mockOrderData });
+    mockedCreateMolliePayment.mockResolvedValueOnce({
       url: "mollie-redirect-url",
       id: "test-id",
-    }));
+    });
     mockedUpdatePaymentMetafield.mockResolvedValueOnce(true);
+
     const { req, res } = mockRequest("POST");
 
     req.body = {
       checkoutId: "id",
       provider: "mollie",
+      method: "creditCard",
       totalAmount: 100,
       redirectUrl: "example.com",
     } as PayRequestBody;
@@ -92,6 +105,7 @@ describe("/api/pay", () => {
 
     expect(mockedCreateMolliePayment).toHaveBeenCalledWith({
       order: mockOrderData,
+      method: "creditCard",
       redirectUrl: "example.com",
       appUrl: "http://app.com",
     });
@@ -110,19 +124,26 @@ describe("/api/pay", () => {
       privateMetafield: JSON.stringify({
         provider: "mollie",
         session: "session-id-1",
+        method: "creditCard",
       }),
-    };
+    } as OrderFragment;
 
-    mockedCreateOrder.mockImplementationOnce(() => ({ data: mockOrderData }));
+    mockedCreateOrder.mockResolvedValueOnce({ data: mockOrderData });
     mockedVerifyMollieSession.mockResolvedValueOnce({
-      status: "created",
+      status: "created" as MollieOrderStatus,
       url: "mollie-redirect-url",
+    });
+    mockReuseExistingMollieSession.mockResolvedValueOnce({
+      ok: true,
+      provider: "mollie",
+      data: { paymentUrl: "mollie-redirect-url" },
     });
     const { req, res } = mockRequest("POST");
 
     req.body = {
       checkoutId: "id",
       provider: "mollie",
+      method: "creditCard",
       totalAmount: 100,
       redirectUrl: "example.com",
     } as PayRequestBody;
@@ -147,19 +168,26 @@ describe("/api/pay", () => {
   });
 
   it("accepts and processes new payment: adyen", async () => {
-    const mockOrderData = {};
+    const mockOrderData = {
+      privateMetafield: JSON.stringify({
+        provider: "adyen",
+        session: "session-id-2",
+        method: "creditCard",
+      }),
+    } as OrderFragment;
 
-    mockedCreateOrder.mockImplementationOnce(() => ({ data: mockOrderData }));
-    mockedCreateAdyenPayment.mockImplementationOnce(() => ({
+    mockedCreateOrder.mockResolvedValueOnce({ data: mockOrderData });
+    mockedCreateAdyenPayment.mockResolvedValueOnce({
       url: "adyen-redirect-url",
       id: "test-id",
-    }));
+    });
     mockedUpdatePaymentMetafield.mockResolvedValueOnce(true);
     const { req, res } = mockRequest("POST");
 
     req.body = {
       checkoutId: "id",
       provider: "adyen",
+      method: "creditCard",
       totalAmount: 100,
       redirectUrl: "example.com",
     } as PayRequestBody;
@@ -169,7 +197,14 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledWith("id", 100);
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
-    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith(mockOrderData, "example.com");
+    expect(mockedCreateAdyenPayment).toHaveBeenCalledWith({
+      appUrl: "http://undefined",
+      method: "creditCard",
+      order: {
+        privateMetafield: '{"provider":"adyen","session":"session-id-2","method":"creditCard"}',
+      },
+      redirectUrl: "example.com",
+    });
     expect(mockedCreateAdyenPayment).toHaveBeenCalledTimes(1);
 
     const data = res._getJSONData<PayRequestSuccessResponse>();
@@ -184,12 +219,18 @@ describe("/api/pay", () => {
       privateMetafield: JSON.stringify({
         provider: "adyen",
         session: "session-id-2",
+        method: "creditCard",
       }),
-    };
+    } as OrderFragment;
 
-    mockedCreateOrder.mockImplementationOnce(() => ({ data: mockOrderData }));
+    mockReuseExistingAdyenSession.mockResolvedValueOnce({
+      ok: true,
+      provider: "adyen",
+      data: { paymentUrl: "adyen-redirect-url" },
+    });
+    mockedCreateOrder.mockResolvedValueOnce({ data: mockOrderData });
     mockedVerifyAdyenSession.mockResolvedValueOnce({
-      status: "active",
+      status: 0, // "active"
       url: "adyen-redirect-url",
     });
     const { req, res } = mockRequest("POST");
@@ -197,6 +238,7 @@ describe("/api/pay", () => {
     req.body = {
       checkoutId: "id",
       provider: "adyen",
+      method: "creditCard",
       totalAmount: 100,
       redirectUrl: "example.com",
     } as PayRequestBody;

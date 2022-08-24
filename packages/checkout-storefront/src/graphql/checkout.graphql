@@ -10,9 +10,26 @@ fragment CheckoutErrorFragment on CheckoutError {
   code
 }
 
+fragment GiftCardFragment on GiftCard {
+  displayCode
+  id
+  currentBalance {
+    ...Money
+  }
+}
+
 fragment CheckoutFragment on Checkout {
   id
   email
+  discount {
+    ...Money
+  }
+  voucherCode
+  discountName
+  translatedDiscountName
+  giftCards {
+    ...GiftCardFragment
+  }
   channel {
     id
   }
@@ -77,8 +94,7 @@ fragment CheckoutFragment on Checkout {
       ...Money
     }
     tax {
-      currency
-      amount
+      ...Money
     }
   }
   shippingPrice {
@@ -114,10 +130,12 @@ fragment CheckoutLineFragment on CheckoutLine {
     ...Money
   }
   variant {
-    id
-    pricing {
-      onSale
+    attributes(variantSelection: ALL) {
+      values {
+        name
+      }
     }
+    id
     name
     product {
       name
@@ -166,10 +184,18 @@ query user {
       ...AddressFragment
     }
     defaultBillingAddress {
-      id
+      ...AddressFragment
     }
     defaultShippingAddress {
-      id
+      ...AddressFragment
+    }
+  }
+}
+
+query channel($slug: String!) {
+  channel(slug: $slug) {
+    countries {
+      code
     }
   }
 }
@@ -180,10 +206,7 @@ mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!
       ...CheckoutErrorFragment
     }
     checkout {
-      id
-      lines {
-        ...CheckoutLineFragment
-      }
+      ...CheckoutFragment
     }
   }
 }
@@ -194,10 +217,7 @@ mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
       ...CheckoutErrorFragment
     }
     checkout {
-      id
-      lines {
-        ...CheckoutLineFragment
-      }
+      ...CheckoutFragment
     }
   }
 }
@@ -213,8 +233,8 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
   }
 }
 
-mutation checkoutCustomerAttach($checkoutId: ID!, $customerId: ID!) {
-  checkoutCustomerAttach(id: $checkoutId, checkoutId: $customerId) {
+mutation checkoutCustomerAttach($checkoutId: ID!) {
+  checkoutCustomerAttach(id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -267,8 +287,16 @@ mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
   }
 }
 
-mutation checkoutShippingAddressUpdate($checkoutId: ID!, $shippingAddress: AddressInput!) {
-  checkoutShippingAddressUpdate(id: $checkoutId, shippingAddress: $shippingAddress) {
+mutation checkoutShippingAddressUpdate(
+  $checkoutId: ID!
+  $shippingAddress: AddressInput!
+  $validationRules: CheckoutAddressValidationRules
+) {
+  checkoutShippingAddressUpdate(
+    id: $checkoutId
+    shippingAddress: $shippingAddress
+    validationRules: $validationRules
+  ) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -278,8 +306,16 @@ mutation checkoutShippingAddressUpdate($checkoutId: ID!, $shippingAddress: Addre
   }
 }
 
-mutation checkoutBillingAddressUpdate($checkoutId: ID!, $billingAddress: AddressInput!) {
-  checkoutBillingAddressUpdate(id: $checkoutId, billingAddress: $billingAddress) {
+mutation checkoutBillingAddressUpdate(
+  $checkoutId: ID!
+  $billingAddress: AddressInput!
+  $validationRules: CheckoutAddressValidationRules
+) {
+  checkoutBillingAddressUpdate(
+    id: $checkoutId
+    billingAddress: $billingAddress
+    validationRules: $validationRules
+  ) {
     errors {
       ...CheckoutErrorFragment
     }
@@ -311,6 +347,32 @@ query addressValidationRules($countryCode: CountryCode!) {
     countryAreaChoices {
       raw
       verbose
+    }
+  }
+}
+
+mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!) {
+  checkoutAddPromoCode(checkoutId: $checkoutId, promoCode: $promoCode) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}
+
+mutation checkoutRemovePromoCode($checkoutId: ID, $promoCode: String, $promoCodeId: ID) {
+  checkoutRemovePromoCode(
+    checkoutId: $checkoutId
+    promoCode: $promoCode
+    promoCodeId: $promoCodeId
+  ) {
+    errors {
+      ...CheckoutErrorFragment
+    }
+    checkout {
+      ...CheckoutFragment
     }
   }
 }

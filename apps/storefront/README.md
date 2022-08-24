@@ -1,4 +1,24 @@
-# Saleor React Storefront
+![Nextjs Storefront](https://user-images.githubusercontent.com/44495184/185616416-2cbd9aa4-d3a1-4a4f-b9b1-cb4b78ad864b.png)
+
+<div align="center">
+  <h1>Next.js Storefront</h1>
+</div>
+
+<div align="center">
+  <p>Open-source frontend e-commerce platform from the <a href="https://github.com/saleor/saleor">Saleor</a> team.</p>
+</div>
+
+<div align="center">
+  <a href="https://saleor.io/">🏠 Website</a>
+  <span> • </span>
+  <a href="https://docs.saleor.io/docs/3.x/">📚 Docs</a>
+  <span> • </span>
+  <a href="https://saleor.io/blog/">📰 Blog</a>
+  <span> • </span>
+  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
+</div>
+
+## Development
 
 ### GraphQL queries
 

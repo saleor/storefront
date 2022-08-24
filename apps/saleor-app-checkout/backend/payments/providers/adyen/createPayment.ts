@@ -1,58 +1,72 @@
-import { OrderFragment } from "@/saleor-app-checkout/graphql";
-import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
+import {
+  formatRedirectUrl,
+  getIntegerAmountFromSaleor,
+} from "@/saleor-app-checkout/backend/payments/utils";
 
-import { getAdyenAmountFromSaleor, getAdyenClient, getLineItems } from "./utils";
+import { getAdyenClient, getLineItems } from "./utils";
 import invariant from "ts-invariant";
 
-export const createAdyenPayment = async (data: OrderFragment, redirectUrl: string) => {
-  const { config, checkout } = await getAdyenClient();
-  invariant(config.merchantAccount, "Missing merchant account configuration");
+import type { CheckoutAPI } from "@adyen/api-library";
 
-  const total = data.total.gross;
+import { CreatePaymentData } from "../../types";
 
-  const { url, id } = await checkout.paymentLinks({
+const createPaymentLink = (
+  { order, redirectUrl }: CreatePaymentData,
+  checkout: CheckoutAPI,
+  merchantAccount: string
+) => {
+  const total = order.total.gross;
+
+  return checkout.paymentLinks({
     amount: {
       currency: total.currency,
-      value: getAdyenAmountFromSaleor(total.amount),
+      value: getIntegerAmountFromSaleor(total.amount),
     },
-    reference: data.number || data.id,
-    returnUrl: formatRedirectUrl(redirectUrl, data.id),
-    merchantAccount: config.merchantAccount,
-    countryCode: data.billingAddress?.country.code,
+    reference: order.number || order.id,
+    returnUrl: formatRedirectUrl(redirectUrl, order.id),
+    merchantAccount: merchantAccount,
+    countryCode: order.billingAddress?.country.code,
     metadata: {
-      orderId: data.id,
+      orderId: order.id,
     },
-    lineItems: getLineItems(data.lines),
-    shopperEmail: data.userEmail!,
-    shopperName: data.billingAddress
+    lineItems: getLineItems(order.lines),
+    shopperEmail: order.userEmail!,
+    shopperName: order.billingAddress
       ? {
-          firstName: data.billingAddress.firstName,
-          lastName: data.billingAddress.lastName,
+          firstName: order.billingAddress.firstName,
+          lastName: order.billingAddress.lastName,
         }
       : undefined,
-    shopperLocale: "EN", //TODO: get from checkout and pass here
-    telephoneNumber: data.shippingAddress?.phone || data.billingAddress?.phone || undefined,
-    billingAddress: data.billingAddress
+    shopperLocale: "EN",
+    telephoneNumber: order.shippingAddress?.phone || order.billingAddress?.phone || undefined,
+    billingAddress: order.billingAddress
       ? {
-          city: data.billingAddress.city,
-          country: data.billingAddress.country.code,
-          street: data.billingAddress.streetAddress1,
-          houseNumberOrName: data.billingAddress.streetAddress2,
-          postalCode: data.billingAddress.postalCode,
-          stateOrProvince: data.billingAddress.countryArea,
+          city: order.billingAddress.city,
+          country: order.billingAddress.country.code,
+          street: order.billingAddress.streetAddress1,
+          houseNumberOrName: order.billingAddress.streetAddress2,
+          postalCode: order.billingAddress.postalCode,
+          stateOrProvince: order.billingAddress.countryArea,
         }
       : undefined,
-    deliveryAddress: data.shippingAddress
+    deliveryAddress: order.shippingAddress
       ? {
-          city: data.shippingAddress.city,
-          country: data.shippingAddress.country.code,
-          street: data.shippingAddress.streetAddress1,
-          houseNumberOrName: data.shippingAddress.streetAddress2,
-          postalCode: data.shippingAddress.postalCode,
-          stateOrProvince: data.shippingAddress.countryArea,
+          city: order.shippingAddress.city,
+          country: order.shippingAddress.country.code,
+          street: order.shippingAddress.streetAddress1,
+          houseNumberOrName: order.shippingAddress.streetAddress2,
+          postalCode: order.shippingAddress.postalCode,
+          stateOrProvince: order.shippingAddress.countryArea,
         }
       : undefined,
   });
+};
+
+export const createAdyenPayment = async (paymentData: CreatePaymentData) => {
+  const { config, checkout } = await getAdyenClient();
+  invariant(config.merchantAccount, "Missing merchant account configuration");
+
+  const { url, id } = await createPaymentLink(paymentData, checkout, config.merchantAccount);
 
   return { url, id };
 };

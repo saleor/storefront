@@ -66,6 +66,7 @@ const mockPrivateSettings = (returnMockedSettings: boolean = true) => {
       paymentProviders: {
         adyen: {},
         mollie: {},
+        stripe: {},
       },
     });
   }
@@ -81,6 +82,7 @@ const mockPrivateSettings = (returnMockedSettings: boolean = true) => {
         merchantAccount: "Saleor",
       },
       mollie: {},
+      stripe: {},
     },
   });
 };
@@ -114,6 +116,7 @@ describe("withAdyenWebhookCredentials", () => {
       paymentProviders: {
         adyen: adyenConfig,
         mollie: {},
+        stripe: {},
       },
     });
 

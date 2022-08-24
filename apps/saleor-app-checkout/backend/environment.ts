@@ -23,13 +23,12 @@ export const getAuthToken = () => {
       );
     } else {
       console.warn(
-        "⚠️ Warning! Auth token is not set. Make sure the app is installedd in Saleor or set SALEOR_APP_TOKEN environment variable"
+        "⚠️ Warning! Auth token is not set. Make sure the app is installed in Saleor or set SALEOR_APP_TOKEN environment variable"
       );
     }
     token = "";
   }
 
-  console.log("Using authToken: ", maskToken(token));
   return token;
 };
 

@@ -13,6 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if ("id" in req.body) {
     const [paymentError, paymentData] = await unpackPromise(verifyPayment(req.body.id));
 
+    console.log({ paymentError });
+
     if (paymentError) {
       res.status(500).json({ error: "error while validating payment" });
       return;

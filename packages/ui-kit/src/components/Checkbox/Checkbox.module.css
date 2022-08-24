@@ -23,7 +23,7 @@
 }
 
 :local(.checkbox-input) {
-  @apply w-5 h-5 border border-border-primary absolute top-0 left-0 z-20 text-border-active;
+  @apply w-5 h-5 rounded-sm border border-border-primary absolute top-0 left-0 z-20 text-border-active;
 }
 
 :local(.checkbox-input svg) {
