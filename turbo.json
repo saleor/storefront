@@ -69,5 +69,10 @@
       "cache": false
     }
   },
-  "globalDependencies": [".env", ".env.local"]
+  "globalDependencies": [
+    "pnp-lock.yaml",
+    ".env",
+    ".env.local",
+    "packages/eslint-config-checkout/index.js"
+  ]
 }
