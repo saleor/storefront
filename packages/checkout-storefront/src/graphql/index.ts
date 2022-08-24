@@ -15,7 +15,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   Date: any;
-  DateTime: any;
+  DateTime: string;
   GenericScalar: any;
   JSONString: string;
   Metadata: Record<string, string>;

@@ -17,7 +17,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   Date: any;
-  DateTime: any;
+  DateTime: string;
   GenericScalar: any;
   JSONString: string;
   Metadata: Record<string, string>;
@@ -22434,7 +22434,7 @@ export type MenuItemFragment = { __typename?: 'MenuItem', id: string, name: stri
 
 export type MenuItemWithChildrenFragment = { __typename?: 'MenuItem', id: string, name: string, url?: string | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, children?: Array<{ __typename?: 'MenuItem', id: string, name: string, url?: string | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null }> | null, translation?: { __typename?: 'MenuItemTranslation', id: string, name: string } | null, category?: { __typename?: 'Category', id: string, slug: string } | null, collection?: { __typename?: 'Collection', id: string, slug: string } | null, page?: { __typename?: 'Page', id: string, slug: string } | null }> | null };
 
-export type OrderDetailsFragment = { __typename?: 'Order', id: string, token: string, created: any, number: string, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number } } };
+export type OrderDetailsFragment = { __typename?: 'Order', id: string, token: string, created: string, number: string, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number } } };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null };
 
@@ -22639,7 +22639,7 @@ export type CollectionPathsQuery = { __typename?: 'Query', collections?: { __typ
 export type CurrentUserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserDetailsQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, lastLogin?: any | null, dateJoined: any, email: string, firstName: string, lastName: string, avatar?: { __typename?: 'Image', url: string, alt?: string | null } | null, orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null } | null } | null };
+export type CurrentUserDetailsQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, lastLogin?: string | null, dateJoined: string, email: string, firstName: string, lastName: string, avatar?: { __typename?: 'Image', url: string, alt?: string | null } | null, orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null } | null } | null };
 
 export type FilteringAttributesQueryVariables = Exact<{
   filter: AttributeFilterInput;
@@ -22680,7 +22680,7 @@ export type OrderDetailsQueryVariables = Exact<{
 }>;
 
 
-export type OrderDetailsQuery = { __typename?: 'Query', orderByToken?: { __typename?: 'Order', id: string, number: string, created: any, statusDisplay: string, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } }>, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } } | null };
+export type OrderDetailsQuery = { __typename?: 'Query', orderByToken?: { __typename?: 'Order', id: string, number: string, created: string, statusDisplay: string, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, productName: string, variantName: string, quantity: number, thumbnail?: { __typename?: 'Image', url: string, alt?: string | null } | null, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } }>, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } } } | null };
 
 export type OrderDetailsByTokenQueryVariables = Exact<{
   token: Scalars['UUID'];
@@ -22695,7 +22695,7 @@ export type OrdersQueryVariables = Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', me?: { __typename?: 'User', orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, token: string, created: any, number: string, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null } | null };
+export type OrdersQuery = { __typename?: 'Query', me?: { __typename?: 'User', orders?: { __typename?: 'OrderCountableConnection', totalCount?: number | null, edges: Array<{ __typename?: 'OrderCountableEdge', cursor: string, node: { __typename?: 'Order', id: string, token: string, created: string, number: string, status: OrderStatus, total: { __typename?: 'TaxedMoney', currency: string, gross: { __typename?: 'Money', currency: string, amount: number }, net: { __typename?: 'Money', currency: string, amount: number } } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null } | null };
 
 export type PageQueryVariables = Exact<{
   slug: Scalars['String'];
@@ -22703,7 +22703,7 @@ export type PageQueryVariables = Exact<{
 }>;
 
 
-export type PageQuery = { __typename?: 'Query', page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null, seoDescription?: string | null, slug: string, created: any, content?: string | null, translation?: { __typename?: 'PageTranslation', id: string, title?: string | null, content?: string | null } | null } | null };
+export type PageQuery = { __typename?: 'Query', page?: { __typename?: 'Page', id: string, title: string, seoTitle?: string | null, seoDescription?: string | null, slug: string, created: string, content?: string | null, translation?: { __typename?: 'PageTranslation', id: string, title?: string | null, content?: string | null } | null } | null };
 
 export type PagePathsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']>;

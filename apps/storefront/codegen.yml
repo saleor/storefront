@@ -18,6 +18,7 @@ generates:
         JSONString: string
         UUID: string
         Metadata: Record<string, string>
+        DateTime: string
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
       enumsAsTypes: true
   ./graphql.schema.json:

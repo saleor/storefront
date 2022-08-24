@@ -16,6 +16,9 @@
     "lint:staged": "eslint --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
+  "resolutions": {
+    "graphql": "^15.8.0"
+  },
   "peerDependencies": {
     "graphql": "^15.8.0",
     "react": "^18.2.0",
