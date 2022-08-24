@@ -54,6 +54,14 @@
     "check-types": {
       "outputs": []
     },
+    "generate": {
+      "outputs": [
+        "graphql/index.ts",
+        "graphql.schema.json",
+        "saleor/api.tsx",
+        "src/graphql/index.ts"
+      ]
+    },
     "test": {
       "outputs": []
     },

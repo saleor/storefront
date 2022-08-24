@@ -18,7 +18,7 @@ export type Scalars = {
   DateTime: any;
   GenericScalar: any;
   JSONString: string;
-  Metadata: any;
+  Metadata: Record<string, string>;
   PositiveDecimal: any;
   UUID: string;
   Upload: any;

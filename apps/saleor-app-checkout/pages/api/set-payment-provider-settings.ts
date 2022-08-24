@@ -17,7 +17,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   const apiUrl = `https://${tokenDomain}/graphql/`;
 
-  const data = req.body;
+  const data = req.body as string;
 
   if (!data) {
     return res.status(400).json({

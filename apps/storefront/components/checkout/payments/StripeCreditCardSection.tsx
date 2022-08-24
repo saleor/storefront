@@ -113,7 +113,9 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
     // Additional payment action is needed (ex. 3D Secure)
     if (completeData?.checkoutComplete?.confirmationNeeded) {
       // Parse data for the Stripe
-      const confirmationData = JSON.parse(completeData?.checkoutComplete?.confirmationData || "");
+      const confirmationData = JSON.parse(
+        completeData?.checkoutComplete?.confirmationData || ""
+      ) as { client_secret: string };
 
       // Execute additional action at Stripe
       const stripeConfirmationResponse = await stripe.confirmCardPayment(

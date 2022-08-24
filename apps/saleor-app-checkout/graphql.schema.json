@@ -76943,6 +76943,18 @@
             "deprecationReason": null
           },
           {
+            "name": "name",
+            "description": "Variant name.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "preorder",
             "description": "Determines if variant is in preorder.\n\nAdded in Saleor 3.1.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
@@ -77545,6 +77557,18 @@
             "deprecationReason": null
           },
           {
+            "name": "name",
+            "description": "Variant name.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "preorder",
             "description": "Determines if variant is in preorder.\n\nAdded in Saleor 3.1.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
@@ -78004,6 +78028,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "Variant name.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -102840,15 +102876,15 @@
           },
           {
             "name": "secretKey",
-            "description": "Used to create a hash signature with each payload.\n\nIf not set, since Saleor 3.5, your payload will be signed using private key used also to sign JWT tokens.",
+            "description": "Used to create a hash signature for each payload.",
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS."
           },
           {
             "name": "subscriptionQuery",
@@ -103081,7 +103117,7 @@
           },
           {
             "name": "secretKey",
-            "description": "The secret key used to create a hash signature with each payload.",
+            "description": "The secret key used to create a hash signature with each payload.\n\nDEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -105461,7 +105497,7 @@
           },
           {
             "name": "secretKey",
-            "description": "Use to create a hash signature with each payload.",
+            "description": "Use to create a hash signature with each payload.\n\nDEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -106614,7 +106650,11 @@
         "name": "include",
         "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
         "isRepeatable": false,
-        "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
+        "locations": [
+          "FIELD",
+          "FRAGMENT_SPREAD",
+          "INLINE_FRAGMENT"
+        ],
         "args": [
           {
             "name": "if",
@@ -106638,7 +106678,11 @@
         "name": "skip",
         "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
         "isRepeatable": false,
-        "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
+        "locations": [
+          "FIELD",
+          "FRAGMENT_SPREAD",
+          "INLINE_FRAGMENT"
+        ],
         "args": [
           {
             "name": "if",

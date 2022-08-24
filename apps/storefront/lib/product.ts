@@ -32,7 +32,7 @@ export const getSelectedVariantID = (product: ProductDetailsFragment, router?: N
   }
   if (product?.variants?.length === 1) {
     // case, where product has only one variant to choose from, so we pre-select it
-    return product.variants![0]!.id!;
+    return product.variants[0]!.id;
   }
   // there are multiple variants and user has not chosen any
   return undefined;
