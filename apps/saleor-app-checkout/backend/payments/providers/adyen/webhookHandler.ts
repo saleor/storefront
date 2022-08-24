@@ -4,15 +4,16 @@ import {
   TransactionCreateMutationVariables,
   TransactionEventInput,
   TransactionFragment,
-  TransactionStatus,
   TransactionUpdateInput,
   TransactionUpdateMutationVariables,
 } from "@/saleor-app-checkout/graphql";
 
-import { mapAvailableActions, createEventUniqueKey, getAmountAfterRefund } from "./utils";
-import { getSaleorAmountFromInteger } from "../../utils";
-
-const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
+import {
+  mapAvailableActions,
+  createEventUniqueKey,
+  getNotificationStatus,
+  getTransactionAmountFromAdyen,
+} from "./utils";
 
 export const ADYEN_PAYMENT_PREFIX = "adyen";
 
@@ -42,7 +43,7 @@ export const getOrderId = async (
 
   const client = new Client({
     apiKey,
-    environment: "TEST",
+    environment: "TEST", // TODO: Choose environment dynamically in Dashboard
   });
 
   const checkout = new CheckoutAPI(client);
@@ -64,77 +65,22 @@ export const getUpdatedTransactionData = (
   transaction: TransactionFragment,
   notification: Types.notification.NotificationRequestItem
 ): TransactionUpdateMutationVariables => {
-  const { eventCode, amount, pspReference, originalReference, operations, success } = notification;
+  const { eventCode, pspReference, originalReference, operations } = notification;
 
   if (!originalReference) {
     throw "originalReference does not exit on notification";
   }
 
-  const getStatus = (): TransactionStatus => {
-    const failureStates = [EventCodeEnum.CaptureFailed, EventCodeEnum.RefundFailed];
-
-    if (
-      failureStates.includes(eventCode) ||
-      success === Types.notification.NotificationRequestItem.SuccessEnum.False
-    ) {
-      return "FAILURE";
-    }
-
-    return "SUCCESS";
-  };
-
-  const getNewAmount = ():
-    | Pick<
-        TransactionUpdateInput,
-        "amountRefunded" | "amountAuthorized" | "amountCharged" | "amountVoided"
-      >
-    | undefined => {
-    if (eventCode === EventCodeEnum.Refund) {
-      if (!amount.currency || !amount.value) {
-        throw "Amount not specified for a refund notification";
-      }
-      const refundAmount = getSaleorAmountFromInteger(amount.value);
-
-      if (transaction.chargedAmount.amount !== 0) {
-        const chargedAmount = getAmountAfterRefund(transaction.chargedAmount, refundAmount);
-
-        return {
-          amountCharged: {
-            amount: chargedAmount,
-            currency: amount.currency!,
-          },
-          amountRefunded: {
-            amount: refundAmount,
-            currency: amount.currency!,
-          },
-        };
-      } else if (transaction.authorizedAmount.amount !== 0) {
-        const chargedAmount = getAmountAfterRefund(transaction.authorizedAmount, refundAmount);
-
-        return {
-          amountAuthorized: {
-            amount: chargedAmount,
-            currency: amount.currency,
-          },
-          amountVoided: {
-            amount: refundAmount,
-            currency: amount.currency!,
-          },
-        };
-      }
-    }
-  };
-
   const updatedTransactionEvent: TransactionEventInput = {
     name: eventCode.toString(),
-    status: getStatus(),
+    status: getNotificationStatus(notification),
     reference: pspReference,
   };
 
   const updatedTransaction: TransactionUpdateInput = {
     status: eventCode.toString(),
-    ...getNewAmount(),
-    ...(operations && { availableActions: mapAvailableActions(operations) }),
+    availableActions: mapAvailableActions(operations),
+    ...getTransactionAmountFromAdyen(notification, transaction),
   };
 
   return {
@@ -148,8 +94,7 @@ export const getNewTransactionData = (
   orderId: string,
   notification: Types.notification.NotificationRequestItem
 ): TransactionCreateMutationVariables | undefined => {
-  const { eventCode, amount, pspReference, paymentMethod, additionalData, operations } =
-    notification;
+  const { eventCode, pspReference, paymentMethod, additionalData, operations } = notification;
   const paymentLinkId = additionalData?.paymentLinkId;
 
   if (!paymentLinkId) {
@@ -158,41 +103,19 @@ export const getNewTransactionData = (
 
   const transactionEvent: TransactionEventInput = {
     name: eventCode.toString(),
-    status: "SUCCESS",
+    status: getNotificationStatus(notification),
     reference: pspReference,
   };
 
-  if (eventCode === EventCodeEnum.Authorisation) {
-    return {
-      id: orderId,
-      transactionEvent,
-      transaction: {
-        status: eventCode.toString(),
-        type: `${ADYEN_PAYMENT_PREFIX}-${paymentMethod}`,
-        amountAuthorized: {
-          amount: getSaleorAmountFromInteger(amount.value!),
-          currency: amount.currency!,
-        },
-        reference: pspReference,
-        availableActions: operations ? mapAvailableActions(operations) : [],
-      },
-    };
-  }
-
-  if (eventCode === EventCodeEnum.Capture) {
-    return {
-      id: orderId,
-      transactionEvent,
-      transaction: {
-        status: eventCode.toString(),
-        type: `${ADYEN_PAYMENT_PREFIX}-${paymentMethod}`,
-        amountCharged: {
-          amount: getSaleorAmountFromInteger(amount.value!),
-          currency: amount.currency!,
-        },
-        reference: pspReference,
-        availableActions: operations ? mapAvailableActions(operations) : [],
-      },
-    };
-  }
+  return {
+    id: orderId,
+    transactionEvent,
+    transaction: {
+      status: eventCode.toString(),
+      type: `${ADYEN_PAYMENT_PREFIX}-${paymentMethod}`,
+      reference: pspReference,
+      availableActions: mapAvailableActions(operations),
+      ...getTransactionAmountFromAdyen(notification, null),
+    },
+  };
 };

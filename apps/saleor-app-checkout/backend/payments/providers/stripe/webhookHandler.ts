@@ -4,7 +4,7 @@ import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphq
 import { Stripe } from "stripe";
 import {
   getSaleorAmountFromInteger,
-  getTransactionAmount,
+  getTransactionAmountGetter,
 } from "@/saleor-app-checkout/backend/payments/utils";
 import { assertUnreachable } from "checkout-common";
 
@@ -90,7 +90,7 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
       return null;
     }
 
-    const getAmount = getTransactionAmount({
+    const getAmount = getTransactionAmountGetter({
       authorized: getSaleorAmountFromInteger(charge.amount),
       voided: undefined,
       refunded: undefined,
