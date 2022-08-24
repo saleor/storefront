@@ -55,12 +55,17 @@ module.exports = {
       { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
     ],
 
+    // numbers and booleans are fine in template strings
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      { allowNumber: true, allowBoolean: true },
+    ],
+
     // @todo
     "react/display-name": "off",
     "react/no-children-prop": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
-    "@typescript-eslint/restrict-template-expressions": "off",
 
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-return": "off",

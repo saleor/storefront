@@ -23,7 +23,7 @@ export const getPillsData = (
       );
       const choiceName = attrChoice?.node.name || value;
       return {
-        label: `${attrName}: ${choiceName}`,
+        label: attrName ? `${attrName}: ${choiceName}` : choiceName,
         choiceSlug: value,
         attributeSlug: filter.slug,
       };

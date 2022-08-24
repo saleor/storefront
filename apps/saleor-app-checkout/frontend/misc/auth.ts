@@ -1,5 +1,9 @@
 import { app } from "./app";
 
-export const getAuthHeaders = () => ({
-  Authorization: `Bearer ${app?.getState()?.token}`,
-});
+export const getAuthHeaders = () => {
+  const token = app?.getState()?.token;
+
+  return {
+    Authorization: token ? `Bearer ${token}` : "",
+  };
+};

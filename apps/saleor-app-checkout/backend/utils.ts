@@ -1,5 +1,6 @@
 import { PermissionEnum } from "@/saleor-app-checkout/graphql";
 import { NextApiHandler, NextApiRequest } from "next";
+import invariant from "ts-invariant";
 import { debugEnvVars, envVars, envVarsNames } from "../constants";
 import { isAuthenticated, isAuthorized } from "./auth";
 
@@ -54,6 +55,9 @@ export const getBaseUrl = (req: { headers: Record<string, string | string[] | un
   }
 
   const { host, "x-forwarded-proto": protocol = "http" } = req.headers;
+
+  invariant(typeof host === "string", "host is not a string");
+  invariant(typeof protocol === "string", "protocol is not a string");
 
   return `${protocol}://${host}`;
 };

@@ -15,7 +15,7 @@ const handler = (request: NextApiRequest, response: NextApiResponse) => {
   if (getAppDomain() !== saleorDomain) {
     console.error(`App instalation tried from non-matching Saleor domain.
 Expected ${getAppDomain()} (defined in NEXT_PUBLIC_SALEOR_API_URL).
-Received: ${saleorDomain}`);
+Received: ${saleorDomain.toString()}`);
 
     response.status(400).json({
       success: false,
