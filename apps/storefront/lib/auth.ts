@@ -15,7 +15,7 @@ export const useLogout = () => {
 
   const onLogout = async () => {
     await logout();
-    await resetCheckoutToken();
+    resetCheckoutToken();
     await client.resetStore();
     router.push(paths.$url());
   };
