@@ -2,6 +2,7 @@ import {
   AdyenProviderSettingID,
   MollieProviderSettingID,
   PaymentProviderID,
+  StripeProviderSettingID,
 } from "checkout-common";
 import { defineMessages } from "react-intl";
 
@@ -12,6 +13,10 @@ export const paymentProvidersMessages = defineMessages<PaymentProviderID>({
   },
   adyen: {
     defaultMessage: "Adyen",
+    description: "payment provider",
+  },
+  stripe: {
+    defaultMessage: "Stripe",
     description: "payment provider",
   },
 });
@@ -50,6 +55,21 @@ export const adyenPaymentProviderMessages = defineMessages<AdyenProviderSettingI
   },
   clientKey: {
     defaultMessage: "Public client key",
+    description: "payment provider setting",
+  },
+});
+
+export const stripePaymentProviderMessages = defineMessages<StripeProviderSettingID>({
+  publishableKey: {
+    defaultMessage: "Publishable Key",
+    description: "payment provider setting",
+  },
+  secretKey: {
+    defaultMessage: "Secret Key",
+    description: "payment provider setting",
+  },
+  webhookSecret: {
+    defaultMessage: "Webhookd Secret",
     description: "payment provider setting",
   },
 });

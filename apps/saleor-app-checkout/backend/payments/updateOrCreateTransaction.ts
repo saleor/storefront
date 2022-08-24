@@ -26,14 +26,14 @@ export async function updateOrCreateTransaction(
 
   if (existingTransaction) {
     console.info(`Transaction ${existingTransaction.id} updated`, transactionData);
-    return await updateTransaction({
+    return updateTransaction({
       ...transactionData,
       id: existingTransaction.id,
     });
   }
 
   console.info("Transaction created", transactionData);
-  return await createTransaction({
+  return createTransaction({
     ...transactionData,
   });
 }

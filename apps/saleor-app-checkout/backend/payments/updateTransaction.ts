@@ -13,8 +13,6 @@ export const updateTransaction = async (args: TransactionUpdateMutationVariables
     )
     .toPromise();
 
-  console.log(data?.transactionUpdate?.errors, error);
-
   if (data?.transactionUpdate?.transaction?.id && data.transactionUpdate.errors.length === 0) {
     return true;
   }

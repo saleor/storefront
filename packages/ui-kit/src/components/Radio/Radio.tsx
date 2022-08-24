@@ -34,7 +34,7 @@ export const Radio = forwardRef(
             />
             <div className={clsx(styles["radio-input"], classNames?.radio)} />
           </div>
-          <div className="w-full flex justify-stretch ml-4">{label}</div>
+          {label && <div className="w-full flex justify-stretch ml-4">{label}</div>}
         </div>
       </Label>
     );

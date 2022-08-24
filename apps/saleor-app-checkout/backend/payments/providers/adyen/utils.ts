@@ -10,9 +10,7 @@ import { Types } from "@adyen/api-library";
 import currency from "currency.js";
 import { getTransactionAmountGetterAsMoney } from "../../utils";
 import { failedEvents } from "./consts";
-
-export const getAdyenAmountFromSaleor = (float: number) => parseInt((float * 100).toFixed(0), 10);
-export const getSaleorAmountFromAdyen = (integer: number) => parseFloat((integer / 100).toFixed(2));
+import { getIntegerAmountFromSaleor, getSaleorAmountFromInteger } from "../../utils";
 
 const OperationsEnum = Types.notification.NotificationRequestItem.OperationsEnum;
 const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
@@ -44,9 +42,9 @@ export const getLineItems = (lines: OrderFragment["lines"]): Types.checkout.Line
     description: line.productName + " - " + line.variantName,
     quantity: line.quantity,
     taxPercentage: line.taxRate * 100,
-    taxAmount: getAdyenAmountFromSaleor(line.totalPrice.tax.amount),
-    amountExcludingTax: getAdyenAmountFromSaleor(line.totalPrice.tax.amount),
-    amountIncludingTax: getAdyenAmountFromSaleor(line.totalPrice.gross.amount),
+    taxAmount: getIntegerAmountFromSaleor(line.totalPrice.tax.amount),
+    amountExcludingTax: getIntegerAmountFromSaleor(line.totalPrice.tax.amount),
+    amountIncludingTax: getIntegerAmountFromSaleor(line.totalPrice.gross.amount),
     id: line.id,
     imageUrl: line.thumbnail?.url,
     itemCategory: line.variant?.product.category?.name,
@@ -137,7 +135,7 @@ export const getTransactionAmountFromAdyen = (
     refunded: transaction?.refundedAmount?.amount,
     authorized: transaction?.authorizedAmount?.amount,
   });
-  const notificationAmount = currency(getSaleorAmountFromAdyen(notification.amount.value ?? 0));
+  const notificationAmount = currency(getSaleorAmountFromInteger(notification.amount.value ?? 0));
   const notificationCurrency = notification.amount.currency!;
 
   if (notification.success === Types.notification.NotificationRequestItem.SuccessEnum.False) {

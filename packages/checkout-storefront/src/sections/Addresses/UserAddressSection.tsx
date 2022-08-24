@@ -1,23 +1,21 @@
 import { Button } from "@/checkout-storefront/components/Button";
-import { AddressFragment, CountryCode } from "@/checkout-storefront/graphql";
+import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getById } from "@/checkout-storefront/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
-import React, { Suspense, useEffect, useRef, useState } from "react";
-import { UserAddressFormData } from "./types";
+import React, { Suspense, useState } from "react";
+import { Address, UserAddressFormData } from "./types";
 import { UserAddressList } from "./UserAddressList";
-import { UserAddressSectionContainer } from "./UserAddressSectionContainer";
 import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
-import { getAddressFormDataFromAddress } from "./utils";
-import { useCountrySelect } from "@/checkout-storefront/providers/CountrySelectProvider";
-import { useUserAddressSelect, UseUserAddressSelectProps } from "./useUserAddressSelect";
-import { AddressesSkeleton } from "./AddressesSkeleton";
+import { getUserAddressFormDataFromAddress } from "./utils";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
+import { Title } from "@/checkout-storefront/components/Title";
+import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
+import { AddressListProvider } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
 
-export interface UserAddressSectionProps
-  extends UseUserAddressSelectProps,
-    UseErrors<UserAddressFormData> {
+export interface UserAddressSectionProps extends UseErrors<UserAddressFormData> {
+  defaultAddress: Address;
   onAddressSelect: (address: UserAddressFormData) => void;
   addresses: AddressFragment[];
   title: string;
@@ -25,22 +23,13 @@ export interface UserAddressSectionProps
 }
 
 export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
-  defaultAddressId,
+  defaultAddress,
   addresses = [],
   onAddressSelect,
   title,
   type,
 }) => {
   const formatMessage = useFormattedMessages();
-
-  const { selectedAddress, selectedAddressId, setSelectedAddressId } = useUserAddressSelect({
-    type,
-    defaultAddressId,
-    addresses,
-    onAddressSelect,
-  });
-
-  const { setCountryCode } = useCountrySelect();
 
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
@@ -50,35 +39,34 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
 
   const displayAddressList = !displayAddressEdit && !displayAddressCreate;
 
-  const editedAddress = addresses.find(getById(editedAddressId as string));
-
-  const handleSelectCountry = (address?: AddressFragment) => () =>
-    setCountryCode(address?.country.code as CountryCode);
-
-  useEffect(handleSelectCountry(selectedAddress), [selectedAddress]);
-
-  useEffect(handleSelectCountry(editedAddress), [editedAddress]);
+  const editedAddress = addresses.find(getById(editedAddressId as string)) as AddressFragment;
 
   return (
-    <Suspense fallback={<AddressesSkeleton />}>
-      <UserAddressSectionContainer
-        title={title}
-        displayCountrySelect={displayAddressEdit || displayAddressCreate}
+    <Suspense fallback={<AddressSectionSkeleton />}>
+      <AddressListProvider
+        onCheckoutAddressUpdate={onAddressSelect}
+        defaultAddress={defaultAddress}
+        checkAddressAvailability={type === "SHIPPING"}
       >
-        <AddressCreateForm
-          show={displayAddressCreate}
-          type={type}
-          onClose={() => setDisplayAddressCreate(false)}
-        />
+        {displayAddressCreate && (
+          <AddressCreateForm
+            title={title}
+            type={type}
+            onClose={() => setDisplayAddressCreate(false)}
+          />
+        )}
 
-        <AddressEditForm
-          show={displayAddressEdit}
-          onClose={() => setEditedAddressId(null)}
-          defaultValues={getAddressFormDataFromAddress(editedAddress)}
-        />
+        {displayAddressEdit && (
+          <AddressEditForm
+            title={title}
+            onClose={() => setEditedAddressId(null)}
+            defaultValues={getUserAddressFormDataFromAddress(editedAddress)}
+          />
+        )}
 
         {displayAddressList && (
-          <>
+          <div className="flex flex-col">
+            <Title>{title}</Title>
             <Button
               variant="secondary"
               ariaLabel={formatMessage("addAddressLabel")}
@@ -86,15 +74,10 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
               label={formatMessage("addAddress")}
               className="mb-4 w-full"
             />
-            <UserAddressList
-              addresses={addresses as AddressFragment[]}
-              onAddressSelect={setSelectedAddressId}
-              selectedAddressId={selectedAddressId}
-              onEditChange={(id: string) => setEditedAddressId(id)}
-            />
-          </>
+            <UserAddressList type={type} onEditChange={(id: string) => setEditedAddressId(id)} />
+          </div>
         )}
-      </UserAddressSectionContainer>
+      </AddressListProvider>
     </Suspense>
   );
 };

@@ -1,6 +1,17 @@
+import { AddressFragment } from "@/checkout-storefront/graphql";
+import { ReactNode } from "react";
+import { TaxedMoney } from "@/checkout-storefront/graphql";
+
 export interface Classes {
   className?: string;
 }
+
+export interface Children {
+  children: ReactNode | ReactNode[];
+}
+
+export type GrossMoney = Pick<TaxedMoney, "gross">;
+export type GrossMoneyWithTax = Pick<TaxedMoney, "gross" | "tax">;
 
 export interface AriaLabel {
   ariaLabel: string;
@@ -42,3 +53,7 @@ export type AddressField =
   | "phone";
 
 export type ApiAddressField = AddressField | "name";
+
+export interface CommonSectionProps {
+  collapsed: boolean;
+}

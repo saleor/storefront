@@ -1,5 +1,5 @@
-import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { formatRedirectUrl } from "@/saleor-app-checkout/backend/payments/utils";
+import { CreatePaymentData } from "../../types";
 
 import {
   getDiscountLines,
@@ -9,17 +9,7 @@ import {
   getMollieClient,
 } from "./utils";
 
-export interface CreateMolliePaymentData {
-  order: OrderFragment;
-  redirectUrl: string;
-  appUrl: string;
-}
-
-export const createMolliePayment = async ({
-  order,
-  redirectUrl,
-  appUrl,
-}: CreateMolliePaymentData) => {
+export const createMolliePayment = async ({ order, redirectUrl, appUrl }: CreatePaymentData) => {
   const discountLines = getDiscountLines(order.discounts);
   const shippingLines = getShippingLines(order);
   const lines = getLines(order.lines);

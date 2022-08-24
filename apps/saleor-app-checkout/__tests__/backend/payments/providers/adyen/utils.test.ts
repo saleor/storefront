@@ -1,11 +1,14 @@
 import {
   createEventUniqueKey,
-  getSaleorAmountFromAdyen,
-  getAdyenAmountFromSaleor,
   getTransactionAmountFromAdyen,
   TransactionAmounts,
   nonNegative,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
+
+import {
+  getSaleorAmountFromInteger,
+  getIntegerAmountFromSaleor,
+} from "@/saleor-app-checkout/backend/payments/utils";
 import { TransactionEventFragment, TransactionFragment } from "@/saleor-app-checkout/graphql";
 import { prepareSaleorTransaction } from "@/saleor-app-checkout/mocks/fixtures/saleor";
 import { Types } from "@adyen/api-library";
@@ -59,19 +62,19 @@ describe("createEventUniqueKey", () => {
   });
 });
 
-describe("getSaleorAmountFromAdyen", () => {
+describe("getSaleorAmountFromInteger", () => {
   it("parses integer into float value", () => {
-    expect(getSaleorAmountFromAdyen(1922)).toBe(19.22);
-    expect(getSaleorAmountFromAdyen(1000)).toBe(10);
-    expect(getSaleorAmountFromAdyen(837)).toBe(8.37);
+    expect(getSaleorAmountFromInteger(1922)).toBe(19.22);
+    expect(getSaleorAmountFromInteger(1000)).toBe(10);
+    expect(getSaleorAmountFromInteger(837)).toBe(8.37);
   });
 });
 
-describe("getAdyenAmountFromSaleor", () => {
+describe("getIntegerAmountFromSaleor", () => {
   it("parses float into integer value", () => {
-    expect(getAdyenAmountFromSaleor(19.22)).toBe(1922);
-    expect(getAdyenAmountFromSaleor(10)).toBe(1000);
-    expect(getAdyenAmountFromSaleor(8.37)).toBe(837);
+    expect(getIntegerAmountFromSaleor(19.22)).toBe(1922);
+    expect(getIntegerAmountFromSaleor(10)).toBe(1000);
+    expect(getIntegerAmountFromSaleor(8.37)).toBe(837);
   });
 });
 

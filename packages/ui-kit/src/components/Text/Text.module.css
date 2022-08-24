@@ -14,6 +14,10 @@
   @apply text-text-error;
 }
 
+.txt-success {
+  @apply text-text-success;
+}
+
 .txt-xs {
   @apply text-xs;
 }

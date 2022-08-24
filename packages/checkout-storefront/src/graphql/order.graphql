@@ -6,6 +6,14 @@ fragment Money on Money {
 fragment OrderLineFragment on OrderLine {
   id
   quantity
+  variant {
+    name
+    attributes(variantSelection: ALL) {
+      values {
+        name
+      }
+    }
+  }
   totalPrice {
     gross {
       ...Money
@@ -57,6 +65,13 @@ fragment Order on Order {
   id
   number
   userEmail
+  discounts {
+    type
+    name
+    amount {
+      ...Money
+    }
+  }
   shippingAddress {
     ...AddressFragment
   }
@@ -73,6 +88,9 @@ fragment Order on Order {
     tax {
       ...Money
     }
+  }
+  voucher {
+    code
   }
   shippingPrice {
     gross {

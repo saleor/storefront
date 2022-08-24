@@ -40,5 +40,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0",
+    "pnpm": "^7.5.0"
+  },
+  "packageManager": "pnpm@7.5.2"
 }

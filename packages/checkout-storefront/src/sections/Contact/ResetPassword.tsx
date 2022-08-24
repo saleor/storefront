@@ -25,7 +25,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { setPassword: resetPassword } = useAuth();
-  const { showErrors, showSuccess } = useAlerts("resetPassword");
+  const { showErrors } = useAlerts("resetPassword");
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -34,9 +34,6 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
   const resolver = useValidationResolver(schema);
   const { handleSubmit, ...rest } = useForm<FormData>({ resolver });
 
-  // @todo this used to work before making the typescript config more strict
-  // please, fix me
-  // @ts-expect-error
   const getInputProps = useGetInputProps(rest);
 
   const onSubmit = async ({ password }: FormData) => {
@@ -52,10 +49,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
 
     if (hasErrors) {
       showErrors(errors);
-      return;
     }
-
-    showSuccess();
   };
 
   return (

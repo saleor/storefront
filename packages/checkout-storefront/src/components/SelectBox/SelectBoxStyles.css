@@ -1,0 +1,27 @@
+@tailwind components;
+
+@layer components {
+  .select-box-group {
+    @apply w-full;
+  }
+
+  .select-box {
+    @apply flex flex-row items-center justify-start border rounded border-border-secondary mb-2 py-2 px-3 cursor-default;
+  }
+
+  .select-box:hover {
+    @apply border border-border-active;
+  }
+
+  div.select-box.selected {
+    @apply border border-border-active;
+  }
+
+  div.select-box.disabled:hover {
+    @apply border-border-secondary;
+  }
+
+  .address-select-box {
+    @apply flex flex-row justify-between;
+  }
+}

@@ -5,9 +5,7 @@ export interface Country {
   code: CountryCode;
 }
 
-export type Countries = Country[];
-
-export const countries: Countries = [
+export const countries: Country[] = [
   {
     code: "PL",
     name: "Poland",
@@ -26,3 +24,16 @@ export const countries: Countries = [
     name: "Netherlands",
   },
 ];
+
+export const defaultCountry = countries[0] as Country;
+
+export const isValidCountryCode = (countryCode: CountryCode): boolean =>
+  countries.map(({ code }) => code).includes(countryCode);
+
+export const getCountryByCountryCode = (countryCode: CountryCode): Country => {
+  if (!isValidCountryCode(countryCode as CountryCode)) {
+    return defaultCountry;
+  }
+
+  return countries.find(({ code }) => code === countryCode) as Country;
+};

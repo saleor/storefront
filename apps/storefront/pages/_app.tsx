@@ -9,6 +9,7 @@ import React, { ReactElement, ReactNode } from "react";
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
 import { SaleorProviderWithChannels } from "@/components/SaleorProviderWithChannels";
+import { BaseSeo } from "@/components/seo/BaseSeo";
 import { DEMO_MODE } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
@@ -29,6 +30,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <CheckoutProvider>
         <RegionsProvider>
           <SaleorProviderWithChannels>
+            <BaseSeo />
             <NextNProgress color="#5B68E4" options={{ showSpinner: false }} />
             {DEMO_MODE && <DemoBanner />}
             {getLayout(<Component {...pageProps} />)}

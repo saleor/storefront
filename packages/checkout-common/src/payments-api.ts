@@ -3,6 +3,7 @@ import type { PaymentMethodID, PaymentProviderID } from "./payments";
 type BaseBody = {
   checkoutApiUrl: string;
   provider: PaymentProviderID;
+  method: PaymentMethodID;
   redirectUrl: string;
   // captureAmount?: number; // support for partial payments
 };

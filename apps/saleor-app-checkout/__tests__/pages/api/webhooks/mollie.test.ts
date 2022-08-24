@@ -1,4 +1,4 @@
-import { paymentProviders } from "@/saleor-app-checkout/mocks/fixtures/saleor";
+import { mollieCompletedOrderId } from "@/saleor-app-checkout/mocks/fixtures/saleor";
 import handler from "@/saleor-app-checkout/pages/api/webhooks/mollie";
 import {
   mockRequest,
@@ -9,9 +9,9 @@ import {
 describe("/api/webhooks/mollie", () => {
   const context = setupRecording();
 
-  beforeEach(() => {
-    setupPollyMiddleware(context.polly.server);
-  });
+  beforeEach(() => setupPollyMiddleware(context.polly.server));
+
+  afterEach(() => context.polly.flush());
 
   it("handles invalid (empty) requests payments", async () => {
     const { req, res } = mockRequest("POST");
@@ -38,7 +38,7 @@ describe("/api/webhooks/mollie", () => {
     const { req, res } = mockRequest("POST");
 
     req.body = {
-      id: paymentProviders.mollie.completedOrderId,
+      id: mollieCompletedOrderId,
     };
 
     await handler(req, res);

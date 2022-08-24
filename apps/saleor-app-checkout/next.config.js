@@ -3,7 +3,7 @@ const withTM = require("next-transpile-modules")();
 /** @type {import('next').NextConfig} */
 module.exports = withTM({
   i18n: {
-    locales: ["en-US", "pl-PL"],
+    locales: ["en-US", "pl-PL", "fr-FR", "vi-VN"],
     defaultLocale: "en-US",
   },
   reactStrictMode: true,
@@ -24,4 +24,5 @@ module.exports = withTM({
   eslint: {
     dirs: ["pages", "backend", "frontend", "config"],
   },
+  assetPrefix: process.env.NEXT_PUBLIC_CHECKOUT_APP_URL,
 });
