@@ -155,7 +155,10 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const [error, body] = safeJsonParse<PayRequestBody>(req.body);
+  const [error, body] =
+    typeof req.body === "string"
+      ? safeJsonParse<PayRequestBody>(req.body)
+      : [null, req.body as PayRequestBody];
 
   if (error) {
     console.error(error, req.body);
