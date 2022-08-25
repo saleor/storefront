@@ -26,6 +26,7 @@ import {
 } from "@/saleor-app-checkout/backend/payments/types";
 import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
 import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
+import { safeJsonParse } from "@/saleor-app-checkout/utils";
 
 class MissingUrlError extends Error {
   constructor(public provider: PaymentProviderID, public order?: OrderFragment) {
@@ -154,7 +155,13 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const body: PayRequestBody = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+  const [error, body] = safeJsonParse<PayRequestBody>(req.body);
+
+  if (error) {
+    console.error(error, req.body);
+    res.status(400).send({ message: "Invalid JSON" });
+    return;
+  }
 
   try {
     const appUrl = getBaseUrl(req);
