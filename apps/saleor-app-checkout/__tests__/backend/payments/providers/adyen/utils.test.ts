@@ -11,6 +11,7 @@ import {
 } from "@/saleor-app-checkout/backend/payments/utils";
 import { TransactionEventFragment, TransactionFragment } from "@/saleor-app-checkout/graphql";
 import { prepareSaleorTransaction } from "@/saleor-app-checkout/mocks/fixtures/saleor";
+import { disableConsole } from "@/saleor-app-checkout/test-utils";
 import { Types } from "@adyen/api-library";
 
 type NotificationRequestItem = Types.notification.NotificationRequestItem;
@@ -135,6 +136,7 @@ describe("getTransactionAmountFromAdyen", () => {
   });
 
   it("throws an error if transaction and notification currencies don't match", () => {
+    disableConsole("error");
     const notification: NotificationRequestItem = {
       ...prepareAdyenNotification(12_00, EventCodeEnum.Capture),
       amount: {
