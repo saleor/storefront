@@ -28,13 +28,13 @@
 ## Motivation
 
 **modern & fast**:
-Project is focusing on best practices for e-commerce, like: SSR & ISR, image optimization.
+The project focuses on best practices for e-commerce, like: SSR & ISR, image optimization.
 
 **easily customizable**:
-TailwindCSS can be easily extended and tweaked, or completely changed to your favorite css solution.
+TailwindCSS can be easily extended and tweaked, or completely replaced with your favorite CSS solution.
 
 **works out-of-the-box**:
-Pre configured tools for DX.
+Pre-configured tools for DX.
 
 ## Stack
 
@@ -44,7 +44,7 @@ Pre configured tools for DX.
 - Tailwind CSS
 - Saleor Checkout
 
-## Quick Setup
+## Quickstart
 
 Supercharge your development with our CLI tool and free developer account at [Saleor Cloud](https://cloud.saleor.io/). To download and install Saleor CLI, run the following command:
 
@@ -58,7 +58,7 @@ Set up your local storefront development environment by running the `storefront 
 saleor storefront create
 ```
 
-If you don't want to customize available options, you can also spawn a fully functional local storefront development environment, using`--demo` switch:
+If you don't want to customize available options, you can also spawn a fully functional local storefront development environment using`--demo` attribute:
 
 ```
 saleor storefront create --demo
@@ -77,7 +77,7 @@ Here's the list of each app and shared package in the monorepo (click to see a R
 #### Apps
 
 - [`apps/storefront`](apps/storefront/README.md): Next.js e-commerce storefront starter pack
-- [`apps/saleor-app-checkout`](apps/saleor-app-checkout/README.md): a Next.js Saleor app with dashboard for managing settings and theme, backend for Checkout, and the Checkout Storefront – ready to be extended/modified
+- [`apps/saleor-app-checkout`](apps/saleor-app-checkout/README.md): a Next.js Saleor app with a dashboard for managing settings and theme, backend for Checkout, and the Checkout Storefront – ready to be extended/modified
 
 #### Packages
 
@@ -85,7 +85,7 @@ Here's the list of each app and shared package in the monorepo (click to see a R
 - `packages/config-checkout`: `eslint` configuration
 - `packages/config-storefront`: `eslint` configuration
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
-- `packages/checkout-storefront`: Checkout store front component
+- `packages/checkout-storefront`: Checkout storefront component
 - `packages/checkout-common`: Common types and utils
 
 ### Install dependencies
@@ -114,7 +114,7 @@ pnpm dev
 
 ### Configuration
 
-Instructions how to configure the application (e.g. change the graphql API URL) can be found [here](apps/storefront/docs/configuration.md).
+Instructions how to configure the application (e.g. change the GraphQL API URL) can be found [here](apps/storefront/docs/configuration.md).
 
 ### Build
 
@@ -142,7 +142,7 @@ cd apps/saleor-app-checkout && npx saleor app tunnel 3001
 
 > Note: the process needs to be running in the background
 
-Before you start the server, you need to change default environment variables. Create `.env.local` file in each app:
+Before you start the server, you need to change the default environment variables. Create `.env.local` file in each app:
 
 - [`apps/saleor-app-checkout`](./apps/saleor-app-checkout/README.md#env-variables)
 
@@ -154,7 +154,7 @@ pnpm run dev --filter=saleor-app-checkout...
 
 ### Develop Checkout Storefront
 
-When in dev, a special development server is also running for `checkout-storefront` on port 3002. Check out [localhost:3002?checkout=<ID>](http://localhost:3002?checkout=) and add the your token to the url.
+When in dev, a special development server is also running for `checkout-storefront` on port 3002. Check out [localhost:3002?checkout=<ID>](http://localhost:3002?checkout=) and add your token to the URL.
 
 ### Code style
 
@@ -176,13 +176,13 @@ pnpm dev --filter=saleor-app-checkout
 
 ### GraphQL Schema
 
-To generate GraphQL code based on latest schema from Saleor instance defined in `SALEOR_API_URL` env variable run this command:
+To generate GraphQL code based on the latest schema from Saleor instance defined in `SALEOR_API_URL` env variable, run this command:
 
 ```
 pnpm run generate
 ```
 
-You need to run this command after each change in `*.graphql` files
+You need to run this command after each change in `*.graphql` files.
 
 ### Env variables
 
@@ -214,7 +214,7 @@ Change environment variables inside `.env` file:
 
   > See [guide below](#vercel) on how to deploy the Saleor App Checkout
 
-There are more environment variables available in each app. Go to their README's to learn more
+There are more environment variables available in each app. Go to their README's to learn more.
 
 ## Other tools
 
@@ -232,7 +232,7 @@ Add [breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoin
 
 ### VS Code GraphQL Extension
 
-GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.
+GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information, and autocompletion for GraphQL projects. This extension also works with queries annotated with `gql` tag.
 
 VS Marketplace [link](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql)
 
@@ -256,14 +256,14 @@ Saleor App Checkout supports two payment gateways that you can configure:
 
 [![Adyen](./docs/logos/adyen.svg)](https://www.adyen.com/)
 
-Payment gateways can be configured in the Saleor App Checkout inside Saleor dashboard.
+You can configure the payment gateways in the Saleor App Checkout inside the Saleor dashboard.
 Go to **Apps > Third party apps > Checkout**.
 
 You can toggle, which payment gateway handles each different payment options per channel:
 
 ![Configuration options: Credit Card, Apple Pay, PayPal that are available in Saleor App Checkout dashboard](./docs/screenshots/config-dashboard-1.png)
 
-To use payment gateway, you need to provide its credentials. You can do that by clicking settings icon in channel configuration page
+To use a payment gateway, you need to provide its credentials. You can do that by clicking the settings icon on the channel configuration page.
 
 ![Payment gateway configuration in Saleor dashboard](./docs/screenshots/config-dashboard-2.png)
 
