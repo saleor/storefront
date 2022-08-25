@@ -220,3 +220,14 @@ export const setupRecording = () => {
     },
   });
 };
+
+export const consoleTypes = ["log", "debug", "info", "warn", "error"] as const;
+type ConsoleType = typeof consoleTypes[number];
+
+export function disableConsole(logType: ConsoleType | ConsoleType[]) {
+  const types = Array.isArray(logType) ? logType : [logType];
+
+  types.forEach((type) => {
+    jest.spyOn(console, type).mockImplementation(() => {});
+  });
+}
