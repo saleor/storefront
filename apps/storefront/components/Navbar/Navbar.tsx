@@ -30,6 +30,11 @@ export function Navbar() {
         setBurgerOpen(false);
       }
     });
+    if (isBurgerOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
   });
 
   const counter =
