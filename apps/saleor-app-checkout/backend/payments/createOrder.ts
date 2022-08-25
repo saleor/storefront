@@ -64,5 +64,14 @@ export const createOrder = async (
     };
   }
 
+  if (process.env.DEMO_MODE) {
+    return {
+      data: {
+        ...data.orderCreateFromCheckout.order,
+        userEmail: "checkout@example.com",
+      },
+    };
+  }
+
   return { data: data.orderCreateFromCheckout.order };
 };
