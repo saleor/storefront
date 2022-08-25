@@ -1,6 +1,30 @@
 subscription TransactionActionRequestSubscription {
   event {
-    ...TransactionActionPayload
+    ... on TransactionActionRequest {
+      # temporary paste fragment due to Saleor validation issues
+      transaction {
+        id
+        reference
+        type
+        authorizedAmount {
+          amount
+          currency
+        }
+        chargedAmount {
+          amount
+        }
+        voidedAmount {
+          amount
+        }
+        refundedAmount {
+          amount
+        }
+      }
+      action {
+        actionType
+        amount
+      }
+    }
   }
 }
 
