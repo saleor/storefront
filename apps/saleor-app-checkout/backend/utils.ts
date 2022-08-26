@@ -47,7 +47,7 @@ export const requireAuthorization =
     return await fn(req, res);
   };
 
-export const getBaseUrl = (req: NextApiRequest) => {
+export const getBaseUrl = (req: { headers: Record<string, string | string[] | undefined> }) => {
   if (debugEnvVars?.appUrl) {
     console.debug("Using DEBUG_APP_URL: ", debugEnvVars.appUrl);
     return debugEnvVars.appUrl;

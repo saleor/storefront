@@ -3097,6 +3097,14 @@ export type CheckoutLineDelete = {
 
 export type CheckoutLineInput = {
   /**
+   * Flag that allow force splitting the same variant into multiple lines by skipping the matching logic.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  forceNewLine?: InputMaybe<Scalars["Boolean"]>;
+  /**
    * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
    *
    * Added in Saleor 3.1.
@@ -3112,6 +3120,12 @@ export type CheckoutLineInput = {
 
 export type CheckoutLineUpdateInput = {
   /**
+   * ID of the line.
+   *
+   * Added in Saleor 3.6.
+   */
+  lineId?: InputMaybe<Scalars["ID"]>;
+  /**
    * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
    *
    * Added in Saleor 3.1.
@@ -3121,8 +3135,12 @@ export type CheckoutLineUpdateInput = {
   price?: InputMaybe<Scalars["PositiveDecimal"]>;
   /** The number of items purchased. Optional for apps, required for any other users. */
   quantity?: InputMaybe<Scalars["Int"]>;
-  /** ID of the product variant. */
-  variantId: Scalars["ID"];
+  /**
+   * ID of the product variant.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use `lineId` instead.
+   */
+  variantId?: InputMaybe<Scalars["ID"]>;
 };
 
 /** Adds a checkout line to the existing checkout.If line was already in checkout, its quantity will be increased. */
@@ -11993,6 +12011,12 @@ export type OrderFulfillInput = {
   lines: Array<OrderFulfillLineInput>;
   /** If true, send an email notification to the customer. */
   notifyCustomer?: InputMaybe<Scalars["Boolean"]>;
+  /**
+   * Fulfillment tracking number.
+   *
+   * Added in Saleor 3.6.
+   */
+  trackingNumber?: InputMaybe<Scalars["String"]>;
 };
 
 export type OrderFulfillLineInput = {
@@ -12166,6 +12190,14 @@ export type OrderLineThumbnailArgs = {
 };
 
 export type OrderLineCreateInput = {
+  /**
+   * Flag that allow force splitting the same variant into multiple lines by skipping the matching logic.
+   *
+   * Added in Saleor 3.6.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  forceNewLine?: InputMaybe<Scalars["Boolean"]>;
   /** Number of variant items ordered. */
   quantity: Scalars["Int"];
   /** Product variant ID. */
@@ -19773,7 +19805,7 @@ export type User = Node &
   ObjectWithMetadata & {
     __typename?: "User";
     /** List of all user's addresses. */
-    addresses?: Maybe<Array<Address>>;
+    addresses: Array<Address>;
     avatar?: Maybe<Image>;
     /**
      * Returns the last open checkout of this user.
@@ -22753,7 +22785,7 @@ export const AppDocument = gql`
 `;
 
 export function useAppQuery(options?: Omit<Urql.UseQueryArgs<AppQueryVariables>, "query">) {
-  return Urql.useQuery<AppQuery>({ query: AppDocument, ...options });
+  return Urql.useQuery<AppQuery, AppQueryVariables>({ query: AppDocument, ...options });
 }
 export const ChannelDocument = gql`
   query Channel($id: ID!) {
@@ -22765,7 +22797,7 @@ export const ChannelDocument = gql`
 `;
 
 export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryVariables>, "query">) {
-  return Urql.useQuery<ChannelQuery>({ query: ChannelDocument, ...options });
+  return Urql.useQuery<ChannelQuery, ChannelQueryVariables>({ query: ChannelDocument, ...options });
 }
 export const ChannelsDocument = gql`
   query Channels {
@@ -22779,7 +22811,10 @@ export const ChannelsDocument = gql`
 export function useChannelsQuery(
   options?: Omit<Urql.UseQueryArgs<ChannelsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<ChannelsQuery>({ query: ChannelsDocument, ...options });
+  return Urql.useQuery<ChannelsQuery, ChannelsQueryVariables>({
+    query: ChannelsDocument,
+    ...options,
+  });
 }
 export const CheckoutDocument = gql`
   query Checkout($id: ID!) {
@@ -22797,7 +22832,10 @@ export const CheckoutDocument = gql`
 export function useCheckoutQuery(
   options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, "query">
 ) {
-  return Urql.useQuery<CheckoutQuery>({ query: CheckoutDocument, ...options });
+  return Urql.useQuery<CheckoutQuery, CheckoutQueryVariables>({
+    query: CheckoutDocument,
+    ...options,
+  });
 }
 export const FileUploadDocument = gql`
   mutation FileUpload($file: Upload!) {
@@ -22829,7 +22867,10 @@ export const PublicMetafieldsDocument = gql`
 export function usePublicMetafieldsQuery(
   options: Omit<Urql.UseQueryArgs<PublicMetafieldsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<PublicMetafieldsQuery>({ query: PublicMetafieldsDocument, ...options });
+  return Urql.useQuery<PublicMetafieldsQuery, PublicMetafieldsQueryVariables>({
+    query: PublicMetafieldsDocument,
+    ...options,
+  });
 }
 export const PrivateMetafieldsDocument = gql`
   query PrivateMetafields($id: ID!, $keys: [String!]) {
@@ -22843,7 +22884,10 @@ export const PrivateMetafieldsDocument = gql`
 export function usePrivateMetafieldsQuery(
   options: Omit<Urql.UseQueryArgs<PrivateMetafieldsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<PrivateMetafieldsQuery>({ query: PrivateMetafieldsDocument, ...options });
+  return Urql.useQuery<PrivateMetafieldsQuery, PrivateMetafieldsQueryVariables>({
+    query: PrivateMetafieldsDocument,
+    ...options,
+  });
 }
 export const PublicMetafieldsInferedDocument = gql`
   query PublicMetafieldsInfered($keys: [String!]) {
@@ -22857,7 +22901,7 @@ export const PublicMetafieldsInferedDocument = gql`
 export function usePublicMetafieldsInferedQuery(
   options?: Omit<Urql.UseQueryArgs<PublicMetafieldsInferedQueryVariables>, "query">
 ) {
-  return Urql.useQuery<PublicMetafieldsInferedQuery>({
+  return Urql.useQuery<PublicMetafieldsInferedQuery, PublicMetafieldsInferedQueryVariables>({
     query: PublicMetafieldsInferedDocument,
     ...options,
   });
@@ -22874,7 +22918,7 @@ export const PrivateMetafieldsInferedDocument = gql`
 export function usePrivateMetafieldsInferedQuery(
   options?: Omit<Urql.UseQueryArgs<PrivateMetafieldsInferedQueryVariables>, "query">
 ) {
-  return Urql.useQuery<PrivateMetafieldsInferedQuery>({
+  return Urql.useQuery<PrivateMetafieldsInferedQuery, PrivateMetafieldsInferedQueryVariables>({
     query: PrivateMetafieldsInferedDocument,
     ...options,
   });
@@ -22947,7 +22991,10 @@ export const OrderDetailsDocument = gql`
 export function useOrderDetailsQuery(
   options: Omit<Urql.UseQueryArgs<OrderDetailsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<OrderDetailsQuery>({ query: OrderDetailsDocument, ...options });
+  return Urql.useQuery<OrderDetailsQuery, OrderDetailsQueryVariables>({
+    query: OrderDetailsDocument,
+    ...options,
+  });
 }
 export const OrderPaymentDetailsDocument = gql`
   query OrderPaymentDetails($id: ID!) {
@@ -22964,7 +23011,7 @@ export const OrderPaymentDetailsDocument = gql`
 export function useOrderPaymentDetailsQuery(
   options: Omit<Urql.UseQueryArgs<OrderPaymentDetailsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<OrderPaymentDetailsQuery>({
+  return Urql.useQuery<OrderPaymentDetailsQuery, OrderPaymentDetailsQueryVariables>({
     query: OrderPaymentDetailsDocument,
     ...options,
   });
@@ -23003,7 +23050,10 @@ export const OrderTransactionsDocument = gql`
 export function useOrderTransactionsQuery(
   options: Omit<Urql.UseQueryArgs<OrderTransactionsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<OrderTransactionsQuery>({ query: OrderTransactionsDocument, ...options });
+  return Urql.useQuery<OrderTransactionsQuery, OrderTransactionsQueryVariables>({
+    query: OrderTransactionsDocument,
+    ...options,
+  });
 }
 export const TransactionCreateDocument = gql`
   mutation TransactionCreate(
@@ -23088,10 +23138,32 @@ export function useTransactionUpdateProcessedEventsMutation() {
 export const TransactionActionRequestSubscriptionDocument = gql`
   subscription TransactionActionRequestSubscription {
     event {
-      ...TransactionActionPayload
+      ... on TransactionActionRequest {
+        transaction {
+          id
+          reference
+          type
+          authorizedAmount {
+            amount
+            currency
+          }
+          chargedAmount {
+            amount
+          }
+          voidedAmount {
+            amount
+          }
+          refundedAmount {
+            amount
+          }
+        }
+        action {
+          actionType
+          amount
+        }
+      }
     }
   }
-  ${TransactionActionPayloadFragmentDoc}
 `;
 
 export function useTransactionActionRequestSubscription<
@@ -23147,5 +23219,8 @@ export const CheckWebhooksDocument = gql`
 export function useCheckWebhooksQuery(
   options?: Omit<Urql.UseQueryArgs<CheckWebhooksQueryVariables>, "query">
 ) {
-  return Urql.useQuery<CheckWebhooksQuery>({ query: CheckWebhooksDocument, ...options });
+  return Urql.useQuery<CheckWebhooksQuery, CheckWebhooksQueryVariables>({
+    query: CheckWebhooksDocument,
+    ...options,
+  });
 }
