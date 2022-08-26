@@ -3,8 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { saleorDomainHeader } from "../../constants";
 import { getAppDomain, setAuthToken } from "@/saleor-app-checkout/backend/environment";
 
-// eslint-disable-next-line require-await
-const handler = async (request: NextApiRequest, response: NextApiResponse): Promise<undefined> => {
+const handler = (request: NextApiRequest, response: NextApiResponse) => {
   console.debug(request);
 
   const saleorDomain = request.headers[saleorDomainHeader];
