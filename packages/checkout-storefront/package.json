@@ -12,7 +12,8 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "jest"
+    "test": "jest",
+    "test-dev": "jest --watch"
   },
   "peerDependencies": {
     "graphql": "^15.8.0",
