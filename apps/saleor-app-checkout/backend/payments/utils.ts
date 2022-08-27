@@ -18,7 +18,7 @@ type Amounts = {
 
 const notNegative = (number: number) => (number < 0 ? 0 : number);
 
-export const getTransactionAmount = (amounts: Amounts) => {
+export const getTransactionAmountGetter = (amounts: Amounts) => {
   const charged = amounts?.charged ?? 0;
   const authorized = amounts?.authorized ?? 0;
   const refunded = amounts?.refunded ?? 0;
@@ -39,6 +39,9 @@ export const getTransactionAmount = (amounts: Amounts) => {
     }
   };
 };
+
+export const getTransactionAmountGetterAsMoney = (amounts: Amounts) => (type: keyof Amounts) =>
+  currency(getTransactionAmountGetter(amounts)(type));
 
 // Some payment methods expect the amount to be in cents (integers)
 // Saleor provides and expects the amount to be in dollars (decimal format / floats)

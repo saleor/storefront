@@ -6,6 +6,9 @@
   "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "build": "NODE_ENV=production rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "check-types": "tsc --noEmit",
     "dev": "rollup -w -c",
     "build": "NODE_ENV=production rollup -c",

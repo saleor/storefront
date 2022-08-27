@@ -3,7 +3,7 @@ import { OrderStatus } from "@mollie/api-client";
 import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphql";
 
 import { getMollieEventName, getMollieClient } from "./utils";
-import { getTransactionAmount } from "../../utils";
+import { getTransactionAmountGetter } from "../../utils";
 
 export const MOLLIE_PAYMENT_PREFIX = "mollie";
 
@@ -19,7 +19,7 @@ export const verifyPayment = async (
   const reference = id;
   const eventName = getMollieEventName(status);
 
-  const getAmount = getTransactionAmount({
+  const getAmount = getTransactionAmountGetter({
     authorized: amount?.value,
     voided: undefined,
     refunded: amountRefunded?.value,
@@ -69,7 +69,7 @@ export const verifyPayment = async (
           amount: getAmount("authorized"),
           currency: amount.currency,
         },
-        availableActions: [],
+        availableActions: ["CHARGE"],
       },
       transactionEvent: {
         status: "PENDING",

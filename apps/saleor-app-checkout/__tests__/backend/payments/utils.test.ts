@@ -1,9 +1,9 @@
-import { getTransactionAmount } from "@/saleor-app-checkout/backend/payments/utils";
+import { getTransactionAmountGetter } from "@/saleor-app-checkout/backend/payments/utils";
 
 describe("@/saleor-app-checkout/backend/payments/utils", () => {
-  describe("getTransactionAmount util", () => {
+  describe("getTransactionAmountGetter util", () => {
     it("returns correct authorized value", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 0,
         authorized: 100,
         refunded: 0,
@@ -17,7 +17,7 @@ describe("@/saleor-app-checkout/backend/payments/utils", () => {
     });
 
     it("returns correct authorized value when partially charged", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 50,
         authorized: 100,
         refunded: 0,
@@ -31,7 +31,7 @@ describe("@/saleor-app-checkout/backend/payments/utils", () => {
     });
 
     it("returns correct charged value", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 100,
         authorized: 100,
         refunded: 0,
@@ -45,7 +45,7 @@ describe("@/saleor-app-checkout/backend/payments/utils", () => {
     });
 
     it("returns correct charted value when refunded", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 100,
         authorized: 100,
         refunded: 100,
@@ -59,7 +59,7 @@ describe("@/saleor-app-checkout/backend/payments/utils", () => {
     });
 
     it("returns correct charged value when partialy refunded", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 100,
         authorized: 100,
         refunded: 50,
@@ -73,7 +73,7 @@ describe("@/saleor-app-checkout/backend/payments/utils", () => {
     });
 
     it("returns 0 for charged value if returned more than transaction", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 100,
         authorized: 100,
         refunded: 200,
@@ -87,7 +87,7 @@ describe("@/saleor-app-checkout/backend/payments/utils", () => {
     });
 
     it("handles problematic numbers", () => {
-      const fn = getTransactionAmount({
+      const fn = getTransactionAmountGetter({
         charged: 0.2,
         authorized: 0.3,
         refunded: 0,

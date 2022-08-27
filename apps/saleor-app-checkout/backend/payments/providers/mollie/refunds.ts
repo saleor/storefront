@@ -11,7 +11,7 @@ import {
   TransactionUpdateMutationVariables,
 } from "@/saleor-app-checkout/graphql";
 import { PaymentStatus } from "@mollie/api-client";
-import { getTransactionAmount } from "@/saleor-app-checkout/backend/payments/utils";
+import { getTransactionAmountGetter } from "@/saleor-app-checkout/backend/payments/utils";
 import { getClient } from "@/saleor-app-checkout/backend/client";
 
 export async function handleMolieRefund(
@@ -39,7 +39,7 @@ export async function handleMolieRefund(
   // TODO: Check duplicate webhook invocations
   // based on Saleor-Signature header and metadata saved in transaction
 
-  const getAmount = getTransactionAmount({
+  const getTransactionAmount = getTransactionAmountGetter({
     voided: transaction?.voidedAmount.amount,
     charged: transaction?.chargedAmount.amount,
     refunded: transaction?.refundedAmount.amount,
@@ -48,12 +48,12 @@ export async function handleMolieRefund(
 
   const transactionActions: TransactionActionEnum[] = [];
 
-  if (getAmount("charged") < Number(amount)) {
+  if (getTransactionAmount("charged") < Number(amount)) {
     // Some money in transaction was not refunded
     transactionActions.push("REFUND");
   }
 
-  if (Number(amount) > getAmount("charged")) {
+  if (Number(amount) > getTransactionAmount("charged")) {
     // Refunded more than charged
     throw new Error("Cannot refund more than charged in transaction");
   }

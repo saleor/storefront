@@ -9,7 +9,10 @@ import { Headers } from "headers-polyfill";
 import { MockedRequest } from "msw";
 import { Readable } from "node:stream";
 
-export type TestNextApiResponse = NextApiResponse & { _getJSONData: <T extends Object>() => T };
+export type TestNextApiResponse = NextApiResponse & {
+  _getJSONData: <T extends Object>() => T;
+  _getData: <T extends string>() => T;
+};
 
 export const mockRequest = (method: RequestMethod = "GET") => {
   const { req, res } = createMocks({ method });
