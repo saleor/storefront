@@ -3,8 +3,7 @@ import {
   CheckoutError,
   CheckoutShippingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
-import { checkout } from "@/checkout-storefront/lib/fixtures";
-import { checkoutErrors, urqlError } from "@/checkout-storefront/lib/fixtures/errors";
+import { apiErrors, checkout, urqlError } from "@/checkout-storefront/lib/fixtures";
 import { extractMutationErrors, getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils";
 import { OperationResult } from "urql";
 
@@ -36,16 +35,16 @@ describe("extractMutationErrors", () => {
       data: {
         checkoutShippingAddressUpdate: {
           checkout: null,
-          errors: [checkoutErrors[0] as CheckoutError],
+          errors: [apiErrors[0] as CheckoutError],
         },
         checkoutBillingAddressUpdate: {
           checkout: null,
-          errors: [checkoutErrors[1] as CheckoutError],
+          errors: [apiErrors[1] as CheckoutError],
         },
       },
     };
 
-    expect(extractMutationErrors(result)).toEqual([true, checkoutErrors]);
+    expect(extractMutationErrors(result)).toEqual([true, apiErrors]);
   });
 
   it("should return false and empty array for result without api errors", () => {

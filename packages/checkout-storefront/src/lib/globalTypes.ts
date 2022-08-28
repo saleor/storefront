@@ -1,4 +1,3 @@
-import { AddressFragment } from "@/checkout-storefront/graphql";
 import { ReactNode } from "react";
 import { TaxedMoney } from "@/checkout-storefront/graphql";
 

@@ -26,5 +26,5 @@ module.exports = {
     "^lodash-es$": "lodash",
     "^lodash-es/(.*)$": "lodash/$1",
   },
-  testEnvironment: "setup-polly-jest/jest-environment-node",
+  testEnvironment: "jsdom",
 };

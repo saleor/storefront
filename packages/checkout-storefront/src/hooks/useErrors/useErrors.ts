@@ -4,7 +4,6 @@ import { ApiErrors, Errors } from "./types";
 
 export interface UseErrors<TFormData> {
   errors: Errors<TFormData>;
-  setErrors: (errors: Errors<TFormData>) => void;
   setApiErrors: (apiErrors: ApiErrors<TFormData>) => void;
   clearErrors: () => void;
   hasErrors: boolean;
@@ -12,19 +11,18 @@ export interface UseErrors<TFormData> {
 
 export const useErrors = <TFormData>(): UseErrors<TFormData> => {
   const [errors, setErrors] = useState<Errors<TFormData>>({});
-  const getParsedApiErrors = useGetParsedApiErrors();
+  const getParsedApiErrors = useGetParsedApiErrors<TFormData>();
 
   const getParsedErrors = <TFormData>(apiErrors: ApiErrors<TFormData>) => {
     if (!apiErrors) {
       return {} as Errors<TFormData>;
     }
 
-    // @ts-ignore to be fixed before merge
+    //@ts-ignore
     return getParsedApiErrors(apiErrors).reduce((result, { field, ...rest }) => {
       return {
         ...result,
         [field]: {
-          field,
           ...rest,
         },
       };
@@ -40,7 +38,6 @@ export const useErrors = <TFormData>(): UseErrors<TFormData> => {
   return {
     errors,
     setApiErrors,
-    setErrors,
     clearErrors,
     hasErrors,
   };

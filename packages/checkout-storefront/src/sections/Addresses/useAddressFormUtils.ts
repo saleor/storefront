@@ -1,51 +1,13 @@
-import { AddressValidationData } from "@/checkout-storefront/graphql";
+import { AddressValidationData, ValidationRulesFragment } from "@/checkout-storefront/graphql";
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
+import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
-import { uniq } from "lodash-es";
+import {
+  getOrderedAddressFields,
+  getRequiredAddressFields,
+} from "@/checkout-storefront/sections/Addresses/utils";
 
-const addressFieldsOrder: AddressField[] = [
-  "firstName",
-  "lastName",
-  "companyName",
-  "phone",
-  "streetAddress1",
-  "streetAddress2",
-  "city",
-  "postalCode",
-  "cityArea",
-  "countryArea",
-];
-
-// api doesn't order the fields but we want to
-const getSortedAddressFields = (addressFields: AddressField[] = []): AddressField[] => {
-  const filteredAddressFields = getFilteredAddressFields(addressFields);
-
-  return addressFieldsOrder.filter((orderedAddressField) =>
-    filteredAddressFields.includes(orderedAddressField)
-  );
-};
-
-export const getSortedAddressFieldsFromAddress = (address: Partial<Record<AddressField, any>>) =>
-  getSortedAddressFields(Object.keys(address) as AddressField[]);
-
-const getRequiredAddressFields = (requiredFields: AddressField[]): AddressField[] => [
-  ...requiredFields,
-  "firstName",
-  "lastName",
-];
-
-// api doesn't approve of "name" so we replace it with "firstName"
-// and "lastName"
-const getFilteredAddressFields = (addressFields: ApiAddressField[]): AddressField[] => {
-  const filteredAddressFields = addressFields.filter(
-    (addressField: ApiAddressField) => addressField !== "name"
-  ) as AddressField[];
-
-  return uniq([...filteredAddressFields, "firstName", "lastName"]);
-};
-
-export const useAddressFormUtils = (validationRules?: AddressValidationData | null) => {
+export const useAddressFormUtils = (validationRules?: ValidationRulesFragment | null) => {
   const formatMessage = useFormattedMessages();
 
   const isRequiredField = (field: AddressField) =>
@@ -79,7 +41,7 @@ export const useAddressFormUtils = (validationRules?: AddressValidationData | nu
     return getLocalizedFieldName(field, localizedFields[field]);
   };
 
-  const sortedAddressFields = getSortedAddressFields(
+  const sortedAddressFields = getOrderedAddressFields(
     validationRules?.allowedFields! as AddressField[]
   );
 

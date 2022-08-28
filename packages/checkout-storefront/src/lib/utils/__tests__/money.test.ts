@@ -1,7 +1,7 @@
 import { Money } from "@/checkout-storefront/graphql";
 import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
 
-describe("money", () => {
+describe("getFormattedMoney", () => {
   it("should display proper string for formatted money", () => {
     const money: Money = {
       currency: "GBP",

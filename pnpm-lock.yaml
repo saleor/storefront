@@ -410,6 +410,7 @@ importers:
       '@stripe/stripe-js': ^1.26.0
       '@testing-library/jest-dom': ^5.16.1
       '@testing-library/react': ^12.1.2
+      '@testing-library/react-hooks': ^8.0.1
       '@testing-library/user-event': ^13.5.0
       '@types/jest': ^27.5.2
       '@types/lodash-es': ^4.17.6
@@ -439,6 +440,7 @@ importers:
       query-string: ^7.1.1
       react-error-boundary: ^3.1.4
       react-hook-form: ^7.33.1
+      react-test-renderer: ^18.2.0
       react-toastify: ^9.0.4
       rollup: ^2.70.2
       rollup-plugin-dts: ^4.2.2
@@ -473,6 +475,7 @@ importers:
       query-string: 7.1.1
       react-error-boundary: 3.1.4
       react-hook-form: 7.34.2
+      react-test-renderer: 18.2.0
       react-toastify: 9.0.8
       tailwindcss: 3.1.8_ts-node@10.9.1
       ts-invariant: 0.10.3
@@ -495,6 +498,7 @@ importers:
       '@rollup/plugin-typescript': 8.4.0_5zsqiitiqqdgwm4iemtywlnhku
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 12.1.5
+      '@testing-library/react-hooks': 8.0.1_wgoqgniqt4zn24uhoeqck6qdwy
       '@testing-library/user-event': 13.5.0_wl4iynrlixafokvgqnhzlvigei
       '@types/jest': 27.5.2
       '@types/lodash-es': 4.17.6
@@ -8010,6 +8014,28 @@ packages:
       dom-accessibility-api: 0.5.14
       lodash: 4.17.21
       redent: 3.0.0
+    dev: true
+
+  /@testing-library/react-hooks/8.0.1_wgoqgniqt4zn24uhoeqck6qdwy:
+    resolution: {integrity: sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      '@types/react': ^16.9.0 || ^17.0.0
+      react: ^16.9.0 || ^17.0.0
+      react-dom: ^16.9.0 || ^17.0.0
+      react-test-renderer: ^16.9.0 || ^17.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react-dom:
+        optional: true
+      react-test-renderer:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.18.9
+      '@types/react': 18.0.17
+      react-error-boundary: 3.1.4
+      react-test-renderer: 18.2.0
     dev: true
 
   /@testing-library/react/12.1.5:
@@ -21541,7 +21567,6 @@ packages:
       react: '>=16.13.1'
     dependencies:
       '@babel/runtime': 7.18.9
-    dev: false
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
@@ -21639,7 +21664,6 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
-    dev: true
 
   /react-merge-refs/1.1.0:
     resolution: {integrity: sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==}
@@ -21750,6 +21774,14 @@ packages:
       - webpack-plugin-serve
     dev: true
 
+  /react-shallow-renderer/16.15.0:
+    resolution: {integrity: sha512-oScf2FqQ9LFVQgA73vr86xl2NaOIX73rh+YFqcOp68CWj56tSfgtGKrEbyhCj0rSijyG9M1CYprTh39fBi5hzA==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      object-assign: 4.1.1
+      react-is: 18.2.0
+
   /react-side-effect/2.1.2_react@18.2.0:
     resolution: {integrity: sha512-PVjOcvVOyIILrYoyGEpDN3vmYNLdy1CajSFNt4TDsVQC5KpTijDvWVoR+/7Rz2xT978D8/ZtFceXxzsPwZEDvw==}
     peerDependencies:
@@ -21770,6 +21802,15 @@ packages:
       react: 18.2.0
       refractor: 3.6.0
     dev: true
+
+  /react-test-renderer/18.2.0:
+    resolution: {integrity: sha512-JWD+aQ0lh2gvh4NM3bBM42Kx+XybOxCpgYK7F8ugAlpaTSnWsX+39Z4XkOykGZAHrjwwTZT3x3KxswVWxHPUqA==}
+    peerDependencies:
+      react: ^18.2.0
+    dependencies:
+      react-is: 18.2.0
+      react-shallow-renderer: 16.15.0
+      scheduler: 0.23.0
 
   /react-toastify/9.0.8:
     resolution: {integrity: sha512-EwM+teWt49HSHx+67qI08yLAW1zAsBxCXLCsUfxHYv1W7/R3ZLhrqKalh7j+kjgPna1h5LQMSMwns4tB4ww2yQ==}
