@@ -19,7 +19,7 @@ export const allowCors =
       return;
     }
 
-    return await fn(req, res);
+    return fn(req, res);
   };
 
 export const requireAuthorization =
@@ -45,7 +45,7 @@ export const requireAuthorization =
       });
     }
 
-    return await fn(req, res);
+    return fn(req, res);
   };
 
 export const getBaseUrl = (req: { headers: Record<string, string | string[] | undefined> }) => {

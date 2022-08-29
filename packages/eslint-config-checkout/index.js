@@ -49,6 +49,9 @@ module.exports = {
     // we sometimes use async functions that don't await anything
     "@typescript-eslint/require-await": "off",
 
+    // make sure to `await` inside try…catch
+    "@typescript-eslint/return-await": ["error", "in-try-catch"],
+
     // allow unused vars prefixed with `_`
     "@typescript-eslint/no-unused-vars": [
       "error",
