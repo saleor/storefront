@@ -1,5 +1,5 @@
 import { PermissionEnum } from "@/saleor-app-checkout/graphql";
-import { NextApiHandler, NextApiRequest } from "next";
+import { NextApiHandler } from "next";
 import invariant from "ts-invariant";
 import { debugEnvVars, envVars, envVarsNames } from "../constants";
 import { isAuthenticated, isAuthorized } from "./auth";
