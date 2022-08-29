@@ -65,8 +65,6 @@ module.exports = {
     ],
 
     // @todo
-    "react/display-name": "off",
-    "react/no-children-prop": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
 
