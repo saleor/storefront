@@ -60,43 +60,35 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/media/:match*",
-        destination: "https://dck24t1mwc0h.cloudfront.net/media/:match*",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/media/:match*`,
       },
       {
         source: "/dashboard/:match*",
-        destination: "https://dck24t1mwc0h.cloudfront.net/dashboard/:match*",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/dashboard/:match*`,
       },
-      // {
-      //   source: "/graphql/:match*",
-      //   destination: "https://dck24t1mwc0h.cloudfront.net/graphql/:match*",
-      // },
-      // {
-      //   source: "/graphql/",
-      //   destination: "https://dck24t1mwc0h.cloudfront.net/graphql/",
-      // },
       {
         source: "/graphql/:match*",
-        destination: "https://demo.saleor.io/graphql/:match*",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/graphql/:match*`,
       },
       {
         source: "/graphql/",
-        destination: "https://demo.saleor.io/graphql/",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/graphql/`,
       },
       {
         source: "/plugins/:match*",
-        destination: "https://dck24t1mwc0h.cloudfront.net/plugins/:match*",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/plugins/:match*`,
       },
       {
         source: "/digital-download/:match*",
-        destination: "https://dck24t1mwc0h.cloudfront.net/digital-download/:match*",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/digital-download/:match*`,
       },
       {
         source: "/thumbnail/:match*",
-        destination: "https://dck24t1mwc0h.cloudfront.net/thumbnail/:match*",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/thumbnail/:match*`,
       },
       {
         source: "/.well-known/jwks.json",
-        destination: "https://dck24t1mwc0h.cloudfront.net/.well-known/jwks.json",
+        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/.well-known/jwks.json`,
       },
     ];
   },
