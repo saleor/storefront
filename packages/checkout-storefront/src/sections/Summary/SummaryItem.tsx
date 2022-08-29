@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react";
 import { Text } from "@saleor/ui-kit";
 import { PhotoIcon } from "@/checkout-storefront/icons";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { getSummaryLineProps } from "./utils";
+import { getSummaryLineAttributesText, getSummaryLineProps } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { compact } from "lodash-es";
 
@@ -17,16 +17,8 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
   const { productName, productImage } = getSummaryLineProps(line);
 
   const formatMessage = useFormattedMessages();
-  const attributesText =
-    compact(
-      line.variant?.attributes.reduce(
-        (result: Array<string | undefined | null>, { values }) => [
-          ...result,
-          ...values.map(({ name }) => name),
-        ],
-        []
-      )
-    ).join(", ") || "";
+
+  const attributesText = getSummaryLineAttributesText(line);
 
   return (
     <li className="summary-item">

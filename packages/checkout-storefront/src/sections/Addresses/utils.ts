@@ -5,7 +5,8 @@ import {
   CountryCode,
   CountryDisplay,
 } from "@/checkout-storefront/graphql";
-import { isEqual, omit, reduce } from "lodash-es";
+import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
+import { isEqual, omit, reduce, uniq } from "lodash-es";
 import { Address, AddressFormData, UserAddressFormData } from "./types";
 
 export const emptyFormData = {
@@ -43,14 +44,14 @@ export const getAddressFormDataFromAddress = (address: Address): AddressFormData
 
   const { country, ...rest } = address;
 
-  const defaultValues = reduce(
+  const parsedAddressBase = reduce(
     rest,
     (result, val, key) => ({ ...result, [key]: val || "" }),
     {}
   ) as Omit<AddressFormData, "countryCode">;
 
   return {
-    ...defaultValues,
+    ...parsedAddressBase,
     countryCode: country.code as CountryCode,
   };
 };
@@ -92,3 +93,41 @@ export const getAddressVlidationRulesVariables = (
         checkRequiredFields: false,
       }
     : {};
+
+export const addressFieldsOrder: AddressField[] = [
+  "firstName",
+  "lastName",
+  "companyName",
+  "phone",
+  "streetAddress1",
+  "streetAddress2",
+  "city",
+  "postalCode",
+  "cityArea",
+  "countryArea",
+];
+
+// api doesn't order the fields but we want to
+export const getOrderedAddressFields = (addressFields: AddressField[] = []): AddressField[] => {
+  const filteredAddressFields = getFilteredAddressFields(addressFields);
+
+  return addressFieldsOrder.filter((orderedAddressField) =>
+    filteredAddressFields.includes(orderedAddressField)
+  );
+};
+
+export const getRequiredAddressFields = (requiredFields: AddressField[]): AddressField[] => [
+  ...requiredFields,
+  "firstName",
+  "lastName",
+];
+
+// api doesn't approve of "name" so we replace it with "firstName"
+// and "lastName"
+export const getFilteredAddressFields = (addressFields: ApiAddressField[]): AddressField[] => {
+  const filteredAddressFields = addressFields.filter(
+    (addressField: ApiAddressField) => addressField !== "name"
+  ) as AddressField[];
+
+  return uniq([...filteredAddressFields, "firstName", "lastName"]);
+};

@@ -15626,6 +15626,8 @@ export type ProductVariantBulkCreateInput = {
   attributes: Array<BulkAttributeValueInput>;
   /** List of prices assigned to channels. */
   channelListings?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -15754,6 +15756,8 @@ export type ProductVariantCreate = {
 export type ProductVariantCreateInput = {
   /** List of attributes specific to this variant. */
   attributes: Array<AttributeValueInput>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -15870,6 +15874,8 @@ export type ProductVariantFilterInput = {
 export type ProductVariantInput = {
   /** List of attributes specific to this variant. */
   attributes?: InputMaybe<Array<AttributeValueInput>>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -21018,9 +21024,8 @@ export type Webhook = Node & {
   isActive: Scalars["Boolean"];
   name: Scalars["String"];
   /**
-   * Used to create a hash signature with each payload.
-   *
-   * If not set, since Saleor 3.5, your payload will be signed using private key used also to sign JWT tokens.
+   * Used to create a hash signature for each payload.
+   * @deprecated This field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
    */
   secretKey?: Maybe<Scalars["String"]>;
   /** Used to define payloads for specific events. */
@@ -21077,7 +21082,11 @@ export type WebhookCreateInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   query?: InputMaybe<Scalars["String"]>;
-  /** The secret key used to create a hash signature with each payload. */
+  /**
+   * The secret key used to create a hash signature with each payload.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
+   */
   secretKey?: InputMaybe<Scalars["String"]>;
   /** The synchronous events that webhook wants to subscribe. */
   syncEvents?: InputMaybe<Array<WebhookEventTypeSyncEnum>>;
@@ -21727,7 +21736,11 @@ export type WebhookUpdateInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   query?: InputMaybe<Scalars["String"]>;
-  /** Use to create a hash signature with each payload. */
+  /**
+   * Use to create a hash signature with each payload.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
+   */
   secretKey?: InputMaybe<Scalars["String"]>;
   /** The synchronous events that webhook wants to subscribe. */
   syncEvents?: InputMaybe<Array<WebhookEventTypeSyncEnum>>;
@@ -21786,6 +21799,21 @@ export type GiftCardFragment = {
   displayCode: string;
   id: string;
   currentBalance: { __typename?: "Money"; currency: string; amount: number };
+};
+
+export type ValidationRulesFragment = {
+  __typename?: "AddressValidationData";
+  addressFormat: string;
+  allowedFields: Array<string>;
+  requiredFields: Array<string>;
+  countryAreaType: string;
+  postalCodeType: string;
+  cityType: string;
+  countryAreaChoices: Array<{
+    __typename?: "ChoiceValue";
+    raw?: string | null;
+    verbose?: string | null;
+  }>;
 };
 
 export type CheckoutFragment = {
@@ -23824,6 +23852,20 @@ export const CheckoutErrorFragmentDoc = gql`
     code
   }
 `;
+export const ValidationRulesFragmentDoc = gql`
+  fragment ValidationRulesFragment on AddressValidationData {
+    addressFormat
+    allowedFields
+    requiredFields
+    countryAreaType
+    postalCodeType
+    cityType
+    countryAreaChoices {
+      raw
+      verbose
+    }
+  }
+`;
 export const MoneyFragmentDoc = gql`
   fragment Money on Money {
     currency
@@ -24388,18 +24430,10 @@ export function useCheckoutDeliveryMethodUpdateMutation() {
 export const AddressValidationRulesDocument = gql`
   query addressValidationRules($countryCode: CountryCode!) {
     addressValidationRules(countryCode: $countryCode) {
-      addressFormat
-      allowedFields
-      requiredFields
-      countryAreaType
-      postalCodeType
-      cityType
-      countryAreaChoices {
-        raw
-        verbose
-      }
+      ...ValidationRulesFragment
     }
   }
+  ${ValidationRulesFragmentDoc}
 `;
 
 export function useAddressValidationRulesQuery(
