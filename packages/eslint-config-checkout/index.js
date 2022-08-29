@@ -16,7 +16,7 @@ module.exports = {
       rootDir: ["apps/*/", "packages/*/"],
     },
     react: {
-      version: "999.999.999",
+      version: "detect",
     },
   },
   rules: {

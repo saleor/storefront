@@ -10,10 +10,10 @@
     "build": "NODE_ENV=production rollup -c",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
     "check-types": "tsc --noEmit",
-    "test": "jest",
-    "test:dev": "jest --watch",
     "lint": "eslint",
     "lint:staged": "eslint --fix",
+    "test": "jest",
+    "test:dev": "jest --watch",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "resolutions": {
