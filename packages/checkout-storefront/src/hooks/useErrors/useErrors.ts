@@ -13,12 +13,11 @@ export const useErrors = <TFormData>(): UseErrors<TFormData> => {
   const [errors, setErrors] = useState<Errors<TFormData>>({});
   const getParsedApiErrors = useGetParsedApiErrors<TFormData>();
 
-  const getParsedErrors = <TFormData>(apiErrors: ApiErrors<TFormData>) => {
+  const getParsedErrors = (apiErrors: ApiErrors<TFormData>) => {
     if (!apiErrors) {
       return {} as Errors<TFormData>;
     }
 
-    //@ts-ignore
     return getParsedApiErrors(apiErrors).reduce((result, { field, ...rest }) => {
       return {
         ...result,
