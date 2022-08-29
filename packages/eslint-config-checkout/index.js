@@ -1,3 +1,6 @@
+/**
+ * @type {import('eslint').Linter.Config}
+ */
 module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "formatjs"],
@@ -19,6 +22,7 @@ module.exports = {
       version: "detect",
     },
   },
+  ignorePatterns: ["build/", ".turbo/", "dist/", "node_modules/", ".eslintrc.js"],
   rules: {
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",
