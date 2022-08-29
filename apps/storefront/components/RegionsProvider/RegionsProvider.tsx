@@ -56,10 +56,10 @@ export function RegionsProvider({ children }: { children: ReactNode }) {
 
   const [currentChannelSlug, setCurrentChannelSlug] = useState(router.query.channel);
 
-  const setCurrentChannel = (channel: string) => {
+  const setCurrentChannel = async (channel: string) => {
     resetCheckoutToken();
     setCurrentChannelSlug(channel);
-    return apolloClient.resetStore();
+    await apolloClient.resetStore();
   };
 
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;

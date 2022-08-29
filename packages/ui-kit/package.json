@@ -19,6 +19,7 @@
     "dev": "rollup -c -w",
     "lint": "eslint",
     "lint:staged": "eslint --fix",
+    "check-types": "tsc",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",

@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:staged": "next lint --fix",
+    "check-types": "tsc --noEmit",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
     "paths": "pathpida --ignorePath ../../.gitignore",
     "cy:run": "cypress run",
