@@ -31,6 +31,8 @@ export function SavedAddressSelectionList({
 
   const onSelectSavedAddress = async (address: AddressDetailsFragment) => {
     setSelectedSavedAddress(address);
+
+    // @todo handle errors
     const _errors = await updateAddressMutation({
       firstName: address?.firstName,
       lastName: address?.lastName,
