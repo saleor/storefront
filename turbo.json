@@ -70,7 +70,7 @@
     }
   },
   "globalDependencies": [
-    "pnp-lock.yaml",
+    "pnpm-lock.yaml",
     ".env",
     ".env.local",
     "packages/eslint-config-checkout/index.js"
