@@ -66,6 +66,7 @@
     "autoprefixer": "10.4.2",
     "cypress": "^10.1.0",
     "eslint": "^8.22.0",
+    "eslint-config-checkout": "workspace:*",
     "pathpida": "^0.18.1",
     "postcss": "8.4.12",
     "prettier": "2.6.2",

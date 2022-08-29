@@ -242,6 +242,7 @@ importers:
       dotenv-cli: ^5.1.0
       editorjs-blocks-react-renderer: ^1.2.4
       eslint: ^8.22.0
+      eslint-config-checkout: workspace:*
       graphql: 16.3.0
       graphql-tag: ^2.12.6
       next: 12.2.3
@@ -309,6 +310,7 @@ importers:
       autoprefixer: registry.npmjs.org/autoprefixer/10.4.2_postcss@8.4.12
       cypress: registry.npmjs.org/cypress/10.6.0
       eslint: registry.npmjs.org/eslint/8.23.0
+      eslint-config-checkout: link:../../packages/eslint-config-checkout
       pathpida: registry.npmjs.org/pathpida/0.18.1
       postcss: registry.npmjs.org/postcss/8.4.12
       prettier: registry.npmjs.org/prettier/2.6.2
