@@ -198,7 +198,7 @@ describe("/api/pay", () => {
     expect(mockedCreateOrder).toHaveBeenCalledTimes(1);
 
     expect(mockedCreateAdyenPayment).toHaveBeenCalledWith({
-      appUrl: "http://undefined",
+      appUrl: "http://",
       method: "creditCard",
       order: {
         privateMetafield: '{"provider":"adyen","session":"session-id-2","method":"creditCard"}',

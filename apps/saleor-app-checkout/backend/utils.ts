@@ -54,7 +54,7 @@ export const getBaseUrl = (req: { headers: Record<string, string | string[] | un
     return debugEnvVars.appUrl;
   }
 
-  const { host, "x-forwarded-proto": protocol = "http" } = req.headers;
+  const { host = "", "x-forwarded-proto": protocol = "http" } = req.headers;
 
   invariant(typeof host === "string", "host is not a string");
   invariant(typeof protocol === "string", "protocol is not a string");
