@@ -7,6 +7,7 @@
         "$BROWSER",
         "$CHECKOUT_APP_URL",
         "$CHECKOUT_STOREFRONT_URL",
+        "$CLOUD_DEPLOYMENT_URL",
         "$NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS",
         "$NEXT_PUBLIC_API_URI",
         "$NEXT_PUBLIC_CHECKOUT_APP_URL",
@@ -33,9 +34,9 @@
         "$TEST_ADYEN_WEBHOOK_USERNAME",
         "$TEST_MOLLIE_KEY",
         "$TEST_MOLLIE_PROFILE_ID",
+        "$TEST_STRIPE_PUBLISHABLE_KEY",
         "$TEST_STRIPE_SECRET_KEY",
-        "$TEST_STRIPE_WEBHOOK_SECRET",
-        "$TEST_STRIPE_PUBLISHABLE_KEY"
+        "$TEST_STRIPE_WEBHOOK_SECRET"
       ],
       "outputs": [
         "dist/**",
@@ -58,6 +59,9 @@
       "outputs": []
     },
     "dev": {
+      "cache": false
+    },
+    "start": {
       "cache": false
     }
   },
