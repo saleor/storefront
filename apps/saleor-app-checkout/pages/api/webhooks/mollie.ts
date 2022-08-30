@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { verifyPayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
@@ -10,7 +11,7 @@ import invariant from "ts-invariant";
   It's called after any change in the payment (paid, expired, failed, refunded, etc.)
   https://docs.mollie.com/overview/webhooks
 */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if ("id" in req.body) {
     const { id } = req.body;
     invariant(typeof id === "string", "id must be a string");
@@ -37,3 +38,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   res.status(400).json({ error: "invalid request body" });
 }
+
+export default withSentry(handler);

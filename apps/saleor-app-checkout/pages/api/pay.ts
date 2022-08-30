@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
 import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
@@ -221,4 +222,4 @@ const getPaymentUrlIdForProvider = (
   }
 };
 
-export default allowCors(handler);
+export default withSentry(allowCors(handler));
