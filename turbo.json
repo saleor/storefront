@@ -61,6 +61,7 @@
       "cache": false
     },
     "start": {
+      "cache": true
     }
   },
   "globalDependencies": [".env", ".env.local"]
