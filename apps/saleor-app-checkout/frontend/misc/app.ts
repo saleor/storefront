@@ -1,6 +1,4 @@
 import { isSsr } from "@/saleor-app-checkout/constants";
-import createApp from "@saleor/app-bridge";
+import { AppBridge } from "@saleor/app-sdk/app-bridge";
 
-export const app = !isSsr ? createApp() : undefined;
-
-export type AppBridge = ReturnType<typeof createApp>;
+export const app = !isSsr ? new AppBridge() : undefined;
