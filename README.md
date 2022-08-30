@@ -172,7 +172,7 @@ You can also run only a specific app by running this command:
 pnpm dev --filter=saleor-app-checkout
 ```
 
-## Starting on your own production server
+## Starting production server
 
 After completing the development as per above, these commands are suitable to start the `storefront` and `saleor-app-checkout` applications in a production-like environment:
 
