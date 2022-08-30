@@ -45,6 +45,8 @@ module.exports = withBundleAnalyzer({
     ];
   },
   async rewrites() {
+    const cloudDeploymentUrl = process.env.CLOUD_DEPLOYMENT_URL;
+
     return [
       {
         source: "/checkout",
@@ -58,38 +60,42 @@ module.exports = withBundleAnalyzer({
         source: "/saleor-app-checkout/:path*",
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
       },
-      {
-        source: "/media/:match*",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/media/:match*`,
-      },
-      {
-        source: "/dashboard/:match*",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/dashboard/:match*`,
-      },
-      {
-        source: "/graphql/:match*",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/graphql/:match*`,
-      },
-      {
-        source: "/graphql/",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/graphql/`,
-      },
-      {
-        source: "/plugins/:match*",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/plugins/:match*`,
-      },
-      {
-        source: "/digital-download/:match*",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/digital-download/:match*`,
-      },
-      {
-        source: "/thumbnail/:match*",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/thumbnail/:match*`,
-      },
-      {
-        source: "/.well-known/jwks.json",
-        destination: `${process.env.CLOUD_DEPLOYMENT_URL}/.well-known/jwks.json`,
-      },
+      ...(cloudDeploymentUrl
+        ? [
+            {
+              source: "/media/:match*",
+              destination: `${cloudDeploymentUrl}/media/:match*`,
+            },
+            {
+              source: "/dashboard/:match*",
+              destination: `${cloudDeploymentUrl}/dashboard/:match*`,
+            },
+            {
+              source: "/graphql/:match*",
+              destination: `${cloudDeploymentUrl}/graphql/:match*`,
+            },
+            {
+              source: "/graphql/",
+              destination: `${cloudDeploymentUrl}/graphql/`,
+            },
+            {
+              source: "/plugins/:match*",
+              destination: `${cloudDeploymentUrl}/plugins/:match*`,
+            },
+            {
+              source: "/digital-download/:match*",
+              destination: `${cloudDeploymentUrl}/digital-download/:match*`,
+            },
+            {
+              source: "/thumbnail/:match*",
+              destination: `${cloudDeploymentUrl}/thumbnail/:match*`,
+            },
+            {
+              source: "/.well-known/jwks.json",
+              destination: `${cloudDeploymentUrl}/.well-known/jwks.json`,
+            },
+          ]
+        : []),
     ];
   },
   experimental: {},
