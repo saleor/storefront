@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
@@ -12,7 +12,7 @@ interface BillingSameAsShippingContextConsumerProps {
 export const [useBillingSameAsShipping, Provider] =
   createSafeContext<BillingSameAsShippingContextConsumerProps>();
 
-export const BillingSameAsShippingProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
+export const BillingSameAsShippingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { checkout } = useCheckout();
 
   const [isBillingSameAsShippingAddress, setIsBillingSameAsShippingAddress] = useState(

@@ -41,7 +41,8 @@ export function useLocalStorage<T>(
       try {
         const item = event.newValue;
         if (item) {
-          setStoredValue(JSON.parse(item));
+          // @todo: should we validate the value here?
+          setStoredValue(JSON.parse(item) as T);
         }
       } catch {
         console.warn(`Could not update value for ${key}`);

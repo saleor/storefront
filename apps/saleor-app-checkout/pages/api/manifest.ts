@@ -9,9 +9,11 @@ import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import urlJoin from "url-join";
 import { SALEOR_WEBHOOK_TRANSACTION_ENDPOINT } from "./webhooks/saleor/transaction-action-request";
 import { TransactionActionRequestSubscriptionDocument } from "@/saleor-app-checkout/graphql";
+import invariant from "ts-invariant";
 
 const handler: Handler = (request) => {
   const { baseURL } = request.context;
+  invariant(typeof baseURL === "string", `baseURL is not a string`);
 
   const webhookUrl = urlJoin(getBaseUrl(request), SALEOR_WEBHOOK_TRANSACTION_ENDPOINT);
 

@@ -33,7 +33,7 @@ export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
     }
 
     // Update current URL to use the chosen locale
-    router.push({
+    void router.push({
       pathname: router.pathname,
       query: {
         ...router.query,

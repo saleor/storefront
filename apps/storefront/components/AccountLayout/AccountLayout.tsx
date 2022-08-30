@@ -1,12 +1,12 @@
 import { useAuthState } from "@saleor/sdk";
 import { useRouter } from "next/router";
-import React, { PropsWithChildren } from "react";
+import React, { ReactNode } from "react";
 
 import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
 
-export type AccountLayoutProps = PropsWithChildren<{}>;
+export type AccountLayoutProps = { children: ReactNode };
 
 export function AccountLayout({ children }: AccountLayoutProps) {
   const router = useRouter();
@@ -21,7 +21,7 @@ export function AccountLayout({ children }: AccountLayoutProps) {
   }
 
   if (!authenticated && typeof window !== "undefined") {
-    router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
+    void router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
     return null;
   }
 

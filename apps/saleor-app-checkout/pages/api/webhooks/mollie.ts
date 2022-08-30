@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { verifyPayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import invariant from "ts-invariant";
 
 /**
   Webhooks endpoint for mollie payment gateway.
@@ -11,7 +12,9 @@ import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if ("id" in req.body) {
-    const [paymentError, paymentData] = await unpackPromise(verifyPayment(req.body.id));
+    const { id } = req.body;
+    invariant(typeof id === "string", "id must be a string");
+    const [paymentError, paymentData] = await unpackPromise(verifyPayment(id));
 
     console.log({ paymentError });
 

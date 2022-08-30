@@ -58,7 +58,7 @@ export const createOrder = async (
 
   if (!data?.orderCreateFromCheckout?.order) {
     return {
-      errors: data?.orderCreateFromCheckout?.errors.map((e) => e.code!) || [
+      errors: data?.orderCreateFromCheckout?.errors.map((e) => e.code) || [
         "COULD_NOT_CREATE_ORDER_FROM_CHECKOUT",
       ],
     };

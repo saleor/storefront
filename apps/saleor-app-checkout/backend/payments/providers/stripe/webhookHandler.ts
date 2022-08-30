@@ -69,7 +69,7 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
       transaction: {
         status: checkoutSession.status || "unknown",
         reference: checkoutSession.id,
-        type: `${STRIPE_PAYMENT_PREFIX}-${method}`,
+        type: `${STRIPE_PAYMENT_PREFIX}-${method || "(unknown-payment-method)"}`,
         availableActions: [],
       },
       transactionEvent: {
@@ -102,7 +102,7 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
       transaction: {
         status: checkoutSession.status || "unknown",
         reference: checkoutSession.id,
-        type: `${STRIPE_PAYMENT_PREFIX}-${method}`,
+        type: `${STRIPE_PAYMENT_PREFIX}-${method || "(unknown-payment-method)"}`,
         amountAuthorized: {
           amount: getAmount("authorized"),
           currency: charge.currency.toUpperCase(),

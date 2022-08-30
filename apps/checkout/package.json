@@ -17,17 +17,18 @@
     "@types/node": "^16.11.22",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "eslint": "8.19.0",
+    "eslint": "^8.22.0",
     "eslint-config-checkout": "workspace:*",
-    "eslint-plugin-react": "7.30.1",
-    "eslint-plugin-react-hooks": "4.6.0",
     "react-scripts": "5.0.1",
     "tsconfig": "workspace:*",
     "typescript": "4.7.4"
   },
   "scripts": {
     "dev": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "lint": "eslint .",
+    "lint:staged": "eslint --fix .",
+    "check-types": "tsc --noEmit"
   },
   "browserslist": {
     "production": [

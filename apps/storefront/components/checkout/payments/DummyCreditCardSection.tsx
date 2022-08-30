@@ -96,7 +96,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
     const order = completeData?.checkoutComplete?.order;
     // If there are no errors during payment and confirmation, order should be created
     if (order) {
-      redirectToOrderDetailsPage();
+      return redirectToOrderDetailsPage();
     } else {
       console.error("Order was not created");
     }

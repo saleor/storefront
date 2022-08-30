@@ -48,7 +48,7 @@ export const mapPublicMetafieldsToSettings = (
       }
 
       try {
-        const metadataItemSettings = JSON.parse(metafield || "");
+        const metadataItemSettings = JSON.parse(metafield || "") as UnknownPublicSettingsValues;
 
         return {
           ...settings,

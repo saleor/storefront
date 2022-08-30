@@ -10,10 +10,14 @@
     "build": "NODE_ENV=production rollup -c",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
     "check-types": "tsc --noEmit",
-    "lint": "eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "lint": "eslint",
+    "lint:staged": "eslint --fix",
     "test": "jest",
-    "test:dev": "jest --watch"
+    "test:dev": "jest --watch",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "resolutions": {
+    "graphql": "^15.8.0"
   },
   "peerDependencies": {
     "graphql": "^15.8.0",
@@ -73,13 +77,10 @@
     "@types/react-dom": "^18.0.6",
     "@types/webpack-env": "^1.16.3",
     "@types/yup": "^0.29.13",
-    "@typescript-eslint/parser": "^5.17.0",
     "autoprefixer": "9.8.6",
     "env-vars": "workspace:*",
-    "eslint": "^8.12.0",
+    "eslint": "^8.22.0",
     "eslint-config-checkout": "workspace:*",
-    "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.3.0",
     "graphql-tag": "^2.12.6",
     "jest": "^27.5.1",
     "next": "12.2.2",

@@ -49,13 +49,21 @@
     "lint": {
       "outputs": []
     },
+    "lint:staged": {
+      "outputs": []
+    },
     "check-types": {
       "outputs": []
     },
-    "test": {
-      "outputs": []
+    "generate": {
+      "outputs": [
+        "graphql/index.ts",
+        "graphql.schema.json",
+        "saleor/api.tsx",
+        "src/graphql/index.ts"
+      ]
     },
-    "lint:staged": {
+    "test": {
       "outputs": []
     },
     "dev": {
@@ -65,5 +73,10 @@
       "cache": false
     }
   },
-  "globalDependencies": [".env", ".env.local"]
+  "globalDependencies": [
+    "pnpm-lock.yaml",
+    ".env",
+    ".env.local",
+    "packages/eslint-config-checkout/index.js"
+  ]
 }

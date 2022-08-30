@@ -1,5 +1,6 @@
 import { PermissionEnum } from "@/saleor-app-checkout/graphql";
-import { NextApiHandler, NextApiRequest } from "next";
+import { NextApiHandler } from "next";
+import invariant from "ts-invariant";
 import { debugEnvVars, envVars, envVarsNames } from "../constants";
 import { isAuthenticated, isAuthorized } from "./auth";
 
@@ -18,7 +19,7 @@ export const allowCors =
       return;
     }
 
-    return await fn(req, res);
+    return fn(req, res);
   };
 
 export const requireAuthorization =
@@ -44,7 +45,7 @@ export const requireAuthorization =
       });
     }
 
-    return await fn(req, res);
+    return fn(req, res);
   };
 
 export const getBaseUrl = (req: { headers: Record<string, string | string[] | undefined> }) => {
@@ -53,7 +54,10 @@ export const getBaseUrl = (req: { headers: Record<string, string | string[] | un
     return debugEnvVars.appUrl;
   }
 
-  const { host, "x-forwarded-proto": protocol = "http" } = req.headers;
+  const { host = "", "x-forwarded-proto": protocol = "http" } = req.headers;
+
+  invariant(typeof host === "string", "host is not a string");
+  invariant(typeof protocol === "string", "protocol is not a string");
 
   return `${protocol}://${host}`;
 };

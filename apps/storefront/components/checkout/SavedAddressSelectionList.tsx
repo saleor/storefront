@@ -29,9 +29,11 @@ export function SavedAddressSelectionList({
 
   if (addresses.length === 0) return null;
 
-  const onSelectSavedAddress = (address: AddressDetailsFragment) => {
+  const onSelectSavedAddress = async (address: AddressDetailsFragment) => {
     setSelectedSavedAddress(address);
-    updateAddressMutation({
+
+    // @todo handle errors
+    const _errors = await updateAddressMutation({
       firstName: address?.firstName,
       lastName: address?.lastName,
       phone: address?.phone || "",
@@ -52,7 +54,7 @@ export function SavedAddressSelectionList({
           onClick={() => address && onSelectSavedAddress(address)}
           onKeyDown={(e) => {
             if (address && e.key === "Enter") {
-              onSelectSavedAddress(address);
+              return onSelectSavedAddress(address);
             }
           }}
           className={clsx(

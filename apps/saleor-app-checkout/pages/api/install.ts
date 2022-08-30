@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (req: NextApiRequest, res: NextApiResponse) => {};
+const handler: NextApiHandler = (_req, _res) => {};
+export default handler;

@@ -14,7 +14,7 @@ interface ErrorAlertProps<T> {
   getErrorMessage: (error: UnknownError<T>, intl: IntlShape) => string | null | undefined;
 }
 
-const ErrorAlert = <T extends any>({ errors, getErrorMessage }: ErrorAlertProps<T>) => {
+const ErrorAlert = <T,>({ errors, getErrorMessage }: ErrorAlertProps<T>) => {
   const intl = useIntl();
   const classes = useStyles();
 

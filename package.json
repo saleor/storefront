@@ -18,7 +18,8 @@
     "test": "env-cmd --no-override -f .env turbo run test --cache-dir=.turbo",
     "start": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run start",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "clean": "rm -rf ./**/node_modules/ ./**/.next ./.turbo ./pnpm-lock.yaml"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",

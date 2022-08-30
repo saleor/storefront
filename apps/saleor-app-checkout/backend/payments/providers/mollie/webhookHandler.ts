@@ -15,7 +15,7 @@ export const verifyPayment = async (
   const { status, amountCaptured, amountRefunded, metadata, method, amount } =
     await mollieClient.orders.get(id);
 
-  const type = `${MOLLIE_PAYMENT_PREFIX}-${method}`;
+  const type = `${MOLLIE_PAYMENT_PREFIX}-${method || "(unknown-payment-method)"}`;
   const reference = id;
   const eventName = getMollieEventName(status);
 

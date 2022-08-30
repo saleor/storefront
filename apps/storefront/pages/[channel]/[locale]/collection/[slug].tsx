@@ -20,8 +20,17 @@ import {
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const collectionSlug = context.params?.slug?.toString()!;
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
+) => {
+  if (!context.params) {
+    return {
+      props: {},
+      notFound: true,
+    };
+  }
+
+  const collectionSlug = context.params.slug.toString();
   const response: ApolloQueryResult<CollectionBySlugQuery> = await apolloClient.query<
     CollectionBySlugQuery,
     CollectionBySlugQueryVariables

@@ -1,6 +1,6 @@
 import { app, AppBridge } from "@/saleor-app-checkout/frontend/misc/app";
 import { useRouter } from "next/router";
-import { createContext, PropsWithChildren, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { handleRedirectEvent, handleRouteChange } from "./handlers";
 
 interface IAppContext {
@@ -13,7 +13,7 @@ export const AppContext = createContext<IAppContext>({
   isAuthorized: false,
 });
 
-const AppProvider: React.FC<PropsWithChildren<{}>> = (props) => {
+const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(!!app?.getState()?.token);
 
