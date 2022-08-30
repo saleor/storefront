@@ -181,7 +181,7 @@ pnpm build
 pnpm start
 ```
 
-Alternatively, you can also start only a specific application by running either of these commands:
+Alternatively, you can start a specific application by running either of these commands:
 
 ```bash
 pnpm start:saleor-app-checkout
