@@ -174,7 +174,7 @@ pnpm dev --filter=saleor-app-checkout
 
 ## Starting production server
 
-After completing the development as per above, these commands are suitable to start the `storefront` and `saleor-app-checkout` applications in a production-like environment:
+After completing the development, these commands are suitable to start the `storefront` and `saleor-app-checkout` applications in a production-like environment:
 
 ```bash
 pnpm build
