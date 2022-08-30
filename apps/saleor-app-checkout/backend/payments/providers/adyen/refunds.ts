@@ -41,6 +41,7 @@ export async function handleAdyenRefund(
   });
 
   if (!updateSucceeded) {
+    console.error("Transaction status couldn't be updated in Saleor");
     throw new Error("Transaction couldn't be updated in Saleor");
   }
 }

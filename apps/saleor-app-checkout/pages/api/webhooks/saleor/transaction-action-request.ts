@@ -25,6 +25,7 @@ export const config = {
 
 const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const { transaction, action } = req.params;
+  console.log("Start processing Saleor transaction action", action, transaction);
 
   if (!transaction?.type || !transaction.reference || !action.amount) {
     console.warn("Received webhook call without transaction data", req.params);
@@ -34,6 +35,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const { "saleor-signature": payloadSignature } = req.headers;
 
   if (!payloadSignature) {
+    console.warn("Missing Saleor signature");
     return Response.BadRequest({ success: false, message: "Missing signature" });
   }
 
@@ -41,6 +43,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const eventProcessed = processedEvents.some((signature) => signature === payloadSignature);
 
   if (eventProcessed) {
+    console.log("Event already processed");
     return Response.OK({ success: true, message: "Event already processed" });
   }
 
@@ -81,6 +84,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
     input: JSON.stringify([...processedEvents, payloadSignature]),
   });
 
+  console.log("Refund processing complete");
   return Response.OK({ success: true });
 };
 

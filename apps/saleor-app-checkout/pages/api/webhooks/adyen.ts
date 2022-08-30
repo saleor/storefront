@@ -56,6 +56,7 @@ async function notificationHandler(
   const orderId = await getOrderId(notification, apiKey);
 
   if (!orderId) {
+    console.log("Order id not found");
     return;
   }
 
