@@ -26,5 +26,10 @@ export const getYouTubeIDFromURL = (url: string) => {
   return match && match[7].length === 11 ? match[7] : undefined;
 };
 
-export const getVideoThumbnail = (videoUrl: string) =>
-  `https://img.youtube.com/vi/${getYouTubeIDFromURL(videoUrl)}/maxresdefault.jpg`;
+export const getVideoThumbnail = (videoUrl: string) => {
+  const videoId = getYouTubeIDFromURL(videoUrl);
+  if (!videoId) {
+    return null;
+  }
+  return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+};

@@ -1,10 +1,7 @@
 module.exports = {
-  parser: "@typescript-eslint/parser",
+  root: true,
+  extends: ["checkout"],
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ["./tsconfig.json"],
   },
-  plugins: ["react", "react-hooks"],
-  extends: ["checkout"],
-  ignorePatterns: "*.js",
 };

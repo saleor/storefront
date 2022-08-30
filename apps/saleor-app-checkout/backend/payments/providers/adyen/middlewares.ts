@@ -60,6 +60,10 @@ export const isAdyenNotification: Middleware = (handler) => (request) => {
 export const isAdyenWebhookAuthenticated: Middleware = (handler) => (request) => {
   const { username, password } = request.context as AdyenRequestContext;
 
+  if (typeof request.headers.authorization !== "string") {
+    return Response.Unauthorized();
+  }
+
   if (!verifyBasicAuth(username, password, request.headers.authorization)) {
     return Response.Unauthorized();
   }

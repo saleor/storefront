@@ -1,5 +1,4 @@
 import React, { AllHTMLAttributes, ForwardedRef, forwardRef } from "react";
-import { Classes } from "@/checkout-storefront/lib/globalTypes";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
 import { Control, FieldPath, UseFormRegisterReturn, useWatch } from "react-hook-form";
 import { ControlFormData } from "@/checkout-storefront/hooks/useGetInputProps";

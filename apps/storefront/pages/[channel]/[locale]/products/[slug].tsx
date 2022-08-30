@@ -38,8 +38,17 @@ export const getStaticPaths: GetStaticPaths = async () => ({
   fallback: "blocking",
 });
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const productSlug = context.params?.slug?.toString()!;
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
+) => {
+  if (!context.params) {
+    return {
+      props: {},
+      notFound: true,
+    };
+  }
+
+  const productSlug = context.params.slug.toString();
   const response: ApolloQueryResult<ProductBySlugQuery> = await apolloClient.query<
     ProductBySlugQuery,
     ProductBySlugQueryVariables
@@ -134,7 +143,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
 
     if (errors.length === 0) {
       // Product successfully added, redirect to cart page
-      router.push(paths.cart.$url());
+      void router.push(paths.cart.$url());
       return;
     }
 

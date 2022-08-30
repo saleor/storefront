@@ -29,8 +29,8 @@ export function AddressBookCard({ address, onRefreshBook }: AddressBookCardProps
     cardHeader = t.formatMessage(messages.defaultBilling);
   }
 
-  const onDeleteAddress = (addressId: string) => {
-    deleteAddressMutation({
+  const onDeleteAddress = async (addressId: string) => {
+    await deleteAddressMutation({
       variables: { id: addressId },
     });
     onRefreshBook();

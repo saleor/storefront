@@ -6,7 +6,8 @@ import {
 } from "@/saleor-app-checkout/graphql";
 
 export const getOrderTransactions = async (args: OrderTransactionsQueryVariables) => {
-  const { data, error } = await getClient()
+  // @todo handle errors
+  const { data, error: _error } = await getClient()
     .query<OrderTransactionsQuery, OrderTransactionsQueryVariables>(OrderTransactionsDocument, args)
     .toPromise();
 

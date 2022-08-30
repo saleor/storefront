@@ -32,7 +32,7 @@ function OrdersPage() {
   const orders = mapEdgesToItems(ordersCollection?.me?.orders);
 
   const onLoadMore = () => {
-    fetchMore({
+    return fetchMore({
       variables: {
         after: ordersCollection?.me?.orders?.pageInfo.endCursor,
       },

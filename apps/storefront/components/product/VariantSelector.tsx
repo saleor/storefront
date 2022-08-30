@@ -30,7 +30,7 @@ export function VariantSelector({ product, selectedVariantID }: VariantSelectorP
 
   const onChange = (value: string) => {
     setSelectedVariant(value);
-    router.replace(
+    void router.replace(
       paths.products._slug(product.slug).$url({ ...(value && { query: { variant: value } }) }),
       undefined,
       {

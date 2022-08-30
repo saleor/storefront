@@ -10,9 +10,8 @@
     "dev": "rollup -c -w",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "check-types": "tsc --noEmit",
-    "dev": "rollup -w -c",
-    "build": "NODE_ENV=production rollup -c",
-    "lint": "eslint --max-warnings=0 \"src/**/*.@(tsx|ts|jsx|js)\" --fix"
+    "lint": "eslint",
+    "lint:staged": "eslint --fix"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3"

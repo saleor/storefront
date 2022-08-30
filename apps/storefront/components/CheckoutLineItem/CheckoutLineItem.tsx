@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import { useIntl } from "react-intl";
 
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -38,20 +38,20 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
     setQuantity(line.quantity);
   }, [line]);
 
-  const changeLineState = (event: any) => {
-    if (!event?.target?.validity?.valid) return;
-    setQuantity(event.target.value);
+  const changeLineState = (event: SyntheticEvent<HTMLInputElement>) => {
+    if (!event?.currentTarget?.validity?.valid) return;
+    setQuantity(parseFloat(event.currentTarget.value));
   };
 
-  const onQuantityUpdate = async (event: any) => {
+  const onQuantityUpdate = async (event: SyntheticEvent<HTMLInputElement>) => {
     changeLineState(event);
-    if (!event?.target?.validity?.valid || event?.target?.value === "") return;
+    if (!event?.currentTarget?.validity?.valid || event?.currentTarget?.value === "") return;
     const result = await checkoutLineUpdateMutation({
       variables: {
         token,
         lines: [
           {
-            quantity: parseFloat(event.target.value),
+            quantity: parseFloat(event.currentTarget.value),
             variantId: line?.variant.id || "",
           },
         ],
@@ -138,11 +138,11 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
                 onFocus={() => {
                   setErrors(null);
                 }}
-                onChange={(ev) => changeLineState(ev)}
-                onBlur={(ev) => onQuantityUpdate(ev)}
+                onChange={changeLineState}
+                onBlur={onQuantityUpdate}
                 onKeyPress={(ev) => {
                   if (ev.key === "Enter") {
-                    onQuantityUpdate(ev);
+                    return onQuantityUpdate(ev);
                   }
                 }}
                 min={1}

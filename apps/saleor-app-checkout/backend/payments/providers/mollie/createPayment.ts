@@ -16,7 +16,7 @@ export const createMolliePayment = async ({ order, redirectUrl, appUrl }: Create
   const mollieClient = await getMollieClient();
 
   const mollieData = await mollieClient.orders.create({
-    orderNumber: order.number!,
+    orderNumber: order.number,
     webhookUrl: `${appUrl}/api/webhooks/mollie`,
     locale: "en_US",
     redirectUrl: formatRedirectUrl(redirectUrl, order.id),

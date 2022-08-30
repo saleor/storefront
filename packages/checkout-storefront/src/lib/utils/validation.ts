@@ -1,7 +1,4 @@
-import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import { ApiErrors, Errors, Error } from "@/checkout-storefront/hooks/useErrors";
 import { ValidationError, ErrorCode } from "@/checkout-storefront/lib/globalTypes";
-import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
 import { ValidationError as ValidationErrorObject } from "yup";
@@ -60,33 +57,3 @@ export const useValidationResolver = <
     },
     [schema]
   );
-
-export const useGetFormErrorsFromApiErrors = (): (<TFormData>(
-  apiErrors: ApiErrors<TFormData>
-) => Errors<TFormData>) => {
-  const { getMessageByErrorCode } = useErrorMessages();
-
-  const getErrorsFromApi = <TFormData>(apiErrors: ApiErrors<TFormData>) => {
-    if (!apiErrors) {
-      return {} as Errors<TFormData>;
-    }
-
-    return apiErrors.reduce(
-      (result: Errors<TFormData>, { field, code }: { field: keyof TFormData; code: string }) => {
-        const errorCode = camelCase(code) as ErrorCode;
-
-        return {
-          ...result,
-          [field]: {
-            field,
-            code: errorCode,
-            message: getMessageByErrorCode(errorCode),
-          } as Error<TFormData>,
-        };
-      },
-      {} as Errors<TFormData>
-    );
-  };
-
-  return getErrorsFromApi;
-};

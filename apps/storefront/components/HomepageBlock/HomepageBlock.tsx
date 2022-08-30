@@ -20,7 +20,7 @@ export function HomepageBlock({ menuItem }: HomepageBlockProps) {
   const t = useIntl();
   const filter: ProductFilterInput = {};
   if (menuItem.page?.id) {
-    const content = translate(menuItem.page!, "content");
+    const content = translate(menuItem.page, "content");
     return <div className="pb-10">{content && <RichText jsonStringData={content} />}</div>;
   }
   let link: UrlObject = {};

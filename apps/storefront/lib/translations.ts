@@ -1,11 +1,13 @@
-type Translated = {
-  translation?: object | undefined | null;
-};
-
-export function translate<T extends Translated, K extends keyof T>(obj: T, key: K): T[K] {
-  // TODO: better types
-  // @ts-ignore
-  return obj.translation?.[key] || obj[key];
+export function translate<
+  Obj extends {
+    translation?:
+      | { [TranslationKey in K]?: Obj[TranslationKey] | undefined | null }
+      | undefined
+      | null;
+  },
+  K extends keyof Obj
+>(obj: Obj, key: K): Obj[K] {
+  const result = obj.translation?.[key] || obj[key];
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- typescript seems to think this assertions IS necessary
+  return result as Obj[K];
 }
-
-export default translate;

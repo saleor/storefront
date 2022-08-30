@@ -25,7 +25,7 @@ function OrderDetailsPage({ token }: InferGetStaticPropsType<typeof getStaticPro
   const { formatPrice } = useRegions();
   const { authenticated } = useAuthState();
   const { loading, error, data } = useOrderDetailsByTokenQuery({
-    variables: { token },
+    variables: { token: token! },
     skip: !token || !authenticated,
   });
 

@@ -14,6 +14,12 @@ export function VideoExpand({ video, onRemoveExpand }: VideoExpandProps) {
     return null;
   }
 
+  const videoId = getYouTubeIDFromURL(video.url);
+
+  if (!videoId) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen absolute grid grid-cols-1 mx-auto px-8 md:h-full w-full bg-gray-100">
       <div
@@ -32,7 +38,7 @@ export function VideoExpand({ video, onRemoveExpand }: VideoExpandProps) {
       <div className="w-full h-full absolute md:mt-10 flex justify-center items-center">
         <iframe
           title={video.alt || "Video"}
-          src={`https://www.youtube.com/embed/${getYouTubeIDFromURL(video.url)}?autoplay=1`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
           className="w-full h-4/5 md:w-4/5"
           allow="autoplay"
           allowFullScreen

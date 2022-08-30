@@ -1,4 +1,5 @@
-import { CheckoutLineFragment, Money, OrderLineFragment } from "@/checkout-storefront/graphql";
+import { CheckoutLineFragment, OrderLineFragment } from "@/checkout-storefront/graphql";
+import compact from "lodash-es/compact";
 
 export const isCheckoutLine = (
   line: CheckoutLineFragment | OrderLineFragment
@@ -20,3 +21,14 @@ export const getSummaryLineProps = (line: OrderLineFragment | CheckoutLineFragme
         productName: line.productName,
         productImage: line.thumbnail,
       };
+
+export const getSummaryLineAttributesText = (line: CheckoutLineFragment | OrderLineFragment) =>
+  compact(
+    line.variant?.attributes.reduce(
+      (result: Array<string | undefined | null>, { values }) => [
+        ...result,
+        ...values.map(({ name }) => name),
+      ],
+      []
+    )
+  ).join(", ") || "";

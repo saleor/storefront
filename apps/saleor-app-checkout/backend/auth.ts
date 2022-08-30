@@ -78,7 +78,7 @@ export const isAuthenticated = async (req: NextApiRequest) => {
 
   const jwtVerifier = JwtVerifier.getInstance(tokenData["iss"]);
 
-  return await jwtVerifier.verify(token);
+  return jwtVerifier.verify(token);
 };
 
 export const hasPermissionsInToken = (

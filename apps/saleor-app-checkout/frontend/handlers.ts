@@ -61,7 +61,7 @@ export const uploadSettingsFiles = async ({
     return data;
   }
 
-  return await reduce(
+  return reduce(
     dataFiles,
     async (settings, subSettings, idx) => {
       const uploadedSettings = await settings;

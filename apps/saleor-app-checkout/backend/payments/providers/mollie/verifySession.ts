@@ -1,4 +1,4 @@
-import { Order, OrderStatus as MollieOrderStatus } from "@mollie/api-client";
+import { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { envVars } from "@/saleor-app-checkout/constants";
 
