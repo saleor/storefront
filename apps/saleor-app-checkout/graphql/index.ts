@@ -417,6 +417,17 @@ export type Allocation = Node & {
   warehouse: Warehouse;
 };
 
+/**
+ * Determine the allocation strategy for the channel.
+ *
+ *     PRIORITIZE_SORTING_ORDER - allocate stocks according to the warehouses' order
+ *     within the channel
+ *
+ *     PRIORITIZE_HIGH_STOCK - allocate stock in a warehouse with the most stock
+ *
+ */
+export type AllocationStrategyEnum = "PRIORITIZE_HIGH_STOCK" | "PRIORITIZE_SORTING_ORDER";
+
 /** Represents app data. */
 export type App = Node &
   ObjectWithMetadata & {
@@ -2322,6 +2333,16 @@ export type Channel = Node & {
   /** Slug of the channel. */
   slug: Scalars["String"];
   /**
+   * Define the stock setting for this channel.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
+   */
+  stockSettings: StockSettings;
+  /**
    * List of warehouses assigned to this channel.
    *
    * Added in Saleor 3.5.
@@ -2392,6 +2413,14 @@ export type ChannelCreateInput = {
   name: Scalars["String"];
   /** Slug of the channel. */
   slug: Scalars["String"];
+  /**
+   * The channel stock settings.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
 /**
@@ -2495,6 +2524,22 @@ export type ChannelErrorCode =
   | "UNIQUE";
 
 /**
+ * Reorder the warehouses of a channel.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_CHANNELS.
+ */
+export type ChannelReorderWarehouses = {
+  __typename?: "ChannelReorderWarehouses";
+  /** Channel within the warehouses are reordered. */
+  channel?: Maybe<Channel>;
+  errors: Array<ChannelError>;
+};
+
+/**
  * Event sent when channel status has changed.
  *
  * Added in Saleor 3.2.
@@ -2561,6 +2606,14 @@ export type ChannelUpdateInput = {
   removeWarehouses?: InputMaybe<Array<Scalars["ID"]>>;
   /** Slug of the channel. */
   slug?: InputMaybe<Scalars["String"]>;
+  /**
+   * The channel stock settings.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
 /**
@@ -8467,6 +8520,16 @@ export type Mutation = {
    */
   channelDelete?: Maybe<ChannelDelete>;
   /**
+   * Reorder the warehouses of a channel.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_CHANNELS.
+   */
+  channelReorderWarehouses?: Maybe<ChannelReorderWarehouses>;
+  /**
    * Update a channel.
    *
    * Requires one of the following permissions: MANAGE_CHANNELS.
@@ -9996,6 +10059,11 @@ export type MutationChannelDeactivateArgs = {
 export type MutationChannelDeleteArgs = {
   id: Scalars["ID"];
   input?: InputMaybe<ChannelDeleteInput>;
+};
+
+export type MutationChannelReorderWarehousesArgs = {
+  channelId: Scalars["ID"];
+  moves: Array<ReorderInput>;
 };
 
 export type MutationChannelUpdateArgs = {
@@ -13594,7 +13662,7 @@ export type PaymentError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
-  /** List of varint IDs which causes the error. */
+  /** List of variant IDs which causes the error. */
   variants?: Maybe<Array<Scalars["ID"]>>;
 };
 
@@ -15626,6 +15694,8 @@ export type ProductVariantBulkCreateInput = {
   attributes: Array<BulkAttributeValueInput>;
   /** List of prices assigned to channels. */
   channelListings?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -15754,6 +15824,8 @@ export type ProductVariantCreate = {
 export type ProductVariantCreateInput = {
   /** List of attributes specific to this variant. */
   attributes: Array<AttributeValueInput>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -15870,6 +15942,8 @@ export type ProductVariantFilterInput = {
 export type ProductVariantInput = {
   /** List of attributes specific to this variant. */
   attributes?: InputMaybe<Array<AttributeValueInput>>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -19194,6 +19268,24 @@ export type StockInput = {
   warehouse: Scalars["ID"];
 };
 
+/**
+ * Represents the channel stock settings.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type StockSettings = {
+  __typename?: "StockSettings";
+  /** Allocation strategy defines the preference of warehouses for allocations and reservations. */
+  allocationStrategy: AllocationStrategyEnum;
+};
+
+export type StockSettingsInput = {
+  /** Allocation strategy options. Strategy defines the preference of warehouses for allocations and reservations. */
+  allocationStrategy: AllocationStrategyEnum;
+};
+
 /** Enum representing the type of a payment storage in a gateway. */
 export type StorePaymentMethodEnum =
   /** Storage is disabled. The payment is not stored. */
@@ -20814,7 +20906,11 @@ export type WarehouseCreateInput = {
   email?: InputMaybe<Scalars["String"]>;
   /** Warehouse name. */
   name: Scalars["String"];
-  /** Shipping zones supported by the warehouse. */
+  /**
+   * Shipping zones supported by the warehouse.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Providing the zone ids will raise a ValidationError.
+   */
   shippingZones?: InputMaybe<Array<Scalars["ID"]>>;
   /** Warehouse slug. */
   slug?: InputMaybe<Scalars["String"]>;
@@ -20883,6 +20979,8 @@ export type WarehouseError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
+  /** List of shipping zones IDs which causes the error. */
+  shippingZones?: Maybe<Array<Scalars["ID"]>>;
 };
 
 /** An enumeration. */
@@ -21018,9 +21116,8 @@ export type Webhook = Node & {
   isActive: Scalars["Boolean"];
   name: Scalars["String"];
   /**
-   * Used to create a hash signature with each payload.
-   *
-   * If not set, since Saleor 3.5, your payload will be signed using private key used also to sign JWT tokens.
+   * Used to create a hash signature for each payload.
+   * @deprecated This field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
    */
   secretKey?: Maybe<Scalars["String"]>;
   /** Used to define payloads for specific events. */
@@ -21077,7 +21174,11 @@ export type WebhookCreateInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   query?: InputMaybe<Scalars["String"]>;
-  /** The secret key used to create a hash signature with each payload. */
+  /**
+   * The secret key used to create a hash signature with each payload.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
+   */
   secretKey?: InputMaybe<Scalars["String"]>;
   /** The synchronous events that webhook wants to subscribe. */
   syncEvents?: InputMaybe<Array<WebhookEventTypeSyncEnum>>;
@@ -21727,7 +21828,11 @@ export type WebhookUpdateInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   query?: InputMaybe<Scalars["String"]>;
-  /** Use to create a hash signature with each payload. */
+  /**
+   * Use to create a hash signature with each payload.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
+   */
   secretKey?: InputMaybe<Scalars["String"]>;
   /** The synchronous events that webhook wants to subscribe. */
   syncEvents?: InputMaybe<Array<WebhookEventTypeSyncEnum>>;
@@ -23112,7 +23217,7 @@ export const TransactionProcessedEventsDocument = gql`
 export function useTransactionProcessedEventsQuery(
   options: Omit<Urql.UseQueryArgs<TransactionProcessedEventsQueryVariables>, "query">
 ) {
-  return Urql.useQuery<TransactionProcessedEventsQuery>({
+  return Urql.useQuery<TransactionProcessedEventsQuery, TransactionProcessedEventsQueryVariables>({
     query: TransactionProcessedEventsDocument,
     ...options,
   });
