@@ -2,6 +2,7 @@ import { CountryCode, useAddressValidationRulesQuery } from "@/checkout-storefro
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
+import { reduce } from "lodash-es";
 import {
   getRequiredAddressFields,
   getOrderedAddressFields,
