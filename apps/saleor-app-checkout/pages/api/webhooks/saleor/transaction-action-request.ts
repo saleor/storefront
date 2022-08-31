@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { ADYEN_PAYMENT_PREFIX } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { MOLLIE_PAYMENT_PREFIX } from "@/saleor-app-checkout/backend/payments/providers/mollie";
 import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
@@ -52,10 +53,12 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   return Response.OK({ success: true });
 };
 
-export default toNextHandler([
-  withMethod(HTTPMethod.POST),
-  withSaleorDomainMatch,
-  withSaleorEventMatch("transaction_action_request"),
-  withWebhookSignatureVerified(),
-  handler as Handler,
-]);
+export default withSentry(
+  toNextHandler([
+    withMethod(HTTPMethod.POST),
+    withSaleorDomainMatch,
+    withSaleorEventMatch("transaction_action_request"),
+    withWebhookSignatureVerified(),
+    handler as Handler,
+  ])
+);

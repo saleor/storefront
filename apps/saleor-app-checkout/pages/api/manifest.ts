@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { print } from "graphql/language/printer.js";
 import { appName } from "../../constants";
 import { version } from "../../package.json";
@@ -41,4 +42,4 @@ const handler: Handler = (request) => {
   return Response.OK(manifest);
 };
 
-export default toNextHandler([withBaseURL, handler]);
+export default withSentry(toNextHandler([withBaseURL, handler]));
