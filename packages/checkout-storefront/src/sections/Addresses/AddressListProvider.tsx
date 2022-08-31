@@ -192,7 +192,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       return;
     }
 
-    const firstAvailableAddress = addressList.filter(isAvailable)?.[0];
+    const firstAvailableAddress = addressList.find(isAvailable);
 
     // otherwise just choose any available
     if (firstAvailableAddress) {
