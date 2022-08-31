@@ -7,7 +7,6 @@ import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { useEffect, useState } from "react";
-import { entries } from "@/checkout-storefront/lib/utils";
 
 type AvailablePaymentMethods = PaymentMethodID[];
 
@@ -20,6 +19,8 @@ export interface UsePaymentMethods {
   selectedPaymentProvider: PaymentProvider;
   isValidProviderSelected: boolean;
 }
+
+const entries = <T extends object>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
 
 const getAllPaymentMethods = (
   allPaymentMethods: ChannelActivePaymentProvidersByChannel | null | undefined
