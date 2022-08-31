@@ -184,7 +184,8 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       return;
     }
 
-    // in case it's not ok or ca, prefer to select user default address
+    // in case some address needs to be set prefer to select
+    // user default address
     if (defaultAddress) {
       checkoutAddressRef.current = defaultAddress;
       handleAddressSelect(defaultAddress.id);
@@ -193,7 +194,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
     const firstAvailableAddress = addressList.filter(isAvailable)?.[0];
 
-    // otherwise just choose any
+    // otherwise just choose any available
     if (firstAvailableAddress) {
       checkoutAddressRef.current = firstAvailableAddress;
       handleAddressSelect(firstAvailableAddress?.id);
