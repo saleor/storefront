@@ -9,7 +9,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { extractMutationErrors, getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React, { useCallback, useEffect } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
@@ -34,7 +34,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
   const updateShippingAddress = useCallback(
-    async ({ autoSave, ...address }: Partial<AddressFormData>) => {
+    async ({ autoSave, ...address }: AddressFormData) => {
       const result = await checkoutShippingAddressUpdate({
         checkoutId: checkout.id,
         shippingAddress: getAddressInputData(address),
@@ -50,17 +50,6 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
     },
     [checkout.id]
   );
-
-  // const handleAutoSetShippingCountry = () => {
-  //   if (!shippingAddress && !userDefaultAddress) {
-  //     void updateShippingAddress({
-  //       autoSave: true,
-  //       countryCode: getLocalizationDataFromUrl().country.code,
-  //     });
-  //   }
-  // };
-
-  // useEffect(handleAutoSetShippingCountry, [shippingAddress, updateShippingAddress]);
 
   if (collapsed) {
     return null;
@@ -83,6 +72,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
           />
         ) : (
           <GuestAddressSection
+            defaultAddress={user?.defaultShippingAddress}
             checkAddressAvailability={true}
             address={checkout?.shippingAddress}
             title={formatMessage("shippingAddress")}

@@ -125,6 +125,7 @@ export const BillingAddressSection = () => {
           ) : (
             <GuestAddressSection
               {...errorProps}
+              defaultAddress={user?.defaultBillingAddress}
               selectedCountryCode={checkout?.shippingAddress?.country.code as CountryCode}
               address={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage("billingAddress")}
