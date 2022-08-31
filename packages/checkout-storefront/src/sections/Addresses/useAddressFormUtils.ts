@@ -1,17 +1,44 @@
-import { AddressValidationData, ValidationRulesFragment } from "@/checkout-storefront/graphql";
+import {
+  AddressFragment,
+  CountryCode,
+  useAddressValidationRulesQuery,
+} from "@/checkout-storefront/graphql";
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
+import { reduce } from "lodash-es";
 import {
-  getOrderedAddressFields,
   getRequiredAddressFields,
+  getOrderedAddressFields,
 } from "@/checkout-storefront/sections/Addresses/utils";
 
-export const useAddressFormUtils = (validationRules?: ValidationRulesFragment | null) => {
+export const useAddressFormUtils = (countryCode: CountryCode) => {
   const formatMessage = useFormattedMessages();
 
+  const [{ data }] = useAddressValidationRulesQuery({
+    variables: { countryCode },
+  });
+
+  const validationRules = data?.addressValidationRules;
+
+  const hasAllRequiredFields = (address: AddressFragment) =>
+    !getMissingFieldsFromAddress(address).length;
+
+  const getMissingFieldsFromAddress = (address: AddressFragment) =>
+    reduce(
+      address,
+      (result, fieldValue, fieldName) => {
+        if (!isRequiredField(fieldName)) {
+          return result;
+        }
+
+        return !!fieldValue ? result : [...result, fieldName];
+      },
+      []
+    );
+
   const isRequiredField = (field: AddressField) =>
-    getRequiredAddressFields(validationRules?.requiredFields! as AddressField[]).includes(field);
+    getRequiredAddressFields(validationRules?.requiredFields as AddressField[]).includes(field);
 
   const getLocalizedFieldName = (field: AddressField, localizedField?: string | null) => {
     try {
@@ -41,9 +68,16 @@ export const useAddressFormUtils = (validationRules?: ValidationRulesFragment | 
     return getLocalizedFieldName(field, localizedFields[field]);
   };
 
-  const sortedAddressFields = getOrderedAddressFields(
-    validationRules?.allowedFields! as AddressField[]
+  const orderedAddressFields = getOrderedAddressFields(
+    validationRules?.allowedFields as AddressField[]
   );
 
-  return { sortedAddressFields, getFieldLabel, isRequiredField };
+  return {
+    orderedAddressFields,
+    getFieldLabel,
+    isRequiredField,
+    hasAllRequiredFields,
+    getMissingFieldsFromAddress,
+    validationRules,
+  };
 };

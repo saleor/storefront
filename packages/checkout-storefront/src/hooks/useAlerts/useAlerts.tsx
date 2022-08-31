@@ -1,6 +1,6 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { Alert, AlertType, AlertErrorData, CheckoutScope } from "./types";
+import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./types";
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
 import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/useErrors";
@@ -8,15 +8,15 @@ import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 
 export interface ScopedAlertsProps {
-  showErrors: (errors: AlertErrorData[]) => void;
-  showCustomErrors: (errors: ErrorCode[]) => void;
+  showErrors: (errors: ApiErrors<any>) => void;
+  showCustomErrors: (errors: CustomError[]) => void;
 }
 
 function useAlerts(scope: CheckoutScope): ScopedAlertsProps;
 
 function useAlerts(): {
-  showErrors: (errors: AlertErrorData[], scope: CheckoutScope) => void;
-  showCustomErrors: (errors: ErrorCode[], scope: CheckoutScope) => void;
+  showErrors: (errors: ApiErrors<any>, scope: CheckoutScope) => void;
+  showCustomErrors: (errors: CustomError[], scope: CheckoutScope) => void;
 };
 
 function useAlerts(globalScope?: any): any {
@@ -58,8 +58,14 @@ function useAlerts(globalScope?: any): any {
       showAlert({ ...error, scope }, { type: "error" })
     );
 
-  const showCustomErrors = (errors: ErrorCode[], scope: CheckoutScope = globalScope) =>
-    errors.forEach((code: ErrorCode) => showAlert({ scope, code, field: "" }, { type: "error" }));
+  const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
+    errors.forEach(({ field = "", message, ...rest }: CustomError) => {
+      if (message) {
+        toast(message, { type: "error" });
+      } else {
+        showAlert({ scope, field, ...rest }, { type: "error" });
+      }
+    });
 
   return { showErrors, showCustomErrors };
 }

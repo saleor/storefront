@@ -9,7 +9,7 @@ import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalT
 import { isEqual, omit, reduce, uniq } from "lodash-es";
 import { Address, AddressFormData, UserAddressFormData } from "./types";
 
-export const emptyFormData = {
+export const emptyFormData: AddressFormData = {
   firstName: "",
   lastName: "",
   streetAddress1: "",
@@ -20,7 +20,7 @@ export const emptyFormData = {
   countryArea: "",
   postalCode: "",
   phone: "",
-  countryCode: "",
+  countryCode: "" as CountryCode,
 };
 
 export const getAddressInputData = ({

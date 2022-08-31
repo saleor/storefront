@@ -3,10 +3,9 @@ import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuth, useAuthState } from "@saleor/sdk";
 
-import { FormData } from "./types";
+import { FormData } from "./useCheckoutForm";
 import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { PayErrorResult } from "@/checkout-storefront/fetch";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { useEffect } from "react";
 
@@ -19,7 +18,7 @@ export const useCheckoutFinalize = () => {
     env: { checkoutApiUrl },
   } = useAppConfig();
   const { showErrors, showCustomErrors } = useAlerts();
-  const { errors, setApiErrors } = useErrors();
+  const { errors, setApiErrors } = useErrors<FormData>();
 
   useEffect(() => {
     // @todo should this show a notification?
@@ -71,7 +70,12 @@ export const useCheckoutFinalize = () => {
 
       if ("ok" in result && result.ok === false) {
         const { errors } = result;
-        showCustomErrors(errors, "checkoutPay");
+
+        const parsedErrors = errors.map((error) => ({
+          code: error,
+        }));
+
+        showCustomErrors(parsedErrors, "checkoutPay");
       }
     }
   };
