@@ -79,6 +79,6 @@ export const useAddressFormUtils = (countryCode: CountryCode) => {
     isRequiredField,
     hasAllRequiredFields,
     getMissingFieldsFromAddress,
-    validationRules,
+    ...validationRules,
   };
 };

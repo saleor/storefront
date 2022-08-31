@@ -48,22 +48,30 @@ function useAlerts(globalScope?: any): any {
     };
   };
 
-  const showAlert = ({ scope, ...dataRest }: AlertErrorData, { type }: { type: AlertType }) => {
-    const { message, ...options } = getParsedAlert({ ...dataRest, scope }, type);
-    toast(message, options);
+  const showDefaultAlert = (
+    { scope, ...dataRest }: AlertErrorData,
+    { type }: { type: AlertType } = { type: "error" }
+  ) => {
+    const parsedAlert = getParsedAlert({ ...dataRest, scope }, type);
+    showAlert(parsedAlert);
   };
 
+  const showAlert = ({
+    message,
+    type = "error",
+    ...rest
+  }: Pick<Alert, "message"> & { type?: AlertType; id?: string }) =>
+    toast(<Text>{message}</Text>, { type, ...rest });
+
   const showErrors = (errors: ApiErrors<any>, scope: CheckoutScope = globalScope) =>
-    getParsedApiErrors(errors).forEach((error) =>
-      showAlert({ ...error, scope }, { type: "error" })
-    );
+    getParsedApiErrors(errors).forEach((error) => showDefaultAlert({ ...error, scope }));
 
   const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
     errors.forEach(({ field = "", message, code }: CustomError) => {
       if (message) {
-        toast(<Text>message</Text>, { type: "error" });
+        showAlert({ message });
       } else {
-        showAlert({ scope, field, code }, { type: "error" });
+        showDefaultAlert({ scope, field, code });
       }
     });
 

@@ -11,6 +11,7 @@
   "account": "Account",
   "signOut": "Sign Out",
   "signIn": "Sign In",
+  "checkoutFinalizeEmailInvalidError": "Please provide valid email before finalizing checkout",
   "shippingAddress": "Shipping address",
   "billingAddress": "Billing address",
   "addAddress": "Add address",

@@ -13,6 +13,7 @@ import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
+import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -38,13 +39,17 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   });
 
   const resolver = useValidationResolver(schema);
-  const { watch, getValues, setError, ...rest } = useForm<FormData>({
+  const formProps = useForm<FormData>({
     resolver,
     mode: "onBlur",
     defaultValues: { email: getContextValues("email") },
   });
 
-  const getInputProps = useGetInputProps(rest);
+  const { watch, getValues, setError, trigger } = formProps;
+
+  useCheckoutFormValidationTrigger(trigger);
+
+  const getInputProps = useGetInputProps(formProps);
   const getContextInputProps = useGetInputProps(formContext);
 
   useSetFormErrors({
