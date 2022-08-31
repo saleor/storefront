@@ -21,7 +21,6 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const formatMessage = useFormattedMessages();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
-  const shippingAddress = checkout?.shippingAddress;
   const [{ data }] = useUserQuery({
     pause: !authUser?.id,
   });
@@ -31,9 +30,6 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const { showErrors } = useAlerts();
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
-
-  const userDefaultAddress = user?.defaultShippingAddress;
-  const defaultAddress = checkout?.shippingAddress || userDefaultAddress;
 
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
@@ -55,16 +51,16 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
     [checkout.id]
   );
 
-  const handleAutoSetShippingCountry = () => {
-    if (!shippingAddress && !userDefaultAddress) {
-      void updateShippingAddress({
-        autoSave: true,
-        countryCode: getLocalizationDataFromUrl().country.code,
-      });
-    }
-  };
+  // const handleAutoSetShippingCountry = () => {
+  //   if (!shippingAddress && !userDefaultAddress) {
+  //     void updateShippingAddress({
+  //       autoSave: true,
+  //       countryCode: getLocalizationDataFromUrl().country.code,
+  //     });
+  //   }
+  // };
 
-  useEffect(handleAutoSetShippingCountry, [shippingAddress, updateShippingAddress]);
+  // useEffect(handleAutoSetShippingCountry, [shippingAddress, updateShippingAddress]);
 
   if (collapsed) {
     return null;
@@ -83,7 +79,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
               void updateShippingAddress(formData);
             }}
             addresses={addresses as AddressFragment[]}
-            defaultAddress={defaultAddress}
+            defaultAddress={user?.defaultShippingAddress}
           />
         ) : (
           <GuestAddressSection
