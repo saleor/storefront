@@ -38,7 +38,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   });
 
   const resolver = useValidationResolver(schema);
-  const { handleSubmit, watch, getValues, setError, ...rest } = useForm<FormData>({
+  const { watch, getValues, setError, ...rest } = useForm<FormData>({
     resolver,
     mode: "onBlur",
     defaultValues: { email: getContextValues("email") },
@@ -64,7 +64,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       checkoutId: checkout.id,
     });
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+    const [hasErrors, errors] = extractMutationErrors<FormData>(result);
 
     if (hasErrors) {
       showErrors(errors);

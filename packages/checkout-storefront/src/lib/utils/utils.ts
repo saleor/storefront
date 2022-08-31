@@ -1,4 +1,5 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
+import { ApiErrors } from "@/checkout-storefront/hooks";
 import { getCountryByCountryCode } from "@/checkout-storefront/sections/Addresses/countries";
 import { reduce } from "lodash-es";
 import queryString from "query-string";
@@ -65,10 +66,10 @@ export const extractCheckoutIdFromUrl = (): string => {
   return checkoutId;
 };
 
-export const extractMutationErrors = <TData extends Object, TVars = any>(
+export const extractMutationErrors = <TData extends Record<string, any>, TVars = any>(
   result: OperationResult<TData, TVars> | any // any to cover apollo client
   // mutations, to be removed once we remove apollo client from sdk
-): [boolean, any[]] => {
+): [boolean, ApiErrors<TData>] => {
   const urqlErrors = result.error ? [result.error] : [];
 
   const graphqlErrors = reduce(

@@ -39,7 +39,7 @@ export const getAddressInputData = ({
 
 export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
-    return emptyFormData as AddressFormData;
+    return emptyFormData;
   }
 
   const { country, ...rest } = address;
@@ -86,7 +86,7 @@ export const isMatchingAddressFormData = (
 ) => isEqual(omit(address, ["id", "autoSave"]), omit(addressToMatch, ["id", "autoSave"]));
 
 export const getAddressVlidationRulesVariables = (
-  autoSave: boolean = false
+  autoSave = false
 ): CheckoutAddressValidationRules =>
   autoSave
     ? {

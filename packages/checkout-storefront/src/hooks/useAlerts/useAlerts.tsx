@@ -4,8 +4,8 @@ import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
 import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/useErrors";
-import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
+import { Text } from "@saleor/ui-kit";
 
 export interface ScopedAlertsProps {
   showErrors: (errors: ApiErrors<any>) => void;
@@ -59,11 +59,11 @@ function useAlerts(globalScope?: any): any {
     );
 
   const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
-    errors.forEach(({ field = "", message, ...rest }: CustomError) => {
+    errors.forEach(({ field = "", message, code }: CustomError) => {
       if (message) {
-        toast(message, { type: "error" });
+        toast(<Text>message</Text>, { type: "error" });
       } else {
-        showAlert({ scope, field, ...rest }, { type: "error" });
+        showAlert({ scope, field, code }, { type: "error" });
       }
     });
 

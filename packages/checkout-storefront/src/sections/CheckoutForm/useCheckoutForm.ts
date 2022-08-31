@@ -9,7 +9,7 @@ import {
 } from "@/checkout-storefront/hooks";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useAddressFormUtils } from "@/checkout-storefront/sections/Addresses/useAddressFormUtils";
-import { object, string } from "yup";
+import { object, string, ValidationError } from "yup";
 import { useForm } from "react-hook-form";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "@/checkout-storefront/sections/PaymentSection";
@@ -88,26 +88,24 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
   const ensureValidCheckout = (): boolean => {
     let isValid = true;
     setValue("validating", true);
-    const { email, password, createAccount } = getValues();
+    const formData = getValues();
+    const { createAccount } = formData;
 
     try {
-      // console.log("EMAIL", { email });
       const isLoggedIn = authenticated && checkout?.email;
 
       if (!isLoggedIn) {
-        schema.validateSyncAt("email", email);
+        schema.validateSyncAt("email", formData);
       }
     } catch (e) {
-      console.log({ ...e });
-      const { path, type } = e;
-      // console.log({ email, path, type });
+      const { path, type } = e as ValidationError;
       showCustomErrors([{ field: path as string, code: type as ErrorCode }]);
       isValid = false;
     }
 
     if (createAccount) {
       try {
-        schema.validateSyncAt("password", password);
+        schema.validateSyncAt("password", formData);
       } catch ({ path, type }) {
         showCustomErrors([{ field: path as string, code: type as ErrorCode }]);
         isValid = false;
@@ -120,7 +118,13 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
 
     if (!shippingHasAllRequiredFields(checkout.shippingAddress)) {
       showCustomErrors([
-        { message: getAddressMissingFieldsErrorMessage(checkout.shippingAddress, "SHIPPING") },
+        {
+          message: getAddressMissingFieldsErrorMessage(
+            checkout.shippingAddress as AddressFragment,
+            "SHIPPING"
+          ),
+          code: "invalid",
+        },
       ]);
       isValid = false;
     }
@@ -132,7 +136,13 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
 
     if (!billingHasAllRequiredFields(checkout.billingAddress)) {
       showCustomErrors([
-        { message: getAddressMissingFieldsErrorMessage(checkout.billingAddress, "BILLING") },
+        {
+          message: getAddressMissingFieldsErrorMessage(
+            checkout.billingAddress as AddressFragment,
+            "BILLING"
+          ),
+          code: "invalid",
+        },
       ]);
       isValid = false;
     }
@@ -142,7 +152,6 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
       isValid = false;
     }
 
-    console.log({ checkout });
     return isValid;
   };
 

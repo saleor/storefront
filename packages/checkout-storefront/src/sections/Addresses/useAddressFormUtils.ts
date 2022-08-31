@@ -1,8 +1,4 @@
-import {
-  AddressFragment,
-  CountryCode,
-  useAddressValidationRulesQuery,
-} from "@/checkout-storefront/graphql";
+import { CountryCode, useAddressValidationRulesQuery } from "@/checkout-storefront/graphql";
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
@@ -11,6 +7,7 @@ import {
   getRequiredAddressFields,
   getOrderedAddressFields,
 } from "@/checkout-storefront/sections/Addresses/utils";
+import { Address } from "@/checkout-storefront/sections/Addresses/types";
 
 export const useAddressFormUtils = (countryCode: CountryCode) => {
   const formatMessage = useFormattedMessages();
@@ -21,21 +18,25 @@ export const useAddressFormUtils = (countryCode: CountryCode) => {
 
   const validationRules = data?.addressValidationRules;
 
-  const hasAllRequiredFields = (address: AddressFragment) =>
-    !getMissingFieldsFromAddress(address).length;
+  const hasAllRequiredFields = (address: Address) => !getMissingFieldsFromAddress(address).length;
 
-  const getMissingFieldsFromAddress = (address: AddressFragment) =>
-    reduce(
+  const getMissingFieldsFromAddress = (address: Address) => {
+    if (!address) {
+      return [];
+    }
+
+    return reduce(
       address,
       (result, fieldValue, fieldName) => {
-        if (!isRequiredField(fieldName)) {
+        if (!isRequiredField(fieldName as AddressField)) {
           return result;
         }
 
-        return !!fieldValue ? result : [...result, fieldName];
+        return !!fieldValue ? result : ([...result, fieldName] as AddressField[]);
       },
-      []
+      [] as AddressField[]
     );
+  };
 
   const isRequiredField = (field: AddressField) =>
     getRequiredAddressFields(validationRules?.requiredFields as AddressField[]).includes(field);
