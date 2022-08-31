@@ -180,7 +180,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
     // currently selected address is the same as checkout or
     // address hasn't changed at all -> do nothing
-    if (isSelectedAddressSameAsCheckout || (!!checkoutAddress && !hasCheckoutAddressChanged)) {
+    if (isSelectedAddressSameAsCheckout || (checkoutAddress && !hasCheckoutAddressChanged)) {
       return;
     }
 
