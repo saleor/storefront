@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { print } from "graphql/language/printer.js";
 import { appName } from "../../constants";
 import { version } from "../../package.json";
@@ -9,9 +10,11 @@ import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import urlJoin from "url-join";
 import { SALEOR_WEBHOOK_TRANSACTION_ENDPOINT } from "./webhooks/saleor/transaction-action-request";
 import { TransactionActionRequestSubscriptionDocument } from "@/saleor-app-checkout/graphql";
+import invariant from "ts-invariant";
 
 const handler: Handler = (request) => {
   const { baseURL } = request.context;
+  invariant(typeof baseURL === "string", `baseURL is not a string`);
 
   const webhookUrl = urlJoin(getBaseUrl(request), SALEOR_WEBHOOK_TRANSACTION_ENDPOINT);
 
@@ -39,4 +42,4 @@ const handler: Handler = (request) => {
   return Response.OK(manifest);
 };
 
-export default toNextHandler([withBaseURL, handler]);
+export default withSentry(toNextHandler([withBaseURL, handler]));

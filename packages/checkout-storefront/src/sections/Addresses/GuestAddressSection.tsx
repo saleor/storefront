@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Address, AddressFormData } from "./types";
 import { AddressForm } from "./AddressForm";
-import { getAddressFormDataFromAddress } from "./utils";
+import { emptyFormData, getAddressFormDataFromAddress } from "./utils";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import {
   useCountrySelect,
   UseCountrySelectProps,
 } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
+import { getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
 
 interface GuestAddressSectionProps
   extends UseErrors<AddressFormData>,
@@ -14,6 +15,7 @@ interface GuestAddressSectionProps
   onSubmit: (address: AddressFormData) => void;
   address: Address;
   title: string;
+  defaultAddress: Address;
 }
 
 export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
@@ -22,6 +24,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   title,
   selectedCountryCode,
   checkAddressAvailability,
+  defaultAddress,
   ...errorProps
 }) => {
   const addressFormData = getAddressFormDataFromAddress(address);
@@ -33,6 +36,18 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   });
 
   const handleSave = (address: AddressFormData) => onSubmit({ ...address, autoSave: true });
+
+  const handleAutoSetShippingCountry = () => {
+    if (!address && !defaultAddress) {
+      void onSubmit({
+        ...emptyFormData,
+        autoSave: true,
+        countryCode: getLocalizationDataFromUrl().country.code,
+      });
+    }
+  };
+
+  useEffect(handleAutoSetShippingCountry, [address?.id]);
 
   return (
     <AddressForm

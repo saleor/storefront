@@ -1,4 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@sentry/nextjs";
+import { NextApiHandler } from "next";
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (req: NextApiRequest, res: NextApiResponse) => {};
+const handler: NextApiHandler = (_req, _res) => {};
+export default withSentry(handler);

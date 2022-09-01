@@ -7,6 +7,7 @@
         "$BROWSER",
         "$CHECKOUT_APP_URL",
         "$CHECKOUT_STOREFRONT_URL",
+        "$CLOUD_DEPLOYMENT_URL",
         "$NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS",
         "$NEXT_PUBLIC_API_URI",
         "$NEXT_PUBLIC_CHECKOUT_APP_URL",
@@ -16,6 +17,9 @@
         "$NEXT_PUBLIC_GEOLOCATION",
         "$NEXT_PUBLIC_HOMEPAGE_MENU",
         "$NEXT_PUBLIC_SALEOR_API_URL",
+        "$NEXT_PUBLIC_SENTRY_DSN",
+        "$NEXT_PUBLIC_SENTRY_ENVIRONMENT",
+        "$NEXT_PUBLIC_SENTRY_RELEASE",
         "$NEXT_PUBLIC_STOREFRONT_NAME",
         "$NEXT_PUBLIC_VERCEL_URL",
         "$PORT",
@@ -23,6 +27,9 @@
         "$REACT_APP_SALEOR_API_URL",
         "$SALEOR_API_URL",
         "$SALEOR_APP_TOKEN",
+        "$SENTRY_DSN",
+        "$SENTRY_ENVIRONMENT",
+        "$SENTRY_RELEASE",
         "$SETTINGS_ENCRYPTION_SECRET",
         "$STOREFRONT_URL",
         "$TEST_ADYEN_API_KEY",
@@ -33,9 +40,9 @@
         "$TEST_ADYEN_WEBHOOK_USERNAME",
         "$TEST_MOLLIE_KEY",
         "$TEST_MOLLIE_PROFILE_ID",
+        "$TEST_STRIPE_PUBLISHABLE_KEY",
         "$TEST_STRIPE_SECRET_KEY",
-        "$TEST_STRIPE_WEBHOOK_SECRET",
-        "$TEST_STRIPE_PUBLISHABLE_KEY"
+        "$TEST_STRIPE_WEBHOOK_SECRET"
       ],
       "outputs": [
         "dist/**",
@@ -48,18 +55,34 @@
     "lint": {
       "outputs": []
     },
+    "lint:staged": {
+      "outputs": []
+    },
     "check-types": {
       "outputs": []
+    },
+    "generate": {
+      "outputs": [
+        "graphql/index.ts",
+        "graphql.schema.json",
+        "saleor/api.tsx",
+        "src/graphql/index.ts"
+      ]
     },
     "test": {
       "outputs": []
     },
-    "lint:staged": {
-      "outputs": []
-    },
     "dev": {
+      "cache": false
+    },
+    "start": {
       "cache": false
     }
   },
-  "globalDependencies": [".env", ".env.local"]
+  "globalDependencies": [
+    "pnpm-lock.yaml",
+    ".env",
+    ".env.local",
+    "packages/eslint-config-checkout/index.js"
+  ]
 }

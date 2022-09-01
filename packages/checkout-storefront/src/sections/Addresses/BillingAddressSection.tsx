@@ -36,14 +36,11 @@ export const BillingAddressSection = () => {
 
   const user = data?.me;
   const addresses = user?.addresses;
-  const defaultBillingAddress = user?.defaultBillingAddress;
   const errorProps = useErrors<UserAddressFormData>();
   const { setApiErrors } = errorProps;
   const [passDefaultFormDataAddress, setPassDefaultFormDataAddress] = useState<boolean>(
     !!billingAddress
   );
-
-  const defaultAddress = defaultBillingAddress;
 
   const { showErrors } = useAlerts();
 
@@ -123,11 +120,12 @@ export const BillingAddressSection = () => {
                 void updateBillingAddress(address);
               }}
               addresses={addresses as AddressFragment[]}
-              defaultAddress={(checkout?.billingAddress || defaultAddress) as AddressFragment}
+              defaultAddress={user?.defaultBillingAddress}
             />
           ) : (
             <GuestAddressSection
               {...errorProps}
+              defaultAddress={user?.defaultBillingAddress}
               selectedCountryCode={checkout?.shippingAddress?.country.code as CountryCode}
               address={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage("billingAddress")}

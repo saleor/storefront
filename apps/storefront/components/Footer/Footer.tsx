@@ -56,7 +56,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                     {item?.name}
                   </a>
                 ) : (
-                  <Link href={getLinkPath(item!, currentChannel.slug, currentLocale)} passHref>
+                  <Link href={getLinkPath(item, currentChannel.slug, currentLocale)} passHref>
                     <a href="pass" className={styles["menu-heading"]}>
                       {item?.name}
                     </a>
@@ -76,7 +76,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                           {sub?.name}
                         </a>
                       ) : (
-                        <Link href={getLinkPath(sub!, currentChannel.slug, currentLocale)} passHref>
+                        <Link href={getLinkPath(sub, currentChannel.slug, currentLocale)} passHref>
                           <a
                             href="pass"
                             className={styles["menu-link"]}

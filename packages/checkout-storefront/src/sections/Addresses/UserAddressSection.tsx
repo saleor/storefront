@@ -13,6 +13,7 @@ import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { Title } from "@/checkout-storefront/components/Title";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
 import { AddressListProvider } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
+import { useCheckout } from "@/checkout-storefront/hooks";
 
 export interface UserAddressSectionProps extends UseErrors<UserAddressFormData> {
   defaultAddress: Address;
@@ -29,6 +30,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   title,
   type,
 }) => {
+  const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
 
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
@@ -44,6 +46,7 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
       <AddressListProvider
+        checkoutAddress={type === "SHIPPING" ? checkout.shippingAddress : checkout.billingAddress}
         onCheckoutAddressUpdate={onAddressSelect}
         defaultAddress={defaultAddress}
         checkAddressAvailability={type === "SHIPPING"}

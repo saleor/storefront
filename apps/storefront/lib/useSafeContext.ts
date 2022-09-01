@@ -1,6 +1,6 @@
 import React from "react";
 
-function createSafeContext<TValue extends {} | null>() {
+function createSafeContext<TValue>() {
   const context = React.createContext<TValue | undefined>(undefined);
 
   function useContext() {

@@ -22,8 +22,17 @@ import {
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const categorySlug = context.params?.slug?.toString()!;
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
+) => {
+  if (!context.params) {
+    return {
+      props: {},
+      notFound: true,
+    };
+  }
+
+  const categorySlug = context.params.slug.toString();
   const response: ApolloQueryResult<CategoryBySlugQuery> = await apolloClient.query<
     CategoryBySlugQuery,
     CategoryBySlugQueryVariables
@@ -48,8 +57,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
   });
 
-  let attributes: AttributeFilterFragment[] = mapEdgesToItems(attributesResponse.data.attributes);
-  attributes = attributes.filter((attribute) => attribute.choices?.edges.length);
+  const attributes: AttributeFilterFragment[] = mapEdgesToItems(
+    attributesResponse.data.attributes
+  ).filter((attribute) => attribute.choices?.edges.length);
 
   return {
     props: {
@@ -73,7 +83,7 @@ function CategoryPage({
   const subcategories = mapEdgesToItems(category.children);
 
   const navigateToCategory = (categorySlug: string) => {
-    router.push(paths.category._slug(categorySlug).$url());
+    void router.push(paths.category._slug(categorySlug).$url());
   };
 
   return (

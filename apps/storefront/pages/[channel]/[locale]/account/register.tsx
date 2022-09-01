@@ -46,8 +46,9 @@ function RegisterPage() {
       });
       return;
     }
+
     // User signed in successfully.
-    router.push(paths.$url());
+    void router.push(paths.$url());
   });
 
   return (

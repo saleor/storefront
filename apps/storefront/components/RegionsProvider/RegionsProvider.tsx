@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { PropsWithChildren, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { IntlProvider } from "react-intl";
 
 import apolloClient from "@/lib/graphql";
@@ -23,7 +23,7 @@ export interface RegionsConsumerProps {
     channel: string;
     locale: LanguageCodeEnum;
   };
-  setCurrentChannel: (slug: string) => void;
+  setCurrentChannel: (slug: string) => Promise<void>;
   formatPrice: (price?: PriceFragment) => string;
 }
 
@@ -50,16 +50,16 @@ export interface RegionsProviderProps {
   children: React.ReactNode;
 }
 
-export function RegionsProvider({ children }: PropsWithChildren<{}>) {
+export function RegionsProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { resetCheckoutToken } = useCheckout();
 
   const [currentChannelSlug, setCurrentChannelSlug] = useState(router.query.channel);
 
-  const setCurrentChannel = (channel: string) => {
+  const setCurrentChannel = async (channel: string) => {
     resetCheckoutToken();
     setCurrentChannelSlug(channel);
-    apolloClient.resetStore();
+    await apolloClient.resetStore();
   };
 
   const locale = router.query.locale?.toString() || DEFAULT_LOCALE;

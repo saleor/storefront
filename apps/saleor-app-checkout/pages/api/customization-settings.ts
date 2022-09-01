@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { getPublicSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { NextApiHandler } from "next";
@@ -9,4 +10,4 @@ const handler: NextApiHandler = async (req, res) => {
 
   res.status(200).json(settings.customizations);
 };
-export default allowCors(handler);
+export default withSentry(allowCors(handler));

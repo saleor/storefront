@@ -62,7 +62,7 @@ export function ProductCollection({
   }, [setCounter, data?.products?.totalCount]);
 
   const onLoadMore = () => {
-    fetchMore({
+    return fetchMore({
       variables: {
         after: data?.products?.pageInfo.endCursor,
       },

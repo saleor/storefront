@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
 import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import { handleMolieRefund } from "@/saleor-app-checkout/backend/payments/providers/mollie";
@@ -88,10 +89,12 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   return Response.OK({ success: true });
 };
 
-export default toNextHandler([
-  withMethod(HTTPMethod.POST),
-  withSaleorDomainMatch,
-  withSaleorEventMatch("transaction_action_request"),
-  withWebhookSignatureVerified(),
-  handler as Handler,
-]);
+export default withSentry(
+  toNextHandler([
+    withMethod(HTTPMethod.POST),
+    withSaleorDomainMatch,
+    withSaleorEventMatch("transaction_action_request"),
+    withWebhookSignatureVerified(),
+    handler as Handler,
+  ])
+);

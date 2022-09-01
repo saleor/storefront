@@ -27,7 +27,7 @@ export const useFetch = <
       if (result?.error) {
         throw result.error;
       }
-      setResult(result);
+      setResult(result as TData);
       return result;
     } catch (e) {
       setError(e as TError);

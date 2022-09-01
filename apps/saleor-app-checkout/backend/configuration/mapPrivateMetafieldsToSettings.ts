@@ -36,7 +36,7 @@ const readSettingsValues = (
       return {
         ...subSettings,
         [subSettingKey]: subSetting.encrypted
-          ? decryptSetting(subSetting as SettingValue, obfuscateEncryptedData)
+          ? decryptSetting(subSetting, obfuscateEncryptedData)
           : subSetting.value,
       };
     },
@@ -87,7 +87,9 @@ export const mapPrivateMetafieldsToSettings = (
         return settings;
       }
 
-      const metadataItemSettings = JSON.parse(metafield || "");
+      const metadataItemSettings = JSON.parse(
+        metafield || ""
+      ) as UnknownPrivateSettingsValues<"encrypted">;
 
       return {
         ...settings,

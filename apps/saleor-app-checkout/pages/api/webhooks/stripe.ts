@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
@@ -44,7 +45,7 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
   return res.status(204).end();
 };
 
-export default stripeWebhook;
+export default withSentry(stripeWebhook);
 
 export const config = {
   api: {

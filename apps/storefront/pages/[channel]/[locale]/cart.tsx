@@ -18,12 +18,15 @@ function Cart() {
   const { currentChannel, currentLocale } = useRegions();
 
   if (checkoutError) return <p>Error</p>;
+  if (!checkout && !loading) return <p>Error</p>;
 
   const isCheckoutLoading = loading || typeof window === "undefined";
   const products = checkout?.lines || [];
 
   // we rewrite `/checkout` to the checkout domain to keep cookies
-  const externalCheckoutUrl = `/checkout?checkout=${checkout?.id}&locale=${currentLocale}&channel=${currentChannel.slug}`;
+  const externalCheckoutUrl = checkout
+    ? `/checkout?checkout=${checkout.id}&locale=${currentLocale}&channel=${currentChannel.slug}`
+    : "";
 
   return (
     <>

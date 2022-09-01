@@ -10,11 +10,26 @@ import AppProvider from "@/saleor-app-checkout/frontend/components/elements/AppP
 import { client } from "@/saleor-app-checkout/frontend/misc/client";
 import PrivateSettingsProvider from "@/saleor-app-checkout/frontend/components/elements/PrivateSettingsProvider";
 import "@saleor/checkout-storefront/dist/esm/index.css";
+import { useEffect } from "react";
+
+declare global {
+  // eslint-disable-next-line no-var -- var is required here
+  var __SALEOR_CHECKOUT_ENV__: string;
+}
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
 
   const { locale, messages } = useFormattedMessages();
+
+  useEffect(() => {
+    const env = [
+      process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || "",
+      process.env.NEXT_PUBLIC_SENTRY_RELEASE || "",
+    ].join("-");
+
+    globalThis.__SALEOR_CHECKOUT_ENV__ = env;
+  }, []);
 
   return (
     <>

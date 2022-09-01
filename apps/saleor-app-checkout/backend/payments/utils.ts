@@ -1,7 +1,6 @@
 import {
   TransactionActionEnum,
   TransactionActionPayloadFragment,
-  TransactionFragment,
   TransactionItem,
 } from "@/saleor-app-checkout/graphql";
 import currency from "currency.js";

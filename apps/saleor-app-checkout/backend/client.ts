@@ -11,11 +11,11 @@ export const getClient = (params: ClientParams = {}) => {
   const { apiUrl = envVars.apiUrl, appToken = getAuthToken() } = params;
 
   return createClient({
-    url: apiUrl!,
+    url: apiUrl,
     requestPolicy: "network-only", // On SSR, Vercel uses client cache in consecutive requests, so we need network-only to always return fresh data from Saleor
     fetchOptions: {
       headers: {
-        Authorization: `Bearer ${appToken!}`,
+        Authorization: `Bearer ${appToken}`,
       },
     },
   });

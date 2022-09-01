@@ -3,6 +3,7 @@
   "include": ["src", "types.d.ts"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {

@@ -18,6 +18,19 @@ fragment GiftCardFragment on GiftCard {
   }
 }
 
+fragment ValidationRulesFragment on AddressValidationData {
+  addressFormat
+  allowedFields
+  requiredFields
+  countryAreaType
+  postalCodeType
+  cityType
+  countryAreaChoices {
+    raw
+    verbose
+  }
+}
+
 fragment CheckoutFragment on Checkout {
   id
   email
@@ -338,16 +351,7 @@ mutation checkoutDeliveryMethodUpdate($checkoutId: ID!, $deliveryMethodId: ID!) 
 
 query addressValidationRules($countryCode: CountryCode!) {
   addressValidationRules(countryCode: $countryCode) {
-    addressFormat
-    allowedFields
-    requiredFields
-    countryAreaType
-    postalCodeType
-    cityType
-    countryAreaChoices {
-      raw
-      verbose
-    }
+    ...ValidationRulesFragment
   }
 }
 

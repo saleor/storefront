@@ -35,7 +35,7 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
   const redirectToOrderDetailsPage = () => {
     resetCheckoutToken();
 
-    router.push(paths.order.$url());
+    void router.push(paths.order.$url());
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -56,24 +56,26 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
     }
 
     // Create Stripe payment
-    const pR = await stripe.createPaymentMethod({
+    const paymentMethodResult = await stripe.createPaymentMethod({
       type: "card",
       card: cardElement,
-      billing_details: {
-        email: checkout.email!,
-        phone: checkout.billingAddress?.phone || "",
-        name: `${checkout.billingAddress?.firstName} ${checkout.billingAddress?.lastName}`,
-        address: {
-          line1: checkout.billingAddress?.streetAddress1,
-          city: checkout.billingAddress?.city,
-          country: checkout.billingAddress?.country.code,
-          postal_code: checkout.billingAddress?.postalCode,
-        },
-      },
+      billing_details: checkout.billingAddress
+        ? {
+            email: checkout.email || "",
+            phone: checkout.billingAddress.phone || "",
+            name: `${checkout.billingAddress.firstName} ${checkout.billingAddress.lastName}`,
+            address: {
+              line1: checkout.billingAddress.streetAddress1,
+              city: checkout.billingAddress.city,
+              country: checkout.billingAddress.country.code,
+              postal_code: checkout.billingAddress.postalCode,
+            },
+          }
+        : undefined,
     });
 
-    if (pR.error || !pR.paymentMethod) {
-      console.error("[error]", pR.error);
+    if (paymentMethodResult.error || !paymentMethodResult.paymentMethod) {
+      console.error("[error]", paymentMethodResult.error);
       setIsPaymentProcessing(false);
       return;
     }
@@ -85,7 +87,7 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
         paymentInput: {
           gateway: "saleor.payments.stripe",
           amount: checkout.totalPrice?.gross.amount,
-          token: pR.paymentMethod.id,
+          token: paymentMethodResult.paymentMethod.id,
         },
       },
     });
@@ -113,13 +115,15 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
     // Additional payment action is needed (ex. 3D Secure)
     if (completeData?.checkoutComplete?.confirmationNeeded) {
       // Parse data for the Stripe
-      const confirmationData = JSON.parse(completeData?.checkoutComplete?.confirmationData || "");
+      const confirmationData = JSON.parse(
+        completeData?.checkoutComplete?.confirmationData || ""
+      ) as { client_secret: string };
 
       // Execute additional action at Stripe
       const stripeConfirmationResponse = await stripe.confirmCardPayment(
         confirmationData.client_secret,
         {
-          payment_method: pR.paymentMethod.id,
+          payment_method: paymentMethodResult.paymentMethod.id,
         }
       );
 

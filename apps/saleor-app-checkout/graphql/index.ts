@@ -15,10 +15,10 @@ export type Scalars = {
   Int: number;
   Float: number;
   Date: any;
-  DateTime: any;
+  DateTime: string;
   GenericScalar: any;
   JSONString: string;
-  Metadata: any;
+  Metadata: Record<string, string>;
   PositiveDecimal: any;
   UUID: string;
   Upload: any;
@@ -416,17 +416,6 @@ export type Allocation = Node & {
    */
   warehouse: Warehouse;
 };
-
-/**
- * Determine the allocation strategy for the channel.
- *
- *     PRIORITIZE_SORTING_ORDER - allocate stocks according to the warehouses' order
- *     within the channel
- *
- *     PRIORITIZE_HIGH_STOCK - allocate stock in a warehouse with the most stock
- *
- */
-export type AllocationStrategyEnum = "PRIORITIZE_HIGH_STOCK" | "PRIORITIZE_SORTING_ORDER";
 
 /** Represents app data. */
 export type App = Node &
@@ -2333,16 +2322,6 @@ export type Channel = Node & {
   /** Slug of the channel. */
   slug: Scalars["String"];
   /**
-   * Define the stock setting for this channel.
-   *
-   * Added in Saleor 3.7.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   *
-   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
-   */
-  stockSettings: StockSettings;
-  /**
    * List of warehouses assigned to this channel.
    *
    * Added in Saleor 3.5.
@@ -2413,14 +2392,6 @@ export type ChannelCreateInput = {
   name: Scalars["String"];
   /** Slug of the channel. */
   slug: Scalars["String"];
-  /**
-   * The channel stock settings.
-   *
-   * Added in Saleor 3.7.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   */
-  stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
 /**
@@ -2524,22 +2495,6 @@ export type ChannelErrorCode =
   | "UNIQUE";
 
 /**
- * Reorder the warehouses of a channel.
- *
- * Added in Saleor 3.7.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- *
- * Requires one of the following permissions: MANAGE_CHANNELS.
- */
-export type ChannelReorderWarehouses = {
-  __typename?: "ChannelReorderWarehouses";
-  /** Channel within the warehouses are reordered. */
-  channel?: Maybe<Channel>;
-  errors: Array<ChannelError>;
-};
-
-/**
  * Event sent when channel status has changed.
  *
  * Added in Saleor 3.2.
@@ -2606,14 +2561,6 @@ export type ChannelUpdateInput = {
   removeWarehouses?: InputMaybe<Array<Scalars["ID"]>>;
   /** Slug of the channel. */
   slug?: InputMaybe<Scalars["String"]>;
-  /**
-   * The channel stock settings.
-   *
-   * Added in Saleor 3.7.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   */
-  stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
 /**
@@ -8520,16 +8467,6 @@ export type Mutation = {
    */
   channelDelete?: Maybe<ChannelDelete>;
   /**
-   * Reorder the warehouses of a channel.
-   *
-   * Added in Saleor 3.7.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   *
-   * Requires one of the following permissions: MANAGE_CHANNELS.
-   */
-  channelReorderWarehouses?: Maybe<ChannelReorderWarehouses>;
-  /**
    * Update a channel.
    *
    * Requires one of the following permissions: MANAGE_CHANNELS.
@@ -10059,11 +9996,6 @@ export type MutationChannelDeactivateArgs = {
 export type MutationChannelDeleteArgs = {
   id: Scalars["ID"];
   input?: InputMaybe<ChannelDeleteInput>;
-};
-
-export type MutationChannelReorderWarehousesArgs = {
-  channelId: Scalars["ID"];
-  moves: Array<ReorderInput>;
 };
 
 export type MutationChannelUpdateArgs = {
@@ -13662,7 +13594,7 @@ export type PaymentError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
-  /** List of variant IDs which causes the error. */
+  /** List of varint IDs which causes the error. */
   variants?: Maybe<Array<Scalars["ID"]>>;
 };
 
@@ -15694,8 +15626,6 @@ export type ProductVariantBulkCreateInput = {
   attributes: Array<BulkAttributeValueInput>;
   /** List of prices assigned to channels. */
   channelListings?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
-  /** Variant name. */
-  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -15824,8 +15754,6 @@ export type ProductVariantCreate = {
 export type ProductVariantCreateInput = {
   /** List of attributes specific to this variant. */
   attributes: Array<AttributeValueInput>;
-  /** Variant name. */
-  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -15942,8 +15870,6 @@ export type ProductVariantFilterInput = {
 export type ProductVariantInput = {
   /** List of attributes specific to this variant. */
   attributes?: InputMaybe<Array<AttributeValueInput>>;
-  /** Variant name. */
-  name?: InputMaybe<Scalars["String"]>;
   /**
    * Determines if variant is in preorder.
    *
@@ -19268,24 +19194,6 @@ export type StockInput = {
   warehouse: Scalars["ID"];
 };
 
-/**
- * Represents the channel stock settings.
- *
- * Added in Saleor 3.7.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
-export type StockSettings = {
-  __typename?: "StockSettings";
-  /** Allocation strategy defines the preference of warehouses for allocations and reservations. */
-  allocationStrategy: AllocationStrategyEnum;
-};
-
-export type StockSettingsInput = {
-  /** Allocation strategy options. Strategy defines the preference of warehouses for allocations and reservations. */
-  allocationStrategy: AllocationStrategyEnum;
-};
-
 /** Enum representing the type of a payment storage in a gateway. */
 export type StorePaymentMethodEnum =
   /** Storage is disabled. The payment is not stored. */
@@ -19897,7 +19805,7 @@ export type User = Node &
   ObjectWithMetadata & {
     __typename?: "User";
     /** List of all user's addresses. */
-    addresses: Array<Address>;
+    addresses?: Maybe<Array<Address>>;
     avatar?: Maybe<Image>;
     /**
      * Returns the last open checkout of this user.
@@ -20906,11 +20814,7 @@ export type WarehouseCreateInput = {
   email?: InputMaybe<Scalars["String"]>;
   /** Warehouse name. */
   name: Scalars["String"];
-  /**
-   * Shipping zones supported by the warehouse.
-   *
-   * DEPRECATED: this field will be removed in Saleor 4.0. Providing the zone ids will raise a ValidationError.
-   */
+  /** Shipping zones supported by the warehouse. */
   shippingZones?: InputMaybe<Array<Scalars["ID"]>>;
   /** Warehouse slug. */
   slug?: InputMaybe<Scalars["String"]>;
@@ -20979,8 +20883,6 @@ export type WarehouseError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
-  /** List of shipping zones IDs which causes the error. */
-  shippingZones?: Maybe<Array<Scalars["ID"]>>;
 };
 
 /** An enumeration. */
@@ -21116,8 +21018,9 @@ export type Webhook = Node & {
   isActive: Scalars["Boolean"];
   name: Scalars["String"];
   /**
-   * Used to create a hash signature for each payload.
-   * @deprecated This field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
+   * Used to create a hash signature with each payload.
+   *
+   * If not set, since Saleor 3.5, your payload will be signed using private key used also to sign JWT tokens.
    */
   secretKey?: Maybe<Scalars["String"]>;
   /** Used to define payloads for specific events. */
@@ -21174,11 +21077,7 @@ export type WebhookCreateInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   query?: InputMaybe<Scalars["String"]>;
-  /**
-   * The secret key used to create a hash signature with each payload.
-   *
-   * DEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
-   */
+  /** The secret key used to create a hash signature with each payload. */
   secretKey?: InputMaybe<Scalars["String"]>;
   /** The synchronous events that webhook wants to subscribe. */
   syncEvents?: InputMaybe<Array<WebhookEventTypeSyncEnum>>;
@@ -21828,11 +21727,7 @@ export type WebhookUpdateInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   query?: InputMaybe<Scalars["String"]>;
-  /**
-   * Use to create a hash signature with each payload.
-   *
-   * DEPRECATED: this field will be removed in Saleor 4.0. As of Saleor 3.5, webhook payloads default to signing using a verifiable JWS.
-   */
+  /** Use to create a hash signature with each payload. */
   secretKey?: InputMaybe<Scalars["String"]>;
   /** The synchronous events that webhook wants to subscribe. */
   syncEvents?: InputMaybe<Array<WebhookEventTypeSyncEnum>>;
@@ -21949,7 +21844,7 @@ export type PublicMetafieldsQueryVariables = Exact<{
 
 export type PublicMetafieldsQuery = {
   __typename?: "Query";
-  app?: { __typename?: "App"; id: string; metafields?: any | null } | null;
+  app?: { __typename?: "App"; id: string; metafields?: Record<string, string> | null } | null;
 };
 
 export type PrivateMetafieldsQueryVariables = Exact<{
@@ -21959,7 +21854,11 @@ export type PrivateMetafieldsQueryVariables = Exact<{
 
 export type PrivateMetafieldsQuery = {
   __typename?: "Query";
-  app?: { __typename?: "App"; id: string; privateMetafields?: any | null } | null;
+  app?: {
+    __typename?: "App";
+    id: string;
+    privateMetafields?: Record<string, string> | null;
+  } | null;
 };
 
 export type PublicMetafieldsInferedQueryVariables = Exact<{
@@ -21968,7 +21867,7 @@ export type PublicMetafieldsInferedQueryVariables = Exact<{
 
 export type PublicMetafieldsInferedQuery = {
   __typename?: "Query";
-  app?: { __typename?: "App"; id: string; metafields?: any | null } | null;
+  app?: { __typename?: "App"; id: string; metafields?: Record<string, string> | null } | null;
 };
 
 export type PrivateMetafieldsInferedQueryVariables = Exact<{
@@ -21977,7 +21876,11 @@ export type PrivateMetafieldsInferedQueryVariables = Exact<{
 
 export type PrivateMetafieldsInferedQuery = {
   __typename?: "Query";
-  app?: { __typename?: "App"; id: string; privateMetafields?: any | null } | null;
+  app?: {
+    __typename?: "App";
+    id: string;
+    privateMetafields?: Record<string, string> | null;
+  } | null;
 };
 
 export type UpdatePublicMetadataMutationVariables = Exact<{
@@ -21991,34 +21894,34 @@ export type UpdatePublicMetadataMutation = {
   updateMetadata?: {
     __typename?: "UpdateMetadata";
     item?:
-      | { __typename?: "App"; metafields?: any | null }
-      | { __typename?: "Attribute"; metafields?: any | null }
-      | { __typename?: "Category"; metafields?: any | null }
-      | { __typename?: "Checkout"; metafields?: any | null }
-      | { __typename?: "CheckoutLine"; metafields?: any | null }
-      | { __typename?: "Collection"; metafields?: any | null }
-      | { __typename?: "DigitalContent"; metafields?: any | null }
-      | { __typename?: "Fulfillment"; metafields?: any | null }
-      | { __typename?: "GiftCard"; metafields?: any | null }
-      | { __typename?: "Invoice"; metafields?: any | null }
-      | { __typename?: "Menu"; metafields?: any | null }
-      | { __typename?: "MenuItem"; metafields?: any | null }
-      | { __typename?: "Order"; metafields?: any | null }
-      | { __typename?: "OrderLine"; metafields?: any | null }
-      | { __typename?: "Page"; metafields?: any | null }
-      | { __typename?: "PageType"; metafields?: any | null }
-      | { __typename?: "Payment"; metafields?: any | null }
-      | { __typename?: "Product"; metafields?: any | null }
-      | { __typename?: "ProductType"; metafields?: any | null }
-      | { __typename?: "ProductVariant"; metafields?: any | null }
-      | { __typename?: "Sale"; metafields?: any | null }
-      | { __typename?: "ShippingMethod"; metafields?: any | null }
-      | { __typename?: "ShippingMethodType"; metafields?: any | null }
-      | { __typename?: "ShippingZone"; metafields?: any | null }
-      | { __typename?: "TransactionItem"; metafields?: any | null }
-      | { __typename?: "User"; metafields?: any | null }
-      | { __typename?: "Voucher"; metafields?: any | null }
-      | { __typename?: "Warehouse"; metafields?: any | null }
+      | { __typename?: "App"; metafields?: Record<string, string> | null }
+      | { __typename?: "Attribute"; metafields?: Record<string, string> | null }
+      | { __typename?: "Category"; metafields?: Record<string, string> | null }
+      | { __typename?: "Checkout"; metafields?: Record<string, string> | null }
+      | { __typename?: "CheckoutLine"; metafields?: Record<string, string> | null }
+      | { __typename?: "Collection"; metafields?: Record<string, string> | null }
+      | { __typename?: "DigitalContent"; metafields?: Record<string, string> | null }
+      | { __typename?: "Fulfillment"; metafields?: Record<string, string> | null }
+      | { __typename?: "GiftCard"; metafields?: Record<string, string> | null }
+      | { __typename?: "Invoice"; metafields?: Record<string, string> | null }
+      | { __typename?: "Menu"; metafields?: Record<string, string> | null }
+      | { __typename?: "MenuItem"; metafields?: Record<string, string> | null }
+      | { __typename?: "Order"; metafields?: Record<string, string> | null }
+      | { __typename?: "OrderLine"; metafields?: Record<string, string> | null }
+      | { __typename?: "Page"; metafields?: Record<string, string> | null }
+      | { __typename?: "PageType"; metafields?: Record<string, string> | null }
+      | { __typename?: "Payment"; metafields?: Record<string, string> | null }
+      | { __typename?: "Product"; metafields?: Record<string, string> | null }
+      | { __typename?: "ProductType"; metafields?: Record<string, string> | null }
+      | { __typename?: "ProductVariant"; metafields?: Record<string, string> | null }
+      | { __typename?: "Sale"; metafields?: Record<string, string> | null }
+      | { __typename?: "ShippingMethod"; metafields?: Record<string, string> | null }
+      | { __typename?: "ShippingMethodType"; metafields?: Record<string, string> | null }
+      | { __typename?: "ShippingZone"; metafields?: Record<string, string> | null }
+      | { __typename?: "TransactionItem"; metafields?: Record<string, string> | null }
+      | { __typename?: "User"; metafields?: Record<string, string> | null }
+      | { __typename?: "Voucher"; metafields?: Record<string, string> | null }
+      | { __typename?: "Warehouse"; metafields?: Record<string, string> | null }
       | null;
     errors: Array<{
       __typename?: "MetadataError";
@@ -22040,34 +21943,34 @@ export type UpdatePrivateMetadataMutation = {
   updatePrivateMetadata?: {
     __typename?: "UpdatePrivateMetadata";
     item?:
-      | { __typename?: "App"; privateMetafields?: any | null }
-      | { __typename?: "Attribute"; privateMetafields?: any | null }
-      | { __typename?: "Category"; privateMetafields?: any | null }
-      | { __typename?: "Checkout"; privateMetafields?: any | null }
-      | { __typename?: "CheckoutLine"; privateMetafields?: any | null }
-      | { __typename?: "Collection"; privateMetafields?: any | null }
-      | { __typename?: "DigitalContent"; privateMetafields?: any | null }
-      | { __typename?: "Fulfillment"; privateMetafields?: any | null }
-      | { __typename?: "GiftCard"; privateMetafields?: any | null }
-      | { __typename?: "Invoice"; privateMetafields?: any | null }
-      | { __typename?: "Menu"; privateMetafields?: any | null }
-      | { __typename?: "MenuItem"; privateMetafields?: any | null }
-      | { __typename?: "Order"; privateMetafields?: any | null }
-      | { __typename?: "OrderLine"; privateMetafields?: any | null }
-      | { __typename?: "Page"; privateMetafields?: any | null }
-      | { __typename?: "PageType"; privateMetafields?: any | null }
-      | { __typename?: "Payment"; privateMetafields?: any | null }
-      | { __typename?: "Product"; privateMetafields?: any | null }
-      | { __typename?: "ProductType"; privateMetafields?: any | null }
-      | { __typename?: "ProductVariant"; privateMetafields?: any | null }
-      | { __typename?: "Sale"; privateMetafields?: any | null }
-      | { __typename?: "ShippingMethod"; privateMetafields?: any | null }
-      | { __typename?: "ShippingMethodType"; privateMetafields?: any | null }
-      | { __typename?: "ShippingZone"; privateMetafields?: any | null }
-      | { __typename?: "TransactionItem"; privateMetafields?: any | null }
-      | { __typename?: "User"; privateMetafields?: any | null }
-      | { __typename?: "Voucher"; privateMetafields?: any | null }
-      | { __typename?: "Warehouse"; privateMetafields?: any | null }
+      | { __typename?: "App"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Attribute"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Category"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Checkout"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "CheckoutLine"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Collection"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "DigitalContent"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Fulfillment"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "GiftCard"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Invoice"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Menu"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "MenuItem"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Order"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "OrderLine"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Page"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "PageType"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Payment"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Product"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "ProductType"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "ProductVariant"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Sale"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "ShippingMethod"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "ShippingMethodType"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "ShippingZone"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "TransactionItem"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "User"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Voucher"; privateMetafields?: Record<string, string> | null }
+      | { __typename?: "Warehouse"; privateMetafields?: Record<string, string> | null }
       | null;
     errors: Array<{
       __typename?: "MetadataError";

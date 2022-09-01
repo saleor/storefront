@@ -72,7 +72,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const inputFiles = event.target.files;
-    if (!!inputFiles?.length) {
+    if (inputFiles?.length) {
       setFiles({
         ...files,
         [optionId]: {

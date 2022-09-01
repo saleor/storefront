@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 import { Types as AdyenTypes } from "@adyen/api-library";
 import { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
@@ -106,4 +107,4 @@ const handler: NextApiHandler = async (req, res) => {
   res.status(200).json(response);
 };
 
-export default allowCors(handler);
+export default withSentry(allowCors(handler));

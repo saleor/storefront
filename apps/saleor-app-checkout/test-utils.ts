@@ -170,20 +170,33 @@ export const setupPollyMiddleware = (server: PollyServer) => {
     .passthrough();
 };
 
-export const setupRecording = () => {
+const getPollyConfig = (): PollyConfig => {
   // use replay mode by default, override if POLLY_MODE env variable is passed
-  const opts: PollyConfig =
-    process.env.POLLY_MODE === "record" && !process.env.CI
-      ? {
-          mode: "record",
-          recordIfMissing: true,
-          recordFailedRequests: true,
-        }
-      : {
-          mode: "replay",
-          recordIfMissing: false,
-          recordFailedRequests: false,
-        };
+  const mode = process.env.CI ? "replay" : process.env.POLLY_MODE ?? "replay";
+
+  if (mode === "record") {
+    return {
+      mode: "record",
+      recordIfMissing: true,
+      recordFailedRequests: true,
+    };
+  }
+  if (mode === "record_missing") {
+    return {
+      mode: "replay",
+      recordIfMissing: true,
+      recordFailedRequests: true,
+    };
+  }
+  return {
+    mode: "replay",
+    recordIfMissing: false,
+    recordFailedRequests: false,
+  };
+};
+
+export const setupRecording = () => {
+  const opts = getPollyConfig();
 
   return setupPolly({
     ...opts,

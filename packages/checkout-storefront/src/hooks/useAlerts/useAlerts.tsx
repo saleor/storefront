@@ -39,7 +39,7 @@ function useAlerts(globalScope?: any): any {
   };
 
   const getParsedAlert = (data: AlertErrorData, type: AlertType): Alert => {
-    const { scope, field, code } = data as AlertErrorData;
+    const { scope, field, code } = data;
 
     return {
       id: camelCase(`${scope}-${field}-${code}`),

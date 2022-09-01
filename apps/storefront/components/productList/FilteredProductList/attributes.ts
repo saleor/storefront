@@ -23,7 +23,7 @@ export const getPillsData = (
       );
       const choiceName = attrChoice?.node.name || value;
       return {
-        label: `${attrName}: ${choiceName}`,
+        label: attrName ? `${attrName}: ${choiceName}` : choiceName,
         choiceSlug: value,
         attributeSlug: filter.slug,
       };
@@ -48,13 +48,13 @@ export const getFilterOptions = (
 };
 
 export const parseQueryAttributeFilters = (query: string): UrlFilter[] => {
-  const filters: UrlFilter[] = [];
-  query.split(";").map((attributeWithValues) => {
+  const filters = query.split(";").flatMap((attributeWithValues) => {
     const splitted = attributeWithValues.split(".");
-    const attributeFilter = { slug: splitted[0], values: splitted.slice(1) };
+    const attributeFilter: UrlFilter = { slug: splitted[0], values: splitted.slice(1) };
     if (attributeFilter.values.length > 0) {
-      filters.push(attributeFilter);
+      return [attributeFilter];
     }
+    return [];
   });
   return filters;
 };

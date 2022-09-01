@@ -7,7 +7,7 @@ generates:
     plugins:
       - add:
           content:
-            - "// THIS FILE IS GENERATED WITH `npm run generate`"
+            - "// THIS FILE IS GENERATED WITH `pnpm generate`"
             - "import * as Scalar from '../scalars'"
       - "typescript"
       - "typescript-operations"
@@ -16,6 +16,9 @@ generates:
     config:
       scalars:
         JSONString: string
+        UUID: string
+        Metadata: Record<string, string>
+        DateTime: string
       dedupeOperationSuffix: true # Prevent suffix duplication in generated names
       enumsAsTypes: true
   ./graphql.schema.json:
