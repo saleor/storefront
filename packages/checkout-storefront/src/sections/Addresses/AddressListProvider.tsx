@@ -17,6 +17,7 @@ import {
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import {
   getAddressInputData,
+  getMatchingAddressFromList,
   getUserAddressFormDataFromAddress,
   isMatchingAddress,
 } from "@/checkout-storefront/sections/Addresses/utils";
@@ -26,6 +27,7 @@ import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses
 
 interface AddressListProviderProps {
   onCheckoutAddressUpdate: (address: UserAddressFormData) => void;
+  checkoutAddress: Address;
   defaultAddress: Address;
   checkAddressAvailability: boolean;
 }
@@ -51,8 +53,9 @@ export const [useAddressList, Provider] = createSafeContext<ContextConsumerProps
 
 export const AddressListProvider: React.FC<PropsWithChildren<AddressListProviderProps>> = ({
   children,
-  onCheckoutAddressUpdate,
   defaultAddress,
+  checkoutAddress,
+  onCheckoutAddressUpdate,
   checkAddressAvailability,
 }) => {
   const { user: authUser } = useAuthState();
@@ -72,11 +75,14 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   const [{ fetching: creating }, userAddressCreate] = useUserAddressCreateMutation();
 
   const [addressList, setAddressList] = useState(addresses);
+
+  const getMatchingAddress = getMatchingAddressFromList(addressList);
+
   const [selectedAddressId, setSelectedAddressId] = useState<string | undefined>(
-    defaultAddress?.id
+    getMatchingAddress(checkoutAddress)?.id || defaultAddress?.id
   );
 
-  const defaultAddressRef = useRef<Address>(null);
+  const checkoutAddressRef = useRef<Address>(null);
 
   const handleCheckoutAddressUpdate = (address: AddressFragment) =>
     onCheckoutAddressUpdate(getUserAddressFormDataFromAddress(address));
@@ -164,27 +170,38 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   };
 
   const handleDefaultAddressSet = () => {
-    if (!selectedAddressId && addressList.length) {
-      setSelectedAddressId(addressList?.[0]?.id);
-      return;
-    }
+    const isSelectedAddressSameAsCheckout =
+      !!getSelectedAddress() && isMatchingAddress(checkoutAddress, getSelectedAddress());
 
-    if (
-      (getSelectedAddress() && isMatchingAddress(defaultAddress, getSelectedAddress())) ||
-      defaultAddress === defaultAddressRef.current
-    ) {
-      return;
-    }
-
-    const matchingAddress = addressList.find((address) =>
-      isMatchingAddress(defaultAddress, address)
+    const hasCheckoutAddressChanged = !isMatchingAddress(
+      checkoutAddress,
+      checkoutAddressRef.current
     );
 
-    defaultAddressRef.current = defaultAddress;
-    setSelectedAddressId(matchingAddress?.id as string);
+    // currently selected address is the same as checkout or
+    // address hasn't changed at all -> do nothing
+    if (isSelectedAddressSameAsCheckout || (checkoutAddress && !hasCheckoutAddressChanged)) {
+      return;
+    }
+
+    // in case some address needs to be set prefer to select
+    // user default address
+    if (defaultAddress) {
+      checkoutAddressRef.current = defaultAddress;
+      handleAddressSelect(defaultAddress.id);
+      return;
+    }
+
+    const firstAvailableAddress = addressList.find(isAvailable);
+
+    // otherwise just choose any available
+    if (firstAvailableAddress) {
+      checkoutAddressRef.current = firstAvailableAddress;
+      handleAddressSelect(firstAvailableAddress?.id);
+    }
   };
 
-  useEffect(handleDefaultAddressSet, [defaultAddress, addressList]);
+  useEffect(handleDefaultAddressSet, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
 
   const debouncedUpdate = useCallback(
     debounce((address: AddressFragment) => {

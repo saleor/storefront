@@ -4,6 +4,7 @@ import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import {
   emptyFormData,
   getAddressFormDataFromAddress,
+  getMatchingAddressFromList,
   getOrderedAddressFields,
   isMatchingAddress,
 } from "@/checkout-storefront/sections/Addresses/utils";
@@ -43,6 +44,40 @@ describe("isMatchingAddress", () => {
     const addressToCompare = addresses[1];
 
     expect(isMatchingAddress(address, addressToCompare)).toEqual(false);
+  });
+});
+
+describe("getMatchingAddressFromList", () => {
+  const [firstAddress, ...rest] = addresses;
+  const addressList = [{ ...firstAddress, id: "some-id" } as AddressFragment, ...rest];
+
+  const getMatchingAddress = getMatchingAddressFromList(addressList);
+
+  it("should return proper address for addresses of same id", () => {
+    const addressToCompare = { ...addresses[1], id: "some-id" } as AddressFragment;
+
+    expect(getMatchingAddress(addressToCompare)).toEqual(addressList[0]);
+  });
+
+  it("should return proper address for addresses of different id but same data", () => {
+    const addressToCompare = { ...addresses[0], id: "some-other-id" } as AddressFragment;
+
+    expect(getMatchingAddress(addressToCompare)).toEqual(addressList[0]);
+  });
+
+  it("should return undefined for address that doesn't match any in the list", () => {
+    const addressToCompare = {
+      ...emptyFormData,
+      country: { code: "PL", country: "Polska" },
+      id: "some-other-id",
+    } as AddressFragment;
+
+    expect(getMatchingAddress(addressToCompare)).toEqual(undefined);
+  });
+
+  it("should return undefined for not existing address passed to check function", () => {
+    expect(getMatchingAddress(null)).toEqual(undefined);
+    expect(getMatchingAddress(undefined)).toEqual(undefined);
   });
 });
 
