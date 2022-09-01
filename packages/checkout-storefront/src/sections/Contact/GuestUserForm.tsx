@@ -14,6 +14,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
+import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -58,6 +59,8 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   });
 
   const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
 
   const onSubmit = async ({ email }: FormData) => {
     if (!email || updatingEmail || email === checkout.email) {

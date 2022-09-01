@@ -1,12 +1,17 @@
-import { CheckoutScope } from "@/checkout-storefront/hooks/useAlerts";
-import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
+import {
+  CheckoutFormData,
+  CheckoutUpdateStateScope,
+} from "@/checkout-storefront/sections/CheckoutForm/types";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-export const useCheckoutUpdateStateTrigger = (checkoutScope: CheckoutScope, updating: boolean) => {
+export const useCheckoutUpdateStateTrigger = (
+  checkoutScope: CheckoutUpdateStateScope,
+  updating: boolean
+) => {
   const { setValue } = useFormContext<CheckoutFormData>();
 
   useEffect(() => {
     setValue(`updateState.${checkoutScope}`, updating);
-  }, [updating]);
+  }, [updating, checkoutScope]);
 };

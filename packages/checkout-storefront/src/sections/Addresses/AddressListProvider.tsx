@@ -21,7 +21,7 @@ import {
   getUserAddressFormDataFromAddress,
   isMatchingAddress,
 } from "@/checkout-storefront/sections/Addresses/utils";
-import { ApiErrors, useAlerts } from "@/checkout-storefront/hooks";
+import { ApiErrors, useAlerts, useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { debounce } from "lodash-es";
 import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
 

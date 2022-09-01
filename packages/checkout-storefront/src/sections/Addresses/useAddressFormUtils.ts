@@ -8,8 +8,9 @@ import {
   getOrderedAddressFields,
 } from "@/checkout-storefront/sections/Addresses/utils";
 import { Address } from "@/checkout-storefront/sections/Addresses/types";
+import { defaultCountry } from "@/checkout-storefront/sections/Addresses/countries";
 
-export const useAddressFormUtils = (countryCode: CountryCode) => {
+export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.code) => {
   const formatMessage = useFormattedMessages();
 
   const [{ data }] = useAddressValidationRulesQuery({
