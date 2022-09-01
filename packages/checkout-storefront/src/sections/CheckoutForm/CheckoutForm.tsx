@@ -1,7 +1,7 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { FormProvider } from "react-hook-form";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutFinalize } from "./useCheckoutFinalize";
@@ -25,9 +25,32 @@ export const CheckoutForm = () => {
   const { ensureValidCheckout, getFormData, usePaymentProvidersProps, methods } = useCheckoutForm({
     userRegisterErrors,
   });
+  const [isProcessingApiChanges, setIsProcessingApiChanges] = useState(false);
+  const [submitInProgress, setSubmitInProgress] = useState(false);
+
+  const hasFinishedApiChanges = !Object.values(methods.watch("updateState")).some((value) => value);
+
+  useEffect(() => {
+    if (!hasFinishedApiChanges) {
+      return;
+    }
+
+    setIsProcessingApiChanges(false);
+
+    if (submitInProgress) {
+      handleSubmit();
+    }
+  }, [hasFinishedApiChanges]);
 
   // not using form handleSubmit on purpose
   const handleSubmit = () => {
+    if (!hasFinishedApiChanges) {
+      setIsProcessingApiChanges(true);
+      setSubmitInProgress(true);
+      return;
+    }
+
+    setSubmitInProgress(false);
     if (!ensureValidCheckout()) {
       return;
     }
@@ -35,6 +58,7 @@ export const CheckoutForm = () => {
     void checkoutFinalize(getFormData());
   };
 
+  console.log("YOO");
   return (
     <div className="checkout-form-container">
       <div className="checkout-form">
@@ -55,15 +79,23 @@ export const CheckoutForm = () => {
           </>
         </FormProvider>
       </div>
-      {!showOnlyContact && (
-        <Button
-          disabled={isLoading}
-          ariaLabel={formatMessage("finalizeCheckoutLabel")}
-          label={formatMessage("pay")}
-          className="pay-button"
-          onClick={handleSubmit}
-        />
-      )}
+      {!showOnlyContact &&
+        (isProcessingApiChanges ? (
+          <Button
+            className="pay-button"
+            disabled
+            ariaLabel={formatMessage("saveLabel")}
+            label={formatMessage("processing")}
+          />
+        ) : (
+          <Button
+            disabled={isLoading}
+            ariaLabel={formatMessage("finalizeCheckoutLabel")}
+            label={formatMessage("pay")}
+            className="pay-button"
+            onClick={handleSubmit}
+          />
+        ))}
     </div>
   );
 };

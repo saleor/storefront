@@ -1,5 +1,6 @@
 import { AddressFragment, AddressTypeEnum, CountryCode } from "@/checkout-storefront/graphql";
 import {
+  CheckoutScope,
   Errors,
   MessageKey,
   useAlerts,
@@ -18,17 +19,39 @@ import { PaymentMethodID, PaymentProviderID } from "checkout-common";
 import { defaultCountry } from "@/checkout-storefront/sections/Addresses/countries";
 import { useEffect } from "react";
 import { useAuthState } from "@saleor/sdk";
+import { isMatchingAddress } from "@/checkout-storefront/sections/Addresses/utils";
 
-export interface FormData {
+type UpdateState = Record<CheckoutScope, boolean>;
+
+const defaultUpdateState: UpdateState = [
+  "checkoutShippingUpdate",
+  "checkoutCustomerAttach",
+  "checkoutBillingUpdate",
+  "checkoutAddPromoCode",
+  "checkoutDeliveryMethodUpdate",
+  "userAddressCreate",
+  "userAddressUpdate",
+  "userAddressDelete",
+  "checkoutPay",
+  "userRegister",
+  "requestPasswordReset",
+  "checkoutLinesUpdate",
+  "checkoutEmailUpdate",
+  "resetPassword",
+  "login",
+].reduce((result, checkoutScope) => ({ ...result, [checkoutScope]: false }), {} as UpdateState);
+
+export interface CheckoutFormData {
   email: string;
   password: string;
   createAccount: boolean;
   paymentProviderId: PaymentProviderID;
   paymentMethodId: PaymentMethodID;
   validating: boolean;
+  updateState: UpdateState;
 }
 
-export type UseCheckoutFormProps = { userRegisterErrors: Errors<FormData> };
+export type UseCheckoutFormProps = { userRegisterErrors: Errors<CheckoutFormData> };
 
 export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) => {
   const formatMessage = useFormattedMessages();
@@ -53,7 +76,7 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
 
   const resolver = useValidationResolver(schema);
   // will be used for e.g. account creation at checkout finalization
-  const methods = useForm<FormData>({
+  const methods = useForm<CheckoutFormData>({
     resolver,
     mode: "onBlur",
     defaultValues: {
@@ -61,10 +84,11 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
       email: checkout?.email || "",
       password: "",
       validating: false,
+      updateState: defaultUpdateState,
     },
   });
 
-  useSetFormErrors<FormData>({
+  useSetFormErrors<CheckoutFormData>({
     setError: methods.setError,
     errors: userRegisterErrors,
   });
@@ -99,7 +123,9 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
       }
     } catch (e) {
       const { path, type } = e as ValidationError;
-      showCustomErrors([{ field: path as string, code: type as ErrorCode }]);
+      showCustomErrors([
+        { field: path as string, code: type === "email" ? "invalid" : (type as ErrorCode) },
+      ]);
       isValid = false;
     }
 
@@ -134,7 +160,10 @@ export const useCheckoutForm = ({ userRegisterErrors }: UseCheckoutFormProps) =>
       isValid = false;
     }
 
-    if (!billingHasAllRequiredFields(checkout.billingAddress)) {
+    if (
+      !isMatchingAddress(checkout.shippingAddress, checkout.billingAddress) &&
+      !billingHasAllRequiredFields(checkout.billingAddress)
+    ) {
       showCustomErrors([
         {
           message: getAddressMissingFieldsErrorMessage(

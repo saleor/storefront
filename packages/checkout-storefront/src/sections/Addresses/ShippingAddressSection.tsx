@@ -6,12 +6,13 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks/useCheckoutUpdateStateTrigger";
 import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { GuestAddressSection } from "./GuestAddressSection";
 import { AddressFormData, UserAddressFormData } from "./types";
 import { UserAddressSection } from "./UserAddressSection";
@@ -31,7 +32,9 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
 
-  const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
+  const [{ fetching }, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutShippingUpdate", fetching);
 
   const updateShippingAddress = useCallback(
     async ({ autoSave, ...address }: AddressFormData) => {
