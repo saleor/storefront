@@ -1,35 +1,15 @@
-import { CheckoutAPI, Client } from "@adyen/api-library";
-
-import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 import {
   formatRedirectUrl,
   getIntegerAmountFromSaleor,
 } from "@/saleor-app-checkout/backend/payments/utils";
 
-import { getLineItems } from "./utils";
-import { CreatePaymentData } from "../../types";
+import { getAdyenClient, getLineItems } from "./utils";
 import invariant from "ts-invariant";
 
-export const createAdyenPayment = async (paymentData: CreatePaymentData) => {
-  const {
-    paymentProviders: { adyen },
-  } = await getPrivateSettings(envVars.apiUrl, false);
+import type { CheckoutAPI } from "@adyen/api-library";
 
-  invariant(adyen.apiKey, "API key not defined");
-  invariant(adyen.merchantAccount, "Merchant account not defined");
+import { CreatePaymentData } from "../../types";
 
-  const client = new Client({
-    apiKey: adyen.apiKey,
-    environment: "TEST",
-  });
-
-  const checkout = new CheckoutAPI(client);
-
-  const { url, id } = await createPaymentLink(paymentData, checkout, adyen.merchantAccount);
-
-  return { url, id };
-};
 const createPaymentLink = (
   { order, redirectUrl }: CreatePaymentData,
   checkout: CheckoutAPI,
@@ -80,4 +60,13 @@ const createPaymentLink = (
         }
       : undefined,
   });
+};
+
+export const createAdyenPayment = async (paymentData: CreatePaymentData) => {
+  const { config, checkout } = await getAdyenClient();
+  invariant(config.merchantAccount, "Missing merchant account configuration");
+
+  const { url, id } = await createPaymentLink(paymentData, checkout, config.merchantAccount);
+
+  return { url, id };
 };

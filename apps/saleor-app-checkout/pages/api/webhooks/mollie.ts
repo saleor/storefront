@@ -17,9 +17,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     invariant(typeof id === "string", "id must be a string");
     const [paymentError, paymentData] = await unpackPromise(verifyPayment(id));
 
-    console.log({ paymentError });
-
     if (paymentError) {
+      console.error("Error while validating payment", { paymentError });
       res.status(500).json({ error: "error while validating payment" });
       return;
     }

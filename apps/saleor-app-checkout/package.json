@@ -17,7 +17,7 @@
     "i18n": "npm run extract:i18n && npm run compile:i18n"
   },
   "dependencies": {
-    "@adyen/api-library": "^10.2.0",
+    "@adyen/api-library": "^11.0.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.60",
@@ -86,6 +86,7 @@
     "jest": "^27.5.1",
     "json-easy-strip": "^1.0.6",
     "msw": "^0.43.1",
+    "next-test-api-route-handler": "^3.1.7",
     "next-transpile-modules": "9.0.0",
     "node-mocks-http": "^1.11.0",
     "omit-deep-lodash": "^1.1.7",

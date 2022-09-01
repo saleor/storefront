@@ -1,6 +1,7 @@
 import { mollieCompletedOrderId } from "@/saleor-app-checkout/mocks/fixtures/saleor";
 import handler from "@/saleor-app-checkout/pages/api/webhooks/mollie";
 import {
+  disableConsole,
   mockRequest,
   setupPollyMiddleware,
   setupRecording,
@@ -23,6 +24,7 @@ describe("/api/webhooks/mollie", () => {
   });
 
   it("handles requests with invalid orderId", async () => {
+    disableConsole("error");
     const { req, res } = mockRequest("POST");
 
     req.body = {
@@ -35,6 +37,7 @@ describe("/api/webhooks/mollie", () => {
   });
 
   it("handles request with completed payment", async () => {
+    disableConsole("info");
     const { req, res } = mockRequest("POST");
 
     req.body = {

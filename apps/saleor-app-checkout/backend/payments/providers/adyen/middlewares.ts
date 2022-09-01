@@ -54,6 +54,7 @@ export const isAdyenNotification: Middleware = (handler) => (request) => {
     return handler(request);
   }
 
+  console.warn("Invalid notification made to Adyen webhookk handler", request);
   return Response.BadRequest();
 };
 
@@ -65,6 +66,7 @@ export const isAdyenWebhookAuthenticated: Middleware = (handler) => (request) =>
   }
 
   if (!verifyBasicAuth(username, password, request.headers.authorization)) {
+    console.warn("Unauthenticated request to Adyen webhook handler", request);
     return Response.Unauthorized();
   }
 
@@ -90,7 +92,7 @@ export const isAdyenWebhookHmacValid: Middleware = (handler) => async (request) 
   );
 
   if (!isValid || validationError) {
-    console.error("Invalid hmac in Adyen webhook request", validationError);
+    console.error("Invalid hmac in Adyen webhook request", validationError || request);
     return Response.Unauthorized();
   }
 

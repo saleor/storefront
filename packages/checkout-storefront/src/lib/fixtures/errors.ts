@@ -26,7 +26,7 @@ export const urqlError = {
 export const validationErrors: ValidationError<AddressFormData>[] = [
   {
     type: "invalid",
-    path: "name",
+    path: "firstName",
     message: "This is highly irregular",
   },
   {

@@ -55,7 +55,7 @@ export const getOrderId = async (
   } catch (e) {
     // INFO: checkout.getPaymentLinks method fails randomly
     // it's possible to get notification metadata directly from notification itself (undocumented)
-    console.error("checkout.getPaymentLinks failed");
+    console.warn("checkout.getPaymentLinks failed");
 
     return "metadata.orderId" in additionalData ? additionalData["metadata.orderId"] : null;
   }

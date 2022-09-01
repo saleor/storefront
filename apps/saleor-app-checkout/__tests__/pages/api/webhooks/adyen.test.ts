@@ -13,6 +13,7 @@ import {
 } from "@/saleor-app-checkout/mocks/fixtures/adyen";
 import handler from "@/saleor-app-checkout/pages/api/webhooks/adyen";
 import {
+  disableConsole,
   mockRequest,
   setupPollyMiddleware,
   setupRecording,
@@ -73,6 +74,7 @@ describe("/api/webhooks/adyen", () => {
   });
 
   it("rejects request with no hmac", async () => {
+    disableConsole("error");
     const { req, res } = mockRequest("POST");
 
     req.headers = getReqHeaders();
@@ -95,6 +97,7 @@ describe("/api/webhooks/adyen", () => {
   });
 
   it("create new payment if it was firstly authorized", async () => {
+    disableConsole("warn"); // checkout.getPaymentLinks fails
     const { req, res } = mockRequest("POST");
 
     req.headers = getReqHeaders();
@@ -129,6 +132,7 @@ describe("/api/webhooks/adyen", () => {
   });
 
   it("create new payment if it was firstly captured", async () => {
+    disableConsole("warn"); // checkout.getPaymentLinks fails
     const { req, res } = mockRequest("POST");
 
     req.headers = getReqHeaders();
@@ -167,6 +171,7 @@ describe("/api/webhooks/adyen", () => {
   });
 
   it("updates payment when it was captured", async () => {
+    disableConsole("warn"); // checkout.getPaymentLinks fails
     const { req, res } = mockRequest("POST");
 
     req.headers = getReqHeaders();
@@ -210,6 +215,7 @@ describe("/api/webhooks/adyen", () => {
   });
 
   it("adds refund to Saleor when status changes to REFUND", async () => {
+    disableConsole("warn"); // checkout.getPaymentLinks fails
     const { req, res } = mockRequest("POST");
 
     req.headers = getReqHeaders();
