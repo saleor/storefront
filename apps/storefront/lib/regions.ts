@@ -1,6 +1,7 @@
 import { GetStaticPropsContext } from "next";
 
 import { LanguageCodeEnum } from "../saleor/api";
+import { DEFAULT_CHANNEL as CHANNEL_SLUG } from "./const";
 
 export const LOCALES = [
   {
@@ -23,7 +24,7 @@ export interface Channel {
 }
 
 export const DEFAULT_CHANNEL: Channel = {
-  slug: "default-channel",
+  slug: CHANNEL_SLUG,
   name: "United States Dollar",
   currencyCode: "USD",
 };
