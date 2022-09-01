@@ -31,7 +31,7 @@ const handler: Handler = (request) => {
     webhooks: [
       {
         name: "Checkout app payment notifications",
-        events: ["TRANSACTION_ACTION_REQUEST"],
+        asyncEvents: ["TRANSACTION_ACTION_REQUEST"],
         query: print(TransactionActionRequestSubscriptionDocument),
         targetUrl: webhookUrl,
         isActive: true,

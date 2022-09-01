@@ -1,6 +1,7 @@
 import { verifyStripeEventSignature } from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
 import handler from "@/saleor-app-checkout/pages/api/webhooks/stripe";
 import {
+  disableConsole,
   mockRequestStream,
   setupPollyMiddleware,
   setupRecording,
@@ -67,6 +68,7 @@ describe("/api/webhooks/stripe", () => {
   });
 
   it("should update transaction", async () => {
+    disableConsole("info");
     // return mocked event
     mockVerifyStripeEventSignature.mockResolvedValue({
       id: "evt_1LXWzCEosEcNBN5msbniFSuj",

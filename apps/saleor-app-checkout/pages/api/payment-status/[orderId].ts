@@ -13,7 +13,7 @@ import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/prov
 const adyenHandler = async (sessionId: string): Promise<PaymentStatusResponse> => {
   const session = await verifyAdyenSession(sessionId);
 
-  const StatusEnum = AdyenTypes.checkout.PaymentLinkResource.StatusEnum;
+  const StatusEnum = AdyenTypes.checkout.PaymentLinkResponse.StatusEnum;
 
   if (session.status === StatusEnum.Active) {
     // Session was previously generated but has not been completed

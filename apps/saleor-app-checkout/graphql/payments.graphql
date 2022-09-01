@@ -29,3 +29,19 @@ mutation TransactionUpdate(
     }
   }
 }
+
+query TransactionProcessedEvents($id: ID!) {
+  transaction(id: $id) {
+    processedEvents: metafield(key: "processedEvents")
+  }
+}
+
+mutation TransactionUpdateProcessedEvents($id: ID!, $input: String!) {
+  updateMetadata(id: $id, input: { key: "processedEvents", value: $input }) {
+    errors {
+      code
+      field
+      message
+    }
+  }
+}

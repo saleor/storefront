@@ -4,9 +4,11 @@ export type SettingsType = "public" | "private";
 export const allPublicMetafieldID = ["customizationsCheckoutUrl"] as const;
 export const allPublicSettingID = ["customizations", "channelActivePaymentProviders"] as const;
 export const allPrivateSettingID = ["paymentProviders"] as const;
+export const allPublicTransactionMetafieldID = ["processedEvents"] as const;
 export const allSettingID = [...allPublicSettingID, ...allPrivateSettingID] as const;
 export type PublicMetafieldID = typeof allPublicMetafieldID;
 export type PublicSettingID = typeof allPublicSettingID;
+export type PublicTransactionMetafieldID = typeof allPublicTransactionMetafieldID;
 export type PrivateSettingID = typeof allPrivateSettingID;
 export type MetafieldID = PublicMetafieldID;
 export type SettingID = PublicSettingID | PrivateSettingID;
@@ -44,6 +46,7 @@ export interface Customization<P extends CustomizationID> {
   label: string;
   settings: CustomizationSettings<P>[];
 }
+export type TransactionProcessedEvents = string[];
 
 /**
  * Common types

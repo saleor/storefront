@@ -161,7 +161,7 @@ export const setupPollyMiddleware = (server: PollyServer) => {
 
       const isHandledByMsw = handlers.some((handler) => handler.test(fakeReq));
 
-      if (isHandledByMsw) {
+      if (isHandledByMsw && (process.env.DEBUG || process.env.CI)) {
         console.debug("(from Polly.js) Passing request to MSW:\n", JSON.stringify(fakeReq));
       }
 
@@ -233,3 +233,16 @@ export const setupRecording = () => {
     },
   });
 };
+
+export const consoleTypes = ["log", "debug", "info", "warn", "error"] as const;
+type ConsoleType = typeof consoleTypes[number];
+
+export function disableConsole(logType: ConsoleType | ConsoleType[]) {
+  if (process.env.DEBUG) return;
+
+  const types = Array.isArray(logType) ? logType : [logType];
+
+  types.forEach((type) => {
+    jest.spyOn(console, type).mockImplementation(() => {});
+  });
+}

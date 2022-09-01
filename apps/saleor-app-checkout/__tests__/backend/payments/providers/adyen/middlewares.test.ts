@@ -9,6 +9,7 @@ import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/
 import type { Request } from "retes";
 import { Response } from "retes/response";
 import { validateHmac } from "@/saleor-app-checkout/backend/payments/providers/adyen/validator";
+import { disableConsole } from "@/saleor-app-checkout/test-utils";
 
 jest.mock("@/saleor-app-checkout/backend/configuration/settings");
 jest.mock("@/saleor-app-checkout/backend/payments/providers/adyen/validator");
@@ -96,6 +97,7 @@ afterEach(() => {
 
 describe("withAdyenWebhookCredentials", () => {
   it("returns an error if it cannot fetch Adyen configuration", async () => {
+    disableConsole("error");
     mockedGetPrivateSettings.mockRejectedValueOnce("Error while making request");
 
     const res = await withAdyenWebhookCredentials(handler)(mockRequest);
@@ -104,6 +106,7 @@ describe("withAdyenWebhookCredentials", () => {
   });
 
   it("returns an error if it has missing Adyen configuration", async () => {
+    disableConsole("error");
     mockPrivateSettings(false);
 
     const res = await withAdyenWebhookCredentials(handler)(mockRequest);
