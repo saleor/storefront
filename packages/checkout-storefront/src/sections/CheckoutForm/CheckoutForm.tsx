@@ -1,7 +1,7 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { FormProvider } from "react-hook-form";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutFinalize } from "./useCheckoutFinalize";
