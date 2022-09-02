@@ -109,7 +109,7 @@ You need to run this command after each change in the `*.graphql` files.
   
 ### Code formatting
 
-Before committing the code, Git pre-hooks will check staged changes for following the code styles. If you would like to format the code by yourself, run the command:
+Before committing the code, git pre-hooks will check staged changes for following the code styles. If you would like to format the code by yourself, run the command:
 
 ```bash
 pnpm lint
