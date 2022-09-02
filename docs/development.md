@@ -131,16 +131,6 @@ Change environment variables inside `.env` file:
   https://my-env.eu.saleor.cloud/graphql/
   ```
 
-- `CHECKOUT_APP_URL` — URL of deployed Saleor App Checkout
-
-  Example:
-
-  ```
-  https://saleor-app-checkout.vercel.app
-  ```
-
-  > See [guide below](#vercel) on how to deploy the Saleor App Checkout
-
 There are more environment variables available in each app. Go to their README's to learn more.
 
 ### Tooling
