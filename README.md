@@ -28,13 +28,13 @@
 ## Motivation
 
 🏎️ **modern & fast**:
-The project utilizes all the best practices for e-commerce, like SSR, ISR, and image optimization
+The project utilizes all the best practices for e-commerce, like SSR, ISR, and image optimization.
+
+💳 **integrated payments**: 
+Reduce the purchase friction by taking advantage of integrations with modern payment providers such as Adyen or Mollie.
 
 🛠️ **easily customizable**:
 TailwindCSS can be easily extended and tweaked, or completely replaced with your favorite CSS solution.
-
-**integrated payments**:
-
 
 👌 **works out-of-the-box**:
 Pre-configured tools built with DX in mind.
@@ -91,27 +91,27 @@ pnpm dev
 
 Read more about development in [docs/development.md](./docs/development.md).
 
-## Deployment
-
-Read Vercel deployment guide in [docs/vercel.md](./docs/vercel.md)
-
 ## Payment gateways
 
 Saleor App Checkout supports two configurable payment gateways:
 
 <a href="https://www.mollie.com/en">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../logos/mollie_light.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../logos/mollie_dark.svg">
-    <img alt="Mollie" src="../logos/mollie_dark.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/logos/mollie_light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./docs/logos/mollie_dark.svg">
+    <img alt="Mollie" src="./docs/logos/mollie_dark.svg">
   </picture>
 </a>
 
 <br>
 
-[![Adyen](../logos/adyen.svg)](https://www.adyen.com/)
+[![Adyen](./docs/logos/adyen.svg)](https://www.adyen.com/)
 
 For further information, please go to [docs/payment/index.md](./docs/payment/index.md).
+
+## Deployment
+
+Read Vercel deployment guide in [docs/vercel.md](./docs/vercel.md)
 
 ## FAQ
 
