@@ -20,6 +20,10 @@
 
 ## Setup
 
+### Prerequisites
+
+Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint.
+
 ### Development
 
 Run the development server:
@@ -28,9 +32,9 @@ Run the development server:
 pnpm dev
 ```
 
-> Note: Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint.
-
 To develop `saleor-app-checkout` app locally, you need to create a tunnel for it. The tunnel will enable you to display it within your Saleor Dashboard.
+
+If you want to read more about Saleor Apps architecture, see [the documentation](https://docs.saleor.io/docs/3.x/developer/extending/apps/key-concepts).
 
 To create a tunnel, run:
 
@@ -39,6 +43,11 @@ npx saleor app tunnel 3001
 ```
 
 Choose **Yes** when asked if the app should be installed.
+
+The tunnel needs to be running in the background. Please don't kill it during the development.
+
+<!-- The section below is a bit crowded. It's difficult to parse what is a suggestion, and what is a must (do I need to run `saleor app install`?)  -->
+<!-- Do we need to inform the user of `ngrok`? Why would somebody use it over the proposed solution? Maybe we can move it to FAQ or something. -->
 
 > Warning: Make sure that the app is running on port 3001 otherwise it won't be available from the tunnel
 >
