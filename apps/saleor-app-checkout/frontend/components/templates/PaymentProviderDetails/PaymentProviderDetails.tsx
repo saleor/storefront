@@ -16,7 +16,7 @@ import PaymentProviderDetailsSettings from "./PaymentProviderDetailsSettings";
 import { messages } from "./messages";
 import { ConfirmButtonTransitionState } from "@saleor/macaw-ui";
 import { useIntl } from "react-intl";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { useEffect } from "react";
 
 interface PaymentProviderDetailsProps {
@@ -41,14 +41,20 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
   const router = useRouter();
   const intl = useIntl();
   const paymentProviders = usePaymentProviders();
-  const {
-    control,
-    handleSubmit: handleSubmitForm,
-    formState,
-    reset: resetForm,
-  } = useForm({
+
+  const { encryptedSettings, publicSettings, hasEncryptedSettings, hasPublicSettings } =
+    extractSettingsData(selectedPaymentProvider);
+
+  const flatSettings = Object.fromEntries(
+    selectedPaymentProvider.settings.map((setting) => [setting.id, setting.value])
+  );
+
+  const formMethods = useForm({
     shouldUnregister: true, // Legacy fields from different subpage using the same form might be still present, this should unregister them
+    defaultValues: flatSettings,
   });
+
+  const { control, handleSubmit: handleSubmitForm, formState, reset: resetForm } = formMethods;
 
   useEffect(() => {
     resetForm(getFormDefaultValues(selectedPaymentProvider)); // Update values on subpage change as the same form is used
@@ -86,67 +92,70 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
     }
   };
 
-  const handleSubmit = (flattedOptions: Record<string, string>) => {
+  const handleSubmit = (flattedOptions: Record<string, string | undefined>) => {
+    const changedEntries = Object.entries(flattedOptions).filter(
+      ([key]) => formState.dirtyFields[key]
+    );
+
     onSubmit({
-      [selectedPaymentProvider.id]: flattedOptions,
+      [selectedPaymentProvider.id]: Object.fromEntries(changedEntries),
     } as PaymentProviderSettingsValues<"unencrypted">);
   };
 
-  const { encryptedSettings, publicSettings, hasEncryptedSettings, hasPublicSettings } =
-    extractSettingsData(selectedPaymentProvider);
-
   return (
     <form>
-      <AppLayout
-        title={intl.formatMessage(sectionMessages.settings)}
-        onBackClick={onBackClick}
-        items={paymentProviders}
-        selectedItem={selectedPaymentProvider}
-        loading={loading}
-        onItemClick={onPaymentProviderClick}
-      >
-        <ErrorAlert
-          errors={errors}
-          getErrorMessage={(error, intl) =>
-            error.code ? getMetadataErrorMessage(error.code, intl) : error.message
-          }
-        />
-        <Card>
-          {loading && (
-            <PaymentProviderDetailsSettings
-              settings={encryptedSettings}
-              showHeader={true}
-              loading={true}
-            />
-          )}
-          {!loading && hasEncryptedSettings && (
-            <PaymentProviderDetailsSettings
-              settings={encryptedSettings}
-              description={intl.formatMessage(messages.encryptedSettingNotice)}
-              showHeader={true}
-              formControl={control}
-            />
-          )}
-          {!loading && hasPublicSettings && (
-            <>
-              {hasEncryptedSettings && <Divider />}
+      <FormProvider {...formMethods}>
+        <AppLayout
+          title={intl.formatMessage(sectionMessages.settings)}
+          onBackClick={onBackClick}
+          items={paymentProviders}
+          selectedItem={selectedPaymentProvider}
+          loading={loading}
+          onItemClick={onPaymentProviderClick}
+        >
+          <ErrorAlert
+            errors={errors}
+            getErrorMessage={(error, intl) =>
+              error.code ? getMetadataErrorMessage(error.code, intl) : error.message
+            }
+          />
+          <Card>
+            {loading && (
               <PaymentProviderDetailsSettings
-                settings={publicSettings}
-                description={intl.formatMessage(messages.publicSettingNotice)}
-                showHeader={!hasEncryptedSettings}
+                settings={encryptedSettings}
+                showHeader={true}
+                loading={true}
+              />
+            )}
+            {!loading && hasEncryptedSettings && (
+              <PaymentProviderDetailsSettings
+                settings={encryptedSettings}
+                description={intl.formatMessage(messages.encryptedSettingNotice)}
+                showHeader={true}
                 formControl={control}
               />
-            </>
-          )}
-        </Card>
-      </AppLayout>
-      <AppSavebar
-        disabled={loading || !formState.isDirty}
-        state={saveButtonBarState}
-        onCancel={onCancel}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={handleSubmitForm(handleSubmit)}
-      />
+            )}
+            {!loading && hasPublicSettings && (
+              <>
+                {hasEncryptedSettings && <Divider />}
+                <PaymentProviderDetailsSettings
+                  settings={publicSettings}
+                  description={intl.formatMessage(messages.publicSettingNotice)}
+                  showHeader={!hasEncryptedSettings}
+                  formControl={control}
+                />
+              </>
+            )}
+          </Card>
+        </AppLayout>
+        <AppSavebar
+          disabled={loading || !formState.isDirty}
+          state={saveButtonBarState}
+          onCancel={onCancel}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onSubmit={handleSubmitForm(handleSubmit)}
+        />
+      </FormProvider>
     </form>
   );
 };
