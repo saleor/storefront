@@ -60,7 +60,7 @@ Set up your local storefront development environment by running the `storefront 
 saleor storefront create
 ```
 
-If you don't want to customize available options, you can also spawn a fully functional local storefront development environment using`--demo` attribute:
+If you don't want to customize available options, you can also spawn a fully functional local storefront development environment using `--demo` attribute:
 
 ```
 saleor storefront create --demo
@@ -69,7 +69,7 @@ saleor storefront create --demo
 ---
 
 ## Development
-First install `pnpm` globally:
+First install [`pnpm`](https://pnpm.io/) (an alternative to `npm`, focused on performance) globally:
 ```
 npm install -g pnpm
 ```
