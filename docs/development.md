@@ -105,7 +105,7 @@ To generate GraphQL code based on the latest schema from Saleor instance defined
 pnpm run generate
 ```
 
-You need to run this command after each change in the `*.graphql` files.
+You need to run this command after each change in the `*.graphql` files or when you update your Saleor instance.
   
 ### Code formatting
 
