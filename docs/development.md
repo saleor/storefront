@@ -131,14 +131,6 @@ Change environment variables inside `.env` file:
   https://my-env.eu.saleor.cloud/graphql/
   ```
 
-  > To run sandbox Saleor environment in [Saleor Cloud](https://cloud.saleor.io/) use this command:
-  >
-  > ```bash
-  > npx saleor project create && npx saleor environment create
-  > ```
-  >
-  > You can also run Saleor locally. See [Saleor docs](https://docs.saleor.io/docs/3.x/developer/installation) for more instructions
-
 - `CHECKOUT_APP_URL` — URL of deployed Saleor App Checkout
 
   Example:
