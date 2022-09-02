@@ -68,14 +68,6 @@ cd apps/saleor-app-checkout && npx saleor app tunnel 3001
 
 > Note: The process needs to be running in the background. Please don't kill it during the development.
 
-<!-- is the bit below correct? you have to filter something to run it for all the apps? -->
-<!-- 
-To run the development server for all the apps, use the following command:
-
-```
-pnpm run dev --filter=saleor-app-checkout...
-```
- -->
 #### [`checkout-storefront`](../packages/checkout-storefront/README.md)
 
 The URL structure for `checkout-storefront` is `localhost:3002?checkout=<ID>`, which means it requires a checkout id to work correctly. You don't have to supply it manually; it will be provided when transitioning from the cart to checkout.
