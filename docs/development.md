@@ -54,23 +54,11 @@ pnpm dev --filter=saleor-app-checkout
 
 #### [`saleor-app-checkout`](../apps/saleor-app-checkout/README.md)
 
-First, you need to change the default environment variables. Create `.env.local` file in `apps/saleor-app-checkout`, as described [here](../apps/saleor-app-checkout/README.md#env-variables).
-
-Then, to develop `saleor-app-checkout` app locally, you need to create a tunnel for it. The tunnel will enable you to display it within your Saleor Dashboard.
-
-If you want to read more about Saleor Apps architecture, see [the documentation](https://docs.saleor.io/docs/3.x/developer/extending/apps/key-concepts).
-
-To create a tunnel, run:
-
-```bash
-cd apps/saleor-app-checkout && npx saleor app tunnel 3001
-```
-
-> Note: The process needs to be running in the background. Please don't kill it during the development.
+For development instructions, please go to [apps/saleor-app-checkout/README.md](../apps/saleor-app-checkout/README.md).
 
 #### [`checkout-storefront`](../packages/checkout-storefront/README.md)
 
-The URL structure for `checkout-storefront` is `localhost:3002?checkout=<ID>`, which means it requires a checkout id to work correctly. You don't have to supply it manually; it will be provided when transitioning from the cart to checkout.
+For development instructions, please go to [packages/checkout-storefront/README.md](../packages/checkout-storefront/README.md).
 
 ### Building
 
