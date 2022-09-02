@@ -28,9 +28,11 @@ Run the development server:
 pnpm dev
 ```
 
-Start tunnel, so that Checkout App is available from Internet for webhooks:
+> Note: Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint.
 
-> Note: Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GrpahQL API endpoint
+To develop `saleor-app-checkout` app locally, you need to create a tunnel for it. The tunnel will enable you to display it within your Saleor Dashboard.
+
+To create a tunnel, run:
 
 ```bash
 npx saleor app tunnel 3001
