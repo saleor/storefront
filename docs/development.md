@@ -11,12 +11,12 @@ This repository is a monorepo. Here's the list of all the apps and packages in i
 
 ### Packages
 
-- `packages/ui-kit`: UI kit for Storefront and Checkout
-- `packages/config-checkout`: `eslint` configuration
-- `packages/config-storefront`: `eslint` configuration
-- `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
-- `packages/checkout-storefront`: Checkout storefront component
-- `packages/checkout-common`: Common types and utils
+- [`packages/ui-kit`](../packages/ui-kit): UI kit for Storefront and Checkout
+- [`packages/eslint-config-checkout`](../packages/eslint-config-checkout): `eslint` configuration
+- [`packages/tsconfig`](../packages/tsconfig): `tsconfig.json`s used throughout the monorepo
+- [`packages/checkout-storefront`](../packages/checkout-storefront): Checkout storefront component
+- [`packages/checkout-common`](../packages/checkout-common): Common types and utils
+- [`packages/env-vars`](../packages/env-vars): Importing env vars across packages
 
 ## Getting started
 
