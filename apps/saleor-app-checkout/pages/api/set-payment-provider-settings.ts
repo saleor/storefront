@@ -5,6 +5,7 @@ import {
   setPrivateSettings,
 } from "@/saleor-app-checkout/backend/configuration/settings";
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
+import { merge } from "lodash-es";
 import { NextApiHandler } from "next";
 
 const handler: NextApiHandler = async (req, res) => {
@@ -31,12 +32,11 @@ const handler: NextApiHandler = async (req, res) => {
   try {
     const settings = await getPrivateSettings(apiUrl, false);
 
+    const newSettings = JSON.parse(data);
+
     const updatedSettings = await setPrivateSettings(apiUrl, {
       ...settings,
-      paymentProviders: {
-        ...settings.paymentProviders,
-        ...JSON.parse(data),
-      },
+      paymentProviders: merge(settings.paymentProviders, newSettings),
     });
 
     return res.status(200).json({
