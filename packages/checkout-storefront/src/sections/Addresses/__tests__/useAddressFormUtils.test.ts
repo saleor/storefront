@@ -14,6 +14,7 @@ const mockedSuccessResponse = {
       } as AddressValidationRulesQuery,
     }),
 };
+
 const mockedFailResponse = {
   executeQuery: () =>
     fromValue({
@@ -25,10 +26,7 @@ const mockedFailResponse = {
 
 describe("isRequiredField", () => {
   it("should return true for required field", () => {
-    const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
-      wrapper: getMockUrqlProvider(mockedSuccessResponse),
-    });
-
+    const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code));
     expect(hook.current.isRequiredField("city")).toEqual(true);
   });
 
@@ -70,7 +68,6 @@ describe("getFieldLabel", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedFailResponse),
     });
-
-    expect(hook.current.getFieldLabel("companyName")).toEqual("Company");
+    expect(hook.current.getFieldLabel("countryArea")).toEqual("Province");
   });
 });
