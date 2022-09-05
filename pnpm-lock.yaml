@@ -77,8 +77,7 @@ importers:
       '@pollyjs/adapter-node-http': ^6.0.5
       '@pollyjs/core': ^6.0.5
       '@pollyjs/persister-fs': ^6.0.5
-      '@saleor/app-bridge': ^0.1.9
-      '@saleor/app-sdk': ^0.7.0
+      '@saleor/app-sdk': ~0.9.1
       '@saleor/checkout-storefront': workspace:*
       '@saleor/macaw-ui': ^0.4.0
       '@sentry/nextjs': 7.11.1
@@ -141,8 +140,7 @@ importers:
       '@material-ui/lab': 4.0.0-alpha.61_upnjamd3tbaukgopcqqdlc7jbm
       '@material-ui/styles': 4.11.5_zxljzmqdrxwnuenbkrz77w74uy
       '@mollie/api-client': 3.6.0
-      '@saleor/app-bridge': 0.1.10
-      '@saleor/app-sdk': 0.7.0
+      '@saleor/app-sdk': 0.9.1
       '@saleor/checkout-storefront': link:../../packages/checkout-storefront
       '@saleor/macaw-ui': 0.4.0_2y22cl4s2qbk2dsjoypyjtjdfu
       '@sentry/nextjs': 7.11.1_6qx5nlobmpaz7n77l6lcv4j2fe
@@ -2751,7 +2749,7 @@ packages:
         optional: true
     dependencies:
       '@formatjs/icu-messageformat-parser': 2.1.0
-      '@types/node': 17.0.45
+      '@types/node': 14.18.26
       chalk: 4.1.2
       ts-jest: 27.1.5_vnhccswlnufoelt52lyvke3blm
       tslib: 2.4.0
@@ -5600,20 +5598,17 @@ packages:
     resolution: {integrity: sha512-LwzQKA4vzIct1zNZzBmRKI9QuNpLgTQMEjsQLf3BXuGYb3QPTP4Yjf6mkdX+X1mYttZ808QpOwAzZjv28kq7DA==}
     dev: true
 
-  /@saleor/app-bridge/0.1.10:
-    resolution: {integrity: sha512-ULQohMC/uZQWc4JeKzNOB8T9SkM5NwnvRw3YSAWj+WEeD+vil9hfGqml+2E8jjT5RsVCl3Dx9frgvvWPqnnrUw==}
-    engines: {node: '>=10'}
+  /@saleor/app-sdk/0.9.1:
+    resolution: {integrity: sha512-p+/qvl2tk0gowdLSK9szXLSVYNaIr1QQF0panqnuT+GYXOEtwysBvr/TUq0b1GLKZsxlmgjE46NNsqBIVJdnpQ==}
     dependencies:
-      uuid: 8.3.2
-    dev: false
-
-  /@saleor/app-sdk/0.7.0:
-    resolution: {integrity: sha512-e2an48MV7608xJIewQzaUaqN8fwmZmQrQx9rY25cjEWjvbM6TuF3YdkZyGH/1M8dsIFaQJmJnv0+uZIChOyywQ==}
-    dependencies:
+      debug: 4.3.4
       fast-glob: 3.2.11
       graphql: 16.6.0
       jose: 4.9.0
-      retes: 0.29.4
+      retes: 0.32.0
+      uuid: 8.3.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@saleor/macaw-ui/0.4.0_2y22cl4s2qbk2dsjoypyjtjdfu:
@@ -11353,7 +11348,7 @@ packages:
     dev: true
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   /concat-stream/1.6.2:
     resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}
@@ -22044,14 +22039,14 @@ packages:
     resolution: {integrity: sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==}
     engines: {node: '>=0.12'}
 
-  /retes/0.29.4:
-    resolution: {integrity: sha512-c6Ji2oGfXN/abuLRVLUT0/eklLuAlargjBR0Ru/FAhgmL2TtEhNl2OQ3UnFSUYXa8a6v9qrEb6UvIp0A6KlJ5w==}
+  /retes/0.30.1:
+    resolution: {integrity: sha512-+zXCyrOT22WjM9ayT3riudhmFDJVTeGshfgKWSuyOPV+ez2R6Fi2OtM1hfGteGZrAv/gATEMgdiCPdJOaDvIEw==}
     dependencies:
       busboy: 1.6.0
     dev: false
 
-  /retes/0.30.1:
-    resolution: {integrity: sha512-+zXCyrOT22WjM9ayT3riudhmFDJVTeGshfgKWSuyOPV+ez2R6Fi2OtM1hfGteGZrAv/gATEMgdiCPdJOaDvIEw==}
+  /retes/0.32.0:
+    resolution: {integrity: sha512-pCz9SdztBaU4QMX/YA3A5tfEVgHdLwGdc7hJOJHF+XTJzHJksiwQTquZuz32DeJ4KRgo2P8h5sdPnyi+v4AzwQ==}
     dependencies:
       busboy: 1.6.0
     dev: false

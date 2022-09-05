@@ -1,7 +1,8 @@
-import { app, AppBridge } from "@/saleor-app-checkout/frontend/misc/app";
+import { app } from "@/saleor-app-checkout/frontend/misc/app";
 import { useRouter } from "next/router";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { handleRedirectEvent, handleRouteChange } from "./handlers";
+import { AppBridge } from "@saleor/app-sdk/app-bridge";
 
 interface IAppContext {
   app?: AppBridge;
