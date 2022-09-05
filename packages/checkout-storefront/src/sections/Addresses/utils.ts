@@ -126,7 +126,7 @@ export const getOrderedAddressFields = (addressFields: AddressField[] = []): Add
   );
 };
 
-export const getRequiredAddressFields = (requiredFields: AddressField[]): AddressField[] => [
+export const getRequiredAddressFields = (requiredFields: AddressField[] = []): AddressField[] => [
   ...requiredFields,
   "firstName",
   "lastName",
