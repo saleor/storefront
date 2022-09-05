@@ -1,7 +1,6 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useCheckoutAddPromoCodeMutation } from "@/checkout-storefront/graphql";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
@@ -30,9 +29,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   });
   const resolver = useValidationResolver(schema);
 
-  const [{ fetching }, checkoutAddPromoCode] = useCheckoutAddPromoCodeMutation();
-
-  useCheckoutUpdateStateTrigger("checkoutAddPromoCode", fetching);
+  const [, checkoutAddPromoCode] = useCheckoutAddPromoCodeMutation();
 
   const formProps = useForm<FormData>({ resolver, defaultValues: { promoCode: "" } });
   const { handleSubmit, watch, setError, reset } = formProps;
