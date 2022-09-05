@@ -72,18 +72,6 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
 
   const hasFinishedApiChanges = !Object.values(methods.watch("updateState")).some((value) => value);
 
-  useEffect(() => {
-    if (!hasFinishedApiChanges) {
-      return;
-    }
-
-    setIsProcessingApiChanges(false);
-
-    if (submitInProgress) {
-      handleSubmit();
-    }
-  }, [hasFinishedApiChanges]);
-
   // not using form handleSubmit on purpose
   const handleSubmit = () => {
     if (!hasFinishedApiChanges) {
@@ -99,6 +87,18 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
 
     checkoutFinalize(getFormData());
   };
+
+  useEffect(() => {
+    if (!hasFinishedApiChanges) {
+      return;
+    }
+
+    setIsProcessingApiChanges(false);
+
+    if (submitInProgress) {
+      handleSubmit();
+    }
+  }, [hasFinishedApiChanges]);
 
   return { methods, usePaymentProvidersProps, handleSubmit, isProcessingApiChanges };
 };

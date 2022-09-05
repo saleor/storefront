@@ -17,7 +17,6 @@ export type CheckoutUpdateStateScope = Extract<
   | "checkoutCustomerAttach"
   | "checkoutAddPromoCode"
   | "checkoutDeliveryMethodUpdate"
-  | "checkoutLinesUpdate"
   | "checkoutEmailUpdate"
   | "checkoutBillingUpdate"
 >;
