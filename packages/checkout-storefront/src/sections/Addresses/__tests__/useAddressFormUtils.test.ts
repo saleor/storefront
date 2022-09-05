@@ -22,15 +22,15 @@ const mockedFailResponse = {
       } as AddressValidationRulesQuery,
     }),
 };
+
 describe("isRequiredField", () => {
   it("should return true for required field", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedSuccessResponse),
     });
 
-// describe("isRequiredField", () => {
-//   it("should return true for required field", () => {
-//     const { result: hook } = renderHook(() => useAddressFormUtils(validationRules));
+    expect(hook.current.isRequiredField("city")).toEqual(true);
+  });
 
   it("should return false for not required field", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
@@ -44,24 +44,19 @@ describe("isRequiredField", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedFailResponse),
     });
-//     expect(hook.current.isRequiredField("city")).toEqual(true);
-//   });
 
-//   it("should return false for not required field", () => {
-//     const { result: hook } = renderHook(() => useAddressFormUtils(validationRules));
+    expect(hook.current.isRequiredField("companyName")).toEqual(false);
+  });
+});
 
 describe("getFieldLabel", () => {
   it("should return localized field label when available", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedSuccessResponse),
     });
-//     expect(hook.current.isRequiredField("companyName")).toEqual(false);
-//   });
-// });
 
-// describe("getFieldLabel", () => {
-//   it("should return localized field label when available", () => {
-//     const { result: hook } = renderHook(() => useAddressFormUtils(validationRules));
+    expect(hook.current.getFieldLabel("countryArea")).toEqual("Province");
+  });
 
   it("should return unlocalized field label when otherwise unavailable", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
@@ -75,12 +70,7 @@ describe("getFieldLabel", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedFailResponse),
     });
-//     expect(hook.current.getFieldLabel("countryArea")).toEqual("Province");
-//   });
 
-//   it("should return unlocalized field label when otherwise unavailable", () => {
-//     const { result: hook } = renderHook(() => useAddressFormUtils(validationRules));
-
-//     expect(hook.current.getFieldLabel("companyName")).toEqual("Company");
-//   });
-// });
+    expect(hook.current.getFieldLabel("companyName")).toEqual("Company");
+  });
+});
