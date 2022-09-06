@@ -19,7 +19,7 @@
     "start": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run start",
     "format": "prettier --write .",
     "prepare": "husky install",
-    "clean": "rm -rf ./**/node_modules/ ./**/.next ./.turbo ./pnpm-lock.yaml"
+    "clean": "rm -rf node_modules **/node_modules **/.next .turbo pnpm-lock.yaml"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
@@ -32,7 +32,7 @@
   "engines": {
     "npm": ">=7.0.0",
     "node": ">=16.0.0",
-    "pnpm": "^7.5.0"
+    "pnpm": ">=7.7.1"
   },
-  "packageManager": "pnpm@7.5.2"
+  "packageManager": "pnpm@7.11.0"
 }
