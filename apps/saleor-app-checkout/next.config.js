@@ -1,5 +1,6 @@
 const { withSentryConfig } = require("@sentry/nextjs");
 const withTM = require("next-transpile-modules")();
+const { localhostHttp } = require("./utils/configUtils");
 
 const isSentryEnabled =
   process.env.SENTRY_DSN && process.env.SENTRY_ENVIRONMENT && process.env.SENTRY_RELEASE;
@@ -28,7 +29,7 @@ const config = withTM({
   eslint: {
     dirs: ["pages", "backend", "frontend", "config"],
   },
-  assetPrefix: process.env.NEXT_PUBLIC_CHECKOUT_APP_URL,
+  assetPrefix: localhostHttp(process.env.NEXT_PUBLIC_CHECKOUT_APP_URL),
 });
 
 module.exports = isSentryEnabled

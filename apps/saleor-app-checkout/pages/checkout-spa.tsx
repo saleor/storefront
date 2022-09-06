@@ -1,4 +1,5 @@
 import Dynamic from "next/dynamic";
+import { localhostHttp } from "../utils/configUtils";
 
 const CheckoutStoreFront = Dynamic(
   async () => {
@@ -31,5 +32,13 @@ export default function CheckoutSpa() {
     return null;
   }
 
-  return <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl, checkoutAppUrl }} />;
+  return (
+    <CheckoutStoreFront
+      env={{
+        apiUrl: localhostHttp(apiUrl),
+        checkoutApiUrl: localhostHttp(checkoutApiUrl),
+        checkoutAppUrl: localhostHttp(checkoutAppUrl),
+      }}
+    />
+  );
 }
