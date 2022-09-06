@@ -31,7 +31,7 @@
 The project utilizes all the best practices for e-commerce, like SSR, ISR, and image optimization.
 
 💳 **integrated payments**: 
-Reduce the purchase friction by taking advantage of integrations with modern payment providers such as Adyen or Mollie.
+Reduce the purchase friction by taking advantage of integrations with modern payment providers such as Adyen, Mollie or Stripe.
 
 🛠️ **easily customizable**:
 TailwindCSS can be easily extended and tweaked, or completely replaced with your favorite CSS solution.
