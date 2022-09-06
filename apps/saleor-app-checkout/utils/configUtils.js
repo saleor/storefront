@@ -12,7 +12,7 @@ module.exports.localhostHttp = (url) => {
     }
     return url;
   } catch (e) {
-    console.warn(e);
+    console.warn(e, url);
     return url;
   }
 };
