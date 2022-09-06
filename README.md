@@ -45,6 +45,7 @@ Pre-configured tools built with DX in mind.
 - TypeScript
 - GraphQL with Apollo Client
 - Tailwind CSS
+- Turborepo
 - Saleor Checkout
 
 ## Quickstart
