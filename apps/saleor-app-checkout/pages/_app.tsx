@@ -35,6 +35,26 @@ export default function App(props: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        {/* eslint-disable-next-line react/no-unknown-property */}
+        <style jsx global>
+          {`
+            html,
+            body {
+              height: 100%;
+              width: 100%;
+            }
+            *,
+            *:after,
+            *:before {
+              box-sizing: border-box;
+            }
+            body {
+              font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+              font-size: 1rem;
+              margin: 0;
+            }
+          `}
+        </style>
       </Head>
       <AppProvider>
         <ClientProvider value={client}>
