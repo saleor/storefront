@@ -395,7 +395,7 @@ importers:
       env-vars: workspace:*
       eslint: ^8.22.0
       eslint-config-checkout: workspace:*
-      graphql: ^15.8.0
+      graphql: 15.8.0
       graphql-tag: ^2.12.6
       hex-rgb: ^5.0.0
       jest: ^27.5.1
