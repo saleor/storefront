@@ -2,7 +2,7 @@
 
 ## Structure
 
-This repository is a monorepo. Here's the list of all the apps and packages in it (each app has its own README):
+This repository is a monorepo built with [Turborepo](https://turborepo.org/). Here's the list of all the apps and packages in it (each app has its own README):
 
 ### Apps
 
