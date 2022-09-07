@@ -27,12 +27,9 @@ const config = withTM({
     esmExternals: false,
   },
   eslint: {
-    dirs: ["pages", "backend", "frontend", "config"],
-  },
-  assetPrefix: localhostHttp(process.env.NEXT_PUBLIC_CHECKOUT_APP_URL),
-  eslint: {
     ignoreDuringBuilds: true,
   },
+  assetPrefix: localhostHttp(process.env.NEXT_PUBLIC_CHECKOUT_APP_URL),
 });
 
 module.exports = isSentryEnabled
