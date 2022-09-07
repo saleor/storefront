@@ -20,6 +20,10 @@
 
 ## Setup
 
+### Prerequisites
+
+Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint.
+
 ### Development
 
 Run the development server:
@@ -28,29 +32,29 @@ Run the development server:
 pnpm dev
 ```
 
-Start tunnel, so that Checkout App is available from the Internet for webhooks:
+To develop `saleor-app-checkout` app locally, you need to create a tunnel for it. The tunnel will enable you to display it within your Saleor Dashboard. If you want to read more about Saleor Apps architecture, see [the documentation](https://docs.saleor.io/docs/3.x/developer/extending/apps/key-concepts).
 
-> Note: Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint
+To create a tunnel, run:
 
 ```bash
 npx saleor app tunnel 3001
 ```
 
-Choose **Yes** when asked if the app should be installed.
+where `3001` is the port on which `saleor-app-checkout` runs by default. Alternative ways of creating a tunnel are described [here](#alternatives-to-saleor-app-tunnel).
 
-> Warning: Make sure that the app is running on port 3001 otherwise it won't be available from the tunnel
->
-> ```bash
-> lsof -i :3001
-> ```
+> Note: The tunnel needs to be running in the background. Please don't kill it during the development.
 
-> Note: You can also use [`ngrok`](https://ngrok.com/), but you would need to update env variables each time you open tunnel (on free plan) with new domain `ngrok` assigned you.
->
-> After you do that use `saleor app install` to install the app in your Saleor instance.
->
-> The tunnel needs to use `https` protocol with valid SSL certificate, otherwise you won't receive webhook calls
+After the CLI installs the app for you, you need to make sure the requests to your Saleor instance are authenticated. To do that, please generate the auth token with the command:
 
-After the app is installed in Saleor, a `.auth_token` file should be created with a token used for authenticating requests made to your Saleor instance.
+```bash
+npx saleor app token
+```
+
+Next, please copy the generated token, and paste it into the newly created `.auth_token` file:
+
+```bash
+touch .auth_token
+```
 
 Open the app by using the tunnel URL received from `saleor app tunnel` (example: `https://saleor-app-checkout-xyz-my-org.saleor.live`) in your browser to see the result.
 
@@ -71,6 +75,16 @@ saleor app token
 ```
 
 Then set the `SALEOR_APP_TOKEN` environment variable value to the token you've received from Saleor and **redeploy the app**.
+
+### Other
+
+#### Alternatives to `saleor app tunnel`
+You can also use [`ngrok`](https://ngrok.com/), but you would need to update env variables each time you open tunnel (on free plan) with new domain `ngrok` assigned you.
+
+After you do that use `saleor app install` to install the app in your Saleor instance.
+
+The tunnel needs to use `https` protocol with valid SSL certificate, otherwise you won't receive webhook calls.
+
 
 ## Env Variables
 
