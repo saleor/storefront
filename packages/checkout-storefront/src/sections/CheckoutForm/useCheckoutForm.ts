@@ -4,7 +4,7 @@ import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { usePaymentMethods } from "@/checkout-storefront/sections/PaymentSection";
-import { PaymentProviderID } from "checkout-common";
+import { PaymentMethodID, PaymentProviderID } from "checkout-common";
 import { useEffect, useState } from "react";
 import { useCheckoutFormValidation } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFormValidation";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
@@ -28,7 +28,8 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
   const { errorMessages } = useErrorMessages();
   const { checkout, loading: loadingCheckout } = useCheckout();
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
-  const { isValidProviderSelected, selectedPaymentProvider } = usePaymentProvidersProps;
+  const { isValidProviderSelected, selectedPaymentProvider, selectedPaymentMethod } =
+    usePaymentProvidersProps;
 
   const [isProcessingApiChanges, setIsProcessingApiChanges] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);
@@ -65,11 +66,13 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     schema,
   });
 
-  const getFormData = () => ({
+  const getFormData = (): CheckoutFormData => ({
     ...getValues(),
     paymentProviderId: selectedPaymentProvider as PaymentProviderID,
+    paymentMethodId: selectedPaymentMethod as PaymentMethodID,
   });
 
+  console.log({ loadingCheckout });
   const hasFinishedApiChanges =
     !Object.values(methods.watch("updateState")).some((value) => value) && !loadingCheckout;
 
