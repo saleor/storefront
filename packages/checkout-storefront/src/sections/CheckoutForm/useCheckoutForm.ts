@@ -26,7 +26,7 @@ export type UseCheckoutFormProps = {
 
 export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseCheckoutFormProps) => {
   const { errorMessages } = useErrorMessages();
-  const { checkout } = useCheckout();
+  const { checkout, loading: loadingCheckout } = useCheckout();
   const usePaymentProvidersProps = usePaymentMethods(checkout?.channel?.id);
   const { isValidProviderSelected, selectedPaymentProvider } = usePaymentProvidersProps;
 
@@ -70,7 +70,8 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     paymentProviderId: selectedPaymentProvider as PaymentProviderID,
   });
 
-  const hasFinishedApiChanges = !Object.values(methods.watch("updateState")).some((value) => value);
+  const hasFinishedApiChanges =
+    !Object.values(methods.watch("updateState")).some((value) => value) && !loadingCheckout;
 
   // not using form handleSubmit on purpose
   const handleSubmit = () => {

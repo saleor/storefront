@@ -38,7 +38,7 @@ const getAllPaymentMethods = (
   );
 };
 
-export const usePaymentMethods = (channelId: string) => {
+export const usePaymentMethods = (channelId?: string) => {
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();

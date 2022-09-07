@@ -6,12 +6,12 @@ import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
 export const useCheckoutUpdateStateTrigger = (
-  checkoutScope: CheckoutUpdateStateScope,
+  scope: CheckoutUpdateStateScope,
   updating: boolean
 ) => {
   const { setValue } = useFormContext<CheckoutFormData>();
 
   useEffect(() => {
-    setValue(`updateState.${checkoutScope}`, updating);
-  }, [updating, checkoutScope]);
+    setValue(`updateState.${scope}`, updating);
+  }, [updating, scope]);
 };

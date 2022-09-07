@@ -13,5 +13,5 @@ export const useCheckout = ({ pause }: { pause?: boolean } = { pause: false }) =
     pause: pause || authenticating,
   });
 
-  return { checkout: data?.checkout!, loading };
+  return { checkout: data?.checkout, loading };
 };
