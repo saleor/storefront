@@ -13,7 +13,7 @@ type AvailablePaymentMethods = PaymentMethodID[];
 type PaymentProvider = PaymentProviderID | undefined | "";
 
 export interface UsePaymentMethods {
-  selectedPaymentMethod: PaymentMethodID | undefined;
+  selectedPaymentMethod: PaymentMethodID;
   setSelectedPaymentMethod: (value: PaymentMethodID) => void;
   availablePaymentMethods: AvailablePaymentMethods;
   selectedPaymentProvider: PaymentProvider;
