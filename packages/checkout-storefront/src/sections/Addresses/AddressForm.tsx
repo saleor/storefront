@@ -18,12 +18,10 @@ import { UseCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCount
 import { useAddressFormUtils } from "./useAddressFormUtils";
 import { IconButton } from "@/checkout-storefront/components";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import {
-  emptyFormData,
-  isMatchingAddressFormData,
-} from "@/checkout-storefront/sections/Addresses/utils";
+import { emptyFormData } from "@/checkout-storefront/sections/Addresses/utils";
 import { isEqual } from "lodash-es";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
+import { useFormAutofillSubmit } from "@/checkout-storefront/hooks/useFormAutofillSubmit";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors">,
@@ -55,6 +53,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   const { errorMessages } = useErrorMessages();
   const [countryArea, setCountryArea] = useState<string>(defaultValues.countryArea || "");
   const defaultValuesRef = useRef<Partial<TFormData> | undefined>(defaultValues);
+  const { validationRules } = useAddressFormUtils(countryCode);
 
   const schema = object({
     firstName: string().required(errorMessages.required),
@@ -62,6 +61,8 @@ export const AddressForm = <TFormData extends AddressFormData>({
     streetAddress1: string().required(errorMessages.required),
     postalCode: string().required(errorMessages.required),
     city: string().required(errorMessages.required),
+    cityArea: string(),
+    countryArea: string(),
   });
 
   const resolver = useValidationResolver(schema);
@@ -72,7 +73,16 @@ export const AddressForm = <TFormData extends AddressFormData>({
     defaultValues: defaultValues as DefaultValues<TFormData>,
   });
 
-  const { handleSubmit, getValues, setError, clearErrors, reset, trigger } = formProps;
+  const {
+    handleSubmit,
+    getValues,
+    setError,
+    clearErrors,
+    reset,
+    watch,
+    trigger,
+    formState: { isDirty },
+  } = formProps;
 
   useCheckoutFormValidationTrigger(trigger);
 
@@ -92,34 +102,45 @@ export const AddressForm = <TFormData extends AddressFormData>({
     }
   };
 
-  const handleSave = (address: TFormData) => {
-    onClearErrors();
-    onSubmit(countryArea ? { ...address, countryCode, countryArea } : { ...address, countryCode });
-  };
+  const hasDataChanged = (formData: TFormData) => !isEqual(formData, defaultValuesRef.current);
 
-  const handleAutoSave = () => {
-    if (!autoSave) {
+  const onSubmitWithDataChangeEnsured = (formData: TFormData) => {
+    console.log(formData, defaultValuesRef.current, hasDataChanged, isDirty);
+    if (!hasDataChanged(formData) || !isDirty) {
       return;
     }
 
-    const formData = getValues();
-    onSubmit({ ...formData, countryCode });
+    onSubmit({ ...formData, countryCode, isDirty });
   };
 
-  useEffect(() => {
-    const formData = getValues();
-    const submitData = { ...formData, countryCode };
-    if (autoSave && !isMatchingAddressFormData(submitData, defaultValues)) {
-      onSubmit(submitData);
+  const handleSave = (address: TFormData) => {
+    onClearErrors();
+    if (hasDataChanged(address)) {
+      onSubmitWithDataChangeEnsured(
+        countryArea ? { ...address, countryCode, countryArea } : { ...address, countryCode }
+      );
+    } else if (typeof onCancel === "function") {
+      onCancel();
     }
-  }, [countryCode]);
+  };
+
+  const debouncedSubmit = useFormAutofillSubmit({
+    defaultFormData: defaultValues,
+    formData: { ...watch(), countryCode },
+    trigger,
+    onSubmit: onSubmitWithDataChangeEnsured,
+  });
 
   useEffect(() => {
-    if (!Object.keys(defaultValues).length && !isEqual(defaultValues, defaultValuesRef.current)) {
-      reset(emptyFormData as TFormData);
-
-      defaultValuesRef.current = defaultValues;
+    if (isEqual(defaultValues, defaultValuesRef.current)) {
+      return;
     }
+
+    const dataToSet = !Object.keys(defaultValues).length ? emptyFormData : defaultValues;
+
+    reset(dataToSet as TFormData);
+
+    defaultValuesRef.current = defaultValues;
   }, [defaultValues]);
 
   return (
@@ -160,7 +181,12 @@ export const AddressForm = <TFormData extends AddressFormData>({
               key={field}
               label={label}
               {...getInputProps(field as Path<TFormData>, {
-                onBlur: handleAutoSave,
+                onBlur: () => {
+                  if (!autoSave) {
+                    return;
+                  }
+                  debouncedSubmit({ ...getValues(), countryCode });
+                },
               })}
               optional={!isRequired}
             />

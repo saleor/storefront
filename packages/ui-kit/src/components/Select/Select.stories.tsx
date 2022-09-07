@@ -38,6 +38,7 @@ type StoriesArgs = Omit<SelectProps, "onChange">;
 const commonArgs: StoriesArgs = {
   selectedValue: users[0].value,
   options: users,
+  placeholder: "Select option",
 };
 
 export const Basic = Template.bind({});

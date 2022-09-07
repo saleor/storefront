@@ -1,0 +1,12 @@
+.container {
+  @apply relative block w-full;
+}
+
+.select {
+  @apply h-10 border rounded border-border-secondary py-2 px-3 w-38 text-md;
+}
+
+.select:focus,
+.select:active {
+  @apply border-border-primary outline-none;
+}

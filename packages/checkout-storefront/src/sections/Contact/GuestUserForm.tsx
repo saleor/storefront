@@ -14,7 +14,11 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
+<<<<<<< HEAD
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
+=======
+import { useFormAutofillSubmit } from "@/checkout-storefront/hooks/useFormAutofillSubmit";
+>>>>>>> 84099ea... wip
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -33,22 +37,26 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     getValues: getContextValues,
     setValue: setContextValue,
     formState: contextFormState,
+    trigger: triggerContext,
   } = formContext;
 
   const schema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
   });
 
+  const defaultValues = { email: getContextValues("email") };
+
   const resolver = useValidationResolver(schema);
   const formProps = useForm<FormData>({
     resolver,
     mode: "onBlur",
-    defaultValues: { email: getContextValues("email") },
+    defaultValues,
   });
 
-  const { watch, getValues, setError, trigger } = formProps;
+  const { watch, setError, trigger } = formProps;
 
   useCheckoutFormValidationTrigger(trigger);
+  useCheckoutFormValidationTrigger(triggerContext);
 
   const getInputProps = useGetInputProps(formProps);
   const getContextInputProps = useGetInputProps(formContext);
@@ -85,6 +93,13 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
   useEffect(() => setContextValue("createAccount", createAccountSelected), [createAccountSelected]);
 
+  // const debouncedSubmit = useFormAutofillSubmit({
+  //   watch,
+  //   trigger,
+  //   onSubmit: () => onSubmit(getValues()),
+  //   defaultValues,
+  // });
+
   return (
     <SignInFormContainer
       title={formatMessage("contact")}
@@ -95,11 +110,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       <TextInput
         label={formatMessage("emailLabel")}
         {...getInputProps("email", {
-          // for some reason using handleSubmit here
-          // disallows password input to focus
-          onBlur: () => {
-            void onSubmit(getValues());
-          },
+          // onBlur: debouncedSubmit,
         })}
       />
       <Checkbox

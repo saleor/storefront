@@ -19,16 +19,6 @@ export const TextInput = forwardRef(
     ref: Ref<HTMLInputElement>
   ) => (
     <div className={clsx(styles["text-input-container"], classNames.container)}>
-      {label && (
-        <Label
-          className={clsx(styles["text-input-label"], {
-            [styles["text-input-filled-label"]]: value || placeholder,
-          })}
-        >
-          {label}
-          {required && "*"}
-        </Label>
-      )}
       <input
         ref={ref}
         className={clsx(
@@ -44,6 +34,16 @@ export const TextInput = forwardRef(
         required={required}
         {...rest}
       />
+      {label && (
+        <Label
+          className={clsx(styles["text-input-label"], {
+            [styles["text-input-filled-label"]]: value || placeholder,
+          })}
+        >
+          {label}
+          {required && "*"}
+        </Label>
+      )}
       {error && (
         <Text size="sm" color="error" className={styles["text-input-error-caption"]}>
           {error}

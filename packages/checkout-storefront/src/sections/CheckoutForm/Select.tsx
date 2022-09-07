@@ -1,11 +1,4 @@
-import {
-  FocusEvent,
-  ReactNode,
-  SelectHTMLAttributes,
-  SyntheticEvent,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, SelectHTMLAttributes } from "react";
 import clsx from "clsx";
 
 import styles from "./Select.module.css";
@@ -24,7 +17,6 @@ export type SelectOnChangeHandler<TData extends string = string> = (value: TData
 
 export interface SelectProps<TData extends string = string>
   extends SelectHTMLAttributes<HTMLSelectElement> {
-  onChange: (event: SyntheticEvent) => void;
   options: Option<TData>[];
   error?: boolean;
   classNames?: ClassNames<
@@ -38,59 +30,17 @@ export const Select = <TData extends string = string>({
   classNames,
   placeholder = "",
   value,
-  onChange,
-  onBlur,
-  onFocus,
   ...rest
 }: SelectProps<TData>) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef();
-
-  const handleChange = (event: SyntheticEvent) => {
-    console.log("CHANGE DAMN");
-    event.preventDefault();
-    setIsOpen(!isOpen);
-    onChange(event);
-  };
-
-  const handleBlur = (event: FocusEvent<HTMLSelectElement>) => {
-    console.log("BLUR");
-    setIsOpen(false);
-    if (typeof onBlur === "function") {
-      onBlur(event);
-    }
-  };
-
-  const handleFocus = (event: FocusEvent<HTMLSelectElement>) => {
-    console.log("FOCUS");
-    setIsOpen(true);
-    if (typeof onFocus === "function") {
-      onFocus(event);
-    }
-  };
-
-  const handleClick = (lol) => console.log("CLICK", ref.current);
-
   return (
     <div className={clsx(styles.container, classNames?.container)}>
-      <select
-        {...rest}
-        ref={ref}
-        onClick={handleClick}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className={clsx(styles.select)}
-      >
+      <select {...rest} className={clsx(styles.select)}>
         {options.map(({ label, value, disabled = false }) => (
           <option value={value} disabled={disabled}>
             {label}
           </option>
         ))}
       </select>
-      <div className={clsx(styles.icon, isOpen && styles["dropdown-open"])}>
-        <ChevronDownIcon />
-      </div>
       {/* <Combobox value={selectedOption} onChange={({ value }: Option<TData>) => onChange(value)}>
         <Combobox.Button
           className={clsx(

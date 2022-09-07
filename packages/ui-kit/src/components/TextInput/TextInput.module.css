@@ -14,6 +14,12 @@
   @apply text-xs;
 }
 
+.text-input:-webkit-autofill + .text-input-label {
+  transition: all 0.2s ease-out;
+  top: 0.6rem;
+  @apply text-xs;
+}
+
 .text-input {
   transition: border 0.2s ease-in-out;
   @apply h-12 rounded text-base border border-border-primary appearance-none w-full focus:border-border-active focus:outline-none active:outline-none active:border-border-primary py-3 pt-5 pb-2;
