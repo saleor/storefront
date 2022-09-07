@@ -46,6 +46,7 @@ cd ../.. && pnpm run build:saleor-app-checkout
 ```
 
 - Add environment variables:
+  - `ENABLE_EXPERIMENTAL_COREPACK` with value `1` – this enables the [Corepack](https://vercel.com/docs/concepts/deployments/configure-a-build#corepack) support and is required for the proper pnpm version to be used in Vercel
   - `SETTINGS_ENCRYPTION_SECRET` — Random string used for encrypting apps configuration (you can generate it using `openssl rand -hex 256`)
   - _Optional_: `NEXT_PUBLIC_SALEOR_API_URL` — if you want to override the value of `SALEOR_API_URL` stored inside `.env` file in the root of the repository
 
