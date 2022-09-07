@@ -30,7 +30,7 @@
 🏎️ **modern & fast**:
 The project utilizes all the best practices for e-commerce, like SSR, ISR, and image optimization.
 
-💳 **integrated payments**: 
+💳 **integrated payments**:
 Reduce the purchase friction by taking advantage of integrations with modern payment providers such as Adyen, Mollie or Stripe.
 
 🛠️ **easily customizable**:
@@ -73,17 +73,21 @@ saleor storefront create --demo
 ---
 
 ## Development
+
 First install [`pnpm`](https://pnpm.io/) (an alternative to `npm`, focused on performance) globally:
+
 ```
 npm install -g pnpm
 ```
 
 Then install dependencies:
+
 ```
 pnpm i
 ```
 
 To start the servers, run:
+
 ```
 pnpm dev
 ```
@@ -94,7 +98,7 @@ Read more about development in [docs/development.md](./docs/development.md).
 
 ## Payment gateways
 
-Saleor App Checkout supports two configurable payment gateways:
+Saleor App Checkout supports three configurable payment gateways:
 
 <a href="https://www.mollie.com/en">
   <picture>
@@ -107,6 +111,8 @@ Saleor App Checkout supports two configurable payment gateways:
 <br>
 
 [![Adyen](./docs/logos/adyen.svg)](https://www.adyen.com/)
+
+[![Stripe](./docs/logos/stripe_blurple.svg)](https://stripe.com/)
 
 For further information, please go to [docs/payment/index.md](./docs/payment/index.md).
 
