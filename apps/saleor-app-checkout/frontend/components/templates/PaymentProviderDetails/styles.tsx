@@ -14,6 +14,11 @@ export const useStyles = makeStyles(
     skeleton: {
       width: "100%",
     },
+    formLine: {
+      width: "100%",
+      display: "flex",
+      gap: theme.spacing(2),
+    },
   }),
   { name: "PaymentProviderDetails" }
 );

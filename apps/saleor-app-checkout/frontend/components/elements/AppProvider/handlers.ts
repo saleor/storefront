@@ -1,6 +1,6 @@
 import { app } from "@/saleor-app-checkout/frontend/misc/app";
 import { getRawAppPath } from "@/saleor-app-checkout/frontend/utils";
-import { actions } from "@saleor/app-bridge";
+import { actions } from "@saleor/app-sdk/app-bridge";
 import { NextRouter } from "next/router";
 
 export const handleRedirectEvent = (router: NextRouter, path: string) => {

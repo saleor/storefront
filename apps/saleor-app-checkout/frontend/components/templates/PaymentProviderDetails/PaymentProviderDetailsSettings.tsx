@@ -3,10 +3,11 @@ import { PaymentProviderID, PaymentProviderSettings } from "checkout-common";
 import VerticalSpacer from "@/saleor-app-checkout/frontend/components/elements/VerticalSpacer";
 import { FormattedMessage } from "react-intl";
 import { useStyles } from "./styles";
-import { Controller, Control, FieldValues } from "react-hook-form";
+import { Controller, Control, FieldValues, useFormContext } from "react-hook-form";
 import { messages } from "./messages";
 import Setting from "@/saleor-app-checkout/frontend/components/elements/Setting";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { Button } from "@saleor/macaw-ui";
 
 interface PaymentProviderDetailsSettingsProps {
   settings: PaymentProviderSettings<PaymentProviderID>[];
@@ -24,6 +25,7 @@ const PaymentProviderDetailsSettings: React.FC<PaymentProviderDetailsSettingsPro
   formControl,
 }) => {
   const classes = useStyles();
+  const { resetField, setValue } = useFormContext();
 
   return (
     <CardContent>
@@ -47,21 +49,32 @@ const PaymentProviderDetailsSettings: React.FC<PaymentProviderDetailsSettingsPro
         {loading ? (
           <Skeleton className={classes.skeleton} />
         ) : (
-          settings.map(({ id, type, label, value }) => (
+          settings.map(({ id, type, label, value, encrypt }) => (
             <Controller
               key={id}
               name={id}
               control={formControl}
               defaultValue={value}
-              render={({ field }) => (
-                <Setting
-                  name={field.name}
-                  type={type}
-                  label={label}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                />
+              render={({ field, fieldState }) => (
+                <div className={classes.formLine}>
+                  <Setting
+                    name={field.name}
+                    type={type}
+                    label={label}
+                    value={field.value}
+                    onChange={field.onChange}
+                    defaultValue={value}
+                    clearValue={() => setValue(field.name, "")}
+                    resetValue={() => resetField(field.name)}
+                    onBlur={field.onBlur}
+                    encrypted={encrypt}
+                  />
+                  {fieldState.isDirty && (
+                    <Button variant="tertiary" onClick={() => resetField(field.name)}>
+                      Reset
+                    </Button>
+                  )}
+                </div>
               )}
             />
           ))
