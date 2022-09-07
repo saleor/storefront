@@ -4,9 +4,21 @@ Checkout Storefront is a component used for connecting Saleor based storefronts 
 
 ## Project structure
 
+### URL structure
+The supported query parameters are:
+
+- locale - locale, passed from storefront to checkout, will be used to display messages in the correct language
+- checkout - checkout id, it will be provided when transitioning from the cart to checkout
+- channel - channel slug for which we've created the checkout for
+
+An example URL can look something like this:
+```
+https://example-saleor-app.com?locale=pl-PL&checkout=Q2hlY2tvdXQ6ZTcwZjBlYzgtOWMyMS00Y2FkLWE4YzktZWQ3ODcwYjNhN2I5&channel=channel-pln
+```
+
 ### API requests and types
 
-Checkout uses urql for all graphql queries and mutations. Queries and mutations are split between `checkout.graphql`, `order.graphql`. To add a query or mutation, go to respective file and add your code there. Then generate typescript types by running:
+Checkout uses `urql` for all GraphQL queries and mutations. Queries and mutations are split between `checkout.graphql`, `order.graphql`. To add a query or mutation, go to the respective file and add your code there. Then generate typescript types by running:
 
 ```bash
 $ pnpm generate
@@ -20,7 +32,7 @@ Rest requests are defined in `src/fetch/requests.ts` and all use `useFetch` hook
 
 You can configure your styling (colors, font sizes, etc.) in your `checkout configuration app` (called saleor-app-checkout in this repository). The branding config is being fetched from the checkout app in `AppConfigProvider` as a `AppConfig` object. Then the styles are parsed and injected into the css. Check implementation of AppConfigProvider.
 
-Checkout uses [tailwindcss](https://tailwindcss.com/) for styling. You can find tailwind config in `tailwind.config.js`. In the config, the css variables are mapped to tailwind styles like so:
+Checkout uses [tailwindcss](https://tailwindcss.com/) for styling. You can find Tailwind config in `tailwind.config.js`. In the config, the css variables are mapped to Tailwind styles like so:
 
 ```js
 border: {
