@@ -23,11 +23,6 @@ export default [
         format: "esm",
         sourcemap: isProd,
       },
-      isProd && {
-        file: packageJson.main,
-        format: "cjs",
-        sourcemap: true,
-      },
     ]),
     external: ["react", "react-dom", "graphql"],
     plugins: __([

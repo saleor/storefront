@@ -16,6 +16,9 @@
     "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
     "i18n": "npm run extract:i18n && npm run compile:i18n"
   },
+  "resolutions": {
+    "graphql": "15.8.0"
+  },
   "dependencies": {
     "@adyen/api-library": "^11.0.0",
     "@material-ui/core": "^4.12.3",
@@ -97,7 +100,7 @@
   "engines": {
     "npm": ">=7.0.0",
     "node": ">=16.0.0",
-    "pnpm": "^7.5.0"
+    "pnpm": ">=7.7.1"
   },
-  "packageManager": "pnpm@7.5.2"
+  "packageManager": "pnpm@7.11.0"
 }

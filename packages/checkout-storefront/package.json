@@ -2,7 +2,6 @@
   "name": "@saleor/checkout-storefront",
   "version": "0.1.0",
   "private": true,
-  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -17,10 +16,10 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "resolutions": {
-    "graphql": "^15.8.0"
+    "graphql": "15.8.0"
   },
   "peerDependencies": {
-    "graphql": "^15.8.0",
+    "graphql": "15.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -101,7 +100,7 @@
   "engines": {
     "npm": ">=7.0.0",
     "node": ">=16.0.0",
-    "pnpm": "^7.5.0"
+    "pnpm": ">=7.7.1"
   },
-  "packageManager": "pnpm@7.5.2"
+  "packageManager": "pnpm@7.11.0"
 }
