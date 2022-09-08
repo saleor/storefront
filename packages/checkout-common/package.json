@@ -8,7 +8,7 @@
   "scripts": {
     "build": "NODE_ENV=production rollup -c",
     "dev": "rollup -c -w",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "clean": "rm -rf .turbo dist .rollup.cache",
     "check-types": "tsc --noEmit",
     "lint": "eslint",
     "lint:staged": "eslint --fix"

@@ -13,7 +13,7 @@
     "lint:staged": "eslint --fix",
     "test": "jest",
     "test:dev": "jest --watch",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+    "clean": "rm -rf .turbo .next .rollup.cache dist"
   },
   "resolutions": {
     "graphql": "15.8.0"
