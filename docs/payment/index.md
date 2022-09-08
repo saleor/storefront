@@ -1,6 +1,6 @@
 # Payment gateways configuration
 
-Saleor App Checkout supports two configurable payment gateways:
+Saleor App Checkout supports three configurable payment gateways:
 
 <a href="https://www.mollie.com/en">
   <picture>
