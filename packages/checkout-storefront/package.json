@@ -28,6 +28,7 @@
     "@types/react": "^18.0.15"
   },
   "dependencies": {
+    "@adyen/adyen-web": "5.23.1",
     "@apollo/client": "^3.5.10",
     "@headlessui/react": "^1.6.0",
     "@hookform/error-message": "^2.0.0",

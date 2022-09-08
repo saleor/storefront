@@ -4,6 +4,7 @@ import {
   PayRequestBody,
   PaymentStatusResponse,
   ChannelActivePaymentProvidersByChannel,
+  AdyenDropInCreateSessionResponse,
 } from "checkout-common";
 import { PayResult } from "./types";
 import urlJoin from "url-join";
@@ -39,3 +40,11 @@ export const getOrderPaymentStatus = ({
   checkoutApiUrl: string;
 }): FetchResponse<PaymentStatusResponse> =>
   fetch(urlJoin(checkoutApiUrl, "payment-status", orderId));
+
+export const createDropInAdyenSession = ({
+  checkoutApiUrl,
+}: {
+  checkoutApiUrl: string;
+}): FetchResponse<AdyenDropInCreateSessionResponse> => {
+  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions"), { method: "POST" });
+};

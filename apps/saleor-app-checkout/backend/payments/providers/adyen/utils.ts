@@ -45,11 +45,11 @@ export const getAdyenClient = async () => {
   } = await getPrivateSettings(envVars.apiUrl, false);
 
   if (!adyen.apiKey) {
-    throw "API key not defined";
+    throw new Error("API key not defined");
   }
 
   if (!adyen.merchantAccount) {
-    throw "Merchant account not defined";
+    throw new Error("Merchant account not defined");
   }
 
   const client = new Client({
