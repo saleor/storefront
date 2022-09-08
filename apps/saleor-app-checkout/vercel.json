@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
   "installCommand": "cd ../../ && pnpm install",
-  "buildCommand": "cd ../../ && build:saleor-app-checkout"
+  "buildCommand": "cd ../../ && pnpm run build:saleor-app-checkout"
 }
