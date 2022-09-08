@@ -1,4 +1,4 @@
-import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
+import { pay as payRequest, PaySuccessResult, PayErrorResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { OrderBody, CheckoutBody } from "checkout-common";
 import { useAppConfig } from "../providers/AppConfigProvider";
@@ -48,6 +48,12 @@ export const usePay = () => {
 
       window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, "", newUrl);
       window.location.href = paymentUrl;
+    }
+
+    if (!result?.ok && result?.orderId) {
+      // Order created, payment creation failed, checkout doesn't exist
+      const newUrl = `?order=${result.orderId}`;
+      window.location.href = newUrl;
     }
 
     return result;

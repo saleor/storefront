@@ -28,6 +28,7 @@ import {
 import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
 import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
 import { safeJsonParse } from "@/saleor-app-checkout/utils";
+import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 
 class MissingUrlError extends Error {
   constructor(public provider: PaymentProviderID, public order?: OrderFragment) {
@@ -40,6 +41,17 @@ class KnownPaymentError extends Error {
   constructor(public provider: PaymentProviderID, public errors: Errors) {
     super(`Error! Provider: ${provider} | Errors: ${errors.join(", ")}`);
     Object.setPrototypeOf(this, KnownPaymentError.prototype);
+  }
+}
+
+class UnknownPaymentError extends Error {
+  constructor(
+    public provider: PaymentProviderID,
+    public error: Error,
+    public order?: OrderFragment
+  ) {
+    super(`Error! Provider: ${provider} | Error: ${error.message}`);
+    Object.setPrototypeOf(this, UnknownPaymentError.prototype);
   }
 }
 
@@ -125,7 +137,16 @@ const getPaymentResponse = async (
     }
   }
 
-  const { url, id } = await getPaymentUrlIdForProvider(body, order, appUrl);
+  const [paymentUrlError, data] = await unpackPromise(
+    getPaymentUrlIdForProvider(body, order, appUrl)
+  );
+
+  if (paymentUrlError) {
+    console.error(paymentUrlError);
+    throw new UnknownPaymentError(body.provider, paymentUrlError, order);
+  }
+
+  const { id, url } = data;
 
   if (!url) {
     throw new MissingUrlError(body.provider, order);
@@ -178,6 +199,14 @@ const handler: NextApiHandler = async (req, res) => {
         provider: err.provider,
         errors: err.errors,
       } as PayRequestErrorResponse);
+    }
+
+    if (err instanceof UnknownPaymentError) {
+      return res.status(500).json({
+        ok: false,
+        provider: err.provider,
+        orderId: err.order?.id,
+      });
     }
 
     if (err instanceof MissingUrlError) {
