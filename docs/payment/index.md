@@ -18,6 +18,12 @@ Read setup guide in [docs/payment/mollie.md](../payment/mollie.md)
 
 Read setup guide in [docs/payment/adyen.md](../payment/adyen.md)
 
+<br>
+
+[![Stripe](./../logos/stripe_blurple.svg)](https://stripe.com/)
+
+Read setup guide in [docs/payment/stripe.md](../payment/stripe.md)
+
 ---
 
 You can configure the payment gateways in the Saleor App Checkout inside the Saleor dashboard.
