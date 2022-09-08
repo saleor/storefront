@@ -6,7 +6,7 @@
     "dev": "NODE_OPTIONS='--inspect --require env-vars' next dev -p 3001",
     "test": "jest",
     "test:record": "POLLY_MODE=record jest --runInBand --verbose",
-    "build": "npm run i18n && next build",
+    "build": "next lint --quiet && npm run i18n && next build",
     "start": "next start -p 3001",
     "lint": "next lint",
     "lint:staged": "next lint --fix",

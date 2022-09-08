@@ -27,7 +27,7 @@ const config = withTM({
     esmExternals: false,
   },
   eslint: {
-    dirs: ["pages", "backend", "frontend", "config"],
+    ignoreDuringBuilds: true,
   },
   assetPrefix: localhostHttp(process.env.NEXT_PUBLIC_CHECKOUT_APP_URL),
 });
