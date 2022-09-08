@@ -22,18 +22,18 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   onSubmit,
   address,
   title,
-  selectedCountryCode,
+  // selectedCountryCode,
   checkAddressAvailability,
   defaultAddress,
   ...errorProps
 }) => {
   const addressFormData = getAddressFormDataFromAddress(address);
 
-  const countrySelectProps = useCountrySelect({
-    autoSelect: !addressFormData?.countryCode && !selectedCountryCode,
-    selectedCountryCode: addressFormData?.countryCode || selectedCountryCode,
-    checkAddressAvailability,
-  });
+  // const countrySelectProps = useCountrySelect({
+  //   autoSelect: !addressFormData?.countryCode && !selectedCountryCode,
+  //   selectedCountryCode: addressFormData?.countryCode || selectedCountryCode,
+  //   checkAddressAvailability,
+  // });
 
   const handleSave = (address: AddressFormData) => onSubmit({ ...address, autoSave: true });
 
@@ -56,7 +56,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
       onSubmit={handleSave}
       defaultValues={addressFormData}
       {...errorProps}
-      {...countrySelectProps}
+      // {...countrySelectProps}
     />
   );
 };

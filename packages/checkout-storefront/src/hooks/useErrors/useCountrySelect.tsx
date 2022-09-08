@@ -5,27 +5,26 @@ import { useMemo, useState } from "react";
 import { Option } from "@saleor/ui-kit";
 import sortBy from "lodash-es/sortBy";
 import { getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
+import { Address, AddressFormData } from "@/checkout-storefront/sections/Addresses/types";
+import { some } from "lodash-es";
 
 interface CountryOption extends Option {
   value: CountryCode;
 }
 
 export interface UseCountrySelectProps {
-  autoSelect: boolean;
-  selectedCountryCode?: CountryCode | undefined;
+  defaultFormData: AddressFormData;
   checkAddressAvailability?: boolean;
 }
 
 export interface UseCountrySelect {
-  countryCode: CountryCode;
-  setCountryCode: (countryCode: CountryCode) => void;
   countryOptions: CountryOption[];
+  initialCountryCode: CountryCode;
 }
 
 export const useCountrySelect = ({
-  autoSelect,
-  selectedCountryCode,
   checkAddressAvailability = false,
+  defaultFormData,
 }: UseCountrySelectProps): UseCountrySelect => {
   const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
 
@@ -42,19 +41,16 @@ export const useCountrySelect = ({
     []
   );
 
-  const getInitialCountryCode = (): CountryCode => {
-    if (!autoSelect && selectedCountryCode) {
-      return selectedCountryCode;
-    }
+  const initialCountryCode = useMemo(() => {
+    const countryCodeInOptions = countryOptions.find(
+      ({ code }) => code === defaultFormData.countryCode
+    )?.code;
 
-    return getLocalizationDataFromUrl().country.code;
-  };
-
-  const [countryCode, setCountryCode] = useState(getInitialCountryCode());
+    return (countryCodeInOptions as CountryCode) || getLocalizationDataFromUrl().country.code;
+  }, [defaultFormData, countryOptions]);
 
   return {
     countryOptions,
-    countryCode,
-    setCountryCode,
+    initialCountryCode,
   };
 };

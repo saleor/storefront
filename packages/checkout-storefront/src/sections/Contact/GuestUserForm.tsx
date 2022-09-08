@@ -14,11 +14,8 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
-<<<<<<< HEAD
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
-=======
 import { useFormAutofillSubmit } from "@/checkout-storefront/hooks/useFormAutofillSubmit";
->>>>>>> 84099ea... wip
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 

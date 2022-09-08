@@ -1,6 +1,6 @@
+import { ClassNames } from "@lib/globalTypes";
 import clsx from "clsx";
 import { Ref, InputHTMLAttributes, forwardRef } from "react";
-import { ClassNames } from "../..";
 
 import { Label } from "../Label";
 import { Text } from "../Text";

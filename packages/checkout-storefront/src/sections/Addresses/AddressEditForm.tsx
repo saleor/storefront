@@ -18,10 +18,10 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const { setApiErrors, ...errorsRest } = useErrors<UserAddressFormData>();
   const { addressUpdate, addressDelete, updating, deleting } = useAddressList();
 
-  const countrySelectProps = useCountrySelect({
-    autoSelect: !defaultValues.countryCode,
-    selectedCountryCode: defaultValues.countryCode,
-  });
+  // const countrySelectProps = useCountrySelect({
+  //   autoSelect: !defaultValues.countryCode,
+  //   selectedCountryCode: defaultValues.countryCode,
+  // });
 
   const handleUpdate = async (formData: UserAddressFormData) => {
     const { hasErrors, errors } = await addressUpdate(formData);
@@ -50,7 +50,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
       }}
       defaultValues={defaultValues}
       onCancel={onClose}
-      {...countrySelectProps}
+      // {...countrySelectProps}
       {...errorsRest}
       {...rest}
     />
