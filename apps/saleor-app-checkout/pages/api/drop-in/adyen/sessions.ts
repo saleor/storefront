@@ -1,23 +1,40 @@
-import { AdyenDropInCreateSessionResponse } from "checkout-common";
+import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
+import { createAdyenCheckoutSession } from "@/saleor-app-checkout/backend/payments/providers/adyen";
+import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
+import { safeJsonParse } from "@/saleor-app-checkout/utils";
+import { AdyenDropInCreateSessionResponse, PayRequestBody } from "checkout-common";
 import { NextApiHandler } from "next";
-import { getAdyenClient } from "../../../../backend/payments/providers/adyen/utils";
 
-const DropInAdyenSessionsHandler: NextApiHandler<AdyenDropInCreateSessionResponse> = async (
-  req,
-  res
-) => {
-  const adyenClient = await getAdyenClient();
+const DropInAdyenSessionsHandler: NextApiHandler<
+  AdyenDropInCreateSessionResponse | { message: string }
+> = async (req, res) => {
+  if (req.method !== "POST") {
+    res.status(405).send({ message: "Only POST requests allowed" });
+    return;
+  }
 
-  // @TODO see if we can reuse `createPaymentLink`
-  const session = await adyenClient.checkout.sessions({
-    amount: { currency: "EUR", value: 1000 },
-    reference: "YOUR_PAYMENT_REFERENCE",
-    returnUrl: "https://your-company.com/checkout?shopperOrder=12xy..",
-    merchantAccount: "YOUR_MERCHANT_ACCOUNT",
-    countryCode: "NL",
-  });
+  const [error, body] =
+    typeof req.body === "string"
+      ? safeJsonParse<PayRequestBody>(req.body)
+      : [null, req.body as PayRequestBody];
 
-  res.status(201).json({ session, clientKey: "@TODO return this" });
+  if (error) {
+    console.error(error, req.body);
+    res.status(400).send({ message: "Invalid JSON" });
+    return;
+  }
+
+  try {
+    const appUrl = getBaseUrl(req);
+    const order = await createOrderFromBodyOrId(body);
+
+    const { session, clientKey } = await createAdyenCheckoutSession({ order, redirectUrl: appUrl });
+    return res.status(200).json({ session, clientKey });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({ message: body.provider });
+  }
 };
 
 export default DropInAdyenSessionsHandler;

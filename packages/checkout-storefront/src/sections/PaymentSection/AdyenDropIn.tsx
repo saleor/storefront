@@ -1,5 +1,5 @@
 import { createDropInAdyenSession } from "@/checkout-storefront/fetch/requests";
-import { useFetch } from "@/checkout-storefront/hooks";
+import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
 import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
@@ -17,10 +17,19 @@ export const AdyenDropIn = ({}: AdyenDropInProps) => {
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
 
-  const [checkout, setCheckout] = useState<AdyenCheckoutInstance | null>(null);
+  const [_adyenCheckoutInstance, setAdyenCheckoutInstance] = useState<AdyenCheckoutInstance | null>(
+    null
+  );
+
+  const { checkout, loading: isCheckoutLoading } = useCheckout();
 
   const [adyenSession] = useFetch(createDropInAdyenSession, {
-    args: { checkoutApiUrl },
+    args: {
+      checkoutApiUrl,
+      checkoutId: checkout?.id,
+      totalAmount: checkout?.totalPrice?.gross?.amount,
+    },
+    skip: isCheckoutLoading,
   });
 
   useEffect(() => {
@@ -38,7 +47,7 @@ export const AdyenDropIn = ({}: AdyenDropInProps) => {
         onError: (error: any, component: any) => {
           console.error(error.name, error.message, error.stack, component);
         },
-        // Any payment method specific configuration. Find the configuration specific to each payment method:  https://docs.adyen.com/payment-methods
+        // Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
         // For example, this is 3D Secure configuration for cards:
         paymentMethodsConfiguration: {
           card: {
@@ -52,7 +61,7 @@ export const AdyenDropIn = ({}: AdyenDropInProps) => {
         },
       })
         .then((c) => {
-          setCheckout(c);
+          setAdyenCheckoutInstance(c);
           dropinComponentRef.current = c.create("dropin").mount("#dropin-container");
         })
         .catch(console.error);

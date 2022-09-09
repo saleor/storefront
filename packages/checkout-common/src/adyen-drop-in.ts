@@ -2,5 +2,5 @@ import type { CreateCheckoutSessionResponse } from "@adyen/api-library/lib/src/t
 
 export type AdyenDropInCreateSessionResponse = {
   session: CreateCheckoutSessionResponse;
-  clientKey: string;
+  clientKey?: string;
 };

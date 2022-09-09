@@ -7,7 +7,7 @@ import pay from "@/saleor-app-checkout/pages/api/pay";
 import { mockRequest } from "@/saleor-app-checkout/test-utils";
 
 import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
-import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
+import { createAdyenCheckoutPaymentLinks } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { createOrder } from "@/saleor-app-checkout/backend/payments/createOrder";
 import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
 import {
@@ -32,7 +32,7 @@ jest.mock("urql");
 
 const mockedCreateOrder = <jest.Mock>createOrder;
 const mockedCreateMolliePayment = <jest.Mock>createMolliePayment;
-const mockedCreateAdyenPayment = <jest.Mock>createAdyenPayment;
+const mockedCreateAdyenPayment = <jest.Mock>createAdyenCheckoutPaymentLinks;
 const mockedUpdatePaymentMetafield = <jest.Mock>updatePaymentMetafield;
 const mockedVerifyAdyenSession = <jest.Mock>verifyAdyenSession;
 const mockReuseExistingAdyenSession = <jest.Mock>reuseExistingAdyenSession;

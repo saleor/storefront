@@ -6,24 +6,26 @@ import {
 import { getAdyenClient, getLineItems } from "./utils";
 import invariant from "ts-invariant";
 
-import type { CheckoutAPI } from "@adyen/api-library";
-
 import { CreatePaymentData } from "../../types";
+import { OrderFragment } from "@/saleor-app-checkout/graphql";
 
-const createPaymentLink = (
-  { order, redirectUrl }: CreatePaymentData,
-  checkout: CheckoutAPI,
-  merchantAccount: string
-) => {
+export const orderToAdyenRequest = ({
+  order,
+  returnUrl,
+  merchantAccount,
+}: {
+  order: OrderFragment;
+  merchantAccount: string;
+  returnUrl: string;
+}) => {
   const total = order.total.gross;
-
-  return checkout.paymentLinks({
+  return {
     amount: {
       currency: total.currency,
       value: getIntegerAmountFromSaleor(total.amount),
     },
     reference: order.number || order.id,
-    returnUrl: formatRedirectUrl(redirectUrl, order.id),
+    returnUrl,
     merchantAccount: merchantAccount,
     countryCode: order.billingAddress?.country.code,
     metadata: {
@@ -59,14 +61,44 @@ const createPaymentLink = (
           stateOrProvince: order.shippingAddress.countryArea,
         }
       : undefined,
-  });
+  };
 };
 
-export const createAdyenPayment = async (paymentData: CreatePaymentData) => {
+type CreateAdyenCheckoutArg = Pick<CreatePaymentData, "order" | "redirectUrl">;
+
+export const createAdyenCheckoutPaymentLinks = async ({
+  order,
+  redirectUrl,
+}: CreateAdyenCheckoutArg) => {
   const { config, checkout } = await getAdyenClient();
   invariant(config.merchantAccount, "Missing merchant account configuration");
 
-  const { url, id } = await createPaymentLink(paymentData, checkout, config.merchantAccount);
+  return checkout.paymentLinks(
+    orderToAdyenRequest({
+      order,
+      merchantAccount: config.merchantAccount,
+      returnUrl: formatRedirectUrl(redirectUrl, order.id),
+    })
+  );
+};
 
-  return { url, id };
+export const createAdyenCheckoutSession = async ({
+  order,
+  redirectUrl,
+}: CreateAdyenCheckoutArg) => {
+  const { config, checkout } = await getAdyenClient();
+  invariant(config.merchantAccount, "Missing merchant account configuration");
+
+  const session = await checkout.sessions(
+    orderToAdyenRequest({
+      order,
+      merchantAccount: config.merchantAccount,
+      returnUrl: formatRedirectUrl(redirectUrl, order.id),
+    })
+  );
+
+  return {
+    session,
+    clientKey: config.clientKey,
+  };
 };

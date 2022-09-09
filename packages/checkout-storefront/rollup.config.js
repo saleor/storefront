@@ -22,6 +22,7 @@ export default [
         file: packageJson.module,
         format: "esm",
         sourcemap: isProd,
+        inlineDynamicImports: true,
       },
     ]),
     external: ["react", "react-dom", "graphql"],
