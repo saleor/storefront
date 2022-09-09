@@ -43,3 +43,5 @@ cypress/screenshots
 cypress/videos
 
 .idea
+
+.auth_token
