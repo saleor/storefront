@@ -49,10 +49,10 @@ function useAlerts(globalScope?: any): any {
   };
 
   const showDefaultAlert = (
-    { scope, ...dataRest }: AlertErrorData,
+    alertErrorData: AlertErrorData,
     { type }: { type: AlertType } = { type: "error" }
   ) => {
-    const parsedAlert = getParsedAlert({ ...dataRest, scope }, type);
+    const parsedAlert = getParsedAlert(alertErrorData, type);
     showAlert(parsedAlert);
   };
 
