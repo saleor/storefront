@@ -67,7 +67,7 @@ function useAlerts(globalScope?: any): any {
     getParsedApiErrors(errors).forEach((error) => showDefaultAlert({ ...error, scope }));
 
   const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
-    errors.forEach(({ field = "", message, code }: CustomError) => {
+    errors.forEach(({ field = "", message, code }) => {
       if (message) {
         showAlert({ message });
       } else {
