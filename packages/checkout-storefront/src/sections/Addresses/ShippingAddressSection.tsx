@@ -39,7 +39,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const updateShippingAddress = useCallback(
     async ({ autoSave, ...address }: AddressFormData) => {
       const result = await checkoutShippingAddressUpdate({
-        checkoutId: checkout.id,
+        checkoutId: checkout?.id as string,
         shippingAddress: getAddressInputData(address),
         validationRules: getAddressVlidationRulesVariables(autoSave),
       });
@@ -51,7 +51,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
         setApiErrors(errors);
       }
     },
-    [checkout.id]
+    [checkout?.id, setApiErrors, showErrors, checkoutShippingAddressUpdate]
   );
 
   if (collapsed) {

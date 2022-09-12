@@ -1,4 +1,5 @@
 import { CountryCode, useChannelQuery } from "@/checkout-storefront/graphql";
+import { useCallback, useMemo } from "react";
 
 interface UseAddressAvailabilityProps {
   pause: boolean;
@@ -12,16 +13,21 @@ export const useAddressAvailability = (
     pause,
   });
 
-  const availableShippingCountries: CountryCode[] =
-    (data?.channel?.countries?.map(({ code }) => code) as CountryCode[]) || [];
+  const availableShippingCountries: CountryCode[] = useMemo(
+    () => (data?.channel?.countries?.map(({ code }) => code) as CountryCode[]) || [],
+    [data?.channel]
+  );
 
-  const isAvailable = ({ country }: { country: { code: string } }) => {
-    if (pause) {
-      return true;
-    }
+  const isAvailable = useCallback(
+    ({ country }: { country: { code: string } }) => {
+      if (pause) {
+        return true;
+      }
 
-    return availableShippingCountries.includes(country?.code as CountryCode);
-  };
+      return availableShippingCountries.includes(country?.code as CountryCode);
+    },
+    [pause, availableShippingCountries]
+  );
 
   return { isAvailable };
 };

@@ -4,26 +4,26 @@ import { useCallback, useEffect, useRef } from "react";
 import { Path, UseFormReturn, UseFormStateReturn } from "react-hook-form";
 
 interface UseFormAutofillSubmit<TFormData extends FormDataBase>
-  extends Pick<UseFormReturn<TFormData>, "watch" | "trigger">,
+  extends Pick<UseFormReturn<TFormData>, "trigger">,
     Pick<UseFormStateReturn<TFormData>, "isDirty"> {
   onSubmit: (formData: TFormData) => Promise<void> | void;
   formData: TFormData;
   defaultFormData?: TFormData;
-  autoSave: boolean;
+  autoSave?: boolean;
 }
 
-export const useFormAutofillSubmit = <TFormData>({
+export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
   formData,
   defaultFormData,
   onSubmit,
   isDirty,
   trigger,
-  autoSave,
+  autoSave = true,
 }: UseFormAutofillSubmit<TFormData>) => {
   const formDataRef = useRef<TFormData | undefined>(defaultFormData);
 
   const debouncedSubmit = useCallback(
-    debounce((formData) => {
+    debounce((formData: TFormData) => {
       if (!isDirty) {
         return;
       }
@@ -34,7 +34,7 @@ export const useFormAutofillSubmit = <TFormData>({
   );
 
   const throttledTrigger = useCallback(
-    throttle((formData) => {
+    throttle((formData: TFormData) => {
       const fieldsToValidate = Object.entries(formData)
         .filter(
           ([fieldName, fieldValue]) =>
@@ -55,7 +55,7 @@ export const useFormAutofillSubmit = <TFormData>({
       void throttledTrigger(formData);
       void debouncedSubmit(formData);
     }
-  }, [debouncedSubmit, formData]);
+  }, [debouncedSubmit, formData, autoSave, throttledTrigger]);
 
   return debouncedSubmit;
 };

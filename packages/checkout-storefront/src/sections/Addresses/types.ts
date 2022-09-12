@@ -4,7 +4,6 @@ import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 export interface AddressFormData
   extends Omit<Record<AddressField, string>, "country" | "countryCode"> {
   countryCode: CountryCode;
-  name: string;
   autoSave?: boolean;
 }
 

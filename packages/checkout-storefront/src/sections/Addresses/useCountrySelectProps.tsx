@@ -1,12 +1,11 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { countries } from "@/checkout-storefront/sections/Addresses/countries";
 import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Option } from "@saleor/ui-kit";
 import sortBy from "lodash-es/sortBy";
 import { getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
-import { Address, AddressFormData } from "@/checkout-storefront/sections/Addresses/types";
-import { some } from "lodash-es";
+import { AddressFormData } from "@/checkout-storefront/sections/Addresses/types";
 
 interface CountryOption extends Option {
   value: CountryCode;
@@ -22,7 +21,7 @@ export interface UseCountrySelect {
   initialCountryCode: CountryCode;
 }
 
-export const useCountrySelect = ({
+export const useCountrySelectProps = ({
   checkAddressAvailability = false,
   defaultFormData,
 }: UseCountrySelectProps): UseCountrySelect => {
@@ -38,7 +37,7 @@ export const useCountrySelect = ({
         })),
         "disabled"
       ),
-    []
+    [isAvailable]
   );
 
   const initialCountryCode = useMemo(() => {

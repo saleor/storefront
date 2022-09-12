@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-interface UseCheckoutFormSubmit {}
-
 export const useCheckoutFormSubmit = () => {
   const [isProcessingApiChanges, setIsProcessingApiChanges] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);

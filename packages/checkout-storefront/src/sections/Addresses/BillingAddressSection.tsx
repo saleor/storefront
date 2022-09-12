@@ -1,7 +1,6 @@
 import { Checkbox } from "@/checkout-storefront/components/Checkbox";
 import {
   AddressFragment,
-  CountryCode,
   useCheckoutBillingAddressUpdateMutation,
   useUserQuery,
 } from "@/checkout-storefront/graphql";
@@ -128,8 +127,8 @@ export const BillingAddressSection = () => {
           ) : (
             <GuestAddressSection
               {...errorProps}
+              checkAddressAvailability={false}
               defaultAddress={user?.defaultBillingAddress}
-              selectedCountryCode={checkout?.shippingAddress?.country.code as CountryCode}
               address={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage("billingAddress")}
               onSubmit={(address) => {

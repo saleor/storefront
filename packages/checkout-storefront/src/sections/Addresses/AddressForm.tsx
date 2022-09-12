@@ -8,37 +8,35 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { TrashIcon } from "@/checkout-storefront/icons";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { DefaultValues, Path, Resolver, SubmitHandler, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
 import { Select } from "@saleor/ui-kit";
 import { Title } from "@/checkout-storefront/components/Title";
-import {
-  useCountrySelect,
-  UseCountrySelect,
-} from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
 import { useAddressFormUtils } from "./useAddressFormUtils";
 import { IconButton } from "@/checkout-storefront/components";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { emptyFormData } from "@/checkout-storefront/sections/Addresses/utils";
 import { isEqual } from "lodash-es";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
-import { useFormAutofillSubmit } from "@/checkout-storefront/hooks/useFormAutofillSubmit";
+import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
+import { useCountrySelectProps } from "./useCountrySelectProps";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors"> {
-  defaultValues?: Partial<TFormData>;
+  defaultValues?: TFormData;
   onCancel?: () => void;
   onDelete?: () => void;
   loading?: boolean;
   onSubmit: SubmitHandler<TFormData>;
   autoSave?: boolean;
   title: string;
+  checkAddressAvailability: boolean;
 }
 
 export const AddressForm = <TFormData extends AddressFormData>({
-  defaultValues = {},
+  defaultValues = emptyFormData as TFormData,
   onCancel,
   onSubmit,
   errors,
@@ -51,8 +49,8 @@ export const AddressForm = <TFormData extends AddressFormData>({
 }: AddressFormProps<TFormData>) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const defaultValuesRef = useRef<Partial<TFormData> | undefined>(defaultValues);
-  const { initialCountryCode, countryOptions } = useCountrySelect({
+  const defaultValuesRef = useRef<TFormData>(defaultValues);
+  const { initialCountryCode, countryOptions } = useCountrySelectProps({
     defaultFormData: defaultValues,
     checkAddressAvailability,
   });
@@ -119,7 +117,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
     handleCancel();
   };
 
-  const debouncedSubmit = useFormAutofillSubmit<TFormData>({
+  const debouncedSubmit = useFormDebouncedSubmit<TFormData>({
     autoSave,
     defaultFormData: defaultValues,
     formData: watch(),
@@ -128,7 +126,6 @@ export const AddressForm = <TFormData extends AddressFormData>({
     onSubmit: handleOnSubmit,
   });
 
-  console.log({ autoSave });
   const handleChange = () => {
     if (!autoSave) {
       return;
@@ -150,7 +147,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   }, [defaultValues]);
 
   return (
-    <>
+    <form>
       <div className="flex flex-row justify-between items-baseline">
         <Title>{title}</Title>
         <Select
@@ -226,6 +223,6 @@ export const AddressForm = <TFormData extends AddressFormData>({
           </div>
         )}
       </div>
-    </>
+    </form>
   );
 };

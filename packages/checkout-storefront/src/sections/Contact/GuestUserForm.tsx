@@ -15,7 +15,7 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
-import { useFormAutofillSubmit } from "@/checkout-storefront/hooks/useFormAutofillSubmit";
+import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -50,7 +50,12 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     defaultValues,
   });
 
-  const { watch, setError, trigger } = formProps;
+  const {
+    watch,
+    setError,
+    trigger,
+    formState: { isDirty },
+  } = formProps;
 
   useCheckoutFormValidationTrigger(trigger);
   useCheckoutFormValidationTrigger(triggerContext);
@@ -68,13 +73,13 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
 
   const onSubmit = async ({ email }: FormData) => {
-    if (!email || updatingEmail || email === checkout.email) {
+    if (!email || updatingEmail || email === checkout?.email) {
       return;
     }
 
     const result = await updateEmail({
       email,
-      checkoutId: checkout.id,
+      checkoutId: checkout?.id as string,
     });
 
     const [hasErrors, errors] = extractMutationErrors<FormData>(result);
@@ -86,16 +91,20 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
   const emailValue = watch("email");
 
-  useEffect(() => setContextValue("email", emailValue), [emailValue]);
+  useEffect(() => setContextValue("email", emailValue), [emailValue, setContextValue]);
 
-  useEffect(() => setContextValue("createAccount", createAccountSelected), [createAccountSelected]);
+  useEffect(
+    () => setContextValue("createAccount", createAccountSelected),
+    [createAccountSelected, setContextValue]
+  );
 
-  // const debouncedSubmit = useFormAutofillSubmit({
-  //   watch,
-  //   trigger,
-  //   onSubmit: () => onSubmit(getValues()),
-  //   defaultValues,
-  // });
+  const debouncedSubmit = useFormDebouncedSubmit<FormData>({
+    trigger,
+    isDirty,
+    onSubmit,
+    formData: watch(),
+    defaultFormData: defaultValues,
+  });
 
   return (
     <SignInFormContainer
@@ -107,7 +116,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       <TextInput
         label={formatMessage("emailLabel")}
         {...getInputProps("email", {
-          // onBlur: debouncedSubmit,
+          onChange: debouncedSubmit,
         })}
       />
       <Checkbox

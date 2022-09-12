@@ -46,17 +46,13 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
       <AddressListProvider
-        checkoutAddress={type === "SHIPPING" ? checkout.shippingAddress : checkout.billingAddress}
+        checkoutAddress={type === "SHIPPING" ? checkout?.shippingAddress : checkout?.billingAddress}
         onCheckoutAddressUpdate={onAddressSelect}
         defaultAddress={defaultAddress}
         checkAddressAvailability={type === "SHIPPING"}
       >
         {displayAddressCreate && (
-          <AddressCreateForm
-            title={title}
-            type={type}
-            onClose={() => setDisplayAddressCreate(false)}
-          />
+          <AddressCreateForm title={title} onClose={() => setDisplayAddressCreate(false)} />
         )}
 
         {displayAddressEdit && (

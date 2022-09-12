@@ -19,9 +19,7 @@ export interface SelectProps<TData extends string = string>
   extends SelectHTMLAttributes<HTMLSelectElement> {
   options: Option<TData>[];
   error?: boolean;
-  classNames?: ClassNames<
-    "container" | "triggerIcon" | "trigger" | "triggerArrow" | "options" | "optionIcon" | "option"
-  >;
+  classNames?: ClassNames<"container" | "select">;
 }
 
 export const Select = <TData extends string = string>({
@@ -40,6 +38,7 @@ export const Select = <TData extends string = string>({
             {label}
           </option>
         ))}
+        <ChevronDownIcon />
       </select>
       {/* <Combobox value={selectedOption} onChange={({ value }: Option<TData>) => onChange(value)}>
         <Combobox.Button
