@@ -4,7 +4,6 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { PaymentMethods, PaymentMethodsProps } from "./PaymentMethods";
 import { BillingAddressSection } from "../Addresses/BillingAddressSection";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { AdyenDropIn } from "./AdyenDropIn";
 
 type PaymentSectionProps = PaymentMethodsProps & CommonSectionProps;
 
@@ -21,7 +20,6 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({ collapsed, ...re
       <div className="section">
         <Title>{formatMessage("paymentProviders")}</Title>
         <PaymentMethods {...rest} />
-        <AdyenDropIn />
         <BillingAddressSection />
       </div>
     </>

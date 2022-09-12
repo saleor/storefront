@@ -45,7 +45,7 @@ export const createDropInAdyenSession = ({
   checkoutApiUrl,
   ...body
 }: PayRequestBody): FetchResponse<AdyenDropInCreateSessionResponse> => {
-  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions"), {
+  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions") + "/", {
     method: "POST",
     body: JSON.stringify(body),
   });

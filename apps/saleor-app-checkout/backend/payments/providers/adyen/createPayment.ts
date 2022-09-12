@@ -26,7 +26,7 @@ export const orderToAdyenRequest = ({
     },
     reference: order.number || order.id,
     returnUrl,
-    merchantAccount: merchantAccount,
+    merchantAccount,
     countryCode: order.billingAddress?.country.code,
     metadata: {
       orderId: order.id,
@@ -88,6 +88,8 @@ export const createAdyenCheckoutSession = async ({
 }: CreateAdyenCheckoutArg) => {
   const { config, checkout } = await getAdyenClient();
   invariant(config.merchantAccount, "Missing merchant account configuration");
+
+  console.log({ "config.merchantAccount": config.merchantAccount });
 
   const session = await checkout.sessions(
     orderToAdyenRequest({

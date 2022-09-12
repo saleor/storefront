@@ -3,13 +3,14 @@ import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
 import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
 interface AdyenDropInProps {}
 
-export const AdyenDropIn = ({}: AdyenDropInProps) => {
+export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
+  console.log("AdyenDropIn");
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();
@@ -23,14 +24,29 @@ export const AdyenDropIn = ({}: AdyenDropInProps) => {
 
   const { checkout, loading: isCheckoutLoading } = useCheckout();
 
-  const [adyenSession] = useFetch(createDropInAdyenSession, {
+  const [adyenSession, fetchAdyenSession] = useFetch(createDropInAdyenSession, {
     args: {
       checkoutApiUrl,
       checkoutId: checkout?.id,
       totalAmount: checkout?.totalPrice?.gross?.amount,
     },
-    skip: isCheckoutLoading,
+    skip: true,
   });
+
+  // Prevent double fetch https://github.com/facebook/react/issues/24502
+  const isFetchingAdyenSession = useRef(false);
+  useEffect(() => {
+    if (
+      !isFetchingAdyenSession.current &&
+      checkout &&
+      !isCheckoutLoading &&
+      !adyenSession.loading &&
+      !adyenSession.data
+    ) {
+      isFetchingAdyenSession.current = true;
+      void fetchAdyenSession();
+    }
+  }, [adyenSession.data, adyenSession.loading, checkout, fetchAdyenSession, isCheckoutLoading]);
 
   useEffect(() => {
     if (dropinContainerElRef.current && adyenSession.data) {
@@ -62,7 +78,7 @@ export const AdyenDropIn = ({}: AdyenDropInProps) => {
       })
         .then((c) => {
           setAdyenCheckoutInstance(c);
-          dropinComponentRef.current = c.create("dropin").mount("#dropin-container");
+          dropinComponentRef.current = c.create("dropin").mount(dropinContainerElRef.current!);
         })
         .catch(console.error);
     }
@@ -73,4 +89,5 @@ export const AdyenDropIn = ({}: AdyenDropInProps) => {
   }, [adyenSession.data]);
 
   return <div ref={dropinContainerElRef} />;
-};
+});
+AdyenDropIn.displayName = "AdyenDropIn";

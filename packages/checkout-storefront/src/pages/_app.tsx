@@ -2,6 +2,7 @@
 // For the production, this package is built with `rollup`.
 // https://github.com/saleor/saleor-checkout/pull/161
 import Dynamic from "next/dynamic";
+import urlJoin from "url-join";
 import "../index.css";
 
 const CheckoutStoreFront = Dynamic(
@@ -16,7 +17,9 @@ const CheckoutStoreFront = Dynamic(
 );
 
 const apiUrl = process.env["NEXT_PUBLIC_SALEOR_API_URL"];
-const checkoutApiUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"] + `/api`;
+const checkoutApiUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]
+  ? urlJoin(process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"], `api`)
+  : "";
 const checkoutAppUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"];
 
 export default function CheckoutSpa() {

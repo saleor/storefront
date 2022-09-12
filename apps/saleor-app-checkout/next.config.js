@@ -1,5 +1,8 @@
 const { withSentryConfig } = require("@sentry/nextjs");
-const withTM = require("next-transpile-modules")();
+const withTM = require("next-transpile-modules")([
+  "@saleor/checkout-storefront",
+  "checkout-common",
+]);
 const { localhostHttp } = require("./utils/configUtils");
 
 const isSentryEnabled =
@@ -24,7 +27,7 @@ const config = withTM({
   },
   images: { domains: ["localhost"] },
   experimental: {
-    esmExternals: false,
+    esmExternals: "loose",
   },
   eslint: {
     ignoreDuringBuilds: true,

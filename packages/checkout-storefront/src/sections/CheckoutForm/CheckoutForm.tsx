@@ -12,9 +12,15 @@ import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
+<<<<<<< HEAD
 import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
+=======
+import { AdyenDropIn } from "../PaymentSection/AdyenDropIn";
+>>>>>>> 745ccc02 (First working version)
 
 export const CheckoutForm = () => {
+  const [showAdyenDropIn, setShowAdyenDropIn] = useState(false);
+
   const formatMessage = useFormattedMessages();
   const { checkout, loading } = useCheckout();
   const { authenticating } = useAuthState();
@@ -66,6 +72,16 @@ export const CheckoutForm = () => {
             onClick={handleSubmit}
           />
         ))}
+        {!showOnlyContact && (
+        <Button
+          disabled={isLoading || isProcessingApiChanges}
+          ariaLabel={"Siema"}
+          label={"Siema"}
+          className="pay-button"
+          onClick={() => setShowAdyenDropIn(true)}
+          type="button"
+        />
+      )}
     </div>
   );
 };
