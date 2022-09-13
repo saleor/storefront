@@ -5,6 +5,7 @@ export type PayResult = PaySuccessResult | PayErrorResult | null;
 export interface PayErrorResult {
   ok: false;
   errors: ErrorCode[];
+  orderId?: string;
 }
 
 export interface PaySuccessResult {

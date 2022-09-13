@@ -1,6 +1,6 @@
 # Payment gateways configuration
 
-Saleor App Checkout supports two configurable payment gateways:
+Saleor App Checkout supports three configurable payment gateways:
 
 <a href="https://www.mollie.com/en">
   <picture>
@@ -17,6 +17,12 @@ Read setup guide in [docs/payment/mollie.md](../payment/mollie.md)
 [![Adyen](../logos/adyen.svg)](https://www.adyen.com/)
 
 Read setup guide in [docs/payment/adyen.md](../payment/adyen.md)
+
+<br>
+
+[![Stripe](./../logos/stripe_blurple.svg)](https://stripe.com/)
+
+Read setup guide in [docs/payment/stripe.md](../payment/stripe.md)
 
 ---
 
