@@ -92,6 +92,7 @@ importers:
       '@types/react': ^18.0.15
       '@types/react-dom': ^18.0.6
       '@types/setup-polly-jest': ^0.5.1
+      '@types/yup': 0.32.0
       '@urql/exchange-auth': ^0.1.7
       '@urql/exchange-multipart-fetch': ^0.1.14
       babel-plugin-formatjs: ^10.3.18
@@ -134,6 +135,7 @@ importers:
       typescript: 4.7.4
       url-join: ^5.0.0
       urql: ^2.2.0
+      yup: 0.32.11
     dependencies:
       '@adyen/adyen-web': registry.npmjs.org/@adyen/adyen-web/5.23.1
       '@adyen/api-library': registry.npmjs.org/@adyen/api-library/11.0.0
@@ -170,6 +172,7 @@ importers:
       ts-invariant: registry.npmjs.org/ts-invariant/0.10.3
       url-join: registry.npmjs.org/url-join/5.0.0
       urql: registry.npmjs.org/urql/2.2.3_o264z5epwuajru7y4dsijkqr44
+      yup: registry.npmjs.org/yup/0.32.11
     devDependencies:
       '@formatjs/cli': registry.npmjs.org/@formatjs/cli/4.8.4_ts-jest@27.1.5
       '@graphql-codegen/add': registry.npmjs.org/@graphql-codegen/add/3.2.1_graphql@15.8.0
@@ -193,6 +196,7 @@ importers:
       '@types/react': registry.npmjs.org/@types/react/18.0.18
       '@types/react-dom': registry.npmjs.org/@types/react-dom/18.0.6
       '@types/setup-polly-jest': registry.npmjs.org/@types/setup-polly-jest/0.5.1
+      '@types/yup': registry.npmjs.org/@types/yup/0.32.0
       babel-plugin-formatjs: registry.npmjs.org/babel-plugin-formatjs/10.3.28_ts-jest@27.1.5
       dotenv: registry.npmjs.org/dotenv/16.0.2
       env-vars: link:../../packages/env-vars
@@ -339,10 +343,12 @@ importers:
       rollup-plugin-terser: ^7.0.2
       tsconfig: workspace:*
       typescript: 4.7.4
+      yup: 0.32.11
     dependencies:
       '@adyen/api-library': registry.npmjs.org/@adyen/api-library/11.0.0
       '@material-ui/core': registry.npmjs.org/@material-ui/core/4.12.4_sfoxds7t5ydpegc3knd667wn6m
       rollup-plugin-esbuild: registry.npmjs.org/rollup-plugin-esbuild/4.10.1_uu2p2v3owefbwsafzxfcsbbrxa
+      yup: registry.npmjs.org/yup/0.32.11
     devDependencies:
       '@rollup/plugin-commonjs': registry.npmjs.org/@rollup/plugin-commonjs/22.0.2_rollup@2.79.0
       '@rollup/plugin-image': registry.npmjs.org/@rollup/plugin-image/2.1.1_rollup@2.79.0
@@ -10306,6 +10312,15 @@ packages:
     resolution: {integrity: sha512-Ynb/CjHhE/Xp/4bhHmQC4U1Ox+I2OpfRYF3dnNgQqn1cHa6LK3H1wJMNPT02tSVZA6FYuXE2ITORfbnb6zBCSA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/yup/-/yup-0.29.14.tgz}
     name: '@types/yup'
     version: 0.29.14
+    dev: true
+
+  registry.npmjs.org/@types/yup/0.32.0:
+    resolution: {integrity: sha512-Gr2lllWTDxGVYHgWfL8szjdedERpNgm44L9BDL2cmcHG7Bfd6taEpiW3ayMFLaYvlJr/6bFXDJdh6L406AGlFg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/yup/-/yup-0.32.0.tgz}
+    name: '@types/yup'
+    version: 0.32.0
+    deprecated: This is a stub types definition. yup provides its own type definitions, so you do not need this installed.
+    dependencies:
+      yup: registry.npmjs.org/yup/0.32.11
     dev: true
 
   registry.npmjs.org/@typescript-eslint/eslint-plugin/5.33.0_iurrlxgqcgk5svigzxakafpeuu:
@@ -22729,7 +22744,6 @@ packages:
     resolution: {integrity: sha512-wynEP02LmIbLpcYw8uBKpcfF6dmg2vcpKqxeH5UcoKEYdExslsdUA4ugFauuaeYdTB76ez6gJW8XAZ6CgkXYxA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/nanoclone/-/nanoclone-0.2.1.tgz}
     name: nanoclone
     version: 0.2.1
-    dev: false
 
   registry.npmjs.org/nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/nanoid/-/nanoid-3.3.4.tgz}
@@ -25649,7 +25663,6 @@ packages:
     resolution: {integrity: sha512-IJUkICM5dP5znhCckHSv30Q4b5/JA5enCtkRHYaOVOAocnH/1BQEYTC5NMfT3AVl/iXKdr3aqQbQn9DxyWknwA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/property-expr/-/property-expr-2.0.5.tgz}
     name: property-expr
     version: 2.0.5
-    dev: false
 
   registry.npmjs.org/property-information/5.6.0:
     resolution: {integrity: sha512-YUHSPk+A30YPv+0Qf8i9Mbfe/C0hdPXk1s1jPVToV8pk8BQtpw10ct89Eo7OWkutrwqvT0eicAxlOg3dOAu8JA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/property-information/-/property-information-5.6.0.tgz}
@@ -29448,7 +29461,6 @@ packages:
     resolution: {integrity: sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/toposort/-/toposort-2.0.2.tgz}
     name: toposort
     version: 2.0.2
-    dev: false
 
   registry.npmjs.org/totalist/1.1.0:
     resolution: {integrity: sha512-gduQwd1rOdDMGxFG1gEvhV88Oirdo2p+KjoYFU7k2g+i7n6AFFbDQ5kMPUsW0pNbfQsB/cwXvT1i4Bue0s9g5g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/totalist/-/totalist-1.1.0.tgz}
@@ -31785,7 +31797,6 @@ packages:
       nanoclone: registry.npmjs.org/nanoclone/0.2.1
       property-expr: registry.npmjs.org/property-expr/2.0.5
       toposort: registry.npmjs.org/toposort/2.0.2
-    dev: false
 
   registry.npmjs.org/zen-observable-ts/1.2.5:
     resolution: {integrity: sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zen-observable-ts/-/zen-observable-ts-1.2.5.tgz}

@@ -1,9 +1,10 @@
-import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
 import { createAdyenCheckoutSession } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
-import { safeJsonParse } from "@/saleor-app-checkout/utils";
-import { AdyenDropInCreateSessionResponse, PayRequestBody } from "checkout-common";
+import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
+import { AdyenDropInCreateSessionResponse, postDropInAdyenSessionsBody } from "checkout-common";
 import { NextApiHandler } from "next";
+
+const parseAndValidateBody = createParseAndValidateBody(postDropInAdyenSessionsBody);
 
 const DropInAdyenSessionsHandler: NextApiHandler<
   AdyenDropInCreateSessionResponse | { message: string }
@@ -13,10 +14,7 @@ const DropInAdyenSessionsHandler: NextApiHandler<
     return;
   }
 
-  const [error, body] =
-    typeof req.body === "string"
-      ? safeJsonParse<PayRequestBody>(req.body)
-      : [null, req.body as PayRequestBody];
+  const [error, body] = parseAndValidateBody(req.body);
 
   if (error) {
     console.error(error, req.body);
@@ -26,9 +24,11 @@ const DropInAdyenSessionsHandler: NextApiHandler<
 
   try {
     const appUrl = getBaseUrl(req);
-    const order = await createOrderFromBodyOrId(body);
 
-    const { session, clientKey } = await createAdyenCheckoutSession({ order, redirectUrl: appUrl });
+    const { session, clientKey } = await createAdyenCheckoutSession({
+      ...body,
+      redirectUrl: appUrl,
+    });
     return res.status(200).json({ session, clientKey });
   } catch (err) {
     console.error(err);

@@ -6,7 +6,6 @@ import {
 import { getAdyenClient, getLineItems } from "./utils";
 import invariant from "ts-invariant";
 
-import { CreatePaymentData } from "../../types";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 
 export const orderToAdyenRequest = ({
@@ -64,12 +63,13 @@ export const orderToAdyenRequest = ({
   };
 };
 
-type CreateAdyenCheckoutArg = Pick<CreatePaymentData, "order" | "redirectUrl">;
-
 export const createAdyenCheckoutPaymentLinks = async ({
   order,
   redirectUrl,
-}: CreateAdyenCheckoutArg) => {
+}: {
+  order: OrderFragment;
+  redirectUrl: string;
+}) => {
   const { config, checkout } = await getAdyenClient();
   invariant(config.merchantAccount, "Missing merchant account configuration");
 
@@ -83,21 +83,28 @@ export const createAdyenCheckoutPaymentLinks = async ({
 };
 
 export const createAdyenCheckoutSession = async ({
-  order,
+  currency,
+  totalAmount,
+  checkoutId,
   redirectUrl,
-}: CreateAdyenCheckoutArg) => {
+}: {
+  currency: string;
+  totalAmount: number;
+  checkoutId: string;
+  redirectUrl: string;
+}) => {
   const { config, checkout } = await getAdyenClient();
   invariant(config.merchantAccount, "Missing merchant account configuration");
 
-  console.log({ "config.merchantAccount": config.merchantAccount });
-
-  const session = await checkout.sessions(
-    orderToAdyenRequest({
-      order,
-      merchantAccount: config.merchantAccount,
-      returnUrl: formatRedirectUrl(redirectUrl, order.id),
-    })
-  );
+  const session = await checkout.sessions({
+    merchantAccount: config.merchantAccount,
+    amount: {
+      currency: currency,
+      value: getIntegerAmountFromSaleor(totalAmount),
+    },
+    returnUrl: formatRedirectUrl(redirectUrl, checkoutId),
+    reference: checkoutId,
+  });
 
   return {
     session,
