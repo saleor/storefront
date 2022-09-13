@@ -15,7 +15,6 @@ export type OrderBody = {
 export type CheckoutBody = {
   checkoutId: string;
   totalAmount: number;
-  currency: string;
 } & BaseBody;
 
 export type PayRequestBody = OrderBody | CheckoutBody;
