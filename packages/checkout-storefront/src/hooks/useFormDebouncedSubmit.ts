@@ -1,11 +1,10 @@
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { debounce, isEqual, throttle } from "lodash-es";
 import { useCallback, useEffect, useRef } from "react";
-import { Path, UseFormReturn, UseFormStateReturn } from "react-hook-form";
+import { Path, UseFormReturn } from "react-hook-form";
 
 interface UseFormAutofillSubmit<TFormData extends FormDataBase>
-  extends Pick<UseFormReturn<TFormData>, "trigger">,
-    Pick<UseFormStateReturn<TFormData>, "isDirty"> {
+  extends Pick<UseFormReturn<TFormData>, "trigger" | "formState"> {
   onSubmit: (formData: TFormData) => Promise<void> | void;
   formData: TFormData;
   defaultFormData?: TFormData;
@@ -16,10 +15,11 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
   formData,
   defaultFormData,
   onSubmit,
-  isDirty,
   trigger,
   autoSave = true,
+  formState,
 }: UseFormAutofillSubmit<TFormData>) => {
+  const { isDirty, dirtyFields } = formState;
   const formDataRef = useRef<TFormData | undefined>(defaultFormData);
 
   const debouncedSubmit = useCallback(
@@ -28,13 +28,18 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
         return;
       }
 
+      console.log("SUBMET");
       void onSubmit(formData);
     }, 2000),
-    [isDirty]
+    [isDirty, onSubmit]
   );
 
   const throttledTrigger = useCallback(
     throttle((formData: TFormData) => {
+      if (!isDirty) {
+        return;
+      }
+
       const fieldsToValidate = Object.entries(formData)
         .filter(
           ([fieldName, fieldValue]) =>
@@ -43,9 +48,10 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
         .map(([fieldName]) => fieldName);
 
       formDataRef.current = formData;
-      void trigger(fieldsToValidate as Array<Path<TFormData>>);
-    }, 2000),
-    []
+
+      void trigger(fieldsToValidate as Path<TFormData>[]);
+    }, 200),
+    [dirtyFields, trigger]
   );
 
   useEffect(() => {

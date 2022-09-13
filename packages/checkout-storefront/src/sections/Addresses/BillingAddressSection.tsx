@@ -128,8 +128,7 @@ export const BillingAddressSection = () => {
             <GuestAddressSection
               {...errorProps}
               checkAddressAvailability={false}
-              defaultAddress={user?.defaultBillingAddress}
-              address={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
+              defaultAddress={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage("billingAddress")}
               onSubmit={(address) => {
                 void updateBillingAddress(address);

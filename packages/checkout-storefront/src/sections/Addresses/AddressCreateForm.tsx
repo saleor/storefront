@@ -23,7 +23,6 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onClose, .
 
   return (
     <AddressForm
-      checkAddressAvailability={false}
       onSubmit={handleSubmit}
       onCancel={onClose}
       loading={creating}

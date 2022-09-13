@@ -50,12 +50,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     defaultValues,
   });
 
-  const {
-    watch,
-    setError,
-    trigger,
-    formState: { isDirty },
-  } = formProps;
+  const { watch, setError, trigger, formState } = formProps;
 
   useCheckoutFormValidationTrigger(trigger);
   useCheckoutFormValidationTrigger(triggerContext);
@@ -79,7 +74,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
     const result = await updateEmail({
       email,
-      checkoutId: checkout?.id as string,
+      checkoutId: checkout.id,
     });
 
     const [hasErrors, errors] = extractMutationErrors<FormData>(result);
@@ -100,10 +95,10 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
     trigger,
-    isDirty,
     onSubmit,
     formData: watch(),
     defaultFormData: defaultValues,
+    formState,
   });
 
   return (
@@ -113,27 +108,29 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       redirectButtonLabel={formatMessage("signIn")}
       onSectionChange={onSectionChange}
     >
-      <TextInput
-        label={formatMessage("emailLabel")}
-        {...getInputProps("email", {
-          onChange: debouncedSubmit,
-        })}
-      />
-      <Checkbox
-        classNames={{ container: "!mb-0" }}
-        value="createAccount"
-        label={formatMessage("wantToCreateAccountLabel")}
-        checked={createAccountSelected}
-        onChange={setCreateAccountSelected}
-      />
-      {createAccountSelected && (
-        <div className="mt-2">
-          <PasswordInput
-            label={formatMessage("passwordLabel")}
-            {...getContextInputProps("password")}
-          />
-        </div>
-      )}
+      <form>
+        <TextInput
+          label={formatMessage("emailLabel")}
+          {...getInputProps("email", {
+            onChange: debouncedSubmit,
+          })}
+        />
+        <Checkbox
+          classNames={{ container: "!mb-0" }}
+          value="createAccount"
+          label={formatMessage("wantToCreateAccountLabel")}
+          checked={createAccountSelected}
+          onChange={setCreateAccountSelected}
+        />
+        {createAccountSelected && (
+          <div className="mt-2">
+            <PasswordInput
+              label={formatMessage("passwordLabel")}
+              {...getContextInputProps("password")}
+            />
+          </div>
+        )}
+      </form>
     </SignInFormContainer>
   );
 };

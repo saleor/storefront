@@ -13,7 +13,7 @@ type AvailablePaymentMethods = PaymentMethodID[];
 type PaymentProvider = PaymentProviderID | undefined | "";
 
 export interface UsePaymentMethods {
-  selectedPaymentMethod: PaymentMethodID;
+  selectedPaymentMethod: PaymentMethodID | undefined;
   setSelectedPaymentMethod: (value: PaymentMethodID) => void;
   availablePaymentMethods: AvailablePaymentMethods;
   selectedPaymentProvider: PaymentProvider;
@@ -28,13 +28,14 @@ const getAllPaymentMethods = (
   if (!allPaymentMethods) {
     return [];
   }
+
   return entries(allPaymentMethods).reduce<AvailablePaymentMethods>(
     (availablePaymentMethods, [paymentMethodId, paymentProviderId]) => {
       return paymentProviderId
         ? [...availablePaymentMethods, paymentMethodId]
         : availablePaymentMethods;
     },
-    []
+    [] as AvailablePaymentMethods
   );
 };
 
@@ -42,7 +43,7 @@ export const usePaymentMethods = (channelId?: string) => {
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodID>();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodID | undefined>();
 
   const [{ data: allPaymentMethods, loading }] = useFetch(getPaymentMethods, {
     args: { channelId, checkoutApiUrl },

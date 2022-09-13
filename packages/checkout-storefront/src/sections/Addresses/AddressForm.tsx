@@ -8,8 +8,8 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { TrashIcon } from "@/checkout-storefront/icons";
 import { useValidationResolver } from "@/checkout-storefront/lib/utils";
-import { useEffect, useRef } from "react";
-import { DefaultValues, Path, Resolver, SubmitHandler, useForm } from "react-hook-form";
+import { useCallback, useEffect, useRef } from "react";
+import { DefaultValues, Path, PathValue, Resolver, SubmitHandler, useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { AddressFormData } from "./types";
 import { Select } from "@saleor/ui-kit";
@@ -18,10 +18,11 @@ import { useAddressFormUtils } from "./useAddressFormUtils";
 import { IconButton } from "@/checkout-storefront/components";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { emptyFormData } from "@/checkout-storefront/sections/Addresses/utils";
-import { isEqual } from "lodash-es";
+import { difference, isEqual } from "lodash-es";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 import { useCountrySelectProps } from "./useCountrySelectProps";
+import { CountryCode } from "@/checkout-storefront/graphql";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors"> {
@@ -32,7 +33,7 @@ export interface AddressFormProps<TFormData extends AddressFormData>
   onSubmit: SubmitHandler<TFormData>;
   autoSave?: boolean;
   title: string;
-  checkAddressAvailability: boolean;
+  checkAddressAvailability?: boolean;
 }
 
 export const AddressForm = <TFormData extends AddressFormData>({
@@ -45,7 +46,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   onDelete,
   loading = false,
   title,
-  checkAddressAvailability,
+  checkAddressAvailability = false,
 }: AddressFormProps<TFormData>) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
@@ -77,53 +78,59 @@ export const AddressForm = <TFormData extends AddressFormData>({
     },
   });
 
-  const {
-    handleSubmit,
-    getValues,
-    setError,
-    clearErrors,
-    reset,
-    watch,
-    trigger,
-    formState: { isDirty },
-  } = formProps;
+  const { handleSubmit, getValues, setError, clearErrors, watch, trigger, setValue, formState } =
+    formProps;
 
   useCheckoutFormValidationTrigger(trigger);
 
   useSetFormErrors({ setError, errors });
 
   const getInputProps = useGetInputProps(formProps);
+  const countryCode = watch("countryCode" as Path<TFormData>) as CountryCode;
 
-  const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices } =
-    useAddressFormUtils(watch("countryCode"));
+  const {
+    orderedAddressFields,
+    getFieldLabel,
+    isRequiredField,
+    countryAreaChoices,
+    allowedFields,
+  } = useAddressFormUtils(countryCode);
 
-  const handleCancel = () => {
+  const allowedFieldsRef = useRef<AddressField[]>(allowedFields || []);
+
+  const handleCancel = useCallback(() => {
     clearErrors();
     onClearErrors();
 
     if (typeof onCancel === "function") {
       onCancel();
     }
-  };
+  }, [clearErrors, onClearErrors, onCancel]);
 
-  const hasDataChanged = (formData: TFormData) => !isEqual(formData, defaultValuesRef.current);
+  const hasDataChanged = useCallback(
+    (formData: TFormData) => !isEqual(formData, defaultValuesRef.current),
+    []
+  );
 
-  const handleOnSubmit = (formData: TFormData) => {
-    if (hasDataChanged(formData)) {
-      onSubmit(formData);
-      return;
-    }
+  const handleOnSubmit = useCallback(
+    (formData: TFormData) => {
+      if (hasDataChanged(formData)) {
+        onSubmit(formData);
+        return;
+      }
 
-    handleCancel();
-  };
+      handleCancel();
+    },
+    [onSubmit, handleCancel, hasDataChanged]
+  );
 
   const debouncedSubmit = useFormDebouncedSubmit<TFormData>({
     autoSave,
     defaultFormData: defaultValues,
     formData: watch(),
     trigger,
-    isDirty,
     onSubmit: handleOnSubmit,
+    formState,
   });
 
   const handleChange = () => {
@@ -134,26 +141,27 @@ export const AddressForm = <TFormData extends AddressFormData>({
     debouncedSubmit(getValues());
   };
 
+  // prevents outdated data to remain in the form when a field is
+  // no longer allowed
   useEffect(() => {
-    if (isEqual(defaultValues, defaultValuesRef.current)) {
-      return;
-    }
+    const removedFields = difference(allowedFieldsRef.current, allowedFields);
 
-    const dataToSet = !Object.keys(defaultValues).length ? emptyFormData : defaultValues;
-
-    reset(dataToSet as TFormData);
-
-    defaultValuesRef.current = defaultValues;
-  }, [defaultValues]);
+    removedFields.forEach((field) => {
+      setValue(
+        field as Path<TFormData>,
+        emptyFormData[field as Path<TFormData>] as PathValue<TFormData, Path<TFormData>>
+      );
+    });
+  }, [allowedFields, setValue]);
 
   return (
     <form>
       <div className="flex flex-row justify-between items-baseline">
         <Title>{title}</Title>
         <Select
-          classNames={{ container: "!w-1/2" }}
+          width="1/2"
           options={countryOptions}
-          {...getInputProps("countryCode", { onChange: handleChange })}
+          {...getInputProps("countryCode" as Path<TFormData>, { onChange: handleChange })}
         />
       </div>
       <div className="mt-2">
@@ -164,9 +172,9 @@ export const AddressForm = <TFormData extends AddressFormData>({
           if (field === "countryArea" && isRequired) {
             return (
               <Select
-                {...getInputProps("countryArea", { onChange: handleChange })}
+                {...getInputProps("countryArea" as Path<TFormData>, { onChange: handleChange })}
                 classNames={{ container: "mb-4" }}
-                placeholder={label}
+                placeholder={getFieldLabel("countryArea")}
                 options={
                   countryAreaChoices?.map(({ verbose, raw }) => ({
                     label: verbose as string,

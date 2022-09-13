@@ -41,7 +41,7 @@ export const useCountrySelectProps = ({
   );
 
   const initialCountryCode = useMemo(() => {
-    const countryCodeInOptions = countryOptions.find(
+    const countryCodeInOptions = countries.find(
       ({ code }) => code === defaultFormData.countryCode
     )?.code;
 

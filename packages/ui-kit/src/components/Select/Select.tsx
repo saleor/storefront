@@ -1,9 +1,18 @@
-import { ForwardedRef, forwardRef, ReactNode, SelectHTMLAttributes, SyntheticEvent } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  ReactNode,
+  SelectHTMLAttributes,
+  SyntheticEvent,
+  useState,
+} from "react";
 import clsx from "clsx";
 
 import styles from "./Select.module.css";
 import { ChevronDownIcon } from "../icons";
 import { ClassNames } from "@lib/globalTypes";
+
+const PLACEHOLDER_KEY = "placeholder";
 
 export interface Option<TData extends string = string> {
   label: string | ReactNode;
@@ -19,19 +28,48 @@ export interface SelectProps<TData extends string = string>
   extends SelectHTMLAttributes<HTMLSelectElement> {
   onChange: (event: SyntheticEvent) => void;
   options: Option<TData>[];
-  classNames?: ClassNames<
-    "container" | "triggerIcon" | "trigger" | "triggerArrow" | "options" | "optionIcon" | "option"
-  >;
+  classNames?: ClassNames<"container">;
+  width?: "1/2" | "full";
 }
 
 export const Select = forwardRef(
   <TData extends string = string>(
-    { options, classNames, placeholder = "", value, ...rest }: SelectProps<TData>,
+    {
+      options,
+      classNames,
+      placeholder = "",
+      value,
+      width = "full",
+      onChange,
+      ...rest
+    }: SelectProps<TData>,
     ref: ForwardedRef<HTMLSelectElement>
   ) => {
+    const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
+
+    const handleChange = (event: SyntheticEvent) => {
+      if ((event.target as HTMLSelectElement).value === PLACEHOLDER_KEY) {
+        return;
+      }
+
+      setShowPlaceholder(false);
+      onChange(event);
+    };
+
     return (
-      <div className={clsx(styles.container, classNames?.container)}>
-        <select {...rest} ref={ref} className={clsx(styles.select)}>
+      <div
+        className={clsx(
+          styles.container,
+          classNames?.container,
+          width === "1/2" ? "w-1/2" : "w-full"
+        )}
+      >
+        <select onChange={handleChange} {...rest} ref={ref} className={clsx(styles.select)}>
+          {showPlaceholder && (
+            <option disabled selected value="">
+              {placeholder}
+            </option>
+          )}
           {options.map(({ label, value, disabled = false }) => (
             <option value={value} disabled={disabled}>
               {label}

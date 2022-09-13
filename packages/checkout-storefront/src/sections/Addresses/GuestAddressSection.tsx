@@ -1,13 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Address, AddressFormData } from "./types";
 import { AddressForm } from "./AddressForm";
-import { emptyFormData, getAddressFormDataFromAddress } from "./utils";
+import { getAddressFormDataFromAddress } from "./utils";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
-import { getLocalizationDataFromUrl } from "@/checkout-storefront/lib/utils";
 
 interface GuestAddressSectionProps extends UseErrors<AddressFormData> {
   onSubmit: (address: AddressFormData) => void;
-  address: Address;
   title: string;
   defaultAddress: Address;
   checkAddressAvailability: boolean;
@@ -15,13 +13,12 @@ interface GuestAddressSectionProps extends UseErrors<AddressFormData> {
 
 export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   onSubmit,
-  address,
   title,
   checkAddressAvailability,
   defaultAddress,
   ...errorProps
 }) => {
-  const addressFormData = getAddressFormDataFromAddress(address);
+  const addressFormData = getAddressFormDataFromAddress(defaultAddress);
 
   const handleSave = (address: AddressFormData) => onSubmit({ ...address, autoSave: true });
 
@@ -31,6 +28,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
       title={title}
       onSubmit={handleSave}
       defaultValues={addressFormData}
+      checkAddressAvailability={checkAddressAvailability}
       {...errorProps}
     />
   );
