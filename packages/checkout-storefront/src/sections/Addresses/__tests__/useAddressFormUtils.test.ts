@@ -26,7 +26,9 @@ const mockedFailResponse = {
 
 describe("isRequiredField", () => {
   it("should return true for required field", () => {
-    const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code));
+    const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
+      wrapper: getMockUrqlProvider(mockedSuccessResponse),
+    });
     expect(hook.current.isRequiredField("city")).toEqual(true);
   });
 
@@ -68,6 +70,6 @@ describe("getFieldLabel", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedFailResponse),
     });
-    expect(hook.current.getFieldLabel("countryArea")).toEqual("Province");
+    expect(hook.current.getFieldLabel("countryArea")).toEqual("Country area");
   });
 });
