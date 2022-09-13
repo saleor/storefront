@@ -27,14 +27,14 @@ describe("Using filters and sorting on products list", () => {
 
   it("should filter products by variant attribute SRS_0306", () => {
     waitForProgressBarToNotBeVisible();
-    filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
+    selectNotEmptyCategory();
     cy.get(CATEGORY.filters.filtersMenuButtons).first().click();
     filterProducts(CATEGORY.filters.filterList, CATEGORY.filters.filterPill);
   });
 
   it("should clear selected filters SRS_0308", () => {
     waitForProgressBarToNotBeVisible();
-    filterProducts(NAVIGATION.categoriesListButtons, CATEGORY.categoryTitle);
+    selectNotEmptyCategory();
     cy.get(CATEGORY.filters.filtersMenuButtons).first().click();
     filterProducts(CATEGORY.filters.filterList, CATEGORY.filters.filterPill);
     cy.get(CATEGORY.filters.clearAllFiltersButton)

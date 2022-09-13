@@ -39,7 +39,7 @@ dist
 .rollup.cache
 
 #cypress
-cypress/screenshots
-cypress/videos
+apps/storefront/cypress/screenshots
+apps/storefront/cypress/videos
 
 .idea
