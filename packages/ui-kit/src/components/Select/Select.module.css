@@ -6,6 +6,10 @@
   @apply h-10 border rounded border-border-secondary py-2 px-3 pr-10 w-full text-base appearance-none;
 }
 
+.select:disabled {
+  @apply pointer-events-none select-none text-text-secondary;
+}
+
 .select:focus,
 .select:active {
   @apply border-border-primary outline-none;
