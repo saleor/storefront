@@ -3,7 +3,7 @@ import { validationRules } from "@/checkout-storefront/lib/fixtures/address";
 import { useAddressFormUtils } from "@/checkout-storefront/sections/Addresses/useAddressFormUtils";
 import { renderHook } from "@testing-library/react-hooks";
 import { fromValue } from "wonka";
-import { getMockUrqlProvider } from "@/checkout-storefront/lib/utils";
+import { getMockUrqlProvider } from "@/checkout-storefront/__tests__/utils";
 import { defaultCountry } from "@/checkout-storefront/sections/Addresses/countries";
 
 const mockedSuccessResponse = {

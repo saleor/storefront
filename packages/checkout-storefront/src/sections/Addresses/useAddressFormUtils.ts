@@ -2,7 +2,6 @@ import { CountryCode, useAddressValidationRulesQuery } from "@/checkout-storefro
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
-import { reduce } from "lodash-es";
 import {
   getRequiredAddressFields,
   getOrderedAddressFields,
@@ -26,17 +25,13 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
       return [];
     }
 
-    return reduce(
-      address,
-      (result, fieldValue, fieldName) => {
-        if (!isRequiredField(fieldName as AddressField)) {
-          return result;
-        }
+    return Object.entries(address).reduce((result, [fieldName, fieldValue]) => {
+      if (!isRequiredField(fieldName as AddressField)) {
+        return result;
+      }
 
-        return !!fieldValue ? result : ([...result, fieldName] as AddressField[]);
-      },
-      [] as AddressField[]
-    );
+      return !!fieldValue ? result : ([...result, fieldName] as AddressField[]);
+    }, [] as AddressField[]);
   };
 
   const isRequiredField = (field: AddressField) =>

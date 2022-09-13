@@ -11,7 +11,7 @@ import { isMatchingAddress } from "@/checkout-storefront/sections/Addresses/util
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 import { UsePaymentMethods } from "@/checkout-storefront/sections/PaymentSection";
 import { useAuthState } from "@saleor/sdk";
-import { useEffect } from "react";
+import { flushSync } from "react-dom";
 import { UseFormReturn } from "react-hook-form";
 import { ValidationError } from "yup";
 
@@ -23,7 +23,6 @@ interface UseCheckoutFormValidation
 
 export const useCheckoutFormValidation = ({
   isValidProviderSelected,
-  watch,
   setValue,
   getValues,
   schema,
@@ -127,17 +126,12 @@ export const useCheckoutFormValidation = ({
       isValid = false;
     }
 
+    flushSync(() => {
+      setValue("validating", false);
+    });
+
     return isValid;
   };
-
-  const validating = watch("validating");
-
-  // needs to be a hook so react doesn't batch this
-  useEffect(() => {
-    if (validating) {
-      setValue("validating", false);
-    }
-  }, [validating]);
 
   return ensureValidCheckout;
 };

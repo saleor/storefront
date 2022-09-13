@@ -76,7 +76,8 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
   const hasFinishedApiChanges =
     !Object.values(methods.watch("updateState")).some((value) => value) && !loadingCheckout;
 
-  // not using form handleSubmit on purpose
+  // not using form handleSubmit because it wouldn't allow us to have
+  // a flow with steps and errors in between
   const handleSubmit = () => {
     if (!hasFinishedApiChanges) {
       setIsProcessingApiChanges(true);
