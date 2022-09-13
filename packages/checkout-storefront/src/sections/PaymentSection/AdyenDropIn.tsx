@@ -76,12 +76,15 @@ function createAdyenCheckout(adyenSessionResponse: AdyenDropInCreateSessionRespo
     onError: (error: any, component: any) => {
       console.error(error.name, error.message, error.stack, component);
     },
-    onSubmit: (state: { isValid?: boolean; data: CardElementData }, component: DropinElement) => {
+    onSubmit: (
+      state: { isValid?: boolean; data: CardElementData & Record<string, any> },
+      component: DropinElement
+    ) => {
       //  Your function calling your server to make a `/payments` request
       console.log("onSubmit", state);
     },
     onAdditionalDetails: (
-      state: { isValid?: boolean; data: CardElementData },
+      state: { isValid?: boolean; data: CardElementData & Record<string, any> },
       component: DropinElement
     ) => {
       //  Your function calling your server to make a `/payments/details` request
