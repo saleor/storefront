@@ -2,6 +2,7 @@ import { createDropInAdyenSession } from "@/checkout-storefront/fetch/requests";
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
+import { CardElementData } from "@adyen/adyen-web/dist/types/components/Card/types";
 import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { AdyenDropInCreateSessionResponse } from "checkout-common";
 import { memo, useEffect, useRef, useState } from "react";
@@ -74,6 +75,17 @@ function createAdyenCheckout(adyenSessionResponse: AdyenDropInCreateSessionRespo
     },
     onError: (error: any, component: any) => {
       console.error(error.name, error.message, error.stack, component);
+    },
+    onSubmit: (state: { isValid?: boolean; data: CardElementData }, component: DropinElement) => {
+      //  Your function calling your server to make a `/payments` request
+      console.log("onSubmit", state);
+    },
+    onAdditionalDetails: (
+      state: { isValid?: boolean; data: CardElementData },
+      component: DropinElement
+    ) => {
+      //  Your function calling your server to make a `/payments/details` request
+      console.log("onAdditionalDetails", state, component);
     },
     // Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
     // For example, this is 3D Secure configuration for cards:
