@@ -13,6 +13,8 @@ import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
+import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
+import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -38,13 +40,17 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   });
 
   const resolver = useValidationResolver(schema);
-  const { handleSubmit, watch, getValues, setError, ...rest } = useForm<FormData>({
+  const formProps = useForm<FormData>({
     resolver,
     mode: "onBlur",
     defaultValues: { email: getContextValues("email") },
   });
 
-  const getInputProps = useGetInputProps(rest);
+  const { watch, getValues, setError, trigger } = formProps;
+
+  useCheckoutFormValidationTrigger(trigger);
+
+  const getInputProps = useGetInputProps(formProps);
   const getContextInputProps = useGetInputProps(formContext);
 
   useSetFormErrors({
@@ -53,6 +59,8 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   });
 
   const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
 
   const onSubmit = async ({ email }: FormData) => {
     if (!email || updatingEmail || email === checkout.email) {
@@ -64,7 +72,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       checkoutId: checkout.id,
     });
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+    const [hasErrors, errors] = extractMutationErrors<FormData>(result);
 
     if (hasErrors) {
       showErrors(errors);

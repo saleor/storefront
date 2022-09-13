@@ -5,7 +5,6 @@ import { PhotoIcon } from "@/checkout-storefront/icons";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getSummaryLineAttributesText, getSummaryLineProps } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import { compact } from "lodash-es";
 
 export type SummaryLine = CheckoutLineFragment | OrderLineFragment;
 

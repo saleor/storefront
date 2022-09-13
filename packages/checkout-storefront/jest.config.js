@@ -4,6 +4,7 @@ const { compilerOptions } = requireJSON("./tsconfig.json");
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
+  testMatch: ["**/**/*.test.ts"],
   clearMocks: false,
   collectCoverage: false,
   coverageDirectory: "coverage",

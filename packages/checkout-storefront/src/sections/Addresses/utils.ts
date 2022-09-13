@@ -9,7 +9,7 @@ import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalT
 import { isEqual, omit, reduce, uniq } from "lodash-es";
 import { Address, AddressFormData, UserAddressFormData } from "./types";
 
-export const emptyFormData = {
+export const emptyFormData: AddressFormData = {
   firstName: "",
   lastName: "",
   streetAddress1: "",
@@ -20,7 +20,7 @@ export const emptyFormData = {
   countryArea: "",
   postalCode: "",
   phone: "",
-  countryCode: "",
+  countryCode: "" as CountryCode,
 };
 
 export const getAddressInputData = ({
@@ -39,7 +39,7 @@ export const getAddressInputData = ({
 
 export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
-    return emptyFormData as AddressFormData;
+    return emptyFormData;
   }
 
   const { country, ...rest } = address;
@@ -96,7 +96,7 @@ export const isMatchingAddressFormData = (
 ) => isEqual(omit(address, ["id", "autoSave"]), omit(addressToMatch, ["id", "autoSave"]));
 
 export const getAddressVlidationRulesVariables = (
-  autoSave: boolean = false
+  autoSave = false
 ): CheckoutAddressValidationRules =>
   autoSave
     ? {
@@ -126,7 +126,7 @@ export const getOrderedAddressFields = (addressFields: AddressField[] = []): Add
   );
 };
 
-export const getRequiredAddressFields = (requiredFields: AddressField[]): AddressField[] => [
+export const getRequiredAddressFields = (requiredFields: AddressField[] = []): AddressField[] => [
   ...requiredFields,
   "firstName",
   "lastName",

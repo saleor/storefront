@@ -1,9 +1,5 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
-import {
-  AddressValidationData,
-  useAddressValidationRulesQuery,
-} from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
@@ -27,6 +23,7 @@ import {
   isMatchingAddressFormData,
 } from "@/checkout-storefront/sections/Addresses/utils";
 import { isEqual } from "lodash-es";
+import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 
 export interface AddressFormProps<TFormData extends AddressFormData>
   extends Omit<UseErrors<TFormData>, "setApiErrors">,
@@ -75,21 +72,16 @@ export const AddressForm = <TFormData extends AddressFormData>({
     defaultValues: defaultValues as DefaultValues<TFormData>,
   });
 
-  const { handleSubmit, getValues, setError, clearErrors, reset } = formProps;
+  const { handleSubmit, getValues, setError, clearErrors, reset, trigger } = formProps;
+
+  useCheckoutFormValidationTrigger(trigger);
 
   useSetFormErrors({ setError, errors });
 
   const getInputProps = useGetInputProps(formProps);
 
-  const [{ data }] = useAddressValidationRulesQuery({
-    variables: { countryCode },
-  });
-
-  const validationRules = data?.addressValidationRules;
-
-  const { sortedAddressFields, getFieldLabel, isRequiredField } = useAddressFormUtils(
-    validationRules as AddressValidationData
-  );
+  const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices } =
+    useAddressFormUtils(countryCode);
 
   const handleCancel = () => {
     clearErrors();
@@ -142,7 +134,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
         />
       </div>
       <div className="mt-2">
-        {sortedAddressFields.map((field: AddressField) => {
+        {orderedAddressFields.map((field: AddressField) => {
           const isRequired = isRequiredField(field);
           const label = getFieldLabel(field);
 
@@ -154,7 +146,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
                 onChange={setCountryArea}
                 selectedValue={countryArea}
                 options={
-                  validationRules?.countryAreaChoices.map(({ verbose, raw }) => ({
+                  countryAreaChoices?.map(({ verbose, raw }) => ({
                     label: verbose as string,
                     value: raw as string,
                   })) || []
@@ -196,14 +188,12 @@ export const AddressForm = <TFormData extends AddressFormData>({
               <Button
                 disabled
                 ariaLabel={formatMessage("saveLabel")}
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleSubmit(handleSave)}
                 label={formatMessage("processing")}
               />
             ) : (
               <Button
                 ariaLabel={formatMessage("saveLabel")}
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleSubmit(handleSave)}
                 label={formatMessage("saveAddress")}
               />

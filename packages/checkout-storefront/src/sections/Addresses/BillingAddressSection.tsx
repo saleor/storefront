@@ -5,6 +5,7 @@ import {
   useCheckoutBillingAddressUpdateMutation,
   useUserQuery,
 } from "@/checkout-storefront/graphql";
+import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
@@ -44,9 +45,11 @@ export const BillingAddressSection = () => {
 
   const { showErrors } = useAlerts();
 
-  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
+  const [{ fetching }, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
   const isBillingSameAsShippingRef = useRef<boolean>(isBillingSameAsShipping);
   const shippingAddressRef = useRef<Address>(shippingAddress);
+
+  useCheckoutUpdateStateTrigger("checkoutBillingUpdate", fetching);
 
   const updateBillingAddress = async ({ autoSave, ...addressInput }: AddressFormData) => {
     const result = await checkoutBillingAddressUpdate({

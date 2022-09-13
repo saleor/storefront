@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useCheckoutQuery } from "@/checkout-storefront/graphql";
+import { Checkout, useCheckoutQuery } from "@/checkout-storefront/graphql";
 import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 
@@ -13,5 +13,5 @@ export const useCheckout = ({ pause }: { pause?: boolean } = { pause: false }) =
     pause: pause || authenticating,
   });
 
-  return { checkout: data?.checkout!, loading };
+  return { checkout: data?.checkout as Checkout, loading };
 };

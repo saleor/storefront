@@ -9,3 +9,4 @@ export * from "./useGetInputProps";
 export * from "./useOrder";
 export * from "./usePay";
 export * from "./useSetFormErrors";
+export * from "./useCheckoutUpdateStateTrigger";

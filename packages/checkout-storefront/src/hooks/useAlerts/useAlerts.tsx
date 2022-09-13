@@ -1,22 +1,22 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { Alert, AlertType, AlertErrorData, CheckoutScope } from "./types";
+import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./types";
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
 import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/useErrors";
-import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
+import { Text } from "@saleor/ui-kit";
 
 export interface ScopedAlertsProps {
-  showErrors: (errors: AlertErrorData[]) => void;
-  showCustomErrors: (errors: ErrorCode[]) => void;
+  showErrors: (errors: ApiErrors<any>) => void;
+  showCustomErrors: (errors: CustomError[]) => void;
 }
 
 function useAlerts(scope: CheckoutScope): ScopedAlertsProps;
 
 function useAlerts(): {
-  showErrors: (errors: AlertErrorData[], scope: CheckoutScope) => void;
-  showCustomErrors: (errors: ErrorCode[], scope: CheckoutScope) => void;
+  showErrors: (errors: ApiErrors<any>, scope: CheckoutScope) => void;
+  showCustomErrors: (errors: CustomError[], scope: CheckoutScope) => void;
 };
 
 function useAlerts(globalScope?: any): any {
@@ -48,18 +48,32 @@ function useAlerts(globalScope?: any): any {
     };
   };
 
-  const showAlert = ({ scope, ...dataRest }: AlertErrorData, { type }: { type: AlertType }) => {
-    const { message, ...options } = getParsedAlert({ ...dataRest, scope }, type);
-    toast(message, options);
+  const showDefaultAlert = (
+    alertErrorData: AlertErrorData,
+    { type }: { type: AlertType } = { type: "error" }
+  ) => {
+    const parsedAlert = getParsedAlert(alertErrorData, type);
+    showAlert(parsedAlert);
   };
 
-  const showErrors = (errors: ApiErrors<any>, scope: CheckoutScope = globalScope) =>
-    getParsedApiErrors(errors).forEach((error) =>
-      showAlert({ ...error, scope }, { type: "error" })
-    );
+  const showAlert = ({
+    message,
+    type = "error",
+    ...rest
+  }: Pick<Alert, "message"> & { type?: AlertType; id?: string }) =>
+    toast(<Text>{message}</Text>, { type, ...rest });
 
-  const showCustomErrors = (errors: ErrorCode[], scope: CheckoutScope = globalScope) =>
-    errors.forEach((code: ErrorCode) => showAlert({ scope, code, field: "" }, { type: "error" }));
+  const showErrors = (errors: ApiErrors<any>, scope: CheckoutScope = globalScope) =>
+    getParsedApiErrors(errors).forEach((error) => showDefaultAlert({ ...error, scope }));
+
+  const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
+    errors.forEach(({ field = "", message, code }) => {
+      if (message) {
+        showAlert({ message });
+      } else {
+        showDefaultAlert({ scope, field, code });
+      }
+    });
 
   return { showErrors, showCustomErrors };
 }
