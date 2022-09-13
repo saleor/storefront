@@ -56,7 +56,7 @@
     "ts-invariant": "0.10.3",
     "url-join": "^5.0.0",
     "urql": "^2.2.0",
-    "yup": "^0.32.11"
+    "yup": "1.0.0-beta.7"
   },
   "devDependencies": {
     "@formatjs/cli": "^4.8.2",
