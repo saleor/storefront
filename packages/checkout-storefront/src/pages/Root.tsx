@@ -31,7 +31,7 @@ export const Root = ({ env }: RootProps) => {
       createClient({
         url: env.apiUrl,
         suspense: true,
-        requestPolicy: "cache-first",
+        requestPolicy: "cache-and-network",
         fetch: authorizedFetch as ClientOptions["fetch"],
       }),
     []
