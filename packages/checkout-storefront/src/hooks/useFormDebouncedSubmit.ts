@@ -28,7 +28,6 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
         return;
       }
 
-      console.log("SUBMET");
       void onSubmit(formData);
     }, 2000),
     [isDirty, onSubmit]

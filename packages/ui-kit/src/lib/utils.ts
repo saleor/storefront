@@ -1,5 +1,6 @@
 import { SyntheticEvent, useState } from "react";
 
+// used for stories
 export const useStateWithOnChangeHandler = <TValue extends string | boolean = string>(
   initialValue: TValue = "" as TValue
 ): [TValue, (event: SyntheticEvent) => void] => {

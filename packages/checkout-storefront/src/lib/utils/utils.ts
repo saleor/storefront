@@ -7,8 +7,6 @@ import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
 import { OperationResult } from "urql";
 
-export const entries = <T extends object>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][];
-
 export const getById =
   <T extends { id: string }>(idToCompare: string | undefined) =>
   (obj: T) =>
