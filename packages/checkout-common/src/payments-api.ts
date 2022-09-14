@@ -1,7 +1,6 @@
 import type { PaymentMethodID, PaymentProviderID } from "./payments";
 
 type BaseBody = {
-  checkoutApiUrl: string;
   provider: PaymentProviderID;
   method: PaymentMethodID;
   redirectUrl: string;

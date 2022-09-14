@@ -11,6 +11,7 @@ export const useCheckout = ({ pause }: { pause?: boolean } = { pause: false }) =
   const [{ data, fetching: loading }] = useCheckoutQuery({
     variables: { id },
     pause: pause || authenticating,
+    requestPolicy: "cache-first",
   });
 
   return { checkout: data?.checkout as Checkout, loading };

@@ -1,4 +1,7 @@
-import { createDropInAdyenSession } from "@/checkout-storefront/fetch/requests";
+import {
+  createDropInAdyenPayment,
+  createDropInAdyenSession,
+} from "@/checkout-storefront/fetch/requests";
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
@@ -19,9 +22,11 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
 
-  const [_adyenCheckoutInstance, setAdyenCheckoutInstance] = useState<AdyenCheckoutInstance | null>(
+  const [adyenCheckoutInstance, setAdyenCheckoutInstance] = useState<AdyenCheckoutInstance | null>(
     null
   );
+
+  console.log(adyenCheckoutInstance);
 
   const { checkout, loading: isCheckoutLoading } = useCheckout();
 
@@ -39,12 +44,79 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
     skip: isCheckoutLoading,
   });
 
+  const [, fetchCreateDropInAdyenPayment] = useFetch(createDropInAdyenPayment, {
+    skip: true,
+  });
+
   useEffect(() => {
     if (!dropinContainerElRef.current || !adyenSessionResponse.data) {
       return;
     }
 
-    createAdyenCheckout(adyenSessionResponse.data)
+    AdyenCheckout({
+      environment: "test",
+      clientKey: adyenSessionResponse.data.clientKey,
+      session: {
+        id: adyenSessionResponse.data.session.id,
+        sessionData: adyenSessionResponse.data.session.sessionData,
+      },
+      onPaymentCompleted: (result: any, component: any) => {
+        console.info(result, component);
+      },
+      onError: (error: any, component: any) => {
+        console.error(error.name, error.message, error.stack, component);
+      },
+      onSubmit: async (state: {
+        isValid?: boolean;
+        data: CardElementData & Record<string, any>;
+      }) => {
+        console.log({ "checkout.totalPrice.gross.amount": checkout.totalPrice.gross.amount });
+        const result = await fetchCreateDropInAdyenPayment({
+          checkoutApiUrl,
+          totalAmount: checkout.totalPrice.gross.amount,
+          checkoutId: checkout.id,
+          method: "dropin",
+          provider: "adyen",
+          redirectUrl: window.location.href,
+          adyenStateData: state.data,
+        });
+
+        if (!result || "message" in result) {
+          // @todo handle error ?
+          console.error(result);
+          return;
+        }
+        console.dir(result.payment);
+        if (result?.payment.action) {
+          // @todo Drop-in will handle the required action, depending on the action.type.
+          // You will then need to make one more API call to verify the payment result.
+          return;
+        } else {
+          const newUrl = `?order=${result.orderId}`;
+          window.location.href = newUrl;
+          return;
+        }
+      },
+      onAdditionalDetails: (
+        state: { isValid?: boolean; data: CardElementData & Record<string, any> },
+        component: DropinElement
+      ) => {
+        //  Your function calling your server to make a `/payments/details` request
+        console.log("onAdditionalDetails", state, component);
+      },
+      // Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
+      // For example, this is 3D Secure configuration for cards:
+      paymentMethodsConfiguration: {
+        card: {
+          hasHolderName: true,
+          holderNameRequired: true,
+          billingAddressRequired: false,
+        },
+      },
+      analytics: {
+        enabled: false,
+      },
+    })
       .then((adyenCheckout) => {
         setAdyenCheckoutInstance(adyenCheckout);
         dropinComponentRef.current = adyenCheckout
@@ -61,46 +133,3 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
   return <div ref={dropinContainerElRef} />;
 });
 AdyenDropIn.displayName = "AdyenDropIn";
-
-function createAdyenCheckout(adyenSessionResponse: AdyenDropInCreateSessionResponse) {
-  return AdyenCheckout({
-    environment: "test",
-    clientKey: adyenSessionResponse.clientKey,
-    session: {
-      id: adyenSessionResponse.session.id,
-      sessionData: adyenSessionResponse.session.sessionData,
-    },
-    onPaymentCompleted: (result: any, component: any) => {
-      console.info(result, component);
-    },
-    onError: (error: any, component: any) => {
-      console.error(error.name, error.message, error.stack, component);
-    },
-    onSubmit: (
-      state: { isValid?: boolean; data: CardElementData & Record<string, any> },
-      component: DropinElement
-    ) => {
-      //  Your function calling your server to make a `/payments` request
-      console.log("onSubmit", state);
-    },
-    onAdditionalDetails: (
-      state: { isValid?: boolean; data: CardElementData & Record<string, any> },
-      component: DropinElement
-    ) => {
-      //  Your function calling your server to make a `/payments/details` request
-      console.log("onAdditionalDetails", state, component);
-    },
-    // Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
-    // For example, this is 3D Secure configuration for cards:
-    paymentMethodsConfiguration: {
-      card: {
-        hasHolderName: true,
-        holderNameRequired: true,
-        billingAddressRequired: false,
-      },
-    },
-    analytics: {
-      enabled: false,
-    },
-  });
-}

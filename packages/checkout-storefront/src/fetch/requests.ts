@@ -5,7 +5,9 @@ import {
   PaymentStatusResponse,
   ChannelActivePaymentProvidersByChannel,
   AdyenDropInCreateSessionResponse,
-  CheckoutBody,
+  PostDropInAdyenSessionsBody,
+  PostDropInAdyenPaymentsBody,
+  PostAdyenDropInPaymentsResponse,
 } from "checkout-common";
 import { PayResult } from "./types";
 import urlJoin from "url-join";
@@ -21,7 +23,10 @@ export const getPaymentMethods = ({
 }: PaymentMethodsRequestArgs): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
   fetch(urlJoin(checkoutApiUrl, "active-payment-providers", channelId));
 
-export const pay = ({ checkoutApiUrl, ...body }: PayRequestBody): FetchResponse<PayResult> =>
+export const pay = ({
+  checkoutApiUrl,
+  ...body
+}: PayRequestBody & { checkoutApiUrl: string }): FetchResponse<PayResult> =>
   fetch(urlJoin(checkoutApiUrl, "pay"), {
     method: "POST",
     body: JSON.stringify(body),
@@ -45,8 +50,22 @@ export const getOrderPaymentStatus = ({
 export const createDropInAdyenSession = ({
   checkoutApiUrl,
   ...body
-}: CheckoutBody & { currency: string }): FetchResponse<AdyenDropInCreateSessionResponse> => {
+}: PostDropInAdyenSessionsBody & {
+  checkoutApiUrl: string;
+}): FetchResponse<AdyenDropInCreateSessionResponse> => {
   return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions") + "/", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+};
+
+export const createDropInAdyenPayment = ({
+  checkoutApiUrl,
+  ...body
+}: PostDropInAdyenPaymentsBody & {
+  checkoutApiUrl: string;
+}): FetchResponse<PostAdyenDropInPaymentsResponse | { message: string }> => {
+  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments") + "/", {
     method: "POST",
     body: JSON.stringify(body),
   });
