@@ -7,7 +7,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
 import { isEqual, omit, reduce, uniq } from "lodash-es";
-import { Address, AddressFormData, UserAddressFormData } from "./types";
+import { Address, AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
 
 export const emptyFormData: AddressFormData = {
   firstName: "",

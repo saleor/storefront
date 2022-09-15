@@ -1,7 +1,7 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
+import { getCountryByCountryCode } from "@/checkout-storefront/lib/consts";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
-import { getCountryByCountryCode } from "@/checkout-storefront/sections/Addresses/countries";
 import { reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";

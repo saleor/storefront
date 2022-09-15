@@ -1,8 +1,8 @@
 import React from "react";
-import { Address, AddressFormData } from "./types";
-import { AddressForm } from "./AddressForm";
-import { getAddressFormDataFromAddress } from "./utils";
+import { Address, AddressFormData } from "../../components/AddressForm/types";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
+import { AutoSaveAddressForm } from "@/checkout-storefront/components/AddressForm";
+import { getAddressFormDataFromAddress } from "@/checkout-storefront/lib/utils";
 
 interface GuestAddressSectionProps extends UseErrors<AddressFormData> {
   onSubmit: (address: AddressFormData) => void;
@@ -23,8 +23,7 @@ export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   const handleSave = (address: AddressFormData) => onSubmit({ ...address, autoSave: true });
 
   return (
-    <AddressForm
-      autoSave
+    <AutoSaveAddressForm
       title={title}
       onSubmit={handleSave}
       defaultValues={addressFormData}

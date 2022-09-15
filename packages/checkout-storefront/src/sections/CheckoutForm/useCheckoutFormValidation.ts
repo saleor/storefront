@@ -1,19 +1,19 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import {
   MessageKey,
+  useAddressFormUtils,
   useAlerts,
   useCheckout,
   useFormattedMessages,
 } from "@/checkout-storefront/hooks";
 import { AddressField, ErrorCode } from "@/checkout-storefront/lib/globalTypes";
-import { useAddressFormUtils } from "@/checkout-storefront/sections/Addresses/useAddressFormUtils";
-import { isMatchingAddress } from "@/checkout-storefront/sections/Addresses/utils";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 import { UsePaymentMethods } from "@/checkout-storefront/sections/PaymentSection";
 import { useAuthState } from "@saleor/sdk";
 import { flushSync } from "react-dom";
 import { UseFormReturn } from "react-hook-form";
 import { ValidationError } from "yup";
+import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
 
 interface UseCheckoutFormValidation
   extends Pick<UsePaymentMethods, "isValidProviderSelected">,

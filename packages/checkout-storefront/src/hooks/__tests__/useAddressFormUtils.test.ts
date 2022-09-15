@@ -1,10 +1,10 @@
 import { AddressValidationRulesQuery } from "@/checkout-storefront/graphql";
 import { validationRules } from "@/checkout-storefront/lib/fixtures/address";
-import { useAddressFormUtils } from "@/checkout-storefront/sections/Addresses/useAddressFormUtils";
 import { renderHook } from "@testing-library/react-hooks";
 import { fromValue } from "wonka";
 import { getMockUrqlProvider } from "@/checkout-storefront/__tests__/utils";
-import { defaultCountry } from "@/checkout-storefront/sections/Addresses/countries";
+import { useAddressFormUtils } from "@/checkout-storefront/hooks/useAddressFormUtils";
+import { defaultCountry } from "@/checkout-storefront/lib/consts";
 
 const mockedSuccessResponse = {
   executeQuery: () =>
@@ -25,7 +25,7 @@ const mockedFailResponse = {
 };
 
 describe("isRequiredField", () => {
-  it("should return true for required field", () => {
+  it("should return true for  field", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry.code), {
       wrapper: getMockUrqlProvider(mockedSuccessResponse),
     });

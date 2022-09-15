@@ -1,10 +1,13 @@
+import {
+  AddressFormProps,
+  ManualSaveAddressForm,
+} from "@/checkout-storefront/components/AddressForm";
+import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
-import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
+import { useAddressList } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
 import React from "react";
-import { AddressForm, AddressFormProps } from "./AddressForm";
-import { AddressFormData } from "./types";
 
-export interface AddressCreateFormProps extends Pick<AddressFormProps<AddressFormData>, "title"> {
+export interface AddressCreateFormProps extends Pick<AddressFormProps, "title"> {
   onClose: () => void;
 }
 
@@ -22,7 +25,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onClose, .
   };
 
   return (
-    <AddressForm
+    <ManualSaveAddressForm
       onSubmit={handleSubmit}
       onCancel={onClose}
       loading={creating}

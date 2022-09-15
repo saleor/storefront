@@ -8,7 +8,7 @@ import {
   getOrderedAddressFields,
   isMatchingAddress,
   isMatchingAddressFormData,
-} from "@/checkout-storefront/sections/Addresses/utils";
+} from "@/checkout-storefront/lib/utils";
 import { omit } from "lodash-es";
 
 describe("getAddressFormDataFromAddress", () => {

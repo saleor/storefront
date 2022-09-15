@@ -8,7 +8,6 @@ interface UseFormAutofillSubmit<TFormData extends FormDataBase>
   onSubmit: (formData: TFormData) => Promise<void> | void;
   formData: TFormData;
   defaultFormData?: TFormData;
-  autoSave?: boolean;
 }
 
 export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
@@ -16,7 +15,6 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
   defaultFormData,
   onSubmit,
   trigger,
-  autoSave = true,
   formState,
 }: UseFormAutofillSubmit<TFormData>) => {
   const { isDirty, dirtyFields } = formState;
@@ -57,11 +55,11 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
   useEffect(() => {
     const hasAutofilled = !isEqual(formData, formDataRef.current);
 
-    if (hasAutofilled && autoSave) {
+    if (hasAutofilled) {
       void throttledTrigger(formData);
       void debouncedSubmit(formData);
     }
-  }, [debouncedSubmit, formData, autoSave, throttledTrigger]);
+  }, [debouncedSubmit, formData, throttledTrigger]);
 
   return debouncedSubmit;
 };

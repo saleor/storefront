@@ -10,3 +10,4 @@ export * from "./Money";
 export * from "./SelectBoxGroup";
 export * from "./TextInput";
 export * from "./Title";
+export * from "./AddressSelectBox";

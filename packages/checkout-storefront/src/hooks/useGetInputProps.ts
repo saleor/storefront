@@ -39,16 +39,15 @@ type UseGetInputProps<
 export const useGetInputProps = <
   TControl extends Control<any, any>,
   TData extends ControlFormData<TControl>
->({
-  register,
-  control,
-  formState: { errors },
-}: UseGetInputProps<TControl, TData>) => {
+>(
+  { register, control, formState: { errors } }: UseGetInputProps<TControl, TData>,
+  defaultOptions?: RegisterOptions<TData, any>
+) => {
   const getInputProps = <TName extends FieldPath<TData> = FieldPath<TData>>(
     name: TName,
     options?: RegisterOptions<TData, TName>
   ) => ({
-    ...register(name, options),
+    ...register(name, { ...defaultOptions, ...options }),
     name,
     errors,
     control,

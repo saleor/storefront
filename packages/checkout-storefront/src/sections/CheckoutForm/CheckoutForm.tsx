@@ -8,10 +8,10 @@ import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import { PaymentSection } from "../PaymentSection";
-import { ShippingAddressSection } from "../Addresses/ShippingAddressSection";
+import { ShippingAddressSection } from "../ShippingAddressSection/ShippingAddressSection";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
-import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
+import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
 
 export const CheckoutForm = () => {
