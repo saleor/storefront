@@ -55,7 +55,6 @@ export const useCheckoutFinalize = () => {
     const userRegisterSuccessOrPassed = await userRegister(formData);
 
     if (userRegisterSuccessOrPassed) {
-      console.log({ ...formData });
       const result = await checkoutPay({
         checkoutApiUrl,
         provider: formData.paymentProviderId,

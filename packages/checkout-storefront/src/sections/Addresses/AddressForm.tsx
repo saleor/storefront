@@ -17,7 +17,10 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { useAddressFormUtils } from "./useAddressFormUtils";
 import { IconButton } from "@/checkout-storefront/components";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import { emptyFormData } from "@/checkout-storefront/sections/Addresses/utils";
+import {
+  emptyFormData,
+  isMatchingAddressFormData,
+} from "@/checkout-storefront/sections/Addresses/utils";
 import { difference, isEqual } from "lodash-es";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
@@ -71,7 +74,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
   const formProps = useForm<TFormData>({
     resolver: resolver as unknown as Resolver<TFormData, any>,
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       ...(defaultValues as DefaultValues<TFormData>),
       countryCode: initialCountryCode,
@@ -108,7 +111,7 @@ export const AddressForm = <TFormData extends AddressFormData>({
   }, [clearErrors, onClearErrors, onCancel]);
 
   const hasDataChanged = useCallback(
-    (formData: TFormData) => !isEqual(formData, defaultValuesRef.current),
+    (formData: TFormData) => !isMatchingAddressFormData(formData, defaultValuesRef.current),
     []
   );
 
@@ -140,6 +143,14 @@ export const AddressForm = <TFormData extends AddressFormData>({
 
     debouncedSubmit(getValues());
   };
+
+  useEffect(() => {
+    if (!hasDataChanged(defaultValues)) {
+      return;
+    }
+
+    defaultValuesRef.current = defaultValues;
+  }, [defaultValues, hasDataChanged]);
 
   // prevents outdated data to remain in the form when a field is
   // no longer allowed

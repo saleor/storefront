@@ -50,10 +50,13 @@ export const getAddressFormDataFromAddress = (address: Address): AddressFormData
     {}
   ) as Omit<AddressFormData, "countryCode">;
 
-  return {
-    ...parsedAddressBase,
-    countryCode: country.code as CountryCode,
-  };
+  return omit(
+    {
+      ...parsedAddressBase,
+      countryCode: country.code as CountryCode,
+    },
+    ["__typename"]
+  ) as AddressFormData;
 };
 
 export const getUserAddressFormDataFromAddress = (
@@ -93,7 +96,11 @@ export const getMatchingAddressFromList =
 export const isMatchingAddressFormData = (
   address?: Partial<AddressFormData> | null,
   addressToMatch?: Partial<AddressFormData> | null
-) => isEqual(omit(address, ["id", "autoSave"]), omit(addressToMatch, ["id", "autoSave"]));
+) => {
+  const propsToOmit = ["id", "autoSave", "__typename"];
+
+  return isEqual(omit(address, propsToOmit), omit(addressToMatch, propsToOmit));
+};
 
 export const getAddressVlidationRulesVariables = (
   autoSave = false
