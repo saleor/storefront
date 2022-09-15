@@ -119,6 +119,7 @@ export const addressFieldsOrder: AddressField[] = [
   "streetAddress1",
   "streetAddress2",
   "city",
+  "countryCode",
   "postalCode",
   "cityArea",
   "countryArea",

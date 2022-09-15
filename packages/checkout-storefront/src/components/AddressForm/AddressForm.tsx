@@ -10,7 +10,7 @@ import { difference, sortBy } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
-import { countries } from "@/checkout-storefront/lib/consts";
+import { autocompleteTags, countries } from "@/checkout-storefront/lib/consts";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { emptyFormData } from "@/checkout-storefront/lib/utils";
 
@@ -34,7 +34,13 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   formProps,
   defaultInputOptions = {},
 }) => {
-  const { setValue, watch, setError } = formProps;
+  const {
+    setValue,
+    watch,
+    setError,
+    trigger,
+    formState: { isDirty },
+  } = formProps;
   const formData = watch();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
   const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
@@ -60,6 +66,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     isRequiredField,
     countryAreaChoices,
     allowedFields,
+    requiredFields,
   } = useAddressFormUtils(formData.countryCode);
 
   const allowedFieldsRef = useRef(allowedFields || []);
@@ -72,13 +79,22 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     removedFields.forEach((field) => {
       setValue(field as Path<AddressFormData>, emptyFormData[field as Path<AddressFormData>]);
     });
-  }, [allowedFields, setValue]);
+
+    if (isDirty) {
+      void trigger();
+    }
+  }, [allowedFields, requiredFields, setValue]);
 
   return (
     <form>
       <div className="flex flex-row justify-between items-baseline">
         <Title>{title}</Title>
-        <Select width="1/2" options={countryOptions} {...getInputProps("countryCode")} />
+        <Select
+          width="1/2"
+          options={countryOptions}
+          {...getInputProps("countryCode")}
+          autoComplete={autocompleteTags.countryCode}
+        />
       </div>
       <div className="mt-2">
         {orderedAddressFields.map((field: AddressField) => {
@@ -91,6 +107,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
                 {...getInputProps("countryArea")}
                 classNames={{ container: "mb-4" }}
                 placeholder={getFieldLabel("countryArea")}
+                autoComplete={autocompleteTags.countryArea}
                 options={
                   countryAreaChoices?.map(({ verbose, raw }) => ({
                     label: verbose as string,
@@ -105,6 +122,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
             <TextInput
               key={field}
               label={label}
+              autoComplete={autocompleteTags[field]}
               {...getInputProps(field as Path<AddressFormData>)}
               optional={!isRequired}
             />

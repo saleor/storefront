@@ -82,6 +82,7 @@ export const useAddressForm = ({
       return;
     }
 
+    void trigger();
     defaultValuesRef.current = defaultValues;
   }, [defaultValues, hasDataChanged]);
 

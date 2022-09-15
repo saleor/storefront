@@ -94,11 +94,8 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
-    trigger,
     onSubmit,
-    formData: watch(),
     defaultFormData: defaultValues,
-    formState,
   });
 
   return (

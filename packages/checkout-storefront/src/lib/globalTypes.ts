@@ -44,7 +44,6 @@ export type AddressField =
   | "city"
   | "firstName"
   | "lastName"
-  | "country"
   | "countryArea"
   | "cityArea"
   | "postalCode"

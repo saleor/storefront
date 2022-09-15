@@ -22,9 +22,7 @@ export const useErrors = <TFormData>(): UseErrors<TFormData> => {
       return getParsedApiErrors(apiErrors).reduce((result, { field, ...rest }) => {
         return {
           ...result,
-          [field]: {
-            ...rest,
-          },
+          [field]: rest,
         };
       }, {} as Errors<TFormData>);
     },

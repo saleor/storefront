@@ -32,54 +32,46 @@ export interface SelectProps<TData extends string = string>
   width?: "1/2" | "full";
 }
 
-export const Select = forwardRef(
-  <TData extends string = string>(
-    {
-      options,
-      classNames,
-      placeholder = "",
-      value,
-      width = "full",
-      onChange,
-      ...rest
-    }: SelectProps<TData>,
-    ref: ForwardedRef<HTMLSelectElement>
-  ) => {
-    const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
+const SelectComponent = <TData extends string = string>(
+  { options, classNames, placeholder = "", width = "full", onChange, ...rest }: SelectProps<TData>,
+  ref: ForwardedRef<HTMLSelectElement>
+) => {
+  const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
 
-    const handleChange = (event: SyntheticEvent) => {
-      if ((event.target as HTMLSelectElement).value === PLACEHOLDER_KEY) {
-        return;
-      }
+  const handleChange = (event: SyntheticEvent) => {
+    if ((event.target as HTMLSelectElement).value === PLACEHOLDER_KEY) {
+      return;
+    }
 
-      setShowPlaceholder(false);
-      onChange(event);
-    };
+    setShowPlaceholder(false);
+    onChange(event);
+  };
 
-    return (
-      <div
-        className={clsx(
-          styles.container,
-          classNames?.container,
-          width === "1/2" ? "w-1/2" : "w-full"
+  return (
+    <div
+      className={clsx(
+        styles.container,
+        classNames?.container,
+        width === "1/2" ? "w-1/2" : "w-full"
+      )}
+    >
+      <select onChange={handleChange} {...rest} ref={ref} className={clsx(styles.select)}>
+        {showPlaceholder && (
+          <option disabled selected value="">
+            {placeholder}
+          </option>
         )}
-      >
-        <select onChange={handleChange} {...rest} ref={ref} className={clsx(styles.select)}>
-          {showPlaceholder && (
-            <option disabled selected value="">
-              {placeholder}
-            </option>
-          )}
-          {options.map(({ label, value, disabled = false }) => (
-            <option value={value} disabled={disabled}>
-              {label}
-            </option>
-          ))}
-        </select>
-        <div className={clsx(styles.icon)}>
-          <ChevronDownIcon />
-        </div>
+        {options.map(({ label, value, disabled = false }) => (
+          <option value={value} disabled={disabled} key={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+      <div className={clsx(styles.icon)}>
+        <ChevronDownIcon />
       </div>
-    );
-  }
-);
+    </div>
+  );
+};
+
+export const Select = forwardRef(SelectComponent);
