@@ -3,7 +3,7 @@
 }
 
 .select {
-  @apply h-10 border rounded border-border-secondary py-2 px-3 pr-10 w-full text-base appearance-none;
+  @apply h-10 border rounded border-border-secondary py-2 px-3 pr-10 w-full text-base appearance-none cursor-pointer;
 }
 
 .select:disabled {
