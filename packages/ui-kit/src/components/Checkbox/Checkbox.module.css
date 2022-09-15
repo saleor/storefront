@@ -1,3 +1,7 @@
+:local(.label) {
+  @apply cursor-pointer;
+}
+
 :local(.checkbox) {
   @apply relative flex flex-row mb-4 pl-6.5;
 }
