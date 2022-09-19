@@ -1,4 +1,4 @@
-import { SHARED_ELEMENTS } from "cypress/elements/shared-elements";
+import { SHARED_ELEMENTS } from "../elements/shared-elements";
 
 import {
   clickOnTheFooterExternalLink,

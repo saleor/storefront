@@ -1,7 +1,7 @@
 {
-  "extends": "../tsconfig.json",
+  // "extends": "../tsconfig.json",
   "include": ["./**/*.ts"],
-  "exclude": [],
+  "exclude": ["node_modules", "cypress"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["cypress", "node"],

@@ -11,10 +11,6 @@ export function selectNotEmptyCategory() {
     .children(MAIN_PAGE.categoryName)
     .invoke("text")
     .then((categoryTitle) => {
-      cy.get(NAVIGATION.categoriesListButtons)
-        .contains(categoryTitle)
-        .click()
-        .get(CATEGORY.categoryTitle)
-        .should("contain.text", categoryTitle);
+      cy.get(NAVIGATION.categoriesListButtons).contains(categoryTitle).click();
     });
 }
