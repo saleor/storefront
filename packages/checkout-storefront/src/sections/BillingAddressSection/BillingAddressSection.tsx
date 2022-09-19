@@ -1,7 +1,6 @@
 import { Checkbox } from "@/checkout-storefront/components/Checkbox";
 import {
   AddressFragment,
-  CountryCode,
   useCheckoutBillingAddressUpdateMutation,
   useUserQuery,
 } from "@/checkout-storefront/graphql";
@@ -13,11 +12,15 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React, { useEffect, useRef, useState } from "react";
-import { GuestAddressSection } from "./GuestAddressSection";
-import { Address, AddressFormData, UserAddressFormData } from "./types";
-import { UserAddressSection } from "./UserAddressSection";
-import { getAddressFormDataFromAddress, getAddressInputData, isMatchingAddress } from "./utils";
-import { getAddressVlidationRulesVariables } from "./utils";
+import { GuestAddressSection } from "../GuestAddressSection/GuestAddressSection";
+import { Address, AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
+import { UserAddressSection } from "../UserAddressSection/UserAddressSection";
+import {
+  isMatchingAddress,
+  getAddressVlidationRulesVariables,
+  getAddressInputData,
+  getAddressFormDataFromAddress,
+} from "@/checkout-storefront/lib/utils";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -128,9 +131,8 @@ export const BillingAddressSection = () => {
           ) : (
             <GuestAddressSection
               {...errorProps}
-              defaultAddress={user?.defaultBillingAddress}
-              selectedCountryCode={checkout?.shippingAddress?.country.code as CountryCode}
-              address={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
+              checkAddressAvailability={false}
+              defaultAddress={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage("billingAddress")}
               onSubmit={(address) => {
                 void updateBillingAddress(address);

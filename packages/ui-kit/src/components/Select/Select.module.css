@@ -1,59 +1,20 @@
 .container {
-  @apply relative block w-full;
+  @apply relative inline-block min-w-50;
 }
 
-:local(.trigger) {
-  @apply h-10 border rounded border-border-primary hover:border-border-active text-base items-center cursor-default w-full text-left whitespace-nowrap text-ellipsis overflow-hidden;
-  padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
-  padding-right: calc(theme("spacing.11") - theme("borderWidth.DEFAULT"));
+.select {
+  @apply h-10 border rounded border-border-secondary py-2 px-3 pr-10 w-full text-base appearance-none;
 }
 
-.trigger-error {
-  @apply border-border-error;
+.select:disabled {
+  @apply pointer-events-none select-none text-text-secondary;
 }
 
-.trigger-disabled {
-  @apply bg-select-disabled border-select-disabled pointer-events-none;
-  padding-right: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
+.select:focus,
+.select:active {
+  @apply border-border-primary outline-none;
 }
 
-.trigger-icon {
-  @apply ml-1 mr-3 inline-block;
-}
-
-.arrow-container {
-  @apply absolute right-0 inline-flex items-center px-2 ml-3;
-}
-
-.arrow-container svg {
-  @apply opacity-60;
-}
-
-:local(.trigger:hover .arrow-container svg) {
-  @apply opacity-100;
-}
-
-.arrow-container-open svg {
-  @apply rotate-180;
-}
-
-.arrow-container::before {
-  @apply absolute h-5 w-[1px] left-0 bg-border-primary;
-  content: "";
-}
-
-.options {
-  @apply absolute shadow-modal z-50 bg-background-primary w-full;
-}
-
-.option {
-  @apply px-4 pt-[14px] pb-[13px] text-base cursor-default flex items-center;
-}
-
-.option-icon {
-  @apply mr-3;
-}
-
-.disabled {
-  @apply text-text-secondary;
+.container .icon {
+  @apply absolute top-2 right-2 pl-2 border-l border-border-secondary pointer-events-none;
 }

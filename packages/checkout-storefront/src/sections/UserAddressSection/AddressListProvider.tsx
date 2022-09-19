@@ -13,17 +13,17 @@ import {
   Address,
   AddressFormData,
   UserAddressFormData,
-} from "@/checkout-storefront/sections/Addresses/types";
+} from "@/checkout-storefront/components/AddressForm/types";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import {
   getAddressInputData,
   getMatchingAddressFromList,
   getUserAddressFormDataFromAddress,
   isMatchingAddress,
-} from "@/checkout-storefront/sections/Addresses/utils";
+} from "@/checkout-storefront/lib/utils";
 import { ApiErrors, useAlerts } from "@/checkout-storefront/hooks";
 import { debounce } from "lodash-es";
-import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
+import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 
 interface AddressListProviderProps {
   onCheckoutAddressUpdate: (address: UserAddressFormData) => void;

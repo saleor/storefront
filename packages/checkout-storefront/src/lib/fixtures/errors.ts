@@ -1,6 +1,6 @@
 import { ApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { ValidationError } from "@/checkout-storefront/lib/globalTypes";
-import { AddressFormData } from "@/checkout-storefront/sections/Addresses/types";
+import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 
 export const apiErrors: ApiErrors<AddressFormData> = [
   {

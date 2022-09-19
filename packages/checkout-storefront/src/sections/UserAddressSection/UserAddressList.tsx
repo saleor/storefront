@@ -1,10 +1,10 @@
 import React from "react";
 import { AddressFragment } from "@/checkout-storefront/graphql";
-import { AddressSelectBox } from "./AddressSelectBox";
+import { AddressSelectBox } from "../../components/AddressSelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
-import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
+import { useAddressList } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
-import { useAddressAvailability } from "@/checkout-storefront/sections/Addresses/useAddressAvailability";
+import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 
 interface UserAddressListProps {
   onEditChange: (id: string) => void;

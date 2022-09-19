@@ -72,7 +72,6 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     paymentMethodId: selectedPaymentMethod as PaymentMethodID,
   });
 
-  console.log({ loadingCheckout });
   const hasFinishedApiChanges =
     !Object.values(methods.watch("updateState")).some((value) => value) && !loadingCheckout;
 

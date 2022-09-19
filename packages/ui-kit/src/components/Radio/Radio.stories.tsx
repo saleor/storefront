@@ -34,7 +34,6 @@ const Template = ({
           key={option.value as string}
           checked={option.value === selected}
           onChange={(event) => {
-            console.log(event.target);
             setSelected(event.target.value);
           }}
         />

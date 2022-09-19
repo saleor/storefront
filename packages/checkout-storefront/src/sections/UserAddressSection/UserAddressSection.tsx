@@ -1,18 +1,17 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { getById } from "@/checkout-storefront/lib/utils";
+import { getById, getUserAddressFormDataFromAddress } from "@/checkout-storefront/lib/utils";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import React, { Suspense, useState } from "react";
-import { Address, UserAddressFormData } from "./types";
+import { Address, UserAddressFormData } from "../../components/AddressForm/types";
 import { UserAddressList } from "./UserAddressList";
 import { AddressCreateForm } from "./AddressCreateForm";
 import { AddressEditForm } from "./AddressEditForm";
-import { getUserAddressFormDataFromAddress } from "./utils";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { Title } from "@/checkout-storefront/components/Title";
-import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
-import { AddressListProvider } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
+import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
+import { AddressListProvider } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
 import { useCheckout } from "@/checkout-storefront/hooks";
 
 export interface UserAddressSectionProps extends UseErrors<UserAddressFormData> {
@@ -46,17 +45,13 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
       <AddressListProvider
-        checkoutAddress={type === "SHIPPING" ? checkout.shippingAddress : checkout.billingAddress}
+        checkoutAddress={type === "SHIPPING" ? checkout?.shippingAddress : checkout?.billingAddress}
         onCheckoutAddressUpdate={onAddressSelect}
         defaultAddress={defaultAddress}
         checkAddressAvailability={type === "SHIPPING"}
       >
         {displayAddressCreate && (
-          <AddressCreateForm
-            title={title}
-            type={type}
-            onClose={() => setDisplayAddressCreate(false)}
-          />
+          <AddressCreateForm title={title} onClose={() => setDisplayAddressCreate(false)} />
         )}
 
         {displayAddressEdit && (
