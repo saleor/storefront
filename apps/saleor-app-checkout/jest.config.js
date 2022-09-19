@@ -18,9 +18,11 @@ module.exports = {
       tsconfig: {
         ...compilerOptions,
         jsx: "react-jsx",
+        allowJs: true,
       },
     },
   },
+  transformIgnorePatterns: ["<rootDir>/node_modules/(?!url-join)"],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: "<rootDir>/",
