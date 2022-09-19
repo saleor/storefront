@@ -14,7 +14,7 @@ import {
 import { getOrderTransactions } from "@/saleor-app-checkout/backend/payments/getOrderTransactions";
 import { updateTransaction } from "@/saleor-app-checkout/backend/payments/updateTransaction";
 import { toNextHandler } from "retes/adapter";
-import { Handler, Middleware } from "retes";
+import { Handler } from "retes";
 import { Response } from "retes/response";
 import {
   AdyenRequestContext,
@@ -44,10 +44,6 @@ const handler: Handler = async (req) => {
 
 export default withSentry(
   toNextHandler([
-    ((handler) => (request) => {
-      console.dir(request.body, { depth: null });
-      return handler(request);
-    }) as Middleware,
     withAdyenWebhookCredentials,
     isAdyenWebhookAuthenticated,
     isAdyenNotification,

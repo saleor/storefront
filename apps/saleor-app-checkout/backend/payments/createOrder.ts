@@ -41,7 +41,6 @@ export const createOrder = async (
   }
 
   if (checkout.data?.checkout?.totalPrice.gross.amount !== totalAmount) {
-    console.log(checkout.data?.checkout?.totalPrice.gross.amount, totalAmount);
     return {
       errors: ["TOTAL_AMOUNT_MISMATCH"],
     };

@@ -25,7 +25,7 @@ export const envVars = {
       : ""
   ),
 };
-console.log(envVars);
+
 export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
   checkoutAppUrl: "NEXT_PUBLIC_CHECKOUT_APP_URL",

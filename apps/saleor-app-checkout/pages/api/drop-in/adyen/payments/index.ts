@@ -32,7 +32,6 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
   }
 
   try {
-    console.log(order);
     const appUrl = getBaseUrl(req);
     const createPaymentData = {
       order,

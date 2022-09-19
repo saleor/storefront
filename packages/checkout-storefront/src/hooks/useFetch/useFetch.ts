@@ -35,7 +35,6 @@ export const useFetch = <
   };
 
   useEffect(() => {
-    console.log(fetchFn, skip);
     if (skip) {
       return;
     }

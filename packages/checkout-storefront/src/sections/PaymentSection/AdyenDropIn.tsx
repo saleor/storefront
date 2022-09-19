@@ -124,9 +124,8 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
   });
 
   const onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails = useEvent(
-    (state, component) => {
-      //  Your function calling your server to make a `/payments/details` request
-      console.log("onAdditionalDetails", state, component);
+    (_state, _component) => {
+      // @todo Your function calling your server to make a `/payments/details` request
     }
   );
 
