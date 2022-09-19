@@ -1,7 +1,7 @@
 export const productsToSearch = {
-  polo: "polo",
+  product: "polo",
   nonExistingProduct: "!@#$%",
   noProductsInfo: "Search query didn't return any viable results",
-  productWithVariants: "Hoodie",
-  productWithoutVariants: "Cup",
+  productWithVariants: "T-shirt",
+  productWithoutVariants: "Beanie",
 };

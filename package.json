@@ -22,9 +22,12 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
   },
   "devDependencies": {
+    "cypress": "^10.1.0",
     "env-cmd": "^10.1.0",
     "husky": "^8.0.1",
     "lint-staged": "13.0.3",
