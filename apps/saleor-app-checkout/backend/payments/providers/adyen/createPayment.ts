@@ -9,6 +9,7 @@ import invariant from "ts-invariant";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { CreatePaymentData } from "../../types";
 import { PostDropInAdyenPaymentsBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
+import { PaymentRequest as AdyenPaymentRequest } from "@adyen/api-library/lib/src/typings/checkout/paymentRequest";
 
 export const orderToAdyenRequest = ({
   order,
@@ -133,6 +134,7 @@ export const createAdyenCheckoutPayment = async ({
     ...adyenRequest,
     paymentMethod: adyenStateData.paymentMethod,
     browserInfo: (adyenStateData.browserInfo as any) ?? undefined,
+    shopperInteraction: AdyenPaymentRequest.ShopperInteractionEnum.Ecommerce,
   });
 
   return {

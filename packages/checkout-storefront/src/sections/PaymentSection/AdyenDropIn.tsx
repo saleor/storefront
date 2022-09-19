@@ -74,7 +74,6 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
   });
 
   const onSubmit: AdyenCheckoutInstanceOnSubmit = useEvent(async (state, component) => {
-    console.log({ "checkout.totalPrice.gross.amount": checkout.totalPrice.gross.amount });
     const result = await fetchCreateDropInAdyenPayment({
       checkoutApiUrl,
       totalAmount: checkout.totalPrice.gross.amount,
@@ -90,7 +89,6 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
       console.error(result);
       return;
     }
-    console.dir(result.payment);
     if (result?.payment.action) {
       // @todo Drop-in will handle the required action, depending on the action.type.
       // You will then need to make one more API call to verify the payment result.
@@ -165,7 +163,6 @@ function createAdyenCheckoutInstance(
     onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails;
   }
 ) {
-  console.log({ adyenSessionResponse });
   return AdyenCheckout({
     environment: "test",
     clientKey: adyenSessionResponse.clientKey,
