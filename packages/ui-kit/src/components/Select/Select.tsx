@@ -1,10 +1,18 @@
-import { ReactNode } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  ReactNode,
+  SelectHTMLAttributes,
+  SyntheticEvent,
+  useState,
+} from "react";
 import clsx from "clsx";
-import { Combobox } from "@headlessui/react";
 
 import styles from "./Select.module.css";
 import { ChevronDownIcon } from "../icons";
 import { ClassNames } from "@lib/globalTypes";
+
+const PLACEHOLDER_KEY = "placeholder";
 
 export interface Option<TData extends string = string> {
   label: string | ReactNode;
@@ -16,92 +24,54 @@ export interface Option<TData extends string = string> {
 
 export type SelectOnChangeHandler<TData extends string = string> = (value: TData) => void;
 
-export interface SelectProps<TData extends string = string> {
+export interface SelectProps<TData extends string = string>
+  extends SelectHTMLAttributes<HTMLSelectElement> {
+  onChange: (event: SyntheticEvent) => void;
   options: Option<TData>[];
-  selectedValue: string;
-  error?: boolean;
-  disabled?: boolean;
-  classNames?: ClassNames<
-    "container" | "triggerIcon" | "trigger" | "triggerArrow" | "options" | "optionIcon" | "option"
-  >;
-  onChange: SelectOnChangeHandler<TData>;
-  placeholder?: string;
+  classNames?: ClassNames<"container">;
+  width?: "1/2" | "full";
 }
 
-export const Select = <TData extends string = string>({
-  selectedValue,
-  options,
-  error,
-  disabled,
-  classNames,
-  onChange,
-  placeholder = "",
-}: SelectProps<TData>) => {
-  const selectedOption = options.find(({ value }) => value === selectedValue);
+const SelectComponent = <TData extends string = string>(
+  { options, classNames, placeholder = "", width = "full", onChange, ...rest }: SelectProps<TData>,
+  ref: ForwardedRef<HTMLSelectElement>
+) => {
+  const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
+
+  const handleChange = (event: SyntheticEvent) => {
+    if ((event.target as HTMLSelectElement).value === PLACEHOLDER_KEY) {
+      return;
+    }
+
+    setShowPlaceholder(false);
+    onChange(event);
+  };
 
   return (
-    <div className={clsx(styles.container, classNames?.container)}>
-      <Combobox value={selectedOption} onChange={({ value }: Option<TData>) => onChange(value)}>
-        <Combobox.Button
-          className={clsx(
-            styles.trigger,
-            {
-              [styles["trigger-error"]]: error,
-              [styles["trigger-disabled"]]: disabled,
-            },
-            classNames?.trigger
-          )}
-        >
-          {({ open }) => {
-            return (
-              <>
-                {selectedOption?.icon && (
-                  <div className={clsx(styles["trigger-icon"], classNames?.triggerIcon)}>
-                    {selectedOption?.icon}
-                  </div>
-                )}
-                {selectedOption?.label || placeholder}
-                {!disabled && (
-                  <span
-                    className={clsx(
-                      styles["arrow-container"],
-                      {
-                        [styles["arrow-container-open"]]: open,
-                      },
-                      classNames?.triggerArrow
-                    )}
-                  >
-                    <ChevronDownIcon />
-                  </span>
-                )}
-              </>
-            );
-          }}
-        </Combobox.Button>
-        {!disabled && (
-          <Combobox.Options className={clsx(styles.options)}>
-            {options.map((option) => (
-              <Combobox.Option
-                key={option.value}
-                value={option}
-                disabled={option.disabled}
-                className={clsx(
-                  styles.option,
-                  classNames?.option,
-                  option.disabled && styles.disabled
-                )}
-              >
-                {option?.icon && (
-                  <div className={clsx(styles["option-icon"], classNames?.optionIcon)}>
-                    {option?.icon}
-                  </div>
-                )}
-                {option.label}
-              </Combobox.Option>
-            ))}
-          </Combobox.Options>
+    <div
+      className={clsx(
+        styles.container,
+        classNames?.container,
+        width === "1/2" ? "w-1/2" : "w-full"
+      )}
+    >
+      <select onChange={handleChange} {...rest} ref={ref} className={clsx(styles.select)}>
+        {showPlaceholder && (
+          <option disabled selected value="">
+            {placeholder}
+          </option>
         )}
-      </Combobox>
+        {options.map(({ label, value, disabled = false }) => (
+          <option value={value} disabled={disabled} key={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+      <div className={clsx(styles.icon)}>
+        <ChevronDownIcon />
+      </div>
     </div>
   );
 };
+
+export const Select = forwardRef(SelectComponent);

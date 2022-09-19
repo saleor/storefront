@@ -13,10 +13,13 @@ import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React, { useCallback } from "react";
-import { GuestAddressSection } from "./GuestAddressSection";
-import { AddressFormData, UserAddressFormData } from "./types";
-import { UserAddressSection } from "./UserAddressSection";
-import { getAddressInputData, getAddressVlidationRulesVariables } from "./utils";
+import { GuestAddressSection } from "../GuestAddressSection/GuestAddressSection";
+import { AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
+import { UserAddressSection } from "../UserAddressSection/UserAddressSection";
+import {
+  getAddressInputData,
+  getAddressVlidationRulesVariables,
+} from "@/checkout-storefront/lib/utils";
 
 export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -28,7 +31,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const user = data?.me;
   const addresses = user?.addresses;
-  const { showErrors } = useAlerts();
+  const { showErrors } = useAlerts("checkoutShippingUpdate");
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
 
@@ -43,15 +46,13 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
         shippingAddress: getAddressInputData(address),
         validationRules: getAddressVlidationRulesVariables(autoSave),
       });
-
       const [hasErrors, errors] = extractMutationErrors(result);
-
       if (hasErrors) {
-        showErrors(errors, "checkoutShippingUpdate");
+        showErrors(errors);
         setApiErrors(errors);
       }
     },
-    [checkout.id]
+    [checkout?.id, setApiErrors, showErrors, checkoutShippingAddressUpdate]
   );
 
   if (collapsed) {
@@ -75,13 +76,10 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
           />
         ) : (
           <GuestAddressSection
-            defaultAddress={user?.defaultShippingAddress}
             checkAddressAvailability={true}
-            address={checkout?.shippingAddress}
+            defaultAddress={checkout.shippingAddress}
             title={formatMessage("shippingAddress")}
-            onSubmit={(address) => {
-              void updateShippingAddress(address);
-            }}
+            onSubmit={updateShippingAddress}
             {...errorProps}
           />
         )}

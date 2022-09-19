@@ -1,4 +1,4 @@
-import { ValidationError, ErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { ValidationError, ErrorCode, FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
 import { ObjectSchema, ValidationError as YupValidationErrorObject } from "yup";
@@ -33,7 +33,7 @@ export const getErrorsAsObject = <TFormData extends Record<string, any>>(
   );
 
 export const useValidationResolver = <
-  TFormData extends Record<string, any>,
+  TFormData extends FormDataBase,
   TShape extends Record<keyof TFormData, any>
 >(
   schema: ObjectSchema<TShape>

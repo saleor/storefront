@@ -26,6 +26,7 @@ export const Button: FC<ButtonProps> = ({
   variant = "primary",
   disabled = false,
   children,
+  type = "button",
   ...rest
 }) => {
   const classes = clsx(
@@ -39,7 +40,7 @@ export const Button: FC<ButtonProps> = ({
   );
 
   return (
-    <button disabled={disabled} className={classes} {...rest}>
+    <button disabled={disabled} className={classes} type={type} {...rest}>
       {typeof label === "string" ? <ButtonLabel content={label} /> : label}
     </button>
   );

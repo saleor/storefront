@@ -7,7 +7,8 @@ import {
   getMatchingAddressFromList,
   getOrderedAddressFields,
   isMatchingAddress,
-} from "@/checkout-storefront/sections/Addresses/utils";
+  isMatchingAddressFormData,
+} from "@/checkout-storefront/lib/utils";
 import { omit } from "lodash-es";
 
 describe("getAddressFormDataFromAddress", () => {
@@ -18,7 +19,7 @@ describe("getAddressFormDataFromAddress", () => {
   it("should return properly formatted form data from adress", () => {
     const address = addresses[0];
     expect(getAddressFormDataFromAddress(address)).toEqual({
-      ...omit(address, "country"),
+      ...omit(address, ["country", "__typename"]),
       countryCode: address?.country.code,
     });
   });
@@ -44,6 +45,42 @@ describe("isMatchingAddress", () => {
     const addressToCompare = addresses[1];
 
     expect(isMatchingAddress(address, addressToCompare)).toEqual(false);
+  });
+});
+
+describe("isMatchingAddressFormData", () => {
+  it("should return true for address form data with all same data", () => {
+    const address = getAddressFormDataFromAddress(addresses[0]);
+
+    expect(isMatchingAddressFormData(address, address)).toEqual(true);
+  });
+
+  it("should return true for address form data of different id but same data", () => {
+    const address = getAddressFormDataFromAddress({
+      ...addresses[0],
+      id: "some-id",
+    } as AddressFragment);
+    const addressToCompare = getAddressFormDataFromAddress({
+      ...addresses[0],
+      id: "some-other-id",
+    } as AddressFragment);
+
+    expect(isMatchingAddressFormData(address, addressToCompare)).toEqual(true);
+  });
+
+  it("should return false for different addresses", () => {
+    const address = getAddressFormDataFromAddress(addresses[0]);
+    const addressToCompare = getAddressFormDataFromAddress(addresses[1]);
+
+    expect(isMatchingAddressFormData(address, addressToCompare)).toEqual(false);
+  });
+
+  it("should return true for same addresses, one of which has an id", () => {
+    const { id, ...addressRest } = addresses[0] as AddressFragment;
+    const address = getAddressFormDataFromAddress({ id, ...addressRest });
+    const addressToCompare = getAddressFormDataFromAddress(addressRest as AddressFragment);
+
+    expect(isMatchingAddressFormData(address, addressToCompare)).toEqual(true);
   });
 });
 

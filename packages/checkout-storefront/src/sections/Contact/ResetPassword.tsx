@@ -11,7 +11,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
-import { Control, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 

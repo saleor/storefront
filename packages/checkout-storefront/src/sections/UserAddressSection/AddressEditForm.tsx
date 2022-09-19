@@ -1,11 +1,13 @@
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
-import { AddressForm, AddressFormProps } from "./AddressForm";
-import { AddressFormData, UserAddressFormData } from "./types";
-import { useCountrySelect } from "@/checkout-storefront/hooks/useErrors/useCountrySelect";
-import { useAddressList } from "@/checkout-storefront/sections/Addresses/AddressListProvider";
+import { AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
+import { useAddressList } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
+import {
+  AddressFormProps,
+  ManualSaveAddressForm,
+} from "@/checkout-storefront/components/AddressForm";
 
-interface AddressEditFormProps extends Pick<AddressFormProps<AddressFormData>, "title"> {
+interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
   defaultValues: UserAddressFormData;
   onClose: () => void;
 }
@@ -18,13 +20,8 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const { setApiErrors, ...errorsRest } = useErrors<UserAddressFormData>();
   const { addressUpdate, addressDelete, updating, deleting } = useAddressList();
 
-  const countrySelectProps = useCountrySelect({
-    autoSelect: !defaultValues.countryCode,
-    selectedCountryCode: defaultValues.countryCode,
-  });
-
-  const handleUpdate = async (formData: UserAddressFormData) => {
-    const { hasErrors, errors } = await addressUpdate(formData);
+  const handleUpdate = async (formData: AddressFormData) => {
+    const { hasErrors, errors } = await addressUpdate({ ...formData, id: defaultValues.id });
 
     if (!hasErrors) {
       setApiErrors(errors);
@@ -42,15 +39,12 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   };
 
   return (
-    <AddressForm
+    <ManualSaveAddressForm
       loading={updating || deleting}
       onSubmit={handleUpdate}
-      onDelete={() => {
-        void handleDelete();
-      }}
+      onDelete={handleDelete}
       defaultValues={defaultValues}
       onCancel={onClose}
-      {...countrySelectProps}
       {...errorsRest}
       {...rest}
     />
