@@ -13,7 +13,7 @@ export default defineConfig({
   viewportWidth: 1400,
   viewportHeight: 660,
   env: {
-    API_URL: process.env.NEXT_PUBLIC_API_URI,
+    API_URL: process.env.SALEOR_API_URL,
   },
   e2e: {
     baseUrl: "http://localhost:3001/",

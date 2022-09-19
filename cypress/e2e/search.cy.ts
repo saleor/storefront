@@ -10,10 +10,10 @@ describe("Search for products", () => {
   });
 
   it("should search for products SRS_0405", () => {
-    const searchQuery = productsToSearch.polo;
+    const searchQuery = productsToSearch.product;
 
     navigateAndSearch(searchQuery);
-    cy.url().should("include", `/search?q=${searchQuery}`);
+    cy.url().should("include", `/search/?q=${searchQuery}`);
   });
 
   it("should see no errors on search page SRS_0404", () => {
