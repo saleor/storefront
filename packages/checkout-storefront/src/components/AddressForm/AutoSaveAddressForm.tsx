@@ -20,15 +20,14 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
 
   const debouncedSubmit = useFormDebouncedSubmit<AddressFormData>({
     defaultFormData: defaultValues,
+    getValues,
     onSubmit: handleSubmit,
   });
-
-  const handleChange = () => debouncedSubmit(getValues());
 
   return (
     <AddressForm
       {...addressFormRest}
-      defaultInputOptions={{ onChange: handleChange }}
+      defaultInputOptions={{ onChange: debouncedSubmit }}
       formProps={formProps}
     />
   );

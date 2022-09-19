@@ -1,7 +1,7 @@
 import { useCheckoutEmailUpdateMutation } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
 import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 import { object, string } from "yup";
@@ -37,6 +37,8 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     trigger: triggerContext,
   } = formContext;
 
+  const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
+
   const schema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
   });
@@ -46,11 +48,11 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
   const resolver = useValidationResolver(schema);
   const formProps = useForm<FormData>({
     resolver,
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues,
   });
 
-  const { watch, setError, trigger, formState } = formProps;
+  const { watch, setError, trigger, getValues } = formProps;
 
   useCheckoutFormValidationTrigger(trigger);
   useCheckoutFormValidationTrigger(triggerContext);
@@ -63,26 +65,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     errors: contextFormState.errors,
   });
 
-  const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
-
   useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
-
-  const onSubmit = async ({ email }: FormData) => {
-    if (!email || updatingEmail || email === checkout?.email) {
-      return;
-    }
-
-    const result = await updateEmail({
-      email,
-      checkoutId: checkout.id,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors<FormData>(result);
-
-    if (hasErrors) {
-      showErrors(errors);
-    }
-  };
 
   const emailValue = watch("email");
 
@@ -93,8 +76,31 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     [createAccountSelected, setContextValue]
   );
 
+  const onSubmit = useCallback(
+    async ({ email }: FormData) => {
+      const isValid = await trigger();
+
+      if (!email || !isValid) {
+        return;
+      }
+
+      const result = await updateEmail({
+        email,
+        checkoutId: checkout.id,
+      });
+
+      const [hasErrors, errors] = extractMutationErrors<FormData>(result);
+
+      if (hasErrors) {
+        showErrors(errors);
+      }
+    },
+    [showErrors, checkout.id, updateEmail, trigger]
+  );
+
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
     onSubmit,
+    getValues,
     defaultFormData: defaultValues,
   });
 

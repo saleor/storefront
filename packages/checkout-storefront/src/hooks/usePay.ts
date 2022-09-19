@@ -1,4 +1,4 @@
-import { pay as payRequest, PaySuccessResult, PayErrorResult } from "@/checkout-storefront/fetch";
+import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { OrderBody, CheckoutBody } from "checkout-common";
 import { useAppConfig } from "../providers/AppConfigProvider";

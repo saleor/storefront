@@ -1,24 +1,32 @@
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
-import { debounce } from "lodash-es";
+import { debounce, isEqual } from "lodash-es";
 import { useCallback, useRef } from "react";
 
 interface UseFormAutofillSubmit<TFormData extends FormDataBase> {
   onSubmit: (formData: TFormData) => Promise<void> | void;
+  getValues: () => TFormData;
   defaultFormData?: TFormData;
 }
 
 export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
   defaultFormData,
+  getValues,
   onSubmit,
 }: UseFormAutofillSubmit<TFormData>) => {
-  const formDataRef = useRef<TFormData | undefined>(defaultFormData);
+  const previousFormData = useRef<TFormData | undefined>(defaultFormData);
 
   const debouncedSubmit = useCallback(
-    debounce((formData: TFormData) => {
-      formDataRef.current = formData;
+    debounce(() => {
+      const formData = getValues();
+
+      if (isEqual(formData, previousFormData.current)) {
+        return;
+      }
+
+      previousFormData.current = formData;
       void onSubmit(formData);
     }, 2000),
-    [onSubmit]
+    [onSubmit, getValues]
   );
 
   return debouncedSubmit;

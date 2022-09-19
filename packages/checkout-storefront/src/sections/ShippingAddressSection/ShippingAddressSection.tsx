@@ -31,7 +31,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const user = data?.me;
   const addresses = user?.addresses;
-  const { showErrors } = useAlerts();
+  const { showErrors } = useAlerts("checkoutShippingUpdate");
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
 
@@ -46,11 +46,9 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
         shippingAddress: getAddressInputData(address),
         validationRules: getAddressVlidationRulesVariables(autoSave),
       });
-
       const [hasErrors, errors] = extractMutationErrors(result);
-
       if (hasErrors) {
-        showErrors(errors, "checkoutShippingUpdate");
+        showErrors(errors);
         setApiErrors(errors);
       }
     },
@@ -81,9 +79,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
             checkAddressAvailability={true}
             defaultAddress={checkout.shippingAddress}
             title={formatMessage("shippingAddress")}
-            onSubmit={(address) => {
-              void updateShippingAddress(address);
-            }}
+            onSubmit={updateShippingAddress}
             {...errorProps}
           />
         )}

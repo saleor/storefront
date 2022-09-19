@@ -60,8 +60,6 @@ export const useAddressForm = ({
 
   useCheckoutFormValidationTrigger(trigger);
 
-  //   const countryCode = watch("countryCode" as Path<AddressFormData>) as CountryCode;
-
   const hasDataChanged = useCallback(
     (formData: AddressFormData) => !isMatchingAddressFormData(formData, defaultValuesRef.current),
     []
@@ -84,7 +82,7 @@ export const useAddressForm = ({
 
     void trigger();
     defaultValuesRef.current = defaultValues;
-  }, [defaultValues, hasDataChanged]);
+  }, [defaultValues, hasDataChanged, trigger]);
 
   return { formProps, onSubmit: handleOnSubmit };
 };

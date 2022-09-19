@@ -12,7 +12,4 @@ export const autocompleteTags: Record<AddressField, string> = {
   postalCode: "postal-code",
   cityArea: "",
   countryArea: "address-level1",
-  //   email: "email",
-  //   currentPassword: "current-password",
-  //   newPassword: "new-password",
 };
