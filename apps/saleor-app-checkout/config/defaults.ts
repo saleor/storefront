@@ -10,6 +10,7 @@ export const defaultActiveChannelPaymentProviders: ChannelActivePaymentProviders
   applePay: "",
   creditCard: "",
   paypal: "",
+  dropin: "",
 };
 
 export const defaultPaymentProviderSettings: PaymentProviderSettingsValues<"unencrypted"> = {
