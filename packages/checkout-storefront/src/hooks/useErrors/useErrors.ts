@@ -1,5 +1,5 @@
 import { useGetParsedApiErrors } from "./useGetParsedApiErrors";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ApiErrors, Errors } from "./types";
 
 export interface UseErrors<TFormData> {
@@ -13,22 +13,26 @@ export const useErrors = <TFormData>(): UseErrors<TFormData> => {
   const [errors, setErrors] = useState<Errors<TFormData>>({});
   const getParsedApiErrors = useGetParsedApiErrors<TFormData>();
 
-  const getParsedErrors = (apiErrors: ApiErrors<TFormData>) => {
-    if (!apiErrors) {
-      return {} as Errors<TFormData>;
-    }
+  const getParsedErrors = useCallback(
+    (apiErrors: ApiErrors<TFormData>) => {
+      if (!apiErrors) {
+        return {} as Errors<TFormData>;
+      }
 
-    return getParsedApiErrors(apiErrors).reduce((result, { field, ...rest }) => {
-      return {
-        ...result,
-        [field]: {
-          ...rest,
-        },
-      };
-    }, {} as Errors<TFormData>);
-  };
+      return getParsedApiErrors(apiErrors).reduce((result, { field, ...rest }) => {
+        return {
+          ...result,
+          [field]: rest,
+        };
+      }, {} as Errors<TFormData>);
+    },
+    [getParsedApiErrors]
+  );
 
-  const setApiErrors = (apiErrors: ApiErrors<TFormData>) => setErrors(getParsedErrors(apiErrors));
+  const setApiErrors = useCallback(
+    (apiErrors: ApiErrors<TFormData>) => setErrors(getParsedErrors(apiErrors)),
+    [setErrors, getParsedErrors]
+  );
 
   const clearErrors = () => setErrors({});
 

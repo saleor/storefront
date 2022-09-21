@@ -11,6 +11,7 @@
   "account": "Account",
   "signOut": "Sign Out",
   "signIn": "Sign In",
+  "checkoutFinalizeEmailInvalidError": "Please provide valid email before finalizing checkout",
   "shippingAddress": "Shipping address",
   "billingAddress": "Billing address",
   "addAddress": "Add address",
@@ -152,5 +153,12 @@
   "checkoutBillingUpdateCountryAreaRequiredError": "Please select country area for billing address",
   "pay": "Pay",
   "deliveryMethodNotApplicable": "This delivery method cannot be used with your current shipping address.",
-  "cantShipToAddress": "Can't ship to this address"
+  "cantShipToAddress": "Can't ship to this address",
+  "checkoutFinalizePasswordRequiredError": "Please set user password before finalizing checkout",
+  "checkoutEmailUpdateEmailInvalidError": "Provided email is invalid",
+  "checkoutFinalizeEmailRequiredError": "Please provide a valid email before finalizing checkout",
+  "checkoutFinalizePaymentProviderRequiredError": "Please select a payment method before finalizing checkout",
+  "checkoutFinalizeShippingAddressInvalidError": "Please fill in a valid shipping address before finalizing checkout",
+  "missingFieldsInShippingAddress": "Missing fields in shipping address",
+  "missingFieldsInBillingAddress": "Missing fields in billing address"
 }

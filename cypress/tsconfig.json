@@ -1,0 +1,10 @@
+{
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "cypress"],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["cypress", "node"],
+    "isolatedModules": false,
+    "noImplicitAny": false
+  }
+}

@@ -3,7 +3,7 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { PaymentMethods, PaymentMethodsProps } from "./PaymentMethods";
 import React from "react";
-import { BillingAddressSection } from "../Addresses/BillingAddressSection";
+import { BillingAddressSection } from "../BillingAddressSection/BillingAddressSection";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 
 type PaymentSectionProps = PaymentMethodsProps & CommonSectionProps;

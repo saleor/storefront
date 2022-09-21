@@ -1,6 +1,6 @@
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { apiErrors } from "@/checkout-storefront/lib/fixtures";
-import { AddressFormData } from "@/checkout-storefront/sections/Addresses/types";
+import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { act, renderHook } from "@testing-library/react-hooks";
 
 describe("useErrors", () => {

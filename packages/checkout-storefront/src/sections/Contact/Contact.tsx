@@ -13,6 +13,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useFormContext } from "react-hook-form";
+import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -29,6 +30,10 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   );
   const [{ fetching: attachingCustomer }, customerAttach] = useCheckoutCustomerAttachMutation();
   const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
+  useCheckoutUpdateStateTrigger("checkoutCustomerAttach", attachingCustomer);
+
   const { showErrors } = useAlerts();
   const { authenticated, user } = useAuthState();
   const hasAuthenticated = useRef(false);

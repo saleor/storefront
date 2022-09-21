@@ -14,6 +14,7 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors, getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
+import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -25,7 +26,9 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     shippingAddress?.country?.code as CountryCode | undefined
   );
 
-  const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
+  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
 
   const hasValidMethodSelected =
     selectedMethodId && shippingMethods.some(getById(selectedMethodId));

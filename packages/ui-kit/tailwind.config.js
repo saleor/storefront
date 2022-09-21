@@ -8,8 +8,8 @@ const spacing = getSpacing(
   0.4,
   "rem",
   [
-    0, 0.5, 1, 1.5, 2, 2.5, 3, 3.25, 4, 5, 6, 6.5, 7, 8, 10, 11, 12, 14, 16, 18, 19, 21, 22, 28, 85,
-    256, 350,
+    0, 0.5, 1, 1.5, 2, 2.5, 3, 3.25, 4, 5, 6, 6.5, 7, 8, 10, 11, 12, 14, 16, 18, 19, 21, 22, 28, 50,
+    85, 256, 350,
   ]
 );
 
@@ -44,7 +44,7 @@ const theme = {
     },
     border: {
       primary: "#B9C1CF",
-      tertiary: "#DEE4EF",
+      secondary: "#DEE4EF",
       active: "#394052",
       error: "#B65757",
     },
@@ -97,6 +97,9 @@ const theme = {
   boxShadow: {
     modal: "0px 4px 20px 0px rgba(0, 0, 0, 0.12)",
   },
+  minHeight: spacing,
+  maxWidth: spacing,
+  minWidth: spacing,
 };
 
 module.exports = {
