@@ -5,7 +5,6 @@ import {
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
-import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { memo, useEffect, useRef } from "react";
 import { PaymentResponse as AdyenPaymentResponse } from "@adyen/api-library/lib/src/typings/checkout/paymentResponse";
 import { useEvent } from "@/checkout-storefront/hooks/useEvent";
@@ -19,6 +18,11 @@ import { Checkout } from "@/checkout-storefront/graphql";
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
 interface AdyenDropInProps {}
+
+// fake function just to get the type because can't import it :(
+const _hack = (adyenCheckout: AdyenCheckoutInstance) =>
+  adyenCheckout.create("dropin").mount("#dropin-container");
+type DropinElement = ReturnType<typeof _hack>;
 
 export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
   const {
