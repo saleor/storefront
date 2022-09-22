@@ -13,17 +13,18 @@ import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider"
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { AvailablePaymentMethods } from "@/checkout-storefront/sections/PaymentSection/types";
+import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 
 export interface PaymentMethodsProps {
   selectedPaymentMethod: PaymentMethodID;
+  setValue: (key: keyof CheckoutFormData, value: PaymentProviderID | PaymentMethodID) => void;
   onSelect: (event: SyntheticEvent) => void;
-  setPaymentProvider: (paymentProviderID: PaymentProviderID) => void;
 }
 
 export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   selectedPaymentMethod,
   onSelect,
-  setPaymentProvider,
+  setValue,
 }) => {
   const formatMessage = useFormattedMessages();
   const {
@@ -56,6 +57,8 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   useEffect(() => {
     if (!loading && allPaymentOptions && !availablePaymentMethods.length) {
       throw new Error("No available payment providers");
+    } else if (!loading && availablePaymentMethods.length && !selectedPaymentMethod) {
+      setValue("paymentMethodId", availablePaymentMethods[0] as PaymentMethodID);
     }
   }, [loading, allPaymentOptions, availablePaymentMethods]);
 
@@ -66,9 +69,9 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 
   useEffect(() => {
     if (paymentProviderID) {
-      setPaymentProvider(paymentProviderID);
+      setValue("paymentProviderId", paymentProviderID);
     }
-  }, [setPaymentProvider, paymentProviderID]);
+  }, [setValue, paymentProviderID]);
 
   return (
     <SelectBoxGroup label={formatMessage("paymentProvidersLabel")} className="flex flex-row gap-2">
@@ -76,7 +79,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
         <SelectBox
           className="shrink"
           value={paymentMethodId}
-          selectedValue={selectedPaymentMethod}
+          selectedValue={selectedPaymentMethod || availablePaymentMethods[0]}
           onSelect={onSelect}
         >
           <Text>{formatMessage(camelCase(paymentMethodId) as MessageKey)}</Text>

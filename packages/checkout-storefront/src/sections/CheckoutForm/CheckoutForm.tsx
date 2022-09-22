@@ -55,9 +55,7 @@ export const CheckoutForm = () => {
                   collapsed={showOnlyContact}
                   onSelect={onChange}
                   selectedPaymentMethod={methods.watch("paymentMethodId")}
-                  setPaymentProvider={(paymentProviderId: PaymentProviderID) =>
-                    methods.setValue("paymentProviderId", paymentProviderId)
-                  }
+                  setValue={methods.setValue}
                 />
               )}
             />
