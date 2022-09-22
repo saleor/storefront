@@ -5,7 +5,7 @@ import {
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
-import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
+import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { memo, useEffect, useRef } from "react";
 import { PaymentResponse as AdyenPaymentResponse } from "@adyen/api-library/lib/src/typings/checkout/paymentResponse";
 import { useEvent } from "@/checkout-storefront/hooks/useEvent";
