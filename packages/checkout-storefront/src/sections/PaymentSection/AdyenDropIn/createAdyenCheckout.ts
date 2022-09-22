@@ -1,4 +1,4 @@
-import AdyenCheckout from "@adyen/adyen-web/dist/types";
+import AdyenCheckout from "@adyen/adyen-web";
 import { CardElementData } from "@adyen/adyen-web/dist/types/components/Card/types";
 import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { AdyenDropInCreateSessionResponse } from "checkout-common";
