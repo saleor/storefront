@@ -53,7 +53,7 @@ export const createDropInAdyenSession = ({
 }: PostDropInAdyenSessionsBody & {
   checkoutApiUrl: string;
 }): FetchResponse<AdyenDropInCreateSessionResponse> => {
-  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions") + "/", {
+  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions", "/"), {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -65,7 +65,7 @@ export const createDropInAdyenPayment = ({
 }: PostDropInAdyenPaymentsBody & {
   checkoutApiUrl: string;
 }): FetchResponse<PostAdyenDropInPaymentsResponse | { message: string }> => {
-  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments") + "/", {
+  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments", "/"), {
     method: "POST",
     body: JSON.stringify(body),
   });

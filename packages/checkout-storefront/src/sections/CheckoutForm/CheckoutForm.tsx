@@ -13,7 +13,7 @@ import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactS
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
-import { AdyenDropIn } from "../PaymentSection/AdyenDropIn";
+import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();

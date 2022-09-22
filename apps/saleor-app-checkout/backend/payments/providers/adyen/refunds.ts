@@ -13,7 +13,6 @@ export async function handleAdyenRefund(
   const { id, amount, currency } = refund;
   const { modification, config } = await getAdyenClient();
 
-  invariant(config.merchantAccount, "Missing merchant account configuration");
   invariant(transaction?.id, "Transaction id is missing");
 
   const transactionActions = getActionsAfterRefund(transaction, amount);

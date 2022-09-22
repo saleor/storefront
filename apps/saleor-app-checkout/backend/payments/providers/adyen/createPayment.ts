@@ -4,7 +4,6 @@ import {
 } from "@/saleor-app-checkout/backend/payments/utils";
 
 import { getAdyenClient, getLineItems } from "./utils";
-import invariant from "ts-invariant";
 
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { CreatePaymentData } from "../../types";
@@ -73,7 +72,6 @@ export const createAdyenCheckoutPaymentLinks = async ({
   redirectUrl,
 }: CreatePaymentData) => {
   const { config, checkout } = await getAdyenClient();
-  invariant(config.merchantAccount, "Missing merchant account configuration");
 
   return checkout.paymentLinks(
     orderToAdyenRequest({
@@ -96,7 +94,6 @@ export const createAdyenCheckoutSession = async ({
   redirectUrl: string;
 }) => {
   const { config, checkout } = await getAdyenClient();
-  invariant(config.merchantAccount, "Missing merchant account configuration");
 
   const session = await checkout.sessions({
     merchantAccount: config.merchantAccount,
@@ -122,7 +119,6 @@ export const createAdyenCheckoutPayment = async ({
   adyenStateData: PostDropInAdyenPaymentsBody["adyenStateData"];
 }) => {
   const { config, checkout } = await getAdyenClient();
-  invariant(config.merchantAccount, "Missing merchant account configuration");
 
   const adyenRequest = orderToAdyenRequest({
     merchantAccount: config.merchantAccount,

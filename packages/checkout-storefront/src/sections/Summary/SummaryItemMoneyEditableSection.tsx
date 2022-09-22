@@ -34,10 +34,6 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
-  console.log(
-    "SummaryItemMoneyEditableSection checkout.totalPrice.gross.amount",
-    checkout.totalPrice.gross.amount
-  );
   const { showErrors } = useAlerts("checkoutLinesUpdate");
   const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
   const { errorMessages } = useErrorMessages();
