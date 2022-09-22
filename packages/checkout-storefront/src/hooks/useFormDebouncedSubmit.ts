@@ -1,6 +1,6 @@
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { debounce, isEqual } from "lodash-es";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 interface UseFormAutofillSubmit<TFormData extends FormDataBase> {
   onSubmit: (formData: TFormData) => Promise<void> | void;
@@ -28,6 +28,12 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
     }, 2000),
     [onSubmit, getValues]
   );
+
+  useEffect(() => {
+    return () => {
+      debouncedSubmit.cancel();
+    };
+  }, [debouncedSubmit]);
 
   return debouncedSubmit;
 };

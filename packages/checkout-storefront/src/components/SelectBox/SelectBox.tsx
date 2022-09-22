@@ -1,10 +1,12 @@
 import clsx from "clsx";
 import { Children, Classes } from "@/checkout-storefront/lib/globalTypes";
-import { FC } from "react";
+import { FC, HTMLAttributes } from "react";
 
-export interface SelectBoxProps extends Classes, Children {
+export interface SelectBoxProps
+  extends Classes,
+    Children,
+    Omit<HTMLAttributes<HTMLInputElement>, "children"> {
   value: string;
-  onSelect: (value: string) => void;
   selectedValue: string | undefined;
   disabled?: boolean;
 }
@@ -12,23 +14,19 @@ export interface SelectBoxProps extends Classes, Children {
 export const SelectBox: FC<SelectBoxProps> = ({
   children,
   value,
-  onSelect,
   selectedValue,
   className,
   disabled = false,
+  ...rest
 }) => {
   const selected = selectedValue === value;
 
-  const handleClick = () => {
-    if (disabled) {
-      return;
-    }
-    onSelect(value);
-  };
-
   return (
-    <div className={clsx("select-box", { selected, disabled }, className)} onClick={handleClick}>
-      <div className="grow">{children}</div>
+    <div className={clsx("select-box", { selected, disabled }, className)}>
+      <input type="radio" value={value} id={value} {...rest} checked={selected} />
+      <label className="w-full" htmlFor={value}>
+        {children}
+      </label>
     </div>
   );
 };
