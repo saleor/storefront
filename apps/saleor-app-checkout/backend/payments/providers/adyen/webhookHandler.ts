@@ -35,10 +35,14 @@ export const getOrderId = async (
   apiKey: string
 ) => {
   const { additionalData } = notification;
-  const paymentLinkId = additionalData?.paymentLinkId;
-
-  if (!paymentLinkId) {
+  if (!additionalData) {
     return;
+  }
+
+  const paymentLinkId = additionalData?.paymentLinkId;
+  if (!paymentLinkId) {
+    // webhooks from drop-in don't have paymentLinkId
+    return getOrderIdFromNotificationItselfUndocumented(additionalData);
   }
 
   const client = new Client({
@@ -57,8 +61,16 @@ export const getOrderId = async (
     // it's possible to get notification metadata directly from notification itself (undocumented)
     console.warn("checkout.getPaymentLinks failed");
 
-    return "metadata.orderId" in additionalData ? additionalData["metadata.orderId"] : null;
+    return getOrderIdFromNotificationItselfUndocumented(additionalData);
   }
+};
+
+const getOrderIdFromNotificationItselfUndocumented = (
+  additionalData: Types.notification.AdditionalData & {
+    ["metadata.orderId"]?: string | null | undefined;
+  }
+) => {
+  return "metadata.orderId" in additionalData ? additionalData["metadata.orderId"] : null;
 };
 
 export const getUpdatedTransactionData = (
@@ -94,12 +106,7 @@ export const getNewTransactionData = (
   orderId: string,
   notification: Types.notification.NotificationRequestItem
 ): TransactionCreateMutationVariables | undefined => {
-  const { eventCode, pspReference, paymentMethod, additionalData, operations } = notification;
-  const paymentLinkId = additionalData?.paymentLinkId;
-
-  if (!paymentLinkId) {
-    throw "Payment link does not exist";
-  }
+  const { eventCode, pspReference, paymentMethod, operations } = notification;
 
   const transactionEvent: TransactionEventInput = {
     name: eventCode.toString(),

@@ -1,13 +1,12 @@
 import { ValidationError, ErrorCode, FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { useCallback } from "react";
 import { FieldErrors } from "react-hook-form";
-import { ValidationError as ValidationErrorObject } from "yup";
-import { OptionalObjectSchema } from "yup/lib/object";
+import { ObjectSchema, ValidationError as YupValidationErrorObject } from "yup";
 
 export const getAllValidationErrors = <TFormData>({
   inner,
   ...rest
-}: ValidationErrorObject): ValidationError<TFormData>[] => {
+}: YupValidationErrorObject): ValidationError<TFormData>[] => {
   if (inner) {
     return inner.map(extractValidationError);
   }
@@ -19,7 +18,7 @@ export const extractValidationError = <TFormData>({
   type,
   path,
   message,
-}: Pick<ValidationErrorObject, "type" | "path" | "message">): ValidationError<TFormData> => ({
+}: Pick<YupValidationErrorObject, "type" | "path" | "message">): ValidationError<TFormData> => ({
   type: type as ErrorCode,
   path: path as keyof TFormData,
   message,
@@ -37,7 +36,7 @@ export const useValidationResolver = <
   TFormData extends FormDataBase,
   TShape extends Record<keyof TFormData, any>
 >(
-  schema: OptionalObjectSchema<TShape>
+  schema: ObjectSchema<TShape>
 ) =>
   useCallback(
     async (data: TFormData) => {
@@ -51,7 +50,7 @@ export const useValidationResolver = <
           errors: {},
         };
       } catch (error) {
-        const errors = getErrorsAsObject(getAllValidationErrors(error as ValidationErrorObject));
+        const errors = getErrorsAsObject(getAllValidationErrors(error as YupValidationErrorObject));
         return { values: {}, errors };
       }
     },

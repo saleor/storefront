@@ -21,6 +21,7 @@
     "graphql": "15.8.0"
   },
   "dependencies": {
+    "@adyen/adyen-web": "5.23.1",
     "@adyen/api-library": "^11.0.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.3",
@@ -53,8 +54,9 @@
     "retes": "^0.30.0",
     "stripe": "10.2.0",
     "ts-invariant": "0.10.3",
-    "url-join": "^5.0.0",
-    "urql": "^2.2.0"
+    "url-join": "4.0.1",
+    "urql": "^2.2.0",
+    "yup": "1.0.0-beta.7"
   },
   "devDependencies": {
     "@formatjs/cli": "^4.8.2",
@@ -79,6 +81,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/setup-polly-jest": "^0.5.1",
+    "@types/url-join": "4.0.1",
     "babel-plugin-formatjs": "^10.3.18",
     "dotenv": "^16.0.1",
     "env-vars": "workspace:*",

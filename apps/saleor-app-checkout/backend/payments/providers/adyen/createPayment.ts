@@ -4,27 +4,30 @@ import {
 } from "@/saleor-app-checkout/backend/payments/utils";
 
 import { getAdyenClient, getLineItems } from "./utils";
-import invariant from "ts-invariant";
 
-import type { CheckoutAPI } from "@adyen/api-library";
-
+import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { CreatePaymentData } from "../../types";
+import { PostDropInAdyenPaymentsBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
+import { PaymentRequest as AdyenPaymentRequest } from "@adyen/api-library/lib/src/typings/checkout/paymentRequest";
 
-const createPaymentLink = (
-  { order, redirectUrl }: CreatePaymentData,
-  checkout: CheckoutAPI,
-  merchantAccount: string
-) => {
+export const orderToAdyenRequest = ({
+  order,
+  returnUrl,
+  merchantAccount,
+}: {
+  order: OrderFragment;
+  merchantAccount: string;
+  returnUrl: string;
+}) => {
   const total = order.total.gross;
-
-  return checkout.paymentLinks({
+  return {
     amount: {
       currency: total.currency,
       value: getIntegerAmountFromSaleor(total.amount),
     },
     reference: order.number || order.id,
-    returnUrl: formatRedirectUrl(redirectUrl, order.id),
-    merchantAccount: merchantAccount,
+    returnUrl,
+    merchantAccount,
     countryCode: order.billingAddress?.country.code,
     metadata: {
       orderId: order.id,
@@ -59,14 +62,77 @@ const createPaymentLink = (
           stateOrProvince: order.shippingAddress.countryArea,
         }
       : undefined,
-  });
+  };
 };
 
-export const createAdyenPayment = async (paymentData: CreatePaymentData) => {
+export const createAdyenCheckoutPaymentLinks = async ({
+  order,
+  redirectUrl,
+}: CreatePaymentData) => {
   const { config, checkout } = await getAdyenClient();
-  invariant(config.merchantAccount, "Missing merchant account configuration");
 
-  const { url, id } = await createPaymentLink(paymentData, checkout, config.merchantAccount);
+  return checkout.paymentLinks(
+    orderToAdyenRequest({
+      order,
+      merchantAccount: config.merchantAccount,
+      returnUrl: formatRedirectUrl(redirectUrl, order.id),
+    })
+  );
+};
 
-  return { url, id };
+export const createAdyenCheckoutSession = async ({
+  currency,
+  totalAmount,
+  checkoutId,
+  redirectUrl,
+}: {
+  currency: string;
+  totalAmount: number;
+  checkoutId: string;
+  redirectUrl: string;
+}) => {
+  const { config, checkout } = await getAdyenClient();
+
+  const session = await checkout.sessions({
+    merchantAccount: config.merchantAccount,
+    amount: {
+      currency: currency,
+      value: getIntegerAmountFromSaleor(totalAmount),
+    },
+    returnUrl: formatRedirectUrl(redirectUrl, checkoutId),
+    reference: checkoutId,
+  });
+
+  return {
+    session,
+    clientKey: config.clientKey,
+  };
+};
+
+export const createAdyenCheckoutPayment = async ({
+  order,
+  redirectUrl,
+  adyenStateData,
+}: CreatePaymentData & {
+  adyenStateData: PostDropInAdyenPaymentsBody["adyenStateData"];
+}) => {
+  const { config, checkout } = await getAdyenClient();
+
+  const adyenRequest = orderToAdyenRequest({
+    merchantAccount: config.merchantAccount,
+    order,
+    returnUrl: formatRedirectUrl(redirectUrl, order.id),
+  });
+
+  const payment = await checkout.payments({
+    ...adyenRequest,
+    paymentMethod: adyenStateData.paymentMethod,
+    browserInfo: (adyenStateData.browserInfo as any) ?? undefined,
+    shopperInteraction: AdyenPaymentRequest.ShopperInteractionEnum.Ecommerce,
+  });
+
+  return {
+    payment,
+    clientKey: config.clientKey,
+  };
 };

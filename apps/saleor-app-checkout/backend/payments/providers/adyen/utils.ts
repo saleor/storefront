@@ -13,6 +13,7 @@ import currency from "currency.js";
 import { getTransactionAmountGetterAsMoney } from "../../utils";
 import { failedEvents } from "./consts";
 import { getIntegerAmountFromSaleor, getSaleorAmountFromInteger } from "../../utils";
+import invariant from "ts-invariant";
 
 const OperationsEnum = Types.notification.NotificationRequestItem.OperationsEnum;
 const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
@@ -41,26 +42,28 @@ export const mapAvailableActions = (
 
 export const getAdyenClient = async () => {
   const {
-    paymentProviders: { adyen },
+    paymentProviders: {
+      adyen: { apiKey, merchantAccount, ...restAdyenSettings },
+    },
   } = await getPrivateSettings(envVars.apiUrl, false);
 
-  if (!adyen.apiKey) {
-    throw "API key not defined";
-  }
-
-  if (!adyen.merchantAccount) {
-    throw "Merchant account not defined";
-  }
+  invariant(apiKey, "API key not defined");
+  invariant(merchantAccount, "Missing merchant account configuration");
 
   const client = new Client({
-    apiKey: adyen.apiKey,
+    apiKey: apiKey,
     environment: "TEST",
   });
 
   const checkout = new CheckoutAPI(client);
   const modification = new Modification(client);
 
-  return { client, checkout, modification, config: adyen };
+  return {
+    client,
+    checkout,
+    modification,
+    config: { ...restAdyenSettings, apiKey, merchantAccount },
+  };
 };
 
 export const getLineItems = (lines: OrderFragment["lines"]): Types.checkout.LineItem[] =>

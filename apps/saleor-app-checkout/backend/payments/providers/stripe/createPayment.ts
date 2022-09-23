@@ -103,6 +103,8 @@ const saleorPaymentMethodIdToStripePaymentMethodId = (
     case "paypal":
       // @todo https://github.com/saleor/react-storefront/issues/390
       return null;
+    case "dropin":
+      return null;
   }
 };
 

@@ -1,3 +1,4 @@
+import urlJoin from "url-join";
 import { localhostHttp } from "./utils/configUtils";
 export const appName = "Checkout";
 
@@ -20,10 +21,11 @@ export const envVars = {
   checkoutAppUrl: localhostHttp(process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]!),
   checkoutApiUrl: localhostHttp(
     process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]
-      ? process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"] + `/api`
+      ? urlJoin(process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"], `api`)
       : ""
   ),
 };
+
 export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
   checkoutAppUrl: "NEXT_PUBLIC_CHECKOUT_APP_URL",

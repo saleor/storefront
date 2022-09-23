@@ -14,4 +14,8 @@ export const paymentMethodsMessages = defineMessages<PaymentMethodID>({
     defaultMessage: "PayPal",
     description: "payment method",
   },
+  dropin: {
+    defaultMessage: "Drop-in",
+    description: "payment method",
+  },
 });
