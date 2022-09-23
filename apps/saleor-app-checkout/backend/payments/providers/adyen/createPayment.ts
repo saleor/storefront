@@ -49,8 +49,7 @@ export const orderToAdyenRequest = ({
           street: order.billingAddress.streetAddress1,
           houseNumberOrName: order.billingAddress.streetAddress2,
           postalCode: order.billingAddress.postalCode,
-          // stateOrProvince: order.billingAddress.countryArea,
-          stateOrProvince: "New York",
+          stateOrProvince: order.billingAddress.countryArea,
         }
       : undefined,
     deliveryAddress: order.shippingAddress
@@ -60,8 +59,7 @@ export const orderToAdyenRequest = ({
           street: order.shippingAddress.streetAddress1,
           houseNumberOrName: order.shippingAddress.streetAddress2,
           postalCode: order.shippingAddress.postalCode,
-          // stateOrProvince: order.shippingAddress.countryArea,
-          stateOrProvince: "New York",
+          stateOrProvince: order.shippingAddress.countryArea,
         }
       : undefined,
   };

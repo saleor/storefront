@@ -27,6 +27,7 @@ const config = withTM({
   },
   images: { domains: ["localhost"] },
   experimental: {
+    // https://nextjs.org/docs/messages/import-esm-externals
     esmExternals: "loose",
   },
   eslint: {
