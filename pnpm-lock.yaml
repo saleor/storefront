@@ -331,6 +331,7 @@ importers:
 
   packages/checkout-common:
     specifiers:
+      '@adyen/adyen-web': 5.23.1
       '@adyen/api-library': ^11.0.0
       '@material-ui/core': ^4.12.3
       '@rollup/plugin-commonjs': ^22.0.1
@@ -349,6 +350,7 @@ importers:
       typescript: 4.7.4
       yup: 1.0.0-beta.7
     dependencies:
+      '@adyen/adyen-web': registry.npmjs.org/@adyen/adyen-web/5.23.1
       '@adyen/api-library': registry.npmjs.org/@adyen/api-library/11.0.0
       '@material-ui/core': registry.npmjs.org/@material-ui/core/4.12.4_sfoxds7t5ydpegc3knd667wn6m
       rollup-plugin-esbuild: registry.npmjs.org/rollup-plugin-esbuild/4.10.1_smomlxmjgt6y4akd764agnhchu

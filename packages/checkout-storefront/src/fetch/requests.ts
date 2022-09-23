@@ -8,6 +8,8 @@ import {
   PostDropInAdyenSessionsBody,
   PostDropInAdyenPaymentsBody,
   PostAdyenDropInPaymentsResponse,
+  PostDropInAdyenPaymentsDetailsBody,
+  PostAdyenDropInPaymentsDetailsResponse,
 } from "checkout-common";
 import { PayResult } from "./types";
 import urlJoin from "url-join";
@@ -66,6 +68,18 @@ export const createDropInAdyenPayment = ({
   checkoutApiUrl: string;
 }): FetchResponse<PostAdyenDropInPaymentsResponse | { message: string }> => {
   return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments", "/"), {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+};
+
+export const handleDropInAdyenPaymentDetails = ({
+  checkoutApiUrl,
+  ...body
+}: PostDropInAdyenPaymentsDetailsBody & {
+  checkoutApiUrl: string;
+}): FetchResponse<PostAdyenDropInPaymentsDetailsResponse | { message: string }> => {
+  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments", "details", "/"), {
     method: "POST",
     body: JSON.stringify(body),
   });
