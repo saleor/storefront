@@ -132,8 +132,6 @@ export const createAdyenCheckoutPayment = async ({
     shopperInteraction: AdyenPaymentRequest.ShopperInteractionEnum.Ecommerce,
   });
 
-  getOrderIdFromAdditionalData(payment.additionalData!);
-
   return {
     payment,
     clientKey: config.clientKey,
