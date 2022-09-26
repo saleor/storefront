@@ -91,7 +91,7 @@ const tryParse = (text: string | undefined) => {
 
 export const setupPollyMiddleware = (server: PollyServer) => {
   // Hide sensitive data in headers or in body
-  server.any().on("beforePersist", (_, recording, _event) => {
+  server.any().on("beforePersist", (_, recording) => {
     const requestJson = tryParse(recording.request.postData?.text);
     const requestHeaders = recording.request.headers.filter(
       (el: Record<string, string>) => !HEADERS_BLACKLIST.has(el.name)
