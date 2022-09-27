@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call -- @todo */
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- @todo */
 import { NextApiRequest, NextApiResponse } from "next";
 import { PollyConfig, PollyServer } from "@pollyjs/core";
 import omitDeep from "omit-deep-lodash";
@@ -10,7 +12,7 @@ import { MockedRequest } from "msw";
 import { Readable } from "node:stream";
 
 export type TestNextApiResponse = NextApiResponse & {
-  _getJSONData: <T extends Object>() => T;
+  _getJSONData: <T extends object>() => T;
   _getData: <T extends string>() => T;
 };
 
@@ -89,7 +91,7 @@ const tryParse = (text: string | undefined) => {
 
 export const setupPollyMiddleware = (server: PollyServer) => {
   // Hide sensitive data in headers or in body
-  server.any().on("beforePersist", (_, recording, event) => {
+  server.any().on("beforePersist", (_, recording) => {
     const requestJson = tryParse(recording.request.postData?.text);
     const requestHeaders = recording.request.headers.filter(
       (el: Record<string, string>) => !HEADERS_BLACKLIST.has(el.name)

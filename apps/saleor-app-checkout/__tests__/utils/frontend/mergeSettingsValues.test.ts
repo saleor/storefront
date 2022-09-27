@@ -1,6 +1,5 @@
 import { mergeSettingsValues as mergePrivateSettingsValues } from "@/saleor-app-checkout/backend/configuration/mapPrivateMetafieldsToSettings";
 import { mergeSettingsValues as mergePublicSettingsValues } from "@/saleor-app-checkout/frontend/misc/mapPublicMetafieldsToSettings";
-import { PaymentProviderSettingsValues } from "@/saleor-app-checkout/types/api";
 
 describe("/utils/frontend/misc/mergeSettingsValues", () => {
   it("overrides default values", () => {
