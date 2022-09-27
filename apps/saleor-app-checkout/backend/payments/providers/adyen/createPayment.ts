@@ -9,7 +9,6 @@ import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { CreatePaymentData } from "../../types";
 import { PostDropInAdyenPaymentsBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
 import { PaymentRequest as AdyenPaymentRequest } from "@adyen/api-library/lib/src/typings/checkout/paymentRequest";
-import { getOrderIdFromAdditionalData } from "./getOrderIdFromNotification";
 
 export const orderToAdyenRequest = ({
   order,

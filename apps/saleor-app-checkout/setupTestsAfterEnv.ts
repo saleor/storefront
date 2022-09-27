@@ -18,7 +18,8 @@ afterEach(() => server.resetHandlers());
 afterEach(() => {
   consoleTypes.forEach((type) => {
     // @ts-expect-error
-    console[type]?.mockClear?.();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    typeof console[type]?.mockClear === "function" && console[type].mockClear();
   });
 });
 

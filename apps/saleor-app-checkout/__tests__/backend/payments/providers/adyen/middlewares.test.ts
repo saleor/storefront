@@ -61,7 +61,7 @@ const requestWithNotification = {
   },
 };
 
-const mockPrivateSettings = (returnMockedSettings: boolean = true) => {
+const mockPrivateSettings = (returnMockedSettings = true) => {
   if (!returnMockedSettings) {
     mockedGetPrivateSettings.mockResolvedValueOnce({
       paymentProviders: {
