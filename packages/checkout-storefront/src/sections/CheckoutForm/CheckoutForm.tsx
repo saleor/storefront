@@ -14,7 +14,6 @@ import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/Delivery
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
 import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
-import { PaymentProviderID } from "checkout-common";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();

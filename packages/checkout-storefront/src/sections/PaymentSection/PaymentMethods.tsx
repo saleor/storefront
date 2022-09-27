@@ -80,7 +80,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
           className="shrink"
           value={paymentMethodId}
           selectedValue={selectedPaymentMethod || availablePaymentMethods[0]}
-          onSelect={onSelect}
+          onChange={onSelect}
         >
           <Text>{formatMessage(camelCase(paymentMethodId) as MessageKey)}</Text>
         </SelectBox>
