@@ -19,6 +19,10 @@
 }
 
 :local([type="checkbox"]:checked + .checkbox-input) {
+  @apply border-border-primary;
+}
+
+:local([type="checkbox"]:focus + .checkbox-input) {
   @apply border-border-active;
 }
 
@@ -27,7 +31,7 @@
 }
 
 :local(.checkbox-input) {
-  @apply w-5 h-5 rounded-sm border border-border-primary absolute top-0 left-0 z-20 text-border-active;
+  @apply w-5 h-5 rounded-sm border border-border-primary absolute top-0 left-0 z-20 text-text-primary;
 }
 
 :local(.checkbox-input svg) {

@@ -34,7 +34,7 @@ export const Checkbox = forwardRef(
                 <CheckIcon />
               </div>
             </div>
-            {label && label}
+            <span className="pointer-events-none">{label && label}</span>
           </div>
         </>
       </Label>

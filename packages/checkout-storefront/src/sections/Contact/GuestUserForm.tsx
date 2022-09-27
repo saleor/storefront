@@ -111,7 +111,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       redirectButtonLabel={formatMessage("signIn")}
       onSectionChange={onSectionChange}
     >
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <TextInput
           label={formatMessage("emailLabel")}
           {...getInputProps("email", {
