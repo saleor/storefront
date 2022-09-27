@@ -3,14 +3,13 @@ import {
   createDropInAdyenSession,
   handleDropInAdyenPaymentDetails,
 } from "@/checkout-storefront/fetch/requests";
-import invariant from "ts-invariant";
 
 import type { PaymentResponse as AdyenWebPaymentResponse } from "@adyen/adyen-web/dist/types/components/types";
 
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useEvent } from "@/checkout-storefront/hooks/useEvent";
 import {
   AdyenCheckoutInstanceOnAdditionalDetails,
@@ -139,7 +138,7 @@ function useDropinAdyenElement(
     return () => {
       dropinComponentRef.current?.unmount();
     };
-  }, [adyenSessionResponse.data]);
+  }, [adyenSessionResponse.data, onAdditionalDetails, onSubmit]);
 
   return { dropinContainerElRef };
 }

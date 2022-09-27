@@ -23,13 +23,13 @@ export const getPaymentMethods = ({
   checkoutApiUrl,
   channelId,
 }: PaymentMethodsRequestArgs): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
-  fetch(urlJoin(checkoutApiUrl, "active-payment-providers", channelId));
+  fetch(urlJoin(checkoutApiUrl, "active-payment-providers", channelId, "/"));
 
 export const pay = ({
   checkoutApiUrl,
   ...body
 }: PayRequestBody & { checkoutApiUrl: string }): FetchResponse<PayResult> =>
-  fetch(urlJoin(checkoutApiUrl, "pay"), {
+  fetch(urlJoin(checkoutApiUrl, "pay", "/"), {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -38,7 +38,7 @@ export const getAppConfig = ({
   checkoutApiUrl,
 }: {
   checkoutApiUrl: string;
-}): FetchResponse<AppConfig> => fetch(urlJoin(checkoutApiUrl, "customization-settings"));
+}): FetchResponse<AppConfig> => fetch(urlJoin(checkoutApiUrl, "customization-settings", "/"));
 
 export const getOrderPaymentStatus = ({
   orderId,
@@ -47,7 +47,7 @@ export const getOrderPaymentStatus = ({
   orderId: string;
   checkoutApiUrl: string;
 }): FetchResponse<PaymentStatusResponse> =>
-  fetch(urlJoin(checkoutApiUrl, "payment-status", orderId));
+  fetch(urlJoin(checkoutApiUrl, "payment-status", orderId, "/"));
 
 export const createDropInAdyenSession = ({
   checkoutApiUrl,

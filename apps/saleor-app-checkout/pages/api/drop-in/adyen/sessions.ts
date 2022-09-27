@@ -1,6 +1,7 @@
 import { createAdyenCheckoutSession } from "@/saleor-app-checkout/backend/payments/providers/adyen";
-import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
+import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
+import { withSentry } from "@sentry/nextjs";
 import { AdyenDropInCreateSessionResponse, postDropInAdyenSessionsBody } from "checkout-common";
 import { NextApiHandler } from "next";
 
@@ -37,4 +38,4 @@ const DropInAdyenSessionsHandler: NextApiHandler<
   }
 };
 
-export default DropInAdyenSessionsHandler;
+export default withSentry(allowCors(DropInAdyenSessionsHandler));
