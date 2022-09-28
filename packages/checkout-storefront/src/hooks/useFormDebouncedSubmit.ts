@@ -23,7 +23,6 @@ export const useFormDebouncedSubmit = <TFormData extends FormDataBase>({
         return;
       }
 
-      console.log("SUBMIT", formData, previousFormData.current);
       previousFormData.current = formData;
       void onSubmit(formData);
     }, 2000),
