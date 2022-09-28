@@ -1,13 +1,12 @@
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 import external from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 import json from "@rollup/plugin-json";
 import image from "@rollup/plugin-image";
 import dts from "rollup-plugin-dts";
-import svg from "rollup-plugin-svg-import";
 
 const packageJson = require("./package.json");
 
@@ -34,8 +33,6 @@ export default [
       }),
       commonjs({ sourceMap: isProd }),
       typescript({
-        overrideIdFn: "[sha512:contenthash:base64:6]",
-        ast: true,
         tsconfig: "./tsconfig.json",
         noEmit: false,
         jsx: "react-jsx",
@@ -46,9 +43,6 @@ export default [
       postcss({
         extract: true,
         plugins: [require("tailwindcss")(), require("autoprefixer")(), require("postcss-import")()],
-      }),
-      svg({
-        stringify: false,
       }),
     ]),
   },

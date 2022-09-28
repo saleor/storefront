@@ -6,10 +6,11 @@ import {
 } from "@/checkout-storefront/components/AddressForm/useAddressForm";
 import { Button } from "@/checkout-storefront/components/Button";
 import { IconButton } from "@/checkout-storefront/components/IconButton";
-import { UseErrors, useFormattedMessages } from "@/checkout-storefront/hooks";
+import { UseErrors } from "@/checkout-storefront/hooks";
 import { TrashIcon } from "@/checkout-storefront/icons";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import React, { useCallback } from "react";
+import { useIntl } from "react-intl";
 
 interface ManualSaveAddressFormProps
   extends UseAddressFormProps,
@@ -30,7 +31,7 @@ export const ManualSaveAddressForm: React.FC<ManualSaveAddressFormProps> = ({
   onCancel,
   ...addressFormRest
 }) => {
-  const formatMessage = useFormattedMessages();
+  const intl = useIntl();
 
   const { formProps, onSubmit: handleOnSubmit } = useAddressForm({ defaultValues, onSubmit });
   const { handleSubmit, clearErrors } = formProps;
@@ -48,7 +49,10 @@ export const ManualSaveAddressForm: React.FC<ManualSaveAddressFormProps> = ({
         {onDelete && (
           <IconButton
             className="mr-2"
-            ariaLabel={formatMessage("deleteAddressLabel")}
+            ariaLabel={intl.formatMessage({
+              defaultMessage: "delete address",
+              id: "AddressForm/ManualSaveAddressForm/RDNzW4",
+            })}
             onClick={onDelete}
             icon={<img src={getSvgSrc(TrashIcon)} alt="" />}
           />
@@ -56,23 +60,41 @@ export const ManualSaveAddressForm: React.FC<ManualSaveAddressFormProps> = ({
 
         <Button
           className="mr-2"
-          ariaLabel={formatMessage("cancelLabel")}
+          ariaLabel={intl.formatMessage({
+            defaultMessage: "cancel",
+            id: "AddressForm/ManualSaveAddressForm/cqZqGK",
+          })}
           variant="secondary"
           onClick={handleCancel}
-          label={formatMessage("cancel")}
+          label={intl.formatMessage({
+            defaultMessage: "cancel",
+            id: "AddressForm/ManualSaveAddressForm/cqZqGK",
+          })}
         />
         {loading ? (
           <Button
             disabled
-            ariaLabel={formatMessage("saveLabel")}
+            ariaLabel={intl.formatMessage({
+              defaultMessage: "save",
+              id: "AddressForm/ManualSaveAddressForm/EjXcOc",
+            })}
             onClick={handleSubmit(handleOnSubmit)}
-            label={formatMessage("processing")}
+            label={intl.formatMessage({
+              defaultMessage: "Processing...",
+              id: "AddressForm/ManualSaveAddressForm/6OWS4p",
+            })}
           />
         ) : (
           <Button
-            ariaLabel={formatMessage("saveLabel")}
+            ariaLabel={intl.formatMessage({
+              defaultMessage: "save",
+              id: "AddressForm/ManualSaveAddressForm/EjXcOc",
+            })}
             onClick={handleSubmit(handleOnSubmit)}
-            label={formatMessage("saveAddress")}
+            label={intl.formatMessage({
+              defaultMessage: "Save address",
+              id: "AddressForm/ManualSaveAddressForm/Y6cXqV",
+            })}
           />
         )}
       </div>

@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  plugins: ["formatjs"],
+  extends: ["checkout"],
   rules: {
     "formatjs/enforce-id": [
       "error",

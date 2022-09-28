@@ -1,7 +1,10 @@
 import { useIntl, MessageDescriptor } from "react-intl";
 
+/**
+ * @deprecated use `useIntl` instead
+ */
 export const useFormattedMessages = () => {
-  const { formatMessage } = useIntl();
+  const Intl = useIntl();
 
-  return (message: MessageDescriptor) => formatMessage(message);
+  return (message: MessageDescriptor) => Intl.formatMessage(message);
 };
