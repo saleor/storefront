@@ -16,7 +16,8 @@
     "test:dev": "jest --watch",
     "clean": "rm -rf .turbo .next .rollup.cache dist",
     "extract:i18n": "formatjs extract 'src/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",
-    "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales"
+    "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
+    "i18n": "npm run extract:i18n && npm run compile:i18n"
   },
   "resolutions": {
     "graphql": "15.8.0"
@@ -59,6 +60,7 @@
     "yup": "1.0.0-beta.7"
   },
   "devDependencies": {
+    "@formatjs/cli": "5.1.0",
     "@graphql-codegen/add": "^3.2.0",
     "@graphql-codegen/cli": "2.8.1",
     "@graphql-codegen/introspection": "2.2.0",

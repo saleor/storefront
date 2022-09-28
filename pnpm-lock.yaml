@@ -371,6 +371,7 @@ importers:
       '@adyen/adyen-web': 5.23.1
       '@adyen/api-library': ^11.0.0
       '@apollo/client': ^3.5.10
+      '@formatjs/cli': 5.1.0
       '@graphql-codegen/add': ^3.2.0
       '@graphql-codegen/cli': 2.8.1
       '@graphql-codegen/introspection': 2.2.0
@@ -434,7 +435,6 @@ importers:
       rollup-plugin-postcss: ^4.0.2
       rollup-plugin-svg-import: ^1.6.0
       rollup-plugin-terser: ^7.0.2
-      rollup-plugin-typescript2: ^0.34.0
       tailwindcss: ^3.0.18
       ts-invariant: 0.10.3
       ts-jest: ^27.1.5
@@ -450,12 +450,12 @@ importers:
       '@adyen/adyen-web': 5.23.1
       '@adyen/api-library': 11.0.0
       '@apollo/client': 3.6.9_o264z5epwuajru7y4dsijkqr44
-      '@headlessui/react': 1.7.2_biqbaboplfbrettd7655fr4n2y
-      '@hookform/error-message': 2.0.0_o3dpxi5w24rpq5xr5omj4ay6sm
+      '@headlessui/react': 1.7.2_react@18.2.0
+      '@hookform/error-message': 2.0.0_moql4z5simslnlytz5kf7rhvqq
       '@react-types/button': 3.6.1_react@18.2.0
       '@saleor/sdk': 0.4.4_sxevcahfumbneihc6kst5qk4oa
       '@saleor/ui-kit': link:../ui-kit
-      '@stripe/react-stripe-js': 1.10.0_wfgeltlko2jxfvdpdhsbptstym
+      '@stripe/react-stripe-js': 1.10.0_24fgre7hhnfvtcvraltcbl2jrq
       '@stripe/stripe-js': 1.36.0
       checkout-common: link:../checkout-common
       clsx: 1.2.1
@@ -470,13 +470,14 @@ importers:
       react-hook-form: 7.35.0_react@18.2.0
       react-intl: 6.1.1_qtbnez4q7bzoc4eqybg3efzzxe
       react-test-renderer: 18.2.0_react@18.2.0
-      react-toastify: 9.0.8_biqbaboplfbrettd7655fr4n2y
+      react-toastify: 9.0.8_react@18.2.0
       tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
       ts-invariant: 0.10.3
       url-join: 4.0.1
       urql: 2.2.3_o264z5epwuajru7y4dsijkqr44
       yup: 1.0.0-beta.7
     devDependencies:
+      '@formatjs/cli': registry.npmjs.org/@formatjs/cli/5.1.0
       '@graphql-codegen/add': 3.2.1_graphql@15.8.0
       '@graphql-codegen/cli': 2.8.1_in74mq2f33ug42rd46dinoaiwi
       '@graphql-codegen/introspection': 2.2.0_graphql@15.8.0
@@ -490,8 +491,8 @@ importers:
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.79.0
       '@rollup/plugin-typescript': 8.5.0_ppxule2mhlgb6ds3e4gxjflaqy
       '@testing-library/jest-dom': 5.16.5
-      '@testing-library/react': 12.1.5_biqbaboplfbrettd7655fr4n2y
-      '@testing-library/react-hooks': 8.0.1_pimovsjg5ibagkm3zmb5gxxeui
+      '@testing-library/react': 12.1.5_react@18.2.0
+      '@testing-library/react-hooks': 8.0.1_li7qrp4uhhhstzbltjfvpsyyjq
       '@testing-library/user-event': 13.5.0_svkptcfudnvlwtcvoqpeiqk33i
       '@types/jest': 27.5.2
       '@types/lodash-es': 4.17.6
@@ -509,7 +510,7 @@ importers:
       graphql-tag: 2.12.6_graphql@15.8.0
       jest: 27.5.1_ts-node@10.9.1
       json-easy-strip: 1.0.6
-      next: 12.2.2_ir3quccc6i62x6qn6jjhyjjiey
+      next: 12.2.2_3toe27fv7etiytxb5kxc7fxaw4
       postcss: 8.4.16
       postcss-import: 14.1.0_postcss@8.4.16
       prettier: 2.7.1
@@ -519,7 +520,6 @@ importers:
       rollup-plugin-postcss: 4.0.2_57znarxsqwmnneadci5z5fd5gu
       rollup-plugin-svg-import: 1.6.0_rollup@2.79.0
       rollup-plugin-terser: 7.0.2_rollup@2.79.0
-      rollup-plugin-typescript2: 0.34.0_xdb5ss5ub2cemhlks3szmapm6q
       ts-jest: 27.1.5_e446tady764t5pikybryz24rte
       tsconfig: link:../tsconfig
       tslib: 2.4.0
@@ -641,7 +641,7 @@ importers:
 packages:
 
   /@adobe/css-tools/4.0.1:
-    resolution: {integrity: sha512-+u76oB43nOHrF4DDWRLWDCtci7f3QJoEBigemIdIeTi1ODqjx6Tad9NCVnPRwewWlKkVab5PlK8DCtPTyX7S8g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@adobe/css-tools/-/css-tools-4.0.1.tgz}
+    resolution: {integrity: sha512-+u76oB43nOHrF4DDWRLWDCtci7f3QJoEBigemIdIeTi1ODqjx6Tad9NCVnPRwewWlKkVab5PlK8DCtPTyX7S8g==}
     dev: true
 
   /@adyen/adyen-web/5.23.1:
@@ -1358,7 +1358,7 @@ packages:
     dev: true
 
   /@babel/runtime-corejs3/7.19.1:
-    resolution: {integrity: sha512-j2vJGnkopRzH+ykJ8h68wrHnEUmtK//E723jjixiAl/PPf6FhqY/vYRcMVlNydRKQjQsTsYEjpx+DZMIvnGk/g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@babel/runtime-corejs3/-/runtime-corejs3-7.19.1.tgz}
+    resolution: {integrity: sha512-j2vJGnkopRzH+ykJ8h68wrHnEUmtK//E723jjixiAl/PPf6FhqY/vYRcMVlNydRKQjQsTsYEjpx+DZMIvnGk/g==}
     engines: {node: '>=6.9.0'}
     dependencies:
       core-js-pure: 3.25.2
@@ -2078,7 +2078,7 @@ packages:
     dependencies:
       graphql: 15.8.0
 
-  /@headlessui/react/1.7.2_biqbaboplfbrettd7655fr4n2y:
+  /@headlessui/react/1.7.2_react@18.2.0:
     resolution: {integrity: sha512-snLv2lxwsf2HNTOBNgHYdvoYZ3ChJE8QszPi1d/hl9js8KrFrUulTaQBfSyPbJP5BybVreWh9DxCgz9S0Z6hKQ==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -2086,10 +2086,9 @@ packages:
       react-dom: ^16 || ^17 || ^18
     dependencies:
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: false
 
-  /@hookform/error-message/2.0.0_o3dpxi5w24rpq5xr5omj4ay6sm:
+  /@hookform/error-message/2.0.0_moql4z5simslnlytz5kf7rhvqq:
     resolution: {integrity: sha512-Y90nHzjgL2MP7GFy75kscdvxrCTjtyxGmOLLxX14nd08OXRIh9lMH/y9Kpdo0p1IPowJBiZMHyueg7p+yrqynQ==}
     peerDependencies:
       react: '>=16.8.0'
@@ -2097,7 +2096,6 @@ packages:
       react-hook-form: ^7.0.0
     dependencies:
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       react-hook-form: 7.35.0_react@18.2.0
     dev: false
 
@@ -2571,7 +2569,7 @@ packages:
       '@sinonjs/commons': 1.8.3
     dev: true
 
-  /@stripe/react-stripe-js/1.10.0_wfgeltlko2jxfvdpdhsbptstym:
+  /@stripe/react-stripe-js/1.10.0_24fgre7hhnfvtcvraltcbl2jrq:
     resolution: {integrity: sha512-vuIjJUZJ3nyiaGa5z5iyMCzZfGGsgzOOjWjqknbbhkNsewyyginfeky9EZLSz9+iSAsgC9K6MeNOTLKVGcMycQ==}
     peerDependencies:
       '@stripe/stripe-js': ^1.34.0
@@ -2581,7 +2579,6 @@ packages:
       '@stripe/stripe-js': 1.36.0
       prop-types: 15.8.1
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: false
 
   /@stripe/stripe-js/1.36.0:
@@ -2623,7 +2620,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react-hooks/8.0.1_pimovsjg5ibagkm3zmb5gxxeui:
+  /@testing-library/react-hooks/8.0.1_li7qrp4uhhhstzbltjfvpsyyjq:
     resolution: {integrity: sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -2642,12 +2639,11 @@ packages:
       '@babel/runtime': 7.19.0
       '@types/react': 18.0.20
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       react-error-boundary: 3.1.4_react@18.2.0
       react-test-renderer: 18.2.0_react@18.2.0
     dev: true
 
-  /@testing-library/react/12.1.5_biqbaboplfbrettd7655fr4n2y:
+  /@testing-library/react/12.1.5_react@18.2.0:
     resolution: {integrity: sha512-OfTXCJUFgjd/digLUuPxa0+/3ZxsQmE7ub9kcbW/wi96Bh3o/p5vrETcBGfP17NWPGqeYYl5LTRpwyGoMC4ysg==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -2658,7 +2654,6 @@ packages:
       '@testing-library/dom': 8.18.0
       '@types/react-dom': 17.0.17
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: true
 
   /@testing-library/user-event/13.5.0_svkptcfudnvlwtcvoqpeiqk33i:
@@ -2703,7 +2698,7 @@ packages:
     dev: true
 
   /@types/applepayjs/3.0.4:
-    resolution: {integrity: sha512-RqaVZWy1Kj4e1PoUoOI8uA+4UuuLpicQFxfU9Y/xWJFZFT6mFB4PiiY911iDxFk7pdvaj5HKH7VsWRisRca1Rg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/applepayjs/-/applepayjs-3.0.4.tgz}
+    resolution: {integrity: sha512-RqaVZWy1Kj4e1PoUoOI8uA+4UuuLpicQFxfU9Y/xWJFZFT6mFB4PiiY911iDxFk7pdvaj5HKH7VsWRisRca1Rg==}
     dev: false
 
   /@types/aria-query/4.2.2:
@@ -2755,7 +2750,7 @@ packages:
     dev: true
 
   /@types/googlepay/0.6.4:
-    resolution: {integrity: sha512-PTt/UCllzl8z5HmhymPpSj6uENZvVKZvCBYdDVmbBVJnLStitxtWrterAOQZkKGlqVdzxNXYeif5hOAMNMS5mw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/googlepay/-/googlepay-0.6.4.tgz}
+    resolution: {integrity: sha512-PTt/UCllzl8z5HmhymPpSj6uENZvVKZvCBYdDVmbBVJnLStitxtWrterAOQZkKGlqVdzxNXYeif5hOAMNMS5mw==}
     dev: false
 
   /@types/graceful-fs/4.1.5:
@@ -2819,7 +2814,7 @@ packages:
     dev: true
 
   /@types/lodash/4.14.185:
-    resolution: {integrity: sha512-evMDG1bC4rgQg4ku9tKpuMh5iBNEwNa3tf9zRHdP1qlv+1WUg44xat4IxCE14gIpZRGUUWAx2VhItCZc25NfMA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/lodash/-/lodash-4.14.185.tgz}
+    resolution: {integrity: sha512-evMDG1bC4rgQg4ku9tKpuMh5iBNEwNa3tf9zRHdP1qlv+1WUg44xat4IxCE14gIpZRGUUWAx2VhItCZc25NfMA==}
     dev: true
 
   /@types/node/14.18.29:
@@ -2901,7 +2896,7 @@ packages:
     dev: true
 
   /@types/testing-library__jest-dom/5.14.5:
-    resolution: {integrity: sha512-SBwbxYoyPIvxHbeHxTZX2Pe/74F/tX2/D3mMvzabdeJ25bBojfW0TyB8BHrbq/9zaaKICJZjLP+8r6AeZMFCuQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/@types/testing-library__jest-dom/-/testing-library__jest-dom-5.14.5.tgz}
+    resolution: {integrity: sha512-SBwbxYoyPIvxHbeHxTZX2Pe/74F/tX2/D3mMvzabdeJ25bBojfW0TyB8BHrbq/9zaaKICJZjLP+8r6AeZMFCuQ==}
     dependencies:
       '@types/jest': 27.5.2
     dev: true
@@ -3553,7 +3548,7 @@ packages:
     dev: true
 
   /chalk/3.0.0:
-    resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/chalk/-/chalk-3.0.0.tgz}
+    resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==}
     engines: {node: '>=8'}
     dependencies:
       ansi-styles: 4.3.0
@@ -3636,7 +3631,7 @@ packages:
     dev: true
 
   /classnames/2.3.2:
-    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/classnames/-/classnames-2.3.2.tgz}
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
     dev: false
 
   /clean-stack/2.2.0:
@@ -3744,7 +3739,7 @@ packages:
     dev: true
 
   /colorette/1.4.0:
-    resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/colorette/-/colorette-1.4.0.tgz}
+    resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
     dev: true
 
   /colorette/2.0.19:
@@ -3763,7 +3758,7 @@ packages:
     dev: true
 
   /commander/4.1.1:
-    resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/commander/-/commander-4.1.1.tgz}
+    resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
     dev: true
 
@@ -3832,7 +3827,7 @@ packages:
     dev: true
 
   /core-js-pure/3.25.2:
-    resolution: {integrity: sha512-ItD7YpW1cUB4jaqFLZXe1AXkyqIxz6GqPnsDV4uF4hVcWh/WAGIqSqw5p0/WdsILM0Xht9s3Koyw05R3K6RtiA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/core-js-pure/-/core-js-pure-3.25.2.tgz}
+    resolution: {integrity: sha512-ItD7YpW1cUB4jaqFLZXe1AXkyqIxz6GqPnsDV4uF4hVcWh/WAGIqSqw5p0/WdsILM0Xht9s3Koyw05R3K6RtiA==}
     requiresBuild: true
     dev: false
 
@@ -3939,7 +3934,7 @@ packages:
     dev: true
 
   /css.escape/1.5.1:
-    resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/css.escape/-/css.escape-1.5.1.tgz}
+    resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
     dev: true
 
   /cssesc/3.0.0:
@@ -4102,7 +4097,7 @@ packages:
     dev: true
 
   /date-fns/2.29.3:
-    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/date-fns/-/date-fns-2.29.3.tgz}
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
     engines: {node: '>=0.11'}
     dev: false
 
@@ -4160,7 +4155,7 @@ packages:
     dev: true
 
   /decode-uri-component/0.2.0:
-    resolution: {integrity: sha512-hjf+xovcEn31w/EUYdTXQh/8smFL/dzYjohQGEIgjyNavaJfBY2p5F527Bo1VPATxv0VYTUC2bOcXvqFwk78Og==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz}
+    resolution: {integrity: sha512-hjf+xovcEn31w/EUYdTXQh/8smFL/dzYjohQGEIgjyNavaJfBY2p5F527Bo1VPATxv0VYTUC2bOcXvqFwk78Og==}
     engines: {node: '>=0.10'}
     dev: false
 
@@ -4764,18 +4759,9 @@ packages:
       to-regex-range: 5.0.1
 
   /filter-obj/1.1.0:
-    resolution: {integrity: sha512-8rXg1ZnX7xzy2NGDVkBVaAy+lSlPNwad13BtgSlLuxfIslyt5Vg64U7tFcCt4WS1R0hvtnQybT/IyCkGZ3DpXQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/filter-obj/-/filter-obj-1.1.0.tgz}
+    resolution: {integrity: sha512-8rXg1ZnX7xzy2NGDVkBVaAy+lSlPNwad13BtgSlLuxfIslyt5Vg64U7tFcCt4WS1R0hvtnQybT/IyCkGZ3DpXQ==}
     engines: {node: '>=0.10.0'}
     dev: false
-
-  /find-cache-dir/3.3.2:
-    resolution: {integrity: sha512-wXZV5emFEjrridIgED11OoUKLxiYjAcqot/NJdAkOhlJ+vGzwhOAfcG5OX1jP+S0PcjEn8bdMJv+g2jwQ3Onig==}
-    engines: {node: '>=8'}
-    dependencies:
-      commondir: 1.0.1
-      make-dir: 3.1.0
-      pkg-dir: 4.2.0
-    dev: true
 
   /find-up/4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -4839,15 +4825,6 @@ packages:
       web-streams-polyfill: 4.0.0-beta.3
     dev: true
 
-  /fs-extra/10.1.0:
-    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      graceful-fs: 4.2.10
-      jsonfile: 6.1.0
-      universalify: 2.0.0
-    dev: true
-
   /fs-extra/9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
     engines: {node: '>=10'}
@@ -4861,14 +4838,6 @@ packages:
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
-
-  /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
@@ -6483,7 +6452,7 @@ packages:
     dev: true
 
   /min-indent/1.0.1:
-    resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/min-indent/-/min-indent-1.0.1.tgz}
+    resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
     dev: true
 
@@ -6534,7 +6503,7 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next/12.2.2_ir3quccc6i62x6qn6jjhyjjiey:
+  /next/12.2.2_3toe27fv7etiytxb5kxc7fxaw4:
     resolution: {integrity: sha512-zAYFY45aBry/PlKONqtlloRFqU/We3zWYdn2NoGvDZkoYUYQSJC8WMcalS5C19MxbCZLUVCX7D7a6gTGgl2yLg==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -6557,7 +6526,6 @@ packages:
       caniuse-lite: 1.0.30001406
       postcss: 8.4.5
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       styled-jsx: 5.0.2_3toe27fv7etiytxb5kxc7fxaw4
       use-sync-external-store: 1.1.0_react@18.2.0
     optionalDependencies:
@@ -6622,7 +6590,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   /normalize-range/0.1.2:
-    resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/normalize-range/-/normalize-range-0.1.2.tgz}
+    resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -6656,7 +6624,7 @@ packages:
     dev: true
 
   /num2fraction/1.2.2:
-    resolution: {integrity: sha512-Y1wZESM7VUThYY+4W+X4ySH2maqcA+p7UR+w8VWNWVAd6lwuXXWz/w/Cz43J/dI2I+PS6wD5N+bJUF+gjWvIqg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/num2fraction/-/num2fraction-1.2.2.tgz}
+    resolution: {integrity: sha512-Y1wZESM7VUThYY+4W+X4ySH2maqcA+p7UR+w8VWNWVAd6lwuXXWz/w/Cz43J/dI2I+PS6wD5N+bJUF+gjWvIqg==}
     dev: true
 
   /nwsapi/2.2.2:
@@ -6926,7 +6894,7 @@ packages:
     dev: true
 
   /picocolors/0.2.1:
-    resolution: {integrity: sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/picocolors/-/picocolors-0.2.1.tgz}
+    resolution: {integrity: sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==}
     dev: true
 
   /picocolors/1.0.0:
@@ -7361,7 +7329,7 @@ packages:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
   /postcss/7.0.39:
-    resolution: {integrity: sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/postcss/-/postcss-7.0.39.tgz}
+    resolution: {integrity: sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==}
     engines: {node: '>=6.0.0'}
     dependencies:
       picocolors: 0.2.1
@@ -7386,7 +7354,7 @@ packages:
     dev: true
 
   /preact/10.11.0:
-    resolution: {integrity: sha512-Fk6+vB2kb6mSJfDgODq0YDhMfl0HNtK5+Uc9QqECO4nlyPAQwCI+BKyWO//idA7ikV7o+0Fm6LQmNuQi1wXI1w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/preact/-/preact-10.11.0.tgz}
+    resolution: {integrity: sha512-Fk6+vB2kb6mSJfDgODq0YDhMfl0HNtK5+Uc9QqECO4nlyPAQwCI+BKyWO//idA7ikV7o+0Fm6LQmNuQi1wXI1w==}
     dev: false
 
   /prelude-ls/1.1.2:
@@ -7447,7 +7415,7 @@ packages:
     dev: false
 
   /property-expr/2.0.5:
-    resolution: {integrity: sha512-IJUkICM5dP5znhCckHSv30Q4b5/JA5enCtkRHYaOVOAocnH/1BQEYTC5NMfT3AVl/iXKdr3aqQbQn9DxyWknwA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/property-expr/-/property-expr-2.0.5.tgz}
+    resolution: {integrity: sha512-IJUkICM5dP5znhCckHSv30Q4b5/JA5enCtkRHYaOVOAocnH/1BQEYTC5NMfT3AVl/iXKdr3aqQbQn9DxyWknwA==}
     dev: false
 
   /proxy-from-env/1.0.0:
@@ -7585,7 +7553,7 @@ packages:
       react-shallow-renderer: 16.15.0_react@18.2.0
       scheduler: 0.23.0
 
-  /react-toastify/9.0.8_biqbaboplfbrettd7655fr4n2y:
+  /react-toastify/9.0.8_react@18.2.0:
     resolution: {integrity: sha512-EwM+teWt49HSHx+67qI08yLAW1zAsBxCXLCsUfxHYv1W7/R3ZLhrqKalh7j+kjgPna1h5LQMSMwns4tB4ww2yQ==}
     peerDependencies:
       react: '>=16'
@@ -7593,7 +7561,6 @@ packages:
     dependencies:
       clsx: 1.2.1
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: false
 
   /react/18.2.0:
@@ -7623,7 +7590,7 @@ packages:
       picomatch: 2.3.1
 
   /redent/3.0.0:
-    resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/redent/-/redent-3.0.0.tgz}
+    resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
     engines: {node: '>=8'}
     dependencies:
       indent-string: 4.0.0
@@ -7798,20 +7765,6 @@ packages:
       terser: 5.15.0
     dev: true
 
-  /rollup-plugin-typescript2/0.34.0_xdb5ss5ub2cemhlks3szmapm6q:
-    resolution: {integrity: sha512-dGtOz2kL6nQVgfIOmnA4Xh+5cFrs3bdu4jja/ej7WKR92RzOOixsn71LY5ZFFmKe1R677nUh+k2++NiY3un2PQ==}
-    peerDependencies:
-      rollup: '>=1.26.3'
-      typescript: '>=2.4.0'
-    dependencies:
-      '@rollup/pluginutils': 4.2.1
-      find-cache-dir: 3.3.2
-      fs-extra: 10.1.0
-      rollup: 2.79.0
-      tslib: 2.4.0
-      typescript: 4.7.4
-    dev: true
-
   /rollup-pluginutils/2.8.2:
     resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
     dependencies:
@@ -7823,7 +7776,7 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: registry.npmjs.org/fsevents/2.3.2
     dev: true
 
   /run-async/2.4.1:
@@ -7926,7 +7879,7 @@ packages:
     dev: true
 
   /shell-quote/1.7.3:
-    resolution: {integrity: sha512-Vpfqwm4EnqGdlsBFNmHhxhElJYrdfcxPThu+ryKS5J8L/fhAwLazFZtq+S+TWZ9ANj2piSQLGj6NQg+lKPmxrw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/shell-quote/-/shell-quote-1.7.3.tgz}
+    resolution: {integrity: sha512-Vpfqwm4EnqGdlsBFNmHhxhElJYrdfcxPThu+ryKS5J8L/fhAwLazFZtq+S+TWZ9ANj2piSQLGj6NQg+lKPmxrw==}
     dev: false
 
   /signal-exit/3.0.7:
@@ -8005,11 +7958,11 @@ packages:
     dev: true
 
   /spawn-command/0.0.2-1:
-    resolution: {integrity: sha512-n98l9E2RMSJ9ON1AKisHzz7V42VDiBQGY6PB1BwRglz99wpVsSuGzQ+jOi6lFXBGVTCrRpltvjm+/XA+tpeJrg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/spawn-command/-/spawn-command-0.0.2-1.tgz}
+    resolution: {integrity: sha512-n98l9E2RMSJ9ON1AKisHzz7V42VDiBQGY6PB1BwRglz99wpVsSuGzQ+jOi6lFXBGVTCrRpltvjm+/XA+tpeJrg==}
     dev: false
 
   /split-on-first/1.1.0:
-    resolution: {integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/split-on-first/-/split-on-first-1.1.0.tgz}
+    resolution: {integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==}
     engines: {node: '>=6'}
     dev: false
 
@@ -8057,7 +8010,7 @@ packages:
     dev: true
 
   /strict-uri-encode/2.0.0:
-    resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz}
+    resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
     engines: {node: '>=4'}
     dev: false
 
@@ -8134,7 +8087,7 @@ packages:
     dev: true
 
   /strip-indent/3.0.0:
-    resolution: {integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/strip-indent/-/strip-indent-3.0.0.tgz}
+    resolution: {integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==}
     engines: {node: '>=8'}
     dependencies:
       min-indent: 1.0.1
@@ -8315,7 +8268,7 @@ packages:
     dev: true
 
   /tiny-case/1.0.3:
-    resolution: {integrity: sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/tiny-case/-/tiny-case-1.0.3.tgz}
+    resolution: {integrity: sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==}
     dev: false
 
   /title-case/3.0.3:
@@ -8354,7 +8307,7 @@ packages:
       is-number: 7.0.0
 
   /toposort/2.0.2:
-    resolution: {integrity: sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/toposort/-/toposort-2.0.2.tgz}
+    resolution: {integrity: sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==}
     dev: false
 
   /tough-cookie/2.5.0:
@@ -8386,7 +8339,7 @@ packages:
     dev: true
 
   /tree-kill/1.2.2:
-    resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/tree-kill/-/tree-kill-1.2.2.tgz}
+    resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
     dev: false
 
