@@ -1,11 +1,7 @@
-import { useMessageFormatter } from "@react-aria/i18n";
-import english from "@/checkout-storefront/lib/translations/en-US.json";
-
-export type MessageKey = keyof typeof english;
+import { useIntl, MessageDescriptor } from "react-intl";
 
 export const useFormattedMessages = () => {
-  const formatMessage = useMessageFormatter({ "en-US": english });
+  const { formatMessage } = useIntl();
 
-  return (messageKey: MessageKey, values?: Record<string, string | number>) =>
-    formatMessage(messageKey, values);
+  return (message: MessageDescriptor) => formatMessage(message);
 };

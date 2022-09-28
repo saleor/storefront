@@ -21,6 +21,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
 import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";
+import { summaryMessages as messages } from "@/checkout-storefront/sections/Summary/messages";
 
 /* temporary solution */
 const PAGE_MARGINS_HEIGHT = 320;
@@ -85,7 +86,7 @@ export const Summary: FC<SummaryProps> = ({
     <div className="summary">
       <div className={clsx("summary-title", isOpen && "open")}>
         <div className="flex flex-row items-center w-full" onClick={() => setOpen(!isOpen)}>
-          <Title className="mb-0">{formatMessage("summary")}</Title>
+          <Title className="mb-0">{formatMessage(messages.title)}</Title>
           <img src={getSvgSrc(ChevronDownIcon)} alt="chevron-down" />
         </div>
         {!isOpen && (

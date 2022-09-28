@@ -6,7 +6,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "concurrently --kill-others 'next dev -p 3002' 'rollup -w -c'",
-    "build": "NODE_ENV=production rollup -c",
+    "build": "NODE_ENV=production rollup -c && tsc -d --emitDeclarationOnly --declarationDir types",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
     "check-types": "tsc --noEmit",
     "check-types:dev": "tsc --noEmit --watch",
@@ -14,7 +14,9 @@
     "lint:staged": "eslint --fix",
     "test": "jest",
     "test:dev": "jest --watch",
-    "clean": "rm -rf .turbo .next .rollup.cache dist"
+    "clean": "rm -rf .turbo .next .rollup.cache dist",
+    "extract:i18n": "formatjs extract 'src/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",
+    "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales"
   },
   "resolutions": {
     "graphql": "15.8.0"
@@ -33,7 +35,6 @@
     "@apollo/client": "^3.5.10",
     "@headlessui/react": "^1.6.0",
     "@hookform/error-message": "^2.0.0",
-    "@react-aria/i18n": "^3.3.4",
     "@react-types/button": "^3.4.1",
     "@saleor/sdk": "^0.4.3",
     "@saleor/ui-kit": "workspace:*",
@@ -45,8 +46,10 @@
     "hex-rgb": "^5.0.0",
     "lodash-es": "^4.17.21",
     "query-string": "^7.1.1",
+    "react": "^18.2.0",
     "react-error-boundary": "^3.1.4",
     "react-hook-form": "^7.34.2",
+    "react-intl": "^6.1.1",
     "react-test-renderer": "^18.2.0",
     "react-toastify": "^9.0.4",
     "tailwindcss": "^3.0.18",
@@ -56,6 +59,7 @@
     "yup": "1.0.0-beta.7"
   },
   "devDependencies": {
+    "@formatjs/ts-transformer": "^3.10.0",
     "@graphql-codegen/add": "^3.2.0",
     "@graphql-codegen/cli": "2.8.1",
     "@graphql-codegen/introspection": "2.2.0",
@@ -80,11 +84,14 @@
     "@types/url-join": "4.0.1",
     "@types/webpack-env": "^1.16.3",
     "autoprefixer": "9.8.6",
+    "env-cmd": "^10.1.0",
     "env-vars": "workspace:*",
     "eslint": "^8.22.0",
     "eslint-config-checkout": "workspace:*",
+    "eslint-plugin-formatjs": "^4.2.2",
     "graphql-tag": "^2.12.6",
     "jest": "^27.5.1",
+    "json-easy-strip": "^1.0.6",
     "next": "12.2.2",
     "postcss": "^8.4.6",
     "postcss-import": "14.1.0",
@@ -93,7 +100,9 @@
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-svg-import": "^1.6.0",
     "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.34.0",
     "ts-jest": "^27.1.5",
     "tsconfig": "workspace:*",
     "tslib": "^2.4.0",
