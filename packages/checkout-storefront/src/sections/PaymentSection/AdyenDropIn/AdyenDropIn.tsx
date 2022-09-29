@@ -6,7 +6,7 @@ import {
 
 import type { PaymentResponse as AdyenWebPaymentResponse } from "@adyen/adyen-web/dist/types/components/types";
 
-import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
+import { useAlerts, useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
 import { memo, useEffect, useRef } from "react";
@@ -35,6 +35,8 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
 
   const { checkout, loading: isCheckoutLoading } = useCheckout();
 
+  const { showCustomErrors } = useAlerts("checkoutPay");
+
   const [, fetchCreateDropInAdyenPayment] = useFetch(createDropInAdyenPayment, {
     skip: true,
   });
@@ -43,6 +45,8 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
   });
 
   const onSubmit: AdyenCheckoutInstanceOnSubmit = useEvent(async (state, component) => {
+    component.setStatus("loading");
+
     const result = await fetchCreateDropInAdyenPayment({
       checkoutApiUrl,
       totalAmount: checkout.totalPrice.gross.amount,
@@ -54,8 +58,9 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
     });
 
     if (!result || "message" in result) {
-      // @todo handle error ?
       console.error(result);
+      showCustomErrors([{ message: result?.message || "Something went wrong…" }]);
+      component.setStatus("ready");
       return;
     }
 
@@ -77,8 +82,9 @@ export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
         adyenStateData: state.data,
       });
       if (!result || "message" in result) {
-        // @todo handle error ?
         console.error(result);
+        showCustomErrors([{ message: result?.message || "Something went wrong…" }]);
+        component.setStatus("ready");
         return;
       }
 

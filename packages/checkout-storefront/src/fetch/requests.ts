@@ -12,7 +12,7 @@ import {
   PostAdyenDropInPaymentsDetailsResponse,
 } from "checkout-common";
 import { PayResult } from "./types";
-import urlJoin from "url-join";
+import { urlJoinTrailingSlash } from "./urlJoin";
 
 export type PaymentMethodsRequestArgs = {
   channelId: string;
@@ -23,13 +23,13 @@ export const getPaymentMethods = ({
   checkoutApiUrl,
   channelId,
 }: PaymentMethodsRequestArgs): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
-  fetch(urlJoin(checkoutApiUrl, "active-payment-providers", channelId, "/"));
+  fetch(urlJoinTrailingSlash(checkoutApiUrl, "active-payment-providers", channelId));
 
 export const pay = ({
   checkoutApiUrl,
   ...body
 }: PayRequestBody & { checkoutApiUrl: string }): FetchResponse<PayResult> =>
-  fetch(urlJoin(checkoutApiUrl, "pay", "/"), {
+  fetch(urlJoinTrailingSlash(checkoutApiUrl, "pay"), {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -38,7 +38,8 @@ export const getAppConfig = ({
   checkoutApiUrl,
 }: {
   checkoutApiUrl: string;
-}): FetchResponse<AppConfig> => fetch(urlJoin(checkoutApiUrl, "customization-settings", "/"));
+}): FetchResponse<AppConfig> =>
+  fetch(urlJoinTrailingSlash(checkoutApiUrl, "customization-settings"));
 
 export const getOrderPaymentStatus = ({
   orderId,
@@ -47,7 +48,7 @@ export const getOrderPaymentStatus = ({
   orderId: string;
   checkoutApiUrl: string;
 }): FetchResponse<PaymentStatusResponse> =>
-  fetch(urlJoin(checkoutApiUrl, "payment-status", orderId, "/"));
+  fetch(urlJoinTrailingSlash(checkoutApiUrl, "payment-status", orderId));
 
 export const createDropInAdyenSession = ({
   checkoutApiUrl,
@@ -55,7 +56,7 @@ export const createDropInAdyenSession = ({
 }: PostDropInAdyenSessionsBody & {
   checkoutApiUrl: string;
 }): FetchResponse<AdyenDropInCreateSessionResponse> => {
-  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "sessions", "/"), {
+  return fetch(urlJoinTrailingSlash(checkoutApiUrl, "drop-in", "adyen", "sessions"), {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -67,7 +68,7 @@ export const createDropInAdyenPayment = ({
 }: PostDropInAdyenPaymentsBody & {
   checkoutApiUrl: string;
 }): FetchResponse<PostAdyenDropInPaymentsResponse | { message: string }> => {
-  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments", "/"), {
+  return fetch(urlJoinTrailingSlash(checkoutApiUrl, "drop-in", "adyen", "payments"), {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -79,7 +80,7 @@ export const handleDropInAdyenPaymentDetails = ({
 }: PostDropInAdyenPaymentsDetailsBody & {
   checkoutApiUrl: string;
 }): FetchResponse<PostAdyenDropInPaymentsDetailsResponse | { message: string }> => {
-  return fetch(urlJoin(checkoutApiUrl, "drop-in", "adyen", "payments", "details", "/"), {
+  return fetch(urlJoinTrailingSlash(checkoutApiUrl, "drop-in", "adyen", "payments", "details"), {
     method: "POST",
     body: JSON.stringify(body),
   });

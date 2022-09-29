@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { getOrderIdFromAdditionalData } from "@/saleor-app-checkout/backend/payments/providers/adyen/getOrderIdFromNotification";
 import { getAdyenClient } from "@/saleor-app-checkout/backend/payments/providers/adyen/utils";
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
@@ -38,6 +39,7 @@ const DropInAdyenPaymentsDetailsHandler: NextApiHandler<
     return res.status(200).json({ payment, orderId });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
 
     return res.status(500).json({ message: "adyen" });
   }
