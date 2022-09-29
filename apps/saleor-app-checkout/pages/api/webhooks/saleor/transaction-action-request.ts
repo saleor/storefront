@@ -95,6 +95,6 @@ export default withSentry(
     withSaleorDomainMatch,
     withSaleorEventMatch("transaction_action_request"),
     withWebhookSignatureVerified(),
-    handler,
+    handler as Handler,
   ])
 );
