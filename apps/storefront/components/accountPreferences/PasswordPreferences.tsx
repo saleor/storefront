@@ -65,6 +65,7 @@ export function PasswordPreferences() {
               type="password"
               placeholder="Old password"
               id="oldPassword"
+              spellCheck={false}
               {...register("oldPassword", {
                 required: true,
               })}
@@ -84,6 +85,7 @@ export function PasswordPreferences() {
               type="password"
               placeholder="New password"
               id="newPassword"
+              spellCheck={false}
               {...register("newPassword", {
                 required: true,
               })}
@@ -103,6 +105,7 @@ export function PasswordPreferences() {
               type="password"
               placeholder="Repeat new password"
               id="password"
+              spellCheck={false}
               {...register("newPasswordRepeat", {
                 required: true,
               })}

@@ -54,6 +54,7 @@ export function CartSummary({ checkout }: CartSummaryProps) {
                 type="text"
                 id="discount-code"
                 className="block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+                spellCheck={false}
                 {...registerForm("promoCode", {
                   required: true,
                 })}
