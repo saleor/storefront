@@ -77,7 +77,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     setSelectedMethodId(selectedMethodId);
 
     const result = await updateDeliveryMethod({
-      deliveryMethodId: selectedMethodId as string,
+      deliveryMethodId: selectedMethodId ,
       checkoutId: checkout.id,
     });
 
@@ -114,7 +114,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
           <Text>Please fill in shipping address to see available shipping methods</Text>
         )}
         <SelectBoxGroup label={formatMessage("deliveryMethodsLabel")}>
-          {(shippingMethods as ShippingMethod[])?.map(
+          {(shippingMethods )?.map(
             ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
               <SelectBox
                 value={id}

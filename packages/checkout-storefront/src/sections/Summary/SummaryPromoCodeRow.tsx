@@ -26,7 +26,7 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 
   const onDelete = () => {
     const variables = promoCode
-      ? { promoCode: promoCode as string }
+      ? { promoCode: promoCode  }
       : { promoCodeId: promoCodeId as string };
 
     void checkoutRemovePromoCode({

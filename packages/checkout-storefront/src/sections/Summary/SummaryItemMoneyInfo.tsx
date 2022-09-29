@@ -41,7 +41,7 @@ export const SummaryItemMoneyInfo: React.FC<SummaryItemMoneyInfoProps> = ({
         <Money
           ariaLabel={formatMessage("totalPriceLabel")}
           money={{
-            currency: piecePrice?.currency as string,
+            currency: piecePrice?.currency ,
             amount: (piecePrice?.amount || 0) * quantity,
           }}
           weight="bold"
