@@ -3,5 +3,5 @@
   "framework": "nextjs",
   "installCommand": "pnpm --version && pnpm install --frozen-lockfile",
   "buildCommand": "cd ../.. && pnpm run build:saleor-app-checkout",
-  "ignoreCommand": "pnpx @typeofweb/ignore-monorepo-buildstep"
+  "ignoreCommand": "npx @typeofweb/ignore-monorepo-buildstep@latest"
 }
