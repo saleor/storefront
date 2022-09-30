@@ -68,6 +68,7 @@ const mockPrivateSettings = (returnMockedSettings = true) => {
         adyen: {},
         mollie: {},
         stripe: {},
+        dummy: {},
       },
     });
   }
@@ -84,6 +85,7 @@ const mockPrivateSettings = (returnMockedSettings = true) => {
       },
       mollie: {},
       stripe: {},
+      dummy: {},
     },
   });
 };
@@ -120,6 +122,7 @@ describe("withAdyenWebhookCredentials", () => {
         adyen: adyenConfig,
         mollie: {},
         stripe: {},
+        dummy: {},
       },
     });
 

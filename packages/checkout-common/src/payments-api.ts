@@ -28,12 +28,12 @@ export type ChannelActivePaymentProvidersByChannel = {
 };
 
 export type DummyPayRequestBody = {
-  type: "fully_paid" | "partially_paid";
+  checkoutApiUrl: string;
   amountCharged: {
     amount: number;
     currency: string;
   };
-} & Pick<OrderBody, "checkoutApiUrl" | "orderId">;
+} & Pick<OrderBody, "orderId">;
 
 export type DummyPayRequestResult = {
   ok: boolean;

@@ -10,6 +10,8 @@ import {
   PostAdyenDropInPaymentsResponse,
   PostDropInAdyenPaymentsDetailsBody,
   PostAdyenDropInPaymentsDetailsResponse,
+  DummyPayRequestResult,
+  DummyPayRequestBody,
 } from "checkout-common";
 import { PayResult } from "./types";
 import { urlJoinTrailingSlash } from "./urlJoin";
@@ -85,3 +87,12 @@ export const handleDropInAdyenPaymentDetails = ({
     body: JSON.stringify(body),
   });
 };
+
+export const dummyPay = ({
+  checkoutApiUrl,
+  ...body
+}: DummyPayRequestBody): FetchResponse<DummyPayRequestResult> =>
+  fetch(urlJoinTrailingSlash(checkoutApiUrl, "dummy-pay"), {
+    method: "POST",
+    body: JSON.stringify(body),
+  });

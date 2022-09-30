@@ -195,7 +195,9 @@ const getPaymentUrlIdForProvider = (
     case "stripe":
       return createStripePayment(createPaymentData);
     case "dummy":
-      return createDummyPayment();
+      return createDummyPayment({
+        redirectUrl: `${body.redirectUrl}?order=${order.id}&dummyPayment=true`,
+      });
     default:
       assertUnreachable(body.provider);
   }

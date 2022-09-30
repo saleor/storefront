@@ -1,8 +1,10 @@
-import { CreatePaymentResult } from "../../types";
+import { CreatePaymentData, CreatePaymentResult } from "../../types";
 
-export const createDummyPayment = async (): Promise<CreatePaymentResult> => {
+export const createDummyPayment = async ({
+  redirectUrl,
+}: Pick<CreatePaymentData, "redirectUrl">): Promise<CreatePaymentResult> => {
   return {
-    url: "/",
+    url: redirectUrl,
     id: "",
   };
 };

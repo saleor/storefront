@@ -160,5 +160,11 @@
   "checkoutFinalizePaymentProviderRequiredError": "Please select a payment method before finalizing checkout",
   "checkoutFinalizeShippingAddressInvalidError": "Please fill in a valid shipping address before finalizing checkout",
   "missingFieldsInShippingAddress": "Missing fields in shipping address",
-  "missingFieldsInBillingAddress": "Missing fields in billing address"
+  "missingFieldsInBillingAddress": "Missing fields in billing address",
+  "loadingWithDots": "Loading...",
+  "dummyPay": "Dummy Pay",
+  "dummyPayment": "Dummy Payment",
+  "dummyPaymentAmountPlaceholder": "Left to pay [{currency}]",
+  "orderTotalPrice": "Total price",
+  "orderAlreadyPaid": "Already paid"
 }

@@ -22,6 +22,10 @@ export const paymentProvidersMessages = defineMessages<PaymentProviderID>({
     id: "messages/paymentProviders/ehp06H",
     description: "payment provider",
   },
+  dummy: {
+    defaultMessage: "Dummy Payment",
+    description: "dummy payment provider",
+  },
 });
 
 export const molliePaymentProviderMessages = defineMessages<MollieProviderSettingID>({

@@ -106,6 +106,12 @@ fragment Order on Order {
   lines {
     ...OrderLineFragment
   }
+  totalBalance {
+    ...Money
+  }
+  totalCaptured {
+    ...Money
+  }
 }
 
 query order($id: ID!) {

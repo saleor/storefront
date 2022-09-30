@@ -158,6 +158,7 @@ const paymentProviderFields: Record<PaymentProviderID, any> = {
   mollie: molliePaymentProvider,
   adyen: adyenPaymentProvider,
   stripe: stripePaymentProvider,
+  dummy: {},
 };
 
 export type CommonField = { id: string } & Record<string, any>;

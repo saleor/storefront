@@ -105,6 +105,8 @@ const saleorPaymentMethodIdToStripePaymentMethodId = (
       return null;
     case "dropin":
       return null;
+    case "dummy":
+      return null;
   }
 };
 

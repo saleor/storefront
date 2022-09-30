@@ -8,13 +8,13 @@ import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphq
 import { safeJsonParse } from "@/saleor-app-checkout/utils";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const [bodyError, body] =
+  const [error, body] =
     typeof req.body === "string"
       ? safeJsonParse<DummyPayRequestBody>(req.body)
       : [null, req.body as DummyPayRequestBody];
 
-  if (bodyError) {
-    console.error(bodyError, req.body);
+  if (error) {
+    console.error(error, req.body);
     res.status(400).send({ message: "Invalid JSON" });
     return;
   }
