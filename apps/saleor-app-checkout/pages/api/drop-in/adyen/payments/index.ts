@@ -1,8 +1,9 @@
 import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
 import { createAdyenCheckoutPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
-import { getBaseUrl } from "@/saleor-app-checkout/backend/utils";
+import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { withSentry } from "@sentry/nextjs";
 import { PostAdyenDropInPaymentsResponse, postDropInAdyenPaymentsBody } from "checkout-common";
 import { NextApiHandler } from "next";
 
@@ -51,4 +52,4 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
   }
 };
 
-export default DropInAdyenPaymentsHandler;
+export default withSentry(allowCors(DropInAdyenPaymentsHandler));

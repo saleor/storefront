@@ -7,6 +7,7 @@ import { isAuthenticated, isAuthorized } from "./auth";
 export const allowCors =
   (fn: NextApiHandler): NextApiHandler =>
   async (req, res) => {
+    console.log({ "req.headers.origin": req.headers.origin });
     res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,POST");
     res.setHeader(
