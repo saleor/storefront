@@ -65,6 +65,7 @@ fragment Order on Order {
   id
   number
   userEmail
+  isPaid
   discounts {
     type
     name

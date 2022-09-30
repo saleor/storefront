@@ -23924,6 +23924,7 @@ export type OrderFragment = {
   id: string;
   number: string;
   userEmail?: string | null;
+  isPaid: boolean;
   discounts: Array<{
     __typename?: "OrderDiscount";
     type: OrderDiscountType;
@@ -24024,6 +24025,7 @@ export type OrderQuery = {
     id: string;
     number: string;
     userEmail?: string | null;
+    isPaid: boolean;
     discounts: Array<{
       __typename?: "OrderDiscount";
       type: OrderDiscountType;
@@ -24367,6 +24369,7 @@ export const OrderFragmentDoc = gql`
     id
     number
     userEmail
+    isPaid
     discounts {
       type
       name
