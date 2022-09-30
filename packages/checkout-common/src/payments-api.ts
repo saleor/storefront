@@ -26,3 +26,15 @@ export type PaymentStatusResponse = {
 export type ChannelActivePaymentProvidersByChannel = {
   [P in PaymentMethodID]: PaymentProviderID | "";
 };
+
+export type DummyPayRequestBody = {
+  type: "fully_paid" | "partially_paid";
+  amountCharged: {
+    amount: number;
+    currency: string;
+  };
+} & Pick<OrderBody, "checkoutApiUrl" | "orderId">;
+
+export type DummyPayRequestResult = {
+  ok: boolean;
+};
