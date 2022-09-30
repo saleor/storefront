@@ -106,5 +106,14 @@ module.exports = withBundleAnalyzer({
         : []),
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/:channel/:locale/account/",
+        destination: "/[channel]/[locale]/account/preferences",
+        permanent: true,
+      },
+    ];
+  },
   experimental: {},
 });
