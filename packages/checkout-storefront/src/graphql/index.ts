@@ -1,4 +1,5 @@
 // THIS FILE IS GENERATED WITH `pnpm generate`
+import "graphql/language/ast";
 import gql from "graphql-tag";
 import * as Urql from "urql";
 export type Maybe<T> = T | null;
@@ -416,6 +417,17 @@ export type Allocation = Node & {
    */
   warehouse: Warehouse;
 };
+
+/**
+ * Determine the allocation strategy for the channel.
+ *
+ *     PRIORITIZE_SORTING_ORDER - allocate stocks according to the warehouses' order
+ *     within the channel
+ *
+ *     PRIORITIZE_HIGH_STOCK - allocate stock in a warehouse with the most stock
+ *
+ */
+export type AllocationStrategyEnum = "PRIORITIZE_HIGH_STOCK" | "PRIORITIZE_SORTING_ORDER";
 
 /** Represents app data. */
 export type App = Node &
@@ -1296,7 +1308,7 @@ export type AttributeDeleted = Event & {
 };
 
 /** An enumeration. */
-export type AttributeEntityTypeEnum = "PAGE" | "PRODUCT";
+export type AttributeEntityTypeEnum = "PAGE" | "PRODUCT" | "PRODUCT_VARIANT";
 
 export type AttributeError = {
   __typename?: "AttributeError";
@@ -1333,6 +1345,7 @@ export type AttributeFilterInput = {
   isVariantOnly?: InputMaybe<Scalars["Boolean"]>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
   type?: InputMaybe<AttributeTypeEnum>;
   valueRequired?: InputMaybe<Scalars["Boolean"]>;
   visibleInStorefront?: InputMaybe<Scalars["Boolean"]>;
@@ -1865,6 +1878,26 @@ export type BulkStockError = {
   values?: Maybe<Array<Scalars["ID"]>>;
 };
 
+/**
+ * Synchronous webhook for calculating checkout/order taxes.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CalculateTaxes = Event & {
+  __typename?: "CalculateTaxes";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  taxBase: TaxableObject;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
 export type CardInput = {
   /** Payment method nonce, a token returned by the appropriate provider's SDK. */
   code: Scalars["String"];
@@ -2123,6 +2156,7 @@ export type CategoryFilterInput = {
   ids?: InputMaybe<Array<Scalars["ID"]>>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type CategoryInput = {
@@ -2322,6 +2356,16 @@ export type Channel = Node & {
   /** Slug of the channel. */
   slug: Scalars["String"];
   /**
+   * Define the stock setting for this channel.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
+   */
+  stockSettings: StockSettings;
+  /**
    * List of warehouses assigned to this channel.
    *
    * Added in Saleor 3.5.
@@ -2392,6 +2436,14 @@ export type ChannelCreateInput = {
   name: Scalars["String"];
   /** Slug of the channel. */
   slug: Scalars["String"];
+  /**
+   * The channel stock settings.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
 /**
@@ -2495,6 +2547,22 @@ export type ChannelErrorCode =
   | "UNIQUE";
 
 /**
+ * Reorder the warehouses of a channel.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_CHANNELS.
+ */
+export type ChannelReorderWarehouses = {
+  __typename?: "ChannelReorderWarehouses";
+  /** Channel within the warehouses are reordered. */
+  channel?: Maybe<Channel>;
+  errors: Array<ChannelError>;
+};
+
+/**
  * Event sent when channel status has changed.
  *
  * Added in Saleor 3.2.
@@ -2561,6 +2629,14 @@ export type ChannelUpdateInput = {
   removeWarehouses?: InputMaybe<Array<Scalars["ID"]>>;
   /** Slug of the channel. */
   slug?: InputMaybe<Scalars["String"]>;
+  /**
+   * The channel stock settings.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
 /**
@@ -2689,6 +2765,14 @@ export type Checkout = Node &
     stockReservationExpires?: Maybe<Scalars["DateTime"]>;
     /** The price of the checkout before shipping, with taxes included. */
     subtotalPrice: TaxedMoney;
+    /**
+     * Returns True if checkout has to be exempt from taxes.
+     *
+     * Added in Saleor 3.8.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxExemption: Scalars["Boolean"];
     /** The checkout's token. */
     token: Scalars["UUID"];
     /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
@@ -3104,6 +3188,12 @@ export type CheckoutLineInput = {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   forceNewLine?: InputMaybe<Scalars["Boolean"]>;
+  /**
+   * Fields required to update the object's metadata.
+   *
+   * Added in Saleor 3.8.
+   */
+  metadata?: InputMaybe<Array<MetadataInput>>;
   /**
    * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
    *
@@ -3630,6 +3720,7 @@ export type CollectionFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   published?: InputMaybe<CollectionPublished>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type CollectionInput = {
@@ -5353,6 +5444,29 @@ export type FulfillmentApprove = {
   order?: Maybe<Order>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   orderErrors: Array<OrderError>;
+};
+
+/**
+ * Event sent when fulfillment is approved.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type FulfillmentApproved = Event & {
+  __typename?: "FulfillmentApproved";
+  /** The fulfillment the event relates to. */
+  fulfillment?: Maybe<Fulfillment>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The order the fulfillment belongs to. */
+  order?: Maybe<Order>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /**
@@ -7718,6 +7832,7 @@ export type MenuFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
   slug?: InputMaybe<Array<Scalars["String"]>>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type MenuInput = {
@@ -8466,6 +8581,16 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_CHANNELS.
    */
   channelDelete?: Maybe<ChannelDelete>;
+  /**
+   * Reorder the warehouses of a channel.
+   *
+   * Added in Saleor 3.7.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_CHANNELS.
+   */
+  channelReorderWarehouses?: Maybe<ChannelReorderWarehouses>;
   /**
    * Update a channel.
    *
@@ -9637,6 +9762,16 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_STAFF.
    */
   staffUpdate?: Maybe<StaffUpdate>;
+  /**
+   * Exempt checkout or order from charging the taxes. When tax exemption is enabled, taxes won't be charged for the checkout or order. Taxes may still be calculated in cases when product prices are entered with the tax included and the net price needs to be known.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxExemptionManage?: Maybe<TaxExemptionManage>;
   /** Create JWT token. */
   tokenCreate?: Maybe<CreateToken>;
   /** Refresh JWT token. Mutation tries to take refreshToken from the input.If it fails it will try to take refreshToken from the http-only cookie -refreshToken. csrfToken is required when refreshToken is provided as a cookie. */
@@ -9998,6 +10133,11 @@ export type MutationChannelDeleteArgs = {
   input?: InputMaybe<ChannelDeleteInput>;
 };
 
+export type MutationChannelReorderWarehousesArgs = {
+  channelId: Scalars["ID"];
+  moves: Array<ReorderInput>;
+};
+
 export type MutationChannelUpdateArgs = {
   id: Scalars["ID"];
   input: ChannelUpdateInput;
@@ -10021,6 +10161,7 @@ export type MutationCheckoutBillingAddressUpdateArgs = {
 export type MutationCheckoutCompleteArgs = {
   checkoutId?: InputMaybe<Scalars["ID"]>;
   id?: InputMaybe<Scalars["ID"]>;
+  metadata?: InputMaybe<Array<MetadataInput>>;
   paymentData?: InputMaybe<Scalars["JSONString"]>;
   redirectUrl?: InputMaybe<Scalars["String"]>;
   storeSource?: InputMaybe<Scalars["Boolean"]>;
@@ -10445,6 +10586,8 @@ export type MutationOrderConfirmArgs = {
 
 export type MutationOrderCreateFromCheckoutArgs = {
   id: Scalars["ID"];
+  metadata?: InputMaybe<Array<MetadataInput>>;
+  privateMetadata?: InputMaybe<Array<MetadataInput>>;
   removeCheckout?: InputMaybe<Scalars["Boolean"]>;
 };
 
@@ -10979,6 +11122,11 @@ export type MutationStaffUpdateArgs = {
   input: StaffUpdateInput;
 };
 
+export type MutationTaxExemptionManageArgs = {
+  id: Scalars["ID"];
+  taxExemption: Scalars["Boolean"];
+};
+
 export type MutationTokenCreateArgs = {
   email: Scalars["String"];
   password: Scalars["String"];
@@ -11220,7 +11368,7 @@ export type Order = Node &
     created: Scalars["DateTime"];
     customerNote: Scalars["String"];
     /**
-     * The delivery method selected for this checkout.
+     * The delivery method selected for this order.
      *
      * Added in Saleor 3.1.
      *
@@ -11336,6 +11484,14 @@ export type Order = Node &
     statusDisplay: Scalars["String"];
     /** The sum of line prices not including shipping. */
     subtotal: TaxedMoney;
+    /**
+     * Returns True if order has to be exempt from taxes.
+     *
+     * Added in Saleor 3.8.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxExemption: Scalars["Boolean"];
     /** @deprecated This field will be removed in Saleor 4.0. Use `id` instead. */
     token: Scalars["String"];
     /** Total amount of the order. */
@@ -12852,6 +13008,7 @@ export type PageFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   pageTypes?: InputMaybe<Array<Scalars["ID"]>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
@@ -13225,6 +13382,7 @@ export type PageTypeDeleted = Event & {
 
 export type PageTypeFilterInput = {
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /**
@@ -13594,7 +13752,7 @@ export type PaymentError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
-  /** List of varint IDs which causes the error. */
+  /** List of variant IDs which causes the error. */
   variants?: Maybe<Array<Scalars["ID"]>>;
 };
 
@@ -13840,6 +13998,7 @@ export type PermissionEnum =
   | "MANAGE_SETTINGS"
   | "MANAGE_SHIPPING"
   | "MANAGE_STAFF"
+  | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
   | "MANAGE_USERS";
 
@@ -14757,6 +14916,7 @@ export type ProductFilterInput = {
   price?: InputMaybe<PriceRangeInput>;
   productTypes?: InputMaybe<Array<Scalars["ID"]>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
   /** Filter by variants having specific stock status. */
   stockAvailability?: InputMaybe<StockAvailability>;
   stocks?: InputMaybe<ProductStockFilterInput>;
@@ -15290,6 +15450,7 @@ export type ProductTypeFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   productType?: InputMaybe<ProductTypeEnum>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type ProductTypeInput = {
@@ -19200,6 +19361,24 @@ export type StockInput = {
   warehouse: Scalars["ID"];
 };
 
+/**
+ * Represents the channel stock settings.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type StockSettings = {
+  __typename?: "StockSettings";
+  /** Allocation strategy defines the preference of warehouses for allocations and reservations. */
+  allocationStrategy: AllocationStrategyEnum;
+};
+
+export type StockSettingsInput = {
+  /** Allocation strategy options. Strategy defines the preference of warehouses for allocations and reservations. */
+  allocationStrategy: AllocationStrategyEnum;
+};
+
 /** Enum representing the type of a payment storage in a gateway. */
 export type StorePaymentMethodEnum =
   /** Storage is disabled. The payment is not stored. */
@@ -19221,6 +19400,42 @@ export type Subscription = {
   event?: Maybe<Event>;
 };
 
+/**
+ * Exempt checkout or order from charging the taxes. When tax exemption is enabled, taxes won't be charged for the checkout or order. Taxes may still be calculated in cases when product prices are entered with the tax included and the net price needs to be known.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxExemptionManage = {
+  __typename?: "TaxExemptionManage";
+  errors: Array<TaxExemptionManageError>;
+  taxableObject?: Maybe<TaxSourceObject>;
+};
+
+export type TaxExemptionManageError = {
+  __typename?: "TaxExemptionManageError";
+  /** The error code. */
+  code: TaxExemptionManageErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxExemptionManageErrorCode =
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "NOT_EDITABLE_ORDER"
+  | "NOT_FOUND";
+
+export type TaxSourceLine = CheckoutLine | OrderLine;
+
+export type TaxSourceObject = Checkout | Order;
+
 /** Representation of tax types fetched from tax gateway. */
 export type TaxType = {
   __typename?: "TaxType";
@@ -19228,6 +19443,55 @@ export type TaxType = {
   description?: Maybe<Scalars["String"]>;
   /** External tax code used to identify given tax group. */
   taxCode?: Maybe<Scalars["String"]>;
+};
+
+/** Taxable object. */
+export type TaxableObject = {
+  __typename?: "TaxableObject";
+  /** The address data. */
+  address?: Maybe<Address>;
+  channel: Channel;
+  /** The currency of the object. */
+  currency: Scalars["String"];
+  /** List of discounts. */
+  discounts: Array<TaxableObjectDiscount>;
+  /** List of lines assigned to the object. */
+  lines: Array<TaxableObjectLine>;
+  /** Determines if prices contain entered tax.. */
+  pricesEnteredWithTax: Scalars["Boolean"];
+  /** The price of shipping method. */
+  shippingPrice: Money;
+  /** The source object related to this tax object. */
+  sourceObject: TaxSourceObject;
+};
+
+/** Taxable object discount. */
+export type TaxableObjectDiscount = {
+  __typename?: "TaxableObjectDiscount";
+  /** The amount of the discount. */
+  amount: Money;
+  /** The name of the discount. */
+  name?: Maybe<Scalars["String"]>;
+};
+
+export type TaxableObjectLine = {
+  __typename?: "TaxableObjectLine";
+  /** Determines if taxes are being charged for the product. */
+  chargeTaxes: Scalars["Boolean"];
+  /** The product name. */
+  productName: Scalars["String"];
+  /** The product sku. */
+  productSku?: Maybe<Scalars["String"]>;
+  /** Number of items. */
+  quantity: Scalars["Int"];
+  /** The source line related to this tax line. */
+  sourceLine: TaxSourceLine;
+  /** Price of the order line. */
+  totalPrice: Money;
+  /** Price of the single item in the order line. */
+  unitPrice: Money;
+  /** The variant name. */
+  variantName: Scalars["String"];
 };
 
 /** Represents a monetary value with taxes. In cases where taxes were not applied, net and gross values will be equal. */
@@ -20820,7 +21084,11 @@ export type WarehouseCreateInput = {
   email?: InputMaybe<Scalars["String"]>;
   /** Warehouse name. */
   name: Scalars["String"];
-  /** Shipping zones supported by the warehouse. */
+  /**
+   * Shipping zones supported by the warehouse.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Providing the zone ids will raise a ValidationError.
+   */
   shippingZones?: InputMaybe<Array<Scalars["ID"]>>;
   /** Warehouse slug. */
   slug?: InputMaybe<Scalars["String"]>;
@@ -20889,6 +21157,8 @@ export type WarehouseError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
+  /** List of shipping zones IDs which causes the error. */
+  shippingZones?: Maybe<Array<Scalars["ID"]>>;
 };
 
 /** An enumeration. */
@@ -20906,6 +21176,7 @@ export type WarehouseFilterInput = {
   ids?: InputMaybe<Array<Scalars["ID"]>>;
   isPrivate?: InputMaybe<Scalars["Boolean"]>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /**
@@ -21213,6 +21484,8 @@ export type WebhookEventTypeAsyncEnum =
   | "DRAFT_ORDER_DELETED"
   /** A draft order is updated. */
   | "DRAFT_ORDER_UPDATED"
+  /** A fulfillment is approved. */
+  | "FULFILLMENT_APPROVED"
   /** A fulfillment is cancelled. */
   | "FULFILLMENT_CANCELED"
   /** A new fulfillment is created. */
@@ -21414,6 +21687,8 @@ export type WebhookEventTypeEnum =
   | "DRAFT_ORDER_DELETED"
   /** A draft order is updated. */
   | "DRAFT_ORDER_UPDATED"
+  /** A fulfillment is approved. */
+  | "FULFILLMENT_APPROVED"
   /** A fulfillment is cancelled. */
   | "FULFILLMENT_CANCELED"
   /** A new fulfillment is created. */
@@ -21637,6 +21912,7 @@ export type WebhookSampleEventTypeEnum =
   | "DRAFT_ORDER_CREATED"
   | "DRAFT_ORDER_DELETED"
   | "DRAFT_ORDER_UPDATED"
+  | "FULFILLMENT_APPROVED"
   | "FULFILLMENT_CANCELED"
   | "FULFILLMENT_CREATED"
   | "GIFT_CARD_CREATED"
