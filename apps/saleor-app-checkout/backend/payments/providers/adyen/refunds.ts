@@ -11,14 +11,14 @@ export async function handleAdyenRefund(
   transaction: TransactionActionPayloadFragment["transaction"]
 ) {
   const { id, amount, currency } = refund;
-  const { modification, config } = await getAdyenClient();
+  const { checkout, config } = await getAdyenClient();
 
   invariant(transaction?.id, "Transaction id is missing");
 
   const transactionActions = getActionsAfterRefund(transaction, amount);
 
   const [refundError, refundResult] = await unpackPromise(
-    modification.refunds(id, {
+    checkout.refunds(id, {
       amount: {
         currency,
         value: getIntegerAmountFromSaleor(amount),

@@ -48,3 +48,16 @@ export const postDropInAdyenPaymentsBody = yup
   })
   .required();
 export type PostDropInAdyenPaymentsBody = yup.InferType<typeof postDropInAdyenPaymentsBody>;
+
+export type PostAdyenDropInPaymentsDetailsResponse = {
+  payment: AdyenPaymentResponse;
+  orderId: string;
+};
+export const postDropInAdyenPaymentsDetailsBody = yup
+  .object({
+    adyenStateData: yup.object().unknown(true).required(),
+  })
+  .required();
+export type PostDropInAdyenPaymentsDetailsBody = yup.InferType<
+  typeof postDropInAdyenPaymentsDetailsBody
+>;
