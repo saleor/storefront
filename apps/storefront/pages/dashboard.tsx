@@ -19,6 +19,14 @@ const useIsMounted = (): boolean => {
 
 const getStorefrontUrl = () => window.location.origin;
 
+/**
+ * TODO
+ * basic page with
+ * - docs
+ * - link to storefront
+ * - info if misconfigured
+ * - connect AppBridge
+ */
 const DashboardPage: NextPage = () => {
   const mounted = useIsMounted();
   const { push } = useRouter();
@@ -36,9 +44,8 @@ const DashboardPage: NextPage = () => {
   return (
     <div>
       <h1>Saleor Storefront example</h1>
-      <a href={getStorefrontUrl()} target="_blank" rel="noreferrer">
-        Access storefront
-      </a>
+      <p>Storefront url: {getStorefrontUrl()}</p>
+
       <div>
         <code>
           <pre>CHECKOUT_STOREFRONT_URL={process.env.CHECKOUT_STOREFRONT_URL}</pre>
