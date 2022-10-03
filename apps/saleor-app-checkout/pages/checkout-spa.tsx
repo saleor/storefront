@@ -1,4 +1,5 @@
 import Dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import { envVars } from "../constants";
 
 const CheckoutStoreFront = Dynamic(
@@ -13,7 +14,9 @@ const CheckoutStoreFront = Dynamic(
 );
 
 export default function CheckoutSpa() {
-  const apiUrl = envVars.apiUrl;
+  const router = useRouter()
+  const domainFromUrl = router.query.domain
+  const apiUrl = domainFromUrl ? `https://${router.query.domain}/graphql/` : envVars.apiUrl;
   const checkoutApiUrl = envVars.checkoutApiUrl;
   const checkoutAppUrl = envVars.checkoutAppUrl;
 

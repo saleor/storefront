@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { handleRedirectEvent, handleRouteChange } from "./handlers";
 import { AppBridge } from "@saleor/app-sdk/app-bridge";
+import { domainClient } from "@/saleor-app-checkout/frontend/misc/client";
+import { Provider as ClientProvider } from "urql";
 
 interface IAppContext {
   app?: AppBridge;
@@ -17,6 +19,8 @@ export const AppContext = createContext<IAppContext>({
 const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(!!app?.getState()?.token);
+
+  const client = domainClient(`https://${app?.getState().domain}/graphql/`)
 
   useEffect(() => {
     if (app) {
@@ -46,6 +50,6 @@ const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
     }
   }, []);
 
-  return <AppContext.Provider value={{ app, isAuthorized }} {...props} />;
+  return <ClientProvider value={client}><AppContext.Provider value={{ app, isAuthorized }} {...props} /></ClientProvider>;
 };
 export default AppProvider;

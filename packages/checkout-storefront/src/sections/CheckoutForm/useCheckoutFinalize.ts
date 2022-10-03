@@ -6,7 +6,7 @@ import { useAuth, useAuthState } from "@saleor/sdk";
 import { FormData } from "./types";
 import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { PayErrorResult } from "@/checkout-storefront/fetch";
+// import { PayErrorResult } from "@/checkout-storefront/fetch";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { useEffect } from "react";
 
@@ -16,7 +16,7 @@ export const useCheckoutFinalize = () => {
   const { user } = useAuthState();
   const { checkoutPay, loading, error: payError, data: _payData } = usePay();
   const {
-    env: { checkoutApiUrl },
+    env: { checkoutApiUrl, apiUrl },
   } = useAppConfig();
   const { showErrors, showCustomErrors } = useAlerts();
   const { errors, setApiErrors } = useErrors();
@@ -57,6 +57,7 @@ export const useCheckoutFinalize = () => {
 
     if (userRegisterSuccessOrPassed) {
       const result = await checkoutPay({
+        saleorApiDomain: new URL(apiUrl).hostname,
         checkoutApiUrl,
         provider: formData.paymentProviderId,
         method: formData.paymentMethodId,

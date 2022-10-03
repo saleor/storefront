@@ -16,13 +16,18 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { env } = useAppConfig();
 
   const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(getOrderPaymentStatus, {
-    args: { orderId, checkoutApiUrl: env.checkoutApiUrl },
+    args: {
+      orderId,
+      checkoutApiUrl: env.checkoutApiUrl,
+      saleorApiDomain: new URL(env.apiUrl).hostname,
+    },
   });
 
   const formatMessage = useFormattedMessages();
 
   const handlePay = () => {
     return orderPay({
+      saleorApiDomain: "", // TODO: ADD SALEOR DOMAIN HERE
       provider: "mollie", // TODO: Hardcoded payment provider
       method: "creditCard", // TODO: Hardcoded payment provider
       orderId,

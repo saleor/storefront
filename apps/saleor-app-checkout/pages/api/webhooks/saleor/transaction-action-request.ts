@@ -15,6 +15,9 @@ import {
   isAdyenTransaction,
   isMollieTransaction,
 } from "@/saleor-app-checkout/backend/payments/utils";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
+
+const debug = createDebug("api/webhooks/saleor/transaction-action-request")
 
 export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transaction-action-request";
 
@@ -25,18 +28,19 @@ export const config = {
 } as const;
 
 const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
+  debug("Request received")
   const { transaction, action } = req.params;
-  console.log("Start processing Saleor transaction action", action, transaction);
+  debug("Start processing Saleor transaction action: %O, %O", action, transaction);
 
   if (!transaction?.type || !transaction.reference || !action.amount) {
-    console.warn("Received webhook call without transaction data", req.params);
+    debug("Received webhook call without transaction data", req.params);
     return Response.BadRequest({ success: false, message: "Missing transaction data" });
   }
 
   const { "saleor-signature": payloadSignature } = req.headers;
 
   if (!payloadSignature) {
-    console.warn("Missing Saleor signature");
+    debug("Missing Saleor signature");
     return Response.BadRequest({ success: false, message: "Missing signature" });
   }
 
@@ -44,7 +48,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const eventProcessed = processedEvents.some((signature) => signature === payloadSignature);
 
   if (eventProcessed) {
-    console.log("Event already processed");
+    debug("Event already processed");
     return Response.OK({ success: true, message: "Event already processed" });
   }
 
@@ -85,7 +89,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
     input: JSON.stringify([...processedEvents, payloadSignature]),
   });
 
-  console.log("Refund processing complete");
+  debug("Refund processing complete");
   return Response.OK({ success: true });
 };
 

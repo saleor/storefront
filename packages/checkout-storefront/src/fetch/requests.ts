@@ -11,13 +11,17 @@ import urlJoin from "url-join";
 export type PaymentMethodsRequestArgs = {
   channelId: string;
   checkoutApiUrl: string;
+  saleorApiDomain: string;
 };
 
 export const getPaymentMethods = ({
   checkoutApiUrl,
   channelId,
+  saleorApiDomain,
 }: PaymentMethodsRequestArgs): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
-  fetch(urlJoin(checkoutApiUrl, "active-payment-providers", channelId));
+  fetch(
+    urlJoin(checkoutApiUrl, "active-payment-providers", channelId, `?domain=${saleorApiDomain}`)
+  );
 
 export const pay = ({ checkoutApiUrl, ...body }: PayRequestBody): FetchResponse<PayResult> =>
   fetch(urlJoin(checkoutApiUrl, "pay"), {
@@ -27,15 +31,20 @@ export const pay = ({ checkoutApiUrl, ...body }: PayRequestBody): FetchResponse<
 
 export const getAppConfig = ({
   checkoutApiUrl,
+  saleorApiDomain,
 }: {
   checkoutApiUrl: string;
-}): FetchResponse<AppConfig> => fetch(urlJoin(checkoutApiUrl, "customization-settings"));
+  saleorApiDomain: string;
+}): FetchResponse<AppConfig> =>
+  fetch(urlJoin(checkoutApiUrl, `customization-settings?domain=${saleorApiDomain}`));
 
 export const getOrderPaymentStatus = ({
   orderId,
   checkoutApiUrl,
+  saleorApiDomain,
 }: {
   orderId: string;
   checkoutApiUrl: string;
+  saleorApiDomain: string;
 }): FetchResponse<PaymentStatusResponse> =>
-  fetch(urlJoin(checkoutApiUrl, "payment-status", orderId));
+  fetch(urlJoin(checkoutApiUrl, "payment-status", orderId, `?domain=${saleorApiDomain}`));

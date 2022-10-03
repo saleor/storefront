@@ -1,3 +1,4 @@
+import { createDebug } from './../../utils/debug';
 import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
@@ -29,6 +30,8 @@ import { createStripePayment } from "@/saleor-app-checkout/backend/payments/prov
 import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
 import { safeJsonParse } from "@/saleor-app-checkout/utils";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+
+const debug = createDebug("api/pay")
 
 class MissingUrlError extends Error {
   constructor(public provider: PaymentProviderID, public order?: OrderFragment) {
@@ -89,22 +92,28 @@ const reuseExistingSession = ({
 
 const createOrderFromBodyOrId = async (body: PayRequestBody): Promise<OrderFragment> => {
   const provider = body.provider;
+  debug(`createOrderFromBodyOrId for provider ${provider}`)
 
   if ("checkoutId" in body) {
-    const data = await createOrder(body.checkoutId, body.totalAmount);
+    debug(`Create order for checkout ${body.checkoutId}`)
+    const data = await createOrder(body.saleorApiDomain, body.checkoutId, body.totalAmount);
 
     if ("errors" in data) {
+      debug(`Creating order with errors`)
       throw new KnownPaymentError(provider, data.errors);
     }
-
+    debug(`Order created without errors`)
     return data.data;
   } else if ("orderId" in body) {
+    debug(`Pulling order details for order ${body.orderId}`)
     const data = await getOrderDetails(body.orderId);
 
     if ("errors" in data) {
+      debug(`Could not get order details`)
       throw new KnownPaymentError(provider, data.errors);
     }
 
+    debug(`Returning order data`)
     return data.data;
   }
 
@@ -166,12 +175,14 @@ const getPaymentResponse = async (
     session: id,
   };
 
-  await updatePaymentMetafield(order.id, payment);
+  await updatePaymentMetafield(body.saleorApiDomain, order.id, payment);
 
   return response;
 };
 
 const handler: NextApiHandler = async (req, res) => {
+  debug("Request received")
+
   if (req.method !== "POST") {
     res.status(405).send({ message: "Only POST requests allowed" });
     return;
@@ -181,16 +192,20 @@ const handler: NextApiHandler = async (req, res) => {
     typeof req.body === "string"
       ? safeJsonParse<PayRequestBody>(req.body)
       : [null, req.body as PayRequestBody];
-
+  
+  debug("Parsed body: %O", body)
+  
   if (error) {
+    debug("Error while parsing request body")
     console.error(error, req.body);
     res.status(400).send({ message: "Invalid JSON" });
     return;
   }
-
+  debug("Request body parsed")
   try {
     const appUrl = getBaseUrl(req);
     const response = await getPaymentResponse(body, appUrl);
+    debug("Payment response processed, return success")
     return res.status(200).json(response);
   } catch (err) {
     if (err instanceof KnownPaymentError) {
@@ -231,6 +246,7 @@ const getPaymentUrlIdForProvider = (
         redirectUrl: body.redirectUrl,
         method: body.method,
         appUrl,
+        saleorDomain: body.saleorApiDomain
       });
     case "adyen":
       return createAdyenPayment({
@@ -238,6 +254,7 @@ const getPaymentUrlIdForProvider = (
         redirectUrl: body.redirectUrl,
         method: body.method,
         appUrl,
+        saleorDomain: body.saleorApiDomain
       });
     case "stripe":
       return createStripePayment({
@@ -245,10 +262,17 @@ const getPaymentUrlIdForProvider = (
         redirectUrl: body.redirectUrl,
         method: body.method,
         appUrl,
+        saleorDomain: body.saleorApiDomain
       });
     default:
       assertUnreachable(body.provider);
   }
+};
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
 };
 
 export default withSentry(allowCors(handler));

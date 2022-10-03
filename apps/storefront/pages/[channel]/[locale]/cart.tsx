@@ -25,7 +25,11 @@ function Cart() {
 
   // we rewrite `/checkout` to the checkout domain to keep cookies
   const externalCheckoutUrl = checkout
-    ? `/checkout?checkout=${checkout.id}&locale=${currentLocale}&channel=${currentChannel.slug}`
+    ? `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL as string}/checkout-spa?checkout=${
+        checkout.id
+      }&locale=${currentLocale}&channel=${currentChannel.slug}&domain=${
+        new URL(process.env.NEXT_PUBLIC_API_URI as string).hostname
+      }`
     : "";
 
   return (

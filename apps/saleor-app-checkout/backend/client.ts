@@ -1,14 +1,16 @@
 import { createClient } from "urql";
 import { envVars } from "../constants";
-import { getAuthToken } from "./environment";
 
 interface ClientParams {
   apiUrl?: string;
-  appToken?: string;
+  appToken: string;
 }
 
-export const getClient = (params: ClientParams = {}) => {
-  const { apiUrl = envVars.apiUrl, appToken = getAuthToken() } = params;
+export const getClient = (params: ClientParams) => {
+  const { apiUrl = envVars.apiUrl, appToken } = params;
+  if (!appToken) {
+    throw new Error("Can't create client without the token");
+  }
 
   return createClient({
     url: apiUrl,

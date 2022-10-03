@@ -7,13 +7,18 @@ import {
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { merge } from "lodash-es";
 import { NextApiHandler } from "next";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
+
+const debug = createDebug("api/set-payment-provider-settings")
 
 const handler: NextApiHandler = async (req, res) => {
+  debug("Request received")
   const tokenData = getTokenDataFromRequest(req);
 
   const tokenDomain = tokenData?.["iss"];
 
   if (!tokenDomain) {
+    debug("Error: no token domain")
     return res.status(500).json({ error: "Token iss is not correct" });
   }
 
@@ -22,6 +27,7 @@ const handler: NextApiHandler = async (req, res) => {
   const data = req.body as string;
 
   if (!data) {
+    debug("Error: missing data")
     return res.status(400).json({
       error: {
         message: "Submitted data is incorrect",
@@ -43,7 +49,15 @@ const handler: NextApiHandler = async (req, res) => {
       data: updatedSettings.paymentProviders,
     });
   } catch (error) {
+    debug("Error during updating the settings: %O", error)
     return res.status(500).json({ error });
   }
 };
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};
+
 export default withSentry(allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"])));

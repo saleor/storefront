@@ -1,9 +1,5 @@
 import fs from "fs";
-import { envVars, serverEnvVars } from "../constants";
-import { AppDocument, AppQuery, AppQueryVariables } from "../graphql";
-import { getClient } from "./client";
-
-const maskToken = (token: string) => "*".repeat(Math.max(token.length - 4, 0)) + token.slice(-4);
+import { serverEnvVars } from "../constants";
 
 export const getAuthToken = () => {
   let token;
@@ -30,36 +26,4 @@ export const getAuthToken = () => {
   }
 
   return token;
-};
-
-export const setAuthToken = (token: string) => {
-  if (process.env.VERCEL === "1") {
-    console.warn(
-      "App was installed in Saleor, please update SALEOR_APP_TOKEN environment variables in Vercel"
-    );
-  } else {
-    console.log("Setting authToken: ", maskToken(token));
-    fs.writeFileSync(".auth_token", token);
-  }
-};
-
-export const getAppId = async () => {
-  const { data, error } = await getClient()
-    .query<AppQuery, AppQueryVariables>(AppDocument)
-    .toPromise();
-  if (error) {
-    throw new Error("Couldn't fetch app id", { cause: error });
-  }
-  const id = data?.app?.id;
-
-  if (!id) {
-    throw new Error("App id is empty");
-  }
-
-  return id;
-};
-
-export const getAppDomain = () => {
-  const url = new URL(envVars.apiUrl);
-  return url.host;
 };

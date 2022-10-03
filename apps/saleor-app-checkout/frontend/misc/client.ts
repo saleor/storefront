@@ -77,3 +77,6 @@ const authConfig: ClientOptions = {
 };
 
 export const client = createClient(authConfig);
+export const domainClient = (url: string) => {
+  return createClient({...authConfig, url})
+}

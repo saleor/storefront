@@ -2,5 +2,8 @@
 .envrc
 .auth_token
 
+# Local auth credentials to Saleor instance
+.saleor-app-auth.json
+
 # Sentry
 .sentryclirc

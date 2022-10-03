@@ -10,8 +10,9 @@ export const createStripePayment = async ({
   redirectUrl,
   appUrl: _appUrl,
   method,
+  saleorDomain
 }: CreatePaymentData): Promise<CreatePaymentResult> => {
-  const stripeClient = await getStripeClient();
+  const stripeClient = await getStripeClient(saleorDomain);
 
   const stripeCheckoutCustomer = await createStripeCustomerFromOrder(stripeClient, order);
 
@@ -30,8 +31,8 @@ export const createStripePayment = async ({
     payment_method_types: stripePaymentMethod ? [stripePaymentMethod] : undefined,
     customer: stripeCheckoutCustomer.id,
     mode: "payment",
-    cancel_url: formatRedirectUrl(redirectUrl, order.id),
-    success_url: formatRedirectUrl(redirectUrl, order.id),
+    cancel_url: formatRedirectUrl(redirectUrl, order.id) + `?domain=${saleorDomain}`,
+    success_url: formatRedirectUrl(redirectUrl, order.id) + `?domain=${saleorDomain}`,
     metadata: {
       orderId: order.id,
     },

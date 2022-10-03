@@ -9,7 +9,12 @@ import {
   getMollieClient,
 } from "./utils";
 
-export const createMolliePayment = async ({ order, redirectUrl, appUrl }: CreatePaymentData) => {
+export const createMolliePayment = async ({
+  order,
+  redirectUrl,
+  appUrl,
+  saleorDomain,
+}: CreatePaymentData) => {
   const discountLines = getDiscountLines(order.discounts);
   const shippingLines = getShippingLines(order);
   const lines = getLines(order.lines);
@@ -17,7 +22,7 @@ export const createMolliePayment = async ({ order, redirectUrl, appUrl }: Create
 
   const mollieData = await mollieClient.orders.create({
     orderNumber: order.number,
-    webhookUrl: `${appUrl}/api/webhooks/mollie`,
+    webhookUrl: `${appUrl}/api/webhooks/mollie?domain=${saleorDomain}`, // TODO: we can store the domain in the URL!
     locale: "en_US",
     redirectUrl: formatRedirectUrl(redirectUrl, order.id),
     metadata: {

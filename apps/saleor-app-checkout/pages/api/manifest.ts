@@ -11,8 +11,12 @@ import urlJoin from "url-join";
 import { SALEOR_WEBHOOK_TRANSACTION_ENDPOINT } from "./webhooks/saleor/transaction-action-request";
 import { TransactionActionRequestSubscriptionDocument } from "@/saleor-app-checkout/graphql";
 import invariant from "ts-invariant";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
+
+const debug = createDebug("api/manifest")
 
 const handler: Handler = (request) => {
+  debug("Request received")
   const { baseURL } = request.context;
   invariant(typeof baseURL === "string", `baseURL is not a string`);
 
@@ -40,6 +44,12 @@ const handler: Handler = (request) => {
   };
 
   return Response.OK(manifest);
+};
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
 };
 
 export default withSentry(toNextHandler([withBaseURL, handler]));

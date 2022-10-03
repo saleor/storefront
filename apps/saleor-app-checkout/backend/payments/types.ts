@@ -22,6 +22,7 @@ export interface CreatePaymentData {
   redirectUrl: string;
   appUrl: string;
   method: PaymentMethodID;
+  saleorDomain: string;
 }
 
 export interface CreatePaymentResult {

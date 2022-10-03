@@ -9,6 +9,9 @@ import {
   stripeWebhookEventToTransactionCreateMutationVariables,
 } from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
 import type { Readable } from "node:stream";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
+
+const debug = createDebug("api/webhooks/stripe");
 
 // https://github.com/vercel/next.js/discussions/12517#discussioncomment-2929922
 async function buffer(readable: Readable) {
@@ -20,28 +23,46 @@ async function buffer(readable: Readable) {
 }
 
 const stripeWebhook: NextApiHandler = async (req, res) => {
-  const { webhookSecret } = await getStripeSecrets();
+  debug("Request received");
+  const domain = req.query.domain;
+
+  if (!domain) {
+    debug("Can't return settings - missing domain");
+    res.status(400).json({ error: "Missing domain query" });
+    return;
+  }
+  const { webhookSecret } = await getStripeSecrets(domain as string);
   const sig = req.headers["stripe-signature"];
 
   if (typeof sig !== "string") {
+    debug("Missing signature");
     return res.status(400).json({ message: '"stripe-signature" header is missing' });
   }
 
   const body = await buffer(req);
-
-  const [err, event] = await unpackPromise(verifyStripeEventSignature(body, sig, webhookSecret));
+  debug("Verify event signature...");
+  const [err, event] = await unpackPromise(
+    verifyStripeEventSignature(body, sig, webhookSecret, domain as string)
+  );
 
   if (err || !event) {
+    debug("Event signature verification failed: %O", err);
     return res.status(500).json({ message: err?.message });
   }
-
-  const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables(event);
+  debug("Signature verified");
+  debug("Get transaction data");
+  const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables(
+    event,
+    domain as string
+  );
 
   if (transactionData?.id) {
     const id = transactionData.id;
-    await updateOrCreateTransaction(id, { ...transactionData, id });
+    debug(`Update data for transaction ${id}`);
+    await updateOrCreateTransaction(id, { ...transactionData, id }, domain as string);
   }
 
+  debug("Webhook processed");
   return res.status(204).end();
 };
 

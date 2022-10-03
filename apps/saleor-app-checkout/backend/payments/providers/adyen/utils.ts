@@ -13,6 +13,7 @@ import currency from "currency.js";
 import { getTransactionAmountGetterAsMoney } from "../../utils";
 import { failedEvents } from "./consts";
 import { getIntegerAmountFromSaleor, getSaleorAmountFromInteger } from "../../utils";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
 
 const OperationsEnum = Types.notification.NotificationRequestItem.OperationsEnum;
 const EventCodeEnum = Types.notification.NotificationRequestItem.EventCodeEnum;
@@ -155,6 +156,12 @@ export const getTransactionAmountFromAdyen = (
   notification: Types.notification.NotificationRequestItem,
   transaction: TransactionFragment | null
 ): TransactionAmounts => {
+  const debug = createDebug("getTransactionAmountFromAdyen");
+  debug(
+    "Function called for transaction id: %s with status %s",
+    transaction?.id,
+    notification.eventCode
+  );
   const getTransactionAmount = getTransactionAmountGetterAsMoney({
     voided: transaction?.voidedAmount?.amount,
     charged: transaction?.chargedAmount?.amount,
@@ -169,12 +176,12 @@ export const getTransactionAmountFromAdyen = (
   }
 
   if (!isNotificationAmountValid(notification)) {
-    console.error("(Adyen webhook) Notification without amount or currency");
+    debug("Notification without amount or currency");
     throw new Error("Notification doesn't contain amount or currency");
   }
 
   if (!isNotificationCurrencyMatchingTransaction(notificationCurrency, transaction)) {
-    console.error("(Adyen webhook) Mistmatch between notification and transaction currency");
+    debug("Mismatch between notification and transaction currency");
     throw new Error("Mismatch between notification and transaction currency");
   }
 

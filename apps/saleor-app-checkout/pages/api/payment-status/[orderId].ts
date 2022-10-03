@@ -9,8 +9,12 @@ import { OrderPaymentMetafield } from "@/saleor-app-checkout/types";
 import { verifyAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
 import { PaymentStatusResponse } from "checkout-common";
 import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
+
+const debug = createDebug("api/payment-status/[orderID]")
 
 const adyenHandler = async (sessionId: string): Promise<PaymentStatusResponse> => {
+  debug("Adyen handler")
   const session = await verifyAdyenSession(sessionId);
 
   const StatusEnum = AdyenTypes.checkout.PaymentLinkResponse.StatusEnum;
@@ -36,6 +40,7 @@ const adyenHandler = async (sessionId: string): Promise<PaymentStatusResponse> =
 };
 
 const mollieHandler = async (sessionId: string): Promise<PaymentStatusResponse> => {
+  debug("Mollie handler")
   const session = await verifyMollieSession(sessionId);
 
   if (session.status === MollieOrderStatus.created) {
@@ -67,16 +72,25 @@ const mollieHandler = async (sessionId: string): Promise<PaymentStatusResponse> 
 };
 
 const handler: NextApiHandler = async (req, res) => {
+  debug("Request received")
   if (req.method !== "GET") {
     res.status(405).send({ message: "Only GET requests allowed" });
     return;
   }
 
   const orderId = req.query.orderId as string;
+  const domain = req.query.domain
+  if (!domain) {
+    debug("Error: missing domain")
+    res.status(400).send({ message: "Missing domain from the query" });
+    return;
+  }
 
-  const order = await getOrderPaymentDetails(orderId);
+  debug(`Getting payment details for the order ${orderId} in domain ${domain}`)
+  const order = await getOrderPaymentDetails(domain as string, orderId);
 
   if ("errors" in order) {
+    debug("Error: %O", order.errors)
     return res.status(400).json({
       ok: false,
       errors: order.errors,
@@ -105,6 +119,12 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   res.status(200).json(response);
+};
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
 };
 
 export default withSentry(allowCors(handler));

@@ -1,3 +1,4 @@
+import { getAuthData } from "@/saleor-app-checkout/config/saleorApp";
 import {
   TransactionUpdateProcessedEventsDocument,
   TransactionUpdateProcessedEventsMutation,
@@ -8,7 +9,9 @@ import { getClient } from "../client";
 export const updateTransactionProcessedEvents = async (
   args: TransactionUpdateProcessedEventsMutationVariables
 ) => {
-  const { data, error } = await getClient()
+  const authData = await getAuthData()
+  const client = await getClient({appToken: authData.token, apiUrl: authData.apiUrl})
+  const { data, error } = await client
     .mutation<
       TransactionUpdateProcessedEventsMutation,
       TransactionUpdateProcessedEventsMutationVariables

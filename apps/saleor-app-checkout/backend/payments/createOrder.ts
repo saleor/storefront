@@ -1,3 +1,4 @@
+import { apl, getAuthData } from '@/saleor-app-checkout/config/saleorApp';
 import { getClient } from "@/saleor-app-checkout/backend/client";
 import {
   CheckoutDocument,
@@ -10,8 +11,12 @@ import {
 } from "@/saleor-app-checkout/graphql";
 
 import { Errors } from "./types";
+import { createDebug } from '@/saleor-app-checkout/utils/debug';
+
+const debug = createDebug("createOrder")
 
 export const createOrder = async (
+  saleorApiDomain: string,
   checkoutId: string,
   totalAmount: number
 ): Promise<
@@ -22,8 +27,13 @@ export const createOrder = async (
       errors: Errors;
     }
 > => {
+  debug(`Creating order from checkout ${checkoutId} (${saleorApiDomain})`)
   // Start by checking if total amount is correct
-  const client = getClient();
+  const authData = await apl.get(saleorApiDomain)
+  if(!authData){
+    throw new Error("Could not get auth data")
+  }
+  const client = await getClient({appToken: authData.token, apiUrl: `https://${authData.domain}/graphql/`})
   const checkout = await client
     .query<CheckoutQuery, CheckoutQueryVariables>(CheckoutDocument, {
       id: checkoutId,
@@ -31,21 +41,25 @@ export const createOrder = async (
     .toPromise();
 
   if (checkout.error) {
+    debug("Could not fetch checkout details. Error: %O", checkout.error)
     throw checkout.error;
   }
 
   if (!checkout.data?.checkout) {
+    debug("Error: No checkout found")
     return {
       errors: ["CHECKOUT_NOT_FOUND"],
     };
   }
 
   if (checkout.data?.checkout?.totalPrice.gross.amount !== totalAmount) {
+    debug("Error: total amount mismatch")
     return {
       errors: ["TOTAL_AMOUNT_MISMATCH"],
     };
   }
 
+  debug("Creating order")
   const { data, error } = await client
     .mutation<OrderCreateMutation, OrderCreateMutationVariables>(OrderCreateDocument, {
       id: checkoutId,
@@ -53,10 +67,12 @@ export const createOrder = async (
     .toPromise();
 
   if (error) {
+    debug("Error during order creation: %O", error)
     throw error;
   }
 
   if (!data?.orderCreateFromCheckout?.order) {
+    debug("Error during order creation: %O", data?.orderCreateFromCheckout?.errors)
     return {
       errors: data?.orderCreateFromCheckout?.errors.map((e) => e.code) || [
         "COULD_NOT_CREATE_ORDER_FROM_CHECKOUT",
@@ -72,6 +88,6 @@ export const createOrder = async (
       },
     };
   }
-
+  debug("Order created")
   return { data: data.orderCreateFromCheckout.order };
 };

@@ -14,7 +14,7 @@ import {
 import { getOrderTransactions } from "@/saleor-app-checkout/backend/payments/getOrderTransactions";
 import { updateTransaction } from "@/saleor-app-checkout/backend/payments/updateTransaction";
 import { toNextHandler } from "retes/adapter";
-import { Handler } from "retes";
+import { Handler, Request } from "retes";
 import { Response } from "retes/response";
 import {
   AdyenRequestContext,
@@ -25,14 +25,25 @@ import {
   withAdyenWebhookCredentials,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/middlewares";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { createDebug } from "@/saleor-app-checkout/utils/debug";
 
-const handler: Handler = async (req) => {
+const debug = createDebug("api/webhooks/adyen");
+
+// TODO: Whats with this request type? :/
+const handler: Handler = async (req: Request<AdyenRequestParams>) => {
+  debug("Request received");
+  const domain = req.params.domain;
+
+  if (!domain) {
+    debug("Can't return settings - missing domain");
+    return Response.BadRequest("Missing domain");
+  }
   const { apiKey } = req.context as AdyenRequestContext;
-  const params = req.params as AdyenRequestParams;
+  const params = req.params;
 
   const notificationItem = params?.notificationItems?.[0]?.NotificationRequestItem;
 
-  const [error] = await unpackPromise(notificationHandler(notificationItem, apiKey));
+  const [error] = await unpackPromise(notificationHandler(notificationItem, apiKey, domain));
 
   if (error) {
     console.warn("Error while saving Adyen notification");
@@ -54,7 +65,8 @@ export default withSentry(
 
 async function notificationHandler(
   notification: Types.notification.NotificationRequestItem,
-  apiKey: string
+  apiKey: string,
+  domain: string
 ) {
   // Get order id from webhook metadata
   const orderId = await getOrderId(notification, apiKey);
@@ -66,7 +78,7 @@ async function notificationHandler(
 
   // Get order transactions and run deduplication
   // https://docs.adyen.com/development-resources/webhooks/best-practices#handling-duplicates
-  const transactions = await getOrderTransactions({ id: orderId });
+  const transactions = await getOrderTransactions({ id: orderId }, domain);
   const duplicate = isNotificationDuplicate(transactions, notification);
 
   if (duplicate) {
@@ -86,7 +98,7 @@ async function notificationHandler(
 
     const data = getUpdatedTransactionData(transaction, notification);
 
-    await updateTransaction(data);
+    await updateTransaction(data, domain);
   } else {
     const data = getNewTransactionData(orderId, notification);
 
@@ -94,6 +106,6 @@ async function notificationHandler(
       return;
     }
 
-    await createTransaction(data);
+    await createTransaction(data, domain);
   }
 }

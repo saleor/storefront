@@ -3,11 +3,9 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import { ThemeProvider } from "@saleor/macaw-ui";
 import { IntlProvider } from "react-intl";
-import { Provider as ClientProvider } from "urql";
 import { useFormattedMessages } from "@/saleor-app-checkout/frontend/hooks/useFormattedMessages";
 import AppContainer from "@/saleor-app-checkout/frontend/components/elements/AppContainer";
 import AppProvider from "@/saleor-app-checkout/frontend/components/elements/AppProvider";
-import { client } from "@/saleor-app-checkout/frontend/misc/client";
 import PrivateSettingsProvider from "@/saleor-app-checkout/frontend/components/elements/PrivateSettingsProvider";
 import "@saleor/checkout-storefront/dist/esm/index.css";
 import { useEffect } from "react";
@@ -21,6 +19,7 @@ export default function App(props: AppProps) {
   const { Component, pageProps } = props;
 
   const { locale, messages } = useFormattedMessages();
+
 
   useEffect(() => {
     const env = [
@@ -57,7 +56,6 @@ export default function App(props: AppProps) {
         </style>
       </Head>
       <AppProvider>
-        <ClientProvider value={client}>
           <PrivateSettingsProvider>
             <IntlProvider
               locale={locale}
@@ -72,7 +70,6 @@ export default function App(props: AppProps) {
               </ThemeProvider>
             </IntlProvider>
           </PrivateSettingsProvider>
-        </ClientProvider>
       </AppProvider>
     </>
   );

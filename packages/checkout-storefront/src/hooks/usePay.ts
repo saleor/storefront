@@ -27,6 +27,7 @@ export const usePay = () => {
     method,
     checkoutId,
     totalAmount,
+    saleorApiDomain,
   }: Omit<CheckoutBody, "redirectUrl">) => {
     const redirectUrl = getRedirectUrl();
     const result = await pay({
@@ -36,6 +37,7 @@ export const usePay = () => {
       checkoutId,
       totalAmount,
       redirectUrl,
+      saleorApiDomain,
     });
 
     if ((result as PaySuccessResult)?.data?.paymentUrl) {
@@ -63,6 +65,7 @@ export const usePay = () => {
     provider,
     orderId,
     method,
+    saleorApiDomain,
   }: Omit<OrderBody, "redirectUrl" | "checkoutApiUrl">) => {
     const redirectUrl = getRedirectUrl();
     const result = await pay({
@@ -71,6 +74,7 @@ export const usePay = () => {
       method,
       orderId,
       redirectUrl,
+      saleorApiDomain,
     });
 
     if ((result as PaySuccessResult)?.data?.paymentUrl) {

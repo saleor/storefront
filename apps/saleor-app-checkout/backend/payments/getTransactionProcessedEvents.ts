@@ -1,3 +1,4 @@
+import { getAuthData } from "@/saleor-app-checkout/config/saleorApp";
 import {
   TransactionProcessedEventsDocument,
   TransactionProcessedEventsQuery,
@@ -9,7 +10,9 @@ import { getClient } from "../client";
 export const getTransactionProcessedEvents = async (
   args: TransactionProcessedEventsQueryVariables
 ) => {
-  const { data, error } = await getClient()
+    const authData = await getAuthData()
+  const client = await getClient({appToken: authData.token, apiUrl: authData.apiUrl})
+  const { data, error } = await client
     .query<TransactionProcessedEventsQuery, TransactionProcessedEventsQueryVariables>(
       TransactionProcessedEventsDocument,
       args
