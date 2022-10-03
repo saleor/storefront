@@ -5,7 +5,7 @@ import { FC, HTMLAttributes } from "react";
 export interface SelectBoxProps
   extends Classes,
     Children,
-    Omit<HTMLAttributes<HTMLInputElement>, "children"> {
+    Omit<HTMLAttributes<React.HTMLInputElement>, "children"> {
   value: string;
   selectedValue: string | undefined;
   disabled?: boolean;
