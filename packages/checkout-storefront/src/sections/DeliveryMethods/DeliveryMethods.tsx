@@ -77,7 +77,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   }, [shippingAddress, shippingMethods]);
 
   const handleSubmit = async ({ selectedMethodId }: FormData) => {
-    console.log({ selectedMethodId });
     const result = await updateDeliveryMethod({
       deliveryMethodId: selectedMethodId as string,
       checkoutId: checkout.id,
