@@ -80,11 +80,15 @@ function useAlerts(globalScope?: any): any {
   );
 
   const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
-    errors.forEach(({ field = "", message, code }) => {
-      if (message) {
-        showAlert({ message });
+    errors.forEach((error) => {
+      if ("message" in error) {
+        showAlert({ message: error.message });
       } else {
-        showDefaultAlert({ scope, field, code });
+        showDefaultAlert({
+          scope: error.scope || scope,
+          field: error.field || "",
+          code: error.code,
+        });
       }
     });
 

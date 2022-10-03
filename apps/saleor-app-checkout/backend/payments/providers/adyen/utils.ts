@@ -8,7 +8,7 @@ import {
   TransactionStatus,
   TransactionUpdateInput,
 } from "@/saleor-app-checkout/graphql";
-import { CheckoutAPI, Client, Modification, Types } from "@adyen/api-library";
+import { CheckoutAPI, Client, Types } from "@adyen/api-library";
 import currency from "currency.js";
 import { getTransactionAmountGetterAsMoney } from "../../utils";
 import { failedEvents } from "./consts";
@@ -43,7 +43,7 @@ export const mapAvailableActions = (
 export const getAdyenClient = async () => {
   const {
     paymentProviders: {
-      adyen: { apiKey, merchantAccount, ...restAdyenSettings },
+      adyen: { apiKey, merchantAccount, clientKey, ...restAdyenSettings },
     },
   } = await getPrivateSettings(envVars.apiUrl, false);
 
@@ -56,13 +56,11 @@ export const getAdyenClient = async () => {
   });
 
   const checkout = new CheckoutAPI(client);
-  const modification = new Modification(client);
 
   return {
     client,
     checkout,
-    modification,
-    config: { ...restAdyenSettings, apiKey, merchantAccount },
+    config: { ...restAdyenSettings, clientKey, apiKey, merchantAccount },
   };
 };
 

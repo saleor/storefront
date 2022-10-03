@@ -6,9 +6,10 @@ generates:
   saleor/api.tsx:
     plugins:
       - add:
-          content:
-            - "// THIS FILE IS GENERATED WITH `pnpm generate`"
-            - "import * as Scalar from '../scalars'"
+          content: |-
+            // THIS FILE IS GENERATED WITH `pnpm generate`
+            import "graphql/language/ast";
+            import * as Scalar from '../scalars';
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"

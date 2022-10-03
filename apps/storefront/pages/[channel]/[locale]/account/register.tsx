@@ -69,6 +69,7 @@ function RegisterPage() {
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="email"
                   id="email"
+                  spellCheck={false}
                   {...registerForm("email", {
                     required: true,
                   })}
@@ -85,6 +86,7 @@ function RegisterPage() {
                   className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
                   type="password"
                   id="password"
+                  spellCheck={false}
                   {...registerForm("password", {
                     required: true,
                   })}
