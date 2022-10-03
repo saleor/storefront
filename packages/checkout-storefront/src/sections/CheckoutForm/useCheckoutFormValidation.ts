@@ -8,21 +8,17 @@ import {
 } from "@/checkout-storefront/hooks";
 import { AddressField, ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
-import { UsePaymentMethods } from "@/checkout-storefront/sections/PaymentSection";
 import { useAuthState } from "@saleor/sdk";
 import { flushSync } from "react-dom";
 import { UseFormReturn } from "react-hook-form";
 import { ValidationError } from "yup";
 import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
 
-interface UseCheckoutFormValidation
-  extends Pick<UsePaymentMethods, "isValidProviderSelected">,
-    UseFormReturn<CheckoutFormData> {
+interface UseCheckoutFormValidation extends UseFormReturn<CheckoutFormData> {
   schema: { validateSyncAt: (key: keyof CheckoutFormData, data: CheckoutFormData) => void };
 }
 
 export const useCheckoutFormValidation = ({
-  isValidProviderSelected,
   setValue,
   getValues,
   schema,
@@ -118,11 +114,6 @@ export const useCheckoutFormValidation = ({
           code: "invalid",
         },
       ]);
-      isValid = false;
-    }
-
-    if (!isValidProviderSelected) {
-      showCustomErrors([{ field: "paymentProvider", code: "required" }]);
       isValid = false;
     }
 

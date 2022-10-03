@@ -6,7 +6,7 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
@@ -14,26 +14,24 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors, getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
+import { useCheckoutUpdateStateTrigger, useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
+import { Controller, useForm } from "react-hook-form";
+
+interface FormData {
+  selectedMethodId: string | undefined;
+}
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
-  const [selectedMethodId, setSelectedMethodId] = useState(checkout?.deliveryMethod?.id);
-  const shippingCountryRef = useRef<CountryCode | undefined | null>(
+
+  const previousShippingCountry = useRef<CountryCode | undefined | null>(
     shippingAddress?.country?.code as CountryCode | undefined
   );
 
-  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
-
-  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
-
-  const hasValidMethodSelected =
-    selectedMethodId && shippingMethods.some(getById(selectedMethodId));
-
-  const handleAutoSetMethod = () => {
+  const getAutoSetMethod = () => {
     if (!shippingMethods.length) {
       return;
     }
@@ -44,38 +42,41 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       shippingMethods[0] as ShippingMethod
     );
 
-    void handleSubmit(cheapestMethod.id);
+    return cheapestMethod;
   };
 
-  const handleAutoSetMethodAfterMethodsListChange = () => {};
+  const defaultFormData: FormData = {
+    selectedMethodId: deliveryMethod?.id || getAutoSetMethod()?.id,
+  };
 
-  useEffect(handleAutoSetMethodAfterMethodsListChange, [shippingMethods]);
+  const formProps = useForm<FormData>({ defaultValues: defaultFormData });
+  const { watch, getValues, setValue, control } = formProps;
+
+  const selectedMethodId = watch("selectedMethodId");
+
+  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
 
   useEffect(() => {
-    const hasShippingCountryChanged = shippingAddress?.country?.code !== shippingCountryRef.current;
+    const hasShippingCountryChanged =
+      shippingAddress?.country?.code !== previousShippingCountry.current;
+
+    const hasValidMethodSelected =
+      selectedMethodId && shippingMethods.some(getById(selectedMethodId));
 
     if (hasValidMethodSelected) {
       return;
     }
 
-    handleAutoSetMethod();
+    setValue("selectedMethodId", getAutoSetMethod()?.id);
 
     if (hasShippingCountryChanged) {
-      shippingCountryRef.current = shippingAddress?.country?.code as CountryCode;
+      previousShippingCountry.current = shippingAddress?.country?.code as CountryCode;
     }
   }, [shippingAddress, shippingMethods]);
 
-  useEffect(() => {
-    if (!deliveryMethod) {
-      return;
-    }
-
-    setSelectedMethodId(deliveryMethod.id);
-  }, [deliveryMethod]);
-
-  const handleSubmit = async (selectedMethodId: string) => {
-    setSelectedMethodId(selectedMethodId);
-
+  const handleSubmit = async ({ selectedMethodId }: FormData) => {
     const result = await updateDeliveryMethod({
       deliveryMethodId: selectedMethodId as string,
       checkoutId: checkout.id,
@@ -87,8 +88,15 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       return;
     }
 
+    setValue("selectedMethodId", selectedMethodId);
     showErrors(errors);
   };
+
+  const debouncedSubmit = useFormDebouncedSubmit<FormData>({
+    onSubmit: handleSubmit,
+    getValues,
+    defaultFormData,
+  });
 
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -100,6 +108,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       max: max.toString(),
     });
   };
+
+  useEffect(() => {
+    void debouncedSubmit();
+  }, [selectedMethodId]);
 
   if (!checkout?.isShippingRequired || collapsed) {
     return null;
@@ -113,29 +125,29 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
         {!shippingAddress && (
           <Text>Please fill in shipping address to see available shipping methods</Text>
         )}
-        <SelectBoxGroup label={formatMessage("deliveryMethodsLabel")}>
-          {(shippingMethods as ShippingMethod[])?.map(
-            ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
-              <SelectBox
-                value={id}
-                selectedValue={selectedMethodId}
-                onSelect={(methodId: string) => {
-                  void handleSubmit(methodId);
-                }}
-              >
-                <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
-                  <div className="flex flex-row justify-between self-stretch items-center">
-                    <Text>{name}</Text>
-                    <Text>{getFormattedMoney(price)}</Text>
-                  </div>
-                  <Text size="xs" color="secondary">
-                    {getSubtitle({ min, max })}
-                  </Text>
-                </div>
-              </SelectBox>
-            )
+        <Controller
+          control={control}
+          name="selectedMethodId"
+          render={({ field: { onChange } }) => (
+            <SelectBoxGroup label={formatMessage("deliveryMethodsLabel")}>
+              {shippingMethods?.map(
+                ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
+                  <SelectBox value={id} selectedValue={selectedMethodId} onChange={onChange}>
+                    <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
+                      <div className="flex flex-row justify-between self-stretch items-center">
+                        <Text>{name}</Text>
+                        <Text>{getFormattedMoney(price)}</Text>
+                      </div>
+                      <Text size="xs" color="secondary">
+                        {getSubtitle({ min, max })}
+                      </Text>
+                    </div>
+                  </SelectBox>
+                )
+              )}
+            </SelectBoxGroup>
           )}
-        </SelectBoxGroup>
+        />
       </div>
     </>
   );

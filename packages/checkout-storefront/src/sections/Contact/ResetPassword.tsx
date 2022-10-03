@@ -55,7 +55,6 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
   return (
     <SignInFormContainer
       title={formatMessage("resetPassword")}
-      redirectSubtitle={formatMessage("rememberedYourPassword")}
       redirectButtonLabel={formatMessage("signIn")}
       onSectionChange={onSectionChange}
       subtitle={formatMessage("providePassword")}
