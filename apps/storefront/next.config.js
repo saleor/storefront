@@ -25,25 +25,25 @@ module.exports = withBundleAnalyzer({
 
     return config;
   },
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          {
-            key: "x-content-type-options",
-            value: "nosniff",
-          },
-          { key: "x-xss-protection", value: "1" },
-          { key: "x-frame-options", value: "DENY" },
-          {
-            key: "strict-transport-security",
-            value: "max-age=31536000; includeSubDomains",
-          },
-        ],
-      },
-    ];
-  },
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/(.*)",
+  //       headers: [
+  //         {
+  //           key: "x-content-type-options",
+  //           value: "nosniff",
+  //         },
+  //         { key: "x-xss-protection", value: "1" },
+  //         { key: "x-frame-options", value: "DENY" },
+  //         {
+  //           key: "strict-transport-security",
+  //           value: "max-age=31536000; includeSubDomains",
+  //         },
+  //       ],
+  //     },
+  //   ];
+  // },
   async rewrites() {
     const cloudDeploymentUrl = process.env.CLOUD_DEPLOYMENT_URL;
 
