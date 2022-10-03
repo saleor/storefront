@@ -7,7 +7,6 @@ import { Types } from "@adyen/api-library";
 import { createTransaction } from "@/saleor-app-checkout/backend/payments/createTransaction";
 import {
   getNewTransactionData,
-  getOrderId,
   getUpdatedTransactionData,
   isNotificationDuplicate,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen";
@@ -25,6 +24,7 @@ import {
   withAdyenWebhookCredentials,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/middlewares";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { getOrderIdFromNotification } from "@/saleor-app-checkout/backend/payments/providers/adyen/getOrderIdFromNotification";
 
 const handler: Handler = async (req) => {
   const { apiKey } = req.context as AdyenRequestContext;
@@ -57,7 +57,7 @@ async function notificationHandler(
   apiKey: string
 ) {
   // Get order id from webhook metadata
-  const orderId = await getOrderId(notification, apiKey);
+  const orderId = await getOrderIdFromNotification(notification, apiKey);
 
   if (!orderId) {
     console.log("Order id not found");

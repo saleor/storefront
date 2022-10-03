@@ -8,8 +8,9 @@ export interface AlertErrorData {
   field: string;
 }
 
-export type CustomError = Partial<AlertErrorData> &
-  Pick<AlertErrorData, "code"> & { message?: string };
+export type CustomError =
+  | { message: string }
+  | (Partial<AlertErrorData> & Pick<AlertErrorData, "code">);
 
 export interface Alert {
   message: string;

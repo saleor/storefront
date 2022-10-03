@@ -41,6 +41,7 @@ export const TextInput = forwardRef(
         placeholder={placeholder}
         value={value}
         required={required}
+        spellCheck={false}
         {...rest}
         type={type}
       />
