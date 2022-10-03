@@ -2,7 +2,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
 import { Suspense, useState } from "react";
-import { FormProvider } from "react-hook-form";
+import { Controller, FormProvider } from "react-hook-form";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
@@ -24,11 +24,10 @@ export const CheckoutForm = () => {
   const isLoading = loading || authenticating;
   const [showOnlyContact, setShowOnlyContact] = useState(false);
 
-  const { handleSubmit, isProcessingApiChanges, usePaymentProvidersProps, methods } =
-    useCheckoutForm({
-      userRegisterErrors,
-      checkoutFinalize,
-    });
+  const { handleSubmit, isProcessingApiChanges, methods } = useCheckoutForm({
+    userRegisterErrors,
+    checkoutFinalize,
+  });
 
   return (
     <div className="checkout-form-container">
@@ -47,7 +46,18 @@ export const CheckoutForm = () => {
               <DeliveryMethods collapsed={showOnlyContact} />
             </Suspense>
             <AdyenDropIn />
-            <PaymentSection {...usePaymentProvidersProps} collapsed={showOnlyContact} />
+            <Controller
+              name="paymentMethodId"
+              control={methods.control}
+              render={({ field: { onChange } }) => (
+                <PaymentSection
+                  collapsed={showOnlyContact}
+                  onSelect={onChange}
+                  selectedPaymentMethod={methods.watch("paymentMethodId")}
+                  setValue={methods.setValue}
+                />
+              )}
+            />
           </>
         </FormProvider>
       </div>
