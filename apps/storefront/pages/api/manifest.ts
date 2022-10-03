@@ -18,6 +18,15 @@ const handler: Handler = (request) => {
     permissions: [],
     appUrl: baseURL + "/dashboard",
     tokenTargetUrl: `${baseURL}/api/register`,
+    extensions: [
+      {
+        mount: "PRODUCT_DETAILS_MORE_ACTIONS",
+        label: "Product preview in Storefront",
+        permissions: [],
+        url: "/test",
+        target: "POPUP",
+      },
+    ],
   };
 
   return Response.OK(manifest);
