@@ -50,7 +50,10 @@
     "react-intl": "^5.24.6",
     "react-use": "^17.3.2",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "url-join": "4.0.1"
+    "url-join": "4.0.1",
+    "@saleor/app-sdk": "^0.11.0",
+    "ts-invariant": "^0.10.3",
+    "retes": "^0.33.0"
   },
   "devDependencies": {
     "@formatjs/cli": "^4.8.2",

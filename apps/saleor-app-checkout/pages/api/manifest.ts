@@ -11,6 +11,7 @@ import urlJoin from "url-join";
 import { SALEOR_WEBHOOK_TRANSACTION_ENDPOINT } from "./webhooks/saleor/transaction-action-request";
 import { TransactionActionRequestSubscriptionDocument } from "@/saleor-app-checkout/graphql";
 import invariant from "ts-invariant";
+import { AppManifest } from "@saleor/app-sdk/types";
 
 const handler: Handler = (request) => {
   const { baseURL } = request.context;
@@ -18,7 +19,7 @@ const handler: Handler = (request) => {
 
   const webhookUrl = urlJoin(getBaseUrl(request), SALEOR_WEBHOOK_TRANSACTION_ENDPOINT);
 
-  const manifest = {
+  const manifest: AppManifest = {
     id: "saleor.checkout.app",
     version: version,
     name: appName,

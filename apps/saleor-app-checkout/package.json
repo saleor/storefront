@@ -28,7 +28,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/styles": "^4.11.5",
     "@mollie/api-client": "^3.6.0",
-    "@saleor/app-sdk": "~0.9.1",
+    "@saleor/app-sdk": "~0.11.0",
     "@saleor/checkout-storefront": "workspace:*",
     "@saleor/macaw-ui": "^0.4.0",
     "@sentry/nextjs": "7.11.1",
