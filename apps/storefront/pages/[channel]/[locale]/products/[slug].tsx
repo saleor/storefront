@@ -142,8 +142,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
     setLoadingAddToCheckout(false);
 
     if (errors.length === 0) {
-      // Product successfully added, redirect to cart page
-      void router.push(paths.cart.$url());
+      // Product successfully added
       return;
     }
 
