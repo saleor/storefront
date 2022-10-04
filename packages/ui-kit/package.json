@@ -18,9 +18,9 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint",
-    "lint:staged": "eslint --fix",
+    "lint:staged": "eslint --fix --quiet",
     "check-types": "tsc",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "clean": "rm -rf .next .turbo",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "release": "release-it --npm.pnpm"
@@ -77,7 +77,7 @@
   "engines": {
     "npm": ">=7.0.0",
     "node": ">=16.0.0",
-    "pnpm": "^7.5.0"
+    "pnpm": ">=7.7.1"
   },
-  "packageManager": "pnpm@7.5.2"
+  "packageManager": "pnpm@7.11.0"
 }

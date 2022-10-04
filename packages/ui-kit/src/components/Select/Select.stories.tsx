@@ -1,26 +1,19 @@
-import { useState, useEffect } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { Option, Select, SelectProps } from "./Select";
+import { useStateWithOnChangeHandler } from "../../lib/utils";
 
 export default {
   title: "Components/Select",
   component: Select,
 } as ComponentMeta<typeof Select>;
 
-const Template: ComponentStory<typeof Select> = ({
-  selectedValue: propsSelectedValue,
-  ...args
-}) => {
-  const [selectedValue, setSelectedValue] = useState(propsSelectedValue);
-
-  useEffect(() => {
-    setSelectedValue(selectedValue);
-  }, [selectedValue]);
+const Template: ComponentStory<typeof Select> = ({ ...args }) => {
+  const [, setSelectedValue] = useStateWithOnChangeHandler();
 
   return (
     <div className="w-[440px]">
-      <Select {...args} selectedValue={selectedValue} onChange={setSelectedValue} />
+      <Select {...args} onChange={setSelectedValue} />
     </div>
   );
 };
@@ -36,20 +29,13 @@ const users = [
 type StoriesArgs = Omit<SelectProps, "onChange">;
 
 const commonArgs: StoriesArgs = {
-  selectedValue: users[0].value,
   options: users,
+  placeholder: "Select option",
 };
 
 export const Basic = Template.bind({});
 
 Basic.args = commonArgs;
-
-export const Error = Template.bind({});
-
-Error.args = {
-  ...commonArgs,
-  error: true,
-};
 
 export const Disabled = Template.bind({});
 
@@ -69,6 +55,5 @@ const countries: Option[] = [
 ];
 
 Countries.args = {
-  selectedValue: countries[0].value,
   options: countries,
 };

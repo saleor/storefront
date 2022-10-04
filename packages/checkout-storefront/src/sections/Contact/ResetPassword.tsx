@@ -11,7 +11,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
-import { Control, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 
@@ -55,7 +55,6 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
   return (
     <SignInFormContainer
       title={formatMessage("resetPassword")}
-      redirectSubtitle={formatMessage("rememberedYourPassword")}
       redirectButtonLabel={formatMessage("signIn")}
       onSectionChange={onSectionChange}
       subtitle={formatMessage("providePassword")}

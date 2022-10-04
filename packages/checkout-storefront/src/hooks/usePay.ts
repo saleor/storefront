@@ -50,6 +50,12 @@ export const usePay = () => {
       window.location.href = paymentUrl;
     }
 
+    if (!result?.ok && result?.orderId) {
+      // Order created, payment creation failed, checkout doesn't exist
+      const newUrl = `?order=${result.orderId}`;
+      window.location.href = newUrl;
+    }
+
     return result;
   };
 

@@ -116,6 +116,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
                   type="text"
                   id="card-number"
                   className="block w-full border-gray-300 rounded-md shadow-sm text-base"
+                  spellCheck={false}
                   {...registerCard("cardNumber", {
                     required: true,
                   })}
@@ -136,6 +137,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
                   id="expiration-date"
                   className="block w-full border-gray-300 rounded-md shadow-sm text-base"
                   placeholder="MM / YY"
+                  spellCheck={false}
                   {...registerCard("expDate", {
                     required: true,
                   })}
@@ -152,6 +154,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
                   type="text"
                   id="cvc"
                   className="block w-full border-gray-300 rounded-md shadow-sm text-base"
+                  spellCheck={false}
                   {...registerCard("cvc", {
                     required: true,
                   })}

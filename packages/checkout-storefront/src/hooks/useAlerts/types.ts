@@ -8,6 +8,10 @@ export interface AlertErrorData {
   field: string;
 }
 
+export type CustomError =
+  | { message: string }
+  | (Partial<AlertErrorData> & Pick<AlertErrorData, "code">);
+
 export interface Alert {
   message: string;
   id: string;
@@ -15,6 +19,7 @@ export interface Alert {
 }
 
 export type CheckoutScope =
+  | "checkoutFinalize"
   | "checkoutShippingUpdate"
   | "checkoutCustomerAttach"
   | "checkoutBillingUpdate"

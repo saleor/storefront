@@ -18,7 +18,6 @@ import {
   GiftCardFragment,
   Money as MoneyType,
   OrderLineFragment,
-  TaxedMoney,
 } from "@/checkout-storefront/graphql";
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
 import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";

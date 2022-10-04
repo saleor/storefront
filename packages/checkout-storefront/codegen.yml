@@ -7,8 +7,9 @@ extensions:
       src/graphql/index.ts:
         plugins:
           - add:
-              content:
-                - "// THIS FILE IS GENERATED WITH `pnpm generate`"
+              content: |-
+                // THIS FILE IS GENERATED WITH `pnpm generate`
+                import "graphql/language/ast";
           - "typescript"
           - "typescript-operations"
           - "typescript-urql"

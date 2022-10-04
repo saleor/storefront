@@ -13,7 +13,7 @@ export const getAuthToken = () => {
   }
 
   if (!token && process.env.VERCEL !== "1" && fs.existsSync(".auth_token")) {
-    token = fs.readFileSync(".auth_token", "utf-8");
+    token = fs.readFileSync(".auth_token", "utf-8").trim();
   }
 
   if (!token) {

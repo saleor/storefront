@@ -66,6 +66,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
                 type="text"
                 autoComplete="email"
                 className="w-full border-gray-300 rounded-lg shadow-sm text-base"
+                spellCheck={false}
                 {...register("email", {
                   required: true,
                   pattern: /^\S+@\S+$/i,

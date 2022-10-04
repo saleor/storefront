@@ -15,6 +15,10 @@ interface SettingProps {
   ) => void;
   onFileChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  clearValue?: () => void;
+  resetValue?: () => void;
+  defaultValue?: string;
+  encrypted?: boolean;
 }
 
 const Setting: React.FC<SettingProps> = ({
@@ -25,7 +29,27 @@ const Setting: React.FC<SettingProps> = ({
   onChange,
   onFileChange,
   onBlur,
+  clearValue,
+  resetValue,
+  encrypted,
+  defaultValue,
 }) => {
+  const handleFocus = () => {
+    if (encrypted && value === defaultValue && clearValue) {
+      clearValue();
+    }
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (encrypted && value === "" && resetValue) {
+      resetValue();
+    }
+
+    if (onBlur) {
+      onBlur(event);
+    }
+  };
+
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -43,7 +67,8 @@ const Setting: React.FC<SettingProps> = ({
     label,
     value,
     onChange: handleChange,
-    onBlur,
+    onFocus: handleFocus,
+    onBlur: handleBlur,
   };
 
   if (type === "string") {

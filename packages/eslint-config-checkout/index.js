@@ -22,7 +22,7 @@ module.exports = {
       version: "detect",
     },
   },
-  ignorePatterns: ["build/", ".turbo/", "dist/", "node_modules/", ".eslintrc.js"],
+  ignorePatterns: ["build/", ".turbo/", "dist/", "node_modules/", "*.js", "*.jsx"],
   rules: {
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",

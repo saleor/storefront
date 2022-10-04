@@ -1,6 +1,6 @@
 import { ApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { ValidationError } from "@/checkout-storefront/lib/globalTypes";
-import { AddressFormData } from "@/checkout-storefront/sections/Addresses/types";
+import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 
 export const apiErrors: ApiErrors<AddressFormData> = [
   {
@@ -26,7 +26,7 @@ export const urqlError = {
 export const validationErrors: ValidationError<AddressFormData>[] = [
   {
     type: "invalid",
-    path: "name",
+    path: "firstName",
     message: "This is highly irregular",
   },
   {

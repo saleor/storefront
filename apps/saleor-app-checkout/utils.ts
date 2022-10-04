@@ -1,4 +1,5 @@
 import { Node } from "types/common";
+import type { ObjectSchema } from "yup";
 
 export const getById = (idToCompare: string) => (obj: Node) => obj.id === idToCompare;
 
@@ -28,3 +29,14 @@ export const safeJsonParse = <R = unknown>(json: string) => {
     return [wrapError(err), null] as const;
   }
 };
+
+export const createParseAndValidateBody =
+  <S extends ObjectSchema<{}>>(schema: S) =>
+  (reqBody: unknown) => {
+    try {
+      const maybeBody = typeof reqBody === "string" ? JSON.parse(reqBody) : reqBody;
+      return [null, schema.validateSync(maybeBody)] as const;
+    } catch (err) {
+      return [wrapError(err), null] as const;
+    }
+  };

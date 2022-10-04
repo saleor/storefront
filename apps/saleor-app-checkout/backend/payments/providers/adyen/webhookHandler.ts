@@ -1,4 +1,4 @@
-import { Client, CheckoutAPI, Types } from "@adyen/api-library";
+import { Types } from "@adyen/api-library";
 
 import {
   TransactionCreateMutationVariables,
@@ -28,37 +28,6 @@ export const isNotificationDuplicate = (
   });
 
   return eventKeys.includes(newEventKey);
-};
-
-export const getOrderId = async (
-  notification: Types.notification.NotificationRequestItem,
-  apiKey: string
-) => {
-  const { additionalData } = notification;
-  const paymentLinkId = additionalData?.paymentLinkId;
-
-  if (!paymentLinkId) {
-    return;
-  }
-
-  const client = new Client({
-    apiKey,
-    environment: "TEST", // TODO: Choose environment dynamically in Dashboard
-  });
-
-  const checkout = new CheckoutAPI(client);
-
-  try {
-    const { metadata } = await checkout.getPaymentLinks(paymentLinkId);
-
-    return metadata?.orderId;
-  } catch (e) {
-    // INFO: checkout.getPaymentLinks method fails randomly
-    // it's possible to get notification metadata directly from notification itself (undocumented)
-    console.error("checkout.getPaymentLinks failed");
-
-    return "metadata.orderId" in additionalData ? additionalData["metadata.orderId"] : null;
-  }
 };
 
 export const getUpdatedTransactionData = (
@@ -94,12 +63,7 @@ export const getNewTransactionData = (
   orderId: string,
   notification: Types.notification.NotificationRequestItem
 ): TransactionCreateMutationVariables | undefined => {
-  const { eventCode, pspReference, paymentMethod, additionalData, operations } = notification;
-  const paymentLinkId = additionalData?.paymentLinkId;
-
-  if (!paymentLinkId) {
-    throw "Payment link does not exist";
-  }
+  const { eventCode, pspReference, paymentMethod, operations } = notification;
 
   const transactionEvent: TransactionEventInput = {
     name: eventCode.toString(),

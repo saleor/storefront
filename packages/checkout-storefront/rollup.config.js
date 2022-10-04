@@ -21,12 +21,8 @@ export default [
       {
         file: packageJson.module,
         format: "esm",
-        sourcemap: isProd,
-      },
-      isProd && {
-        file: packageJson.main,
-        format: "cjs",
         sourcemap: true,
+        inlineDynamicImports: true,
       },
     ]),
     external: ["react", "react-dom", "graphql"],
@@ -34,12 +30,14 @@ export default [
       external(),
       resolve({
         browser: true,
+        sourceMap: true,
       }),
-      commonjs({ sourceMap: isProd }),
+      commonjs({ sourceMap: true }),
       typescript({
         tsconfig: "./tsconfig.json",
         noEmit: false,
-        jsx: "react-jsx",
+        sourceMap: true,
+        jsx: isProd ? "react-jsx" : "react-jsxdev",
       }),
       json(),
       image(),

@@ -1,25 +1,19 @@
-import { TransactionRefund } from "@/saleor-app-checkout/types/refunds";
+import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import {
   getMollieEventName,
   getMollieClient,
 } from "@/saleor-app-checkout/backend/payments/providers/mollie/utils";
-import {
-  TransactionActionEnum,
-  TransactionActionPayloadFragment,
-  TransactionUpdateDocument,
-  TransactionUpdateMutation,
-  TransactionUpdateMutationVariables,
-} from "@/saleor-app-checkout/graphql";
+import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
 import { PaymentStatus } from "@mollie/api-client";
-import { getTransactionAmountGetter } from "@/saleor-app-checkout/backend/payments/utils";
-import { getClient } from "@/saleor-app-checkout/backend/client";
+import { getActionsAfterRefund } from "@/saleor-app-checkout/backend/payments/utils";
+import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { updateTransaction } from "../../updateTransaction";
 
 export async function handleMolieRefund(
-  refund: TransactionRefund,
+  refund: TransactionReversal,
   transaction: TransactionActionPayloadFragment["transaction"]
 ) {
   const mollieClient = await getMollieClient();
-  const saleorClient = getClient();
 
   const { id, amount, currency } = refund;
   if (!transaction?.id) {
@@ -36,56 +30,31 @@ export async function handleMolieRefund(
     throw new Error("Couldn't find Mollie payment to refund");
   }
 
-  // TODO: Check duplicate webhook invocations
-  // based on Saleor-Signature header and metadata saved in transaction
+  const transactionActions = getActionsAfterRefund(transaction, amount);
 
-  const getTransactionAmount = getTransactionAmountGetter({
-    voided: transaction?.voidedAmount.amount,
-    charged: transaction?.chargedAmount.amount,
-    refunded: transaction?.refundedAmount.amount,
-    authorized: transaction?.authorizedAmount.amount,
-  });
+  const [refundError, mollieRefund] = await unpackPromise(
+    mollieClient.payments_refunds.create({
+      paymentId: payment?.id,
+      amount: {
+        value: String(amount),
+        currency,
+      },
+    })
+  );
 
-  const transactionActions: TransactionActionEnum[] = [];
-
-  if (getTransactionAmount("charged") < Number(amount)) {
-    // Some money in transaction was not refunded
-    transactionActions.push("REFUND");
-  }
-
-  if (Number(amount) > getTransactionAmount("charged")) {
-    // Refunded more than charged
-    throw new Error("Cannot refund more than charged in transaction");
-  }
-
-  const mollieRefund = await mollieClient.payments_refunds.create({
-    paymentId: payment?.id,
-    amount: {
-      value: String(amount),
-      currency,
+  const updateSucceeded = await updateTransaction({
+    id: transaction.id,
+    transaction: {
+      availableActions: transactionActions,
+    },
+    transactionEvent: {
+      status: refundError ? "FAILURE" : "PENDING",
+      name: getMollieEventName("refund requested"),
+      reference: refundError?.message ?? mollieRefund?.id,
     },
   });
 
-  const { error } = await saleorClient
-    .mutation<TransactionUpdateMutation, TransactionUpdateMutationVariables>(
-      TransactionUpdateDocument,
-      {
-        id: transaction.id,
-        transaction: {
-          availableActions: transactionActions,
-        },
-        transactionEvent: {
-          status: "PENDING",
-          name: getMollieEventName("refund requested"),
-          reference: mollieRefund.id,
-        },
-      }
-    )
-    .toPromise();
-
-  if (error) {
-    throw new Error("Transaction couldn't be updated in Saleor", {
-      cause: error,
-    });
+  if (!updateSucceeded) {
+    throw new Error("Transaction couldn't be updated in Saleor");
   }
 }

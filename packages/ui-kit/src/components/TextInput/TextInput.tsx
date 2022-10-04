@@ -1,6 +1,6 @@
+import { ClassNames } from "@lib/globalTypes";
 import clsx from "clsx";
 import { Ref, InputHTMLAttributes, forwardRef } from "react";
-import { ClassNames } from "../..";
 
 import { Label } from "../Label";
 import { Text } from "../Text";
@@ -15,20 +15,19 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
 
 export const TextInput = forwardRef(
   (
-    { label, error, required, placeholder, value, classNames = {}, ...rest }: TextInputProps,
+    {
+      label,
+      error,
+      required,
+      placeholder,
+      value,
+      classNames = {},
+      type = "text",
+      ...rest
+    }: TextInputProps,
     ref: Ref<HTMLInputElement>
   ) => (
     <div className={clsx(styles["text-input-container"], classNames.container)}>
-      {label && (
-        <Label
-          className={clsx(styles["text-input-label"], {
-            [styles["text-input-filled-label"]]: value || placeholder,
-          })}
-        >
-          {label}
-          {required && "*"}
-        </Label>
-      )}
       <input
         ref={ref}
         className={clsx(
@@ -42,8 +41,20 @@ export const TextInput = forwardRef(
         placeholder={placeholder}
         value={value}
         required={required}
+        spellCheck={false}
         {...rest}
+        type={type}
       />
+      {label && (
+        <Label
+          className={clsx(styles["text-input-label"], {
+            [styles["text-input-filled-label"]]: value || placeholder,
+          })}
+        >
+          {label}
+          {required && "*"}
+        </Label>
+      )}
       {error && (
         <Text size="sm" color="error" className={styles["text-input-error-caption"]}>
           {error}

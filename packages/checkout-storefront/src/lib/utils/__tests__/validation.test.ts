@@ -8,7 +8,7 @@ describe("getErrorsAs", () => {
         message: "This is not unique",
         type: "unique",
       },
-      name: {
+      firstName: {
         message: "This is highly irregular",
         type: "invalid",
       },

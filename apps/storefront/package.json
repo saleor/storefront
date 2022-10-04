@@ -10,13 +10,14 @@
     "translations": "formatjs extract './{components,pages}/**/*.{ts,tsx}' --out-file temp.json --flatten --id-interpolation-pattern '[sha512:contenthash:base64:6]' && formatjs compile 'temp.json' --out-file locale/en-US.json && rm ./temp.json",
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:staged": "next lint --fix",
+    "lint": "next lint --dir .",
+    "lint:staged": "next lint --dir . --fix --quiet",
     "check-types": "tsc --noEmit",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
     "paths": "pathpida --ignorePath ../../.gitignore",
     "cy:run": "cypress run",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
     "@apollo/client": "3.5.10",
@@ -38,7 +39,7 @@
     "editorjs-blocks-react-renderer": "^1.2.4",
     "graphql": "16.3.0",
     "graphql-tag": "^2.12.6",
-    "next": "12.2.3",
+    "next": "12.3.1",
     "next-seo": "^5.5.0",
     "next-sitemap": "^2.4.3",
     "next-usequerystate": "^1.7.2",
@@ -49,7 +50,7 @@
     "react-intl": "^5.24.6",
     "react-use": "^17.3.2",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "url-join": "^5.0.0"
+    "url-join": "4.0.1"
   },
   "devDependencies": {
     "@formatjs/cli": "^4.8.2",
@@ -61,9 +62,11 @@
     "@graphql-codegen/typescript-react-apollo": "3.2.11",
     "@next/bundle-analyzer": "^12.1.4",
     "@svgr/webpack": "^6.2.1",
+    "@types/node": "^16.11.22",
     "@types/qs": "^6.9.7",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/url-join": "4.0.1",
     "autoprefixer": "10.4.2",
     "cypress": "^10.1.0",
     "eslint": "^8.22.0",
@@ -79,7 +82,7 @@
   "engines": {
     "npm": ">=7.0.0",
     "node": "^14 || ^16 || ^18",
-    "pnpm": "^7.5.0"
+    "pnpm": ">=7.7.1"
   },
-  "packageManager": "pnpm@7.5.2"
+  "packageManager": "pnpm@7.11.0"
 }

@@ -1,8 +1,7 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { useState, useEffect } from "react";
 
 import { TextInput } from "./TextInput";
+import { useStateWithOnChangeHandler } from "../../lib/utils";
 
 export default {
   title: "Components/TextInput",
@@ -10,19 +9,9 @@ export default {
 } as ComponentMeta<typeof TextInput>;
 
 const Template: ComponentStory<typeof TextInput> = ({ value, ...args }) => {
-  const [inputValue, setInputValue] = useState(value || "");
+  const [inputValue, setInputValue] = useStateWithOnChangeHandler();
 
-  useEffect(() => {
-    setInputValue(value || "");
-  }, [value]);
-
-  return (
-    <TextInput
-      {...args}
-      value={inputValue}
-      onChange={(e) => setInputValue(e.currentTarget?.value || "")}
-    />
-  );
+  return <TextInput {...args} value={inputValue} onChange={setInputValue} />;
 };
 
 export const Basic = Template.bind({});

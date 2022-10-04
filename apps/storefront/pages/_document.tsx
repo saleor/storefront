@@ -21,7 +21,7 @@ class MyDocument extends Document<{ lang?: string }> {
             rel="stylesheet"
           />
         </Head>
-        <body>
+        <body spellCheck={false}>
           <Main />
           <NextScript />
         </body>

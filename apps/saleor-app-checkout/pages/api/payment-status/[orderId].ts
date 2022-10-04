@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 import { Types as AdyenTypes } from "@adyen/api-library";
 import { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
@@ -12,7 +13,7 @@ import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/prov
 const adyenHandler = async (sessionId: string): Promise<PaymentStatusResponse> => {
   const session = await verifyAdyenSession(sessionId);
 
-  const StatusEnum = AdyenTypes.checkout.PaymentLinkResource.StatusEnum;
+  const StatusEnum = AdyenTypes.checkout.PaymentLinkResponse.StatusEnum;
 
   if (session.status === StatusEnum.Active) {
     // Session was previously generated but has not been completed
@@ -106,4 +107,4 @@ const handler: NextApiHandler = async (req, res) => {
   res.status(200).json(response);
 };
 
-export default allowCors(handler);
+export default withSentry(allowCors(handler));

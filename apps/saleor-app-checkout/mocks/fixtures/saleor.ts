@@ -1,5 +1,8 @@
 import { encryptSetting } from "@/saleor-app-checkout/backend/configuration/encryption";
-import { TransactionFragment } from "@/saleor-app-checkout/graphql";
+import {
+  TransactionActionPayloadFragment,
+  TransactionFragment,
+} from "@/saleor-app-checkout/graphql";
 import { PaymentProviderSettingsValues } from "@/saleor-app-checkout/types";
 import { testingVars } from "../consts";
 
@@ -84,4 +87,62 @@ export const prepareSaleorTransaction = (
     id: "123",
     ...additionalData,
   };
+};
+
+export const transactionActionRequest: Record<
+  "missingData" | "adyenRefund" | "mollieRefund",
+  Partial<TransactionActionPayloadFragment>
+> = {
+  missingData: {
+    transaction: undefined,
+    action: undefined,
+  },
+  adyenRefund: {
+    transaction: {
+      id: "VHJhbnNhY3Rpb25JdGVtOjE3OA==",
+      reference: "LD65H2FVNXSKGK82",
+      type: "adyen-mc",
+      authorizedAmount: {
+        amount: 0,
+        currency: "USD",
+      },
+      chargedAmount: {
+        amount: 42.92,
+      },
+      voidedAmount: {
+        amount: 0,
+      },
+      refundedAmount: {
+        amount: 0,
+      },
+    },
+    action: {
+      actionType: "REFUND",
+      amount: 4.31,
+    },
+  },
+  mollieRefund: {
+    transaction: {
+      id: "VHJhbnNhY3Rpb25JdGVtOjE3Mg==",
+      reference: "ord_kr6ltl",
+      type: "mollie-creditcard",
+      authorizedAmount: {
+        amount: 0,
+        currency: "USD",
+      },
+      chargedAmount: {
+        amount: 21.67,
+      },
+      voidedAmount: {
+        amount: 0,
+      },
+      refundedAmount: {
+        amount: 0,
+      },
+    },
+    action: {
+      actionType: "REFUND",
+      amount: 38.61,
+    },
+  },
 };

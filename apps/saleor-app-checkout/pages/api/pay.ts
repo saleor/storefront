@@ -1,17 +1,11 @@
+import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
-import { createAdyenPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
+import { createAdyenCheckoutPaymentLinks } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
-import { createOrder } from "@/saleor-app-checkout/backend/payments/createOrder";
 import { OrderPaymentMetafield } from "@/saleor-app-checkout/types/common";
-import {
-  assertUnreachable,
-  PaymentMethods,
-  PaymentProviderID,
-  PaymentProviders,
-} from "checkout-common";
+import { assertUnreachable, PaymentMethods, PaymentProviders } from "checkout-common";
 import { OrderFragment } from "@/saleor-app-checkout/graphql";
-import { getOrderDetails } from "@/saleor-app-checkout/backend/payments/getOrderDetails";
 import { PayRequestResponse, PayRequestErrorResponse } from "@/saleor-app-checkout/types/api/pay";
 import { PayRequestBody } from "checkout-common";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
@@ -20,27 +14,19 @@ import { reuseExistingMollieSession } from "@/saleor-app-checkout/backend/paymen
 import { reuseExistingAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
 import {
   CreatePaymentResult,
-  Errors,
   ReuseExistingSessionParams,
   ReuseExistingSessionResult,
 } from "@/saleor-app-checkout/backend/payments/types";
 import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
 import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
 import { safeJsonParse } from "@/saleor-app-checkout/utils";
-
-class MissingUrlError extends Error {
-  constructor(public provider: PaymentProviderID, public order?: OrderFragment) {
-    super(`Missing url! Provider: ${provider} | Order ID: ${order?.id ?? "(missing)"}`);
-    Object.setPrototypeOf(this, MissingUrlError.prototype);
-  }
-}
-
-class KnownPaymentError extends Error {
-  constructor(public provider: PaymentProviderID, public errors: Errors) {
-    super(`Error! Provider: ${provider} | Errors: ${errors.join(", ")}`);
-    Object.setPrototypeOf(this, KnownPaymentError.prototype);
-  }
-}
+import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
+import {
+  KnownPaymentError,
+  UnknownPaymentError,
+  MissingUrlError,
+} from "@/saleor-app-checkout/backend/payments/errors";
 
 const reuseExistingSession = ({
   orderId,
@@ -74,30 +60,6 @@ const reuseExistingSession = ({
   }
 };
 
-const createOrderFromBodyOrId = async (body: PayRequestBody): Promise<OrderFragment> => {
-  const provider = body.provider;
-
-  if ("checkoutId" in body) {
-    const data = await createOrder(body.checkoutId, body.totalAmount);
-
-    if ("errors" in data) {
-      throw new KnownPaymentError(provider, data.errors);
-    }
-
-    return data.data;
-  } else if ("orderId" in body) {
-    const data = await getOrderDetails(body.orderId);
-
-    if ("errors" in data) {
-      throw new KnownPaymentError(provider, data.errors);
-    }
-
-    return data.data;
-  }
-
-  throw new KnownPaymentError(provider, ["MISSING_CHECKOUT_OR_ORDER_ID"]);
-};
-
 const getPaymentResponse = async (
   body: PayRequestBody,
   appUrl: string
@@ -124,7 +86,16 @@ const getPaymentResponse = async (
     }
   }
 
-  const { url, id } = await getPaymentUrlIdForProvider(body, order, appUrl);
+  const [paymentUrlError, data] = await unpackPromise(
+    getPaymentUrlIdForProvider(body, order, appUrl)
+  );
+
+  if (paymentUrlError) {
+    console.error(paymentUrlError);
+    throw new UnknownPaymentError(body.provider, paymentUrlError, order);
+  }
+
+  const { id, url } = data;
 
   if (!url) {
     throw new MissingUrlError(body.provider, order);
@@ -179,6 +150,14 @@ const handler: NextApiHandler = async (req, res) => {
       } as PayRequestErrorResponse);
     }
 
+    if (err instanceof UnknownPaymentError) {
+      return res.status(500).json({
+        ok: false,
+        provider: err.provider,
+        orderId: err.order?.id,
+      });
+    }
+
     if (err instanceof MissingUrlError) {
       return res.status(503).json({ ok: false, provider: err.provider, orderId: err.order?.id });
     }
@@ -194,31 +173,23 @@ const getPaymentUrlIdForProvider = (
   order: OrderFragment,
   appUrl: string
 ): Promise<CreatePaymentResult> => {
+  const createPaymentData = {
+    order,
+    redirectUrl: body.redirectUrl,
+    method: body.method,
+    appUrl,
+  };
+
   switch (body.provider) {
     case "mollie":
-      return createMolliePayment({
-        order,
-        redirectUrl: body.redirectUrl,
-        method: body.method,
-        appUrl,
-      });
+      return createMolliePayment(createPaymentData);
     case "adyen":
-      return createAdyenPayment({
-        order,
-        redirectUrl: body.redirectUrl,
-        method: body.method,
-        appUrl,
-      });
+      return createAdyenCheckoutPaymentLinks(createPaymentData);
     case "stripe":
-      return createStripePayment({
-        order,
-        redirectUrl: body.redirectUrl,
-        method: body.method,
-        appUrl,
-      });
+      return createStripePayment(createPaymentData);
     default:
       assertUnreachable(body.provider);
   }
 };
 
-export default allowCors(handler);
+export default withSentry(allowCors(handler));

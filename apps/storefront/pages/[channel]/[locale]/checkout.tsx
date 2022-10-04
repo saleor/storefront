@@ -14,7 +14,7 @@ function CheckoutPage() {
   useEffect(() => {
     // Redirect to cart if theres no checkout data
     if (!loading && (!checkout || !checkout.lines?.length)) {
-      void router.push(paths.cart.$url());
+      void router.push(paths.$url());
     }
   });
 

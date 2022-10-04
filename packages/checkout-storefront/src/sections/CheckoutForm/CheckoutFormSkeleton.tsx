@@ -4,7 +4,7 @@ import { ContactSkeleton } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods";
 import { PaymentSectionSkeleton } from "@/checkout-storefront/sections/PaymentSection";
 import { Button, Divider } from "@/checkout-storefront/components";
-import { AddressSectionSkeleton } from "@/checkout-storefront/sections/Addresses/AddressSectionSkeleton";
+import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 
 export const CheckoutFormSkeleton = () => {
   const formatMessage = useFormattedMessages();

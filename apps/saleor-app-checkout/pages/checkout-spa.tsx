@@ -1,4 +1,5 @@
 import Dynamic from "next/dynamic";
+import { envVars } from "../constants";
 
 const CheckoutStoreFront = Dynamic(
   async () => {
@@ -11,13 +12,11 @@ const CheckoutStoreFront = Dynamic(
   }
 );
 
-const apiUrl = process.env["NEXT_PUBLIC_SALEOR_API_URL"];
-const checkoutApiUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]
-  ? process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"] + `/api`
-  : "";
-const checkoutAppUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"];
-
 export default function CheckoutSpa() {
+  const apiUrl = envVars.apiUrl;
+  const checkoutApiUrl = envVars.checkoutApiUrl;
+  const checkoutAppUrl = envVars.checkoutAppUrl;
+
   if (!apiUrl) {
     console.warn(`Missing NEXT_PUBLIC_SALEOR_API_URL env variable`);
     return null;
