@@ -22,14 +22,14 @@ export default function App(props: AppProps) {
 
   const { locale, messages } = useFormattedMessages();
 
-  useEffect(() => {
-    const env = [
-      process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || "",
-      process.env.NEXT_PUBLIC_SENTRY_RELEASE || "",
-    ].join("-");
+  const version = [
+    process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || "",
+    process.env.NEXT_PUBLIC_SENTRY_RELEASE || "",
+  ].join("-");
 
-    globalThis.__SALEOR_CHECKOUT_ENV__ = env;
-  }, []);
+  useEffect(() => {
+    globalThis.__SALEOR_CHECKOUT_ENV__ = version;
+  }, [version]);
 
   return (
     <>
@@ -69,6 +69,15 @@ export default function App(props: AppProps) {
                 <AppContainer>
                   <Component {...pageProps} />
                 </AppContainer>
+                <footer
+                  style={{
+                    fontSize: "0.8em",
+                    textAlign: "center",
+                    color: "#777",
+                  }}
+                >
+                  <small>{version}</small>
+                </footer>
               </ThemeProvider>
             </IntlProvider>
           </PrivateSettingsProvider>
