@@ -48,42 +48,102 @@ export const errorMessages = defineMessages({
   },
   checkoutFinalizeShippingAddressInvalidError: {
     defaultMessage: "Please fill in a valid shipping address before finalizing checkout",
-    id: "useAlerts/messages/QtgaSX",
-    description: "checkout finalize shipping address invalid error",
+    id: "useAlerts/messages/Em5uvP",
+    description: "checkout finalize - shipping address invalid error",
   },
   checkoutAddPromoCodePromoCodeInvalidError: {
     defaultMessage: "Invalid promo code provided",
-    id: "useAlerts/messages/Bre+gJ",
-    description: "checkout Add Promo Code Promo Code Invalid Error",
+    id: "useAlerts/messages/yGh+vi",
+    description: "checkout add promo code - promo code invalid error",
   },
   userAddressUpdatePostalCodeInvalidError: {
     defaultMessage: "Invalid postal code provided to address form",
-    id: "useAlerts/messages/UUg3EN",
-    description: "user Address Update Postal Code Invalid Error",
+    id: "useAlerts/messages/uc7gzX",
+    description: "user address update - postal code invalid error",
   },
   userRegisterPasswordPasswordTooShortError: {
     defaultMessage: "Provided password is too short",
-    id: "useAlerts/messages/nuyNbJ",
-    description: "userRegisterPasswordPasswordTooShortError",
+    id: "useAlerts/messages/mJ81Pa",
+    description: "user register - password too short error",
   },
-  checkoutPayShippingMethodNotSetError: "Please choose delivery method before finalizing checkout",
-  checkoutEmailUpdateEmailRequiredError: "Email cannot be empty",
-  checkoutPayTotalAmountMismatchError: "Couldn't finalize checkout, please try again",
-  checkoutPayEmailNotSetError: "Please fill in email before finalizing checkout",
-  userRegisterEmailUniqueError: "Cannot create account with email that is already used",
-  loginEmailInactiveError: "Account with provided email is inactive",
-  loginEmailNotFoundError: "Account with provided email was not found",
-  loginEmailAccountNotConfirmedError: "Account hasn't been confirmed",
-  resetPasswordPasswordPasswordTooShortError: "Provided password is too short",
-  resetPasswordTokenInvalidError: "Provided reset password token is expired or invalid",
-  checkoutLinesUpdateQuantityQuantityGreaterThanLimitError:
-    "Couldn't update line - buy limit for this item exceeded",
-  checkoutLinesUpdateQuantityInsufficientStockError:
-    "Couldn't update line - insufficient stock in warehouse",
-  loginEmailInvalidCredentialsError: "Invalid credentials provided to login",
-  checkoutShippingUpdatePostalCodeInvalidError:
-    "Invalid postal code was provided for shipping address",
-  checkoutBillingUpdatePostalCodeInvalidError:
-    "Invalid postal code was provided for billing address",
-  checkoutFinalizeEmailInvalidError: "Please provide valid email before finalizing checkout",
+  checkoutPayShippingMethodNotSetError: {
+    defaultMessage: "Please choose delivery method before finalizing checkout",
+    id: "useAlerts/messages/k0+Kez",
+    description: "checkout pay - shipping method not set error",
+  },
+  checkoutEmailUpdateEmailRequiredError: {
+    defaultMessage: "Email cannot be empty",
+    id: "useAlerts/messages/a77ZZO",
+    description: "checkout email update - email required error",
+  },
+  checkoutPayTotalAmountMismatchError: {
+    defaultMessage: "Couldn't finalize checkout, please try again",
+    id: "useAlerts/messages/glpqLA",
+    description: "checkout pay - total amount mismatch error",
+  },
+  checkoutPayEmailNotSetError: {
+    defaultMessage: "Please fill in email before finalizing checkout",
+    id: "useAlerts/messages/7/Bo7+",
+    description: "checkout pay - email not set error",
+  },
+  userRegisterEmailUniqueError: {
+    defaultMessage: "Cannot create account with email that is already used",
+    id: "useAlerts/messages/Vx4W5S",
+    description: "user register - email unique error",
+  },
+  loginEmailInactiveError: {
+    defaultMessage: "Account with provided email is inactive",
+    id: "useAlerts/messages/ESuR0A",
+    description: "login - email inactive error",
+  },
+  loginEmailNotFoundError: {
+    defaultMessage: "Account with provided email was not found",
+    id: "useAlerts/messages/LrYpGU",
+    description: "login - email not found error",
+  },
+  loginEmailAccountNotConfirmedError: {
+    defaultMessage: "Account hasn't been confirmed",
+    id: "useAlerts/messages/iTl+Qz",
+    description: "login - account not confirmed error",
+  },
+  resetPasswordPasswordPasswordTooShortError: {
+    defaultMessage: "Provided password is too short",
+    id: "useAlerts/messages/Xd2N1c",
+    description: "reset password - password too short error",
+  },
+  resetPasswordTokenInvalidError: {
+    defaultMessage: "Provided reset password token is expired or invalid",
+    id: "useAlerts/messages/EwTHLm",
+    description: "reset password - token invalid error",
+  },
+  checkoutLinesUpdateQuantityQuantityGreaterThanLimitError: {
+    defaultMessage: "Couldn't update line - buy limit for this item exceeded",
+    id: "useAlerts/messages/KXWHsh",
+    description: "checkout lines update - quantity greater than limit error",
+  },
+  checkoutLinesUpdateQuantityInsufficientStockError: {
+    defaultMessage: "Couldn't update line - insufficient stock in warehouse",
+    id: "useAlerts/messages/oyFho2",
+    description: "checkout lines update - insufficient stock error",
+  },
+  loginEmailInvalidCredentialsError: {
+    defaultMessage: "Invalid credentials provided to login",
+    id: "useAlerts/messages/nX71XF",
+    description: "login - invalid credentials error",
+  },
+  checkoutShippingUpdatePostalCodeInvalidError: {
+    defaultMessage: "Invalid postal code was provided for shipping address",
+    id: "useAlerts/messages/2leXNc",
+    description: "checkout shipping update - postal code invalid error",
+  },
+  checkoutBillingUpdatePostalCodeInvalidError: {
+    defaultMessage: "Invalid postal code was provided for billing address",
+    id: "useAlerts/messages/8fk/m5",
+    description: "checkout billing update - postal code invalid error",
+  },
+  checkoutFinalizeEmailInvalidError: {
+    defaultMessage: "Please provide valid email before finalizing checkout",
+    id: "useAlerts/messages/cRtX18",
+    description: "checkout finalize - email invalid error",
+  },
 });
