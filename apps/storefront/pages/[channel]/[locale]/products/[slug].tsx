@@ -186,7 +186,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             )}
             {!!product.category?.slug && (
               <Link href={paths.category._slug(product?.category?.slug).$url()} passHref>
-                <p className="text-lg mt-2 font-medium text-gray-600 cursor-pointer">
+                <p className="text-md mt-2 font-medium text-gray-600 cursor-pointer">
                   {translate(product.category, "name")}
                 </p>
               </Link>
