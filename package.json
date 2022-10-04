@@ -22,7 +22,7 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
-    "clean": "turbo run clean",
+    "clean": "rm -rf .turbo || turbo run clean",
     "cy:run": "cypress run",
     "cy:open": "cypress open"
   },
