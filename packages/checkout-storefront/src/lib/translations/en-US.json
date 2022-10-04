@@ -164,7 +164,7 @@
   "loadingWithDots": "Loading...",
   "dummyPay": "Dummy Pay",
   "dummyPayment": "Dummy Payment",
-  "dummyPaymentAmountPlaceholder": "Left to pay [{currency}]",
+  "dummyPaymentAmountPlaceholder": "Left to pay ({currency})",
   "orderTotalPrice": "Total price",
   "orderAlreadyPaid": "Already paid"
 }
