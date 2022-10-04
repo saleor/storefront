@@ -1,5 +1,7 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "pnpm --version && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ../../ && pnpm run build:storefront"
+  "buildCommand": "cd ../.. && pnpm run build:storefront",
+  "ignoreCommand": "npx @typeofweb/ignore-monorepo-buildstep@latest"
 }
