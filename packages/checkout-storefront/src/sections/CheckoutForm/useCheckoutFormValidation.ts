@@ -97,7 +97,6 @@ export const useCheckoutFormValidation = ({
       showCustomErrors([
         {
           message: getShippingMissingFieldsErrorMessage(),
-          code: "invalid",
         },
       ]);
       isValid = false;
@@ -115,7 +114,6 @@ export const useCheckoutFormValidation = ({
       showCustomErrors([
         {
           message: getBillingMissingFieldsErrorMessage(),
-          code: "invalid",
         },
       ]);
       isValid = false;

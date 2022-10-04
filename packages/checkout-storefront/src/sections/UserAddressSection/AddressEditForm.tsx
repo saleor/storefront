@@ -2,10 +2,8 @@ import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import React from "react";
 import { AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
 import { useAddressList } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
-import {
-  AddressFormProps,
-  ManualSaveAddressForm,
-} from "@/checkout-storefront/components/AddressForm";
+import { ManualSaveAddressForm } from "@/checkout-storefront/components/ManualSaveAddressForm";
+import { AddressFormProps } from "@/checkout-storefront/components/AddressForm";
 
 interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
   defaultValues: UserAddressFormData;

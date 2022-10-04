@@ -6,6 +6,7 @@ import { SelectBox, SelectBoxProps } from "@/checkout-storefront/components/Sele
 import { Button } from "@/checkout-storefront/components/Button";
 import { Address } from "@/checkout-storefront/components/Address";
 import { AddressFragment } from "@/checkout-storefront/graphql";
+import { labels, messages } from "@/checkout-storefront/components/AddressSelectBox/messages";
 
 interface AddressSelectBoxProps extends Omit<SelectBoxProps, "children"> {
   address: Partial<Record<AddressField, any>>;
@@ -33,7 +34,7 @@ export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
         <Address address={address as AddressFragment} {...textProps}>
           {unavailable && (
             <Text size="xs" className="my-1">
-              {formatMessage("cantShipToAddress")}
+              {formatMessage(messages.cantShipToAddress)}
             </Text>
           )}
         </Address>
@@ -44,9 +45,9 @@ export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
               event.stopPropagation();
               onEdit();
             }}
-            ariaLabel={formatMessage("editAddressLabel")}
+            ariaLabel={formatMessage(messages.editAddress)}
             className="mr-2"
-            label={formatMessage("edit")}
+            label={formatMessage(labels.editAddress)}
           />
         </div>
       </div>
