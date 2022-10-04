@@ -58,13 +58,6 @@ export const pagesPath = {
           }),
         },
       },
-      cart: {
-        $url: (url?: { hash?: string }) => ({
-          pathname: "/[channel]/[locale]/cart" as const,
-          query: { channel, locale },
-          hash: url?.hash,
-        }),
-      },
       category: {
         _slug: (slug: string | number) => ({
           $url: (url?: { hash?: string }) => ({

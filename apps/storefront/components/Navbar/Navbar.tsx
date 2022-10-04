@@ -14,6 +14,7 @@ import styles from "./Navbar.module.css";
 import NavIconButton from "./NavIconButton";
 import Stamp from "./Stamp";
 import UserMenu from "./UserMenu";
+import { useRegions } from "@/components/RegionsProvider";
 
 export function Navbar() {
   const paths = usePaths();
@@ -22,6 +23,11 @@ export function Navbar() {
   const [isBurgerOpen, setBurgerOpen] = useState(false);
   const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
+  const { currentChannel, currentLocale } = useRegions();
+
+  const externalCheckoutUrl = checkout
+    ? `/checkout/?checkout=${checkout.id}&locale=${currentLocale}&channel=${currentChannel.slug}`
+    : "";
 
   useEffect(() => {
     // Close side menu after changing the page
@@ -63,7 +69,7 @@ export function Navbar() {
             ) : (
               <UserMenu />
             )}
-            <Link href={paths.cart.$url()} passHref>
+            <Link href={externalCheckoutUrl} passHref>
               <a href="pass" className="ml-2 hidden xs:flex">
                 <NavIconButton icon="bag" aria-hidden="true" counter={counter} />
               </a>
