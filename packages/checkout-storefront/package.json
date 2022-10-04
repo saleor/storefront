@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit",
     "check-types:dev": "tsc --noEmit --watch",
     "lint": "eslint",
-    "lint:staged": "eslint --fix",
+    "lint:staged": "eslint --fix --quiet",
     "test": "jest",
     "test:dev": "jest --watch",
     "clean": "rm -rf .turbo .next .rollup.cache dist"

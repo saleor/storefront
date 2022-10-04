@@ -18,7 +18,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint",
-    "lint:staged": "eslint --fix",
+    "lint:staged": "eslint --fix --quiet",
     "check-types": "tsc",
     "clean": "rm -rf .next .turbo",
     "storybook": "start-storybook -p 6006",

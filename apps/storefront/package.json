@@ -11,7 +11,7 @@
     "analyze-build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint --dir .",
-    "lint:staged": "next lint --dir . --fix",
+    "lint:staged": "next lint --dir . --fix --quiet",
     "check-types": "tsc --noEmit",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
     "paths": "pathpida --ignorePath ../../.gitignore",
