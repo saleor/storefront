@@ -129,7 +129,11 @@ function useDropinAdyenElement(
   });
 
   useEffect(() => {
-    if (!dropinContainerElRef.current || !adyenSessionResponse.data) {
+    if (
+      !dropinContainerElRef.current ||
+      !adyenSessionResponse.data ||
+      "message" in adyenSessionResponse.data
+    ) {
       return;
     }
 
