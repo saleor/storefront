@@ -21,7 +21,6 @@
     "lint:staged": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run lint:staged",
     "check-types": "turbo run check-types --cache-dir=.turbo",
     "test": "env-cmd --no-override -f .env turbo run test --cache-dir=.turbo",
-    "start": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run start",
     "format": "prettier --write .",
     "prepare": "husky install",
     "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
