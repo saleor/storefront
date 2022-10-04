@@ -25,7 +25,7 @@ function Cart() {
 
   // we rewrite `/checkout` to the checkout domain to keep cookies
   const externalCheckoutUrl = checkout
-    ? `/checkout?checkout=${checkout.id}&locale=${currentLocale}&channel=${currentChannel.slug}`
+    ? `/checkout/?checkout=${checkout.id}&locale=${currentLocale}&channel=${currentChannel.slug}`
     : "";
 
   return (
