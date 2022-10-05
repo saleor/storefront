@@ -5,6 +5,7 @@ Checkout Storefront is a component used for connecting Saleor based storefronts 
 ## Project structure
 
 ### URL structure
+
 The supported query parameters are:
 
 - locale - locale, passed from storefront to checkout, will be used to display messages in the correct language
@@ -12,6 +13,7 @@ The supported query parameters are:
 - channel - channel slug for which we've created the checkout for
 
 An example URL can look something like this:
+
 ```
 https://example-saleor-app.com?locale=pl-PL&checkout=Q2hlY2tvdXQ6ZTcwZjBlYzgtOWMyMS00Y2FkLWE4YzktZWQ3ODcwYjNhN2I5&channel=channel-pln
 ```
