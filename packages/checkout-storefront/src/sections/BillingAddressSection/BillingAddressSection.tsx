@@ -21,6 +21,7 @@ import {
   getAddressInputData,
   getAddressFormDataFromAddress,
 } from "@/checkout-storefront/lib/utils";
+import { messages } from "./messages";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -113,14 +114,14 @@ export const BillingAddressSection = () => {
         value="useShippingAsBilling"
         checked={isBillingSameAsShipping}
         onChange={setIsBillingSameAsShipping}
-        label={formatMessage("useShippingAsBilling")}
+        label={formatMessage(messages.useShippingAsBilling)}
       />
       {!isBillingSameAsShipping && (
         <div className="mt-4">
           {authUser ? (
             <UserAddressSection
               {...errorProps}
-              title={formatMessage("billingAddress")}
+              title={formatMessage(messages.billingAddress)}
               type="BILLING"
               onAddressSelect={(address) => {
                 void updateBillingAddress(address);
@@ -133,7 +134,7 @@ export const BillingAddressSection = () => {
               {...errorProps}
               checkAddressAvailability={false}
               defaultAddress={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
-              title={formatMessage("billingAddress")}
+              title={formatMessage(messages.billingAddress)}
               onSubmit={(address) => {
                 void updateBillingAddress(address);
               }}

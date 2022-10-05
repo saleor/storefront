@@ -19,6 +19,7 @@ import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useEffect } from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { labels, messages } from "@/checkout-storefront/sections/Contact/messages";
 
 type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -97,28 +98,28 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
 
   return (
     <SignInFormContainer
-      title={formatMessage("signIn")}
-      redirectSubtitle={formatMessage("newCustomer")}
-      redirectButtonLabel={formatMessage("guestCheckout")}
+      title={formatMessage(messages.signIn)}
+      redirectSubtitle={formatMessage(messages.newCustomer)}
+      redirectButtonLabel={formatMessage(messages.guestCheckout)}
       onSectionChange={onSectionChange}
     >
-      <TextInput label={formatMessage("emailLabel")} {...getInputProps("email")} />
-      <PasswordInput label={formatMessage("passwordLabel")} {...getInputProps("password")} />
+      <TextInput label={formatMessage(messages.email)} {...getInputProps("email")} />
+      <PasswordInput label={formatMessage(messages.password)} {...getInputProps("password")} />
       <div className="actions">
         {passwordResetSent && (
-          <Text>{formatMessage("linkSent", { email: getValues().email })}</Text>
+          <Text>{formatMessage(messages.linkSent, { email: getValues().email })}</Text>
         )}
         <Button
-          ariaLabel={formatMessage("sendPasswordLabel")}
+          ariaLabel={formatMessage(labels.sendResetLink)}
           variant="tertiary"
-          label={formatMessage(passwordResetSent ? "resend" : "forgotPassword")}
+          label={formatMessage(passwordResetSent ? messages.resend : messages.forgotPassword)}
           className="ml-1 mr-4"
           onClick={onPasswordReset}
         />
         <Button
-          ariaLabel={formatMessage("signInLabel")}
+          ariaLabel={formatMessage(labels.signIn)}
           onClick={handleSubmit(onSubmit)}
-          label={formatMessage("signIn")}
+          label={formatMessage(messages.signIn)}
         />
       </div>
     </SignInFormContainer>

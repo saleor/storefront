@@ -16,6 +16,7 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
+import { labels, messages } from "@/checkout-storefront/sections/Contact/messages";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -106,14 +107,14 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
   return (
     <SignInFormContainer
-      title={formatMessage("contact")}
-      redirectSubtitle={formatMessage("haveAccount")}
-      redirectButtonLabel={formatMessage("signIn")}
+      title={formatMessage(messages.contact)}
+      redirectSubtitle={formatMessage(messages.haveAccount)}
+      redirectButtonLabel={formatMessage(messages.signIn)}
       onSectionChange={onSectionChange}
     >
       <form>
         <TextInput
-          label={formatMessage("emailLabel")}
+          label={formatMessage(messages.email)}
           {...getInputProps("email", {
             onChange: debouncedSubmit,
           })}
@@ -121,14 +122,14 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         <Checkbox
           classNames={{ container: "!mb-0" }}
           value="createAccount"
-          label={formatMessage("wantToCreateAccountLabel")}
+          label={formatMessage(messages.wantToCreateAccount)}
           checked={createAccountSelected}
           onChange={setCreateAccountSelected}
         />
         {createAccountSelected && (
           <div className="mt-2">
             <PasswordInput
-              label={formatMessage("passwordLabel")}
+              label={formatMessage(messages.password)}
               {...getContextInputProps("password")}
             />
           </div>

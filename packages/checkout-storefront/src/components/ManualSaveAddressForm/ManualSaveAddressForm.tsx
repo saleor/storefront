@@ -9,6 +9,7 @@ import { IconButton } from "@/checkout-storefront/components/IconButton";
 import { labels, messages } from "@/checkout-storefront/components/ManualSaveAddressForm/messages";
 import { UseErrors, useFormattedMessages } from "@/checkout-storefront/hooks";
 import { TrashIcon } from "@/checkout-storefront/icons";
+import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import React, { useCallback } from "react";
 
@@ -67,7 +68,7 @@ export const ManualSaveAddressForm: React.FC<ManualSaveAddressFormProps> = ({
             disabled
             ariaLabel={formatMessage(labels.save)}
             onClick={handleSubmit(handleOnSubmit)}
-            label={formatMessage(messages.processing)}
+            label={formatMessage(commonMessages.processing)}
           />
         ) : (
           <Button

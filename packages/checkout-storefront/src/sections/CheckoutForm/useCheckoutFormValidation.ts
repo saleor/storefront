@@ -1,6 +1,5 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import {
-  MessageKey,
   useAddressFormUtils,
   useAlerts,
   useCheckout,
@@ -14,6 +13,8 @@ import { flushSync } from "react-dom";
 import { UseFormReturn } from "react-hook-form";
 import { ValidationError } from "yup";
 import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
+import { MessageDescriptor } from "react-intl";
+import { messages } from "@/checkout-storefront/sections/CheckoutForm/messages";
 
 interface UseCheckoutFormValidation
   extends Pick<UsePaymentMethods, "isValidProviderSelected">,
@@ -36,29 +37,34 @@ export const useCheckoutFormValidation = ({
   const {
     hasAllRequiredFields: shippingHasAllRequiredFields,
     getMissingFieldsFromAddress: getMissingFieldsFromShipping,
+    getFieldLabel: getShippingFieldLabel,
   } = useAddressFormUtils(shippingAddress?.country?.code as CountryCode);
 
   const {
     hasAllRequiredFields: billingHasAllRequiredFields,
     getMissingFieldsFromAddress: getMissingFieldsFromBilling,
+    getFieldLabel: getBillingFieldLabel,
   } = useAddressFormUtils(billingAddress?.country?.code as CountryCode);
 
   const getShippingMissingFieldsErrorMessage = () =>
     getAddressMissingFieldsErrorMessage(
-      "missingFieldsInShippingAddress",
+      messages.missingFieldsInShippingAddress,
+      getShippingFieldLabel,
       getMissingFieldsFromShipping(shippingAddress)
     );
 
   const getBillingMissingFieldsErrorMessage = () =>
     getAddressMissingFieldsErrorMessage(
-      "missingFieldsInBillingAddress",
+      messages.missingFieldsInBillingAddress,
+      getBillingFieldLabel,
       getMissingFieldsFromBilling(billingAddress)
     );
 
-  const getAddressMissingFieldsErrorMessage = (messageKey: MessageKey, fields: AddressField[]) =>
-    `${formatMessage(messageKey)}: ${fields
-      .map((field) => formatMessage(field as MessageKey))
-      .join(", ")}`;
+  const getAddressMissingFieldsErrorMessage = (
+    message: MessageDescriptor,
+    getFieldLabel: (field: AddressField) => string,
+    fields: AddressField[]
+  ) => `${formatMessage(message)}: ${fields.map((field) => getFieldLabel(field)).join(", ")}`;
 
   const ensureValidCheckout = (): boolean => {
     let isValid = true;

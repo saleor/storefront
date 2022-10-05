@@ -14,6 +14,8 @@ import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/Delivery
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
 import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
+import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
+import { labels, messages } from "@/checkout-storefront/sections/CheckoutForm/messages";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -56,14 +58,14 @@ export const CheckoutForm = () => {
           <Button
             className="pay-button"
             disabled
-            ariaLabel={formatMessage("saveLabel")}
-            label={formatMessage("processing")}
+            ariaLabel={formatMessage(labels.pay)}
+            label={formatMessage(commonMessages.processing)}
           />
         ) : (
           <Button
             disabled={isLoading}
-            ariaLabel={formatMessage("finalizeCheckoutLabel")}
-            label={formatMessage("pay")}
+            ariaLabel={formatMessage(labels.pay)}
+            label={formatMessage(messages.pay)}
             className="pay-button"
             onClick={handleSubmit}
           />

@@ -6,11 +6,6 @@ export const messages = defineMessages({
     id: "ManualSaveAddressForm/messages/js69XA",
     description: "cancel",
   },
-  processing: {
-    defaultMessage: "Processing...",
-    id: "ManualSaveAddressForm/messages/03Jmny",
-    description: "processing",
-  },
   save: {
     defaultMessage: "Save address",
     id: "ManualSaveAddressForm/messages/BfROpq",

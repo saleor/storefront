@@ -5,6 +5,7 @@ import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/Delivery
 import { PaymentSectionSkeleton } from "@/checkout-storefront/sections/PaymentSection";
 import { Button, Divider } from "@/checkout-storefront/components";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
+import { labels, messages } from "@/checkout-storefront/sections/CheckoutForm/messages";
 
 export const CheckoutFormSkeleton = () => {
   const formatMessage = useFormattedMessages();
@@ -22,8 +23,8 @@ export const CheckoutFormSkeleton = () => {
       </div>
       <Button
         disabled
-        ariaLabel={formatMessage("finalizeCheckoutLabel")}
-        label={formatMessage("pay")}
+        ariaLabel={formatMessage(labels.pay)}
+        label={formatMessage(messages.pay)}
         className="pay-button"
       />
     </div>
