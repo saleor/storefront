@@ -1,6 +1,13 @@
 import React, { AllHTMLAttributes, ForwardedRef, forwardRef } from "react";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
-import { Control, FieldPath, UseFormRegisterReturn, useWatch } from "react-hook-form";
+import {
+  Control,
+  DeepMap,
+  DeepPartial,
+  FieldPath,
+  UseFormRegisterReturn,
+  useWatch,
+} from "react-hook-form";
 import { ControlFormData } from "@/checkout-storefront/hooks/useGetInputProps";
 import { Errors } from "../hooks/useErrors";
 import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
@@ -12,6 +19,7 @@ export interface TextInputProps<
     Omit<UseFormRegisterReturn, "ref">,
     Pick<UiKitTextInputProps, "classNames"> {
   errors: Errors<TFormData>;
+  touchedFields: DeepMap<DeepPartial<TFormData>, boolean>;
   control: TControl;
   name: FieldPath<TFormData>;
   label: string;
@@ -26,14 +34,16 @@ const TextInputComponent = <
   props: TextInputProps<TControl, TFormData>,
   ref: ForwardedRef<HTMLInputElement>
 ) => {
-  const { name, control, optional, errors, ...rest } = props;
+  const { name, control, optional, errors, touchedFields, ...rest } = props;
 
   const value = useWatch({
     control,
     name,
   });
 
-  const error = errors[name as keyof typeof errors];
+  const error = touchedFields[name as keyof typeof touchedFields]
+    ? errors[name as keyof typeof errors]
+    : null;
 
   return (
     <UiKitTextInput
