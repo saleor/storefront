@@ -109,4 +109,9 @@ export const labels = defineMessages({
     id: "Contact/messages/HvSpKk",
     description: "send password reset link",
   },
+  changeSection: {
+    defaultMessage: "change section",
+    id: "Contact/messages/dE8fQO",
+    description: "change section",
+  },
 });

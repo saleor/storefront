@@ -21,7 +21,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
 import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";
-import { messages, accessibilityLabels } from "@/checkout-storefront/sections/Summary/messages";
+import { messages, labels } from "@/checkout-storefront/sections/Summary/messages";
 
 /* temporary solution */
 const PAGE_MARGINS_HEIGHT = 320;
@@ -91,7 +91,7 @@ export const Summary: FC<SummaryProps> = ({
         </div>
         {!isOpen && (
           <Money
-            ariaLabel={formatMessage(accessibilityLabels.totalPrice)}
+            ariaLabel={formatMessage(labels.totalPrice)}
             weight="bold"
             money={totalPrice?.gross}
           />
@@ -130,13 +130,13 @@ export const Summary: FC<SummaryProps> = ({
           <SummaryMoneyRow
             label={formatMessage(messages.subtotalPrice)}
             money={subtotalPrice?.gross}
-            ariaLabel={formatMessage(accessibilityLabels.subtotal)}
+            ariaLabel={formatMessage(labels.subtotal)}
           />
           {voucherCode && (
             <SummaryPromoCodeRow
               editable={editable}
               promoCode={voucherCode}
-              ariaLabel={formatMessage(accessibilityLabels.voucher)}
+              ariaLabel={formatMessage(labels.voucher)}
               label={formatMessage(messages.voucher, { voucherCode })}
               money={discount}
               negative
@@ -146,7 +146,7 @@ export const Summary: FC<SummaryProps> = ({
             <SummaryPromoCodeRow
               editable={editable}
               promoCodeId={id}
-              ariaLabel={formatMessage(accessibilityLabels.giftCard)}
+              ariaLabel={formatMessage(labels.giftCard)}
               label={formatMessage(messages.giftCard, { giftCardCode: `•••• •••• ${displayCode}` })}
               money={currentBalance}
               negative
@@ -154,7 +154,7 @@ export const Summary: FC<SummaryProps> = ({
           ))}
           <SummaryMoneyRow
             label={formatMessage(messages.shippingCost)}
-            ariaLabel={formatMessage(accessibilityLabels.shippingCost)}
+            ariaLabel={formatMessage(labels.shippingCost)}
             money={shippingPrice?.gross}
           />
           <Divider className="my-4" />
@@ -168,7 +168,7 @@ export const Summary: FC<SummaryProps> = ({
               </Text>
             </div>
             <Money
-              ariaLabel={formatMessage(accessibilityLabels.totalPrice)}
+              ariaLabel={formatMessage(labels.totalPrice)}
               weight="bold"
               money={totalPrice?.gross}
             />

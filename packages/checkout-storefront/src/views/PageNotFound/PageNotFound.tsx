@@ -5,6 +5,11 @@ import { SaleorLogo } from "@/checkout-storefront/images";
 import { Title } from "@/checkout-storefront/components/Title";
 import { FallbackProps } from "react-error-boundary";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { messages } from "@/checkout-storefront/views/PageNotFound/messages";
+import {
+  messages as emptyCartMessages,
+  labels as emptyCartLabels,
+} from "@/checkout-storefront/views/EmptyCartPage/messages";
 
 export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
   console.error(error);
@@ -19,13 +24,13 @@ export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
         <img src={getSvgSrc(SaleorLogo)} alt="logo" className="logo" />
       </div>
       <div className="h-full flex flex-col items-center justify-center mb-22">
-        <Title className="text-center">{formatMessage("problemTitle")}</Title>
-        <Text className="mb-6 max-w-85 text-center">{formatMessage("problemDescription")}</Text>
+        <Title className="text-center">{formatMessage(messages.title)}</Title>
+        <Text className="mb-6 max-w-85 text-center">{formatMessage(messages.subtitle)}</Text>
         <Button
-          ariaLabel={formatMessage("goBackToStoreLabel")}
+          ariaLabel={formatMessage(emptyCartLabels.goBackToStore)}
           onClick={goBack}
           variant="secondary"
-          label={formatMessage("goBackToStore")}
+          label={formatMessage(emptyCartMessages.goBackToStore)}
         />
       </div>
     </div>

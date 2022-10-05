@@ -20,6 +20,7 @@ import {
   getAddressInputData,
   getAddressVlidationRulesVariables,
 } from "@/checkout-storefront/lib/utils";
+import { messages } from "@/checkout-storefront/sections/ShippingAddressSection/messages";
 
 export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -66,7 +67,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
         {authUser ? (
           <UserAddressSection
             {...(errorProps as UseErrors<UserAddressFormData>)}
-            title={formatMessage("shippingAddress")}
+            title={formatMessage(messages.shippingAddress)}
             type="SHIPPING"
             onAddressSelect={(formData: AddressFormData) => {
               void updateShippingAddress(formData);
@@ -78,7 +79,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
           <GuestAddressSection
             checkAddressAvailability={true}
             defaultAddress={checkout.shippingAddress}
-            title={formatMessage("shippingAddress")}
+            title={formatMessage(messages.shippingAddress)}
             onSubmit={updateShippingAddress}
             {...errorProps}
           />

@@ -9,6 +9,7 @@ import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
 import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import { labels, messages } from "@/checkout-storefront/sections/Summary/messages";
 import clsx from "clsx";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
@@ -57,13 +58,17 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
 
   return (
     <div className={clsx("relative px-4 pt-4", className)}>
-      <TextInput label={formatMessage("addDiscount")} {...getInputProps("promoCode")} optional />
+      <TextInput
+        label={formatMessage(messages.addDiscount)}
+        {...getInputProps("promoCode")}
+        optional
+      />
       {showApplyButton && (
         <Button
           className="absolute right-7 top-7"
           variant="tertiary"
-          ariaLabel={formatMessage("applyButtonLabel")}
-          label={formatMessage("apply")}
+          ariaLabel={formatMessage(labels.apply)}
+          label={formatMessage(messages.apply)}
           onClick={handleSubmit(onSubmit)}
         />
       )}
