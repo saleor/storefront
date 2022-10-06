@@ -66,7 +66,9 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
   };
 
   const getFieldLabel = (field: AddressField) => {
-    const isLocalizedField = Object.keys(localizedFields).includes(field);
+    const isLocalizedField =
+      Object.keys(localizedFields).includes(field) &&
+      localizedFields[field as keyof typeof localizedFields] !== field;
 
     if (!isLocalizedField) {
       return formatMessage(addressFieldMessages[field as AddressFieldLabel]);

@@ -130,7 +130,7 @@ export const Summary: FC<SummaryProps> = ({
           <SummaryMoneyRow
             label={formatMessage(messages.subtotalPrice)}
             money={subtotalPrice?.gross}
-            ariaLabel={formatMessage(labels.subtotal)}
+            ariaLabel={formatMessage(labels.subtotalPrice)}
           />
           {voucherCode && (
             <SummaryPromoCodeRow
