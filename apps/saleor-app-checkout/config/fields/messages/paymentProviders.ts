@@ -24,6 +24,7 @@ export const paymentProvidersMessages = defineMessages<PaymentProviderID>({
   },
   dummy: {
     defaultMessage: "Dummy Payment",
+    id: "messages/paymentProviders/LtD8zn",
     description: "dummy payment provider",
   },
 });
