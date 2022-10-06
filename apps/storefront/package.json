@@ -68,7 +68,6 @@
     "@types/react-dom": "^18.0.6",
     "@types/url-join": "4.0.1",
     "autoprefixer": "10.4.2",
-    "cypress": "^10.1.0",
     "eslint": "^8.22.0",
     "eslint-config-checkout": "workspace:*",
     "pathpida": "^0.18.1",
