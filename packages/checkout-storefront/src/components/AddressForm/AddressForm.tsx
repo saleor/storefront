@@ -39,7 +39,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     watch,
     setError,
     trigger,
-    formState: { isDirty },
+    formState: { isDirty, touchedFields },
   } = formProps;
   const formData = watch();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
