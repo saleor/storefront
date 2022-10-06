@@ -141,7 +141,7 @@ function useDropinAdyenElement(
       .then((adyenCheckout) => {
         dropinComponentRef.current = adyenCheckout
           .create("dropin")
-          .mount(dropinContainerElRef.current!);
+          .mount(dropinContainerElRef?.current as HTMLDivElement);
       })
       .catch(console.error);
 

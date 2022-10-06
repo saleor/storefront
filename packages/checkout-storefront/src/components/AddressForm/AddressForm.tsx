@@ -83,7 +83,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     if (isDirty) {
       void trigger();
     }
-  }, [allowedFields, requiredFields, setValue]);
+  }, [allowedFields, requiredFields, setValue, trigger, isDirty]);
 
   return (
     <form>

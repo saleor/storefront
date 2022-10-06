@@ -29,7 +29,7 @@ export const useDynamicAppConfig = <T>({ checkoutAppUrl }: { checkoutAppUrl: str
     return () => {
       window.removeEventListener("message", eventListener);
     };
-  }, []);
+  });
 
   return previewSettings;
 };

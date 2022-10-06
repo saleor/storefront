@@ -6,7 +6,7 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
@@ -32,7 +32,11 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     shippingAddress?.country?.code as CountryCode | undefined
   );
 
-  const getAutoSetMethod = () => {
+  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
+
+  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
+
+  const getAutoSetMethod = useCallback(() => {
     if (!shippingMethods.length) {
       return;
     }
@@ -44,7 +48,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     );
 
     return cheapestMethod;
-  };
+  }, [shippingMethods]);
 
   const defaultFormData: FormData = {
     selectedMethodId: deliveryMethod?.id || getAutoSetMethod()?.id,
@@ -55,9 +59,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
   const selectedMethodId = watch("selectedMethodId");
 
-  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
-
   useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
+
+  const hasValidMethodSelected =
+    selectedMethodId && shippingMethods.some(getById(selectedMethodId));
 
   useEffect(() => {
     const hasShippingCountryChanged =
@@ -75,23 +80,36 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     if (hasShippingCountryChanged) {
       previousShippingCountry.current = shippingAddress?.country?.code as CountryCode;
     }
-  }, [shippingAddress, shippingMethods]);
+  }, [
+    shippingAddress,
+    shippingMethods,
+    getAutoSetMethod,
+    selectedMethodId,
+    hasValidMethodSelected,
+    setValue,
+  ]);
 
-  const handleSubmit = async ({ selectedMethodId }: FormData) => {
-    const result = await updateDeliveryMethod({
-      deliveryMethodId: selectedMethodId as string,
-      checkoutId: checkout.id,
-    });
+  const handleSubmit = useCallback(
+    async ({ selectedMethodId }: FormData) => {
+      if (!selectedMethodId) {
+        return;
+      }
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+      const result = await updateDeliveryMethod({
+        deliveryMethodId: selectedMethodId,
+        checkoutId: checkout.id,
+      });
 
-    if (!hasErrors) {
-      return;
-    }
+      const [hasErrors, errors] = extractMutationErrors(result);
 
-    setValue("selectedMethodId", selectedMethodId);
-    showErrors(errors);
-  };
+      if (!hasErrors) {
+        return;
+      }
+      setValue("selectedMethodId", selectedMethodId);
+      showErrors(errors);
+    },
+    [checkout.id, showErrors, updateDeliveryMethod, setValue]
+  );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
     onSubmit: handleSubmit,
@@ -112,7 +130,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
   useEffect(() => {
     void debouncedSubmit();
-  }, [selectedMethodId]);
+  }, [selectedMethodId, debouncedSubmit]);
 
   if (!checkout?.isShippingRequired || collapsed) {
     return null;

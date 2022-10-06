@@ -1,7 +1,7 @@
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { getAppConfig } from "@/checkout-storefront/fetch";
-import { PropsWithChildren, useEffect, useRef } from "react";
+import { PropsWithChildren, useCallback, useEffect, useRef } from "react";
 import type { AppConfig, AppEnv, BrandingColors, BrandingColorsData } from "./types";
 import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
@@ -48,13 +48,13 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
     return styleEl;
   };
 
-  const appendStylingToBody = (brandingColors: BrandingColorsData) => {
+  const appendStylingToBody = useCallback((brandingColors: BrandingColorsData) => {
     const css = getParsedCssBody(fulfillStyling(brandingColors));
 
     const styleEl = getOrCreateStyleEl();
     styleEl.appendChild(document.createTextNode(css));
     document.head.appendChild(styleEl);
-  };
+  }, []);
 
   const handleAppStylingUpdate = () => {
     const hasStylingConfigChanged = !isEqual(appConfig?.branding, stylingRef.current);
@@ -68,9 +68,9 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
 
   const handleAppDefaultStylingSetup = () => appendStylingToBody(defaultAppColors);
 
-  useEffect(handleAppDefaultStylingSetup, []);
+  useEffect(handleAppDefaultStylingSetup);
 
-  useEffect(handleAppStylingUpdate, [appConfig]);
+  useEffect(handleAppStylingUpdate, [appConfig, appendStylingToBody]);
 
   return <Provider value={{ config: appConfig, env, loading }}>{children}</Provider>;
 };

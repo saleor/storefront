@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FetchFn, GetArgsType, GetDataType, UseFetchOptionalProps, UseFetchResult } from "./types";
 
 export const useFetch = <
@@ -18,21 +18,25 @@ export const useFetch = <
 
   const useFetchArgsDeps = args ? Object.values(args) : [];
 
-  const fetchData = async (immediateArgs?: TArgs): Promise<TData | null> => {
-    setLoading(true);
+  const fetchData = useCallback(
+    async (immediateArgs?: TArgs): Promise<TData | null> => {
+      setLoading(true);
 
-    try {
-      const response = await fetchFn((immediateArgs || args) as TArgs);
-      const result = await response.json();
-      setResult(result);
-      return result;
-    } catch (e) {
-      setError(e as TError);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const response = await fetchFn((immediateArgs || args) as TArgs);
+        const result = (await response.json()) as TData;
+        setResult(result);
+        return result;
+      } catch (e) {
+        setError(e as TError);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [fetchFn, ...useFetchArgsDeps]
+  );
 
   useEffect(() => {
     if (skip) {
@@ -40,7 +44,7 @@ export const useFetch = <
     }
 
     void fetchData();
-  }, [skip, ...useFetchArgsDeps]);
+  }, [skip, fetchData]);
 
   return [{ data: result, loading, error }, fetchData];
 };

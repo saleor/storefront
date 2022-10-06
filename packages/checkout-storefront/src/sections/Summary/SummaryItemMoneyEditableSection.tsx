@@ -8,7 +8,7 @@ import {
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
@@ -52,8 +52,8 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
 
   const { watch, setValue } = methods;
 
-  const getQuantityValue = () => watch("quantity");
-  const getQuantity = () => Number(getQuantityValue());
+  const getQuantityValue = useCallback(() => watch("quantity"), [watch]);
+  const getQuantity = useCallback(() => Number(getQuantityValue()), [getQuantityValue]);
 
   const onLineQuantityUpdate = async ({ quantity }: FormData) => {
     const result = await updateLines(getUpdateLineVars({ quantity }));
@@ -119,7 +119,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     if (line.quantity !== getQuantity()) {
       setValue("quantity", line.quantity.toString());
     }
-  }, [updating]);
+  }, [updating, getQuantity, line.quantity, hasErrors, setValue]);
 
   return (
     <div className="flex flex-col items-end h-20 relative -top-2">
