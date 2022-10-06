@@ -17,7 +17,7 @@ export const Checkbox = forwardRef(
     const id = rest?.id || generaredId;
 
     return (
-      <Label className={clsx(classNames?.label)} htmlFor={id}>
+      <Label className={clsx(styles.label, classNames?.label)} htmlFor={id}>
         <>
           <div className={clsx(styles.checkbox, classNames?.container)}>
             <div className={clsx(styles["box"], "select-none")}>
@@ -34,7 +34,7 @@ export const Checkbox = forwardRef(
                 <CheckIcon />
               </div>
             </div>
-            {label && label}
+            <span className="pointer-events-none">{label && label}</span>
           </div>
         </>
       </Label>

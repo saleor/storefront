@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit",
     "check-types:dev": "tsc --noEmit --watch",
     "lint": "eslint",
-    "lint:staged": "eslint --fix && prettier --write .",
+    "lint:staged": "eslint --fix --quiet && prettier --write .",
     "test": "jest",
     "test:dev": "jest --watch",
     "clean": "rm -rf .turbo .next .rollup.cache dist",
@@ -31,8 +31,8 @@
     "@types/react": "^18.0.15"
   },
   "dependencies": {
-    "@adyen/adyen-web": "5.23.1",
-    "@adyen/api-library": "^11.0.0",
+    "@adyen/adyen-web": "5.26.0",
+    "@adyen/api-library": "12.0.0",
     "@apollo/client": "^3.5.10",
     "@headlessui/react": "^1.6.0",
     "@hookform/error-message": "^2.0.0",
@@ -56,7 +56,7 @@
     "tailwindcss": "^3.0.18",
     "ts-invariant": "0.10.3",
     "url-join": "4.0.1",
-    "urql": "^2.1.3",
+    "urql": "^2.2.3",
     "yup": "1.0.0-beta.7"
   },
   "devDependencies": {
@@ -91,7 +91,7 @@
     "eslint-plugin-formatjs": "^4.2.2",
     "graphql-tag": "^2.12.6",
     "jest": "^27.5.1",
-    "next": "12.2.2",
+    "next": "12.3.1",
     "postcss": "^8.4.6",
     "postcss-import": "14.1.0",
     "prettier": "^2.5.1",

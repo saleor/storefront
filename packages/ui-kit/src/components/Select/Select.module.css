@@ -3,7 +3,7 @@
 }
 
 .select {
-  @apply h-10 border rounded border-border-secondary py-2 px-3 pr-10 w-full text-base appearance-none;
+  @apply h-10 border rounded border-border-primary py-2 px-3 pr-10 w-full text-base appearance-none cursor-pointer;
 }
 
 .select:disabled {
@@ -12,7 +12,7 @@
 
 .select:focus,
 .select:active {
-  @apply border-border-primary outline-none;
+  @apply border-border-active outline-none;
 }
 
 .container .icon {

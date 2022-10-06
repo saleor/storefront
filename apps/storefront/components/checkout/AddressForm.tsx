@@ -73,6 +73,7 @@ export function AddressForm({
               type="text"
               id="phone"
               className="w-full border-gray-300 rounded-md shadow-sm text-base"
+              spellCheck={false}
               {...registerAddress("phone", {
                 required: true,
                 pattern: /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i,
@@ -91,6 +92,7 @@ export function AddressForm({
               type="text"
               id="province"
               className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base"
+              spellCheck={false}
               {...registerAddress("firstName", {
                 required: true,
               })}
@@ -108,6 +110,7 @@ export function AddressForm({
               type="text"
               id="lastName"
               className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base"
+              spellCheck={false}
               {...registerAddress("lastName", {
                 required: true,
               })}
@@ -125,6 +128,7 @@ export function AddressForm({
               type="text"
               id="streetAddress1"
               className="w-full border-gray-300 rounded-md shadow-sm text-base"
+              spellCheck={false}
               {...registerAddress("streetAddress1", {
                 required: true,
               })}
@@ -142,6 +146,7 @@ export function AddressForm({
               type="text"
               id="city"
               className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base"
+              spellCheck={false}
               {...registerAddress("city", { required: true })}
             />
             {!!errorsAddress.city && <p>{errorsAddress.city.message}</p>}
@@ -160,6 +165,7 @@ export function AddressForm({
             type="text"
             id="province"
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            spellCheck={false}
           />
         </div>
       </div> */}
@@ -174,6 +180,7 @@ export function AddressForm({
               id="postal-code"
               autoComplete="postal-code"
               className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base"
+              spellCheck={false}
               {...registerAddress("postalCode", {
                 required: true,
               })}

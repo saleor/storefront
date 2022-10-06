@@ -76,6 +76,27 @@ pnpm run build --filter=saleor-app-checkout
 
 In this example, we'll only build `apps/saleor-app-checkout`
 
+## Starting production server
+
+After completing the development, these commands are suitable to start the `storefront` and `saleor-app-checkout` applications in a production-like environment:
+
+```bash
+pnpm build
+pnpm start
+```
+
+Alternatively, you can start a specific application by running either of these commands:
+
+```bash
+pnpm start:saleor-app-checkout
+```
+
+```bash
+pnpm start:storefront
+```
+
+Either way, [the applications will start on different ports](#ports).
+
 ### Ports
 
 - apps/react-storefront: **http://localhost:3000**
@@ -94,7 +115,7 @@ pnpm run generate
 ```
 
 You need to run this command after each change in the `*.graphql` files or when you update your Saleor instance.
-  
+
 ### Code formatting
 
 Before committing the code, git pre-hooks will check staged changes for following the code styles. If you would like to format the code by yourself, run the command:
@@ -102,7 +123,7 @@ Before committing the code, git pre-hooks will check staged changes for followin
 ```bash
 pnpm lint
 ```
-  
+
 ### Configuration
 
 Instructions how to configure the application (e.g. change the GraphQL API URL) can be found [here](apps/storefront/docs/configuration.md).
@@ -140,4 +161,3 @@ Add [breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoin
 GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information, and autocompletion for GraphQL projects. This extension also works with queries annotated with `gql` tag.
 
 VS Marketplace [link](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql)
-

@@ -79,12 +79,12 @@ Then set the `SALEOR_APP_TOKEN` environment variable value to the token you've r
 ### Other
 
 #### Alternatives to `saleor app tunnel`
+
 You can also use [`ngrok`](https://ngrok.com/), but you would need to update env variables each time you open tunnel (on free plan) with new domain `ngrok` assigned you.
 
 After you do that use `saleor app install` to install the app in your Saleor instance.
 
 The tunnel needs to use `https` protocol with valid SSL certificate, otherwise you won't receive webhook calls.
-
 
 ## Env Variables
 

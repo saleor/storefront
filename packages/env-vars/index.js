@@ -16,7 +16,7 @@ if (fs.existsSync(".env.local")) {
 // Load env variables from apps/**/.env.developmen
 let developmentEnv = {};
 if (fs.existsSync(".env.development") && process.env.NODE_ENV === "development") {
-  developmentEnv = dotenv.config({path: ".env.development"})
+  developmentEnv = dotenv.config({ path: ".env.development" });
 }
 
 // Load env variables from apps/**/.env
@@ -40,7 +40,7 @@ const envs = {
   // monorepo envs
   ...rootEnvLocal?.parsed,
   ...rootEnv?.parsed,
-}
+};
 
 // Replace $ in variable values with other loaded env variables
 // For example:
@@ -50,7 +50,7 @@ const envs = {
 //   OTHER_ENV=$MY_ENV
 // means that OTHER_ENV=123
 const expandedEnvs = dotenvExpand.expand({
-  parsed: envs
-})
+  parsed: envs,
+});
 
-module.exports = expandedEnvs
+module.exports = expandedEnvs;

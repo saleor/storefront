@@ -15,7 +15,16 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
 
 export const TextInput = forwardRef(
   (
-    { label, error, required, placeholder, value, classNames = {}, ...rest }: TextInputProps,
+    {
+      label,
+      error,
+      required,
+      placeholder,
+      value,
+      classNames = {},
+      type = "text",
+      ...rest
+    }: TextInputProps,
     ref: Ref<HTMLInputElement>
   ) => (
     <div className={clsx(styles["text-input-container"], classNames.container)}>
@@ -32,7 +41,9 @@ export const TextInput = forwardRef(
         placeholder={placeholder}
         value={value}
         required={required}
+        spellCheck={false}
         {...rest}
+        type={type}
       />
       {label && (
         <Label

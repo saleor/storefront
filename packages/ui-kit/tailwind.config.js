@@ -45,7 +45,7 @@ const theme = {
     border: {
       primary: "#B9C1CF",
       secondary: "#DEE4EF",
-      active: "#394052",
+      active: "#89c4eb",
       error: "#B65757",
     },
     tooltip: {

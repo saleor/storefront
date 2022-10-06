@@ -10,6 +10,7 @@ const isSentryEnabled =
 
 /** @type {import('next').NextConfig} */
 const config = withTM({
+  trailingSlash: true,
   i18n: {
     locales: ["en-US", "pl-PL", "fr-FR", "vi-VN"],
     defaultLocale: "en-US",
@@ -22,6 +23,14 @@ const config = withTM({
         source: "/",
         destination: "/channels",
         permanent: true,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: "/_next/:path*",
+        headers: [{ key: "Access-Control-Allow-Origin", value: "*" }],
       },
     ];
   },

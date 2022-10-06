@@ -32,7 +32,7 @@ export const BillingAddressSection = () => {
   const hasBillingSameAsShipping = isMatchingAddress(shippingAddress, billingAddress);
 
   const [isBillingSameAsShipping, setIsBillingSameAsShipping] = useState<boolean>(
-    !billingAddress || hasBillingSameAsShipping
+    checkout?.isShippingRequired ? !billingAddress || hasBillingSameAsShipping : false
   );
 
   const [{ data }] = useUserQuery({
@@ -109,13 +109,15 @@ export const BillingAddressSection = () => {
 
   return (
     <div className="mt-2">
-      <Checkbox
-        classNames={{ container: "!mb-0" }}
-        value="useShippingAsBilling"
-        checked={isBillingSameAsShipping}
-        onChange={setIsBillingSameAsShipping}
-        label={formatMessage(messages.useShippingAsBilling)}
-      />
+      {checkout.isShippingRequired && (
+        <Checkbox
+          classNames={{ container: "!mb-0" }}
+          value="useShippingAsBilling"
+          checked={isBillingSameAsShipping}
+          onChange={setIsBillingSameAsShipping}
+          label={formatMessage(messages.useShippingAsBilling)}
+        />
+      )}
       {!isBillingSameAsShipping && (
         <div className="mt-4">
           {authUser ? (

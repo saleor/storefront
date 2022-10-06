@@ -59,6 +59,7 @@ export function EmailPreferences() {
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="email"
               id="newEmail"
+              spellCheck={false}
               {...register("newEmail", {
                 required: true,
                 pattern: /^\S+@\S+$/i,
@@ -78,6 +79,7 @@ export function EmailPreferences() {
               className="px-4 py-2 rounded-md text-sm outline-none w-full"
               type="password"
               id="password"
+              spellCheck={false}
               {...register("password", {
                 required: true,
               })}

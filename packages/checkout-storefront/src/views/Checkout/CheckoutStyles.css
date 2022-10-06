@@ -2,7 +2,7 @@
 
 @layer components {
   .app {
-    @apply bg-background-primary px-4 lg:px-0;
+    @apply min-h-screen bg-background-primary px-4 lg:px-0;
   }
 
   .page-horizontal-spacing {
