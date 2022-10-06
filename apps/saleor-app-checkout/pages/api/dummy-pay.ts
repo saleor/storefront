@@ -1,17 +1,26 @@
 import { withSentry } from "@sentry/nextjs";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 
 import { DummyPayRequestBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphql";
-import { safeJsonParse } from "@/saleor-app-checkout/utils";
+import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
+import * as yup from "yup";
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const [error, body] =
-    typeof req.body === "string"
-      ? safeJsonParse<DummyPayRequestBody>(req.body)
-      : [null, req.body as DummyPayRequestBody];
+const dummyPayBodySchema: yup.ObjectSchema<DummyPayRequestBody> = yup.object({
+  checkoutApiUrl: yup.string().required(),
+  orderId: yup.string().required(),
+  amountCharged: yup.object({
+    amount: yup.number().required(),
+    currency: yup.string().required(),
+  }),
+});
+
+const parseAndValidateBody = createParseAndValidateBody(dummyPayBodySchema);
+
+const handler: NextApiHandler = async (req, res) => {
+  const [error, body] = parseAndValidateBody(req.body);
 
   if (error) {
     console.error(error, req.body);
@@ -33,6 +42,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   await updateOrCreateTransaction(transactionData.id, transactionData);
 
   res.status(200).send({ ok: true });
-}
+};
 
 export default withSentry(allowCors(handler));
