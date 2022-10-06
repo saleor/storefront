@@ -14,7 +14,6 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors, getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { labels, messages } from "@/checkout-storefront/sections/DeliveryMethods/messages";
 import { useCheckoutUpdateStateTrigger, useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
@@ -80,7 +79,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
   const handleSubmit = async ({ selectedMethodId }: FormData) => {
     const result = await updateDeliveryMethod({
-      deliveryMethodId: selectedMethodId,
+      deliveryMethodId: selectedMethodId as string,
       checkoutId: checkout.id,
     });
 
@@ -131,7 +130,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
           control={control}
           name="selectedMethodId"
           render={({ field: { onChange } }) => (
-            <SelectBoxGroup label={formatMessage("deliveryMethodsLabel")}>
+            <SelectBoxGroup label={formatMessage(labels.deliveryMethods)}>
               {shippingMethods?.map(
                 ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
                   <SelectBox value={id} selectedValue={selectedMethodId} onChange={onChange}>

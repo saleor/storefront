@@ -105,6 +105,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
             return (
               <Select
                 {...getInputProps("countryArea")}
+                key={field}
                 classNames={{ container: "mb-4" }}
                 placeholder={getFieldLabel("countryArea")}
                 autoComplete={autocompleteTags.countryArea}

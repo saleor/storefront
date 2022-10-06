@@ -1,6 +1,6 @@
-import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React, { SyntheticEvent, useEffect, useMemo } from "react";
-import { camelCase, compact } from "lodash-es";
+import { compact } from "lodash-es";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { Text } from "@saleor/ui-kit";
@@ -14,6 +14,10 @@ import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { AvailablePaymentMethods } from "@/checkout-storefront/sections/PaymentSection/types";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
+import {
+  labels,
+  paymentMethodsMessages,
+} from "@/checkout-storefront/sections/PaymentSection/messages";
 
 export interface PaymentMethodsProps {
   selectedPaymentMethod: PaymentMethodID;
@@ -55,6 +59,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   const availablePaymentMethods = getParsedPaymentMethods(allPaymentOptions);
 
   useEffect(() => {
+    console.log("LOOOL");
     if (loading) {
       return;
     }
@@ -64,14 +69,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
     } else if (!selectedPaymentMethod) {
       setValue("paymentMethodId", availablePaymentMethods[0] as PaymentMethodID);
     }
-  }, [
-    loading,
-    allPaymentOptions,
-    availablePaymentMethods,
-    selectedPaymentMethod,
-    setValue,
-    channelId,
-  ]);
+  }, [loading, allPaymentOptions, availablePaymentMethods.length, selectedPaymentMethod, setValue]);
 
   const paymentProviderID = useMemo(
     () => allPaymentOptions?.[selectedPaymentMethod],

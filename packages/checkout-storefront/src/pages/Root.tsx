@@ -4,7 +4,7 @@ import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
 import { IntlProvider } from "react-intl";
 
 import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/views/Checkout";
-import { DEFAULT_LOCALE, getCurrentRegion } from "@/checkout-storefront/lib/regions";
+import { DEFAULT_REGION, getCurrentRegion } from "@/checkout-storefront/lib/regions";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
 import {
@@ -51,7 +51,7 @@ export const Root = ({ env }: RootProps) => {
   return (
     // @ts-ignore React 17 <-> 18 type mismatch
     <SaleorProvider client={saleorClient}>
-      <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={getCurrentRegion()}>
+      <IntlProvider defaultLocale={DEFAULT_REGION} locale={getCurrentRegion()}>
         <UrqlProvider value={client}>
           <AppConfigProvider env={env}>
             <div className="app">
