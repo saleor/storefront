@@ -10,7 +10,7 @@ import { Section } from "./Section";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 import { CheckIcon } from "@/checkout-storefront/icons";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import { labels, messages } from "@/checkout-storefront/sections/OrderInfo/messages";
+import { orderInfoLabels, orderInfoMessages } from "./messages";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
@@ -39,7 +39,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
       return (
         <div className="flex flex-row items-center">
           <Text color="success" className="mr-1">
-            {formatMessage(messages.orderPaid)}
+            {formatMessage(orderInfoMessages.orderPaid)}
           </Text>
           <img src={getSvgSrc(CheckIcon)} />
         </div>
@@ -47,17 +47,17 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
     }
 
     if (paymentData?.status === "PENDING") {
-      return <Text color="success">{formatMessage(messages.paymentPending)}</Text>;
+      return <Text color="success">{formatMessage(orderInfoMessages.paymentPending)}</Text>;
     }
 
     if (paymentData?.status === "UNPAID") {
       return (
         <div>
-          <Text color="error">{formatMessage(messages.orderUnpaid)}</Text>
+          <Text color="error">{formatMessage(orderInfoMessages.orderUnpaid)}</Text>
           <Button
             className="mt-2"
-            aria-label={formatMessage(labels.orderPay)}
-            label={formatMessage(messages.orderPay)}
+            aria-label={formatMessage(orderInfoLabels.orderPay)}
+            label={formatMessage(orderInfoMessages.orderPay)}
             onClick={() => {
               void handlePay();
             }}
@@ -67,11 +67,11 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
       );
     }
 
-    return <Text color="error">{formatMessage(messages.orderPaymentStatusMissing)}</Text>;
+    return <Text color="error">{formatMessage(orderInfoMessages.orderPaymentStatusMissing)}</Text>;
   };
 
   return (
-    <Section title={formatMessage(messages.paymentSection)}>
+    <Section title={formatMessage(orderInfoMessages.paymentSection)}>
       <div>{renderPaymentDetails()}</div>
     </Section>
   );

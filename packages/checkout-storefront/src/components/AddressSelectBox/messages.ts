@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const addressSelectBoxMessages = defineMessages({
   cantShipToAddress: {
     defaultMessage: "Can't ship to this address",
     id: "AddressSelectBox/messages/X3KwgL",
@@ -13,7 +13,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const addressSelectBoxLabels = defineMessages({
   editAddress: {
     defaultMessage: "edit address",
     id: "AddressSelectBox/messages//II2Kl",

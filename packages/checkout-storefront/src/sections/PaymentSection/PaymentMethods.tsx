@@ -14,10 +14,7 @@ import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { AvailablePaymentMethods } from "@/checkout-storefront/sections/PaymentSection/types";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
-import {
-  labels,
-  paymentMethodsMessages,
-} from "@/checkout-storefront/sections/PaymentSection/messages";
+import { paymentSectionLabels, paymentMethodsMessages } from "./messages";
 
 export interface PaymentMethodsProps {
   selectedPaymentMethod: PaymentMethodID;
@@ -83,7 +80,10 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   }, [setValue, paymentProviderID]);
 
   return (
-    <SelectBoxGroup label={formatMessage(labels.paymentProviders)} className="flex flex-row gap-2">
+    <SelectBoxGroup
+      label={formatMessage(paymentSectionLabels.paymentProviders)}
+      className="flex flex-row gap-2"
+    >
       {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => (
         <SelectBox
           className="shrink"

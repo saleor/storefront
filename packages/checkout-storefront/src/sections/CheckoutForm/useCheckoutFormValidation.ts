@@ -13,7 +13,7 @@ import { UseFormReturn } from "react-hook-form";
 import { ValidationError } from "yup";
 import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
 import { MessageDescriptor } from "react-intl";
-import { messages } from "@/checkout-storefront/sections/CheckoutForm/messages";
+import { checkoutFormMessages } from "./messages";
 
 interface UseCheckoutFormValidation extends UseFormReturn<CheckoutFormData> {
   schema: { validateSyncAt: (key: keyof CheckoutFormData, data: CheckoutFormData) => void };
@@ -44,14 +44,14 @@ export const useCheckoutFormValidation = ({
 
   const getShippingMissingFieldsErrorMessage = () =>
     getAddressMissingFieldsErrorMessage(
-      messages.missingFieldsInShippingAddress,
+      checkoutFormMessages.missingFieldsInShippingAddress,
       getShippingFieldLabel,
       getMissingFieldsFromShipping(shippingAddress)
     );
 
   const getBillingMissingFieldsErrorMessage = () =>
     getAddressMissingFieldsErrorMessage(
-      messages.missingFieldsInBillingAddress,
+      checkoutFormMessages.missingFieldsInBillingAddress,
       getBillingFieldLabel,
       getMissingFieldsFromBilling(billingAddress)
     );

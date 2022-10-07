@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const orderInfoMessages = defineMessages({
   paymentSection: {
     defaultMessage: "Payment",
     id: "OrderInfo/messages/9VWqRC",
@@ -46,7 +46,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const orderInfoLabels = defineMessages({
   orderPay: {
     defaultMessage: "order pay",
     id: "OrderInfo/messages/fdFTXC",

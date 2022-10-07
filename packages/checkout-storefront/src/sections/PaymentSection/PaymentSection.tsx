@@ -5,7 +5,7 @@ import { PaymentMethods, PaymentMethodsProps } from "./PaymentMethods";
 import React from "react";
 import { BillingAddressSection } from "../BillingAddressSection/BillingAddressSection";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { messages } from "@/checkout-storefront/sections/PaymentSection/messages";
+import { paymentSectionMessages } from "./messages";
 
 type PaymentSectionProps = PaymentMethodsProps & CommonSectionProps;
 
@@ -20,7 +20,7 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({ collapsed, ...re
     <>
       <Divider />
       <div className="section">
-        <Title>{formatMessage(messages.paymentProviders)}</Title>
+        <Title>{formatMessage(paymentSectionMessages.paymentProviders)}</Title>
         <PaymentMethods {...rest} />
         <BillingAddressSection />
       </div>

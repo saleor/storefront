@@ -2,7 +2,7 @@ import { ErrorCode, GenericErrorCode } from "@/checkout-storefront/lib/globalTyp
 import { useCallback, useMemo } from "react";
 import { useFormattedMessages } from "../useFormattedMessages";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
-import { messages } from "./messages";
+import { errorMessages } from "./messages";
 
 export type ErrorMessages = Record<GenericErrorCode, string>;
 
@@ -19,7 +19,7 @@ export const useErrorMessages = (): UseErrorMessages => {
   const getMessageByErrorCode = useCallback(
     (errorCode: ErrorCode) => {
       try {
-        const formattedMessage = formatMessage(messages[errorCode]);
+        const formattedMessage = formatMessage(errorMessages[errorCode]);
         return formattedMessage;
       } catch (e) {
         warnAboutMissingTranslation(errorCode);
@@ -29,7 +29,7 @@ export const useErrorMessages = (): UseErrorMessages => {
     [formatMessage]
   );
 
-  const errorMessages: ErrorMessages = useMemo(
+  const translatedErrorMessages: ErrorMessages = useMemo(
     () =>
       errorMessageKeys.reduce(
         (result, key) => ({
@@ -42,7 +42,7 @@ export const useErrorMessages = (): UseErrorMessages => {
   );
 
   return {
-    errorMessages,
+    errorMessages: translatedErrorMessages,
     getMessageByErrorCode,
   };
 };

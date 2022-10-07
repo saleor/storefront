@@ -3,7 +3,7 @@ import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 import { Section } from "./Section";
-import { messages } from "@/checkout-storefront/sections/DeliveryMethods/messages";
+import { deliveryMethodsMessages } from "@/checkout-storefront/sections/DeliveryMethods/messages";
 
 const isShipping = (
   deliveryMethod: OrderFragment["deliveryMethod"]
@@ -24,16 +24,18 @@ export const DeliverySection = ({
       return undefined;
     }
 
-    return formatMessage(messages.businessDays, {
+    return formatMessage(deliveryMethodsMessages.businessDays, {
       min: min.toString(),
       max: max.toString(),
     });
   };
 
   return (
-    <Section title={formatMessage(messages.deliveryMethod)}>
+    <Section title={formatMessage(deliveryMethodsMessages.deliveryMethod)}>
       {!isShipping(deliveryMethod) ? (
-        <Text color="secondary">{formatMessage(messages.shippingMethodNotApplicable)}</Text>
+        <Text color="secondary">
+          {formatMessage(deliveryMethodsMessages.shippingMethodNotApplicable)}
+        </Text>
       ) : (
         <>
           <Text>{deliveryMethod.name}</Text>

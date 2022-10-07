@@ -21,7 +21,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
 import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";
-import { messages, labels } from "@/checkout-storefront/sections/Summary/messages";
+import { summaryLabels, summaryMessages } from "./messages";
 
 /* temporary solution */
 const PAGE_MARGINS_HEIGHT = 320;
@@ -86,12 +86,12 @@ export const Summary: FC<SummaryProps> = ({
     <div className="summary">
       <div className={clsx("summary-title", isOpen && "open")}>
         <div className="flex flex-row items-center w-full" onClick={() => setOpen(!isOpen)}>
-          <Title className="mb-0">{formatMessage(messages.title)}</Title>
+          <Title className="mb-0">{formatMessage(summaryMessages.title)}</Title>
           <img src={getSvgSrc(ChevronDownIcon)} alt="chevron-down" />
         </div>
         {!isOpen && (
           <Money
-            ariaLabel={formatMessage(labels.totalPrice)}
+            ariaLabel={formatMessage(summaryLabels.totalPrice)}
             weight="bold"
             money={totalPrice?.gross}
           />
@@ -128,16 +128,16 @@ export const Summary: FC<SummaryProps> = ({
         <div className="summary-recap" ref={recapRef}>
           <Divider className="mt-1 mb-4" />
           <SummaryMoneyRow
-            label={formatMessage(messages.subtotalPrice)}
+            label={formatMessage(summaryMessages.subtotalPrice)}
             money={subtotalPrice?.gross}
-            ariaLabel={formatMessage(labels.subtotalPrice)}
+            ariaLabel={formatMessage(summaryLabels.subtotalPrice)}
           />
           {voucherCode && (
             <SummaryPromoCodeRow
               editable={editable}
               promoCode={voucherCode}
-              ariaLabel={formatMessage(labels.voucher)}
-              label={formatMessage(messages.voucher, { voucherCode })}
+              ariaLabel={formatMessage(summaryLabels.voucher)}
+              label={formatMessage(summaryMessages.voucher, { voucherCode })}
               money={discount}
               negative
             />
@@ -146,29 +146,31 @@ export const Summary: FC<SummaryProps> = ({
             <SummaryPromoCodeRow
               editable={editable}
               promoCodeId={id}
-              ariaLabel={formatMessage(labels.giftCard)}
-              label={formatMessage(messages.giftCard, { giftCardCode: `•••• •••• ${displayCode}` })}
+              ariaLabel={formatMessage(summaryLabels.giftCard)}
+              label={formatMessage(summaryMessages.giftCard, {
+                giftCardCode: `•••• •••• ${displayCode}`,
+              })}
               money={currentBalance}
               negative
             />
           ))}
           <SummaryMoneyRow
-            label={formatMessage(messages.shippingCost)}
-            ariaLabel={formatMessage(labels.shippingCost)}
+            label={formatMessage(summaryMessages.shippingCost)}
+            ariaLabel={formatMessage(summaryLabels.shippingCost)}
             money={shippingPrice?.gross}
           />
           <Divider className="my-4" />
           <div className="summary-row pb-4 items-baseline">
             <div className="flex flex-row items-baseline">
-              <Text weight="bold">{formatMessage(messages.totalPrice)}</Text>
+              <Text weight="bold">{formatMessage(summaryMessages.totalPrice)}</Text>
               <Text color="secondary" className="ml-2">
-                {formatMessage(messages.taxCost, {
+                {formatMessage(summaryMessages.taxCost, {
                   taxCost: getFormattedMoney(totalPrice?.tax),
                 })}
               </Text>
             </div>
             <Money
-              ariaLabel={formatMessage(labels.totalPrice)}
+              ariaLabel={formatMessage(summaryLabels.totalPrice)}
               weight="bold"
               money={totalPrice?.gross}
             />

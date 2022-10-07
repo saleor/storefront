@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const shippingMessages = defineMessages({
   shippingAddress: {
     defaultMessage: "Shipping address",
     id: "ShippingAddressSection/messages/BUg4yp",

@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const emptyCartMessages = defineMessages({
   emptyCart: {
     defaultMessage: "Your cart is empty",
     id: "EmptyCartPage/messages/qfic6J",
@@ -18,7 +18,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const emptyCartLabels = defineMessages({
   goBackToStore: {
     defaultMessage: "Go back to store",
     id: "EmptyCartPage/messages/CLKTRp",

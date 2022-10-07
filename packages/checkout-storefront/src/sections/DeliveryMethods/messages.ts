@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const deliveryMethodsMessages = defineMessages({
   businessDays: {
     defaultMessage: "{min}-{max} business days",
     id: "DeliveryMethods/messages/DGFTo/",
@@ -23,7 +23,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const deliveryMethodsLabels = defineMessages({
   deliveryMethods: {
     defaultMessage: "delivery methods",
     id: "DeliveryMethods/messages/IPzOnb",

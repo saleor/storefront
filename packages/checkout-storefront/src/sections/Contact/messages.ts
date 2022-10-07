@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const contactMessages = defineMessages({
   contact: {
     defaultMessage: "Contact details",
     id: "Contact/messages/vPJeeQ",
@@ -88,7 +88,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const contactLabels = defineMessages({
   resetPassword: {
     defaultMessage: "Reset password",
     id: "Contact/messages/Cu74z+",

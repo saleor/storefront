@@ -6,7 +6,7 @@ import { useAuth, useAuthState } from "@saleor/sdk";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { labels, messages } from "@/checkout-storefront/sections/Contact/messages";
+import { contactLabels, contactMessages } from "./messages";
 
 type SignedInUserProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -25,16 +25,19 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({ onSectionChange }) =
   };
 
   return (
-    <SignInFormContainer title={formatMessage(messages.account)} onSectionChange={onSectionChange}>
+    <SignInFormContainer
+      title={formatMessage(contactMessages.account)}
+      onSectionChange={onSectionChange}
+    >
       <div className="flex flex-row justify-between">
         <Text weight="bold" size="md">
           {user?.email}
         </Text>
         <Button
-          ariaLabel={formatMessage(labels.signOut)}
+          ariaLabel={formatMessage(contactLabels.signOut)}
           variant="tertiary"
           onClick={handleLogout}
-          label={formatMessage(messages.signOut)}
+          label={formatMessage(contactMessages.signOut)}
         />
       </div>
     </SignInFormContainer>

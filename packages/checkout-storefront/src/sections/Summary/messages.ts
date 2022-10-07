@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const summaryMessages = defineMessages({
   title: { defaultMessage: "Summary", id: "Summary/messages/62kM+I", description: "summary title" },
   subtotalPrice: {
     defaultMessage: "Subtotal",
@@ -55,7 +55,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const summaryLabels = defineMessages({
   totalPrice: {
     defaultMessage: "total price",
     id: "Summary/messages/DrvEK3",

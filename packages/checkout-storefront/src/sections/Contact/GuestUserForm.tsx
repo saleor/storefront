@@ -16,7 +16,7 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
-import { labels, messages } from "@/checkout-storefront/sections/Contact/messages";
+import { contactMessages } from "./messages";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -107,14 +107,14 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
 
   return (
     <SignInFormContainer
-      title={formatMessage(messages.contact)}
-      redirectSubtitle={formatMessage(messages.haveAccount)}
-      redirectButtonLabel={formatMessage(messages.signIn)}
+      title={formatMessage(contactMessages.contact)}
+      redirectSubtitle={formatMessage(contactMessages.haveAccount)}
+      redirectButtonLabel={formatMessage(contactMessages.signIn)}
       onSectionChange={onSectionChange}
     >
       <form onSubmit={(e) => e.preventDefault()}>
         <TextInput
-          label={formatMessage(messages.email)}
+          label={formatMessage(contactMessages.email)}
           {...getInputProps("email", {
             onChange: debouncedSubmit,
           })}
@@ -122,14 +122,14 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         <Checkbox
           classNames={{ container: "!mb-0" }}
           value="createAccount"
-          label={formatMessage(messages.wantToCreateAccount)}
+          label={formatMessage(contactMessages.wantToCreateAccount)}
           checked={createAccountSelected}
           onChange={setCreateAccountSelected}
         />
         {createAccountSelected && (
           <div className="mt-2">
             <PasswordInput
-              label={formatMessage(messages.password)}
+              label={formatMessage(contactMessages.password)}
               {...getContextInputProps("password")}
             />
           </div>

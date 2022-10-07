@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const userAddressMessages = defineMessages({
   addAddress: {
     defaultMessage: "Add address",
     id: "UserAddressSection/messages/xPCC/5",
@@ -8,7 +8,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const userAddressLabels = defineMessages({
   addAddress: {
     defaultMessage: "add address",
     id: "UserAddressSection/messages/E6w89b",

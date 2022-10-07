@@ -19,7 +19,7 @@ import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { Skeleton } from "@/checkout-storefront/components";
 import { useErrorMessages } from "@/checkout-storefront/hooks";
 import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
-import { messages } from "@/checkout-storefront/sections/Summary/messages";
+import { summaryMessages } from "./messages";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -125,7 +125,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     <div className="flex flex-col items-end h-20 relative -top-2">
       <div className="flex flex-row items-baseline">
         <Text size="xs" className="mr-2">
-          {formatMessage(messages.quantity)}:
+          {formatMessage(summaryMessages.quantity)}:
         </Text>
         <TextInput
           classNames={{ container: "!w-12 !mb-0", input: "text-center !h-8" }}

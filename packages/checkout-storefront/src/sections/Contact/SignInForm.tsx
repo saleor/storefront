@@ -19,7 +19,7 @@ import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useEffect } from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { labels, messages } from "@/checkout-storefront/sections/Contact/messages";
+import { contactLabels, contactMessages } from "./messages";
 
 type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -98,28 +98,33 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
 
   return (
     <SignInFormContainer
-      title={formatMessage(messages.signIn)}
-      redirectSubtitle={formatMessage(messages.newCustomer)}
-      redirectButtonLabel={formatMessage(messages.guestCheckout)}
+      title={formatMessage(contactMessages.signIn)}
+      redirectSubtitle={formatMessage(contactMessages.newCustomer)}
+      redirectButtonLabel={formatMessage(contactMessages.guestCheckout)}
       onSectionChange={onSectionChange}
     >
-      <TextInput label={formatMessage(messages.email)} {...getInputProps("email")} />
-      <PasswordInput label={formatMessage(messages.password)} {...getInputProps("password")} />
+      <TextInput label={formatMessage(contactMessages.email)} {...getInputProps("email")} />
+      <PasswordInput
+        label={formatMessage(contactMessages.password)}
+        {...getInputProps("password")}
+      />
       <div className="actions">
         {passwordResetSent && (
-          <Text>{formatMessage(messages.linkSent, { email: getValues().email })}</Text>
+          <Text>{formatMessage(contactMessages.linkSent, { email: getValues().email })}</Text>
         )}
         <Button
-          ariaLabel={formatMessage(labels.sendResetLink)}
+          ariaLabel={formatMessage(contactLabels.sendResetLink)}
           variant="tertiary"
-          label={formatMessage(passwordResetSent ? messages.resend : messages.forgotPassword)}
+          label={formatMessage(
+            passwordResetSent ? contactMessages.resend : contactMessages.forgotPassword
+          )}
           className="ml-1 mr-4"
           onClick={onPasswordReset}
         />
         <Button
-          ariaLabel={formatMessage(labels.signIn)}
+          ariaLabel={formatMessage(contactLabels.signIn)}
           onClick={handleSubmit(onSubmit)}
-          label={formatMessage(messages.signIn)}
+          label={formatMessage(contactMessages.signIn)}
         />
       </div>
     </SignInFormContainer>

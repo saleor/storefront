@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const manualSaveAddressFormMessages = defineMessages({
   cancel: {
     defaultMessage: "Cancel",
     id: "ManualSaveAddressForm/messages/js69XA",
@@ -13,7 +13,7 @@ export const messages = defineMessages({
   },
 });
 
-export const labels = defineMessages({
+export const manualSaveAddressFormLabels = defineMessages({
   delete: {
     defaultMessage: "Delete address",
     id: "ManualSaveAddressForm/messages/NeZoqm",

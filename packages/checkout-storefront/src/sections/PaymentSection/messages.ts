@@ -1,7 +1,7 @@
 import { PaymentMethodID } from "checkout-common";
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const paymentSectionMessages = defineMessages({
   paymentProviders: {
     defaultMessage: "Payment providers",
     id: "PaymentSection/messages/8YE5b7",
@@ -32,7 +32,7 @@ export const paymentMethodsMessages = defineMessages<PaymentMethodID>({
   },
 });
 
-export const labels = defineMessages({
+export const paymentSectionLabels = defineMessages({
   paymentProviders: {
     defaultMessage: "payment providers",
     id: "PaymentSection/messages/FK5Bg/",

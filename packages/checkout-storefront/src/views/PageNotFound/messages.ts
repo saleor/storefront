@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const messages = defineMessages({
+export const pageNotFoundMessages = defineMessages({
   subtitle: {
     defaultMessage:
       "We couldn’t fetch information about your checkout. Go back to the store and try again.",

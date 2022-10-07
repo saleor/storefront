@@ -7,7 +7,7 @@ import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { useCheckoutRemovePromoCodeMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { isOrderConfirmationPage } from "@/checkout-storefront/lib/utils";
-import { labels } from "@/checkout-storefront/sections/Summary/messages";
+import { summaryLabels } from "./messages";
 
 interface SummaryPromoCodeRowProps extends SummaryMoneyRowProps {
   promoCode?: string;
@@ -40,7 +40,7 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
         <IconButton
           color="secondary"
           onClick={onDelete}
-          ariaLabel={formatMessage(labels.removeDiscount)}
+          ariaLabel={formatMessage(summaryLabels.removeDiscount)}
           variant="bare"
           icon={<img src={getSvgSrc(RemoveIcon)} />}
         />

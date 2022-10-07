@@ -1,9 +1,9 @@
 import { Address } from "@/checkout-storefront/components/Address";
 import { OrderFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { messages as billingMessages } from "@/checkout-storefront/sections/BillingAddressSection/messages";
-import { messages as contactMessages } from "@/checkout-storefront/sections/Contact/messages";
-import { messages as shippingMessages } from "@/checkout-storefront/sections/ShippingAddressSection/messages";
+import { billingMessages } from "@/checkout-storefront/sections/BillingAddressSection/messages";
+import { contactMessages } from "@/checkout-storefront/sections/Contact/messages";
+import { shippingMessages } from "@/checkout-storefront/sections/ShippingAddressSection/messages";
 import { Text } from "@saleor/ui-kit";
 
 import { DeliverySection } from "./DeliverySection";

@@ -14,7 +14,7 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { extractMutationErrors, getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { labels, messages } from "@/checkout-storefront/sections/DeliveryMethods/messages";
+import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useCheckoutUpdateStateTrigger, useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
 
@@ -104,7 +104,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       return undefined;
     }
 
-    return formatMessage(messages.businessDays, {
+    return formatMessage(deliveryMethodsMessages.businessDays, {
       min: min.toString(),
       max: max.toString(),
     });
@@ -122,7 +122,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     <>
       <Divider />
       <div className="section">
-        <Title className="mb-2">{formatMessage(messages.deliveryMethods)}</Title>
+        <Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
         {!shippingAddress && (
           <Text>Please fill in shipping address to see available shipping methods</Text>
         )}
@@ -130,7 +130,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
           control={control}
           name="selectedMethodId"
           render={({ field: { onChange } }) => (
-            <SelectBoxGroup label={formatMessage(labels.deliveryMethods)}>
+            <SelectBoxGroup label={formatMessage(deliveryMethodsLabels.deliveryMethods)}>
               {shippingMethods?.map(
                 ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
                   <SelectBox value={id} selectedValue={selectedMethodId} onChange={onChange}>

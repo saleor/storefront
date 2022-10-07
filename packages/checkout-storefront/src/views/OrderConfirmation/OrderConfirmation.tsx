@@ -6,7 +6,7 @@ import { OrderInfo } from "@/checkout-storefront/sections/OrderInfo";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks";
 import { useOrder } from "@/checkout-storefront/hooks";
-import { messages } from "@/checkout-storefront/sections/OrderInfo/messages";
+import { orderInfoMessages } from "@/checkout-storefront/sections/OrderInfo/messages";
 
 export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
   const { order } = useOrder(orderId);
@@ -17,10 +17,10 @@ export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
       <header>
         <PageHeader />
         <Text size="lg" weight="bold" className="mb-2">
-          {formatMessage(messages.orderConfirmTitle, { number: order.number })}
+          {formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
         </Text>
         <Text size="md">
-          {formatMessage(messages.orderConfirmSubtitle, {
+          {formatMessage(orderInfoMessages.orderConfirmSubtitle, {
             email: order.userEmail!,
           })}
         </Text>
