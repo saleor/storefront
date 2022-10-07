@@ -17,7 +17,7 @@ export const useErrorMessages = (): UseErrorMessages => {
   const formatMessage = useFormattedMessages();
 
   const getMessageByErrorCode = useCallback(
-    (errorCode: GenericErrorCode) => {
+    (errorCode: ErrorCode) => {
       try {
         const formattedMessage = formatMessage(messages[errorCode]);
         return formattedMessage;
@@ -34,7 +34,7 @@ export const useErrorMessages = (): UseErrorMessages => {
       errorMessageKeys.reduce(
         (result, key) => ({
           ...result,
-          [key]: getMessageByErrorCode(key as GenericErrorCode),
+          [key]: getMessageByErrorCode(key),
         }),
         {} as ErrorMessages
       ),

@@ -26,7 +26,7 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
 
   const validationRules = data?.addressValidationRules as ValidationRulesFragment;
 
-  const { countryAreaType, postalCodeType, cityType } = validationRules;
+  const { countryAreaType, postalCodeType, cityType } = validationRules || {};
 
   const localizedFields = {
     countryArea: countryAreaType,
@@ -51,7 +51,7 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
   };
 
   const isRequiredField = (field: AddressField) =>
-    getRequiredAddressFields(validationRules.requiredFields as AddressField[]).includes(field);
+    getRequiredAddressFields(validationRules?.requiredFields as AddressField[]).includes(field);
 
   const getLocalizedFieldLabel = (field: AddressField, localizedField?: string) => {
     try {
@@ -66,18 +66,18 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
   };
 
   const getFieldLabel = (field: AddressField) => {
-    const isLocalizedField =
-      Object.keys(localizedFields).includes(field) &&
-      localizedFields[field as keyof typeof localizedFields] !== field;
+    const localizedField = localizedFields[field as keyof typeof localizedFields];
 
-    if (!isLocalizedField) {
-      return formatMessage(addressFieldMessages[field as AddressFieldLabel]);
+    const isLocalizedField = !!localizedField && localizedField !== field;
+
+    if (isLocalizedField) {
+      return getLocalizedFieldLabel(
+        field,
+        localizedFields[field as keyof typeof localizedFields] as LocalizedAddressFieldLabel
+      );
     }
 
-    return getLocalizedFieldLabel(
-      field,
-      localizedFields[field as keyof typeof localizedFields] as LocalizedAddressFieldLabel
-    );
+    return formatMessage(addressFieldMessages[field as AddressFieldLabel]);
   };
 
   const orderedAddressFields = getOrderedAddressFields(
