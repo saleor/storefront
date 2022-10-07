@@ -31,10 +31,13 @@ function useAlerts(globalScope?: any): any {
 
   const getErrorMessage = useCallback(
     ({ code, field, scope }: AlertErrorData): string => {
-      const messageKey = getMessageKey({ code, field, scope }, { error: true });
+      const messageKey = getMessageKey(
+        { code, field, scope },
+        { error: true }
+      ) as keyof typeof errorMessages;
 
       try {
-        const fullMessage = formatMessage(errorMessages[messageKey] as keyof typeof errorMessages);
+        const fullMessage = formatMessage(errorMessages[messageKey]);
 
         return fullMessage;
       } catch (e) {
