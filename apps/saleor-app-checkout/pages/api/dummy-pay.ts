@@ -8,14 +8,14 @@ import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphq
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import * as yup from "yup";
 
-const dummyPayBodySchema: yup.ObjectSchema<DummyPayRequestBody> = yup.object({
-  checkoutApiUrl: yup.string().required(),
-  orderId: yup.string().required(),
-  amountCharged: yup.object({
-    amount: yup.number().required(),
-    currency: yup.string().required(),
-  }),
-});
+const dummyPayBodySchema: yup.ObjectSchema<Omit<DummyPayRequestBody, "checkoutApiUrl">> =
+  yup.object({
+    orderId: yup.string().required(),
+    amountCharged: yup.object({
+      amount: yup.number().required(),
+      currency: yup.string().required(),
+    }),
+  });
 
 const parseAndValidateBody = createParseAndValidateBody(dummyPayBodySchema);
 
@@ -24,7 +24,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   if (error) {
     console.error(error, req.body);
-    res.status(400).send({ message: "Invalid JSON" });
+    res.status(400).send({ ok: false, error: "Invalid JSON" });
     return;
   }
 

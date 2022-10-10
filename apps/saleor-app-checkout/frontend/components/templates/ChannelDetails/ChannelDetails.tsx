@@ -95,8 +95,12 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
   };
 
   const handleSubmit = (flattenedSettings: Record<string, string>) => {
+    const settingsWithValues = Object.entries(flattenedSettings).reduce(
+      (prev, [key, value]) => ({ ...prev, ...(value !== "" && { [key]: value }) }),
+      {} as Record<string, string>
+    );
     onSubmit({
-      [channelPaymentOptions.channel.id]: flattenedSettings,
+      [channelPaymentOptions.channel.id]: settingsWithValues,
     } as ChannelActivePaymentProviders);
   };
 

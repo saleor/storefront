@@ -2,6 +2,7 @@ import { ChannelFragment } from "@/saleor-app-checkout/graphql";
 import { findById } from "@/saleor-app-checkout/utils";
 import {
   useCustomizations,
+  useDummyPaymentProvider,
   usePaymentMethods,
   usePaymentProviders,
 } from "@/saleor-app-checkout/config/fields";
@@ -42,20 +43,22 @@ export const useChannelPaymentOptionsList = (
 ): ChannelPaymentOptions[] => {
   const paymentMethods = usePaymentMethods();
   const paymentProviders = usePaymentProviders();
+  const dummyPaymentProvider = useDummyPaymentProvider();
 
   return channels.map((channel) => ({
     id: channel.id,
     channel: channel,
     paymentOptions: paymentMethods.map((method) => {
+      const methodProviders = method.id === "dummy" ? [dummyPaymentProvider] : paymentProviders;
       const activeProvider =
         (activePaymentProviders?.[channel.id]?.[method.id] &&
-          findById(paymentProviders, activePaymentProviders[channel.id][method.id])) ||
+          findById(methodProviders, activePaymentProviders[channel.id][method.id])) ||
         null;
 
       return {
         id: method.id,
         method,
-        availableProviders: paymentProviders,
+        availableProviders: methodProviders,
         activeProvider,
       };
     }),

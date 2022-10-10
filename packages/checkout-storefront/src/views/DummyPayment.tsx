@@ -7,6 +7,8 @@ import { useOrderQuery } from "../graphql";
 import { useFetch, useFormattedMessages, useGetInputProps } from "../hooks";
 import { getQueryVariables } from "../lib/utils";
 import { useAppConfig } from "../providers/AppConfigProvider";
+import { toast } from "react-toastify";
+import { Text } from "@saleor/ui-kit";
 
 const getOrderConfirmationUrl = () => {
   const url = new URL(window.location.href);
@@ -21,7 +23,10 @@ type UseDummyPayValues = [
   (charged: DummyPayRequestBody["amountCharged"]) => Promise<void>
 ];
 
+const showError = (text: string) => toast(<Text>{text}</Text>, { type: "error" });
+
 const useDummyPay = (): UseDummyPayValues => {
+  const formatMessage = useFormattedMessages();
   const orderId = getQueryVariables().orderId ?? "";
   const [dummyPayResult, pay] = useFetch(dummyPayRequest);
   const {
@@ -29,14 +34,23 @@ const useDummyPay = (): UseDummyPayValues => {
   } = useAppConfig();
 
   const dummyPay = async (amountCharged: DummyPayRequestBody["amountCharged"]) => {
-    const result = await pay({
-      orderId,
-      checkoutApiUrl,
-      amountCharged,
-    });
+    try {
+      const result = await pay({
+        orderId,
+        checkoutApiUrl,
+        amountCharged,
+      });
 
-    if (result?.ok) {
-      window.location.href = getOrderConfirmationUrl();
+      if (result && result.ok) {
+        window.location.href = getOrderConfirmationUrl();
+      }
+
+      if (result && !result.ok) {
+        showError(result.error);
+      }
+    } catch (e: unknown) {
+      const error = typeof e === "string" ? e : formatMessage("error");
+      showError(error);
     }
   };
 

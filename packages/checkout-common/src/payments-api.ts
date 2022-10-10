@@ -35,6 +35,8 @@ export type DummyPayRequestBody = {
   };
 } & Pick<OrderBody, "orderId">;
 
-export type DummyPayRequestResult = {
-  ok: boolean;
-};
+export type DummyPayRequestResult =
+  | {
+      ok: true;
+    }
+  | { ok: false; error: string };
