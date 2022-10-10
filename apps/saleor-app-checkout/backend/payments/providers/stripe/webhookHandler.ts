@@ -91,10 +91,11 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
     }
 
     const getAmount = getTransactionAmountGetter({
+      // in Stripe, authorized means that the payment is authorized and charged
       authorized: getSaleorAmountFromInteger(charge.amount),
+      charged: getSaleorAmountFromInteger(charge.amount),
       voided: undefined,
       refunded: undefined,
-      charged: undefined,
     });
 
     return {
@@ -107,7 +108,10 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
           amount: getAmount("authorized"),
           currency: charge.currency.toUpperCase(),
         },
-        amountCharged: undefined,
+        amountCharged: {
+          amount: getAmount("charged"),
+          currency: charge.currency.toUpperCase(),
+        },
         availableActions: ["REFUND"],
       },
       transactionEvent: {
