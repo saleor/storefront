@@ -26,6 +26,11 @@ export const envVars = {
   ),
 };
 
+export const getApiDomain = () => {
+  const url = new URL(envVars.apiUrl);
+  return url.hostname;
+};
+
 export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
   checkoutAppUrl: "NEXT_PUBLIC_CHECKOUT_APP_URL",

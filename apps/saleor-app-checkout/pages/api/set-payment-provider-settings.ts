@@ -1,5 +1,4 @@
 import { withSentry } from "@sentry/nextjs";
-import { getTokenDataFromRequest } from "@/saleor-app-checkout/backend/auth";
 import {
   getPrivateSettings,
   setPrivateSettings,
@@ -7,17 +6,16 @@ import {
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { merge } from "lodash-es";
 import { NextApiHandler } from "next";
+import { envVars } from "@/saleor-app-checkout/constants";
 
 const handler: NextApiHandler = async (req, res) => {
-  const tokenData = getTokenDataFromRequest(req);
+  // const tokenData = getTokenDataFromRequest(req);
+  // const tokenDomain = tokenData?.["iss"];
+  // if (!tokenDomain) {
+  //   return res.status(500).json({ error: "Token iss is not correct" });
+  // }
 
-  const tokenDomain = tokenData?.["iss"];
-
-  if (!tokenDomain) {
-    return res.status(500).json({ error: "Token iss is not correct" });
-  }
-
-  const apiUrl = `https://${tokenDomain}/graphql/`;
+  const apiUrl = envVars.apiUrl;
 
   const data = req.body as string;
 
