@@ -16,13 +16,12 @@ const config = withTM({
     defaultLocale: "en-US",
   },
   reactStrictMode: true,
-  // eslint-disable-next-line require-await
   async redirects() {
     return [
       {
         source: "/",
-        destination: "/channels",
-        permanent: true,
+        destination: "/channels/",
+        permanent: false,
       },
     ];
   },
