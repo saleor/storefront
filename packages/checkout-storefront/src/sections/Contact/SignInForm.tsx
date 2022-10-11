@@ -20,21 +20,27 @@ import { useEffect } from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { contactLabels, contactMessages } from "./messages";
+import { useCheckoutCustomerAttachMutation } from "@/checkout-storefront/graphql";
+import { useCheckout, useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
+import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 
-type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
+interface SignInFormProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
+  onSignInSuccess: () => void;
+}
 
 interface FormData {
   email: string;
   password: string;
 }
 
-export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
+export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignInSuccess }) => {
   const formatMessage = useFormattedMessages();
   const { showErrors } = useAlerts();
   const { errorMessages } = useErrorMessages();
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
   const { getValues: getContextValues, setValue: setContextValue } = useFormContext();
+  useCustomerAttach();
 
   const schema = object({
     password: string().required(errorMessages.required),
@@ -59,6 +65,8 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
       showErrors(errors, "login");
       return;
     }
+
+    onSignInSuccess();
   };
 
   const onPasswordReset = async () => {
