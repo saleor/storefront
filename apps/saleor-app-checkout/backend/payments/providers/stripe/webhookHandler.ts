@@ -91,10 +91,10 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
     }
 
     const getAmount = getTransactionAmountGetter({
-      authorized: getSaleorAmountFromInteger(charge.amount),
+      authorized: undefined,
+      charged: getSaleorAmountFromInteger(charge.amount),
       voided: undefined,
       refunded: undefined,
-      charged: undefined,
     });
 
     return {
@@ -107,7 +107,10 @@ export const checkoutSessionToTransactionCreateMutationVariables = async (
           amount: getAmount("authorized"),
           currency: charge.currency.toUpperCase(),
         },
-        amountCharged: undefined,
+        amountCharged: {
+          amount: getAmount("charged"),
+          currency: charge.currency.toUpperCase(),
+        },
         availableActions: ["REFUND"],
       },
       transactionEvent: {
