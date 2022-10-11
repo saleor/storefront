@@ -2,6 +2,7 @@ import { PermissionEnum } from "@/saleor-app-checkout/graphql";
 import { decode, JwtPayload, verify } from "jsonwebtoken";
 import JwksClient from "jwks-rsa";
 import { NextApiRequest } from "next";
+import { getApiDomain } from "../constants";
 
 export class JwtVerifier {
   private static instance: JwtVerifier;
@@ -72,11 +73,16 @@ export const isAuthenticated = async (req: NextApiRequest) => {
 
   const tokenData = getTokenData(token);
 
-  if (!token || !tokenData?.["iss"]) {
+  // @todo
+  // if (!token || !tokenData?.["iss"]) {
+  //   return false;
+  // }
+
+  if (!token || !tokenData) {
     return false;
   }
 
-  const jwtVerifier = JwtVerifier.getInstance(tokenData["iss"]);
+  const jwtVerifier = JwtVerifier.getInstance(getApiDomain());
 
   return jwtVerifier.verify(token);
 };
