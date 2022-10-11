@@ -3,18 +3,21 @@ import { renderHook } from "@testing-library/react-hooks";
 import { apiErrors } from "@/checkout-storefront/lib/fixtures";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
+import { getMockProviders } from "@/checkout-storefront/__tests__/utils";
 
 type TestFormData = AddressFormData & CheckoutFormData;
 
 describe("useGetParsedApiErrors", () => {
   it("should return properly formatted errors from api errors array", () => {
-    const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>());
+    const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
+      wrapper: getMockProviders({ intl: true }),
+    });
 
     const errors = [
       ...apiErrors,
       {
-        code: "PASSWORD_TOO_COMMON",
-        message: "This password is not fancy enough",
+        code: "PASSWORD_TOO_SHORT",
+        message: "This password is not long enough",
         field: "password",
       },
     ];
@@ -31,15 +34,17 @@ describe("useGetParsedApiErrors", () => {
         code: "invalid",
       },
       {
-        message: "Provided password is too common.",
+        message: "Provided password is too short. Minimum length is 8 characters.",
         field: "password",
-        code: "passwordTooCommon",
+        code: "passwordTooShort",
       },
     ]);
   });
 
   it("should return empty array for empty api errors array", () => {
-    const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>());
+    const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
+      wrapper: getMockProviders({ intl: true }),
+    });
     expect(hook.current([])).toEqual([]);
   });
 });

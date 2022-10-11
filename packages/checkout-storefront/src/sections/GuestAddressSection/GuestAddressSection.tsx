@@ -1,8 +1,8 @@
 import React from "react";
 import { Address, AddressFormData } from "../../components/AddressForm/types";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
-import { AutoSaveAddressForm } from "@/checkout-storefront/components/AddressForm";
 import { getAddressFormDataFromAddress } from "@/checkout-storefront/lib/utils";
+import { AutoSaveAddressForm } from "@/checkout-storefront/components/AutoSaveAddressForm";
 
 interface GuestAddressSectionProps extends UseErrors<AddressFormData> {
   onSubmit: (address: AddressFormData) => void;

@@ -9,6 +9,7 @@ import {
   getQueryVariables,
   useValidationResolver,
 } from "@/checkout-storefront/lib/utils";
+import { contactLabels, contactMessages } from "./messages";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -54,17 +55,21 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange })
 
   return (
     <SignInFormContainer
-      title={formatMessage("resetPassword")}
-      redirectButtonLabel={formatMessage("signIn")}
+      title={formatMessage(contactMessages.resetPassword)}
+      redirectSubtitle={formatMessage(contactMessages.rememberedYourPassword)}
+      redirectButtonLabel={formatMessage(contactMessages.signIn)}
       onSectionChange={onSectionChange}
-      subtitle={formatMessage("providePassword")}
+      subtitle={formatMessage(contactMessages.providePassword)}
     >
-      <PasswordInput label={formatMessage("passwordLabel")} {...getInputProps("password")} />
+      <PasswordInput
+        label={formatMessage(contactMessages.password)}
+        {...getInputProps("password")}
+      />
       <div className="mt-4 actions">
         <Button
-          ariaLabel={formatMessage("resetPasswordLabel")}
+          ariaLabel={formatMessage(contactLabels.resetPassword)}
           onClick={handleSubmit(onSubmit)}
-          label={formatMessage("resetPassword")}
+          label={formatMessage(contactMessages.resetPassword)}
         />
       </div>
     </SignInFormContainer>

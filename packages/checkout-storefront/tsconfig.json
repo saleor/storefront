@@ -11,9 +11,6 @@
       "@/checkout-storefront/images": ["./src/assets/images"],
       "@/checkout-storefront/*": ["./src/*"]
     },
-    "declaration": true,
-    "declarationMap": false,
-    "declarationDir": "types",
     "outDir": "dist",
     "composite": false,
     "allowJs": true,

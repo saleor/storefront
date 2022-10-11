@@ -16,10 +16,10 @@ export interface AriaLabel {
   ariaLabel: string;
 }
 
+export type GenericErrorCode = "invalid" | "required" | "unique";
+
 export type ErrorCode =
-  | "invalid"
-  | "required"
-  | "unique"
+  | GenericErrorCode
   | "quantityGreaterThanLimit"
   | "insufficientStock"
   | "invalidCredentials"

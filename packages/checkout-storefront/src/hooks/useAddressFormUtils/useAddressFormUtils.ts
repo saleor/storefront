@@ -1,10 +1,21 @@
-import { CountryCode, useAddressValidationRulesQuery } from "@/checkout-storefront/graphql";
-import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import {
+  CountryCode,
+  useAddressValidationRulesQuery,
+  ValidationRulesFragment,
+} from "@/checkout-storefront/graphql";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
 import { getRequiredAddressFields, getOrderedAddressFields } from "@/checkout-storefront/lib/utils";
 import { Address } from "@/checkout-storefront/components/AddressForm/types";
 import { defaultCountry } from "@/checkout-storefront/lib/consts";
+import {
+  AddressFieldLabel,
+  addressFieldMessages,
+  LocalizedAddressFieldLabel,
+  localizedAddressFieldMessages,
+} from "@/checkout-storefront/hooks/useAddressFormUtils/messages";
+import camelCase from "lodash-es/camelCase";
 
 export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.code) => {
   const formatMessage = useFormattedMessages();
@@ -13,7 +24,15 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
     variables: { countryCode },
   });
 
-  const validationRules = data?.addressValidationRules;
+  const validationRules = data?.addressValidationRules as ValidationRulesFragment;
+
+  const { countryAreaType, postalCodeType, cityType } = validationRules || {};
+
+  const localizedFields = {
+    countryArea: countryAreaType,
+    city: cityType,
+    postalCode: postalCodeType,
+  };
 
   const hasAllRequiredFields = (address: Address) => !getMissingFieldsFromAddress(address).length;
 
@@ -34,32 +53,31 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.co
   const isRequiredField = (field: AddressField) =>
     getRequiredAddressFields(validationRules?.requiredFields as AddressField[]).includes(field);
 
-  const getLocalizedFieldName = (field: AddressField, localizedField?: string | null) => {
+  const getLocalizedFieldLabel = (field: AddressField, localizedField?: string) => {
     try {
-      const translatedLabel = formatMessage(localizedField as MessageKey);
+      const translatedLabel = formatMessage(
+        localizedAddressFieldMessages[camelCase(localizedField) as LocalizedAddressFieldLabel]
+      );
       return translatedLabel;
     } catch (e) {
-      warnAboutMissingTranslation(localizedField as string);
-      return formatMessage(field as MessageKey);
+      warnAboutMissingTranslation(localizedField);
+      return formatMessage(addressFieldMessages[camelCase(field) as AddressFieldLabel]);
     }
   };
 
   const getFieldLabel = (field: AddressField) => {
-    const { countryAreaType, postalCodeType, cityType } = validationRules || {};
+    const localizedField = localizedFields[field as keyof typeof localizedFields];
 
-    const localizedFields: Partial<Record<AddressField, string | undefined>> = {
-      countryArea: countryAreaType,
-      city: cityType,
-      postalCode: postalCodeType,
-    };
+    const isLocalizedField = !!localizedField && localizedField !== field;
 
-    const isLocalizedField = Object.keys(localizedFields).includes(field);
-
-    if (!isLocalizedField) {
-      return formatMessage(field as MessageKey);
+    if (isLocalizedField) {
+      return getLocalizedFieldLabel(
+        field,
+        localizedFields[field as keyof typeof localizedFields] as LocalizedAddressFieldLabel
+      );
     }
 
-    return getLocalizedFieldName(field, localizedFields[field]);
+    return formatMessage(addressFieldMessages[field as AddressFieldLabel]);
   };
 
   const orderedAddressFields = getOrderedAddressFields(

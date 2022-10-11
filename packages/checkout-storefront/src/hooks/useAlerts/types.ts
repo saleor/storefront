@@ -9,8 +9,9 @@ export interface AlertErrorData {
 }
 
 export type CustomError =
-  | { message: string }
-  | (Partial<AlertErrorData> & Pick<AlertErrorData, "code">);
+  | Pick<AlertErrorData, "code">
+  | Pick<AlertErrorData, "code" | "field">
+  | { message: string };
 
 export interface Alert {
   message: string;

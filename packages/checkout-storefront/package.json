@@ -11,10 +11,13 @@
     "check-types": "tsc --noEmit",
     "check-types:dev": "tsc --noEmit --watch",
     "lint": "eslint",
-    "lint:staged": "eslint --fix --quiet",
+    "lint:staged": "eslint --fix --quiet && prettier --write .",
     "test": "jest",
     "test:dev": "jest --watch",
-    "clean": "rm -rf .turbo .next .rollup.cache dist"
+    "clean": "rm -rf .turbo .next .rollup.cache dist",
+    "extract:i18n": "formatjs extract 'src/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en-US.json",
+    "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
+    "i18n": "npm run extract:i18n && npm run compile:i18n"
   },
   "resolutions": {
     "graphql": "15.8.0"
@@ -33,7 +36,6 @@
     "@apollo/client": "^3.5.10",
     "@headlessui/react": "^1.6.0",
     "@hookform/error-message": "^2.0.0",
-    "@react-aria/i18n": "^3.3.4",
     "@react-types/button": "^3.4.1",
     "@saleor/sdk": "^0.4.3",
     "@saleor/ui-kit": "workspace:*",
@@ -45,8 +47,10 @@
     "hex-rgb": "^5.0.0",
     "lodash-es": "^4.17.21",
     "query-string": "^7.1.1",
+    "react": "^18.2.0",
     "react-error-boundary": "^3.1.4",
     "react-hook-form": "^7.34.2",
+    "react-intl": "^6.1.1",
     "react-test-renderer": "^18.2.0",
     "react-toastify": "^9.0.4",
     "tailwindcss": "^3.0.18",
@@ -56,6 +60,7 @@
     "yup": "1.0.0-beta.7"
   },
   "devDependencies": {
+    "@formatjs/cli": "5.1.0",
     "@graphql-codegen/add": "^3.2.0",
     "@graphql-codegen/cli": "2.8.1",
     "@graphql-codegen/introspection": "2.2.0",
@@ -83,6 +88,7 @@
     "env-vars": "workspace:*",
     "eslint": "^8.22.0",
     "eslint-config-checkout": "workspace:*",
+    "eslint-plugin-formatjs": "^4.2.2",
     "graphql-tag": "^2.12.6",
     "jest": "^27.5.1",
     "next": "12.3.1",

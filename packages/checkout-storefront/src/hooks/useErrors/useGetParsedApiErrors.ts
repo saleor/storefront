@@ -1,4 +1,4 @@
-import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { useErrorMessages } from "../useErrorMessages";
@@ -17,7 +17,7 @@ export const useGetParsedApiErrors = <TFormData>(): GetErrorsFromApiErrors<TForm
         return {
           field,
           code: errorCode,
-          message: getMessageByErrorCode(errorCode as ErrorCode),
+          message: getMessageByErrorCode(errorCode as GenericErrorCode),
         };
       }) as Error<TFormData>[],
     [getMessageByErrorCode]
