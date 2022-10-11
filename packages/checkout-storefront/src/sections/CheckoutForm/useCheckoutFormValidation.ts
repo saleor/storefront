@@ -14,6 +14,7 @@ import { ValidationError } from "yup";
 import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
 import { MessageDescriptor } from "react-intl";
 import { checkoutFormMessages } from "./messages";
+import { useEffect } from "react";
 
 interface UseCheckoutFormValidation extends UseFormReturn<CheckoutFormData> {
   schema: { validateSyncAt: (key: keyof CheckoutFormData, data: CheckoutFormData) => void };
@@ -25,10 +26,14 @@ export const useCheckoutFormValidation = ({
   schema,
 }: UseCheckoutFormValidation) => {
   const formatMessage = useFormattedMessages();
-  const { checkout } = useCheckout();
+  const { checkout, loading } = useCheckout();
   const { shippingAddress, billingAddress } = checkout;
   const { showCustomErrors } = useAlerts("checkoutFinalize");
   const { authenticated } = useAuthState();
+
+  useEffect(() => {
+    setValue("updateState.checkoutFetch", loading);
+  }, [setValue, loading]);
 
   const {
     hasAllRequiredFields: shippingHasAllRequiredFields,

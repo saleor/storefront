@@ -8,10 +8,10 @@ export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);
   const { authenticating } = useAuthState();
 
-  const [{ data, fetching: loading }, refetch] = useCheckoutQuery({
+  const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
     variables: { id },
     pause: pause || authenticating,
   });
 
-  return { checkout: data?.checkout as Checkout, loading, refetch };
+  return { checkout: data?.checkout as Checkout, loading: loading || stale, refetch };
 };

@@ -11,12 +11,14 @@ export interface CheckoutFormData {
   updateState: Pick<Record<CheckoutScope, boolean>, CheckoutUpdateStateScope>;
 }
 
-export type CheckoutUpdateStateScope = Extract<
-  CheckoutScope,
-  | "checkoutShippingUpdate"
-  | "checkoutCustomerAttach"
-  | "checkoutAddPromoCode"
-  | "checkoutDeliveryMethodUpdate"
-  | "checkoutEmailUpdate"
-  | "checkoutBillingUpdate"
->;
+export type CheckoutUpdateStateScope =
+  | Extract<
+      CheckoutScope,
+      | "checkoutShippingUpdate"
+      | "checkoutCustomerAttach"
+      | "checkoutAddPromoCode"
+      | "checkoutDeliveryMethodUpdate"
+      | "checkoutEmailUpdate"
+      | "checkoutBillingUpdate"
+    >
+  | "checkoutFetch";
