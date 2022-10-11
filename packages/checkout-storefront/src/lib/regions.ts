@@ -4,8 +4,8 @@ export const regions = {
   "fr-FR": "France",
 };
 
-const DEFAULT_REGION = "en-US";
+export const DEFAULT_LOCALE = "en-US";
 
-export const getCurrentRegion = (): keyof typeof regions => DEFAULT_REGION;
+export const getCurrentLocale = (): keyof typeof regions => DEFAULT_LOCALE;
 
 export type Region = keyof typeof regions;

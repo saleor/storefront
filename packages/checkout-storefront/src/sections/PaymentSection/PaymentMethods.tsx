@@ -1,6 +1,6 @@
-import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React, { SyntheticEvent, useEffect, useMemo } from "react";
-import { camelCase, compact } from "lodash-es";
+import { compact } from "lodash-es";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { Text } from "@saleor/ui-kit";
@@ -14,6 +14,7 @@ import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { AvailablePaymentMethods } from "@/checkout-storefront/sections/PaymentSection/types";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
+import { paymentSectionLabels, paymentMethodsMessages } from "./messages";
 
 export interface PaymentMethodsProps {
   selectedPaymentMethod: PaymentMethodID;
@@ -64,14 +65,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
     } else if (!selectedPaymentMethod) {
       setValue("paymentMethodId", availablePaymentMethods[0] as PaymentMethodID);
     }
-  }, [
-    loading,
-    allPaymentOptions,
-    availablePaymentMethods,
-    selectedPaymentMethod,
-    setValue,
-    channelId,
-  ]);
+  }, [loading, allPaymentOptions, availablePaymentMethods.length, selectedPaymentMethod, setValue]);
 
   const paymentProviderID = useMemo(
     () => allPaymentOptions?.[selectedPaymentMethod],
@@ -85,7 +79,10 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   }, [setValue, paymentProviderID]);
 
   return (
-    <SelectBoxGroup label={formatMessage("paymentProvidersLabel")} className="flex flex-row gap-2">
+    <SelectBoxGroup
+      label={formatMessage(paymentSectionLabels.paymentProviders)}
+      className="flex flex-row gap-2"
+    >
       {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => (
         <SelectBox
           className="shrink"
@@ -93,7 +90,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
           selectedValue={selectedPaymentMethod || availablePaymentMethods[0]}
           onChange={onSelect}
         >
-          <Text>{formatMessage(camelCase(paymentMethodId) as MessageKey)}</Text>
+          <Text>{formatMessage(paymentMethodsMessages[paymentMethodId])}</Text>
         </SelectBox>
       ))}
     </SelectBoxGroup>

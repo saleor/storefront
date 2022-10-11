@@ -1,3 +1,3 @@
-export const warnAboutMissingTranslation = (messageKey: string) => {
+export const warnAboutMissingTranslation = (messageKey = "") => {
   console.warn(`Missing translation for key: ${messageKey}`);
 };

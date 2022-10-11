@@ -1,0 +1,890 @@
+{
+  "AddressSelectBox/messages//II2Kl": [
+    {
+      "type": 0,
+      "value": "edit address"
+    }
+  ],
+  "AddressSelectBox/messages/OzIgQf": [
+    {
+      "type": 0,
+      "value": "edit address"
+    }
+  ],
+  "AddressSelectBox/messages/X3KwgL": [
+    {
+      "type": 0,
+      "value": "Can't ship to this address"
+    }
+  ],
+  "BillingAddressSection/messages/OLzmaE": [
+    {
+      "type": 0,
+      "value": "Billing address"
+    }
+  ],
+  "BillingAddressSection/messages/qFJDT2": [
+    {
+      "type": 0,
+      "value": "Use shipping as billing"
+    }
+  ],
+  "CheckoutForm/messages/+qM8r0": [
+    {
+      "type": 0,
+      "value": "There are certain fields in billing form that are missing or invalid"
+    }
+  ],
+  "CheckoutForm/messages/UDs7fN": [
+    {
+      "type": 0,
+      "value": "pay"
+    }
+  ],
+  "CheckoutForm/messages/guvzy3": [
+    {
+      "type": 0,
+      "value": "There are certain fields in shipping address form that are missing or invalid"
+    }
+  ],
+  "CheckoutForm/messages/jLJToZ": [
+    {
+      "type": 0,
+      "value": "Pay"
+    }
+  ],
+  "Contact/messages//BXzqC": [
+    {
+      "type": 0,
+      "value": "New customer?"
+    }
+  ],
+  "Contact/messages//Iazj+": [
+    {
+      "type": 0,
+      "value": "Resend?"
+    }
+  ],
+  "Contact/messages/5hAp9w": [
+    {
+      "type": 0,
+      "value": "Already have an account?"
+    }
+  ],
+  "Contact/messages/Cu74z+": [
+    {
+      "type": 0,
+      "value": "Reset password"
+    }
+  ],
+  "Contact/messages/E8oPzo": [
+    {
+      "type": 0,
+      "value": "Account"
+    }
+  ],
+  "Contact/messages/HvSpKk": [
+    {
+      "type": 0,
+      "value": "send password reset link"
+    }
+  ],
+  "Contact/messages/IbOUpe": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "Contact/messages/JX+fPs": [
+    {
+      "type": 0,
+      "value": "Guest checkout"
+    }
+  ],
+  "Contact/messages/Ng/PvP": [
+    {
+      "type": 0,
+      "value": "A magic link has been sent to "
+    },
+    {
+      "type": 1,
+      "value": "email"
+    }
+  ],
+  "Contact/messages/bHaSzm": [
+    {
+      "type": 0,
+      "value": "Password confirmation"
+    }
+  ],
+  "Contact/messages/dE8fQO": [
+    {
+      "type": 0,
+      "value": "change section"
+    }
+  ],
+  "Contact/messages/ljwlqe": [
+    {
+      "type": 0,
+      "value": "Sign in"
+    }
+  ],
+  "Contact/messages/reCzHf": [
+    {
+      "type": 0,
+      "value": "Sign out"
+    }
+  ],
+  "Contact/messages/sXWoD4": [
+    {
+      "type": 0,
+      "value": "Remembered your password?"
+    }
+  ],
+  "Contact/messages/tCwlQg": [
+    {
+      "type": 0,
+      "value": "Email"
+    }
+  ],
+  "Contact/messages/uEp7uy": [
+    {
+      "type": 0,
+      "value": "Forgot password?"
+    }
+  ],
+  "Contact/messages/v8Xp5+": [
+    {
+      "type": 0,
+      "value": "I want to create account"
+    }
+  ],
+  "Contact/messages/vPJeeQ": [
+    {
+      "type": 0,
+      "value": "Contact details"
+    }
+  ],
+  "Contact/messages/xRJQ5g": [
+    {
+      "type": 0,
+      "value": "Provide a new password for your account"
+    }
+  ],
+  "DeliveryMethods/messages/DGFTo/": [
+    {
+      "type": 1,
+      "value": "min"
+    },
+    {
+      "type": 0,
+      "value": "-"
+    },
+    {
+      "type": 1,
+      "value": "max"
+    },
+    {
+      "type": 0,
+      "value": " business days"
+    }
+  ],
+  "DeliveryMethods/messages/IPzOnb": [
+    {
+      "type": 0,
+      "value": "delivery methods"
+    }
+  ],
+  "DeliveryMethods/messages/TitWRN": [
+    {
+      "type": 0,
+      "value": "Not applicable"
+    }
+  ],
+  "DeliveryMethods/messages/U/hMpC": [
+    {
+      "type": 0,
+      "value": "Delivery methods"
+    }
+  ],
+  "DeliveryMethods/messages/ZHOxoA": [
+    {
+      "type": 0,
+      "value": "Delivery method"
+    }
+  ],
+  "EmptyCartPage/messages/CLKTRp": [
+    {
+      "type": 0,
+      "value": "Go back to store"
+    }
+  ],
+  "EmptyCartPage/messages/CMDZDI": [
+    {
+      "type": 0,
+      "value": "Add anything to the cart to continue"
+    }
+  ],
+  "EmptyCartPage/messages/qfic6J": [
+    {
+      "type": 0,
+      "value": "Your cart is empty"
+    }
+  ],
+  "ManualSaveAddressForm/messages/BfROpq": [
+    {
+      "type": 0,
+      "value": "Save address"
+    }
+  ],
+  "ManualSaveAddressForm/messages/NeZoqm": [
+    {
+      "type": 0,
+      "value": "Delete address"
+    }
+  ],
+  "ManualSaveAddressForm/messages/a4P38R": [
+    {
+      "type": 0,
+      "value": "Cancel editing"
+    }
+  ],
+  "ManualSaveAddressForm/messages/js69XA": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "ManualSaveAddressForm/messages/khhC7s": [
+    {
+      "type": 0,
+      "value": "Save address"
+    }
+  ],
+  "OrderInfo/messages/4IPxGY": [
+    {
+      "type": 0,
+      "value": "The order has not been paid for. If you ordered a payment - check for the confirmation."
+    }
+  ],
+  "OrderInfo/messages/9VWqRC": [
+    {
+      "type": 0,
+      "value": "Payment"
+    }
+  ],
+  "OrderInfo/messages/H+et6P": [
+    {
+      "type": 0,
+      "value": "Pay for the order"
+    }
+  ],
+  "OrderInfo/messages/MY0OAh": [
+    {
+      "type": 0,
+      "value": "Your payment is being processed."
+    }
+  ],
+  "OrderInfo/messages/VjsJkY": [
+    {
+      "type": 0,
+      "value": "Order #"
+    },
+    {
+      "type": 1,
+      "value": "number"
+    },
+    {
+      "type": 0,
+      "value": " confirmed"
+    }
+  ],
+  "OrderInfo/messages/fdFTXC": [
+    {
+      "type": 0,
+      "value": "order pay"
+    }
+  ],
+  "OrderInfo/messages/nkRLWD": [
+    {
+      "type": 0,
+      "value": "We could not fetch information about your payment. If you ordered a payment - check for the confirmation and contact the store."
+    }
+  ],
+  "OrderInfo/messages/ty5n+J": [
+    {
+      "type": 0,
+      "value": "Thank you for placing your order. We’ve received it and we will contact you as soon as your package is shipped. A confirmation email has been sent to "
+    },
+    {
+      "type": 1,
+      "value": "email"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "OrderInfo/messages/vcXZR6": [
+    {
+      "type": 0,
+      "value": "We've received your payment"
+    }
+  ],
+  "PageNotFound/messages/Q7DOPP": [
+    {
+      "type": 0,
+      "value": "We couldn’t fetch information about your checkout. Go back to the store and try again."
+    }
+  ],
+  "PasswordInput/messages/fClTvW": [
+    {
+      "type": 0,
+      "value": "change password visibility"
+    }
+  ],
+  "PaymentSection/messages/8YE5b7": [
+    {
+      "type": 0,
+      "value": "Payment providers"
+    }
+  ],
+  "PaymentSection/messages/FK5Bg/": [
+    {
+      "type": 0,
+      "value": "payment providers"
+    }
+  ],
+  "PaymentSection/messages/bFYz7Q": [
+    {
+      "type": 0,
+      "value": "Drop in"
+    }
+  ],
+  "PaymentSection/messages/im88Fe": [
+    {
+      "type": 0,
+      "value": "Credit card"
+    }
+  ],
+  "PaymentSection/messages/jdRifS": [
+    {
+      "type": 0,
+      "value": "PayPal"
+    }
+  ],
+  "PaymentSection/messages/p7Zg+S": [
+    {
+      "type": 0,
+      "value": "Apple Pay"
+    }
+  ],
+  "ShippingAddressSection/messages/BUg4yp": [
+    {
+      "type": 0,
+      "value": "Shipping address"
+    }
+  ],
+  "Summary/messages/+3aZyi": [
+    {
+      "type": 0,
+      "value": "shippingCost"
+    }
+  ],
+  "Summary/messages/0e730y": [
+    {
+      "type": 0,
+      "value": "single piece price"
+    }
+  ],
+  "Summary/messages/5J0ywS": [
+    {
+      "type": 0,
+      "value": "quantity"
+    }
+  ],
+  "Summary/messages/62kM+I": [
+    {
+      "type": 0,
+      "value": "Summary"
+    }
+  ],
+  "Summary/messages/8yNMpu": [
+    {
+      "type": 0,
+      "value": "remove promo code"
+    }
+  ],
+  "Summary/messages/9hELnS": [
+    {
+      "type": 0,
+      "value": "subtotal price"
+    }
+  ],
+  "Summary/messages/CDMWR5": [
+    {
+      "type": 0,
+      "value": "giftCard"
+    }
+  ],
+  "Summary/messages/DrvEK3": [
+    {
+      "type": 0,
+      "value": "total price"
+    }
+  ],
+  "Summary/messages/I+Nu5r": [
+    {
+      "type": 0,
+      "value": "Shipping cost"
+    }
+  ],
+  "Summary/messages/LXBBAY": [
+    {
+      "type": 0,
+      "value": "Gift Card: "
+    },
+    {
+      "type": 1,
+      "value": "giftCardCode"
+    }
+  ],
+  "Summary/messages/LmzMmY": [
+    {
+      "type": 0,
+      "value": "each"
+    }
+  ],
+  "Summary/messages/MgTWsL": [
+    {
+      "type": 0,
+      "value": "Voucher: "
+    },
+    {
+      "type": 1,
+      "value": "voucherCode"
+    }
+  ],
+  "Summary/messages/U9SMA8": [
+    {
+      "type": 0,
+      "value": "Add gift card or discount code"
+    }
+  ],
+  "Summary/messages/ZAp08H": [
+    {
+      "type": 0,
+      "value": "summary item name"
+    }
+  ],
+  "Summary/messages/eUwD3W": [
+    {
+      "type": 0,
+      "value": "includes "
+    },
+    {
+      "type": 1,
+      "value": "taxCost"
+    },
+    {
+      "type": 0,
+      "value": " tax"
+    }
+  ],
+  "Summary/messages/fDpo5E": [
+    {
+      "type": 0,
+      "value": "Total price"
+    }
+  ],
+  "Summary/messages/gfKEVQ": [
+    {
+      "type": 0,
+      "value": "Apply"
+    }
+  ],
+  "Summary/messages/r/8W3/": [
+    {
+      "type": 0,
+      "value": "undiscounted price"
+    }
+  ],
+  "Summary/messages/sUYq4a": [
+    {
+      "type": 0,
+      "value": "apply"
+    }
+  ],
+  "Summary/messages/svpQPb": [
+    {
+      "type": 0,
+      "value": "voucher"
+    }
+  ],
+  "Summary/messages/xUvWaP": [
+    {
+      "type": 0,
+      "value": "Subtotal"
+    }
+  ],
+  "Summary/messages/ydrYcS": [
+    {
+      "type": 0,
+      "value": "variant name"
+    }
+  ],
+  "UserAddressSection/messages/E6w89b": [
+    {
+      "type": 0,
+      "value": "add address"
+    }
+  ],
+  "UserAddressSection/messages/xPCC/5": [
+    {
+      "type": 0,
+      "value": "Add address"
+    }
+  ],
+  "lib/commonMessages/03Jmny": [
+    {
+      "type": 0,
+      "value": "Processing..."
+    }
+  ],
+  "useAddressFormUtils/messages/0KU6nT": [
+    {
+      "type": 0,
+      "value": "Postal code"
+    }
+  ],
+  "useAddressFormUtils/messages/7bJ7Hd": [
+    {
+      "type": 0,
+      "value": "City area"
+    }
+  ],
+  "useAddressFormUtils/messages/Jbz2k6": [
+    {
+      "type": 0,
+      "value": "First name"
+    }
+  ],
+  "useAddressFormUtils/messages/K/a8rS": [
+    {
+      "type": 0,
+      "value": "Last name"
+    }
+  ],
+  "useAddressFormUtils/messages/KyH9NK": [
+    {
+      "type": 0,
+      "value": "Country"
+    }
+  ],
+  "useAddressFormUtils/messages/OxxX1m": [
+    {
+      "type": 0,
+      "value": "Post town"
+    }
+  ],
+  "useAddressFormUtils/messages/QXvSmh": [
+    {
+      "type": 0,
+      "value": "Company"
+    }
+  ],
+  "useAddressFormUtils/messages/X/8oa4": [
+    {
+      "type": 0,
+      "value": "District"
+    }
+  ],
+  "useAddressFormUtils/messages/X51P1g": [
+    {
+      "type": 0,
+      "value": "City"
+    }
+  ],
+  "useAddressFormUtils/messages/XI2F1P": [
+    {
+      "type": 0,
+      "value": "Province"
+    }
+  ],
+  "useAddressFormUtils/messages/Y6dLvp": [
+    {
+      "type": 0,
+      "value": "Street address"
+    }
+  ],
+  "useAddressFormUtils/messages/Zdvjjr": [
+    {
+      "type": 0,
+      "value": "State"
+    }
+  ],
+  "useAddressFormUtils/messages/dxC3yk": [
+    {
+      "type": 0,
+      "value": "Country area"
+    }
+  ],
+  "useAddressFormUtils/messages/ljLaVr": [
+    {
+      "type": 0,
+      "value": "Phone number"
+    }
+  ],
+  "useAddressFormUtils/messages/mbEUWh": [
+    {
+      "type": 0,
+      "value": "Street address (continue)"
+    }
+  ],
+  "useAddressFormUtils/messages/tGSbvd": [
+    {
+      "type": 0,
+      "value": "Zip code"
+    }
+  ],
+  "useAlerts/messages/2leXNc": [
+    {
+      "type": 0,
+      "value": "Invalid postal code was provided for shipping address"
+    }
+  ],
+  "useAlerts/messages/7/Bo7+": [
+    {
+      "type": 0,
+      "value": "Please fill in email before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/7yexjS": [
+    {
+      "type": 0,
+      "value": "Sorry, something went wrong. Please try again in a moment."
+    }
+  ],
+  "useAlerts/messages/8fk/m5": [
+    {
+      "type": 0,
+      "value": "Invalid postal code was provided for billing address"
+    }
+  ],
+  "useAlerts/messages/ESuR0A": [
+    {
+      "type": 0,
+      "value": "Account with provided email is inactive"
+    }
+  ],
+  "useAlerts/messages/Em5uvP": [
+    {
+      "type": 0,
+      "value": "Please fill in a valid shipping address before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/EwTHLm": [
+    {
+      "type": 0,
+      "value": "Provided reset password token is expired or invalid"
+    }
+  ],
+  "useAlerts/messages/FggIw/": [
+    {
+      "type": 0,
+      "value": "User with provided email has not been found"
+    }
+  ],
+  "useAlerts/messages/JBUgUT": [
+    {
+      "type": 0,
+      "value": "Please select country area for billing address"
+    }
+  ],
+  "useAlerts/messages/KXWHsh": [
+    {
+      "type": 0,
+      "value": "Couldn't update line - buy limit for this item exceeded"
+    }
+  ],
+  "useAlerts/messages/LrYpGU": [
+    {
+      "type": 0,
+      "value": "Account with provided email was not found"
+    }
+  ],
+  "useAlerts/messages/Vx4W5S": [
+    {
+      "type": 0,
+      "value": "Cannot create account with email that is already used"
+    }
+  ],
+  "useAlerts/messages/Xd2N1c": [
+    {
+      "type": 0,
+      "value": "Provided password is too short"
+    }
+  ],
+  "useAlerts/messages/a77ZZO": [
+    {
+      "type": 0,
+      "value": "Email cannot be empty"
+    }
+  ],
+  "useAlerts/messages/b1SQCj": [
+    {
+      "type": 0,
+      "value": "Please select a payment method before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/cRtX18": [
+    {
+      "type": 0,
+      "value": "Please provide valid email before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/dCkgOw": [
+    {
+      "type": 0,
+      "value": "Please set user password before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/dKzVev": [
+    {
+      "type": 0,
+      "value": "Provided email is invalid"
+    }
+  ],
+  "useAlerts/messages/glpqLA": [
+    {
+      "type": 0,
+      "value": "Couldn't finalize checkout, please try again"
+    }
+  ],
+  "useAlerts/messages/iTl+Qz": [
+    {
+      "type": 0,
+      "value": "Account hasn't been confirmed"
+    }
+  ],
+  "useAlerts/messages/k0+Kez": [
+    {
+      "type": 0,
+      "value": "Please choose delivery method before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/mJ81Pa": [
+    {
+      "type": 0,
+      "value": "Provided password is too short"
+    }
+  ],
+  "useAlerts/messages/nX71XF": [
+    {
+      "type": 0,
+      "value": "Invalid credentials provided to login"
+    }
+  ],
+  "useAlerts/messages/oyFho2": [
+    {
+      "type": 0,
+      "value": "Couldn't update line - insufficient stock in warehouse"
+    }
+  ],
+  "useAlerts/messages/rVGqj8": [
+    {
+      "type": 0,
+      "value": "Please provide a valid email before finalizing checkout"
+    }
+  ],
+  "useAlerts/messages/uc7gzX": [
+    {
+      "type": 0,
+      "value": "Invalid postal code provided to address form"
+    }
+  ],
+  "useAlerts/messages/vn9b/m": [
+    {
+      "type": 0,
+      "value": "Please select country area for shipping address"
+    }
+  ],
+  "useAlerts/messages/wQ7eb8": [
+    {
+      "type": 0,
+      "value": "User account with provided email is inactive"
+    }
+  ],
+  "useAlerts/messages/yGh+vi": [
+    {
+      "type": 0,
+      "value": "Invalid promo code provided"
+    }
+  ],
+  "useErrorMessages/messages/+WMTds": [
+    {
+      "type": 0,
+      "value": "Chosen quantity is more than limit allowed."
+    }
+  ],
+  "useErrorMessages/messages/GmjKcs": [
+    {
+      "type": 0,
+      "value": "Required field"
+    }
+  ],
+  "useErrorMessages/messages/GrUSxl": [
+    {
+      "type": 0,
+      "value": "Value must be unique"
+    }
+  ],
+  "useErrorMessages/messages/OOj8Aa": [
+    {
+      "type": 0,
+      "value": "Not enough of chosen item in stock."
+    }
+  ],
+  "useErrorMessages/messages/RcmVPj": [
+    {
+      "type": 0,
+      "value": "Missing fields in address form:"
+    }
+  ],
+  "useErrorMessages/messages/W/xrYy": [
+    {
+      "type": 0,
+      "value": "Provided password is too short. Minimum length is 8 characters."
+    }
+  ],
+  "useErrorMessages/messages/YaHFRg": [
+    {
+      "type": 0,
+      "value": "Invalid credentials provided at login."
+    }
+  ],
+  "useErrorMessages/messages/ZnQ753": [
+    {
+      "type": 0,
+      "value": "Provided password is invalid."
+    }
+  ],
+  "useErrorMessages/messages/ebt/9V": [
+    {
+      "type": 0,
+      "value": "Invalid value"
+    }
+  ],
+  "useErrorMessages/messages/v+nLdX": [
+    {
+      "type": 0,
+      "value": "Provided password is too common. Use something more fancy."
+    }
+  ],
+  "useErrorMessages/messages/wVsmCj": [
+    {
+      "type": 0,
+      "value": "Provided password is too similar to your previous password."
+    }
+  ]
+}

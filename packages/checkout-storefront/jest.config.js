@@ -20,6 +20,7 @@ module.exports = {
       },
     },
   },
+  transformIgnorePatterns: ["<rootDir>/node_modules/(?!url-join)"],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: "<rootDir>/",

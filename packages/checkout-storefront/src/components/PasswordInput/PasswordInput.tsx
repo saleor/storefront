@@ -6,6 +6,7 @@ import { Control } from "react-hook-form";
 import { IconButton } from "@/checkout-storefront/components/IconButton";
 import { TextInput, TextInputProps } from "@/checkout-storefront/components/TextInput";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { labels } from "@/checkout-storefront/components/PasswordInput/messages";
 
 const PasswordInputComponent = <
   TControl extends Control<any, any>,
@@ -23,7 +24,7 @@ const PasswordInputComponent = <
       <div className="password-input-icon">
         <IconButton
           variant="bare"
-          ariaLabel={formatMessage("passwordVisibilityLabel")}
+          ariaLabel={formatMessage(labels.passwordVisibility)}
           onClick={() => setPasswordVisible(!passwordVisible)}
           icon={
             <img src={passwordVisible ? getSvgSrc(EyeIcon) : getSvgSrc(EyeHiddenIcon)} alt="" />

@@ -13,6 +13,7 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 import { AddressListProvider } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
 import { useCheckout } from "@/checkout-storefront/hooks";
+import { userAddressLabels, userAddressMessages } from "./messages";
 
 export interface UserAddressSectionProps extends UseErrors<UserAddressFormData> {
   defaultAddress: Address;
@@ -67,9 +68,9 @@ export const UserAddressSection: React.FC<UserAddressSectionProps> = ({
             <Title>{title}</Title>
             <Button
               variant="secondary"
-              ariaLabel={formatMessage("addAddressLabel")}
+              ariaLabel={formatMessage(userAddressLabels.addAddress)}
               onClick={() => setDisplayAddressCreate(true)}
-              label={formatMessage("addAddress")}
+              label={formatMessage(userAddressMessages.addAddress)}
               className="mb-4 w-full"
             />
             <UserAddressList type={type} onEditChange={(id: string) => setEditedAddressId(id)} />

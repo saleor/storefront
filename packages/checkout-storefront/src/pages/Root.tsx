@@ -1,10 +1,10 @@
 import { createClient, Provider as UrqlProvider, ClientOptions } from "urql";
 import { ErrorBoundary } from "react-error-boundary";
-import { I18nProvider } from "@react-aria/i18n";
 import { createFetch, createSaleorClient, SaleorProvider } from "@saleor/sdk";
+import { IntlProvider } from "react-intl";
 
 import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/views/Checkout";
-import { getCurrentRegion } from "@/checkout-storefront/lib/regions";
+import { DEFAULT_LOCALE, getCurrentLocale } from "@/checkout-storefront/lib/regions";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
 import {
@@ -51,7 +51,7 @@ export const Root = ({ env }: RootProps) => {
   return (
     // @ts-ignore React 17 <-> 18 type mismatch
     <SaleorProvider client={saleorClient}>
-      <I18nProvider locale={getCurrentRegion()}>
+      <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={getCurrentLocale()}>
         <UrqlProvider value={client}>
           <AppConfigProvider env={env}>
             <div className="app">
@@ -70,7 +70,7 @@ export const Root = ({ env }: RootProps) => {
             </div>
           </AppConfigProvider>
         </UrqlProvider>
-      </I18nProvider>
+      </IntlProvider>
     </SaleorProvider>
   );
 };

@@ -12,8 +12,18 @@ export const useCheckoutUpdateStateTrigger = (
   updating: boolean
 ) => {
   const { setValue } = useFormContext<CheckoutFormData>();
+  const stateKey = `updateState.${scope}` as keyof CheckoutFormData;
 
   useEffect(() => {
-    setValue(`updateState.${scope}`, updating);
+    if (updating) {
+      setValue(stateKey, updating);
+    } else {
+      // temporary solution to make sure we wait for checkout fetch
+      // that'd happen soon after any mutations. will be fixed
+      // once we implement advanced caching for urql
+      setTimeout(() => {
+        setValue(stateKey, updating);
+      }, 2000);
+    }
   }, [updating, scope]);
 };

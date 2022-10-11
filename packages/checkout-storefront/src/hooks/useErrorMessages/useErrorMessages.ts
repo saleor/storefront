@@ -1,13 +1,14 @@
-import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { ErrorCode, GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { useCallback, useMemo } from "react";
-import { MessageKey, useFormattedMessages } from "./useFormattedMessages";
-import { warnAboutMissingTranslation } from "./useFormattedMessages/utils";
+import { useFormattedMessages } from "../useFormattedMessages";
+import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
+import { errorMessages } from "./messages";
 
-export type ErrorMessages = Record<ErrorCode, string>;
+export type ErrorMessages = Record<GenericErrorCode, string>;
 
 interface UseErrorMessages {
   errorMessages: ErrorMessages;
-  getMessageByErrorCode: (code: ErrorCode) => string;
+  getMessageByErrorCode: (code: GenericErrorCode) => string;
 }
 
 const errorMessageKeys: ErrorCode[] = ["invalid", "required", "unique"];
@@ -18,7 +19,7 @@ export const useErrorMessages = (): UseErrorMessages => {
   const getMessageByErrorCode = useCallback(
     (errorCode: ErrorCode) => {
       try {
-        const formattedMessage = formatMessage(errorCode as MessageKey);
+        const formattedMessage = formatMessage(errorMessages[errorCode]);
         return formattedMessage;
       } catch (e) {
         warnAboutMissingTranslation(errorCode);
@@ -28,7 +29,7 @@ export const useErrorMessages = (): UseErrorMessages => {
     [formatMessage]
   );
 
-  const errorMessages: ErrorMessages = useMemo(
+  const translatedErrorMessages: ErrorMessages = useMemo(
     () =>
       errorMessageKeys.reduce(
         (result, key) => ({
@@ -41,7 +42,7 @@ export const useErrorMessages = (): UseErrorMessages => {
   );
 
   return {
-    errorMessages,
+    errorMessages: translatedErrorMessages,
     getMessageByErrorCode,
   };
 };

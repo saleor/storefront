@@ -5,7 +5,7 @@ export type Money = {
 
 export const getFormattedMoney = <TMoney extends Money>(
   money: TMoney | undefined | null,
-  negative: boolean = false
+  negative = false
 ) => {
   if (!money) {
     return "";

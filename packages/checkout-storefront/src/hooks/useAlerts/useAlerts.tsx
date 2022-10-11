@@ -1,5 +1,5 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import { MessageKey, useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./types";
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
@@ -7,13 +7,13 @@ import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/us
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import { Text } from "@saleor/ui-kit";
 import { useCallback } from "react";
+import { errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
+import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 
-export interface ScopedAlertsProps {
+function useAlerts(scope: CheckoutScope): {
   showErrors: (errors: ApiErrors<any>) => void;
   showCustomErrors: (errors: CustomError[]) => void;
-}
-
-function useAlerts(scope: CheckoutScope): ScopedAlertsProps;
+};
 
 function useAlerts(): {
   showErrors: (errors: ApiErrors<any>, scope: CheckoutScope) => void;
@@ -22,24 +22,30 @@ function useAlerts(): {
 
 function useAlerts(globalScope?: any): any {
   const formatMessage = useFormattedMessages();
-  const { getMessageByErrorCode } = useErrorMessages();
   const getParsedApiErrors = useGetParsedApiErrors();
 
+  const getMessageKey = ({ scope, field, code }: AlertErrorData, { error } = { error: false }) => {
+    const keyBase = `${scope}-${field}-${code}`;
+    return camelCase(error ? `${keyBase}-error` : keyBase);
+  };
+
   const getErrorMessage = useCallback(
-    ({ scope, code, field }: AlertErrorData): string => {
-      const messageKey = camelCase(`${scope}-${field}-${code}-error`);
+    ({ code, field, scope }: AlertErrorData): string => {
+      const messageKey = getMessageKey(
+        { code, field, scope },
+        { error: true }
+      ) as keyof typeof errorMessages;
 
       try {
-        const fullMessage = formatMessage(messageKey as MessageKey);
+        const fullMessage = formatMessage(errorMessages[messageKey]);
 
         return fullMessage;
       } catch (e) {
         warnAboutMissingTranslation(messageKey);
-
-        return `${getMessageByErrorCode(code)}: ${formatMessage(field as MessageKey)}`;
+        return formatMessage(errorMessages.somethingWentWrong);
       }
     },
-    [formatMessage, getMessageByErrorCode]
+    [formatMessage]
   );
 
   const getParsedAlert = useCallback(
@@ -79,18 +85,17 @@ function useAlerts(globalScope?: any): any {
     [getParsedApiErrors, showDefaultAlert, globalScope]
   );
 
-  const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) =>
-    errors.forEach((error) => {
-      if ("message" in error) {
-        showAlert({ message: error.message });
-      } else {
-        showDefaultAlert({
-          scope: error.scope || scope,
-          field: error.field || "",
-          code: error.code,
-        });
+  const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) => {
+    const parsedErrors = errors.map((error) => ({ field: "", message: "", code: "", ...error }));
+
+    parsedErrors.forEach(({ field, message, code }) => {
+      if (message) {
+        showAlert({ message });
+      } else if (field && code) {
+        showDefaultAlert({ scope, field, code: code as ErrorCode });
       }
     });
+  };
 
   return { showErrors, showCustomErrors };
 }

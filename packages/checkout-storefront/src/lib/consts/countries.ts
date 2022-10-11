@@ -31,7 +31,7 @@ export const isValidCountryCode = (countryCode: CountryCode): boolean =>
   countries.map(({ code }) => code).includes(countryCode);
 
 export const getCountryByCountryCode = (countryCode: CountryCode): Country => {
-  if (!isValidCountryCode(countryCode as CountryCode)) {
+  if (!isValidCountryCode(countryCode)) {
     return defaultCountry;
   }
 

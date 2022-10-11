@@ -22,7 +22,6 @@
   "dependencies": {
     "@apollo/client": "3.5.10",
     "@formatjs/swc-plugin": "^1.4.0",
-    "@formatjs/ts-transformer": "^3.9.2",
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.15",
     "@headlessui/react": "^1.6.0",
     "@heroicons/react": "^1.0.6",

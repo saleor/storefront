@@ -6,8 +6,10 @@ import {
 } from "@/checkout-storefront/components/AddressForm/useAddressForm";
 import { Button } from "@/checkout-storefront/components/Button";
 import { IconButton } from "@/checkout-storefront/components/IconButton";
+import { manualSaveAddressFormMessages, manualSaveAddressFormLabels } from "./messages";
 import { UseErrors, useFormattedMessages } from "@/checkout-storefront/hooks";
 import { TrashIcon } from "@/checkout-storefront/icons";
+import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import React, { useCallback } from "react";
 
@@ -48,7 +50,7 @@ export const ManualSaveAddressForm: React.FC<ManualSaveAddressFormProps> = ({
         {onDelete && (
           <IconButton
             className="mr-2"
-            ariaLabel={formatMessage("deleteAddressLabel")}
+            ariaLabel={formatMessage(manualSaveAddressFormLabels.delete)}
             onClick={onDelete}
             icon={<img src={getSvgSrc(TrashIcon)} alt="" />}
           />
@@ -56,23 +58,23 @@ export const ManualSaveAddressForm: React.FC<ManualSaveAddressFormProps> = ({
 
         <Button
           className="mr-2"
-          ariaLabel={formatMessage("cancelLabel")}
+          ariaLabel={formatMessage(manualSaveAddressFormLabels.cancel)}
           variant="secondary"
           onClick={handleCancel}
-          label={formatMessage("cancel")}
+          label={formatMessage(manualSaveAddressFormMessages.cancel)}
         />
         {loading ? (
           <Button
             disabled
-            ariaLabel={formatMessage("saveLabel")}
+            ariaLabel={formatMessage(manualSaveAddressFormLabels.save)}
             onClick={handleSubmit(handleOnSubmit)}
-            label={formatMessage("processing")}
+            label={formatMessage(commonMessages.processing)}
           />
         ) : (
           <Button
-            ariaLabel={formatMessage("saveLabel")}
+            ariaLabel={formatMessage(manualSaveAddressFormLabels.save)}
             onClick={handleSubmit(handleOnSubmit)}
-            label={formatMessage("saveAddress")}
+            label={formatMessage(manualSaveAddressFormMessages.save)}
           />
         )}
       </div>

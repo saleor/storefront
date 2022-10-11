@@ -3,6 +3,7 @@ import { Text } from "@saleor/ui-kit";
 import { Button } from "@/checkout-storefront/components/Button";
 import { Title } from "@/checkout-storefront/components/Title";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { contactLabels } from "@/checkout-storefront/sections/Contact/messages";
 
 export interface SignInFormContainerProps {
   title: string;
@@ -35,7 +36,7 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
             )}
             {redirectButtonLabel && (
               <Button
-                ariaLabel={formatMessage("sectionChangeButtonLabel")}
+                ariaLabel={formatMessage(contactLabels.changeSection)}
                 onClick={onSectionChange}
                 variant="tertiary"
                 label={redirectButtonLabel}

@@ -1,6 +1,5 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import {
-  MessageKey,
   useAddressFormUtils,
   useAlerts,
   useCheckout,
@@ -13,6 +12,9 @@ import { flushSync } from "react-dom";
 import { UseFormReturn } from "react-hook-form";
 import { ValidationError } from "yup";
 import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
+import { MessageDescriptor } from "react-intl";
+import { checkoutFormMessages } from "./messages";
+import { useEffect } from "react";
 
 interface UseCheckoutFormValidation extends UseFormReturn<CheckoutFormData> {
   schema: { validateSyncAt: (key: keyof CheckoutFormData, data: CheckoutFormData) => void };
@@ -24,37 +26,46 @@ export const useCheckoutFormValidation = ({
   schema,
 }: UseCheckoutFormValidation) => {
   const formatMessage = useFormattedMessages();
-  const { checkout } = useCheckout();
+  const { checkout, loading } = useCheckout();
   const { shippingAddress, billingAddress } = checkout;
   const { showCustomErrors } = useAlerts("checkoutFinalize");
   const { authenticated } = useAuthState();
 
+  useEffect(() => {
+    setValue("updateState.checkoutFetch", loading);
+  }, [setValue, loading]);
+
   const {
     hasAllRequiredFields: shippingHasAllRequiredFields,
     getMissingFieldsFromAddress: getMissingFieldsFromShipping,
+    getFieldLabel: getShippingFieldLabel,
   } = useAddressFormUtils(shippingAddress?.country?.code as CountryCode);
 
   const {
     hasAllRequiredFields: billingHasAllRequiredFields,
     getMissingFieldsFromAddress: getMissingFieldsFromBilling,
+    getFieldLabel: getBillingFieldLabel,
   } = useAddressFormUtils(billingAddress?.country?.code as CountryCode);
 
   const getShippingMissingFieldsErrorMessage = () =>
     getAddressMissingFieldsErrorMessage(
-      "missingFieldsInShippingAddress",
+      checkoutFormMessages.missingFieldsInShippingAddress,
+      getShippingFieldLabel,
       getMissingFieldsFromShipping(shippingAddress)
     );
 
   const getBillingMissingFieldsErrorMessage = () =>
     getAddressMissingFieldsErrorMessage(
-      "missingFieldsInBillingAddress",
+      checkoutFormMessages.missingFieldsInBillingAddress,
+      getBillingFieldLabel,
       getMissingFieldsFromBilling(billingAddress)
     );
 
-  const getAddressMissingFieldsErrorMessage = (messageKey: MessageKey, fields: AddressField[]) =>
-    `${formatMessage(messageKey)}: ${fields
-      .map((field) => formatMessage(field as MessageKey))
-      .join(", ")}`;
+  const getAddressMissingFieldsErrorMessage = (
+    message: MessageDescriptor,
+    getFieldLabel: (field: AddressField) => string,
+    fields: AddressField[]
+  ) => `${formatMessage(message)}: ${fields.map((field) => getFieldLabel(field)).join(", ")}`;
 
   const ensureValidCheckout = (): boolean => {
     let isValid = true;
@@ -93,7 +104,6 @@ export const useCheckoutFormValidation = ({
       showCustomErrors([
         {
           message: getShippingMissingFieldsErrorMessage(),
-          code: "invalid",
         },
       ]);
       isValid = false;
@@ -111,7 +121,6 @@ export const useCheckoutFormValidation = ({
       showCustomErrors([
         {
           message: getBillingMissingFieldsErrorMessage(),
-          code: "invalid",
         },
       ]);
       isValid = false;
