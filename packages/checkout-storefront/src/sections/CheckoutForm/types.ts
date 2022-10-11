@@ -8,7 +8,7 @@ export interface CheckoutFormData {
   paymentProviderId: PaymentProviderID;
   paymentMethodId: PaymentMethodID;
   validating: boolean;
-  updateState: Pick<Record<CheckoutScope, boolean>, CheckoutUpdateStateScope>;
+  updateState: Record<CheckoutUpdateStateScope, boolean>;
 }
 
 export type CheckoutUpdateStateScope =
