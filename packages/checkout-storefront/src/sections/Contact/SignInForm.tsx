@@ -20,8 +20,6 @@ import { useEffect } from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { contactLabels, contactMessages } from "./messages";
-import { useCheckoutCustomerAttachMutation } from "@/checkout-storefront/graphql";
-import { useCheckout, useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 
 interface SignInFormProps extends Pick<SignInFormContainerProps, "onSectionChange"> {

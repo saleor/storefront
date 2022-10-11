@@ -3,7 +3,7 @@ import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCheckoutFormValidation } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFormValidation";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 
@@ -65,7 +65,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
 
   // not using form handleSubmit because it wouldn't allow us to have
   // a flow with steps and errors in between
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (!hasFinishedApiChanges) {
       setIsProcessingApiChanges(true);
       setSubmitInProgress(true);
@@ -78,7 +78,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     }
 
     checkoutFinalize(getValues());
-  };
+  }, [checkoutFinalize, ensureValidCheckout, getValues, hasFinishedApiChanges]);
 
   useEffect(() => {
     if (!hasFinishedApiChanges) {
@@ -90,7 +90,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     if (submitInProgress) {
       handleSubmit();
     }
-  }, [hasFinishedApiChanges]);
+  }, [hasFinishedApiChanges, handleSubmit, submitInProgress]);
 
   return { methods, handleSubmit, isProcessingApiChanges };
 };

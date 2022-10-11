@@ -11,6 +11,7 @@ import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 import { CheckIcon } from "@/checkout-storefront/icons";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { orderInfoLabels, orderInfoMessages } from "./messages";
+import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
@@ -41,7 +42,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
           <Text color="success" className="mr-1">
             {formatMessage(orderInfoMessages.orderPaid)}
           </Text>
-          <img src={getSvgSrc(CheckIcon)} />
+          <img src={getSvgSrc(CheckIcon)} alt={formatMessage(imageAltMessages.checkIcon)} />
         </div>
       );
     }
