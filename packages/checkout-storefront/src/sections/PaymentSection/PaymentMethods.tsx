@@ -56,7 +56,6 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   const availablePaymentMethods = getParsedPaymentMethods(allPaymentOptions);
 
   useEffect(() => {
-    console.log("LOOOL");
     if (loading) {
       return;
     }
