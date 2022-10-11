@@ -3,5 +3,5 @@
   "framework": "nextjs",
   "installCommand": "pnpm --version && pnpm install --frozen-lockfile",
   "buildCommand": "cd ../.. && pnpm run build:storefront",
-  "ignoreCommand": "npx @typeofweb/ignore-monorepo-buildstep@latest"
+  "ignoreCommand": " git branch --show-current -q | grep -v \"demo\\|main\\|canary\" && npx @typeofweb/ignore-monorepo-buildstep@latest"
 }
