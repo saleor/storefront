@@ -56,7 +56,7 @@ export function VariantSelector({ product, selectedVariantID }: VariantSelectorP
                 <div
                   className={clsx(
                     "bg-white w-full h-full relative cursor-pointer object-contain border-2",
-                    checked && "border-brand translate-y-[-10px] translate-x-[-10px]",
+                    checked && "border-brand",
                     !checked && "hover:border-main border-main-2"
                   )}
                 >
