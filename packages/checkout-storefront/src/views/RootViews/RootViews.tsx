@@ -5,8 +5,9 @@ import {
   OrderConfirmationSkeleton,
 } from "@/checkout-storefront/views/OrderConfirmation";
 import { Suspense } from "react";
-import { DummyPayment } from "./DummyPayment";
-import { useFormattedMessages } from "../hooks";
+import { DummyPayment } from "../DummyPayment/DummyPayment";
+import { useFormattedMessages } from "../../hooks";
+import { rootViewsMessages } from "./messages";
 
 export const RootViews = () => {
   const orderId = getQueryVariables().orderId;
@@ -19,7 +20,9 @@ export const RootViews = () => {
         <Suspense
           fallback={
             <div className="h-screen w-screen flex items-center justify-center">
-              <span className="text-text-secondary">{formatMessage("loadingWithDots")}</span>
+              <span className="text-text-secondary">
+                {formatMessage(rootViewsMessages.loadingWithDots)}
+              </span>
             </div>
           }
         >

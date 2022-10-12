@@ -10,7 +10,7 @@ import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
 import { useMemo } from "react";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "../hooks/useAlerts/consts";
-import { RootViews } from "../views/RootViews";
+import { RootViews } from "../views/RootViews/RootViews";
 export interface RootProps {
   env: AppEnv;
 }

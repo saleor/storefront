@@ -1,14 +1,15 @@
 import { DummyPayRequestBody, DummyPayRequestResult } from "checkout-common";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Button, TextInput } from "../components";
-import { dummyPay as dummyPayRequest } from "../fetch";
-import { useOrderQuery } from "../graphql";
-import { useFetch, useFormattedMessages, useGetInputProps } from "../hooks";
-import { getQueryVariables } from "../lib/utils";
-import { useAppConfig } from "../providers/AppConfigProvider";
+import { Button, TextInput } from "../../components";
+import { dummyPay as dummyPayRequest } from "../../fetch";
+import { useOrderQuery } from "../../graphql";
+import { useFetch, useFormattedMessages, useGetInputProps } from "../../hooks";
+import { getQueryVariables } from "../../lib/utils";
+import { useAppConfig } from "../../providers/AppConfigProvider";
 import { toast } from "react-toastify";
 import { Text } from "@saleor/ui-kit";
+import { dummyPaymentMessages } from "./messages";
 
 const getOrderConfirmationUrl = () => {
   const url = new URL(window.location.href);
@@ -49,7 +50,7 @@ const useDummyPay = (): UseDummyPayValues => {
         showError(result.error);
       }
     } catch (e: unknown) {
-      const error = typeof e === "string" ? e : formatMessage("error");
+      const error = typeof e === "string" ? e : formatMessage(dummyPaymentMessages.error);
       showError(error);
     }
   };
@@ -91,16 +92,22 @@ export const DummyPayment = () => {
   return (
     <section className="h-screen flex justify-center items-center">
       <div className="flex flex-col gap-8">
-        <h2 className="font-bold text-4xl text-center">{formatMessage("dummyPayment")}</h2>
+        <h2 className="font-bold text-4xl text-center">
+          {formatMessage(dummyPaymentMessages.dummyPayment)}
+        </h2>
         <div className="checkout-form w-auto gap-4 px-4 py-4">
           <div className="flex flex-col">
             <p>
-              <span className="text-text-secondary">{formatMessage("orderTotalPrice")}</span>:{" "}
-              {orderPaymentAmount} {orderPaymentCurrency}
+              <span className="text-text-secondary">
+                {formatMessage(dummyPaymentMessages.orderTotalPrice)}
+              </span>
+              : {orderPaymentAmount} {orderPaymentCurrency}
             </p>
             <p>
-              <span className="text-text-secondary">{formatMessage("orderAlreadyPaid")}</span>:{" "}
-              {paymentCaptured?.amount} {paymentCaptured?.currency}
+              <span className="text-text-secondary">
+                {formatMessage(dummyPaymentMessages.orderAlreadyPaid)}
+              </span>
+              : {paymentCaptured?.amount} {paymentCaptured?.currency}
             </p>
           </div>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit(submitHandler)}>
@@ -108,7 +115,7 @@ export const DummyPayment = () => {
               {...getInputProps("amount")}
               name="amount"
               type="number"
-              label={formatMessage("dummyPaymentAmountPlaceholder", {
+              label={formatMessage(dummyPaymentMessages.dummyPaymentAmountPlaceholder, {
                 currency: orderPaymentCurrency.toUpperCase(),
               })}
               max={paymentBalance}
@@ -116,11 +123,11 @@ export const DummyPayment = () => {
             <Button
               disabled={orderResult.fetching}
               type="submit"
-              ariaLabel={formatMessage("dummyPay")}
+              ariaLabel={formatMessage(dummyPaymentMessages.dummyPay)}
               label={
                 dummyPayResult.loading
-                  ? formatMessage("loadingWithDots")
-                  : formatMessage("dummyPay")
+                  ? formatMessage(dummyPaymentMessages.loadingWithDots)
+                  : formatMessage(dummyPaymentMessages.dummyPay)
               }
             />
           </form>
