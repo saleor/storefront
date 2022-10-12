@@ -16,10 +16,12 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onClose, .
   const handleSubmit = async (formData: AddressFormData) => {
     const { hasErrors, errors } = await addressCreate(formData);
 
-    if (!hasErrors) {
+    if (hasErrors) {
       setApiErrors(errors);
-      onClose();
+      return;
     }
+
+    onClose();
   };
 
   return (

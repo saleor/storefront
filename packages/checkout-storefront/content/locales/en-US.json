@@ -3,13 +3,13 @@
     "developer_comment": "edit address accessibility label",
     "string": "edit address"
   },
-  "AddressSelectBox/messages/OzIgQf": {
-    "developer_comment": "edit address",
-    "string": "edit address"
-  },
   "AddressSelectBox/messages/X3KwgL": {
     "developer_comment": "can't ship to address",
     "string": "Can't ship to this address"
+  },
+  "AddressSelectBox/messages/rHpDYH": {
+    "developer_comment": "edit address",
+    "string": "edit"
   },
   "BillingAddressSection/messages/OLzmaE": {
     "developer_comment": "billing address",
@@ -334,6 +334,14 @@
   "lib/commonMessages/03Jmny": {
     "developer_comment": "processing",
     "string": "Processing..."
+  },
+  "lib/commonMessages/9NmWSQ": {
+    "developer_comment": "check icon",
+    "string": "check icon"
+  },
+  "lib/commonMessages/sklVAb": {
+    "developer_comment": "remove icon",
+    "string": "remove icon"
   },
   "useAddressFormUtils/messages/0KU6nT": {
     "developer_comment": "postal code",

@@ -23,7 +23,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({ onEditChange, 
           key={id}
           value={id}
           selectedValue={selectedAddressId}
-          onSelect={() => setSelectedAddressId(id)}
+          onChange={() => setSelectedAddressId(id)}
           address={{ ...rest }}
           onEdit={() => onEditChange(id)}
           unavailable={!isAvailable(rest)}

@@ -193,6 +193,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
   const handleAddressSelect = useCallback(
     (addressId: string) => {
+      console.log({ addressId });
       setSelectedAddressId(addressId);
       debouncedUpdate(getSelectedAddress(addressId) as AddressFragment);
     },
@@ -231,17 +232,8 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     }
   };
 
-  useEffect(handleDefaultAddressSet, [
-    defaultAddress?.id,
-    checkoutAddress?.id,
-    addressList.length,
-    addressList,
-    checkoutAddress,
-    defaultAddress,
-    getSelectedAddress,
-    handleAddressSelect,
-    isAvailable,
-  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(handleDefaultAddressSet, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
 
   const providerValues: ContextConsumerProps = useMemo(() => {
     return {

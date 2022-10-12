@@ -61,6 +61,11 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/uc7gzX",
     description: "user address update - postal code invalid error",
   },
+  userAddressCreatePostalCodeInvalidError: {
+    defaultMessage: "Invalid postal code provided to address form",
+    id: "useAlerts/messages/wLQO7F",
+    description: "user address create - postal code invalid error",
+  },
   userRegisterPasswordPasswordTooShortError: {
     defaultMessage: "Provided password is too short",
     id: "useAlerts/messages/mJ81Pa",
