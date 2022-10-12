@@ -62,8 +62,8 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 
     if (allPaymentOptions && !availablePaymentMethods.length) {
       throw new Error("No available payment providers");
-    } else if (!selectedPaymentMethod) {
-      setValue("paymentMethodId", availablePaymentMethods[0] as PaymentMethodID);
+    } else if (!selectedPaymentMethod && availablePaymentMethods[0]) {
+      setValue("paymentMethodId", availablePaymentMethods[0]);
     }
   }, [loading, allPaymentOptions, availablePaymentMethods, selectedPaymentMethod, setValue]);
 
