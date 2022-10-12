@@ -30,6 +30,11 @@ export const paymentMethodsMessages = defineMessages<PaymentMethodID>({
     id: "PaymentSection/messages/bFYz7Q",
     description: "dropin",
   },
+  dummy: {
+    defaultMessage: "Dummy",
+    id: "PaymentSection/messages/xXCQ+K",
+    description: "dummy payment method",
+  },
 });
 
 export const paymentSectionLabels = defineMessages({
