@@ -137,6 +137,12 @@
       "value": "Border Primary"
     }
   ],
+  "messages/paymentMethods/2dP9Gd": [
+    {
+      "type": 0,
+      "value": "Dummy Payment"
+    }
+  ],
   "messages/paymentMethods/6bexF4": [
     {
       "type": 0,
@@ -189,6 +195,12 @@
     {
       "type": 0,
       "value": "Webhook username"
+    }
+  ],
+  "messages/paymentProviders/LtD8zn": [
+    {
+      "type": 0,
+      "value": "Dummy Payment"
     }
   ],
   "messages/paymentProviders/WdX1+f": [
