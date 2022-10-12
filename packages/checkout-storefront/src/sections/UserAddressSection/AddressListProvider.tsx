@@ -183,6 +183,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     [addressList, handleCheckoutAddressUpdate, showErrors, isAvailable, userAddressCreate]
   );
 
+  // because eslint is unable to read deps inside of debounce
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdate = useCallback(
     debounce((address: AddressFragment) => {
@@ -233,7 +234,12 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleDefaultAddressSet, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
+  useEffect(handleDefaultAddressSet, [
+    defaultAddress?.id,
+    checkoutAddress?.id,
+    addressList.length,
+    getSelectedAddress,
+  ]);
 
   const providerValues: ContextConsumerProps = useMemo(() => {
     return {
