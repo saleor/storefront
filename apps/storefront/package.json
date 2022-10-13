@@ -15,8 +15,6 @@
     "check-types": "tsc --noEmit",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w",
     "paths": "pathpida --ignorePath ../../.gitignore",
-    "cy:run": "cypress run",
-    "cy:open": "cypress open",
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
