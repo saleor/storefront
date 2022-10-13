@@ -233,12 +233,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleDefaultAddressSet, [
-    defaultAddress?.id,
-    checkoutAddress?.id,
-    addressList.length,
-    getSelectedAddress,
-  ]);
+  useEffect(handleDefaultAddressSet, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
 
   const providerValues: ContextConsumerProps = useMemo(() => {
     return {

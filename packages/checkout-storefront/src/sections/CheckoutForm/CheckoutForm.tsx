@@ -73,7 +73,6 @@ export const CheckoutForm = () => {
           />
         ) : (
           <Button
-            disabled={isLoading}
             ariaLabel={formatMessage(checkoutFormLabels.pay)}
             label={formatMessage(checkoutFormMessages.pay)}
             className="pay-button"

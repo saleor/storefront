@@ -16,7 +16,6 @@ export const useCustomerAttach = () => {
       return;
     }
 
-    console.log("ATTACHEN");
     await customerAttach({
       checkoutId: checkout.id,
     });
