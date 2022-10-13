@@ -5,15 +5,23 @@ WORKDIR /app
 RUN npm install -g pnpm@7.11.0
 
 # Setup proxy to API used in saleor-platform
-RUN apt-get update && apt-get install -y nginx
+RUN apt-get update && apt-get install -y nginx jq
 COPY apps/storefront/nginx/dev.conf /etc/nginx/conf.d/default.conf
 
 COPY . .
-RUN pnpm install
 
+# Remove Cypress from dependencies
+RUN jq 'del(.devDependencies.cypress)' package.json > _.json && mv _.json package.json
+RUN pnpm install
 
 ARG SALEOR_API_URL
 ENV SALEOR_API_URL ${SALEOR_API_URL:-http://localhost:8000/graphql/}
 
+RUN pnpm run build
+
 EXPOSE 3000
-CMD pnpm turbo run dev --parallel --cache-dir=.turbo
+EXPOSE 3001
+EXPOSE 3002
+
+
+CMD pnpm run start
