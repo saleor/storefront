@@ -5,7 +5,15 @@ services:
     container_name: saleor-app-checkout
     build:
       context: .
-      dockerfile: ./apps/saleor-app-checkout/Dockerfile
-    restart: always
+      dockerfile: Dockerfile.base
     ports:
       - 3001:3001
+    command: pnpm run start:saleor-app-checkout
+  storefront:
+    container_name: storefront
+    build:
+      context: .
+      dockerfile: Dockerfile.base
+    ports:
+      - 3000:3000
+    command: pnpm run start:storefront
