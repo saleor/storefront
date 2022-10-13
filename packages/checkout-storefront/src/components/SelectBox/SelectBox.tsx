@@ -25,7 +25,7 @@ export const SelectBox: FC<SelectBoxProps> = ({
   return (
     <div className={clsx("select-box", { selected, disabled }, className)}>
       <input type="radio" value={value} id={id || value} {...rest} checked={selected} />
-      <label className="w-full" htmlFor={id}>
+      <label className="w-full" htmlFor={id || value}>
         {children}
       </label>
     </div>
