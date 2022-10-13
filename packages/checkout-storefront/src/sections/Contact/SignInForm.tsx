@@ -20,7 +20,6 @@ import { useEffect } from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { contactLabels, contactMessages } from "./messages";
-import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 
 interface SignInFormProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignInSuccess: () => void;
@@ -38,7 +37,6 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
   const { getValues: getContextValues, setValue: setContextValue } = useFormContext();
-  useCustomerAttach();
 
   const schema = object({
     password: string().required(errorMessages.required),

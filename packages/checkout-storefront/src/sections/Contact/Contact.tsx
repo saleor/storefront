@@ -6,6 +6,7 @@ import { SignedInUser } from "./SignedInUser";
 import { ResetPassword } from "./ResetPassword";
 import { GuestUserForm } from "./GuestUserForm";
 import { useAuthState } from "@saleor/sdk";
+import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -17,6 +18,7 @@ interface ContactProps {
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   const { authenticated } = useAuthState();
+  useCustomerAttach();
 
   const [passwordResetShown, setPasswordResetShown] = useState(false);
 
