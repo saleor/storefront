@@ -52,8 +52,8 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
 
   const { watch, setValue } = methods;
 
-  const getQuantityValue = useCallback(() => watch("quantity"), [watch]);
-  const getQuantity = useCallback(() => Number(getQuantityValue()), [getQuantityValue]);
+  const quantityString = watch("quantity");
+  const quantity = Number(quantityString);
 
   const onLineQuantityUpdate = async ({ quantity }: FormData) => {
     const result = await updateLines(getUpdateLineVars({ quantity }));
@@ -64,6 +64,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
       return;
     }
 
+    setValue("quantity", line.quantity);
     setApiErrors(errors);
     showErrors(errors);
   };
@@ -94,32 +95,24 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   };
 
   const handleQuantityInputBlur = () => {
-    if (getQuantity() === line.quantity) {
+    if (quantity === line.quantity) {
       return;
     }
 
-    if (getQuantityValue() === "") {
+    const isQuantityValid = !isNaN(quantity) && quantity >= 0;
+
+    if (quantityString === "" || !isQuantityValid) {
       setValue("quantity", String(line.quantity));
       return;
     }
 
-    if (getQuantity() === 0) {
+    if (quantity === 0) {
       void onLineDelete();
       return;
     }
 
-    void onLineQuantityUpdate({ quantity: getQuantityValue() });
+    void onLineQuantityUpdate({ quantity: quantityString });
   };
-
-  useEffect(() => {
-    if (updating || !hasErrors) {
-      return;
-    }
-
-    if (line.quantity !== getQuantity()) {
-      setValue("quantity", line.quantity.toString());
-    }
-  }, [updating, getQuantity, line.quantity, hasErrors, setValue]);
 
   return (
     <div className="flex flex-col items-end h-20 relative -top-2">
@@ -128,7 +121,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           {formatMessage(summaryMessages.quantity)}:
         </Text>
         <TextInput
-          classNames={{ container: "!w-12 !mb-0", input: "text-center !h-8" }}
+          classNames={{ container: "!w-13 !mb-0", input: "text-center !h-8" }}
           label=""
           {...getInputProps("quantity", { onBlur: handleQuantityInputBlur })}
         />
