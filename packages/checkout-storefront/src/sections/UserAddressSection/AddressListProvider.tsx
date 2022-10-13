@@ -194,7 +194,6 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
   const handleAddressSelect = useCallback(
     (addressId: string) => {
-      console.log({ addressId });
       setSelectedAddressId(addressId);
       debouncedUpdate(getSelectedAddress(addressId) as AddressFragment);
     },

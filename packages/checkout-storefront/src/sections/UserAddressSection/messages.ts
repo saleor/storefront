@@ -14,4 +14,14 @@ export const userAddressLabels = defineMessages({
     id: "UserAddressSection/messages/E6w89b",
     description: "add address accessibility label",
   },
+  shippingUserAddresses: {
+    defaultMessage: "shipping user addresses",
+    id: "UserAddressSection/messages/YpnLAd",
+    description: "shipping user addresses",
+  },
+  billingUserAddresses: {
+    defaultMessage: "billing user addresses",
+    id: "UserAddressSection/messages/OMv17k",
+    description: "billing user addresses",
+  },
 });
