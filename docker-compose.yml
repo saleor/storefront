@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  saleor-app-checkout:
+    container_name: saleor-app-checkout
+    build:
+      context: .
+      dockerfile: ./apps/saleor-app-checkout/Dockerfile
+    restart: always
+    ports:
+      - 3001:3001
