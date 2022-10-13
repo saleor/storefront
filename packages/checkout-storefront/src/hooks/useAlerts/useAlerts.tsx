@@ -25,7 +25,6 @@ function useAlerts(globalScope?: any): any {
 
   const getMessageKey = ({ scope, field, code }: AlertErrorData, { error } = { error: false }) => {
     const keyBase = `${scope}-${field}-${code}`;
-    console.log(camelCase(keyBase));
     return camelCase(error ? `${keyBase}-error` : keyBase);
   };
 
