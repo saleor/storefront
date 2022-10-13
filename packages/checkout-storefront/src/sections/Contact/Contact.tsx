@@ -1,4 +1,3 @@
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
@@ -6,6 +5,7 @@ import { SignInForm } from "./SignInForm";
 import { SignedInUser } from "./SignedInUser";
 import { ResetPassword } from "./ResetPassword";
 import { GuestUserForm } from "./GuestUserForm";
+import { useAuthState } from "@saleor/sdk";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -16,17 +16,18 @@ interface ContactProps {
 }
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
-  const { checkout } = useCheckout();
+  const { authenticated } = useAuthState();
 
   const [passwordResetShown, setPasswordResetShown] = useState(false);
 
   const selectInitialSection = (): Section => {
     const shouldShowPasswordReset = passwordResetToken && !passwordResetShown;
+
     if (shouldShowPasswordReset) {
       return "resetPassword";
     }
 
-    return checkout.user ? "signedInUser" : "guestUser";
+    return authenticated ? "signedInUser" : "guestUser";
   };
 
   const passwordResetToken = getQueryVariables().passwordResetToken;
