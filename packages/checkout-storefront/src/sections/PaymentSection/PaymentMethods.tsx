@@ -50,7 +50,9 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       return [];
     }
 
-    return compact(Object.keys(allPaymentMethods)) as AvailablePaymentMethods;
+    return Object.entries(allPaymentMethods)
+      .filter(([, paymentProviderId]) => !!paymentProviderId)
+      .map(([paymentMethodId]) => paymentMethodId) as AvailablePaymentMethods;
   };
 
   const availablePaymentMethods = getParsedPaymentMethods(allPaymentOptions);
