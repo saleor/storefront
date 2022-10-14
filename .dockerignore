@@ -20,4 +20,4 @@
 **/.next/*
 **/.turbo/*
 **/node_modules/*
-**/Dockerfile
+**/Dockerfile*
