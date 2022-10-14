@@ -1,4 +1,3 @@
-import { envVars } from "@/saleor-app-checkout/constants";
 import { authExchange } from "@urql/exchange-auth";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import {
@@ -15,7 +14,6 @@ interface AuthState {
   token: string;
 }
 
-// eslint-disable-next-line require-await
 const getAuth = async ({ authState }: { authState?: AuthState | null }) => {
   if (!authState) {
     const token = app?.getState().token;
@@ -59,7 +57,6 @@ const addAuthToOperation = ({
 const willAuthError = ({ authState }: { authState?: AuthState | null }) => !authState?.token;
 
 const authConfig: ClientOptions = {
-  url: envVars.apiUrl,
   exchanges: [
     dedupExchange,
     cacheExchange,
@@ -72,4 +69,9 @@ const authConfig: ClientOptions = {
   ],
 };
 
-export const client = createClient(authConfig);
+export const createGraphqlClient = (apiUrl: string) => {
+  return createClient({
+    ...authConfig,
+    url: apiUrl,
+  });
+};

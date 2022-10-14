@@ -1,25 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import * as Apl from "@/saleor-app-checkout/config/apl";
 
 import { saleorDomainHeader } from "../../constants";
-import { getAppDomain, setAuthToken } from "@/saleor-app-checkout/backend/environment";
 
-const handler = (request: NextApiRequest, response: NextApiResponse) => {
-  const saleorDomain = request.headers[saleorDomainHeader];
-  if (!saleorDomain) {
+const handler = async (request: NextApiRequest, response: NextApiResponse) => {
+  // @todo: Allow restricting only to specific domains
+
+  const saleorApiHost = request.headers[saleorDomainHeader];
+  if (!saleorApiHost || typeof saleorApiHost !== "string") {
     console.error("Missing saleor domain token.");
-    response.status(400).json({ success: false, message: "Missing saleor domain token." });
-    return;
-  }
-
-  if (getAppDomain() !== saleorDomain) {
-    console.error(`App instalation tried from non-matching Saleor domain.
-Expected ${getAppDomain()} (defined in NEXT_PUBLIC_SALEOR_API_URL).
-Received: ${saleorDomain.toString()}`);
-
-    response.status(400).json({
-      success: false,
-      message: "Saleor domain doesn't match configured NEXT_PUBLIC_SALEOR_API_URL domain",
-    });
+    response.status(400).json({ success: false, message: `Missing ${saleorDomainHeader} header.` });
     return;
   }
 
@@ -30,7 +20,13 @@ Received: ${saleorDomain.toString()}`);
     return;
   }
 
-  setAuthToken(authToken);
+  try {
+    await Apl.set({ saleorApiHost, authToken });
+  } catch (error) {
+    console.log("Error thrown during saving the auth data: %O", error);
+    response.status(500).json({ success: false, message: "Unable to save registration data" });
+    return;
+  }
 
   response.status(200).json({ success: true });
 };

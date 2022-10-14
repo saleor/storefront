@@ -66,32 +66,36 @@ export const orderToAdyenRequest = ({
 };
 
 export const createAdyenCheckoutPaymentLinks = async ({
+  saleorApiHost,
   order,
   redirectUrl,
 }: CreatePaymentData) => {
-  const { config, checkout } = await getAdyenClient();
+  const { config, checkout } = await getAdyenClient(saleorApiHost);
 
   return checkout.paymentLinks(
     orderToAdyenRequest({
       order,
       merchantAccount: config.merchantAccount,
-      returnUrl: formatRedirectUrl(redirectUrl, order.id),
+      returnUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: order.id }),
     })
   );
 };
 
-export const createAdyenCheckoutSession = async ({
-  currency,
-  totalAmount,
-  checkoutId,
-  redirectUrl,
-}: {
-  currency: string;
-  totalAmount: number;
-  checkoutId: string;
-  redirectUrl: string;
-}) => {
-  const { config, checkout } = await getAdyenClient();
+export const createAdyenCheckoutSession = async (
+  saleorApiHost: string,
+  {
+    currency,
+    totalAmount,
+    checkoutId,
+    redirectUrl,
+  }: {
+    currency: string;
+    totalAmount: number;
+    checkoutId: string;
+    redirectUrl: string;
+  }
+) => {
+  const { config, checkout } = await getAdyenClient(saleorApiHost);
 
   const session = await checkout.sessions({
     merchantAccount: config.merchantAccount,
@@ -99,7 +103,8 @@ export const createAdyenCheckoutSession = async ({
       currency: currency,
       value: getIntegerAmountFromSaleor(totalAmount),
     },
-    returnUrl: formatRedirectUrl(redirectUrl, checkoutId),
+    // @todo is this correct? `orderId: checkoutId`
+    returnUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: checkoutId }),
     reference: checkoutId,
   });
 
@@ -110,18 +115,19 @@ export const createAdyenCheckoutSession = async ({
 };
 
 export const createAdyenCheckoutPayment = async ({
+  saleorApiHost,
   order,
   redirectUrl,
   adyenStateData,
 }: CreatePaymentData & {
   adyenStateData: PostDropInAdyenPaymentsBody["adyenStateData"];
 }) => {
-  const { config, checkout } = await getAdyenClient();
+  const { config, checkout } = await getAdyenClient(saleorApiHost);
 
   const adyenRequest = orderToAdyenRequest({
     merchantAccount: config.merchantAccount,
     order,
-    returnUrl: formatRedirectUrl(redirectUrl, order.id),
+    returnUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: order.id }),
   });
 
   const payment = await checkout.payments({

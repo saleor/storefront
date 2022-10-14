@@ -16,7 +16,6 @@ export interface AppConfig {
 }
 
 export interface AppEnv {
-  apiUrl: string;
   checkoutApiUrl: string;
   checkoutAppUrl: string;
 }

@@ -14,6 +14,7 @@ const queryParamsMap = {
   order: "orderId",
   token: "passwordResetToken",
   email: "passwordResetEmail",
+  saleorApiHost: "saleorApiHost",
 } as const;
 
 type UnmappedQueryParam = keyof typeof queryParamsMap;

@@ -2,6 +2,8 @@ import * as Sentry from "@sentry/nextjs";
 import { createAdyenCheckoutSession } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
+import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 import { AdyenDropInCreateSessionResponse, postDropInAdyenSessionsBody } from "checkout-common";
 import { NextApiHandler } from "next";
 
@@ -23,10 +25,19 @@ const DropInAdyenSessionsHandler: NextApiHandler<
     return;
   }
 
+  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
+    getSaleorApiHostFromRequest(req)
+  );
+
+  if (saleorApiHostError) {
+    res.status(400).json({ message: saleorApiHostError.message });
+    return;
+  }
+
   try {
     const appUrl = getBaseUrl(req);
 
-    const { session, clientKey } = await createAdyenCheckoutSession({
+    const { session, clientKey } = await createAdyenCheckoutSession(saleorApiHost, {
       ...body,
       redirectUrl: appUrl,
     });

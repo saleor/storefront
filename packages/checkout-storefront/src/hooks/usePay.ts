@@ -22,12 +22,14 @@ export const usePay = () => {
   const [{ loading, error, data }, pay] = useFetch(payRequest, { skip: true });
   const {
     env: { checkoutApiUrl },
+    saleorApiHost,
   } = useAppConfig();
 
   const checkoutPay = useCallback(
     async ({ provider, method, checkoutId, totalAmount }: Omit<CheckoutBody, "redirectUrl">) => {
       const redirectUrl = getRedirectUrl();
       const result = await pay({
+        saleorApiHost,
         checkoutApiUrl,
         provider,
         method,
@@ -64,6 +66,7 @@ export const usePay = () => {
   }: Omit<OrderBody, "redirectUrl" | "checkoutApiUrl">) => {
     const redirectUrl = getRedirectUrl();
     const result = await pay({
+      saleorApiHost,
       checkoutApiUrl,
       provider,
       method,

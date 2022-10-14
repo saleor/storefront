@@ -22,7 +22,7 @@
 
 ### Prerequisites
 
-Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint.
+Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo.
 
 ### Development
 

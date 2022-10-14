@@ -7,10 +7,12 @@ import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
 import { isEqual } from "lodash-es";
 import { useDynamicAppConfig } from "@/checkout-storefront/hooks/useDynamicAppConfig";
+import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 interface AppConfigContextConsumerProps {
   config?: AppConfig | null;
   loading: boolean;
   env: AppEnv;
+  saleorApiHost: string;
 }
 
 const [useAppConfig, Provider] = createSafeContext<AppConfigContextConsumerProps>();
@@ -20,6 +22,7 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
   children,
   env,
 }) => {
+  const { saleorApiHost } = getQueryVariables();
   const [{ data: storedAppConfig, loading }] = useFetch(getAppConfig, {
     args: { checkoutApiUrl: env.checkoutApiUrl },
   });
@@ -68,9 +71,14 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
 
   const handleAppDefaultStylingSetup = () => appendStylingToBody(defaultAppColors);
 
-  useEffect(handleAppDefaultStylingSetup);
+  useEffect(handleAppDefaultStylingSetup, [appendStylingToBody]);
 
   useEffect(handleAppStylingUpdate, [appConfig, appendStylingToBody]);
 
-  return <Provider value={{ config: appConfig, env, loading }}>{children}</Provider>;
+  if (!saleorApiHost) {
+    console.warn(`Missing saleorApiHost query param`);
+    return null;
+  }
+
+  return <Provider value={{ config: appConfig, env, loading, saleorApiHost }}>{children}</Provider>;
 };

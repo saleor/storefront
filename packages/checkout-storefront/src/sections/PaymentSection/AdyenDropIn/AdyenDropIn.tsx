@@ -31,6 +31,7 @@ type DropinElement = ReturnType<typeof _hack>;
 export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   const {
     env: { checkoutApiUrl },
+    saleorApiHost,
   } = useAppConfig();
 
   const { checkout, loading: isCheckoutLoading } = useCheckout();
@@ -48,6 +49,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
     component.setStatus("loading");
 
     const result = await fetchCreateDropInAdyenPayment({
+      saleorApiHost,
       checkoutApiUrl,
       totalAmount: checkout.totalPrice.gross.amount,
       checkoutId: checkout.id,
@@ -78,6 +80,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   const onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails = useEvent(
     async (state, component) => {
       const result = await fetchHandleDropInAdyenPaymentDetails({
+        saleorApiHost,
         checkoutApiUrl,
         adyenStateData: state.data,
       });

@@ -15,7 +15,7 @@ import {
   UpdatePrivateMetadataMutation,
   UpdatePrivateMetadataMutationVariables,
 } from "@/saleor-app-checkout/graphql";
-import { getClient } from "@/saleor-app-checkout/backend/client";
+import { getClientForAuthData } from "@/saleor-app-checkout/backend/saleorGraphqlClient";
 import { defaultActiveChannelPaymentProviders } from "@/saleor-app-checkout/config/defaults";
 import { mergeChannelsWithPaymentProvidersSettings } from "./utils";
 import { PrivateSettingsValues } from "@/saleor-app-checkout/types/api";
@@ -24,9 +24,19 @@ import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings
 import { mapPublicMetafieldsToSettings } from "@/saleor-app-checkout/frontend/misc/mapPublicMetafieldsToSettings";
 import { allPrivateSettingID, allPublicSettingID } from "@/saleor-app-checkout/types/common";
 import { getAppId } from "../environment";
+import * as Apl from "@/saleor-app-checkout/config/apl";
 
-export const getPrivateSettings = async (apiUrl: string, obfuscateEncryptedData: boolean) => {
-  const { data, error } = await getClient({ apiUrl })
+export const getPrivateSettings = async ({
+  saleorApiHost,
+  obfuscateEncryptedData,
+}: {
+  saleorApiHost: string;
+  obfuscateEncryptedData: boolean;
+}) => {
+  const authData = await Apl.get(saleorApiHost);
+  const client = getClientForAuthData(authData);
+
+  const { data, error } = await client
     .query<PrivateMetafieldsInferedQuery, PrivateMetafieldsInferedQueryVariables>(
       PrivateMetafieldsInferedDocument,
       {
@@ -47,8 +57,10 @@ export const getPrivateSettings = async (apiUrl: string, obfuscateEncryptedData:
   return settingsValues;
 };
 
-export const getPublicSettings = async () => {
-  const { data, error } = await getClient()
+export const getPublicSettings = async ({ saleorApiHost }: { saleorApiHost: string }) => {
+  const authData = await Apl.get(saleorApiHost);
+
+  const { data, error } = await getClientForAuthData(authData)
     .query<PublicMetafieldsInferedQuery, PublicMetafieldsInferedQueryVariables>(
       PublicMetafieldsInferedDocument,
       { keys: [...allPublicSettingID] }
@@ -68,10 +80,11 @@ export const getPublicSettings = async () => {
   return settingsValues;
 };
 
-export const getActivePaymentProvidersSettings = async () => {
-  const settings = await getPublicSettings();
+export const getActivePaymentProvidersSettings = async (saleorApiHost: string) => {
+  const authData = await Apl.get(saleorApiHost);
+  const settings = await getPublicSettings({ saleorApiHost });
 
-  const { data, error } = await getClient()
+  const { data, error } = await getClientForAuthData(authData)
     .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, {})
     .toPromise();
 
@@ -89,10 +102,17 @@ export const getActivePaymentProvidersSettings = async () => {
   return activePaymentProvidersSettings;
 };
 
-export const getChannelActivePaymentProvidersSettings = async (channelId: string) => {
-  const settings = await getPublicSettings();
+export const getChannelActivePaymentProvidersSettings = async ({
+  saleorApiHost,
+  channelId,
+}: {
+  saleorApiHost: string;
+  channelId: string;
+}) => {
+  const authData = await Apl.get(saleorApiHost);
+  const settings = await getPublicSettings({ saleorApiHost });
 
-  const { data, error } = await getClient()
+  const { data, error } = await getClientForAuthData(authData)
     .query<ChannelQuery, ChannelQueryVariables>(ChannelDocument, {
       id: channelId,
     })
@@ -111,14 +131,17 @@ export const getChannelActivePaymentProvidersSettings = async (channelId: string
 };
 
 export const setPrivateSettings = async (
-  apiUrl: string,
+  saleorApiHost: string,
   settings: PrivateSettingsValues<"unencrypted">
 ) => {
+  const authData = await Apl.get(saleorApiHost);
+  const client = getClientForAuthData(authData);
+
   const metadata = mapPrivateSettingsToMetadata(settings);
 
-  const appId = await getAppId();
+  const appId = await getAppId(saleorApiHost);
 
-  const { data, error } = await getClient({ apiUrl })
+  const { data, error } = await client
     .mutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(
       UpdatePrivateMetadataDocument,
       {

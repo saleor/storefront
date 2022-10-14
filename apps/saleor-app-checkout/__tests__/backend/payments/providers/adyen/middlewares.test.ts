@@ -1,5 +1,6 @@
 import {
   AdyenRequestContext,
+  AdyenRequestParams,
   isAdyenNotification,
   isAdyenWebhookAuthenticated,
   isAdyenWebhookHmacValid,
@@ -23,8 +24,12 @@ const TEST_REQUEST_DOMAIN = "vercel.com";
 const TEST_ADYEN_PASSWORD = "password";
 const TEST_ADYEN_USERNAME = "adyen_webhook";
 
-const mockRequest: Request = {
-  params: {},
+const mockRequest: Request<AdyenRequestParams> = {
+  params: {
+    saleorApiHost: "saleor-api-host.saleor.localhost:8000",
+    live: "false",
+    notificationItems: [],
+  },
   url: "",
   // @ts-expect-error Expects IncomingMessage, but object will do fine
   body: {},
@@ -48,6 +53,7 @@ const requestWithNotification = {
     ...adyenConfig,
   } as AdyenRequestContext,
   params: {
+    ...mockRequest.params,
     live: "false",
     notificationItems: [
       {

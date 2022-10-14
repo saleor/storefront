@@ -6,14 +6,19 @@ import {
 import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
 import { PaymentStatus } from "@mollie/api-client";
 import { getActionsAfterRefund } from "@/saleor-app-checkout/backend/payments/utils";
-import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { unpackPromise } from "@/saleor-app-checkout/utils/unpackErrors";
 import { updateTransaction } from "../../updateTransaction";
 
-export async function handleMolieRefund(
-  refund: TransactionReversal,
-  transaction: TransactionActionPayloadFragment["transaction"]
-) {
-  const mollieClient = await getMollieClient();
+export async function handleMolieRefund({
+  saleorApiHost,
+  refund,
+  transaction,
+}: {
+  saleorApiHost: string;
+  refund: TransactionReversal;
+  transaction: TransactionActionPayloadFragment["transaction"];
+}) {
+  const mollieClient = await getMollieClient(saleorApiHost);
 
   const { id, amount, currency } = refund;
   if (!transaction?.id) {
@@ -42,7 +47,7 @@ export async function handleMolieRefund(
     })
   );
 
-  const updateSucceeded = await updateTransaction({
+  const updateSucceeded = await updateTransaction(saleorApiHost, {
     id: transaction.id,
     transaction: {
       availableActions: transactionActions,

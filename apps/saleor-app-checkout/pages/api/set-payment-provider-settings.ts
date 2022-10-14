@@ -6,7 +6,8 @@ import {
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { merge } from "lodash-es";
 import { NextApiHandler } from "next";
-import { envVars } from "@/saleor-app-checkout/constants";
+import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const handler: NextApiHandler = async (req, res) => {
   // const tokenData = getTokenDataFromRequest(req);
@@ -15,7 +16,14 @@ const handler: NextApiHandler = async (req, res) => {
   //   return res.status(500).json({ error: "Token iss is not correct" });
   // }
 
-  const apiUrl = envVars.apiUrl;
+  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
+    getSaleorApiHostFromRequest(req)
+  );
+
+  if (saleorApiHostError) {
+    res.status(400).json({ message: saleorApiHostError.message });
+    return;
+  }
 
   const data = req.body as string;
 
@@ -28,11 +36,11 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   try {
-    const settings = await getPrivateSettings(apiUrl, false);
+    const settings = await getPrivateSettings({ saleorApiHost, obfuscateEncryptedData: false });
 
     const newSettings = JSON.parse(data);
 
-    const updatedSettings = await setPrivateSettings(apiUrl, {
+    const updatedSettings = await setPrivateSettings(saleorApiHost, {
       ...settings,
       paymentProviders: merge(settings.paymentProviders, newSettings),
     });

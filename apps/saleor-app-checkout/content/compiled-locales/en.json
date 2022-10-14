@@ -1,0 +1,332 @@
+{
+  "ChannelDetails/messages/1+HS9r": [
+    {
+      "type": 0,
+      "value": "Select payment methods"
+    }
+  ],
+  "ChannelList/messages/vOL1vk": [
+    {
+      "type": 0,
+      "value": "Channel name"
+    }
+  ],
+  "CustomizationDetails/messages/CAoP49": [
+    {
+      "type": 0,
+      "value": "Customization preview"
+    }
+  ],
+  "CustomizationDetails/messages/Z9ndZ7": [
+    {
+      "type": 0,
+      "value": "Please provide valid checkout URL"
+    }
+  ],
+  "CustomizationDetails/messages/eQTUqD": [
+    {
+      "type": 0,
+      "value": "Checkout URL"
+    }
+  ],
+  "ErrorDetails/messages/+1z3pp": [
+    {
+      "type": 0,
+      "value": "Something went wrong"
+    }
+  ],
+  "FileInput/messages/AlmJPi": [
+    {
+      "type": 0,
+      "value": "Upload file"
+    }
+  ],
+  "FileInput/messages/Zr2A5Y": [
+    {
+      "type": 0,
+      "value": "Max size 1GB"
+    }
+  ],
+  "FileInput/messages/h6LHdF": [
+    {
+      "type": 0,
+      "value": "Drag an image here"
+    }
+  ],
+  "PaymentProviderDetails/messages//1yAUF": [
+    {
+      "type": 0,
+      "value": "These information will not be encrypted"
+    }
+  ],
+  "PaymentProviderDetails/messages/OOy0zB": [
+    {
+      "type": 0,
+      "value": "These information will be encrypted"
+    }
+  ],
+  "PaymentProviderDetails/messages/n3PNHM": [
+    {
+      "type": 0,
+      "value": "Payment provider settings"
+    }
+  ],
+  "messages/customization//dYclm": [
+    {
+      "type": 0,
+      "value": "Button BG Hover"
+    }
+  ],
+  "messages/customization/0NYFC/": [
+    {
+      "type": 0,
+      "value": "Button Text"
+    }
+  ],
+  "messages/customization/4kEXS+": [
+    {
+      "type": 0,
+      "value": "Branding"
+    }
+  ],
+  "messages/customization/D8irjQ": [
+    {
+      "type": 0,
+      "value": "Button BG Primary"
+    }
+  ],
+  "messages/customization/DopY6P": [
+    {
+      "type": 0,
+      "value": "Error"
+    }
+  ],
+  "messages/customization/HpJ0xA": [
+    {
+      "type": 0,
+      "value": "Logo"
+    }
+  ],
+  "messages/customization/S/xcUp": [
+    {
+      "type": 0,
+      "value": "Success"
+    }
+  ],
+  "messages/customization/X5y+L2": [
+    {
+      "type": 0,
+      "value": "Product settings"
+    }
+  ],
+  "messages/customization/cNpy7H": [
+    {
+      "type": 0,
+      "value": "Text"
+    }
+  ],
+  "messages/customization/e9Fc8u": [
+    {
+      "type": 0,
+      "value": "Low stock threshold"
+    }
+  ],
+  "messages/customization/m/r08F": [
+    {
+      "type": 0,
+      "value": "Border Primary"
+    }
+  ],
+  "messages/paymentMethods/2dP9Gd": [
+    {
+      "type": 0,
+      "value": "Dummy Payment"
+    }
+  ],
+  "messages/paymentMethods/6bexF4": [
+    {
+      "type": 0,
+      "value": "Drop-in"
+    }
+  ],
+  "messages/paymentMethods/BFIFWS": [
+    {
+      "type": 0,
+      "value": "Apple Pay"
+    }
+  ],
+  "messages/paymentMethods/IKIBYk": [
+    {
+      "type": 0,
+      "value": "Credit card"
+    }
+  ],
+  "messages/paymentMethods/nXqPc7": [
+    {
+      "type": 0,
+      "value": "PayPal"
+    }
+  ],
+  "messages/paymentProviders/+1my3D": [
+    {
+      "type": 0,
+      "value": "Webhook HMAC key"
+    }
+  ],
+  "messages/paymentProviders/9hBUgM": [
+    {
+      "type": 0,
+      "value": "API key"
+    }
+  ],
+  "messages/paymentProviders/CH2iz9": [
+    {
+      "type": 0,
+      "value": "Webhook password"
+    }
+  ],
+  "messages/paymentProviders/CQH/Vb": [
+    {
+      "type": 0,
+      "value": "Mollie"
+    }
+  ],
+  "messages/paymentProviders/I6I7xw": [
+    {
+      "type": 0,
+      "value": "Webhook username"
+    }
+  ],
+  "messages/paymentProviders/LtD8zn": [
+    {
+      "type": 0,
+      "value": "Dummy Payment"
+    }
+  ],
+  "messages/paymentProviders/WdX1+f": [
+    {
+      "type": 0,
+      "value": "Public client key"
+    }
+  ],
+  "messages/paymentProviders/YBcvvL": [
+    {
+      "type": 0,
+      "value": "Publishable Key"
+    }
+  ],
+  "messages/paymentProviders/ehp06H": [
+    {
+      "type": 0,
+      "value": "Stripe"
+    }
+  ],
+  "messages/paymentProviders/fQ20+Q": [
+    {
+      "type": 0,
+      "value": "Secret Key"
+    }
+  ],
+  "messages/paymentProviders/glq8nA": [
+    {
+      "type": 0,
+      "value": "Webhookd Secret"
+    }
+  ],
+  "messages/paymentProviders/m5P19o": [
+    {
+      "type": 0,
+      "value": "Adyen"
+    }
+  ],
+  "messages/paymentProviders/qHRtb0": [
+    {
+      "type": 0,
+      "value": "Private API key"
+    }
+  ],
+  "messages/paymentProviders/t7YEMr": [
+    {
+      "type": 0,
+      "value": "Profile ID"
+    }
+  ],
+  "messages/paymentProviders/ufY8+j": [
+    {
+      "type": 0,
+      "value": "Merchant account"
+    }
+  ],
+  "misc/commonMessages/95qy1d": [
+    {
+      "type": 0,
+      "value": "Channels"
+    }
+  ],
+  "misc/commonMessages/g8hTTQ": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
+  "misc/commonMessages/gnUZny": [
+    {
+      "type": 0,
+      "value": "Customization"
+    }
+  ],
+  "misc/errorMessages/KEl0/z": [
+    {
+      "type": 0,
+      "value": "Something went wrong"
+    }
+  ],
+  "misc/errorMessages/OvAW89": [
+    {
+      "type": 0,
+      "value": "Payment provider not found."
+    }
+  ],
+  "misc/errorMessages/fHPUmP": [
+    {
+      "type": 0,
+      "value": "Unknown error"
+    }
+  ],
+  "misc/errorMessages/ftpe3L": [
+    {
+      "type": 0,
+      "value": "Invalid"
+    }
+  ],
+  "misc/errorMessages/nE/aC7": [
+    {
+      "type": 0,
+      "value": "Channel payment options not found."
+    }
+  ],
+  "misc/errorMessages/ofWxwJ": [
+    {
+      "type": 0,
+      "value": "Required"
+    }
+  ],
+  "misc/errorMessages/v74OtS": [
+    {
+      "type": 0,
+      "value": "Not updated"
+    }
+  ],
+  "misc/errorMessages/vZ8Jjv": [
+    {
+      "type": 0,
+      "value": "GraphQL error"
+    }
+  ],
+  "misc/errorMessages/z3iWGt": [
+    {
+      "type": 0,
+      "value": "Not found"
+    }
+  ]
+}

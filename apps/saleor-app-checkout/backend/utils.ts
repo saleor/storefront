@@ -1,7 +1,7 @@
 import { PermissionEnum } from "@/saleor-app-checkout/graphql";
 import { NextApiHandler } from "next";
 import invariant from "ts-invariant";
-import { debugEnvVars, envVars, envVarsNames } from "../constants";
+import { debugEnvVars } from "../constants";
 import { isAuthenticated, isAuthorized } from "./auth";
 
 export const allowCors =
@@ -63,14 +63,4 @@ export const getBaseUrl = (req: { headers: Record<string, string | string[] | un
   invariant(typeof protocol === "string", "protocol is not a string");
 
   return `${protocol}://${host}`;
-};
-
-export const getSaleorDomain = (): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    if (!envVars.apiUrl) {
-      return reject(`Missing ${envVarsNames.apiUrl} environment variable`);
-    }
-    const url = new URL(envVars.apiUrl);
-    return resolve(url.host);
-  });
 };
