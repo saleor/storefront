@@ -14,7 +14,36 @@ COPY . .
 RUN jq 'del(.devDependencies.cypress)' package.json > _.json && mv _.json package.json
 RUN pnpm install
 
+# Env variables
+RUN rm .env
+
 ARG SALEOR_API_URL
 ENV SALEOR_API_URL ${SALEOR_API_URL:-http://localhost:8000/graphql/}
 
-RUN pnpm run build
+ARG STOREFRONT_URL
+ENV STOREFRONT_URL ${STOREFRONT_URL:-http://localhost:3000}
+
+ARG CHECKOUT_APP_URL
+ENV CHECKOUT_APP_URL ${CHECKOUT_APP_URL:-http://localhost:3001}
+
+ARG CHECKOUT_STOREFRONT_URL
+ENV CHECKOUT_STOREFRONT_URL ${CHECKOUT_STOREFRONT_URL:-http://localhost:3001/checkout-spa/}
+
+ARG CLOUD_DEPLOYMENT_URL https://prod.demo.saleor.cloud
+ENV CLOUD_DEPLOYMENT_URL ${CLOUD_DEPLOYMENT_URL:-https://prod.demo.saleor.cloud}
+
+ARG SENTRY_DSN
+ENV SENTRY_DSN ${SENTRY_DSN}
+
+ARG SENTRY_ENVIRONMENT
+ENV SENTRY_ENVIRONMENT ${SENTRY_ENVIRONMENT}
+
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE ${SENTRY_RELEASE}
+
+ARG VERCEL_URL
+ENV VERCEL_URL ${VERCEL_URL:-localhost:3001}
+
+ENV ENABLE_EXPERIMENTAL_COREPACK 1
+
+RUN pnpm turbo run build
