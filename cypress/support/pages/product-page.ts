@@ -1,4 +1,4 @@
-import { CART } from "../../elements/cart";
+import { NAVIGATION } from "../../elements/navigation";
 import { PRODUCT_ELEMENTS } from "../../elements/product-page";
 import { SHARED_ELEMENTS } from "../../elements/shared-elements";
 import { navigateAndSearch } from "./search";
@@ -27,6 +27,10 @@ export function addItemToCart() {
       } else {
         cy.get(PRODUCT_ELEMENTS.addToCartButton).click();
       }
-      cy.wait("@CreateCheckout").its("response.body.data.checkoutCreate.errors").should("be.empty");
+      cy.wait("@CreateCheckout")
+        .its("response.body.data.checkoutCreate.errors")
+        .should("be.empty")
+        .get(NAVIGATION.cartCounter)
+        .should("be.visible");
     });
 }

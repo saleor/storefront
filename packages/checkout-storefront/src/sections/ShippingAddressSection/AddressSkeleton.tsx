@@ -3,7 +3,7 @@ import React from "react";
 
 export const AddressSkeleton = () => {
   return (
-    <div className="skeleton-box mb-2">
+    <div className="skeleton-box mb-2" data-testid="addressSkeleton">
       <Skeleton className="w-1/3" />
       <Skeleton className="w-2/3" />
       <Skeleton className="w-1/2" />

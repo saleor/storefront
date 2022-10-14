@@ -122,10 +122,11 @@ export const BillingAddressSection = () => {
           checked={isBillingSameAsShipping}
           onChange={setIsBillingSameAsShipping}
           label={formatMessage(billingMessages.useShippingAsBilling)}
+          data-testid={"useShippingAsBillingCheckbox"}
         />
       )}
       {!isBillingSameAsShipping && (
-        <div className="mt-4">
+        <div className="mt-4" data-testid="billingAddressSection">
           {authUser ? (
             <UserAddressSection
               {...errorProps}

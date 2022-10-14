@@ -19,7 +19,7 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({ collapsed, ...re
   return (
     <>
       <Divider />
-      <div className="section">
+      <div className="section" data-testid="paymentMethods">
         <Title>{formatMessage(paymentSectionMessages.paymentProviders)}</Title>
         <PaymentMethods {...rest} />
         <BillingAddressSection />

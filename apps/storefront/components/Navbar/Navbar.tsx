@@ -63,7 +63,7 @@ export function Navbar() {
             {!authenticated ? (
               <Link href={paths.account.login.$url()} passHref>
                 <a href="pass">
-                  <NavIconButton icon="user" aria-hidden="true" />
+                  <NavIconButton icon="user" aria-hidden="true" data-testid="userIcon" />
                 </a>
               </Link>
             ) : (
@@ -71,7 +71,12 @@ export function Navbar() {
             )}
             <Link href={externalCheckoutUrl} passHref>
               <a href="pass" className="ml-2 hidden xs:flex">
-                <NavIconButton icon="bag" aria-hidden="true" counter={counter} />
+                <NavIconButton
+                  icon="bag"
+                  aria-hidden="true"
+                  counter={counter}
+                  data-testid="cartIcon"
+                />
               </a>
             </Link>
             <Link href={paths.search.$url()} passHref>

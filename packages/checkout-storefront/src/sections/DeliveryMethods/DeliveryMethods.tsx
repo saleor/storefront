@@ -147,7 +147,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   return (
     <>
       <Divider />
-      <div className="section">
+      <div className="section" data-testid="deliveryMethods">
         <Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
         {!shippingAddress && (
           <Text>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</Text>
