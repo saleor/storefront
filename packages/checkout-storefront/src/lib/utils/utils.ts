@@ -19,7 +19,13 @@ export const getByUnmatchingId =
 
 export type QueryVariables = Partial<
   Record<
-    "checkoutId" | "passwordResetToken" | "email" | "orderId" | "redirectUrl" | "locale",
+    | "checkoutId"
+    | "passwordResetToken"
+    | "email"
+    | "orderId"
+    | "redirectUrl"
+    | "locale"
+    | "dummyPayment",
     string
   >
 > & { countryCode: CountryCode };
@@ -33,6 +39,7 @@ export const getQueryVariables = (): QueryVariables => {
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
+    dummyPayment: vars.dummyPayment as "true" | undefined,
   } as QueryVariables;
 };
 

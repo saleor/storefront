@@ -22,4 +22,9 @@ export const paymentMethodsMessages = defineMessages<PaymentMethodID>({
     id: "messages/paymentMethods/6bexF4",
     description: "payment method",
   },
+  dummy: {
+    defaultMessage: "Dummy Payment",
+    id: "messages/paymentMethods/2dP9Gd",
+    description: "dummy payment method",
+  },
 });

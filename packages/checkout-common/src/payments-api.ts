@@ -26,3 +26,17 @@ export type PaymentStatusResponse = {
 export type ChannelActivePaymentProvidersByChannel = {
   [P in PaymentMethodID]: PaymentProviderID | "";
 };
+
+export type DummyPayRequestBody = {
+  checkoutApiUrl: string;
+  amountCharged: {
+    amount: number;
+    currency: string;
+  };
+} & Pick<OrderBody, "orderId">;
+
+export type DummyPayRequestResult =
+  | {
+      ok: true;
+    }
+  | { ok: false; error: string };

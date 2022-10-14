@@ -1,32 +1,37 @@
 import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
+import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
+import {
+  KnownPaymentError,
+  MissingUrlError,
+  UnknownPaymentError,
+} from "@/saleor-app-checkout/backend/payments/errors";
 import { createAdyenCheckoutPaymentLinks } from "@/saleor-app-checkout/backend/payments/providers/adyen";
-import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
-import { OrderPaymentMetafield } from "@/saleor-app-checkout/types/common";
-import { assertUnreachable, PaymentMethods, PaymentProviders } from "checkout-common";
-import { OrderFragment } from "@/saleor-app-checkout/graphql";
-import { PayRequestResponse, PayRequestErrorResponse } from "@/saleor-app-checkout/types/api/pay";
-import { PayRequestBody } from "checkout-common";
-import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
-import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
-import { reuseExistingMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
 import { reuseExistingAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
+import { createDummyPayment } from "@/saleor-app-checkout/backend/payments/providers/dummy/createPayment";
+import { createMolliePayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
+import { reuseExistingMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
+import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
+import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
 import {
   CreatePaymentResult,
   ReuseExistingSessionParams,
   ReuseExistingSessionResult,
 } from "@/saleor-app-checkout/backend/payments/types";
-import { createStripePayment } from "@/saleor-app-checkout/backend/payments/providers/stripe/createPayment";
-import { reuseExistingStripeSession } from "@/saleor-app-checkout/backend/payments/providers/stripe/verifySession";
+import { updatePaymentMetafield } from "@/saleor-app-checkout/backend/payments/updatePaymentMetafield";
+import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
+import { OrderFragment } from "@/saleor-app-checkout/graphql";
+import { PayRequestErrorResponse, PayRequestResponse } from "@/saleor-app-checkout/types/api/pay";
+import { OrderPaymentMetafield } from "@/saleor-app-checkout/types/common";
 import { safeJsonParse } from "@/saleor-app-checkout/utils";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
-import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
 import {
-  KnownPaymentError,
-  UnknownPaymentError,
-  MissingUrlError,
-} from "@/saleor-app-checkout/backend/payments/errors";
+  assertUnreachable,
+  PaymentMethods,
+  PaymentProviders,
+  PayRequestBody,
+} from "checkout-common";
 
 const reuseExistingSession = ({
   orderId,
@@ -55,6 +60,8 @@ const reuseExistingSession = ({
       return reuseExistingAdyenSession(params);
     case "stripe":
       return reuseExistingStripeSession(params);
+    case "dummy":
+      return undefined;
     default:
       assertUnreachable(payment.provider);
   }
@@ -187,6 +194,10 @@ const getPaymentUrlIdForProvider = (
       return createAdyenCheckoutPaymentLinks(createPaymentData);
     case "stripe":
       return createStripePayment(createPaymentData);
+    case "dummy":
+      return createDummyPayment({
+        redirectUrl: `${body.redirectUrl}?order=${order.id}&dummyPayment=true`,
+      });
     default:
       assertUnreachable(body.provider);
   }

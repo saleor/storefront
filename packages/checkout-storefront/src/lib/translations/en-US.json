@@ -85,6 +85,7 @@
   "paymentProviders": "Select payment method",
   "paymentProvidersLabel": "payment providers",
   "creditCard": "Credit Card",
+  "dummy": "Dummy Payment",
   "applePay": "Apple Pay",
   "paypal": "PayPal",
   "city": "City",

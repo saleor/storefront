@@ -38,6 +38,7 @@ export const paymentProviders: PaymentProviderSettingsValues<"encrypted"> = {
       value: testingVars.stripePublishableKey,
     },
   },
+  dummy: { dummyKey: encryptSetting("") },
 };
 
 export const appPrivateMetafields = {

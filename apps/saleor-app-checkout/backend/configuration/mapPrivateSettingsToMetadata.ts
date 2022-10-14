@@ -6,8 +6,10 @@ import { encryptSetting } from "./encryption";
 
 const encryptSubSettings = (
   subSetting: Record<string, string> | undefined,
-  subSettingsFields?: CommonField[]
+  subSettingsFieldsInput?: CommonField[]
 ) => {
+  const subSettingsFields = Array.isArray(subSettingsFieldsInput) ? subSettingsFieldsInput : [];
+
   const encryptedSubSetting = reduce(
     subSetting,
     (result, value, valueKey) => {

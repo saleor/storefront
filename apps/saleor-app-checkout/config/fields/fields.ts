@@ -25,6 +25,7 @@ import PayPalIcon from "./icons/PayPal";
 import MollieIcon from "./icons/Mollie";
 import AdyenIcon from "./icons/Adyen";
 import StripeIcon from "./icons/Stripe";
+import DummyIcon from "./icons/Dummy";
 
 const paymentMethods: Omit<PaymentMethod, "name">[] = [
   {
@@ -38,6 +39,10 @@ const paymentMethods: Omit<PaymentMethod, "name">[] = [
   {
     id: "paypal",
     logo: PayPalIcon,
+  },
+  {
+    id: "dummy",
+    logo: DummyIcon,
   },
 ];
 
@@ -158,6 +163,7 @@ const paymentProviderFields: Record<PaymentProviderID, any> = {
   mollie: molliePaymentProvider,
   adyen: adyenPaymentProvider,
   stripe: stripePaymentProvider,
+  dummy: {},
 };
 
 export type CommonField = { id: string } & Record<string, any>;
@@ -206,7 +212,17 @@ export const useStripePaymentProvider = (): PaymentProvider<"stripe"> => {
   };
 };
 
-export const usePaymentProviders = () => [
+export const useDummyPaymentProvider = (): PaymentProvider<"dummy"> => {
+  const intl = useIntl();
+
+  return {
+    id: "dummy",
+    label: intl.formatMessage(paymentProvidersMessages.dummy),
+    settings: [],
+  };
+};
+
+export const usePaymentProviders = (): PaymentProvider<PaymentProviderID>[] => [
   useMolliePaymentProvider(),
   useAdyenPaymentProvider(),
   useStripePaymentProvider(),

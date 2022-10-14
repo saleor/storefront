@@ -23924,6 +23924,7 @@ export type OrderFragment = {
   id: string;
   number: string;
   userEmail?: string | null;
+  isPaid: boolean;
   discounts: Array<{
     __typename?: "OrderDiscount";
     type: OrderDiscountType;
@@ -24011,6 +24012,8 @@ export type OrderFragment = {
     };
     thumbnail?: { __typename?: "Image"; alt?: string | null; url: string } | null;
   }>;
+  totalBalance: { __typename?: "Money"; currency: string; amount: number };
+  totalCaptured: { __typename?: "Money"; currency: string; amount: number };
 };
 
 export type OrderQueryVariables = Exact<{
@@ -24024,6 +24027,7 @@ export type OrderQuery = {
     id: string;
     number: string;
     userEmail?: string | null;
+    isPaid: boolean;
     discounts: Array<{
       __typename?: "OrderDiscount";
       type: OrderDiscountType;
@@ -24111,6 +24115,8 @@ export type OrderQuery = {
       };
       thumbnail?: { __typename?: "Image"; alt?: string | null; url: string } | null;
     }>;
+    totalBalance: { __typename?: "Money"; currency: string; amount: number };
+    totalCaptured: { __typename?: "Money"; currency: string; amount: number };
   } | null;
 };
 
@@ -24367,6 +24373,7 @@ export const OrderFragmentDoc = gql`
     id
     number
     userEmail
+    isPaid
     discounts {
       type
       name
@@ -24406,6 +24413,12 @@ export const OrderFragmentDoc = gql`
     }
     lines {
       ...OrderLineFragment
+    }
+    totalBalance {
+      ...Money
+    }
+    totalCaptured {
+      ...Money
     }
   }
   ${MoneyFragmentDoc}

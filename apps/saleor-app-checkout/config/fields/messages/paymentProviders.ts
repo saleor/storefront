@@ -22,6 +22,11 @@ export const paymentProvidersMessages = defineMessages<PaymentProviderID>({
     id: "messages/paymentProviders/ehp06H",
     description: "payment provider",
   },
+  dummy: {
+    defaultMessage: "Dummy Payment",
+    id: "messages/paymentProviders/LtD8zn",
+    description: "dummy payment provider",
+  },
 });
 
 export const molliePaymentProviderMessages = defineMessages<MollieProviderSettingID>({
@@ -71,6 +76,24 @@ export const adyenPaymentProviderMessages = defineMessages<AdyenProviderSettingI
 });
 
 export const stripePaymentProviderMessages = defineMessages<StripeProviderSettingID>({
+  publishableKey: {
+    defaultMessage: "Publishable Key",
+    id: "messages/paymentProviders/YBcvvL",
+    description: "payment provider setting",
+  },
+  secretKey: {
+    defaultMessage: "Secret Key",
+    id: "messages/paymentProviders/fQ20+Q",
+    description: "payment provider setting",
+  },
+  webhookSecret: {
+    defaultMessage: "Webhookd Secret",
+    id: "messages/paymentProviders/glq8nA",
+    description: "payment provider setting",
+  },
+});
+
+export const dummyPaymentProviderMessages = defineMessages<StripeProviderSettingID>({
   publishableKey: {
     defaultMessage: "Publishable Key",
     id: "messages/paymentProviders/YBcvvL",

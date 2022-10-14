@@ -49,6 +49,7 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
           liveApiKey: "some_decrypted_key",
         },
         stripe: {},
+        dummy: {},
       },
     };
 
@@ -72,6 +73,7 @@ describe("/utils/frontend/misc/mapMetadataToSettings", () => {
           liveApiKey: "•••• _key",
         },
         stripe: {},
+        dummy: {},
       },
     };
 

@@ -1,7 +1,7 @@
 import type { IconComponent } from "./icon";
 import type { SettingType } from "./settings";
 
-export const PaymentMethods = ["creditCard", "applePay", "paypal", "dropin"] as const;
+export const PaymentMethods = ["creditCard", "applePay", "paypal", "dropin", "dummy"] as const;
 export type PaymentMethodID = typeof PaymentMethods[number];
 export interface PaymentMethod {
   id: PaymentMethodID;
@@ -25,6 +25,7 @@ export const PaymentProviders: readonly (keyof PaymentProviderToSettings)[] = [
   "mollie",
   "adyen",
   "stripe",
+  "dummy",
 ] as const;
 export type PaymentProviderID = typeof PaymentProviders[number];
 
@@ -32,6 +33,7 @@ export type PaymentProviderToSettings = {
   mollie: MollieProviderSettingID;
   adyen: AdyenProviderSettingID;
   stripe: StripeProviderSettingID;
+  dummy: "dummyKey";
 };
 
 export type PaymentProviderSettingID<P extends PaymentProviderID> = PaymentProviderToSettings[P];

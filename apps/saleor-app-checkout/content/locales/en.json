@@ -91,6 +91,10 @@
     "developer_comment": "customization setting",
     "string": "Border Primary"
   },
+  "messages/paymentMethods/2dP9Gd": {
+    "developer_comment": "dummy payment method",
+    "string": "Dummy Payment"
+  },
   "messages/paymentMethods/6bexF4": {
     "developer_comment": "payment method",
     "string": "Drop-in"
@@ -126,6 +130,10 @@
   "messages/paymentProviders/I6I7xw": {
     "developer_comment": "payment provider setting",
     "string": "Webhook username"
+  },
+  "messages/paymentProviders/LtD8zn": {
+    "developer_comment": "dummy payment provider",
+    "string": "Dummy Payment"
   },
   "messages/paymentProviders/WdX1+f": {
     "developer_comment": "payment provider setting",
