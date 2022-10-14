@@ -232,6 +232,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     }
   };
 
+  // otherwise it gets way overcomplicated to get this to run only when needed
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(handleDefaultAddressSet, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
 

@@ -98,7 +98,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
       return;
     }
 
-    const isQuantityValid = !isNaN(quantity) && quantity >= 0;
+    const isQuantityValid = !Number.isNaN(quantity) && quantity >= 0;
 
     if (quantityString === "" || !isQuantityValid) {
       setValue("quantity", String(line.quantity));
