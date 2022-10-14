@@ -10,5 +10,5 @@ export const useCheckoutFormValidationTrigger = (callback: () => Promise<any>) =
     if (validating) {
       void callback();
     }
-  }, [validating]);
+  }, [validating, callback]);
 };

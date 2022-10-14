@@ -96,7 +96,7 @@ export const useCheckoutFormValidation = ({
       }
     }
 
-    if (!checkout.shippingAddress) {
+    if (checkout.isShippingRequired && !checkout.shippingAddress) {
       showCustomErrors([{ field: "shippingAddress", code: "required" }]);
     }
 

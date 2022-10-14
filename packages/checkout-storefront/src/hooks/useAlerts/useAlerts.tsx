@@ -1,4 +1,3 @@
-import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./types";
 import { toast } from "react-toastify";

@@ -2,7 +2,7 @@ import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
 import { getCountryByCountryCode } from "@/checkout-storefront/lib/consts";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
-import { reduce } from "lodash-es";
+import { omit, reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
 import { OperationResult } from "urql";
@@ -24,14 +24,30 @@ export type QueryVariables = Partial<
   >
 > & { countryCode: CountryCode };
 
+const getRawQueryParams = () => queryString.parse(location.search);
+
 export const getQueryVariables = (): QueryVariables => {
-  const vars = queryString.parse(location.search);
+  const vars = getRawQueryParams();
   return {
     ...vars,
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
   } as QueryVariables;
+};
+
+export const clearUrlAfterPasswordReset = (): void => {
+  const query = omit(getRawQueryParams(), ["token", "email"]);
+  const newUrl = queryString.stringifyUrl({ url: window.location.origin, query });
+  window.history.replaceState(
+    {
+      ...window.history.state,
+      url: newUrl,
+      as: newUrl,
+    },
+    "",
+    newUrl
+  );
 };
 
 export const getCurrentHref = () => location.href;

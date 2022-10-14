@@ -80,7 +80,7 @@ export const Summary: FC<SummaryProps> = ({
     handleWindowResize();
 
     return () => window.removeEventListener("resize", handleWindowResize);
-  }, [recapRef]);
+  }, [recapRef, lines.length]);
 
   return (
     <div className="summary">

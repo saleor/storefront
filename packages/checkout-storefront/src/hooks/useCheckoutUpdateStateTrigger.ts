@@ -25,5 +25,5 @@ export const useCheckoutUpdateStateTrigger = (
         setValue(stateKey, updating);
       }, 2000);
     }
-  }, [updating, scope]);
+  }, [updating, scope, setValue, stateKey]);
 };

@@ -61,6 +61,11 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/uc7gzX",
     description: "user address update - postal code invalid error",
   },
+  userAddressCreatePostalCodeInvalidError: {
+    defaultMessage: "Invalid postal code provided to address form",
+    id: "useAlerts/messages/wLQO7F",
+    description: "user address create - postal code invalid error",
+  },
   userRegisterPasswordPasswordTooShortError: {
     defaultMessage: "Provided password is too short",
     id: "useAlerts/messages/mJ81Pa",
@@ -145,5 +150,15 @@ export const errorMessages = defineMessages({
     defaultMessage: "Please provide valid email before finalizing checkout",
     id: "useAlerts/messages/cRtX18",
     description: "checkout finalize - email invalid error",
+  },
+  checkoutFinalizeShippingAddressRequiredError: {
+    defaultMessage: "Please provide a valid shipping address before finalizing checkout",
+    id: "useAlerts/messages/ow9nan",
+    description: "please provide a valid shipping address before finalizing checkout",
+  },
+  checkoutFinalizeBillingAddressRequiredError: {
+    defaultMessage: "Please provide a valid billing address before finalizing",
+    id: "useAlerts/messages/kiBZQ6",
+    description: "please provide a valid billing address before finalizing",
   },
 });

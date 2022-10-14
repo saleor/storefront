@@ -8,9 +8,14 @@ import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "./messages";
 
-type SignedInUserProps = Pick<SignInFormContainerProps, "onSectionChange">;
+interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
+  onSignOutSuccess: () => void;
+}
 
-export const SignedInUser: React.FC<SignedInUserProps> = ({ onSectionChange }) => {
+export const SignedInUser: React.FC<SignedInUserProps> = ({
+  onSectionChange,
+  onSignOutSuccess,
+}) => {
   const formatMessage = useFormattedMessages();
 
   const { checkout } = useCheckout();
@@ -22,6 +27,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({ onSectionChange }) =
   const handleLogout = async () => {
     await customerDetach({ checkoutId: checkout.id });
     await logout();
+    onSignOutSuccess();
   };
 
   return (

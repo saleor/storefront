@@ -5,6 +5,8 @@ import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup"
 import { useAddressList } from "@/checkout-storefront/sections/UserAddressSection/AddressListProvider";
 import { AddressTypeEnum } from "@saleor/sdk/dist/apollo/types";
 import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
+import { useFormattedMessages } from "@/checkout-storefront/hooks";
+import { userAddressLabels } from "./messages";
 
 interface UserAddressListProps {
   onEditChange: (id: string) => void;
@@ -12,18 +14,26 @@ interface UserAddressListProps {
 }
 
 export const UserAddressList: React.FC<UserAddressListProps> = ({ onEditChange, type }) => {
+  const formatMessage = useFormattedMessages();
   const isShippingAddressList = type === "SHIPPING";
   const { addressList, selectedAddressId, setSelectedAddressId } = useAddressList();
   const { isAvailable } = useAddressAvailability({ pause: !isShippingAddressList });
 
   return (
-    <SelectBoxGroup label="user addresses">
+    <SelectBoxGroup
+      label={formatMessage(
+        isShippingAddressList
+          ? userAddressLabels.shippingUserAddresses
+          : userAddressLabels.billingUserAddresses
+      )}
+    >
       {addressList.map(({ id, ...rest }: AddressFragment) => (
         <AddressSelectBox
-          key={id}
           value={id}
+          key={`${type}-${id}`}
+          id={`${type}-${id}`}
           selectedValue={selectedAddressId}
-          onSelect={() => setSelectedAddressId(id)}
+          onChange={() => setSelectedAddressId(id)}
           address={{ ...rest }}
           onEdit={() => onEditChange(id)}
           unavailable={!isAvailable(rest)}

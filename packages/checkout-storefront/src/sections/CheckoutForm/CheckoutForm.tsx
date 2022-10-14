@@ -6,7 +6,6 @@ import { Controller, FormProvider } from "react-hook-form";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useAuthState } from "@saleor/sdk";
 import { PaymentSection } from "../PaymentSection";
 import { ShippingAddressSection } from "../ShippingAddressSection/ShippingAddressSection";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
@@ -16,15 +15,16 @@ import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/use
 import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { checkoutFormLabels, checkoutFormMessages } from "./messages";
+import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
-  const { checkout, loading } = useCheckout();
-  const { authenticating } = useAuthState();
+  const { checkout } = useCheckout();
   const { checkoutFinalize, errors: userRegisterErrors } = useCheckoutFinalize();
 
-  const isLoading = loading || authenticating;
-  const [showOnlyContact, setShowOnlyContact] = useState(false);
+  const [showOnlyContact, setShowOnlyContact] = useState(
+    !!getQueryVariables().passwordResetToken || false
+  );
 
   const { handleSubmit, isProcessingApiChanges, methods } = useCheckoutForm({
     userRegisterErrors,
@@ -73,7 +73,6 @@ export const CheckoutForm = () => {
           />
         ) : (
           <Button
-            disabled={isLoading}
             ariaLabel={formatMessage(checkoutFormLabels.pay)}
             label={formatMessage(checkoutFormMessages.pay)}
             className="pay-button"

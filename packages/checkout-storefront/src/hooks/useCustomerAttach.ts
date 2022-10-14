@@ -4,7 +4,7 @@ import { useAuthState } from "@saleor/sdk";
 import { useEffect, useCallback } from "react";
 
 export const useCustomerAttach = () => {
-  const { checkout } = useCheckout();
+  const { checkout, loading } = useCheckout();
   const { user, authenticated } = useAuthState();
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
@@ -12,14 +12,14 @@ export const useCustomerAttach = () => {
   useCheckoutUpdateStateTrigger("checkoutCustomerAttach", fetching);
 
   const attachCustomer = useCallback(async () => {
-    if (checkout?.user?.id === user?.id || fetching) {
+    if (checkout?.user?.id === user?.id || fetching || loading) {
       return;
     }
 
     await customerAttach({
       checkoutId: checkout.id,
     });
-  }, [customerAttach, checkout?.user?.id, user?.id, fetching, checkout?.id]);
+  }, [customerAttach, checkout?.user?.id, user?.id, fetching, checkout?.id, loading]);
 
   useEffect(() => {
     void attachCustomer();

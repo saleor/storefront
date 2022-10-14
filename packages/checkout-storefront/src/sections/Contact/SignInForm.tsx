@@ -21,14 +21,16 @@ import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { contactLabels, contactMessages } from "./messages";
 
-type SignInFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
+interface SignInFormProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
+  onSignInSuccess: () => void;
+}
 
 interface FormData {
   email: string;
   password: string;
 }
 
-export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
+export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignInSuccess }) => {
   const formatMessage = useFormattedMessages();
   const { showErrors } = useAlerts();
   const { errorMessages } = useErrorMessages();
@@ -43,13 +45,15 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
 
   const resolver = useValidationResolver(schema);
 
-  const { handleSubmit, getValues, watch, setError, clearErrors, ...rest } = useForm<FormData>({
+  const formProps = useForm<FormData>({
     resolver,
-    mode: "onBlur",
-    defaultValues: { email: getContextValues("email") },
+    mode: "onTouched",
+    defaultValues: { email: getContextValues("email"), password: "" },
   });
 
-  const getInputProps = useGetInputProps(rest);
+  const { handleSubmit, getValues, watch, setError, clearErrors } = formProps;
+
+  const getInputProps = useGetInputProps(formProps);
 
   const onSubmit = async (formData: FormData) => {
     const result = await login(formData);
@@ -59,6 +63,8 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
       showErrors(errors, "login");
       return;
     }
+
+    onSignInSuccess();
   };
 
   const onPasswordReset = async () => {
@@ -92,6 +98,10 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange }) => {
   };
 
   const emailValue = watch("email");
+
+  useEffect(() => {
+    setPasswordResetSent(false);
+  }, [emailValue]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setContextValue("email", emailValue), [emailValue]);

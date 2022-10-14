@@ -5,16 +5,16 @@
       "value": "edit address"
     }
   ],
-  "AddressSelectBox/messages/OzIgQf": [
-    {
-      "type": 0,
-      "value": "edit address"
-    }
-  ],
   "AddressSelectBox/messages/X3KwgL": [
     {
       "type": 0,
       "value": "Can't ship to this address"
+    }
+  ],
+  "AddressSelectBox/messages/rHpDYH": [
+    {
+      "type": 0,
+      "value": "edit"
     }
   ],
   "BillingAddressSection/messages/OLzmaE": [
@@ -549,6 +549,18 @@
     {
       "type": 0,
       "value": "Processing..."
+    }
+  ],
+  "lib/commonMessages/9NmWSQ": [
+    {
+      "type": 0,
+      "value": "check icon"
+    }
+  ],
+  "lib/commonMessages/sklVAb": [
+    {
+      "type": 0,
+      "value": "remove icon"
     }
   ],
   "useAddressFormUtils/messages/0KU6nT": [

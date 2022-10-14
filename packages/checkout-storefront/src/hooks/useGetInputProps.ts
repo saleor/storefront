@@ -4,8 +4,8 @@ import {
   UseFormReturn,
   FieldPath,
   UseFormRegisterReturn,
-  FieldErrors,
 } from "react-hook-form";
+import { Error } from "@/checkout-storefront/hooks";
 
 export type ControlFormData<FormControl> = FormControl extends Control<infer FormData>
   ? FormData
@@ -16,7 +16,7 @@ export type FormInputProps<
   TData extends ControlFormData<TControl>
 > = UseFormRegisterReturn & {
   name: FieldPath<TData>;
-  errors: FieldErrors<TData>;
+  error: Error<TData> | undefined;
   control: Control<TData>;
 };
 
@@ -32,7 +32,7 @@ export type GetInputProps = <
 type UseGetInputProps<
   TControl extends Control<any, any>,
   TData extends ControlFormData<TControl>
-> = Pick<UseFormReturn<TData>, "formState" | "register"> & {
+> = Pick<UseFormReturn<TData>, "formState" | "register" | "getFieldState"> & {
   control: TControl;
 };
 
@@ -40,19 +40,22 @@ export const useGetInputProps = <
   TControl extends Control<any, any>,
   TData extends ControlFormData<TControl>
 >(
-  { register, control, formState: { errors, touchedFields } }: UseGetInputProps<TControl, TData>,
+  { register, control, getFieldState, formState }: UseGetInputProps<TControl, TData>,
   defaultOptions?: RegisterOptions<TData, any>
 ) => {
   const getInputProps = <TName extends FieldPath<TData> = FieldPath<TData>>(
     name: TName,
     options?: RegisterOptions<TData, TName>
-  ) => ({
-    ...register(name, { ...defaultOptions, ...options }),
-    name,
-    errors,
-    control,
-    touchedFields,
-  });
+  ) => {
+    const fieldState = getFieldState(name, formState);
+
+    return {
+      ...register(name, { ...defaultOptions, ...options }),
+      name,
+      error: fieldState.error as Pick<Error<TData>, "message">,
+      control,
+    };
+  };
 
   return getInputProps;
 };

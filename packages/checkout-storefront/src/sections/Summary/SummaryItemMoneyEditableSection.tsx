@@ -8,7 +8,6 @@ import {
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
-import { useEffect } from "react";
 import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
@@ -36,7 +35,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutLinesUpdate");
-  const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
+  const { setApiErrors, clearErrors } = useErrors<FormData>();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
 
@@ -52,8 +51,8 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
 
   const { watch, setValue } = methods;
 
-  const getQuantityValue = () => watch("quantity");
-  const getQuantity = () => Number(getQuantityValue());
+  const quantityString = watch("quantity");
+  const quantity = Number(quantityString);
 
   const onLineQuantityUpdate = async ({ quantity }: FormData) => {
     const result = await updateLines(getUpdateLineVars({ quantity }));
@@ -64,6 +63,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
       return;
     }
 
+    setValue("quantity", line.quantity.toString());
     setApiErrors(errors);
     showErrors(errors);
   };
@@ -94,32 +94,24 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   };
 
   const handleQuantityInputBlur = () => {
-    if (getQuantity() === line.quantity) {
+    if (quantity === line.quantity) {
       return;
     }
 
-    if (getQuantityValue() === "") {
+    const isQuantityValid = !Number.isNaN(quantity) && quantity >= 0;
+
+    if (quantityString === "" || !isQuantityValid) {
       setValue("quantity", String(line.quantity));
       return;
     }
 
-    if (getQuantity() === 0) {
+    if (quantity === 0) {
       void onLineDelete();
       return;
     }
 
-    void onLineQuantityUpdate({ quantity: getQuantityValue() });
+    void onLineQuantityUpdate({ quantity: quantityString });
   };
-
-  useEffect(() => {
-    if (updating || !hasErrors) {
-      return;
-    }
-
-    if (line.quantity !== getQuantity()) {
-      setValue("quantity", line.quantity.toString());
-    }
-  }, [updating]);
 
   return (
     <div className="flex flex-col items-end h-20 relative -top-2">
@@ -128,7 +120,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           {formatMessage(summaryMessages.quantity)}:
         </Text>
         <TextInput
-          classNames={{ container: "!w-12 !mb-0", input: "text-center !h-8" }}
+          classNames={{ container: "!w-13 !mb-0", input: "text-center !h-8" }}
           label=""
           {...getInputProps("quantity", { onBlur: handleQuantityInputBlur })}
         />

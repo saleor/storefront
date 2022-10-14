@@ -16,6 +16,7 @@ export const SelectBox: FC<SelectBoxProps> = ({
   value,
   selectedValue,
   className,
+  id,
   disabled = false,
   ...rest
 }) => {
@@ -23,8 +24,8 @@ export const SelectBox: FC<SelectBoxProps> = ({
 
   return (
     <div className={clsx("select-box", { selected, disabled }, className)}>
-      <input type="radio" value={value} id={value} {...rest} checked={selected} />
-      <label className="w-full" htmlFor={value}>
+      <input type="radio" value={value} id={id || value} {...rest} checked={selected} />
+      <label className="w-full" htmlFor={id || value}>
         {children}
       </label>
     </div>

@@ -21,7 +21,7 @@ export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
         </Text>
         <Text size="md">
           {formatMessage(orderInfoMessages.orderConfirmSubtitle, {
-            email: order.userEmail!,
+            email: order.userEmail || "",
           })}
         </Text>
       </header>

@@ -39,7 +39,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     watch,
     setError,
     trigger,
-    formState: { isDirty, touchedFields },
+    formState: { isDirty },
   } = formProps;
   const formData = watch();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
@@ -83,7 +83,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     if (isDirty) {
       void trigger();
     }
-  }, [allowedFields, requiredFields, setValue]);
+  }, [allowedFields, requiredFields, setValue, trigger, isDirty]);
 
   return (
     <form>

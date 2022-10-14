@@ -29,6 +29,8 @@ export const useDynamicAppConfig = <T>({ checkoutAppUrl }: { checkoutAppUrl: str
     return () => {
       window.removeEventListener("message", eventListener);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // because this needs to only run on mount
   }, []);
 
   return previewSettings;

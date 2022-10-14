@@ -1,135 +1,63 @@
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { extractMutationErrors, getQueryVariables } from "@/checkout-storefront/lib/utils";
-import React, { FC, useEffect, useRef } from "react";
+import { getQueryVariables } from "@/checkout-storefront/lib/utils";
+import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
 import { SignedInUser } from "./SignedInUser";
-import { useAuthState } from "@saleor/sdk";
 import { ResetPassword } from "./ResetPassword";
 import { GuestUserForm } from "./GuestUserForm";
-import {
-  useCheckoutCustomerAttachMutation,
-  useCheckoutEmailUpdateMutation,
-} from "@/checkout-storefront/graphql";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { useFormContext } from "react-hook-form";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
+import { useAuthState } from "@saleor/sdk";
+import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
+
+const onlyContactShownSections: Section[] = ["signIn", "resetPassword"];
 
 interface ContactProps {
   setShowOnlyContact: (value: boolean) => void;
 }
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
+  const { authenticated } = useAuthState();
+  useCustomerAttach();
+
   const [passwordResetShown, setPasswordResetShown] = useState(false);
-  const passwordResetToken = getQueryVariables().passwordResetToken;
-  const shouldShowPasswordReset = passwordResetToken && !passwordResetShown;
-  const [currentSection, setCurrentSection] = useState<Section>(
-    shouldShowPasswordReset ? "resetPassword" : "guestUser"
-  );
-  const [{ fetching: attachingCustomer }, customerAttach] = useCheckoutCustomerAttachMutation();
-  const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
 
-  useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
-  useCheckoutUpdateStateTrigger("checkoutCustomerAttach", attachingCustomer);
-
-  const { showErrors } = useAlerts();
-  const { authenticated, user } = useAuthState();
-  const hasAuthenticated = useRef(false);
-  const { checkout, loading } = useCheckout();
-  const { getValues } = useFormContext();
-
-  const handleChangeSection = (section: Section) => () => setCurrentSection(section);
-
-  const isCurrentSection = (section: Section) => currentSection === section;
-
-  const handleEmailUpdate = async (email: string) => {
-    if (updatingEmail || !email?.length) {
-      return;
-    }
-
-    const result = await updateEmail({
-      email,
-      checkoutId: checkout.id,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      showErrors(errors, "checkoutEmailUpdate");
-      return;
-    }
-  };
-
-  const updateEmailAfterSignIn = async () => {
-    if (!user?.email || user?.email === checkout?.email) {
-      return;
-    }
-
-    await handleEmailUpdate(user?.email);
-  };
-
-  const updateEmailAfterSectionChange = async () => {
-    const formEmail = getValues("email");
-
-    if (formEmail !== checkout.email) {
-      await handleEmailUpdate(formEmail);
-    }
-  };
-
-  const handleCustomerAttatch = async () => {
-    if (checkout?.user?.id === user?.id || attachingCustomer) {
-      return;
-    }
-
-    await customerAttach({
-      checkoutId: checkout.id,
-    });
-  };
-
-  useEffect(() => {
-    if (authenticated && !hasAuthenticated.current) {
-      void updateEmailAfterSignIn();
-      void handleCustomerAttatch();
-      hasAuthenticated.current = true;
-    }
-  }, [authenticated]);
-
-  useEffect(() => {
-    if (authenticated) {
-      return;
-    }
-
-    if (isCurrentSection("guestUser")) {
-      void updateEmailAfterSectionChange();
-    }
-  }, [currentSection]);
-
-  useEffect(() => {
-    if (loading) {
-      return;
-    }
-
-    if (authenticated) {
-      setCurrentSection("signedInUser");
-      hasAuthenticated.current = true;
-      return;
-    }
+  const selectInitialSection = (): Section => {
+    const shouldShowPasswordReset = passwordResetToken && !passwordResetShown;
 
     if (shouldShowPasswordReset) {
-      setPasswordResetShown(true);
-      return;
+      return "resetPassword";
     }
 
-    setCurrentSection("guestUser");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, checkout?.user, authenticated]);
+    return authenticated ? "signedInUser" : "guestUser";
+  };
+
+  const passwordResetToken = getQueryVariables().passwordResetToken;
+  const [currentSection, setCurrentSection] = useState<Section>(selectInitialSection());
+
+  const handleChangeSection = (section: Section) => () => {
+    if (onlyContactShownSections.includes(section)) {
+      setShowOnlyContact(true);
+    }
+    setCurrentSection(section);
+  };
+
+  const isCurrentSection = useCallback(
+    (section: Section) => currentSection === section,
+    [currentSection]
+  );
+
+  const shouldShowOnlyContact = onlyContactShownSections.includes(currentSection);
 
   useEffect(() => {
-    const shouldShowOnlyContact = isCurrentSection("resetPassword") || isCurrentSection("signIn");
+    if (isCurrentSection("resetPassword")) {
+      setPasswordResetShown(true);
+    }
+  }, [isCurrentSection]);
+
+  useEffect(() => {
     setShowOnlyContact(shouldShowOnlyContact);
-  }, [currentSection]);
+  }, [currentSection, setShowOnlyContact, shouldShowOnlyContact]);
 
   return (
     <div>
@@ -138,15 +66,24 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       )}
 
       {isCurrentSection("signIn") && (
-        <SignInForm onSectionChange={handleChangeSection("guestUser")} />
+        <SignInForm
+          onSectionChange={handleChangeSection("guestUser")}
+          onSignInSuccess={handleChangeSection("signedInUser")}
+        />
       )}
 
       {isCurrentSection("signedInUser") && (
-        <SignedInUser onSectionChange={handleChangeSection("guestUser")} />
+        <SignedInUser
+          onSectionChange={handleChangeSection("guestUser")}
+          onSignOutSuccess={handleChangeSection("guestUser")}
+        />
       )}
 
       {isCurrentSection("resetPassword") && (
-        <ResetPassword onSectionChange={handleChangeSection("signIn")} />
+        <ResetPassword
+          onSectionChange={handleChangeSection("signIn")}
+          onResetPasswordSuccess={handleChangeSection("signedInUser")}
+        />
       )}
     </div>
   );

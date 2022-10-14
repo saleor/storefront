@@ -1,7 +1,7 @@
 import { FieldError, Path, UseFormSetError } from "react-hook-form";
 import { Errors } from "@/checkout-storefront/hooks/useErrors";
 import { forEach } from "lodash-es";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 function useSetFormErrors<TFormData>({
   setError,
@@ -10,7 +10,7 @@ function useSetFormErrors<TFormData>({
   setError: UseFormSetError<TFormData>;
   errors?: Errors<TFormData>;
 }) {
-  const setFormErrors = () => {
+  const setFormErrors = useCallback(() => {
     // because we don't get this prop when setting errors from hook form
     const hasErrors = typeof errors === "object" ? !!Object.keys(errors).length : false;
 
@@ -21,11 +21,11 @@ function useSetFormErrors<TFormData>({
         });
       });
     }
-  };
+  }, [errors, setError]);
 
   useEffect(() => {
     setFormErrors();
-  }, [errors]);
+  }, [errors, setFormErrors]);
 }
 
 export { useSetFormErrors };

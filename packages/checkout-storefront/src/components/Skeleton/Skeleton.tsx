@@ -17,5 +17,5 @@ export const Skeleton: React.FC<PropsWithChildren<SkeletonProps>> = ({
     className
   );
 
-  return <div className={classes} children={children} />;
+  return <div className={classes}>{children}</div>;
 };

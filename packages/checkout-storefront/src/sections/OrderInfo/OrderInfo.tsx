@@ -13,21 +13,25 @@ import { Section } from "./Section";
 export const OrderInfo = ({ order }: { order: OrderFragment }) => {
   const formatMessage = useFormattedMessages();
 
+  const { id, deliveryMethod, shippingAddress, billingAddress, userEmail } = order;
+
   return (
     <section className="lg:w-1/2 border border-border-secondary rounded-lg pt-5 px-4">
-      <PaymentSection orderId={order.id} />
-      <DeliverySection deliveryMethod={order.deliveryMethod} />
+      <PaymentSection orderId={id} />
+      <DeliverySection deliveryMethod={deliveryMethod} />
       <Section title={formatMessage(contactMessages.contact)}>
-        <Text>{order?.userEmail}</Text>
+        <Text>{userEmail}</Text>
       </Section>
-      {order.shippingAddress && (
+      {shippingAddress && (
         <Section title={formatMessage(shippingMessages.shippingAddress)}>
-          <Address address={order.shippingAddress} />
+          <Address address={shippingAddress} />
         </Section>
       )}
-      <Section title={formatMessage(billingMessages.billingAddress)}>
-        <Address address={order.billingAddress!} />
-      </Section>
+      {billingAddress && (
+        <Section title={formatMessage(billingMessages.billingAddress)}>
+          <Address address={billingAddress} />
+        </Section>
+      )}
     </section>
   );
 };

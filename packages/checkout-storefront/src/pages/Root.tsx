@@ -34,7 +34,7 @@ export const Root = ({ env }: RootProps) => {
         requestPolicy: "cache-and-network",
         fetch: authorizedFetch as ClientOptions["fetch"],
       }),
-    []
+    [authorizedFetch, env.apiUrl]
   );
 
   // temporarily need to use @apollo/client because saleor sdk
@@ -45,7 +45,7 @@ export const Root = ({ env }: RootProps) => {
         apiUrl: env.apiUrl,
         channel: "default-channel",
       }),
-    []
+    [env.apiUrl]
   );
 
   return (

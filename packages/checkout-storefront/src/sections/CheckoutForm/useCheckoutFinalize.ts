@@ -5,7 +5,6 @@ import { useAuth, useAuthState } from "@saleor/sdk";
 
 import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { useEffect } from "react";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 
@@ -14,9 +13,6 @@ export const useCheckoutFinalize = () => {
   const { register } = useAuth();
   const { user } = useAuthState();
   const { checkoutPay, loading, error: payError, data: _payData } = usePay();
-  const {
-    env: { checkoutApiUrl },
-  } = useAppConfig();
   const { showErrors, showCustomErrors } = useAlerts();
   const { errors, setApiErrors } = useErrors<CheckoutFormData>();
 

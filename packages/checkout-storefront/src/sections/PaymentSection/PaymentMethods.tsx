@@ -1,6 +1,5 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React, { SyntheticEvent, useEffect, useMemo } from "react";
-import { compact } from "lodash-es";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { Text } from "@saleor/ui-kit";
@@ -50,7 +49,9 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       return [];
     }
 
-    return compact(Object.keys(allPaymentMethods)) as AvailablePaymentMethods;
+    return Object.entries(allPaymentMethods)
+      .filter(([, paymentProviderId]) => !!paymentProviderId)
+      .map(([paymentMethodId]) => paymentMethodId) as AvailablePaymentMethods;
   };
 
   const availablePaymentMethods = getParsedPaymentMethods(allPaymentOptions);
@@ -62,10 +63,10 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 
     if (allPaymentOptions && !availablePaymentMethods.length) {
       throw new Error("No available payment providers");
-    } else if (!selectedPaymentMethod) {
-      setValue("paymentMethodId", availablePaymentMethods[0] as PaymentMethodID);
+    } else if (!selectedPaymentMethod && availablePaymentMethods[0]) {
+      setValue("paymentMethodId", availablePaymentMethods[0]);
     }
-  }, [loading, allPaymentOptions, availablePaymentMethods.length, selectedPaymentMethod, setValue]);
+  }, [loading, allPaymentOptions, availablePaymentMethods, selectedPaymentMethod, setValue]);
 
   const paymentProviderID = useMemo(
     () => allPaymentOptions?.[selectedPaymentMethod],

@@ -84,90 +84,121 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
 
   const checkoutAddressRef = useRef<Address>(null);
 
-  const handleCheckoutAddressUpdate = (address: AddressFragment) =>
-    onCheckoutAddressUpdate(getUserAddressFormDataFromAddress(address));
+  const handleCheckoutAddressUpdate = useCallback(
+    (address: AddressFragment) =>
+      onCheckoutAddressUpdate(getUserAddressFormDataFromAddress(address)),
+    [onCheckoutAddressUpdate]
+  );
 
-  const getSelectedAddress = (id: string | undefined = selectedAddressId) =>
-    addressList.find(getById(id));
+  const getSelectedAddress = useCallback(
+    (id: string | undefined = selectedAddressId) => addressList.find(getById(id)),
+    [addressList, selectedAddressId]
+  );
 
-  const addressUpdate = async (formData: UserAddressFormData) => {
-    const result = await userAddressUpdate({
-      address: getAddressInputData({
-        ...formData,
-      }),
-      id: formData.id,
-    });
+  const addressUpdate = useCallback(
+    async (formData: UserAddressFormData) => {
+      const result = await userAddressUpdate({
+        address: getAddressInputData({
+          ...formData,
+        }),
+        id: formData.id,
+      });
 
-    const [hasErrors, errors] = extractMutationErrors(result);
+      const [hasErrors, errors] = extractMutationErrors(result);
 
-    if (hasErrors) {
-      showErrors(errors, "userAddressUpdate");
-      return { hasErrors, errors };
-    }
-
-    const updatedAddress = result?.data?.accountAddressUpdate?.address as AddressFragment;
-
-    const updatedList = addressList.map((existingAddress) =>
-      existingAddress.id === updatedAddress.id ? updatedAddress : existingAddress
-    );
-
-    setAddressList(updatedList);
-
-    if (isAvailable(updatedAddress)) {
-      setSelectedAddressId(updatedAddress.id);
-
-      handleCheckoutAddressUpdate(updatedAddress);
-    }
-
-    return { hasErrors: false, errors: [] };
-  };
-
-  const addressDelete = async (id: string) => {
-    const result = await userAddressDelete({
-      id,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      showErrors(errors, "userAddressDelete");
-    }
-
-    setAddressList(addressList.filter(getByUnmatchingId(id)));
-
-    if (selectedAddressId === id && addressList[0]) {
-      const newAddress = addressList[0];
-      setSelectedAddressId(newAddress.id);
-      handleCheckoutAddressUpdate(newAddress);
-    }
-
-    return { hasErrors, errors };
-  };
-
-  const addressCreate = async (formData: AddressFormData) => {
-    const result = await userAddressCreate({
-      address: getAddressInputData({
-        ...formData,
-      }),
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      showErrors(errors, "userAddressCreate");
-    } else {
-      const address = result?.data?.accountAddressCreate?.address as AddressFragment;
-
-      setAddressList([...addressList, address]);
-
-      if (isAvailable(address)) {
-        setSelectedAddressId(address.id);
-        handleCheckoutAddressUpdate(address);
+      if (hasErrors) {
+        showErrors(errors, "userAddressUpdate");
+        return { hasErrors, errors };
       }
-    }
 
-    return { hasErrors, errors };
-  };
+      const updatedAddress = result?.data?.accountAddressUpdate?.address as AddressFragment;
+
+      const updatedList = addressList.map((existingAddress) =>
+        existingAddress.id === updatedAddress.id ? updatedAddress : existingAddress
+      );
+
+      setAddressList(updatedList);
+
+      if (isAvailable(updatedAddress)) {
+        setSelectedAddressId(updatedAddress.id);
+
+        handleCheckoutAddressUpdate(updatedAddress);
+      }
+
+      return { hasErrors: false, errors: [] };
+    },
+    [addressList, handleCheckoutAddressUpdate, isAvailable, showErrors, userAddressUpdate]
+  );
+
+  const addressDelete = useCallback(
+    async (id: string) => {
+      const result = await userAddressDelete({
+        id,
+      });
+
+      const [hasErrors, errors] = extractMutationErrors(result);
+
+      if (hasErrors) {
+        showErrors(errors, "userAddressDelete");
+      }
+
+      setAddressList(addressList.filter(getByUnmatchingId(id)));
+
+      if (selectedAddressId === id && addressList[0]) {
+        const newAddress = addressList[0];
+        setSelectedAddressId(newAddress.id);
+        handleCheckoutAddressUpdate(newAddress);
+      }
+
+      return { hasErrors, errors };
+    },
+    [addressList, handleCheckoutAddressUpdate, showErrors, userAddressDelete, selectedAddressId]
+  );
+
+  const addressCreate = useCallback(
+    async (formData: AddressFormData) => {
+      const result = await userAddressCreate({
+        address: getAddressInputData({
+          ...formData,
+        }),
+      });
+
+      const [hasErrors, errors] = extractMutationErrors(result);
+
+      if (hasErrors) {
+        showErrors(errors, "userAddressCreate");
+      } else {
+        const address = result?.data?.accountAddressCreate?.address as AddressFragment;
+
+        setAddressList([...addressList, address]);
+
+        if (isAvailable(address)) {
+          setSelectedAddressId(address.id);
+          handleCheckoutAddressUpdate(address);
+        }
+      }
+
+      return { hasErrors, errors };
+    },
+    [addressList, handleCheckoutAddressUpdate, showErrors, isAvailable, userAddressCreate]
+  );
+
+  // because eslint is unable to read deps inside of debounce
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedUpdate = useCallback(
+    debounce((address: AddressFragment) => {
+      handleCheckoutAddressUpdate(address);
+    }, 2000),
+    [handleCheckoutAddressUpdate]
+  );
+
+  const handleAddressSelect = useCallback(
+    (addressId: string) => {
+      setSelectedAddressId(addressId);
+      debouncedUpdate(getSelectedAddress(addressId) as AddressFragment);
+    },
+    [getSelectedAddress, debouncedUpdate]
+  );
 
   const handleDefaultAddressSet = () => {
     const isSelectedAddressSameAsCheckout =
@@ -201,19 +232,9 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     }
   };
 
+  // otherwise it gets way overcomplicated to get this to run only when needed
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(handleDefaultAddressSet, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
-
-  const debouncedUpdate = useCallback(
-    debounce((address: AddressFragment) => {
-      handleCheckoutAddressUpdate(address);
-    }, 2000),
-    []
-  );
-
-  const handleAddressSelect = (addressId: string) => {
-    setSelectedAddressId(addressId);
-    debouncedUpdate(getSelectedAddress(addressId) as AddressFragment);
-  };
 
   const providerValues: ContextConsumerProps = useMemo(() => {
     return {
@@ -227,7 +248,17 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       updating,
       creating,
     };
-  }, [addressList, deleting, updating, creating, selectedAddressId]);
+  }, [
+    addressList,
+    deleting,
+    updating,
+    creating,
+    selectedAddressId,
+    addressCreate,
+    addressDelete,
+    addressUpdate,
+    handleAddressSelect,
+  ]);
 
   return <Provider value={providerValues}>{children}</Provider>;
 };
