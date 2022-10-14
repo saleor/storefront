@@ -80,7 +80,10 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       )}
 
       {isCurrentSection("resetPassword") && (
-        <ResetPassword onSectionChange={handleChangeSection("signIn")} />
+        <ResetPassword
+          onSectionChange={handleChangeSection("signIn")}
+          onResetPasswordSuccess={handleChangeSection("signedInUser")}
+        />
       )}
     </div>
   );

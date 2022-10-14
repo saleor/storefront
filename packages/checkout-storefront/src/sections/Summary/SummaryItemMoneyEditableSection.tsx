@@ -8,7 +8,6 @@ import {
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
-import { useCallback, useEffect } from "react";
 import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
@@ -36,7 +35,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutLinesUpdate");
-  const { setApiErrors, hasErrors, clearErrors } = useErrors<FormData>();
+  const { setApiErrors, clearErrors } = useErrors<FormData>();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
 
@@ -64,7 +63,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
       return;
     }
 
-    setValue("quantity", line.quantity);
+    setValue("quantity", line.quantity.toString());
     setApiErrors(errors);
     showErrors(errors);
   };

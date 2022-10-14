@@ -1,6 +1,5 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React, { SyntheticEvent, useEffect, useMemo } from "react";
-import { compact } from "lodash-es";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { Text } from "@saleor/ui-kit";

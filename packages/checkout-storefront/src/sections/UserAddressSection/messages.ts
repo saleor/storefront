@@ -6,6 +6,11 @@ export const userAddressMessages = defineMessages({
     id: "UserAddressSection/messages/xPCC/5",
     description: "add address",
   },
+  noAddresses: {
+    defaultMessage: "You currently have no saved addresses.",
+    id: "UserAddressSection/messages/lhYBSH",
+    description: "you have no addresses",
+  },
 });
 
 export const userAddressLabels = defineMessages({

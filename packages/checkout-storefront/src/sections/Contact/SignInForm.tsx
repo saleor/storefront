@@ -45,13 +45,15 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
 
   const resolver = useValidationResolver(schema);
 
-  const { handleSubmit, getValues, watch, setError, clearErrors, ...rest } = useForm<FormData>({
+  const formProps = useForm<FormData>({
     resolver,
-    mode: "onBlur",
-    defaultValues: { email: getContextValues("email") },
+    mode: "onTouched",
+    defaultValues: { email: getContextValues("email"), password: "" },
   });
 
-  const getInputProps = useGetInputProps(rest);
+  const { handleSubmit, getValues, watch, setError, clearErrors } = formProps;
+
+  const getInputProps = useGetInputProps(formProps);
 
   const onSubmit = async (formData: FormData) => {
     const result = await login(formData);
@@ -96,6 +98,10 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
   };
 
   const emailValue = watch("email");
+
+  useEffect(() => {
+    setPasswordResetSent(false);
+  }, [emailValue]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setContextValue("email", emailValue), [emailValue]);
