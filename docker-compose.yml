@@ -12,7 +12,6 @@ services:
         - CHECKOUT_APP_URL=http://localhost:3001
         - CHECKOUT_STOREFRONT_URL=http://localhost:3001/checkout-spa/
         - CLOUD_DEPLOYMENT_URL=
-        - VERCEL_URL=http://localhost:3001
     ports:
       - 3001:3001
     command: pnpm turbo run start --filter=saleor-app-checkout...
@@ -27,7 +26,6 @@ services:
         - CHECKOUT_APP_URL=http://localhost:3001
         - CHECKOUT_STOREFRONT_URL=http://localhost:3001/checkout-spa/
         - CLOUD_DEPLOYMENT_URL=
-        - VERCEL_URL=http://localhost:3001
     ports:
       - 3000:3000
     command: sh -c '(nginx &) && pnpm turbo run start --filter=storefront...'
