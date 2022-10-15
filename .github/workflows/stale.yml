@@ -13,4 +13,10 @@ jobs:
     steps:
       - uses: actions/stale@v5
         with:
+          days-before-stale: 90
+          days-before-close: 30
           days-before-pr-close: -1
+          stale-issue-message: |
+            This issue had no activity for more than 90 days. Labelling as stale.
+
+            It'll be automatically closed withing 30 days of no activity.
