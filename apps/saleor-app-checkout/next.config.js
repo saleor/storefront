@@ -37,6 +37,7 @@ const config = withTM({
   experimental: {
     // https://nextjs.org/docs/messages/import-esm-externals
     esmExternals: "loose",
+    externalDir: true,
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -14,6 +14,9 @@ const isProd = process.env.NODE_ENV === "production";
 
 const __ = (arr) => arr.filter((x) => !!x);
 
+/**
+ * @type {import('rollup').RollupOptions[]}
+ */
 export default [
   {
     input: "src/index.tsx",
