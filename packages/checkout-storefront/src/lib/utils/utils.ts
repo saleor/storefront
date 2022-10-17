@@ -1,6 +1,5 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
-import { Country, getCountryByCountryCode } from "@/checkout-storefront/lib/consts";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { Locale } from "@/checkout-storefront/lib/regions";
 import { omit, reduce } from "lodash-es";
@@ -81,14 +80,16 @@ export const isOrderConfirmationPage = () => {
   return typeof orderId === "string";
 };
 
-export const getParsedLocaleData = (locale?: Locale): { locale: Locale; country: Country } => {
+export const getParsedLocaleData = (
+  locale?: Locale
+): { locale: Locale; countryCode: CountryCode } => {
   if (typeof locale !== "string") {
     throw new Error("Invalid url");
   }
 
   const [, countryCode] = locale?.split("-");
 
-  return { country: getCountryByCountryCode(countryCode as CountryCode), locale };
+  return { countryCode: countryCode as CountryCode, locale };
 };
 
 export const extractCheckoutIdFromUrl = (): string => {

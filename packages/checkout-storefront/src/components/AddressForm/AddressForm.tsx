@@ -1,7 +1,7 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 import { Option, Select } from "@saleor/ui-kit";
-import { UseErrors, useGetInputProps } from "@/checkout-storefront/hooks";
+import { UseErrors, useFormattedMessages, useGetInputProps } from "@/checkout-storefront/hooks";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { Path, RegisterOptions, UseFormReturn } from "react-hook-form";
@@ -13,6 +13,7 @@ import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { autocompleteTags, countries } from "@/checkout-storefront/lib/consts";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { emptyFormData } from "@/checkout-storefront/lib/utils";
+import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
 
 interface CountryOption extends Option {
   value: CountryCode;
@@ -42,6 +43,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     formState: { isDirty },
   } = formProps;
   const formData = watch();
+  const formatMessage = useFormattedMessages();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
   const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
   const ref = useRef<HTMLFormElement>(null);
@@ -51,14 +53,14 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   const countryOptions: CountryOption[] = useMemo(
     () =>
       sortBy(
-        countries.map(({ code, name }) => ({
-          label: name,
+        countries.map((code) => ({
+          label: formatMessage(countriesMessages[code as keyof typeof countriesMessages]),
           value: code,
           disabled: !isAvailable({ country: { code } }),
         })),
         "disabled"
       ),
-    [isAvailable]
+    [formatMessage, isAvailable]
   );
 
   const {

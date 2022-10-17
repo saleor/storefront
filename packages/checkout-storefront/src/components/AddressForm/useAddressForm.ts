@@ -33,13 +33,11 @@ export const useAddressForm = ({
   const defaultValuesRef = useRef<AddressFormData>(defaultValues);
 
   const initialCountryCode = useMemo(() => {
-    const countryCodeInOptions = countries.find(
-      ({ code }) => code === defaultValues.countryCode
-    )?.code;
+    const countryCodeInOptions = countries.find((code) => code === defaultValues.countryCode);
 
     return (
       (countryCodeInOptions as CountryCode) ||
-      getParsedLocaleData(getQueryParams().locale).country.code
+      getParsedLocaleData(getQueryParams().locale).countryCode
     );
   }, [defaultValues]);
 
@@ -87,7 +85,7 @@ export const useAddressForm = ({
   const handleUrlChange = useCallback(
     ({ queryParams: { locale } }: UrlChangeHandlerArgs) => {
       const formData = getValues();
-      const newCountryCode = getParsedLocaleData(locale).country.code;
+      const newCountryCode = getParsedLocaleData(locale).countryCode;
 
       const hasCountryChanged = newCountryCode !== formData.countryCode;
 
