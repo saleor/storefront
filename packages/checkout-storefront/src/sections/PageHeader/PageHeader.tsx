@@ -1,12 +1,12 @@
 import { SaleorLogo } from "@/checkout-storefront/images";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
-import { LanguageButton } from "./LanguageButton";
+import { LanguageSelect } from "@/checkout-storefront/sections/PageHeader/LanguageSelect";
 
 export const PageHeader = () => {
   return (
     <div className="page-header">
       <img src={getSvgSrc(SaleorLogo)} alt="logo" className="logo" />
-      <LanguageButton />
+      <LanguageSelect />
     </div>
   );
 };

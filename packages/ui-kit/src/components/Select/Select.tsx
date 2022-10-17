@@ -1,9 +1,9 @@
 import {
+  ChangeEvent,
   ForwardedRef,
   forwardRef,
   ReactNode,
   SelectHTMLAttributes,
-  SyntheticEvent,
   useState,
 } from "react";
 import clsx from "clsx";
@@ -26,7 +26,7 @@ export type SelectOnChangeHandler<TData extends string = string> = (value: TData
 
 export interface SelectProps<TData extends string = string>
   extends SelectHTMLAttributes<HTMLSelectElement> {
-  onChange: (event: SyntheticEvent) => void;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   options: Option<TData>[];
   classNames?: ClassNames<"container">;
   width?: "1/2" | "full";
@@ -38,7 +38,7 @@ const SelectComponent = <TData extends string = string>(
 ) => {
   const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
 
-  const handleChange = (event: SyntheticEvent) => {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if ((event.target as HTMLSelectElement).value === PLACEHOLDER_KEY) {
       return;
     }
