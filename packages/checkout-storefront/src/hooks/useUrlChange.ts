@@ -14,5 +14,5 @@ export const useUrlChange = (onLocationChange: ({ queryParams }: UrlChangeHandle
     return () => {
       window.removeEventListener(URL_CHANGED, handleChange);
     };
-  }, []);
+  }, [onLocationChange]);
 };
