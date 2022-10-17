@@ -1,4 +1,28 @@
 {
+  "AddressForm/messages/9BsfhB": [
+    {
+      "type": 0,
+      "value": "Netherlands"
+    }
+  ],
+  "AddressForm/messages/IHMZ2N": [
+    {
+      "type": 0,
+      "value": "Poland"
+    }
+  ],
+  "AddressForm/messages/PwM0Kj": [
+    {
+      "type": 0,
+      "value": "France"
+    }
+  ],
+  "AddressForm/messages/xQAA6W": [
+    {
+      "type": 0,
+      "value": "United States of America"
+    }
+  ],
   "AddressSelectBox/messages//II2Kl": [
     {
       "type": 0,
@@ -213,6 +237,56 @@
       "value": "Delivery method"
     }
   ],
+  "DummyPayment/messages/2uijFy": [
+    {
+      "type": 0,
+      "value": "Left to pay ("
+    },
+    {
+      "type": 1,
+      "value": "currency"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "DummyPayment/messages/9FUEKB": [
+    {
+      "type": 0,
+      "value": "Dummy Pay"
+    }
+  ],
+  "DummyPayment/messages/Cm6A9z": [
+    {
+      "type": 0,
+      "value": "Loading..."
+    }
+  ],
+  "DummyPayment/messages/Hm9+RE": [
+    {
+      "type": 0,
+      "value": "Something went wrong"
+    }
+  ],
+  "DummyPayment/messages/S0J+0M": [
+    {
+      "type": 0,
+      "value": "Dummy Payment"
+    }
+  ],
+  "DummyPayment/messages/eJ2qAk": [
+    {
+      "type": 0,
+      "value": "Total price"
+    }
+  ],
+  "DummyPayment/messages/qCpYR4": [
+    {
+      "type": 0,
+      "value": "Already paid"
+    }
+  ],
   "EmptyCartPage/messages/CLKTRp": [
     {
       "type": 0,
@@ -331,6 +405,30 @@
       "value": "We've received your payment"
     }
   ],
+  "PageHeader/messages/7vp32g": [
+    {
+      "type": 0,
+      "value": "Dutch"
+    }
+  ],
+  "PageHeader/messages/e9JKRm": [
+    {
+      "type": 0,
+      "value": "French"
+    }
+  ],
+  "PageHeader/messages/eXrxj4": [
+    {
+      "type": 0,
+      "value": "English (USA)"
+    }
+  ],
+  "PageHeader/messages/kd+Ya5": [
+    {
+      "type": 0,
+      "value": "Polish"
+    }
+  ],
   "PageNotFound/messages/Q7DOPP": [
     {
       "type": 0,
@@ -377,6 +475,18 @@
     {
       "type": 0,
       "value": "Apple Pay"
+    }
+  ],
+  "PaymentSection/messages/xXCQ+K": [
+    {
+      "type": 0,
+      "value": "Dummy"
+    }
+  ],
+  "RootViews/messages/Cm6A9z": [
+    {
+      "type": 0,
+      "value": "Loading..."
     }
   ],
   "ShippingAddressSection/messages/BUg4yp": [
@@ -537,6 +647,24 @@
     {
       "type": 0,
       "value": "add address"
+    }
+  ],
+  "UserAddressSection/messages/OMv17k": [
+    {
+      "type": 0,
+      "value": "billing user addresses"
+    }
+  ],
+  "UserAddressSection/messages/YpnLAd": [
+    {
+      "type": 0,
+      "value": "shipping user addresses"
+    }
+  ],
+  "UserAddressSection/messages/lhYBSH": [
+    {
+      "type": 0,
+      "value": "You currently have no saved addresses."
     }
   ],
   "UserAddressSection/messages/xPCC/5": [
@@ -785,6 +913,12 @@
       "value": "Please choose delivery method before finalizing checkout"
     }
   ],
+  "useAlerts/messages/kiBZQ6": [
+    {
+      "type": 0,
+      "value": "Please provide a valid billing address before finalizing"
+    }
+  ],
   "useAlerts/messages/mJ81Pa": [
     {
       "type": 0,
@@ -795,6 +929,12 @@
     {
       "type": 0,
       "value": "Invalid credentials provided to login"
+    }
+  ],
+  "useAlerts/messages/ow9nan": [
+    {
+      "type": 0,
+      "value": "Please provide a valid shipping address before finalizing checkout"
     }
   ],
   "useAlerts/messages/oyFho2": [
@@ -819,6 +959,12 @@
     {
       "type": 0,
       "value": "Please select country area for shipping address"
+    }
+  ],
+  "useAlerts/messages/wLQO7F": [
+    {
+      "type": 0,
+      "value": "Invalid postal code provided to address form"
     }
   ],
   "useAlerts/messages/wQ7eb8": [

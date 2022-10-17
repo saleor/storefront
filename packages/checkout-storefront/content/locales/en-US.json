@@ -1,4 +1,20 @@
 {
+  "AddressForm/messages/9BsfhB": {
+    "developer_comment": "netherlands",
+    "string": "Netherlands"
+  },
+  "AddressForm/messages/IHMZ2N": {
+    "developer_comment": "poland",
+    "string": "Poland"
+  },
+  "AddressForm/messages/PwM0Kj": {
+    "developer_comment": "france",
+    "string": "France"
+  },
+  "AddressForm/messages/xQAA6W": {
+    "developer_comment": "usa",
+    "string": "United States of America"
+  },
   "AddressSelectBox/messages//II2Kl": {
     "developer_comment": "edit address accessibility label",
     "string": "edit address"
@@ -131,6 +147,34 @@
     "developer_comment": "delivery method",
     "string": "Delivery method"
   },
+  "DummyPayment/messages/2uijFy": {
+    "developer_comment": "how much is left to pay",
+    "string": "Left to pay ({currency})"
+  },
+  "DummyPayment/messages/9FUEKB": {
+    "developer_comment": "dummy pay",
+    "string": "Dummy Pay"
+  },
+  "DummyPayment/messages/Cm6A9z": {
+    "developer_comment": "loading",
+    "string": "Loading..."
+  },
+  "DummyPayment/messages/Hm9+RE": {
+    "developer_comment": "error",
+    "string": "Something went wrong"
+  },
+  "DummyPayment/messages/S0J+0M": {
+    "developer_comment": "dummy payment",
+    "string": "Dummy Payment"
+  },
+  "DummyPayment/messages/eJ2qAk": {
+    "developer_comment": "order total price",
+    "string": "Total price"
+  },
+  "DummyPayment/messages/qCpYR4": {
+    "developer_comment": "order already paid",
+    "string": "Already paid"
+  },
   "EmptyCartPage/messages/CLKTRp": {
     "developer_comment": "go back to store",
     "string": "Go back to store"
@@ -199,6 +243,22 @@
     "developer_comment": "paid order message",
     "string": "We've received your payment"
   },
+  "PageHeader/messages/7vp32g": {
+    "developer_comment": "dutch",
+    "string": "Dutch"
+  },
+  "PageHeader/messages/e9JKRm": {
+    "developer_comment": "French",
+    "string": "French"
+  },
+  "PageHeader/messages/eXrxj4": {
+    "developer_comment": "english usa",
+    "string": "English (USA)"
+  },
+  "PageHeader/messages/kd+Ya5": {
+    "developer_comment": "polish",
+    "string": "Polish"
+  },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",
     "string": "We couldn’t fetch information about your checkout. Go back to the store and try again."
@@ -230,6 +290,14 @@
   "PaymentSection/messages/p7Zg+S": {
     "developer_comment": "apple pay",
     "string": "Apple Pay"
+  },
+  "PaymentSection/messages/xXCQ+K": {
+    "developer_comment": "dummy payment method",
+    "string": "Dummy"
+  },
+  "RootViews/messages/Cm6A9z": {
+    "developer_comment": "loading",
+    "string": "Loading..."
   },
   "ShippingAddressSection/messages/BUg4yp": {
     "developer_comment": "shipping address",
@@ -326,6 +394,18 @@
   "UserAddressSection/messages/E6w89b": {
     "developer_comment": "add address accessibility label",
     "string": "add address"
+  },
+  "UserAddressSection/messages/OMv17k": {
+    "developer_comment": "billing user addresses",
+    "string": "billing user addresses"
+  },
+  "UserAddressSection/messages/YpnLAd": {
+    "developer_comment": "shipping user addresses",
+    "string": "shipping user addresses"
+  },
+  "UserAddressSection/messages/lhYBSH": {
+    "developer_comment": "you have no addresses",
+    "string": "You currently have no saved addresses."
   },
   "UserAddressSection/messages/xPCC/5": {
     "developer_comment": "add address",
@@ -491,6 +571,10 @@
     "developer_comment": "checkout pay - shipping method not set error",
     "string": "Please choose delivery method before finalizing checkout"
   },
+  "useAlerts/messages/kiBZQ6": {
+    "developer_comment": "please provide a valid billing address before finalizing",
+    "string": "Please provide a valid billing address before finalizing"
+  },
   "useAlerts/messages/mJ81Pa": {
     "developer_comment": "user register - password too short error",
     "string": "Provided password is too short"
@@ -498,6 +582,10 @@
   "useAlerts/messages/nX71XF": {
     "developer_comment": "login - invalid credentials error",
     "string": "Invalid credentials provided to login"
+  },
+  "useAlerts/messages/ow9nan": {
+    "developer_comment": "please provide a valid shipping address before finalizing checkout",
+    "string": "Please provide a valid shipping address before finalizing checkout"
   },
   "useAlerts/messages/oyFho2": {
     "developer_comment": "checkout lines update - insufficient stock error",
@@ -514,6 +602,10 @@
   "useAlerts/messages/vn9b/m": {
     "developer_comment": "checkout shipping update country area required error",
     "string": "Please select country area for shipping address"
+  },
+  "useAlerts/messages/wLQO7F": {
+    "developer_comment": "user address create - postal code invalid error",
+    "string": "Invalid postal code provided to address form"
   },
   "useAlerts/messages/wQ7eb8": {
     "developer_comment": "request password reset email inactive error",
