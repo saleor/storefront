@@ -6,7 +6,7 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import {
   extractMutationErrors,
-  getQueryVariables,
+  getQueryParams,
   clearUrlAfterPasswordReset,
   useValidationResolver,
 } from "@/checkout-storefront/lib/utils";
@@ -44,7 +44,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
   const getInputProps = useGetInputProps(rest);
 
   const onSubmit = async ({ password }: FormData) => {
-    const { email, passwordResetToken } = getQueryVariables();
+    const { email, passwordResetToken } = getQueryParams();
 
     const result = await resetPassword({
       password,

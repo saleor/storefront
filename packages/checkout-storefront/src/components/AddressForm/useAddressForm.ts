@@ -1,7 +1,7 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import {
   getParsedLocaleData,
-  getQueryVariables,
+  getQueryParams,
   useValidationResolver,
 } from "@/checkout-storefront/lib/utils";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -39,7 +39,7 @@ export const useAddressForm = ({
 
     return (
       (countryCodeInOptions as CountryCode) ||
-      getParsedLocaleData(getQueryVariables().locale).country.code
+      getParsedLocaleData(getQueryParams().locale).country.code
     );
   }, [defaultValues]);
 

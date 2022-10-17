@@ -22262,7 +22262,7 @@ export type AddressFragment = {
   country: { __typename?: "CountryDisplay"; country: string; code: string };
 };
 
-export type CheckoutQueryVariables = Exact<{
+export type CheckoutQueryParams = Exact<{
   id: Scalars["ID"];
 }>;
 
@@ -22383,7 +22383,7 @@ export type CheckoutQuery = {
   } | null;
 };
 
-export type UserQueryVariables = Exact<{ [key: string]: never }>;
+export type UserQueryParams = Exact<{ [key: string]: never }>;
 
 export type UserQuery = {
   __typename?: "Query";
@@ -22438,7 +22438,7 @@ export type UserQuery = {
   } | null;
 };
 
-export type ChannelQueryVariables = Exact<{
+export type ChannelQueryParams = Exact<{
   slug: Scalars["String"];
 }>;
 
@@ -23596,7 +23596,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
   } | null;
 };
 
-export type AddressValidationRulesQueryVariables = Exact<{
+export type AddressValidationRulesQueryParams = Exact<{
   countryCode: CountryCode;
 }>;
 
@@ -24016,7 +24016,7 @@ export type OrderFragment = {
   totalCaptured: { __typename?: "Money"; currency: string; amount: number };
 };
 
-export type OrderQueryVariables = Exact<{
+export type OrderQueryParams = Exact<{
   id: Scalars["ID"];
 }>;
 
@@ -24435,10 +24435,8 @@ export const CheckoutDocument = gql`
   ${CheckoutFragmentDoc}
 `;
 
-export function useCheckoutQuery(
-  options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, "query">
-) {
-  return Urql.useQuery<CheckoutQuery, CheckoutQueryVariables>({
+export function useCheckoutQuery(options: Omit<Urql.UseQueryArgs<CheckoutQueryParams>, "query">) {
+  return Urql.useQuery<CheckoutQuery, CheckoutQueryParams>({
     query: CheckoutDocument,
     ...options,
   });
@@ -24461,8 +24459,8 @@ export const UserDocument = gql`
   ${AddressFragmentDoc}
 `;
 
-export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
-  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options });
+export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryParams>, "query">) {
+  return Urql.useQuery<UserQuery, UserQueryParams>({ query: UserDocument, ...options });
 }
 export const ChannelDocument = gql`
   query channel($slug: String!) {
@@ -24474,8 +24472,8 @@ export const ChannelDocument = gql`
   }
 `;
 
-export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryVariables>, "query">) {
-  return Urql.useQuery<ChannelQuery, ChannelQueryVariables>({ query: ChannelDocument, ...options });
+export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryParams>, "query">) {
+  return Urql.useQuery<ChannelQuery, ChannelQueryParams>({ query: ChannelDocument, ...options });
 }
 export const CheckoutLinesUpdateDocument = gql`
   mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
@@ -24726,9 +24724,9 @@ export const AddressValidationRulesDocument = gql`
 `;
 
 export function useAddressValidationRulesQuery(
-  options: Omit<Urql.UseQueryArgs<AddressValidationRulesQueryVariables>, "query">
+  options: Omit<Urql.UseQueryArgs<AddressValidationRulesQueryParams>, "query">
 ) {
-  return Urql.useQuery<AddressValidationRulesQuery, AddressValidationRulesQueryVariables>({
+  return Urql.useQuery<AddressValidationRulesQuery, AddressValidationRulesQueryParams>({
     query: AddressValidationRulesDocument,
     ...options,
   });
@@ -24787,6 +24785,6 @@ export const OrderDocument = gql`
   ${OrderFragmentDoc}
 `;
 
-export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
-  return Urql.useQuery<OrderQuery, OrderQueryVariables>({ query: OrderDocument, ...options });
+export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryParams>, "query">) {
+  return Urql.useQuery<OrderQuery, OrderQueryParams>({ query: OrderDocument, ...options });
 }

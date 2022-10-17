@@ -1,13 +1,13 @@
-import { getQueryVariables, QueryVariables } from "@/checkout-storefront/lib/utils";
+import { getQueryParams, QueryParams } from "@/checkout-storefront/lib/utils";
 import { useEffect } from "react";
 
 export const URL_CHANGED = "urlChangedEvent";
 
-export type UrlChangeHandlerArgs = { queryParams: QueryVariables };
+export type UrlChangeHandlerArgs = { queryParams: QueryParams };
 
 export const useUrlChange = (onLocationChange: ({ queryParams }: UrlChangeHandlerArgs) => void) => {
   useEffect(() => {
-    const handleChange = () => onLocationChange({ queryParams: getQueryVariables() });
+    const handleChange = () => onLocationChange({ queryParams: getQueryParams() });
 
     window.addEventListener(URL_CHANGED, handleChange);
 
