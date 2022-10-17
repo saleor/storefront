@@ -31,7 +31,11 @@ export default [
         browser: true,
       }),
       commonjs(),
-      typescript({ tsconfig: "./tsconfig.json" }),
+      typescript({
+        tsconfig: "./tsconfig.json",
+        // https://stackoverflow.com/questions/64720611/rollup-plugin-typescript-cant-find-json-file
+        resolveJsonModule: true,
+      }),
       postcss(require("tailwindcss")(), require("autoprefixer")()),
       terser(),
     ],

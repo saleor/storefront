@@ -41,6 +41,8 @@ export default [
         noEmit: false,
         sourceMap: true,
         jsx: isProd ? "react-jsx" : "react-jsxdev",
+        // https://stackoverflow.com/questions/64720611/rollup-plugin-typescript-cant-find-json-file
+        resolveJsonModule: true,
       }),
       json(),
       image(),
