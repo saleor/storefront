@@ -29,11 +29,10 @@ export interface SelectProps<TData extends string = string>
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   options: Option<TData>[];
   classNames?: ClassNames<"container">;
-  width?: "1/2" | "full";
 }
 
 const SelectComponent = <TData extends string = string>(
-  { options, classNames, placeholder = "", width = "full", onChange, ...rest }: SelectProps<TData>,
+  { options, classNames, placeholder = "", onChange, ...rest }: SelectProps<TData>,
   ref: ForwardedRef<HTMLSelectElement>
 ) => {
   const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
@@ -48,13 +47,7 @@ const SelectComponent = <TData extends string = string>(
   };
 
   return (
-    <div
-      className={clsx(
-        styles.container,
-        classNames?.container,
-        width === "1/2" ? "w-1/2" : "w-full"
-      )}
-    >
+    <div className={clsx(styles.container, classNames?.container)}>
       <select onChange={handleChange} {...rest} ref={ref} className={clsx(styles.select)}>
         {showPlaceholder && (
           <option disabled selected value="">

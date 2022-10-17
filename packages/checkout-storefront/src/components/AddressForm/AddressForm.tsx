@@ -93,7 +93,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
       <div className="flex flex-row justify-between items-baseline">
         <Title>{title}</Title>
         <Select
-          width="1/2"
+          classNames={{ container: "inline-block !w-auto" }}
           options={countryOptions}
           {...getInputProps("countryCode")}
           autoComplete={autocompleteTags.countryCode}
