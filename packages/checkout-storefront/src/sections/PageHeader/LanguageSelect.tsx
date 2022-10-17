@@ -1,5 +1,5 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks";
-import { URL_CHANGED } from "@/checkout-storefront/hooks/useUrlChange";
+import { POPSTATE_EVENT } from "@/checkout-storefront/hooks/useUrlChange";
 import { LanguageIcon } from "@/checkout-storefront/icons";
 import { getCurrentLocale, Locale, locales } from "@/checkout-storefront/lib/regions";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
@@ -17,7 +17,7 @@ export const LanguageSelect: React.FC = ({}) => {
 
     setLanguageInUrl(locale);
 
-    const navEvent = new PopStateEvent(URL_CHANGED);
+    const navEvent = new PopStateEvent(POPSTATE_EVENT);
     window.dispatchEvent(navEvent);
   };
 

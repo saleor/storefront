@@ -1,7 +1,7 @@
 import { getQueryParams, QueryParams } from "@/checkout-storefront/lib/utils";
 import { useEffect } from "react";
 
-export const URL_CHANGED = "urlChangedEvent";
+export const POPSTATE_EVENT = "popstate";
 
 export type UrlChangeHandlerArgs = { queryParams: QueryParams };
 
@@ -9,10 +9,10 @@ export const useUrlChange = (onLocationChange: ({ queryParams }: UrlChangeHandle
   useEffect(() => {
     const handleChange = () => onLocationChange({ queryParams: getQueryParams() });
 
-    window.addEventListener(URL_CHANGED, handleChange);
+    window.addEventListener(POPSTATE_EVENT, handleChange);
 
     return () => {
-      window.removeEventListener(URL_CHANGED, handleChange);
+      window.removeEventListener(POPSTATE_EVENT, handleChange);
     };
   }, [onLocationChange]);
 };

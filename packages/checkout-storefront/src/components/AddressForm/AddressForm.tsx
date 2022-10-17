@@ -46,7 +46,6 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   const formatMessage = useFormattedMessages();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
   const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
-  const ref = useRef<HTMLFormElement>(null);
 
   useSetFormErrors({ setError, errors });
 
@@ -89,7 +88,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   }, [allowedFields, requiredFields, setValue, trigger, isDirty]);
 
   return (
-    <form ref={ref}>
+    <form>
       <div className="flex flex-row justify-between items-baseline">
         <Title>{title}</Title>
         <Select
