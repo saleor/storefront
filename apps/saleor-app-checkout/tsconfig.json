@@ -6,6 +6,14 @@
     "allowJs": true,
     "paths": {
       "@/saleor-app-checkout/*": ["./*"],
+
+      // https://github.com/belgattitude/nextjs-monorepo-example
+      "@saleor/checkout-storefront/*": ["../../packages/checkout-storefront/*"],
+      "@saleor/checkout-storefront": ["../../packages/checkout-storefront/src/index.tsx"],
+      "@/checkout-storefront/icons": ["../../packages/checkout-storefront/src/assets/icons"],
+      "@/checkout-storefront/images": ["../../packages/checkout-storefront/src/assets/images"],
+      "@/checkout-storefront/*": ["../../packages/checkout-storefront/src/*"],
+
       // https://github.com/facebook/react/issues/24304.
       // Remove when this gets updated to React 18"
       "react": ["./node_modules/@types/react"],

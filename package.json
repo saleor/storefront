@@ -16,7 +16,7 @@
     "generate": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run generate --cache-dir=.turbo",
     "dev": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback pnpm run _dev",
     "/*": "https://github.com/vercel/turborepo/issues/460",
-    "_dev": "turbo run build --filter=@saleor/checkout-storefront --cache-dir=.turbo && turbo run dev --parallel --cache-dir=.turbo",
+    "_dev": "turbo run build --filter=@saleor/checkout-storefront --cache-dir=.turbo && turbo run dev --parallel --cache-dir=.turbo --filter=!checkout",
     "lint": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run lint --cache-dir=.turbo",
     "lint:staged": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run lint:staged",
     "check-types": "turbo run check-types --cache-dir=.turbo",
@@ -24,7 +24,7 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
-    "clean": "rm -rf .turbo || turbo run clean",
+    "clean": "rm -rf .turbo; turbo run clean",
     "cy:run": "cypress run",
     "cy:open": "cypress open"
   },
