@@ -16,6 +16,10 @@ export const countries: Country[] = [
     name: "Great Britain",
   },
   {
+    code: "FR",
+    name: "France",
+  },
+  {
     code: "US",
     name: "United States",
   },

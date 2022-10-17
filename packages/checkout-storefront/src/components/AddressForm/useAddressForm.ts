@@ -1,5 +1,9 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import { getLocalizationDataFromUrl, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import {
+  getParsedLocaleData,
+  getQueryVariables,
+  useValidationResolver,
+} from "@/checkout-storefront/lib/utils";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { DefaultValues, Resolver, useForm, UseFormReturn } from "react-hook-form";
 import { object, string } from "yup";
@@ -8,6 +12,8 @@ import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { countries } from "@/checkout-storefront/lib/consts";
+import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
+import { omit } from "lodash-es";
 
 export interface UseAddressFormProps {
   defaultValues?: AddressFormData;
@@ -31,7 +37,10 @@ export const useAddressForm = ({
       ({ code }) => code === defaultValues.countryCode
     )?.code;
 
-    return (countryCodeInOptions as CountryCode) || getLocalizationDataFromUrl().country.code;
+    return (
+      (countryCodeInOptions as CountryCode) ||
+      getParsedLocaleData(getQueryVariables().locale).country.code
+    );
   }, [defaultValues]);
 
   const schema = object({
@@ -56,7 +65,7 @@ export const useAddressForm = ({
     },
   });
 
-  const { trigger } = formProps;
+  const { trigger, getValues, setValue } = formProps;
 
   useCheckoutFormValidationTrigger(trigger);
 
@@ -74,6 +83,26 @@ export const useAddressForm = ({
     },
     [onSubmit, hasDataChanged]
   );
+
+  const handleUrlChange = useCallback(
+    ({ queryParams: { locale } }: UrlChangeHandlerArgs) => {
+      const formData = getValues();
+      const newCountryCode = getParsedLocaleData(locale).country.code;
+
+      const hasCountryChanged = newCountryCode !== formData.countryCode;
+
+      const hasFilledAnyData = Object.values(omit(formData, ["id", "countryCode"])).some(
+        (value) => !!value
+      );
+
+      if (hasCountryChanged && !hasFilledAnyData) {
+        setValue("countryCode", newCountryCode);
+      }
+    },
+    [getValues, setValue]
+  );
+
+  useUrlChange(handleUrlChange);
 
   useEffect(() => {
     if (!hasDataChanged(defaultValues)) {

@@ -1,7 +1,8 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
-import { getCountryByCountryCode } from "@/checkout-storefront/lib/consts";
+import { Country, getCountryByCountryCode } from "@/checkout-storefront/lib/consts";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
+import { Locale } from "@/checkout-storefront/lib/regions";
 import { omit, reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -28,7 +29,7 @@ export type QueryVariables = Partial<
     | "dummyPayment",
     string
   >
-> & { countryCode: CountryCode };
+> & { countryCode: CountryCode; locale: Locale };
 
 const getRawQueryParams = () => queryString.parse(location.search);
 
@@ -36,6 +37,7 @@ export const getQueryVariables = (): QueryVariables => {
   const vars = getRawQueryParams();
   return {
     ...vars,
+    locale: vars.locale as Locale,
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
@@ -43,12 +45,27 @@ export const getQueryVariables = (): QueryVariables => {
   } as QueryVariables;
 };
 
+export const setLanguageInUrl = (locale: Locale) =>
+  replaceUrl({ query: { ...getRawQueryParams(), locale } });
+
 export const clearUrlAfterPasswordReset = (): void => {
   const query = omit(getRawQueryParams(), ["token", "email"]);
-  const newUrl = queryString.stringifyUrl({ url: window.location.origin, query });
-  window.history.replaceState(
+  replaceUrl({ query });
+};
+
+export const replaceUrl = ({
+  url = window.location.origin,
+  query,
+}: {
+  url?: string;
+  query?: Record<string, any>;
+}) => {
+  const newUrl = queryString.stringifyUrl({ url, query });
+
+  window.history.pushState(
     {
       ...window.history.state,
+      ...query,
       url: newUrl,
       as: newUrl,
     },
@@ -64,16 +81,14 @@ export const isOrderConfirmationPage = () => {
   return typeof orderId === "string";
 };
 
-export const getLocalizationDataFromUrl = () => {
-  const { /*channel*/ locale } = getQueryVariables();
-
+export const getParsedLocaleData = (locale?: Locale): { locale: Locale; country: Country } => {
   if (typeof locale !== "string") {
     throw new Error("Invalid url");
   }
 
-  const [, /*language*/ countryCode] = locale?.split("-");
+  const [, countryCode] = locale?.split("-");
 
-  return { country: getCountryByCountryCode(countryCode as CountryCode) };
+  return { country: getCountryByCountryCode(countryCode as CountryCode), locale };
 };
 
 export const extractCheckoutIdFromUrl = (): string => {

@@ -1,4 +1,4 @@
-import PageHeader from "@/checkout-storefront/sections/PageHeader";
+import { PageHeader } from "@/checkout-storefront/sections/PageHeader";
 import { SummarySkeleton } from "@/checkout-storefront/sections/Summary/SummarySkeleton";
 import { Skeleton } from "@/checkout-storefront/components/Skeleton";
 

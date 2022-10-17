@@ -1,4 +1,4 @@
-import PageHeader from "@/checkout-storefront/sections/PageHeader";
+import { PageHeader } from "@/checkout-storefront/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout-storefront/sections/Summary";
 import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout-storefront/sections/CheckoutForm";
 import { Suspense } from "react";
