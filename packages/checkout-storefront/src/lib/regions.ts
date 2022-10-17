@@ -1,11 +1,9 @@
-export const regions = {
-  "en-US": "United States",
-  "pl-PL": "Polska",
-  "fr-FR": "France",
-};
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
+
+export const locales = ["en-US", "pl-PL", "fr-FR", "nl-NL"] as const;
 
 export const DEFAULT_LOCALE = "en-US";
 
-export const getCurrentLocale = (): keyof typeof regions => DEFAULT_LOCALE;
+export const getCurrentLocale = (): Locale => getQueryParams().locale;
 
-export type Region = keyof typeof regions;
+export type Locale = typeof locales[number];

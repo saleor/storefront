@@ -3,19 +3,23 @@ import { ErrorBoundary } from "react-error-boundary";
 import { IntlProvider } from "react-intl";
 import { ClientOptions, createClient, Provider as UrqlProvider } from "urql";
 
-import { DEFAULT_LOCALE, getCurrentLocale } from "@/checkout-storefront/lib/regions";
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
 import { AppEnv } from "@/checkout-storefront/providers/AppConfigProvider/types";
 import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
-import { useMemo } from "react";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "../hooks/useAlerts/consts";
 import { RootViews } from "../views/RootViews/RootViews";
+import { useMemo, useState, useCallback } from "react";
+import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
+import { DEFAULT_LOCALE, getCurrentLocale, Locale } from "@/checkout-storefront/lib/regions";
+
 export interface RootProps {
   env: AppEnv;
 }
 
 export const Root = ({ env }: RootProps) => {
+  const [currentLocale, setCurrentLocale] = useState<Locale>(getCurrentLocale());
+
   const authorizedFetch = useMemo(() => createFetch(), []);
 
   const client = useMemo(
@@ -40,10 +44,19 @@ export const Root = ({ env }: RootProps) => {
     [env.apiUrl]
   );
 
+  const handleUrlChange = useCallback(
+    ({ queryParams: { locale } }: UrlChangeHandlerArgs) => {
+      setCurrentLocale(locale);
+    },
+    [setCurrentLocale]
+  );
+
+  useUrlChange(handleUrlChange);
+
   return (
     // @ts-ignore React 17 <-> 18 type mismatch
     <SaleorProvider client={saleorClient}>
-      <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={getCurrentLocale()}>
+      <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={currentLocale}>
         <UrqlProvider value={client}>
           <AppConfigProvider env={env}>
             <div className="app">

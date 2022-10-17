@@ -14,6 +14,7 @@ import LabelIcon from "./discount.svg";
 import PhotoIcon from "./photo.svg";
 import EyeIcon from "./eye.svg";
 import EyeHiddenIcon from "./eyeHidden.svg";
+import LanguageIcon from "./language.svg";
 
 export {
   PhotoIcon,
@@ -32,4 +33,5 @@ export {
   PenIcon,
   EyeIcon,
   EyeHiddenIcon,
+  LanguageIcon,
 };

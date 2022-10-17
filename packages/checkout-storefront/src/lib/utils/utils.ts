@@ -1,7 +1,7 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
-import { getCountryByCountryCode } from "@/checkout-storefront/lib/consts";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
+import { Locale } from "@/checkout-storefront/lib/regions";
 import { omit, reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -17,7 +17,7 @@ export const getByUnmatchingId =
   (obj: T) =>
     obj.id !== idToCompare;
 
-export type QueryVariables = Partial<
+export type QueryParams = Partial<
   Record<
     | "checkoutId"
     | "passwordResetToken"
@@ -28,27 +28,43 @@ export type QueryVariables = Partial<
     | "dummyPayment",
     string
   >
-> & { countryCode: CountryCode };
+> & { countryCode: CountryCode; locale: Locale };
 
 const getRawQueryParams = () => queryString.parse(location.search);
 
-export const getQueryVariables = (): QueryVariables => {
+export const getQueryParams = (): QueryParams => {
   const vars = getRawQueryParams();
   return {
     ...vars,
+    locale: vars.locale as Locale,
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
     dummyPayment: vars.dummyPayment as "true" | undefined,
-  } as QueryVariables;
+  } as QueryParams;
 };
+
+export const setLanguageInUrl = (locale: Locale) =>
+  replaceUrl({ query: { ...getRawQueryParams(), locale } });
 
 export const clearUrlAfterPasswordReset = (): void => {
   const query = omit(getRawQueryParams(), ["token", "email"]);
-  const newUrl = queryString.stringifyUrl({ url: window.location.origin, query });
-  window.history.replaceState(
+  replaceUrl({ query });
+};
+
+export const replaceUrl = ({
+  url = window.location.origin,
+  query,
+}: {
+  url?: string;
+  query?: Record<string, any>;
+}) => {
+  const newUrl = queryString.stringifyUrl({ url, query });
+
+  window.history.pushState(
     {
       ...window.history.state,
+      ...query,
       url: newUrl,
       as: newUrl,
     },
@@ -60,24 +76,24 @@ export const clearUrlAfterPasswordReset = (): void => {
 export const getCurrentHref = () => location.href;
 
 export const isOrderConfirmationPage = () => {
-  const { orderId } = getQueryVariables();
+  const { orderId } = getQueryParams();
   return typeof orderId === "string";
 };
 
-export const getLocalizationDataFromUrl = () => {
-  const { /*channel*/ locale } = getQueryVariables();
-
+export const getParsedLocaleData = (
+  locale?: Locale
+): { locale: Locale; countryCode: CountryCode } => {
   if (typeof locale !== "string") {
     throw new Error("Invalid url");
   }
 
-  const [, /*language*/ countryCode] = locale?.split("-");
+  const [, countryCode] = locale?.split("-");
 
-  return { country: getCountryByCountryCode(countryCode as CountryCode) };
+  return { countryCode: countryCode as CountryCode, locale };
 };
 
 export const extractCheckoutIdFromUrl = (): string => {
-  const { checkoutId } = getQueryVariables();
+  const { checkoutId } = getQueryParams();
 
   if (isOrderConfirmationPage()) {
     return "";

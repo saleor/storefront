@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import PageHeader from "@/checkout-storefront/sections/PageHeader";
+import { PageHeader } from "@/checkout-storefront/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout-storefront/sections/Summary";
 import { OrderInfo } from "@/checkout-storefront/sections/OrderInfo";
 import { Text } from "@saleor/ui-kit";

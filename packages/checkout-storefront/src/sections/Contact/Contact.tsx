@@ -1,4 +1,4 @@
-import { getQueryVariables } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
 import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
@@ -32,7 +32,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
     return authenticated ? "signedInUser" : "guestUser";
   };
 
-  const passwordResetToken = getQueryVariables().passwordResetToken;
+  const passwordResetToken = getQueryParams().passwordResetToken;
   const [currentSection, setCurrentSection] = useState<Section>(selectInitialSection());
 
   const handleChangeSection = (section: Section) => () => {

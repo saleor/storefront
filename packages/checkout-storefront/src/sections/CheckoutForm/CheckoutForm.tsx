@@ -15,7 +15,7 @@ import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/use
 import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { checkoutFormLabels, checkoutFormMessages } from "./messages";
-import { getQueryVariables } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -23,7 +23,7 @@ export const CheckoutForm = () => {
   const { checkoutFinalize, errors: userRegisterErrors } = useCheckoutFinalize();
 
   const [showOnlyContact, setShowOnlyContact] = useState(
-    !!getQueryVariables().passwordResetToken || false
+    !!getQueryParams().passwordResetToken || false
   );
 
   const { handleSubmit, isProcessingApiChanges, methods } = useCheckoutForm({

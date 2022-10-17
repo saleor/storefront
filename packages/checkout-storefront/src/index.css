@@ -9,6 +9,7 @@
 @import "./sections/CheckoutForm/CheckoutFormStyles.css";
 @import "./views/OrderConfirmation/OrderConfirmationStyles.css";
 @import "./sections/Summary/SummaryStyles.css";
+@import "./sections/PageHeader/PageHeaderStyles.css";
 @import "@adyen/adyen-web/dist/adyen.css";
 
 @tailwind base;

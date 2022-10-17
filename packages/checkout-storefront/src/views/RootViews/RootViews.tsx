@@ -1,4 +1,3 @@
-import { getQueryVariables } from "@/checkout-storefront/lib/utils";
 import { Checkout, CheckoutSkeleton } from "@/checkout-storefront/views/Checkout";
 import {
   OrderConfirmation,
@@ -8,10 +7,11 @@ import { Suspense } from "react";
 import { DummyPayment } from "../DummyPayment/DummyPayment";
 import { useFormattedMessages } from "../../hooks";
 import { rootViewsMessages } from "./messages";
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
 
 export const RootViews = () => {
-  const orderId = getQueryVariables().orderId;
-  const dummyPayment = getQueryVariables().dummyPayment;
+  const orderId = getQueryParams().orderId;
+  const dummyPayment = getQueryParams().dummyPayment;
   const formatMessage = useFormattedMessages();
 
   if (orderId) {

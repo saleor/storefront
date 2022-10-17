@@ -1,0 +1,19 @@
+@tailwind components;
+
+@layer components {
+  .page-header {
+    @apply mb-6 md:mb-12 flex flex-row justify-between items-center;
+  }
+
+  .logo {
+    @apply h-10;
+  }
+
+  .language-select-container {
+    @apply relative flex flex-row justify-end;
+  }
+
+  .language-select {
+    @apply opacity-0 !absolute right-0 !min-w-0;
+  }
+}

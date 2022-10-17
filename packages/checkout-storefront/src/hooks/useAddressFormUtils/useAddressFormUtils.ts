@@ -17,7 +17,7 @@ import {
 } from "@/checkout-storefront/hooks/useAddressFormUtils/messages";
 import camelCase from "lodash-es/camelCase";
 
-export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry.code) => {
+export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
   const formatMessage = useFormattedMessages();
 
   const [{ data }] = useAddressValidationRulesQuery({
