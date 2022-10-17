@@ -40,8 +40,7 @@ export default [
         tsconfig: "./tsconfig.json",
         noEmit: false,
         jsx: "react-jsx",
-        // https://stackoverflow.com/questions/64720611/rollup-plugin-typescript-cant-find-json-file
-        resolveJsonModule: true,
+        resolveJsonModule: false,
       }),
       json(),
       image(),
