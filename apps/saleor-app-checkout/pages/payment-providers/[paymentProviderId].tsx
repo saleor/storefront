@@ -8,11 +8,14 @@ import { useIntl } from "react-intl";
 import { notFoundMessages } from "@/saleor-app-checkout/frontend/misc/errorMessages";
 import { useGetPaymentProviderSettings } from "@/saleor-app-checkout/frontend/hooks/useGetPaymentProviderSettings";
 import { useSetPaymentProviderSettings } from "@/saleor-app-checkout/frontend/hooks/useSetPaymentProviderSettings";
+import { app } from "@/saleor-app-checkout/frontend/misc/app";
 
 const PaymentProvider = () => {
   const router = useRouter();
   const { paymentProviderId, channelId } = router.query;
   const intl = useIntl();
+
+  const saleorApiHost = app?.getState().domain;
 
   const getPaymentProviderSettings = useGetPaymentProviderSettings();
   const [setPaymentProviderSettings, setPaymentProviderSettingsRequest] =
@@ -29,7 +32,7 @@ const PaymentProvider = () => {
   };
 
   const handleSubmit = (data: PaymentProviderSettingsValues<"unencrypted">) => {
-    void setPaymentProviderSettingsRequest(data);
+    void setPaymentProviderSettingsRequest({ ...data, saleorApiHost });
   };
 
   const errors = [

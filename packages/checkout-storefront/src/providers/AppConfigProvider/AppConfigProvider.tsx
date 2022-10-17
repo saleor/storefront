@@ -24,7 +24,7 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
 }) => {
   const { saleorApiHost } = getQueryVariables();
   const [{ data: storedAppConfig, loading }] = useFetch(getAppConfig, {
-    args: { checkoutApiUrl: env.checkoutApiUrl },
+    args: { checkoutApiUrl: env.checkoutApiUrl, saleorApiHost },
   });
   const dynamicAppConfig = useDynamicAppConfig<AppConfig>({
     checkoutAppUrl: env.checkoutAppUrl,

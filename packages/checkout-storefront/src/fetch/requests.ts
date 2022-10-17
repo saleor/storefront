@@ -138,9 +138,15 @@ export const handleDropInAdyenPaymentDetails = ({
 
 export const dummyPay = ({
   checkoutApiUrl,
+  saleorApiHost,
   ...body
 }: DummyPayRequestBody): FetchResponse<DummyPayRequestResult> =>
-  fetch(urlJoinTrailingSlash(checkoutApiUrl, "dummy-pay"), {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
+  fetch(
+    urlJoinTrailingSlash(checkoutApiUrl, "dummy-pay") +
+      `?` +
+      new URLSearchParams({ saleorApiHost }).toString(),
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+    }
+  );

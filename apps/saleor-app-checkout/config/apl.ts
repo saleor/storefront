@@ -1,9 +1,26 @@
-import { FileAPL } from "@saleor/app-sdk/APL";
+import { UpstashAPL } from "@saleor/app-sdk/APL";
 import invariant from "ts-invariant";
 
-const apl = new FileAPL();
+type Result = {
+  apiUrl: string;
+  saleorApiHost: string;
+  domain: string;
+  appToken: string;
+};
 
-export const get = async (saleorApiHost: string) => {
+const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
+invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
+
+const apl = new UpstashAPL({
+  restURL: process.env.UPSTASH_REDIS_REST_URL!,
+  restToken: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+// const apl = new FileAPL();
+
+export const get = async (saleorApiHost: string): Promise<Result> => {
   const authData = await apl.get(saleorApiHost);
 
   invariant(authData, `No auth data found for given host: ${saleorApiHost}. Is the app installed?`);
@@ -19,5 +36,7 @@ export const get = async (saleorApiHost: string) => {
 };
 
 export const set = ({ saleorApiHost, authToken }: { saleorApiHost: string; authToken: string }) => {
+  console.log(`APL SET`, { saleorApiHost, authToken });
+
   return apl.set({ domain: saleorApiHost, token: authToken });
 };

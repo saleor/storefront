@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CombinedError } from "urql";
 import { requestGetPaymentProviderSettings } from "../fetch";
+import { app } from "../misc/app";
 import { useAuthData } from "./useAuthData";
 import { useFetch, UseFetchOptionalProps } from "./useFetch";
 import { usePrivateSettings } from "./usePrivateSettings";
@@ -11,9 +12,15 @@ export const useGetPaymentProviderSettings = <TArgs>(
   const { isAuthorized } = useAuthData();
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
+  const saleorApiHost = app?.getState().domain;
+
   const [{ data, loading, error }] = useFetch(requestGetPaymentProviderSettings, {
     skip: !isAuthorized,
     ...optionalProps,
+    args: {
+      ...optionalProps?.args,
+      saleorApiHost,
+    },
   });
 
   useEffect(() => {

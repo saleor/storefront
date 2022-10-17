@@ -1,11 +1,11 @@
 import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
-import { replaceUrl } from "@/checkout-storefront/lib/utils/url";
+import { getQueryParams, replaceUrl } from "@/checkout-storefront/lib/utils/url";
 import { OrderBody, CheckoutBody } from "checkout-common";
 import { useCallback } from "react";
 import { useAppConfig } from "../providers/AppConfigProvider";
 
-const getRedirectUrl = () => {
+const getRedirectUrl = (saleorApiHost: string) => {
   const url = new URL(window.location.href);
   const redirectUrl = url.searchParams.get("redirectUrl");
 
@@ -14,7 +14,8 @@ const getRedirectUrl = () => {
     return redirectUrl;
   }
 
-  // return existing url without any search params
+  url.searchParams.set("saleorApiHost", saleorApiHost);
+  // return existing url without any other search params
   return location.origin + location.pathname;
 };
 
@@ -27,7 +28,7 @@ export const usePay = () => {
 
   const checkoutPay = useCallback(
     async ({ provider, method, checkoutId, totalAmount }: Omit<CheckoutBody, "redirectUrl">) => {
-      const redirectUrl = getRedirectUrl();
+      const redirectUrl = getRedirectUrl(saleorApiHost);
       const result = await pay({
         saleorApiHost,
         checkoutApiUrl,
@@ -43,20 +44,38 @@ export const usePay = () => {
           data: { paymentUrl },
         } = result as PaySuccessResult;
         replaceUrl({
-          query: { checkout: undefined, order: orderId },
+          query: {
+            locale: getQueryParams().locale,
+            checkout: undefined,
+            order: orderId,
+            saleorApiHost,
+            // @todo remove `domain`
+            // https://github.com/saleor/saleor-dashboard/issues/2387
+            // https://github.com/saleor/saleor-app-sdk/issues/87
+            domain: saleorApiHost,
+          },
         });
         window.location.href = paymentUrl;
       }
       if (!result?.ok && result?.orderId) {
         // Order created, payment creation failed, checkout doesn't exist
         const newUrl = replaceUrl({
-          query: { checkout: undefined, order: result?.orderId },
+          query: {
+            locale: getQueryParams().locale,
+            checkout: undefined,
+            order: result?.orderId,
+            saleorApiHost,
+            // @todo remove `domain`
+            // https://github.com/saleor/saleor-dashboard/issues/2387
+            // https://github.com/saleor/saleor-app-sdk/issues/87
+            domain: saleorApiHost,
+          },
         });
         window.location.href = newUrl;
       }
       return result;
     },
-    [checkoutApiUrl, pay]
+    [checkoutApiUrl, pay, saleorApiHost]
   );
 
   const orderPay = async ({
@@ -64,7 +83,7 @@ export const usePay = () => {
     orderId,
     method,
   }: Omit<OrderBody, "redirectUrl" | "checkoutApiUrl">) => {
-    const redirectUrl = getRedirectUrl();
+    const redirectUrl = getRedirectUrl(saleorApiHost);
     const result = await pay({
       saleorApiHost,
       checkoutApiUrl,

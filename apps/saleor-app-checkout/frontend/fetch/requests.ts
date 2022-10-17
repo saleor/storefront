@@ -6,17 +6,30 @@ export interface PaymentProviderSettingsResult {
   data: PaymentProviderSettingsValues<"unencrypted">;
 }
 
-export const requestGetPaymentProviderSettings = (): FetchResponse<PaymentProviderSettingsResult> =>
-  fetch(`/api/payment-provider-settings`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
+export const requestGetPaymentProviderSettings = ({
+  saleorApiHost,
+}: {
+  saleorApiHost: string;
+}): FetchResponse<PaymentProviderSettingsResult> =>
+  fetch(
+    `/api/payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiHost }).toString(),
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  );
 
-export const requestSetPaymentProviderSettings = (
-  data: PaymentProviderSettingsValues<"unencrypted">
-): FetchResponse<PaymentProviderSettingsResult> =>
-  fetch(`/api/set-payment-provider-settings`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
+export const requestSetPaymentProviderSettings = ({
+  saleorApiHost,
+  ...data
+}: PaymentProviderSettingsValues<"unencrypted"> & {
+  saleorApiHost: string;
+}): FetchResponse<PaymentProviderSettingsResult> =>
+  fetch(
+    `/api/set-payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiHost }).toString(),
+    {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    }
+  );

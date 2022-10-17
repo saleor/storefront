@@ -29,6 +29,7 @@ export type ChannelActivePaymentProvidersByChannel = {
 
 export type DummyPayRequestBody = {
   checkoutApiUrl: string;
+  saleorApiHost: string;
   amountCharged: {
     amount: number;
     currency: string;
