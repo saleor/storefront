@@ -1,4 +1,3 @@
-import { CATEGORY } from "../../elements/category";
 import { MAIN_PAGE } from "../../elements/main-page";
 import { NAVIGATION } from "../../elements/navigation";
 import { SHARED_ELEMENTS } from "../../elements/shared-elements";

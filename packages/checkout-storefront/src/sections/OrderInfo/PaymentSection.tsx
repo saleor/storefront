@@ -73,7 +73,7 @@ export const PaymentSection = ({ orderId }: { orderId: string }) => {
 
   return (
     <Section title={formatMessage(orderInfoMessages.paymentSection)}>
-      <div>{renderPaymentDetails()}</div>
+      <div data-testid="paymentStatus">{renderPaymentDetails()}</div>
     </Section>
   );
 };

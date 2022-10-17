@@ -4,4 +4,6 @@ export const productsToSearch = {
   noProductsInfo: "Search query didn't return any viable results",
   productWithVariants: "T-shirt",
   productWithoutVariants: "Beanie",
+  digitalProductLocal: "sea",
+  digitalProductDemo: "cloud",
 };
