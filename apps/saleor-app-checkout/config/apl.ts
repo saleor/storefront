@@ -1,4 +1,4 @@
-import { UpstashAPL } from "@saleor/app-sdk/APL";
+import { FileAPL, UpstashAPL } from "@saleor/app-sdk/APL";
 import invariant from "ts-invariant";
 
 type Result = {
@@ -8,17 +8,22 @@ type Result = {
   appToken: string;
 };
 
-const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
-const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const useFileAPL = false;
 
-invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
-invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
+const apl = useFileAPL
+  ? new FileAPL()
+  : (() => {
+      const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
+      const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-const apl = new UpstashAPL({
-  restURL: process.env.UPSTASH_REDIS_REST_URL!,
-  restToken: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
-// const apl = new FileAPL();
+      invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
+      invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
+
+      return new UpstashAPL({
+        restURL: process.env.UPSTASH_REDIS_REST_URL!,
+        restToken: process.env.UPSTASH_REDIS_REST_TOKEN!,
+      });
+    })();
 
 export const get = async (saleorApiHost: string): Promise<Result> => {
   const authData = await apl.get(saleorApiHost);
