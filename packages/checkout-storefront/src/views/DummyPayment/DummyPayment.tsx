@@ -5,11 +5,11 @@ import { Button, TextInput } from "../../components";
 import { dummyPay as dummyPayRequest } from "../../fetch";
 import { useOrderQuery } from "../../graphql";
 import { useFetch, useFormattedMessages, useGetInputProps } from "../../hooks";
-import { getQueryVariables } from "../../lib/utils";
 import { useAppConfig } from "../../providers/AppConfigProvider";
 import { toast } from "react-toastify";
 import { Text } from "@saleor/ui-kit";
 import { dummyPaymentMessages } from "./messages";
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
 
 const getOrderConfirmationUrl = () => {
   const url = new URL(window.location.href);
@@ -28,7 +28,7 @@ const showError = (text: string) => toast(<Text>{text}</Text>, { type: "error" }
 
 const useDummyPay = (): UseDummyPayValues => {
   const formatMessage = useFormattedMessages();
-  const orderId = getQueryVariables().orderId ?? "";
+  const orderId = getQueryParams().orderId ?? "";
   const [dummyPayResult, pay] = useFetch(dummyPayRequest);
   const {
     env: { checkoutApiUrl },
@@ -63,7 +63,7 @@ type DummyPaymentFormValues = {
 };
 
 export const DummyPayment = () => {
-  const orderId = getQueryVariables().orderId ?? "";
+  const orderId = getQueryParams().orderId ?? "";
   const formatMessage = useFormattedMessages();
   const [orderResult] = useOrderQuery({ variables: { id: orderId } });
   const [dummyPayResult, dummyPay] = useDummyPay();

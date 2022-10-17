@@ -1615,12 +1615,18 @@ export type AttributeValueCreateInput = {
   fileUrl?: InputMaybe<Scalars["String"]>;
   /** Name of a value displayed in the interface. */
   name: Scalars["String"];
-  /** Represents the text of the attribute value, plain text without formating. */
+  /**
+   * Represents the text of the attribute value, plain text without formating.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
+   */
   plainText?: InputMaybe<Scalars["String"]>;
   /**
    * Represents the text of the attribute value, includes formatting.
    *
    * Rich text format. For reference see https://editorjs.io/
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The rich text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
    */
   richText?: InputMaybe<Scalars["JSONString"]>;
   /** Represent value of the attribute value (e.g. color values for swatch attributes). */
@@ -1800,12 +1806,18 @@ export type AttributeValueUpdateInput = {
   fileUrl?: InputMaybe<Scalars["String"]>;
   /** Name of a value displayed in the interface. */
   name?: InputMaybe<Scalars["String"]>;
-  /** Represents the text of the attribute value, plain text without formating. */
+  /**
+   * Represents the text of the attribute value, plain text without formating.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
+   */
   plainText?: InputMaybe<Scalars["String"]>;
   /**
    * Represents the text of the attribute value, includes formatting.
    *
    * Rich text format. For reference see https://editorjs.io/
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The rich text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
    */
   richText?: InputMaybe<Scalars["JSONString"]>;
   /** Represent value of the attribute value (e.g. color values for swatch attributes). */
@@ -4387,6 +4399,12 @@ export type CustomerEventsEnum =
 
 export type CustomerFilterInput = {
   dateJoined?: InputMaybe<DateRangeInput>;
+  /**
+   * Filter by ids.
+   *
+   * Added in Saleor 3.8.
+   */
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   numberOfOrders?: InputMaybe<IntRangeInput>;
   placedOrders?: InputMaybe<DateRangeInput>;
@@ -13778,6 +13796,12 @@ export type PaymentErrorCode =
 
 export type PaymentFilterInput = {
   checkouts?: InputMaybe<Array<Scalars["ID"]>>;
+  /**
+   * Filter by ids.
+   *
+   * Added in Saleor 3.8.
+   */
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
 };
 
 /** Available payment gateway backend with configuration necessary to setup client. */
@@ -22262,7 +22286,7 @@ export type AddressFragment = {
   country: { __typename?: "CountryDisplay"; country: string; code: string };
 };
 
-export type CheckoutQueryParams = Exact<{
+export type CheckoutQueryVariables = Exact<{
   id: Scalars["ID"];
 }>;
 
@@ -22383,7 +22407,7 @@ export type CheckoutQuery = {
   } | null;
 };
 
-export type UserQueryParams = Exact<{ [key: string]: never }>;
+export type UserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserQuery = {
   __typename?: "Query";
@@ -22438,7 +22462,7 @@ export type UserQuery = {
   } | null;
 };
 
-export type ChannelQueryParams = Exact<{
+export type ChannelQueryVariables = Exact<{
   slug: Scalars["String"];
 }>;
 
@@ -23596,7 +23620,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
   } | null;
 };
 
-export type AddressValidationRulesQueryParams = Exact<{
+export type AddressValidationRulesQueryVariables = Exact<{
   countryCode: CountryCode;
 }>;
 
@@ -24016,7 +24040,7 @@ export type OrderFragment = {
   totalCaptured: { __typename?: "Money"; currency: string; amount: number };
 };
 
-export type OrderQueryParams = Exact<{
+export type OrderQueryVariables = Exact<{
   id: Scalars["ID"];
 }>;
 
@@ -24435,8 +24459,10 @@ export const CheckoutDocument = gql`
   ${CheckoutFragmentDoc}
 `;
 
-export function useCheckoutQuery(options: Omit<Urql.UseQueryArgs<CheckoutQueryParams>, "query">) {
-  return Urql.useQuery<CheckoutQuery, CheckoutQueryParams>({
+export function useCheckoutQuery(
+  options: Omit<Urql.UseQueryArgs<CheckoutQueryVariables>, "query">
+) {
+  return Urql.useQuery<CheckoutQuery, CheckoutQueryVariables>({
     query: CheckoutDocument,
     ...options,
   });
@@ -24459,8 +24485,8 @@ export const UserDocument = gql`
   ${AddressFragmentDoc}
 `;
 
-export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryParams>, "query">) {
-  return Urql.useQuery<UserQuery, UserQueryParams>({ query: UserDocument, ...options });
+export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
+  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options });
 }
 export const ChannelDocument = gql`
   query channel($slug: String!) {
@@ -24472,8 +24498,8 @@ export const ChannelDocument = gql`
   }
 `;
 
-export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryParams>, "query">) {
-  return Urql.useQuery<ChannelQuery, ChannelQueryParams>({ query: ChannelDocument, ...options });
+export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryVariables>, "query">) {
+  return Urql.useQuery<ChannelQuery, ChannelQueryVariables>({ query: ChannelDocument, ...options });
 }
 export const CheckoutLinesUpdateDocument = gql`
   mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
@@ -24724,9 +24750,9 @@ export const AddressValidationRulesDocument = gql`
 `;
 
 export function useAddressValidationRulesQuery(
-  options: Omit<Urql.UseQueryArgs<AddressValidationRulesQueryParams>, "query">
+  options: Omit<Urql.UseQueryArgs<AddressValidationRulesQueryVariables>, "query">
 ) {
-  return Urql.useQuery<AddressValidationRulesQuery, AddressValidationRulesQueryParams>({
+  return Urql.useQuery<AddressValidationRulesQuery, AddressValidationRulesQueryVariables>({
     query: AddressValidationRulesDocument,
     ...options,
   });
@@ -24785,6 +24811,6 @@ export const OrderDocument = gql`
   ${OrderFragmentDoc}
 `;
 
-export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryParams>, "query">) {
-  return Urql.useQuery<OrderQuery, OrderQueryParams>({ query: OrderDocument, ...options });
+export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
+  return Urql.useQuery<OrderQuery, OrderQueryVariables>({ query: OrderDocument, ...options });
 }
