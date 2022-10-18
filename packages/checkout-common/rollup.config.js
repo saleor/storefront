@@ -40,6 +40,7 @@ export default [
         tsconfig: "./tsconfig.json",
         noEmit: false,
         jsx: "react-jsx",
+        resolveJsonModule: false,
       }),
       json(),
       image(),

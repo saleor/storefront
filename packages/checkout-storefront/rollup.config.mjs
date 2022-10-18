@@ -7,8 +7,10 @@ import postcss from "rollup-plugin-postcss";
 import json from "@rollup/plugin-json";
 import image from "@rollup/plugin-image";
 import dts from "rollup-plugin-dts";
-
-const packageJson = require("./package.json");
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
+import postcssImport from "postcss-import";
+import packageJson from "./package.json" assert { type: "json" };
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -41,13 +43,15 @@ export default [
         noEmit: false,
         sourceMap: true,
         jsx: isProd ? "react-jsx" : "react-jsxdev",
+        // Let Rollup resolve JSON modules via the @rollup/plugin-json
+        resolveJsonModule: false,
       }),
-      json(),
+      json({ preferConst: true, compact: true }),
       image(),
       isProd && terser(),
       postcss({
         extract: true,
-        plugins: [require("tailwindcss")(), require("autoprefixer")(), require("postcss-import")()],
+        plugins: [tailwindcss(), autoprefixer(), postcssImport()],
       }),
     ]),
   },

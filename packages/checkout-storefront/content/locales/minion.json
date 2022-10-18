@@ -33,7 +33,7 @@
   },
   "BillingAddressSection/messages/qFJDT2": {
     "developer_comment": "use shipping as billing",
-    "string": "Use shipping as billing"
+    "string": "Uso tuthoy sim idslo"
   },
   "CheckoutForm/messages/+qM8r0": {
     "developer_comment": "missing fields in billing address",
@@ -41,7 +41,7 @@
   },
   "CheckoutForm/messages/UDs7fN": {
     "developer_comment": "pay accessibility label",
-    "string": "pay"
+    "string": "yen"
   },
   "CheckoutForm/messages/guvzy3": {
     "developer_comment": "missing fields in shipping address",
@@ -49,7 +49,7 @@
   },
   "CheckoutForm/messages/jLJToZ": {
     "developer_comment": "pay",
-    "string": "Pay"
+    "string": "Yen"
   },
   "Contact/messages//BXzqC": {
     "developer_comment": "new customer?",
@@ -61,7 +61,7 @@
   },
   "Contact/messages/5hAp9w": {
     "developer_comment": "already have account?",
-    "string": "Already have an account?"
+    "string": "Bedy kaylay nan tugfe?"
   },
   "Contact/messages/Cu74z+": {
     "developer_comment": "reset password",
@@ -69,7 +69,7 @@
   },
   "Contact/messages/E8oPzo": {
     "developer_comment": "account",
-    "string": "Account"
+    "string": "Tugfe"
   },
   "Contact/messages/HvSpKk": {
     "developer_comment": "send password reset link",
@@ -97,11 +97,11 @@
   },
   "Contact/messages/ljwlqe": {
     "developer_comment": "sign in",
-    "string": "Sign in"
+    "string": "Gag een"
   },
   "Contact/messages/reCzHf": {
     "developer_comment": "sign out",
-    "string": "Sign out"
+    "string": "Gag kapee"
   },
   "Contact/messages/sXWoD4": {
     "developer_comment": "remembered your password?",
@@ -117,11 +117,11 @@
   },
   "Contact/messages/v8Xp5+": {
     "developer_comment": "i want to create account",
-    "string": "I want to create account"
+    "string": "Ka quer da maynoo tugfe"
   },
   "Contact/messages/vPJeeQ": {
     "developer_comment": "contact",
-    "string": "Contact details"
+    "string": "Koabo ichawl"
   },
   "Contact/messages/xRJQ5g": {
     "developer_comment": "provide a new password",
@@ -133,7 +133,7 @@
   },
   "DeliveryMethods/messages/IPzOnb": {
     "developer_comment": "delivery methods accessibility label",
-    "string": "delivery methods"
+    "string": "doeyom reoud"
   },
   "DeliveryMethods/messages/TitWRN": {
     "developer_comment": "shipping method not applicable",
@@ -141,11 +141,11 @@
   },
   "DeliveryMethods/messages/U/hMpC": {
     "developer_comment": "delivery methods",
-    "string": "Delivery methods"
+    "string": "Doeyom reoud"
   },
   "DeliveryMethods/messages/ZHOxoA": {
     "developer_comment": "delivery method",
-    "string": "Delivery method"
+    "string": "Doeyom resani"
   },
   "DummyPayment/messages/2uijFy": {
     "developer_comment": "how much is left to pay",
@@ -169,7 +169,7 @@
   },
   "DummyPayment/messages/eJ2qAk": {
     "developer_comment": "order total price",
-    "string": "Total price"
+    "string": "Qua ton"
   },
   "DummyPayment/messages/qCpYR4": {
     "developer_comment": "order already paid",
@@ -243,6 +243,10 @@
     "developer_comment": "paid order message",
     "string": "We've received your payment"
   },
+  "PageHeader/messages/7uJ/Tb": {
+    "developer_comment": "dummy",
+    "string": "Dummy"
+  },
   "PageHeader/messages/7vp32g": {
     "developer_comment": "dutch",
     "string": "Dutch"
@@ -259,10 +263,6 @@
     "developer_comment": "polish",
     "string": "Polish"
   },
-  "PageHeader/messages/x3KBZ/": {
-    "developer_comment": "minion",
-    "string": "Minion"
-  },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",
     "string": "We couldn’t fetch information about your checkout. Go back to the store and try again."
@@ -273,11 +273,11 @@
   },
   "PaymentSection/messages/8YE5b7": {
     "developer_comment": "payment providers",
-    "string": "Payment providers"
+    "string": "Rayinn hatsup"
   },
   "PaymentSection/messages/FK5Bg/": {
     "developer_comment": "payment providers accessibility label",
-    "string": "payment providers"
+    "string": "rayinn hatsup"
   },
   "PaymentSection/messages/bFYz7Q": {
     "developer_comment": "dropin",
@@ -305,7 +305,7 @@
   },
   "ShippingAddressSection/messages/BUg4yp": {
     "developer_comment": "shipping address",
-    "string": "Shipping address"
+    "string": "tuthoy dudreb"
   },
   "Summary/messages/+3aZyi": {
     "developer_comment": "shipping cost acessibility label",
@@ -317,11 +317,11 @@
   },
   "Summary/messages/5J0ywS": {
     "developer_comment": "quantity",
-    "string": "quantity"
+    "string": "nohdoe"
   },
   "Summary/messages/62kM+I": {
     "developer_comment": "summary title",
-    "string": "Summary"
+    "string": "Godheh"
   },
   "Summary/messages/8yNMpu": {
     "developer_comment": "remove promo code",
@@ -329,7 +329,7 @@
   },
   "Summary/messages/9hELnS": {
     "developer_comment": "subtotal price acessibility label",
-    "string": "subtotal price"
+    "string": "subtotal ton"
   },
   "Summary/messages/CDMWR5": {
     "developer_comment": "gift card acessibility label",
@@ -337,11 +337,11 @@
   },
   "Summary/messages/DrvEK3": {
     "developer_comment": "total price acessibility label",
-    "string": "total price"
+    "string": "qua ton"
   },
   "Summary/messages/I+Nu5r": {
     "developer_comment": "shipping cost",
-    "string": "Shipping cost"
+    "string": "Tuthoy fig"
   },
   "Summary/messages/LXBBAY": {
     "developer_comment": "gift card",
@@ -357,7 +357,7 @@
   },
   "Summary/messages/U9SMA8": {
     "developer_comment": "add discount",
-    "string": "Add gift card or discount code"
+    "string": "Tokali aal lay sif rodtaw hao"
   },
   "Summary/messages/ZAp08H": {
     "developer_comment": "summary item name acessibility label",
@@ -365,11 +365,11 @@
   },
   "Summary/messages/eUwD3W": {
     "developer_comment": "tax cost",
-    "string": "includes {taxCost} tax"
+    "string": "sixmho {taxCost} eng"
   },
   "Summary/messages/fDpo5E": {
     "developer_comment": "total price",
-    "string": "Total price"
+    "string": "Qua ton"
   },
   "Summary/messages/gfKEVQ": {
     "developer_comment": "apply",
@@ -429,7 +429,7 @@
   },
   "useAddressFormUtils/messages/0KU6nT": {
     "developer_comment": "postal code",
-    "string": "Postal code"
+    "string": "Pahm hao"
   },
   "useAddressFormUtils/messages/7bJ7Hd": {
     "developer_comment": "city area",
@@ -437,15 +437,15 @@
   },
   "useAddressFormUtils/messages/Jbz2k6": {
     "developer_comment": "first name",
-    "string": "First name"
+    "string": "Prima nomba"
   },
   "useAddressFormUtils/messages/K/a8rS": {
     "developer_comment": "last name",
-    "string": "Last name"
+    "string": "Tepo nomba"
   },
   "useAddressFormUtils/messages/KyH9NK": {
     "developer_comment": "country",
-    "string": "Country"
+    "string": "Placo"
   },
   "useAddressFormUtils/messages/OxxX1m": {
     "developer_comment": "post town",
@@ -453,7 +453,7 @@
   },
   "useAddressFormUtils/messages/QXvSmh": {
     "developer_comment": "company",
-    "string": "Company"
+    "string": "Raylib"
   },
   "useAddressFormUtils/messages/X/8oa4": {
     "developer_comment": "district",
@@ -461,7 +461,7 @@
   },
   "useAddressFormUtils/messages/X51P1g": {
     "developer_comment": "city",
-    "string": "City"
+    "string": "Kiku"
   },
   "useAddressFormUtils/messages/XI2F1P": {
     "developer_comment": "province",
@@ -469,7 +469,7 @@
   },
   "useAddressFormUtils/messages/Y6dLvp": {
     "developer_comment": "street address",
-    "string": "Street address"
+    "string": "Yuptao dudreb"
   },
   "useAddressFormUtils/messages/Zdvjjr": {
     "developer_comment": "state",
@@ -485,7 +485,7 @@
   },
   "useAddressFormUtils/messages/mbEUWh": {
     "developer_comment": "street address continue",
-    "string": "Street address (continue)"
+    "string": "Yuptao dudreb (tuppul)"
   },
   "useAddressFormUtils/messages/tGSbvd": {
     "developer_comment": "zip code",

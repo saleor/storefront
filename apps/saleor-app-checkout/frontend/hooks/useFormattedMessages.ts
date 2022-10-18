@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-import English from "../content/compiled-locales/en.json";
-import Polish from "../content/compiled-locales/pl.json";
+import English from "../../content/compiled-locales/en.json";
+import Polish from "../../content/compiled-locales/pl.json";
 
 export const useFormattedMessages = () => {
   const { locale } = useRouter();

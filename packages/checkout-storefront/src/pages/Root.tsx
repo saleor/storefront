@@ -13,12 +13,35 @@ import { useMemo, useState, useCallback } from "react";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 import { DEFAULT_LOCALE, getCurrentLocale, Locale } from "@/checkout-storefront/lib/regions";
 
+import En from "../../content/compiled-locales/en-US.json";
+import Minion from "../../content/compiled-locales/minion.json";
+
 export interface RootProps {
   env: AppEnv;
 }
 
-export const Root = ({ env }: RootProps) => {
+const localeToMessages = {
+  "en-US": En,
+  minion: Minion,
+};
+
+const useCurrentLocale = () => {
   const [currentLocale, setCurrentLocale] = useState<Locale>(getCurrentLocale());
+
+  const messages =
+    currentLocale in localeToMessages
+      ? localeToMessages[currentLocale as keyof typeof localeToMessages]
+      : null;
+
+  if (!messages) {
+    console.warn(`Missing messages for locale: ${currentLocale}`);
+  }
+
+  return { currentLocale, setCurrentLocale, messages: messages || {} };
+};
+
+export const Root = ({ env }: RootProps) => {
+  const { currentLocale, setCurrentLocale, messages } = useCurrentLocale();
 
   const authorizedFetch = useMemo(() => createFetch(), []);
 
@@ -56,7 +79,7 @@ export const Root = ({ env }: RootProps) => {
   return (
     // @ts-ignore React 17 <-> 18 type mismatch
     <SaleorProvider client={saleorClient}>
-      <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={currentLocale}>
+      <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={currentLocale} messages={messages}>
         <UrqlProvider value={client}>
           <AppConfigProvider env={env}>
             <div className="app">

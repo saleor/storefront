@@ -7,6 +7,11 @@ export const languagesMessages = defineMessages<Locale>({
     id: "PageHeader/messages/eXrxj4",
     description: "english usa",
   },
+  minion: {
+    defaultMessage: "Minion",
+    id: "PageHeader/messages/x3KBZ/",
+    description: "minion",
+  },
   "pl-PL": {
     defaultMessage: "Polish",
     id: "PageHeader/messages/kd+Ya5",

@@ -45,3 +45,6 @@ cypress/videos
 .idea
 
 .auth_token
+
+
+**/content/compiled-locales

@@ -3,18 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect --require env-vars' next dev -p 3001",
+    "dev": "pnpm run i18n && NODE_OPTIONS='--inspect --require env-vars' next dev -p 3001",
     "test": "jest",
     "test:record": "POLLY_MODE=record jest --runInBand --verbose",
-    "build": "next lint --dir . --quiet && npm run i18n && next build",
+    "build": "pnpm run i18n && next lint --dir . --quiet && npm run i18n && next build",
     "start": "next start -p 3001",
     "lint": "next lint --dir .",
     "lint:staged": "next lint --dir . --fix --quiet",
     "check-types": "tsc --noEmit",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
-    "extract:i18n": "formatjs extract '{backend,config,content,frontend,graphql,pages,types,utils}/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",
-    "compile:i18n": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
-    "i18n": "npm run extract:i18n && npm run compile:i18n",
+    "i18n:extract": "formatjs extract '{backend,config,content,frontend,graphql,pages,types,utils}/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file content/locales/en.json",
+    "i18n:compile": "formatjs compile-folder --ast --format transifex content/locales content/compiled-locales",
+    "i18n": "pnpm run i18n:extract && pnpm run i18n:compile",
     "clean": "rm -rf .next .turbo"
   },
   "resolutions": {

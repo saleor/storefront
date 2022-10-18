@@ -74,6 +74,18 @@
         "src/graphql/index.ts"
       ]
     },
+    "i18n:extract": {
+      "outputs": [
+        "apps/saleor-app-checkout/content/locales",
+        "packages/checkout-storefront/content/locales"
+      ]
+    },
+    "i18n:compile": {
+      "outputs": [
+        "apps/saleor-app-checkout/content/compiled-locales",
+        "packages/checkout-storefront/content/compiled-locales"
+      ]
+    },
     "test": {
       "outputs": []
     },
