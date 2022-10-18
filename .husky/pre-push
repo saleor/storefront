@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+GRAY='\033[1;30m'
+NC='\033[0m'
+
+PATHS_LOCALES="packages/checkout-storefront/content/locales apps/saleor-app-checkout/content/locales"
+echo $PATHS_LOCALES
+
+pnpm run lint
+pnpm run i18n:extract
+pnpm exec prettier --write $PATHS_LOCALES
+
+if git diff --quiet $PATHS_LOCALES
+then
+  exit 0
+else 
+  echo "${RED}Error: Changes in locales found.${NC}"
+  echo "${BLUE}Please run ${GRAY}pnpm run i18n:extract${BLUE} and commit the changes.${NC}"
+  exit 1
+fi
