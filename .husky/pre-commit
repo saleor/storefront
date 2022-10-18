@@ -1,8 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-pnpm run i18n:extract
-git add apps/saleor-app-checkout/content/locales
-git add packages/checkout-storefront/content/locales
-
 pnpm exec lint-staged
