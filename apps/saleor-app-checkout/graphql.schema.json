@@ -8761,7 +8761,7 @@
           },
           {
             "name": "plainText",
-            "description": "Represents the text of the attribute value, plain text without formating.",
+            "description": "Represents the text of the attribute value, plain text without formating.\n\nDEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -8773,7 +8773,7 @@
           },
           {
             "name": "richText",
-            "description": "Represents the text of the attribute value, includes formatting.\n\nRich text format. For reference see https://editorjs.io/",
+            "description": "Represents the text of the attribute value, includes formatting.\n\nRich text format. For reference see https://editorjs.io/\n\nDEPRECATED: this field will be removed in Saleor 4.0.The rich text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
             "type": {
               "kind": "SCALAR",
               "name": "JSONString",
@@ -9675,7 +9675,7 @@
           },
           {
             "name": "plainText",
-            "description": "Represents the text of the attribute value, plain text without formating.",
+            "description": "Represents the text of the attribute value, plain text without formating.\n\nDEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -9687,7 +9687,7 @@
           },
           {
             "name": "richText",
-            "description": "Represents the text of the attribute value, includes formatting.\n\nRich text format. For reference see https://editorjs.io/",
+            "description": "Represents the text of the attribute value, includes formatting.\n\nRich text format. For reference see https://editorjs.io/\n\nDEPRECATED: this field will be removed in Saleor 4.0.The rich text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
             "type": {
               "kind": "SCALAR",
               "name": "JSONString",
@@ -22208,6 +22208,26 @@
               "kind": "INPUT_OBJECT",
               "name": "DateRangeInput",
               "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ids",
+            "description": "Filter by ids. \n\nAdded in Saleor 3.8.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -45114,7 +45134,7 @@
               },
               {
                 "name": "customerId",
-                "description": "ID of customer to attach to checkout. Can be used to attach customer to checkout by staff or app. Requires IMPERSONATE_USER permission.",
+                "description": "ID of customer to attach to checkout. Requires IMPERSONATE_USER permission when customerId is different than the logged-in user.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "ID",
@@ -67723,6 +67743,26 @@
           {
             "name": "checkouts",
             "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ids",
+            "description": "Filter by ids. \n\nAdded in Saleor 3.8.",
             "type": {
               "kind": "LIST",
               "name": null,

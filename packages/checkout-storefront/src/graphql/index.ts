@@ -22208,11 +22208,23 @@ export type CheckoutFragment = {
       name: string;
       attributes: Array<{
         __typename?: "SelectedAttribute";
-        values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+        values: Array<{
+          __typename?: "AttributeValue";
+          name?: string | null;
+          dateTime?: string | null;
+          boolean?: boolean | null;
+          translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+        }>;
       }>;
       product: {
         __typename?: "Product";
         name: string;
+        translation?: {
+          __typename?: "ProductTranslation";
+          id: string;
+          name?: string | null;
+          language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+        } | null;
         media?: Array<{
           __typename?: "ProductMedia";
           alt: string;
@@ -22249,11 +22261,23 @@ export type CheckoutLineFragment = {
     name: string;
     attributes: Array<{
       __typename?: "SelectedAttribute";
-      values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+      values: Array<{
+        __typename?: "AttributeValue";
+        name?: string | null;
+        dateTime?: string | null;
+        boolean?: boolean | null;
+        translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+      }>;
     }>;
     product: {
       __typename?: "Product";
       name: string;
+      translation?: {
+        __typename?: "ProductTranslation";
+        id: string;
+        name?: string | null;
+        language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+      } | null;
       media?: Array<{
         __typename?: "ProductMedia";
         alt: string;
@@ -22288,6 +22312,7 @@ export type AddressFragment = {
 
 export type CheckoutQueryVariables = Exact<{
   id: Scalars["ID"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutQuery = {
@@ -22384,11 +22409,23 @@ export type CheckoutQuery = {
         name: string;
         attributes: Array<{
           __typename?: "SelectedAttribute";
-          values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+          values: Array<{
+            __typename?: "AttributeValue";
+            name?: string | null;
+            dateTime?: string | null;
+            boolean?: boolean | null;
+            translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+          }>;
         }>;
         product: {
           __typename?: "Product";
           name: string;
+          translation?: {
+            __typename?: "ProductTranslation";
+            id: string;
+            name?: string | null;
+            language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+          } | null;
           media?: Array<{
             __typename?: "ProductMedia";
             alt: string;
@@ -22464,6 +22501,7 @@ export type UserQuery = {
 
 export type ChannelQueryVariables = Exact<{
   slug: Scalars["String"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type ChannelQuery = {
@@ -22477,6 +22515,7 @@ export type ChannelQuery = {
 export type CheckoutLinesUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   lines: Array<CheckoutLineUpdateInput> | CheckoutLineUpdateInput;
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutLinesUpdateMutation = {
@@ -22581,11 +22620,23 @@ export type CheckoutLinesUpdateMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -22608,6 +22659,7 @@ export type CheckoutLinesUpdateMutation = {
 export type CheckoutLineDeleteMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   lineId?: InputMaybe<Scalars["ID"]>;
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutLineDeleteMutation = {
@@ -22712,11 +22764,23 @@ export type CheckoutLineDeleteMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -22739,6 +22803,7 @@ export type CheckoutLineDeleteMutation = {
 export type CheckoutEmailUpdateMutationVariables = Exact<{
   email: Scalars["String"];
   checkoutId: Scalars["ID"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutEmailUpdateMutation = {
@@ -22843,11 +22908,23 @@ export type CheckoutEmailUpdateMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -22869,6 +22946,7 @@ export type CheckoutEmailUpdateMutation = {
 
 export type CheckoutCustomerAttachMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutCustomerAttachMutation = {
@@ -22973,11 +23051,23 @@ export type CheckoutCustomerAttachMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -22999,6 +23089,7 @@ export type CheckoutCustomerAttachMutation = {
 
 export type CheckoutCustomerDetachMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutCustomerDetachMutation = {
@@ -23103,11 +23194,23 @@ export type CheckoutCustomerDetachMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -23229,6 +23332,7 @@ export type CheckoutShippingAddressUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   shippingAddress: AddressInput;
   validationRules?: InputMaybe<CheckoutAddressValidationRules>;
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutShippingAddressUpdateMutation = {
@@ -23333,11 +23437,23 @@ export type CheckoutShippingAddressUpdateMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -23361,6 +23477,7 @@ export type CheckoutBillingAddressUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   billingAddress: AddressInput;
   validationRules?: InputMaybe<CheckoutAddressValidationRules>;
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutBillingAddressUpdateMutation = {
@@ -23465,11 +23582,23 @@ export type CheckoutBillingAddressUpdateMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -23492,6 +23621,7 @@ export type CheckoutBillingAddressUpdateMutation = {
 export type CheckoutDeliveryMethodUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   deliveryMethodId: Scalars["ID"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutDeliveryMethodUpdateMutation = {
@@ -23596,11 +23726,23 @@ export type CheckoutDeliveryMethodUpdateMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -23645,6 +23787,7 @@ export type AddressValidationRulesQuery = {
 export type CheckoutAddPromoCodeMutationVariables = Exact<{
   checkoutId?: InputMaybe<Scalars["ID"]>;
   promoCode: Scalars["String"];
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutAddPromoCodeMutation = {
@@ -23749,11 +23892,23 @@ export type CheckoutAddPromoCodeMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -23777,6 +23932,7 @@ export type CheckoutRemovePromoCodeMutationVariables = Exact<{
   checkoutId?: InputMaybe<Scalars["ID"]>;
   promoCode?: InputMaybe<Scalars["String"]>;
   promoCodeId?: InputMaybe<Scalars["ID"]>;
+  languageCode: LanguageCodeEnum;
 }>;
 
 export type CheckoutRemovePromoCodeMutation = {
@@ -23881,11 +24037,23 @@ export type CheckoutRemovePromoCodeMutation = {
           name: string;
           attributes: Array<{
             __typename?: "SelectedAttribute";
-            values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+            values: Array<{
+              __typename?: "AttributeValue";
+              name?: string | null;
+              dateTime?: string | null;
+              boolean?: boolean | null;
+              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
+            }>;
           }>;
           product: {
             __typename?: "Product";
             name: string;
+            translation?: {
+              __typename?: "ProductTranslation";
+              id: string;
+              name?: string | null;
+              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
+            } | null;
             media?: Array<{
               __typename?: "ProductMedia";
               alt: string;
@@ -24229,12 +24397,24 @@ export const CheckoutLineFragmentDoc = gql`
       attributes(variantSelection: ALL) {
         values {
           name
+          dateTime
+          boolean
+          translation(languageCode: $languageCode) {
+            name
+          }
         }
       }
       id
       name
       product {
         name
+        translation(languageCode: $languageCode) {
+          language {
+            code
+          }
+          id
+          name
+        }
         media {
           alt
           type
@@ -24451,7 +24631,7 @@ export const OrderFragmentDoc = gql`
   ${OrderLineFragmentDoc}
 `;
 export const CheckoutDocument = gql`
-  query checkout($id: ID!) {
+  query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
     checkout(id: $id) {
       ...CheckoutFragment
     }
@@ -24489,7 +24669,7 @@ export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables
   return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options });
 }
 export const ChannelDocument = gql`
-  query channel($slug: String!) {
+  query channel($slug: String!, $languageCode: LanguageCodeEnum!) {
     channel(slug: $slug) {
       countries {
         code
@@ -24502,7 +24682,11 @@ export function useChannelQuery(options: Omit<Urql.UseQueryArgs<ChannelQueryVari
   return Urql.useQuery<ChannelQuery, ChannelQueryVariables>({ query: ChannelDocument, ...options });
 }
 export const CheckoutLinesUpdateDocument = gql`
-  mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
+  mutation checkoutLinesUpdate(
+    $checkoutId: ID!
+    $lines: [CheckoutLineUpdateInput!]!
+    $languageCode: LanguageCodeEnum!
+  ) {
     checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
       errors {
         ...CheckoutErrorFragment
@@ -24522,7 +24706,7 @@ export function useCheckoutLinesUpdateMutation() {
   );
 }
 export const CheckoutLineDeleteDocument = gql`
-  mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
+  mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID, $languageCode: LanguageCodeEnum!) {
     checkoutLineDelete(id: $checkoutId, lineId: $lineId) {
       errors {
         ...CheckoutErrorFragment
@@ -24542,7 +24726,11 @@ export function useCheckoutLineDeleteMutation() {
   );
 }
 export const CheckoutEmailUpdateDocument = gql`
-  mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
+  mutation checkoutEmailUpdate(
+    $email: String!
+    $checkoutId: ID!
+    $languageCode: LanguageCodeEnum!
+  ) {
     checkoutEmailUpdate(email: $email, id: $checkoutId) {
       errors {
         ...CheckoutErrorFragment
@@ -24562,7 +24750,7 @@ export function useCheckoutEmailUpdateMutation() {
   );
 }
 export const CheckoutCustomerAttachDocument = gql`
-  mutation checkoutCustomerAttach($checkoutId: ID!) {
+  mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
     checkoutCustomerAttach(id: $checkoutId) {
       errors {
         ...CheckoutErrorFragment
@@ -24582,7 +24770,7 @@ export function useCheckoutCustomerAttachMutation() {
   );
 }
 export const CheckoutCustomerDetachDocument = gql`
-  mutation checkoutCustomerDetach($checkoutId: ID!) {
+  mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
     checkoutCustomerDetach(id: $checkoutId) {
       errors {
         ...CheckoutErrorFragment
@@ -24666,6 +24854,7 @@ export const CheckoutShippingAddressUpdateDocument = gql`
     $checkoutId: ID!
     $shippingAddress: AddressInput!
     $validationRules: CheckoutAddressValidationRules
+    $languageCode: LanguageCodeEnum!
   ) {
     checkoutShippingAddressUpdate(
       id: $checkoutId
@@ -24695,6 +24884,7 @@ export const CheckoutBillingAddressUpdateDocument = gql`
     $checkoutId: ID!
     $billingAddress: AddressInput!
     $validationRules: CheckoutAddressValidationRules
+    $languageCode: LanguageCodeEnum!
   ) {
     checkoutBillingAddressUpdate(
       id: $checkoutId
@@ -24720,7 +24910,11 @@ export function useCheckoutBillingAddressUpdateMutation() {
   >(CheckoutBillingAddressUpdateDocument);
 }
 export const CheckoutDeliveryMethodUpdateDocument = gql`
-  mutation checkoutDeliveryMethodUpdate($checkoutId: ID!, $deliveryMethodId: ID!) {
+  mutation checkoutDeliveryMethodUpdate(
+    $checkoutId: ID!
+    $deliveryMethodId: ID!
+    $languageCode: LanguageCodeEnum!
+  ) {
     checkoutDeliveryMethodUpdate(id: $checkoutId, deliveryMethodId: $deliveryMethodId) {
       errors {
         ...CheckoutErrorFragment
@@ -24758,7 +24952,11 @@ export function useAddressValidationRulesQuery(
   });
 }
 export const CheckoutAddPromoCodeDocument = gql`
-  mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!) {
+  mutation checkoutAddPromoCode(
+    $checkoutId: ID
+    $promoCode: String!
+    $languageCode: LanguageCodeEnum!
+  ) {
     checkoutAddPromoCode(checkoutId: $checkoutId, promoCode: $promoCode) {
       errors {
         ...CheckoutErrorFragment
@@ -24778,7 +24976,12 @@ export function useCheckoutAddPromoCodeMutation() {
   );
 }
 export const CheckoutRemovePromoCodeDocument = gql`
-  mutation checkoutRemovePromoCode($checkoutId: ID, $promoCode: String, $promoCodeId: ID) {
+  mutation checkoutRemovePromoCode(
+    $checkoutId: ID
+    $promoCode: String
+    $promoCodeId: ID
+    $languageCode: LanguageCodeEnum!
+  ) {
     checkoutRemovePromoCode(
       checkoutId: $checkoutId
       promoCode: $promoCode

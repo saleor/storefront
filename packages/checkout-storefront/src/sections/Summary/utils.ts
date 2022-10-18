@@ -1,5 +1,10 @@
-import { CheckoutLineFragment, OrderLineFragment } from "@/checkout-storefront/graphql";
+import {
+  CheckoutLineFragment,
+  LanguageCodeEnum,
+  OrderLineFragment,
+} from "@/checkout-storefront/graphql";
 import compact from "lodash-es/compact";
+import { useIntl } from "react-intl";
 
 export const isCheckoutLine = (
   line: CheckoutLineFragment | OrderLineFragment
@@ -22,13 +27,26 @@ export const getSummaryLineProps = (line: OrderLineFragment | CheckoutLineFragme
         productImage: line.thumbnail,
       };
 
-export const getSummaryLineAttributesText = (line: CheckoutLineFragment | OrderLineFragment) =>
-  compact(
-    line.variant?.attributes.reduce(
-      (result: Array<string | undefined | null>, { values }) => [
-        ...result,
-        ...values.map(({ name }) => name),
-      ],
-      []
-    )
-  ).join(", ") || "";
+export const useSummaryLineLineAttributesText = (
+  line: CheckoutLineFragment | OrderLineFragment
+): string => {
+  const intl = useIntl();
+
+  return (
+    compact(
+      line.variant?.attributes.reduce(
+        (result: Array<string | undefined | null>, { values }) => [
+          ...result,
+          ...values.map(({ name, boolean, dateTime }: LanguageCodeEnum) => {
+            if (dateTime) {
+              return intl.formatDate(dateTime, { dateStyle: "medium" });
+            }
+            console.log({ name, boolean, dateTime });
+            return name;
+          }),
+        ],
+        []
+      )
+    ).join(", ") || ""
+  );
+};

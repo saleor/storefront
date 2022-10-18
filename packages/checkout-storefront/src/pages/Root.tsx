@@ -9,9 +9,9 @@ import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "../hooks/useAlerts/consts";
 import { RootViews } from "../views/RootViews/RootViews";
-import { useMemo, useState, useCallback } from "react";
-import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
-import { DEFAULT_LOCALE, getCurrentLocale, Locale } from "@/checkout-storefront/lib/regions";
+import { useMemo } from "react";
+import { DEFAULT_LOCALE } from "@/checkout-storefront/lib/regions";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 import En from "../../content/compiled-locales/en-US.json";
 import Pl from "../../content/compiled-locales/pl-PL.json";
@@ -46,6 +46,7 @@ export const Root = ({ env }: RootProps) => {
   const { currentLocale, setCurrentLocale, messages } = useCurrentLocale();
 
   const authorizedFetch = useMemo(() => createFetch(), []);
+  const { locale } = useLocale();
 
   const client = useMemo(
     () =>
@@ -68,15 +69,6 @@ export const Root = ({ env }: RootProps) => {
       }),
     [env.apiUrl]
   );
-
-  const handleUrlChange = useCallback(
-    ({ queryParams: { locale } }: UrlChangeHandlerArgs) => {
-      setCurrentLocale(locale);
-    },
-    [setCurrentLocale]
-  );
-
-  useUrlChange(handleUrlChange);
 
   return (
     // @ts-ignore React 17 <-> 18 type mismatch
