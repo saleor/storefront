@@ -1,1 +1,222 @@
-{}
+{
+    "ChannelDetails/messages/1+HS9r": {
+      "developer_comment": "section title",
+      "string": "Wybierz metody płatności"
+    },
+    "ChannelList/messages/vOL1vk": {
+      "developer_comment": "label",
+      "string": "Nazwa kanału"
+    },
+    "CustomizationDetails/messages/CAoP49": {
+      "developer_comment": "section title",
+      "string": "Podgląd personalizacji"
+    },
+    "CustomizationDetails/messages/Z9ndZ7": {
+      "developer_comment": "information",
+      "string": "Proszę podać poprawny adres URL checkoutu"
+    },
+    "CustomizationDetails/messages/eQTUqD": {
+      "developer_comment": "input label",
+      "string": "URL checkoutu"
+    },
+    "ErrorDetails/messages/+1z3pp": {
+      "developer_comment": "error title",
+      "string": "Coś poszło nie tak"
+    },
+    "FileInput/messages/AlmJPi": {
+      "developer_comment": "button",
+      "string": "Wgraj plik"
+    },
+    "FileInput/messages/Zr2A5Y": {
+      "developer_comment": "description",
+      "string": "Maksymalny rozmiar to 1GB"
+    },
+    "FileInput/messages/h6LHdF": {
+      "developer_comment": "description",
+      "string": "Tutaj załączysz obrazek"
+    },
+    "PaymentProviderDetails/messages//1yAUF": {
+      "developer_comment": "notice for private settings",
+      "string": "Te informacje nie będą szyfrowane"
+    },
+    "PaymentProviderDetails/messages/OOy0zB": {
+      "developer_comment": "notice for private settings",
+      "string": "Te informacje nie będą szyfrowane"
+    },
+    "PaymentProviderDetails/messages/n3PNHM": {
+      "developer_comment": "section title",
+      "string": "Ustawienia dostawcy płatności"
+    },
+    "messages/customization//dYclm": {
+      "developer_comment": "customization setting",
+      "string": "Tło przycisku po najechaniu na niego"
+    },
+    "messages/customization/0NYFC/": {
+      "developer_comment": "customization setting",
+      "string": "Tekst na przycisku"
+    },
+    "messages/customization/4kEXS+": {
+      "developer_comment": "customization",
+      "string": "Personalizacja marki"
+    },
+    "messages/customization/D8irjQ": {
+      "developer_comment": "customization setting",
+      "string": "Podstawowe tło przycisku"
+    },
+    "messages/customization/DopY6P": {
+      "developer_comment": "customization setting",
+      "string": "Błąd"
+    },
+    "messages/customization/HpJ0xA": {
+      "developer_comment": "customization setting",
+      "string": "Logo"
+    },
+    "messages/customization/S/xcUp": {
+      "developer_comment": "customization setting",
+      "string": "Sukces"
+    },
+    "messages/customization/X5y+L2": {
+      "developer_comment": "customization",
+      "string": "Ustawienia produktu"
+    },
+    "messages/customization/cNpy7H": {
+      "developer_comment": "customization setting",
+      "string": "Tekst"
+    },
+    "messages/customization/e9Fc8u": {
+      "developer_comment": "customization setting",
+      "string": "Niski próg zapasów"
+    },
+    "messages/customization/m/r08F": {
+      "developer_comment": "customization setting",
+      "string": "Podstawowe obramowanie"
+    },
+    "messages/paymentMethods/2dP9Gd": {
+      "developer_comment": "dummy payment method",
+      "string": "Płatności fikcyjne"
+    },
+    "messages/paymentMethods/6bexF4": {
+      "developer_comment": "payment method",
+      "string": "Płatność z góry"
+    },
+    "messages/paymentMethods/BFIFWS": {
+      "developer_comment": "payment method",
+      "string": "Apple Pay"
+    },
+    "messages/paymentMethods/IKIBYk": {
+      "developer_comment": "payment method",
+      "string": "Karta kredytowa"
+    },
+    "messages/paymentMethods/nXqPc7": {
+      "developer_comment": "payment method",
+      "string": "PayPal"
+    },
+    "messages/paymentProviders/+1my3D": {
+      "developer_comment": "payment provider setting",
+      "string": "Klucz webhooka HMAC"
+    },
+    "messages/paymentProviders/9hBUgM": {
+      "developer_comment": "payment provider setting",
+      "string": "Klucz API"
+    },
+    "messages/paymentProviders/CH2iz9": {
+      "developer_comment": "payment provider setting",
+      "string": "Hasło do webhooka"
+    },
+    "messages/paymentProviders/CQH/Vb": {
+      "developer_comment": "payment provider",
+      "string": "Mollie"
+    },
+    "messages/paymentProviders/I6I7xw": {
+      "developer_comment": "payment provider setting",
+      "string": "Nazwa użytkownika webhooka"
+    },
+    "messages/paymentProviders/LtD8zn": {
+      "developer_comment": "dummy payment provider",
+      "string": "Płatności fikcyjne"
+    },
+    "messages/paymentProviders/WdX1+f": {
+      "developer_comment": "payment provider setting",
+      "string": "Klucz klienta publicznego"
+    },
+    "messages/paymentProviders/YBcvvL": {
+      "developer_comment": "payment provider setting",
+      "string": "Klucz publiczny"
+    },
+    "messages/paymentProviders/ehp06H": {
+      "developer_comment": "payment provider",
+      "string": "Stripe"
+    },
+    "messages/paymentProviders/fQ20+Q": {
+      "developer_comment": "payment provider setting",
+      "string": "Klucz prywatny"
+    },
+    "messages/paymentProviders/glq8nA": {
+      "developer_comment": "payment provider setting",
+      "string": "Sekret webhooka"
+    },
+    "messages/paymentProviders/m5P19o": {
+      "developer_comment": "payment provider",
+      "string": "Adyen"
+    },
+    "messages/paymentProviders/qHRtb0": {
+      "developer_comment": "payment provider setting",
+      "string": "Prywatny klucz API"
+    },
+    "messages/paymentProviders/t7YEMr": {
+      "developer_comment": "payment provider setting",
+      "string": "ID Profilu"
+    },
+    "messages/paymentProviders/ufY8+j": {
+      "developer_comment": "payment provider setting",
+      "string": "Konto sprzedawcy"
+    },
+    "misc/commonMessages/95qy1d": {
+      "developer_comment": "section name",
+      "string": "Kanały"
+    },
+    "misc/commonMessages/g8hTTQ": {
+      "developer_comment": "section name",
+      "string": "Ustawienia"
+    },
+    "misc/commonMessages/gnUZny": {
+      "developer_comment": "section name",
+      "string": "Personalizacja"
+    },
+    "misc/errorMessages/KEl0/z": {
+      "developer_comment": "error message",
+      "string": "Coś poszło nie tak"
+    },
+    "misc/errorMessages/OvAW89": {
+      "developer_comment": "error message",
+      "string": "Nie znaleziono dostawcy płatności."
+    },
+    "misc/errorMessages/fHPUmP": {
+      "developer_comment": "error message",
+      "string": "Nieznany błąd"
+    },
+    "misc/errorMessages/ftpe3L": {
+      "developer_comment": "error message",
+      "string": "Nieważny"
+    },
+    "misc/errorMessages/nE/aC7": {
+      "developer_comment": "error message",
+      "string": "Nie znaleziono opcji kanału płatności."
+    },
+    "misc/errorMessages/ofWxwJ": {
+      "developer_comment": "error message",
+      "string": "Wymagane"
+    },
+    "misc/errorMessages/v74OtS": {
+      "developer_comment": "error message",
+      "string": "Nieaktualizowane"
+    },
+    "misc/errorMessages/vZ8Jjv": {
+      "developer_comment": "error message",
+      "string": "Błąd GraphQL"
+    },
+    "misc/errorMessages/z3iWGt": {
+      "developer_comment": "error message",
+      "string": "Nie znaleziono"
+    }
+  }

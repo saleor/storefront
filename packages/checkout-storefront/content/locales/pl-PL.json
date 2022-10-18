@@ -1,0 +1,667 @@
+{
+    "AddressForm/messages/9BsfhB": {
+      "developer_comment": "netherlands",
+      "string": "Holandia"
+    },
+    "AddressForm/messages/IHMZ2N": {
+      "developer_comment": "poland",
+      "string": "Polska"
+    },
+    "AddressForm/messages/PwM0Kj": {
+      "developer_comment": "france",
+      "string": "Francja"
+    },
+    "AddressForm/messages/xQAA6W": {
+      "developer_comment": "usa",
+      "string": "Stany Zjednoczone Ameryki"
+    },
+    "AddressSelectBox/messages//II2Kl": {
+      "developer_comment": "edit address accessibility label",
+      "string": "edytuj adres"
+    },
+    "AddressSelectBox/messages/X3KwgL": {
+      "developer_comment": "can't ship to address",
+      "string": "Nie można przeprowadzić wysyłki na ten adres"
+    },
+    "AddressSelectBox/messages/rHpDYH": {
+      "developer_comment": "edit address",
+      "string": "edytuj"
+    },
+    "BillingAddressSection/messages/OLzmaE": {
+      "developer_comment": "billing address",
+      "string": "Adres rozliczeniowy"
+    },
+    "BillingAddressSection/messages/qFJDT2": {
+      "developer_comment": "use shipping as billing",
+      "string": "Użyj wysyłki jako płatności"
+    },
+    "CheckoutForm/messages/+qM8r0": {
+      "developer_comment": "missing fields in billing address",
+      "string": "Niektóre pola w formularzu rozliczeniowym są puste lub zostały niepoprawnie wypełnione"
+    },
+    "CheckoutForm/messages/UDs7fN": {
+      "developer_comment": "pay accessibility label",
+      "string": "zapłać"
+    },
+    "CheckoutForm/messages/guvzy3": {
+      "developer_comment": "missing fields in shipping address",
+      "string": "Niektóre pola w adresie dostawy są puste lub zostały niepoprawnie wypełnione"
+    },
+    "CheckoutForm/messages/jLJToZ": {
+      "developer_comment": "pay",
+      "string": "Zapłać"
+    },
+    "Contact/messages//BXzqC": {
+      "developer_comment": "new customer?",
+      "string": "Nowy klient?"
+    },
+    "Contact/messages//Iazj+": {
+      "developer_comment": "resend?",
+      "string": "Wysłać ponownie?"
+    },
+    "Contact/messages/5hAp9w": {
+      "developer_comment": "already have account?",
+      "string": "Masz już konto?"
+    },
+    "Contact/messages/Cu74z+": {
+      "developer_comment": "reset password",
+      "string": "Zresetuj hasło"
+    },
+    "Contact/messages/E8oPzo": {
+      "developer_comment": "account",
+      "string": "Konto"
+    },
+    "Contact/messages/HvSpKk": {
+      "developer_comment": "send password reset link",
+      "string": "wyślij link celem resetu hasła"
+    },
+    "Contact/messages/IbOUpe": {
+      "developer_comment": "password",
+      "string": "Hasło"
+    },
+    "Contact/messages/JX+fPs": {
+      "developer_comment": "Guest checkout",
+      "string": "Kasa gości"
+    },
+    "Contact/messages/Ng/PvP": {
+      "developer_comment": "a link has been sent to",
+      "string": "Magiczny link został wysłany do {email}"
+    },
+    "Contact/messages/bHaSzm": {
+      "developer_comment": "password confirmation",
+      "string": "Potwierdzenie hasła"
+    },
+    "Contact/messages/dE8fQO": {
+      "developer_comment": "change section",
+      "string": "zmień sekcję"
+    },
+    "Contact/messages/ljwlqe": {
+      "developer_comment": "sign in",
+      "string": "Zaloguj się"
+    },
+    "Contact/messages/reCzHf": {
+      "developer_comment": "sign out",
+      "string": "Wyloguj się"
+    },
+    "Contact/messages/sXWoD4": {
+      "developer_comment": "remembered your password?",
+      "string": "Zapamiętałeś swoje hasło?"
+    },
+    "Contact/messages/tCwlQg": {
+      "developer_comment": "email",
+      "string": "Email"
+    },
+    "Contact/messages/uEp7uy": {
+      "developer_comment": "forgot password",
+      "string": "Zapomniałeś hasła?"
+    },
+    "Contact/messages/v8Xp5+": {
+      "developer_comment": "i want to create account",
+      "string": "Chcę stworzyć konto"
+    },
+    "Contact/messages/vPJeeQ": {
+      "developer_comment": "contact",
+      "string": "Informacje kontaktowe"
+    },
+    "Contact/messages/xRJQ5g": {
+      "developer_comment": "provide a new password",
+      "string": "Podaj nowe hasło do swojego konta"
+    },
+    "DeliveryMethods/messages/DGFTo/": {
+      "developer_comment": "business days",
+      "string": "{min}-{max} dni roboczych"
+    },
+    "DeliveryMethods/messages/IPzOnb": {
+      "developer_comment": "delivery methods accessibility label",
+      "string": "rodzaje dostawy"
+    },
+    "DeliveryMethods/messages/TitWRN": {
+      "developer_comment": "shipping method not applicable",
+      "string": "Nie dotyczy"
+    },
+    "DeliveryMethods/messages/U/hMpC": {
+      "developer_comment": "delivery methods",
+      "string": "Rodzaje dostawy"
+    },
+    "DeliveryMethods/messages/ZHOxoA": {
+      "developer_comment": "delivery method",
+      "string": "Rodzaj dostawy"
+    },
+    "DummyPayment/messages/2uijFy": {
+      "developer_comment": "how much is left to pay",
+      "string": "Pozostało do uregulowania ({currency})"
+    },
+    "DummyPayment/messages/9FUEKB": {
+      "developer_comment": "dummy pay",
+      "string": "Testowa płatność"
+    },
+    "DummyPayment/messages/Cm6A9z": {
+      "developer_comment": "loading",
+      "string": "Ładowanie..."
+    },
+    "DummyPayment/messages/Hm9+RE": {
+      "developer_comment": "error",
+      "string": "Coś poszło nie tak"
+    },
+    "DummyPayment/messages/S0J+0M": {
+      "developer_comment": "dummy payment",
+      "string": "Testowa płatność"
+    },
+    "DummyPayment/messages/eJ2qAk": {
+      "developer_comment": "order total price",
+      "string": "Cena całkowita"
+    },
+    "DummyPayment/messages/qCpYR4": {
+      "developer_comment": "order already paid",
+      "string": "Już opłacone"
+    },
+    "EmptyCartPage/messages/CLKTRp": {
+      "developer_comment": "go back to store",
+      "string": "Wróć do sklepu"
+    },
+    "EmptyCartPage/messages/CMDZDI": {
+      "developer_comment": "add to cart to continue",
+      "string": "Dodaj cokolwiek do koszyka, aby kontynuować"
+    },
+    "EmptyCartPage/messages/qfic6J": {
+      "developer_comment": "cart is empty",
+      "string": "Twój koszyk jest pusty"
+    },
+    "ManualSaveAddressForm/messages/BfROpq": {
+      "developer_comment": "save address",
+      "string": "Zapisz adres"
+    },
+    "ManualSaveAddressForm/messages/NeZoqm": {
+      "developer_comment": "delete address accessibility label",
+      "string": "Usuń adres"
+    },
+    "ManualSaveAddressForm/messages/a4P38R": {
+      "developer_comment": "cancel accessibility label",
+      "string": "Anuluj edycję"
+    },
+    "ManualSaveAddressForm/messages/js69XA": {
+      "developer_comment": "cancel",
+      "string": "Anuluj"
+    },
+    "ManualSaveAddressForm/messages/khhC7s": {
+      "developer_comment": "save accessibility label",
+      "string": "Zapisz adres"
+    },
+    "OrderInfo/messages/4IPxGY": {
+      "developer_comment": "order unpaid message",
+      "string": "Zamówienie nie zostało opłacone. Jeśli zleciłeś płatność - sprawdź potwierdzenie."
+    },
+    "OrderInfo/messages/9VWqRC": {
+      "developer_comment": "payment",
+      "string": "Zapłata"
+    },
+    "OrderInfo/messages/H+et6P": {
+      "developer_comment": "pay for the order",
+      "string": "Zapłać za zamówienie"
+    },
+    "OrderInfo/messages/MY0OAh": {
+      "developer_comment": "payment pending",
+      "string": "Twoja płatność jest przetwarzana."
+    },
+    "OrderInfo/messages/VjsJkY": {
+      "developer_comment": "order confirmed",
+      "string": "Zamówienie #{number} potwierdzone"
+    },
+    "OrderInfo/messages/fdFTXC": {
+      "developer_comment": "order pay accessibility label",
+      "string": "opłata zamówienia"
+    },
+    "OrderInfo/messages/nkRLWD": {
+      "developer_comment": "order payment status missing",
+      "string": "Nie mogliśmy pobrać informacji o Twojej płatności. Jeśli zleciłeś płatność - sprawdź potwierdzenie i skontaktuj się ze sklepem."
+    },
+    "OrderInfo/messages/ty5n+J": {
+      "developer_comment": "order confirmed subtitle",
+      "string": "Dziękujemy za złożenie zamówienia. Otrzymaliśmy je i skontaktujemy się z Tobą, gdy tylko Twoja paczka zostanie wysłana. E-mail z potwierdzeniem został wysłany na adres {email}."
+    },
+    "OrderInfo/messages/vcXZR6": {
+      "developer_comment": "paid order message",
+      "string": "Otrzymaliśmy Twoją płatność"
+    },
+    "PageHeader/messages/7vp32g": {
+      "developer_comment": "dutch",
+      "string": "Holenderski"
+    },
+    "PageHeader/messages/e9JKRm": {
+      "developer_comment": "French",
+      "string": "Francuski"
+    },
+    "PageHeader/messages/eXrxj4": {
+      "developer_comment": "english usa",
+      "string": "Angielski (USA)"
+    },
+    "PageHeader/messages/kd+Ya5": {
+      "developer_comment": "polish",
+      "string": "Polski"
+    },
+    "PageHeader/messages/x3KBZ/": {
+      "developer_comment": "minion",
+      "string": "Minion"
+    },
+    "PageNotFound/messages/Q7DOPP": {
+      "developer_comment": "couldn't find info about your checkout",
+      "string": "Nie mogliśmy pobrać informacji o Twojej sesji. Wróć do sklepu i spróbuj ponownie."
+    },
+    "PasswordInput/messages/fClTvW": {
+      "developer_comment": "change password visibility accessibility label",
+      "string": "zmień widoczność hasła"
+    },
+    "PaymentSection/messages/8YE5b7": {
+      "developer_comment": "payment providers",
+      "string": "Dostawcy płatności"
+    },
+    "PaymentSection/messages/FK5Bg/": {
+      "developer_comment": "payment providers accessibility label",
+      "string": "dostawcy płatności"
+    },
+    "PaymentSection/messages/bFYz7Q": {
+      "developer_comment": "dropin",
+      "string": "Płatność z góry"
+    },
+    "PaymentSection/messages/im88Fe": {
+      "developer_comment": "credit card",
+      "string": "Karta kredytowa"
+    },
+    "PaymentSection/messages/jdRifS": {
+      "developer_comment": "paypal",
+      "string": "PayPal"
+    },
+    "PaymentSection/messages/p7Zg+S": {
+      "developer_comment": "apple pay",
+      "string": "Apple Pay"
+    },
+    "PaymentSection/messages/xXCQ+K": {
+      "developer_comment": "dummy payment method",
+      "string": "Testowa płatność"
+    },
+    "RootViews/messages/Cm6A9z": {
+      "developer_comment": "loading",
+      "string": "Ładowanie..."
+    },
+    "ShippingAddressSection/messages/BUg4yp": {
+      "developer_comment": "shipping address",
+      "string": "Adres dostawy"
+    },
+    "Summary/messages/+3aZyi": {
+      "developer_comment": "shipping cost acessibility label",
+      "string": "kosztDostawy"
+    },
+    "Summary/messages/0e730y": {
+      "developer_comment": "single piece price acessibility label",
+      "string": "cena za jedną sztukę"
+    },
+    "Summary/messages/5J0ywS": {
+      "developer_comment": "quantity",
+      "string": "ilość"
+    },
+    "Summary/messages/62kM+I": {
+      "developer_comment": "summary title",
+      "string": "Podsumowanie"
+    },
+    "Summary/messages/8yNMpu": {
+      "developer_comment": "remove promo code",
+      "string": "usuń kod promocyjny"
+    },
+    "Summary/messages/9hELnS": {
+      "developer_comment": "subtotal price acessibility label",
+      "string": "cena sumaryczna"
+    },
+    "Summary/messages/CDMWR5": {
+      "developer_comment": "gift card acessibility label",
+      "string": "kartaPodarunkowa"
+    },
+    "Summary/messages/DrvEK3": {
+      "developer_comment": "total price acessibility label",
+      "string": "cena całkowita"
+    },
+    "Summary/messages/I+Nu5r": {
+      "developer_comment": "shipping cost",
+      "string": "Koszt dostawy"
+    },
+    "Summary/messages/LXBBAY": {
+      "developer_comment": "gift card",
+      "string": "Karta Podarunkowa: {giftCardCode}"
+    },
+    "Summary/messages/LmzMmY": {
+      "developer_comment": "each",
+      "string": "each"
+    },
+    "Summary/messages/MgTWsL": {
+      "developer_comment": "voucher",
+      "string": "Voucher: {voucherCode}"
+    },
+    "Summary/messages/U9SMA8": {
+      "developer_comment": "add discount",
+      "string": "Dodaj kartę podarunkową lub kod rabatowy"
+    },
+    "Summary/messages/ZAp08H": {
+      "developer_comment": "summary item name acessibility label",
+      "string": "nazwa elementu podsumowania"
+    },
+    "Summary/messages/eUwD3W": {
+      "developer_comment": "tax cost",
+      "string": "zawiera {taxCost} podatku"
+    },
+    "Summary/messages/fDpo5E": {
+      "developer_comment": "total price",
+      "string": "Cena całkowita"
+    },
+    "Summary/messages/gfKEVQ": {
+      "developer_comment": "apply",
+      "string": "Zastosuj"
+    },
+    "Summary/messages/r/8W3/": {
+      "developer_comment": "undiscounted price acessibility label",
+      "string": "cena bez rabatu"
+    },
+    "Summary/messages/sUYq4a": {
+      "developer_comment": "apply acessibility label",
+      "string": "zastosuj"
+    },
+    "Summary/messages/svpQPb": {
+      "developer_comment": "voucher acessibility label",
+      "string": "voucher"
+    },
+    "Summary/messages/xUvWaP": {
+      "developer_comment": "subtotal price",
+      "string": "Częściowa"
+    },
+    "Summary/messages/ydrYcS": {
+      "developer_comment": "variant name acessibility label",
+      "string": "nazwa wariantu"
+    },
+    "UserAddressSection/messages/E6w89b": {
+      "developer_comment": "add address accessibility label",
+      "string": "dodaj adres"
+    },
+    "UserAddressSection/messages/OMv17k": {
+      "developer_comment": "billing user addresses",
+      "string": "adresy rozliczeniowe użytkowników"
+    },
+    "UserAddressSection/messages/YpnLAd": {
+      "developer_comment": "shipping user addresses",
+      "string": "adresy wysyłkowe użytkowników"
+    },
+    "UserAddressSection/messages/lhYBSH": {
+      "developer_comment": "you have no addresses",
+      "string": "Obecnie nie masz zapisanych adresów."
+    },
+    "UserAddressSection/messages/xPCC/5": {
+      "developer_comment": "add address",
+      "string": "Dodaj adres"
+    },
+    "lib/commonMessages/03Jmny": {
+      "developer_comment": "processing",
+      "string": "Przetwarzanie..."
+    },
+    "lib/commonMessages/9NmWSQ": {
+      "developer_comment": "check icon",
+      "string": "sprawdź ikonę"
+    },
+    "lib/commonMessages/sklVAb": {
+      "developer_comment": "remove icon",
+      "string": "usuń ikonę"
+    },
+    "useAddressFormUtils/messages/0KU6nT": {
+      "developer_comment": "postal code",
+      "string": "Kod pocztowy"
+    },
+    "useAddressFormUtils/messages/7bJ7Hd": {
+      "developer_comment": "city area",
+      "string": "Miasto"
+    },
+    "useAddressFormUtils/messages/Jbz2k6": {
+      "developer_comment": "first name",
+      "string": "Imię"
+    },
+    "useAddressFormUtils/messages/K/a8rS": {
+      "developer_comment": "last name",
+      "string": "Nazwisko"
+    },
+    "useAddressFormUtils/messages/KyH9NK": {
+      "developer_comment": "country",
+      "string": "Kraj"
+    },
+    "useAddressFormUtils/messages/OxxX1m": {
+      "developer_comment": "post town",
+      "string": "Kod pocztowy"
+    },
+    "useAddressFormUtils/messages/QXvSmh": {
+      "developer_comment": "company",
+      "string": "Firma"
+    },
+    "useAddressFormUtils/messages/X/8oa4": {
+      "developer_comment": "district",
+      "string": "Dzielnica"
+    },
+    "useAddressFormUtils/messages/X51P1g": {
+      "developer_comment": "city",
+      "string": "Miasto"
+    },
+    "useAddressFormUtils/messages/XI2F1P": {
+      "developer_comment": "province",
+      "string": "Województwo"
+    },
+    "useAddressFormUtils/messages/Y6dLvp": {
+      "developer_comment": "street address",
+      "string": "Ulica"
+    },
+    "useAddressFormUtils/messages/Zdvjjr": {
+      "developer_comment": "state",
+      "string": "Stan"
+    },
+    "useAddressFormUtils/messages/dxC3yk": {
+      "developer_comment": "country area",
+      "string": "Strefa kraju"
+    },
+    "useAddressFormUtils/messages/ljLaVr": {
+      "developer_comment": "phone number",
+      "string": "Numer telefonu"
+    },
+    "useAddressFormUtils/messages/mbEUWh": {
+      "developer_comment": "street address continue",
+      "string": "Adres (kontynuuj)"
+    },
+    "useAddressFormUtils/messages/tGSbvd": {
+      "developer_comment": "zip code",
+      "string": "Kod pocztowy"
+    },
+    "useAlerts/messages/2leXNc": {
+      "developer_comment": "checkout shipping update - postal code invalid error",
+      "string": "W adresie wysyłki podano nieprawidłowy kod pocztowy"
+    },
+    "useAlerts/messages/7/Bo7+": {
+      "developer_comment": "checkout pay - email not set error",
+      "string": "Proszę wprowadzić e-mail przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/7yexjS": {
+      "developer_comment": "something went wrong",
+      "string": "Przepraszam, coś poszło nie tak. Spróbuj ponownie za chwilę."
+    },
+    "useAlerts/messages/8fk/m5": {
+      "developer_comment": "checkout billing update - postal code invalid error",
+      "string": "Podano nieprawidłowy kod pocztowy dla adresu rozliczeniowego"
+    },
+    "useAlerts/messages/ESuR0A": {
+      "developer_comment": "login - email inactive error",
+      "string": "Konto z podanym adresem e-mail jest nieaktywne"
+    },
+    "useAlerts/messages/Em5uvP": {
+      "developer_comment": "checkout finalize - shipping address invalid error",
+      "string": "Proszę podać poprawny adres wysyłki przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/EwTHLm": {
+      "developer_comment": "reset password - token invalid error",
+      "string": "Podany token resetowania hasła wygasł lub jest nieprawidłowy"
+    },
+    "useAlerts/messages/FggIw/": {
+      "developer_comment": "request password reset - email not found error",
+      "string": "Nie znaleziono użytkownika z podanym adresem e-mail"
+    },
+    "useAlerts/messages/JBUgUT": {
+      "developer_comment": "checkout billing update country area required error",
+      "string": "Wybierz kraj dla adresu rozliczeniowego"
+    },
+    "useAlerts/messages/KXWHsh": {
+      "developer_comment": "checkout lines update - quantity greater than limit error",
+      "string": "Nie można zaktualizować wiersza — przekroczono limit kopii tego przedmiotu"
+    },
+    "useAlerts/messages/LrYpGU": {
+      "developer_comment": "login - email not found error",
+      "string": "Konto z podanym adresem e-mail nie zostało znalezione"
+    },
+    "useAlerts/messages/Vx4W5S": {
+      "developer_comment": "user register - email unique error",
+      "string": "Nie można utworzyć konta z adresem e-mail, który jest już używany"
+    },
+    "useAlerts/messages/Xd2N1c": {
+      "developer_comment": "reset password - password too short error",
+      "string": "Podane hasło jest za krótkie"
+    },
+    "useAlerts/messages/a77ZZO": {
+      "developer_comment": "checkout email update - email required error",
+      "string": "E-mail nie może być pusty"
+    },
+    "useAlerts/messages/b1SQCj": {
+      "developer_comment": "checkout finalize payment provider required error",
+      "string": "Wybierz metodę płatności przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/cRtX18": {
+      "developer_comment": "checkout finalize - email invalid error",
+      "string": "Proszę podać poprawny adres e-mail przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/dCkgOw": {
+      "developer_comment": "checkout finalize password required error",
+      "string": "Proszę ustawić hasło użytkownika przed sfinalizowaniem kasy"
+    },
+    "useAlerts/messages/dKzVev": {
+      "developer_comment": "checkout email update email invalid error",
+      "string": "Podany adres e-mail jest nieprawidłowy"
+    },
+    "useAlerts/messages/glpqLA": {
+      "developer_comment": "checkout pay - total amount mismatch error",
+      "string": "Nie udało się sfinalizować płatności, spróbuj ponownie"
+    },
+    "useAlerts/messages/iTl+Qz": {
+      "developer_comment": "login - account not confirmed error",
+      "string": "Konto nie zostało potwierdzone"
+    },
+    "useAlerts/messages/k0+Kez": {
+      "developer_comment": "checkout pay - shipping method not set error",
+      "string": "Proszę wybrać metodę dostawy przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/kiBZQ6": {
+      "developer_comment": "please provide a valid billing address before finalizing",
+      "string": "Przed sfinalizowaniem podaj prawidłowy adres rozliczeniowy"
+    },
+    "useAlerts/messages/mJ81Pa": {
+      "developer_comment": "user register - password too short error",
+      "string": "Podane hasło jest za krótkie"
+    },
+    "useAlerts/messages/nX71XF": {
+      "developer_comment": "login - invalid credentials error",
+      "string": "Podano nieprawidłowe dane logowania"
+    },
+    "useAlerts/messages/ow9nan": {
+      "developer_comment": "please provide a valid shipping address before finalizing checkout",
+      "string": "Proszę podać poprawny adres wysyłki przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/oyFho2": {
+      "developer_comment": "checkout lines update - insufficient stock error",
+      "string": "Nie można zaktualizować linii - niewystarczające zapasy w magazynie"
+    },
+    "useAlerts/messages/rVGqj8": {
+      "developer_comment": "checkout finalize email required error",
+      "string": "Podaj prawidłowy adres e-mail przed sfinalizowaniem transakcji"
+    },
+    "useAlerts/messages/uc7gzX": {
+      "developer_comment": "user address update - postal code invalid error",
+      "string": "Nieprawidłowy kod pocztowy podany na formularzu adresowym"
+    },
+    "useAlerts/messages/vn9b/m": {
+      "developer_comment": "checkout shipping update country area required error",
+      "string": "Proszę wybrać kraj dla adresu wysyłki"
+    },
+    "useAlerts/messages/wLQO7F": {
+      "developer_comment": "user address create - postal code invalid error",
+      "string": "Nieprawidłowy kod pocztowy podany na formularzu adresowym"
+    },
+    "useAlerts/messages/wQ7eb8": {
+      "developer_comment": "request password reset email inactive error",
+      "string": "Konto użytkownika z podanym adresem e-mail jest nieaktywne"
+    },
+    "useAlerts/messages/yGh+vi": {
+      "developer_comment": "checkout add promo code - promo code invalid error",
+      "string": "Podano nieprawidłowy kod promocyjny"
+    },
+    "useErrorMessages/messages/+WMTds": {
+      "developer_comment": "quantity greater than limit",
+      "string": "Wybrana ilość przekracza dozwolony limit."
+    },
+    "useErrorMessages/messages/GmjKcs": {
+      "developer_comment": "required field",
+      "string": "Pole wymagane"
+    },
+    "useErrorMessages/messages/GrUSxl": {
+      "developer_comment": "value must be unique",
+      "string": "Wartość musi być unikalna"
+    },
+    "useErrorMessages/messages/OOj8Aa": {
+      "developer_comment": "insufficient stock",
+      "string": "Za mało wybranego produktu w magazynie."
+    },
+    "useErrorMessages/messages/RcmVPj": {
+      "developer_comment": "missing fields in address form",
+      "string": "Brakujące pola w formularzu adresowym:"
+    },
+    "useErrorMessages/messages/W/xrYy": {
+      "developer_comment": "password too short",
+      "string": "Podane hasło jest za krótkie. Minimalna długość to 8 znaków."
+    },
+    "useErrorMessages/messages/YaHFRg": {
+      "developer_comment": "invalid credentials",
+      "string": "Podano nieprawidłowe dane logowania."
+    },
+    "useErrorMessages/messages/ZnQ753": {
+      "developer_comment": "password invalid",
+      "string": "Podane hasło jest nieprawidłowe."
+    },
+    "useErrorMessages/messages/ebt/9V": {
+      "developer_comment": "invalid value",
+      "string": "niewłaściwa wartość"
+    },
+    "useErrorMessages/messages/v+nLdX": {
+      "developer_comment": "password too common",
+      "string": "Podane hasło jest zbyt powszechne. Użyj czegoś bardziej kreatywnego."
+    },
+    "useErrorMessages/messages/wVsmCj": {
+      "developer_comment": "password too similar",
+      "string": "Podane hasło jest zbyt podobne do poprzedniego hasła."
+    }
+  }
+  
