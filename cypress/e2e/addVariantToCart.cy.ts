@@ -5,7 +5,6 @@ import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
 describe("Select variant and add to cart", () => {
   beforeEach(() => {
     cy.visit("/").clearLocalStorage();
-    waitForProgressBarToNotBeVisible();
   });
 
   it("should select a variant and add to the cart SRS_0202", () => {
@@ -16,7 +15,7 @@ describe("Select variant and add to cart", () => {
   });
 
   it("should add product without variants to the cart SRS_0203", () => {
-    const product = productsToSearch.productWithoutVariants;
+    const product = productsToSearch.productWithoutVariantsDemo;
 
     openProductPage(product);
     addItemToCart();

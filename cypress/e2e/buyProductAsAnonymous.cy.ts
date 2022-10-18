@@ -16,7 +16,7 @@ describe("Buy product as anonymous user", () => {
   });
 
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit("/").clearLocalStorage();
     waitForProgressBarToNotBeVisible();
   });
 
@@ -54,8 +54,7 @@ describe("Buy product as anonymous user", () => {
   });
 
   it("should be able select digital product in SRS and create ordev via checkout SRS_1002", () => {
-    const product = productsToSearch.digitalProductLocal; // diffrent DB for demo and base setup when populate local db
-    // const product = productsToSearch.digitalProductDemo
+    const product = productsToSearch.digitalProductDemo;
 
     cy.addAliasToGraphRequest("checkoutEmailUpdate").addAliasToGraphRequest(
       "checkoutBillingAddressUpdate"

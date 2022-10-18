@@ -3,12 +3,10 @@ import { SEARCH_PAGE_SELECTORS } from "../elements/search-page";
 import { SHARED_ELEMENTS } from "../elements/shared-elements";
 import { productsToSearch } from "../fixtures/search";
 import { navigateAndSearch } from "../support/pages/search";
-import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
 
 describe("Search for products", () => {
   beforeEach(() => {
-    cy.visit("/");
-    waitForProgressBarToNotBeVisible();
+    cy.visit("/").clearLocalStorage();
   });
 
   it("should search for products SRS_0405", () => {
@@ -19,10 +17,13 @@ describe("Search for products", () => {
   });
 
   it("should see no errors on search page SRS_0404", () => {
-    cy.addAliasToGraphRequest("ProductCollection");
-    cy.get(NAVIGATION.searchIcon)
-      .click()
-      .url()
+    cy.addAliasToGraphRequest("ProductCollection")
+      .get(NAVIGATION.searchIcon)
+      .invoke("attr", "href")
+      .then((href) => {
+        cy.visit(href);
+      });
+    cy.url()
       .should("include", "/search")
       .wait("@ProductCollection")
       .get(SHARED_ELEMENTS.productsList)
