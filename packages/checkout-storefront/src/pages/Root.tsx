@@ -14,7 +14,7 @@ import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/
 import { DEFAULT_LOCALE, getCurrentLocale, Locale } from "@/checkout-storefront/lib/regions";
 
 import En from "../../content/compiled-locales/en-US.json";
-import Dummy from "../../content/compiled-locales/dummy.json";
+import Minion from "../../content/compiled-locales/minion.json";
 
 export interface RootProps {
   env: AppEnv;
@@ -22,7 +22,7 @@ export interface RootProps {
 
 const localeToMessages = {
   "en-US": En,
-  dummy: Dummy,
+  minion: Minion,
 };
 
 const useCurrentLocale = () => {
