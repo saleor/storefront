@@ -53,7 +53,7 @@ export const clearUrlAfterPasswordReset = (): void => {
 };
 
 export const replaceUrl = ({
-  url = window.location.origin,
+  url = window.location.origin + window.location.pathname,
   query,
 }: {
   url?: string;
