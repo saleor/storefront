@@ -82,7 +82,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
       setValue(field as Path<AddressFormData>, emptyFormData[field as Path<AddressFormData>]);
     });
 
-    if (isDirty) {
+    if (removedFields.length && isDirty) {
       void trigger();
     }
   }, [allowedFields, requiredFields, setValue, trigger, isDirty]);

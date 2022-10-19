@@ -1,6 +1,8 @@
 import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
+import { getQueryParams, replaceUrl } from "@/checkout-storefront/lib/utils";
 import { OrderBody, CheckoutBody } from "checkout-common";
+import { useCallback } from "react";
 import { useAppConfig } from "../providers/AppConfigProvider";
 
 const getRedirectUrl = () => {
@@ -22,42 +24,36 @@ export const usePay = () => {
     env: { checkoutApiUrl },
   } = useAppConfig();
 
-  const checkoutPay = async ({
-    provider,
-    method,
-    checkoutId,
-    totalAmount,
-  }: Omit<CheckoutBody, "redirectUrl">) => {
-    const redirectUrl = getRedirectUrl();
-    const result = await pay({
-      checkoutApiUrl,
-      provider,
-      method,
-      checkoutId,
-      totalAmount,
-      redirectUrl,
-    });
-
-    if ((result as PaySuccessResult)?.data?.paymentUrl) {
-      const {
-        orderId,
-        data: { paymentUrl },
-      } = result as PaySuccessResult;
-
-      const newUrl = `?order=${orderId}`;
-
-      window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, "", newUrl);
-      window.location.href = paymentUrl;
-    }
-
-    if (!result?.ok && result?.orderId) {
-      // Order created, payment creation failed, checkout doesn't exist
-      const newUrl = `?order=${result.orderId}`;
-      window.location.href = newUrl;
-    }
-
-    return result;
-  };
+  const checkoutPay = useCallback(
+    async ({ provider, method, checkoutId, totalAmount }: Omit<CheckoutBody, "redirectUrl">) => {
+      const redirectUrl = getRedirectUrl();
+      const result = await pay({
+        checkoutApiUrl,
+        provider,
+        method,
+        checkoutId,
+        totalAmount,
+        redirectUrl,
+      });
+      if ((result as PaySuccessResult)?.data?.paymentUrl) {
+        const {
+          orderId,
+          data: { paymentUrl },
+        } = result as PaySuccessResult;
+        replaceUrl({ query: { locale: getQueryParams().locale, order: orderId } });
+        window.location.href = paymentUrl;
+      }
+      if (!result?.ok && result?.orderId) {
+        // Order created, payment creation failed, checkout doesn't exist
+        const newUrl = replaceUrl({
+          query: { locale: getQueryParams().locale, order: result?.orderId },
+        });
+        window.location.href = newUrl;
+      }
+      return result;
+    },
+    [checkoutApiUrl, pay]
+  );
 
   const orderPay = async ({
     provider,

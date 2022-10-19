@@ -5,7 +5,7 @@ import { useAuth, useAuthState } from "@saleor/sdk";
 
 import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 
 export const useCheckoutFinalize = () => {
@@ -21,59 +21,65 @@ export const useCheckoutFinalize = () => {
     console.error(payError);
   }, [payError]);
 
-  const userRegister = async (formData: CheckoutFormData): Promise<boolean> => {
-    const { createAccount, email, password } = formData;
+  const userRegister = useCallback(
+    async (formData: CheckoutFormData): Promise<boolean> => {
+      const { createAccount, email, password } = formData;
 
-    if (user || !createAccount) {
-      return true;
-    }
+      if (user || !createAccount) {
+        return true;
+      }
 
-    const registerFormData = { email, password };
+      const registerFormData = { email, password };
 
-    // adding redirect url because some saleor envs require it
-    const result = await register({
-      ...registerFormData,
-      redirectUrl: location.href,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      showErrors(errors, "userRegister");
-      setApiErrors(errors);
-      return !hasErrors;
-    }
-
-    return true;
-  };
-
-  const checkoutFinalize = async (formData: CheckoutFormData) => {
-    const userRegisterSuccessOrPassed = await userRegister(formData);
-
-    if (userRegisterSuccessOrPassed) {
-      const result = await checkoutPay({
-        provider: formData.paymentProviderId,
-        method: formData.paymentMethodId,
-        checkoutId: checkout?.id,
-        totalAmount: checkout?.totalPrice?.gross?.amount,
+      // adding redirect url because some saleor envs require it
+      const result = await register({
+        ...registerFormData,
+        redirectUrl: location.href,
       });
 
-      if (!result) {
-        console.error("Unexpected empty result!", { result });
-        return;
+      const [hasErrors, errors] = extractMutationErrors(result);
+
+      if (hasErrors) {
+        showErrors(errors, "userRegister");
+        setApiErrors(errors);
+        return !hasErrors;
       }
 
-      if ("ok" in result && result.ok === false) {
-        const { errors } = result;
+      return true;
+    },
+    [register, setApiErrors, showErrors, user]
+  );
 
-        const parsedErrors = errors.map((error) => ({
-          code: error,
-        }));
+  const checkoutFinalize = useCallback(
+    async (formData: CheckoutFormData) => {
+      const userRegisterSuccessOrPassed = await userRegister(formData);
 
-        showCustomErrors(parsedErrors, "checkoutPay");
+      if (userRegisterSuccessOrPassed) {
+        const result = await checkoutPay({
+          provider: formData.paymentProviderId,
+          method: formData.paymentMethodId,
+          checkoutId: checkout?.id,
+          totalAmount: checkout?.totalPrice?.gross?.amount,
+        });
+
+        if (!result) {
+          console.error("Unexpected empty result!", { result });
+          return;
+        }
+
+        if ("ok" in result && result.ok === false) {
+          const { errors } = result;
+
+          const parsedErrors = errors.map((error) => ({
+            code: error,
+          }));
+
+          showCustomErrors(parsedErrors, "checkoutPay");
+        }
       }
-    }
-  };
+    },
+    [checkout?.id, checkout?.totalPrice?.gross?.amount, checkoutPay, showCustomErrors, userRegister]
+  );
 
   return {
     checkoutFinalize,

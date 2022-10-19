@@ -84,17 +84,20 @@ function useAlerts(globalScope?: any): any {
     [getParsedApiErrors, showDefaultAlert, globalScope]
   );
 
-  const showCustomErrors = (errors: CustomError[], scope: CheckoutScope = globalScope) => {
-    const parsedErrors = errors.map((error) => ({ field: "", message: "", code: "", ...error }));
+  const showCustomErrors = useCallback(
+    (errors: CustomError[], scope: CheckoutScope = globalScope) => {
+      const parsedErrors = errors.map((error) => ({ field: "", message: "", code: "", ...error }));
 
-    parsedErrors.forEach(({ field, message, code }) => {
-      if (message) {
-        showAlert({ message });
-      } else if (field && code) {
-        showDefaultAlert({ scope, field, code: code as ErrorCode });
-      }
-    });
-  };
+      parsedErrors.forEach(({ field, message, code }) => {
+        if (message) {
+          showAlert({ message });
+        } else if (field && code) {
+          showDefaultAlert({ scope, field, code: code as ErrorCode });
+        }
+      });
+    },
+    [globalScope, showAlert, showDefaultAlert]
+  );
 
   return { showErrors, showCustomErrors };
 }

@@ -30,7 +30,7 @@ export type QueryParams = Partial<
   >
 > & { countryCode: CountryCode; locale: Locale };
 
-const getRawQueryParams = () => queryString.parse(location.search);
+export const getRawQueryParams = () => queryString.parse(location.search);
 
 export const getQueryParams = (): QueryParams => {
   const vars = getRawQueryParams();
@@ -70,6 +70,8 @@ export const replaceUrl = ({
     "",
     newUrl
   );
+
+  return newUrl;
 };
 
 export const getCurrentHref = () => location.href;
