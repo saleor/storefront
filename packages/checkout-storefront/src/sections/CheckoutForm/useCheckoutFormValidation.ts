@@ -14,7 +14,7 @@ import { ValidationError } from "yup";
 import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
 import { MessageDescriptor } from "react-intl";
 import { checkoutFormMessages } from "./messages";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 interface UseCheckoutFormValidation extends UseFormReturn<CheckoutFormData> {
   schema: { validateSyncAt: (key: keyof CheckoutFormData, data: CheckoutFormData) => void };
@@ -47,27 +47,46 @@ export const useCheckoutFormValidation = ({
     getFieldLabel: getBillingFieldLabel,
   } = useAddressFormUtils(billingAddress?.country?.code as CountryCode);
 
-  const getShippingMissingFieldsErrorMessage = () =>
-    getAddressMissingFieldsErrorMessage(
-      checkoutFormMessages.missingFieldsInShippingAddress,
+  const getAddressMissingFieldsErrorMessage = useCallback(
+    (
+      message: MessageDescriptor,
+      getFieldLabel: (field: AddressField) => string,
+      fields: AddressField[]
+    ) => `${formatMessage(message)}: ${fields.map((field) => getFieldLabel(field)).join(", ")}`,
+    [formatMessage]
+  );
+
+  const getShippingMissingFieldsErrorMessage = useCallback(
+    () =>
+      getAddressMissingFieldsErrorMessage(
+        checkoutFormMessages.missingFieldsInShippingAddress,
+        getShippingFieldLabel,
+        getMissingFieldsFromShipping(shippingAddress)
+      ),
+    [
+      getAddressMissingFieldsErrorMessage,
+      getMissingFieldsFromShipping,
       getShippingFieldLabel,
-      getMissingFieldsFromShipping(shippingAddress)
-    );
+      shippingAddress,
+    ]
+  );
 
-  const getBillingMissingFieldsErrorMessage = () =>
-    getAddressMissingFieldsErrorMessage(
-      checkoutFormMessages.missingFieldsInBillingAddress,
+  const getBillingMissingFieldsErrorMessage = useCallback(
+    () =>
+      getAddressMissingFieldsErrorMessage(
+        checkoutFormMessages.missingFieldsInBillingAddress,
+        getBillingFieldLabel,
+        getMissingFieldsFromBilling(billingAddress)
+      ),
+    [
+      billingAddress,
+      getAddressMissingFieldsErrorMessage,
       getBillingFieldLabel,
-      getMissingFieldsFromBilling(billingAddress)
-    );
+      getMissingFieldsFromBilling,
+    ]
+  );
 
-  const getAddressMissingFieldsErrorMessage = (
-    message: MessageDescriptor,
-    getFieldLabel: (field: AddressField) => string,
-    fields: AddressField[]
-  ) => `${formatMessage(message)}: ${fields.map((field) => getFieldLabel(field)).join(", ")}`;
-
-  const ensureValidCheckout = (): boolean => {
+  const ensureValidCheckout = useCallback((): boolean => {
     let isValid = true;
     setValue("validating", true);
     const formData = getValues();
@@ -131,7 +150,21 @@ export const useCheckoutFormValidation = ({
     });
 
     return isValid;
-  };
+  }, [
+    authenticated,
+    billingHasAllRequiredFields,
+    checkout.billingAddress,
+    checkout?.email,
+    checkout.isShippingRequired,
+    checkout.shippingAddress,
+    getBillingMissingFieldsErrorMessage,
+    getShippingMissingFieldsErrorMessage,
+    getValues,
+    schema,
+    setValue,
+    shippingHasAllRequiredFields,
+    showCustomErrors,
+  ]);
 
   return ensureValidCheckout;
 };
