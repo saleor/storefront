@@ -20,7 +20,7 @@ describe("Buy product as anonymous user", () => {
     waitForProgressBarToNotBeVisible();
   });
 
-  it("should be able select product in SRS and create ordev via checkout SRS_1001", () => {
+  it("should buy a product as anonymous SRS_1001", () => {
     cy.addAliasToGraphRequest("checkoutEmailUpdate")
       .addAliasToGraphRequest("checkoutShippingAddressUpdate")
       .addAliasToGraphRequest("checkoutBillingAddressUpdate")
@@ -53,8 +53,8 @@ describe("Buy product as anonymous user", () => {
     payByDummyPayment();
   });
 
-  it("should be able select digital product in SRS and create ordev via checkout SRS_1002", () => {
-    const product = productsToSearch.digitalProductDemo;
+  it("should buy a digital product as anonymous SRS_1002", () => {
+    const product = productsToSearch.digitalProduct;
 
     cy.addAliasToGraphRequest("checkoutEmailUpdate").addAliasToGraphRequest(
       "checkoutBillingAddressUpdate"

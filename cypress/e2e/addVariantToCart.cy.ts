@@ -15,7 +15,7 @@ describe("Select variant and add to cart", () => {
   });
 
   it("should add product without variants to the cart SRS_0203", () => {
-    const product = productsToSearch.productWithoutVariantsDemo;
+    const product = productsToSearch.productWithoutVariants;
 
     openProductPage(product);
     addItemToCart();
