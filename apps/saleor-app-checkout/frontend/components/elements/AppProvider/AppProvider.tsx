@@ -20,11 +20,11 @@ const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(!!app?.getState()?.token);
 
-  const saleorApiHost = app?.getState().domain;
+  const saleorApiUrl = app?.getState().domain;
 
   const client = useMemo(
-    () => (saleorApiHost ? createGraphqlClient(`https://${saleorApiHost}/graphql/`) : null),
-    [saleorApiHost]
+    () => (saleorApiUrl ? createGraphqlClient(saleorApiUrl) : null),
+    [saleorApiUrl]
   );
 
   useEffect(() => {

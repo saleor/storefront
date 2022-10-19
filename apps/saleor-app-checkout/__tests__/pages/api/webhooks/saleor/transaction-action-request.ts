@@ -36,10 +36,10 @@ const mockedGetTransactionProcessedEvents = getTransactionProcessedEvents as jes
 
 const REQUEST_SIGNATURE = "valid_signature";
 
-const getReqHeaders = async (saleorApiHost: string): Promise<HeadersInit> => {
+const getReqHeaders = async (saleorDomainHeader: string): Promise<HeadersInit> => {
   return {
     "Content-Type": "application/json",
-    [SALEOR_DOMAIN_HEADER]: saleorApiHost,
+    [SALEOR_DOMAIN_HEADER]: saleorDomainHeader,
     "saleor-signature": REQUEST_SIGNATURE,
     "saleor-event": "transaction_action_request",
   };
@@ -52,7 +52,7 @@ describe("Saleor TRANSACTION_ACTION_REQUEST webhook handler", () => {
     await testApiHandler({
       handler,
       params: {
-        saleorApiHost: "saleor-api-host.saleor.localhost:8000",
+        saleorApiUrl: "https://saleor-api-host.saleor.localhost:8000/graphql/",
       },
       test: async ({ fetch }) => {
         const res = await fetch({
@@ -76,7 +76,7 @@ describe("Saleor TRANSACTION_ACTION_REQUEST webhook handler", () => {
     await testApiHandler({
       handler,
       params: {
-        saleorApiHost: "saleor-api-host.saleor.localhost:8000",
+        saleorApiUrl: "https://saleor-api-host.saleor.localhost:8000/graphql/",
       },
       test: async ({ fetch }) => {
         const res = await fetch({

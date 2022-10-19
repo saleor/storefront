@@ -3,10 +3,10 @@ import { CheckoutAPI, Client, Types as AdyenTypes } from "@adyen/api-library";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { ReuseExistingVendorSessionFn } from "../../types";
 
-export const verifyAdyenSession = async (saleorApiHost: string, session: string) => {
+export const verifyAdyenSession = async (saleorApiUrl: string, session: string) => {
   const {
     paymentProviders: { adyen },
-  } = await getPrivateSettings({ saleorApiHost, obfuscateEncryptedData: false });
+  } = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: false });
 
   if (!adyen.apiKey) {
     throw "API key not defined";
@@ -27,10 +27,10 @@ export const verifyAdyenSession = async (saleorApiHost: string, session: string)
 };
 
 export const reuseExistingAdyenSession: ReuseExistingVendorSessionFn = async (
-  saleorApiHost,
+  saleorApiUrl,
   { payment, orderId }
 ) => {
-  const session = await verifyAdyenSession(saleorApiHost, payment.session);
+  const session = await verifyAdyenSession(saleorApiUrl, payment.session);
   const StatusEnum = AdyenTypes.checkout.PaymentLinkResponse.StatusEnum;
 
   if (session.status === StatusEnum.Active) {

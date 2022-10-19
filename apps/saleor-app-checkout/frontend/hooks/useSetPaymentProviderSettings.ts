@@ -10,14 +10,14 @@ export const useSetPaymentProviderSettings = <TArgs>(
 ) => {
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const saleorApiHost = app?.getState().domain;
+  const saleorApiUrl = app?.getState().domain;
 
   const [{ data, loading, error }, request] = useFetch(requestSetPaymentProviderSettings, {
     skip: true,
     ...optionalProps,
     args: {
       ...optionalProps?.args,
-      saleorApiHost,
+      saleorApiUrl,
     },
   });
 

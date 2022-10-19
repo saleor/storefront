@@ -9,7 +9,7 @@ import {
   stripeWebhookEventToTransactionCreateMutationVariables,
 } from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
 import type { Readable } from "node:stream";
-import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 
 // https://github.com/vercel/next.js/discussions/12517#discussioncomment-2929922
 async function buffer(readable: Readable) {
@@ -21,16 +21,14 @@ async function buffer(readable: Readable) {
 }
 
 const stripeWebhook: NextApiHandler = async (req, res) => {
-  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
-    getSaleorApiHostFromRequest(req)
-  );
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
-  if (saleorApiHostError) {
-    res.status(400).json({ message: saleorApiHostError.message });
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
-  const { webhookSecret } = await getStripeSecrets(saleorApiHost);
+  const { webhookSecret } = await getStripeSecrets(saleorApiUrl);
   const sig = req.headers["stripe-signature"];
 
   if (typeof sig !== "string") {
@@ -40,7 +38,7 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
   const body = await buffer(req);
 
   const [err, event] = await unpackPromise(
-    verifyStripeEventSignature({ saleorApiHost, body, signature: sig, secret: webhookSecret })
+    verifyStripeEventSignature({ saleorApiUrl, body, signature: sig, secret: webhookSecret })
   );
 
   if (err || !event) {
@@ -50,14 +48,14 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
   }
 
   const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables({
-    saleorApiHost,
+    saleorApiUrl,
     event,
   });
 
   if (transactionData?.id) {
     const id = transactionData.id;
     await updateOrCreateTransaction({
-      saleorApiHost,
+      saleorApiUrl,
       orderId: id,
       transactionData: { ...transactionData, id },
     });

@@ -17,34 +17,34 @@ import { PayResult } from "./types";
 import { urlJoinTrailingSlash } from "./urlJoin";
 
 export type PaymentMethodsRequestArgs = {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   channelId: string;
   checkoutApiUrl: string;
 };
 
 export const getPaymentMethods = ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutApiUrl,
   channelId,
 }: PaymentMethodsRequestArgs): FetchResponse<ChannelActivePaymentProvidersByChannel> =>
   fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "active-payment-providers", channelId) +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString()
+      new URLSearchParams({ saleorApiUrl }).toString()
   );
 
 export const pay = ({
   checkoutApiUrl,
-  saleorApiHost,
+  saleorApiUrl,
   ...body
 }: PayRequestBody & {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutApiUrl: string;
 }): FetchResponse<PayResult> =>
   fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "pay") +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString(),
+      new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
       body: JSON.stringify(body),
@@ -52,45 +52,45 @@ export const pay = ({
   );
 
 export const getAppConfig = ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutApiUrl,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutApiUrl: string;
 }): FetchResponse<AppConfig> =>
   fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "customization-settings") +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString()
+      new URLSearchParams({ saleorApiUrl }).toString()
   );
 
 export const getOrderPaymentStatus = ({
-  saleorApiHost,
+  saleorApiUrl,
   orderId,
   checkoutApiUrl,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   orderId: string;
   checkoutApiUrl: string;
 }): FetchResponse<PaymentStatusResponse> =>
   fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "payment-status", orderId) +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString()
+      new URLSearchParams({ saleorApiUrl }).toString()
   );
 
 export const createDropInAdyenSession = ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutApiUrl,
   ...body
 }: PostDropInAdyenSessionsBody & {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutApiUrl: string;
 }): FetchResponse<AdyenDropInCreateSessionResponse> => {
   return fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "drop-in", "adyen", "sessions") +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString(),
+      new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
       body: JSON.stringify(body),
@@ -99,17 +99,17 @@ export const createDropInAdyenSession = ({
 };
 
 export const createDropInAdyenPayment = ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutApiUrl,
   ...body
 }: PostDropInAdyenPaymentsBody & {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutApiUrl: string;
 }): FetchResponse<PostAdyenDropInPaymentsResponse | { message: string }> => {
   return fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "drop-in", "adyen", "payments") +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString(),
+      new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
       body: JSON.stringify(body),
@@ -118,17 +118,17 @@ export const createDropInAdyenPayment = ({
 };
 
 export const handleDropInAdyenPaymentDetails = ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutApiUrl,
   ...body
 }: PostDropInAdyenPaymentsDetailsBody & {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutApiUrl: string;
 }): FetchResponse<PostAdyenDropInPaymentsDetailsResponse | { message: string }> => {
   return fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "drop-in", "adyen", "payments", "details") +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString(),
+      new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
       body: JSON.stringify(body),
@@ -138,13 +138,13 @@ export const handleDropInAdyenPaymentDetails = ({
 
 export const dummyPay = ({
   checkoutApiUrl,
-  saleorApiHost,
+  saleorApiUrl,
   ...body
 }: DummyPayRequestBody): FetchResponse<DummyPayRequestResult> =>
   fetch(
     urlJoinTrailingSlash(checkoutApiUrl, "dummy-pay") +
       `?` +
-      new URLSearchParams({ saleorApiHost }).toString(),
+      new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
       body: JSON.stringify(body),

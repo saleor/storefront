@@ -5,31 +5,31 @@ import { getMollieClient } from "./utils";
 import { ReuseExistingVendorSessionFn } from "../../types";
 
 export const verifyMollieSession = async ({
-  saleorApiHost,
+  saleorApiUrl,
   session,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   session: string;
 }) => {
   const {
     paymentProviders: { mollie },
-  } = await getPrivateSettings({ saleorApiHost, obfuscateEncryptedData: false });
+  } = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: false });
 
   if (!mollie.apiKey) {
     throw "API key not defined";
   }
 
-  const client = await getMollieClient(saleorApiHost);
+  const client = await getMollieClient(saleorApiUrl);
   const { status, _links } = await client.orders.get(session);
 
   return { status, url: _links.checkout?.href };
 };
 
 export const reuseExistingMollieSession: ReuseExistingVendorSessionFn = async (
-  saleorApiHost,
+  saleorApiUrl,
   { payment, orderId }
 ) => {
-  const session = await verifyMollieSession({ saleorApiHost, session: payment.session });
+  const session = await verifyMollieSession({ saleorApiUrl, session: payment.session });
 
   if (session.status === MollieOrderStatus.created && session.url) {
     return {

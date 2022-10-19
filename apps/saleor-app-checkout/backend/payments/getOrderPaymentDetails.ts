@@ -9,10 +9,10 @@ import * as Apl from "@/saleor-app-checkout/config/apl";
 import { Errors } from "./types";
 
 export const getOrderPaymentDetails = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   { id }: { id: OrderPaymentDetailsQueryVariables["id"] }
 ) => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
 
   const { data, error } = await client

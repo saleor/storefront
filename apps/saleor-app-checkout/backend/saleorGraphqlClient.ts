@@ -1,13 +1,13 @@
 import { createClient } from "urql";
 
 interface ClientParams {
-  apiUrl: string;
+  saleorApiUrl: string;
   appToken: string;
 }
 
-export const getClientForAuthData = ({ apiUrl, appToken }: ClientParams) => {
+export const getClientForAuthData = ({ saleorApiUrl, appToken }: ClientParams) => {
   const client = createClient({
-    url: apiUrl,
+    url: saleorApiUrl,
     requestPolicy: "network-only", // On SSR, Vercel uses client cache in consecutive requests, so we need network-only to always return fresh data from Saleor
     suspense: false,
     fetchOptions: {

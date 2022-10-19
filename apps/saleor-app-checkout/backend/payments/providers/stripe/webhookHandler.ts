@@ -15,25 +15,25 @@ import { assertUnreachable } from "checkout-common";
 export const STRIPE_PAYMENT_PREFIX = "stripe";
 
 export const verifyStripeEventSignature = async ({
-  saleorApiHost,
+  saleorApiUrl,
   body,
   signature,
   secret,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   body: string | Buffer;
   signature: string;
   secret: string;
 }) => {
-  const stripeClient = await getStripeClient(saleorApiHost);
+  const stripeClient = await getStripeClient(saleorApiUrl);
   return stripeClient.webhooks.constructEvent(body, signature, secret) as StripeWebhookEvents;
 };
 
 const getPaymentIntentFromCheckoutSession = async ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutSession,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutSession: Stripe.Checkout.Session;
 }) => {
   if (!checkoutSession.payment_intent) {
@@ -43,7 +43,7 @@ const getPaymentIntentFromCheckoutSession = async ({
     return checkoutSession.payment_intent;
   }
 
-  const stripeClient = await getStripeClient(saleorApiHost);
+  const stripeClient = await getStripeClient(saleorApiUrl);
   return stripeClient.paymentIntents.retrieve(checkoutSession.payment_intent);
 };
 
@@ -59,11 +59,11 @@ export const getPaymentMethodFromPaymentIntent = (paymentIntent: Stripe.PaymentI
 };
 
 export const checkoutSessionToTransactionCreateMutationVariables = async ({
-  saleorApiHost,
+  saleorApiUrl,
   eventType,
   checkoutSession,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   eventType:
     | "checkout.session.async_payment_failed"
     | "checkout.session.async_payment_succeeded"
@@ -72,7 +72,7 @@ export const checkoutSessionToTransactionCreateMutationVariables = async ({
   checkoutSession: Stripe.Checkout.Session;
 }): Promise<(Omit<TransactionCreateMutationVariables, "id"> & { id?: string }) | null> => {
   const paymentIntent = await getPaymentIntentFromCheckoutSession({
-    saleorApiHost,
+    saleorApiUrl,
     checkoutSession,
   });
   const method = getPaymentMethodFromPaymentIntent(paymentIntent);
@@ -141,10 +141,10 @@ export const checkoutSessionToTransactionCreateMutationVariables = async ({
 };
 
 export const stripeWebhookEventToTransactionCreateMutationVariables = ({
-  saleorApiHost,
+  saleorApiUrl,
   event,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   event: StripeWebhookEvents;
 }) => {
   switch (event.type) {
@@ -153,7 +153,7 @@ export const stripeWebhookEventToTransactionCreateMutationVariables = ({
     case "checkout.session.async_payment_succeeded":
     case "checkout.session.expired":
       return checkoutSessionToTransactionCreateMutationVariables({
-        saleorApiHost,
+        saleorApiUrl,
         eventType: event.type,
         checkoutSession: event.data.object,
       });

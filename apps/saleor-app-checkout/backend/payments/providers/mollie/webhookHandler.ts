@@ -8,13 +8,13 @@ import { getTransactionAmountGetter } from "../../utils";
 export const MOLLIE_PAYMENT_PREFIX = "mollie";
 
 export const verifyPayment = async ({
-  saleorApiHost,
+  saleorApiUrl,
   id,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   id: string;
 }): Promise<TransactionCreateMutationVariables | undefined> => {
-  const mollieClient = await getMollieClient(saleorApiHost);
+  const mollieClient = await getMollieClient(saleorApiUrl);
 
   const { status, amountCaptured, amountRefunded, metadata, method, amount } =
     await mollieClient.orders.get(id);

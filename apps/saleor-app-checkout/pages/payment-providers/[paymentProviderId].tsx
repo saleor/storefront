@@ -15,13 +15,18 @@ const PaymentProvider = () => {
   const { paymentProviderId, channelId } = router.query;
   const intl = useIntl();
 
-  const saleorApiHost = app?.getState().domain;
-
   const getPaymentProviderSettings = useGetPaymentProviderSettings();
   const [setPaymentProviderSettings, setPaymentProviderSettingsRequest] =
     useSetPaymentProviderSettings();
 
   const paymentProviders = usePaymentProviderSettings(getPaymentProviderSettings.data);
+
+  const domain = app?.getState().domain;
+  if (!domain) {
+    console.error(`Missing domain!`);
+    return null;
+  }
+  const saleorApiUrl = `https://${domain}/graphql/`;
 
   const paymentProvider = paymentProviders.find(
     (paymentMethod) => paymentMethod.id === paymentProviderId
@@ -32,7 +37,7 @@ const PaymentProvider = () => {
   };
 
   const handleSubmit = (data: PaymentProviderSettingsValues<"unencrypted">) => {
-    void setPaymentProviderSettingsRequest({ ...data, saleorApiHost });
+    void setPaymentProviderSettingsRequest({ ...data, saleorApiUrl });
   };
 
   const errors = [

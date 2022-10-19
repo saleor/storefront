@@ -28,18 +28,18 @@ export function Navbar() {
 
   const saleorApiUrl = process.env.NEXT_PUBLIC_API_URI;
   invariant(saleorApiUrl, "Missing NEXT_PUBLIC_API_URI");
-  const saleorApiHost = new URL(saleorApiUrl).host;
+  const domain = new URL(saleorApiUrl).hostname;
 
   const checkoutParams = checkout
     ? new URLSearchParams({
         checkout: checkout.id,
         locale: currentLocale,
         channel: currentChannel.slug,
-        saleorApiHost,
+        saleorApiUrl,
         // @todo remove `domain`
         // https://github.com/saleor/saleor-dashboard/issues/2387
         // https://github.com/saleor/saleor-app-sdk/issues/87
-        domain: saleorApiHost,
+        domain,
       })
     : new URLSearchParams();
 

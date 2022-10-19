@@ -66,23 +66,23 @@ export const orderToAdyenRequest = ({
 };
 
 export const createAdyenCheckoutPaymentLinks = async ({
-  saleorApiHost,
+  saleorApiUrl,
   order,
   redirectUrl,
 }: CreatePaymentData) => {
-  const { config, checkout } = await getAdyenClient(saleorApiHost);
+  const { config, checkout } = await getAdyenClient(saleorApiUrl);
 
   return checkout.paymentLinks(
     orderToAdyenRequest({
       order,
       merchantAccount: config.merchantAccount,
-      returnUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: order.id }),
+      returnUrl: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: order.id }),
     })
   );
 };
 
 export const createAdyenCheckoutSession = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   {
     currency,
     totalAmount,
@@ -95,7 +95,7 @@ export const createAdyenCheckoutSession = async (
     redirectUrl: string;
   }
 ) => {
-  const { config, checkout } = await getAdyenClient(saleorApiHost);
+  const { config, checkout } = await getAdyenClient(saleorApiUrl);
 
   const session = await checkout.sessions({
     merchantAccount: config.merchantAccount,
@@ -104,7 +104,7 @@ export const createAdyenCheckoutSession = async (
       value: getIntegerAmountFromSaleor(totalAmount),
     },
     // @todo is this correct? `orderId: checkoutId`
-    returnUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: checkoutId }),
+    returnUrl: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: checkoutId }),
     reference: checkoutId,
   });
 
@@ -115,19 +115,19 @@ export const createAdyenCheckoutSession = async (
 };
 
 export const createAdyenCheckoutPayment = async ({
-  saleorApiHost,
+  saleorApiUrl,
   order,
   redirectUrl,
   adyenStateData,
 }: CreatePaymentData & {
   adyenStateData: PostDropInAdyenPaymentsBody["adyenStateData"];
 }) => {
-  const { config, checkout } = await getAdyenClient(saleorApiHost);
+  const { config, checkout } = await getAdyenClient(saleorApiUrl);
 
   const adyenRequest = orderToAdyenRequest({
     merchantAccount: config.merchantAccount,
     order,
-    returnUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: order.id }),
+    returnUrl: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: order.id }),
   });
 
   const payment = await checkout.payments({

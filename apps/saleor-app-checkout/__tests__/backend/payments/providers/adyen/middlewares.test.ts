@@ -26,7 +26,7 @@ const TEST_ADYEN_USERNAME = "adyen_webhook";
 
 const mockRequest: Request<AdyenRequestParams> = {
   params: {
-    saleorApiHost: "saleor-api-host.saleor.localhost:8000",
+    saleorApiUrl: "https://saleor-api-host.saleor.localhost:8000/graphql/",
     live: "false",
     notificationItems: [],
   },

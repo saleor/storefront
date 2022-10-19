@@ -7,16 +7,16 @@ import { getActionsAfterRefund, getIntegerAmountFromSaleor } from "../../utils";
 import { getAdyenClient } from "./utils";
 
 export async function handleAdyenRefund({
-  saleorApiHost,
+  saleorApiUrl,
   refund,
   transaction,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   refund: TransactionReversal;
   transaction: TransactionActionPayloadFragment["transaction"];
 }) {
   const { id, amount, currency } = refund;
-  const { checkout, config } = await getAdyenClient(saleorApiHost);
+  const { checkout, config } = await getAdyenClient(saleorApiUrl);
 
   invariant(transaction?.id, "Transaction id is missing");
 
@@ -32,7 +32,7 @@ export async function handleAdyenRefund({
     })
   );
 
-  const updateSucceeded = await updateTransaction(saleorApiHost, {
+  const updateSucceeded = await updateTransaction(saleorApiUrl, {
     id: transaction.id,
     transaction: {
       availableActions: transactionActions,

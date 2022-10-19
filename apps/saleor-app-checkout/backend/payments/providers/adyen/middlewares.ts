@@ -12,13 +12,13 @@ export type AdyenRequestContext = Required<
   PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">]["adyen"]
 >;
 
-export type AdyenRequestParams = Types.notification.Notification & { saleorApiHost: string };
+export type AdyenRequestParams = Types.notification.Notification & { saleorApiUrl: string };
 
 export const withAdyenWebhookCredentials =
   (handler: Handler) => async (request: Request<AdyenRequestParams>) => {
     const [error, settings] = await unpackPromise(
       getPrivateSettings({
-        saleorApiHost: request.params.saleorApiHost,
+        saleorApiUrl: request.params.saleorApiUrl,
         obfuscateEncryptedData: false,
       })
     );

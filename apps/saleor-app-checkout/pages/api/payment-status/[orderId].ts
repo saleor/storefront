@@ -8,17 +8,17 @@ import { OrderPaymentMetafield } from "@/saleor-app-checkout/types";
 import { verifyAdyenSession } from "@/saleor-app-checkout/backend/payments/providers/adyen/verifySession";
 import { PaymentStatusResponse } from "checkout-common";
 import { verifyMollieSession } from "@/saleor-app-checkout/backend/payments/providers/mollie/verifySession";
-import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const adyenHandler = async ({
-  saleorApiHost,
+  saleorApiUrl,
   sessionId,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   sessionId: string;
 }): Promise<PaymentStatusResponse> => {
-  const session = await verifyAdyenSession(saleorApiHost, sessionId);
+  const session = await verifyAdyenSession(saleorApiUrl, sessionId);
 
   const StatusEnum = AdyenTypes.checkout.PaymentLinkResponse.StatusEnum;
 
@@ -43,13 +43,13 @@ const adyenHandler = async ({
 };
 
 const mollieHandler = async ({
-  saleorApiHost,
+  saleorApiUrl,
   sessionId,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   sessionId: string;
 }): Promise<PaymentStatusResponse> => {
-  const session = await verifyMollieSession({ saleorApiHost, session: sessionId });
+  const session = await verifyMollieSession({ saleorApiUrl, session: sessionId });
 
   if (session.status === MollieOrderStatus.created) {
     // Session was previously generated but has not been completed
@@ -85,18 +85,16 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
-    getSaleorApiHostFromRequest(req)
-  );
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
-  if (saleorApiHostError) {
-    res.status(400).json({ message: saleorApiHostError.message });
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
   const orderId = req.query.orderId as string;
 
-  const order = await getOrderPaymentDetails(saleorApiHost, { id: orderId });
+  const order = await getOrderPaymentDetails(saleorApiUrl, { id: orderId });
 
   if ("errors" in order) {
     return res.status(400).json({
@@ -120,9 +118,9 @@ const handler: NextApiHandler = async (req, res) => {
     const data: OrderPaymentMetafield = JSON.parse(order.data.privateMetafield);
 
     if (data.provider === "adyen") {
-      response = await adyenHandler({ saleorApiHost, sessionId: data.session });
+      response = await adyenHandler({ saleorApiUrl, sessionId: data.session });
     } else if (data.provider === "mollie") {
-      response = await mollieHandler({ saleorApiHost, sessionId: data.session });
+      response = await mollieHandler({ saleorApiUrl, sessionId: data.session });
     }
   }
 

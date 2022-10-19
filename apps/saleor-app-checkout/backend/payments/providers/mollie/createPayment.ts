@@ -10,7 +10,7 @@ import {
 } from "./utils";
 
 export const createMolliePayment = async ({
-  saleorApiHost,
+  saleorApiUrl,
   order,
   redirectUrl,
   appUrl,
@@ -18,13 +18,13 @@ export const createMolliePayment = async ({
   const discountLines = getDiscountLines(order.discounts);
   const shippingLines = getShippingLines(order);
   const lines = getLines(order.lines);
-  const mollieClient = await getMollieClient(saleorApiHost);
+  const mollieClient = await getMollieClient(saleorApiUrl);
 
   const mollieData = await mollieClient.orders.create({
     orderNumber: order.number,
-    webhookUrl: `${appUrl}/api/webhooks/mollie?saleorApiHost=${saleorApiHost}`,
+    webhookUrl: `${appUrl}/api/webhooks/mollie?saleorApiUrl=${encodeURIComponent(saleorApiUrl)}`,
     locale: "en_US",
-    redirectUrl: formatRedirectUrl({ saleorApiHost, redirectUrl, orderId: order.id }),
+    redirectUrl: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: order.id }),
     metadata: {
       orderId: order.id,
     },

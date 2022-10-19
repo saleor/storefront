@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/nextjs";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { NextApiHandler } from "next";
-import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const handler: NextApiHandler = async (req, res) => {
@@ -13,17 +13,15 @@ const handler: NextApiHandler = async (req, res) => {
   // }
   // const apiUrl = `https://${tokenDomain}/graphql/`;
 
-  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
-    getSaleorApiHostFromRequest(req)
-  );
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
-  if (saleorApiHostError) {
-    res.status(400).json({ message: saleorApiHostError.message });
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
   try {
-    const settings = await getPrivateSettings({ saleorApiHost, obfuscateEncryptedData: true });
+    const settings = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: true });
 
     res.status(200).json({
       data: settings.paymentProviders,

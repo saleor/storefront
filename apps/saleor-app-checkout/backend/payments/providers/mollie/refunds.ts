@@ -10,15 +10,15 @@ import { unpackPromise } from "@/saleor-app-checkout/utils/unpackErrors";
 import { updateTransaction } from "../../updateTransaction";
 
 export async function handleMolieRefund({
-  saleorApiHost,
+  saleorApiUrl,
   refund,
   transaction,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   refund: TransactionReversal;
   transaction: TransactionActionPayloadFragment["transaction"];
 }) {
-  const mollieClient = await getMollieClient(saleorApiHost);
+  const mollieClient = await getMollieClient(saleorApiUrl);
 
   const { id, amount, currency } = refund;
   if (!transaction?.id) {
@@ -47,7 +47,7 @@ export async function handleMolieRefund({
     })
   );
 
-  const updateSucceeded = await updateTransaction(saleorApiHost, {
+  const updateSucceeded = await updateTransaction(saleorApiUrl, {
     id: transaction.id,
     transaction: {
       availableActions: transactionActions,

@@ -7,12 +7,12 @@ export interface PaymentProviderSettingsResult {
 }
 
 export const requestGetPaymentProviderSettings = ({
-  saleorApiHost,
+  saleorApiUrl,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
 }): FetchResponse<PaymentProviderSettingsResult> =>
   fetch(
-    `/api/payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiHost }).toString(),
+    `/api/payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "GET",
       headers: getAuthHeaders(),
@@ -20,13 +20,13 @@ export const requestGetPaymentProviderSettings = ({
   );
 
 export const requestSetPaymentProviderSettings = ({
-  saleorApiHost,
+  saleorApiUrl,
   ...data
 }: PaymentProviderSettingsValues<"unencrypted"> & {
-  saleorApiHost: string;
+  saleorApiUrl: string;
 }): FetchResponse<PaymentProviderSettingsResult> =>
   fetch(
-    `/api/set-payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiHost }).toString(),
+    `/api/set-payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
       headers: getAuthHeaders(),

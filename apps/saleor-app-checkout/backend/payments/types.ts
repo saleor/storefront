@@ -18,7 +18,7 @@ export type ErrorCode = InternalErrorCodes | OrderCreateFromCheckoutErrorCode;
 export type Errors = ErrorCode[];
 
 export interface CreatePaymentData {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   order: OrderFragment;
   redirectUrl: string;
   appUrl: string;
@@ -44,6 +44,6 @@ interface ReuseExistingVendorSessionParams extends ReuseExistingSessionParams {
 export type ReuseExistingSessionResult = Promise<PayRequestResponse | undefined> | undefined;
 
 export type ReuseExistingVendorSessionFn = (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   params: ReuseExistingVendorSessionParams
 ) => ReuseExistingSessionResult;

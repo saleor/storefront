@@ -35,11 +35,11 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 
   const {
     env: { checkoutApiUrl },
-    saleorApiHost,
+    saleorApiUrl,
   } = useAppConfig();
 
   const [{ data: allPaymentOptions, loading }] = useFetch(getPaymentMethods, {
-    args: { channelId, checkoutApiUrl, saleorApiHost },
+    args: { channelId, checkoutApiUrl, saleorApiUrl },
     skip: !channelId,
   });
 

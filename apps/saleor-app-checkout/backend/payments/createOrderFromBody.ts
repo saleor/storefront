@@ -5,14 +5,14 @@ import { getOrderDetails } from "./getOrderDetails";
 import { KnownPaymentError } from "./errors";
 
 export const createOrderFromBodyOrId = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   body: PayRequestBody
 ): Promise<OrderFragment> => {
   const provider = body.provider;
 
   if ("checkoutId" in body) {
     const data = await createOrder({
-      saleorApiHost,
+      saleorApiUrl,
       checkoutId: body.checkoutId,
       totalAmount: body.totalAmount,
     });
@@ -23,7 +23,7 @@ export const createOrderFromBodyOrId = async (
 
     return data.data;
   } else if ("orderId" in body) {
-    const data = await getOrderDetails(saleorApiHost, { id: body.orderId });
+    const data = await getOrderDetails(saleorApiUrl, { id: body.orderId });
 
     if ("errors" in data) {
       throw new KnownPaymentError(provider, data.errors);

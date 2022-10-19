@@ -5,18 +5,19 @@ import crypto from "crypto";
  * Saleor version 3.5+ is required
  */
 export async function isValidSaleorRequest({
-  saleorApiHost,
+  saleorApiUrl,
   bodyBuffer,
   signature,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   bodyBuffer: Buffer;
   signature: string;
 }): Promise<boolean> {
   // TODO: Use JWS (JSON Web Signature) when implemented in core
   // PR: https://github.com/saleor/saleor/pull/10080
 
-  const JWKS = jose.createRemoteJWKSet(new URL(`https://${saleorApiHost}/.well-known/jwks.json`));
+  const origin = new URL(saleorApiUrl).origin;
+  const JWKS = jose.createRemoteJWKSet(new URL(`${origin}/.well-known/jwks.json`));
 
   let key;
   try {

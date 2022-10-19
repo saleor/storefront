@@ -21,15 +21,15 @@ type CreateOrderResult =
     };
 
 export const createOrder = async ({
-  saleorApiHost,
+  saleorApiUrl,
   checkoutId,
   totalAmount,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   checkoutId: string;
   totalAmount: number;
 }): Promise<CreateOrderResult> => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
 
   // Start by checking if total amount is correct

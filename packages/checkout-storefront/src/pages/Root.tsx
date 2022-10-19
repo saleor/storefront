@@ -19,37 +19,37 @@ export interface RootProps {
 }
 export const Root = ({ env }: RootProps) => {
   const authorizedFetch = useMemo(() => createFetch(), []);
+  const { saleorApiUrl } = getQueryParams();
   const { locale, messages, channel } = useLocale();
-  const { saleorApiHost } = getQueryParams();
 
   const client = useMemo(
     () =>
-      saleorApiHost
+      saleorApiUrl
         ? createClient({
-            url: `https://${saleorApiHost}/graphql/`,
+            url: saleorApiUrl,
             suspense: true,
             requestPolicy: "cache-and-network",
             fetch: authorizedFetch as ClientOptions["fetch"],
           })
         : null,
-    [authorizedFetch, saleorApiHost]
+    [authorizedFetch, saleorApiUrl]
   );
 
   // temporarily need to use @apollo/client because saleor sdk
   // is based on apollo. to be changed
   const saleorClient = useMemo(
     () =>
-      saleorApiHost
+      saleorApiUrl
         ? createSaleorClient({
-            apiUrl: `https://${saleorApiHost}/graphql/`,
-            channel: channel,
+            apiUrl: saleorApiUrl,
+            channel,
           })
         : null,
-    [saleorApiHost, channel]
+    [saleorApiUrl]
   );
 
-  if (!saleorApiHost || !saleorClient || !client) {
-    console.warn(`Missing "domain" query param!`);
+  if (!saleorApiUrl || !saleorClient || !client) {
+    console.warn(`Missing "saleorApiUrl" query param!`);
     return null;
   }
 

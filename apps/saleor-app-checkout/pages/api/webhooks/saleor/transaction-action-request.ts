@@ -27,14 +27,14 @@ export const config = {
 };
 
 export type TransactionActionPayloadParams = TransactionActionPayloadFragment & {
-  saleorApiHost: string;
+  saleorApiUrl: string;
 };
 
 const handler: Handler<TransactionActionPayloadParams> = async (req) => {
-  const saleorApiHost = req.params.saleorApiHost;
+  const saleorApiUrl = req.params.saleorApiUrl;
 
-  if (!saleorApiHost) {
-    return Response.BadRequest({ success: false, message: "Saleor saleorApiHost param" });
+  if (!saleorApiUrl) {
+    return Response.BadRequest({ success: false, message: "Saleor saleorApiUrl param" });
   }
 
   const { transaction, action } = req.params;
@@ -56,7 +56,7 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
     return Response.BadRequest({ success: false, message: "Missing signature" });
   }
 
-  const processedEvents = await getTransactionProcessedEvents(saleorApiHost, {
+  const processedEvents = await getTransactionProcessedEvents(saleorApiUrl, {
     id: transaction.id,
   });
   const eventProcessed = processedEvents.some((signature) => signature === payloadSignature);
@@ -75,10 +75,10 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
   try {
     if (action.actionType === "REFUND") {
       if (isMollieTransaction(transaction)) {
-        await handleMolieRefund({ saleorApiHost, refund: transactionReversal, transaction });
+        await handleMolieRefund({ saleorApiUrl, refund: transactionReversal, transaction });
       }
       if (isAdyenTransaction(transaction)) {
-        await handleAdyenRefund({ saleorApiHost, refund: transactionReversal, transaction });
+        await handleAdyenRefund({ saleorApiUrl, refund: transactionReversal, transaction });
       }
       if (isDummyTransaction(transaction)) {
         await handleDummyRefund(
@@ -108,7 +108,7 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
     });
   }
 
-  await updateTransactionProcessedEvents(saleorApiHost, {
+  await updateTransactionProcessedEvents(saleorApiUrl, {
     id: transaction.id,
     input: JSON.stringify([...processedEvents, payloadSignature]),
   });

@@ -6,12 +6,13 @@ import { saleorDomainHeader } from "../../constants";
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   // @todo: Allow restricting only to specific domains
 
-  const saleorApiHost = request.headers[saleorDomainHeader];
-  if (!saleorApiHost || typeof saleorApiHost !== "string") {
-    console.error("Missing saleor domain token.");
+  const domain = request.headers[saleorDomainHeader];
+  if (!domain || typeof domain !== "string") {
+    console.error(`Missing ${saleorDomainHeader} header.`);
     response.status(400).json({ success: false, message: `Missing ${saleorDomainHeader} header.` });
     return;
   }
+  const saleorApiUrl = `https://${domain}/graphql/`;
 
   const authToken = request.body?.auth_token as string;
   if (!authToken) {
@@ -21,7 +22,7 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   }
 
   try {
-    await Apl.set({ saleorApiHost, authToken });
+    await Apl.set({ saleorApiUrl, authToken });
   } catch (error) {
     console.log("Error thrown during saving the auth data: %O", error);
     response.status(500).json({ success: false, message: "Unable to save registration data" });

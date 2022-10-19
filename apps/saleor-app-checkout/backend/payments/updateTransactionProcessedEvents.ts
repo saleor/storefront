@@ -7,10 +7,10 @@ import { getClientForAuthData } from "../saleorGraphqlClient";
 import * as Apl from "@/saleor-app-checkout/config/apl";
 
 export const updateTransactionProcessedEvents = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   args: TransactionUpdateProcessedEventsMutationVariables
 ) => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
 
   const { data, error } = await client

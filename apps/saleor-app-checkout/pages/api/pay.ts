@@ -32,10 +32,10 @@ import {
   PayRequestBody,
 } from "checkout-common";
 import { unpackPromise, unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
-import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 
 const reuseExistingSession = (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   { orderId, provider, method, privateMetafield }: ReuseExistingSessionParams
 ): ReuseExistingSessionResult => {
   const payment: OrderPaymentMetafield = JSON.parse(privateMetafield);
@@ -54,11 +54,11 @@ const reuseExistingSession = (
 
   switch (payment.provider) {
     case "mollie":
-      return reuseExistingMollieSession(saleorApiHost, params);
+      return reuseExistingMollieSession(saleorApiUrl, params);
     case "adyen":
-      return reuseExistingAdyenSession(saleorApiHost, params);
+      return reuseExistingAdyenSession(saleorApiUrl, params);
     case "stripe":
-      return reuseExistingStripeSession(saleorApiHost, params);
+      return reuseExistingStripeSession(saleorApiUrl, params);
     case "dummy":
       return undefined;
     default:
@@ -67,11 +67,11 @@ const reuseExistingSession = (
 };
 
 const getPaymentResponse = async ({
-  saleorApiHost,
+  saleorApiUrl,
   body,
   appUrl,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   body: PayRequestBody;
   appUrl: string;
 }): Promise<PayRequestResponse> => {
@@ -82,10 +82,10 @@ const getPaymentResponse = async ({
     throw new KnownPaymentError(body.provider, ["UNKNOWN_METHOD"]);
   }
 
-  const order = await createOrderFromBodyOrId(saleorApiHost, body);
+  const order = await createOrderFromBodyOrId(saleorApiUrl, body);
 
   if (order.privateMetafield) {
-    const existingSessionResponse = await reuseExistingSession(saleorApiHost, {
+    const existingSessionResponse = await reuseExistingSession(saleorApiUrl, {
       orderId: order.id,
       privateMetafield: order.privateMetafield,
       provider: body.provider,
@@ -98,7 +98,7 @@ const getPaymentResponse = async ({
   }
 
   const [paymentUrlError, data] = await unpackPromise(
-    getPaymentUrlIdForProvider({ saleorApiHost, body, order, appUrl })
+    getPaymentUrlIdForProvider({ saleorApiUrl, body, order, appUrl })
   );
 
   if (paymentUrlError) {
@@ -126,7 +126,7 @@ const getPaymentResponse = async ({
     session: id,
   };
 
-  await updatePaymentMetafield({ saleorApiHost, orderId: order.id, payment });
+  await updatePaymentMetafield({ saleorApiUrl, orderId: order.id, payment });
 
   return response;
 };
@@ -137,12 +137,10 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
-    getSaleorApiHostFromRequest(req)
-  );
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
-  if (saleorApiHostError) {
-    res.status(400).json({ message: saleorApiHostError.message });
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
@@ -159,7 +157,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   try {
     const appUrl = getBaseUrl(req);
-    const response = await getPaymentResponse({ saleorApiHost, body, appUrl });
+    const response = await getPaymentResponse({ saleorApiUrl, body, appUrl });
     return res.status(200).json(response);
   } catch (err) {
     if (err instanceof KnownPaymentError) {
@@ -190,18 +188,18 @@ const handler: NextApiHandler = async (req, res) => {
 };
 
 const getPaymentUrlIdForProvider = ({
-  saleorApiHost,
+  saleorApiUrl,
   body,
   order,
   appUrl,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   body: PayRequestBody;
   order: OrderFragment;
   appUrl: string;
 }): Promise<CreatePaymentResult> => {
   const createPaymentData = {
-    saleorApiHost,
+    saleorApiUrl,
     order,
     redirectUrl: body.redirectUrl,
     method: body.method,

@@ -9,17 +9,17 @@ import { DUMMY_PAYMENT_TYPE } from "./providers/dummy/refunds";
 import { MOLLIE_PAYMENT_PREFIX } from "./providers/mollie";
 
 export const formatRedirectUrl = ({
-  saleorApiHost,
+  saleorApiUrl,
   redirectUrl,
   orderId,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   redirectUrl: string;
   orderId: string;
 }) => {
   const url = new URL(redirectUrl);
   url.searchParams.set("order", orderId);
-  url.searchParams.set("saleorApiHost", saleorApiHost);
+  url.searchParams.set("saleorApiUrl", saleorApiUrl);
 
   return url.toString();
 };

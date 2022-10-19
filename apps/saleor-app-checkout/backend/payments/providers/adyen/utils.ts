@@ -39,12 +39,12 @@ export const mapAvailableActions = (
   });
 };
 
-export const getAdyenClient = async (saleorApiHost: string) => {
+export const getAdyenClient = async (saleorApiUrl: string) => {
   const {
     paymentProviders: {
       adyen: { apiKey, merchantAccount, clientKey, ...restAdyenSettings },
     },
-  } = await getPrivateSettings({ saleorApiHost, obfuscateEncryptedData: false });
+  } = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: false });
 
   invariant(apiKey, "API key not defined");
   invariant(merchantAccount, "Missing merchant account configuration");

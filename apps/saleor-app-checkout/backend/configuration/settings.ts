@@ -27,13 +27,13 @@ import { getAppId } from "../environment";
 import * as Apl from "@/saleor-app-checkout/config/apl";
 
 export const getPrivateSettings = async ({
-  saleorApiHost,
+  saleorApiUrl,
   obfuscateEncryptedData,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   obfuscateEncryptedData: boolean;
 }) => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
 
   const { data, error } = await client
@@ -57,8 +57,8 @@ export const getPrivateSettings = async ({
   return settingsValues;
 };
 
-export const getPublicSettings = async ({ saleorApiHost }: { saleorApiHost: string }) => {
-  const authData = await Apl.get(saleorApiHost);
+export const getPublicSettings = async ({ saleorApiUrl }: { saleorApiUrl: string }) => {
+  const authData = await Apl.get(saleorApiUrl);
 
   const { data, error } = await getClientForAuthData(authData)
     .query<PublicMetafieldsInferedQuery, PublicMetafieldsInferedQueryVariables>(
@@ -80,9 +80,9 @@ export const getPublicSettings = async ({ saleorApiHost }: { saleorApiHost: stri
   return settingsValues;
 };
 
-export const getActivePaymentProvidersSettings = async (saleorApiHost: string) => {
-  const authData = await Apl.get(saleorApiHost);
-  const settings = await getPublicSettings({ saleorApiHost });
+export const getActivePaymentProvidersSettings = async (saleorApiUrl: string) => {
+  const authData = await Apl.get(saleorApiUrl);
+  const settings = await getPublicSettings({ saleorApiUrl });
 
   const { data, error } = await getClientForAuthData(authData)
     .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, {})
@@ -103,14 +103,14 @@ export const getActivePaymentProvidersSettings = async (saleorApiHost: string) =
 };
 
 export const getChannelActivePaymentProvidersSettings = async ({
-  saleorApiHost,
+  saleorApiUrl,
   channelId,
 }: {
-  saleorApiHost: string;
+  saleorApiUrl: string;
   channelId: string;
 }) => {
-  const authData = await Apl.get(saleorApiHost);
-  const settings = await getPublicSettings({ saleorApiHost });
+  const authData = await Apl.get(saleorApiUrl);
+  const settings = await getPublicSettings({ saleorApiUrl });
 
   const { data, error } = await getClientForAuthData(authData)
     .query<ChannelQuery, ChannelQueryVariables>(ChannelDocument, {
@@ -131,15 +131,15 @@ export const getChannelActivePaymentProvidersSettings = async ({
 };
 
 export const setPrivateSettings = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   settings: PrivateSettingsValues<"unencrypted">
 ) => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
 
   const metadata = mapPrivateSettingsToMetadata(settings);
 
-  const appId = await getAppId(saleorApiHost);
+  const appId = await getAppId(saleorApiUrl);
 
   const { data, error } = await client
     .mutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(

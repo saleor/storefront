@@ -18,10 +18,10 @@ type GetOrderDetailsResult =
     };
 
 export const getOrderDetails = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   { id }: { id: OrderDetailsQueryVariables["id"] }
 ): Promise<GetOrderDetailsResult> => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
 
   const { data, error } = await client

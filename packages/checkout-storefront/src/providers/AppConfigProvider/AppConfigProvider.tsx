@@ -12,7 +12,7 @@ interface AppConfigContextConsumerProps {
   config?: AppConfig | null;
   loading: boolean;
   env: AppEnv;
-  saleorApiHost: string;
+  saleorApiUrl: string;
 }
 
 const [useAppConfig, Provider] = createSafeContext<AppConfigContextConsumerProps>();
@@ -22,9 +22,9 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
   children,
   env,
 }) => {
-  const { saleorApiHost } = getQueryParams();
+  const { saleorApiUrl } = getQueryParams();
   const [{ data: storedAppConfig, loading }] = useFetch(getAppConfig, {
-    args: { checkoutApiUrl: env.checkoutApiUrl, saleorApiHost },
+    args: { checkoutApiUrl: env.checkoutApiUrl, saleorApiUrl },
   });
   const dynamicAppConfig = useDynamicAppConfig<AppConfig>({
     checkoutAppUrl: env.checkoutAppUrl,
@@ -75,10 +75,10 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
 
   useEffect(handleAppStylingUpdate, [appConfig, appendStylingToBody]);
 
-  if (!saleorApiHost) {
-    console.warn(`Missing saleorApiHost query param`);
+  if (!saleorApiUrl) {
+    console.warn(`Missing saleorApiUrl query param`);
     return null;
   }
 
-  return <Provider value={{ config: appConfig, env, loading, saleorApiHost }}>{children}</Provider>;
+  return <Provider value={{ config: appConfig, env, loading, saleorApiUrl }}>{children}</Provider>;
 };

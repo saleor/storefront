@@ -2,9 +2,7 @@ import { FileAPL, UpstashAPL } from "@saleor/app-sdk/APL";
 import invariant from "ts-invariant";
 
 type Result = {
-  apiUrl: string;
-  saleorApiHost: string;
-  domain: string;
+  saleorApiUrl: string;
   appToken: string;
 };
 
@@ -25,23 +23,19 @@ const apl = useFileAPL
       });
     })();
 
-export const get = async (saleorApiHost: string): Promise<Result> => {
-  const authData = await apl.get(saleorApiHost);
+export const get = async (saleorApiUrl: string): Promise<Result> => {
+  const authData = await apl.get(saleorApiUrl);
 
-  invariant(authData, `No auth data found for given host: ${saleorApiHost}. Is the app installed?`);
-
-  const apiUrl = `https://${authData.domain}/graphql/`;
+  invariant(authData, `No auth data found for given host: ${saleorApiUrl}. Is the app installed?`);
 
   return {
-    apiUrl,
-    saleorApiHost,
-    domain: authData.domain,
+    saleorApiUrl,
     appToken: authData.token,
   };
 };
 
-export const set = ({ saleorApiHost, authToken }: { saleorApiHost: string; authToken: string }) => {
-  console.log(`APL SET`, { saleorApiHost, authToken });
+export const set = ({ saleorApiUrl, authToken }: { saleorApiUrl: string; authToken: string }) => {
+  console.log(`APL SET`, { saleorApiUrl, authToken });
 
-  return apl.set({ domain: saleorApiHost, token: authToken });
+  return apl.set({ domain: saleorApiUrl, token: authToken });
 };

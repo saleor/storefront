@@ -3,6 +3,7 @@ import { SALEOR_DOMAIN_HEADER } from "@saleor/app-sdk/const";
 import type { Request } from "retes";
 
 const TEST_SALEOR_DOMAIN = "master.staging.saleor.cloud";
+const TEST_SALEOR_URL = `https://${TEST_SALEOR_DOMAIN}/graphql/`;
 
 jest.mock("@/saleor-app-checkout/backend/utils.ts");
 
@@ -42,7 +43,7 @@ describe("withSaleorDomainMatch", () => {
 
     const result = await withSaleorDomainMatch(handler)({
       ...mockRequest,
-      params: { ...mockRequest.params, saleorApiHost: TEST_SALEOR_DOMAIN },
+      params: { ...mockRequest.params, saleorApiUrl: TEST_SALEOR_URL },
     });
     expect(result.body).toHaveProperty("success", false);
     expect(result.body).toHaveProperty("message");
@@ -58,7 +59,7 @@ describe("withSaleorDomainMatch", () => {
       headers: {
         [SALEOR_DOMAIN_HEADER]: "",
       },
-      params: { ...mockRequest.params, saleorApiHost: TEST_SALEOR_DOMAIN },
+      params: { ...mockRequest.params, saleorApiUrl: TEST_SALEOR_URL },
     });
     expect(result.body).toHaveProperty("success", false);
     expect(result.body).toHaveProperty("message");
@@ -73,7 +74,7 @@ describe("withSaleorDomainMatch", () => {
       headers: {
         [SALEOR_DOMAIN_HEADER]: "some-other-comain.com",
       },
-      params: { ...mockRequest.params, saleorApiHost: TEST_SALEOR_DOMAIN },
+      params: { ...mockRequest.params, saleorApiUrl: TEST_SALEOR_URL },
     });
     expect(result.body).toHaveProperty("success", false);
     expect(result.body).toHaveProperty("message");
@@ -89,7 +90,7 @@ describe("withSaleorDomainMatch", () => {
       headers: {
         [SALEOR_DOMAIN_HEADER]: TEST_SALEOR_DOMAIN,
       },
-      params: { ...mockRequest.params, saleorApiHost: TEST_SALEOR_DOMAIN },
+      params: { ...mockRequest.params, saleorApiUrl: TEST_SALEOR_URL },
     });
     expect(handler).toHaveBeenCalled();
   });

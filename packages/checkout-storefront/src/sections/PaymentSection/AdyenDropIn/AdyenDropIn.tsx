@@ -31,7 +31,7 @@ type DropinElement = ReturnType<typeof _hack>;
 export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   const {
     env: { checkoutApiUrl },
-    saleorApiHost,
+    saleorApiUrl,
   } = useAppConfig();
 
   const { checkout, loading: isCheckoutLoading } = useCheckout();
@@ -50,7 +50,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
 
     const result = await fetchCreateDropInAdyenPayment({
       checkoutApiUrl,
-      saleorApiHost,
+      saleorApiUrl,
       totalAmount: checkout.totalPrice.gross.amount,
       checkoutId: checkout.id,
       method: "dropin",
@@ -73,14 +73,14 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
       );
       return;
     } else {
-      return handlePaymentResult(saleorApiHost, result, component);
+      return handlePaymentResult(saleorApiUrl, result, component);
     }
   });
 
   const onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails = useEvent(
     async (state, component) => {
       const result = await fetchHandleDropInAdyenPaymentDetails({
-        saleorApiHost,
+        saleorApiUrl,
         checkoutApiUrl,
         adyenStateData: state.data,
       });
@@ -91,7 +91,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
         return;
       }
 
-      return handlePaymentResult(saleorApiHost, result, component);
+      return handlePaymentResult(saleorApiUrl, result, component);
     }
   );
 
@@ -119,12 +119,12 @@ function useDropinAdyenElement(
   const [adyenCheckoutInstanceCreationStatus, setAdyenCheckoutInstanceCreationStatus] = useState<
     "IDLE" | "IN_PROGRESS" | "DONE" | "ERROR"
   >("IDLE");
-  const { saleorApiHost } = useAppConfig();
+  const { saleorApiUrl } = useAppConfig();
 
   const [adyenSessionResponse] = useFetch(createDropInAdyenSession, {
     args: {
       checkoutApiUrl,
-      saleorApiHost,
+      saleorApiUrl,
       checkoutId: checkout?.id,
       // we send 0 here and update it later inside `onSubmit`
       totalAmount: 0,

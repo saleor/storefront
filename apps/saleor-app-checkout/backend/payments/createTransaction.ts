@@ -7,10 +7,10 @@ import {
 import * as Apl from "@/saleor-app-checkout/config/apl";
 
 export const createTransaction = async (
-  saleorApiHost: string,
+  saleorApiUrl: string,
   args: TransactionCreateMutationVariables
 ) => {
-  const authData = await Apl.get(saleorApiHost);
+  const authData = await Apl.get(saleorApiUrl);
   const client = getClientForAuthData(authData);
   const { data, error } = await client
     .mutation<TransactionCreateMutation, TransactionCreateMutationVariables>(

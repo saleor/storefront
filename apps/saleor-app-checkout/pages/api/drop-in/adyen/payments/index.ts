@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
 import { createAdyenCheckoutPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
@@ -26,17 +26,15 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
     return;
   }
 
-  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
-    getSaleorApiHostFromRequest(req)
-  );
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
-  if (saleorApiHostError) {
-    res.status(400).json({ message: saleorApiHostError.message });
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
   const [orderCrationError, order] = await unpackPromise(
-    createOrderFromBodyOrId(saleorApiHost, body)
+    createOrderFromBodyOrId(saleorApiUrl, body)
   );
 
   if (orderCrationError) {
@@ -55,7 +53,7 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
       adyenStateData: body.adyenStateData,
     };
 
-    const { payment } = await createAdyenCheckoutPayment({ saleorApiHost, ...createPaymentData });
+    const { payment } = await createAdyenCheckoutPayment({ saleorApiUrl, ...createPaymentData });
 
     return res.status(200).json({ payment, orderId: order.id });
   } catch (err) {

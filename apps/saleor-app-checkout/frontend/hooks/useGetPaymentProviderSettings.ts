@@ -12,14 +12,14 @@ export const useGetPaymentProviderSettings = <TArgs>(
   const { isAuthorized } = useAuthData();
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const saleorApiHost = app?.getState().domain;
+  const saleorApiUrl = app?.getState().domain;
 
   const [{ data, loading, error }] = useFetch(requestGetPaymentProviderSettings, {
     skip: !isAuthorized,
     ...optionalProps,
     args: {
       ...optionalProps?.args,
-      saleorApiHost,
+      saleorApiUrl,
     },
   });
 

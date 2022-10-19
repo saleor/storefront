@@ -10,7 +10,7 @@ import {
 } from "checkout-common";
 import { NextApiHandler } from "next";
 import invariant from "ts-invariant";
-import { getSaleorApiHostFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const parseAndValidateBody = createParseAndValidateBody(postDropInAdyenPaymentsDetailsBody);
@@ -31,17 +31,15 @@ const DropInAdyenPaymentsDetailsHandler: NextApiHandler<
     return;
   }
 
-  const [saleorApiHostError, saleorApiHost] = unpackThrowable(() =>
-    getSaleorApiHostFromRequest(req)
-  );
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
-  if (saleorApiHostError) {
-    res.status(400).json({ message: saleorApiHostError.message });
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
   try {
-    const { checkout } = await getAdyenClient(saleorApiHost);
+    const { checkout } = await getAdyenClient(saleorApiUrl);
     const payment = await checkout.paymentsDetails(body.adyenStateData as AdyenDetailsRequest);
     const orderId = getOrderIdFromAdditionalData(payment.additionalData || {});
     invariant(orderId, "orderId should be set at this point. Please file a bug report.");

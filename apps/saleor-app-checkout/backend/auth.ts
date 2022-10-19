@@ -68,18 +68,18 @@ export const getTokenDataFromRequest = (req: NextApiRequest) => {
   return tokenData;
 };
 
-export const getSaleorApiHostFromRequest = (req: NextApiRequest) => {
-  const saleorApiHost = req.query.saleorApiHost;
+export const getSaleorApiUrlFromRequest = (req: NextApiRequest) => {
+  const saleorApiUrl = req.query.saleorApiUrl;
 
-  invariant(saleorApiHost && typeof saleorApiHost === "string", "saleorApiHost is required");
+  invariant(saleorApiUrl && typeof saleorApiUrl === "string", "saleorApiUrl is required");
 
-  return saleorApiHost;
+  return saleorApiUrl;
 };
 
 export const isAuthenticated = async (req: NextApiRequest) => {
   const token = getTokenFromRequest(req);
   const tokenData = getTokenData(token);
-  const saleorApiHost = getSaleorApiHostFromRequest(req);
+  const saleorApiUrl = getSaleorApiUrlFromRequest(req);
 
   // @todo
   // if (!token || !tokenData?.["iss"]) {
@@ -90,7 +90,8 @@ export const isAuthenticated = async (req: NextApiRequest) => {
     return false;
   }
 
-  const jwtVerifier = JwtVerifier.getInstance(saleorApiHost);
+  const domain = new URL(saleorApiUrl).hostname;
+  const jwtVerifier = JwtVerifier.getInstance(domain);
 
   return jwtVerifier.verify(token);
 };
