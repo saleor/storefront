@@ -2,7 +2,7 @@ import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { Locale } from "@/checkout-storefront/lib/regions";
-import { omit, reduce } from "lodash-es";
+import { reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
 import { OperationResult } from "urql";
@@ -48,12 +48,11 @@ export const setLanguageInUrl = (locale: Locale) =>
   replaceUrl({ query: { ...getRawQueryParams(), locale } });
 
 export const clearUrlAfterPasswordReset = (): void => {
-  const query = omit(getRawQueryParams(), ["token", "email"]);
-  replaceUrl({ query });
+  replaceUrl({ query: { ...getRawQueryParams(), token: undefined, email: undefined } });
 };
 
 export const replaceUrl = ({
-  url = window.location.origin,
+  url = window.location.toString(),
   query,
 }: {
   url?: string;
