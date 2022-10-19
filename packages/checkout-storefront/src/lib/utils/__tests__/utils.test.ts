@@ -4,7 +4,12 @@ import {
   CheckoutShippingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { apiErrors, checkout, urqlError } from "@/checkout-storefront/lib/fixtures";
-import { extractMutationErrors, getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  getById,
+  getByUnmatchingId,
+  getUrl,
+} from "@/checkout-storefront/lib/utils";
 import { OperationResult } from "urql";
 
 const items = [
@@ -86,5 +91,53 @@ describe("extractMutationErrors", () => {
     };
 
     expect(extractMutationErrors(result)).toEqual([true, [urqlError]]);
+  });
+});
+
+describe.only("getUrl", () => {
+  const compareUrl = (a: string, b: string) => {
+    expect(new URL(a).toString()).toEqual(new URL(b).toString());
+  };
+
+  it("should not modify URL", () => {
+    compareUrl(getUrl({ url: "https://example.com" }), "https://example.com");
+  });
+
+  it("should add query to the url", () => {
+    compareUrl(
+      getUrl({
+        url: "https://example.com",
+        query: {
+          a: 123,
+          b: "aaa",
+        },
+      }),
+      "https://example.com?a=123&b=aaa"
+    );
+  });
+
+  it("should replace and merge fields in query", () => {
+    compareUrl(
+      getUrl({
+        url: "https://example.com?test=123&b=cccc",
+        query: {
+          a: 123,
+          b: "aaa",
+        },
+      }),
+      "https://example.com?a=123&b=aaa&test=123"
+    );
+  });
+
+  it("should remove fields from query", () => {
+    compareUrl(
+      getUrl({
+        url: "https://example.com?test=123&b=cccc&token=secret",
+        query: {
+          token: undefined,
+        },
+      }),
+      "https://example.com?b=cccc&test=123"
+    );
   });
 });

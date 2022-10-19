@@ -10,9 +10,9 @@ import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "../hooks/useAlerts/consts";
 import { RootViews } from "../views/RootViews/RootViews";
 import { useMemo } from "react";
-import { DEFAULT_LOCALE } from "@/checkout-storefront/lib/regions";
-import { getQueryParams } from "../lib/utils/url";
 import { useLocale } from "../hooks/useLocale";
+import { DEFAULT_LOCALE } from "../lib/regions";
+import { getQueryParams } from "../lib/utils/url";
 
 export interface RootProps {
   env: AppEnv;
