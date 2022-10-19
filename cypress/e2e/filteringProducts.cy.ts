@@ -1,5 +1,4 @@
 import { CATEGORY } from "../elements/category";
-import { NAVIGATION } from "../elements/navigation";
 import { filterProducts, sortingProductsByName } from "../support/pages/category";
 import { selectNotEmptyCategory } from "../support/pages/main-page";
 import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";

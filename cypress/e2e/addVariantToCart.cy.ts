@@ -1,6 +1,5 @@
 import { productsToSearch } from "../fixtures/search";
 import { addItemToCart, openProductPage } from "../support/pages/product-page";
-import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
 
 describe("Select variant and add to cart", () => {
   beforeEach(() => {
