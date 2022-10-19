@@ -16,7 +16,7 @@ export default defineConfig({
     API_URL: process.env.SALEOR_API_URL,
   },
   e2e: {
-    baseUrl: process.env.CYPRESS_baseUrl,
+    baseUrl: "http://localhost:3000",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
   },
 });

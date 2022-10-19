@@ -2,8 +2,6 @@ import { CHECKOUT_ELEMENTS } from "../../elements/checkout/checkout-page";
 import { DUMMY_PAYMENT } from "../../elements/checkout/dummy-payment-page";
 import { ORDER_CONFIRMATION } from "../../elements/checkout/order-confirmation";
 
-export function selectDeliveryMethod() {}
-
 export function payByDummyPayment() {
   cy.addAliasToGraphRequest("order")
     .get(CHECKOUT_ELEMENTS.paymentMethods)
