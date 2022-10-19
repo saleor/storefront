@@ -1,5 +1,5 @@
 name: QA
-on: [pull_request]
+on: [pull_request_target]
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -9,6 +9,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          # contrary to what you might read in outdated articles on the Internet
+          # this is now safe thanks to new GitHub settings
+          # https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks
+          ref: ${{ github.event.pull_request.head.sha }} # Check out the code of the PR
 
       - uses: pnpm/action-setup@v2
         with:
@@ -21,7 +26,7 @@ jobs:
 
       - name: Turbo Cache
         id: turbo-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .turbo
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
