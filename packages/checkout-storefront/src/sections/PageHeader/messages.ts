@@ -17,14 +17,4 @@ export const languagesMessages = defineMessages<Locale>({
     id: "PageHeader/messages/kd+Ya5",
     description: "polish",
   },
-  "fr-FR": {
-    defaultMessage: "French",
-    id: "PageHeader/messages/e9JKRm",
-    description: "French",
-  },
-  "nl-NL": {
-    defaultMessage: "Dutch",
-    id: "PageHeader/messages/7vp32g",
-    description: "dutch",
-  },
 });

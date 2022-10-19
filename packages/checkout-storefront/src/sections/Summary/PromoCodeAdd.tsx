@@ -14,12 +14,14 @@ import clsx from "clsx";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
+import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
 
 interface FormData {
   promoCode: string;
 }
 
 export const PromoCodeAdd: FC<Classes> = ({ className }) => {
+  const getQueryVarsWithLocale = useQueryVarsWithLocale();
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { setApiErrors, errors } = useErrors<FormData>();
@@ -39,7 +41,9 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const showApplyButton = !!watch("promoCode");
 
   const onSubmit = async ({ promoCode }: FormData) => {
-    const result = await checkoutAddPromoCode({ promoCode, checkoutId: checkout.id });
+    const result = await checkoutAddPromoCode(
+      getQueryVarsWithLocale({ promoCode, checkoutId: checkout.id })
+    );
     const [hasErrors, apiErrors] = extractMutationErrors(result);
 
     if (hasErrors) {

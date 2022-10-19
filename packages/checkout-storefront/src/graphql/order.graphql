@@ -11,6 +11,11 @@ fragment OrderLineFragment on OrderLine {
     attributes(variantSelection: ALL) {
       values {
         name
+        dateTime
+        boolean
+        translation(languageCode: $languageCode) {
+          name
+        }
       }
     }
   }
@@ -114,7 +119,7 @@ fragment Order on Order {
   }
 }
 
-query order($id: ID!) {
+query order($id: ID!, $languageCode: LanguageCodeEnum!) {
   order(id: $id) {
     ...Order
   }

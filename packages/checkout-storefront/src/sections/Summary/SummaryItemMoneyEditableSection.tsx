@@ -19,6 +19,7 @@ import { Skeleton } from "@/checkout-storefront/components";
 import { useErrorMessages } from "@/checkout-storefront/hooks";
 import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 import { summaryMessages } from "./messages";
+import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -31,6 +32,7 @@ export interface FormData {
 export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
   line,
 }) => {
+  const getQueryVarsWithLocale = useQueryVarsWithLocale();
   const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
@@ -70,18 +72,21 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
 
   const getInputProps = useGetInputProps(methods);
 
-  const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables => ({
-    checkoutId: checkout.id,
-    lines: [
-      {
-        quantity: Number(quantity),
-        variantId: line.variant.id,
-      },
-    ],
-  });
+  const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables =>
+    getQueryVarsWithLocale({
+      checkoutId: checkout.id,
+      lines: [
+        {
+          quantity: Number(quantity),
+          variantId: line.variant.id,
+        },
+      ],
+    });
 
   const onLineDelete = async () => {
-    const result = await deleteLines({ checkoutId: checkout.id, lineId: line.id });
+    const result = await deleteLines(
+      getQueryVarsWithLocale({ checkoutId: checkout.id, lineId: line.id })
+    );
     const [hasMutationErrors, errors] = extractMutationErrors(result);
 
     if (!hasMutationErrors) {

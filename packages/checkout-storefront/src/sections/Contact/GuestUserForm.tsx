@@ -17,6 +17,7 @@ import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/us
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 import { contactMessages } from "./messages";
+import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -26,6 +27,7 @@ interface FormData {
 
 export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionChange }) => {
   const { checkout } = useCheckout();
+  const getQueryVarsWithLocale = useQueryVarsWithLocale();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { showErrors } = useAlerts("checkoutEmailUpdate");
@@ -85,10 +87,12 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         return;
       }
 
-      const result = await updateEmail({
-        email,
-        checkoutId: checkout.id,
-      });
+      const result = await updateEmail(
+        getQueryVarsWithLocale({
+          email,
+          checkoutId: checkout.id,
+        })
+      );
 
       const [hasErrors, errors] = extractMutationErrors<FormData>(result);
 
@@ -96,7 +100,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         showErrors(errors);
       }
     },
-    [showErrors, checkout.id, updateEmail, trigger]
+    [trigger, updateEmail, getQueryVarsWithLocale, checkout.id, showErrors]
   );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({

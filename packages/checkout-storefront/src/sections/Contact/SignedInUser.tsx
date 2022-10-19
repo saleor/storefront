@@ -7,6 +7,7 @@ import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "./messages";
+import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignOutSuccess: () => void;
@@ -17,6 +18,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
   onSignOutSuccess,
 }) => {
   const formatMessage = useFormattedMessages();
+  const getQueryVarsWithLocale = useQueryVarsWithLocale();
 
   const { checkout } = useCheckout();
   const { logout } = useAuth();
@@ -25,7 +27,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
   const [, customerDetach] = useCheckoutCustomerDetachMutation();
 
   const handleLogout = async () => {
-    await customerDetach({ checkoutId: checkout.id });
+    await customerDetach(getQueryVarsWithLocale({ checkoutId: checkout.id }));
     await logout();
     onSignOutSuccess();
   };

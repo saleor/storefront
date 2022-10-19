@@ -21,9 +21,11 @@ import {
   getAddressVlidationRulesVariables,
 } from "@/checkout-storefront/lib/utils";
 import { shippingMessages } from "./messages";
+import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
 
 export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
+  const getQueryVarsWithLocale = useQueryVarsWithLocale();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
   const [{ data }] = useUserQuery({
@@ -42,18 +44,20 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
   const updateShippingAddress = useCallback(
     async ({ autoSave, ...address }: AddressFormData) => {
-      const result = await checkoutShippingAddressUpdate({
-        checkoutId: checkout.id,
-        shippingAddress: getAddressInputData(address),
-        validationRules: getAddressVlidationRulesVariables(autoSave),
-      });
+      const result = await checkoutShippingAddressUpdate(
+        getQueryVarsWithLocale({
+          checkoutId: checkout.id,
+          shippingAddress: getAddressInputData(address),
+          validationRules: getAddressVlidationRulesVariables(autoSave),
+        })
+      );
       const [hasErrors, errors] = extractMutationErrors(result);
       if (hasErrors) {
         showErrors(errors);
         setApiErrors(errors);
       }
     },
-    [checkout?.id, setApiErrors, showErrors, checkoutShippingAddressUpdate]
+    [checkoutShippingAddressUpdate, getQueryVarsWithLocale, checkout.id, showErrors, setApiErrors]
   );
 
   if (collapsed) {

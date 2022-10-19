@@ -155,6 +155,9 @@ fragment CheckoutLineFragment on CheckoutLine {
     }
     id
     name
+    translation(languageCode: $languageCode) {
+      name
+    }
     product {
       name
       translation(languageCode: $languageCode) {
@@ -217,7 +220,7 @@ query user {
   }
 }
 
-query channel($slug: String!, $languageCode: LanguageCodeEnum!) {
+query channel($slug: String!) {
   channel(slug: $slug) {
     countries {
       code
