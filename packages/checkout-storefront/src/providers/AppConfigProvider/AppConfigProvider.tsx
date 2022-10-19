@@ -7,7 +7,7 @@ import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
 import { isEqual } from "lodash-es";
 import { useDynamicAppConfig } from "@/checkout-storefront/hooks/useDynamicAppConfig";
-import { getQueryVariables } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
 interface AppConfigContextConsumerProps {
   config?: AppConfig | null;
   loading: boolean;
@@ -22,7 +22,7 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
   children,
   env,
 }) => {
-  const { saleorApiHost } = getQueryVariables();
+  const { saleorApiHost } = getQueryParams();
   const [{ data: storedAppConfig, loading }] = useFetch(getAppConfig, {
     args: { checkoutApiUrl: env.checkoutApiUrl, saleorApiHost },
   });

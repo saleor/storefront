@@ -11,8 +11,8 @@ import { alertsContainerProps } from "../hooks/useAlerts/consts";
 import { RootViews } from "../views/RootViews/RootViews";
 import { useMemo } from "react";
 import { DEFAULT_LOCALE } from "@/checkout-storefront/lib/regions";
-import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { getQueryParams } from "../lib/utils/url";
+import { useLocale } from "../hooks/useLocale";
 
 export interface RootProps {
   env: AppEnv;
