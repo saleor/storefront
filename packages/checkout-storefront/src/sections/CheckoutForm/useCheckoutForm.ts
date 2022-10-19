@@ -89,7 +89,6 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
       return;
     }
 
-    console.log({ submitInProgress, hasFinishedApiChanges, handleSubmit });
     setIsProcessingApiChanges(false);
 
     if (submitInProgress) {
