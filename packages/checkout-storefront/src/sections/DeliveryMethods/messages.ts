@@ -21,6 +21,11 @@ export const deliveryMethodsMessages = defineMessages({
     id: "DeliveryMethods/messages/TitWRN",
     description: "shipping method not applicable",
   },
+  noShippingAddressMessage: {
+    defaultMessage: "Please fill in shipping address to see available shipping methods",
+    id: "DeliveryMethods/messages/927KCY",
+    description: "no shipping address message",
+  },
 });
 
 export const deliveryMethodsLabels = defineMessages({

@@ -1,7 +1,7 @@
 import { Divider, Skeleton } from "@/checkout-storefront/components";
 
 export const SummarySkeleton = () => (
-  <div className="summary px-6">
+  <div className="summary px-6 pt-6">
     <div className="flex flex-col lg:hidden">
       <div className="summary-row mb-6">
         <Skeleton className="w-1/3" />
