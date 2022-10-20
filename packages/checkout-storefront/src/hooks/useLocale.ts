@@ -4,9 +4,9 @@ import { DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
 import { getParsedLocaleData, getQueryParams } from "@/checkout-storefront/lib/utils";
 import { useMemo, useState } from "react";
 
-import EN_US from "@/checkout-storefront/compiled-locales/en-US.json";
-import PL_PL from "@/checkout-storefront/compiled-locales/pl-PL.json";
-import Minion from "@/checkout-storefront/compiled-locales/minion.json";
+import EN_US from "../../content/compiled-locales/en-US.json";
+import PL_PL from "../../content/compiled-locales/pl-PL.json";
+import Minion from "../../content/compiled-locales/minion.json";
 
 const localeToMessages: Record<Locale, any> = {
   "en-US": EN_US,

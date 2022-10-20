@@ -10,7 +10,6 @@
     "paths": {
       "@/checkout-storefront/icons": ["./src/assets/icons"],
       "@/checkout-storefront/images": ["./src/assets/images"],
-      "@/checkout-storefront/compiled-locales/*": ["./content/compiled-locales/*"],
       "@/checkout-storefront/*": ["./src/*"]
     },
     "outDir": "dist",
