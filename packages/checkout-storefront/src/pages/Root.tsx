@@ -14,6 +14,7 @@ import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/
 import { DEFAULT_LOCALE, getCurrentLocale, Locale } from "@/checkout-storefront/lib/regions";
 
 import En from "../../content/compiled-locales/en-US.json";
+import Pl from "../../content/compiled-locales/pl-PL.json";
 import Minion from "../../content/compiled-locales/minion.json";
 
 export interface RootProps {
@@ -22,6 +23,7 @@ export interface RootProps {
 
 const localeToMessages = {
   "en-US": En,
+  "pl-PL": Pl,
   minion: Minion,
 };
 
