@@ -1,19 +1,1003 @@
 {
-  "AddressForm/messages/9BsfhB": {
-    "developer_comment": "netherlands",
-    "string": "Netherlands"
+  "AddressForm/messages/+3/str": {
+    "developer_comment": "Romania",
+    "string": "Romania"
   },
-  "AddressForm/messages/IHMZ2N": {
-    "developer_comment": "poland",
+  "AddressForm/messages/+35USE": {
+    "developer_comment": "Monaco",
+    "string": "Monaco"
+  },
+  "AddressForm/messages/+LTFwE": {
+    "developer_comment": "Zimbabwe",
+    "string": "Zimbabwe"
+  },
+  "AddressForm/messages/+Re6RX": {
+    "developer_comment": "Panama",
+    "string": "Panama"
+  },
+  "AddressForm/messages/+dJgMv": {
+    "developer_comment": "Egypt",
+    "string": "Egypt"
+  },
+  "AddressForm/messages//QPMOC": {
+    "developer_comment": "Rwanda",
+    "string": "Rwanda"
+  },
+  "AddressForm/messages//i/8+x": {
+    "developer_comment": "Russia",
+    "string": "Russia"
+  },
+  "AddressForm/messages/0981cj": {
+    "developer_comment": "Mali",
+    "string": "Mali"
+  },
+  "AddressForm/messages/0OhS/E": {
+    "developer_comment": "Guernsey",
+    "string": "Guernsey"
+  },
+  "AddressForm/messages/0qM4AQ": {
+    "developer_comment": "Christmas Island",
+    "string": "Christmas Island"
+  },
+  "AddressForm/messages/1BVFqL": {
+    "developer_comment": "Dominican Republic",
+    "string": "Dominican Republic"
+  },
+  "AddressForm/messages/1G/9/v": {
+    "developer_comment": "Saint Barthélemy",
+    "string": "Saint Barthélemy"
+  },
+  "AddressForm/messages/1gMboq": {
+    "developer_comment": "Cambodia",
+    "string": "Cambodia"
+  },
+  "AddressForm/messages/24zJ2G": {
+    "developer_comment": "Pitcairn",
+    "string": "Pitcairn"
+  },
+  "AddressForm/messages/2Ia9yk": {
+    "developer_comment": "Montenegro",
+    "string": "Montenegro"
+  },
+  "AddressForm/messages/2aZjsy": {
+    "developer_comment": "Saint Vincent and the Grenadines",
+    "string": "Saint Vincent and the Grenadines"
+  },
+  "AddressForm/messages/2lrvGQ": {
+    "developer_comment": "Guatemala",
+    "string": "Guatemala"
+  },
+  "AddressForm/messages/3+K3eR": {
+    "developer_comment": "Central African Republic",
+    "string": "Central African Republic"
+  },
+  "AddressForm/messages/35l+5O": {
+    "developer_comment": "Nigeria",
+    "string": "Nigeria"
+  },
+  "AddressForm/messages/3LyeiO": {
+    "developer_comment": "China",
+    "string": "China"
+  },
+  "AddressForm/messages/3Mu0o5": {
+    "developer_comment": "Mexico",
+    "string": "Mexico"
+  },
+  "AddressForm/messages/3RJLTO": {
+    "developer_comment": "Virgin Islands (British)",
+    "string": "Virgin Islands (British)"
+  },
+  "AddressForm/messages/3Yiy2F": {
+    "developer_comment": "Bermuda",
+    "string": "Bermuda"
+  },
+  "AddressForm/messages/3lb6zY": {
+    "developer_comment": "Guyana",
+    "string": "Guyana"
+  },
+  "AddressForm/messages/3qmq7r": {
+    "developer_comment": "Saint Martin (French part)",
+    "string": "Saint Martin (French part)"
+  },
+  "AddressForm/messages/3vhsEZ": {
+    "developer_comment": "Argentina",
+    "string": "Argentina"
+  },
+  "AddressForm/messages/4KynCH": {
+    "developer_comment": "Åland Islands",
+    "string": "Åland Islands"
+  },
+  "AddressForm/messages/5E5/lt": {
+    "developer_comment": "Timor-Leste",
+    "string": "Timor-Leste"
+  },
+  "AddressForm/messages/5x+w4L": {
+    "developer_comment": "Brunei",
+    "string": "Brunei"
+  },
+  "AddressForm/messages/6CFBZ2": {
+    "developer_comment": "Togo",
+    "string": "Togo"
+  },
+  "AddressForm/messages/7GxtRT": {
+    "developer_comment": "Slovenia",
+    "string": "Slovenia"
+  },
+  "AddressForm/messages/7lrRGn": {
+    "developer_comment": "Moldova",
+    "string": "Moldova"
+  },
+  "AddressForm/messages/8/elLk": {
+    "developer_comment": "Czechia",
+    "string": "Czechia"
+  },
+  "AddressForm/messages/87OAV1": {
+    "developer_comment": "Angola",
+    "string": "Angola"
+  },
+  "AddressForm/messages/8Fcqnm": {
+    "developer_comment": "European Union",
+    "string": "European Union"
+  },
+  "AddressForm/messages/8KuAMg": {
+    "developer_comment": "Botswana",
+    "string": "Botswana"
+  },
+  "AddressForm/messages/8Wse/t": {
+    "developer_comment": "Samoa",
+    "string": "Samoa"
+  },
+  "AddressForm/messages/9E5e9n": {
+    "developer_comment": "Bahamas",
+    "string": "Bahamas"
+  },
+  "AddressForm/messages/9txxUj": {
+    "developer_comment": "Croatia",
+    "string": "Croatia"
+  },
+  "AddressForm/messages/9uWNKf": {
+    "developer_comment": "Bangladesh",
+    "string": "Bangladesh"
+  },
+  "AddressForm/messages/A5G1Cb": {
+    "developer_comment": "Mozambique",
+    "string": "Mozambique"
+  },
+  "AddressForm/messages/AKU/rl": {
+    "developer_comment": "Mongolia",
+    "string": "Mongolia"
+  },
+  "AddressForm/messages/AMeNrv": {
+    "developer_comment": "Congo",
+    "string": "Congo"
+  },
+  "AddressForm/messages/AWsbha": {
+    "developer_comment": "Canada",
+    "string": "Canada"
+  },
+  "AddressForm/messages/B/27YJ": {
+    "developer_comment": "Poland",
     "string": "Poland"
   },
-  "AddressForm/messages/PwM0Kj": {
-    "developer_comment": "france",
+  "AddressForm/messages/BDg+fo": {
+    "developer_comment": "Cayman Islands",
+    "string": "Cayman Islands"
+  },
+  "AddressForm/messages/BSH40T": {
+    "developer_comment": "Djibouti",
+    "string": "Djibouti"
+  },
+  "AddressForm/messages/BY/v/V": {
+    "developer_comment": "Singapore",
+    "string": "Singapore"
+  },
+  "AddressForm/messages/BnhxSK": {
+    "developer_comment": "French Polynesia",
+    "string": "French Polynesia"
+  },
+  "AddressForm/messages/BuYzls": {
+    "developer_comment": "Vietnam",
+    "string": "Vietnam"
+  },
+  "AddressForm/messages/C9IT3L": {
+    "developer_comment": "French Southern Territories",
+    "string": "French Southern Territories"
+  },
+  "AddressForm/messages/CThFlC": {
+    "developer_comment": "Belgium",
+    "string": "Belgium"
+  },
+  "AddressForm/messages/CXJMbm": {
+    "developer_comment": "Aruba",
+    "string": "Aruba"
+  },
+  "AddressForm/messages/CeU6Ku": {
+    "developer_comment": "Papua New Guinea",
+    "string": "Papua New Guinea"
+  },
+  "AddressForm/messages/ChmgQI": {
+    "developer_comment": "Puerto Rico",
+    "string": "Puerto Rico"
+  },
+  "AddressForm/messages/Cn9SxV": {
+    "developer_comment": "Bahrain",
+    "string": "Bahrain"
+  },
+  "AddressForm/messages/CxrUJZ": {
+    "developer_comment": "Cocos (Keeling) Islands",
+    "string": "Cocos (Keeling) Islands"
+  },
+  "AddressForm/messages/D69IYs": {
+    "developer_comment": "Kyrgyzstan",
+    "string": "Kyrgyzstan"
+  },
+  "AddressForm/messages/DOoSpc": {
+    "developer_comment": "Cabo Verde",
+    "string": "Cabo Verde"
+  },
+  "AddressForm/messages/DUOOIr": {
+    "developer_comment": "Niger",
+    "string": "Niger"
+  },
+  "AddressForm/messages/Dlvlwl": {
+    "developer_comment": "Laos",
+    "string": "Laos"
+  },
+  "AddressForm/messages/DmI8N+": {
+    "developer_comment": "Paraguay",
+    "string": "Paraguay"
+  },
+  "AddressForm/messages/DnWk6V": {
+    "developer_comment": "Turkmenistan",
+    "string": "Turkmenistan"
+  },
+  "AddressForm/messages/E8OaB7": {
+    "developer_comment": "Senegal",
+    "string": "Senegal"
+  },
+  "AddressForm/messages/E8ZfO1": {
+    "developer_comment": "Equatorial Guinea",
+    "string": "Equatorial Guinea"
+  },
+  "AddressForm/messages/EE8FUW": {
+    "developer_comment": "Honduras",
+    "string": "Honduras"
+  },
+  "AddressForm/messages/EWeTWr": {
+    "developer_comment": "Mauritius",
+    "string": "Mauritius"
+  },
+  "AddressForm/messages/EmA9sW": {
+    "developer_comment": "Faroe Islands",
+    "string": "Faroe Islands"
+  },
+  "AddressForm/messages/Ev/r0d": {
+    "developer_comment": "Grenada",
+    "string": "Grenada"
+  },
+  "AddressForm/messages/FFcAZ+": {
+    "developer_comment": "Mayotte",
+    "string": "Mayotte"
+  },
+  "AddressForm/messages/FOyXKV": {
+    "developer_comment": "Greenland",
+    "string": "Greenland"
+  },
+  "AddressForm/messages/GlpjNg": {
+    "developer_comment": "Saint Kitts and Nevis",
+    "string": "Saint Kitts and Nevis"
+  },
+  "AddressForm/messages/Gv7Nkl": {
+    "developer_comment": "Latvia",
+    "string": "Latvia"
+  },
+  "AddressForm/messages/H03l8S": {
+    "developer_comment": "Guam",
+    "string": "Guam"
+  },
+  "AddressForm/messages/HMzYxx": {
+    "developer_comment": "El Salvador",
+    "string": "El Salvador"
+  },
+  "AddressForm/messages/HX23kM": {
+    "developer_comment": "Germany",
+    "string": "Germany"
+  },
+  "AddressForm/messages/I6YMLq": {
+    "developer_comment": "Iraq",
+    "string": "Iraq"
+  },
+  "AddressForm/messages/I7N5d5": {
+    "developer_comment": "Montserrat",
+    "string": "Montserrat"
+  },
+  "AddressForm/messages/ICWko4": {
+    "developer_comment": "Guadeloupe",
+    "string": "Guadeloupe"
+  },
+  "AddressForm/messages/IL/4HV": {
+    "developer_comment": "Iceland",
+    "string": "Iceland"
+  },
+  "AddressForm/messages/ITFSvw": {
+    "developer_comment": "Yemen",
+    "string": "Yemen"
+  },
+  "AddressForm/messages/IaAMRl": {
+    "developer_comment": "Comoros",
+    "string": "Comoros"
+  },
+  "AddressForm/messages/IojxYs": {
+    "developer_comment": "Chile",
+    "string": "Chile"
+  },
+  "AddressForm/messages/IqNqYb": {
+    "developer_comment": "Micronesia (Federated States of)",
+    "string": "Micronesia (Federated States of)"
+  },
+  "AddressForm/messages/J23dee": {
+    "developer_comment": "Japan",
+    "string": "Japan"
+  },
+  "AddressForm/messages/JTn7TI": {
+    "developer_comment": "Uganda",
+    "string": "Uganda"
+  },
+  "AddressForm/messages/JZGrjz": {
+    "developer_comment": "Australia",
+    "string": "Australia"
+  },
+  "AddressForm/messages/Jcr//0": {
+    "developer_comment": "Norfolk Island",
+    "string": "Norfolk Island"
+  },
+  "AddressForm/messages/Jn/c3X": {
+    "developer_comment": "South Africa",
+    "string": "South Africa"
+  },
+  "AddressForm/messages/JwzwDf": {
+    "developer_comment": "Serbia",
+    "string": "Serbia"
+  },
+  "AddressForm/messages/KONzNF": {
+    "developer_comment": "Jordan",
+    "string": "Jordan"
+  },
+  "AddressForm/messages/Kzfc+V": {
+    "developer_comment": "Suriname",
+    "string": "Suriname"
+  },
+  "AddressForm/messages/LH4nev": {
+    "developer_comment": "Ukraine",
+    "string": "Ukraine"
+  },
+  "AddressForm/messages/LVSZhV": {
+    "developer_comment": "Costa Rica",
+    "string": "Costa Rica"
+  },
+  "AddressForm/messages/LfEV9c": {
+    "developer_comment": "Bolivia",
+    "string": "Bolivia"
+  },
+  "AddressForm/messages/Lz6TZd": {
+    "developer_comment": "Falkland Islands (Malvinas)",
+    "string": "Falkland Islands (Malvinas)"
+  },
+  "AddressForm/messages/MJ3p0z": {
+    "developer_comment": "Maldives",
+    "string": "Maldives"
+  },
+  "AddressForm/messages/Msh2z5": {
+    "developer_comment": "Iran",
+    "string": "Iran"
+  },
+  "AddressForm/messages/N1JKvx": {
+    "developer_comment": "Malaysia",
+    "string": "Malaysia"
+  },
+  "AddressForm/messages/N1Q+6G": {
+    "developer_comment": "Cuba",
+    "string": "Cuba"
+  },
+  "AddressForm/messages/NdXWB5": {
+    "developer_comment": "Wallis and Futuna",
+    "string": "Wallis and Futuna"
+  },
+  "AddressForm/messages/Nt5rKh": {
+    "developer_comment": "Andorra",
+    "string": "Andorra"
+  },
+  "AddressForm/messages/Nvbipr": {
+    "developer_comment": "Georgia",
+    "string": "Georgia"
+  },
+  "AddressForm/messages/O2de3e": {
+    "developer_comment": "Spain",
+    "string": "Spain"
+  },
+  "AddressForm/messages/O3mm9/": {
+    "developer_comment": "Marshall Islands",
+    "string": "Marshall Islands"
+  },
+  "AddressForm/messages/OQ+Olf": {
+    "developer_comment": "Saint Helena, Ascension and Tristan da Cunha",
+    "string": "Saint Helena, Ascension and Tristan da Cunha"
+  },
+  "AddressForm/messages/OSzrGw": {
+    "developer_comment": "Curaçao",
+    "string": "Curaçao"
+  },
+  "AddressForm/messages/PXdiHI": {
+    "developer_comment": "Trinidad and Tobago",
+    "string": "Trinidad and Tobago"
+  },
+  "AddressForm/messages/QFKhj9": {
+    "developer_comment": "Cook Islands",
+    "string": "Cook Islands"
+  },
+  "AddressForm/messages/QOTB1q": {
+    "developer_comment": "Luxembourg",
+    "string": "Luxembourg"
+  },
+  "AddressForm/messages/QpbfVe": {
+    "developer_comment": "American Samoa",
+    "string": "American Samoa"
+  },
+  "AddressForm/messages/QrZxS5": {
+    "developer_comment": "Albania",
+    "string": "Albania"
+  },
+  "AddressForm/messages/R3SQiE": {
+    "developer_comment": "Chad",
+    "string": "Chad"
+  },
+  "AddressForm/messages/R3YX6x": {
+    "developer_comment": "Turks and Caicos Islands",
+    "string": "Turks and Caicos Islands"
+  },
+  "AddressForm/messages/RIE26p": {
+    "developer_comment": "Peru",
+    "string": "Peru"
+  },
+  "AddressForm/messages/Rec3oK": {
+    "developer_comment": "Israel",
+    "string": "Israel"
+  },
+  "AddressForm/messages/S17KaW": {
+    "developer_comment": "Tokelau",
+    "string": "Tokelau"
+  },
+  "AddressForm/messages/S8InDN": {
+    "developer_comment": "Colombia",
+    "string": "Colombia"
+  },
+  "AddressForm/messages/SGi7gS": {
+    "developer_comment": "Netherlands",
+    "string": "Netherlands"
+  },
+  "AddressForm/messages/SH5Jnu": {
+    "developer_comment": "South Korea",
+    "string": "South Korea"
+  },
+  "AddressForm/messages/Sgfz6i": {
+    "developer_comment": "Antigua and Barbuda",
+    "string": "Antigua and Barbuda"
+  },
+  "AddressForm/messages/ShtpIG": {
+    "developer_comment": "New Caledonia",
+    "string": "New Caledonia"
+  },
+  "AddressForm/messages/SiD5zn": {
+    "developer_comment": "Svalbard and Jan Mayen",
+    "string": "Svalbard and Jan Mayen"
+  },
+  "AddressForm/messages/TJWI4F": {
+    "developer_comment": "Ecuador",
+    "string": "Ecuador"
+  },
+  "AddressForm/messages/TTBXCb": {
+    "developer_comment": "Myanmar",
+    "string": "Myanmar"
+  },
+  "AddressForm/messages/TYzswE": {
+    "developer_comment": "Côte d'Ivoire",
+    "string": "Côte d'Ivoire"
+  },
+  "AddressForm/messages/TaJXxW": {
+    "developer_comment": "Palau",
+    "string": "Palau"
+  },
+  "AddressForm/messages/Tz8NeM": {
+    "developer_comment": "Jamaica",
+    "string": "Jamaica"
+  },
+  "AddressForm/messages/Uw1fwi": {
+    "developer_comment": "Holy See",
+    "string": "Holy See"
+  },
+  "AddressForm/messages/UwnYL4": {
+    "developer_comment": "Lithuania",
+    "string": "Lithuania"
+  },
+  "AddressForm/messages/V+VLpH": {
+    "developer_comment": "Eritrea",
+    "string": "Eritrea"
+  },
+  "AddressForm/messages/VA5Ius": {
+    "developer_comment": "North Korea",
+    "string": "North Korea"
+  },
+  "AddressForm/messages/VVk1wF": {
+    "developer_comment": "Nauru",
+    "string": "Nauru"
+  },
+  "AddressForm/messages/VpVsVE": {
+    "developer_comment": "Heard Island and McDonald Islands",
+    "string": "Heard Island and McDonald Islands"
+  },
+  "AddressForm/messages/Vty5er": {
+    "developer_comment": "Dominica",
+    "string": "Dominica"
+  },
+  "AddressForm/messages/Vwjf0I": {
+    "developer_comment": "Kazakhstan",
+    "string": "Kazakhstan"
+  },
+  "AddressForm/messages/WH/GNk": {
+    "developer_comment": "Tuvalu",
+    "string": "Tuvalu"
+  },
+  "AddressForm/messages/WHUUaK": {
+    "developer_comment": "Réunion",
+    "string": "Réunion"
+  },
+  "AddressForm/messages/WW/g37": {
+    "developer_comment": "Hong Kong",
+    "string": "Hong Kong"
+  },
+  "AddressForm/messages/WXy06l": {
+    "developer_comment": "Belarus",
+    "string": "Belarus"
+  },
+  "AddressForm/messages/XVI43y": {
+    "developer_comment": "Lebanon",
+    "string": "Lebanon"
+  },
+  "AddressForm/messages/XdlbBW": {
+    "developer_comment": "South Georgia and the South Sandwich Islands",
+    "string": "South Georgia and the South Sandwich Islands"
+  },
+  "AddressForm/messages/YOjgGK": {
+    "developer_comment": "Morocco",
+    "string": "Morocco"
+  },
+  "AddressForm/messages/YW2Rgu": {
+    "developer_comment": "Seychelles",
+    "string": "Seychelles"
+  },
+  "AddressForm/messages/ZgL3J3": {
+    "developer_comment": "Norway",
+    "string": "Norway"
+  },
+  "AddressForm/messages/Zx6/Wd": {
+    "developer_comment": "India",
+    "string": "India"
+  },
+  "AddressForm/messages/a/HhAT": {
+    "developer_comment": "Malawi",
+    "string": "Malawi"
+  },
+  "AddressForm/messages/a0Q5EY": {
+    "developer_comment": "Barbados",
+    "string": "Barbados"
+  },
+  "AddressForm/messages/a5hpgt": {
+    "developer_comment": "Slovakia",
+    "string": "Slovakia"
+  },
+  "AddressForm/messages/aFeJk2": {
+    "developer_comment": "Haiti",
+    "string": "Haiti"
+  },
+  "AddressForm/messages/aFf8xn": {
+    "developer_comment": "Algeria",
+    "string": "Algeria"
+  },
+  "AddressForm/messages/aREuhs": {
+    "developer_comment": "Fiji",
+    "string": "Fiji"
+  },
+  "AddressForm/messages/aSLBUy": {
+    "developer_comment": "Thailand",
+    "string": "Thailand"
+  },
+  "AddressForm/messages/b3rvTZ": {
+    "developer_comment": "Guinea",
+    "string": "Guinea"
+  },
+  "AddressForm/messages/bC+63M": {
+    "developer_comment": "Bhutan",
+    "string": "Bhutan"
+  },
+  "AddressForm/messages/bDMNqd": {
+    "developer_comment": "New Zealand",
+    "string": "New Zealand"
+  },
+  "AddressForm/messages/bNXMjj": {
+    "developer_comment": "Malta",
+    "string": "Malta"
+  },
+  "AddressForm/messages/bbEGxs": {
+    "developer_comment": "Congo (the Democratic Republic of the)",
+    "string": "Congo (the Democratic Republic of the)"
+  },
+  "AddressForm/messages/bgCInd": {
+    "developer_comment": "Brazil",
+    "string": "Brazil"
+  },
+  "AddressForm/messages/bx18RE": {
+    "developer_comment": "Sint Maarten (Dutch part)",
+    "string": "Sint Maarten (Dutch part)"
+  },
+  "AddressForm/messages/cEUj16": {
+    "developer_comment": "Nicaragua",
+    "string": "Nicaragua"
+  },
+  "AddressForm/messages/cfKJbG": {
+    "developer_comment": "Burkina Faso",
+    "string": "Burkina Faso"
+  },
+  "AddressForm/messages/chgM/b": {
+    "developer_comment": "Venezuela",
+    "string": "Venezuela"
+  },
+  "AddressForm/messages/d9f9F7": {
+    "developer_comment": "Syria",
+    "string": "Syria"
+  },
+  "AddressForm/messages/dDPcLg": {
+    "developer_comment": "Sao Tome and Principe",
+    "string": "Sao Tome and Principe"
+  },
+  "AddressForm/messages/dHwCKw": {
+    "developer_comment": "Portugal",
+    "string": "Portugal"
+  },
+  "AddressForm/messages/dhTIfP": {
+    "developer_comment": "Antarctica",
+    "string": "Antarctica"
+  },
+  "AddressForm/messages/e4oQUX": {
+    "developer_comment": "Tunisia",
+    "string": "Tunisia"
+  },
+  "AddressForm/messages/ehL1qR": {
+    "developer_comment": "Qatar",
+    "string": "Qatar"
+  },
+  "AddressForm/messages/ejmNM1": {
+    "developer_comment": "Saint Pierre and Miquelon",
+    "string": "Saint Pierre and Miquelon"
+  },
+  "AddressForm/messages/f//ZhL": {
+    "developer_comment": "British Indian Ocean Territory",
+    "string": "British Indian Ocean Territory"
+  },
+  "AddressForm/messages/f7hDXo": {
+    "developer_comment": "Belize",
+    "string": "Belize"
+  },
+  "AddressForm/messages/fN0/YF": {
+    "developer_comment": "Gabon",
+    "string": "Gabon"
+  },
+  "AddressForm/messages/gABGvv": {
+    "developer_comment": "United Kingdom",
+    "string": "United Kingdom"
+  },
+  "AddressForm/messages/gSfZWs": {
+    "developer_comment": "Isle of Man",
+    "string": "Isle of Man"
+  },
+  "AddressForm/messages/gcO54p": {
+    "developer_comment": "Libya",
+    "string": "Libya"
+  },
+  "AddressForm/messages/gkNUOW": {
+    "developer_comment": "Saudi Arabia",
+    "string": "Saudi Arabia"
+  },
+  "AddressForm/messages/gmp08N": {
+    "developer_comment": "Tonga",
+    "string": "Tonga"
+  },
+  "AddressForm/messages/h3kviB": {
+    "developer_comment": "Gibraltar",
+    "string": "Gibraltar"
+  },
+  "AddressForm/messages/hEqPVT": {
+    "developer_comment": "Benin",
+    "string": "Benin"
+  },
+  "AddressForm/messages/hF+SJn": {
+    "developer_comment": "Western Sahara",
+    "string": "Western Sahara"
+  },
+  "AddressForm/messages/hINdUv": {
+    "developer_comment": "Jersey",
+    "string": "Jersey"
+  },
+  "AddressForm/messages/hQKX9A": {
+    "developer_comment": "Taiwan",
+    "string": "Taiwan"
+  },
+  "AddressForm/messages/hR6Dsj": {
+    "developer_comment": "Macao",
+    "string": "Macao"
+  },
+  "AddressForm/messages/hyjjwk": {
+    "developer_comment": "Martinique",
+    "string": "Martinique"
+  },
+  "AddressForm/messages/i4LHfV": {
+    "developer_comment": "Somalia",
+    "string": "Somalia"
+  },
+  "AddressForm/messages/iCux5z": {
+    "developer_comment": "Ghana",
+    "string": "Ghana"
+  },
+  "AddressForm/messages/iSL4lW": {
+    "developer_comment": "Nepal",
+    "string": "Nepal"
+  },
+  "AddressForm/messages/ifvs0d": {
+    "developer_comment": "Guinea-Bissau",
+    "string": "Guinea-Bissau"
+  },
+  "AddressForm/messages/iswnHN": {
+    "developer_comment": "United States Minor Outlying Islands",
+    "string": "United States Minor Outlying Islands"
+  },
+  "AddressForm/messages/jD5+pT": {
+    "developer_comment": "France",
     "string": "France"
   },
-  "AddressForm/messages/xQAA6W": {
-    "developer_comment": "usa",
+  "AddressForm/messages/jzUm6I": {
+    "developer_comment": "Eswatini",
+    "string": "Eswatini"
+  },
+  "AddressForm/messages/l1KbE7": {
+    "developer_comment": "French Guiana",
+    "string": "French Guiana"
+  },
+  "AddressForm/messages/lJsAwX": {
+    "developer_comment": "Finland",
+    "string": "Finland"
+  },
+  "AddressForm/messages/lfa27y": {
+    "developer_comment": "Greece",
+    "string": "Greece"
+  },
+  "AddressForm/messages/mbQguu": {
+    "developer_comment": "Estonia",
+    "string": "Estonia"
+  },
+  "AddressForm/messages/mfEieV": {
+    "developer_comment": "Denmark",
+    "string": "Denmark"
+  },
+  "AddressForm/messages/nI5eDJ": {
+    "developer_comment": "Ethiopia",
+    "string": "Ethiopia"
+  },
+  "AddressForm/messages/nKinNt": {
+    "developer_comment": "North Macedonia",
+    "string": "North Macedonia"
+  },
+  "AddressForm/messages/nRLW35": {
+    "developer_comment": "Namibia",
+    "string": "Namibia"
+  },
+  "AddressForm/messages/nY7lQ3": {
+    "developer_comment": "South Sudan",
+    "string": "South Sudan"
+  },
+  "AddressForm/messages/nnh9Bk": {
+    "developer_comment": "Bulgaria",
+    "string": "Bulgaria"
+  },
+  "AddressForm/messages/np1zL8": {
+    "developer_comment": "Azerbaijan",
+    "string": "Azerbaijan"
+  },
+  "AddressForm/messages/ntGFyq": {
+    "developer_comment": "Austria",
+    "string": "Austria"
+  },
+  "AddressForm/messages/o/1QQo": {
+    "developer_comment": "Solomon Islands",
+    "string": "Solomon Islands"
+  },
+  "AddressForm/messages/oA/ktV": {
+    "developer_comment": "Madagascar",
+    "string": "Madagascar"
+  },
+  "AddressForm/messages/pgPJJ/": {
+    "developer_comment": "Sweden",
+    "string": "Sweden"
+  },
+  "AddressForm/messages/pgVv/N": {
+    "developer_comment": "Virgin Islands (U.S.)",
+    "string": "Virgin Islands (U.S.)"
+  },
+  "AddressForm/messages/q4CJGn": {
+    "developer_comment": "Niue",
+    "string": "Niue"
+  },
+  "AddressForm/messages/qJhQH+": {
+    "developer_comment": "Kenya",
+    "string": "Kenya"
+  },
+  "AddressForm/messages/qOzgfA": {
+    "developer_comment": "Armenia",
+    "string": "Armenia"
+  },
+  "AddressForm/messages/qTX4+E": {
+    "developer_comment": "Saint Lucia",
+    "string": "Saint Lucia"
+  },
+  "AddressForm/messages/qYb5Jk": {
+    "developer_comment": "United Arab Emirates",
+    "string": "United Arab Emirates"
+  },
+  "AddressForm/messages/qeafX4": {
+    "developer_comment": "Bouvet Island",
+    "string": "Bouvet Island"
+  },
+  "AddressForm/messages/qormkg": {
+    "developer_comment": "Uruguay",
+    "string": "Uruguay"
+  },
+  "AddressForm/messages/qtwUHg": {
+    "developer_comment": "Sierra Leone",
+    "string": "Sierra Leone"
+  },
+  "AddressForm/messages/sJb+g5": {
+    "developer_comment": "Uzbekistan",
+    "string": "Uzbekistan"
+  },
+  "AddressForm/messages/skQIxY": {
+    "developer_comment": "United States of America",
     "string": "United States of America"
+  },
+  "AddressForm/messages/t+/kLN": {
+    "developer_comment": "Italy",
+    "string": "Italy"
+  },
+  "AddressForm/messages/tIboLQ": {
+    "developer_comment": "Pakistan",
+    "string": "Pakistan"
+  },
+  "AddressForm/messages/tK6E11": {
+    "developer_comment": "Vanuatu",
+    "string": "Vanuatu"
+  },
+  "AddressForm/messages/tP/Oze": {
+    "developer_comment": "Northern Mariana Islands",
+    "string": "Northern Mariana Islands"
+  },
+  "AddressForm/messages/tYEJBL": {
+    "developer_comment": "Lesotho",
+    "string": "Lesotho"
+  },
+  "AddressForm/messages/ti2ZL4": {
+    "developer_comment": "Tajikistan",
+    "string": "Tajikistan"
+  },
+  "AddressForm/messages/tpJaze": {
+    "developer_comment": "Sri Lanka",
+    "string": "Sri Lanka"
+  },
+  "AddressForm/messages/tzgM0t": {
+    "developer_comment": "Mauritania",
+    "string": "Mauritania"
+  },
+  "AddressForm/messages/u+YfYt": {
+    "developer_comment": "Sudan",
+    "string": "Sudan"
+  },
+  "AddressForm/messages/u61Uce": {
+    "developer_comment": "Turkey",
+    "string": "Turkey"
+  },
+  "AddressForm/messages/u91qY4": {
+    "developer_comment": "Cameroon",
+    "string": "Cameroon"
+  },
+  "AddressForm/messages/uE53ck": {
+    "developer_comment": "San Marino",
+    "string": "San Marino"
+  },
+  "AddressForm/messages/uKkCu3": {
+    "developer_comment": "Ireland",
+    "string": "Ireland"
+  },
+  "AddressForm/messages/ugRA1N": {
+    "developer_comment": "Palestine, State of",
+    "string": "Palestine, State of"
+  },
+  "AddressForm/messages/uz7aXC": {
+    "developer_comment": "Liechtenstein",
+    "string": "Liechtenstein"
+  },
+  "AddressForm/messages/v5+WFh": {
+    "developer_comment": "Switzerland",
+    "string": "Switzerland"
+  },
+  "AddressForm/messages/v7V3TJ": {
+    "developer_comment": "Philippines",
+    "string": "Philippines"
+  },
+  "AddressForm/messages/vB4cu8": {
+    "developer_comment": "Kiribati",
+    "string": "Kiribati"
+  },
+  "AddressForm/messages/vVqZDn": {
+    "developer_comment": "Oman",
+    "string": "Oman"
+  },
+  "AddressForm/messages/vhPQFk": {
+    "developer_comment": "Liberia",
+    "string": "Liberia"
+  },
+  "AddressForm/messages/wQRvOc": {
+    "developer_comment": "Indonesia",
+    "string": "Indonesia"
+  },
+  "AddressForm/messages/wb7BE+": {
+    "developer_comment": "Gambia",
+    "string": "Gambia"
+  },
+  "AddressForm/messages/xQTOMT": {
+    "developer_comment": "Zambia",
+    "string": "Zambia"
+  },
+  "AddressForm/messages/yEktUH": {
+    "developer_comment": "Cyprus",
+    "string": "Cyprus"
+  },
+  "AddressForm/messages/yIymyU": {
+    "developer_comment": "Kuwait",
+    "string": "Kuwait"
+  },
+  "AddressForm/messages/ye07k9": {
+    "developer_comment": "Bosnia and Herzegovina",
+    "string": "Bosnia and Herzegovina"
+  },
+  "AddressForm/messages/ykbN9o": {
+    "developer_comment": "Hungary",
+    "string": "Hungary"
+  },
+  "AddressForm/messages/z7tOzp": {
+    "developer_comment": "Tanzania",
+    "string": "Tanzania"
+  },
+  "AddressForm/messages/zKLtUg": {
+    "developer_comment": "Anguilla",
+    "string": "Anguilla"
+  },
+  "AddressForm/messages/zV566+": {
+    "developer_comment": "Afghanistan",
+    "string": "Afghanistan"
+  },
+  "AddressForm/messages/zVAmwy": {
+    "developer_comment": "Burundi",
+    "string": "Burundi"
+  },
+  "AddressForm/messages/zyu9ti": {
+    "developer_comment": "Bonaire, Sint Eustatius and Saba",
+    "string": "Bonaire, Sint Eustatius and Saba"
   },
   "AddressSelectBox/messages//II2Kl": {
     "developer_comment": "edit address accessibility label",

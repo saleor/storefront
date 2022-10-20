@@ -13,22 +13,12 @@ interface GuestAddressSectionProps extends UseErrors<AddressFormData> {
 
 export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({
   onSubmit,
-  title,
-  checkAddressAvailability,
   defaultAddress,
-  ...errorProps
+  ...rest
 }) => {
   const addressFormData = getAddressFormDataFromAddress(defaultAddress);
 
   const handleSave = (address: AddressFormData) => onSubmit({ ...address, autoSave: true });
 
-  return (
-    <AutoSaveAddressForm
-      title={title}
-      onSubmit={handleSave}
-      defaultValues={addressFormData}
-      checkAddressAvailability={checkAddressAvailability}
-      {...errorProps}
-    />
-  );
+  return <AutoSaveAddressForm onSubmit={handleSave} defaultValues={addressFormData} {...rest} />;
 };

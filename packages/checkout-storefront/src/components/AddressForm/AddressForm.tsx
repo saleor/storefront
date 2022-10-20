@@ -53,7 +53,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     () =>
       sortBy(
         countries.map((code) => ({
-          label: formatMessage(countriesMessages[code as keyof typeof countriesMessages]),
+          label: formatMessage(countriesMessages[code]),
           value: code,
           disabled: !isAvailable({ country: { code } }),
         })),
