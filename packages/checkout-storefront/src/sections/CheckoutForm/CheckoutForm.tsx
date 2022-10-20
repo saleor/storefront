@@ -12,7 +12,6 @@ import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactS
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
 import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
-import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils";
@@ -47,7 +46,9 @@ export const CheckoutForm = () => {
             <Suspense fallback={<DeliveryMethodsSkeleton />}>
               <DeliveryMethods collapsed={showOnlyContact} />
             </Suspense>
-            <AdyenDropIn />
+            {/* temporarily hide until we figure out how to show this */}
+            {/* along with payment providers section */}
+            {/* <AdyenDropIn /> */}
             <Controller
               name="paymentMethodId"
               control={methods.control}
