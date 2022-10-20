@@ -2,15 +2,11 @@
 
 @layer components {
   .summary {
-    @apply flex flex-col w-full lg:w-1/2 h-fit border border-border-secondary rounded-lg lg:border-none overflow-hidden lg:overflow-visible lg:summary-with-bottom-margin;
-  }
-
-  .summary-with-bottom-margin {
-    height: calc(100vh - 168px);
+    @apply flex flex-col w-full lg:w-1/2 h-fit border border-border-secondary rounded-lg overflow-hidden lg:overflow-visible;
   }
 
   .summary-title {
-    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pt-0 lg:pb-6 lg:px-0 lg:pointer-events-none;
+    @apply flex flex-row px-6 justify-between items-baseline z-50 py-4 lg:pointer-events-none;
   }
 
   .summary-title .text {
