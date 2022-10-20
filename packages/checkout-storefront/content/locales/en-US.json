@@ -1111,6 +1111,10 @@
     "developer_comment": "provide a new password",
     "string": "Provide a new password for your account"
   },
+  "DeliveryMethods/messages/927KCY": {
+    "developer_comment": "no shipping address message",
+    "string": "Please fill in shipping address to see available shipping methods"
+  },
   "DeliveryMethods/messages/DGFTo/": {
     "developer_comment": "business days",
     "string": "{min}-{max} business days"
