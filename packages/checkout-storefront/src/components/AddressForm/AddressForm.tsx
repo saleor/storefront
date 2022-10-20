@@ -90,9 +90,9 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   return (
     <form>
       <div className="flex flex-row justify-between items-baseline">
-        <Title>{title}</Title>
+        <Title className="flex-1">{title}</Title>
         <Select
-          classNames={{ container: "inline-block !w-auto" }}
+          classNames={{ container: "flex-1 inline-block !w-auto" }}
           options={countryOptions}
           {...getInputProps("countryCode")}
           autoComplete={autocompleteTags.countryCode}

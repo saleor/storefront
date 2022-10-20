@@ -1,19 +1,1253 @@
 {
-  "AddressForm/messages/9BsfhB": {
-    "developer_comment": "netherlands",
-    "string": "Netherlands"
+  "AddressForm/messages/+3/str": {
+    "developer_comment": "Romania",
+    "string": "Romania",
+    "@TODO": "Please translate this"
   },
-  "AddressForm/messages/IHMZ2N": {
-    "developer_comment": "poland",
-    "string": "Poland"
+  "AddressForm/messages/+35USE": {
+    "developer_comment": "Monaco",
+    "string": "Monaco",
+    "@TODO": "Please translate this"
   },
-  "AddressForm/messages/PwM0Kj": {
-    "developer_comment": "france",
-    "string": "France"
+  "AddressForm/messages/+LTFwE": {
+    "developer_comment": "Zimbabwe",
+    "string": "Zimbabwe",
+    "@TODO": "Please translate this"
   },
-  "AddressForm/messages/xQAA6W": {
-    "developer_comment": "usa",
-    "string": "United States of America"
+  "AddressForm/messages/+Re6RX": {
+    "developer_comment": "Panama",
+    "string": "Panama",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/+dJgMv": {
+    "developer_comment": "Egypt",
+    "string": "Egypt",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages//QPMOC": {
+    "developer_comment": "Rwanda",
+    "string": "Rwanda",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages//i/8+x": {
+    "developer_comment": "Russia",
+    "string": "Russia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/0981cj": {
+    "developer_comment": "Mali",
+    "string": "Mali",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/0OhS/E": {
+    "developer_comment": "Guernsey",
+    "string": "Guernsey",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/0qM4AQ": {
+    "developer_comment": "Christmas Island",
+    "string": "Christmas Island",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/1BVFqL": {
+    "developer_comment": "Dominican Republic",
+    "string": "Dominican Republic",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/1G/9/v": {
+    "developer_comment": "Saint Barthélemy",
+    "string": "Saint Barthélemy",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/1gMboq": {
+    "developer_comment": "Cambodia",
+    "string": "Cambodia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/24zJ2G": {
+    "developer_comment": "Pitcairn",
+    "string": "Pitcairn",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/2Ia9yk": {
+    "developer_comment": "Montenegro",
+    "string": "Montenegro",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/2aZjsy": {
+    "developer_comment": "Saint Vincent and the Grenadines",
+    "string": "Saint Vincent and the Grenadines",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/2lrvGQ": {
+    "developer_comment": "Guatemala",
+    "string": "Guatemala",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3+K3eR": {
+    "developer_comment": "Central African Republic",
+    "string": "Central African Republic",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/35l+5O": {
+    "developer_comment": "Nigeria",
+    "string": "Nigeria",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3LyeiO": {
+    "developer_comment": "China",
+    "string": "China",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3Mu0o5": {
+    "developer_comment": "Mexico",
+    "string": "Mexico",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3RJLTO": {
+    "developer_comment": "Virgin Islands (British)",
+    "string": "Virgin Islands (British)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3Yiy2F": {
+    "developer_comment": "Bermuda",
+    "string": "Bermuda",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3lb6zY": {
+    "developer_comment": "Guyana",
+    "string": "Guyana",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3qmq7r": {
+    "developer_comment": "Saint Martin (French part)",
+    "string": "Saint Martin (French part)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/3vhsEZ": {
+    "developer_comment": "Argentina",
+    "string": "Argentina",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/4KynCH": {
+    "developer_comment": "Åland Islands",
+    "string": "Åland Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/5E5/lt": {
+    "developer_comment": "Timor-Leste",
+    "string": "Timor-Leste",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/5x+w4L": {
+    "developer_comment": "Brunei",
+    "string": "Brunei",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/6CFBZ2": {
+    "developer_comment": "Togo",
+    "string": "Togo",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/7GxtRT": {
+    "developer_comment": "Slovenia",
+    "string": "Slovenia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/7lrRGn": {
+    "developer_comment": "Moldova",
+    "string": "Moldova",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/8/elLk": {
+    "developer_comment": "Czechia",
+    "string": "Czechia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/87OAV1": {
+    "developer_comment": "Angola",
+    "string": "Angola",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/8Fcqnm": {
+    "developer_comment": "European Union",
+    "string": "European Union",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/8KuAMg": {
+    "developer_comment": "Botswana",
+    "string": "Botswana",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/8Wse/t": {
+    "developer_comment": "Samoa",
+    "string": "Samoa",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/9E5e9n": {
+    "developer_comment": "Bahamas",
+    "string": "Bahamas",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/9txxUj": {
+    "developer_comment": "Croatia",
+    "string": "Croatia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/9uWNKf": {
+    "developer_comment": "Bangladesh",
+    "string": "Bangladesh",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/A5G1Cb": {
+    "developer_comment": "Mozambique",
+    "string": "Mozambique",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/AKU/rl": {
+    "developer_comment": "Mongolia",
+    "string": "Mongolia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/AMeNrv": {
+    "developer_comment": "Congo",
+    "string": "Congo",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/AWsbha": {
+    "developer_comment": "Canada",
+    "string": "Canada",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/B/27YJ": {
+    "developer_comment": "Poland",
+    "string": "Poland",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/BDg+fo": {
+    "developer_comment": "Cayman Islands",
+    "string": "Cayman Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/BSH40T": {
+    "developer_comment": "Djibouti",
+    "string": "Djibouti",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/BY/v/V": {
+    "developer_comment": "Singapore",
+    "string": "Singapore",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/BnhxSK": {
+    "developer_comment": "French Polynesia",
+    "string": "French Polynesia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/BuYzls": {
+    "developer_comment": "Vietnam",
+    "string": "Vietnam",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/C9IT3L": {
+    "developer_comment": "French Southern Territories",
+    "string": "French Southern Territories",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/CThFlC": {
+    "developer_comment": "Belgium",
+    "string": "Belgium",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/CXJMbm": {
+    "developer_comment": "Aruba",
+    "string": "Aruba",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/CeU6Ku": {
+    "developer_comment": "Papua New Guinea",
+    "string": "Papua New Guinea",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ChmgQI": {
+    "developer_comment": "Puerto Rico",
+    "string": "Puerto Rico",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Cn9SxV": {
+    "developer_comment": "Bahrain",
+    "string": "Bahrain",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/CxrUJZ": {
+    "developer_comment": "Cocos (Keeling) Islands",
+    "string": "Cocos (Keeling) Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/D69IYs": {
+    "developer_comment": "Kyrgyzstan",
+    "string": "Kyrgyzstan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/DOoSpc": {
+    "developer_comment": "Cabo Verde",
+    "string": "Cabo Verde",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/DUOOIr": {
+    "developer_comment": "Niger",
+    "string": "Niger",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Dlvlwl": {
+    "developer_comment": "Laos",
+    "string": "Laos",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/DmI8N+": {
+    "developer_comment": "Paraguay",
+    "string": "Paraguay",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/DnWk6V": {
+    "developer_comment": "Turkmenistan",
+    "string": "Turkmenistan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/E8OaB7": {
+    "developer_comment": "Senegal",
+    "string": "Senegal",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/E8ZfO1": {
+    "developer_comment": "Equatorial Guinea",
+    "string": "Equatorial Guinea",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/EE8FUW": {
+    "developer_comment": "Honduras",
+    "string": "Honduras",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/EWeTWr": {
+    "developer_comment": "Mauritius",
+    "string": "Mauritius",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/EmA9sW": {
+    "developer_comment": "Faroe Islands",
+    "string": "Faroe Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Ev/r0d": {
+    "developer_comment": "Grenada",
+    "string": "Grenada",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/FFcAZ+": {
+    "developer_comment": "Mayotte",
+    "string": "Mayotte",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/FOyXKV": {
+    "developer_comment": "Greenland",
+    "string": "Greenland",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/GlpjNg": {
+    "developer_comment": "Saint Kitts and Nevis",
+    "string": "Saint Kitts and Nevis",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Gv7Nkl": {
+    "developer_comment": "Latvia",
+    "string": "Latvia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/H03l8S": {
+    "developer_comment": "Guam",
+    "string": "Guam",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/HMzYxx": {
+    "developer_comment": "El Salvador",
+    "string": "El Salvador",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/HX23kM": {
+    "developer_comment": "Germany",
+    "string": "Germany",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/I6YMLq": {
+    "developer_comment": "Iraq",
+    "string": "Iraq",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/I7N5d5": {
+    "developer_comment": "Montserrat",
+    "string": "Montserrat",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ICWko4": {
+    "developer_comment": "Guadeloupe",
+    "string": "Guadeloupe",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/IL/4HV": {
+    "developer_comment": "Iceland",
+    "string": "Iceland",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ITFSvw": {
+    "developer_comment": "Yemen",
+    "string": "Yemen",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/IaAMRl": {
+    "developer_comment": "Comoros",
+    "string": "Comoros",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/IojxYs": {
+    "developer_comment": "Chile",
+    "string": "Chile",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/IqNqYb": {
+    "developer_comment": "Micronesia (Federated States of)",
+    "string": "Micronesia (Federated States of)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/J23dee": {
+    "developer_comment": "Japan",
+    "string": "Japan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/JTn7TI": {
+    "developer_comment": "Uganda",
+    "string": "Uganda",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/JZGrjz": {
+    "developer_comment": "Australia",
+    "string": "Australia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Jcr//0": {
+    "developer_comment": "Norfolk Island",
+    "string": "Norfolk Island",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Jn/c3X": {
+    "developer_comment": "South Africa",
+    "string": "South Africa",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/JwzwDf": {
+    "developer_comment": "Serbia",
+    "string": "Serbia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/KONzNF": {
+    "developer_comment": "Jordan",
+    "string": "Jordan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Kzfc+V": {
+    "developer_comment": "Suriname",
+    "string": "Suriname",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/LH4nev": {
+    "developer_comment": "Ukraine",
+    "string": "Ukraine",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/LVSZhV": {
+    "developer_comment": "Costa Rica",
+    "string": "Costa Rica",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/LfEV9c": {
+    "developer_comment": "Bolivia",
+    "string": "Bolivia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Lz6TZd": {
+    "developer_comment": "Falkland Islands (Malvinas)",
+    "string": "Falkland Islands (Malvinas)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/MJ3p0z": {
+    "developer_comment": "Maldives",
+    "string": "Maldives",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Msh2z5": {
+    "developer_comment": "Iran",
+    "string": "Iran",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/N1JKvx": {
+    "developer_comment": "Malaysia",
+    "string": "Malaysia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/N1Q+6G": {
+    "developer_comment": "Cuba",
+    "string": "Cuba",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/NdXWB5": {
+    "developer_comment": "Wallis and Futuna",
+    "string": "Wallis and Futuna",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Nt5rKh": {
+    "developer_comment": "Andorra",
+    "string": "Andorra",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Nvbipr": {
+    "developer_comment": "Georgia",
+    "string": "Georgia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/O2de3e": {
+    "developer_comment": "Spain",
+    "string": "Spain",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/O3mm9/": {
+    "developer_comment": "Marshall Islands",
+    "string": "Marshall Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/OQ+Olf": {
+    "developer_comment": "Saint Helena, Ascension and Tristan da Cunha",
+    "string": "Saint Helena, Ascension and Tristan da Cunha",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/OSzrGw": {
+    "developer_comment": "Curaçao",
+    "string": "Curaçao",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/PXdiHI": {
+    "developer_comment": "Trinidad and Tobago",
+    "string": "Trinidad and Tobago",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/QFKhj9": {
+    "developer_comment": "Cook Islands",
+    "string": "Cook Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/QOTB1q": {
+    "developer_comment": "Luxembourg",
+    "string": "Luxembourg",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/QpbfVe": {
+    "developer_comment": "American Samoa",
+    "string": "American Samoa",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/QrZxS5": {
+    "developer_comment": "Albania",
+    "string": "Albania",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/R3SQiE": {
+    "developer_comment": "Chad",
+    "string": "Chad",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/R3YX6x": {
+    "developer_comment": "Turks and Caicos Islands",
+    "string": "Turks and Caicos Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/RIE26p": {
+    "developer_comment": "Peru",
+    "string": "Peru",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Rec3oK": {
+    "developer_comment": "Israel",
+    "string": "Israel",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/S17KaW": {
+    "developer_comment": "Tokelau",
+    "string": "Tokelau",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/S8InDN": {
+    "developer_comment": "Colombia",
+    "string": "Colombia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/SGi7gS": {
+    "developer_comment": "Netherlands",
+    "string": "Netherlands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/SH5Jnu": {
+    "developer_comment": "South Korea",
+    "string": "South Korea",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Sgfz6i": {
+    "developer_comment": "Antigua and Barbuda",
+    "string": "Antigua and Barbuda",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ShtpIG": {
+    "developer_comment": "New Caledonia",
+    "string": "New Caledonia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/SiD5zn": {
+    "developer_comment": "Svalbard and Jan Mayen",
+    "string": "Svalbard and Jan Mayen",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/TJWI4F": {
+    "developer_comment": "Ecuador",
+    "string": "Ecuador",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/TTBXCb": {
+    "developer_comment": "Myanmar",
+    "string": "Myanmar",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/TYzswE": {
+    "developer_comment": "Côte d'Ivoire",
+    "string": "Côte d'Ivoire",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/TaJXxW": {
+    "developer_comment": "Palau",
+    "string": "Palau",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Tz8NeM": {
+    "developer_comment": "Jamaica",
+    "string": "Jamaica",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Uw1fwi": {
+    "developer_comment": "Holy See",
+    "string": "Holy See",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/UwnYL4": {
+    "developer_comment": "Lithuania",
+    "string": "Lithuania",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/V+VLpH": {
+    "developer_comment": "Eritrea",
+    "string": "Eritrea",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/VA5Ius": {
+    "developer_comment": "North Korea",
+    "string": "North Korea",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/VVk1wF": {
+    "developer_comment": "Nauru",
+    "string": "Nauru",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/VpVsVE": {
+    "developer_comment": "Heard Island and McDonald Islands",
+    "string": "Heard Island and McDonald Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Vty5er": {
+    "developer_comment": "Dominica",
+    "string": "Dominica",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Vwjf0I": {
+    "developer_comment": "Kazakhstan",
+    "string": "Kazakhstan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/WH/GNk": {
+    "developer_comment": "Tuvalu",
+    "string": "Tuvalu",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/WHUUaK": {
+    "developer_comment": "Réunion",
+    "string": "Réunion",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/WW/g37": {
+    "developer_comment": "Hong Kong",
+    "string": "Hong Kong",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/WXy06l": {
+    "developer_comment": "Belarus",
+    "string": "Belarus",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/XVI43y": {
+    "developer_comment": "Lebanon",
+    "string": "Lebanon",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/XdlbBW": {
+    "developer_comment": "South Georgia and the South Sandwich Islands",
+    "string": "South Georgia and the South Sandwich Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/YOjgGK": {
+    "developer_comment": "Morocco",
+    "string": "Morocco",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/YW2Rgu": {
+    "developer_comment": "Seychelles",
+    "string": "Seychelles",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ZgL3J3": {
+    "developer_comment": "Norway",
+    "string": "Norway",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/Zx6/Wd": {
+    "developer_comment": "India",
+    "string": "India",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/a/HhAT": {
+    "developer_comment": "Malawi",
+    "string": "Malawi",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/a0Q5EY": {
+    "developer_comment": "Barbados",
+    "string": "Barbados",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/a5hpgt": {
+    "developer_comment": "Slovakia",
+    "string": "Slovakia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/aFeJk2": {
+    "developer_comment": "Haiti",
+    "string": "Haiti",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/aFf8xn": {
+    "developer_comment": "Algeria",
+    "string": "Algeria",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/aREuhs": {
+    "developer_comment": "Fiji",
+    "string": "Fiji",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/aSLBUy": {
+    "developer_comment": "Thailand",
+    "string": "Thailand",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/b3rvTZ": {
+    "developer_comment": "Guinea",
+    "string": "Guinea",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/bC+63M": {
+    "developer_comment": "Bhutan",
+    "string": "Bhutan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/bDMNqd": {
+    "developer_comment": "New Zealand",
+    "string": "New Zealand",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/bNXMjj": {
+    "developer_comment": "Malta",
+    "string": "Malta",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/bbEGxs": {
+    "developer_comment": "Congo (the Democratic Republic of the)",
+    "string": "Congo (the Democratic Republic of the)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/bgCInd": {
+    "developer_comment": "Brazil",
+    "string": "Brazil",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/bx18RE": {
+    "developer_comment": "Sint Maarten (Dutch part)",
+    "string": "Sint Maarten (Dutch part)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/cEUj16": {
+    "developer_comment": "Nicaragua",
+    "string": "Nicaragua",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/cfKJbG": {
+    "developer_comment": "Burkina Faso",
+    "string": "Burkina Faso",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/chgM/b": {
+    "developer_comment": "Venezuela",
+    "string": "Venezuela",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/d9f9F7": {
+    "developer_comment": "Syria",
+    "string": "Syria",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/dDPcLg": {
+    "developer_comment": "Sao Tome and Principe",
+    "string": "Sao Tome and Principe",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/dHwCKw": {
+    "developer_comment": "Portugal",
+    "string": "Portugal",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/dhTIfP": {
+    "developer_comment": "Antarctica",
+    "string": "Antarctica",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/e4oQUX": {
+    "developer_comment": "Tunisia",
+    "string": "Tunisia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ehL1qR": {
+    "developer_comment": "Qatar",
+    "string": "Qatar",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ejmNM1": {
+    "developer_comment": "Saint Pierre and Miquelon",
+    "string": "Saint Pierre and Miquelon",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/f//ZhL": {
+    "developer_comment": "British Indian Ocean Territory",
+    "string": "British Indian Ocean Territory",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/f7hDXo": {
+    "developer_comment": "Belize",
+    "string": "Belize",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/fN0/YF": {
+    "developer_comment": "Gabon",
+    "string": "Gabon",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/gABGvv": {
+    "developer_comment": "United Kingdom",
+    "string": "United Kingdom",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/gSfZWs": {
+    "developer_comment": "Isle of Man",
+    "string": "Isle of Man",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/gcO54p": {
+    "developer_comment": "Libya",
+    "string": "Libya",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/gkNUOW": {
+    "developer_comment": "Saudi Arabia",
+    "string": "Saudi Arabia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/gmp08N": {
+    "developer_comment": "Tonga",
+    "string": "Tonga",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/h3kviB": {
+    "developer_comment": "Gibraltar",
+    "string": "Gibraltar",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/hEqPVT": {
+    "developer_comment": "Benin",
+    "string": "Benin",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/hF+SJn": {
+    "developer_comment": "Western Sahara",
+    "string": "Western Sahara",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/hINdUv": {
+    "developer_comment": "Jersey",
+    "string": "Jersey",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/hQKX9A": {
+    "developer_comment": "Taiwan",
+    "string": "Taiwan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/hR6Dsj": {
+    "developer_comment": "Macao",
+    "string": "Macao",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/hyjjwk": {
+    "developer_comment": "Martinique",
+    "string": "Martinique",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/i4LHfV": {
+    "developer_comment": "Somalia",
+    "string": "Somalia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/iCux5z": {
+    "developer_comment": "Ghana",
+    "string": "Ghana",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/iSL4lW": {
+    "developer_comment": "Nepal",
+    "string": "Nepal",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ifvs0d": {
+    "developer_comment": "Guinea-Bissau",
+    "string": "Guinea-Bissau",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/iswnHN": {
+    "developer_comment": "United States Minor Outlying Islands",
+    "string": "United States Minor Outlying Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/jD5+pT": {
+    "developer_comment": "France",
+    "string": "France",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/jzUm6I": {
+    "developer_comment": "Eswatini",
+    "string": "Eswatini",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/l1KbE7": {
+    "developer_comment": "French Guiana",
+    "string": "French Guiana",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/lJsAwX": {
+    "developer_comment": "Finland",
+    "string": "Finland",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/lfa27y": {
+    "developer_comment": "Greece",
+    "string": "Greece",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/mbQguu": {
+    "developer_comment": "Estonia",
+    "string": "Estonia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/mfEieV": {
+    "developer_comment": "Denmark",
+    "string": "Denmark",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/nI5eDJ": {
+    "developer_comment": "Ethiopia",
+    "string": "Ethiopia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/nKinNt": {
+    "developer_comment": "North Macedonia",
+    "string": "North Macedonia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/nRLW35": {
+    "developer_comment": "Namibia",
+    "string": "Namibia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/nY7lQ3": {
+    "developer_comment": "South Sudan",
+    "string": "South Sudan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/nnh9Bk": {
+    "developer_comment": "Bulgaria",
+    "string": "Bulgaria",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/np1zL8": {
+    "developer_comment": "Azerbaijan",
+    "string": "Azerbaijan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ntGFyq": {
+    "developer_comment": "Austria",
+    "string": "Austria",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/o/1QQo": {
+    "developer_comment": "Solomon Islands",
+    "string": "Solomon Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/oA/ktV": {
+    "developer_comment": "Madagascar",
+    "string": "Madagascar",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/pgPJJ/": {
+    "developer_comment": "Sweden",
+    "string": "Sweden",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/pgVv/N": {
+    "developer_comment": "Virgin Islands (U.S.)",
+    "string": "Virgin Islands (U.S.)",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/q4CJGn": {
+    "developer_comment": "Niue",
+    "string": "Niue",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qJhQH+": {
+    "developer_comment": "Kenya",
+    "string": "Kenya",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qOzgfA": {
+    "developer_comment": "Armenia",
+    "string": "Armenia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qTX4+E": {
+    "developer_comment": "Saint Lucia",
+    "string": "Saint Lucia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qYb5Jk": {
+    "developer_comment": "United Arab Emirates",
+    "string": "United Arab Emirates",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qeafX4": {
+    "developer_comment": "Bouvet Island",
+    "string": "Bouvet Island",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qormkg": {
+    "developer_comment": "Uruguay",
+    "string": "Uruguay",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/qtwUHg": {
+    "developer_comment": "Sierra Leone",
+    "string": "Sierra Leone",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/sJb+g5": {
+    "developer_comment": "Uzbekistan",
+    "string": "Uzbekistan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/skQIxY": {
+    "developer_comment": "United States of America",
+    "string": "United States of America",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/t+/kLN": {
+    "developer_comment": "Italy",
+    "string": "Italy",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/tIboLQ": {
+    "developer_comment": "Pakistan",
+    "string": "Pakistan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/tK6E11": {
+    "developer_comment": "Vanuatu",
+    "string": "Vanuatu",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/tP/Oze": {
+    "developer_comment": "Northern Mariana Islands",
+    "string": "Northern Mariana Islands",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/tYEJBL": {
+    "developer_comment": "Lesotho",
+    "string": "Lesotho",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ti2ZL4": {
+    "developer_comment": "Tajikistan",
+    "string": "Tajikistan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/tpJaze": {
+    "developer_comment": "Sri Lanka",
+    "string": "Sri Lanka",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/tzgM0t": {
+    "developer_comment": "Mauritania",
+    "string": "Mauritania",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/u+YfYt": {
+    "developer_comment": "Sudan",
+    "string": "Sudan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/u61Uce": {
+    "developer_comment": "Turkey",
+    "string": "Turkey",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/u91qY4": {
+    "developer_comment": "Cameroon",
+    "string": "Cameroon",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/uE53ck": {
+    "developer_comment": "San Marino",
+    "string": "San Marino",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/uKkCu3": {
+    "developer_comment": "Ireland",
+    "string": "Ireland",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ugRA1N": {
+    "developer_comment": "Palestine, State of",
+    "string": "Palestine, State of",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/uz7aXC": {
+    "developer_comment": "Liechtenstein",
+    "string": "Liechtenstein",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/v5+WFh": {
+    "developer_comment": "Switzerland",
+    "string": "Switzerland",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/v7V3TJ": {
+    "developer_comment": "Philippines",
+    "string": "Philippines",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/vB4cu8": {
+    "developer_comment": "Kiribati",
+    "string": "Kiribati",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/vVqZDn": {
+    "developer_comment": "Oman",
+    "string": "Oman",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/vhPQFk": {
+    "developer_comment": "Liberia",
+    "string": "Liberia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/wQRvOc": {
+    "developer_comment": "Indonesia",
+    "string": "Indonesia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/wb7BE+": {
+    "developer_comment": "Gambia",
+    "string": "Gambia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/xQTOMT": {
+    "developer_comment": "Zambia",
+    "string": "Zambia",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/yEktUH": {
+    "developer_comment": "Cyprus",
+    "string": "Cyprus",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/yIymyU": {
+    "developer_comment": "Kuwait",
+    "string": "Kuwait",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ye07k9": {
+    "developer_comment": "Bosnia and Herzegovina",
+    "string": "Bosnia and Herzegovina",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/ykbN9o": {
+    "developer_comment": "Hungary",
+    "string": "Hungary",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/z7tOzp": {
+    "developer_comment": "Tanzania",
+    "string": "Tanzania",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/zKLtUg": {
+    "developer_comment": "Anguilla",
+    "string": "Anguilla",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/zV566+": {
+    "developer_comment": "Afghanistan",
+    "string": "Afghanistan",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/zVAmwy": {
+    "developer_comment": "Burundi",
+    "string": "Burundi",
+    "@TODO": "Please translate this"
+  },
+  "AddressForm/messages/zyu9ti": {
+    "developer_comment": "Bonaire, Sint Eustatius and Saba",
+    "string": "Bonaire, Sint Eustatius and Saba",
+    "@TODO": "Please translate this"
   },
   "AddressSelectBox/messages//II2Kl": {
     "developer_comment": "edit address accessibility label",
@@ -126,6 +1360,11 @@
   "Contact/messages/xRJQ5g": {
     "developer_comment": "provide a new password",
     "string": "Provide a new password for your account"
+  },
+  "DeliveryMethods/messages/927KCY": {
+    "developer_comment": "no shipping address message",
+    "string": "Please fill in shipping address to see available shipping methods",
+    "@TODO": "Please translate this"
   },
   "DeliveryMethods/messages/DGFTo/": {
     "developer_comment": "business days",
@@ -243,10 +1482,6 @@
     "developer_comment": "paid order message",
     "string": "We've received your payment"
   },
-  "PageHeader/messages/7uJ/Tb": {
-    "developer_comment": "dummy",
-    "string": "Dummy"
-  },
   "PageHeader/messages/7vp32g": {
     "developer_comment": "dutch",
     "string": "Dutch"
@@ -262,6 +1497,11 @@
   "PageHeader/messages/kd+Ya5": {
     "developer_comment": "polish",
     "string": "Polish"
+  },
+  "PageHeader/messages/x3KBZ/": {
+    "developer_comment": "minion",
+    "string": "Minion",
+    "@TODO": "Please translate this"
   },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",
