@@ -22470,7 +22470,7 @@ export type ChannelQuery = {
   __typename?: "Query";
   channel?: {
     __typename?: "Channel";
-    countries?: Array<{ __typename?: "CountryDisplay"; code: string; country: string }> | null;
+    countries?: Array<{ __typename?: "CountryDisplay"; code: string }> | null;
   } | null;
 };
 
@@ -24493,7 +24493,6 @@ export const ChannelDocument = gql`
     channel(slug: $slug) {
       countries {
         code
-        country
       }
     }
   }
