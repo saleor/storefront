@@ -209,6 +209,7 @@ query channel($slug: String!) {
   channel(slug: $slug) {
     countries {
       code
+      country
     }
   }
 }
