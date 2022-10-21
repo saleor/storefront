@@ -1,8 +1,8 @@
-import { CountryCode } from "@/checkout-storefront/graphql";
+import { CountryCode, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
-import { reduce } from "lodash-es";
+import { reduce, snakeCase } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
 import { OperationResult } from "urql";
@@ -55,6 +55,9 @@ export const setLanguageInUrl = (locale: Locale) =>
 export const clearUrlAfterPasswordReset = (): void => {
   replaceUrl({ query: { ...getRawQueryParams(), token: undefined, email: undefined } });
 };
+
+export const localeToLanguageCode = (locale: Locale) =>
+  snakeCase(locale).toUpperCase() as LanguageCodeEnum;
 
 export const replaceUrl = ({
   url = window.location.toString(),

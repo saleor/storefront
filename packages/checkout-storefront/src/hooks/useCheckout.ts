@@ -1,17 +1,17 @@
 import { useMemo } from "react";
 
 import { Checkout, useCheckoutQuery } from "@/checkout-storefront/graphql";
-import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils";
+import { extractCheckoutIdFromUrl, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
-import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);
+  const { locale } = useLocale();
   const { authenticating } = useAuthState();
-  const getQueryVarsWithLocale = useQueryVarsWithLocale();
 
   const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
-    variables: getQueryVarsWithLocale({ id }),
+    variables: { id, languageCode: localeToLanguageCode(locale) },
     pause: pause || authenticating,
   });
 

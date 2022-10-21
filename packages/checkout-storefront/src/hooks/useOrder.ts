@@ -1,11 +1,12 @@
 import { OrderFragment, useOrderQuery } from "@/checkout-storefront/graphql";
-import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 
 export const useOrder = (id: string) => {
-  const getQueryVarsWithLocale = useQueryVarsWithLocale();
+  const { locale } = useLocale();
 
   const [{ data, fetching: loading }] = useOrderQuery({
-    variables: getQueryVarsWithLocale({ id }),
+    variables: { languageCode: localeToLanguageCode(locale), id },
   });
 
   return { order: data?.order as OrderFragment, loading };

@@ -11,13 +11,18 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { extractMutationErrors, getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  getById,
+  getFormattedMoney,
+  localeToLanguageCode,
+} from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useCheckoutUpdateStateTrigger, useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
-import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 interface FormData {
   selectedMethodId: string | undefined;
@@ -25,7 +30,7 @@ interface FormData {
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
-  const getQueryVarsWithLocale = useQueryVarsWithLocale();
+  const { locale } = useLocale();
   const { checkout } = useCheckout();
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
@@ -97,12 +102,11 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
         return;
       }
 
-      const result = await updateDeliveryMethod(
-        getQueryVarsWithLocale({
-          deliveryMethodId: selectedMethodId,
-          checkoutId: checkout.id,
-        })
-      );
+      const result = await updateDeliveryMethod({
+        languageCode: localeToLanguageCode(locale),
+        deliveryMethodId: selectedMethodId,
+        checkoutId: checkout.id,
+      });
 
       const [hasErrors, errors] = extractMutationErrors(result);
 
@@ -112,7 +116,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       setValue("selectedMethodId", selectedMethodId);
       showErrors(errors);
     },
-    [updateDeliveryMethod, getQueryVarsWithLocale, checkout.id, setValue, showErrors]
+    [updateDeliveryMethod, locale, checkout.id, setValue, showErrors]
   );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({

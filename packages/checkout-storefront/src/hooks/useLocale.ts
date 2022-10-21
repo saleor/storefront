@@ -6,12 +6,10 @@ import { useMemo, useState } from "react";
 
 import EN_US from "../../content/compiled-locales/en-US.json";
 import PL_PL from "../../content/compiled-locales/pl-PL.json";
-import Minion from "../../content/compiled-locales/minion.json";
 
 const localeToMessages: Record<Locale, any> = {
   "en-US": EN_US,
   "pl-PL": PL_PL,
-  minion: Minion,
 };
 
 interface UseLocale {

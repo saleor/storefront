@@ -9,7 +9,7 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { GuestAddressSection } from "../GuestAddressSection/GuestAddressSection";
@@ -22,11 +22,11 @@ import {
   getAddressFormDataFromAddress,
 } from "@/checkout-storefront/lib/utils";
 import { billingMessages } from "./messages";
-import { useQueryVarsWithLocale } from "@/checkout-storefront/hooks/useQueryVarsWithLocale";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
-  const getQueryVarsWithLocale = useQueryVarsWithLocale();
+  const { locale } = useLocale();
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress, id: checkoutId } = checkout;
@@ -59,13 +59,12 @@ export const BillingAddressSection = () => {
 
   const updateBillingAddress = useCallback(
     async ({ autoSave, ...addressInput }: AddressFormData) => {
-      const result = await checkoutBillingAddressUpdate(
-        getQueryVarsWithLocale({
-          checkoutId,
-          billingAddress: getAddressInputData(addressInput),
-          validationRules: getAddressVlidationRulesVariables(autoSave),
-        })
-      );
+      const result = await checkoutBillingAddressUpdate({
+        languageCode: localeToLanguageCode(locale),
+        checkoutId,
+        billingAddress: getAddressInputData(addressInput),
+        validationRules: getAddressVlidationRulesVariables(autoSave),
+      });
 
       const [hasErrors, errors] = extractMutationErrors(result);
 
@@ -74,7 +73,7 @@ export const BillingAddressSection = () => {
         setApiErrors(errors);
       }
     },
-    [checkoutBillingAddressUpdate, checkoutId, getQueryVarsWithLocale, setApiErrors, showErrors]
+    [checkoutBillingAddressUpdate, checkoutId, locale, setApiErrors, showErrors]
   );
 
   const setBillingSameAsShipping = useCallback(async () => {
