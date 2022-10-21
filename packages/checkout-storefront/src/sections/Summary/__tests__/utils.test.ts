@@ -9,14 +9,14 @@ import { getMockProviders } from "@/checkout-storefront/__tests__/utils";
 
 describe("useSummaryLineAttributesText", () => {
   it("should return properly formatted string for line with attributes", () => {
+    const line = checkout.lines[0];
+
     const { result: hook } = renderHook(
       () => useSummaryLineLineAttributesText(line as CheckoutLineFragment),
       {
         wrapper: getMockProviders({ intl: true }),
       }
     );
-
-    const line = checkout.lines[0];
 
     expect(hook.current).toEqual("White, 45cm x 45cm, aaaa, 1, 700ml, XS");
   });
