@@ -35,8 +35,7 @@ export default function App(props: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        {/* eslint-disable-next-line react/no-unknown-property */}
-        <style jsx global>
+        <style>
           {`
             html,
             body {
@@ -49,9 +48,9 @@ export default function App(props: AppProps) {
               box-sizing: border-box;
             }
             body {
-              font-family: "Roboto", "Helvetica", "Arial", sans-serif;
               font-size: 1rem;
               margin: 0;
+              background: transparent !important;
             }
           `}
         </style>
@@ -74,6 +73,9 @@ export default function App(props: AppProps) {
                     fontSize: "0.8em",
                     textAlign: "center",
                     color: "#777",
+                    transform: "translateY(-100%)",
+                    height: "1.7rem",
+                    marginTop: "-1.7rem",
                   }}
                 >
                   <small>{version}</small>
