@@ -1,7 +1,7 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
-import { Locale } from "@/checkout-storefront/lib/regions";
+import { DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
 import { reduce } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -34,9 +34,14 @@ export const getRawQueryParams = () => queryString.parse(location.search);
 
 export const getQueryParams = (): QueryParams => {
   const vars = getRawQueryParams();
+
+  if (typeof vars.locale !== "string") {
+    replaceUrl({ query: { ...vars, locale: DEFAULT_LOCALE } });
+  }
+
   return {
     ...vars,
-    locale: vars.locale as Locale,
+    locale: vars.locale || (DEFAULT_LOCALE as Locale),
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
@@ -82,12 +87,8 @@ export const isOrderConfirmationPage = () => {
 };
 
 export const getParsedLocaleData = (
-  locale?: Locale
+  locale: Locale
 ): { locale: Locale; countryCode: CountryCode } => {
-  if (typeof locale !== "string") {
-    throw new Error("Invalid url");
-  }
-
   const [, countryCode] = locale?.split("-");
 
   return { countryCode: countryCode as CountryCode, locale };
