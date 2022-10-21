@@ -1,5 +1,6 @@
 import { CheckoutLineFragment, OrderLineFragment } from "@/checkout-storefront/graphql";
 import compact from "lodash-es/compact";
+import { useIntl } from "react-intl";
 
 export const isCheckoutLine = (
   line: CheckoutLineFragment | OrderLineFragment
@@ -12,8 +13,8 @@ export const getThumbnailFromLine = (line: CheckoutLineFragment) =>
 export const getSummaryLineProps = (line: OrderLineFragment | CheckoutLineFragment) =>
   isCheckoutLine(line)
     ? {
-        variantName: line.variant.name,
-        productName: line.variant.product.name,
+        variantName: line.variant.translation?.name || line.variant.name,
+        productName: line.variant.product.translation?.name || line.variant.product.name,
         productImage: getThumbnailFromLine(line),
       }
     : {
@@ -22,13 +23,29 @@ export const getSummaryLineProps = (line: OrderLineFragment | CheckoutLineFragme
         productImage: line.thumbnail,
       };
 
-export const getSummaryLineAttributesText = (line: CheckoutLineFragment | OrderLineFragment) =>
-  compact(
-    line.variant?.attributes.reduce(
-      (result: Array<string | undefined | null>, { values }) => [
+export const useSummaryLineLineAttributesText = (
+  line: CheckoutLineFragment | OrderLineFragment
+): string => {
+  const intl = useIntl();
+
+  const parsedValues =
+    line.variant?.attributes?.reduce<Array<string | undefined | null>>(
+      (result, { values }) => [
         ...result,
-        ...values.map(({ name }) => name),
+        ...values.map(({ name, dateTime, translation }) => {
+          if (translation?.name) {
+            return translation.name;
+          }
+
+          if (dateTime) {
+            return intl.formatDate(dateTime, { dateStyle: "medium" });
+          }
+
+          return name;
+        }),
       ],
       []
-    )
-  ).join(", ") || "";
+    ) || [];
+
+  return compact(parsedValues).join(", ");
+};

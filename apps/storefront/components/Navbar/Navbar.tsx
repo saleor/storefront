@@ -23,10 +23,10 @@ export function Navbar() {
   const [isBurgerOpen, setBurgerOpen] = useState(false);
   const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
-  const { currentChannel, currentLocale } = useRegions();
+  const { currentLocale } = useRegions();
 
   const externalCheckoutUrl = checkout
-    ? `/checkout/?checkout=${checkout.id}&locale=${currentLocale}&channel=${currentChannel.slug}`
+    ? `/checkout/?checkout=${checkout.id}&locale=${currentLocale}`
     : "";
 
   useEffect(() => {

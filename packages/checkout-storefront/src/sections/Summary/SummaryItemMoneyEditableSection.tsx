@@ -8,7 +8,11 @@ import {
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
-import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  localeToLanguageCode,
+  useValidationResolver,
+} from "@/checkout-storefront/lib/utils";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { object, string } from "yup";
@@ -19,6 +23,7 @@ import { Skeleton } from "@/checkout-storefront/components";
 import { useErrorMessages } from "@/checkout-storefront/hooks";
 import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 import { summaryMessages } from "./messages";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
@@ -31,6 +36,7 @@ export interface FormData {
 export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
   line,
 }) => {
+  const { locale } = useLocale();
   const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
   const { checkout } = useCheckout();
@@ -71,6 +77,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const getInputProps = useGetInputProps(methods);
 
   const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables => ({
+    languageCode: localeToLanguageCode(locale),
     checkoutId: checkout.id,
     lines: [
       {
@@ -81,7 +88,11 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   });
 
   const onLineDelete = async () => {
-    const result = await deleteLines({ checkoutId: checkout.id, lineId: line.id });
+    const result = await deleteLines({
+      languageCode: localeToLanguageCode(locale),
+      checkoutId: checkout.id,
+      lineId: line.id,
+    });
     const [hasMutationErrors, errors] = extractMutationErrors(result);
 
     if (!hasMutationErrors) {

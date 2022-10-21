@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react";
 import { Text } from "@saleor/ui-kit";
 import { PhotoIcon } from "@/checkout-storefront/icons";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { getSummaryLineAttributesText, getSummaryLineProps } from "./utils";
+import { useSummaryLineLineAttributesText, getSummaryLineProps } from "./utils";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { summaryLabels } from "./messages";
 
@@ -18,7 +18,7 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
 
   const formatMessage = useFormattedMessages();
 
-  const attributesText = getSummaryLineAttributesText(line);
+  const attributesText = useSummaryLineLineAttributesText(line);
 
   return (
     <li className="summary-item">

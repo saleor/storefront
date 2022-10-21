@@ -1,15 +1,16 @@
 import { useGetParsedApiErrors } from "./useGetParsedApiErrors";
 import { useCallback, useState } from "react";
 import { ApiErrors, Errors } from "./types";
+import { FieldValues } from "react-hook-form";
 
-export interface UseErrors<TFormData> {
+export interface UseErrors<TFormData extends FieldValues> {
   errors: Errors<TFormData>;
   setApiErrors: (apiErrors: ApiErrors<TFormData>) => void;
   clearErrors: () => void;
   hasErrors: boolean;
 }
 
-export const useErrors = <TFormData>(): UseErrors<TFormData> => {
+export const useErrors = <TFormData extends FieldValues>(): UseErrors<TFormData> => {
   const [errors, setErrors] = useState<Errors<TFormData>>({});
   const getParsedApiErrors = useGetParsedApiErrors<TFormData>();
 

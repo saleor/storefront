@@ -8,18 +8,24 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
-import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  localeToLanguageCode,
+  useValidationResolver,
+} from "@/checkout-storefront/lib/utils";
 import { summaryLabels, summaryMessages } from "./messages";
 import clsx from "clsx";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 interface FormData {
   promoCode: string;
 }
 
 export const PromoCodeAdd: FC<Classes> = ({ className }) => {
+  const { locale } = useLocale();
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
   const { setApiErrors, errors } = useErrors<FormData>();
@@ -39,7 +45,11 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const showApplyButton = !!watch("promoCode");
 
   const onSubmit = async ({ promoCode }: FormData) => {
-    const result = await checkoutAddPromoCode({ promoCode, checkoutId: checkout.id });
+    const result = await checkoutAddPromoCode({
+      languageCode: localeToLanguageCode(locale),
+      promoCode,
+      checkoutId: checkout.id,
+    });
     const [hasErrors, apiErrors] = extractMutationErrors(result);
 
     if (hasErrors) {

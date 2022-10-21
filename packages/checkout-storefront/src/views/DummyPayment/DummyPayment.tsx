@@ -9,7 +9,8 @@ import { useAppConfig } from "../../providers/AppConfigProvider";
 import { toast } from "react-toastify";
 import { Text } from "@saleor/ui-kit";
 import { dummyPaymentMessages } from "./messages";
-import { getQueryParams } from "@/checkout-storefront/lib/utils";
+import { getQueryParams, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 const getOrderConfirmationUrl = () => {
   const url = new URL(window.location.href);
@@ -64,8 +65,11 @@ type DummyPaymentFormValues = {
 
 export const DummyPayment = () => {
   const orderId = getQueryParams().orderId ?? "";
+  const { locale } = useLocale();
   const formatMessage = useFormattedMessages();
-  const [orderResult] = useOrderQuery({ variables: { id: orderId } });
+  const [orderResult] = useOrderQuery({
+    variables: { languageCode: localeToLanguageCode(locale), id: orderId },
+  });
   const [dummyPayResult, dummyPay] = useDummyPay();
 
   const orderPaymentAmount = orderResult.data?.order?.total.gross.amount ?? 0;

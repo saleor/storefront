@@ -1,9 +1,9 @@
-import { FieldError, Path, UseFormSetError } from "react-hook-form";
+import { FieldError, FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { Errors } from "@/checkout-storefront/hooks/useErrors";
 import { forEach } from "lodash-es";
 import { useCallback, useEffect } from "react";
 
-function useSetFormErrors<TFormData>({
+function useSetFormErrors<TFormData extends FieldValues>({
   setError,
   errors,
 }: {

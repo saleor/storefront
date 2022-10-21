@@ -40,13 +40,15 @@ export const usePay = () => {
           orderId,
           data: { paymentUrl },
         } = result as PaySuccessResult;
-        replaceUrl({ query: { locale: getQueryParams().locale, order: orderId } });
+        replaceUrl({
+          query: { locale: getQueryParams().locale, checkout: undefined, order: orderId },
+        });
         window.location.href = paymentUrl;
       }
       if (!result?.ok && result?.orderId) {
         // Order created, payment creation failed, checkout doesn't exist
         const newUrl = replaceUrl({
-          query: { locale: getQueryParams().locale, order: result?.orderId },
+          query: { locale: getQueryParams().locale, checkout: undefined, order: result?.orderId },
         });
         window.location.href = newUrl;
       }

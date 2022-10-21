@@ -1,6 +1,10 @@
 import { useCheckoutEmailUpdateMutation } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  localeToLanguageCode,
+  useValidationResolver,
+} from "@/checkout-storefront/lib/utils";
 import React, { useCallback, useEffect, useState } from "react";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
 import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
@@ -17,6 +21,7 @@ import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/us
 import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 import { contactMessages } from "./messages";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -26,6 +31,7 @@ interface FormData {
 
 export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionChange }) => {
   const { checkout } = useCheckout();
+  const { locale } = useLocale();
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
   const { showErrors } = useAlerts("checkoutEmailUpdate");
@@ -86,6 +92,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       }
 
       const result = await updateEmail({
+        languageCode: localeToLanguageCode(locale),
         email,
         checkoutId: checkout.id,
       });
@@ -96,7 +103,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         showErrors(errors);
       }
     },
-    [showErrors, checkout.id, updateEmail, trigger]
+    [trigger, updateEmail, locale, checkout.id, showErrors]
   );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({

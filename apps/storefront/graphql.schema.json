@@ -45134,7 +45134,7 @@
               },
               {
                 "name": "customerId",
-                "description": "ID of customer to attach to checkout. Can be used to attach customer to checkout by staff or app. Requires IMPERSONATE_USER permission.",
+                "description": "ID of customer to attach to checkout. Requires IMPERSONATE_USER permission when customerId is different than the logged-in user.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "ID",
@@ -67743,6 +67743,26 @@
           {
             "name": "checkouts",
             "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ids",
+            "description": "Filter by ids. \n\nAdded in Saleor 3.8.",
             "type": {
               "kind": "LIST",
               "name": null,

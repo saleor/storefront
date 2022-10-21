@@ -1231,14 +1231,6 @@
     "developer_comment": "paid order message",
     "string": "We've received your payment"
   },
-  "PageHeader/messages/7vp32g": {
-    "developer_comment": "dutch",
-    "string": "Dutch"
-  },
-  "PageHeader/messages/e9JKRm": {
-    "developer_comment": "French",
-    "string": "French"
-  },
   "PageHeader/messages/eXrxj4": {
     "developer_comment": "english usa",
     "string": "English (USA)"
@@ -1246,10 +1238,6 @@
   "PageHeader/messages/kd+Ya5": {
     "developer_comment": "polish",
     "string": "Polish"
-  },
-  "PageHeader/messages/x3KBZ/": {
-    "developer_comment": "minion",
-    "string": "Minion"
   },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",

@@ -146,12 +146,27 @@ fragment CheckoutLineFragment on CheckoutLine {
     attributes(variantSelection: ALL) {
       values {
         name
+        dateTime
+        boolean
+        translation(languageCode: $languageCode) {
+          name
+        }
       }
     }
     id
     name
+    translation(languageCode: $languageCode) {
+      name
+    }
     product {
       name
+      translation(languageCode: $languageCode) {
+        language {
+          code
+        }
+        id
+        name
+      }
       media {
         alt
         type
@@ -184,7 +199,7 @@ fragment AddressFragment on Address {
   lastName
 }
 
-query checkout($id: ID!) {
+query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
   checkout(id: $id) {
     ...CheckoutFragment
   }
@@ -213,7 +228,11 @@ query channel($slug: String!) {
   }
 }
 
-mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {
+mutation checkoutLinesUpdate(
+  $checkoutId: ID!
+  $lines: [CheckoutLineUpdateInput!]!
+  $languageCode: LanguageCodeEnum!
+) {
   checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
     errors {
       ...CheckoutErrorFragment
@@ -224,7 +243,7 @@ mutation checkoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!
   }
 }
 
-mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
+mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID, $languageCode: LanguageCodeEnum!) {
   checkoutLineDelete(id: $checkoutId, lineId: $lineId) {
     errors {
       ...CheckoutErrorFragment
@@ -235,7 +254,7 @@ mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID) {
   }
 }
 
-mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
+mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
   checkoutEmailUpdate(email: $email, id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
@@ -246,7 +265,7 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!) {
   }
 }
 
-mutation checkoutCustomerAttach($checkoutId: ID!) {
+mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
   checkoutCustomerAttach(id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
@@ -257,7 +276,7 @@ mutation checkoutCustomerAttach($checkoutId: ID!) {
   }
 }
 
-mutation checkoutCustomerDetach($checkoutId: ID!) {
+mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
   checkoutCustomerDetach(id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
@@ -304,6 +323,7 @@ mutation checkoutShippingAddressUpdate(
   $checkoutId: ID!
   $shippingAddress: AddressInput!
   $validationRules: CheckoutAddressValidationRules
+  $languageCode: LanguageCodeEnum!
 ) {
   checkoutShippingAddressUpdate(
     id: $checkoutId
@@ -323,6 +343,7 @@ mutation checkoutBillingAddressUpdate(
   $checkoutId: ID!
   $billingAddress: AddressInput!
   $validationRules: CheckoutAddressValidationRules
+  $languageCode: LanguageCodeEnum!
 ) {
   checkoutBillingAddressUpdate(
     id: $checkoutId
@@ -338,7 +359,11 @@ mutation checkoutBillingAddressUpdate(
   }
 }
 
-mutation checkoutDeliveryMethodUpdate($checkoutId: ID!, $deliveryMethodId: ID!) {
+mutation checkoutDeliveryMethodUpdate(
+  $checkoutId: ID!
+  $deliveryMethodId: ID!
+  $languageCode: LanguageCodeEnum!
+) {
   checkoutDeliveryMethodUpdate(id: $checkoutId, deliveryMethodId: $deliveryMethodId) {
     errors {
       ...CheckoutErrorFragment
@@ -355,7 +380,11 @@ query addressValidationRules($countryCode: CountryCode!) {
   }
 }
 
-mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!) {
+mutation checkoutAddPromoCode(
+  $checkoutId: ID
+  $promoCode: String!
+  $languageCode: LanguageCodeEnum!
+) {
   checkoutAddPromoCode(checkoutId: $checkoutId, promoCode: $promoCode) {
     errors {
       ...CheckoutErrorFragment
@@ -366,7 +395,12 @@ mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!) {
   }
 }
 
-mutation checkoutRemovePromoCode($checkoutId: ID, $promoCode: String, $promoCodeId: ID) {
+mutation checkoutRemovePromoCode(
+  $checkoutId: ID
+  $promoCode: String
+  $promoCodeId: ID
+  $languageCode: LanguageCodeEnum!
+) {
   checkoutRemovePromoCode(
     checkoutId: $checkoutId
     promoCode: $promoCode
