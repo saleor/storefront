@@ -1239,10 +1239,6 @@
     "developer_comment": "polish",
     "string": "Polish"
   },
-  "PageHeader/messages/x3KBZ/": {
-    "developer_comment": "minion",
-    "string": "Minion"
-  },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",
     "string": "We couldn’t fetch information about your checkout. Go back to the store and try again."
