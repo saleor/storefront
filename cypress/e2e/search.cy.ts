@@ -6,7 +6,7 @@ import { navigateAndSearch } from "../support/pages/search";
 
 describe("Search for products", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit("/").clearLocalStorage();
   });
 
   it("should search for products SRS_0405", () => {
@@ -17,10 +17,15 @@ describe("Search for products", () => {
   });
 
   it("should see no errors on search page SRS_0404", () => {
-    cy.get(NAVIGATION.searchIcon)
-      .click()
-      .url()
+    cy.addAliasToGraphRequest("ProductCollection")
+      .get(NAVIGATION.searchIcon)
+      .invoke("attr", "href")
+      .then((href) => {
+        cy.visit(href);
+      });
+    cy.url()
       .should("include", "/search")
+      .wait("@ProductCollection")
       .get(SHARED_ELEMENTS.productsList)
       .should("be.visible");
   });

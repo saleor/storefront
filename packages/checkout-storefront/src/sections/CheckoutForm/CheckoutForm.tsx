@@ -78,6 +78,7 @@ export const CheckoutForm = () => {
             label={formatMessage(checkoutFormMessages.pay)}
             className="pay-button"
             onClick={handleSubmit}
+            data-testid="pay-button"
           />
         ))}
     </div>

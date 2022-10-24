@@ -62,7 +62,7 @@ export function Navbar() {
           <div className="flex-1 flex justify-end">
             {!authenticated ? (
               <Link href={paths.account.login.$url()} passHref>
-                <a href="pass">
+                <a href="pass" data-testid="userIcon">
                   <NavIconButton icon="user" aria-hidden="true" />
                 </a>
               </Link>
@@ -70,13 +70,13 @@ export function Navbar() {
               <UserMenu />
             )}
             <Link href={externalCheckoutUrl} passHref>
-              <a href="pass" className="ml-2 hidden xs:flex">
+              <a href="pass" className="ml-2 hidden xs:flex" data-testid="cartIcon">
                 <NavIconButton icon="bag" aria-hidden="true" counter={counter} />
               </a>
             </Link>
             <Link href={paths.search.$url()} passHref>
-              <a href="pass" className="hidden lg:flex ml-2">
-                <NavIconButton icon="spyglass" data-testid="searchIcon" />
+              <a href="pass" className="hidden lg:flex ml-2" data-testid="searchIcon">
+                <NavIconButton icon="spyglass" />
               </a>
             </Link>
             <NavIconButton

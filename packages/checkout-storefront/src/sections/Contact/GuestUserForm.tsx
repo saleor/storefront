@@ -132,6 +132,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
           label={formatMessage(contactMessages.wantToCreateAccount)}
           checked={createAccountSelected}
           onChange={setCreateAccountSelected}
+          data-testid={"createAccountCheckbox"}
         />
         {createAccountSelected && (
           <div className="mt-2">

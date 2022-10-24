@@ -33,7 +33,11 @@ function NavIconButton({ icon, counter, ...rest }: NavIconButtonProps) {
   return (
     <button type="button" className={styles["nav-icon-button"]} {...rest}>
       {getIcon(icon)}
-      {!!counter && <span className={styles["nav-icon-counter"]}>{counter}</span>}
+      {!!counter && (
+        <span className={styles["nav-icon-counter"]} data-testid="cartCounter">
+          {counter}
+        </span>
+      )}
     </button>
   );
 }
