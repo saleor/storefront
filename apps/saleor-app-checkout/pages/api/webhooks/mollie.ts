@@ -1,4 +1,4 @@
-import { withSentry } from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { verifyPayment } from "@/saleor-app-checkout/backend/payments/providers/mollie";
@@ -18,6 +18,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const [paymentError, paymentData] = await unpackPromise(verifyPayment(id));
 
     if (paymentError) {
+      Sentry.captureException(paymentError);
       console.error("Error while validating payment", { paymentError });
       res.status(500).json({ error: "error while validating payment" });
       return;
@@ -38,4 +39,4 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(400).json({ error: "invalid request body" });
 }
 
-export default withSentry(handler);
+export default handler;
