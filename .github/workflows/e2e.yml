@@ -42,3 +42,4 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
+          
