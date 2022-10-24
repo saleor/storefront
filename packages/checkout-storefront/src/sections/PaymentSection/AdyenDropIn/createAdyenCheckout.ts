@@ -7,6 +7,7 @@ import {
   PostAdyenDropInPaymentsResponse,
 } from "checkout-common";
 import { PaymentResponse as AdyenApiPaymentResponse } from "@adyen/api-library/lib/src/typings/checkout/paymentResponse";
+import { replaceUrl } from "@/checkout-storefront/lib/utils/utils";
 
 export type AdyenCheckoutInstanceOnSubmit = (
   state: {
@@ -46,6 +47,7 @@ export function createAdyenCheckoutInstance(
     },
     onSubmit,
     onAdditionalDetails,
+    allowPaymentMethods: ["scheme"],
     // Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
     // For example, this is 3D Secure configuration for cards:
     paymentMethodsConfiguration: {
@@ -86,7 +88,10 @@ export function handlePaymentResult(
 
     case AdyenApiPaymentResponse.ResultCodeEnum.Authorised:
     case AdyenApiPaymentResponse.ResultCodeEnum.Success: {
-      const newUrl = `?order=${result.orderId}`;
+      component.setStatus("success");
+      const newUrl = replaceUrl({
+        query: { checkout: undefined, order: result?.orderId },
+      });
       window.location.href = newUrl;
       return;
     }
