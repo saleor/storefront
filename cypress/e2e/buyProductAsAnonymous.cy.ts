@@ -5,6 +5,7 @@ import { productsToSearch } from "../fixtures/search";
 import { addItemToCart, openProductPage } from "../support/pages/product-page";
 import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
 import { payByDummyPayment } from "../support/pages/checkout-page";
+import { checkIfOrderNumberAndPaymentStatusIsCorrect } from "../support/pages/order-confirmation-page";
 
 describe("Buy product as anonymous user", () => {
   let address;
@@ -25,6 +26,7 @@ describe("Buy product as anonymous user", () => {
       .addAliasToGraphRequest("checkoutShippingAddressUpdate")
       .addAliasToGraphRequest("checkoutBillingAddressUpdate")
       .addAliasToGraphRequest("checkoutDeliveryMethodUpdate")
+      .addAliasToGraphRequest("order")
       .get(SHARED_ELEMENTS.productsList)
       .children()
       .first()
@@ -51,6 +53,7 @@ describe("Buy product as anonymous user", () => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
     payByDummyPayment();
+    checkIfOrderNumberAndPaymentStatusIsCorrect();
   });
 
   it("should buy a digital product as anonymous SRS_1002", () => {
@@ -74,5 +77,6 @@ describe("Buy product as anonymous user", () => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
     payByDummyPayment();
+    checkIfOrderNumberAndPaymentStatusIsCorrect();
   });
 });
