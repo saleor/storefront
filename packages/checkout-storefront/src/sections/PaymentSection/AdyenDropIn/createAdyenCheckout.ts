@@ -46,6 +46,7 @@ export function createAdyenCheckoutInstance(
     },
     onSubmit,
     onAdditionalDetails,
+    allowPaymentMethods: ["scheme"],
     // Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
     // For example, this is 3D Secure configuration for cards:
     paymentMethodsConfiguration: {
