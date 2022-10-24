@@ -4,7 +4,6 @@ import { getAdyenClient } from "@/saleor-app-checkout/backend/payments/providers
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import type { DetailsRequest as AdyenDetailsRequest } from "@adyen/api-library/lib/src/typings/checkout/detailsRequest";
-import { withSentry } from "@sentry/nextjs";
 import {
   PostAdyenDropInPaymentsDetailsResponse,
   postDropInAdyenPaymentsDetailsBody,
@@ -38,11 +37,11 @@ const DropInAdyenPaymentsDetailsHandler: NextApiHandler<
 
     return res.status(200).json({ payment, orderId });
   } catch (err) {
-    console.error(err);
     Sentry.captureException(err);
+    console.error(err);
 
     return res.status(500).json({ message: "adyen" });
   }
 };
 
-export default withSentry(allowCors(DropInAdyenPaymentsDetailsHandler));
+export default allowCors(DropInAdyenPaymentsDetailsHandler);

@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import { getChannelActivePaymentProvidersSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { NextApiHandler } from "next";
@@ -22,4 +21,4 @@ const handler: NextApiHandler = async (req, res) => {
   res.status(200).json(channelProvidersSettings);
 };
 
-export default withSentry(allowCors(handler));
+export default allowCors(handler);

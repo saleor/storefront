@@ -1,7 +1,5 @@
 // https://docs.adyen.com/development-resources/webhooks
 
-import { withSentry } from "@sentry/nextjs";
-
 import { Types } from "@adyen/api-library";
 
 import { createTransaction } from "@/saleor-app-checkout/backend/payments/createTransaction";
@@ -42,15 +40,13 @@ const handler: Handler = async (req) => {
   return Response.OK("[accepted]");
 };
 
-export default withSentry(
-  toNextHandler([
-    withAdyenWebhookCredentials,
-    isAdyenWebhookAuthenticated,
-    isAdyenNotification,
-    isAdyenWebhookHmacValid,
-    handler,
-  ])
-);
+export default toNextHandler([
+  withAdyenWebhookCredentials,
+  isAdyenWebhookAuthenticated,
+  isAdyenNotification,
+  isAdyenWebhookHmacValid,
+  handler,
+]);
 
 async function notificationHandler(
   notification: Types.notification.NotificationRequestItem,

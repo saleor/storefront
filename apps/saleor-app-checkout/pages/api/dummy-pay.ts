@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
 import { DummyPayRequestBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
@@ -44,4 +43,4 @@ const handler: NextApiHandler = async (req, res) => {
   res.status(200).send({ ok: true });
 };
 
-export default withSentry(allowCors(handler));
+export default allowCors(handler);
