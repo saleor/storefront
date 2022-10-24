@@ -1,8 +1,7 @@
 import { ORDER_CONFIRMATION } from "../../elements/checkout/order-confirmation";
 
-export function checkIfOrderNumberAndPaymentStatusIsCorrect() {
-  cy.addAliasToGraphRequest("order")
-    .wait("@order")
+export function checkIfOrderNumberAndPaymentStatusAreCorrect() {
+  cy.wait("@order")
     .its("response.body.data.order.number")
     .then((orderNumber) => {
       cy.get(ORDER_CONFIRMATION.titleWithOrderNumber).should("contain", orderNumber);
