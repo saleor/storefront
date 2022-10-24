@@ -11,13 +11,13 @@ on:
         options:
         - https://staging-demo.saleor.io/
         - https://demo.saleor.io/
-        
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 7.11.0 # version used by Vercel 
@@ -32,9 +32,13 @@ jobs:
           DEFAULT_ENV_URI: 'https://staging-demo.saleor.io'
         run: |
           echo "::set-output name=ENV_URI::${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}"
-          
+ 
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
         with:
+          record: true
           config: baseUrl=${{ steps.get-env-uri.outputs.ENV_URI }}
-          env: API_URL=${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
