@@ -1,9 +1,9 @@
+import * as Sentry from "@sentry/nextjs";
 import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
 import { createAdyenCheckoutPayment } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
-import { withSentry } from "@sentry/nextjs";
 import { PostAdyenDropInPaymentsResponse, postDropInAdyenPaymentsBody } from "checkout-common";
 import { NextApiHandler } from "next";
 
@@ -28,6 +28,7 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
   const [orderCrationError, order] = await unpackPromise(createOrderFromBodyOrId(body));
 
   if (orderCrationError) {
+    Sentry.captureException(orderCrationError);
     console.error(orderCrationError);
     return res.status(500).json({ message: `Error creating order for ${body.provider}` });
   }
@@ -46,10 +47,11 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
 
     return res.status(200).json({ payment, orderId: order.id });
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
 
     return res.status(500).json({ message: body.provider, orderId: order.id });
   }
 };
 
-export default withSentry(allowCors(DropInAdyenPaymentsHandler));
+export default allowCors(DropInAdyenPaymentsHandler);

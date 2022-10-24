@@ -1,4 +1,4 @@
-import { withSentry } from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs";
 import {
   getPrivateSettings,
   setPrivateSettings,
@@ -41,7 +41,8 @@ const handler: NextApiHandler = async (req, res) => {
       data: updatedSettings.paymentProviders,
     });
   } catch (error) {
+    Sentry.captureException(error);
     return res.status(500).json({ error });
   }
 };
-export default withSentry(allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"])));
+export default allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"]));

@@ -1,5 +1,5 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
+import * as Sentry from "@sentry/nextjs";
 
 import { createOrderFromBodyOrId } from "@/saleor-app-checkout/backend/payments/createOrderFromBody";
 import {
@@ -157,6 +157,8 @@ const handler: NextApiHandler = async (req, res) => {
       } as PayRequestErrorResponse);
     }
 
+    Sentry.captureException(err);
+
     if (err instanceof UnknownPaymentError) {
       return res.status(500).json({
         ok: false,
@@ -203,4 +205,4 @@ const getPaymentUrlIdForProvider = (
   }
 };
 
-export default withSentry(allowCors(handler));
+export default allowCors(handler);

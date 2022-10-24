@@ -1,4 +1,4 @@
-import { withSentry } from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs";
 import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
 import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import { handleMolieRefund } from "@/saleor-app-checkout/backend/payments/providers/mollie";
@@ -72,8 +72,9 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
         // TODO: Handle Adyen void payment
       }
     }
-  } catch (e) {
-    console.error("Error while creating refund", e);
+  } catch (err) {
+    Sentry.captureException(err);
+    console.error("Error while creating refund", err);
     return Response.InternalServerError({
       success: false,
       message: "Error while processing event",
@@ -89,12 +90,10 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   return Response.OK({ success: true });
 };
 
-export default withSentry(
-  toNextHandler([
-    withMethod(HTTPMethod.POST),
-    withSaleorDomainMatch,
-    withSaleorEventMatch("transaction_action_request"),
-    withWebhookSignatureVerified(),
-    handler as Handler,
-  ])
-);
+export default toNextHandler([
+  withMethod(HTTPMethod.POST),
+  withSaleorDomainMatch,
+  withSaleorEventMatch("transaction_action_request"),
+  withWebhookSignatureVerified(),
+  handler as Handler,
+]);

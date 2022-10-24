@@ -1,4 +1,4 @@
-import { withSentry } from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { NextApiHandler } from "next";
@@ -21,7 +21,8 @@ const handler: NextApiHandler = async (req, res) => {
       data: settings.paymentProviders,
     });
   } catch (error) {
+    Sentry.captureException(error);
     return res.status(500).json({ error });
   }
 };
-export default withSentry(allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"])));
+export default allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"]));

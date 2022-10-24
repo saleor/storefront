@@ -5,8 +5,7 @@ const withTM = require("next-transpile-modules")([
 ]);
 const { localhostHttp } = require("./utils/configUtils");
 
-const isSentryEnabled =
-  process.env.SENTRY_DSN && process.env.SENTRY_ENVIRONMENT && process.env.SENTRY_RELEASE;
+const isSentryEnabled = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 /** @type {import('next').NextConfig} */
 const config = withTM({
@@ -43,6 +42,15 @@ const config = withTM({
     ignoreDuringBuilds: true,
   },
   assetPrefix: localhostHttp(process.env.NEXT_PUBLIC_CHECKOUT_APP_URL),
+  sentry: {
+    // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
+    // for client-side builds. (This will be the default starting in
+    // `@sentry/nextjs` version 8.0.0.) See
+    // https://webpack.js.org/configuration/devtool/ and
+    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#use-hidden-source-map
+    // for more information.
+    hideSourceMaps: true,
+  },
 });
 
 module.exports = isSentryEnabled
