@@ -43,6 +43,7 @@ export default [
         tsconfig: "./tsconfig.json",
         noEmit: false,
         jsx: "react-jsx",
+        // Let Rollup resolve JSON modules via the @rollup/plugin-json
         resolveJsonModule: false,
       }),
       json(),
