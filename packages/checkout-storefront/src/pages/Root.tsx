@@ -12,14 +12,13 @@ import { RootViews } from "../views/RootViews/RootViews";
 import { useMemo } from "react";
 import { DEFAULT_LOCALE } from "@/checkout-storefront/lib/regions";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { getQueryParams } from "@/checkout-storefront/lib/utils";
 
 export interface RootProps {
   env: AppEnv;
 }
 export const Root = ({ env }: RootProps) => {
   const authorizedFetch = useMemo(() => createFetch(), []);
-  const { locale, messages } = useLocale();
+  const { locale, messages, channel } = useLocale();
 
   const client = useMemo(
     () =>
@@ -38,9 +37,9 @@ export const Root = ({ env }: RootProps) => {
     () =>
       createSaleorClient({
         apiUrl: env.apiUrl,
-        channel: getQueryParams().channel,
+        channel,
       }),
-    [env.apiUrl]
+    [env.apiUrl, channel]
   );
 
   return (

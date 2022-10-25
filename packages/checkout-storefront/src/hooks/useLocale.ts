@@ -15,6 +15,7 @@ const localeToMessages: Record<Locale, any> = {
 interface UseLocale {
   locale: Locale;
   countryCode: CountryCode;
+  channel: string;
   messages: typeof localeToMessages[keyof typeof localeToMessages];
 }
 
@@ -23,6 +24,7 @@ export const useLocale = (): UseLocale => {
 
   const [currentLocale, setCurrentLocale] = useState<Locale>(locale);
   const [currentCountryCode, setCurrentCountryCode] = useState<CountryCode>(countryCode);
+  const [currentChannel, setCurrentChannel] = useState<string>(getQueryParams().channel);
 
   const messages = useMemo(
     () =>
@@ -40,12 +42,18 @@ export const useLocale = (): UseLocale => {
     const newQuery = getParsedLocaleData(queryParams.locale);
     setCurrentLocale(newQuery.locale);
     setCurrentCountryCode(newQuery.countryCode);
+    setCurrentChannel(queryParams.channel);
   };
 
   useUrlChange(handleChange);
 
   return useMemo(
-    () => ({ locale: currentLocale, countryCode: currentCountryCode, messages }),
-    [currentCountryCode, currentLocale, messages]
+    () => ({
+      locale: currentLocale,
+      countryCode: currentCountryCode,
+      messages,
+      channel: currentChannel,
+    }),
+    [currentCountryCode, currentLocale, messages, currentChannel]
   );
 };
