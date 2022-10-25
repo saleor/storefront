@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { defineConfig } from "cypress";
-
-require("dotenv").config();
+import "../react-storefront/packages/env-vars";
 
 export default defineConfig({
   projectId: "o9u948",

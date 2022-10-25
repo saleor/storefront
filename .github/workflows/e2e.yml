@@ -1,0 +1,45 @@
+name: E2E Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true 
+        description: 'Environment to run tests against'
+        default: 'https://staging-demo.saleor.io'
+        type: choice
+        options:
+        - https://staging-demo.saleor.io/
+        - https://demo.saleor.io/
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.11.0 # version used by Vercel 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "pnpm" 
+
+      - name: Get env
+        id: get-env-uri
+        env:
+          DEFAULT_ENV_URI: 'https://staging-demo.saleor.io'
+        run: |
+          echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
+ 
+      - name: Cypress run on demo
+        uses: cypress-io/github-action@v4
+        with:
+          record: true
+          config: baseUrl=${{ steps.get-env-uri.outputs.ENV_URI }}
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
+          
