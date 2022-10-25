@@ -48,9 +48,15 @@ const SelectComponent = <TData extends string = string>(
 
   return (
     <div className={clsx(styles.container, classNames?.container)}>
-      <select onChange={handleChange} {...rest} ref={ref} className={clsx(styles.select)}>
+      <select
+        {...rest}
+        onChange={handleChange}
+        defaultValue={showPlaceholder ? "" : undefined}
+        ref={ref}
+        className={clsx(styles.select)}
+      >
         {showPlaceholder && (
-          <option disabled selected value="">
+          <option disabled value="">
             {placeholder}
           </option>
         )}

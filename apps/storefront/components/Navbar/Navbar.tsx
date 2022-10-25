@@ -27,7 +27,7 @@ export function Navbar() {
 
   const externalCheckoutUrl = checkout
     ? `/checkout/?checkout=${checkout.id}&locale=${currentLocale}`
-    : "";
+    : "#";
 
   useEffect(() => {
     // Close side menu after changing the page
@@ -69,8 +69,8 @@ export function Navbar() {
             ) : (
               <UserMenu />
             )}
-            <Link href={externalCheckoutUrl} passHref>
-              <a href="pass" className="ml-2 hidden xs:flex" data-testid="cartIcon">
+            <Link href={externalCheckoutUrl}>
+              <a className="ml-2 hidden xs:flex" data-testid="cartIcon">
                 <NavIconButton icon="bag" aria-hidden="true" counter={counter} />
               </a>
             </Link>

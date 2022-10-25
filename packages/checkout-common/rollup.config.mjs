@@ -7,8 +7,11 @@ import postcss from "rollup-plugin-postcss";
 import json from "@rollup/plugin-json";
 import image from "@rollup/plugin-image";
 import dts from "rollup-plugin-dts";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
+import postcssImport from "postcss-import";
 
-const packageJson = require("./package.json");
+import packageJson from "./package.json" assert { type: "json" };
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -40,6 +43,7 @@ export default [
         tsconfig: "./tsconfig.json",
         noEmit: false,
         jsx: "react-jsx",
+        // Let Rollup resolve JSON modules via the @rollup/plugin-json
         resolveJsonModule: false,
       }),
       json(),
@@ -47,7 +51,7 @@ export default [
       isProd && terser(),
       postcss({
         extract: true,
-        plugins: [require("tailwindcss")(), require("autoprefixer")(), require("postcss-import")()],
+        plugins: [tailwindcss, autoprefixer, postcssImport],
       }),
     ]),
   },

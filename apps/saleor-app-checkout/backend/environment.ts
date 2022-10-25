@@ -45,7 +45,7 @@ export const setAuthToken = (token: string) => {
 
 export const getAppId = async () => {
   const { data, error } = await getClient()
-    .query<AppQuery, AppQueryVariables>(AppDocument)
+    .query<AppQuery, AppQueryVariables>(AppDocument, {})
     .toPromise();
   if (error) {
     throw new Error("Couldn't fetch app id", { cause: error });

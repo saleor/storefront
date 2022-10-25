@@ -5,8 +5,10 @@ import { terser } from "rollup-plugin-terser";
 import external from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 import dts from "rollup-plugin-dts";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
-const packageJson = require("./package.json");
+import packageJson from "./package.json" assert { type: "json" };
 
 export default [
   {
@@ -34,7 +36,7 @@ export default [
       typescript({
         tsconfig: "./tsconfig.json",
       }),
-      postcss(require("tailwindcss")(), require("autoprefixer")()),
+      postcss(tailwindcss, autoprefixer),
       terser(),
     ],
   },

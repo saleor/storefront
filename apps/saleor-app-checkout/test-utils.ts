@@ -159,7 +159,7 @@ export const setupPollyMiddleware = (server: PollyServer) => {
           statusText: "",
           delay: 0,
         }),
-      };
+      } as MockedRequest;
 
       const isHandledByMsw = handlers.some((handler) => handler.test(fakeReq));
 

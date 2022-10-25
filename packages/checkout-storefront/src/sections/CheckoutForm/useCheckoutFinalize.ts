@@ -18,7 +18,9 @@ export const useCheckoutFinalize = () => {
 
   useEffect(() => {
     // @todo should this show a notification?
-    console.error(payError);
+    if (payError) {
+      console.error(payError);
+    }
   }, [payError]);
 
   const userRegister = useCallback(
