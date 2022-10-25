@@ -45,21 +45,21 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   const formData = watch();
   const formatMessage = useFormattedMessages();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
-  const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
+  const { availableShippingCountries } = useAddressAvailability({
+    pause: !checkAddressAvailability,
+  });
 
   useSetFormErrors({ setError, errors });
 
   const countryOptions: CountryOption[] = useMemo(
     () =>
-      sortBy(
-        countries.map((code) => ({
+      availableShippingCountries
+        .sort((a, b) => a.localeCompare(b))
+        .map((code) => ({
           label: formatMessage(countriesMessages[code]),
           value: code,
-          disabled: !isAvailable({ country: { code } }),
         })),
-        "disabled"
-      ),
-    [formatMessage, isAvailable]
+    [formatMessage, availableShippingCountries]
   );
 
   const {

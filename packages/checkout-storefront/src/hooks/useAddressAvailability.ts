@@ -31,5 +31,5 @@ export const useAddressAvailability = (
     [pause, availableShippingCountries]
   );
 
-  return { isAvailable };
+  return { isAvailable, availableShippingCountries };
 };
