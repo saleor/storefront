@@ -31,7 +31,7 @@ jobs:
         env:
           DEFAULT_ENV_URI: 'https://staging-demo.saleor.io'
         run: |
-          echo "::set-output name=ENV_URI::${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}"
+          echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
  
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
