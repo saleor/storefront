@@ -1,6 +1,6 @@
 import { PageTabs, PageTab } from "@saleor/macaw-ui";
 import { useRouter } from "next/router";
-import { channelListPath, customizationPath } from "routes";
+import { channelListPath, customizationPath } from "@/saleor-app-checkout/routes";
 import { useIntl } from "react-intl";
 import { sectionMessages } from "@/saleor-app-checkout/frontend/misc/commonMessages";
 import { useStyles } from "./styles";
