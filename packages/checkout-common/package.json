@@ -33,7 +33,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "tsconfig": "workspace:*",
-    "typescript": "4.7.4"
+    "typescript": "4.8.4"
   },
   "engines": {
     "npm": ">=7.0.0",
