@@ -18,7 +18,7 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
-    "@apollo/client": "3.5.10",
+    "@apollo/client": "3.7.0",
     "@formatjs/swc-plugin": "^1.4.0",
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.15",
     "@headlessui/react": "^1.6.0",

@@ -33,7 +33,7 @@
   "dependencies": {
     "@adyen/adyen-web": "5.26.0",
     "@adyen/api-library": "12.0.0",
-    "@apollo/client": "^3.5.10",
+    "@apollo/client": "3.7.0",
     "@headlessui/react": "^1.6.0",
     "@hookform/error-message": "^2.0.0",
     "@react-types/button": "^3.4.1",
