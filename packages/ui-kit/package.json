@@ -21,8 +21,8 @@
     "lint:staged": "eslint --fix --quiet",
     "check-types": "tsc",
     "clean": "rm -rf .next .turbo dist",
-    "storybook": "NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
-    "build-storybook": "NODE_OPTIONS=--openssl-legacy-provider build-storybook",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
     "release": "release-it --npm.pnpm"
   },
   "peerDependencies": {
