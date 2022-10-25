@@ -214,9 +214,18 @@ const getPaymentUrlIdForProvider = ({
     case "stripe":
       return createStripePayment(createPaymentData);
     case "dummy":
+      const url = new URL(body.redirectUrl);
+      url.searchParams.set("order", order.id);
+      url.searchParams.set("dummyPayment", "true");
+      url.searchParams.set("saleorApiUrl", saleorApiUrl);
+      const domain = url.hostname;
+      // @todo remove `domain`
+      // https://github.com/saleor/saleor-dashboard/issues/2387
+      // https://github.com/saleor/saleor-app-sdk/issues/87
+      url.searchParams.set("domain", domain);
       return createDummyPayment({
         ...createPaymentData,
-        redirectUrl: `${body.redirectUrl}?order=${order.id}&dummyPayment=true`,
+        redirectUrl: url.toString(),
       });
     default:
       assertUnreachable(body.provider);

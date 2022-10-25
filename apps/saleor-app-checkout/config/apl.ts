@@ -35,7 +35,5 @@ export const get = async (saleorApiUrl: string): Promise<Result> => {
 };
 
 export const set = ({ saleorApiUrl, authToken }: { saleorApiUrl: string; authToken: string }) => {
-  console.log(`APL SET`, { saleorApiUrl, authToken });
-
   return apl.set({ domain: saleorApiUrl, token: authToken });
 };

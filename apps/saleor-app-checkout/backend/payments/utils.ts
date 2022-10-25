@@ -20,6 +20,11 @@ export const formatRedirectUrl = ({
   const url = new URL(redirectUrl);
   url.searchParams.set("order", orderId);
   url.searchParams.set("saleorApiUrl", saleorApiUrl);
+  const domain = url.hostname;
+  // @todo remove `domain`
+  // https://github.com/saleor/saleor-dashboard/issues/2387
+  // https://github.com/saleor/saleor-app-sdk/issues/87
+  url.searchParams.set("domain", domain);
 
   return url.toString();
 };
