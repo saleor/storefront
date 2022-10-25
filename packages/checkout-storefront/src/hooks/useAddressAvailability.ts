@@ -1,4 +1,5 @@
 import { CountryCode, useChannelQuery } from "@/checkout-storefront/graphql";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useCallback, useMemo } from "react";
 
 interface UseAddressAvailabilityProps {
@@ -8,9 +9,10 @@ interface UseAddressAvailabilityProps {
 export const useAddressAvailability = (
   { pause }: UseAddressAvailabilityProps = { pause: false }
 ) => {
+  const { checkout } = useCheckout();
   const [{ data }] = useChannelQuery({
-    variables: { slug: "default-channel" },
-    pause,
+    variables: { slug: checkout.channel.slug },
+    pause: pause || !checkout?.channel.slug,
   });
 
   const availableShippingCountries: CountryCode[] = useMemo(

@@ -12,6 +12,7 @@ import { RootViews } from "../views/RootViews/RootViews";
 import { useMemo } from "react";
 import { DEFAULT_LOCALE } from "@/checkout-storefront/lib/regions";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { getQueryParams } from "@/checkout-storefront/lib/utils";
 
 export interface RootProps {
   env: AppEnv;
@@ -37,7 +38,7 @@ export const Root = ({ env }: RootProps) => {
     () =>
       createSaleorClient({
         apiUrl: env.apiUrl,
-        channel: "default-channel",
+        channel: getQueryParams().channel,
       }),
     [env.apiUrl]
   );

@@ -1,7 +1,7 @@
 import { CountryCode, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
-import { DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
+import { DEFAULT_CHANNEL, DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
 import { reduce, snakeCase } from "lodash-es";
 import queryString from "query-string";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -28,7 +28,7 @@ export type QueryParams = Partial<
     | "dummyPayment",
     string
   >
-> & { countryCode: CountryCode; locale: Locale };
+> & { countryCode: CountryCode; locale: Locale; channel: string };
 
 export const getRawQueryParams = () => queryString.parse(location.search);
 
@@ -41,11 +41,12 @@ export const getQueryParams = (): QueryParams => {
 
   return {
     ...vars,
-    locale: vars.locale || (DEFAULT_LOCALE as Locale),
+    locale: vars.locale || DEFAULT_LOCALE,
     checkoutId: vars.checkout as string | undefined,
     orderId: vars.order as string | undefined,
     passwordResetToken: vars.token as string | undefined,
     dummyPayment: vars.dummyPayment as "true" | undefined,
+    channel: vars.channel || DEFAULT_CHANNEL,
   } as QueryParams;
 };
 
