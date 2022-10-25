@@ -394,9 +394,9 @@ importers:
       '@stripe/react-stripe-js': ^1.13.0
       '@stripe/stripe-js': ^1.42.0
       '@testing-library/jest-dom': ^5.16.1
-      '@testing-library/react': ^12.1.2
+      '@testing-library/react': ^13.4.0
       '@testing-library/react-hooks': ^8.0.1
-      '@testing-library/user-event': ^13.5.0
+      '@testing-library/user-event': ^14.4.3
       '@types/jest': ^27.5.2
       '@types/lodash-es': ^4.17.6
       '@types/node': ^16.11.22
@@ -404,7 +404,7 @@ importers:
       '@types/react-dom': ^18.0.7
       '@types/url-join': 4.0.1
       '@types/webpack-env': ^1.16.3
-      autoprefixer: 9.8.6
+      autoprefixer: 10.4.12
       checkout-common: workspace:*
       clsx: ^1.1.1
       concurrently: 7.5.0
@@ -419,7 +419,7 @@ importers:
       lodash-es: ^4.17.21
       next: 12.3.1
       postcss: ^8.4.18
-      postcss-import: 14.1.0
+      postcss-import: 15.0.0
       prettier: ^2.5.1
       query-string: ^7.1.1
       react: ^18.2.0
@@ -441,20 +441,19 @@ importers:
       tslib: ^2.4.0
       typescript: 4.8.4
       url-join: 4.0.1
-      urql: ^2.2.3
-      web-vitals: ^2.1.4
+      urql: ^3.0.3
       wonka: ^6.0.0
       yup: 1.0.0-beta.7
     dependencies:
       '@adyen/adyen-web': registry.npmjs.org/@adyen/adyen-web/5.28.2
       '@adyen/api-library': 12.0.0
-      '@apollo/client': registry.npmjs.org/@apollo/client/3.7.0_y6rrllycv66ulrjz2f64r566fi
-      '@headlessui/react': 1.7.3_sqtgkyaaeoobayrawoqsu3p2gq
-      '@hookform/error-message': 2.0.0_oy6bpclnxemdyjvoajojiqxqy4
+      '@apollo/client': registry.npmjs.org/@apollo/client/3.7.0_wxfjnvblbhu4ianu4f2qg722fu
+      '@headlessui/react': 1.7.3_biqbaboplfbrettd7655fr4n2y
+      '@hookform/error-message': 2.0.0_dzekpqzszvy7xf4sex3hsdhnba
       '@react-types/button': 3.6.2_react@18.2.0
       '@saleor/sdk': 0.4.4_mndcbikiw37m6pgpbxuknmfdpe
       '@saleor/ui-kit': link:../ui-kit
-      '@stripe/react-stripe-js': registry.npmjs.org/@stripe/react-stripe-js/1.13.0_2siaaqfxoayrkd2ustuaqj26fy
+      '@stripe/react-stripe-js': registry.npmjs.org/@stripe/react-stripe-js/1.13.0_6nr2xug6y4biiuh7urbys4ixky
       '@stripe/stripe-js': registry.npmjs.org/@stripe/stripe-js/1.42.0
       checkout-common: link:../checkout-common
       clsx: 1.2.1
@@ -464,16 +463,16 @@ importers:
       lodash-es: 4.17.21
       query-string: 7.1.1
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       react-error-boundary: 3.1.4_react@18.2.0
       react-hook-form: registry.npmjs.org/react-hook-form/7.38.0_react@18.2.0
       react-intl: registry.npmjs.org/react-intl/6.2.1_uz2ogxeagc4rbieizlfzyaazee
       react-test-renderer: 18.2.0_react@18.2.0
-      react-toastify: 9.0.8_sqtgkyaaeoobayrawoqsu3p2gq
+      react-toastify: 9.0.8_biqbaboplfbrettd7655fr4n2y
       tailwindcss: registry.npmjs.org/tailwindcss/3.2.1_neo3lunb2qpadwxplzw7r2isgm
       ts-invariant: 0.10.3
       url-join: 4.0.1
-      urql: 2.2.3_o264z5epwuajru7y4dsijkqr44
+      urql: registry.npmjs.org/urql/3.0.3_o264z5epwuajru7y4dsijkqr44
       yup: 1.0.0-beta.7
     devDependencies:
       '@formatjs/cli': registry.npmjs.org/@formatjs/cli/5.1.3
@@ -490,9 +489,9 @@ importers:
       '@rollup/plugin-node-resolve': registry.npmjs.org/@rollup/plugin-node-resolve/15.0.1_rollup@3.2.3
       '@rollup/plugin-typescript': registry.npmjs.org/@rollup/plugin-typescript/9.0.2_bvn3ed5hy3sfde644tygjdj4ia
       '@testing-library/jest-dom': 5.16.5
-      '@testing-library/react': 12.1.5_sqtgkyaaeoobayrawoqsu3p2gq
-      '@testing-library/react-hooks': 8.0.1_zd73rb3ckfuqhy7w25e3al6cne
-      '@testing-library/user-event': 13.5.0_aaq3sbffpfe3jnxzm2zngsddei
+      '@testing-library/react': registry.npmjs.org/@testing-library/react/13.4.0_biqbaboplfbrettd7655fr4n2y
+      '@testing-library/react-hooks': 8.0.1_xzw4grlhfiz2scg7gf2zruxbvu
+      '@testing-library/user-event': registry.npmjs.org/@testing-library/user-event/14.4.3_aaq3sbffpfe3jnxzm2zngsddei
       '@types/jest': 27.5.2
       '@types/lodash-es': 4.17.6
       '@types/node': 16.11.64
@@ -500,16 +499,16 @@ importers:
       '@types/react-dom': registry.npmjs.org/@types/react-dom/18.0.7
       '@types/url-join': 4.0.1
       '@types/webpack-env': 1.18.0
-      autoprefixer: 9.8.6
+      autoprefixer: registry.npmjs.org/autoprefixer/10.4.12_postcss@8.4.18
       env-vars: link:../env-vars
       eslint: registry.npmjs.org/eslint/8.26.0
       eslint-config-checkout: link:../eslint-config-checkout
       eslint-plugin-formatjs: registry.npmjs.org/eslint-plugin-formatjs/4.3.4_bz2ymisszjxjxkv3xrdzdgrbwq
       graphql-tag: 2.12.6_graphql@15.8.0
       jest: 27.5.1_ts-node@10.9.1
-      next: 12.3.1_pn4cjoze7dqrf6tsjp4ff3wlgu
+      next: 12.3.1_6tziyx3dehkoeijunclpkpolha
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-import: 14.1.0_postcss@8.4.18
+      postcss-import: registry.npmjs.org/postcss-import/15.0.0_postcss@8.4.18
       prettier: 2.7.1
       rollup: registry.npmjs.org/rollup/3.2.3
       rollup-plugin-dts: 5.0.0_655ssj4e7sdqlljrreeiqtltve
@@ -520,7 +519,6 @@ importers:
       tsconfig: link:../tsconfig
       tslib: 2.4.0
       typescript: 4.8.4
-      web-vitals: 2.1.4
       wonka: 6.1.0
 
   packages/env-vars:
@@ -753,6 +751,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/highlight': 7.18.6
+    dev: true
 
   /@babel/compat-data/7.19.3:
     resolution: {integrity: sha512-prBHMK4JYYK+wDjJF1q99KK4JLL+egWS4nmNqdlMUgCExMZ+iZW0hGhyC3VEbsPjvaN0TBhW//VIFwBrk8sEiw==}
@@ -787,7 +786,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@ampproject/remapping': 2.2.0
-      '@babel/code-frame': 7.18.6
+      '@babel/code-frame': registry.npmjs.org/@babel/code-frame/7.18.6
       '@babel/generator': 7.19.3
       '@babel/helper-compilation-targets': 7.19.3_@babel+core@7.19.3
       '@babel/helper-module-transforms': 7.19.0
@@ -849,7 +848,7 @@ packages:
       '@babel/compat-data': 7.19.3
       '@babel/core': 7.19.3
       '@babel/helper-validator-option': 7.18.6
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       semver: 6.3.0
 
   /@babel/helper-create-class-features-plugin/7.19.0_@babel+core@7.19.3:
@@ -2126,7 +2125,7 @@ packages:
     resolution: {integrity: sha512-eR8Lo9hnDS7tqkO7NsV+mKvCmv5boaXFSZ70DnfhcgiEne8hv9oCEd36Klw74EtizEqLsy4YnW8UWwpBVolHZA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      regenerator-runtime: 0.13.9
+      regenerator-runtime: registry.npmjs.org/regenerator-runtime/0.13.10
 
   /@babel/runtime/7.5.5:
     resolution: {integrity: sha512-28QvEGyQyNkB0/m2B4FU7IEZGK2NUrcMtT6BZEFALTguLk+AUT6ofsHtPk5QyjAdUkpMJ+/Em+quwz4HOt30AQ==}
@@ -3298,18 +3297,7 @@ packages:
       react-dom: ^16 || ^17 || ^18
     dependencies:
       react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-    dev: false
-
-  /@headlessui/react/1.7.3_sqtgkyaaeoobayrawoqsu3p2gq:
-    resolution: {integrity: sha512-LGp06SrGv7BMaIQlTs8s2G06moqkI0cb0b8stgq7KZ3xcHdH3qMP+cRyV7qe5x4XEW/IGY48BW4fLesD6NQLng==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
-      react-dom: ^16 || ^17 || ^18
-    dependencies:
-      react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: false
 
   /@heroicons/react/1.0.6_react@18.2.0:
@@ -3320,7 +3308,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@hookform/error-message/2.0.0_oy6bpclnxemdyjvoajojiqxqy4:
+  /@hookform/error-message/2.0.0_dzekpqzszvy7xf4sex3hsdhnba:
     resolution: {integrity: sha512-Y90nHzjgL2MP7GFy75kscdvxrCTjtyxGmOLLxX14nd08OXRIh9lMH/y9Kpdo0p1IPowJBiZMHyueg7p+yrqynQ==}
     peerDependencies:
       react: '>=16.8.0'
@@ -3328,7 +3316,7 @@ packages:
       react-hook-form: ^7.0.0
     dependencies:
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       react-hook-form: registry.npmjs.org/react-hook-form/7.38.0_react@18.2.0
     dev: false
 
@@ -4582,7 +4570,7 @@ packages:
       graphql: ^15.5.0
       react: ^16.8.0 || ^17.0.0
     dependencies:
-      '@apollo/client': registry.npmjs.org/@apollo/client/3.7.0_y6rrllycv66ulrjz2f64r566fi
+      '@apollo/client': registry.npmjs.org/@apollo/client/3.7.0_wxfjnvblbhu4ianu4f2qg722fu
       cross-fetch: 3.1.5
       graphql: 15.8.0
       jwt-decode: 3.1.2
@@ -6642,7 +6630,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react-hooks/8.0.1_zd73rb3ckfuqhy7w25e3al6cne:
+  /@testing-library/react-hooks/8.0.1_xzw4grlhfiz2scg7gf2zruxbvu:
     resolution: {integrity: sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -6661,23 +6649,9 @@ packages:
       '@babel/runtime': 7.19.0
       '@types/react': registry.npmjs.org/@types/react/18.0.22
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       react-error-boundary: 3.1.4_react@18.2.0
       react-test-renderer: 18.2.0_react@18.2.0
-    dev: true
-
-  /@testing-library/react/12.1.5_sqtgkyaaeoobayrawoqsu3p2gq:
-    resolution: {integrity: sha512-OfTXCJUFgjd/digLUuPxa0+/3ZxsQmE7ub9kcbW/wi96Bh3o/p5vrETcBGfP17NWPGqeYYl5LTRpwyGoMC4ysg==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: <18.0.0
-      react-dom: <18.0.0
-    dependencies:
-      '@babel/runtime': 7.19.0
-      '@testing-library/dom': 8.18.1
-      '@types/react-dom': registry.npmjs.org/@types/react-dom/17.0.17
-      react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
     dev: true
 
   /@testing-library/react/13.3.0_biqbaboplfbrettd7655fr4n2y:
@@ -6692,16 +6666,6 @@ packages:
       '@types/react-dom': 18.0.6
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-    dev: true
-
-  /@testing-library/user-event/13.5.0_aaq3sbffpfe3jnxzm2zngsddei:
-    resolution: {integrity: sha512-5Kwtbo3Y/NowpkbRuSepbyMFkZmHgD+vPzYB/RJ4oxt5Gj/avFFBYjhw27cqSVPVw/3a67NK1PbiIr9k4Gwmdg==}
-    engines: {node: '>=10', npm: '>=6'}
-    peerDependencies:
-      '@testing-library/dom': '>=7.21.4'
-    dependencies:
-      '@babel/runtime': 7.19.0
-      '@testing-library/dom': registry.npmjs.org/@testing-library/dom/8.19.0
     dev: true
 
   /@testing-library/user-event/13.5.0_znccgeejomvff3jrsk3ljovfpu:
@@ -7493,16 +7457,6 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@urql/core/2.6.1_graphql@15.8.0:
-    resolution: {integrity: sha512-gYrEHy3tViJhwIhauK6MIf2Qp09QTsgNHZRd0n71rS+hF6gdwjspf1oKljl4m25+272cJF7fPjBUGmjaiEr7Kg==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@graphql-typed-document-node/core': registry.npmjs.org/@graphql-typed-document-node/core/3.1.1_graphql@15.8.0
-      graphql: 15.8.0
-      wonka: 4.0.15
-    dev: false
-
   /@urql/introspection/0.3.3_graphql@16.6.0:
     resolution: {integrity: sha512-tekSLLqWnusfV6V7xaEnLJQSdXOD/lWy7f8JYQwrX+88Md+voGSCSx5WJXI7KLBN3Tat2OV08tAr8UROykls4Q==}
     peerDependencies:
@@ -8088,6 +8042,7 @@ packages:
   /ansi-regex/5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
+    dev: true
 
   /ansi-regex/6.0.1:
     resolution: {integrity: sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA==}
@@ -8104,13 +8059,6 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       color-convert: 1.9.3
-    dev: true
-
-  /ansi-styles/4.3.0:
-    resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
-    engines: {node: '>=8'}
-    dependencies:
-      color-convert: 2.0.1
     dev: true
 
   /ansi-styles/5.2.0:
@@ -8437,19 +8385,6 @@ packages:
       picocolors: 1.0.0
       postcss: 8.4.12
       postcss-value-parser: 4.2.0
-
-  /autoprefixer/9.8.6:
-    resolution: {integrity: sha512-XrvP4VVHdRBCdX1S3WXVD8+RyG9qeb1D5Sn1DeLiG2xfSpzellk5k54xbUERJ3M5DggQxes39UGOTP8CFrEGbg==}
-    hasBin: true
-    dependencies:
-      browserslist: 4.21.4
-      caniuse-lite: 1.0.30001416
-      colorette: 1.4.0
-      normalize-range: 0.1.2
-      num2fraction: 1.2.2
-      postcss: registry.npmjs.org/postcss/7.0.39
-      postcss-value-parser: 4.2.0
-    dev: true
 
   /autoprefixer/9.8.8:
     resolution: {integrity: sha512-eM9d/swFopRt5gdJ7jrpCwgvEMIayITpojhkkSMRsFHYuH5bkSQ4p/9qTEHtmNudUZh22Tehu7I6CxAW0IXTKA==}
@@ -9286,8 +9221,8 @@ packages:
   /caniuse-api/3.0.0:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
     dependencies:
-      browserslist: 4.21.4
-      caniuse-lite: 1.0.30001416
+      browserslist: registry.npmjs.org/browserslist/4.21.4
+      caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001425
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
     dev: true
@@ -9342,8 +9277,8 @@ packages:
     resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==}
     engines: {node: '>=8'}
     dependencies:
-      ansi-styles: 4.3.0
-      supports-color: 7.2.0
+      ansi-styles: registry.npmjs.org/ansi-styles/4.3.0
+      supports-color: registry.npmjs.org/supports-color/7.2.0
     dev: true
 
   /chalk/4.1.2:
@@ -9656,13 +9591,6 @@ packages:
       color-name: 1.1.3
     dev: true
 
-  /color-convert/2.0.1:
-    resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
-    engines: {node: '>=7.0.0'}
-    dependencies:
-      color-name: 1.1.4
-    dev: true
-
   /color-name/1.1.3:
     resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==}
     dev: true
@@ -9677,10 +9605,6 @@ packages:
 
   /colord/2.9.3:
     resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
-    dev: true
-
-  /colorette/1.4.0:
-    resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
     dev: true
 
   /colorette/2.0.19:
@@ -13643,6 +13567,7 @@ packages:
     resolution: {integrity: sha512-Erxj2n/LDAZ7H8WNJXd9tw38GYM3dv8rk8Zcs+jJuxYTW7sozH+SS8NtrSjVL1/vpLvWi1hxy96IzjJ3EHTJJg==}
     dependencies:
       has: registry.npmjs.org/has/1.0.3
+    dev: true
 
   /is-data-descriptor/0.1.4:
     resolution: {integrity: sha512-+w9D5ulSoBNlmw9OHn3U2v51SyoCd0he+bB3xMl62oijhrspxowjU+AIcDY0N3iEJbUEkB15IlMASQsxYigvXg==}
@@ -14178,7 +14103,7 @@ packages:
       jest-runtime: 27.5.1
       jest-snapshot: 27.5.1
       jest-util: 27.5.1
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
       slash: 3.0.0
       stack-utils: 2.0.5
       throat: 6.0.1
@@ -14316,7 +14241,7 @@ packages:
       jest-validate: 27.5.1
       micromatch: registry.npmjs.org/micromatch/4.0.5
       parse-json: 5.2.0
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
       ts-node: registry.npmjs.org/ts-node/10.9.1_k2jc2lb6qrtdc3lulqxjwnbwoi
@@ -14334,7 +14259,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       diff-sequences: 27.5.1
       jest-get-type: 27.5.1
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
     dev: true
 
   /jest-docblock/27.5.1:
@@ -14352,7 +14277,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       jest-get-type: 27.5.1
       jest-util: 27.5.1
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
     dev: true
 
   /jest-environment-jsdom/27.5.1:
@@ -14452,7 +14377,7 @@ packages:
       jest-runtime: 27.5.1
       jest-snapshot: 27.5.1
       jest-util: 27.5.1
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
       throat: 6.0.1
     transitivePeerDependencies:
       - supports-color
@@ -14463,7 +14388,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       jest-get-type: 27.5.1
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
     dev: true
 
   /jest-matcher-utils/27.5.1:
@@ -14473,7 +14398,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       jest-diff: 27.5.1
       jest-get-type: 27.5.1
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
     dev: true
 
   /jest-message-util/27.5.1:
@@ -14486,7 +14411,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       graceful-fs: 4.2.10
       micromatch: registry.npmjs.org/micromatch/4.0.5
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
       slash: 3.0.0
       stack-utils: 2.0.5
     dev: true
@@ -14563,7 +14488,7 @@ packages:
       jest-pnp-resolver: 1.2.2_jest-resolve@27.5.1
       jest-util: 27.5.1
       jest-validate: 27.5.1
-      resolve: 1.22.1
+      resolve: registry.npmjs.org/resolve/1.22.1
       resolve.exports: 1.1.0
       slash: 3.0.0
     dev: true
@@ -14670,7 +14595,7 @@ packages:
       jest-message-util: 27.5.1
       jest-util: 27.5.1
       natural-compare: 1.4.0
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
       semver: 7.3.8
     transitivePeerDependencies:
       - supports-color
@@ -14721,7 +14646,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       jest-get-type: 27.5.1
       leven: 3.1.0
-      pretty-format: 27.5.1
+      pretty-format: registry.npmjs.org/pretty-format/27.5.1
     dev: true
 
   /jest-watch-typeahead/1.1.0_jest@27.5.1:
@@ -14773,7 +14698,7 @@ packages:
     dependencies:
       '@types/node': 18.8.2
       merge-stream: 2.0.0
-      supports-color: 7.2.0
+      supports-color: registry.npmjs.org/supports-color/7.2.0
     dev: true
 
   /jest-worker/27.5.1:
@@ -16178,53 +16103,9 @@ packages:
       '@next/env': 12.3.1
       '@swc/helpers': 0.4.11
       caniuse-lite: 1.0.30001416
-      postcss: 8.4.14
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      styled-jsx: 5.0.7_b6k74wvxdvqypha4emuv7fd2ke
-      use-sync-external-store: 1.2.0_react@18.2.0
-    optionalDependencies:
-      '@next/swc-android-arm-eabi': registry.npmjs.org/@next/swc-android-arm-eabi/12.3.1
-      '@next/swc-android-arm64': registry.npmjs.org/@next/swc-android-arm64/12.3.1
-      '@next/swc-darwin-arm64': registry.npmjs.org/@next/swc-darwin-arm64/12.3.1
-      '@next/swc-darwin-x64': registry.npmjs.org/@next/swc-darwin-x64/12.3.1
-      '@next/swc-freebsd-x64': registry.npmjs.org/@next/swc-freebsd-x64/12.3.1
-      '@next/swc-linux-arm-gnueabihf': registry.npmjs.org/@next/swc-linux-arm-gnueabihf/12.3.1
-      '@next/swc-linux-arm64-gnu': registry.npmjs.org/@next/swc-linux-arm64-gnu/12.3.1
-      '@next/swc-linux-arm64-musl': registry.npmjs.org/@next/swc-linux-arm64-musl/12.3.1
-      '@next/swc-linux-x64-gnu': registry.npmjs.org/@next/swc-linux-x64-gnu/12.3.1
-      '@next/swc-linux-x64-musl': registry.npmjs.org/@next/swc-linux-x64-musl/12.3.1
-      '@next/swc-win32-arm64-msvc': registry.npmjs.org/@next/swc-win32-arm64-msvc/12.3.1
-      '@next/swc-win32-ia32-msvc': registry.npmjs.org/@next/swc-win32-ia32-msvc/12.3.1
-      '@next/swc-win32-x64-msvc': registry.npmjs.org/@next/swc-win32-x64-msvc/12.3.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-
-  /next/12.3.1_pn4cjoze7dqrf6tsjp4ff3wlgu:
-    resolution: {integrity: sha512-l7bvmSeIwX5lp07WtIiP9u2ytZMv7jIeB8iacR28PuUEFG5j0HGAPnMqyG5kbZNBG2H7tRsrQ4HCjuMOPnANZw==}
-    engines: {node: '>=12.22.0'}
-    hasBin: true
-    peerDependencies:
-      fibers: '>= 3.1.0'
-      node-sass: ^6.0.0 || ^7.0.0
-      react: ^17.0.2 || ^18.0.0-0
-      react-dom: ^17.0.2 || ^18.0.0-0
-      sass: ^1.3.0
-    peerDependenciesMeta:
-      fibers:
-        optional: true
-      node-sass:
-        optional: true
-      sass:
-        optional: true
-    dependencies:
-      '@next/env': 12.3.1
-      '@swc/helpers': 0.4.11
-      caniuse-lite: 1.0.30001416
       postcss: registry.npmjs.org/postcss/8.4.14
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       styled-jsx: 5.0.7_b6k74wvxdvqypha4emuv7fd2ke
       use-sync-external-store: 1.2.0_react@18.2.0
     optionalDependencies:
@@ -16244,7 +16125,6 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
-    dev: true
 
   /nextjs-progressbar/0.0.14_next@12.3.1+react@18.2.0:
     resolution: {integrity: sha512-AXYXHDN6M52AwFnGqH/vlwyo0gbC9zM7QS/4ryOTI0RUqfze5FJl8uSrxKJMzK6hGFdDeQXcZoWsLGXeCVtTwg==}
@@ -17040,6 +16920,7 @@ packages:
 
   /path-parse/1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
+    dev: true
 
   /path-root-regex/0.1.2:
     resolution: {integrity: sha512-4GlJ6rZDhQZFE0DPVKh0e9jmZ5egZfxTkp7bcRDuPlJXbAwhxcl2dINPUAsjLdejqaLsCeg8axcLjIbvBjN4pQ==}
@@ -17243,7 +17124,7 @@ packages:
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
       postcss-selector-parser: 6.0.10
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-clamp/4.1.0_postcss@8.4.17:
@@ -17305,11 +17186,11 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       caniuse-api: 3.0.0
       colord: 2.9.3
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-convert-values/5.1.2_postcss@8.4.17:
@@ -17329,9 +17210,9 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-custom-media/8.0.2_postcss@8.4.17:
@@ -17540,18 +17421,6 @@ packages:
       resolve: 1.22.1
     dev: true
 
-  /postcss-import/14.1.0_postcss@8.4.18:
-    resolution: {integrity: sha512-flwI+Vgm4SElObFVPpTIT7SU7R3qk2L7PyduMcokiaVKuWv9d/U+Gm/QAd8NDLuykTWTkcrjOeD2Pp1rMeBTGw==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      postcss: ^8.0.0
-    dependencies:
-      postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
-      read-cache: 1.0.0
-      resolve: 1.22.1
-    dev: true
-
   /postcss-initial/4.0.1_postcss@8.4.17:
     resolution: {integrity: sha512-0ueD7rPqX8Pn1xJIjay0AZeIuDoF+V+VvMt/uOnn+4ezUKhZM/NokDeP6DwMNyIoYByuN/94IQnt5FEkaN59xQ==}
     peerDependencies:
@@ -17740,7 +17609,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
       stylehacks: 5.1.0_postcss@8.4.18
     dev: true
 
@@ -17763,7 +17632,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       caniuse-api: 3.0.0
       cssnano-utils: 3.1.0_postcss@8.4.18
       postcss: registry.npmjs.org/postcss/8.4.18
@@ -17787,7 +17656,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-minify-gradients/5.1.1_postcss@8.4.17:
@@ -17811,7 +17680,7 @@ packages:
       colord: 2.9.3
       cssnano-utils: 3.1.0_postcss@8.4.18
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-minify-params/5.1.3_postcss@8.4.17:
@@ -17832,10 +17701,10 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       cssnano-utils: 3.1.0_postcss@8.4.18
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-minify-selectors/5.2.1_postcss@8.4.17:
@@ -17914,7 +17783,7 @@ packages:
       icss-utils: 5.1.0_postcss@8.4.18
       postcss: registry.npmjs.org/postcss/8.4.18
       postcss-selector-parser: 6.0.10
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-modules-scope/2.2.0:
@@ -18069,7 +17938,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-positions/5.1.1_postcss@8.4.17:
@@ -18089,7 +17958,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-repeat-style/5.1.1_postcss@8.4.17:
@@ -18109,7 +17978,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-string/5.1.0_postcss@8.4.17:
@@ -18129,7 +17998,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-timing-functions/5.1.0_postcss@8.4.17:
@@ -18149,7 +18018,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-unicode/5.1.0_postcss@8.4.17:
@@ -18169,9 +18038,9 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-url/5.1.0_postcss@8.4.17:
@@ -18193,7 +18062,7 @@ packages:
     dependencies:
       normalize-url: 6.1.0
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize-whitespace/5.1.1_postcss@8.4.17:
@@ -18213,7 +18082,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-normalize/10.0.1_dumrjbqyj3z7f4pm3eq7hvks24:
@@ -18254,7 +18123,7 @@ packages:
     dependencies:
       cssnano-utils: 3.1.0_postcss@8.4.18
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-overflow-shorthand/3.0.4_postcss@8.4.17:
@@ -18370,7 +18239,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       caniuse-api: 3.0.0
       postcss: registry.npmjs.org/postcss/8.4.18
     dev: true
@@ -18392,7 +18261,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
     dev: true
 
   /postcss-replace-overflow-wrap/4.0.0_postcss@8.4.17:
@@ -18438,7 +18307,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       postcss: registry.npmjs.org/postcss/8.4.18
-      postcss-value-parser: 4.2.0
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
       svgo: 2.8.0
     dev: true
 
@@ -18475,14 +18344,6 @@ packages:
 
   /postcss/8.4.12:
     resolution: {integrity: sha512-lg6eITwYe9v6Hr5CncVbK70SoioNQIq81nsaG86ev5hAidQvmOeETBqs7jm43K2F5/Ley3ytDtriImV6TpNiSg==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.4
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-
-  /postcss/8.4.14:
-    resolution: {integrity: sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.4
@@ -18552,7 +18413,7 @@ packages:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      ansi-regex: 5.0.1
+      ansi-regex: registry.npmjs.org/ansi-regex/5.0.1
       ansi-styles: registry.npmjs.org/ansi-styles/5.2.0
       react-is: registry.npmjs.org/react-is/17.0.2
     dev: true
@@ -19193,7 +19054,7 @@ packages:
       react-shallow-renderer: 16.15.0_react@18.2.0
       scheduler: 0.23.0
 
-  /react-toastify/9.0.8_sqtgkyaaeoobayrawoqsu3p2gq:
+  /react-toastify/9.0.8_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-EwM+teWt49HSHx+67qI08yLAW1zAsBxCXLCsUfxHYv1W7/R3ZLhrqKalh7j+kjgPna1h5LQMSMwns4tB4ww2yQ==}
     peerDependencies:
       react: '>=16'
@@ -19201,7 +19062,7 @@ packages:
     dependencies:
       clsx: 1.2.1
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: false
 
   /react-transition-group/4.4.5_biqbaboplfbrettd7655fr4n2y:
@@ -19732,9 +19593,9 @@ packages:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
     dependencies:
-      is-core-module: 2.10.0
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
+      is-core-module: registry.npmjs.org/is-core-module/2.11.0
+      path-parse: registry.npmjs.org/path-parse/1.0.7
+      supports-preserve-symlinks-flag: registry.npmjs.org/supports-preserve-symlinks-flag/1.0.0
 
   /resolve/2.0.0-next.4:
     resolution: {integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ==}
@@ -20942,7 +20803,7 @@ packages:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
     dependencies:
-      ansi-regex: 5.0.1
+      ansi-regex: registry.npmjs.org/ansi-regex/5.0.1
 
   /strip-ansi/7.0.1:
     resolution: {integrity: sha512-cXNxvT8dFNRVfhVME3JAe98mkXDYN2O1l7jmcwMnOslDeESg1rF/OZMtK0nRAhiari1unG5cD4jG3rapUAkLbw==}
@@ -21093,7 +20954,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.21.4
+      browserslist: registry.npmjs.org/browserslist/4.21.4
       postcss: registry.npmjs.org/postcss/8.4.18
       postcss-selector-parser: 6.0.10
     dev: true
@@ -21114,13 +20975,6 @@ packages:
       has-flag: 3.0.0
     dev: true
 
-  /supports-color/7.2.0:
-    resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
-    engines: {node: '>=8'}
-    dependencies:
-      has-flag: 4.0.0
-    dev: true
-
   /supports-color/8.1.1:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
@@ -21139,6 +20993,7 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: true
 
   /svg-parser/2.0.4:
     resolution: {integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==}
@@ -21175,7 +21030,7 @@ packages:
       css-select: 4.3.0
       css-tree: 1.1.3
       csso: 4.2.0
-      picocolors: 1.0.0
+      picocolors: registry.npmjs.org/picocolors/1.0.0
       stable: 0.1.8
     dev: true
 
@@ -21674,7 +21529,7 @@ packages:
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.3.8
-      typescript: registry.npmjs.org/typescript/4.8.4
+      typescript: 4.8.4
       yargs-parser: 20.2.9
     dev: true
 
@@ -21816,7 +21671,6 @@ packages:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /ua-parser-js/0.7.31:
     resolution: {integrity: sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==}
@@ -22102,18 +21956,6 @@ packages:
       querystring: 0.2.0
     dev: true
 
-  /urql/2.2.3_o264z5epwuajru7y4dsijkqr44:
-    resolution: {integrity: sha512-XMkSYJKW9s4ZlbSuxcUz3fTBIykOn0sGileRXQeyZpaRBXJPVz5saSY05k7jdefNxShZtTI+/nr7PYUWQertfg==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      react: '>= 16.8.0'
-    dependencies:
-      '@urql/core': 2.6.1_graphql@15.8.0
-      graphql: 15.8.0
-      react: 18.2.0
-      wonka: 4.0.15
-    dev: false
-
   /use-sync-external-store/1.2.0_react@18.2.0:
     resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
     peerDependencies:
@@ -22337,6 +22179,7 @@ packages:
 
   /web-vitals/2.1.4:
     resolution: {integrity: sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==}
+    dev: false
 
   /webcrypto-core/1.7.5:
     resolution: {integrity: sha512-gaExY2/3EHQlRNNNVSrbG2Cg94Rutl7fAaKILS1w8ZDhGxdFOaw6EbCfHIxPy9vt/xwp5o0VQAx9aySPF6hU1A==}
@@ -22677,10 +22520,6 @@ packages:
     dependencies:
       execa: 5.1.1
     dev: true
-
-  /wonka/4.0.15:
-    resolution: {integrity: sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==}
-    dev: false
 
   /wonka/6.1.0:
     resolution: {integrity: sha512-VgiMCz7BXOiDbgpVhf5iNhK7hurteY5Jv0fDJewUkY0s4fbxQD2iKqfGxNXNTwp2v3bgT8QVu2l5H7YdkZ5WIA==}
@@ -23141,7 +22980,7 @@ packages:
       zen-observable-ts: registry.npmjs.org/zen-observable-ts/1.2.5
     dev: false
 
-  registry.npmjs.org/@apollo/client/3.7.0_y6rrllycv66ulrjz2f64r566fi:
+  registry.npmjs.org/@apollo/client/3.7.0_wxfjnvblbhu4ianu4f2qg722fu:
     resolution: {integrity: sha512-hp4OvrH1ZIQACRYcIrh/C0WFnY7IM7G6nlTpC8DSTEWxfZQ2kvpvDY0I/hYmCs0oAVrg26g3ANEdOzGWTcYbPg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@apollo/client/-/client-3.7.0.tgz}
     id: registry.npmjs.org/@apollo/client/3.7.0
     name: '@apollo/client'
@@ -23172,7 +23011,7 @@ packages:
       optimism: registry.npmjs.org/optimism/0.16.1
       prop-types: registry.npmjs.org/prop-types/15.8.1
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       response-iterator: registry.npmjs.org/response-iterator/0.2.6
       symbol-observable: registry.npmjs.org/symbol-observable/4.0.0
       ts-invariant: registry.npmjs.org/ts-invariant/0.10.3
@@ -25568,7 +25407,7 @@ packages:
       '@formatjs/intl-listformat': registry.npmjs.org/@formatjs/intl-listformat/7.1.3
       intl-messageformat: registry.npmjs.org/intl-messageformat/10.2.1
       tslib: registry.npmjs.org/tslib/2.4.0
-      typescript: registry.npmjs.org/typescript/4.8.4
+      typescript: 4.8.4
     dev: false
 
   registry.npmjs.org/@formatjs/ts-transformer/3.11.1_ts-jest@27.1.5:
@@ -27455,7 +27294,7 @@ packages:
       - supports-color
     dev: true
 
-  registry.npmjs.org/@stripe/react-stripe-js/1.13.0_2siaaqfxoayrkd2ustuaqj26fy:
+  registry.npmjs.org/@stripe/react-stripe-js/1.13.0_6nr2xug6y4biiuh7urbys4ixky:
     resolution: {integrity: sha512-6v2VVYorWalmlHF5DIlHp5xtFzX9rY36N4d7kyS8D/4jxvZYHOKJj96LCQfwuFi/o19/dCX8rxt/ct+pF9kI8A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@stripe/react-stripe-js/-/react-stripe-js-1.13.0.tgz}
     id: registry.npmjs.org/@stripe/react-stripe-js/1.13.0
     name: '@stripe/react-stripe-js'
@@ -27468,7 +27307,7 @@ packages:
       '@stripe/stripe-js': registry.npmjs.org/@stripe/stripe-js/1.42.0
       prop-types: registry.npmjs.org/prop-types/15.8.1
       react: 18.2.0
-      react-dom: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     dev: false
 
   registry.npmjs.org/@stripe/stripe-js/1.42.0:
@@ -27678,6 +27517,35 @@ packages:
       dom-accessibility-api: registry.npmjs.org/dom-accessibility-api/0.5.14
       lz-string: registry.npmjs.org/lz-string/1.4.4
       pretty-format: registry.npmjs.org/pretty-format/27.5.1
+    dev: true
+
+  registry.npmjs.org/@testing-library/react/13.4.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-sXOGON+WNTh3MLE9rve97ftaZukN3oNf2KjDy7YTx6hcTO2uuLHuCGynMDhFwGw/jYf4OJ2Qk0i4i79qMNNkyw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@testing-library/react/-/react-13.4.0.tgz}
+    id: registry.npmjs.org/@testing-library/react/13.4.0
+    name: '@testing-library/react'
+    version: 13.4.0
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@babel/runtime': registry.npmjs.org/@babel/runtime/7.19.4
+      '@testing-library/dom': registry.npmjs.org/@testing-library/dom/8.19.0
+      '@types/react-dom': registry.npmjs.org/@types/react-dom/18.0.7
+      react: 18.2.0
+      react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
+    dev: true
+
+  registry.npmjs.org/@testing-library/user-event/14.4.3_aaq3sbffpfe3jnxzm2zngsddei:
+    resolution: {integrity: sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@testing-library/user-event/-/user-event-14.4.3.tgz}
+    id: registry.npmjs.org/@testing-library/user-event/14.4.3
+    name: '@testing-library/user-event'
+    version: 14.4.3
+    engines: {node: '>=12', npm: '>=6'}
+    peerDependencies:
+      '@testing-library/dom': '>=7.21.4'
+    dependencies:
+      '@testing-library/dom': registry.npmjs.org/@testing-library/dom/8.19.0
     dev: true
 
   registry.npmjs.org/@tootallnate/once/2.0.0:
@@ -27950,30 +27818,12 @@ packages:
     version: 1.2.4
     dev: false
 
-  registry.npmjs.org/@types/react-dom/17.0.17:
-    resolution: {integrity: sha512-VjnqEmqGnasQKV0CWLevqMTXBYG9GbwuE6x3VetERLh0cq2LTptFE73MrQi2S7GkKXCf2GgwItB/melLnxfnsg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/react-dom/-/react-dom-17.0.17.tgz}
-    name: '@types/react-dom'
-    version: 17.0.17
-    dependencies:
-      '@types/react': registry.npmjs.org/@types/react/17.0.50
-    dev: true
-
   registry.npmjs.org/@types/react-dom/18.0.7:
     resolution: {integrity: sha512-HaXc+BbqAZE1RdsK3tC8SbkFy6UL2xF76lT9rQs5JkPrJg3rWA3Ou/Lhw3YJQzEDkBpmJ79nBsfnd05WrBd2QQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/react-dom/-/react-dom-18.0.7.tgz}
     name: '@types/react-dom'
     version: 18.0.7
     dependencies:
       '@types/react': registry.npmjs.org/@types/react/18.0.22
-    dev: true
-
-  registry.npmjs.org/@types/react/17.0.50:
-    resolution: {integrity: sha512-ZCBHzpDb5skMnc1zFXAXnL3l1FAdi+xZvwxK+PkglMmBrwjpp9nKaWuEvrGnSifCJmBFGxZOOFuwC6KH/s0NuA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/react/-/react-17.0.50.tgz}
-    name: '@types/react'
-    version: 17.0.50
-    dependencies:
-      '@types/prop-types': registry.npmjs.org/@types/prop-types/15.7.5
-      '@types/scheduler': registry.npmjs.org/@types/scheduler/0.16.2
-      csstype: registry.npmjs.org/csstype/3.1.1
     dev: true
 
   registry.npmjs.org/@types/react/18.0.22:
@@ -28089,6 +27939,19 @@ packages:
       '@typescript-eslint/types': registry.npmjs.org/@typescript-eslint/types/5.41.0
       eslint-visitor-keys: registry.npmjs.org/eslint-visitor-keys/3.3.0
     dev: true
+
+  registry.npmjs.org/@urql/core/3.0.5_graphql@15.8.0:
+    resolution: {integrity: sha512-6/1HG+WEAcPs+hXSFnxWBTWkNUwa8dj2cHysWokMaFIbAioGtUaSdxp2q9FDMtWAIGdc640NFSt2B8itGLdoAA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@urql/core/-/core-3.0.5.tgz}
+    id: registry.npmjs.org/@urql/core/3.0.5
+    name: '@urql/core'
+    version: 3.0.5
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-typed-document-node/core': registry.npmjs.org/@graphql-typed-document-node/core/3.1.1_graphql@15.8.0
+      graphql: 15.8.0
+      wonka: registry.npmjs.org/wonka/6.1.0
+    dev: false
 
   registry.npmjs.org/@urql/core/3.0.5_graphql@16.6.0:
     resolution: {integrity: sha512-6/1HG+WEAcPs+hXSFnxWBTWkNUwa8dj2cHysWokMaFIbAioGtUaSdxp2q9FDMtWAIGdc640NFSt2B8itGLdoAA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@urql/core/-/core-3.0.5.tgz}
@@ -28704,6 +28567,25 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  registry.npmjs.org/autoprefixer/10.4.12_postcss@8.4.18:
+    resolution: {integrity: sha512-WrCGV9/b97Pa+jtwf5UGaRjgQIg7OK3D06GnoYoZNcG1Xb8Gt3EfuKjlhh9i/VtT16g6PYjZ69jdJ2g8FxSC4Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.12.tgz}
+    id: registry.npmjs.org/autoprefixer/10.4.12
+    name: autoprefixer
+    version: 10.4.12
+    engines: {node: ^10 || ^12 || >=14}
+    hasBin: true
+    peerDependencies:
+      postcss: ^8.1.0
+    dependencies:
+      browserslist: registry.npmjs.org/browserslist/4.21.4
+      caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001425
+      fraction.js: registry.npmjs.org/fraction.js/4.2.0
+      normalize-range: registry.npmjs.org/normalize-range/0.1.2
+      picocolors: registry.npmjs.org/picocolors/1.0.0
+      postcss: registry.npmjs.org/postcss/8.4.18
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
+    dev: true
+
   registry.npmjs.org/available-typed-arrays/1.0.5:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz}
     name: available-typed-arrays
@@ -28937,7 +28819,6 @@ packages:
       electron-to-chromium: registry.npmjs.org/electron-to-chromium/1.4.284
       node-releases: registry.npmjs.org/node-releases/2.0.6
       update-browserslist-db: registry.npmjs.org/update-browserslist-db/1.0.10_browserslist@4.21.4
-    dev: true
 
   registry.npmjs.org/bser/2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/bser/-/bser-2.1.1.tgz}
@@ -29030,7 +28911,6 @@ packages:
     resolution: {integrity: sha512-/pzFv0OmNG6W0ym80P3NtapU0QEiDS3VuYAZMGoLLqiC7f6FJFe1MjpQDREGApeenD9wloeytmVDj+JLXPC6qw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001425.tgz}
     name: caniuse-lite
     version: 1.0.30001425
-    dev: true
 
   registry.npmjs.org/capital-case/1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/capital-case/-/capital-case-1.0.4.tgz}
@@ -29529,7 +29409,7 @@ packages:
       '@types/node': 16.11.64
       cosmiconfig: registry.npmjs.org/cosmiconfig/7.0.1
       ts-node: registry.npmjs.org/ts-node/10.9.1_k2jc2lb6qrtdc3lulqxjwnbwoi
-      typescript: registry.npmjs.org/typescript/4.8.4
+      typescript: 4.8.4
     dev: true
 
   registry.npmjs.org/cosmiconfig/7.0.1:
@@ -29961,7 +29841,6 @@ packages:
     resolution: {integrity: sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.284.tgz}
     name: electron-to-chromium
     version: 1.4.284
-    dev: true
 
   registry.npmjs.org/emoji-regex/10.2.1:
     resolution: {integrity: sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/emoji-regex/-/emoji-regex-10.2.1.tgz}
@@ -30825,6 +30704,12 @@ packages:
     dependencies:
       node-domexception: registry.npmjs.org/node-domexception/1.0.0
       web-streams-polyfill: registry.npmjs.org/web-streams-polyfill/4.0.0-beta.3
+    dev: true
+
+  registry.npmjs.org/fraction.js/4.2.0:
+    resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz}
+    name: fraction.js
+    version: 4.2.0
     dev: true
 
   registry.npmjs.org/fs-extra/9.1.0:
@@ -32898,7 +32783,6 @@ packages:
     resolution: {integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/node-releases/-/node-releases-2.0.6.tgz}
     name: node-releases
     version: 2.0.6
-    dev: true
 
   registry.npmjs.org/normalize-path/2.1.1:
     resolution: {integrity: sha512-3pKJwH184Xo/lnH6oyP1q2pMd7HcypqqmRs91/6/i2CGtWwIKGCkOOMTm/zXbgTEWHw1uNpNi/igc3ePOYHb6w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/normalize-path/-/normalize-path-2.1.1.tgz}
@@ -32914,6 +32798,13 @@ packages:
     name: normalize-path
     version: 3.0.0
     engines: {node: '>=0.10.0'}
+
+  registry.npmjs.org/normalize-range/0.1.2:
+    resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz}
+    name: normalize-range
+    version: 0.1.2
+    engines: {node: '>=0.10.0'}
+    dev: true
 
   registry.npmjs.org/npm-run-path/4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/npm-run-path/-/npm-run-path-4.0.1.tgz}
@@ -33245,12 +33136,6 @@ packages:
     version: 2.1.0
     dev: true
 
-  registry.npmjs.org/picocolors/0.2.1:
-    resolution: {integrity: sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/picocolors/-/picocolors-0.2.1.tgz}
-    name: picocolors
-    version: 0.2.1
-    dev: true
-
   registry.npmjs.org/picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz}
     name: picocolors
@@ -33288,6 +33173,21 @@ packages:
       read-cache: registry.npmjs.org/read-cache/1.0.0
       resolve: registry.npmjs.org/resolve/1.22.1
     dev: false
+
+  registry.npmjs.org/postcss-import/15.0.0_postcss@8.4.18:
+    resolution: {integrity: sha512-Y20shPQ07RitgBGv2zvkEAu9bqvrD77C9axhj/aA1BQj4czape2MdClCExvB27EwYEJdGgKZBpKanb0t1rK2Kg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/postcss-import/-/postcss-import-15.0.0.tgz}
+    id: registry.npmjs.org/postcss-import/15.0.0
+    name: postcss-import
+    version: 15.0.0
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      postcss: ^8.0.0
+    dependencies:
+      postcss: registry.npmjs.org/postcss/8.4.18
+      postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.2.0
+      read-cache: registry.npmjs.org/read-cache/1.0.0
+      resolve: registry.npmjs.org/resolve/1.22.1
+    dev: true
 
   registry.npmjs.org/postcss-js/4.0.0_postcss@8.4.18:
     resolution: {integrity: sha512-77QESFBwgX4irogGVPgQ5s07vLvFqWr228qZY+w6lW599cRlK/HmnlivnnVUxkjHnCu4J16PDMHcH+e+2HbvTQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/postcss-js/-/postcss-js-4.0.0.tgz}
@@ -33350,17 +33250,6 @@ packages:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz}
     name: postcss-value-parser
     version: 4.2.0
-    dev: false
-
-  registry.npmjs.org/postcss/7.0.39:
-    resolution: {integrity: sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/postcss/-/postcss-7.0.39.tgz}
-    name: postcss
-    version: 7.0.39
-    engines: {node: '>=6.0.0'}
-    dependencies:
-      picocolors: registry.npmjs.org/picocolors/0.2.1
-      source-map: 0.6.1
-    dev: true
 
   registry.npmjs.org/postcss/8.4.14:
     resolution: {integrity: sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/postcss/-/postcss-8.4.14.tgz}
@@ -33371,7 +33260,6 @@ packages:
       nanoid: registry.npmjs.org/nanoid/3.3.4
       picocolors: registry.npmjs.org/picocolors/1.0.0
       source-map-js: registry.npmjs.org/source-map-js/1.0.2
-    dev: true
 
   registry.npmjs.org/postcss/8.4.17:
     resolution: {integrity: sha512-UNxNOLQydcOFi41yHNMcKRZ39NeXlr8AxGuZJsdub8vIb12fHzcq37DTU/QtbI6WLxNg2gF9Z+8qtRwTj1UI1Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/postcss/-/postcss-8.4.17.tgz}
@@ -33589,17 +33477,17 @@ packages:
       scheduler: registry.npmjs.org/scheduler/0.20.2
     dev: false
 
-  registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325_react@18.2.0:
-    resolution: {integrity: sha512-LIpWe5CdiO8NZ+K4YzGj8wdqW44eBBNwUy3Q9OTYBY4G+JB31/c8GGzoBC2FvVkSVLTb4LUHBGYiyl7s2n1zug==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/react-dom/-/react-dom-18.0.0-rc.3-next-e7d0053e6-20220325.tgz}
-    id: registry.npmjs.org/react-dom/18.0.0-rc.3-next-e7d0053e6-20220325
+  registry.npmjs.org/react-dom/18.2.0_react@18.2.0:
+    resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz}
+    id: registry.npmjs.org/react-dom/18.2.0
     name: react-dom
-    version: 18.0.0-rc.3-next-e7d0053e6-20220325
+    version: 18.2.0
     peerDependencies:
-      react: 18.0.0-rc.3-next-e7d0053e6-20220325
+      react: ^18.2.0
     dependencies:
       loose-envify: registry.npmjs.org/loose-envify/1.4.0
       react: 18.2.0
-      scheduler: registry.npmjs.org/scheduler/0.21.0-rc.3-next-e7d0053e6-20220325
+      scheduler: registry.npmjs.org/scheduler/0.23.0
 
   registry.npmjs.org/react-fast-compare/3.2.0:
     resolution: {integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.0.tgz}
@@ -33681,7 +33569,7 @@ packages:
       intl-messageformat: registry.npmjs.org/intl-messageformat/10.2.1
       react: 18.2.0
       tslib: registry.npmjs.org/tslib/2.4.0
-      typescript: registry.npmjs.org/typescript/4.8.4
+      typescript: 4.8.4
     dev: false
 
   registry.npmjs.org/react-is/16.13.1:
@@ -33726,7 +33614,6 @@ packages:
     version: 1.0.0
     dependencies:
       pify: registry.npmjs.org/pify/2.3.0
-    dev: false
 
   registry.npmjs.org/readable-stream/2.3.7:
     resolution: {integrity: sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.7.tgz}
@@ -34104,10 +33991,10 @@ packages:
       object-assign: registry.npmjs.org/object-assign/4.1.1
     dev: false
 
-  registry.npmjs.org/scheduler/0.21.0-rc.3-next-e7d0053e6-20220325:
-    resolution: {integrity: sha512-DIpRZC4U7E4snduICzeIL4N16C9R1kX/CIBrH5kp0kGB6zbTkIKSBnuAXoKgmgHe2tt2LVGWN1x2XMgw3xylLw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/scheduler/-/scheduler-0.21.0-rc.3-next-e7d0053e6-20220325.tgz}
+  registry.npmjs.org/scheduler/0.23.0:
+    resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/scheduler/-/scheduler-0.23.0.tgz}
     name: scheduler
-    version: 0.21.0-rc.3-next-e7d0053e6-20220325
+    version: 0.23.0
     dependencies:
       loose-envify: registry.npmjs.org/loose-envify/1.4.0
 
@@ -34819,7 +34706,7 @@ packages:
       create-require: registry.npmjs.org/create-require/1.1.1
       diff: registry.npmjs.org/diff/4.0.2
       make-error: registry.npmjs.org/make-error/1.3.6
-      typescript: registry.npmjs.org/typescript/4.8.4
+      typescript: 4.8.4
       v8-compile-cache-lib: registry.npmjs.org/v8-compile-cache-lib/3.0.1
       yn: registry.npmjs.org/yn/3.1.1
 
@@ -35186,7 +35073,6 @@ packages:
       browserslist: registry.npmjs.org/browserslist/4.21.4
       escalade: registry.npmjs.org/escalade/3.1.1
       picocolors: registry.npmjs.org/picocolors/1.0.0
-    dev: true
 
   registry.npmjs.org/upper-case-first/2.0.2:
     resolution: {integrity: sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/upper-case-first/-/upper-case-first-2.0.2.tgz}
@@ -35211,6 +35097,21 @@ packages:
     dependencies:
       punycode: registry.npmjs.org/punycode/2.1.1
     dev: true
+
+  registry.npmjs.org/urql/3.0.3_o264z5epwuajru7y4dsijkqr44:
+    resolution: {integrity: sha512-aVUAMRLdc5AOk239DxgXt6ZxTl/fEmjr7oyU5OGo8uvpqu42FkeJErzd2qBzhAQ3DyusoZIbqbBLPlnKo/yy2A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/urql/-/urql-3.0.3.tgz}
+    id: registry.npmjs.org/urql/3.0.3
+    name: urql
+    version: 3.0.3
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+      react: '>= 16.8.0'
+    dependencies:
+      '@urql/core': registry.npmjs.org/@urql/core/3.0.5_graphql@15.8.0
+      graphql: 15.8.0
+      react: 18.2.0
+      wonka: registry.npmjs.org/wonka/6.1.0
+    dev: false
 
   registry.npmjs.org/urql/3.0.3_onqnqwb3ubg5opvemcqf7c2qhy:
     resolution: {integrity: sha512-aVUAMRLdc5AOk239DxgXt6ZxTl/fEmjr7oyU5OGo8uvpqu42FkeJErzd2qBzhAQ3DyusoZIbqbBLPlnKo/yy2A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/urql/-/urql-3.0.3.tgz}
