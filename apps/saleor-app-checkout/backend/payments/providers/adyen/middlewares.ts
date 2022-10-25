@@ -54,7 +54,7 @@ export const isAdyenNotification: Middleware = (handler) => (request) => {
     return handler(request);
   }
 
-  console.warn("Invalid notification made to Adyen webhookk handler", request);
+  console.warn("Invalid notification made to Adyen webhook handler", request);
   return Response.BadRequest();
 };
 
