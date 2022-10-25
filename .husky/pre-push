@@ -9,7 +9,7 @@ NC='\033[0m'
 PATHS_LOCALES="packages/checkout-storefront/content/locales apps/saleor-app-checkout/content/locales"
 echo $PATHS_LOCALES
 
-pnpm run lint
+# pnpm run lint
 pnpm run i18n:extract
 pnpm exec prettier --write $PATHS_LOCALES
 
