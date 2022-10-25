@@ -42,7 +42,11 @@ function SubCollapseMenu({ menuItem }: CollapseMenuProps) {
                       {sub.name}
                     </a>
                   ) : (
-                    <Link href={getLinkPath(sub, currentChannel.slug, currentLocale)} passHref>
+                    <Link
+                      href={getLinkPath(sub, currentChannel.slug, currentLocale)}
+                      passHref
+                      legacyBehavior
+                    >
                       <a href="pass">{sub.name}</a>
                     </Link>
                   )}

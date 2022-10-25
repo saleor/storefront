@@ -67,6 +67,7 @@ export function MainMenu() {
                           <Link
                             href={getLinkPath(child, currentChannel.slug, currentLocale)}
                             passHref
+                            legacyBehavior
                           >
                             <a
                               onClick={() => setOpenDropdown(false)}

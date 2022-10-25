@@ -42,7 +42,7 @@ export function HomepageBlock({ menuItem }: HomepageBlockProps) {
       </h1>
       <ProductCollection filter={filter} allowMore={false} />
       <div className="flex flex-row-reverse p-4">
-        <Link href={link} passHref>
+        <Link href={link} passHref legacyBehavior>
           <a href="pass">
             <p className="text-base">{t.formatMessage(messages.more)}</p>
           </a>

@@ -20,9 +20,7 @@ function Custom404() {
           </header>
           <main>
             <div className="container px-8">
-              <Link href={paths.$url()} passHref>
-                <a href="pass">Go back home</a>
-              </Link>
+              <Link href={paths.$url()}>Go back home</Link>
             </div>
           </main>
         </div>
