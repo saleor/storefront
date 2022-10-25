@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { SyntheticEvent } from "react";
 import { useIntl } from "react-intl";

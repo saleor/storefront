@@ -1,6 +1,6 @@
 import { PlayIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useState } from "react";
 
 import { ImageExpand } from "@/components/product/ImageExpand";
