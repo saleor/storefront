@@ -10,6 +10,7 @@ import User from "./userIcon.svg"; // in the final version it should be imported
 interface NavIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: "user" | "bag" | "spyglass" | "menu" | "close";
   counter?: number;
+  isButton?: boolean;
 }
 
 const getIcon = (iconName: NavIconButtonProps["icon"]) => {
@@ -29,16 +30,28 @@ const getIcon = (iconName: NavIconButtonProps["icon"]) => {
   }
 };
 
-function NavIconButton({ icon, counter, ...rest }: NavIconButtonProps) {
-  return (
-    <button type="button" className={styles["nav-icon-button"]} {...rest}>
+function NavIconButton({ icon, counter, isButton = true, ...rest }: NavIconButtonProps) {
+  const inner = (
+    <>
       {getIcon(icon)}
       {!!counter && (
         <span className={styles["nav-icon-counter"]} data-testid="cartCounter">
           {counter}
         </span>
       )}
-    </button>
+    </>
+  );
+  if (isButton) {
+    return (
+      <button type="button" className={styles["nav-icon-button"]} {...rest}>
+        {inner}
+      </button>
+    );
+  }
+  return (
+    <span className={styles["nav-icon-button"]} {...rest}>
+      {inner}
+    </span>
   );
 }
 

@@ -59,7 +59,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
           <div className="flex flex-col">
             {authenticated ? (
               <>
-                <Link href={paths.account.preferences.$url()} passHref>
+                <Link href={paths.account.preferences.$url()} passHref legacyBehavior>
                   <a tabIndex={0} className={styles["burger-link"]} href="pass">
                     {t.formatMessage(messages.menuAccountPreferences)}
                   </a>

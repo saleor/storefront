@@ -51,7 +51,7 @@ export default [
       isProd && terser(),
       postcss({
         extract: true,
-        plugins: [tailwindcss, autoprefixer, postcssImport],
+        plugins: [tailwindcss(), autoprefixer(), postcssImport()],
       }),
     ]),
   },
