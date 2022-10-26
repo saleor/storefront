@@ -14,7 +14,7 @@ import { updateTransactionProcessedEvents } from "@/saleor-app-checkout/backend/
 import { disableConsole } from "@/saleor-app-checkout/test-utils";
 
 const handler: typeof endpoint & { config?: PageConfig } = endpoint;
-handler.config = config;
+handler.config = config as PageConfig;
 
 jest.mock("@saleor/app-sdk/middleware", () => ({
   __esModule: true,

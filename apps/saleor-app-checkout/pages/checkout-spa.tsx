@@ -1,4 +1,5 @@
 import Dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { envVars } from "../constants";
 
 const CheckoutStoreFront = Dynamic(
@@ -13,22 +14,24 @@ const CheckoutStoreFront = Dynamic(
 );
 
 export default function CheckoutSpa() {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   const apiUrl = envVars.apiUrl;
-  const checkoutApiUrl = envVars.checkoutApiUrl;
-  const checkoutAppUrl = envVars.checkoutAppUrl;
+  const checkoutAppUrl = window.location.origin + "/saleor-app-checkout/";
 
   if (!apiUrl) {
     console.warn(`Missing NEXT_PUBLIC_SALEOR_API_URL env variable`);
     return null;
   }
-  if (!checkoutApiUrl) {
-    console.warn(`Missing NEXT_PUBLIC_CHECKOUT_APP_URL env variable`);
-    return null;
-  }
-  if (!checkoutAppUrl) {
-    console.warn(`Missing NEXT_PUBLIC_CHECKOUT_APP_URL env variable`);
-    return null;
-  }
 
-  return <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl, checkoutAppUrl }} />;
+  return (
+    <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl: checkoutAppUrl + "api/", checkoutAppUrl }} />
+  );
 }

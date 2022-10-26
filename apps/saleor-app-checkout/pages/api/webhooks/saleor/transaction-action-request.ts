@@ -20,7 +20,7 @@ export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transact
 
 export const config = {
   api: {
-    bodyParser: false as const,
+    bodyParser: false,
   },
 };
 

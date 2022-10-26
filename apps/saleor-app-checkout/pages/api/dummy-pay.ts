@@ -7,14 +7,13 @@ import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphq
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import * as yup from "yup";
 
-const dummyPayBodySchema: yup.ObjectSchema<Omit<DummyPayRequestBody, "checkoutApiUrl">> =
-  yup.object({
-    orderId: yup.string().required(),
-    amountCharged: yup.object({
-      amount: yup.number().required(),
-      currency: yup.string().required(),
-    }),
-  });
+const dummyPayBodySchema = yup.object({
+  orderId: yup.string().required(),
+  amountCharged: yup.object({
+    amount: yup.number().required(),
+    currency: yup.string().required(),
+  }),
+});
 
 const parseAndValidateBody = createParseAndValidateBody(dummyPayBodySchema);
 
