@@ -51,6 +51,6 @@ export default stripeWebhook;
 export const config = {
   api: {
     // required for verification of the signature
-    bodyParser: false,
+    bodyParser: false as const,
   },
 };
