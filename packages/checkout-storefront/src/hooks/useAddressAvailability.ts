@@ -1,34 +1,19 @@
-import { CountryCode, useChannelQuery } from "@/checkout-storefront/graphql";
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useCallback, useMemo } from "react";
+import { CountryCode } from "@/checkout-storefront/graphql";
+import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
+import { useCallback } from "react";
 
-interface UseAddressAvailabilityProps {
-  pause: boolean;
-}
-
-export const useAddressAvailability = (
-  { pause }: UseAddressAvailabilityProps = { pause: false }
-) => {
-  const { checkout } = useCheckout();
-  const [{ data }] = useChannelQuery({
-    variables: { slug: checkout.channel.slug },
-    pause: pause || !checkout?.channel.slug,
-  });
-
-  const availableShippingCountries: CountryCode[] = useMemo(
-    () => (data?.channel?.countries?.map(({ code }) => code) as CountryCode[]) || [],
-    [data?.channel]
-  );
+export const useAddressAvailability = (skipCheck = false) => {
+  const { availableShippingCountries } = useAvailableShippingCountries();
 
   const isAvailable = useCallback(
     ({ country }: { country: { code: string } }) => {
-      if (pause) {
+      if (skipCheck) {
         return true;
       }
 
       return availableShippingCountries.includes(country?.code as CountryCode);
     },
-    [pause, availableShippingCountries]
+    [skipCheck, availableShippingCountries]
   );
 
   return { isAvailable, availableShippingCountries };

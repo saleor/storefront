@@ -63,7 +63,7 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
     pause: !authUser?.id,
   });
 
-  const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
+  const { isAvailable } = useAddressAvailability(!checkAddressAvailability);
 
   const { showErrors } = useAlerts();
 

@@ -1,19 +1,19 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
-import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 import { Option, Select } from "@saleor/ui-kit";
 import { UseErrors, useFormattedMessages, useGetInputProps } from "@/checkout-storefront/hooks";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { Path, RegisterOptions, UseFormReturn } from "react-hook-form";
 import { FC, PropsWithChildren, useEffect, useMemo, useRef } from "react";
-import { difference, sortBy } from "lodash-es";
+import { difference, omit } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
-import { autocompleteTags, countries } from "@/checkout-storefront/lib/consts";
+import { autocompleteTags } from "@/checkout-storefront/lib/consts";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { emptyFormData } from "@/checkout-storefront/lib/utils";
 import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
+import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
 
 interface CountryOption extends Option {
   value: CountryCode;
@@ -31,7 +31,6 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   errors,
   title,
   children,
-  checkAddressAvailability = false,
   formProps,
   defaultInputOptions = {},
 }) => {
@@ -45,9 +44,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   const formData = watch();
   const formatMessage = useFormattedMessages();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
-  const { availableShippingCountries } = useAddressAvailability({
-    pause: !checkAddressAvailability,
-  });
+  const { availableShippingCountries } = useAvailableShippingCountries();
 
   useSetFormErrors({ setError, errors });
 
@@ -82,10 +79,13 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
       setValue(field as Path<AddressFormData>, emptyFormData[field as Path<AddressFormData>]);
     });
 
-    if (removedFields.length && isDirty) {
+    const isFormDirty =
+      isDirty && Object.values(omit(formData, "countryCode")).some((value) => !!value);
+
+    if (removedFields.length && isFormDirty) {
       void trigger();
     }
-  }, [allowedFields, requiredFields, setValue, trigger, isDirty]);
+  }, [allowedFields, requiredFields, setValue, trigger, isDirty, formData]);
 
   return (
     <form>
