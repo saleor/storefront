@@ -1,4 +1,3 @@
-import urlJoin from "url-join";
 import { localhostHttp } from "./utils/configUtils";
 export const appName = "Checkout";
 

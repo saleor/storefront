@@ -1,6 +1,5 @@
 import { NextApiHandler } from "next";
 
-import { DummyPayRequestBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphql";
