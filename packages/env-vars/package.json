@@ -8,9 +8,9 @@
     "index.js"
   ],
   "devDependencies": {
-    "@types/find-config": "^1.0.1",
-    "dotenv": "^16.0.1",
-    "dotenv-expand": "^8.0.3",
-    "find-config": "^1.0.0"
+    "@types/find-config": "1.0.1",
+    "dotenv": "16.0.3",
+    "dotenv-expand": "9.0.0",
+    "find-config": "1.0.0"
   }
 }
