@@ -49,6 +49,14 @@ module.exports = withBundleAnalyzer({
         source: "/checkout/(.*)",
         headers: [{ key: "x-frame-options", value: "ALLOWALL" }],
       },
+      /**
+       * TODO. Ensure this is valid approach. Best if it can be limited to Saleor,
+       *   so maybe it should use NEXT_PUBLIC_API_URI?
+       */
+      {
+        source: "/dashboard/(.*)",
+        headers: [{ key: "content-security-policy", value: "frame-ancestors *" }],
+      },
     ];
   },
   async rewrites() {

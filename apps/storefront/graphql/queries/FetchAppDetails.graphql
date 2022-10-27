@@ -1,0 +1,9 @@
+query FetchAppDetails {
+  app {
+    id
+    privateMetadata {
+      key
+      value
+    }
+  }
+}
