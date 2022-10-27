@@ -12,7 +12,7 @@ import { TransactionActionRequestSubscriptionDocument } from "@/saleor-app-check
 import invariant from "ts-invariant";
 
 const handler: Handler = (request) => {
-  const { baseURL } = request.context;
+  const baseURL = getBaseUrl(request);
   invariant(typeof baseURL === "string", `baseURL is not a string`);
 
   const webhookUrl = urlJoin(getBaseUrl(request), SALEOR_WEBHOOK_TRANSACTION_ENDPOINT);
