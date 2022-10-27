@@ -11,6 +11,7 @@
         "content/compiled-locales/**"
       ],
       "env": [
+        "APL",
         "BROWSER",
         "CHECKOUT_APP_URL",
         "CHECKOUT_STOREFRONT_URL",
@@ -47,7 +48,9 @@
         "TEST_MOLLIE_PROFILE_ID",
         "TEST_STRIPE_PUBLISHABLE_KEY",
         "TEST_STRIPE_SECRET_KEY",
-        "TEST_STRIPE_WEBHOOK_SECRET"
+        "TEST_STRIPE_WEBHOOK_SECRET",
+        "UPSTASH_REDIS_REST_TOKEN",
+        "UPSTASH_REDIS_REST_URL"
       ]
     },
     "lint": {
