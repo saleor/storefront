@@ -54,11 +54,14 @@ module.exports = withBundleAnalyzer({
   async rewrites() {
     const cloudDeploymentUrl = process.env.CLOUD_DEPLOYMENT_URL;
 
-    return [
+    return {
+      beforeFiles : [
       {
         source: "/checkout/",
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/`,
-      },
+      }
+    ],
+    afterFiles: [
       {
         source: `${checkoutEmbededInStorefrontPath}/`,
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
@@ -116,7 +119,8 @@ module.exports = withBundleAnalyzer({
             },
           ]
         : []),
-    ];
+        ]
+        };
   },
   async redirects() {
     return [
