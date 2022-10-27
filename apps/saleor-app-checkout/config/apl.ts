@@ -8,6 +8,7 @@ type Result = {
   appToken: string;
 };
 
+// @TODO: Use an env variable for single-tenant Vercel deployments?
 const useFileAPL = process.env.APL === "file";
 
 if (useFileAPL) {

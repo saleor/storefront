@@ -37,26 +37,35 @@ To develop `saleor-app-checkout` app locally, you need to create a tunnel for it
 To create a tunnel, run:
 
 ```bash
-npx saleor app tunnel 3001
+npx saleor app tunnel 3001 --force-install
 ```
 
 where `3001` is the port on which `saleor-app-checkout` runs by default. Alternative ways of creating a tunnel are described [here](#alternatives-to-saleor-app-tunnel).
 
-> Note: The tunnel needs to be running in the background. Please don't kill it during the development.
+> **Note**<br/>
+> Argument `--force-install` is required only the first time you run the command in order to install the application inside Saleor Dashboard and save the token.
 
-After the CLI installs the app for you, you need to make sure the requests to your Saleor instance are authenticated. To do that, please generate the auth token with the command:
+Open the app by using the tunnel URL received from `saleor app tunnel` (example: `https://saleor-app-checkout-xyz-my-org.saleor.live`) in your browser to see the result.
+
+> **Warning**<br/>
+> The tunnel needs to be running in the background. Please don't kill it during the development.
+
+#### Alternative way to obtain the token
+
+Token can also be generated using the CLI command:
 
 ```bash
 npx saleor app token
 ```
 
-Next, please copy the generated token, and paste it into the newly created `.auth_token` file:
+Now, create an empty JSON file named `.saleor-app-auth.json` and paste the token there. The file should look like this:
 
-```bash
-touch .auth_token
+```json
+{
+  "token": "(your application's auth token)",
+  "domain": "(your Saleor GraphQL API URL)"
+}
 ```
-
-Open the app by using the tunnel URL received from `saleor app tunnel` (example: `https://saleor-app-checkout-xyz-my-org.saleor.live`) in your browser to see the result.
 
 ### Production
 
