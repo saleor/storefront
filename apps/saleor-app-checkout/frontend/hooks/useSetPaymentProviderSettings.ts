@@ -10,7 +10,11 @@ export const useSetPaymentProviderSettings = <TArgs>(
 ) => {
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const saleorApiUrl = app?.getState().domain;
+  const domain = app?.getState().domain;
+  if (!domain) {
+    console.error(`Missing domain!`);
+  }
+  const saleorApiUrl = domain ? `https://${domain}/graphql/` : "";
 
   const [{ data, loading, error }, request] = useFetch(requestSetPaymentProviderSettings, {
     skip: true,

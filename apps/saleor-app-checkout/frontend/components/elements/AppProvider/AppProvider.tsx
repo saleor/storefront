@@ -20,7 +20,8 @@ const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(!!app?.getState()?.token);
 
-  const saleorApiUrl = app?.getState().domain;
+  const domain = app?.getState().domain;
+  const saleorApiUrl = domain ? `https://${domain}/graphql/` : "";
 
   const client = useMemo(
     () => (saleorApiUrl ? createGraphqlClient(saleorApiUrl) : null),

@@ -12,7 +12,11 @@ export const useGetPaymentProviderSettings = <TArgs>(
   const { isAuthorized } = useAuthData();
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const saleorApiUrl = app?.getState().domain;
+  const domain = app?.getState().domain;
+  if (!domain) {
+    console.error(`Missing domain!`);
+  }
+  const saleorApiUrl = domain ? `https://${domain}/graphql/` : "";
 
   const [{ data, loading, error }] = useFetch(requestGetPaymentProviderSettings, {
     skip: !isAuthorized,

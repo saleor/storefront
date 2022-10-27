@@ -84,6 +84,8 @@ export const getActivePaymentProvidersSettings = async (saleorApiUrl: string) =>
   const authData = await Apl.get(saleorApiUrl);
   const settings = await getPublicSettings({ saleorApiUrl });
 
+  console.log({ saleorApiUrl, authData });
+
   const { data, error } = await getClientForAuthData(authData)
     .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, {})
     .toPromise();

@@ -22954,6 +22954,7 @@ export const ChannelsDocument = gql`
 export function useChannelsQuery(
   options?: Omit<Urql.UseQueryArgs<ChannelsQueryVariables>, "query">
 ) {
+  console.log(`Use channels query`, Urql.useQuery, ChannelsDocument, options);
   return Urql.useQuery<ChannelsQuery, ChannelsQueryVariables>({
     query: ChannelsDocument,
     ...options,

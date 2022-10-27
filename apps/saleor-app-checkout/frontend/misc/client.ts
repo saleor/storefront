@@ -56,22 +56,19 @@ const addAuthToOperation = ({
 
 const willAuthError = ({ authState }: { authState?: AuthState | null }) => !authState?.token;
 
-const authConfig: ClientOptions = {
-  exchanges: [
-    dedupExchange,
-    cacheExchange,
-    authExchange({
-      getAuth,
-      willAuthError,
-      addAuthToOperation,
-    }),
-    multipartFetchExchange,
-  ],
-};
-
 export const createGraphqlClient = (apiUrl: string) => {
+  console.log({ apiUrl });
   return createClient({
-    ...authConfig,
+    exchanges: [
+      dedupExchange,
+      cacheExchange,
+      authExchange({
+        getAuth,
+        willAuthError,
+        addAuthToOperation,
+      }),
+      multipartFetchExchange,
+    ],
     url: apiUrl,
   });
 };
