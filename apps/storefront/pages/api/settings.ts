@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { SALEOR_DOMAIN_HEADER } from "@saleor/app-sdk/const";
+import { SALEOR_AUTHORIZATION_BEARER_HEADER, SALEOR_DOMAIN_HEADER } from "@saleor/app-sdk/const";
 import { SettingsManager } from "@saleor/app-sdk/settings-manager";
 
 import { createClient } from "../../saleor-app/graphql";
@@ -40,8 +40,7 @@ export default async function handler(
 ) {
   const saleorDomain = req.headers[SALEOR_DOMAIN_HEADER] as string;
   const authData = await saleorApp.apl.get(saleorDomain);
-
-  console.log(saleorDomain);
+  const token = req.headers[SALEOR_AUTHORIZATION_BEARER_HEADER] as string | undefined;
 
   if (!authData) {
     console.debug(`Could not find auth data for the domain ${saleorDomain}.`);
@@ -62,6 +61,13 @@ export default async function handler(
     await sendResponse(res, 200, settings);
     return;
   } else if (req.method === "POST") {
+    if (!token) {
+      // TODO validate token, probably extract logic from middleware in SDK to standalone function (or make a separate handler)
+      return res
+        .status(401)
+        .end(`Not authorized, ${SALEOR_AUTHORIZATION_BEARER_HEADER} header is required`);
+    }
+
     const { checkoutUrl } = req.body as SettingsUpdateApiRequest;
 
     if (checkoutUrl) {
