@@ -1,4 +1,4 @@
-import { MetadataEntry, EncryptedMetadataManager } from "@saleor/app-sdk/settings-manager";
+import { MetadataEntry, MetadataManager } from "@saleor/app-sdk/settings-manager";
 import { Client } from "urql";
 
 import {
@@ -21,7 +21,7 @@ export async function fetchAllMetadata(client: Client): Promise<MetadataEntry[]>
     return [];
   }
 
-  return data?.app?.privateMetadata.map((md) => ({ key: md.key, value: md.value })) || [];
+  return data?.app?.metadata.map((md) => ({ key: md.key, value: md.value })) || [];
 }
 
 // Mutate function takes urql client and metadata entries, and construct mutation to the API.
@@ -60,7 +60,7 @@ export async function mutateMetadata(client: Client, metadata: MetadataEntry[]) 
   }
 
   return (
-    mutationData?.updatePrivateMetadata?.item?.privateMetadata.map((md) => ({
+    mutationData?.updateMetadata?.item?.metadata.map((md) => ({
       key: md.key,
       value: md.value,
     })) || []
@@ -71,9 +71,8 @@ export const createSettingsManager = (client: Client) => {
   // EncryptedMetadataManager gives you interface to manipulate metadata and cache values in memory.
   // We recommend it for production, because all values are encrypted.
   // If your use case require plain text values, you can use MetadataManager.
-  return new EncryptedMetadataManager({
+  return new MetadataManager({
     // Secret key should be randomly created for production and set as environment variable
-    encryptionKey: process.env.SECRET_KEY!,
     fetchMetadata: () => fetchAllMetadata(client),
     mutateMetadata: (metadata) => mutateMetadata(client, metadata),
   });

@@ -1,7 +1,7 @@
 mutation UpdateAppMetadata($id: ID!, $input: [MetadataInput!]!) {
-  updatePrivateMetadata(id: $id, input: $input) {
+  updateMetadata(id: $id, input: $input) {
     item {
-      privateMetadata {
+      metadata {
         key
         value
       }

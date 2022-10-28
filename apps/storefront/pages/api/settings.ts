@@ -33,14 +33,15 @@ const sendResponse = async (
   });
 };
 
-// Main body of our settings endpoint. It's available at `api/settings` url.
-// Using GET method will return existing values, and POST is used to modify them.
+// Todo how this is authenticated? We should check token for SET/POST
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SettingsApiResponse>
 ) {
   const saleorDomain = req.headers[SALEOR_DOMAIN_HEADER] as string;
   const authData = await saleorApp.apl.get(saleorDomain);
+
+  console.log(saleorDomain);
 
   if (!authData) {
     console.debug(`Could not find auth data for the domain ${saleorDomain}.`);

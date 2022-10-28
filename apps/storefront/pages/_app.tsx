@@ -13,6 +13,7 @@ import { BaseSeo } from "@/components/seo/BaseSeo";
 import { DEMO_MODE } from "@/lib/const";
 import apolloClient from "@/lib/graphql";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
+import { SaleorAppSettingsProvider } from "../saleor-app/saleor-app-settings-provider";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -30,10 +31,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <CheckoutProvider>
         <RegionsProvider>
           <SaleorProviderWithChannels>
-            <BaseSeo />
-            <NextNProgress color="#5B68E4" options={{ showSpinner: false }} />
-            {DEMO_MODE && <DemoBanner />}
-            {getLayout(<Component {...pageProps} />)}
+            <SaleorAppSettingsProvider>
+              <BaseSeo />
+              <NextNProgress color="#5B68E4" options={{ showSpinner: false }} />
+              {DEMO_MODE && <DemoBanner />}
+              {getLayout(<Component {...pageProps} />)}
+            </SaleorAppSettingsProvider>
           </SaleorProviderWithChannels>
         </RegionsProvider>
       </CheckoutProvider>

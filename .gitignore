@@ -48,3 +48,6 @@ cypress/videos
 
 
 **/content/compiled-locales
+
+# saleor-app-sdk - APL for local app development
+.saleor-app-auth.json

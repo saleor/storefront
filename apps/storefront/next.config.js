@@ -64,10 +64,6 @@ module.exports = withBundleAnalyzer({
 
     return [
       {
-        source: "/checkout/",
-        destination: `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/`,
-      },
-      {
         source: `${checkoutEmbededInStorefrontPath}/`,
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
       },

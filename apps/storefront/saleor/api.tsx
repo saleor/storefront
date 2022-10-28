@@ -24683,120 +24683,120 @@ export type UpdateAppMetadataMutationVariables = Exact<{
 
 export type UpdateAppMetadataMutation = {
   __typename?: "Mutation";
-  updatePrivateMetadata?: {
-    __typename?: "UpdatePrivateMetadata";
+  updateMetadata?: {
+    __typename?: "UpdateMetadata";
     item?:
       | {
           __typename?: "App";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Attribute";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Category";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Checkout";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "CheckoutLine";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Collection";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "DigitalContent";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Fulfillment";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "GiftCard";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Invoice";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Menu";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "MenuItem";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Order";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "OrderLine";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Page";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "PageType";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Payment";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Product";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "ProductType";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "ProductVariant";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Sale";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "ShippingMethod";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "ShippingMethodType";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "ShippingZone";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "TransactionItem";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "User";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Voucher";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {
           __typename?: "Warehouse";
-          privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | null;
   } | null;
@@ -25100,7 +25100,7 @@ export type FetchAppDetailsQuery = {
   app?: {
     __typename?: "App";
     id: string;
-    privateMetadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+    metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
   } | null;
 };
 
@@ -27125,9 +27125,9 @@ export type RequestEmailChangeMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateAppMetadataDocument = gql`
   mutation UpdateAppMetadata($id: ID!, $input: [MetadataInput!]!) {
-    updatePrivateMetadata(id: $id, input: $input) {
+    updateMetadata(id: $id, input: $input) {
       item {
-        privateMetadata {
+        metadata {
           key
           value
         }
@@ -27583,7 +27583,7 @@ export const FetchAppDetailsDocument = gql`
   query FetchAppDetails {
     app {
       id
-      privateMetadata {
+      metadata {
         key
         value
       }

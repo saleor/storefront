@@ -15,6 +15,7 @@ import NavIconButton from "./NavIconButton";
 import Stamp from "./Stamp";
 import UserMenu from "./UserMenu";
 import { useRegions } from "@/components/RegionsProvider";
+import { useSaleorAppSettings } from "../../saleor-app/saleor-app-settings-provider";
 
 export function Navbar() {
   const paths = usePaths();
@@ -24,10 +25,12 @@ export function Navbar() {
   const { authenticated } = useAuthState();
   const { checkout } = useCheckout();
   const { currentLocale } = useRegions();
+  const { checkoutUrl } = useSaleorAppSettings();
 
-  const externalCheckoutUrl = checkout
-    ? `/checkout/?checkout=${checkout.id}&locale=${currentLocale}`
-    : "#";
+  const externalCheckoutUrl =
+    checkout && checkoutUrl
+      ? `${checkoutUrl}/?checkout=${checkout.id}&locale=${currentLocale}`
+      : "#";
 
   useEffect(() => {
     // Close side menu after changing the page
