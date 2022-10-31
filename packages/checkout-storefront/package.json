@@ -5,8 +5,8 @@
   "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "pnpm run i18n && concurrently --kill-others 'next dev -p 3002' 'rollup -w -c'",
-    "build": "pnpm run i18n && NODE_ENV=production rollup -c",
+    "dev": "pnpm run i18n && concurrently --kill-others 'next dev -p 3002' 'NODE_OPTIONS=--experimental-json-modules rollup -w -c'",
+    "build": "pnpm run i18n && NODE_OPTIONS=--experimental-json-modules NODE_ENV=production rollup -c",
     "generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r env-vars --config codegen.yml",
     "check-types": "tsc --noEmit",
     "check-types:dev": "tsc --noEmit --watch",

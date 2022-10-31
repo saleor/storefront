@@ -6,8 +6,8 @@
   "module": "dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "NODE_ENV=production rollup -c",
-    "dev": "rollup -c -w",
+    "build": "NODE_OPTIONS=--experimental-json-modules NODE_ENV=production rollup -c",
+    "dev": "NODE_OPTIONS=--experimental-json-modules rollup -c -w",
     "clean": "rm -rf .turbo dist .rollup.cache",
     "check-types": "tsc --noEmit",
     "lint": "eslint",

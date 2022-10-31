@@ -15,8 +15,8 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "NODE_OPTIONS=--experimental-json-modules NODE_ENV=production rollup -c",
+    "dev": "NODE_OPTIONS=--experimental-json-modules rollup -c -w",
     "lint": "eslint",
     "lint:staged": "eslint --fix --quiet",
     "check-types": "tsc",
