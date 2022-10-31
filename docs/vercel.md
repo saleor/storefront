@@ -48,17 +48,21 @@ cd ../.. && pnpm run build:saleor-app-checkout
 - Add environment variables:
   - `ENABLE_EXPERIMENTAL_COREPACK` with value `1` – this enables the [Corepack](https://vercel.com/docs/concepts/deployments/configure-a-build#corepack) support and is required for the proper pnpm version to be used in Vercel
   - `SETTINGS_ENCRYPTION_SECRET` — Random string used for encrypting apps configuration (you can generate it using `openssl rand -hex 256`)
-  - @TODO upstash or FileAPL or env variable?
+  - `NEXT_PUBLIC_SALEOR_API_URL` - URL to your Saleor GraphQL API
+  - `SALEOR_APP_TOKEN` - Saleor App token, see below for instructions on how to generate it
+  - `APL=vercel` - this is required for the single-tenant deployment to Vercel
 
 Here's the final result on configuration page:
 
+<!-- @todo -->
+
 ![Vercel "Configure project" page with all settings filled out](./screenshots/setup-vercel-2.png)
 
-Click deploy and wait until the app is deployed
+Click deploy and wait until the app is deployed.
 
 ### 3. Update environment variables in repository
 
-Update `CHECKOUT_APP_URL` in `.env` file located at the root of monorepo to be your deployment URL
+Update `CHECKOUT_APP_URL` in `.env` file located at the root of monorepo to be your deployment URL.
 
 Example:
 
@@ -110,7 +114,83 @@ saleor app install
 > To see which domain is used for production go to [Vercel Dashboard](https://vercel.com) > Settings > Domains:
 > ![Vercel dashboard settings page that shows which domain is connected to production deployment](./screenshots/setup-vercel-domain.png)
 
-6. 🥳 Congrats! saleor-app-checkout is now ready to be used!
+### 5. Generate app token
+
+After the app was installed, generate its app token by using:
+
+- [Saleor CLI](https://github.com/saleor/saleor-cli)
+
+```
+saleor app token
+```
+
+- [Saleor GraphQL API](https://docs.saleor.io/docs/3.x/developer/api-reference/mutations/app-token-create)
+
+```graphql
+mutation {
+  appTokenCreate(input: { name: "Vercel", app: "<MY_APP_ID>" }) {
+    authToken
+  }
+}
+```
+
+Where `<MY_APP_ID>` is the app `id`. You can retrieve the `id` by using this GraphQL query:
+
+```graphql
+query {
+  apps(first: 10) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+outputs this:
+
+```jsonc
+{
+  "data": {
+    "apps": {
+      "edges": [
+        {
+          "node": {
+            "id": "QXBwOjQ=", // <- this is the app id
+            "name": "Checkout"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+### 6. Update environment variables in Vercel
+
+You have to add additional environment variables for Checkout App in Vercel:
+
+- `SALEOR_APP_TOKEN` — Token you've just generated
+
+> **Warning**<br/>
+> 🚨 These values are secrets — don't store them inside your git repository
+
+> **Note**<br/>
+> Make sure that you also have "Automatically expose System Environment Variables" **selected** ✅
+
+<!-- @todo -->
+
+Here's how the configuration should look like in the end:
+![Vercel env variable final configuration](./screenshots/setup-vercel-3.png)
+
+After you're done, re-deploy the app
+
+> **Note**<br/>
+> ⚠️ Make sure that you **don't** select the "Redeploy with existing Build Cache." option
+
+7. 🥳 Congrats! saleor-app-checkout is now ready to be used!
 
 ## Checkout SPA
 

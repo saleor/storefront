@@ -30,7 +30,12 @@ const getApl = () => {
     case "vercel":
       return new CheckoutVercelAPL();
     default:
-      invariant(false, `Unsupported APL env variable: ${process.env.APL || "(no value)"}`);
+      invariant(
+        false,
+        `Unsupported APL env variable: ${
+          process.env.APL || "(no value)"
+        }. Use one of the supported values: "upstash", "file", "vercel".`
+      );
   }
 };
 
@@ -82,11 +87,11 @@ Please, set ${c('APL=vercel')}, ${c('NEXT_PUBLIC_SALEOR_API_URL')}, and ${c('SAL
       // prettier-ignore
       `
 ${h('WARNING!')} Looks like you're using the deprecated \`.auth_token\` file or the deprecated NEXT_PUBLIC_SALEOR_API_URL env variable.
-Please remove them and use an APL instead. Create \`.saleor-app-auth.json\` file and add the following JSON to it:
-${c('{')}
-${c('  "token": "${"(your application\'s auth token)"}",')}
-${c('  "domain": "${NEXT_PUBLIC_SALEOR_API_URL || "(your Saleor GraphQL API URL)"}"')}
-${c('}')}
+Please remove them, create \`.saleor-app-auth.json\` file and add the following JSON to it:
+${c(`{`)}
+${c(`  "token": "(your application\'s auth token)",`)}
+${c(`  "domain": "${NEXT_PUBLIC_SALEOR_API_URL || "(your Saleor GraphQL API URL)"}"`)}
+${c(`}`)}
 ${Reset}
 `.trim()
     );

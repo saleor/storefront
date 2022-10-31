@@ -21,11 +21,15 @@ export class CheckoutVercelAPL implements APL {
     };
   }
   async set(_authData: AuthData) {
-    console.log(`Not setting auth data for domain because CheckoutVercelAPL is used.`);
+    console.log(
+      `CheckoutVercelAPL: Not setting auth data for domain because CheckoutVercelAPL is used.`
+    );
     // do nothing
   }
   async delete(_domain: string) {
-    console.log(`Not setting auth data for domain because CheckoutVercelAPL is used.`);
+    console.log(
+      `CheckoutVercelAPL: Not deleting auth data for domain because CheckoutVercelAPL is used.`
+    );
     // do nothing
   }
   async getAll() {
