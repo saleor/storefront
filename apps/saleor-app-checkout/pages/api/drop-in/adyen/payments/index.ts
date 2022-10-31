@@ -28,8 +28,8 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
   const [orderCrationError, order] = await unpackPromise(createOrderFromBodyOrId(body));
 
   if (orderCrationError) {
-    Sentry.captureException(orderCrationError);
     console.error(orderCrationError);
+    Sentry.captureException(orderCrationError);
     return res.status(500).json({ message: `Error creating order for ${body.provider}` });
   }
 
@@ -47,8 +47,8 @@ const DropInAdyenPaymentsHandler: NextApiHandler<
 
     return res.status(200).json({ payment, orderId: order.id });
   } catch (err) {
-    Sentry.captureException(err);
     console.error(err);
+    Sentry.captureException(err);
 
     return res.status(500).json({ message: body.provider, orderId: order.id });
   }

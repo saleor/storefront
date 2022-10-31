@@ -157,6 +157,7 @@ const handler: NextApiHandler = async (req, res) => {
       } as PayRequestErrorResponse);
     }
 
+    console.error(err);
     Sentry.captureException(err);
 
     if (err instanceof UnknownPaymentError) {
@@ -170,8 +171,6 @@ const handler: NextApiHandler = async (req, res) => {
     if (err instanceof MissingUrlError) {
       return res.status(503).json({ ok: false, provider: err.provider, orderId: err.order?.id });
     }
-
-    console.error(err);
 
     return res.status(500).json({ ok: false, provider: body.provider });
   }

@@ -32,6 +32,7 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
   const [err, event] = await unpackPromise(verifyStripeEventSignature(body, sig, webhookSecret));
 
   if (err || !event) {
+    console.error(err);
     Sentry.captureException(err);
     return res.status(500).json({ message: err?.message });
   }
