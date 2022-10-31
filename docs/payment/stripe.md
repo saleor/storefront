@@ -12,7 +12,8 @@ In this guide, we'll set up [Stripe](https://stripe.com) payment gateway with Sa
 ![Getting to payment providers in Stripe settings](../screenshots/setup-stripe-2.png)
 ![At least one payment method is enabled on Payment methods page](../screenshots/setup-stripe-3.png)
 
-> Note: Don't worry about the "Activation required Please activate your account before accepting live payments with any of the below payment methods." message if you only want to test. Enabled payment methods will still work in test mode, even without completing verification of your Stripe account.
+> **Note**<br/>
+> Don't worry about the "Activation required Please activate your account before accepting live payments with any of the below payment methods." message if you only want to test. Enabled payment methods will still work in test mode, even without completing verification of your Stripe account.
 
 3. In your Stripe dashboard, select: Developers -> API keys and copy **Publishable key** and **Secret key**
 

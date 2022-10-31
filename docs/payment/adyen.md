@@ -98,7 +98,8 @@ Adyen will make a call to your webhook. If everything is configured properly you
 
 ![Successful webhook test in Adyen](../screenshots/setup-adyen-webhook-test-2.png)
 
-> Note: It can take a while for your webhook configuration to propagate in Adyen after you save it. If the test failed, give it a few minutes before you try again
+> **Note**<br/>
+> It can take a while for your webhook configuration to propagate in Adyen after you save it. If the test failed, give it a few minutes before you try again
 
 If the response failed because of invalid configuration in Adyen, Checkout App will return the reason in response:
 

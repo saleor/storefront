@@ -75,7 +75,8 @@ To build for production, run the following command:
 cd ../.. && pnpm run build:saleor-app-checkout
 ```
 
-> Note: The command needs to be run from root of the monorepo. Otherwise Turborepo won't be able to build the app
+> **Note**<br/>
+> The command needs to be run from root of the monorepo. Otherwise Turborepo won't be able to build the app
 
 The deployed app needs to have auth token set manually by an environment variable. Install the app in Saleor and use Saleor CLI to generate the token:
 
@@ -118,7 +119,8 @@ openssl rand -hex 256
 
 - `DEBUG_APP_URL` - URL to the deployed checkout app. Used when running app locally and tunneling requests by using `saleor tunnel`
 
-> Warning: This variable should be used for local development only! It will be ignored in production deployment.
+> **Warning**<br/>
+> This variable should be used for local development only! It will be ignored in production deployment.
 >
 > In production this URL is taken from `Host` header in each request
 
@@ -164,7 +166,8 @@ Checkout Storefront is available at [/checkout-spa](../saleor-app-checkout/pages
 
 You'll need a token to use the checkout. A new checkout session can be generated either in your storefront or in the GraphQL Playground. You could use a preexisting checkout as well.
 
-> ⚠️ Note that if a given checkout has customer already attached, it'll become private, and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
+> **Note**<br/>
+> ⚠️ that if a given checkout has customer already attached, it'll become private, and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
 
 To generate checkout in GraphQL API and retrieve its `id`:
 
