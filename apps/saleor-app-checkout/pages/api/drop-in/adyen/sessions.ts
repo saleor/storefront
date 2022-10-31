@@ -32,8 +32,8 @@ const DropInAdyenSessionsHandler: NextApiHandler<
     });
     return res.status(200).json({ session, clientKey });
   } catch (err) {
-    Sentry.captureException(err);
     console.error(err);
+    Sentry.captureException(err);
 
     return res.status(500).json({ message: body.provider });
   }

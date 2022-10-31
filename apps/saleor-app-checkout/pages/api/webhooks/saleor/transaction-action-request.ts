@@ -73,8 +73,8 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
       }
     }
   } catch (err) {
+    console.error(err);
     Sentry.captureException(err);
-    console.error("Error while creating refund", err);
     return Response.InternalServerError({
       success: false,
       message: "Error while processing event",
