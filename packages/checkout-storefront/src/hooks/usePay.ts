@@ -1,6 +1,6 @@
 import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
-import { getQueryParams, replaceUrl } from "@/checkout-storefront/lib/utils";
+import { replaceUrl } from "@/checkout-storefront/lib/utils/url";
 import { OrderBody, CheckoutBody } from "checkout-common";
 import { useCallback } from "react";
 import { useAppConfig } from "../providers/AppConfigProvider";
@@ -41,7 +41,7 @@ export const usePay = () => {
           data: { paymentUrl },
         } = result as PaySuccessResult;
         replaceUrl({
-          query: { locale: getQueryParams().locale, checkout: undefined, order: orderId },
+          query: { checkout: undefined, order: orderId },
         });
         window.location.href = paymentUrl;
       }

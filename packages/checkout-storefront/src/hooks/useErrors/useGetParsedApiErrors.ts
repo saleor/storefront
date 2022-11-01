@@ -2,9 +2,12 @@ import { GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { useErrorMessages } from "../useErrorMessages";
-import { Error, ApiErrors } from "./types";
+import { Error, ApiErrors, Errors } from "./types";
 
-type GetErrorsFromApiErrors<TFormData> = (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];
+type GetErrorsFromApiErrors<TFormData> = {
+  getParsedApiErrors: (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];
+  getFormErrorsFromApiErrors: (apiErrors: ApiErrors<TFormData>) => Errors<TFormData>;
+};
 
 export const useGetParsedApiErrors = <TFormData>(): GetErrorsFromApiErrors<TFormData> => {
   const { getMessageByErrorCode } = useErrorMessages();
@@ -23,5 +26,15 @@ export const useGetParsedApiErrors = <TFormData>(): GetErrorsFromApiErrors<TForm
     [getMessageByErrorCode]
   );
 
-  return getParsedApiErrors;
+  const getFormErrorsFromApiErrors = useCallback(
+    (apiErrors: ApiErrors<TFormData>) =>
+      getParsedApiErrors(apiErrors).reduce(
+        (result, { field, ...rest }) => ({ ...result, [field]: rest }),
+        {}
+      ),
+
+    [getParsedApiErrors]
+  );
+
+  return { getParsedApiErrors, getFormErrorsFromApiErrors };
 };

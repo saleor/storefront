@@ -1,9 +1,5 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import {
-  getParsedLocaleData,
-  getQueryParams,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { DefaultValues, Resolver, useForm, UseFormReturn } from "react-hook-form";
 import { object, string } from "yup";
@@ -14,6 +10,7 @@ import { CountryCode } from "@/checkout-storefront/graphql";
 import { countries } from "@/checkout-storefront/lib/consts";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 import { omit } from "lodash-es";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 export interface UseAddressFormProps {
   defaultValues?: AddressFormData;

@@ -11,7 +11,7 @@ import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
 import { autocompleteTags } from "@/checkout-storefront/lib/consts";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
-import { emptyFormData } from "@/checkout-storefront/lib/utils";
+import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
 import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
 import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
 
@@ -42,6 +42,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     formState: { isDirty },
   } = formProps;
   const formData = watch();
+  const previousFormData = useRef(formData);
   const formatMessage = useFormattedMessages();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
   const { availableShippingCountries } = useAvailableShippingCountries();
@@ -73,6 +74,14 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   // prevents outdated data to remain in the form when a field is
   // no longer allowed
   useEffect(() => {
+    const hasFormDataChanged = !isMatchingAddressFormData(formData, previousFormData.current);
+
+    if (!hasFormDataChanged) {
+      return;
+    }
+
+    previousFormData.current = formData;
+
     const removedFields = difference(allowedFieldsRef.current, allowedFields);
 
     removedFields.forEach((field) => {
@@ -80,7 +89,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     });
 
     const isFormDirty =
-      isDirty && Object.values(omit(formData, "countryCode")).some((value) => !!value);
+      isDirty && Object.values(omit(formData, ["countryCode", "id"])).some((value) => !!value);
 
     if (removedFields.length && isFormDirty) {
       void trigger();

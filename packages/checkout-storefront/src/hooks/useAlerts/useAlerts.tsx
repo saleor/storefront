@@ -21,7 +21,7 @@ function useAlerts(): {
 
 function useAlerts(globalScope?: any): any {
   const formatMessage = useFormattedMessages();
-  const getParsedApiErrors = useGetParsedApiErrors();
+  const { getParsedApiErrors } = useGetParsedApiErrors();
 
   const getMessageKey = ({ scope, field, code }: AlertErrorData, { error } = { error: false }) => {
     const keyBase = `${scope}-${field}-${code}`;

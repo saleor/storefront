@@ -36,7 +36,7 @@ const TextInputComponent = <
   return (
     <UiKitTextInput
       {...rest}
-      error={(error as any)?.message || ""}
+      error={error}
       ref={ref}
       name={name}
       value={value}
