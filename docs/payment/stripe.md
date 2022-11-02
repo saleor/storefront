@@ -23,7 +23,7 @@ In this guide, we'll set up [Stripe](https://stripe.com) payment gateway with Sa
 4. Go to the Webhooks section in the Stripe dashboard (Developers -> Webhooks). You can configure webhooks for your live environment or test them locally.
 
 - For local development, follow the instructions you see on the screen. You will need to install the`stripe` CLI.
-- For the live environment, you'll need to configure webhooks manually. Click **Add an endpoint** and fill out the form. The endpoint for Stripe webhooks is `<YOUR_CHECKOUT_APP_URL>/api/webhooks/stripe/`.
+- For the live environment, you'll need to configure webhooks manually. Click **Add an endpoint** and fill out the form. The endpoint for Stripe webhooks is `<YOUR_CHECKOUT_APP_URL>/api/webhooks/stripe/?saleorApiUrl=<YOUR_SALEOR_API_URL>`.
 
 > **Note**<br/>
 > Trailing slash is required in webhook URL.

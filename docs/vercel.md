@@ -195,7 +195,7 @@ After you're done, re-deploy the app
 
 ## Checkout SPA
 
-Checkout SPA (user-facing interface for Checkout) is available on the same URL as the saleor-app-checkout under the `/checkout-spa` path.
+Checkout SPA (user-facing interface for Checkout) is available on the same URL as the saleor-app-checkout under the `/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_API_URL>` path.
 
 ## Deploying Storefront SPA
 

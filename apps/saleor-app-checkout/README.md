@@ -162,7 +162,7 @@ Mocks for msw are located in `mocks/handlers`
 
 ## Checkout Storefront
 
-Checkout Storefront is available at [/checkout-spa](../saleor-app-checkout/pages/checkout-spa.tsx).
+Checkout Storefront is available at [/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_API_URL>](../saleor-app-checkout/pages/checkout-spa.tsx).
 
 You'll need a token to use the checkout. A new checkout session can be generated either in your storefront or in the GraphQL Playground. You could use a preexisting checkout as well.
 
@@ -188,7 +188,7 @@ mutation {
 
 Learn more about creating checkout sessions in [Saleor docs](https://docs.saleor.io/docs/3.x/developer/checkout#creating-a-checkout-session)
 
-Open [localhost:3001/checkout-spa/?checkout=<ID>](http://localhost:3001/checkout-spa/?checkout=) in your browser and add your token to the URL.
+Copy `http://localhost:3001/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_API_URL>&checkout=<TOKEN>`, replace `YOUR_SALEOR_API_URL` with a URL to Saleor GraphQL endpoint, `TOKEN` with the token of your checkout session and opne it in your browser.
 
 ### More info
 

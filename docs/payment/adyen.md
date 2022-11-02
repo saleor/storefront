@@ -48,10 +48,10 @@ Fill out the webhook details:
 
 - **Description** - enter some description for your webhook (ex. Saleor Checkout notifications)
 - **Server configuration**
-  - **URL** - URL of your deployed [Checkout App](#saleor-app-checkout) + `/api/webhooks/adyen`
+  - **URL**:
 
 ```
-<YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen/
+<YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen/?saleorApiUrl=<YOUR_SALEOR_API_URL>
 ```
 
 > **Note**<br/>
