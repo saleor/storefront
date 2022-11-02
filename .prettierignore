@@ -1,6 +1,8 @@
-**/.next
 pnpm-lock.yaml
 **/.rollup-cache
+**/.rollup.cache
 **/build
-_next
+**/dist
+**/.next
+**/_next
 **/.turbo
