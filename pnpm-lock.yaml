@@ -117,7 +117,6 @@ importers:
       msw: 0.47.4
       next: 13.0.0
       next-test-api-route-handler: 3.1.7
-      next-transpile-modules: 9.1.0
       node-mocks-http: 1.11.0
       omit-deep-lodash: 1.1.7
       raw-body: 2.5.1
@@ -208,7 +207,6 @@ importers:
       json-easy-strip: registry.npmjs.org/json-easy-strip/1.0.6
       msw: registry.npmjs.org/msw/0.47.4_typescript@4.8.4
       next-test-api-route-handler: registry.npmjs.org/next-test-api-route-handler/3.1.7_next@13.0.0
-      next-transpile-modules: registry.npmjs.org/next-transpile-modules/9.1.0
       node-mocks-http: registry.npmjs.org/node-mocks-http/1.11.0
       omit-deep-lodash: registry.npmjs.org/omit-deep-lodash/1.1.7
       setup-polly-jest: registry.npmjs.org/setup-polly-jest/0.11.0_@pollyjs+core@6.0.5
@@ -21778,15 +21776,6 @@ packages:
       node-fetch: registry.npmjs.org/node-fetch/2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: true
-
-  registry.npmjs.org/next-transpile-modules/9.1.0:
-    resolution: {integrity: sha512-yzJji65xDqcIqjvx5vPJcs1M+MYQTzLM1pXH/qf8Q88ohx+bwVGDc1AeV+HKr1NwvMCNTpwVPSFI7cA5WdyeWA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/next-transpile-modules/-/next-transpile-modules-9.1.0.tgz}
-    name: next-transpile-modules
-    version: 9.1.0
-    dependencies:
-      enhanced-resolve: registry.npmjs.org/enhanced-resolve/5.10.0
-      escalade: registry.npmjs.org/escalade/3.1.1
     dev: true
 
   registry.npmjs.org/next-usequerystate/1.7.2_r5sq4deac3rmm2d5onhwvomqve:

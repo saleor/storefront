@@ -1,15 +1,11 @@
 const { withSentryConfig } = require("@sentry/nextjs");
-const withTM = require("next-transpile-modules")([
-  "@saleor/checkout-storefront",
-  "checkout-common",
-]);
 
 const isSentryEnabled = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 const checkoutEmbededInStorefrontPath = "/saleor-app-checkout";
 
 /** @type {import('next').NextConfig} */
-const config = withTM({
+const config = {
   trailingSlash: true,
   i18n: {
     locales: ["en-US", "pl-PL", "fr-FR", "vi-VN"],
@@ -55,6 +51,7 @@ const config = withTM({
     // https://nextjs.org/docs/messages/import-esm-externals
     esmExternals: "loose",
     externalDir: true,
+    transpilePackages: ["@saleor/checkout-storefront", "checkout-common"],
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -69,7 +66,7 @@ const config = withTM({
     // for more information.
     hideSourceMaps: false,
   },
-});
+};
 
 module.exports = isSentryEnabled
   ? withSentryConfig(config, {

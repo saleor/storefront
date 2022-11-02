@@ -93,7 +93,6 @@
     "json-easy-strip": "1.0.6",
     "msw": "0.47.4",
     "next-test-api-route-handler": "3.1.7",
-    "next-transpile-modules": "9.1.0",
     "node-mocks-http": "1.11.0",
     "omit-deep-lodash": "1.1.7",
     "setup-polly-jest": "0.11.0",
