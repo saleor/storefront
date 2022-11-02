@@ -180,7 +180,7 @@ mutation {
 
 Learn more about creating checkout sessions in [Saleor docs](https://docs.saleor.io/docs/3.x/developer/checkout#creating-a-checkout-session)
 
-Open [localhost:3001/checkout-spa?checkout=<ID>](http://localhost:3001/checkout-spa?checkout=) in your browser and add your token to the URL.
+Open [localhost:3001/checkout-spa/?checkout=<ID>](http://localhost:3001/checkout-spa/?checkout=) in your browser and add your token to the URL.
 
 ### More info
 
