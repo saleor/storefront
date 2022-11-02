@@ -51,8 +51,11 @@ Fill out the webhook details:
   - **URL** - URL of your deployed [Checkout App](#saleor-app-checkout) + `/api/webhooks/adyen`
 
 ```
-<YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen
+<YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen/
 ```
+
+> **Note**<br/>
+> Trailing slash is required in webhook URL.
 
 - Other settings should be set to default:
   - **Method**: JSON
