@@ -176,7 +176,7 @@ mutation {
   checkoutCreate(
     input: {
       channel: "default-channel"
-      lines: [{ variantId: "UHJvZHVjdFZhcmlhbnQ6MjAz", quantity: 1 }]
+      lines: [{ variantId: "UHJvZHVjdFZhcmlhbnQ6MjE0", quantity: 1 }]
     }
   ) {
     checkout {
