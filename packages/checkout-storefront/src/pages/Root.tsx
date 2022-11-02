@@ -48,8 +48,16 @@ export const Root = ({ env }: RootProps) => {
     [saleorApiUrl]
   );
 
-  if (!saleorApiUrl || !saleorClient || !client) {
+  if (!saleorApiUrl) {
     console.warn(`Missing "saleorApiUrl" query param!`);
+    return null;
+  }
+  if (!saleorClient) {
+    console.warn(`Couldn't create saleor client!`);
+    return null;
+  }
+  if (!client) {
+    console.warn(`Couldn't create URQL client!`);
     return null;
   }
 
