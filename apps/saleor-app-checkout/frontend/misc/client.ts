@@ -1,13 +1,6 @@
 import { authExchange } from "@urql/exchange-auth";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
-import {
-  createClient,
-  makeOperation,
-  cacheExchange,
-  ClientOptions,
-  dedupExchange,
-  Operation,
-} from "urql";
+import { createClient, makeOperation, cacheExchange, dedupExchange, Operation } from "urql";
 import { app } from "./app";
 
 interface AuthState {
