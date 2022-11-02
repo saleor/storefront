@@ -34,6 +34,7 @@ const handler: NextApiHandler = async (req, res) => {
       type: DUMMY_PAYMENT_TYPE,
       status: "complete",
       amountCharged,
+      availableActions: ["REFUND"],
     },
     transactionEvent: {
       status: "SUCCESS",
