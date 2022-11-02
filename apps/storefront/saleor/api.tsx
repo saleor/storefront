@@ -638,16 +638,15 @@ export type AppDeleteFailedInstallation = {
   errors: Array<AppError>;
 };
 
-/**
- * Event sent when app is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type AppDeleted = Event & {
   __typename?: "AppDeleted";
-  /** The application the event relates to. */
+  /**
+   * The application the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   app?: Maybe<App>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -818,16 +817,15 @@ export type AppInstallation = Job &
     updatedAt: Scalars["DateTime"];
   };
 
-/**
- * Event sent when new app is installed.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type AppInstalled = Event & {
   __typename?: "AppInstalled";
-  /** The application the event relates to. */
+  /**
+   * The application the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   app?: Maybe<App>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -893,16 +891,15 @@ export type AppSortingInput = {
   field: AppSortField;
 };
 
-/**
- * Event sent when app status has changed.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type AppStatusChanged = Event & {
   __typename?: "AppStatusChanged";
-  /** The application the event relates to. */
+  /**
+   * The application the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   app?: Maybe<App>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -989,16 +986,15 @@ export type AppUpdate = {
   errors: Array<AppError>;
 };
 
-/**
- * Event sent when app is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type AppUpdated = Event & {
   __typename?: "AppUpdated";
-  /** The application the event relates to. */
+  /**
+   * The application the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   app?: Maybe<App>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2078,16 +2074,15 @@ export type CategoryCreate = {
   productErrors: Array<ProductError>;
 };
 
-/**
- * Event sent when new category is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CategoryCreated = Event & {
   __typename?: "CategoryCreated";
-  /** The category the event relates to. */
+  /**
+   * The category the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   category?: Maybe<Category>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2112,16 +2107,15 @@ export type CategoryDelete = {
   productErrors: Array<ProductError>;
 };
 
-/**
- * Event sent when category is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CategoryDeleted = Event & {
   __typename?: "CategoryDeleted";
-  /** The category the event relates to. */
+  /**
+   * The category the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   category?: Maybe<Category>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2260,16 +2254,15 @@ export type CategoryUpdate = {
   productErrors: Array<ProductError>;
 };
 
-/**
- * Event sent when category is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CategoryUpdated = Event & {
   __typename?: "CategoryUpdated";
-  /** The category the event relates to. */
+  /**
+   * The category the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   category?: Maybe<Category>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2426,16 +2419,15 @@ export type ChannelCreateInput = {
   stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
-/**
- * Event sent when new channel is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ChannelCreated = Event & {
   __typename?: "ChannelCreated";
-  /** The channel the event relates to. */
+  /**
+   * The channel the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   channel?: Maybe<Channel>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2479,16 +2471,15 @@ export type ChannelDeleteInput = {
   channelId: Scalars["ID"];
 };
 
-/**
- * Event sent when channel is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ChannelDeleted = Event & {
   __typename?: "ChannelDeleted";
-  /** The channel the event relates to. */
+  /**
+   * The channel the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   channel?: Maybe<Channel>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2542,16 +2533,15 @@ export type ChannelReorderWarehouses = {
   errors: Array<ChannelError>;
 };
 
-/**
- * Event sent when channel status has changed.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ChannelStatusChanged = Event & {
   __typename?: "ChannelStatusChanged";
-  /** The channel the event relates to. */
+  /**
+   * The channel the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   channel?: Maybe<Channel>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2619,16 +2609,15 @@ export type ChannelUpdateInput = {
   stockSettings?: InputMaybe<StockSettingsInput>;
 };
 
-/**
- * Event sent when channel is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ChannelUpdated = Event & {
   __typename?: "ChannelUpdated";
-  /** The channel the event relates to. */
+  /**
+   * The channel the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   channel?: Maybe<Channel>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -2879,16 +2868,15 @@ export type CheckoutCreateInput = {
   validationRules?: InputMaybe<CheckoutValidationRules>;
 };
 
-/**
- * Event sent when new checkout is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CheckoutCreated = Event & {
   __typename?: "CheckoutCreated";
-  /** The checkout the event relates to. */
+  /**
+   * The checkout the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   checkout?: Maybe<Checkout>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -3284,16 +3272,15 @@ export type CheckoutSortingInput = {
   field: CheckoutSortField;
 };
 
-/**
- * Event sent when checkout is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CheckoutUpdated = Event & {
   __typename?: "CheckoutUpdated";
-  /** The checkout the event relates to. */
+  /**
+   * The checkout the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   checkout?: Maybe<Checkout>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -3576,16 +3563,15 @@ export type CollectionCreateInput = {
   slug?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new collection is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CollectionCreated = Event & {
   __typename?: "CollectionCreated";
-  /** The collection the event relates to. */
+  /**
+   * The collection the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   collection?: Maybe<Collection>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -3597,13 +3583,6 @@ export type CollectionCreated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new collection is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CollectionCreatedCollectionArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -3621,16 +3600,15 @@ export type CollectionDelete = {
   errors: Array<CollectionError>;
 };
 
-/**
- * Event sent when collection is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CollectionDeleted = Event & {
   __typename?: "CollectionDeleted";
-  /** The collection the event relates to. */
+  /**
+   * The collection the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   collection?: Maybe<Collection>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -3642,13 +3620,6 @@ export type CollectionDeleted = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when collection is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CollectionDeletedCollectionArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -3863,16 +3834,15 @@ export type CollectionUpdate = {
   errors: Array<CollectionError>;
 };
 
-/**
- * Event sent when collection is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CollectionUpdated = Event & {
   __typename?: "CollectionUpdated";
-  /** The collection the event relates to. */
+  /**
+   * The collection the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   collection?: Maybe<Collection>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -3884,13 +3854,6 @@ export type CollectionUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when collection is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CollectionUpdatedCollectionArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -4276,13 +4239,6 @@ export type CustomerCreate = {
   user?: Maybe<User>;
 };
 
-/**
- * Event sent when new customer user is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CustomerCreated = Event & {
   __typename?: "CustomerCreated";
   /** Time of the event. */
@@ -4291,7 +4247,13 @@ export type CustomerCreated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The user the event relates to. */
+  /**
+   * The user the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   user?: Maybe<User>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
@@ -4391,13 +4353,6 @@ export type CustomerUpdate = {
   user?: Maybe<User>;
 };
 
-/**
- * Event sent when customer user is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type CustomerUpdated = Event & {
   __typename?: "CustomerUpdated";
   /** Time of the event. */
@@ -4406,7 +4361,13 @@ export type CustomerUpdated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The user the event relates to. */
+  /**
+   * The user the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   user?: Maybe<User>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
@@ -4757,20 +4718,19 @@ export type DraftOrderCreateInput = {
   voucher?: InputMaybe<Scalars["ID"]>;
 };
 
-/**
- * Event sent when new draft order is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type DraftOrderCreated = Event & {
   __typename?: "DraftOrderCreated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -4791,20 +4751,19 @@ export type DraftOrderDelete = {
   orderErrors: Array<OrderError>;
 };
 
-/**
- * Event sent when draft order is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type DraftOrderDeleted = Event & {
   __typename?: "DraftOrderDeleted";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -4862,20 +4821,19 @@ export type DraftOrderUpdate = {
   orderErrors: Array<OrderError>;
 };
 
-/**
- * Event sent when draft order is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type DraftOrderUpdated = Event & {
   __typename?: "DraftOrderUpdated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -5455,22 +5413,27 @@ export type FulfillmentCancelInput = {
   warehouseId?: InputMaybe<Scalars["ID"]>;
 };
 
-/**
- * Event sent when fulfillment is canceled.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type FulfillmentCanceled = Event & {
   __typename?: "FulfillmentCanceled";
-  /** The fulfillment the event relates to. */
+  /**
+   * The fulfillment the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   fulfillment?: Maybe<Fulfillment>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the fulfillment belongs to. */
+  /**
+   * The order the fulfillment belongs to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -5478,22 +5441,27 @@ export type FulfillmentCanceled = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new fulfillment is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type FulfillmentCreated = Event & {
   __typename?: "FulfillmentCreated";
-  /** The fulfillment the event relates to. */
+  /**
+   * The fulfillment the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   fulfillment?: Maybe<Fulfillment>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the fulfillment belongs to. */
+  /**
+   * The order the fulfillment belongs to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -5977,16 +5945,15 @@ export type GiftCardCreateInput = {
   userEmail?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new gift card is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type GiftCardCreated = Event & {
   __typename?: "GiftCardCreated";
-  /** The gift card the event relates to. */
+  /**
+   * The gift card the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   giftCard?: Maybe<GiftCard>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -6029,16 +5996,15 @@ export type GiftCardDelete = {
   giftCardErrors: Array<GiftCardError>;
 };
 
-/**
- * Event sent when gift card is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type GiftCardDeleted = Event & {
   __typename?: "GiftCardDeleted";
-  /** The gift card the event relates to. */
+  /**
+   * The gift card the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   giftCard?: Maybe<GiftCard>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -6240,16 +6206,15 @@ export type GiftCardSortingInput = {
   field: GiftCardSortField;
 };
 
-/**
- * Event sent when gift card status has changed.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type GiftCardStatusChanged = Event & {
   __typename?: "GiftCardStatusChanged";
-  /** The gift card the event relates to. */
+  /**
+   * The gift card the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   giftCard?: Maybe<GiftCard>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -6355,16 +6320,15 @@ export type GiftCardUpdateInput = {
   startDate?: InputMaybe<Scalars["Date"]>;
 };
 
-/**
- * Event sent when gift card is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type GiftCardUpdated = Event & {
   __typename?: "GiftCardUpdated";
-  /** The gift card the event relates to. */
+  /**
+   * The gift card the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   giftCard?: Maybe<GiftCard>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -6537,16 +6501,15 @@ export type InvoiceDelete = {
   invoiceErrors: Array<InvoiceError>;
 };
 
-/**
- * Event sent when invoice is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type InvoiceDeleted = Event & {
   __typename?: "InvoiceDeleted";
-  /** The invoice the event relates to. */
+  /**
+   * The invoice the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   invoice?: Maybe<Invoice>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -6607,16 +6570,15 @@ export type InvoiceRequestDelete = {
   invoiceErrors: Array<InvoiceError>;
 };
 
-/**
- * Event sent when invoice is requested.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type InvoiceRequested = Event & {
   __typename?: "InvoiceRequested";
-  /** The invoice the event relates to. */
+  /**
+   * The invoice the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   invoice?: Maybe<Invoice>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -6641,16 +6603,15 @@ export type InvoiceSendNotification = {
   invoiceErrors: Array<InvoiceError>;
 };
 
-/**
- * Event sent when invoice is sent.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type InvoiceSent = Event & {
   __typename?: "InvoiceSent";
-  /** The invoice the event relates to. */
+  /**
+   * The invoice the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   invoice?: Maybe<Invoice>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -7694,20 +7655,19 @@ export type MenuCreateInput = {
   slug?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new menu is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuCreated = Event & {
   __typename?: "MenuCreated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The menu the event relates to. */
+  /**
+   * The menu the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   menu?: Maybe<Menu>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -7715,13 +7675,6 @@ export type MenuCreated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new menu is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuCreatedMenuArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -7739,20 +7692,19 @@ export type MenuDelete = {
   menuErrors: Array<MenuError>;
 };
 
-/**
- * Event sent when menu is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuDeleted = Event & {
   __typename?: "MenuDeleted";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The menu the event relates to. */
+  /**
+   * The menu the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   menu?: Maybe<Menu>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -7760,13 +7712,6 @@ export type MenuDeleted = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when menu is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuDeletedMenuArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -7953,20 +7898,19 @@ export type MenuItemCreateInput = {
   url?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new menu item is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuItemCreated = Event & {
   __typename?: "MenuItemCreated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The menu item the event relates to. */
+  /**
+   * The menu item the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   menuItem?: Maybe<MenuItem>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -7974,13 +7918,6 @@ export type MenuItemCreated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new menu item is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuItemCreatedMenuItemArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -7998,20 +7935,19 @@ export type MenuItemDelete = {
   menuItem?: Maybe<MenuItem>;
 };
 
-/**
- * Event sent when menu item is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuItemDeleted = Event & {
   __typename?: "MenuItemDeleted";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The menu item the event relates to. */
+  /**
+   * The menu item the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   menuItem?: Maybe<MenuItem>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -8019,13 +7955,6 @@ export type MenuItemDeleted = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when menu item is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuItemDeletedMenuItemArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -8129,20 +8058,19 @@ export type MenuItemUpdate = {
   menuItem?: Maybe<MenuItem>;
 };
 
-/**
- * Event sent when menu item is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuItemUpdated = Event & {
   __typename?: "MenuItemUpdated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The menu item the event relates to. */
+  /**
+   * The menu item the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   menuItem?: Maybe<MenuItem>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -8150,13 +8078,6 @@ export type MenuItemUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when menu item is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuItemUpdatedMenuItemArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -8191,20 +8112,19 @@ export type MenuUpdate = {
   menuErrors: Array<MenuError>;
 };
 
-/**
- * Event sent when menu is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuUpdated = Event & {
   __typename?: "MenuUpdated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The menu the event relates to. */
+  /**
+   * The menu the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   menu?: Maybe<Menu>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -8212,13 +8132,6 @@ export type MenuUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when menu is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type MenuUpdatedMenuArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -11562,20 +11475,19 @@ export type OrderCancel = {
   orderErrors: Array<OrderError>;
 };
 
-/**
- * Event sent when order is canceled.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type OrderCancelled = Event & {
   __typename?: "OrderCancelled";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -11626,20 +11538,19 @@ export type OrderConfirm = {
   orderErrors: Array<OrderError>;
 };
 
-/**
- * Event sent when order is confirmed.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type OrderConfirmed = Event & {
   __typename?: "OrderConfirmed";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -11709,20 +11620,19 @@ export type OrderCreateFromCheckoutErrorCode =
   | "UNAVAILABLE_VARIANT_IN_CHANNEL"
   | "VOUCHER_NOT_APPLICABLE";
 
-/**
- * Event sent when new order is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type OrderCreated = Event & {
   __typename?: "OrderCreated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -12127,20 +12037,19 @@ export type OrderFulfillStockInput = {
   warehouse: Scalars["ID"];
 };
 
-/**
- * Event sent when order is fulfilled.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type OrderFulfilled = Event & {
   __typename?: "OrderFulfilled";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -12148,20 +12057,19 @@ export type OrderFulfilled = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when order is fully paid.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type OrderFullyPaid = Event & {
   __typename?: "OrderFullyPaid";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -12604,20 +12512,19 @@ export type OrderUpdateShippingInput = {
   shippingMethod?: InputMaybe<Scalars["ID"]>;
 };
 
-/**
- * Event sent when order is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type OrderUpdated = Event & {
   __typename?: "OrderUpdated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The order the event relates to. */
+  /**
+   * The order the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -12862,20 +12769,19 @@ export type PageCreateInput = {
   title?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new page is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type PageCreated = Event & {
   __typename?: "PageCreated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The page the event relates to. */
+  /**
+   * The page the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   page?: Maybe<Page>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -12896,20 +12802,19 @@ export type PageDelete = {
   pageErrors: Array<PageError>;
 };
 
-/**
- * Event sent when page is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type PageDeleted = Event & {
   __typename?: "PageDeleted";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The page the event relates to. */
+  /**
+   * The page the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   page?: Maybe<Page>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -13406,20 +13311,19 @@ export type PageUpdate = {
   pageErrors: Array<PageError>;
 };
 
-/**
- * Event sent when page is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type PageUpdated = Event & {
   __typename?: "PageUpdated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The page the event relates to. */
+  /**
+   * The page the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   page?: Maybe<Page>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -14364,6 +14268,7 @@ export type Product = Node &
     rating?: Maybe<Scalars["Float"]>;
     seoDescription?: Maybe<Scalars["String"]>;
     seoTitle?: Maybe<Scalars["String"]>;
+    shortDescription: Scalars["String"];
     slug: Scalars["String"];
     /** A type of tax. Assigned by enabled tax gateway */
     taxType?: Maybe<TaxType>;
@@ -14690,6 +14595,8 @@ export type ProductCreateInput = {
   rating?: InputMaybe<Scalars["Float"]>;
   /** Search engine optimization fields. */
   seo?: InputMaybe<SeoInput>;
+  /** Product short description. */
+  shortDescription?: InputMaybe<Scalars["String"]>;
   /** Product slug. */
   slug?: InputMaybe<Scalars["String"]>;
   /** Tax rate for enabled tax gateway. */
@@ -14698,22 +14605,27 @@ export type ProductCreateInput = {
   weight?: InputMaybe<Scalars["WeightScalar"]>;
 };
 
-/**
- * Event sent when new product is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductCreated = Event & {
   __typename?: "ProductCreated";
-  /** The category of the product. */
+  /**
+   * The category of the product.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   category?: Maybe<Category>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product the event relates to. */
+  /**
+   * The product the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   product?: Maybe<Product>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -14721,13 +14633,6 @@ export type ProductCreated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new product is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductCreatedProductArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -14745,22 +14650,27 @@ export type ProductDelete = {
   productErrors: Array<ProductError>;
 };
 
-/**
- * Event sent when product is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductDeleted = Event & {
   __typename?: "ProductDeleted";
-  /** The category of the product. */
+  /**
+   * The category of the product.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   category?: Maybe<Category>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product the event relates to. */
+  /**
+   * The product the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   product?: Maybe<Product>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -14768,13 +14678,6 @@ export type ProductDeleted = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when product is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductDeletedProductArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -14824,6 +14727,7 @@ export type ProductFieldEnum =
   | "PRODUCT_MEDIA"
   | "PRODUCT_TYPE"
   | "PRODUCT_WEIGHT"
+  | "SHORT_DESCRIPTION"
   | "VARIANT_ID"
   | "VARIANT_MEDIA"
   | "VARIANT_SKU"
@@ -14897,6 +14801,8 @@ export type ProductInput = {
   rating?: InputMaybe<Scalars["Float"]>;
   /** Search engine optimization fields. */
   seo?: InputMaybe<SeoInput>;
+  /** Product short description. */
+  shortDescription?: InputMaybe<Scalars["String"]>;
   /** Product slug. */
   slug?: InputMaybe<Scalars["String"]>;
   /** Tax rate for enabled tax gateway. */
@@ -15143,6 +15049,7 @@ export type ProductTranslatableContent = Node & {
   product?: Maybe<Product>;
   seoDescription?: Maybe<Scalars["String"]>;
   seoTitle?: Maybe<Scalars["String"]>;
+  shortDescription: Scalars["String"];
   /** Returns translated product fields for the given language code. */
   translation?: Maybe<ProductTranslation>;
 };
@@ -15185,6 +15092,7 @@ export type ProductTranslation = Node & {
   name?: Maybe<Scalars["String"]>;
   seoDescription?: Maybe<Scalars["String"]>;
   seoTitle?: Maybe<Scalars["String"]>;
+  shortDescription?: Maybe<Scalars["String"]>;
 };
 
 /** Represents a type of product. It defines what attributes are available to products of this type. */
@@ -15467,22 +15375,27 @@ export type ProductUpdate = {
   productErrors: Array<ProductError>;
 };
 
-/**
- * Event sent when product is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductUpdated = Event & {
   __typename?: "ProductUpdated";
-  /** The category of the product. */
+  /**
+   * The category of the product.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   category?: Maybe<Category>;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product the event relates to. */
+  /**
+   * The product the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   product?: Maybe<Product>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -15490,13 +15403,6 @@ export type ProductUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when product is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductUpdatedProductArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -15665,36 +15571,34 @@ export type ProductVariantTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
-/**
- * Event sent when product variant is back in stock.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantBackInStock = Event & {
   __typename?: "ProductVariantBackInStock";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product variant the event relates to. */
+  /**
+   * The product variant the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   productVariant?: Maybe<ProductVariant>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** Look up a warehouse. */
+  /**
+   * Look up a warehouse.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   warehouse?: Maybe<Warehouse>;
 };
 
-/**
- * Event sent when product variant is back in stock.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantBackInStockProductVariantArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -15880,20 +15784,19 @@ export type ProductVariantCreateInput = {
   weight?: InputMaybe<Scalars["WeightScalar"]>;
 };
 
-/**
- * Event sent when new product variant is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantCreated = Event & {
   __typename?: "ProductVariantCreated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product variant the event relates to. */
+  /**
+   * The product variant the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   productVariant?: Maybe<ProductVariant>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -15901,13 +15804,6 @@ export type ProductVariantCreated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new product variant is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantCreatedProductVariantArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -15925,20 +15821,19 @@ export type ProductVariantDelete = {
   productVariant?: Maybe<ProductVariant>;
 };
 
-/**
- * Event sent when product variant is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantDeleted = Event & {
   __typename?: "ProductVariantDeleted";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product variant the event relates to. */
+  /**
+   * The product variant the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   productVariant?: Maybe<ProductVariant>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -15946,13 +15841,6 @@ export type ProductVariantDeleted = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when product variant is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantDeletedProductVariantArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -15994,36 +15882,34 @@ export type ProductVariantInput = {
   weight?: InputMaybe<Scalars["WeightScalar"]>;
 };
 
-/**
- * Event sent when product variant is out of stock.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantOutOfStock = Event & {
   __typename?: "ProductVariantOutOfStock";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product variant the event relates to. */
+  /**
+   * The product variant the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   productVariant?: Maybe<ProductVariant>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** Look up a warehouse. */
+  /**
+   * Look up a warehouse.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   warehouse?: Maybe<Warehouse>;
 };
 
-/**
- * Event sent when product variant is out of stock.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantOutOfStockProductVariantArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -16190,20 +16076,19 @@ export type ProductVariantUpdate = {
   productVariant?: Maybe<ProductVariant>;
 };
 
-/**
- * Event sent when product variant is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantUpdated = Event & {
   __typename?: "ProductVariantUpdated";
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
-  /** The product variant the event relates to. */
+  /**
+   * The product variant the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   productVariant?: Maybe<ProductVariant>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
@@ -16211,13 +16096,6 @@ export type ProductVariantUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when product variant is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ProductVariantUpdatedProductVariantArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -17368,13 +17246,6 @@ export type SaleCreate = {
   sale?: Maybe<Sale>;
 };
 
-/**
- * Event sent when new sale is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type SaleCreated = Event & {
   __typename?: "SaleCreated";
   /** Time of the event. */
@@ -17383,19 +17254,18 @@ export type SaleCreated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The sale the event relates to. */
+  /**
+   * The sale the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   sale?: Maybe<Sale>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new sale is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type SaleCreatedSaleArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -17413,13 +17283,6 @@ export type SaleDelete = {
   sale?: Maybe<Sale>;
 };
 
-/**
- * Event sent when sale is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type SaleDeleted = Event & {
   __typename?: "SaleDeleted";
   /** Time of the event. */
@@ -17428,19 +17291,18 @@ export type SaleDeleted = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The sale the event relates to. */
+  /**
+   * The sale the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   sale?: Maybe<Sale>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when sale is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type SaleDeletedSaleArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -17614,13 +17476,6 @@ export type SaleUpdate = {
   sale?: Maybe<Sale>;
 };
 
-/**
- * Event sent when sale is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type SaleUpdated = Event & {
   __typename?: "SaleUpdated";
   /** Time of the event. */
@@ -17629,19 +17484,18 @@ export type SaleUpdated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The sale the event relates to. */
+  /**
+   * The sale the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   sale?: Maybe<Sale>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when sale is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type SaleUpdatedSaleArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -18111,13 +17965,6 @@ export type ShippingPriceCreate = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
-/**
- * Event sent when new shipping price is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceCreated = Event & {
   __typename?: "ShippingPriceCreated";
   /** Time of the event. */
@@ -18126,32 +17973,30 @@ export type ShippingPriceCreated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The shipping method the event relates to. */
+  /**
+   * The shipping method the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingMethod?: Maybe<ShippingMethodType>;
-  /** The shipping zone the shipping method belongs to. */
+  /**
+   * The shipping zone the shipping method belongs to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingZone?: Maybe<ShippingZone>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new shipping price is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceCreatedShippingMethodArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new shipping price is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceCreatedShippingZoneArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -18172,13 +18017,6 @@ export type ShippingPriceDelete = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
-/**
- * Event sent when shipping price is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceDeleted = Event & {
   __typename?: "ShippingPriceDeleted";
   /** Time of the event. */
@@ -18187,32 +18025,30 @@ export type ShippingPriceDeleted = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The shipping method the event relates to. */
+  /**
+   * The shipping method the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingMethod?: Maybe<ShippingMethodType>;
-  /** The shipping zone the shipping method belongs to. */
+  /**
+   * The shipping zone the shipping method belongs to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingZone?: Maybe<ShippingZone>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when shipping price is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceDeletedShippingMethodArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when shipping price is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceDeletedShippingZoneArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -18313,13 +18149,6 @@ export type ShippingPriceUpdate = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
-/**
- * Event sent when shipping price is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceUpdated = Event & {
   __typename?: "ShippingPriceUpdated";
   /** Time of the event. */
@@ -18328,32 +18157,30 @@ export type ShippingPriceUpdated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The shipping method the event relates to. */
+  /**
+   * The shipping method the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingMethod?: Maybe<ShippingMethodType>;
-  /** The shipping zone the shipping method belongs to. */
+  /**
+   * The shipping zone the shipping method belongs to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingZone?: Maybe<ShippingZone>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when shipping price is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceUpdatedShippingMethodArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when shipping price is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingPriceUpdatedShippingZoneArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -18498,13 +18325,6 @@ export type ShippingZoneCreateInput = {
   name?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new shipping zone is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingZoneCreated = Event & {
   __typename?: "ShippingZoneCreated";
   /** Time of the event. */
@@ -18513,19 +18333,18 @@ export type ShippingZoneCreated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The shipping zone the event relates to. */
+  /**
+   * The shipping zone the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingZone?: Maybe<ShippingZone>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new shipping zone is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingZoneCreatedShippingZoneArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -18543,13 +18362,6 @@ export type ShippingZoneDelete = {
   shippingZone?: Maybe<ShippingZone>;
 };
 
-/**
- * Event sent when shipping zone is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingZoneDeleted = Event & {
   __typename?: "ShippingZoneDeleted";
   /** Time of the event. */
@@ -18558,19 +18370,18 @@ export type ShippingZoneDeleted = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The shipping zone the event relates to. */
+  /**
+   * The shipping zone the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingZone?: Maybe<ShippingZone>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when shipping zone is deleted.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingZoneDeletedShippingZoneArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -18612,13 +18423,6 @@ export type ShippingZoneUpdateInput = {
   removeWarehouses?: InputMaybe<Array<Scalars["ID"]>>;
 };
 
-/**
- * Event sent when shipping zone is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingZoneUpdated = Event & {
   __typename?: "ShippingZoneUpdated";
   /** Time of the event. */
@@ -18627,19 +18431,18 @@ export type ShippingZoneUpdated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The shipping zone the event relates to. */
+  /**
+   * The shipping zone the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   shippingZone?: Maybe<ShippingZone>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when shipping zone is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type ShippingZoneUpdatedShippingZoneArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -19419,13 +19222,6 @@ export type TransactionAction = {
  */
 export type TransactionActionEnum = "CHARGE" | "REFUND" | "VOID";
 
-/**
- * Event sent when transaction action is requested.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type TransactionActionRequest = Event & {
   __typename?: "TransactionActionRequest";
   /**
@@ -19800,13 +19596,6 @@ export type TranslatableKinds =
   | "VARIANT"
   | "VOUCHER";
 
-/**
- * Event sent when new translation is created.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type TranslationCreated = Event & {
   __typename?: "TranslationCreated";
   /** Time of the event. */
@@ -19815,7 +19604,13 @@ export type TranslationCreated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The translation the event relates to. */
+  /**
+   * The translation the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   translation?: Maybe<TranslationTypes>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
@@ -19844,6 +19639,7 @@ export type TranslationInput = {
   name?: InputMaybe<Scalars["String"]>;
   seoDescription?: InputMaybe<Scalars["String"]>;
   seoTitle?: InputMaybe<Scalars["String"]>;
+  shortDescription?: InputMaybe<Scalars["String"]>;
 };
 
 export type TranslationTypes =
@@ -19859,13 +19655,6 @@ export type TranslationTypes =
   | ShippingMethodTranslation
   | VoucherTranslation;
 
-/**
- * Event sent when translation is updated.
- *
- * Added in Saleor 3.2.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type TranslationUpdated = Event & {
   __typename?: "TranslationUpdated";
   /** Time of the event. */
@@ -19874,7 +19663,13 @@ export type TranslationUpdated = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /** The translation the event relates to. */
+  /**
+   * The translation the event relates to.
+   *
+   * Added in Saleor 3.2.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   translation?: Maybe<TranslationTypes>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
@@ -20532,13 +20327,6 @@ export type VoucherCreate = {
   voucher?: Maybe<Voucher>;
 };
 
-/**
- * Event sent when new voucher is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type VoucherCreated = Event & {
   __typename?: "VoucherCreated";
   /** Time of the event. */
@@ -20549,17 +20337,16 @@ export type VoucherCreated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** The voucher the event relates to. */
+  /**
+   * The voucher the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   voucher?: Maybe<Voucher>;
 };
 
-/**
- * Event sent when new voucher is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type VoucherCreatedVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -20577,13 +20364,6 @@ export type VoucherDelete = {
   voucher?: Maybe<Voucher>;
 };
 
-/**
- * Event sent when voucher is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type VoucherDeleted = Event & {
   __typename?: "VoucherDeleted";
   /** Time of the event. */
@@ -20594,17 +20374,16 @@ export type VoucherDeleted = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** The voucher the event relates to. */
+  /**
+   * The voucher the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   voucher?: Maybe<Voucher>;
 };
 
-/**
- * Event sent when voucher is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type VoucherDeletedVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -20766,13 +20545,6 @@ export type VoucherUpdate = {
   voucher?: Maybe<Voucher>;
 };
 
-/**
- * Event sent when voucher is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type VoucherUpdated = Event & {
   __typename?: "VoucherUpdated";
   /** Time of the event. */
@@ -20783,17 +20555,16 @@ export type VoucherUpdated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** The voucher the event relates to. */
+  /**
+   * The voucher the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   voucher?: Maybe<Voucher>;
 };
 
-/**
- * Event sent when voucher is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type VoucherUpdatedVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
@@ -20942,13 +20713,6 @@ export type WarehouseCreateInput = {
   slug?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when new warehouse is created.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type WarehouseCreated = Event & {
   __typename?: "WarehouseCreated";
   /** Time of the event. */
@@ -20959,7 +20723,13 @@ export type WarehouseCreated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** The warehouse the event relates to. */
+  /**
+   * The warehouse the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   warehouse?: Maybe<Warehouse>;
 };
 
@@ -20976,13 +20746,6 @@ export type WarehouseDelete = {
   warehouseErrors: Array<WarehouseError>;
 };
 
-/**
- * Event sent when warehouse is deleted.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type WarehouseDeleted = Event & {
   __typename?: "WarehouseDeleted";
   /** Time of the event. */
@@ -20993,7 +20756,13 @@ export type WarehouseDeleted = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** The warehouse the event relates to. */
+  /**
+   * The warehouse the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   warehouse?: Maybe<Warehouse>;
 };
 
@@ -21103,13 +20872,6 @@ export type WarehouseUpdateInput = {
   slug?: InputMaybe<Scalars["String"]>;
 };
 
-/**
- * Event sent when warehouse is updated.
- *
- * Added in Saleor 3.4.
- *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
- */
 export type WarehouseUpdated = Event & {
   __typename?: "WarehouseUpdated";
   /** Time of the event. */
@@ -21120,7 +20882,13 @@ export type WarehouseUpdated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
-  /** The warehouse the event relates to. */
+  /**
+   * The warehouse the event relates to.
+   *
+   * Added in Saleor 3.4.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
   warehouse?: Maybe<Warehouse>;
 };
 
@@ -33595,6 +33363,7 @@ export type ProductKeySpecifier = (
   | "rating"
   | "seoDescription"
   | "seoTitle"
+  | "shortDescription"
   | "slug"
   | "taxType"
   | "thumbnail"
@@ -33636,6 +33405,7 @@ export type ProductFieldPolicy = {
   rating?: FieldPolicy<any> | FieldReadFunction<any>;
   seoDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   seoTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  shortDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   slug?: FieldPolicy<any> | FieldReadFunction<any>;
   taxType?: FieldPolicy<any> | FieldReadFunction<any>;
   thumbnail?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -33970,6 +33740,7 @@ export type ProductTranslatableContentKeySpecifier = (
   | "product"
   | "seoDescription"
   | "seoTitle"
+  | "shortDescription"
   | "translation"
   | ProductTranslatableContentKeySpecifier
 )[];
@@ -33982,6 +33753,7 @@ export type ProductTranslatableContentFieldPolicy = {
   product?: FieldPolicy<any> | FieldReadFunction<any>;
   seoDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   seoTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  shortDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   translation?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProductTranslateKeySpecifier = (
@@ -34003,6 +33775,7 @@ export type ProductTranslationKeySpecifier = (
   | "name"
   | "seoDescription"
   | "seoTitle"
+  | "shortDescription"
   | ProductTranslationKeySpecifier
 )[];
 export type ProductTranslationFieldPolicy = {
@@ -34013,6 +33786,7 @@ export type ProductTranslationFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   seoDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   seoTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  shortDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProductTypeKeySpecifier = (
   | "assignedVariantAttributes"

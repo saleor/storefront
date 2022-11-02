@@ -3399,11 +3399,11 @@
       {
         "kind": "OBJECT",
         "name": "AppDeleted",
-        "description": "Event sent when app is deleted.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "app",
-            "description": "The application the event relates to.",
+            "description": "The application the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -4487,11 +4487,11 @@
       {
         "kind": "OBJECT",
         "name": "AppInstalled",
-        "description": "Event sent when new app is installed.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "app",
-            "description": "The application the event relates to.",
+            "description": "The application the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -4899,11 +4899,11 @@
       {
         "kind": "OBJECT",
         "name": "AppStatusChanged",
-        "description": "Event sent when app status has changed.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "app",
-            "description": "The application the event relates to.",
+            "description": "The application the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -5395,11 +5395,11 @@
       {
         "kind": "OBJECT",
         "name": "AppUpdated",
-        "description": "Event sent when app is updated.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "app",
-            "description": "The application the event relates to.",
+            "description": "The application the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -11056,11 +11056,11 @@
       {
         "kind": "OBJECT",
         "name": "CategoryCreated",
-        "description": "Event sent when new category is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "category",
-            "description": "The category the event relates to.",
+            "description": "The category the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -11204,11 +11204,11 @@
       {
         "kind": "OBJECT",
         "name": "CategoryDeleted",
-        "description": "Event sent when category is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "category",
-            "description": "The category the event relates to.",
+            "description": "The category the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -11900,11 +11900,11 @@
       {
         "kind": "OBJECT",
         "name": "CategoryUpdated",
-        "description": "Event sent when category is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "category",
-            "description": "The category the event relates to.",
+            "description": "The category the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -12488,11 +12488,11 @@
       {
         "kind": "OBJECT",
         "name": "ChannelCreated",
-        "description": "Event sent when new channel is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "channel",
-            "description": "The channel the event relates to.",
+            "description": "The channel the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -12734,11 +12734,11 @@
       {
         "kind": "OBJECT",
         "name": "ChannelDeleted",
-        "description": "Event sent when channel is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "channel",
-            "description": "The channel the event relates to.",
+            "description": "The channel the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -13014,11 +13014,11 @@
       {
         "kind": "OBJECT",
         "name": "ChannelStatusChanged",
-        "description": "Event sent when channel status has changed.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "channel",
-            "description": "The channel the event relates to.",
+            "description": "The channel the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -13313,11 +13313,11 @@
       {
         "kind": "OBJECT",
         "name": "ChannelUpdated",
-        "description": "Event sent when channel is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "channel",
-            "description": "The channel the event relates to.",
+            "description": "The channel the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -14656,11 +14656,11 @@
       {
         "kind": "OBJECT",
         "name": "CheckoutCreated",
-        "description": "Event sent when new checkout is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "checkout",
-            "description": "The checkout the event relates to.",
+            "description": "The checkout the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -16706,11 +16706,11 @@
       {
         "kind": "OBJECT",
         "name": "CheckoutUpdated",
-        "description": "Event sent when checkout is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "checkout",
-            "description": "The checkout the event relates to.",
+            "description": "The checkout the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -18098,11 +18098,11 @@
       {
         "kind": "OBJECT",
         "name": "CollectionCreated",
-        "description": "Event sent when new collection is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "collection",
-            "description": "The collection the event relates to.",
+            "description": "The collection the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -18259,11 +18259,11 @@
       {
         "kind": "OBJECT",
         "name": "CollectionDeleted",
-        "description": "Event sent when collection is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "collection",
-            "description": "The collection the event relates to.",
+            "description": "The collection the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -19317,11 +19317,11 @@
       {
         "kind": "OBJECT",
         "name": "CollectionUpdated",
-        "description": "Event sent when collection is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "collection",
-            "description": "The collection the event relates to.",
+            "description": "The collection the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -21637,7 +21637,7 @@
       {
         "kind": "OBJECT",
         "name": "CustomerCreated",
-        "description": "Event sent when new customer user is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -21677,7 +21677,7 @@
           },
           {
             "name": "user",
-            "description": "The user the event relates to.",
+            "description": "The user the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -22284,7 +22284,7 @@
       {
         "kind": "OBJECT",
         "name": "CustomerUpdated",
-        "description": "Event sent when customer user is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -22324,7 +22324,7 @@
           },
           {
             "name": "user",
-            "description": "The user the event relates to.",
+            "description": "The user the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -24359,7 +24359,7 @@
       {
         "kind": "OBJECT",
         "name": "DraftOrderCreated",
-        "description": "Event sent when new draft order is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -24387,7 +24387,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -24507,7 +24507,7 @@
       {
         "kind": "OBJECT",
         "name": "DraftOrderDeleted",
-        "description": "Event sent when draft order is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -24535,7 +24535,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -24861,7 +24861,7 @@
       {
         "kind": "OBJECT",
         "name": "DraftOrderUpdated",
-        "description": "Event sent when draft order is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -24889,7 +24889,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -28713,11 +28713,11 @@
       {
         "kind": "OBJECT",
         "name": "FulfillmentCanceled",
-        "description": "Event sent when fulfillment is canceled.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "fulfillment",
-            "description": "The fulfillment the event relates to.",
+            "description": "The fulfillment the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -28753,7 +28753,7 @@
           },
           {
             "name": "order",
-            "description": "The order the fulfillment belongs to.",
+            "description": "The order the fulfillment belongs to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -28802,11 +28802,11 @@
       {
         "kind": "OBJECT",
         "name": "FulfillmentCreated",
-        "description": "Event sent when new fulfillment is created.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "fulfillment",
-            "description": "The fulfillment the event relates to.",
+            "description": "The fulfillment the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -28842,7 +28842,7 @@
           },
           {
             "name": "order",
-            "description": "The order the fulfillment belongs to.",
+            "description": "The order the fulfillment belongs to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -30689,11 +30689,11 @@
       {
         "kind": "OBJECT",
         "name": "GiftCardCreated",
-        "description": "Event sent when new gift card is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "giftCard",
-            "description": "The gift card the event relates to.",
+            "description": "The gift card the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -30908,11 +30908,11 @@
       {
         "kind": "OBJECT",
         "name": "GiftCardDeleted",
-        "description": "Event sent when gift card is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "giftCard",
-            "description": "The gift card the event relates to.",
+            "description": "The gift card the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -32070,11 +32070,11 @@
       {
         "kind": "OBJECT",
         "name": "GiftCardStatusChanged",
-        "description": "Event sent when gift card status has changed.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "giftCard",
-            "description": "The gift card the event relates to.",
+            "description": "The gift card the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -32495,11 +32495,11 @@
       {
         "kind": "OBJECT",
         "name": "GiftCardUpdated",
-        "description": "Event sent when gift card is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "giftCard",
-            "description": "The gift card the event relates to.",
+            "description": "The gift card the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -33373,11 +33373,11 @@
       {
         "kind": "OBJECT",
         "name": "InvoiceDeleted",
-        "description": "Event sent when invoice is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "invoice",
-            "description": "The invoice the event relates to.",
+            "description": "The invoice the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -33714,11 +33714,11 @@
       {
         "kind": "OBJECT",
         "name": "InvoiceRequested",
-        "description": "Event sent when invoice is requested.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "invoice",
-            "description": "The invoice the event relates to.",
+            "description": "The invoice the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -33862,11 +33862,11 @@
       {
         "kind": "OBJECT",
         "name": "InvoiceSent",
-        "description": "Event sent when invoice is sent.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "invoice",
-            "description": "The invoice the event relates to.",
+            "description": "The invoice the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -40027,7 +40027,7 @@
       {
         "kind": "OBJECT",
         "name": "MenuCreated",
-        "description": "Event sent when new menu is created.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -40055,7 +40055,7 @@
           },
           {
             "name": "menu",
-            "description": "The menu the event relates to.",
+            "description": "The menu the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -40188,7 +40188,7 @@
       {
         "kind": "OBJECT",
         "name": "MenuDeleted",
-        "description": "Event sent when menu is deleted.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -40216,7 +40216,7 @@
           },
           {
             "name": "menu",
-            "description": "The menu the event relates to.",
+            "description": "The menu the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -41214,7 +41214,7 @@
       {
         "kind": "OBJECT",
         "name": "MenuItemCreated",
-        "description": "Event sent when new menu item is created.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -41242,7 +41242,7 @@
           },
           {
             "name": "menuItem",
-            "description": "The menu item the event relates to.",
+            "description": "The menu item the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -41375,7 +41375,7 @@
       {
         "kind": "OBJECT",
         "name": "MenuItemDeleted",
-        "description": "Event sent when menu item is deleted.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -41403,7 +41403,7 @@
           },
           {
             "name": "menuItem",
-            "description": "The menu item the event relates to.",
+            "description": "The menu item the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -42041,7 +42041,7 @@
       {
         "kind": "OBJECT",
         "name": "MenuItemUpdated",
-        "description": "Event sent when menu item is updated.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -42069,7 +42069,7 @@
           },
           {
             "name": "menuItem",
-            "description": "The menu item the event relates to.",
+            "description": "The menu item the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -42285,7 +42285,7 @@
       {
         "kind": "OBJECT",
         "name": "MenuUpdated",
-        "description": "Event sent when menu is updated.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -42313,7 +42313,7 @@
           },
           {
             "name": "menu",
-            "description": "The menu the event relates to.",
+            "description": "The menu the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -56671,7 +56671,7 @@
       {
         "kind": "OBJECT",
         "name": "OrderCancelled",
-        "description": "Event sent when order is canceled.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -56699,7 +56699,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -56925,7 +56925,7 @@
       {
         "kind": "OBJECT",
         "name": "OrderConfirmed",
-        "description": "Event sent when order is confirmed.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -56953,7 +56953,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -57341,7 +57341,7 @@
       {
         "kind": "OBJECT",
         "name": "OrderCreated",
-        "description": "Event sent when new order is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -57369,7 +57369,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -59851,7 +59851,7 @@
       {
         "kind": "OBJECT",
         "name": "OrderFulfilled",
-        "description": "Event sent when order is fulfilled.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -59879,7 +59879,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -59928,7 +59928,7 @@
       {
         "kind": "OBJECT",
         "name": "OrderFullyPaid",
-        "description": "Event sent when order is fully paid.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -59956,7 +59956,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -62245,7 +62245,7 @@
       {
         "kind": "OBJECT",
         "name": "OrderUpdated",
-        "description": "Event sent when order is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -62273,7 +62273,7 @@
           },
           {
             "name": "order",
-            "description": "The order the event relates to.",
+            "description": "The order the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -63412,7 +63412,7 @@
       {
         "kind": "OBJECT",
         "name": "PageCreated",
-        "description": "Event sent when new page is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -63440,7 +63440,7 @@
           },
           {
             "name": "page",
-            "description": "The page the event relates to.",
+            "description": "The page the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -63560,7 +63560,7 @@
       {
         "kind": "OBJECT",
         "name": "PageDeleted",
-        "description": "Event sent when page is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -63588,7 +63588,7 @@
           },
           {
             "name": "page",
-            "description": "The page the event relates to.",
+            "description": "The page the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -65941,7 +65941,7 @@
       {
         "kind": "OBJECT",
         "name": "PageUpdated",
-        "description": "Event sent when page is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -65969,7 +65969,7 @@
           },
           {
             "name": "page",
-            "description": "The page the event relates to.",
+            "description": "The page the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -70755,6 +70755,22 @@
             "deprecationReason": null
           },
           {
+            "name": "shortDescription",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "slug",
             "description": null,
             "args": [],
@@ -72240,6 +72256,18 @@
             "deprecationReason": null
           },
           {
+            "name": "shortDescription",
+            "description": "Product short description.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "slug",
             "description": "Product slug.",
             "type": {
@@ -72283,11 +72311,11 @@
       {
         "kind": "OBJECT",
         "name": "ProductCreated",
-        "description": "Event sent when new product is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "category",
-            "description": "The category of the product.",
+            "description": "The category of the product.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -72323,7 +72351,7 @@
           },
           {
             "name": "product",
-            "description": "The product the event relates to.",
+            "description": "The product the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -72456,11 +72484,11 @@
       {
         "kind": "OBJECT",
         "name": "ProductDeleted",
-        "description": "Event sent when product is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "category",
-            "description": "The category of the product.",
+            "description": "The category of the product.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -72496,7 +72524,7 @@
           },
           {
             "name": "product",
-            "description": "The product the event relates to.",
+            "description": "The product the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -72823,6 +72851,12 @@
           },
           {
             "name": "PRODUCT_WEIGHT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SHORT_DESCRIPTION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -73321,6 +73355,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SeoInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shortDescription",
+            "description": "Product short description.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -74497,6 +74543,22 @@
             "deprecationReason": null
           },
           {
+            "name": "shortDescription",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "translation",
             "description": "Returns translated product fields for the given language code.",
             "args": [
@@ -74695,6 +74757,18 @@
           },
           {
             "name": "seoTitle",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shortDescription",
             "description": null,
             "args": [],
             "type": {
@@ -76205,11 +76279,11 @@
       {
         "kind": "OBJECT",
         "name": "ProductUpdated",
-        "description": "Event sent when product is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "category",
-            "description": "The category of the product.",
+            "description": "The category of the product.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -76245,7 +76319,7 @@
           },
           {
             "name": "product",
-            "description": "The product the event relates to.",
+            "description": "The product the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -76951,7 +77025,7 @@
       {
         "kind": "OBJECT",
         "name": "ProductVariantBackInStock",
-        "description": "Event sent when product variant is back in stock.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -76979,7 +77053,7 @@
           },
           {
             "name": "productVariant",
-            "description": "The product variant the event relates to.",
+            "description": "The product variant the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -77028,7 +77102,7 @@
           },
           {
             "name": "warehouse",
-            "description": "Look up a warehouse.",
+            "description": "Look up a warehouse.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -77929,7 +78003,7 @@
       {
         "kind": "OBJECT",
         "name": "ProductVariantCreated",
-        "description": "Event sent when new product variant is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -77957,7 +78031,7 @@
           },
           {
             "name": "productVariant",
-            "description": "The product variant the event relates to.",
+            "description": "The product variant the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -78090,7 +78164,7 @@
       {
         "kind": "OBJECT",
         "name": "ProductVariantDeleted",
-        "description": "Event sent when product variant is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -78118,7 +78192,7 @@
           },
           {
             "name": "productVariant",
-            "description": "The product variant the event relates to.",
+            "description": "The product variant the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -78370,7 +78444,7 @@
       {
         "kind": "OBJECT",
         "name": "ProductVariantOutOfStock",
-        "description": "Event sent when product variant is out of stock.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -78398,7 +78472,7 @@
           },
           {
             "name": "productVariant",
-            "description": "The product variant the event relates to.",
+            "description": "The product variant the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -78447,7 +78521,7 @@
           },
           {
             "name": "warehouse",
-            "description": "Look up a warehouse.",
+            "description": "Look up a warehouse.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -79326,7 +79400,7 @@
       {
         "kind": "OBJECT",
         "name": "ProductVariantUpdated",
-        "description": "Event sent when product variant is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -79354,7 +79428,7 @@
           },
           {
             "name": "productVariant",
-            "description": "The product variant the event relates to.",
+            "description": "The product variant the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -85325,7 +85399,7 @@
       {
         "kind": "OBJECT",
         "name": "SaleCreated",
-        "description": "Event sent when new sale is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -85365,7 +85439,7 @@
           },
           {
             "name": "sale",
-            "description": "The sale the event relates to.",
+            "description": "The sale the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -85486,7 +85560,7 @@
       {
         "kind": "OBJECT",
         "name": "SaleDeleted",
-        "description": "Event sent when sale is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -85526,7 +85600,7 @@
           },
           {
             "name": "sale",
-            "description": "The sale the event relates to.",
+            "description": "The sale the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -86411,7 +86485,7 @@
       {
         "kind": "OBJECT",
         "name": "SaleUpdated",
-        "description": "Event sent when sale is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -86451,7 +86525,7 @@
           },
           {
             "name": "sale",
-            "description": "The sale the event relates to.",
+            "description": "The sale the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -88569,7 +88643,7 @@
       {
         "kind": "OBJECT",
         "name": "ShippingPriceCreated",
-        "description": "Event sent when new shipping price is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -88609,7 +88683,7 @@
           },
           {
             "name": "shippingMethod",
-            "description": "The shipping method the event relates to.",
+            "description": "The shipping method the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -88634,7 +88708,7 @@
           },
           {
             "name": "shippingZone",
-            "description": "The shipping zone the shipping method belongs to.",
+            "description": "The shipping zone the shipping method belongs to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -88767,7 +88841,7 @@
       {
         "kind": "OBJECT",
         "name": "ShippingPriceDeleted",
-        "description": "Event sent when shipping price is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -88807,7 +88881,7 @@
           },
           {
             "name": "shippingMethod",
-            "description": "The shipping method the event relates to.",
+            "description": "The shipping method the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -88832,7 +88906,7 @@
           },
           {
             "name": "shippingZone",
-            "description": "The shipping zone the shipping method belongs to.",
+            "description": "The shipping zone the shipping method belongs to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -89407,7 +89481,7 @@
       {
         "kind": "OBJECT",
         "name": "ShippingPriceUpdated",
-        "description": "Event sent when shipping price is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -89447,7 +89521,7 @@
           },
           {
             "name": "shippingMethod",
-            "description": "The shipping method the event relates to.",
+            "description": "The shipping method the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -89472,7 +89546,7 @@
           },
           {
             "name": "shippingZone",
-            "description": "The shipping zone the shipping method belongs to.",
+            "description": "The shipping zone the shipping method belongs to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -90239,7 +90313,7 @@
       {
         "kind": "OBJECT",
         "name": "ShippingZoneCreated",
-        "description": "Event sent when new shipping zone is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -90279,7 +90353,7 @@
           },
           {
             "name": "shippingZone",
-            "description": "The shipping zone the event relates to.",
+            "description": "The shipping zone the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -90400,7 +90474,7 @@
       {
         "kind": "OBJECT",
         "name": "ShippingZoneDeleted",
-        "description": "Event sent when shipping zone is deleted.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -90440,7 +90514,7 @@
           },
           {
             "name": "shippingZone",
-            "description": "The shipping zone the event relates to.",
+            "description": "The shipping zone the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -90751,7 +90825,7 @@
       {
         "kind": "OBJECT",
         "name": "ShippingZoneUpdated",
-        "description": "Event sent when shipping zone is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -90791,7 +90865,7 @@
           },
           {
             "name": "shippingZone",
-            "description": "The shipping zone the event relates to.",
+            "description": "The shipping zone the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -94630,7 +94704,7 @@
       {
         "kind": "OBJECT",
         "name": "TransactionActionRequest",
-        "description": "Event sent when transaction action is requested.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "action",
@@ -96359,7 +96433,7 @@
       {
         "kind": "OBJECT",
         "name": "TranslationCreated",
-        "description": "Event sent when new translation is created.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -96399,7 +96473,7 @@
           },
           {
             "name": "translation",
-            "description": "The translation the event relates to.",
+            "description": "The translation the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "UNION",
@@ -96572,6 +96646,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "shortDescription",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -96647,7 +96733,7 @@
       {
         "kind": "OBJECT",
         "name": "TranslationUpdated",
-        "description": "Event sent when translation is updated.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -96687,7 +96773,7 @@
           },
           {
             "name": "translation",
-            "description": "The translation the event relates to.",
+            "description": "The translation the event relates to.\n\nAdded in Saleor 3.2.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "UNION",
@@ -100226,7 +100312,7 @@
       {
         "kind": "OBJECT",
         "name": "VoucherCreated",
-        "description": "Event sent when new voucher is created.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -100278,7 +100364,7 @@
           },
           {
             "name": "voucher",
-            "description": "The voucher the event relates to.",
+            "description": "The voucher the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -100387,7 +100473,7 @@
       {
         "kind": "OBJECT",
         "name": "VoucherDeleted",
-        "description": "Event sent when voucher is deleted.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -100439,7 +100525,7 @@
           },
           {
             "name": "voucher",
-            "description": "The voucher the event relates to.",
+            "description": "The voucher the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -101373,7 +101459,7 @@
       {
         "kind": "OBJECT",
         "name": "VoucherUpdated",
-        "description": "Event sent when voucher is updated.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -101425,7 +101511,7 @@
           },
           {
             "name": "voucher",
-            "description": "The voucher the event relates to.",
+            "description": "The voucher the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "channel",
@@ -102143,7 +102229,7 @@
       {
         "kind": "OBJECT",
         "name": "WarehouseCreated",
-        "description": "Event sent when new warehouse is created.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -102195,7 +102281,7 @@
           },
           {
             "name": "warehouse",
-            "description": "The warehouse the event relates to.",
+            "description": "The warehouse the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -102291,7 +102377,7 @@
       {
         "kind": "OBJECT",
         "name": "WarehouseDeleted",
-        "description": "Event sent when warehouse is deleted.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -102343,7 +102429,7 @@
           },
           {
             "name": "warehouse",
-            "description": "The warehouse the event relates to.",
+            "description": "The warehouse the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -102929,7 +103015,7 @@
       {
         "kind": "OBJECT",
         "name": "WarehouseUpdated",
-        "description": "Event sent when warehouse is updated.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": null,
         "fields": [
           {
             "name": "issuedAt",
@@ -102981,7 +103067,7 @@
           },
           {
             "name": "warehouse",
-            "description": "The warehouse the event relates to.",
+            "description": "The warehouse the event relates to.\n\nAdded in Saleor 3.4.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "OBJECT",
