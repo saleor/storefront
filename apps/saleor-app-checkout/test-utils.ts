@@ -17,10 +17,16 @@ export type TestNextApiResponse = NextApiResponse & {
 };
 
 export const mockRequest = (method: RequestMethod = "GET") => {
-  const { req, res } = createMocks({ method });
-  req.headers = {
-    "Content-Type": "application/json",
-  };
+  const { req, res } = createMocks({
+    method,
+    url: `https://test.localhost/?saleorApiUrl=${process.env.NEXT_PUBLIC_SALEOR_API_URL!}`,
+    query: {
+      saleorApiUrl: process.env.NEXT_PUBLIC_SALEOR_API_URL,
+    },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   return {
     req: req as unknown as NextApiRequest,

@@ -75,9 +75,7 @@ describe("Saleor TRANSACTION_ACTION_REQUEST webhook handler", () => {
 
     await testApiHandler({
       handler,
-      params: {
-        saleorApiUrl: "https://saleor-api-host.saleor.localhost:8000/graphql/",
-      },
+      url: "?saleorApiUrl=https://saleor-api-host.saleor.localhost:8000/graphql/",
       test: async ({ fetch }) => {
         const res = await fetch({
           method: "POST",

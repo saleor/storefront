@@ -13,11 +13,11 @@ export const withSaleorDomainMatch: Middleware = (handler) =>
       });
     }
 
-    const domain = new URL(saleorApiUrl).hostname;
+    const domain = new URL(saleorApiUrl).host;
     if (domain !== request.headers[SALEOR_DOMAIN_HEADER]) {
       return Response.BadRequest({
         success: false,
-        message: `Invalid ${SALEOR_DOMAIN_HEADER} header.`,
+        message: `Invalid ${SALEOR_DOMAIN_HEADER} header: ${domain} != ${request.headers[SALEOR_DOMAIN_HEADER]}`,
       });
     }
 

@@ -145,7 +145,8 @@ describe("withAdyenWebhookCredentials", () => {
 
 describe("isAdyenNotification middleware", () => {
   it("rejects invalid request shape", async () => {
-    const res = await isAdyenNotification(handler)(mockRequest);
+    const res = await isAdyenNotification(handler)({ ...mockRequest, params: {} });
+    console.log(res);
     expect(res.status).toBe(Response.BadRequest().status);
     expect(handler).not.toHaveBeenCalled();
   });

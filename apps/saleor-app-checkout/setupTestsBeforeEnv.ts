@@ -1,6 +1,9 @@
 import "env-vars";
 
 process.env.SETTINGS_ENCRYPTION_SECRET = "test_salt"; // Change will affect tests fixtures
+
+process.env.APL = "vercel";
+process.env.NEXT_PUBLIC_SALEOR_API_URL = "https://master.staging.saleor.cloud/graphql/";
 process.env.SALEOR_APP_TOKEN = "TEST";
 
 // Fix for jose missing TextEncoder error
