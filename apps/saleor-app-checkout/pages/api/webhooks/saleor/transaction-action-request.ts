@@ -30,11 +30,11 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const { transaction, action } = req.params;
   console.log("Start processing Saleor transaction action", action, transaction);
 
-  if (!transaction?.type || !action.amount) {
+  if (!transaction?.type || !action?.amount) {
     console.warn(
       "Received webhook call without transaction data",
       transaction?.type,
-      action.amount
+      action?.amount
     );
     return Response.BadRequest({ success: false, message: "Missing transaction data" });
   }
