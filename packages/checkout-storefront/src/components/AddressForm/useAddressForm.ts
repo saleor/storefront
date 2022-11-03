@@ -1,8 +1,6 @@
-import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import { getParsedLocaleData, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { DefaultValues, Resolver, useForm, UseFormReturn } from "react-hook-form";
-import { object, string } from "yup";
 import { AddressFormData } from "./types";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
@@ -11,6 +9,7 @@ import { countries } from "@/checkout-storefront/lib/consts";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 import { omit } from "lodash-es";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { useAddressFormValidationResolver } from "@/checkout-storefront/components/AddressForm/useAddressFormValidationResolver";
 
 export interface UseAddressFormProps {
   defaultValues?: AddressFormData;
@@ -26,7 +25,6 @@ export const useAddressForm = ({
   defaultValues = emptyFormData,
   onSubmit,
 }: UseAddressFormProps): UseAddressFormReturn => {
-  const { errorMessages } = useErrorMessages();
   const defaultValuesRef = useRef<AddressFormData>(defaultValues);
 
   const initialCountryCode = useMemo(() => {
@@ -38,18 +36,7 @@ export const useAddressForm = ({
     );
   }, [defaultValues]);
 
-  const schema = object({
-    firstName: string().required(errorMessages.required),
-    lastName: string().required(errorMessages.required),
-    streetAddress1: string().required(errorMessages.required),
-    postalCode: string().required(errorMessages.required),
-    city: string().required(errorMessages.required),
-    cityArea: string(),
-    countryArea: string(),
-    countryCode: string(),
-  });
-
-  const resolver = useValidationResolver(schema);
+  const resolver = useAddressFormValidationResolver();
 
   const formProps = useForm<AddressFormData>({
     resolver: resolver as unknown as Resolver<AddressFormData, any>,
@@ -104,7 +91,6 @@ export const useAddressForm = ({
       return;
     }
 
-    void trigger();
     defaultValuesRef.current = defaultValues;
   }, [defaultValues, hasDataChanged, trigger]);
 

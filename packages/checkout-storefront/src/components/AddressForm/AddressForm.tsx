@@ -14,6 +14,7 @@ import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
 import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
 import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
+import { getIn } from "yup";
 
 interface CountryOption extends Option {
   value: CountryCode;

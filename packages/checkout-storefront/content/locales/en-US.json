@@ -1547,6 +1547,10 @@
     "developer_comment": "login - account not confirmed error",
     "string": "Account hasn't been confirmed"
   },
+  "useAlerts/messages/jxRMRZ": {
+    "developer_comment": "checkout shipping update - postal code invalid error",
+    "string": "Invalid phone number was provided for shipping address"
+  },
   "useAlerts/messages/k0+Kez": {
     "developer_comment": "checkout pay - shipping method not set error",
     "string": "Please choose delivery method before finalizing checkout"
