@@ -3,7 +3,7 @@
 }
 
 .inner {
-  @apply container h-18 flex flex-nowrap items-center;
+  @apply container h-48 flex flex-nowrap items-center;
 }
 
 .logo {

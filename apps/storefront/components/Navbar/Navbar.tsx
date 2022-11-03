@@ -49,15 +49,18 @@ export function Navbar() {
     <>
       <div className={clsx(styles.navbar)}>
         <div className={clsx(styles.inner)}>
+          <div className="flex-vertical">
+            <Link href={paths.$url()} passHref legacyBehavior>
+              <div className="mt-px group block h-14 w-80 relative cursor-pointer">
+                <img src="/images/logo_blue.png" alt="CSPI logo" />
+              </div>
+            </Link>
+            <h1 className="uppercase font-normal text-base mt-1">
+              {process.env.NEXT_PUBLIC_STOREFRONT_NAME || ""}
+            </h1>
+          </div>
           <div className="flex-1 h-full hidden xs:flex">
             <Menu />
-          </div>
-          <div className="flex-1 flex xs:justify-center">
-            <Link href={paths.$url()} passHref legacyBehavior>
-              <a href="pass" className={styles.logo}>
-                <Stamp />
-              </a>
-            </Link>
           </div>
           <div className="flex-1 flex justify-end">
             {!authenticated ? (
