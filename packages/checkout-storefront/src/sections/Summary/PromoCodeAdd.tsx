@@ -6,7 +6,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
-import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
+import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
 import {
   extractMutationErrors,

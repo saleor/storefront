@@ -1,48 +1,44 @@
 import { DEFAULT_CHANNEL, DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
 import { isOrderConfirmationPage } from "./utils";
 import queryString from "query-string";
+import { CountryCode } from "@/checkout-storefront/graphql";
 
-type AuthState = "signIn";
+type ParamBasicValue = string | undefined | null;
 
-const rawQueryParams = ["locale", "dummyPayment", "channel", "authState", "redirectUrl"] as const;
-
-const mappableQueryParams = ["checkout", "order", "email", "token"] as const;
-
-type MappedQueryParam = "passwordResetEmail" | "passwordResetToken" | "checkoutId" | "orderId";
-
-type RawQueryParam = typeof rawQueryParams[number];
-
-type MappableQueryParam = typeof mappableQueryParams[number];
-
-type QueryParam = RawQueryParam | MappedQueryParam;
-
-export type QueryParams = Partial<Record<QueryParam, string>> & {
-  locale: Locale;
-  channel: string;
-  authState?: AuthState;
-};
-
-type UnmappedQueryParam = RawQueryParam | MappableQueryParam;
-
-type UnmappedQueryParams = Partial<Record<UnmappedQueryParam, any>>;
-
-const queryParamsMap: Record<UnmappedQueryParam, QueryParam> = {
-  ...(rawQueryParams.reduce((result, param) => ({ ...result, [param]: param }), {}) as Record<
-    RawQueryParam,
-    QueryParam
-  >),
+const queryParamsMap = {
+  locale: "locale",
+  dummyPayment: "dummyPayment",
+  channel: "channel",
+  redirectUrl: "redirectUrl",
   checkout: "checkoutId",
   order: "orderId",
   token: "passwordResetToken",
   email: "passwordResetEmail",
-};
+} as const;
 
-const defaultParams: UnmappedQueryParams = {
+type UnmappedQueryParam = keyof typeof queryParamsMap;
+
+type QueryParam = typeof queryParamsMap[UnmappedQueryParam];
+
+interface CustomTypedQueryParams {
+  countryCode: CountryCode;
+  locale: Locale;
+  channel: string;
+}
+
+type RawQueryParams = Record<UnmappedQueryParam, ParamBasicValue> & CustomTypedQueryParams;
+
+export type QueryParams = Record<QueryParam, ParamBasicValue> & CustomTypedQueryParams;
+
+const defaultParams: Partial<RawQueryParams> = {
   locale: DEFAULT_LOCALE,
   channel: DEFAULT_CHANNEL,
 };
 
-const getRawQueryParams = (): UnmappedQueryParams => queryString.parse(location.search);
+// this is intentional, we know what we'll get from the query but
+// queryString has no way to type this in such a specific way
+export const getRawQueryParams = () =>
+  queryString.parse(location.search) as unknown as RawQueryParams;
 
 export const getQueryParams = (): QueryParams => {
   const params = getRawQueryParams();
@@ -52,15 +48,15 @@ export const getQueryParams = (): QueryParams => {
   }
 
   return Object.entries(params).reduce((result, entry) => {
-    const [unmappedParamName, paramValue] = entry as [UnmappedQueryParam, any];
-    const value = paramValue || defaultParams[unmappedParamName];
+    const [paramName, paramValue] = entry as [UnmappedQueryParam, ParamBasicValue];
+    const mappedParamName = queryParamsMap[paramName];
+    const mappedParamValue = paramValue || defaultParams[paramName];
 
-    if (mappableQueryParams.includes(unmappedParamName as MappableQueryParam)) {
-      return { ...result, [queryParamsMap[unmappedParamName]]: value };
-    }
-
-    return result;
-  }, params) as QueryParams;
+    return {
+      ...result,
+      [mappedParamName]: mappedParamValue,
+    };
+  }, {}) as QueryParams;
 };
 
 export const clearQueryParams = (...keys: QueryParam[]) => {

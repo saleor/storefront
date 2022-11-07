@@ -22,7 +22,7 @@ describe("useGetParsedApiErrors", () => {
       },
     ];
 
-    expect(hook.current(errors as ApiErrors<TestFormData>)).toEqual([
+    expect(hook.current.getParsedApiErrors(errors as ApiErrors<TestFormData>)).toEqual([
       {
         message: "Required field",
         field: "streetAddress1",
@@ -45,6 +45,36 @@ describe("useGetParsedApiErrors", () => {
     const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
       wrapper: getMockProviders({ intl: true }),
     });
-    expect(hook.current([])).toEqual([]);
+    expect(hook.current.getParsedApiErrors([])).toEqual([]);
+  });
+
+  it("should return proper form errors object from api errors array", () => {
+    const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
+      wrapper: getMockProviders({ intl: true }),
+    });
+
+    const errors = [
+      ...apiErrors,
+      {
+        code: "PASSWORD_TOO_SHORT",
+        message: "This password is not long enough",
+        field: "password",
+      },
+    ];
+
+    expect(hook.current.getFormErrorsFromApiErrors(errors as ApiErrors<TestFormData>)).toEqual({
+      streetAddress1: {
+        message: "Required field",
+        code: "required",
+      },
+      postalCode: {
+        message: "Invalid value",
+        code: "invalid",
+      },
+      password: {
+        message: "Provided password is too short. Minimum length is 8 characters.",
+        code: "passwordTooShort",
+      },
+    });
   });
 });

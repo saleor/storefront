@@ -11,7 +11,7 @@ function useSetFormErrors<TFormData extends FieldValues>({
 }: SetFormErrorsProps<TFormData>) {
   const handleSetFormErrors = useCallback(() => {
     // because we don't get this prop when setting errors from hook form
-    const hasErrors = typeof errors === "object" ? !!Object.keys(errors).length : false;
+    const hasErrors = typeof errors === "object" && !!Object.keys(errors).length;
 
     if (hasErrors) {
       setFormErrors({ setError, errors });
