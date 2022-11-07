@@ -24,10 +24,6 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
 
   const selectInitialSection = (): Section => {
     const shouldShowPasswordReset = passwordResetToken && !passwordResetShown;
-    if (getQueryParams().authState === "signIn") {
-      clearQueryParams("authState");
-      return "signIn";
-    }
 
     if (shouldShowPasswordReset) {
       return "resetPassword";

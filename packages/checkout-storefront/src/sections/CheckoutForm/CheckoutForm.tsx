@@ -20,11 +20,9 @@ export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { checkoutFinalize, errors: userRegisterErrors } = useCheckoutFinalize();
-  const { passwordResetToken, authState } = getQueryParams();
+  const { passwordResetToken } = getQueryParams();
 
-  const [showOnlyContact, setShowOnlyContact] = useState(
-    !!passwordResetToken || authState === "signIn" || false
-  );
+  const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
   const { handleSubmit, isProcessingApiChanges, methods } = useCheckoutForm({
     userRegisterErrors,

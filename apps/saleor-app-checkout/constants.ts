@@ -1,4 +1,3 @@
-import urlJoin from "url-join";
 import { localhostHttp } from "./utils/configUtils";
 export const appName = "Checkout";
 
@@ -18,12 +17,6 @@ export type DebugEnvVars = Record<DebugEnvVar, string | undefined>;
 // https://github.com/vercel/next.js/issues/19420
 export const envVars = {
   apiUrl: localhostHttp(process.env["NEXT_PUBLIC_SALEOR_API_URL"]!),
-  checkoutAppUrl: localhostHttp(process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]!),
-  checkoutApiUrl: localhostHttp(
-    process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]
-      ? urlJoin(process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"], `api`)
-      : ""
-  ),
 };
 
 export const getApiDomain = () => {
@@ -33,8 +26,6 @@ export const getApiDomain = () => {
 
 export const envVarsNames: EnvVars = {
   apiUrl: "NEXT_PUBLIC_SALEOR_API_URL",
-  checkoutAppUrl: "NEXT_PUBLIC_CHECKOUT_APP_URL",
-  checkoutApiUrl: "NEXT_PUBLIC_CHECKOUT_APP_URL",
 };
 
 export const serverEnvVars: ServerEnvVars = {

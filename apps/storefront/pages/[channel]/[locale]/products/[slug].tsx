@@ -184,10 +184,16 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
               </h2>
             )}
             {!!product.category?.slug && (
-              <Link href={paths.category._slug(product?.category?.slug).$url()} passHref>
-                <p className="text-md mt-2 font-medium text-gray-600 cursor-pointer">
-                  {translate(product.category, "name")}
-                </p>
+              <Link
+                href={paths.category._slug(product?.category?.slug).$url()}
+                passHref
+                legacyBehavior
+              >
+                <a>
+                  <p className="text-md mt-2 font-medium text-gray-600 cursor-pointer">
+                    {translate(product.category, "name")}
+                  </p>
+                </a>
               </Link>
             )}
           </div>

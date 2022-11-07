@@ -8,7 +8,7 @@ import { FC, PropsWithChildren, useEffect, useMemo, useRef } from "react";
 import { difference, omit } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
-import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
+import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
 import { autocompleteTags } from "@/checkout-storefront/lib/consts";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";

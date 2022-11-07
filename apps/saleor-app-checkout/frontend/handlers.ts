@@ -6,7 +6,7 @@ import {
 import { merge, reduce } from "lodash-es";
 import { OperationResult } from "urql";
 
-type UploadFileFunction = (variables?: {
+type UploadFileFunction = (variables: {
   file: any;
 }) => Promise<OperationResult<FileUploadMutation>>;
 

@@ -42,24 +42,6 @@ fragment OrderLineFragment on OrderLine {
   }
 }
 
-fragment AddressFragment on Address {
-  id
-  city
-  phone
-  postalCode
-  companyName
-  cityArea
-  streetAddress1
-  streetAddress2
-  countryArea
-  country {
-    country
-    code
-  }
-  firstName
-  lastName
-}
-
 fragment Shipping on ShippingMethod {
   name
   minimumDeliveryDays
