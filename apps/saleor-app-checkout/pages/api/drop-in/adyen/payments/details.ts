@@ -37,8 +37,8 @@ const DropInAdyenPaymentsDetailsHandler: NextApiHandler<
 
     return res.status(200).json({ payment, orderId });
   } catch (err) {
-    Sentry.captureException(err);
     console.error(err);
+    Sentry.captureException(err);
 
     return res.status(500).json({ message: "adyen" });
   }

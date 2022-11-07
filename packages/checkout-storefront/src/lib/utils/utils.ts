@@ -5,7 +5,7 @@ import { Locale } from "@/checkout-storefront/lib/regions";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { reduce, snakeCase } from "lodash-es";
 import { ChangeEvent, ReactEventHandler } from "react";
-import { OperationResult } from "urql";
+import { AnyVariables, OperationResult } from "urql";
 
 export const getById =
   <T extends { id: string }>(idToCompare: string | undefined) =>
@@ -35,7 +35,7 @@ export const getParsedLocaleData = (
   return { countryCode: countryCode as CountryCode, locale };
 };
 
-export const extractMutationErrors = <TData extends FormDataBase, TVars = any>(
+export const extractMutationErrors = <TData extends FormDataBase, TVars extends AnyVariables = any>(
   result: OperationResult<TData, TVars> | any // any to cover apollo client
   // mutations, to be removed once we remove apollo client from sdk
 ): [boolean, ApiErrors<TData>] => {

@@ -18,8 +18,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const [paymentError, paymentData] = await unpackPromise(verifyPayment(id));
 
     if (paymentError) {
+      console.error(paymentError);
       Sentry.captureException(paymentError);
-      console.error("Error while validating payment", { paymentError });
       res.status(500).json({ error: "error while validating payment" });
       return;
     }

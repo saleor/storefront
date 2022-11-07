@@ -8,6 +8,8 @@ const allowedImageDomains = process.env.NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS
   ? process.env.NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS.split(",")
   : [];
 
+const checkoutEmbededInStorefrontPath = "/saleor-app-checkout";
+
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   swcMinify: true,
@@ -58,15 +60,15 @@ module.exports = withBundleAnalyzer({
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/`,
       },
       {
-        source: "/saleor-app-checkout/",
+        source: `${checkoutEmbededInStorefrontPath}/`,
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
       },
       {
-        source: "/saleor-app-checkout/:path*/",
+        source: `${checkoutEmbededInStorefrontPath}/:path*/`,
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*/`,
       },
       {
-        source: "/saleor-app-checkout/:path*",
+        source: `${checkoutEmbededInStorefrontPath}/:path*`,
         destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
       },
 

@@ -21,6 +21,7 @@ const handler: NextApiHandler = async (req, res) => {
       data: settings.paymentProviders,
     });
   } catch (error) {
+    console.error(error);
     Sentry.captureException(error);
     return res.status(500).json({ error });
   }

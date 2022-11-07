@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import React, { SyntheticEvent } from "react";
 import { useIntl } from "react-intl";
@@ -83,7 +83,11 @@ export function CheckoutLineItem({ line }: CheckoutLineItemProps) {
           <div className="flex justify-between">
             <div className="pr-6">
               <h3 className="text-md md:text-xl font-bold">
-                <Link href={paths.products._slug(line?.variant?.product?.slug).$url()} passHref>
+                <Link
+                  href={paths.products._slug(line?.variant?.product?.slug).$url()}
+                  passHref
+                  legacyBehavior
+                >
                   <a
                     href="pass"
                     className="font-medium text-gray-700 hover:text-gray-800"

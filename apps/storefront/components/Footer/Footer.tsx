@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import { HTMLAttributes } from "react";
 
@@ -36,7 +36,7 @@ export function Footer({ className, ...rest }: FooterProps) {
     <footer className={clsx(styles.footer, className)} {...rest}>
       <Box className={styles["footer-inner"]}>
         <div className="flex mb-14 sm:mb-10">
-          <Link href={paths.$url()} passHref>
+          <Link href={paths.$url()} passHref legacyBehavior>
             <a href="pass" className="hidden sm:inline-block">
               <div className="mt-px group block h-16 w-28 relative grayscale">
                 <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
@@ -56,7 +56,11 @@ export function Footer({ className, ...rest }: FooterProps) {
                     {item?.name}
                   </a>
                 ) : (
-                  <Link href={getLinkPath(item, currentChannel.slug, currentLocale)} passHref>
+                  <Link
+                    href={getLinkPath(item, currentChannel.slug, currentLocale)}
+                    passHref
+                    legacyBehavior
+                  >
                     <a href="pass" className={styles["menu-heading"]}>
                       {item?.name}
                     </a>
@@ -76,7 +80,11 @@ export function Footer({ className, ...rest }: FooterProps) {
                           {sub?.name}
                         </a>
                       ) : (
-                        <Link href={getLinkPath(sub, currentChannel.slug, currentLocale)} passHref>
+                        <Link
+                          href={getLinkPath(sub, currentChannel.slug, currentLocale)}
+                          passHref
+                          legacyBehavior
+                        >
                           <a
                             href="pass"
                             className={styles["menu-link"]}

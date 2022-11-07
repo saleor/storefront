@@ -1,6 +1,6 @@
 import { useAuthState } from "@saleor/sdk";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { ReactElement } from "react";
 
 import { AccountLayout, Spinner } from "@/components";
