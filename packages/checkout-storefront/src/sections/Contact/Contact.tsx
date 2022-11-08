@@ -6,7 +6,7 @@ import { ResetPassword } from "./ResetPassword";
 import { GuestUserForm } from "./GuestUserForm";
 import { useAuthState } from "@saleor/sdk";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
-import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
