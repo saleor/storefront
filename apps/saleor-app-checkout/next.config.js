@@ -12,7 +12,7 @@ const checkoutEmbededInStorefrontPath = "/saleor-app-checkout";
 const config = withTM({
   trailingSlash: true,
   i18n: {
-    locales: ["en-US", "pl-PL", "fr-FR", "vi-VN"],
+    locales: ["en-US", "pl-PL", "fr-FR", "vi-VN", "ar-AE"],
     defaultLocale: "en-US",
   },
   reactStrictMode: true,
