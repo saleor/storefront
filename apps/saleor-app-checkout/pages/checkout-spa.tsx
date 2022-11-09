@@ -1,5 +1,6 @@
 import Dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import urlJoin from "url-join";
 
 const CheckoutStoreFront = Dynamic(
   async () => {
@@ -22,12 +23,12 @@ export default function CheckoutSpa() {
     return null;
   }
 
-  const checkoutAppUrl = window.location.origin + "/saleor-app-checkout/";
+  const checkoutAppUrl = urlJoin(window.location.origin, "saleor-app-checkout", "/");
 
   return (
     <CheckoutStoreFront
       env={{
-        checkoutApiUrl: checkoutAppUrl + "api/",
+        checkoutApiUrl: urlJoin(checkoutAppUrl, "api", "/"),
         checkoutAppUrl,
       }}
     />

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import * as Apl from "@/saleor-app-checkout/config/apl";
 
 import { saleorDomainHeader } from "../../constants";
+import { unpackPromise } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   // @todo: Allow restricting only to specific domains
@@ -21,9 +22,9 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
     return;
   }
 
-  try {
-    await Apl.set({ saleorApiUrl, authToken });
-  } catch (error) {
+  const [error] = await unpackPromise(Apl.set({ saleorApiUrl, authToken }));
+
+  if (error) {
     console.log("Error thrown during saving the auth data: %O", error);
     response.status(500).json({ success: false, message: "Unable to save registration data" });
     return;

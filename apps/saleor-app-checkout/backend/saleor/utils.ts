@@ -13,7 +13,6 @@ export async function isValidSaleorRequest({
   bodyBuffer: Buffer;
   signature: string;
 }): Promise<boolean> {
-
   const origin = new URL(saleorApiUrl).origin;
   const JWKS = jose.createRemoteJWKSet(new URL(`${origin}/.well-known/jwks.json`));
 

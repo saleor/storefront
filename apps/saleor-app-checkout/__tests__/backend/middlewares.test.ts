@@ -2,8 +2,8 @@ import { withSaleorDomainMatch } from "@/saleor-app-checkout/backend/middlewares
 import { SALEOR_DOMAIN_HEADER } from "@saleor/app-sdk/const";
 import type { Request } from "retes";
 
-const TEST_SALEOR_DOMAIN = "master.staging.saleor.cloud";
-const TEST_SALEOR_URL = `https://${TEST_SALEOR_DOMAIN}/graphql/`;
+const TEST_SALEOR_URL = process.env.NEXT_PUBLIC_SALEOR_API_URL!;
+const TEST_SALEOR_DOMAIN = new URL(TEST_SALEOR_URL).hostname;
 
 jest.mock("@/saleor-app-checkout/backend/utils.ts");
 
