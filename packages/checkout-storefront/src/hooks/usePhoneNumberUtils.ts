@@ -1,20 +1,22 @@
-import phoneNumber from "google-libphonenumber";
-import { useCallback } from "react";
+import { CountryCode } from "@/checkout-storefront/graphql";
+
+import {
+  parsePhoneNumberWithError,
+  CountryCode as PhoneNumberLibCountryCode,
+} from "libphonenumber-js/max";
 
 export const usePhoneNumberUtils = () => {
-  const phoneNumberUtils = phoneNumber.PhoneNumberUtil.getInstance();
-
-  const isValidNumber = useCallback(
-    (phone: string) => {
-      try {
-        const parsedPhone = phoneNumberUtils.parseAndKeepRawInput(phone);
-        return phoneNumberUtils.isValidNumber(parsedPhone);
-      } catch (e) {
-        return false;
-      }
-    },
-    [phoneNumberUtils]
-  );
+  const isValidNumber = (phone: string, countryCode?: CountryCode) => {
+    try {
+      const phoneNumber = parsePhoneNumberWithError(
+        phone,
+        countryCode as PhoneNumberLibCountryCode
+      );
+      return phoneNumber.isValid();
+    } catch (error) {
+      return false;
+    }
+  };
 
   return { isValidNumber };
 };

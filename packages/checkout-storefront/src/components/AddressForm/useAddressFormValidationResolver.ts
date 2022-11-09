@@ -47,7 +47,7 @@ export const useAddressFormValidationResolver = () => {
 
       const phoneRequiredError = result.errors?.phone?.type === "required";
 
-      if (!isValidNumber(data.phone) && !phoneRequiredError) {
+      if (!isValidNumber(data.phone, data.countryCode) && !phoneRequiredError) {
         result = {
           ...result,
           errors: {
