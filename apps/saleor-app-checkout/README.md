@@ -169,8 +169,8 @@ Checkout Storefront is available at [/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_AP
 
 You'll need a token to use the checkout. A new checkout session can be generated either in your storefront or in the GraphQL Playground. You could use a preexisting checkout as well.
 
-> **Note**<br/>
-> ⚠️ that if a given checkout has customer already attached, it'll become private, and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
+> **Warning**<br/>
+> If a given checkout has customer already attached, it'll become private, and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
 
 To generate checkout in GraphQL API and retrieve its `id`:
 
