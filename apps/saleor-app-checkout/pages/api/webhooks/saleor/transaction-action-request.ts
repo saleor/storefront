@@ -34,7 +34,7 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
   const saleorApiUrl = req.params.saleorApiUrl;
 
   if (!saleorApiUrl) {
-    return Response.BadRequest({ success: false, message: "Saleor saleorApiUrl param" });
+    return Response.BadRequest({ success: false, message: "Saleor saleorApiUrl param is missing" });
   }
 
   const { transaction, action } = req.params;
