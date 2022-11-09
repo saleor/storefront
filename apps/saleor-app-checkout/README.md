@@ -37,7 +37,7 @@ To develop `saleor-app-checkout` app locally, you need to create a tunnel for it
 To create a tunnel, run:
 
 ```bash
-npx saleor app tunnel 3001 --force-install
+npx saleor app tunnel 3001
 ```
 
 where `3001` is the port on which `saleor-app-checkout` runs by default. Alternative ways of creating a tunnel are described [here](#alternatives-to-saleor-app-tunnel).
