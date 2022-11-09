@@ -50,6 +50,9 @@ Open the app by using the tunnel URL received from `saleor app tunnel` (example:
 > **Warning**<br/>
 > The tunnel needs to be running in the background. Please don't kill it during the development.
 
+> **Note**<br />
+> Tunnel might break if you change your Internet connection. If you can't access the app from tunnel please restart it
+
 #### Alternative way to obtain the token
 
 Token can also be generated using the CLI command:
