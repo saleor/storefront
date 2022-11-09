@@ -7,7 +7,7 @@ import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
 import { isEqual } from "lodash-es";
 import { useDynamicAppConfig } from "@/checkout-storefront/hooks/useDynamicAppConfig";
-import { getQueryParams } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 interface AppConfigContextConsumerProps {
   config?: AppConfig | null;
   loading: boolean;

@@ -81,13 +81,14 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
         await handleAdyenRefund({ saleorApiUrl, refund: transactionReversal, transaction });
       }
       if (isDummyTransaction(transaction)) {
-        await handleDummyRefund(
-          {
+        await handleDummyRefund({
+          saleorApiUrl,
+          refund: {
             ...transactionReversal,
             id: transaction.id,
           },
-          transaction
-        );
+          transaction,
+        });
       }
     }
 
