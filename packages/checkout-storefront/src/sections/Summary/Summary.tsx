@@ -173,6 +173,7 @@ export const Summary: FC<SummaryProps> = ({
               ariaLabel={formatMessage(summaryLabels.totalPrice)}
               weight="bold"
               money={totalPrice?.gross}
+              data-testid="totalOrderPrice"
             />
           </div>
         </div>

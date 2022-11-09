@@ -9,7 +9,7 @@ import type { PaymentResponse as AdyenWebPaymentResponse } from "@adyen/adyen-we
 import { useAlerts, useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useEvent } from "@/checkout-storefront/hooks/useEvent";
 import {
   AdyenCheckoutInstanceOnAdditionalDetails,
@@ -28,7 +28,7 @@ const _hack = (adyenCheckout: AdyenCheckoutInstance) =>
   adyenCheckout.create("dropin").mount("#dropin-container");
 type DropinElement = ReturnType<typeof _hack>;
 
-export const AdyenDropIn = memo<AdyenDropInProps>(({}) => {
+export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   const {
     env: { checkoutApiUrl },
   } = useAppConfig();
@@ -113,6 +113,9 @@ function useDropinAdyenElement(
 ) {
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
+  const [adyenCheckoutInstanceCreationStatus, setAdyenCheckoutInstanceCreationStatus] = useState<
+    "IDLE" | "IN_PROGRESS" | "DONE" | "ERROR"
+  >("IDLE");
 
   const [adyenSessionResponse] = useFetch(createDropInAdyenSession, {
     args: {
@@ -132,23 +135,35 @@ function useDropinAdyenElement(
     if (
       !dropinContainerElRef.current ||
       !adyenSessionResponse.data ||
-      "message" in adyenSessionResponse.data
+      "message" in adyenSessionResponse.data ||
+      adyenCheckoutInstanceCreationStatus === "IN_PROGRESS" ||
+      adyenCheckoutInstanceCreationStatus === "DONE"
     ) {
       return;
     }
 
+    setAdyenCheckoutInstanceCreationStatus("IN_PROGRESS");
     createAdyenCheckoutInstance(adyenSessionResponse.data, { onSubmit, onAdditionalDetails })
       .then((adyenCheckout) => {
         dropinComponentRef.current = adyenCheckout
           .create("dropin")
           .mount(dropinContainerElRef?.current as HTMLDivElement);
+        setAdyenCheckoutInstanceCreationStatus("DONE");
       })
-      .catch(console.error);
+      .catch((err) => {
+        setAdyenCheckoutInstanceCreationStatus("ERROR");
+        console.error(err);
+      });
 
     return () => {
       dropinComponentRef.current?.unmount();
     };
-  }, [adyenSessionResponse.data, onAdditionalDetails, onSubmit]);
+  }, [
+    adyenCheckoutInstanceCreationStatus,
+    adyenSessionResponse.data,
+    onAdditionalDetails,
+    onSubmit,
+  ]);
 
   return { dropinContainerElRef };
 }

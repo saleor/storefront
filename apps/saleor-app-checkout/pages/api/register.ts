@@ -1,4 +1,3 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { saleorDomainHeader } from "../../constants";
@@ -36,4 +35,4 @@ Received: ${saleorDomain.toString()}`);
   response.status(200).json({ success: true });
 };
 
-export default withSentry(handler);
+export default handler;

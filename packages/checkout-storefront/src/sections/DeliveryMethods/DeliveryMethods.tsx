@@ -147,7 +147,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   return (
     <>
       <Divider />
-      <div className="section">
+      <div className="section" data-testid="deliveryMethods">
         <Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
         {!shippingAddress && (
           <Text>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</Text>
@@ -159,7 +159,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
             <SelectBoxGroup label={formatMessage(deliveryMethodsLabels.deliveryMethods)}>
               {shippingMethods?.map(
                 ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
-                  <SelectBox value={id} selectedValue={selectedMethodId} onChange={onChange}>
+                  <SelectBox
+                    key={id}
+                    value={id}
+                    selectedValue={selectedMethodId}
+                    onChange={onChange}
+                  >
                     <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
                       <div className="flex flex-row justify-between self-stretch items-center">
                         <Text>{name}</Text>

@@ -66,7 +66,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   return (
     <>
       <Divider />
-      <div className="section">
+      <div className="section" data-testid="shippingAddressSection">
         {authUser ? (
           <UserAddressSection
             {...(errorProps as UseErrors<UserAddressFormData>)}

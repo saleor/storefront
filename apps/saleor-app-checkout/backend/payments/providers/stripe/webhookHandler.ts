@@ -39,7 +39,7 @@ export const getLatestChargeFromPaymentIntent = (paymentIntent: Stripe.PaymentIn
   // https://stripe.com/docs/api/payment_intents/object#payment_intent_object-charges
   // This list only contains the latest charge
   // even if there were previously multiple unsuccessful charges.
-  return paymentIntent?.charges.data[0];
+  return paymentIntent?.charges?.data?.[0];
 };
 
 export const getPaymentMethodFromPaymentIntent = (paymentIntent: Stripe.PaymentIntent | null) => {

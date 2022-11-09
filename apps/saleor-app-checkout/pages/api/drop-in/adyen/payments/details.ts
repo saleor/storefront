@@ -4,7 +4,6 @@ import { getAdyenClient } from "@/saleor-app-checkout/backend/payments/providers
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import type { DetailsRequest as AdyenDetailsRequest } from "@adyen/api-library/lib/src/typings/checkout/detailsRequest";
-import { withSentry } from "@sentry/nextjs";
 import {
   PostAdyenDropInPaymentsDetailsResponse,
   postDropInAdyenPaymentsDetailsBody,
@@ -45,4 +44,4 @@ const DropInAdyenPaymentsDetailsHandler: NextApiHandler<
   }
 };
 
-export default withSentry(allowCors(DropInAdyenPaymentsDetailsHandler));
+export default allowCors(DropInAdyenPaymentsDetailsHandler);

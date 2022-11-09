@@ -72,10 +72,10 @@ export const getActivePaymentProvidersSettings = async () => {
   const settings = await getPublicSettings();
 
   const { data, error } = await getClient()
-    .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument)
+    .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, {})
     .toPromise();
 
-  console.log(data, error); // for deployment debug pusposes
+  console.log(data, error); // for deployment debug purposes
 
   if (error) {
     throw error;

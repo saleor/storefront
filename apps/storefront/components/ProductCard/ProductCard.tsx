@@ -1,5 +1,5 @@
 import { PhotographIcon } from "@heroicons/react/outline";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import React from "react";
 
@@ -32,7 +32,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <li key={product.id} className="w-full">
-      <Link href={paths.products._slug(product.slug).$url()} prefetch={false} passHref>
+      <Link
+        href={paths.products._slug(product.slug).$url()}
+        prefetch={false}
+        passHref
+        legacyBehavior
+      >
         <a href="pass">
           <div className="bg-main active:bg-brand w-full aspect-1">
             <div className="bg-white w-full h-full relative object-contain ">

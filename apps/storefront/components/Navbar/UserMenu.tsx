@@ -22,7 +22,7 @@ function UserMenu({ className, ...rest }: UserMenuProps) {
     <div className={clsx(styles["user-menu-container"], className)} {...rest}>
       <NavIconButton icon="user" aria-hidden="true" />
       <div className={styles["user-menu"]}>
-        <Link href={paths.account.preferences.$url()} passHref>
+        <Link href={paths.account.preferences.$url()} passHref legacyBehavior>
           <a tabIndex={0} className={styles["user-menu-item"]} href="pass">
             {t.formatMessage(messages.menuAccountPreferences)}
           </a>

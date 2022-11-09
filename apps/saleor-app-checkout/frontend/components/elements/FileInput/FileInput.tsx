@@ -1,6 +1,6 @@
 import { Typography } from "@material-ui/core";
 import { Button, DeleteIcon, IconButton, PlusIcon } from "@saleor/macaw-ui";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React, { useEffect, useRef } from "react";
 import { useStyles } from "./styles";
 import clsx from "clsx";

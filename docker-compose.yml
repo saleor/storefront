@@ -8,7 +8,6 @@ services:
       dockerfile: Dockerfile.base
       args:
         - SALEOR_API_URL=http://localhost:8000/graphql/ # handled by nginx
-        - STOREFRONT_URL=http://localhost:3000
         - CHECKOUT_APP_URL=http://localhost:3001
         - CHECKOUT_STOREFRONT_URL=http://localhost:3001/checkout-spa/
         - CLOUD_DEPLOYMENT_URL=

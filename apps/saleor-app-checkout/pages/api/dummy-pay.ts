@@ -1,21 +1,18 @@
-import { withSentry } from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
-import { DummyPayRequestBody } from "@/saleor-app-checkout/../../packages/checkout-common/dist";
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
 import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { TransactionCreateMutationVariables } from "@/saleor-app-checkout/graphql";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
 import * as yup from "yup";
 
-const dummyPayBodySchema: yup.ObjectSchema<Omit<DummyPayRequestBody, "checkoutApiUrl">> =
-  yup.object({
-    orderId: yup.string().required(),
-    amountCharged: yup.object({
-      amount: yup.number().required(),
-      currency: yup.string().required(),
-    }),
-  });
+const dummyPayBodySchema = yup.object({
+  orderId: yup.string().required(),
+  amountCharged: yup.object({
+    amount: yup.number().required(),
+    currency: yup.string().required(),
+  }),
+});
 
 const parseAndValidateBody = createParseAndValidateBody(dummyPayBodySchema);
 
@@ -44,4 +41,4 @@ const handler: NextApiHandler = async (req, res) => {
   res.status(200).send({ ok: true });
 };
 
-export default withSentry(allowCors(handler));
+export default allowCors(handler);

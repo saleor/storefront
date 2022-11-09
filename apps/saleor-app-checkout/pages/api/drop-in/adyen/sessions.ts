@@ -1,7 +1,7 @@
+import * as Sentry from "@sentry/nextjs";
 import { createAdyenCheckoutSession } from "@/saleor-app-checkout/backend/payments/providers/adyen";
 import { allowCors, getBaseUrl } from "@/saleor-app-checkout/backend/utils";
 import { createParseAndValidateBody } from "@/saleor-app-checkout/utils";
-import { withSentry } from "@sentry/nextjs";
 import { AdyenDropInCreateSessionResponse, postDropInAdyenSessionsBody } from "checkout-common";
 import { NextApiHandler } from "next";
 
@@ -33,9 +33,10 @@ const DropInAdyenSessionsHandler: NextApiHandler<
     return res.status(200).json({ session, clientKey });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
 
     return res.status(500).json({ message: body.provider });
   }
 };
 
-export default withSentry(allowCors(DropInAdyenSessionsHandler));
+export default allowCors(DropInAdyenSessionsHandler);

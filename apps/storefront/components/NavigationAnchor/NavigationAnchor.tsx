@@ -32,7 +32,7 @@ export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps)
   }
 
   return (
-    <Link href={getLinkPath(menuItem, slug, currentLocale)} passHref>
+    <Link href={getLinkPath(menuItem, slug, currentLocale)} passHref legacyBehavior>
       <a href="pass" className={className} data-testid={`categoriesList${menuItem.name}`}>
         {translate(menuItem, "name")}
       </a>

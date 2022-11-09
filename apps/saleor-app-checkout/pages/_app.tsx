@@ -23,8 +23,9 @@ export default function App(props: AppProps) {
   const { locale, messages } = useFormattedMessages();
 
   const version = [
-    process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || "",
-    process.env.NEXT_PUBLIC_SENTRY_RELEASE || "",
+    process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || "(unknown_env)",
+    process.env.NEXT_PUBLIC_GIT_BRANCH || "(unknown_branch)",
+    process.env.NEXT_PUBLIC_SENTRY_RELEASE || "(unknown_release)",
   ].join("-");
 
   useEffect(() => {

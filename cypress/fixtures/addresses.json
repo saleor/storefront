@@ -1,0 +1,30 @@
+{
+  "plAddress": {
+    "firstName": "Cypress",
+    "lastName": "Test",
+    "companyName": "Test3",
+    "streetAddress1": "Tęczowa",
+    "streetAddress2": "7/1",
+    "city": "Wrocław",
+    "postalCode": "53-601",
+    "country": "PL",
+    "countryArea": "Dolny Śląsk",
+    "phone": "123456787",
+    "currency": "PLN",
+    "countryFullName": "Poland"
+  },
+  "usAddress": {
+    "firstName": "Cypress",
+    "lastName": "Test",
+    "companyName": "Test2",
+    "streetAddress1": "Antonio Ridge",
+    "streetAddress2": "34930",
+    "city": "North Patrickfort",
+    "postalCode": "70957",
+    "country": "US",
+    "countryArea": "LA",
+    "phone": "+12025550189",
+    "currency": "USD",
+    "countryFullName": "United States of America"
+  }
+}
