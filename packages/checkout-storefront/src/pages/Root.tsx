@@ -18,7 +18,7 @@ export interface RootProps {
 }
 export const Root = ({ env }: RootProps) => {
   const authorizedFetch = useMemo(() => createFetch(), []);
-  const { locale, messages } = useLocale();
+  const { locale, messages, channel } = useLocale();
 
   const client = useMemo(
     () =>
@@ -37,9 +37,9 @@ export const Root = ({ env }: RootProps) => {
     () =>
       createSaleorClient({
         apiUrl: env.apiUrl,
-        channel: "default-channel",
+        channel,
       }),
-    [env.apiUrl]
+    [env.apiUrl, channel]
   );
 
   return (

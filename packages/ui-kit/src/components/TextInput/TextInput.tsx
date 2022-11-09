@@ -9,7 +9,7 @@ import styles from "./TextInput.module.css";
 
 export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "checked"> {
   label?: string;
-  error?: string;
+  error?: { message: string };
   classNames?: ClassNames<"container" | "input">;
 }
 
@@ -33,7 +33,7 @@ export const TextInput = forwardRef(
         className={clsx(
           styles["text-input"],
           {
-            [styles["text-input-error"]]: error,
+            [styles["text-input-error"]]: !!error,
             [styles["text-input-nolabel"]]: !label,
           },
           classNames.input
@@ -55,9 +55,9 @@ export const TextInput = forwardRef(
           {required && "*"}
         </Label>
       )}
-      {error && (
+      {error?.message && (
         <Text size="sm" color="error" className={styles["text-input-error-caption"]}>
-          {error}
+          {error?.message}
         </Text>
       )}
     </div>

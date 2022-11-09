@@ -1,7 +1,7 @@
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 
 export const autocompleteTags: Record<AddressField, string> = {
-  firstName: "name",
+  firstName: "given-name",
   lastName: "family-name",
   companyName: "organization",
   phone: "tel",

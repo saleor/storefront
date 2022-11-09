@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 
 import { Checkout, useCheckoutQuery } from "@/checkout-storefront/graphql";
-import { extractCheckoutIdFromUrl, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils/url";
 
 export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);

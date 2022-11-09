@@ -7,7 +7,7 @@ import {
   PostAdyenDropInPaymentsResponse,
 } from "checkout-common";
 import { PaymentResponse as AdyenApiPaymentResponse } from "@adyen/api-library/lib/src/typings/checkout/paymentResponse";
-import { replaceUrl } from "@/checkout-storefront/lib/utils/utils";
+import { replaceUrl } from "@/checkout-storefront/lib/utils/url";
 
 export type AdyenCheckoutInstanceOnSubmit = (
   state: {

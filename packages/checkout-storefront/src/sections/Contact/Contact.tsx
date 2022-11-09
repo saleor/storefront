@@ -1,4 +1,3 @@
-import { getQueryParams } from "@/checkout-storefront/lib/utils";
 import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
@@ -7,6 +6,7 @@ import { ResetPassword } from "./ResetPassword";
 import { GuestUserForm } from "./GuestUserForm";
 import { useAuthState } from "@saleor/sdk";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 

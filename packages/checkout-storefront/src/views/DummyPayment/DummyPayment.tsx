@@ -9,8 +9,9 @@ import { useAppConfig } from "../../providers/AppConfigProvider";
 import { toast } from "react-toastify";
 import { Text } from "@saleor/ui-kit";
 import { dummyPaymentMessages } from "./messages";
-import { getQueryParams, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 const getOrderConfirmationUrl = () => {
   const url = new URL(window.location.href);

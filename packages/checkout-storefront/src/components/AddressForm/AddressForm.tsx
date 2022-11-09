@@ -1,19 +1,19 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
-import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 import { Option, Select } from "@saleor/ui-kit";
 import { UseErrors, useFormattedMessages, useGetInputProps } from "@/checkout-storefront/hooks";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { Path, RegisterOptions, UseFormReturn } from "react-hook-form";
 import { FC, PropsWithChildren, useEffect, useMemo, useRef } from "react";
-import { difference, sortBy } from "lodash-es";
+import { difference, omit } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
-import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors";
-import { autocompleteTags, countries } from "@/checkout-storefront/lib/consts";
+import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
+import { autocompleteTags } from "@/checkout-storefront/lib/consts";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
-import { emptyFormData } from "@/checkout-storefront/lib/utils";
+import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
 import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
+import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
 
 interface CountryOption extends Option {
   value: CountryCode;
@@ -31,7 +31,6 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   errors,
   title,
   children,
-  checkAddressAvailability = false,
   formProps,
   defaultInputOptions = {},
 }) => {
@@ -43,23 +42,22 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     formState: { isDirty },
   } = formProps;
   const formData = watch();
+  const previousFormData = useRef(formData);
   const formatMessage = useFormattedMessages();
   const getInputProps = useGetInputProps(formProps, defaultInputOptions);
-  const { isAvailable } = useAddressAvailability({ pause: !checkAddressAvailability });
+  const { availableShippingCountries } = useAvailableShippingCountries();
 
   useSetFormErrors({ setError, errors });
 
   const countryOptions: CountryOption[] = useMemo(
     () =>
-      sortBy(
-        countries.map((code) => ({
+      availableShippingCountries
+        .sort((a, b) => a.localeCompare(b))
+        .map((code) => ({
           label: formatMessage(countriesMessages[code]),
           value: code,
-          disabled: !isAvailable({ country: { code } }),
         })),
-        "disabled"
-      ),
-    [formatMessage, isAvailable]
+    [formatMessage, availableShippingCountries]
   );
 
   const {
@@ -76,16 +74,27 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   // prevents outdated data to remain in the form when a field is
   // no longer allowed
   useEffect(() => {
+    const hasFormDataChanged = !isMatchingAddressFormData(formData, previousFormData.current);
+
+    if (!hasFormDataChanged) {
+      return;
+    }
+
+    previousFormData.current = formData;
+
     const removedFields = difference(allowedFieldsRef.current, allowedFields);
 
     removedFields.forEach((field) => {
       setValue(field as Path<AddressFormData>, emptyFormData[field as Path<AddressFormData>]);
     });
 
-    if (removedFields.length && isDirty) {
+    const isFormDirty =
+      isDirty && Object.values(omit(formData, ["countryCode", "id"])).some((value) => !!value);
+
+    if (removedFields.length && isFormDirty) {
       void trigger();
     }
-  }, [allowedFields, requiredFields, setValue, trigger, isDirty]);
+  }, [allowedFields, requiredFields, setValue, trigger, isDirty, formData]);
 
   return (
     <form>
