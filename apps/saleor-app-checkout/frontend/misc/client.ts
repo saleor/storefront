@@ -50,7 +50,7 @@ const addAuthToOperation = ({
 const willAuthError = ({ authState }: { authState?: AuthState | null }) => !authState?.token;
 
 export const createGraphqlClient = (apiUrl: string) => {
-  console.log({ apiUrl });
+  console.info(`Using API_URL: ${apiUrl}`);
   return createClient({
     exchanges: [
       dedupExchange,
