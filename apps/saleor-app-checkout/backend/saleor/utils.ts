@@ -13,8 +13,6 @@ export async function isValidSaleorRequest({
   bodyBuffer: Buffer;
   signature: string;
 }): Promise<boolean> {
-  // TODO: Use JWS (JSON Web Signature) when implemented in core
-  // PR: https://github.com/saleor/saleor/pull/10080
 
   const origin = new URL(saleorApiUrl).origin;
   const JWKS = jose.createRemoteJWKSet(new URL(`${origin}/.well-known/jwks.json`));
