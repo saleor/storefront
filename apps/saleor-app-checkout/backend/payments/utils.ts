@@ -5,6 +5,7 @@ import {
 } from "@/saleor-app-checkout/graphql";
 import currency from "currency.js";
 import { ADYEN_PAYMENT_PREFIX } from "./providers/adyen";
+import { DUMMY_PAYMENT_TYPE } from "./providers/dummy/refunds";
 import { MOLLIE_PAYMENT_PREFIX } from "./providers/mollie";
 
 export const formatRedirectUrl = (redirectUrl: string, orderId: string) => {
@@ -85,6 +86,11 @@ export const isMollieTransaction = (transaction: TransactionWithType) => {
 export const isAdyenTransaction = (transaction: TransactionWithType) => {
   return transaction.type.includes(ADYEN_PAYMENT_PREFIX);
 };
+
+export const isDummyTransaction = (transaction: TransactionWithType) => {
+  return transaction.type.includes(DUMMY_PAYMENT_TYPE);
+};
+
 // Some payment methods expect the amount to be in cents (integers)
 // Saleor provides and expects the amount to be in dollars (decimal format / floats)
 export const getIntegerAmountFromSaleor = (dollars: number) =>
