@@ -27,14 +27,14 @@ const mockedFailResponse = {
 describe("isRequiredField", () => {
   it("should return true for required field", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry), {
-      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse, intl: true }),
+      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse }),
     });
     expect(hook.current.isRequiredField("city")).toEqual(true);
   });
 
   it("should return false for not required field", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry), {
-      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse, intl: true }),
+      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse }),
     });
 
     expect(hook.current.isRequiredField("companyName")).toEqual(false);
@@ -42,7 +42,7 @@ describe("isRequiredField", () => {
 
   it("should return false for failed validation rules query", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry), {
-      wrapper: getMockProviders({ mockedResponseState: mockedFailResponse, intl: true }),
+      wrapper: getMockProviders({ mockedResponseState: mockedFailResponse }),
     });
 
     expect(hook.current.isRequiredField("companyName")).toEqual(false);
@@ -52,7 +52,7 @@ describe("isRequiredField", () => {
 describe("getFieldLabel", () => {
   it("should return localized field label when available", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry), {
-      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse, intl: true }),
+      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse }),
     });
 
     expect(hook.current.getFieldLabel("countryArea")).toEqual("Province");
@@ -60,7 +60,7 @@ describe("getFieldLabel", () => {
 
   it("should return unlocalized field label when otherwise unavailable", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry), {
-      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse, intl: true }),
+      wrapper: getMockProviders({ mockedResponseState: mockedSuccessResponse }),
     });
 
     expect(hook.current.getFieldLabel("companyName")).toEqual("Company");
@@ -68,7 +68,7 @@ describe("getFieldLabel", () => {
 
   it("should return unlocalized field label for failed validation rules query", () => {
     const { result: hook } = renderHook(() => useAddressFormUtils(defaultCountry), {
-      wrapper: getMockProviders({ mockedResponseState: mockedFailResponse, intl: true }),
+      wrapper: getMockProviders({ mockedResponseState: mockedFailResponse }),
     });
     expect(hook.current.getFieldLabel("countryArea")).toEqual("Country area");
   });
