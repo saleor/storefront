@@ -8,6 +8,7 @@ import { useIntl } from "react-intl";
 import { notFoundMessages } from "@/saleor-app-checkout/frontend/misc/errorMessages";
 import { useGetPaymentProviderSettings } from "@/saleor-app-checkout/frontend/hooks/useGetPaymentProviderSettings";
 import { useSetPaymentProviderSettings } from "@/saleor-app-checkout/frontend/hooks/useSetPaymentProviderSettings";
+import { app } from "@/saleor-app-checkout/frontend/misc/app";
 
 const PaymentProvider = () => {
   const router = useRouter();
@@ -20,6 +21,13 @@ const PaymentProvider = () => {
 
   const paymentProviders = usePaymentProviderSettings(getPaymentProviderSettings.data);
 
+  const domain = app?.getState().domain;
+  if (!domain) {
+    console.error(`Missing domain!`);
+    return null;
+  }
+  const saleorApiUrl = `https://${domain}/graphql/`;
+
   const paymentProvider = paymentProviders.find(
     (paymentMethod) => paymentMethod.id === paymentProviderId
   );
@@ -29,7 +37,7 @@ const PaymentProvider = () => {
   };
 
   const handleSubmit = (data: PaymentProviderSettingsValues<"unencrypted">) => {
-    void setPaymentProviderSettingsRequest(data);
+    void setPaymentProviderSettingsRequest({ ...data, saleorApiUrl });
   };
 
   const errors = [

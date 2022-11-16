@@ -1,50 +1,12 @@
-import fs from "fs";
-import { envVars, serverEnvVars } from "../constants";
 import { AppDocument, AppQuery, AppQueryVariables } from "../graphql";
-import { getClient } from "./client";
+import { getClientForAuthData } from "./saleorGraphqlClient";
+import * as Apl from "@/saleor-app-checkout/config/apl";
 
-const maskToken = (token: string) => "*".repeat(Math.max(token.length - 4, 0)) + token.slice(-4);
+export const getAppId = async (saleorApiUrl: string) => {
+  const authData = await Apl.get(saleorApiUrl);
+  const client = getClientForAuthData(authData);
 
-export const getAuthToken = () => {
-  let token;
-
-  if (serverEnvVars.appToken) {
-    token = serverEnvVars.appToken;
-  }
-
-  if (!token && process.env.VERCEL !== "1" && fs.existsSync(".auth_token")) {
-    token = fs.readFileSync(".auth_token", "utf-8").trim();
-  }
-
-  if (!token) {
-    if (process.env.VERCEL) {
-      console.warn(
-        "⚠️ Warning! Auth token is empty. Make sure SALEOR_APP_TOKEN env variable is set"
-      );
-    } else {
-      console.warn(
-        "⚠️ Warning! Auth token is not set. Make sure the app is installed in Saleor or set SALEOR_APP_TOKEN environment variable"
-      );
-    }
-    token = "";
-  }
-
-  return token;
-};
-
-export const setAuthToken = (token: string) => {
-  if (process.env.VERCEL === "1") {
-    console.warn(
-      "App was installed in Saleor, please update SALEOR_APP_TOKEN environment variables in Vercel"
-    );
-  } else {
-    console.log("Setting authToken: ", maskToken(token));
-    fs.writeFileSync(".auth_token", token);
-  }
-};
-
-export const getAppId = async () => {
-  const { data, error } = await getClient()
+  const { data, error } = await client
     .query<AppQuery, AppQueryVariables>(AppDocument, {})
     .toPromise();
   if (error) {
@@ -57,9 +19,4 @@ export const getAppId = async () => {
   }
 
   return id;
-};
-
-export const getAppDomain = () => {
-  const url = new URL(envVars.apiUrl);
-  return url.host;
 };

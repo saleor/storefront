@@ -2,7 +2,8 @@ import * as Sentry from "@sentry/nextjs";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
 import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
 import { NextApiHandler } from "next";
-import { envVars } from "@/saleor-app-checkout/constants";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const handler: NextApiHandler = async (req, res) => {
   // const tokenData = getTokenDataFromRequest(req);
@@ -12,10 +13,15 @@ const handler: NextApiHandler = async (req, res) => {
   // }
   // const apiUrl = `https://${tokenDomain}/graphql/`;
 
-  const apiUrl = envVars.apiUrl;
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
+
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
+    return;
+  }
 
   try {
-    const settings = await getPrivateSettings(apiUrl, true);
+    const settings = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: true });
 
     res.status(200).json({
       data: settings.paymentProviders,

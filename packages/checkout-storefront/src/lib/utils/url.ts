@@ -1,5 +1,4 @@
 import { DEFAULT_CHANNEL, DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
-import { isOrderConfirmationPage } from "./utils";
 import queryString from "query-string";
 import { CountryCode } from "@/checkout-storefront/graphql";
 
@@ -14,6 +13,7 @@ const queryParamsMap = {
   order: "orderId",
   token: "passwordResetToken",
   email: "passwordResetEmail",
+  saleorApiUrl: "saleorApiUrl",
 } as const;
 
 type UnmappedQueryParam = keyof typeof queryParamsMap;
@@ -71,7 +71,7 @@ export const clearQueryParams = (...keys: QueryParam[]) => {
   replaceUrl({ query });
 };
 
-export const replaceUrl = ({
+export const getUrl = ({
   url = window.location.toString(),
   query,
   replaceWholeQuery = false,
@@ -82,6 +82,19 @@ export const replaceUrl = ({
 }) => {
   const newQuery = replaceWholeQuery ? query : { ...getRawQueryParams(), ...query };
   const newUrl = queryString.stringifyUrl({ url, query: newQuery });
+  return { newUrl, newQuery };
+};
+
+export const replaceUrl = ({
+  url = window.location.toString(),
+  query,
+  replaceWholeQuery = false,
+}: {
+  url?: string;
+  query?: Record<string, any>;
+  replaceWholeQuery?: boolean;
+}) => {
+  const { newUrl, newQuery } = getUrl({ url, query, replaceWholeQuery });
 
   window.history.pushState(
     {
@@ -109,4 +122,9 @@ export const extractCheckoutIdFromUrl = (): string => {
   }
 
   return checkoutId;
+};
+
+export const isOrderConfirmationPage = () => {
+  const { orderId } = getQueryParams();
+  return typeof orderId === "string";
 };

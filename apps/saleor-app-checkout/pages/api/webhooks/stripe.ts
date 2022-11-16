@@ -2,13 +2,14 @@ import * as Sentry from "@sentry/nextjs";
 import { NextApiHandler } from "next";
 
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
-import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { unpackPromise, unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 import { getStripeSecrets } from "@/saleor-app-checkout/backend/payments/providers/stripe/stripeClient";
 import {
   verifyStripeEventSignature,
   stripeWebhookEventToTransactionCreateMutationVariables,
 } from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
 import type { Readable } from "node:stream";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 
 // https://github.com/vercel/next.js/discussions/12517#discussioncomment-2929922
 async function buffer(readable: Readable) {
@@ -20,7 +21,14 @@ async function buffer(readable: Readable) {
 }
 
 const stripeWebhook: NextApiHandler = async (req, res) => {
-  const { webhookSecret } = await getStripeSecrets();
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
+
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
+    return;
+  }
+
+  const { webhookSecret } = await getStripeSecrets(saleorApiUrl);
   const sig = req.headers["stripe-signature"];
 
   if (typeof sig !== "string") {
@@ -29,7 +37,9 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
 
   const body = await buffer(req);
 
-  const [err, event] = await unpackPromise(verifyStripeEventSignature(body, sig, webhookSecret));
+  const [err, event] = await unpackPromise(
+    verifyStripeEventSignature({ saleorApiUrl, body, signature: sig, secret: webhookSecret })
+  );
 
   if (err || !event) {
     console.error(err);
@@ -37,11 +47,18 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
     return res.status(500).json({ message: err?.message });
   }
 
-  const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables(event);
+  const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables({
+    saleorApiUrl,
+    event,
+  });
 
   if (transactionData?.id) {
     const id = transactionData.id;
-    await updateOrCreateTransaction(id, { ...transactionData, id });
+    await updateOrCreateTransaction({
+      saleorApiUrl,
+      orderId: id,
+      transactionData: { ...transactionData, id },
+    });
   }
 
   return res.status(204).end();

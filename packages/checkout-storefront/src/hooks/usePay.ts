@@ -1,11 +1,11 @@
 import { pay as payRequest, PaySuccessResult } from "@/checkout-storefront/fetch";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
-import { replaceUrl } from "@/checkout-storefront/lib/utils/url";
+import { getQueryParams, replaceUrl } from "@/checkout-storefront/lib/utils/url";
 import { OrderBody, CheckoutBody } from "checkout-common";
 import { useCallback } from "react";
 import { useAppConfig } from "../providers/AppConfigProvider";
 
-const getRedirectUrl = () => {
+const getRedirectUrl = (saleorApiUrl: string) => {
   const url = new URL(window.location.href);
   const redirectUrl = url.searchParams.get("redirectUrl");
 
@@ -14,7 +14,8 @@ const getRedirectUrl = () => {
     return redirectUrl;
   }
 
-  // return existing url without any search params
+  url.searchParams.set("saleorApiUrl", saleorApiUrl);
+  // return existing url without any other search params
   return location.origin + location.pathname;
 };
 
@@ -22,12 +23,14 @@ export const usePay = () => {
   const [{ loading, error, data }, pay] = useFetch(payRequest, { skip: true });
   const {
     env: { checkoutApiUrl },
+    saleorApiUrl,
   } = useAppConfig();
 
   const checkoutPay = useCallback(
     async ({ provider, method, checkoutId, totalAmount }: Omit<CheckoutBody, "redirectUrl">) => {
-      const redirectUrl = getRedirectUrl();
+      const redirectUrl = getRedirectUrl(saleorApiUrl);
       const result = await pay({
+        saleorApiUrl,
         checkoutApiUrl,
         provider,
         method,
@@ -40,21 +43,41 @@ export const usePay = () => {
           orderId,
           data: { paymentUrl },
         } = result as PaySuccessResult;
+        const domain = new URL(saleorApiUrl).hostname;
         replaceUrl({
-          query: { checkout: undefined, order: orderId },
+          query: {
+            locale: getQueryParams().locale,
+            checkout: undefined,
+            order: orderId,
+            saleorApiUrl,
+            // @todo remove `domain`
+            // https://github.com/saleor/saleor-dashboard/issues/2387
+            // https://github.com/saleor/saleor-app-sdk/issues/87
+            domain,
+          },
         });
         window.location.href = paymentUrl;
       }
       if (!result?.ok && result?.orderId) {
         // Order created, payment creation failed, checkout doesn't exist
+        const domain = new URL(saleorApiUrl).hostname;
         const newUrl = replaceUrl({
-          query: { checkout: undefined, order: result?.orderId },
+          query: {
+            locale: getQueryParams().locale,
+            checkout: undefined,
+            order: result?.orderId,
+            saleorApiUrl,
+            // @todo remove `domain`
+            // https://github.com/saleor/saleor-dashboard/issues/2387
+            // https://github.com/saleor/saleor-app-sdk/issues/87
+            domain,
+          },
         });
         window.location.href = newUrl;
       }
       return result;
     },
-    [checkoutApiUrl, pay]
+    [checkoutApiUrl, pay, saleorApiUrl]
   );
 
   const orderPay = async ({
@@ -62,8 +85,9 @@ export const usePay = () => {
     orderId,
     method,
   }: Omit<OrderBody, "redirectUrl" | "checkoutApiUrl">) => {
-    const redirectUrl = getRedirectUrl();
+    const redirectUrl = getRedirectUrl(saleorApiUrl);
     const result = await pay({
+      saleorApiUrl,
       checkoutApiUrl,
       provider,
       method,

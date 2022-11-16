@@ -1,5 +1,4 @@
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 import {
   OrderFragment,
   TransactionActionEnum,
@@ -40,12 +39,12 @@ export const mapAvailableActions = (
   });
 };
 
-export const getAdyenClient = async () => {
+export const getAdyenClient = async (saleorApiUrl: string) => {
   const {
     paymentProviders: {
       adyen: { apiKey, merchantAccount, clientKey, ...restAdyenSettings },
     },
-  } = await getPrivateSettings(envVars.apiUrl, false);
+  } = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: false });
 
   invariant(apiKey, "API key not defined");
   invariant(merchantAccount, "Missing merchant account configuration");

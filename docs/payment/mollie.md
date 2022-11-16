@@ -11,7 +11,8 @@ In this guide we'll setup [Mollie](https://www.mollie.com/en) payment gateway wi
 ![Getting to payment providers settings in Mollie dashboard](../screenshots/setup-mollie-1.png)
 ![At least one payment method is enabled on Payment methods page](../screenshots/setup-mollie-2.png)
 
-> Note: Don't worry about "You need to complete the boarding before this payment method can be activated." message if you only want to test. Enabled payment methods will still work in test mode, even without completing verification of your Mollie account
+> **Note**<br/>
+> Don't worry about "You need to complete the boarding before this payment method can be activated." message if you only want to test. Enabled payment methods will still work in test mode, even without completing verification of your Mollie account
 
 3. In your Mollie dashboard, select: Developers > API keys and copy **API key** and **Profile ID**
 

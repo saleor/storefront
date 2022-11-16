@@ -8,9 +8,23 @@ import { ADYEN_PAYMENT_PREFIX } from "./providers/adyen";
 import { DUMMY_PAYMENT_TYPE } from "./providers/dummy/refunds";
 import { MOLLIE_PAYMENT_PREFIX } from "./providers/mollie";
 
-export const formatRedirectUrl = (redirectUrl: string, orderId: string) => {
+export const formatRedirectUrl = ({
+  saleorApiUrl,
+  redirectUrl,
+  orderId,
+}: {
+  saleorApiUrl: string;
+  redirectUrl: string;
+  orderId: string;
+}) => {
   const url = new URL(redirectUrl);
   url.searchParams.set("order", orderId);
+  url.searchParams.set("saleorApiUrl", saleorApiUrl);
+  const domain = url.hostname;
+  // @todo remove `domain`
+  // https://github.com/saleor/saleor-dashboard/issues/2387
+  // https://github.com/saleor/saleor-app-sdk/issues/87
+  url.searchParams.set("domain", domain);
 
   return url.toString();
 };

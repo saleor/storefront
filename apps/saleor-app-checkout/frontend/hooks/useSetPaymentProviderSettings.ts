@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CombinedError } from "urql";
 import { requestSetPaymentProviderSettings } from "../fetch";
+import { app } from "../misc/app";
 import { useFetch, UseFetchOptionalProps } from "./useFetch";
 import { usePrivateSettings } from "./usePrivateSettings";
 
@@ -9,9 +10,19 @@ export const useSetPaymentProviderSettings = <TArgs>(
 ) => {
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
+  const domain = app?.getState().domain;
+  if (!domain) {
+    console.error(`Missing domain!`);
+  }
+  const saleorApiUrl = domain ? `https://${domain}/graphql/` : "";
+
   const [{ data, loading, error }, request] = useFetch(requestSetPaymentProviderSettings, {
     skip: true,
     ...optionalProps,
+    args: {
+      ...optionalProps?.args,
+      saleorApiUrl,
+    },
   });
 
   useEffect(() => {

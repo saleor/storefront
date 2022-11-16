@@ -28,7 +28,8 @@ pnpm dlx turbo link
 
 Start by [creating new project](https://vercel.com/docs/concepts/projects/overview#creating-a-project) on Vercel and select your forked GitHub repo
 
-> Note: Vercel doesn't support importing the entire monorepo at the moment, you will need to set up a project yourself for each app inside `/apps` folder
+> **Note**<br/>
+> Vercel doesn't support importing the entire monorepo at the moment, you will need to set up a project yourself for each app inside `/apps` folder
 
 ![Create project on Vercel by selecting your cloned GitHub repository in the menu](./screenshots/setup-vercel-1.png)
 
@@ -48,17 +49,21 @@ cd ../.. && pnpm run build:saleor-app-checkout
 - Add environment variables:
   - `ENABLE_EXPERIMENTAL_COREPACK` with value `1` – this enables the [Corepack](https://vercel.com/docs/concepts/deployments/configure-a-build#corepack) support and is required for the proper pnpm version to be used in Vercel
   - `SETTINGS_ENCRYPTION_SECRET` — Random string used for encrypting apps configuration (you can generate it using `openssl rand -hex 256`)
-  - _Optional_: `NEXT_PUBLIC_SALEOR_API_URL` — if you want to override the value of `SALEOR_API_URL` stored inside `.env` file in the root of the repository
+  - `NEXT_PUBLIC_SALEOR_API_URL` - URL to your Saleor GraphQL API
+  - `SALEOR_APP_TOKEN` - Saleor App token, see below for instructions on how to generate it
+  - `APL=vercel` - this is required for the single-tenant deployment to Vercel
 
 Here's the final result on configuration page:
 
+<!-- @todo -->
+
 ![Vercel "Configure project" page with all settings filled out](./screenshots/setup-vercel-2.png)
 
-Click deploy and wait until the app is deployed
+Click deploy and wait until the app is deployed.
 
 ### 3. Update environment variables in repository
 
-Update `CHECKOUT_APP_URL` in `.env` file located at the root of monorepo to be your deployment URL
+Update `CHECKOUT_APP_URL` in `.env` file located at the root of monorepo to be your deployment URL.
 
 Example:
 
@@ -112,7 +117,7 @@ saleor app install
 
 ### 5. Generate app token
 
-After the app was installed, generate it's `authToken`
+After the app was installed, generate its app token by using:
 
 - [Saleor CLI](https://github.com/saleor/saleor-cli)
 
@@ -170,22 +175,27 @@ You have to add additional environment variables for Checkout App in Vercel:
 
 - `SALEOR_APP_TOKEN` — Token you've just generated
 
+> **Warning**<br/>
 > 🚨 These values are secrets — don't store them inside your git repository
 
-Make sure that you also have "Automatically expose System Environment Variables" **selected** ✅
+> **Note**<br/>
+> Make sure that you also have "Automatically expose System Environment Variables" **selected** ✅
+
+<!-- @todo -->
 
 Here's how the configuration should look like in the end:
 ![Vercel env variable final configuration](./screenshots/setup-vercel-3.png)
 
 After you're done, re-deploy the app
 
-> ⚠️ Make sure that you **didn't** select the "Redeploy with existing Build Cache." option
+> **Note**<br/>
+> ⚠️ Make sure that you **don't** select the "Redeploy with existing Build Cache." option
 
 7. 🥳 Congrats! saleor-app-checkout is now ready to be used!
 
 ## Checkout SPA
 
-Checkout SPA (user-facing interface for Checkout) is available on the same URL as the saleor-app-checkout under the `/checkout-spa` path.
+Checkout SPA (user-facing interface for Checkout) is available on the same URL as the saleor-app-checkout under the `/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_API_URL>` path.
 
 ## Deploying Storefront SPA
 

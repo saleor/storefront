@@ -1,21 +1,12 @@
-import { envVars } from "@/saleor-app-checkout/constants";
 import { authExchange } from "@urql/exchange-auth";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
-import {
-  createClient,
-  makeOperation,
-  cacheExchange,
-  ClientOptions,
-  dedupExchange,
-  Operation,
-} from "urql";
+import { createClient, makeOperation, cacheExchange, dedupExchange, Operation } from "urql";
 import { app } from "./app";
 
 interface AuthState {
   token: string;
 }
 
-// eslint-disable-next-line require-await
 const getAuth = async ({ authState }: { authState?: AuthState | null }) => {
   if (!authState) {
     const token = app?.getState().token;
@@ -58,18 +49,19 @@ const addAuthToOperation = ({
 
 const willAuthError = ({ authState }: { authState?: AuthState | null }) => !authState?.token;
 
-const authConfig: ClientOptions = {
-  url: envVars.apiUrl,
-  exchanges: [
-    dedupExchange,
-    cacheExchange,
-    authExchange({
-      getAuth,
-      willAuthError,
-      addAuthToOperation,
-    }),
-    multipartFetchExchange,
-  ],
+export const createGraphqlClient = (apiUrl: string) => {
+  console.info(`Using API_URL: ${apiUrl}`);
+  return createClient({
+    exchanges: [
+      dedupExchange,
+      cacheExchange,
+      authExchange({
+        getAuth,
+        willAuthError,
+        addAuthToOperation,
+      }),
+      multipartFetchExchange,
+    ],
+    url: apiUrl,
+  });
 };
-
-export const client = createClient(authConfig);

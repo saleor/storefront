@@ -11,7 +11,7 @@ import {
 import { getOrderTransactions } from "@/saleor-app-checkout/backend/payments/getOrderTransactions";
 import { updateTransaction } from "@/saleor-app-checkout/backend/payments/updateTransaction";
 import { toNextHandler } from "retes/adapter";
-import { Handler } from "retes";
+import { Handler, Middleware } from "retes";
 import { Response } from "retes/response";
 import {
   AdyenRequestContext,
@@ -21,16 +21,19 @@ import {
   isAdyenWebhookHmacValid,
   withAdyenWebhookCredentials,
 } from "@/saleor-app-checkout/backend/payments/providers/adyen/middlewares";
-import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
+import { unpackPromise } from "@/saleor-app-checkout/utils/unpackErrors";
 import { getOrderIdFromNotification } from "@/saleor-app-checkout/backend/payments/providers/adyen/getOrderIdFromNotification";
 
-const handler: Handler = async (req) => {
-  const { apiKey } = req.context as AdyenRequestContext;
-  const params = req.params as AdyenRequestParams;
+const handler: Handler<AdyenRequestParams> = async (request) => {
+  const { apiKey } = request.context as AdyenRequestContext;
 
-  const notificationItem = params?.notificationItems?.[0]?.NotificationRequestItem;
+  const notificationItem = request.params?.notificationItems?.[0]?.NotificationRequestItem;
 
-  const [error] = await unpackPromise(notificationHandler(notificationItem, apiKey));
+  const saleorApiUrl = request.params.saleorApiUrl;
+
+  const [error] = await unpackPromise(
+    notificationHandler({ saleorApiUrl, notification: notificationItem, apiKey })
+  );
 
   if (error) {
     console.warn("Error while saving Adyen notification");
@@ -41,17 +44,22 @@ const handler: Handler = async (req) => {
 };
 
 export default toNextHandler([
-  withAdyenWebhookCredentials,
+  withAdyenWebhookCredentials as Middleware,
   isAdyenWebhookAuthenticated,
   isAdyenNotification,
   isAdyenWebhookHmacValid,
-  handler,
+  handler as Handler,
 ]);
 
-async function notificationHandler(
-  notification: Types.notification.NotificationRequestItem,
-  apiKey: string
-) {
+async function notificationHandler({
+  saleorApiUrl,
+  notification,
+  apiKey,
+}: {
+  saleorApiUrl: string;
+  notification: Types.notification.NotificationRequestItem;
+  apiKey: string;
+}) {
   // Get order id from webhook metadata
   const orderId = await getOrderIdFromNotification(notification, apiKey);
 
@@ -62,7 +70,7 @@ async function notificationHandler(
 
   // Get order transactions and run deduplication
   // https://docs.adyen.com/development-resources/webhooks/best-practices#handling-duplicates
-  const transactions = await getOrderTransactions({ id: orderId });
+  const transactions = await getOrderTransactions(saleorApiUrl, { id: orderId });
   const duplicate = isNotificationDuplicate(transactions, notification);
 
   if (duplicate) {
@@ -82,7 +90,7 @@ async function notificationHandler(
 
     const data = getUpdatedTransactionData(transaction, notification);
 
-    await updateTransaction(data);
+    await updateTransaction(saleorApiUrl, data);
   } else {
     const data = getNewTransactionData(orderId, notification);
 
@@ -90,6 +98,6 @@ async function notificationHandler(
       return;
     }
 
-    await createTransaction(data);
+    await createTransaction(saleorApiUrl, data);
   }
 }

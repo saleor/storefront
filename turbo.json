@@ -11,6 +11,7 @@
         "content/compiled-locales/**"
       ],
       "env": [
+        "APL",
         "BROWSER",
         "CHECKOUT_APP_URL",
         "CHECKOUT_STOREFRONT_URL",
@@ -23,7 +24,6 @@
         "NEXT_PUBLIC_DEMO_MODE",
         "NEXT_PUBLIC_GEOLOCATION",
         "NEXT_PUBLIC_HOMEPAGE_MENU",
-        "NEXT_PUBLIC_SALEOR_API_URL",
         "NEXT_PUBLIC_SENTRY_DSN",
         "NEXT_PUBLIC_SENTRY_ENVIRONMENT",
         "NEXT_PUBLIC_SENTRY_RELEASE",
@@ -31,7 +31,6 @@
         "NEXT_PUBLIC_VERCEL_URL",
         "PORT",
         "REACT_APP_CHECKOUT_APP_URL",
-        "REACT_APP_SALEOR_API_URL",
         "SALEOR_API_URL",
         "SALEOR_APP_TOKEN",
         "SENTRY_DSN",
@@ -49,7 +48,9 @@
         "TEST_MOLLIE_PROFILE_ID",
         "TEST_STRIPE_PUBLISHABLE_KEY",
         "TEST_STRIPE_SECRET_KEY",
-        "TEST_STRIPE_WEBHOOK_SECRET"
+        "TEST_STRIPE_WEBHOOK_SECRET",
+        "UPSTASH_REDIS_REST_TOKEN",
+        "UPSTASH_REDIS_REST_URL"
       ]
     },
     "lint": {
