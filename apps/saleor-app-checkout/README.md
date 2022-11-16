@@ -22,7 +22,7 @@
 
 ### Prerequisites
 
-Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo - add `NEXT_PUBLIC_SALEOR_API_URL` env variable in `apps/saleor-app-checkout/.env.local` file with URL to your Saleor GraphQL API endpoint.
+Make sure you've set `SALEOR_API_URL` in the root of the monorepo to your Saleor instance. You can also use other Saleor instance than the one defined in `.env` in root of monorepo.
 
 ### Development
 
@@ -42,21 +42,33 @@ npx saleor app tunnel 3001
 
 where `3001` is the port on which `saleor-app-checkout` runs by default. Alternative ways of creating a tunnel are described [here](#alternatives-to-saleor-app-tunnel).
 
-> Note: The tunnel needs to be running in the background. Please don't kill it during the development.
+> **Note**<br/>
+> Argument `--force-install` is required only the first time you run the command in order to install the application inside Saleor Dashboard and save the token.
 
-After the CLI installs the app for you, you need to make sure the requests to your Saleor instance are authenticated. To do that, please generate the auth token with the command:
+Open the app by using the tunnel URL received from `saleor app tunnel` (example: `https://saleor-app-checkout-xyz-my-org.saleor.live`) in your browser to see the result.
+
+> **Warning**<br/>
+> The tunnel needs to be running in the background. Please don't kill it during the development.
+
+> **Note**<br />
+> Tunnel might break if you change your Internet connection. If you can't access the app from tunnel please restart it
+
+#### Alternative way to obtain the token
+
+Token can also be generated using the CLI command:
 
 ```bash
 npx saleor app token
 ```
 
-Next, please copy the generated token, and paste it into the newly created `.auth_token` file:
+Now, create an empty JSON file named `.saleor-app-auth.json` and paste the token there. The file should look like this:
 
-```bash
-touch .auth_token
+```json
+{
+  "token": "(your application's auth token)",
+  "domain": "(your Saleor GraphQL API URL)"
+}
 ```
-
-Open the app by using the tunnel URL received from `saleor app tunnel` (example: `https://saleor-app-checkout-xyz-my-org.saleor.live`) in your browser to see the result.
 
 ### Production
 
@@ -66,7 +78,8 @@ To build for production, run the following command:
 cd ../.. && pnpm run build:saleor-app-checkout
 ```
 
-> Note: The command needs to be run from root of the monorepo. Otherwise Turborepo won't be able to build the app
+> **Note**<br/>
+> The command needs to be run from root of the monorepo. Otherwise Turborepo won't be able to build the app
 
 The deployed app needs to have auth token set manually by an environment variable. Install the app in Saleor and use Saleor CLI to generate the token:
 
@@ -109,17 +122,14 @@ openssl rand -hex 256
 
 - `DEBUG_APP_URL` - URL to the deployed checkout app. Used when running app locally and tunneling requests by using `saleor tunnel`
 
-> Warning: This variable should be used for local development only! It will be ignored in production deployment.
+> **Warning**<br/>
+> This variable should be used for local development only! It will be ignored in production deployment.
 >
 > In production this URL is taken from `Host` header in each request
 
 ### Frontend variables
 
 Each variable starting with [`NEXT_PUBLIC`](https://nextjs.org/docs/basic-features/environment-variables#exposing-environment-variables-to-the-browser) is exposed to frontend
-
-- `NEXT_PUBLIC_SALEOR_API_URL` — URL of your Saleor GraphQL API
-
-> Note: by default `SALEOR_API_URL` env variable from root of monorepo is used for the value. If you want to customise it, you can add a separate `.env.local` file, which won't be stored in git repository
 
 ## Testing
 
@@ -155,11 +165,12 @@ Mocks for msw are located in `mocks/handlers`
 
 ## Checkout Storefront
 
-Checkout Storefront is available at [/checkout-spa](../saleor-app-checkout/pages/checkout-spa.tsx).
+Checkout Storefront is available at [/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_API_URL>](../saleor-app-checkout/pages/checkout-spa.tsx).
 
 You'll need a token to use the checkout. A new checkout session can be generated either in your storefront or in the GraphQL Playground. You could use a preexisting checkout as well.
 
-> ⚠️ Note that if a given checkout has customer already attached, it'll become private, and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
+> **Warning**<br/>
+> If a given checkout has customer already attached, it'll become private, and **you won't be able to fetch its data from the api** without the same customer being logged in your current browser. Checkout uses [Saleor SDK](https://github.com/saleor/saleor-sdk) for authentication.
 
 To generate checkout in GraphQL API and retrieve its `id`:
 
@@ -168,7 +179,7 @@ mutation {
   checkoutCreate(
     input: {
       channel: "default-channel"
-      lines: [{ variantId: "UHJvZHVjdFZhcmlhbnQ6MjAz", quantity: 1 }]
+      lines: [{ variantId: "UHJvZHVjdFZhcmlhbnQ6MjE0", quantity: 1 }]
     }
   ) {
     checkout {
@@ -180,7 +191,7 @@ mutation {
 
 Learn more about creating checkout sessions in [Saleor docs](https://docs.saleor.io/docs/3.x/developer/checkout#creating-a-checkout-session)
 
-Open [localhost:3001/checkout-spa/?checkout=<ID>](http://localhost:3001/checkout-spa/?checkout=) in your browser and add your token to the URL.
+Copy `http://localhost:3001/checkout-spa/?saleorApiUrl=<YOUR_SALEOR_API_URL>&checkout=<TOKEN>`, replace `YOUR_SALEOR_API_URL` with a URL to Saleor GraphQL endpoint, `TOKEN` with the token of your checkout session and opne it in your browser.
 
 ### More info
 

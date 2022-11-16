@@ -1,4 +1,5 @@
-import { getClient } from "@/saleor-app-checkout/backend/client";
+import { getClientForAuthData } from "@/saleor-app-checkout/backend/saleorGraphqlClient";
+import * as Apl from "@/saleor-app-checkout/config/apl";
 import {
   OrderDetailsQuery,
   OrderDetailsQueryVariables,
@@ -8,17 +9,22 @@ import {
 
 import { Errors } from "./types";
 
-export const getOrderDetails = async (
-  id: OrderDetailsQueryVariables["id"]
-): Promise<
+type GetOrderDetailsResult =
   | {
       data: OrderFragment;
     }
   | {
       errors: Errors;
-    }
-> => {
-  const { data, error } = await getClient()
+    };
+
+export const getOrderDetails = async (
+  saleorApiUrl: string,
+  { id }: { id: OrderDetailsQueryVariables["id"] }
+): Promise<GetOrderDetailsResult> => {
+  const authData = await Apl.get(saleorApiUrl);
+  const client = getClientForAuthData(authData);
+
+  const { data, error } = await client
     .query<OrderDetailsQuery, OrderDetailsQueryVariables>(OrderDetailsDocument, { id })
     .toPromise();
 

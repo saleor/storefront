@@ -10,37 +10,56 @@ import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "../hooks/useAlerts/consts";
 import { RootViews } from "../views/RootViews/RootViews";
 import { useMemo } from "react";
-import { DEFAULT_LOCALE } from "@/checkout-storefront/lib/regions";
-import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useLocale } from "../hooks/useLocale";
+import { DEFAULT_LOCALE } from "../lib/regions";
+import { getQueryParams } from "../lib/utils/url";
 
 export interface RootProps {
   env: AppEnv;
 }
 export const Root = ({ env }: RootProps) => {
   const authorizedFetch = useMemo(() => createFetch(), []);
+  const { saleorApiUrl } = getQueryParams();
   const { locale, messages, channel } = useLocale();
 
   const client = useMemo(
     () =>
-      createClient({
-        url: env.apiUrl,
-        suspense: true,
-        requestPolicy: "cache-and-network",
-        fetch: authorizedFetch as ClientOptions["fetch"],
-      }),
-    [authorizedFetch, env.apiUrl]
+      saleorApiUrl
+        ? createClient({
+            url: saleorApiUrl,
+            suspense: true,
+            requestPolicy: "cache-and-network",
+            fetch: authorizedFetch as ClientOptions["fetch"],
+          })
+        : null,
+    [authorizedFetch, saleorApiUrl]
   );
 
   // temporarily need to use @apollo/client because saleor sdk
   // is based on apollo. to be changed
   const saleorClient = useMemo(
     () =>
-      createSaleorClient({
-        apiUrl: env.apiUrl,
-        channel,
-      }),
-    [env.apiUrl, channel]
+      saleorApiUrl
+        ? createSaleorClient({
+            apiUrl: saleorApiUrl,
+            channel,
+          })
+        : null,
+    [saleorApiUrl]
   );
+
+  if (!saleorApiUrl) {
+    console.warn(`Missing "saleorApiUrl" query param!`);
+    return null;
+  }
+  if (!saleorClient) {
+    console.warn(`Couldn't create saleor client!`);
+    return null;
+  }
+  if (!client) {
+    console.warn(`Couldn't create URQL client!`);
+    return null;
+  }
 
   return (
     // @ts-ignore React 17 <-> 18 type mismatch

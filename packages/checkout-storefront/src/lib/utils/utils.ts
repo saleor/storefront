@@ -2,7 +2,6 @@ import { CountryCode, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { Locale } from "@/checkout-storefront/lib/regions";
-import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { reduce, snakeCase } from "lodash-es";
 import { ChangeEvent, ReactEventHandler } from "react";
 import { AnyVariables, OperationResult } from "urql";
@@ -21,11 +20,6 @@ export const localeToLanguageCode = (locale: Locale) =>
   snakeCase(locale).toUpperCase() as LanguageCodeEnum;
 
 export const getCurrentHref = () => location.href;
-
-export const isOrderConfirmationPage = () => {
-  const { orderId } = getQueryParams();
-  return typeof orderId === "string";
-};
 
 export const getParsedLocaleData = (
   locale: Locale

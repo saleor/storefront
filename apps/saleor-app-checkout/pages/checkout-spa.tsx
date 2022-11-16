@@ -1,6 +1,6 @@
 import Dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { envVars } from "../constants";
+import urlJoin from "url-join";
 
 const CheckoutStoreFront = Dynamic(
   async () => {
@@ -23,15 +23,14 @@ export default function CheckoutSpa() {
     return null;
   }
 
-  const apiUrl = envVars.apiUrl;
-  const checkoutAppUrl = window.location.origin + "/saleor-app-checkout/";
-
-  if (!apiUrl) {
-    console.warn(`Missing NEXT_PUBLIC_SALEOR_API_URL env variable`);
-    return null;
-  }
+  const checkoutAppUrl = urlJoin(window.location.origin, "saleor-app-checkout", "/");
 
   return (
-    <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl: checkoutAppUrl + "api/", checkoutAppUrl }} />
+    <CheckoutStoreFront
+      env={{
+        checkoutApiUrl: urlJoin(checkoutAppUrl, "api", "/"),
+        checkoutAppUrl,
+      }}
+    />
   );
 }

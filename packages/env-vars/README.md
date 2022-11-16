@@ -24,7 +24,8 @@ envVars.NODE_ENV; // undefined - it doesn't include every environment variable, 
 
 If you define a variable with the same name in `.env.local` and in `.env` then the variable from `.env.local` takes precedence.
 
-> Note: variables defined later in the file, override already defined variables.
+> **Note**<br/>
+> variables defined later in the file, override already defined variables.
 >
 > For example:
 >

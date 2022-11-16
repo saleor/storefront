@@ -110,6 +110,7 @@ describe("/api/webhooks/adyen", () => {
     expect(res.statusCode).toBe(200);
     expect(res._getData()).toBe("[accepted]"); // adyen requires this response content
     expect(createTransaction).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining({
         id: expect.any(String),
         transactionEvent: {
@@ -145,6 +146,7 @@ describe("/api/webhooks/adyen", () => {
     expect(res.statusCode).toBe(200);
     expect(res._getData()).toBe("[accepted]"); // adyen requires this response content
     expect(createTransaction).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining({
         id: expect.any(String),
         transactionEvent: {
@@ -191,6 +193,7 @@ describe("/api/webhooks/adyen", () => {
     expect(res.statusCode).toBe(200);
     expect(res._getData()).toBe("[accepted]"); // adyen requires this response content
     expect(updateTransaction).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining({
         id: expect.any(String),
         transaction: {
@@ -235,6 +238,7 @@ describe("/api/webhooks/adyen", () => {
     expect(res.statusCode).toBe(200);
     expect(res._getData()).toBe("[accepted]"); // adyen requires this response content
     expect(updateTransaction).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining({
         id: expect.any(String),
         transaction: {

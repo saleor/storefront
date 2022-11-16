@@ -9,17 +9,22 @@ import {
   getMollieClient,
 } from "./utils";
 
-export const createMolliePayment = async ({ order, redirectUrl, appUrl }: CreatePaymentData) => {
+export const createMolliePayment = async ({
+  saleorApiUrl,
+  order,
+  redirectUrl,
+  appUrl,
+}: CreatePaymentData) => {
   const discountLines = getDiscountLines(order.discounts);
   const shippingLines = getShippingLines(order);
   const lines = getLines(order.lines);
-  const mollieClient = await getMollieClient();
+  const mollieClient = await getMollieClient(saleorApiUrl);
 
   const mollieData = await mollieClient.orders.create({
     orderNumber: order.number,
-    webhookUrl: `${appUrl}/api/webhooks/mollie`,
+    webhookUrl: `${appUrl}/api/webhooks/mollie?saleorApiUrl=${encodeURIComponent(saleorApiUrl)}`,
     locale: "en_US",
-    redirectUrl: formatRedirectUrl(redirectUrl, order.id),
+    redirectUrl: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: order.id }),
     metadata: {
       orderId: order.id,
     },

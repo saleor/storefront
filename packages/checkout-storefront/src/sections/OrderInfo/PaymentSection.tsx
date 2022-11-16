@@ -15,10 +15,10 @@ import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 
 export const PaymentSection = ({ orderId }: { orderId: string }) => {
   const { loading: orderPayLoading, orderPay } = usePay();
-  const { env } = useAppConfig();
+  const { env, saleorApiUrl } = useAppConfig();
 
   const [{ data: paymentData, loading: paymentStatusLoading }] = useFetch(getOrderPaymentStatus, {
-    args: { orderId, checkoutApiUrl: env.checkoutApiUrl },
+    args: { orderId, checkoutApiUrl: env.checkoutApiUrl, saleorApiUrl },
   });
 
   const formatMessage = useFormattedMessages();

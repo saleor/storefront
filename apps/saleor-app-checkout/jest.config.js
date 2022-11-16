@@ -22,7 +22,7 @@ module.exports = {
       },
     },
   },
-  transformIgnorePatterns: ["<rootDir>/node_modules/(?!url-join)"],
+  transformIgnorePatterns: ["<rootDir>/node_modules/(?!url-join|@saleor/app-sdk|node-fetch)"],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: "<rootDir>/",

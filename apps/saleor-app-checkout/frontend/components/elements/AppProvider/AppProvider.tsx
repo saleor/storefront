@@ -1,8 +1,10 @@
 import { app } from "@/saleor-app-checkout/frontend/misc/app";
 import { useRouter } from "next/router";
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useMemo, useState } from "react";
 import { handleRedirectEvent, handleRouteChange } from "./handlers";
 import { AppBridge } from "@saleor/app-sdk/app-bridge";
+import { Provider as ClientProvider } from "urql";
+import { createGraphqlClient } from "@/saleor-app-checkout/frontend/misc/client";
 
 interface IAppContext {
   app?: AppBridge;
@@ -17,6 +19,14 @@ export const AppContext = createContext<IAppContext>({
 const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(!!app?.getState()?.token);
+
+  const domain = app?.getState().domain;
+  const saleorApiUrl = domain ? `https://${domain}/graphql/` : "";
+
+  const client = useMemo(
+    () => (saleorApiUrl ? createGraphqlClient(saleorApiUrl) : null),
+    [saleorApiUrl]
+  );
 
   useEffect(() => {
     if (app) {
@@ -44,8 +54,16 @@ const AppProvider: React.FC<{ children: ReactNode }> = (props) => {
         router.events.off("routeChangeComplete", handleRouteChange);
       };
     }
-  }, []);
+  }, [router]);
 
-  return <AppContext.Provider value={{ app, isAuthorized }} {...props} />;
+  if (!client) {
+    return null;
+  }
+
+  return (
+    <ClientProvider value={client}>
+      <AppContext.Provider value={{ app, isAuthorized }} {...props} />
+    </ClientProvider>
+  );
 };
 export default AppProvider;

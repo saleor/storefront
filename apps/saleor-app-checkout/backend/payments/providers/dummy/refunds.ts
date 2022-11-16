@@ -5,10 +5,15 @@ import { getActionsAfterRefund, getTransactionAmountGetter } from "../../utils";
 
 export const DUMMY_PAYMENT_TYPE = "dummy-payment";
 
-export const handleDummyRefund = async (
-  refund: TransactionReversal,
-  transaction: TransactionActionPayloadFragment["transaction"]
-) => {
+export const handleDummyRefund = async ({
+  saleorApiUrl,
+  refund,
+  transaction,
+}: {
+  saleorApiUrl: string;
+  refund: TransactionReversal;
+  transaction: TransactionActionPayloadFragment["transaction"];
+}) => {
   if (!transaction?.id) {
     throw new Error("Transaction id was not provided");
   }
@@ -24,7 +29,7 @@ export const handleDummyRefund = async (
   });
 
   // Create "pending" event
-  await updateTransaction({
+  await updateTransaction(saleorApiUrl, {
     id: transaction.id,
     transaction: {
       availableActions: transactionActions,
@@ -36,7 +41,7 @@ export const handleDummyRefund = async (
   });
 
   // Create "completed" event + update transaction amounts
-  await updateTransaction({
+  await updateTransaction(saleorApiUrl, {
     id: transaction.id,
     transaction: {
       availableActions: transactionActions,

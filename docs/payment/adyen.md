@@ -48,10 +48,10 @@ Fill out the webhook details:
 
 - **Description** - enter some description for your webhook (ex. Saleor Checkout notifications)
 - **Server configuration**
-  - **URL** - URL of your deployed [Checkout App](#saleor-app-checkout) + `/api/webhooks/adyen`
+  - **URL**:
 
 ```
-<YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen/
+<YOUR_CHECKOUT_APP_URL>/api/webhooks/adyen/?saleorApiUrl=<YOUR_SALEOR_API_URL>
 ```
 
 > **Note**<br/>
@@ -98,7 +98,8 @@ Adyen will make a call to your webhook. If everything is configured properly you
 
 ![Successful webhook test in Adyen](../screenshots/setup-adyen-webhook-test-2.png)
 
-> Note: It can take a while for your webhook configuration to propagate in Adyen after you save it. If the test failed, give it a few minutes before you try again
+> **Note**<br/>
+> It can take a while for your webhook configuration to propagate in Adyen after you save it. If the test failed, give it a few minutes before you try again
 
 If the response failed because of invalid configuration in Adyen, Checkout App will return the reason in response:
 

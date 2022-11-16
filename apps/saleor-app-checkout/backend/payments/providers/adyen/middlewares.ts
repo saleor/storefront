@@ -1,49 +1,54 @@
 import { adyenProviderSettingIDs } from "checkout-common";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 import { PrivateSettingsValues } from "@/saleor-app-checkout/types";
-import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import { Types } from "@adyen/api-library";
-import type { Middleware } from "retes";
+import type { Handler, Middleware, Request } from "retes";
 import { Response } from "retes/response";
 import { verifyBasicAuth } from "./utils";
 import { validateHmac } from "./validator";
+import { unpackPromise } from "@/saleor-app-checkout/utils/unpackErrors";
 
 export type AdyenRequestContext = Required<
   PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">]["adyen"]
 >;
 
-export type AdyenRequestParams = Types.notification.Notification;
+export type AdyenRequestParams = Types.notification.Notification & { saleorApiUrl: string };
 
-export const withAdyenWebhookCredentials: Middleware = (handler) => async (request) => {
-  const [error, settings] = await unpackPromise(getPrivateSettings(envVars.apiUrl, false));
+export const withAdyenWebhookCredentials =
+  (handler: Handler) => async (request: Request<AdyenRequestParams>) => {
+    const [error, settings] = await unpackPromise(
+      getPrivateSettings({
+        saleorApiUrl: request.params.saleorApiUrl,
+        obfuscateEncryptedData: false,
+      })
+    );
 
-  if (error) {
-    console.error("Cannot fetch Adyen API configuration", error);
-    return Response.InternalServerError("Cannot fetch Adyen API configuration");
-  }
-
-  const {
-    paymentProviders: { adyen },
-  } = settings;
-
-  const keys = new Set(Object.keys(adyen));
-
-  for (const key of adyenProviderSettingIDs) {
-    if (!keys.has(key)) {
-      console.error(`Missing Adyen configuration - no value for ${key}`);
-      return Response.InternalServerError("Missing Adyen API configuration");
+    if (error) {
+      console.error("Cannot fetch Adyen API configuration", error);
+      return Response.InternalServerError("Cannot fetch Adyen API configuration");
     }
-  }
 
-  return handler({
-    ...request,
-    context: {
-      ...request.context,
-      ...adyen,
-    } as AdyenRequestContext,
-  });
-};
+    const {
+      paymentProviders: { adyen },
+    } = settings;
+
+    const keys = new Set(Object.keys(adyen));
+
+    for (const key of adyenProviderSettingIDs) {
+      if (!keys.has(key)) {
+        console.error(`Missing Adyen configuration - no value for ${key}`);
+        return Response.InternalServerError("Missing Adyen API configuration");
+      }
+    }
+
+    return handler({
+      ...request,
+      context: {
+        ...request.context,
+        ...adyen,
+      } as AdyenRequestContext,
+    });
+  };
 
 const isAdyenNotificationShape = (params: { [key: string]: any }): params is AdyenRequestParams => {
   return typeof params?.live === "string" && Array.isArray(params?.notificationItems);

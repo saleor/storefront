@@ -34,6 +34,7 @@ const useDummyPay = (): UseDummyPayValues => {
   const [dummyPayResult, pay] = useFetch(dummyPayRequest);
   const {
     env: { checkoutApiUrl },
+    saleorApiUrl,
   } = useAppConfig();
 
   const dummyPay = async (amountCharged: DummyPayRequestBody["amountCharged"]) => {
@@ -41,6 +42,7 @@ const useDummyPay = (): UseDummyPayValues => {
       const result = await pay({
         orderId,
         checkoutApiUrl,
+        saleorApiUrl,
         amountCharged,
       });
 
