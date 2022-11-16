@@ -13,8 +13,10 @@ import { getTransactionProcessedEvents } from "@/saleor-app-checkout/backend/pay
 import { updateTransactionProcessedEvents } from "@/saleor-app-checkout/backend/payments/updateTransactionProcessedEvents";
 import {
   isAdyenTransaction,
+  isDummyTransaction,
   isMollieTransaction,
 } from "@/saleor-app-checkout/backend/payments/utils";
+import { handleDummyRefund } from "@/saleor-app-checkout/backend/payments/providers/dummy/refunds";
 
 export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transaction-action-request";
 
@@ -28,8 +30,12 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   const { transaction, action } = req.params;
   console.log("Start processing Saleor transaction action", action, transaction);
 
-  if (!transaction?.type || !transaction.reference || !action.amount) {
-    console.warn("Received webhook call without transaction data", req.params);
+  if (!transaction?.type || !action?.amount) {
+    console.warn(
+      "Received webhook call without transaction data",
+      transaction?.type,
+      action?.amount
+    );
     return Response.BadRequest({ success: false, message: "Missing transaction data" });
   }
 
@@ -61,6 +67,15 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
       }
       if (isAdyenTransaction(transaction)) {
         await handleAdyenRefund(transactionReversal, transaction);
+      }
+      if (isDummyTransaction(transaction)) {
+        await handleDummyRefund(
+          {
+            ...transactionReversal,
+            id: transaction.id,
+          },
+          transaction
+        );
       }
     }
 

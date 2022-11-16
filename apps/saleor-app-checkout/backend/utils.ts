@@ -55,7 +55,9 @@ export const getBaseUrl = (req: { headers: Record<string, string | string[] | un
     return debugEnvVars.appUrl;
   }
 
-  const { host = "", "x-forwarded-proto": protocol = "http" } = req.headers;
+  const { host = "", "x-forwarded-proto": forwardedProtocol = "http" } = req.headers;
+
+  const protocol = forwardedProtocol.includes(",") ? "http" : forwardedProtocol; // proxy can have value http,https
 
   invariant(typeof host === "string", "host is not a string");
   invariant(typeof protocol === "string", "protocol is not a string");
@@ -69,6 +71,6 @@ export const getSaleorDomain = (): Promise<string> => {
       return reject(`Missing ${envVarsNames.apiUrl} environment variable`);
     }
     const url = new URL(envVars.apiUrl);
-    return resolve(url.hostname);
+    return resolve(url.host);
   });
 };
