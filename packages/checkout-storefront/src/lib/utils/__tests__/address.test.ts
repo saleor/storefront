@@ -134,10 +134,10 @@ describe("getOrderedAddressFields", () => {
       "firstName",
       "lastName",
       "companyName",
-      "phone",
       "city",
       "postalCode",
       "cityArea",
+      "phone",
     ]);
   });
 });
