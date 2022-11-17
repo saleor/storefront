@@ -16,15 +16,16 @@ export default defineConfig({
     openMode: 0,
   },
   env: {
-    API_URL: process.env.SALEOR_API_URL,
-    digitalProduct: "sea",
-    productWithoutVariants: "lager",
-    productWithVariants: "T-shirt",
+    API_URL: "https://staging-demo.saleor.io/graphql/",
+    userEmail: "admin@example.com",
+    userPassword: "admin",
+    digitalProduct: "cloud",
+    productWithoutVariants: "beanie",
+    productWithVariants: "zoom",
     productToSearch: "polo",
   },
   e2e: {
-    baseUrl: "http://localhost:3000/",
+    baseUrl: "https://staging-demo.saleor.io/",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
-    excludeSpecPattern: "cypress/e2e/buyProductsAsExistingCustomer.cy.ts",
   },
 });

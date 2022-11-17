@@ -29,7 +29,9 @@
     "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
     "clean": "rm -rf .turbo; turbo run clean",
     "cy:run": "cypress run",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "cy:run-demo": "cypress run --config-file cypress.demo.config.ts",
+    "cy:open-demo": "cypress open --config-file cypress.demo.config.ts"
   },
   "devDependencies": {
     "cypress": "10.11.0",
