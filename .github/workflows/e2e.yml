@@ -39,6 +39,7 @@ jobs:
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
         with:
+          config-file: cypress.demo.config.ts
           record: true
           config: baseUrl=${{ steps.get-env-uri.outputs.ENV_URI }}
         env:
