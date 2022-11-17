@@ -34,8 +34,6 @@ describe("Buy product as existing user", () => {
     cy.get(NAVIGATION.cartIcon)
       .click()
       .wait("@user")
-      // jak zweryfikować czy jest address i jest wybrany?
-
       .wait("@checkoutShippingAddressUpdate")
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.billingAddress")
@@ -54,7 +52,7 @@ describe("Buy product as existing user", () => {
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 
-  it("should buy a digital product as logged in user SRS_1002", () => {
+  it("should buy a digital product as logged in user SRS_1004", () => {
     const product = productsToSearch.digitalProduct;
 
     cy.addAliasToGraphRequest("user")
