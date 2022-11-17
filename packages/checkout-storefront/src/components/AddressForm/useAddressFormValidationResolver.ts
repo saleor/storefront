@@ -1,7 +1,7 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { Errors, useErrorMessages } from "@/checkout-storefront/hooks";
-import { usePhoneNumberUtils } from "@/checkout-storefront/hooks/usePhoneNumberUtils";
 import { getErrorsAsObject, getAllValidationErrors } from "@/checkout-storefront/lib/utils";
+import { isValidPhoneNumber } from "@/checkout-storefront/lib/utils/phoneNumber";
 import { useCallback } from "react";
 import { object, string, ValidationError as YupValidationErrorObject } from "yup";
 
@@ -12,7 +12,6 @@ interface ResolverResult {
 
 export const useAddressFormValidationResolver = () => {
   const { errorMessages } = useErrorMessages();
-  const { isValidNumber } = usePhoneNumberUtils();
 
   const schema = object({
     firstName: string().required(errorMessages.required),
@@ -47,8 +46,8 @@ export const useAddressFormValidationResolver = () => {
 
       const phoneRequiredError = result.errors?.phone?.type === "required";
 
-      if (!isValidNumber(data.phone, data.countryCode) && !phoneRequiredError) {
-        result = {
+      if (!isValidPhoneNumber(data.phone, data.countryCode) && !phoneRequiredError) {
+        return {
           ...result,
           errors: {
             ...result.errors,
@@ -62,6 +61,6 @@ export const useAddressFormValidationResolver = () => {
 
       return result;
     },
-    [schema, isValidNumber, errorMessages]
+    [schema, errorMessages]
   );
 };

@@ -44,7 +44,6 @@
     "checkout-common": "workspace:*",
     "clsx": "1.2.1",
     "concurrently": "7.5.0",
-    "fs": "0.0.1-security",
     "hex-rgb": "5.0.0",
     "libphonenumber-js": "^1.10.14",
     "lodash-es": "4.17.21",

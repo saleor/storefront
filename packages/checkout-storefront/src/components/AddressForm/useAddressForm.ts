@@ -10,7 +10,7 @@ import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/
 import { omit } from "lodash-es";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useAddressFormValidationResolver } from "@/checkout-storefront/components/AddressForm/useAddressFormValidationResolver";
-import { usePhoneNumberUtils } from "@/checkout-storefront/hooks/usePhoneNumberUtils";
+import { getPhoneNumberWithCountryCode } from "@/checkout-storefront/lib/utils/phoneNumber";
 
 export interface UseAddressFormProps {
   defaultValues?: AddressFormData;
@@ -27,7 +27,6 @@ export const useAddressForm = ({
   onSubmit,
 }: UseAddressFormProps): UseAddressFormReturn => {
   const defaultValuesRef = useRef<AddressFormData>(defaultValues);
-  const { getPhoneNumberWithCountryCode } = usePhoneNumberUtils();
 
   const initialCountryCode = useMemo(() => {
     const countryCodeInOptions = countries.find((code) => code === defaultValues.countryCode);
@@ -68,7 +67,7 @@ export const useAddressForm = ({
         return;
       }
     },
-    [hasDataChanged, onSubmit, getPhoneNumberWithCountryCode]
+    [hasDataChanged, onSubmit]
   );
 
   const handleUrlChange = useCallback(
