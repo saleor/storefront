@@ -7,6 +7,7 @@ import { Response } from "retes/response";
 import { verifyBasicAuth } from "./utils";
 import { validateHmac } from "./validator";
 import { unpackPromise } from "@/saleor-app-checkout/utils/unpackErrors";
+import { MissingPaymentProviderSettingsError } from "../../errors";
 
 export type AdyenRequestContext = Required<
   PrivateSettingsValues<"unencrypted">[keyof PrivateSettingsValues<"unencrypted">]["adyen"]
@@ -32,13 +33,11 @@ export const withAdyenWebhookCredentials =
       paymentProviders: { adyen },
     } = settings;
 
-    const keys = new Set(Object.keys(adyen));
-
-    for (const key of adyenProviderSettingIDs) {
-      if (!keys.has(key)) {
-        console.error(`Missing Adyen configuration - no value for ${key}`);
-        return Response.InternalServerError("Missing Adyen API configuration");
-      }
+    const missingKeys = adyenProviderSettingIDs.filter((key) => !adyen[key]);
+    if (missingKeys.length > 0) {
+      const error = new MissingPaymentProviderSettingsError("adyen", missingKeys);
+      console.error(error);
+      return Response.InternalServerError({ error: error.message });
     }
 
     return handler({

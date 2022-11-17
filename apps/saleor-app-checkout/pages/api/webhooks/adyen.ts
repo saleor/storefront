@@ -85,7 +85,7 @@ async function notificationHandler({
     );
 
     if (!transaction) {
-      throw "originalReference does not exist in transactions";
+      throw new Error("originalReference does not exist in transactions");
     }
 
     const data = getUpdatedTransactionData(transaction, notification);

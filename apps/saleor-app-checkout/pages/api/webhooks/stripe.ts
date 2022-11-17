@@ -10,6 +10,7 @@ import {
 } from "@/saleor-app-checkout/backend/payments/providers/stripe/webhookHandler";
 import type { Readable } from "node:stream";
 import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { MissingPaymentProviderSettingsError } from "@/saleor-app-checkout/backend/payments/errors";
 
 // https://github.com/vercel/next.js/discussions/12517#discussioncomment-2929922
 async function buffer(readable: Readable) {
@@ -28,23 +29,42 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const { webhookSecret } = await getStripeSecrets(saleorApiUrl);
   const sig = req.headers["stripe-signature"];
 
   if (typeof sig !== "string") {
     return res.status(400).json({ message: '"stripe-signature" header is missing' });
   }
 
+  const [stripeSecretsError, stripeSecrets] = await unpackPromise(getStripeSecrets(saleorApiUrl));
+
+  if (stripeSecretsError) {
+    console.error(stripeSecretsError);
+
+    if (stripeSecretsError instanceof MissingPaymentProviderSettingsError) {
+      res.status(500).json({ error: stripeSecretsError.message });
+      return;
+    }
+
+    Sentry.captureException(stripeSecretsError);
+    res.status(500).json({ error: "getStripeSecrets failed" });
+    return;
+  }
+
   const body = await buffer(req);
 
-  const [err, event] = await unpackPromise(
-    verifyStripeEventSignature({ saleorApiUrl, body, signature: sig, secret: webhookSecret })
+  const [verifyStripeEventSignatureError, event] = await unpackPromise(
+    verifyStripeEventSignature({
+      saleorApiUrl,
+      body,
+      signature: sig,
+      secret: stripeSecrets.webhookSecret,
+    })
   );
 
-  if (err || !event) {
-    console.error(err);
-    Sentry.captureException(err);
-    return res.status(500).json({ message: err?.message });
+  if (verifyStripeEventSignatureError || !event) {
+    console.error(verifyStripeEventSignatureError);
+    Sentry.captureException(verifyStripeEventSignatureError);
+    return res.status(500).json({ message: verifyStripeEventSignatureError?.message });
   }
 
   const transactionData = await stripeWebhookEventToTransactionCreateMutationVariables({
