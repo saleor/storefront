@@ -8,14 +8,6 @@ import { payByDummyPayment } from "../support/pages/checkout-page";
 import { checkIfOrderNumberAndPaymentStatusAreCorrect } from "../support/pages/order-confirmation-page";
 
 describe("Buy product as existing user", () => {
-  let address;
-
-  before(() => {
-    cy.fixture("addresses").then(({ usAddress }) => {
-      address = usAddress;
-    });
-  });
-
   beforeEach(() => {
     cy.clearLocalStorage().loginUserViaRequest().visit("/");
     waitForProgressBarToNotBeVisible();
