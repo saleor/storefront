@@ -416,7 +416,6 @@ importers:
       eslint: 8.26.0
       eslint-config-checkout: workspace:*
       eslint-plugin-formatjs: 4.3.4
-      fs: 0.0.1-security
       graphql: 15.8.0
       graphql-tag: 2.12.6
       hex-rgb: 5.0.0
@@ -464,7 +463,6 @@ importers:
       checkout-common: link:../checkout-common
       clsx: 1.2.1
       concurrently: 7.5.0
-      fs: 0.0.1-security
       graphql: 15.8.0
       hex-rgb: 5.0.0
       libphonenumber-js: 1.10.14
@@ -13712,10 +13710,6 @@ packages:
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.com/fs.realpath/-/fs.realpath-1.0.0.tgz}
-
-  /fs/0.0.1-security:
-    resolution: {integrity: sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w==}
-    dev: false
 
   /fsevents/1.2.13:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
