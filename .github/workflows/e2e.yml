@@ -13,8 +13,8 @@ on:
           - https://demo.saleor.io/
 
   schedule:
-    - cron: '00 2 * * 1-5'
-    
+    - cron: "00 2 * * 1-5"
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
