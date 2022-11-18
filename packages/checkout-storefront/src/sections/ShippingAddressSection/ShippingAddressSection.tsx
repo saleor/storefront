@@ -6,7 +6,6 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks/useCheckoutUpdateStateTrigger";
 import { useErrors, UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
@@ -22,6 +21,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { shippingMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
 
 export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -37,24 +37,33 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const { showErrors } = useAlerts("checkoutShippingUpdate");
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
+  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
+    state.setUpdateState("checkoutShippingUpdate")
+  );
 
-  const [{ fetching }, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
-
-  useCheckoutUpdateStateTrigger("checkoutShippingUpdate", fetching);
+  const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
   const updateShippingAddress = useCallback(
     async ({ autoSave, ...address }: AddressFormData) => {
+      setCheckoutUpdateState("loading");
+
       const result = await checkoutShippingAddressUpdate({
         languageCode: localeToLanguageCode(locale),
         checkoutId: checkout.id,
         shippingAddress: getAddressInputData(address),
         validationRules: getAddressVlidationRulesVariables(autoSave),
       });
+
       const [hasErrors, errors] = extractMutationErrors(result);
+
       if (hasErrors) {
+        setCheckoutUpdateState("error");
         showErrors(errors);
         setApiErrors(errors);
+        return;
       }
+
+      setCheckoutUpdateState("success");
     },
     [checkoutShippingAddressUpdate, locale, checkout.id, showErrors, setApiErrors]
   );

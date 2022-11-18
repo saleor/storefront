@@ -6,16 +6,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCheckoutFormValidation } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFormValidation";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
-
-const defaultUpdateState = {
-  checkoutShippingUpdate: false,
-  checkoutCustomerAttach: false,
-  checkoutBillingUpdate: false,
-  checkoutAddPromoCode: false,
-  checkoutDeliveryMethodUpdate: false,
-  checkoutLinesUpdate: false,
-  checkoutEmailUpdate: false,
-};
+import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
+import shallow from "zustand/shallow";
 
 export type UseCheckoutFormProps = {
   userRegisterErrors: Errors<CheckoutFormData>;
@@ -24,7 +16,16 @@ export type UseCheckoutFormProps = {
 
 export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseCheckoutFormProps) => {
   const { errorMessages } = useErrorMessages();
-  const { checkout, loading: loadingCheckout } = useCheckout();
+  const { checkout } = useCheckout();
+  const { updateState, loadingCheckout } = useCheckoutUpdateStateStore(
+    ({ updateState, loadingCheckout }) => ({ updateState, loadingCheckout }),
+    shallow
+  );
+
+  const hasFinishedApiChangesWithNoError =
+    !Object.values(updateState).some((status) => status === "loading") &&
+    !Object.values(updateState).some((status) => status === "error") &&
+    !loadingCheckout;
 
   const [isProcessingApiChanges, setIsProcessingApiChanges] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);
@@ -48,7 +49,6 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
       email: checkout?.email || "",
       password: "",
       validating: false,
-      updateState: defaultUpdateState,
     },
   });
 
@@ -64,13 +64,10 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     schema,
   });
 
-  const hasFinishedApiChanges =
-    !Object.values(methods.watch("updateState")).some((value) => value) && !loadingCheckout;
-
   // not using form handleSubmit because it wouldn't allow us to have
   // a flow with steps and errors in between
   const handleSubmit = useCallback(() => {
-    if (!hasFinishedApiChanges) {
+    if (!hasFinishedApiChangesWithNoError) {
       setIsProcessingApiChanges(true);
       setSubmitInProgress(true);
       return;
@@ -82,10 +79,10 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     }
 
     checkoutFinalize(getValues());
-  }, [checkoutFinalize, ensureValidCheckout, getValues, hasFinishedApiChanges]);
+  }, [checkoutFinalize, ensureValidCheckout, getValues, hasFinishedApiChangesWithNoError]);
 
   useEffect(() => {
-    if (!hasFinishedApiChanges) {
+    if (!hasFinishedApiChangesWithNoError) {
       return;
     }
 
@@ -94,7 +91,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     if (submitInProgress) {
       handleSubmit();
     }
-  }, [hasFinishedApiChanges, handleSubmit, submitInProgress]);
+  }, [handleSubmit, submitInProgress, hasFinishedApiChangesWithNoError]);
 
   return { methods, handleSubmit, isProcessingApiChanges };
 };

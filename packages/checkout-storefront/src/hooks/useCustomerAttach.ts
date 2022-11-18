@@ -1,7 +1,8 @@
 import { useCheckoutCustomerAttachMutation } from "@/checkout-storefront/graphql";
-import { useCheckout, useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks";
+import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import { useEffect, useCallback } from "react";
 
@@ -12,17 +13,25 @@ export const useCustomerAttach = () => {
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
-  useCheckoutUpdateStateTrigger("checkoutCustomerAttach", fetching);
+  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
+    state.setUpdateState("checkoutCustomerAttach")
+  );
 
   const attachCustomer = useCallback(async () => {
     if (checkout?.user?.id === user?.id || fetching || loading) {
       return;
     }
 
-    await customerAttach({
+    setCheckoutUpdateState("loading");
+
+    const response = await customerAttach({
       checkoutId: checkout.id,
       languageCode: localeToLanguageCode(locale),
     });
+
+    const [hasErrors] = extractMutationErrors(response);
+
+    setCheckoutUpdateState(hasErrors ? "error" : "success");
   }, [checkout?.user?.id, checkout.id, user?.id, fetching, loading, customerAttach, locale]);
 
   useEffect(() => {

@@ -18,10 +18,10 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 import { contactMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -43,8 +43,11 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     formState: contextFormState,
     trigger: triggerContext,
   } = formContext;
+  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
+    state.setUpdateState("checkoutEmailUpdate")
+  );
 
-  const [{ fetching: updatingEmail }, updateEmail] = useCheckoutEmailUpdateMutation();
+  const [, updateEmail] = useCheckoutEmailUpdateMutation();
 
   const schema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
@@ -72,8 +75,6 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     errors: contextFormState.errors,
   });
 
-  useCheckoutUpdateStateTrigger("checkoutEmailUpdate", updatingEmail);
-
   const emailValue = watch("email");
 
   useEffect(() => setContextValue("email", emailValue), [emailValue, setContextValue]);
@@ -91,6 +92,8 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
         return;
       }
 
+      setCheckoutUpdateState("loading");
+
       const result = await updateEmail({
         languageCode: localeToLanguageCode(locale),
         email,
@@ -100,8 +103,12 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
       const [hasErrors, errors] = extractMutationErrors<FormData>(result);
 
       if (hasErrors) {
+        setCheckoutUpdateState("error");
         showErrors(errors);
+        return;
       }
+
+      setCheckoutUpdateState("success");
     },
     [trigger, updateEmail, locale, checkout.id, showErrors]
   );

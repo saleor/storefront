@@ -110,7 +110,6 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
     } catch (error) {
       const { path, type, message } = extractValidationError(error as ValidationError);
 
-      console.log({ path, type, message });
       setError(path, { type, message });
     }
   };
