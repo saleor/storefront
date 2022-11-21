@@ -43,11 +43,13 @@ export const getRawQueryParams = () =>
 export const getQueryParams = (): QueryParams => {
   const params = getRawQueryParams();
 
-  if (typeof params.locale !== "string") {
+  const locale = params.locale || defaultParams.locale;
+
+  if (locale !== params.locale) {
     replaceUrl({ query: { locale: DEFAULT_LOCALE } });
   }
 
-  return Object.entries(params).reduce((result, entry) => {
+  return Object.entries({ ...params, locale }).reduce((result, entry) => {
     const [paramName, paramValue] = entry as [UnmappedQueryParam, ParamBasicValue];
     const mappedParamName = queryParamsMap[paramName];
     const mappedParamValue = paramValue || defaultParams[paramName];
