@@ -30,11 +30,6 @@ export default function App(props: AppProps) {
     globalThis.__SALEOR_CHECKOUT_ENV__ = version;
   }, [version]);
 
-  const [shouldRender, setShouldRender] = React.useState(false);
-  useEffect(() => {
-    setShouldRender(true);
-  }, []);
-
   return (
     <>
       <Head>
@@ -68,25 +63,21 @@ export default function App(props: AppProps) {
           >
             {/* @ts-expect-error React 17 <-> 18 types mismatch */}
             <ThemeProvider ssr={true}>
-              {shouldRender && (
-                <>
-                  <AppContainer>
-                    <Component {...pageProps} />
-                  </AppContainer>
-                  <footer
-                    style={{
-                      fontSize: "0.8em",
-                      textAlign: "center",
-                      color: "#777",
-                      transform: "translateY(-100%)",
-                      height: "1.7rem",
-                      marginTop: "-1.7rem",
-                    }}
-                  >
-                    <small>{version}</small>
-                  </footer>
-                </>
-              )}
+              <AppContainer>
+                <Component {...pageProps} />
+              </AppContainer>
+              <footer
+                style={{
+                  fontSize: "0.8em",
+                  textAlign: "center",
+                  color: "#777",
+                  transform: "translateY(-100%)",
+                  height: "1.7rem",
+                  marginTop: "-1.7rem",
+                }}
+              >
+                <small>{version}</small>
+              </footer>
             </ThemeProvider>
           </IntlProvider>
         </PrivateSettingsProvider>
