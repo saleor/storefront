@@ -1,7 +1,8 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 import { DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
-import { getParsedLocaleData, getQueryParams } from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useMemo, useState } from "react";
 
 import EN_US from "../../content/compiled-locales/en-US.json";
@@ -15,6 +16,7 @@ const localeToMessages: Record<Locale, any> = {
 interface UseLocale {
   locale: Locale;
   countryCode: CountryCode;
+  channel: string;
   messages: typeof localeToMessages[keyof typeof localeToMessages];
 }
 
@@ -23,6 +25,7 @@ export const useLocale = (): UseLocale => {
 
   const [currentLocale, setCurrentLocale] = useState<Locale>(locale);
   const [currentCountryCode, setCurrentCountryCode] = useState<CountryCode>(countryCode);
+  const [currentChannel, setCurrentChannel] = useState<string>(getQueryParams().channel);
 
   const messages = useMemo(
     () =>
@@ -40,12 +43,18 @@ export const useLocale = (): UseLocale => {
     const newQuery = getParsedLocaleData(queryParams.locale);
     setCurrentLocale(newQuery.locale);
     setCurrentCountryCode(newQuery.countryCode);
+    setCurrentChannel(queryParams.channel);
   };
 
   useUrlChange(handleChange);
 
   return useMemo(
-    () => ({ locale: currentLocale, countryCode: currentCountryCode, messages }),
-    [currentCountryCode, currentLocale, messages]
+    () => ({
+      locale: currentLocale,
+      countryCode: currentCountryCode,
+      messages,
+      channel: currentChannel,
+    }),
+    [currentCountryCode, currentLocale, messages, currentChannel]
   );
 };

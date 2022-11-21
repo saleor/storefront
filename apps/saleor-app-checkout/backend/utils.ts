@@ -1,13 +1,12 @@
 import { PermissionEnum } from "@/saleor-app-checkout/graphql";
 import { NextApiHandler } from "next";
 import invariant from "ts-invariant";
-import { debugEnvVars, envVars, envVarsNames } from "../constants";
+import { debugEnvVars } from "../constants";
 import { isAuthenticated, isAuthorized } from "./auth";
 
 export const allowCors =
   (fn: NextApiHandler): NextApiHandler =>
   async (req, res) => {
-    console.log({ "req.headers.origin": req.headers.origin });
     res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,POST");
     res.setHeader(
@@ -55,20 +54,12 @@ export const getBaseUrl = (req: { headers: Record<string, string | string[] | un
     return debugEnvVars.appUrl;
   }
 
-  const { host = "", "x-forwarded-proto": protocol = "http" } = req.headers;
+  const { host = "", "x-forwarded-proto": forwardedProtocol = "http" } = req.headers;
+
+  const protocol = forwardedProtocol.includes(",") ? "http" : forwardedProtocol; // proxy can have value http,https
 
   invariant(typeof host === "string", "host is not a string");
   invariant(typeof protocol === "string", "protocol is not a string");
 
   return `${protocol}://${host}`;
-};
-
-export const getSaleorDomain = (): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    if (!envVars.apiUrl) {
-      return reject(`Missing ${envVarsNames.apiUrl} environment variable`);
-    }
-    const url = new URL(envVars.apiUrl);
-    return resolve(url.hostname);
-  });
 };

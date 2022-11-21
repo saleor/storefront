@@ -45,6 +45,6 @@ cypress/videos
 .idea
 
 .auth_token
-
+.saleor-app-auth.json
 
 **/content/compiled-locales

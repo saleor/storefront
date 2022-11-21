@@ -1,30 +1,35 @@
 import { OrderStatus as MollieOrderStatus } from "@mollie/api-client";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 
 import { getMollieClient } from "./utils";
 import { ReuseExistingVendorSessionFn } from "../../types";
 
-export const verifyMollieSession = async (session: string) => {
+export const verifyMollieSession = async ({
+  saleorApiUrl,
+  session,
+}: {
+  saleorApiUrl: string;
+  session: string;
+}) => {
   const {
     paymentProviders: { mollie },
-  } = await getPrivateSettings(envVars.apiUrl, false);
+  } = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: false });
 
   if (!mollie.apiKey) {
     throw "API key not defined";
   }
 
-  const client = await getMollieClient();
+  const client = await getMollieClient(saleorApiUrl);
   const { status, _links } = await client.orders.get(session);
 
   return { status, url: _links.checkout?.href };
 };
 
-export const reuseExistingMollieSession: ReuseExistingVendorSessionFn = async ({
-  payment,
-  orderId,
-}) => {
-  const session = await verifyMollieSession(payment.session);
+export const reuseExistingMollieSession: ReuseExistingVendorSessionFn = async (
+  saleorApiUrl,
+  { payment, orderId }
+) => {
+  const session = await verifyMollieSession({ saleorApiUrl, session: payment.session });
 
   if (session.status === MollieOrderStatus.created && session.url) {
     return {

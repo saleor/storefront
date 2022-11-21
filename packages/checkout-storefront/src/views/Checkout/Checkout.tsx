@@ -15,11 +15,13 @@ export const Checkout = () => {
 
   const isCheckoutInvalid = !loading && !checkout && !authenticating;
 
+  const isInitiallyAuthenticating = authenticating && !checkout;
+
   const isEmptyCart = checkout && !checkout.lines.length;
 
   return isCheckoutInvalid ? (
     <PageNotFound />
-  ) : authenticating ? (
+  ) : isInitiallyAuthenticating ? (
     <CheckoutSkeleton />
   ) : (
     <ErrorBoundary FallbackComponent={PageNotFound}>

@@ -16,17 +16,12 @@ const CheckoutStoreFront = Dynamic(
   }
 );
 
-const apiUrl = process.env["NEXT_PUBLIC_SALEOR_API_URL"];
 const checkoutApiUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"]
   ? urlJoin(process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"], `api`)
   : "";
 const checkoutAppUrl = process.env["NEXT_PUBLIC_CHECKOUT_APP_URL"];
 
 export default function CheckoutSpa() {
-  if (!apiUrl) {
-    console.warn(`Missing NEXT_PUBLIC_SALEOR_API_URL env variable`);
-    return null;
-  }
   if (!checkoutApiUrl) {
     console.warn(`Missing NEXT_PUBLIC_CHECKOUT_APP_URL env variable`);
     return null;
@@ -36,5 +31,5 @@ export default function CheckoutSpa() {
     return null;
   }
 
-  return <CheckoutStoreFront env={{ apiUrl, checkoutApiUrl, checkoutAppUrl }} />;
+  return <CheckoutStoreFront env={{ checkoutApiUrl, checkoutAppUrl }} />;
 }

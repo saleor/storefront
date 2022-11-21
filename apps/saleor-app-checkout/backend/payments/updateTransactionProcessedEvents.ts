@@ -3,12 +3,17 @@ import {
   TransactionUpdateProcessedEventsMutation,
   TransactionUpdateProcessedEventsMutationVariables,
 } from "@/saleor-app-checkout/graphql";
-import { getClient } from "../client";
+import { getClientForAuthData } from "../saleorGraphqlClient";
+import * as Apl from "@/saleor-app-checkout/config/apl";
 
 export const updateTransactionProcessedEvents = async (
+  saleorApiUrl: string,
   args: TransactionUpdateProcessedEventsMutationVariables
 ) => {
-  const { data, error } = await getClient()
+  const authData = await Apl.get(saleorApiUrl);
+  const client = getClientForAuthData(authData);
+
+  const { data, error } = await client
     .mutation<
       TransactionUpdateProcessedEventsMutation,
       TransactionUpdateProcessedEventsMutationVariables

@@ -4,18 +4,14 @@ import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
-import {
-  extractMutationErrors,
-  getQueryParams,
-  clearUrlAfterPasswordReset,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
+import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { contactLabels, contactMessages } from "./messages";
 import { useAuth } from "@saleor/sdk";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
+import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 interface ResetPasswordProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onResetPasswordSuccess: () => void;
@@ -44,11 +40,11 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
   const getInputProps = useGetInputProps(rest);
 
   const onSubmit = async ({ password }: FormData) => {
-    const { email, passwordResetToken } = getQueryParams();
+    const { passwordResetEmail, passwordResetToken } = getQueryParams();
 
     const result = await resetPassword({
       password,
-      email: email as string,
+      email: passwordResetEmail as string,
       token: passwordResetToken as string,
     });
 
@@ -59,7 +55,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
       return;
     }
 
-    clearUrlAfterPasswordReset();
+    clearQueryParams("passwordResetToken", "passwordResetEmail");
     onResetPasswordSuccess();
   };
 

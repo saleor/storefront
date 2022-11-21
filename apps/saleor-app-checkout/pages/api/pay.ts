@@ -25,20 +25,19 @@ import { OrderFragment } from "@/saleor-app-checkout/graphql";
 import { PayRequestErrorResponse, PayRequestResponse } from "@/saleor-app-checkout/types/api/pay";
 import { OrderPaymentMetafield } from "@/saleor-app-checkout/types/common";
 import { safeJsonParse } from "@/saleor-app-checkout/utils";
-import { unpackPromise } from "@/saleor-app-checkout/utils/promises";
 import {
   assertUnreachable,
   PaymentMethods,
   PaymentProviders,
   PayRequestBody,
 } from "checkout-common";
+import { unpackPromise, unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
+import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 
-const reuseExistingSession = ({
-  orderId,
-  provider,
-  method,
-  privateMetafield,
-}: ReuseExistingSessionParams): ReuseExistingSessionResult => {
+const reuseExistingSession = (
+  saleorApiUrl: string,
+  { orderId, provider, method, privateMetafield }: ReuseExistingSessionParams
+): ReuseExistingSessionResult => {
   const payment: OrderPaymentMetafield = JSON.parse(privateMetafield);
 
   if (payment.provider !== provider || payment.method !== method || !payment.session) {
@@ -55,11 +54,11 @@ const reuseExistingSession = ({
 
   switch (payment.provider) {
     case "mollie":
-      return reuseExistingMollieSession(params);
+      return reuseExistingMollieSession(saleorApiUrl, params);
     case "adyen":
-      return reuseExistingAdyenSession(params);
+      return reuseExistingAdyenSession(saleorApiUrl, params);
     case "stripe":
-      return reuseExistingStripeSession(params);
+      return reuseExistingStripeSession(saleorApiUrl, params);
     case "dummy":
       return undefined;
     default:
@@ -67,10 +66,15 @@ const reuseExistingSession = ({
   }
 };
 
-const getPaymentResponse = async (
-  body: PayRequestBody,
-  appUrl: string
-): Promise<PayRequestResponse> => {
+const getPaymentResponse = async ({
+  saleorApiUrl,
+  body,
+  appUrl,
+}: {
+  saleorApiUrl: string;
+  body: PayRequestBody;
+  appUrl: string;
+}): Promise<PayRequestResponse> => {
   if (!PaymentProviders.includes(body.provider)) {
     throw new KnownPaymentError(body.provider, ["UNKNOWN_PROVIDER"]);
   }
@@ -78,10 +82,10 @@ const getPaymentResponse = async (
     throw new KnownPaymentError(body.provider, ["UNKNOWN_METHOD"]);
   }
 
-  const order = await createOrderFromBodyOrId(body);
+  const order = await createOrderFromBodyOrId(saleorApiUrl, body);
 
   if (order.privateMetafield) {
-    const existingSessionResponse = await reuseExistingSession({
+    const existingSessionResponse = await reuseExistingSession(saleorApiUrl, {
       orderId: order.id,
       privateMetafield: order.privateMetafield,
       provider: body.provider,
@@ -94,7 +98,7 @@ const getPaymentResponse = async (
   }
 
   const [paymentUrlError, data] = await unpackPromise(
-    getPaymentUrlIdForProvider(body, order, appUrl)
+    getPaymentUrlIdForProvider({ saleorApiUrl, body, order, appUrl })
   );
 
   if (paymentUrlError) {
@@ -122,7 +126,7 @@ const getPaymentResponse = async (
     session: id,
   };
 
-  await updatePaymentMetafield(order.id, payment);
+  await updatePaymentMetafield({ saleorApiUrl, orderId: order.id, payment });
 
   return response;
 };
@@ -130,6 +134,13 @@ const getPaymentResponse = async (
 const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).send({ message: "Only POST requests allowed" });
+    return;
+  }
+
+  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
+
+  if (saleorApiUrlError) {
+    res.status(400).json({ message: saleorApiUrlError.message });
     return;
   }
 
@@ -146,7 +157,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   try {
     const appUrl = getBaseUrl(req);
-    const response = await getPaymentResponse(body, appUrl);
+    const response = await getPaymentResponse({ saleorApiUrl, body, appUrl });
     return res.status(200).json(response);
   } catch (err) {
     if (err instanceof KnownPaymentError) {
@@ -176,12 +187,19 @@ const handler: NextApiHandler = async (req, res) => {
   }
 };
 
-const getPaymentUrlIdForProvider = (
-  body: PayRequestBody,
-  order: OrderFragment,
-  appUrl: string
-): Promise<CreatePaymentResult> => {
+const getPaymentUrlIdForProvider = ({
+  saleorApiUrl,
+  body,
+  order,
+  appUrl,
+}: {
+  saleorApiUrl: string;
+  body: PayRequestBody;
+  order: OrderFragment;
+  appUrl: string;
+}): Promise<CreatePaymentResult> => {
   const createPaymentData = {
+    saleorApiUrl,
     order,
     redirectUrl: body.redirectUrl,
     method: body.method,
@@ -196,8 +214,18 @@ const getPaymentUrlIdForProvider = (
     case "stripe":
       return createStripePayment(createPaymentData);
     case "dummy":
+      const url = new URL(body.redirectUrl);
+      url.searchParams.set("order", order.id);
+      url.searchParams.set("dummyPayment", "true");
+      url.searchParams.set("saleorApiUrl", saleorApiUrl);
+      const domain = url.hostname;
+      // @todo remove `domain`
+      // https://github.com/saleor/saleor-dashboard/issues/2387
+      // https://github.com/saleor/saleor-app-sdk/issues/87
+      url.searchParams.set("domain", domain);
       return createDummyPayment({
-        redirectUrl: `${body.redirectUrl}?order=${order.id}&dummyPayment=true`,
+        ...createPaymentData,
+        redirectUrl: url.toString(),
       });
     default:
       assertUnreachable(body.provider);

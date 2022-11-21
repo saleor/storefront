@@ -45,6 +45,7 @@ fragment CheckoutFragment on Checkout {
   }
   channel {
     id
+    slug
   }
   shippingAddress {
     ...AddressFragment

@@ -1,5 +1,5 @@
 overwrite: true
-schema: ${NEXT_PUBLIC_SALEOR_API_URL}
+schema: ${SALEOR_API_URL}
 documents: "graphql/**/*.graphql"
 generates:
   graphql/index.ts:

@@ -1,4 +1,4 @@
-import { getClient } from "@/saleor-app-checkout/backend/client";
+import { getClientForAuthData } from "@/saleor-app-checkout/backend/saleorGraphqlClient";
 import {
   CheckoutDocument,
   CheckoutQuery,
@@ -8,22 +8,31 @@ import {
   OrderCreateMutationVariables,
   OrderFragment,
 } from "@/saleor-app-checkout/graphql";
+import * as Apl from "@/saleor-app-checkout/config/apl";
 
 import { Errors } from "./types";
 
-export const createOrder = async (
-  checkoutId: string,
-  totalAmount: number
-): Promise<
+type CreateOrderResult =
   | {
       data: OrderFragment;
     }
   | {
       errors: Errors;
-    }
-> => {
+    };
+
+export const createOrder = async ({
+  saleorApiUrl,
+  checkoutId,
+  totalAmount,
+}: {
+  saleorApiUrl: string;
+  checkoutId: string;
+  totalAmount: number;
+}): Promise<CreateOrderResult> => {
+  const authData = await Apl.get(saleorApiUrl);
+  const client = getClientForAuthData(authData);
+
   // Start by checking if total amount is correct
-  const client = getClient();
   const checkout = await client
     .query<CheckoutQuery, CheckoutQueryVariables>(CheckoutDocument, {
       id: checkoutId,

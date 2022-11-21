@@ -6,12 +6,13 @@ import { PaymentMethodID } from "checkout-common";
 import { getStripeClient } from "./stripeClient";
 
 export const createStripePayment = async ({
+  saleorApiUrl,
   order,
   redirectUrl,
   appUrl: _appUrl,
   method,
 }: CreatePaymentData): Promise<CreatePaymentResult> => {
-  const stripeClient = await getStripeClient();
+  const stripeClient = await getStripeClient(saleorApiUrl);
 
   const stripeCheckoutCustomer = await createStripeCustomerFromOrder(stripeClient, order);
 
@@ -30,8 +31,8 @@ export const createStripePayment = async ({
     payment_method_types: stripePaymentMethod ? [stripePaymentMethod] : undefined,
     customer: stripeCheckoutCustomer.id,
     mode: "payment",
-    cancel_url: formatRedirectUrl(redirectUrl, order.id),
-    success_url: formatRedirectUrl(redirectUrl, order.id),
+    cancel_url: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: order.id }),
+    success_url: formatRedirectUrl({ saleorApiUrl, redirectUrl, orderId: order.id }),
     metadata: {
       orderId: order.id,
     },

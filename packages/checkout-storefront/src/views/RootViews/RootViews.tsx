@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { DummyPayment } from "../DummyPayment/DummyPayment";
 import { useFormattedMessages } from "../../hooks";
 import { rootViewsMessages } from "./messages";
-import { getQueryParams } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 export const RootViews = () => {
   const orderId = getQueryParams().orderId;

@@ -13,8 +13,10 @@ import { getTransactionProcessedEvents } from "@/saleor-app-checkout/backend/pay
 import { updateTransactionProcessedEvents } from "@/saleor-app-checkout/backend/payments/updateTransactionProcessedEvents";
 import {
   isAdyenTransaction,
+  isDummyTransaction,
   isMollieTransaction,
 } from "@/saleor-app-checkout/backend/payments/utils";
+import { handleDummyRefund } from "@/saleor-app-checkout/backend/payments/providers/dummy/refunds";
 
 export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transaction-action-request";
 
@@ -24,12 +26,26 @@ export const config = {
   },
 };
 
-const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
+export type TransactionActionPayloadParams = TransactionActionPayloadFragment & {
+  saleorApiUrl: string;
+};
+
+const handler: Handler<TransactionActionPayloadParams> = async (req) => {
+  const saleorApiUrl = req.params.saleorApiUrl;
+
+  if (!saleorApiUrl) {
+    return Response.BadRequest({ success: false, message: "Saleor saleorApiUrl param is missing" });
+  }
+
   const { transaction, action } = req.params;
   console.log("Start processing Saleor transaction action", action, transaction);
 
-  if (!transaction?.type || !transaction.reference || !action.amount) {
-    console.warn("Received webhook call without transaction data", req.params);
+  if (!transaction?.type || !action?.amount) {
+    console.warn(
+      "Received webhook call without transaction data",
+      transaction?.type,
+      action?.amount
+    );
     return Response.BadRequest({ success: false, message: "Missing transaction data" });
   }
 
@@ -40,7 +56,9 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
     return Response.BadRequest({ success: false, message: "Missing signature" });
   }
 
-  const processedEvents = await getTransactionProcessedEvents({ id: transaction.id });
+  const processedEvents = await getTransactionProcessedEvents(saleorApiUrl, {
+    id: transaction.id,
+  });
   const eventProcessed = processedEvents.some((signature) => signature === payloadSignature);
 
   if (eventProcessed) {
@@ -57,10 +75,20 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
   try {
     if (action.actionType === "REFUND") {
       if (isMollieTransaction(transaction)) {
-        await handleMolieRefund(transactionReversal, transaction);
+        await handleMolieRefund({ saleorApiUrl, refund: transactionReversal, transaction });
       }
       if (isAdyenTransaction(transaction)) {
-        await handleAdyenRefund(transactionReversal, transaction);
+        await handleAdyenRefund({ saleorApiUrl, refund: transactionReversal, transaction });
+      }
+      if (isDummyTransaction(transaction)) {
+        await handleDummyRefund({
+          saleorApiUrl,
+          refund: {
+            ...transactionReversal,
+            id: transaction.id,
+          },
+          transaction,
+        });
       }
     }
 
@@ -81,7 +109,7 @@ const handler: Handler<TransactionActionPayloadFragment> = async (req) => {
     });
   }
 
-  await updateTransactionProcessedEvents({
+  await updateTransactionProcessedEvents(saleorApiUrl, {
     id: transaction.id,
     input: JSON.stringify([...processedEvents, payloadSignature]),
   });

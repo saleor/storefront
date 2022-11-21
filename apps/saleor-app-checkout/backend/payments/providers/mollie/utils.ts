@@ -1,12 +1,16 @@
 import createMollieClient, { OrderCreateParams, OrderLineType } from "@mollie/api-client";
 
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { envVars } from "@/saleor-app-checkout/constants";
 import { OrderFragment, OrderLineFragment } from "@/saleor-app-checkout/graphql";
+import { MissingPaymentProviderSettingsError } from "../../errors";
 
-export const getMollieClient = async () => {
-  const metadata = await getPrivateSettings(envVars.apiUrl, false);
-  const apiKey = metadata.paymentProviders.mollie.apiKey!;
+export const getMollieClient = async (saleorApiUrl: string) => {
+  const metadata = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: false });
+  const apiKey = metadata.paymentProviders.mollie.apiKey;
+
+  if (!apiKey) {
+    throw new MissingPaymentProviderSettingsError("mollie", ["apiKey"]);
+  }
 
   return createMollieClient({
     apiKey,

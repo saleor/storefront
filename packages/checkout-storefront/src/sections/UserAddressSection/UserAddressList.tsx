@@ -17,7 +17,7 @@ export const UserAddressList: React.FC<UserAddressListProps> = ({ onEditChange, 
   const formatMessage = useFormattedMessages();
   const isShippingAddressList = type === "SHIPPING";
   const { addressList, selectedAddressId, setSelectedAddressId } = useAddressList();
-  const { isAvailable } = useAddressAvailability({ pause: !isShippingAddressList });
+  const { isAvailable } = useAddressAvailability(!isShippingAddressList);
 
   return (
     <SelectBoxGroup

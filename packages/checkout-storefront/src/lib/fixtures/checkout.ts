@@ -14,6 +14,7 @@ export const checkout: CheckoutFragment = {
   giftCards: [],
   channel: {
     id: "Q2hhbm5lbDoyMjQz",
+    slug: "default-channel",
     __typename: "Channel",
   },
   shippingAddress: {
