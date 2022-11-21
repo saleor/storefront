@@ -80,7 +80,7 @@ importers:
       '@pollyjs/persister-fs': 6.0.5
       '@saleor/app-sdk': 0.18.0
       '@saleor/checkout-storefront': workspace:*
-      '@saleor/macaw-ui': 0.6.6
+      '@saleor/macaw-ui': 0.6.7
       '@sentry/nextjs': 7.16.0
       '@types/content-type': 1.1.5
       '@types/crypto-js': 4.1.1
@@ -146,7 +146,7 @@ importers:
       '@mollie/api-client': registry.npmjs.org/@mollie/api-client/3.6.0
       '@saleor/app-sdk': registry.npmjs.org/@saleor/app-sdk/0.18.0_r5sq4deac3rmm2d5onhwvomqve
       '@saleor/checkout-storefront': link:../../packages/checkout-storefront
-      '@saleor/macaw-ui': registry.npmjs.org/@saleor/macaw-ui/0.6.6_vdvb7n236vx4s4shxyxtl27fte
+      '@saleor/macaw-ui': registry.npmjs.org/@saleor/macaw-ui/0.6.7_vdvb7n236vx4s4shxyxtl27fte
       '@sentry/nextjs': registry.npmjs.org/@sentry/nextjs/7.16.0_next@13.0.0+react@18.2.0
       '@urql/exchange-auth': registry.npmjs.org/@urql/exchange-auth/1.0.0_graphql@16.6.0
       '@urql/exchange-multipart-fetch': registry.npmjs.org/@urql/exchange-multipart-fetch/1.0.1_graphql@16.6.0
@@ -6315,11 +6315,11 @@ packages:
       - supports-color
     dev: false
 
-  registry.npmjs.org/@saleor/macaw-ui/0.6.6_vdvb7n236vx4s4shxyxtl27fte:
-    resolution: {integrity: sha512-Ri1/1L7Kwgs9glbn9SVht5wVMyYq9sZwL6FOPJvicTRFdod360aliQhXH3CeMJIe0WPKB/H0TfmYD4iUeQufJw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@saleor/macaw-ui/-/macaw-ui-0.6.6.tgz}
-    id: registry.npmjs.org/@saleor/macaw-ui/0.6.6
+  registry.npmjs.org/@saleor/macaw-ui/0.6.7_vdvb7n236vx4s4shxyxtl27fte:
+    resolution: {integrity: sha512-HRa8c4M+siOltopPLDusRh/03P7G2FlboFszal5sd2X8HUNZJ4c2BS83gnBMmVgp37kxeZiBVe95Fhjm0PRzbA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@saleor/macaw-ui/-/macaw-ui-0.6.7.tgz}
+    id: registry.npmjs.org/@saleor/macaw-ui/0.6.7
     name: '@saleor/macaw-ui'
-    version: 0.6.6
+    version: 0.6.7
     engines: {node: '>=10'}
     peerDependencies:
       '@material-ui/core': ^4.11.2
