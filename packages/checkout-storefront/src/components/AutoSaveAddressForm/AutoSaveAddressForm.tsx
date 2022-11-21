@@ -4,14 +4,19 @@ import {
   useAddressForm,
   UseAddressFormProps,
 } from "@/checkout-storefront/components/AddressForm/useAddressForm";
+import { AddressTypeEnum } from "@/checkout-storefront/graphql";
+import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 import React from "react";
 
 type AutoSaveAddressFormProps = UseAddressFormProps &
-  Omit<AddressFormProps, "formProps" | "defaultInputOptions" | "children">;
+  Omit<AddressFormProps, "formProps" | "defaultInputOptions" | "children"> & {
+    type: AddressTypeEnum;
+  };
 
 export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
   defaultValues,
+  type,
   onSubmit,
   ...addressFormRest
 }) => {
@@ -19,6 +24,12 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
     defaultValues,
     onSubmit,
   });
+
+  useCheckoutFormValidationTrigger(
+    type === "BILLING" ? "billingAddress" : "shippingAddress",
+    formProps
+  );
+
   const { getValues } = formProps;
 
   const debouncedSubmit = useFormDebouncedSubmit<AddressFormData>({

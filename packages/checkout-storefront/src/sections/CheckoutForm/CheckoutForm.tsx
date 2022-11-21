@@ -2,9 +2,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
 import { Suspense, useState } from "react";
-import { Controller, FormProvider } from "react-hook-form";
 import { Button } from "@/checkout-storefront/components/Button";
-import { useCheckoutFinalize } from "./useCheckoutFinalize";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { PaymentSection } from "../PaymentSection";
 import { ShippingAddressSection } from "../ShippingAddressSection/ShippingAddressSection";
@@ -19,52 +17,35 @@ import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
-  const { checkoutFinalize, errors: userRegisterErrors } = useCheckoutFinalize();
   const { passwordResetToken } = getQueryParams();
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
-  const { handleSubmit, isProcessingApiChanges, methods } = useCheckoutForm({
-    userRegisterErrors,
-    checkoutFinalize,
-  });
+  const { handleSubmit, isProcessing } = useCheckoutForm();
 
   return (
     <div className="checkout-form-container">
       <div className="checkout-form">
-        <FormProvider {...methods}>
-          <Suspense fallback={<ContactSkeleton />}>
-            <Contact setShowOnlyContact={setShowOnlyContact} />
-          </Suspense>
-          <>
-            {checkout?.isShippingRequired && (
-              <Suspense fallback={<AddressSectionSkeleton />}>
-                <ShippingAddressSection collapsed={showOnlyContact} />
-              </Suspense>
-            )}
-            <Suspense fallback={<DeliveryMethodsSkeleton />}>
-              <DeliveryMethods collapsed={showOnlyContact} />
+        <Suspense fallback={<ContactSkeleton />}>
+          <Contact setShowOnlyContact={setShowOnlyContact} />
+        </Suspense>
+        <>
+          {checkout?.isShippingRequired && (
+            <Suspense fallback={<AddressSectionSkeleton />}>
+              <ShippingAddressSection collapsed={showOnlyContact} />
             </Suspense>
-            {/* temporarily hide until we figure out how to show this */}
-            {/* along with payment providers section */}
-            {/* <AdyenDropIn /> */}
-            <Controller
-              name="paymentMethodId"
-              control={methods.control}
-              render={({ field: { onChange } }) => (
-                <PaymentSection
-                  collapsed={showOnlyContact}
-                  onSelect={onChange}
-                  selectedPaymentMethod={methods.watch("paymentMethodId")}
-                  setValue={methods.setValue}
-                />
-              )}
-            />
-          </>
-        </FormProvider>
+          )}
+          <Suspense fallback={<DeliveryMethodsSkeleton />}>
+            <DeliveryMethods collapsed={showOnlyContact} />
+          </Suspense>
+          {/* temporarily hide until we figure out how to show this */}
+          {/* along with payment providers section */}
+          {/* <AdyenDropIn /> */}
+          <PaymentSection collapsed={showOnlyContact} />
+        </>
       </div>
       {!showOnlyContact &&
-        (isProcessingApiChanges ? (
+        (isProcessing ? (
           <Button
             className="pay-button"
             disabled

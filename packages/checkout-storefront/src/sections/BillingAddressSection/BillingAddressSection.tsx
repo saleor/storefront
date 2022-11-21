@@ -145,6 +145,7 @@ export const BillingAddressSection = () => {
           ) : (
             <GuestAddressSection
               {...errorProps}
+              type="BILLING"
               checkAddressAvailability={false}
               defaultAddress={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage(billingMessages.billingAddress)}

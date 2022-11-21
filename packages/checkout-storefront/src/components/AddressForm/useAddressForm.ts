@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { DefaultValues, Resolver, useForm, UseFormReturn } from "react-hook-form";
 import { AddressFormData } from "./types";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
-import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { countries } from "@/checkout-storefront/lib/consts";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
@@ -11,10 +10,6 @@ import { omit } from "lodash-es";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useAddressFormValidationResolver } from "@/checkout-storefront/components/AddressForm/useAddressFormValidationResolver";
 import { getPhoneNumberWithCountryCode } from "@/checkout-storefront/lib/utils/phoneNumber";
-import {
-  useCheckoutValidationActions,
-  useCheckoutValidationState,
-} from "@/checkout-storefront/hooks/state/useCheckoutValidationStateStore";
 
 export interface UseAddressFormProps {
   defaultValues?: AddressFormData;
@@ -31,8 +26,6 @@ export const useAddressForm = ({
   onSubmit,
 }: UseAddressFormProps): UseAddressFormReturn => {
   const defaultValuesRef = useRef<AddressFormData>(defaultValues);
-  const { setErrors } = useCheckoutValidationActions();
-  const validating = useCheckoutValidationState();
 
   const initialCountryCode = useMemo(() => {
     const countryCodeInOptions = countries.find((code) => code === defaultValues.countryCode);
@@ -54,29 +47,7 @@ export const useAddressForm = ({
     },
   });
 
-  const { formState, trigger, getValues, setValue } = formProps;
-
-  const handleGlobalValidationTrigger = useCallback(async () => {
-    if (validating) {
-      const formValid = await trigger();
-      if (formValid) {
-        return;
-      }
-
-      setErrors(
-        Object.entries(formState.errors).map(([name, { type }]) => ({
-          name,
-          type,
-        }))
-      );
-    }
-  }, [formState.errors, setErrors, trigger, validating]);
-
-  useEffect(() => {
-    void handleGlobalValidationTrigger();
-  }, [handleGlobalValidationTrigger]);
-
-  useCheckoutFormValidationTrigger(trigger);
+  const { trigger, getValues, setValue } = formProps;
 
   const hasDataChanged = useCallback(
     (formData: AddressFormData) => !isMatchingAddressFormData(formData, defaultValuesRef.current),

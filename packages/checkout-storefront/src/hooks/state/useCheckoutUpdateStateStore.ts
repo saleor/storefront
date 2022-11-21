@@ -14,10 +14,12 @@ export type CheckoutUpdateStateScope =
       | "checkoutEmailUpdate"
       | "checkoutBillingUpdate"
       | "checkoutLinesUpdate"
+      | "userRegister"
     >
   | "checkoutFetch";
 
 interface CheckoutUpdateStateStore {
+  shouldRegisterUser: boolean;
   loadingCheckout: boolean;
   updateState: Record<CheckoutUpdateStateScope, CheckoutUpdateStateStatus>;
   actions: {
@@ -29,6 +31,7 @@ interface CheckoutUpdateStateStore {
 }
 
 const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
+  shouldRegisterUser: false,
   loadingCheckout: false,
   updateState: {
     checkoutShippingUpdate: "success",
@@ -39,8 +42,10 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
     checkoutLinesUpdate: "success",
     checkoutEmailUpdate: "success",
     checkoutFetch: "success",
+    userRegister: "success",
   },
   actions: {
+    setShouldRegisterUser: (shouldRegisterUser: boolean) => ({ shouldRegisterUser }),
     setLoadingCheckout: (loading: boolean) => set(() => ({ loadingCheckout: loading })),
     setUpdateState: (scope) => (status) =>
       set((state) => ({ updateState: { ...state.updateState, [scope]: status } })),
@@ -55,6 +60,9 @@ export const useCheckoutUpdateState = () =>
     }),
     shallow
   );
+
+export const useUserRegisterState = () =>
+  useCheckoutUpdateStateStore((state) => state.shouldRegisterUser);
 
 export const useCheckoutUpdateStateActions = (
   scope: CheckoutUpdateStateScope | "checkoutLoading"

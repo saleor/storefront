@@ -87,6 +87,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
           />
         ) : (
           <GuestAddressSection
+            type="SHIPPING"
             checkAddressAvailability={true}
             defaultAddress={checkout.shippingAddress}
             title={formatMessage(shippingMessages.shippingAddress)}

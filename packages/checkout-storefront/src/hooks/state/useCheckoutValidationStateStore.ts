@@ -1,25 +1,25 @@
-import { CustomError } from "@/checkout-storefront/hooks/useAlerts";
 import create from "zustand";
+import shallow from "zustand/shallow";
+
+export type CheckoutFormScope = "shippingAddress" | "billingAddress" | "guestUser";
+type CheckoutFormValidationStatus = "valid" | "invalid";
 
 interface UseCheckoutValidationStateStore {
   validating: boolean;
-  errors: CustomError[];
+  validationState: Record<CheckoutFormScope, CheckoutFormValidationStatus>;
   actions: {
-    validateAllForms: (validate: boolean) => void;
-    setErrors: (errors: CustomError[]) => void;
+    validateAllForms: () => void;
+    setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) => void;
   };
 }
 
 const useCheckoutValidationStateStore = create<UseCheckoutValidationStateStore>((set) => ({
   validating: false,
-  errors: [],
+  validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
   actions: {
-    validateAllForms: (validating: boolean) => set(() => ({ validating })),
-    setErrors: (errors: CustomError[]) =>
-      set((state) => ({
-        validateAllForms: false,
-        errors: [...state.errors, ...errors],
-      })),
+    validateAllForms: () => set(() => ({ validating: true })),
+    setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
+      set((state) => ({ validationState: { ...state.validationState, [scope]: status } })),
   },
 }));
 
@@ -27,4 +27,7 @@ export const useCheckoutValidationActions = () =>
   useCheckoutValidationStateStore((state) => state.actions);
 
 export const useCheckoutValidationState = () =>
-  useCheckoutValidationStateStore((state) => state.validating);
+  useCheckoutValidationStateStore(
+    ({ validating, validationState }) => ({ validating, validationState }),
+    shallow
+  );
