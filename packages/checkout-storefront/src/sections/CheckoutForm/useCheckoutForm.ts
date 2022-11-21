@@ -6,8 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCheckoutFormValidation } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFormValidation";
 import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
-import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
-import shallow from "zustand/shallow";
+import { useCheckoutUpdateState } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 
 export type UseCheckoutFormProps = {
   userRegisterErrors: Errors<CheckoutFormData>;
@@ -17,12 +16,12 @@ export type UseCheckoutFormProps = {
 export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseCheckoutFormProps) => {
   const { errorMessages } = useErrorMessages();
   const { checkout } = useCheckout();
-  const { updateState, loadingCheckout } = useCheckoutUpdateStateStore(
-    ({ updateState, loadingCheckout }) => ({ updateState, loadingCheckout }),
-    shallow
-  );
 
-  const hasFinishedApiChangesWithNoError =
+  const { updateState, loadingCheckout } = useCheckoutUpdateState();
+
+  // const finishedFormsValidationWithNoError = !Object.values()
+
+  const finishedApiChangesWithNoError =
     !Object.values(updateState).some((status) => status === "loading") &&
     !Object.values(updateState).some((status) => status === "error") &&
     !loadingCheckout;
@@ -59,10 +58,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
 
   const { getValues } = methods;
 
-  const ensureValidCheckout = useCheckoutFormValidation({
-    ...methods,
-    schema,
-  });
+  const ensureValidCheckout = useCheckoutFormValidation();
 
   // not using form handleSubmit because it wouldn't allow us to have
   // a flow with steps and errors in between
@@ -82,7 +78,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
   }, [checkoutFinalize, ensureValidCheckout, getValues, hasFinishedApiChangesWithNoError]);
 
   useEffect(() => {
-    if (!hasFinishedApiChangesWithNoError) {
+    if (!finishedApiChangesWithNoError || !finishedFormsValidationWithNoError) {
       return;
     }
 
@@ -91,7 +87,7 @@ export const useCheckoutForm = ({ userRegisterErrors, checkoutFinalize }: UseChe
     if (submitInProgress) {
       handleSubmit();
     }
-  }, [handleSubmit, submitInProgress, hasFinishedApiChangesWithNoError]);
+  }, [handleSubmit, submitInProgress, finishedApiChangesWithNoError]);
 
   return { methods, handleSubmit, isProcessingApiChanges };
 };

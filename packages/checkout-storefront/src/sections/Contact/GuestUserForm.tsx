@@ -21,7 +21,7 @@ import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/us
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 import { contactMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 
 type AnonymousCustomerFormProps = Pick<SignInFormContainerProps, "onSectionChange">;
 
@@ -43,9 +43,7 @@ export const GuestUserForm: React.FC<AnonymousCustomerFormProps> = ({ onSectionC
     formState: contextFormState,
     trigger: triggerContext,
   } = formContext;
-  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
-    state.setUpdateState("checkoutEmailUpdate")
-  );
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutEmailUpdate");
 
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
 

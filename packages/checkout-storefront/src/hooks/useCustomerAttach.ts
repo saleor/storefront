@@ -1,6 +1,6 @@
 import { useCheckoutCustomerAttachMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks";
-import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { extractMutationErrors, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
@@ -13,9 +13,7 @@ export const useCustomerAttach = () => {
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
-  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
-    state.setUpdateState("checkoutCustomerAttach")
-  );
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutCustomerAttach");
 
   const attachCustomer = useCallback(async () => {
     if (checkout?.user?.id === user?.id || fetching || loading) {

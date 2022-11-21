@@ -23,7 +23,7 @@ import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 
 interface FormData {
   selectedMethodId: string | undefined;
@@ -36,9 +36,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
 
-  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
-    state.setUpdateState("checkoutDeliveryMethodUpdate")
-  );
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutDeliveryMethodUpdate");
 
   const previousShippingCountry = useRef<CountryCode | undefined | null>(
     shippingAddress?.country?.code as CountryCode | undefined
@@ -141,7 +139,9 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   };
 
   useEffect(() => {
-    setCheckoutUpdateState("loading");
+    // this useffects needs to go in favor of doing whatever's here
+    // imperatively in onChange once the forms are changed
+    // setCheckoutUpdateState("loading");
     void debouncedSubmit();
   }, [selectedMethodId, debouncedSubmit]);
 

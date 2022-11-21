@@ -22,7 +22,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { billingMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateStore } from "@/checkout-storefront/hooks/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -30,9 +30,7 @@ export const BillingAddressSection = () => {
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress, id: checkoutId } = checkout;
-  const setCheckoutUpdateState = useCheckoutUpdateStateStore((state) =>
-    state.setUpdateState("checkoutBillingUpdate")
-  );
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutBillingUpdate");
 
   const hasBillingSameAsShipping = isMatchingAddress(shippingAddress, billingAddress);
 

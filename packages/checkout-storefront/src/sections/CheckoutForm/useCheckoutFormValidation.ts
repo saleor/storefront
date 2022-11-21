@@ -15,6 +15,7 @@ import { isMatchingAddress } from "@/checkout-storefront/lib/utils";
 import { MessageDescriptor } from "react-intl";
 import { checkoutFormMessages } from "./messages";
 import { useCallback } from "react";
+import { useCheckoutValidationActions } from "@/checkout-storefront/hooks/state/useCheckoutValidationStateStore";
 
 interface UseCheckoutFormValidation extends UseFormReturn<CheckoutFormData> {
   schema: { validateSyncAt: (key: keyof CheckoutFormData, data: CheckoutFormData) => void };
@@ -30,6 +31,7 @@ export const useCheckoutFormValidation = ({
   const { shippingAddress, billingAddress } = checkout;
   const { showCustomErrors } = useAlerts("checkoutFinalize");
   const { authenticated } = useAuthState();
+  const { validateAllForms } = useCheckoutValidationActions();
 
   const {
     hasAllRequiredFields: shippingHasAllRequiredFields,
@@ -83,6 +85,8 @@ export const useCheckoutFormValidation = ({
   );
 
   const ensureValidCheckout = useCallback((): boolean => {
+    validateAllForms(true);
+    console.log("LOOL");
     let isValid = true;
     setValue("validating", true);
     const formData = getValues();
