@@ -58,16 +58,16 @@ npm i -g @saleor/cli
 
 [Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli)
 
-Set up your local storefront development environment by running the `storefront create` command. It will take you through the process of creating a new Saleor API instance (or choosing an existing one) and connecting it to your freshly cloned local storefront setup:
-
-```
-saleor storefront create
-```
-
-If you don't want to customize available options, you can also spawn a fully functional local storefront development environment using `--demo` attribute:
+Set up your local storefront development environment by running the storefront create command with --demo attribute. It will create a fresh clone, install dependencies and create a Saleor instance in the Saleor Cloud. The backend will be set to the newly created Cloud instance.
 
 ```
 saleor storefront create --demo
+```
+
+You can also spawn your local storefront development environment without using the --demo attribute. It will create a fresh clone and install dependencies. The default configuration uses the master staging environment of the Saleor Cloud as a backend.
+
+```
+saleor storefront create
 ```
 
 ---
