@@ -1,0 +1,16 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  saleor-store
+spec:
+  selector:
+    app:  saleor-store
+  type:  NodePort
+  ports:
+  - name: saleor-str
+    port: 3000
+    targetPort: saleor-str
+  - name: saleor-co
+    port: 3001
+    targetPort: saleor-co

@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-storefront
+spec:
+  template:
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: saleor-storefront
+        image: skymoore/saleor-storefront
+        imagePullPolicy: Always
+        command:
+          - sh
+          - -c
+          - '(nginx &) && pnpm turbo run start --filter=storefront...'
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "128M"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        ports:
+          - containerPort:  3000
+            name:  saleor-str

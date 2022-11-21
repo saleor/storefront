@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-checkout
+spec:
+  template:
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: saleor-checkout
+        image: skymoore/saleor-storefront
+        imagePullPolicy: Always
+        command:
+          - pnpm
+          - turbo
+          - run
+          - start
+          - --filter=saleor-app-checkout...
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "128M"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        ports:
+          - containerPort:  3001
+            name:  saleor-co
