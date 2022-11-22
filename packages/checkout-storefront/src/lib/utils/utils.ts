@@ -33,11 +33,11 @@ export const extractMutationErrors = <TData extends FormDataBase, TVars extends 
   result: OperationResult<TData, TVars> | any // any to cover apollo client
   // mutations, to be removed once we remove apollo client from sdk
 ): [boolean, ApiErrors<TData>] => {
-  const urqlErrors = result.error ? [result.error] : [];
+  const urqlErrors = result?.error ? [result.error] : [];
 
   const graphqlErrors = reduce(
-    result.data as object,
-    (result, { errors }) => {
+    (result?.data || {}) as object,
+    (result, { errors = [] }) => {
       return [...result, ...errors];
     },
     []

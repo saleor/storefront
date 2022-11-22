@@ -12,6 +12,9 @@ on:
           - https://staging-demo.saleor.io/
           - https://demo.saleor.io/
 
+  schedule:
+    - cron: "00 2 * * 1-5"
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -42,3 +45,9 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
+          CYPRESS_USER_EMAIL: "admin@example.com"
+          CYPRESS_USER_PASSWORD: "admin"
+          CYPRESS_DIGITAL_PRODUCT: "cloud"
+          CYPRESS_WITHOUT_VARIANTS: "beanie"
+          CYPRESS_WITH_VARIANTS: "zoom"
+          CYPRESS_PRODUCT_TO_SEARCH: "polo"
