@@ -4,5 +4,7 @@ declare namespace Cypress {
     addAliasToGraphRequest(alias: string): Chainable<any>;
     addAliasForSearchQuery(alias: string, searchQuery: string): Chainable<any>;
     fillUpBasicAddress(address: {}): Chainable<any>;
+    loginUserViaRequest(authorization?: string, user?: {}): Chainable<any>;
+    sendRequestWithQuery(query: string): Chainable<any>;
   }
 }
