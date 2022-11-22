@@ -11,11 +11,21 @@ export default defineConfig({
   requestTimeout: 15000,
   viewportWidth: 1400,
   viewportHeight: 660,
+  retries: {
+    runMode: 1,
+    openMode: 0,
+  },
   env: {
     API_URL: process.env.SALEOR_API_URL,
+    userEmail: process.env.CYPRESS_USER_EMAIL,
+    userPassword: process.env.CYPRESS_USER_PASSWORD,
+    digitalProduct: process.env.CYPRESS_DIGITAL_PRODUCT,
+    productWithoutVariants: process.env.CYPRESS_WITHOUT_VARIANTS,
+    productWithVariants: process.env.CYPRESS_WITH_VARIANTS,
+    productToSearch: process.env.CYPRESS_PRODUCT_TO_SEARCH,
   },
   e2e: {
-    baseUrl: "http://localhost:3000",
+    baseUrl: "http://localhost:3000/",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
   },
 });

@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 import { CHECKOUT_ELEMENTS } from "../elements/checkout/checkout-page";
+import { TEST_USER } from "../fixtures/users";
 
 Cypress.Commands.add("addAliasToGraphRequest", (operationName) => {
   cy.intercept("POST", Cypress.env("API_URL"), (req) => {
@@ -61,4 +62,47 @@ Cypress.Commands.add("fillUpBasicAddress", (address) => {
     .type(address.postalCode)
     .get(CHECKOUT_ELEMENTS.areaSelect)
     .select(address.countryArea);
+});
+
+Cypress.Commands.add("sendRequestWithQuery", (query, authorization = "auth", variables = "") => {
+  cy.request({
+    body: {
+      variables,
+      query,
+    },
+    headers: {
+      Authorization: `Bearer ${authorization}`,
+    },
+    method: "POST",
+    url: Cypress.env("API_URL"),
+    log: true,
+  }).then((response) => {
+    const respInSting = JSON.stringify(response.body);
+    if (respInSting.includes(`"errors":[{`)) {
+      cy.log(query).log(JSON.stringify(response.body));
+    }
+  });
+});
+
+Cypress.Commands.add("loginUserViaRequest", (authorization = "auth", user = TEST_USER) => {
+  const mutation = `mutation TokenAuth{
+    tokenCreate(email: "${user.email}", password: "${user.password}") {
+      token
+      csrfToken
+      refreshToken
+      errors: errors {
+        code
+        field
+        message
+      }
+      user {
+        id
+        email
+      }
+    }
+  }`;
+  return cy.sendRequestWithQuery(mutation).then((resp) => {
+    window.localStorage.setItem("_saleorCSRFToken", resp.body.data.tokenCreate.csrfToken);
+    window.sessionStorage.setItem(authorization, resp.body.data.tokenCreate.token);
+  });
 });
