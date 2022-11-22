@@ -20,12 +20,12 @@ export const ClientAppBridgeProvider = ({ children }: { children: ReactNode }) =
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(!!app.getState()?.token);
 
-  // @todo use `getState().saleorApiUrl`
+  // @todo use `saleorApiUrl`
   const domain = app.getState().domain;
   const saleorApiUrl = `https://${domain}/graphql/`;
   const client = useMemo(
     () => createGraphqlClient(saleorApiUrl, app.getState().token),
-    [saleorApiUrl]
+    [app, saleorApiUrl]
   );
 
   useEffect(() => {

@@ -15,7 +15,7 @@ export const useGetPaymentProviderSettings = <TArgs>(
   const { app } = useAppContext();
   const domain = app.getState().domain;
 
-  // @todo use saleorApiUrl
+  // @todo use `saleorApiUrl`
   const saleorApiUrl = `https://${domain}/graphql/`;
 
   const [{ data, loading, error }] = useFetch(requestGetPaymentProviderSettings, {

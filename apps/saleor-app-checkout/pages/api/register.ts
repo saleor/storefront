@@ -13,6 +13,7 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
     response.status(400).json({ success: false, message: `Missing ${saleorDomainHeader} header.` });
     return;
   }
+  // @todo use `saleorApiUrl` from request
   const saleorApiUrl = `https://${domain}/graphql/`;
 
   const authToken = request.body?.auth_token as string;
