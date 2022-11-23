@@ -29,7 +29,6 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
     defaultValues,
     onSubmit,
   });
-
   const { getValues } = formProps;
 
   useCheckoutFormValidationTrigger({
