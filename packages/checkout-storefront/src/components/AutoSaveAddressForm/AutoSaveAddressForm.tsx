@@ -5,9 +5,10 @@ import {
   UseAddressFormProps,
 } from "@/checkout-storefront/components/AddressForm/useAddressForm";
 import { AddressTypeEnum } from "@/checkout-storefront/graphql";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
-import React from "react";
+import { checkoutFinalizeMessages } from "@/checkout-storefront/sections/CheckoutForm/messages";
 
 type AutoSaveAddressFormProps = UseAddressFormProps &
   Omit<AddressFormProps, "formProps" | "defaultInputOptions" | "children"> & {
@@ -20,17 +21,23 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
   onSubmit,
   ...addressFormRest
 }) => {
+  const isShippingForm = type === "SHIPPING";
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions(
+    isShippingForm ? "checkoutShippingUpdate" : "checkoutBillingUpdate"
+  );
   const { formProps, onSubmit: handleSubmit } = useAddressForm({
     defaultValues,
     onSubmit,
   });
 
-  useCheckoutFormValidationTrigger(
-    type === "BILLING" ? "billingAddress" : "shippingAddress",
-    formProps
-  );
-
   const { getValues } = formProps;
+
+  useCheckoutFormValidationTrigger({
+    formProps,
+    scope: isShippingForm ? "billingAddress" : "shippingAddress",
+    errorMessage:
+      checkoutFinalizeMessages[isShippingForm ? "shippingAddressInvalid" : "billingAddressInvalid"],
+  });
 
   const debouncedSubmit = useFormDebouncedSubmit<AddressFormData>({
     defaultFormData: defaultValues,
@@ -41,7 +48,12 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
   return (
     <AddressForm
       {...addressFormRest}
-      defaultInputOptions={{ onChange: debouncedSubmit }}
+      defaultInputOptions={{
+        onChange: () => {
+          setCheckoutUpdateState("loading");
+          debouncedSubmit();
+        },
+      }}
       formProps={formProps}
     />
   );

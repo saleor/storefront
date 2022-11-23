@@ -36,21 +36,6 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/dKzVev",
     description: "checkout email update email invalid error",
   },
-  checkoutFinalizeEmailRequiredError: {
-    defaultMessage: "Please provide a valid email before finalizing checkout",
-    id: "useAlerts/messages/rVGqj8",
-    description: "checkout finalize email required error",
-  },
-  checkoutFinalizePaymentProviderRequiredError: {
-    defaultMessage: "Please select a payment method before finalizing checkout",
-    id: "useAlerts/messages/b1SQCj",
-    description: "checkout finalize payment provider required error",
-  },
-  checkoutFinalizeShippingAddressInvalidError: {
-    defaultMessage: "Please fill in a valid shipping address before finalizing checkout",
-    id: "useAlerts/messages/Em5uvP",
-    description: "checkout finalize - shipping address invalid error",
-  },
   checkoutAddPromoCodePromoCodeInvalidError: {
     defaultMessage: "Invalid promo code provided",
     id: "useAlerts/messages/yGh+vi",
@@ -150,20 +135,5 @@ export const errorMessages = defineMessages({
     defaultMessage: "Invalid postal code was provided for billing address",
     id: "useAlerts/messages/8fk/m5",
     description: "checkout billing update - postal code invalid error",
-  },
-  checkoutFinalizeEmailInvalidError: {
-    defaultMessage: "Please provide valid email before finalizing checkout",
-    id: "useAlerts/messages/cRtX18",
-    description: "checkout finalize - email invalid error",
-  },
-  checkoutFinalizeShippingAddressRequiredError: {
-    defaultMessage: "Please provide a valid shipping address before finalizing checkout",
-    id: "useAlerts/messages/ow9nan",
-    description: "please provide a valid shipping address before finalizing checkout",
-  },
-  checkoutFinalizeBillingAddressRequiredError: {
-    defaultMessage: "Please provide a valid billing address before finalizing",
-    id: "useAlerts/messages/kiBZQ6",
-    description: "please provide a valid billing address before finalizing",
   },
 });

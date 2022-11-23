@@ -9,6 +9,7 @@ interface UseCheckoutValidationStateStore {
   validationState: Record<CheckoutFormScope, CheckoutFormValidationStatus>;
   actions: {
     validateAllForms: () => void;
+    setValidating: (validaing: boolean) => void;
     setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) => void;
   };
 }
@@ -18,8 +19,12 @@ const useCheckoutValidationStateStore = create<UseCheckoutValidationStateStore>(
   validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
   actions: {
     validateAllForms: () => set(() => ({ validating: true })),
+    setValidating: (validating: boolean) => set(() => ({ validating })),
     setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
-      set((state) => ({ validationState: { ...state.validationState, [scope]: status } })),
+      set((state) => ({
+        validationState: { ...state.validationState, [scope]: status },
+        validating: false,
+      })),
   },
 }));
 

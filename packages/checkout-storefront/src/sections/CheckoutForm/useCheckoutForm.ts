@@ -3,7 +3,7 @@ import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/hooks/state/useCheckoutValidationStateStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCheckoutFinalize } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFinalize";
 
 export const useCheckoutForm = () => {
@@ -19,19 +19,44 @@ export const useCheckoutForm = () => {
     validateAllForms();
   };
 
+  const updateStateValues = Object.values(updateState);
+
+  const anyRequestsInProgress = updateStateValues.some((status) => status === "loading");
+
   const finishedApiChangesWithNoError =
-    !Object.values(updateState).some((status) => status === "loading") &&
-    !Object.values(updateState).some((status) => status === "error") &&
+    !updateStateValues.some((status) => status === "loading") &&
+    !updateStateValues.some((status) => status === "error") &&
     !loadingCheckout;
 
   const allFormsValid =
     !validating && !Object.values(validationState).every((value) => value === "valid");
 
-  useEffect(() => {
+  const handleSubmit = useCallback(async () => {
+    console.log({ updateState, submitInProgress, finishedApiChangesWithNoError, allFormsValid });
     if (submitInProgress && finishedApiChangesWithNoError && allFormsValid) {
       void checkoutFinalize();
+      return;
     }
-  }, [submitInProgress, finishedApiChangesWithNoError, allFormsValid, checkoutFinalize]);
 
-  return { handleSubmit: submitInitialize, isProcessing: submitInProgress };
+    if (!anyRequestsInProgress) {
+      setSubmitInProgress(false);
+    }
+  }, [
+    submitInProgress,
+    finishedApiChangesWithNoError,
+    allFormsValid,
+    checkoutFinalize,
+    anyRequestsInProgress,
+  ]);
+
+  useEffect(
+    () => void handleSubmit(),
+
+    [handleSubmit]
+  );
+
+  return {
+    handleSubmit: submitInitialize,
+    isProcessing: submitInProgress && anyRequestsInProgress,
+  };
 };
