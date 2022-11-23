@@ -14,7 +14,7 @@ describe("useSummaryLineAttributesText", () => {
     const { result: hook } = renderHook(
       () => useSummaryLineLineAttributesText(line as CheckoutLineFragment),
       {
-        wrapper: getMockProviders({ intl: true }),
+        wrapper: getMockProviders(),
       }
     );
 
@@ -30,7 +30,7 @@ describe("useSummaryLineAttributesText", () => {
     const { result: hook } = renderHook(
       () => useSummaryLineLineAttributesText(line as CheckoutLineFragment),
       {
-        wrapper: getMockProviders({ intl: true }),
+        wrapper: getMockProviders(),
       }
     );
 

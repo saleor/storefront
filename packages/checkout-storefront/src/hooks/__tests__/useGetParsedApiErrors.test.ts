@@ -10,7 +10,7 @@ type TestFormData = AddressFormData & CheckoutFormData;
 describe("useGetParsedApiErrors", () => {
   it("should return properly formatted errors from api errors array", () => {
     const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
-      wrapper: getMockProviders({ intl: true }),
+      wrapper: getMockProviders(),
     });
 
     const errors = [
@@ -43,14 +43,14 @@ describe("useGetParsedApiErrors", () => {
 
   it("should return empty array for empty api errors array", () => {
     const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
-      wrapper: getMockProviders({ intl: true }),
+      wrapper: getMockProviders(),
     });
     expect(hook.current.getParsedApiErrors([])).toEqual([]);
   });
 
   it("should return proper form errors object from api errors array", () => {
     const { result: hook } = renderHook(() => useGetParsedApiErrors<TestFormData>(), {
-      wrapper: getMockProviders({ intl: true }),
+      wrapper: getMockProviders(),
     });
 
     const errors = [

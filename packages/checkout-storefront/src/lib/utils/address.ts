@@ -115,7 +115,6 @@ export const addressFieldsOrder: AddressField[] = [
   "firstName",
   "lastName",
   "companyName",
-  "phone",
   "streetAddress1",
   "streetAddress2",
   "city",
@@ -123,6 +122,7 @@ export const addressFieldsOrder: AddressField[] = [
   "postalCode",
   "cityArea",
   "countryArea",
+  "phone",
 ];
 
 // api doesn't order the fields but we want to
@@ -147,5 +147,5 @@ export const getFilteredAddressFields = (addressFields: ApiAddressField[]): Addr
     (addressField: ApiAddressField) => addressField !== "name"
   ) as AddressField[];
 
-  return uniq([...filteredAddressFields, "firstName", "lastName"]);
+  return uniq([...filteredAddressFields, "firstName", "lastName", "phone"]);
 };

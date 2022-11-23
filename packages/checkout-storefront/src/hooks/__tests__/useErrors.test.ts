@@ -7,7 +7,7 @@ import { getMockProviders } from "@/checkout-storefront/__tests__/utils";
 describe("useErrors", () => {
   it("should enable setting api errors properly", () => {
     const { result: hook } = renderHook(() => useErrors<AddressFormData>(), {
-      wrapper: getMockProviders({ intl: true }),
+      wrapper: getMockProviders(),
     });
 
     act(() => {
@@ -28,7 +28,7 @@ describe("useErrors", () => {
 
   it("should return hasErrors set to true once the errors are set", () => {
     const { result: hook } = renderHook(() => useErrors<AddressFormData>(), {
-      wrapper: getMockProviders({ intl: true }),
+      wrapper: getMockProviders(),
     });
 
     act(() => {
@@ -40,7 +40,7 @@ describe("useErrors", () => {
 
   it("should clear errors properly", () => {
     const { result: hook } = renderHook(() => useErrors<AddressFormData>(), {
-      wrapper: getMockProviders({ intl: true }),
+      wrapper: getMockProviders(),
     });
 
     act(() => {

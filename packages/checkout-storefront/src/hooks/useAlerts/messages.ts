@@ -141,6 +141,11 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/2leXNc",
     description: "checkout shipping update - postal code invalid error",
   },
+  checkoutShippingUpdatePhoneInvalidError: {
+    defaultMessage: "Invalid phone number was provided for shipping address",
+    id: "useAlerts/messages/jxRMRZ",
+    description: "checkout shipping update - postal code invalid error",
+  },
   checkoutBillingUpdatePostalCodeInvalidError: {
     defaultMessage: "Invalid postal code was provided for billing address",
     id: "useAlerts/messages/8fk/m5",

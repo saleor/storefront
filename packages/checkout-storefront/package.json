@@ -45,6 +45,7 @@
     "clsx": "1.2.1",
     "concurrently": "7.5.0",
     "hex-rgb": "5.0.0",
+    "libphonenumber-js": "^1.10.14",
     "lodash-es": "4.17.21",
     "query-string": "7.1.1",
     "react": "18.2.0",
