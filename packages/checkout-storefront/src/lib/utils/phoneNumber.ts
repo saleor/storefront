@@ -22,7 +22,7 @@ export const isValidPhoneNumber = (phone: string, countryCode: CountryCode | und
   !!getPhoneNumberInstance(phone, countryCode)?.isValid();
 
 const isMissingCountryCallingCode = (phone: string, countryCode: CountryCode) => {
-  const isValidWithoutCountryCode = getPhoneNumberInstance(phone, undefined);
+  const isValidWithoutCountryCode = isValidPhoneNumber(phone, undefined);
   const isValidWithCountryCode = isValidPhoneNumber(phone, countryCode);
 
   return isValidWithCountryCode && !isValidWithoutCountryCode;
