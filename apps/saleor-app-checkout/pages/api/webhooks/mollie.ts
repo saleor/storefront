@@ -5,6 +5,7 @@ import { verifyPayment } from "@/saleor-app-checkout/backend/payments/providers/
 import { updateOrCreateTransaction } from "@/saleor-app-checkout/backend/payments/updateOrCreateTransaction";
 import { unpackPromise, unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
+import { MissingPaymentProviderSettingsError } from "@/saleor-app-checkout/backend/payments/errors";
 
 /**
   Webhooks endpoint for mollie payment gateway.
@@ -31,6 +32,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (paymentError) {
     console.error(paymentError);
+
+    if (paymentError instanceof MissingPaymentProviderSettingsError) {
+      res.status(500).json({ error: paymentError.message });
+      return;
+    }
+
     Sentry.captureException(paymentError);
     res.status(500).json({ error: "error while validating payment" });
     return;

@@ -85,8 +85,9 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       label={formatMessage(paymentSectionLabels.paymentProviders)}
       className="flex flex-row gap-2"
     >
-      {availablePaymentMethods.map((paymentMethodId: PaymentMethodID) => (
+      {availablePaymentMethods.map((paymentMethodId) => (
         <SelectBox
+          key={paymentMethodId}
           className="shrink"
           value={paymentMethodId}
           selectedValue={selectedPaymentMethod || availablePaymentMethods[0]}

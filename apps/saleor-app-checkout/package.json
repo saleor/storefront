@@ -30,7 +30,7 @@
     "@mollie/api-client": "3.6.0",
     "@saleor/app-sdk": "0.18.0",
     "@saleor/checkout-storefront": "workspace:*",
-    "@saleor/macaw-ui": "0.6.6",
+    "@saleor/macaw-ui": "0.6.7",
     "@sentry/nextjs": "7.16.0",
     "@urql/exchange-auth": "1.0.0",
     "@urql/exchange-multipart-fetch": "1.0.1",

@@ -26,3 +26,11 @@ export class UnknownPaymentError extends Error {
     Object.setPrototypeOf(this, UnknownPaymentError.prototype);
   }
 }
+
+export class MissingPaymentProviderSettingsError extends Error {
+  constructor(public provider: PaymentProviderID, missingOptions: readonly string[]) {
+    const opts = missingOptions.join(", ");
+    super(`Error! Provider: ${provider} | Missing payment provider configuration: ${opts}`);
+    Object.setPrototypeOf(this, MissingPaymentProviderSettingsError.prototype);
+  }
+}
