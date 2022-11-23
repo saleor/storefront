@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { CombinedError } from "urql";
+import { useAppContext } from "../components/elements/AppProvider/ClientAppBridgeProvider";
 import { requestGetPaymentProviderSettings } from "../fetch";
-import { app } from "../misc/app";
 import { useAuthData } from "./useAuthData";
 import { useFetch, UseFetchOptionalProps } from "./useFetch";
 import { usePrivateSettings } from "./usePrivateSettings";
@@ -12,11 +12,11 @@ export const useGetPaymentProviderSettings = <TArgs>(
   const { isAuthorized } = useAuthData();
   const { privateSettings, setPrivateSettings } = usePrivateSettings();
 
-  const domain = app?.getState().domain;
-  if (!domain) {
-    console.error(`Missing domain!`);
-  }
-  const saleorApiUrl = domain ? `https://${domain}/graphql/` : "";
+  const { app } = useAppContext();
+  const domain = app.getState().domain;
+
+  // @todo use `saleorApiUrl`
+  const saleorApiUrl = `https://${domain}/graphql/`;
 
   const [{ data, loading, error }] = useFetch(requestGetPaymentProviderSettings, {
     skip: !isAuthorized,
@@ -24,6 +24,7 @@ export const useGetPaymentProviderSettings = <TArgs>(
     args: {
       ...optionalProps?.args,
       saleorApiUrl,
+      token: app.getState().token,
     },
   });
 

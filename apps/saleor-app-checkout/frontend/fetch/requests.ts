@@ -1,6 +1,5 @@
 import { PaymentProviderSettingsValues } from "@/saleor-app-checkout/types/api";
 import { FetchResponse } from "../hooks/useFetch";
-import { getAuthHeaders } from "../misc/auth";
 
 export interface PaymentProviderSettingsResult {
   data: PaymentProviderSettingsValues<"unencrypted">;
@@ -8,28 +7,36 @@ export interface PaymentProviderSettingsResult {
 
 export const requestGetPaymentProviderSettings = ({
   saleorApiUrl,
+  token,
 }: {
   saleorApiUrl: string;
+  token: string;
 }): FetchResponse<PaymentProviderSettingsResult> =>
   fetch(
     `/api/payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "GET",
-      headers: getAuthHeaders(),
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
     }
   );
 
 export const requestSetPaymentProviderSettings = ({
   saleorApiUrl,
+  token,
   ...data
 }: PaymentProviderSettingsValues<"unencrypted"> & {
   saleorApiUrl: string;
+  token: string;
 }): FetchResponse<PaymentProviderSettingsResult> =>
   fetch(
     `/api/set-payment-provider-settings/` + `?` + new URLSearchParams({ saleorApiUrl }).toString(),
     {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
       body: JSON.stringify(data),
     }
   );
