@@ -5,7 +5,7 @@ import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils/url";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 
 export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);

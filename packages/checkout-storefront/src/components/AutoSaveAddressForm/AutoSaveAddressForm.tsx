@@ -5,7 +5,7 @@ import {
   UseAddressFormProps,
 } from "@/checkout-storefront/components/AddressForm/useAddressForm";
 import { AddressTypeEnum } from "@/checkout-storefront/graphql";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 

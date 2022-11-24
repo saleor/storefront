@@ -6,7 +6,7 @@ import { useCallback, useEffect } from "react";
 import {
   SelectedPaymentData,
   useSelectedPaymentData,
-} from "@/checkout-storefront/hooks/state/usePaymentMethodsStore";
+} from "@/checkout-storefront/state/paymentMethodsStore";
 
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();

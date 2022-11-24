@@ -22,7 +22,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { billingMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();

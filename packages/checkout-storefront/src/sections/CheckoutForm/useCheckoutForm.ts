@@ -1,8 +1,8 @@
-import { useCheckoutUpdateState } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
 import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
-} from "@/checkout-storefront/hooks/state/useCheckoutValidationStateStore";
+} from "@/checkout-storefront/state/checkoutValidationStateStore";
 import { useCallback, useEffect, useState } from "react";
 import { useCheckoutFinalize } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFinalize";
 

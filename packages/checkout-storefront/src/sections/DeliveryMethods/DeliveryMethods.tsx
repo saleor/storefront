@@ -23,7 +23,7 @@ import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 
 interface FormData {
   selectedMethodId: string | undefined;

@@ -1,6 +1,6 @@
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
-import { useSetSelectedPaymentData } from "@/checkout-storefront/hooks/state/usePaymentMethodsStore";
+import { useSetSelectedPaymentData } from "@/checkout-storefront/state/paymentMethodsStore";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import {
   ChannelActivePaymentProvidersByChannel,

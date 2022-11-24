@@ -3,7 +3,7 @@ import { useAlerts, useCheckout, useErrorMessages } from "@/checkout-storefront/
 import {
   useCheckoutUpdateStateActions,
   useUserRegisterState,
-} from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+} from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import {

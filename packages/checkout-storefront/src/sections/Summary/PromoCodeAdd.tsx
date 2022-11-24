@@ -19,7 +19,7 @@ import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 
 interface FormData {
   promoCode: string;

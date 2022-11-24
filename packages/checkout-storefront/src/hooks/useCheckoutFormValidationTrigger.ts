@@ -2,7 +2,7 @@ import {
   CheckoutFormScope,
   useCheckoutValidationActions,
   useCheckoutValidationState,
-} from "@/checkout-storefront/hooks/state/useCheckoutValidationStateStore";
+} from "@/checkout-storefront/state/checkoutValidationStateStore";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { useCallback, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -12,6 +12,7 @@ interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
   formProps: Pick<UseFormReturn<TData>, "trigger" | "formState">;
 }
 
+// tells forms to validate once the pay button is clicked
 export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   scope,
   formProps,
