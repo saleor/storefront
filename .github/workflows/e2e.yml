@@ -6,7 +6,7 @@ on:
       environment:
         required: true
         description: "Environment to run tests against"
-        default: "https://staging-demo.saleor.io"
+        default: "https://staging-demo.saleor.io/"
         type: choice
         options:
           - https://staging-demo.saleor.io/
@@ -32,7 +32,7 @@ jobs:
       - name: Get env
         id: get-env-uri
         env:
-          DEFAULT_ENV_URI: "https://staging-demo.saleor.io"
+          DEFAULT_ENV_URI: "https://staging-demo.saleor.io/"
         run: |
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
