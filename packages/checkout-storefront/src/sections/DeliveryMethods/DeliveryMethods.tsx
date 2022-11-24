@@ -140,7 +140,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
   useEffect(() => {
     // this useffects needs to go in favor of doing whatever's here
-    // imperatively in onChange once the forms are changed
+    // imperatively in onChange once the we switch to formik
     // setCheckoutUpdateState("loading");
     void debouncedSubmit();
   }, [selectedMethodId, debouncedSubmit]);

@@ -88,8 +88,6 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
 
   const handleCheckoutEmailUpdate = useCallback(
     async ({ email }: GuestUserFormData) => {
-      // const isValid = await trigger();
-
       if (!email) {
         return;
       }

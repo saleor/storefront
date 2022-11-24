@@ -32,7 +32,6 @@ export const useCheckoutForm = () => {
     !validating && !Object.values(validationState).every((value) => value === "valid");
 
   const handleSubmit = useCallback(async () => {
-    console.log({ updateState, submitInProgress, finishedApiChangesWithNoError, allFormsValid });
     if (submitInProgress && finishedApiChangesWithNoError && allFormsValid) {
       void checkoutFinalize();
       return;
