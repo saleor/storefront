@@ -25,21 +25,3 @@ export const checkoutFormLabels = defineMessages({
     description: "pay accessibility label",
   },
 });
-
-export const checkoutFinalizeMessages = defineMessages({
-  emailRequiredOrInvalid: {
-    defaultMessage: "Please provide a valid email before finalizing checkout",
-    id: "CheckoutForm/messages/rVGqj8",
-    description: "checkout finalize email required error",
-  },
-  shippingAddressInvalid: {
-    defaultMessage: "Please fill in a valid shipping address before finalizing checkout",
-    id: "CheckoutForm/messages/Em5uvP",
-    description: "checkout finalize - shipping address invalid error",
-  },
-  billingAddressInvalid: {
-    defaultMessage: "Please fill in a valid billing address before finalizing checkout",
-    id: "CheckoutForm/messages/1G0La/",
-    description: "checkout finalize - shipping address invalid error",
-  },
-});

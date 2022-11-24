@@ -8,7 +8,6 @@ import { AddressTypeEnum } from "@/checkout-storefront/graphql";
 import { useCheckoutUpdateStateActions } from "@/checkout-storefront/hooks/state/useCheckoutUpdateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
-import { checkoutFinalizeMessages } from "@/checkout-storefront/sections/CheckoutForm/messages";
 
 type AutoSaveAddressFormProps = UseAddressFormProps &
   Omit<AddressFormProps, "formProps" | "defaultInputOptions" | "children"> & {
@@ -34,8 +33,6 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
   useCheckoutFormValidationTrigger({
     formProps,
     scope: isShippingForm ? "billingAddress" : "shippingAddress",
-    errorMessage:
-      checkoutFinalizeMessages[isShippingForm ? "shippingAddressInvalid" : "billingAddressInvalid"],
   });
 
   const debouncedSubmit = useFormDebouncedSubmit<AddressFormData>({

@@ -11,7 +11,6 @@ import {
   localeToLanguageCode,
   useValidationResolver,
 } from "@/checkout-storefront/lib/utils";
-import { checkoutFinalizeMessages } from "@/checkout-storefront/sections/CheckoutForm/messages";
 import { useAuth, useAuthState } from "@saleor/sdk";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -53,7 +52,6 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
   useCheckoutFormValidationTrigger({
     scope: "guestUser",
     formProps,
-    errorMessage: checkoutFinalizeMessages.emailRequiredOrInvalid,
   });
 
   const handleUserRegister = useCallback(async () => {
