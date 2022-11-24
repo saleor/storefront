@@ -1023,14 +1023,6 @@
     "developer_comment": "missing fields in billing address",
     "string": "There are certain fields in billing form that are missing or invalid"
   },
-  "CheckoutForm/messages/1G0La/": {
-    "developer_comment": "checkout finalize - shipping address invalid error",
-    "string": "Please fill in a valid billing address before finalizing checkout"
-  },
-  "CheckoutForm/messages/Em5uvP": {
-    "developer_comment": "checkout finalize - shipping address invalid error",
-    "string": "Please fill in a valid shipping address before finalizing checkout"
-  },
   "CheckoutForm/messages/UDs7fN": {
     "developer_comment": "pay accessibility label",
     "string": "pay"
@@ -1042,10 +1034,6 @@
   "CheckoutForm/messages/jLJToZ": {
     "developer_comment": "pay",
     "string": "Pay"
-  },
-  "CheckoutForm/messages/rVGqj8": {
-    "developer_comment": "checkout finalize email required error",
-    "string": "Please provide a valid email before finalizing checkout"
   },
   "Contact/messages//BXzqC": {
     "developer_comment": "new customer?",
