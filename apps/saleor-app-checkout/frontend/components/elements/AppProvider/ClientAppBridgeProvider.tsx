@@ -26,8 +26,6 @@ export const ClientAppBridgeProvider = ({ children }: { children: ReactNode }) =
   const isAuthorized = useSubscribeToIsAuthorized(app);
   useSynchronizedAppBridgePaths(app);
 
-  console.log({ isAuthorized, app, AppBridge });
-
   // @todo use `saleorApiUrl`
   const domain = app.getState().domain;
   const saleorApiUrl = `https://${domain}/graphql/`;
