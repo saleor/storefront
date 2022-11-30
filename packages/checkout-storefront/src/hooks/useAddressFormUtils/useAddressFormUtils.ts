@@ -8,7 +8,7 @@ import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
 import { getRequiredAddressFields, getOrderedAddressFields } from "@/checkout-storefront/lib/utils";
 import { Address } from "@/checkout-storefront/components/AddressForm/types";
-import { defaultCountry } from "@/checkout-storefront/lib/consts";
+import { defaultCountry } from "@/checkout-storefront/lib/consts/countries";
 import {
   AddressFieldLabel,
   addressFieldMessages,

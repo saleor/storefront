@@ -5,7 +5,7 @@ import { AddressFormData } from "./types";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { CountryCode } from "@/checkout-storefront/graphql";
-import { countries } from "@/checkout-storefront/lib/consts";
+import { countries } from "@/checkout-storefront/lib/consts/countries";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 import { omit } from "lodash-es";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";

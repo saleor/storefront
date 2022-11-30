@@ -2,14 +2,13 @@ import { CountryCode } from "@/checkout-storefront/graphql";
 import { Option, Select } from "@saleor/ui-kit";
 import { UseErrors, useFormattedMessages, useGetInputProps } from "@/checkout-storefront/hooks";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { Path, RegisterOptions, UseFormReturn } from "react-hook-form";
 import { FC, PropsWithChildren, useEffect, useMemo, useRef } from "react";
 import { difference, omit } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
-import { autocompleteTags } from "@/checkout-storefront/lib/consts";
+import { autocompleteTags, typeTags } from "@/checkout-storefront/lib/consts/inputAttributes";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
 import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
@@ -108,7 +107,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
         />
       </div>
       <div className="mt-2">
-        {orderedAddressFields.map((field: AddressField) => {
+        {orderedAddressFields.map((field) => {
           const isRequired = isRequiredField(field);
           const label = getFieldLabel(field);
 
@@ -136,6 +135,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
               label={label}
               autoComplete={autocompleteTags[field]}
               {...getInputProps(field as Path<AddressFormData>)}
+              type={typeTags[field] || "text"}
               optional={!isRequired}
             />
           );

@@ -13,3 +13,7 @@ export const autocompleteTags: Record<AddressField, string> = {
   cityArea: "",
   countryArea: "address-level1",
 };
+
+export const typeTags: Partial<Record<AddressField, string>> = {
+  phone: "tel",
+};
