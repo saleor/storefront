@@ -13,8 +13,6 @@ import { useMemo } from "react";
 import { useLocale } from "../hooks/useLocale";
 import { DEFAULT_LOCALE } from "../lib/regions";
 import { getQueryParams } from "../lib/utils/url";
-import { useCheckoutUpdateStateStore } from "@/checkout-storefront/state/updateStateStore";
-import { mountStoreDevtool } from "simple-zustand-devtools";
 
 export interface RootProps {
   env: AppEnv;
@@ -61,10 +59,6 @@ export const Root = ({ env }: RootProps) => {
   if (!client) {
     console.warn(`Couldn't create URQL client!`);
     return null;
-  }
-
-  if (process.env.NODE_ENV === "development") {
-    mountStoreDevtool("UpdateStateStore", useCheckoutUpdateStateStore);
   }
 
   return (

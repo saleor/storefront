@@ -18,8 +18,8 @@ const useCheckoutValidationStateStore = create<UseCheckoutValidationStateStore>(
   validating: false,
   validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
   actions: {
-    validateAllForms: () => set(() => ({ validating: true })),
-    setValidating: (validating: boolean) => set(() => ({ validating })),
+    validateAllForms: () => set({ validating: true }),
+    setValidating: (validating: boolean) => set({ validating }),
     setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
       set((state) => ({
         validationState: { ...state.validationState, [scope]: status },

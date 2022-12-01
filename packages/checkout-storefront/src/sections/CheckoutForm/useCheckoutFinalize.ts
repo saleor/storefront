@@ -5,7 +5,7 @@ import { useCallback, useEffect } from "react";
 import {
   SelectedPaymentData,
   useSelectedPaymentData,
-} from "@/checkout-storefront/state/paymentMethodsStore";
+} from "@/checkout-storefront/state/paymentDataStore";
 
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
@@ -51,6 +51,6 @@ export const useCheckoutFinalize = () => {
 
   return {
     checkoutFinalize,
-    submitting: loading,
+    finalizing: loading,
   };
 };

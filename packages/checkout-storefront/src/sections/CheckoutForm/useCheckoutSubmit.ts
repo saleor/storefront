@@ -14,7 +14,7 @@ export const useCheckoutSubmit = () => {
   const { validating, validationState } = useCheckoutValidationState();
   const { updateState, loadingCheckout } = useCheckoutUpdateState();
   const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
-  const { checkoutFinalize } = useCheckoutFinalize();
+  const { checkoutFinalize, finalizing } = useCheckoutFinalize();
 
   const [submitInProgress, setSubmitInProgress] = useState(false);
 
@@ -30,7 +30,7 @@ export const useCheckoutSubmit = () => {
     updateStateValues.some((status) => status === "loading") || loadingCheckout;
 
   const finishedApiChangesWithNoError =
-    !anyRequestsInProgress && updateStateValues.every((status) => status === "idle");
+    !anyRequestsInProgress && updateStateValues.every((status) => status === "success");
 
   const allFormsValid =
     !validating && Object.values(validationState).every((value) => value === "valid");
@@ -56,6 +56,6 @@ export const useCheckoutSubmit = () => {
 
   return {
     handleSubmit: submitInitialize,
-    isProcessing: submitInProgress && anyRequestsInProgress,
+    isProcessing: (submitInProgress && anyRequestsInProgress) || finalizing,
   };
 };

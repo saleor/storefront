@@ -49,7 +49,9 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
 
   const schema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
-    password: string().min(8, formatMessage(passwordErrorMessages.passwordAtLeastCharacters)),
+    password: string(),
+    // add when we add formik and can validate only part of the form
+    // .min(8, formatMessage(passwordErrorMessages.passwordAtLeastCharacters)),
   });
 
   const resolver = useValidationResolver(schema);

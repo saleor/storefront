@@ -4,7 +4,7 @@ import shallow from "zustand/shallow";
 import { useMemo } from "react";
 import { memoize, omit } from "lodash-es";
 
-export type CheckoutUpdateStateStatus = "idle" | "success" | "loading" | "error";
+export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
 
 export type CheckoutUpdateStateScope = Extract<
   CheckoutScope,
@@ -31,25 +31,25 @@ interface CheckoutUpdateStateStore {
   };
 }
 
-export const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
+const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
   shouldRegisterUser: false,
   loadingCheckout: false,
   updateState: {
-    checkoutShippingUpdate: "idle",
-    checkoutCustomerAttach: "idle",
-    checkoutBillingUpdate: "idle",
-    checkoutAddPromoCode: "idle",
-    checkoutDeliveryMethodUpdate: "idle",
-    checkoutLinesUpdate: "idle",
-    checkoutEmailUpdate: "idle",
-    userRegister: "idle",
+    checkoutShippingUpdate: "success",
+    checkoutCustomerAttach: "success",
+    checkoutBillingUpdate: "success",
+    checkoutAddPromoCode: "success",
+    checkoutDeliveryMethodUpdate: "success",
+    checkoutLinesUpdate: "success",
+    checkoutEmailUpdate: "success",
+    userRegister: "success",
   },
   actions: {
     setShouldRegisterUser: (shouldRegisterUser: boolean) =>
-      set(() => ({
+      set({
         shouldRegisterUser,
-      })),
-    setLoadingCheckout: (loading: boolean) => set(() => ({ loadingCheckout: loading })),
+      }),
+    setLoadingCheckout: (loading: boolean) => set({ loadingCheckout: loading }),
     setUpdateState: memoize(
       (scope) => (status) =>
         set((state) => ({
@@ -60,7 +60,7 @@ export const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set
           // checkout will reload right after, this ensures there
           // are no rerenders in between where there's no state updating
           // also we might not need this once we get better caching
-          loadingCheckout: status === "success",
+          loadingCheckout: status === "success" || state.loadingCheckout,
         }))
     ),
   },
@@ -96,10 +96,12 @@ export const useCheckoutUpdateStateChange = (scope: CheckoutUpdateStateScope) =>
     setCheckoutUpdateState: (status: CheckoutUpdateStateStatus) => {
       const updateState = setUpdateState(scope);
       updateState(status);
-      if (status === "success") {
-        setTimeout(() => {
-          updateState("idle");
-        }, 0);
-      }
+      // // we need to make sure after mutations successes it
+      // // comes back to being success in the state
+      // if (status === "success") {
+      //   setTimeout(() => {
+      //     updateState("success");
+      //   }, 0);
+      // }
     },
   }));

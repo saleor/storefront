@@ -18,8 +18,7 @@ const usePaymentDataStore = create<UsePaymentDataStore>((set) => ({
   paymentMethod: null,
   paymentProvider: null,
   actions: {
-    setPaymentData: ({ paymentMethod, paymentProvider }) =>
-      set(() => ({ paymentMethod, paymentProvider })),
+    setPaymentData: ({ paymentMethod, paymentProvider }) => set({ paymentMethod, paymentProvider }),
   },
 }));
 
