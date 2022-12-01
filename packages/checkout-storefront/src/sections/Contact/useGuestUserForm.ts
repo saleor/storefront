@@ -103,22 +103,23 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
 
     setUserRegistrationDisabled(true);
     setRegisterState("success");
-  }, [checkout.channel.slug, getValues, showErrors, userRegister]);
+  }, [
+    checkout.channel.slug,
+    getValues,
+    // setRegisterState,
+    // setShouldRegisterUser,
+    showErrors,
+    userRegister,
+  ]);
 
   useEffect(() => {
+    console.log("PAAANIE", { shouldUserRegister, user, createAccount, userRegisterDisabled });
     if (!shouldUserRegister || user || !createAccount || userRegisterDisabled) {
       return;
     }
 
     void handleUserRegister();
-  }, [
-    createAccount,
-    handleUserRegister,
-    shouldUserRegister,
-    user,
-    userRegisterDisabled,
-    userRegisterStatus,
-  ]);
+  }, [createAccount, handleUserRegister, shouldUserRegister, user, userRegisterDisabled]);
 
   const handleCheckoutEmailUpdate = useCallback(
     async ({ email }: GuestUserFormData) => {

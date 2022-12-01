@@ -38,7 +38,6 @@ export const useCheckoutSubmit = () => {
     !validating && !Object.values(validationState).every((value) => value === "valid");
 
   const handleSubmit = useCallback(async () => {
-    console.log({ updateState, loadingCheckout, submitInProgress, allFormsValid });
     if (submitInProgress && finishedApiChangesWithNoError && allFormsValid) {
       void checkoutFinalize();
       return;
@@ -53,7 +52,6 @@ export const useCheckoutSubmit = () => {
     allFormsValid,
     checkoutFinalize,
     anyRequestsInProgress,
-    updateState,
   ]);
 
   useEffect(() => void handleSubmit(), [handleSubmit]);
