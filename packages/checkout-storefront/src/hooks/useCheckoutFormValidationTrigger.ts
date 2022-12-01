@@ -20,7 +20,7 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
 
-  const { trigger, formState } = formProps;
+  const { trigger } = formProps;
 
   const handleGlobalValidationTrigger = useCallback(async () => {
     if (validating) {
@@ -30,7 +30,6 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
         return;
       }
 
-      console.log(111, formState.errors);
       setValidationState(scope, "invalid");
     }
   }, [scope, setValidationState, trigger, validating]);
