@@ -1587,6 +1587,10 @@
     "developer_comment": "value must be unique",
     "string": "Value must be unique"
   },
+  "useErrorMessages/messages/Hz38OL": {
+    "developer_comment": "password must be at least 8 characters",
+    "string": "Password must be at least 8 characters"
+  },
   "useErrorMessages/messages/OOj8Aa": {
     "developer_comment": "insufficient stock",
     "string": "Not enough of chosen item in stock."
