@@ -13,7 +13,7 @@ export const useCheckoutSubmit = () => {
   const { validateAllForms } = useCheckoutValidationActions();
   const { validating, validationState } = useCheckoutValidationState();
   const { updateState, loadingCheckout } = useCheckoutUpdateState();
-  const { setShouldRegisterUser } = useCheckoutUpdateStateActions("userRegister");
+  const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
   const { checkoutFinalize } = useCheckoutFinalize();
 
   const [submitInProgress, setSubmitInProgress] = useState(false);
@@ -30,12 +30,10 @@ export const useCheckoutSubmit = () => {
     updateStateValues.some((status) => status === "loading") || loadingCheckout;
 
   const finishedApiChangesWithNoError =
-    !updateStateValues.some((status) => status === "loading") &&
-    !updateStateValues.some((status) => status === "error") &&
-    !loadingCheckout;
+    !anyRequestsInProgress && updateStateValues.every((status) => status === "idle");
 
   const allFormsValid =
-    !validating && !Object.values(validationState).every((value) => value === "valid");
+    !validating && Object.values(validationState).every((value) => value === "valid");
 
   const handleSubmit = useCallback(async () => {
     if (submitInProgress && finishedApiChangesWithNoError && allFormsValid) {
@@ -50,8 +48,8 @@ export const useCheckoutSubmit = () => {
     submitInProgress,
     finishedApiChangesWithNoError,
     allFormsValid,
-    checkoutFinalize,
     anyRequestsInProgress,
+    checkoutFinalize,
   ]);
 
   useEffect(() => void handleSubmit(), [handleSubmit]);

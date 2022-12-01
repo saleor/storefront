@@ -21,7 +21,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { shippingMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 
 export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -37,7 +37,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
   const { showErrors } = useAlerts("checkoutShippingUpdate");
   const errorProps = useErrors<AddressFormData>();
   const { setApiErrors } = errorProps;
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutShippingUpdate");
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutShippingUpdate");
 
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 

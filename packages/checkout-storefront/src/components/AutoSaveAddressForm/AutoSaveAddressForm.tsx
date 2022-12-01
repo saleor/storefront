@@ -5,7 +5,6 @@ import {
   UseAddressFormProps,
 } from "@/checkout-storefront/components/AddressForm/useAddressForm";
 import { AddressTypeEnum } from "@/checkout-storefront/graphql";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks/useFormDebouncedSubmit";
 
@@ -21,9 +20,7 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
   ...addressFormRest
 }) => {
   const isShippingForm = type === "SHIPPING";
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions(
-    isShippingForm ? "checkoutShippingUpdate" : "checkoutBillingUpdate"
-  );
+
   const { formProps, onSubmit: handleSubmit } = useAddressForm({
     defaultValues,
     onSubmit,
@@ -45,10 +42,7 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
     <AddressForm
       {...addressFormRest}
       defaultInputOptions={{
-        onChange: () => {
-          setCheckoutUpdateState("loading");
-          debouncedSubmit();
-        },
+        onChange: debouncedSubmit,
       }}
       formProps={formProps}
     />

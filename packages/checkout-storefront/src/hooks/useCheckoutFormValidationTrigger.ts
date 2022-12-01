@@ -17,7 +17,7 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   scope,
   formProps,
 }: UseCheckoutFormValidationTriggerProps<TData>) => {
-  const { setValidationState, setValidating } = useCheckoutValidationActions();
+  const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
 
   const { trigger } = formProps;
@@ -26,13 +26,13 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
     if (validating) {
       const formValid = await trigger();
       if (formValid) {
-        setValidating(false);
+        setValidationState(scope, "valid");
         return;
       }
 
       setValidationState(scope, "invalid");
     }
-  }, [scope, setValidating, setValidationState, trigger, validating]);
+  }, [scope, setValidationState, trigger, validating]);
 
   useEffect(() => {
     void handleGlobalValidationTrigger();

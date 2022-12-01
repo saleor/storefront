@@ -11,7 +11,7 @@ export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);
   const { locale } = useLocale();
   const { authenticating } = useAuthState();
-  const { setLoadingCheckout } = useCheckoutUpdateStateActions("checkoutLoading");
+  const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
   const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
     variables: { id, languageCode: localeToLanguageCode(locale) },

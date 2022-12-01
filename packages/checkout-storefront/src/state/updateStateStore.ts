@@ -2,9 +2,9 @@ import create from "zustand";
 import { CheckoutScope } from "@/checkout-storefront/hooks/useAlerts";
 import shallow from "zustand/shallow";
 import { useMemo } from "react";
-import { memoize } from "lodash-es";
+import { memoize, omit } from "lodash-es";
 
-export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
+export type CheckoutUpdateStateStatus = "idle" | "success" | "loading" | "error";
 
 export type CheckoutUpdateStateScope = Extract<
   CheckoutScope,
@@ -31,18 +31,18 @@ interface CheckoutUpdateStateStore {
   };
 }
 
-const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
+export const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
   shouldRegisterUser: false,
   loadingCheckout: false,
   updateState: {
-    checkoutShippingUpdate: "success",
-    checkoutCustomerAttach: "success",
-    checkoutBillingUpdate: "success",
-    checkoutAddPromoCode: "success",
-    checkoutDeliveryMethodUpdate: "success",
-    checkoutLinesUpdate: "success",
-    checkoutEmailUpdate: "success",
-    userRegister: "success",
+    checkoutShippingUpdate: "idle",
+    checkoutCustomerAttach: "idle",
+    checkoutBillingUpdate: "idle",
+    checkoutAddPromoCode: "idle",
+    checkoutDeliveryMethodUpdate: "idle",
+    checkoutLinesUpdate: "idle",
+    checkoutEmailUpdate: "idle",
+    userRegister: "idle",
   },
   actions: {
     setShouldRegisterUser: (shouldRegisterUser: boolean) =>
@@ -60,7 +60,7 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
           // checkout will reload right after, this ensures there
           // are no rerenders in between where there's no state updating
           // also we might not need this once we get better caching
-          loadingCheckout: status !== "error",
+          loadingCheckout: status === "success",
         }))
     ),
   },
@@ -88,8 +88,18 @@ export const useUserRegisterState = () => {
   return useMemo(() => shouldUserRegister, [shouldUserRegister]);
 };
 
-export const useCheckoutUpdateStateActions = (scope: CheckoutUpdateStateScope) =>
-  useCheckoutUpdateStateStore(({ actions: { setUpdateState, ...rest } }) => ({
-    ...rest,
-    setCheckoutUpdateState: setUpdateState(scope),
+export const useCheckoutUpdateStateActions = () =>
+  useCheckoutUpdateStateStore(({ actions }) => omit(actions, "setUpdateState"));
+
+export const useCheckoutUpdateStateChange = (scope: CheckoutUpdateStateScope) =>
+  useCheckoutUpdateStateStore(({ actions: { setUpdateState } }) => ({
+    setCheckoutUpdateState: (status: CheckoutUpdateStateStatus) => {
+      const updateState = setUpdateState(scope);
+      updateState(status);
+      if (status === "success") {
+        setTimeout(() => {
+          updateState("idle");
+        }, 0);
+      }
+    },
   }));

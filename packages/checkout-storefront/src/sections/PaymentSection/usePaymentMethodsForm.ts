@@ -1,18 +1,18 @@
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
 import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
-import { useSetSelectedPaymentData } from "@/checkout-storefront/state/paymentMethodsStore";
+import { usePaymentDataActions } from "@/checkout-storefront/state/paymentMethodsStore";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import {
   ChannelActivePaymentProvidersByChannel,
   PaymentMethodID,
   PaymentProviderID,
 } from "checkout-common";
-import { useEffect, useState } from "react";
-
-export type AvailablePaymentMethods = PaymentMethodID[];
+import { useCallback, useEffect, useState } from "react";
+import { getParsedPaymentMethods } from "@/checkout-storefront/sections/PaymentSection/utils";
 
 export const usePaymentMethodsForm = () => {
-  const setSelectedPaymentData = useSetSelectedPaymentData();
+  const { setPaymentData } = usePaymentDataActions();
+
   const {
     checkout: {
       channel: { id: channelId },
@@ -32,19 +32,22 @@ export const usePaymentMethodsForm = () => {
     skip: !channelId,
   });
 
-  const getParsedPaymentMethods = (
-    allPaymentMethods: ChannelActivePaymentProvidersByChannel | null | undefined
-  ): AvailablePaymentMethods => {
-    if (!allPaymentMethods) {
-      return [];
-    }
-
-    return Object.entries(allPaymentMethods)
-      .filter(([, paymentProviderId]) => !!paymentProviderId)
-      .map(([paymentMethodId]) => paymentMethodId) as AvailablePaymentMethods;
-  };
-
   const availablePaymentMethods = getParsedPaymentMethods(allPaymentOptions);
+
+  const handleSelect = useCallback(
+    (paymentMethod: PaymentMethodID) => {
+      setSelectedPaymentMethod(paymentMethod);
+      setPaymentData({
+        paymentMethod,
+        paymentProvider: (allPaymentOptions as ChannelActivePaymentProvidersByChannel)[
+          paymentMethod
+        ] as PaymentProviderID,
+      });
+    },
+    [allPaymentOptions, setPaymentData]
+  );
+
+  const firstAvailableMethod = availablePaymentMethods[0];
 
   useEffect(() => {
     if (loading) {
@@ -53,20 +56,17 @@ export const usePaymentMethodsForm = () => {
 
     if (allPaymentOptions && !availablePaymentMethods.length) {
       throw new Error("No available payment providers");
-    } else if (!selectedPaymentMethod && availablePaymentMethods[0]) {
-      setSelectedPaymentMethod(availablePaymentMethods[0]);
+    } else if (!selectedPaymentMethod && firstAvailableMethod) {
+      handleSelect(firstAvailableMethod);
     }
-  }, [loading, allPaymentOptions, availablePaymentMethods, selectedPaymentMethod]);
-
-  const handleSelect = (paymentMethod: PaymentMethodID) => {
-    setSelectedPaymentMethod(paymentMethod);
-    setSelectedPaymentData({
-      paymentMethod,
-      paymentProvider: (allPaymentOptions as ChannelActivePaymentProvidersByChannel)[
-        paymentMethod
-      ] as PaymentProviderID,
-    });
-  };
+  }, [
+    loading,
+    allPaymentOptions,
+    availablePaymentMethods.length,
+    selectedPaymentMethod,
+    handleSelect,
+    firstAvailableMethod,
+  ]);
 
   return { onSelectPaymentMethod: handleSelect, availablePaymentMethods, selectedPaymentMethod };
 };

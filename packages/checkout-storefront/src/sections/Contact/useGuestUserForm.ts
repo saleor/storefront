@@ -2,9 +2,15 @@ import {
   useCheckoutEmailUpdateMutation,
   useUserRegisterMutation,
 } from "@/checkout-storefront/graphql";
-import { useAlerts, useCheckout, useErrorMessages } from "@/checkout-storefront/hooks";
+import {
+  useAlerts,
+  useCheckout,
+  useErrorMessages,
+  useFormattedMessages,
+} from "@/checkout-storefront/hooks";
 import {
   useCheckoutUpdateStateActions,
+  useCheckoutUpdateStateChange,
   useUserRegisterState,
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
@@ -18,6 +24,7 @@ import { useAuthState } from "@saleor/sdk";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
+import { errorMessages as passwordErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages/messages";
 
 export interface GuestUserFormData {
   email: string;
@@ -25,16 +32,16 @@ export interface GuestUserFormData {
 }
 
 export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) => {
+  const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { user } = useAuthState();
   const { showErrors } = useAlerts("userRegister");
   const shouldUserRegister = useUserRegisterState();
-  const { setShouldRegisterUser } = useCheckoutUpdateStateActions("userRegister");
+  const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
   const { errorMessages } = useErrorMessages();
   const { setCheckoutUpdateState: setEmailUpdateState } =
-    useCheckoutUpdateStateActions("checkoutEmailUpdate");
-  const { setCheckoutUpdateState: setRegisterState } =
-    useCheckoutUpdateStateActions("userRegister");
+    useCheckoutUpdateStateChange("checkoutEmailUpdate");
+  const { setCheckoutUpdateState: setRegisterState } = useCheckoutUpdateStateChange("userRegister");
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
   const { locale } = useLocale();
   const [, userRegister] = useUserRegisterMutation();
@@ -42,7 +49,7 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
 
   const schema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
-    password: string(),
+    password: string().min(8, formatMessage(passwordErrorMessages.passwordAtLeastCharacters)),
   });
 
   const resolver = useValidationResolver(schema);
@@ -55,7 +62,7 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
     defaultValues,
   });
 
-  const { getValues, watch } = formProps;
+  const { getValues, watch, trigger } = formProps;
 
   useCheckoutFormValidationTrigger({
     scope: "guestUser",
@@ -74,7 +81,14 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
 
     setShouldRegisterUser(false);
 
+    const isValid = await trigger();
+
+    if (!isValid) {
+      return;
+    }
+
     setRegisterState("loading");
+
     const registerFormData = { email, password };
 
     // adding redirect url because some saleor envs require it
@@ -92,6 +106,8 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
 
       if (hasAccountForCurrentEmail) {
         setUserRegistrationDisabled(true);
+        // this logic will be removed once new register flow is implemented
+        setTimeout(() => setRegisterState("success"), 100);
       }
 
       return;
@@ -105,11 +121,11 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
     setRegisterState,
     setShouldRegisterUser,
     showErrors,
+    trigger,
     userRegister,
   ]);
 
   useEffect(() => {
-    console.log("PAAANIE", { shouldUserRegister, user, createAccount, userRegisterDisabled });
     if (!shouldUserRegister || user || !createAccount || userRegisterDisabled) {
       return;
     }

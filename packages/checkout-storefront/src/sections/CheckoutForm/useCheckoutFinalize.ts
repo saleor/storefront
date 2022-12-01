@@ -1,7 +1,6 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 import { usePay } from "@/checkout-storefront/hooks/usePay";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCallback, useEffect } from "react";
 import {
   SelectedPaymentData,
@@ -11,7 +10,7 @@ import {
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
   const { checkoutPay, loading, error: payError, data: _payData } = usePay();
-  const { showCustomErrors } = useAlerts();
+  // const { showCustomErrors } = useAlerts();
   const { paymentMethod, paymentProvider } = useSelectedPaymentData() as SelectedPaymentData;
 
   useEffect(() => {
@@ -35,13 +34,12 @@ export const useCheckoutFinalize = () => {
     }
 
     if ("ok" in result && result.ok === false) {
-      const { errors } = result;
-
-      const parsedErrors = errors.map((error) => ({
-        code: error,
-      }));
-
-      showCustomErrors(parsedErrors, "checkoutPay");
+      // for now api doesn't return errors in some cases
+      // const { errors } = result;
+      // const parsedErrors = errors.map((error) => ({
+      //   code: error,
+      // }));
+      // showCustomErrors(parsedErrors, "checkoutPay");
     }
   }, [
     checkout?.id,
@@ -49,7 +47,6 @@ export const useCheckoutFinalize = () => {
     checkoutPay,
     paymentMethod,
     paymentProvider,
-    showCustomErrors,
   ]);
 
   return {

@@ -19,7 +19,7 @@ import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 
 interface FormData {
   promoCode: string;
@@ -31,7 +31,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const formatMessage = useFormattedMessages();
   const { setApiErrors, errors } = useErrors<FormData>();
   const { showErrors } = useAlerts("checkoutAddPromoCode");
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutAddPromoCode");
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutAddPromoCode");
 
   const schema = object({
     code: string(),

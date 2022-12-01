@@ -23,7 +23,7 @@ import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 
 interface FormData {
   selectedMethodId: string | undefined;
@@ -36,7 +36,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
 
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutDeliveryMethodUpdate");
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutDeliveryMethodUpdate");
 
   const previousShippingCountry = useRef<CountryCode | undefined | null>(
     shippingAddress?.country?.code as CountryCode | undefined

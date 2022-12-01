@@ -6,7 +6,7 @@ export interface SelectedPaymentData {
   paymentProvider: PaymentProviderID;
 }
 
-interface UsePaymentMethodsStore {
+interface UsePaymentDataStore {
   paymentMethod: PaymentMethodID | null;
   paymentProvider: PaymentProviderID | null;
   actions: {
@@ -14,7 +14,7 @@ interface UsePaymentMethodsStore {
   };
 }
 
-const usePaymentMethodsStore = create<UsePaymentMethodsStore>((set) => ({
+const usePaymentDataStore = create<UsePaymentDataStore>((set) => ({
   paymentMethod: null,
   paymentProvider: null,
   actions: {
@@ -24,10 +24,9 @@ const usePaymentMethodsStore = create<UsePaymentMethodsStore>((set) => ({
 }));
 
 export const useSelectedPaymentData = () =>
-  usePaymentMethodsStore(({ paymentMethod, paymentProvider }) => ({
+  usePaymentDataStore(({ paymentMethod, paymentProvider }) => ({
     paymentMethod,
     paymentProvider,
   }));
 
-export const useSetSelectedPaymentData = () =>
-  usePaymentMethodsStore((state) => state.actions.setPaymentData);
+export const usePaymentDataActions = () => usePaymentDataStore((state) => state.actions);
