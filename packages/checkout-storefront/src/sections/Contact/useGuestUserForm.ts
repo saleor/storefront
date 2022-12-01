@@ -4,7 +4,6 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useAlerts, useCheckout, useErrorMessages } from "@/checkout-storefront/hooks";
 import {
-  useCheckoutUpdateState,
   useCheckoutUpdateStateActions,
   useUserRegisterState,
 } from "@/checkout-storefront/state/updateStateStore";
@@ -31,9 +30,6 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
   const { showErrors } = useAlerts("userRegister");
   const shouldUserRegister = useUserRegisterState();
   const { setShouldRegisterUser } = useCheckoutUpdateStateActions("userRegister");
-  const {
-    updateState: { userRegister: userRegisterStatus },
-  } = useCheckoutUpdateState();
   const { errorMessages } = useErrorMessages();
   const { setCheckoutUpdateState: setEmailUpdateState } =
     useCheckoutUpdateStateActions("checkoutEmailUpdate");
@@ -106,8 +102,8 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
   }, [
     checkout.channel.slug,
     getValues,
-    // setRegisterState,
-    // setShouldRegisterUser,
+    setRegisterState,
+    setShouldRegisterUser,
     showErrors,
     userRegister,
   ]);

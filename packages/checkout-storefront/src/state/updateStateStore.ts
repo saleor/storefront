@@ -2,6 +2,7 @@ import create from "zustand";
 import { CheckoutScope } from "@/checkout-storefront/hooks/useAlerts";
 import shallow from "zustand/shallow";
 import { useMemo } from "react";
+import { memoize } from "lodash-es";
 
 export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
 
@@ -49,17 +50,19 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
         shouldRegisterUser,
       })),
     setLoadingCheckout: (loading: boolean) => set(() => ({ loadingCheckout: loading })),
-    setUpdateState: (scope) => (status) =>
-      set((state) => ({
-        updateState: {
-          ...state.updateState,
-          [scope]: status,
-        },
-        // checkout will reload right after, this ensures there
-        // are no rerenders in between where there's no state updating
-        // also we might not need this once we get better caching
-        loadingCheckout: true,
-      })),
+    setUpdateState: memoize(
+      (scope) => (status) =>
+        set((state) => ({
+          updateState: {
+            ...state.updateState,
+            [scope]: status,
+          },
+          // checkout will reload right after, this ensures there
+          // are no rerenders in between where there's no state updating
+          // also we might not need this once we get better caching
+          loadingCheckout: status !== "error",
+        }))
+    ),
   },
 }));
 
@@ -74,6 +77,8 @@ export const useCheckoutUpdateState = () => {
 
   return useMemo(
     () => ({ updateState, loadingCheckout }),
+    // because we want to compare array of strings instead of object
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [loadingCheckout, ...Object.values(updateState)]
   );
 };
@@ -83,10 +88,8 @@ export const useUserRegisterState = () => {
   return useMemo(() => shouldUserRegister, [shouldUserRegister]);
 };
 
-export const useCheckoutUpdateStateActions = (
-  scope: CheckoutUpdateStateScope | "checkoutLoading"
-) =>
+export const useCheckoutUpdateStateActions = (scope: CheckoutUpdateStateScope) =>
   useCheckoutUpdateStateStore(({ actions: { setUpdateState, ...rest } }) => ({
     ...rest,
-    setCheckoutUpdateState: setUpdateState(scope as CheckoutUpdateStateScope),
+    setCheckoutUpdateState: setUpdateState(scope),
   }));
