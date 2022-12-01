@@ -18,7 +18,7 @@ export const useCheckout = ({ pause = false } = {}) => {
     pause: pause || authenticating,
   });
 
-  useEffect(() => setLoadingCheckout(loading || stale), [loading, stale]);
+  useEffect(() => setLoadingCheckout(loading || stale), [loading, setLoadingCheckout, stale]);
 
   return { checkout: data?.checkout as Checkout, loading: loading || stale, refetch };
 };

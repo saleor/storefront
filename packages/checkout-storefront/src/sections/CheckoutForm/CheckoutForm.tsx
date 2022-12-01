@@ -9,7 +9,7 @@ import { ShippingAddressSection } from "../ShippingAddressSection/ShippingAddres
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
-import { useCheckoutForm } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutForm";
+import { useCheckoutSubmit } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutSubmit";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
@@ -21,7 +21,7 @@ export const CheckoutForm = () => {
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
-  const { handleSubmit, isProcessing } = useCheckoutForm();
+  const { handleSubmit, isProcessing } = useCheckoutSubmit();
 
   return (
     <div className="checkout-form-container">

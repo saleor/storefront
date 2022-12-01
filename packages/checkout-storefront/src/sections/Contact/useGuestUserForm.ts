@@ -1,6 +1,10 @@
-import { useCheckoutEmailUpdateMutation } from "@/checkout-storefront/graphql";
+import {
+  useCheckoutEmailUpdateMutation,
+  useUserRegisterMutation,
+} from "@/checkout-storefront/graphql";
 import { useAlerts, useCheckout, useErrorMessages } from "@/checkout-storefront/hooks";
 import {
+  useCheckoutUpdateState,
   useCheckoutUpdateStateActions,
   useUserRegisterState,
 } from "@/checkout-storefront/state/updateStateStore";
@@ -11,8 +15,8 @@ import {
   localeToLanguageCode,
   useValidationResolver,
 } from "@/checkout-storefront/lib/utils";
-import { useAuth, useAuthState } from "@saleor/sdk";
-import { useCallback, useEffect } from "react";
+import { useAuthState } from "@saleor/sdk";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 
@@ -23,14 +27,22 @@ export interface GuestUserFormData {
 
 export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) => {
   const { checkout } = useCheckout();
-  const { register } = useAuth();
   const { user } = useAuthState();
   const { showErrors } = useAlerts("userRegister");
   const shouldUserRegister = useUserRegisterState();
+  const { setShouldRegisterUser } = useCheckoutUpdateStateActions("userRegister");
+  const {
+    updateState: { userRegister: userRegisterStatus },
+  } = useCheckoutUpdateState();
   const { errorMessages } = useErrorMessages();
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateActions("checkoutEmailUpdate");
+  const { setCheckoutUpdateState: setEmailUpdateState } =
+    useCheckoutUpdateStateActions("checkoutEmailUpdate");
+  const { setCheckoutUpdateState: setRegisterState } =
+    useCheckoutUpdateStateActions("userRegister");
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
   const { locale } = useLocale();
+  const [, userRegister] = useUserRegisterMutation();
+  const [userRegisterDisabled, setUserRegistrationDisabled] = useState(false);
 
   const schema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
@@ -47,44 +59,66 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
     defaultValues,
   });
 
-  const { getValues } = formProps;
+  const { getValues, watch } = formProps;
 
   useCheckoutFormValidationTrigger({
     scope: "guestUser",
     formProps,
   });
 
+  const email = watch("email");
+
+  useEffect(() => {
+    setUserRegistrationDisabled(false);
+  }, [email]);
+
   const handleUserRegister = useCallback(async () => {
     const formData = getValues();
     const { email, password } = formData;
 
-    if (user || !createAccount) {
-      return true;
-    }
+    setShouldRegisterUser(false);
 
+    setRegisterState("loading");
     const registerFormData = { email, password };
 
     // adding redirect url because some saleor envs require it
-    const result = await register({
-      ...registerFormData,
-      redirectUrl: location.href,
+    const result = await userRegister({
+      input: { ...registerFormData, redirectUrl: location.href, channel: checkout.channel.slug },
     });
 
     const [hasErrors, errors] = extractMutationErrors(result);
 
     if (hasErrors) {
+      setRegisterState("error");
       showErrors(errors);
-      return !hasErrors;
+
+      const hasAccountForCurrentEmail = errors.some(({ code }) => code === "UNIQUE");
+
+      if (hasAccountForCurrentEmail) {
+        setUserRegistrationDisabled(true);
+      }
+
+      return;
     }
 
-    return true;
-  }, [createAccount, getValues, register, showErrors, user]);
+    setUserRegistrationDisabled(true);
+    setRegisterState("success");
+  }, [checkout.channel.slug, getValues, showErrors, userRegister]);
 
   useEffect(() => {
-    if (shouldUserRegister) {
-      void handleUserRegister();
+    if (!shouldUserRegister || user || !createAccount || userRegisterDisabled) {
+      return;
     }
-  }, [handleUserRegister, shouldUserRegister]);
+
+    void handleUserRegister();
+  }, [
+    createAccount,
+    handleUserRegister,
+    shouldUserRegister,
+    user,
+    userRegisterDisabled,
+    userRegisterStatus,
+  ]);
 
   const handleCheckoutEmailUpdate = useCallback(
     async ({ email }: GuestUserFormData) => {
@@ -92,7 +126,7 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
         return;
       }
 
-      setCheckoutUpdateState("loading");
+      setEmailUpdateState("loading");
 
       const result = await updateEmail({
         languageCode: localeToLanguageCode(locale),
@@ -103,14 +137,14 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
       const [hasErrors, errors] = extractMutationErrors<FormData>(result);
 
       if (hasErrors) {
-        setCheckoutUpdateState("error");
+        setEmailUpdateState("error");
         showErrors(errors);
         return;
       }
 
-      setCheckoutUpdateState("success");
+      setEmailUpdateState("success");
     },
-    [updateEmail, locale, checkout.id, showErrors]
+    [setEmailUpdateState, updateEmail, locale, checkout.id, showErrors]
   );
 
   return {

@@ -30,7 +30,16 @@ export const useCustomerAttach = () => {
     const [hasErrors] = extractMutationErrors(response);
 
     setCheckoutUpdateState(hasErrors ? "error" : "success");
-  }, [checkout?.user?.id, checkout.id, user?.id, fetching, loading, customerAttach, locale]);
+  }, [
+    checkout?.user?.id,
+    checkout.id,
+    user?.id,
+    fetching,
+    loading,
+    setCheckoutUpdateState,
+    customerAttach,
+    locale,
+  ]);
 
   useEffect(() => {
     void attachCustomer();

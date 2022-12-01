@@ -1308,7 +1308,7 @@ export type AttributeDeleted = Event & {
 };
 
 /** An enumeration. */
-export type AttributeEntityTypeEnum = "PAGE" | "PRODUCT";
+export type AttributeEntityTypeEnum = "PAGE" | "PRODUCT" | "PRODUCT_VARIANT";
 
 export type AttributeError = {
   __typename?: "AttributeError";
@@ -1345,6 +1345,7 @@ export type AttributeFilterInput = {
   isVariantOnly?: InputMaybe<Scalars["Boolean"]>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
   type?: InputMaybe<AttributeTypeEnum>;
   valueRequired?: InputMaybe<Scalars["Boolean"]>;
   visibleInStorefront?: InputMaybe<Scalars["Boolean"]>;
@@ -1614,12 +1615,18 @@ export type AttributeValueCreateInput = {
   fileUrl?: InputMaybe<Scalars["String"]>;
   /** Name of a value displayed in the interface. */
   name: Scalars["String"];
-  /** Represents the text of the attribute value, plain text without formating. */
+  /**
+   * Represents the text of the attribute value, plain text without formating.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
+   */
   plainText?: InputMaybe<Scalars["String"]>;
   /**
    * Represents the text of the attribute value, includes formatting.
    *
    * Rich text format. For reference see https://editorjs.io/
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The rich text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
    */
   richText?: InputMaybe<Scalars["JSONString"]>;
   /** Represent value of the attribute value (e.g. color values for swatch attributes). */
@@ -1714,6 +1721,12 @@ export type AttributeValueInput = {
 export type AttributeValueTranslatableContent = Node & {
   __typename?: "AttributeValueTranslatableContent";
   /**
+   * Associated attribute that can be translated.
+   *
+   * Added in Saleor 3.9.
+   */
+  attribute?: Maybe<AttributeTranslatableContent>;
+  /**
    * Represents a value of an attribute.
    * @deprecated This field will be removed in Saleor 4.0. Get model fields from the root level queries.
    */
@@ -1799,12 +1812,18 @@ export type AttributeValueUpdateInput = {
   fileUrl?: InputMaybe<Scalars["String"]>;
   /** Name of a value displayed in the interface. */
   name?: InputMaybe<Scalars["String"]>;
-  /** Represents the text of the attribute value, plain text without formating. */
+  /**
+   * Represents the text of the attribute value, plain text without formating.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
+   */
   plainText?: InputMaybe<Scalars["String"]>;
   /**
    * Represents the text of the attribute value, includes formatting.
    *
    * Rich text format. For reference see https://editorjs.io/
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.The rich text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.
    */
   richText?: InputMaybe<Scalars["JSONString"]>;
   /** Represent value of the attribute value (e.g. color values for swatch attributes). */
@@ -1875,6 +1894,26 @@ export type BulkStockError = {
   message?: Maybe<Scalars["String"]>;
   /** List of attribute values IDs which causes the error. */
   values?: Maybe<Array<Scalars["ID"]>>;
+};
+
+/**
+ * Synchronous webhook for calculating checkout/order taxes.
+ *
+ * Added in Saleor 3.7.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CalculateTaxes = Event & {
+  __typename?: "CalculateTaxes";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  taxBase: TaxableObject;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 export type CardInput = {
@@ -2135,6 +2174,7 @@ export type CategoryFilterInput = {
   ids?: InputMaybe<Array<Scalars["ID"]>>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type CategoryInput = {
@@ -2682,6 +2722,14 @@ export type Checkout = Node &
     deliveryMethod?: Maybe<DeliveryMethod>;
     discount?: Maybe<Money>;
     discountName?: Maybe<Scalars["String"]>;
+    /**
+     * Determines whether checkout prices should include taxes when displayed in a storefront.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    displayGrossPrices: Scalars["Boolean"];
     /** Email of a customer. */
     email?: Maybe<Scalars["String"]>;
     /** List of gift cards associated with this checkout. */
@@ -2755,6 +2803,14 @@ export type Checkout = Node &
     stockReservationExpires?: Maybe<Scalars["DateTime"]>;
     /** The price of the checkout before shipping, with taxes included. */
     subtotalPrice: TaxedMoney;
+    /**
+     * Returns True if checkout has to be exempt from taxes.
+     *
+     * Added in Saleor 3.8.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxExemption: Scalars["Boolean"];
     /** The checkout's token. */
     token: Scalars["UUID"];
     /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
@@ -2987,6 +3043,7 @@ export type CheckoutErrorCode =
   | "EMAIL_NOT_SET"
   | "GIFT_CARD_NOT_APPLICABLE"
   | "GRAPHQL_ERROR"
+  | "INACTIVE_PAYMENT"
   | "INSUFFICIENT_STOCK"
   | "INVALID"
   | "INVALID_SHIPPING_METHOD"
@@ -3171,6 +3228,12 @@ export type CheckoutLineInput = {
    */
   forceNewLine?: InputMaybe<Scalars["Boolean"]>;
   /**
+   * Fields required to update the object's metadata.
+   *
+   * Added in Saleor 3.8.
+   */
+  metadata?: InputMaybe<Array<MetadataInput>>;
+  /**
    * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
    *
    * Added in Saleor 3.1.
@@ -3235,6 +3298,27 @@ export type CheckoutLinesUpdate = {
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   checkoutErrors: Array<CheckoutError>;
   errors: Array<CheckoutError>;
+};
+
+/**
+ * Event sent when checkout metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CheckoutMetadataUpdated = Event & {
+  __typename?: "CheckoutMetadataUpdated";
+  /** The checkout the event relates to. */
+  checkout?: Maybe<Checkout>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** Create a new payment for given checkout. */
@@ -3708,6 +3792,7 @@ export type CollectionFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   published?: InputMaybe<CollectionPublished>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type CollectionInput = {
@@ -3747,6 +3832,38 @@ export type CollectionInput = {
   seo?: InputMaybe<SeoInput>;
   /** Slug of the collection. */
   slug?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when collection metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CollectionMetadataUpdated = Event & {
+  __typename?: "CollectionMetadataUpdated";
+  /** The collection the event relates to. */
+  collection?: Maybe<Collection>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when collection metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CollectionMetadataUpdatedCollectionArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
 };
 
 export type CollectionPublished = "HIDDEN" | "PUBLISHED";
@@ -4244,13 +4361,30 @@ export type CountryDisplay = {
   code: Scalars["String"];
   /** Country name. */
   country: Scalars["String"];
-  /** Country tax. */
+  /**
+   * Country tax.
+   * @deprecated This field will be removed in Saleor 4.0. Use `TaxClassCountryRate` type to manage tax rates per country.
+   */
   vat?: Maybe<Vat>;
 };
 
 export type CountryFilterInput = {
   /** Boolean for filtering countries by having shipping zone assigned.If 'true', return countries with shipping zone assigned.If 'false', return countries without any shipping zone assigned.If the argument is not provided (null), return all countries. */
   attachedToShippingZones?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type CountryRateInput = {
+  /** Country in which this rate applies. */
+  countryCode: CountryCode;
+  /** Tax rate value provided as percentage. Example: provide `23` to represent `23%` tax rate. */
+  rate: Scalars["Float"];
+};
+
+export type CountryRateUpdateInput = {
+  /** Country in which this rate applies. */
+  countryCode: CountryCode;
+  /** Tax rate value provided as percentage. Example: provide `23` to represent `23%` tax rate. Provide `null` to remove the particular rate. */
+  rate?: InputMaybe<Scalars["Float"]>;
 };
 
 /** Create JWT token. */
@@ -4386,6 +4520,12 @@ export type CustomerEventsEnum =
 
 export type CustomerFilterInput = {
   dateJoined?: InputMaybe<DateRangeInput>;
+  /**
+   * Filter by ids.
+   *
+   * Added in Saleor 3.8.
+   */
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   numberOfOrders?: InputMaybe<IntRangeInput>;
   placedOrders?: InputMaybe<DateRangeInput>;
@@ -4410,6 +4550,27 @@ export type CustomerInput = {
   lastName?: InputMaybe<Scalars["String"]>;
   /** A note about the user. */
   note?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when customer user metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CustomerMetadataUpdated = Event & {
+  __typename?: "CustomerMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** The user the event relates to. */
+  user?: Maybe<User>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /**
@@ -5568,6 +5729,29 @@ export type FulfillmentLine = Node & {
 };
 
 /**
+ * Event sent when fulfillment metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type FulfillmentMetadataUpdated = Event & {
+  __typename?: "FulfillmentMetadataUpdated";
+  /** The fulfillment the event relates to. */
+  fulfillment?: Maybe<Fulfillment>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The order the fulfillment belongs to. */
+  order?: Maybe<Order>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
  * Refund products.
  *
  * Requires one of the following permissions: MANAGE_ORDERS.
@@ -6215,6 +6399,27 @@ export type GiftCardFilterInput = {
 };
 
 /**
+ * Event sent when gift card metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type GiftCardMetadataUpdated = Event & {
+  __typename?: "GiftCardMetadataUpdated";
+  /** The gift card the event relates to. */
+  giftCard?: Maybe<GiftCard>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
  * Resend a gift card.
  *
  * Added in Saleor 3.1.
@@ -6284,11 +6489,17 @@ export type GiftCardSettingsUpdateInput = {
 };
 
 export type GiftCardSortField =
-  /** Sort orders by current balance. */
+  /**
+   * Sort gift cards by created at.
+   *
+   * Added in Saleor 3.8.
+   */
+  | "CREATED_AT"
+  /** Sort gift cards by current balance. */
   | "CURRENT_BALANCE"
-  /** Sort orders by product. */
+  /** Sort gift cards by product. */
   | "PRODUCT"
-  /** Sort orders by used by. */
+  /** Sort gift cards by used by. */
   | "USED_BY";
 
 export type GiftCardSortingInput = {
@@ -7863,6 +8074,7 @@ export type MenuFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
   slug?: InputMaybe<Array<Scalars["String"]>>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type MenuInput = {
@@ -9736,6 +9948,9 @@ export type Mutation = {
    * Fetch tax rates.
    *
    * Requires one of the following permissions: MANAGE_SETTINGS.
+   * @deprecated
+   *
+   * DEPRECATED: this mutation will be removed in Saleor 4.0.
    */
   shopFetchTaxRates?: Maybe<ShopFetchTaxRates>;
   /**
@@ -9792,6 +10007,76 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_STAFF.
    */
   staffUpdate?: Maybe<StaffUpdate>;
+  /**
+   * Create a tax class.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxClassCreate?: Maybe<TaxClassCreate>;
+  /**
+   * Delete a tax class. After deleting the tax class any products, product types or shipping methods using it are updated to use the default tax class.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxClassDelete?: Maybe<TaxClassDelete>;
+  /**
+   * Update a tax class.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxClassUpdate?: Maybe<TaxClassUpdate>;
+  /**
+   * Update tax configuration for a channel.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxConfigurationUpdate?: Maybe<TaxConfigurationUpdate>;
+  /**
+   * Remove all tax class rates for a specific country.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxCountryConfigurationDelete?: Maybe<TaxCountryConfigurationDelete>;
+  /**
+   * Update tax class rates for a specific country.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxCountryConfigurationUpdate?: Maybe<TaxCountryConfigurationUpdate>;
+  /**
+   * Exempt checkout or order from charging the taxes. When tax exemption is enabled, taxes won't be charged for the checkout or order. Taxes may still be calculated in cases when product prices are entered with the tax included and the net price needs to be known.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_TAXES.
+   */
+  taxExemptionManage?: Maybe<TaxExemptionManage>;
   /** Create JWT token. */
   tokenCreate?: Maybe<CreateToken>;
   /** Refresh JWT token. Mutation tries to take refreshToken from the input.If it fails it will try to take refreshToken from the http-only cookie -refreshToken. csrfToken is required when refreshToken is provided as a cookie. */
@@ -10181,6 +10466,7 @@ export type MutationCheckoutBillingAddressUpdateArgs = {
 export type MutationCheckoutCompleteArgs = {
   checkoutId?: InputMaybe<Scalars["ID"]>;
   id?: InputMaybe<Scalars["ID"]>;
+  metadata?: InputMaybe<Array<MetadataInput>>;
   paymentData?: InputMaybe<Scalars["JSONString"]>;
   redirectUrl?: InputMaybe<Scalars["String"]>;
   storeSource?: InputMaybe<Scalars["Boolean"]>;
@@ -10605,6 +10891,8 @@ export type MutationOrderConfirmArgs = {
 
 export type MutationOrderCreateFromCheckoutArgs = {
   id: Scalars["ID"];
+  metadata?: InputMaybe<Array<MetadataInput>>;
+  privateMetadata?: InputMaybe<Array<MetadataInput>>;
   removeCheckout?: InputMaybe<Scalars["Boolean"]>;
 };
 
@@ -11145,6 +11433,38 @@ export type MutationStaffUpdateArgs = {
   input: StaffUpdateInput;
 };
 
+export type MutationTaxClassCreateArgs = {
+  input: TaxClassCreateInput;
+};
+
+export type MutationTaxClassDeleteArgs = {
+  id: Scalars["ID"];
+};
+
+export type MutationTaxClassUpdateArgs = {
+  id: Scalars["ID"];
+  input: TaxClassUpdateInput;
+};
+
+export type MutationTaxConfigurationUpdateArgs = {
+  id: Scalars["ID"];
+  input: TaxConfigurationUpdateInput;
+};
+
+export type MutationTaxCountryConfigurationDeleteArgs = {
+  countryCode: CountryCode;
+};
+
+export type MutationTaxCountryConfigurationUpdateArgs = {
+  countryCode: CountryCode;
+  updateTaxClassRates: Array<TaxClassRateInput>;
+};
+
+export type MutationTaxExemptionManageArgs = {
+  id: Scalars["ID"];
+  taxExemption: Scalars["Boolean"];
+};
+
 export type MutationTokenCreateArgs = {
   audience?: InputMaybe<Scalars["String"]>;
   email: Scalars["String"];
@@ -11387,7 +11707,7 @@ export type Order = Node &
     created: Scalars["DateTime"];
     customerNote: Scalars["String"];
     /**
-     * The delivery method selected for this checkout.
+     * The delivery method selected for this order.
      *
      * Added in Saleor 3.1.
      *
@@ -11406,6 +11726,13 @@ export type Order = Node &
     discountName?: Maybe<Scalars["String"]>;
     /** List of all discounts assigned to the order. */
     discounts: Array<OrderDiscount>;
+    /**
+     * Determines whether checkout prices should include taxes when displayed in a storefront.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
     displayGrossPrices: Scalars["Boolean"];
     /** List of errors that occurred during order validation. */
     errors: Array<OrderError>;
@@ -11497,12 +11824,55 @@ export type Order = Node &
     shippingMethods: Array<ShippingMethod>;
     /** Total price of shipping. */
     shippingPrice: TaxedMoney;
+    /**
+     * Denormalized tax class assigned to the shipping method.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     */
+    shippingTaxClass?: Maybe<TaxClass>;
+    /**
+     * Denormalized public metadata of the shipping method's tax class.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    shippingTaxClassMetadata: Array<MetadataItem>;
+    /**
+     * Denormalized name of the tax class assigned to the shipping method.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    shippingTaxClassName?: Maybe<Scalars["String"]>;
+    /**
+     * Denormalized private metadata of the shipping method's tax class. Requires staff permissions to access.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    shippingTaxClassPrivateMetadata: Array<MetadataItem>;
+    /** The shipping tax rate value. */
     shippingTaxRate: Scalars["Float"];
     status: OrderStatus;
     /** User-friendly order status. */
     statusDisplay: Scalars["String"];
     /** The sum of line prices not including shipping. */
     subtotal: TaxedMoney;
+    /**
+     * Returns True if order has to be exempt from taxes.
+     *
+     * Added in Saleor 3.8.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxExemption: Scalars["Boolean"];
     /** @deprecated This field will be removed in Saleor 4.0. Use `id` instead. */
     token: Scalars["String"];
     /** Total amount of the order. */
@@ -12306,6 +12676,40 @@ export type OrderLine = Node &
      * Added in Saleor 3.1.
      */
     quantityToFulfill: Scalars["Int"];
+    /**
+     * Denormalized tax class of the product in this order line.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     */
+    taxClass?: Maybe<TaxClass>;
+    /**
+     * Denormalized public metadata of the tax class.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxClassMetadata: Array<MetadataItem>;
+    /**
+     * Denormalized name of the tax class.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxClassName?: Maybe<Scalars["String"]>;
+    /**
+     * Denormalized private metadata of the tax class. Requires staff permissions to access.
+     *
+     * Added in Saleor 3.9.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    taxClassPrivateMetadata: Array<MetadataItem>;
     taxRate: Scalars["Float"];
     thumbnail?: Maybe<Image>;
     /** Price of the order line. */
@@ -12467,6 +12871,27 @@ export type OrderMarkAsPaid = {
   order?: Maybe<Order>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   orderErrors: Array<OrderError>;
+};
+
+/**
+ * Event sent when order metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type OrderMetadataUpdated = Event & {
+  __typename?: "OrderMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The order the event relates to. */
+  order?: Maybe<Order>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** An enumeration. */
@@ -13019,6 +13444,7 @@ export type PageFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   pageTypes?: InputMaybe<Array<Scalars["ID"]>>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
@@ -13080,7 +13506,17 @@ export type PageReorderAttributeValues = {
 };
 
 export type PageSortField =
-  /** Sort pages by creation date. */
+  /**
+   * Sort pages by creation date.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
+  | "CREATED_AT"
+  /**
+   * Sort pages by creation date.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   | "CREATION_DATE"
   /**
    * Sort pages by publication date.
@@ -13392,6 +13828,7 @@ export type PageTypeDeleted = Event & {
 
 export type PageTypeFilterInput = {
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /**
@@ -13787,6 +14224,12 @@ export type PaymentErrorCode =
 
 export type PaymentFilterInput = {
   checkouts?: InputMaybe<Array<Scalars["ID"]>>;
+  /**
+   * Filter by ids.
+   *
+   * Added in Saleor 3.8.
+   */
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
 };
 
 /** Available payment gateway backend with configuration necessary to setup client. */
@@ -14007,6 +14450,7 @@ export type PermissionEnum =
   | "MANAGE_SETTINGS"
   | "MANAGE_SHIPPING"
   | "MANAGE_STAFF"
+  | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
   | "MANAGE_USERS";
 
@@ -14353,6 +14797,7 @@ export type Product = Node &
      * Requires one of the following permissions: MANAGE_PRODUCTS.
      */
     channelListings?: Maybe<Array<ProductChannelListing>>;
+    /** @deprecated This field will be removed in Saleor 4.0. Use `Channel.taxConfiguration` field to determine whether tax collection is enabled. */
     chargeTaxes: Scalars["Boolean"];
     /** List of collections for the product. Requires the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
     collections?: Maybe<Array<Collection>>;
@@ -14438,7 +14883,16 @@ export type Product = Node &
     seoDescription?: Maybe<Scalars["String"]>;
     seoTitle?: Maybe<Scalars["String"]>;
     slug: Scalars["String"];
-    /** A type of tax. Assigned by enabled tax gateway */
+    /**
+     * Tax class assigned to this product type. All products of this product type use this tax class, unless it's overridden in the `Product` type.
+     *
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     */
+    taxClass?: Maybe<TaxClass>;
+    /**
+     * A type of tax. Assigned by enabled tax gateway
+     * @deprecated This field will be removed in Saleor 4.0. Use `taxClass` field instead.
+     */
     taxType?: Maybe<TaxType>;
     thumbnail?: Maybe<Image>;
     /** Returns translated product fields for the given language code. */
@@ -14745,7 +15199,11 @@ export type ProductCreateInput = {
   attributes?: InputMaybe<Array<AttributeValueInput>>;
   /** ID of the product's category. */
   category?: InputMaybe<Scalars["ID"]>;
-  /** Determine if taxes are being charged for the product. */
+  /**
+   * Determine if taxes are being charged for the product.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use `Channel.taxConfiguration` to configure whether tax collection is enabled.
+   */
   chargeTaxes?: InputMaybe<Scalars["Boolean"]>;
   /** List of IDs of collections that the product belongs to. */
   collections?: InputMaybe<Array<Scalars["ID"]>>;
@@ -14777,7 +15235,13 @@ export type ProductCreateInput = {
   seo?: InputMaybe<SeoInput>;
   /** Product slug. */
   slug?: InputMaybe<Scalars["String"]>;
-  /** Tax rate for enabled tax gateway. */
+  /** ID of a tax class to assign to this product. If not provided, product will use the tax class which is assigned to the product type. */
+  taxClass?: InputMaybe<Scalars["ID"]>;
+  /**
+   * Tax rate for enabled tax gateway.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use tax classes to control the tax calculation for a product.
+   */
   taxCode?: InputMaybe<Scalars["String"]>;
   /** Weight of the Product. */
   weight?: InputMaybe<Scalars["WeightScalar"]>;
@@ -14960,6 +15424,7 @@ export type ProductFilterInput = {
    */
   publishedFrom?: InputMaybe<Scalars["DateTime"]>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
   /** Filter by variants having specific stock status. */
   stockAvailability?: InputMaybe<StockAvailability>;
   stocks?: InputMaybe<ProductStockFilterInput>;
@@ -14990,7 +15455,11 @@ export type ProductInput = {
   attributes?: InputMaybe<Array<AttributeValueInput>>;
   /** ID of the product's category. */
   category?: InputMaybe<Scalars["ID"]>;
-  /** Determine if taxes are being charged for the product. */
+  /**
+   * Determine if taxes are being charged for the product.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use `Channel.taxConfiguration` to configure whether tax collection is enabled.
+   */
   chargeTaxes?: InputMaybe<Scalars["Boolean"]>;
   /** List of IDs of collections that the product belongs to. */
   collections?: InputMaybe<Array<Scalars["ID"]>>;
@@ -15020,7 +15489,13 @@ export type ProductInput = {
   seo?: InputMaybe<SeoInput>;
   /** Product slug. */
   slug?: InputMaybe<Scalars["String"]>;
-  /** Tax rate for enabled tax gateway. */
+  /** ID of a tax class to assign to this product. If not provided, product will use the tax class which is assigned to the product type. */
+  taxClass?: InputMaybe<Scalars["ID"]>;
+  /**
+   * Tax rate for enabled tax gateway.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use tax classes to control the tax calculation for a product.
+   */
   taxCode?: InputMaybe<Scalars["String"]>;
   /** Weight of the Product. */
   weight?: InputMaybe<Scalars["WeightScalar"]>;
@@ -15132,6 +15607,40 @@ export type ProductMediaUpdateInput = {
   alt?: InputMaybe<Scalars["String"]>;
 };
 
+/**
+ * Event sent when product metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ProductMetadataUpdated = Event & {
+  __typename?: "ProductMetadataUpdated";
+  /** The category of the product. */
+  category?: Maybe<Category>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The product the event relates to. */
+  product?: Maybe<Product>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when product metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ProductMetadataUpdatedProductArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+};
+
 export type ProductOrder = {
   /**
    * Sort product by the selected attribute's values.
@@ -15215,6 +15724,14 @@ export type ProductPricingInfo = {
   discount?: Maybe<TaxedMoney>;
   /** The discount amount in the local currency. */
   discountLocalCurrency?: Maybe<TaxedMoney>;
+  /**
+   * Determines whether this product's price displayed in a storefront should include taxes.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  displayGrossPrices: Scalars["Boolean"];
   /** Whether it is in sale or not. */
   onSale?: Maybe<Scalars["Boolean"]>;
   /** The discounted price range of the product variants. */
@@ -15385,7 +15902,16 @@ export type ProductType = Node &
      */
     products?: Maybe<ProductCountableConnection>;
     slug: Scalars["String"];
-    /** A type of tax. Assigned by enabled tax gateway */
+    /**
+     * Tax class assigned to this product type. All products of this product type use this tax class, unless it's overridden in the `Product` type.
+     *
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     */
+    taxClass?: Maybe<TaxClass>;
+    /**
+     * A type of tax. Assigned by enabled tax gateway
+     * @deprecated This field will be removed in Saleor 4.0. Use `taxClass` field instead.
+     */
     taxType?: Maybe<TaxType>;
     /**
      * Variant attributes of that product type.
@@ -15511,6 +16037,7 @@ export type ProductTypeFilterInput = {
   metadata?: InputMaybe<Array<MetadataFilter>>;
   productType?: InputMaybe<ProductTypeEnum>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type ProductTypeInput = {
@@ -15528,7 +16055,13 @@ export type ProductTypeInput = {
   productAttributes?: InputMaybe<Array<Scalars["ID"]>>;
   /** Product type slug. */
   slug?: InputMaybe<Scalars["String"]>;
-  /** Tax rate for enabled tax gateway. */
+  /** ID of a tax class to assign to this product type. All products of this product type would use this tax class, unless it's overridden in the `Product` type. */
+  taxClass?: InputMaybe<Scalars["ID"]>;
+  /**
+   * Tax rate for enabled tax gateway.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.. Use tax classes to control the tax calculation for a product type.
+   */
   taxCode?: InputMaybe<Scalars["String"]>;
   /** List of attributes used to distinguish between different variants of a product. */
   variantAttributes?: InputMaybe<Array<Scalars["ID"]>>;
@@ -16158,6 +16691,38 @@ export type ProductVariantInput = {
 };
 
 /**
+ * Event sent when product variant metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ProductVariantMetadataUpdated = Event & {
+  __typename?: "ProductVariantMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The product variant the event relates to. */
+  productVariant?: Maybe<ProductVariant>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when product variant metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ProductVariantMetadataUpdatedProductVariantArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+};
+
+/**
  * Event sent when product variant is out of stock.
  *
  * Added in Saleor 3.2.
@@ -16705,6 +17270,58 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   stocks?: Maybe<StockCountableConnection>;
+  /**
+   * Look up a tax class.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+   */
+  taxClass?: Maybe<TaxClass>;
+  /**
+   * List of tax classes.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+   */
+  taxClasses?: Maybe<TaxClassCountableConnection>;
+  /**
+   * Look up a tax configuration.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+   */
+  taxConfiguration?: Maybe<TaxConfiguration>;
+  /**
+   * List of tax configurations.
+   *
+   * Added in Saleor 3.9.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+   */
+  taxConfigurations?: Maybe<TaxConfigurationCountableConnection>;
+  /**
+   * Tax class rates grouped by country.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+   */
+  taxCountryConfiguration?: Maybe<TaxCountryConfiguration>;
+  /**
+   *
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+   */
+  taxCountryConfigurations?: Maybe<Array<TaxCountryConfiguration>>;
   /** List of all tax rates available from tax gateway. */
   taxTypes?: Maybe<Array<TaxType>>;
   /**
@@ -17179,6 +17796,35 @@ export type QueryStocksArgs = {
   filter?: InputMaybe<StockFilterInput>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryTaxClassArgs = {
+  id: Scalars["ID"];
+};
+
+export type QueryTaxClassesArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<TaxClassFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  sortBy?: InputMaybe<TaxClassSortingInput>;
+};
+
+export type QueryTaxConfigurationArgs = {
+  id: Scalars["ID"];
+};
+
+export type QueryTaxConfigurationsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<TaxConfigurationFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryTaxCountryConfigurationArgs = {
+  countryCode: CountryCode;
 };
 
 export type QueryTransactionArgs = {
@@ -18181,6 +18827,12 @@ export type ShippingMethodType = Node &
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     privateMetafields?: Maybe<Scalars["Metadata"]>;
+    /**
+     * Tax class assigned to this shipping method.
+     *
+     * Requires one of the following permissions: MANAGE_TAXES, MANAGE_SHIPPING.
+     */
+    taxClass?: Maybe<TaxClass>;
     /** Returns translated shipping method fields for the given language code. */
     translation?: Maybe<ShippingMethodTranslation>;
     /** Type of the shipping method. */
@@ -18420,6 +19072,8 @@ export type ShippingPriceInput = {
   name?: InputMaybe<Scalars["String"]>;
   /** Shipping zone this method belongs to. */
   shippingZone?: InputMaybe<Scalars["ID"]>;
+  /** ID of a tax class to assign to this shipping method. If not provided, the default tax class will be used. */
+  taxClass?: InputMaybe<Scalars["ID"]>;
   /** Shipping type: price or weight based. */
   type?: InputMaybe<ShippingMethodTypeEnum>;
 };
@@ -18744,6 +19398,38 @@ export type ShippingZoneFilterInput = {
 };
 
 /**
+ * Event sent when shipping zone metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ShippingZoneMetadataUpdated = Event & {
+  __typename?: "ShippingZoneMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** The shipping zone the event relates to. */
+  shippingZone?: Maybe<ShippingZone>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when shipping zone metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ShippingZoneMetadataUpdatedShippingZoneArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+};
+
+/**
  * Updates a new shipping zone.
  *
  * Requires one of the following permissions: MANAGE_SHIPPING.
@@ -18830,7 +19516,10 @@ export type Shop = {
    * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
    */
   channelCurrencies: Array<Scalars["String"]>;
-  /** Charge taxes on shipping. */
+  /**
+   * Charge taxes on shipping.
+   * @deprecated This field will be removed in Saleor 4.0. Use `ShippingMethodType.taxClass` to determine whether taxes are calculated for shipping methods; if a tax class is set, the taxes will be calculated, otherwise no tax rate will be applied.
+   */
   chargeTaxesOnShipping: Scalars["Boolean"];
   /** Company address. */
   companyAddress?: Maybe<Address>;
@@ -18868,7 +19557,10 @@ export type Shop = {
   defaultWeightUnit?: Maybe<WeightUnitsEnum>;
   /** Shop's description. */
   description?: Maybe<Scalars["String"]>;
-  /** Display prices with tax in store. */
+  /**
+   * Display prices with tax in store.
+   * @deprecated This field will be removed in Saleor 4.0. Use `Channel.taxConfiguration` to determine whether to display gross or net prices.
+   */
   displayGrossPrices: Scalars["Boolean"];
   /** Shop's domain data. */
   domain: Domain;
@@ -18886,7 +19578,10 @@ export type Shop = {
   fulfillmentAutoApprove: Scalars["Boolean"];
   /** Header text. */
   headerText?: Maybe<Scalars["String"]>;
-  /** Include taxes in prices. */
+  /**
+   * Include taxes in prices.
+   * @deprecated This field will be removed in Saleor 4.0. Use `Channel.taxConfiguration.pricesEnteredWithTax` to determine whether prices are entered with tax.
+   */
   includeTaxesInPrices: Scalars["Boolean"];
   /** List of the shops's supported languages. */
   languages: Array<LanguageDisplay>;
@@ -19034,7 +19729,11 @@ export type ShopFetchTaxRates = {
 export type ShopSettingsInput = {
   /** Enable automatic fulfillment for all digital products. */
   automaticFulfillmentDigitalProducts?: InputMaybe<Scalars["Boolean"]>;
-  /** Charge taxes on shipping. */
+  /**
+   * Charge taxes on shipping.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. To enable taxes for a shipping method, assign a tax class to the shipping method with `shippingPriceCreate` or `shippingPriceUpdate` mutations.
+   */
   chargeTaxesOnShipping?: InputMaybe<Scalars["Boolean"]>;
   /** URL of a view where customers can set their password. */
   customerSetPasswordUrl?: InputMaybe<Scalars["String"]>;
@@ -19050,7 +19749,11 @@ export type ShopSettingsInput = {
   defaultWeightUnit?: InputMaybe<WeightUnitsEnum>;
   /** SEO description. */
   description?: InputMaybe<Scalars["String"]>;
-  /** Display prices with tax in store. */
+  /**
+   * Display prices with tax in store.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use `taxConfigurationUpdate` mutation to configure this setting per channel or country.
+   */
   displayGrossPrices?: InputMaybe<Scalars["Boolean"]>;
   /**
    * Enable ability to approve fulfillments which are unpaid.
@@ -19066,7 +19769,11 @@ export type ShopSettingsInput = {
   fulfillmentAutoApprove?: InputMaybe<Scalars["Boolean"]>;
   /** Header text. */
   headerText?: InputMaybe<Scalars["String"]>;
-  /** Include taxes in prices. */
+  /**
+   * Include taxes in prices.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use `taxConfigurationUpdate` mutation to configure this setting per channel or country.
+   */
   includeTaxesInPrices?: InputMaybe<Scalars["Boolean"]>;
   /**
    * Default number of maximum line quantity in single checkout. Minimum possible value is 1, default value is 50.
@@ -19496,6 +20203,603 @@ export type Subscription = {
   event?: Maybe<Event>;
 };
 
+export type TaxCalculationStrategy = "FLAT_RATES" | "TAX_APP";
+
+/**
+ * Tax class is a named object used to define tax rates per country. Tax class can be assigned to product types, products and shipping methods to define their tax rates.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxClass = Node &
+  ObjectWithMetadata & {
+    __typename?: "TaxClass";
+    /** Country-specific tax rates for this tax class. */
+    countries: Array<TaxClassCountryRate>;
+    /** The ID of the object. */
+    id: Scalars["ID"];
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<MetadataItem>;
+    /**
+     * A single key from public metadata.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafield?: Maybe<Scalars["String"]>;
+    /**
+     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafields?: Maybe<Scalars["Metadata"]>;
+    /** Name of the tax class. */
+    name: Scalars["String"];
+    /** List of private metadata items. Requires staff permissions to access. */
+    privateMetadata: Array<MetadataItem>;
+    /**
+     * A single key from private metadata. Requires staff permissions to access.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafield?: Maybe<Scalars["String"]>;
+    /**
+     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafields?: Maybe<Scalars["Metadata"]>;
+  };
+
+/**
+ * Tax class is a named object used to define tax rates per country. Tax class can be assigned to product types, products and shipping methods to define their tax rates.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxClassMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/**
+ * Tax class is a named object used to define tax rates per country. Tax class can be assigned to product types, products and shipping methods to define their tax rates.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxClassMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/**
+ * Tax class is a named object used to define tax rates per country. Tax class can be assigned to product types, products and shipping methods to define their tax rates.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxClassPrivateMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/**
+ * Tax class is a named object used to define tax rates per country. Tax class can be assigned to product types, products and shipping methods to define their tax rates.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxClassPrivateMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+export type TaxClassCountableConnection = {
+  __typename?: "TaxClassCountableConnection";
+  edges: Array<TaxClassCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]>;
+};
+
+export type TaxClassCountableEdge = {
+  __typename?: "TaxClassCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"];
+  /** The item at the end of the edge. */
+  node: TaxClass;
+};
+
+/**
+ * Tax rate for a country. When tax class is null, it represents the default tax rate for that country; otherwise it's a country tax rate specific to the given tax class.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxClassCountryRate = {
+  __typename?: "TaxClassCountryRate";
+  /** Country in which this tax rate applies. */
+  country: CountryDisplay;
+  /** Tax rate value. */
+  rate: Scalars["Float"];
+  /** Related tax class. */
+  taxClass?: Maybe<TaxClass>;
+};
+
+/**
+ * Create a tax class.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxClassCreate = {
+  __typename?: "TaxClassCreate";
+  errors: Array<TaxClassCreateError>;
+  taxClass?: Maybe<TaxClass>;
+};
+
+export type TaxClassCreateError = {
+  __typename?: "TaxClassCreateError";
+  /** The error code. */
+  code: TaxClassCreateErrorCode;
+  /** List of country codes for which the configuration is invalid. */
+  countryCodes: Array<Scalars["String"]>;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxClassCreateErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND";
+
+export type TaxClassCreateInput = {
+  /** List of country-specific tax rates to create for this tax class. */
+  createCountryRates?: InputMaybe<Array<CountryRateInput>>;
+  /** Name of the tax class. */
+  name: Scalars["String"];
+};
+
+/**
+ * Delete a tax class. After deleting the tax class any products, product types or shipping methods using it are updated to use the default tax class.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxClassDelete = {
+  __typename?: "TaxClassDelete";
+  errors: Array<TaxClassDeleteError>;
+  taxClass?: Maybe<TaxClass>;
+};
+
+export type TaxClassDeleteError = {
+  __typename?: "TaxClassDeleteError";
+  /** The error code. */
+  code: TaxClassDeleteErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxClassDeleteErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND";
+
+export type TaxClassFilterInput = {
+  countries?: InputMaybe<Array<CountryCode>>;
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
+};
+
+export type TaxClassRateInput = {
+  /** Tax rate value. */
+  rate?: InputMaybe<Scalars["Float"]>;
+  /** ID of a tax class for which to update the tax rate */
+  taxClassId?: InputMaybe<Scalars["ID"]>;
+};
+
+export type TaxClassSortField =
+  /** Sort tax classes by name. */
+  "NAME";
+
+export type TaxClassSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort tax classes by the selected field. */
+  field: TaxClassSortField;
+};
+
+/**
+ * Update a tax class.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxClassUpdate = {
+  __typename?: "TaxClassUpdate";
+  errors: Array<TaxClassUpdateError>;
+  taxClass?: Maybe<TaxClass>;
+};
+
+export type TaxClassUpdateError = {
+  __typename?: "TaxClassUpdateError";
+  /** The error code. */
+  code: TaxClassUpdateErrorCode;
+  /** List of country codes for which the configuration is invalid. */
+  countryCodes: Array<Scalars["String"]>;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxClassUpdateErrorCode =
+  | "DUPLICATED_INPUT_ITEM"
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "NOT_FOUND";
+
+export type TaxClassUpdateInput = {
+  /** Name of the tax class. */
+  name?: InputMaybe<Scalars["String"]>;
+  /** List of country codes for which to remove the tax class rates. Note: It removes all rates for given country code. */
+  removeCountryRates?: InputMaybe<Array<CountryCode>>;
+  /** List of country-specific tax rates to create or update for this tax class. */
+  updateCountryRates?: InputMaybe<Array<CountryRateUpdateInput>>;
+};
+
+/**
+ * Channel-specific tax configuration.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxConfiguration = Node &
+  ObjectWithMetadata & {
+    __typename?: "TaxConfiguration";
+    /** A channel to which the tax configuration applies to. */
+    channel: Channel;
+    /** Determines whether taxes are charged in the given channel. */
+    chargeTaxes: Scalars["Boolean"];
+    /** List of country-specific exceptions in tax configuration. */
+    countries: Array<TaxConfigurationPerCountry>;
+    /** Determines whether prices displayed in a storefront should include taxes. */
+    displayGrossPrices: Scalars["Boolean"];
+    /** The ID of the object. */
+    id: Scalars["ID"];
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<MetadataItem>;
+    /**
+     * A single key from public metadata.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafield?: Maybe<Scalars["String"]>;
+    /**
+     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafields?: Maybe<Scalars["Metadata"]>;
+    /** Determines whether prices are entered with the tax included. */
+    pricesEnteredWithTax: Scalars["Boolean"];
+    /** List of private metadata items. Requires staff permissions to access. */
+    privateMetadata: Array<MetadataItem>;
+    /**
+     * A single key from private metadata. Requires staff permissions to access.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafield?: Maybe<Scalars["String"]>;
+    /**
+     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafields?: Maybe<Scalars["Metadata"]>;
+    /** The default strategy to use for tax calculation in the given channel. Taxes can be calculated either using user-defined flat rates or with a tax app. Empty value means that no method is selected and taxes are not calculated. */
+    taxCalculationStrategy?: Maybe<TaxCalculationStrategy>;
+  };
+
+/**
+ * Channel-specific tax configuration.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxConfigurationMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/**
+ * Channel-specific tax configuration.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxConfigurationMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/**
+ * Channel-specific tax configuration.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxConfigurationPrivateMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/**
+ * Channel-specific tax configuration.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxConfigurationPrivateMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+export type TaxConfigurationCountableConnection = {
+  __typename?: "TaxConfigurationCountableConnection";
+  edges: Array<TaxConfigurationCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]>;
+};
+
+export type TaxConfigurationCountableEdge = {
+  __typename?: "TaxConfigurationCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"];
+  /** The item at the end of the edge. */
+  node: TaxConfiguration;
+};
+
+export type TaxConfigurationFilterInput = {
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
+};
+
+/**
+ * Country-specific exceptions of a channel's tax configuration.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxConfigurationPerCountry = {
+  __typename?: "TaxConfigurationPerCountry";
+  /** Determines whether taxes are charged in this country. */
+  chargeTaxes: Scalars["Boolean"];
+  /** Country in which this configuration applies. */
+  country: CountryDisplay;
+  /** Determines whether prices displayed in a storefront should include taxes for this country. */
+  displayGrossPrices: Scalars["Boolean"];
+  /** A country-specific strategy to use for tax calculation. Taxes can be calculated either using user-defined flat rates or with a tax app. If not provided, use the value from the channel's tax configuration. */
+  taxCalculationStrategy?: Maybe<TaxCalculationStrategy>;
+};
+
+export type TaxConfigurationPerCountryInput = {
+  /** Determines whether taxes are charged in this country. */
+  chargeTaxes: Scalars["Boolean"];
+  /** Country in which this configuration applies. */
+  countryCode: CountryCode;
+  /** Determines whether prices displayed in a storefront should include taxes for this country. */
+  displayGrossPrices: Scalars["Boolean"];
+  /** A country-specific strategy to use for tax calculation. Taxes can be calculated either using user-defined flat rates or with a tax app. If not provided, use the value from the channel's tax configuration. */
+  taxCalculationStrategy?: InputMaybe<TaxCalculationStrategy>;
+};
+
+/**
+ * Update tax configuration for a channel.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxConfigurationUpdate = {
+  __typename?: "TaxConfigurationUpdate";
+  errors: Array<TaxConfigurationUpdateError>;
+  taxConfiguration?: Maybe<TaxConfiguration>;
+};
+
+export type TaxConfigurationUpdateError = {
+  __typename?: "TaxConfigurationUpdateError";
+  /** The error code. */
+  code: TaxConfigurationUpdateErrorCode;
+  /** List of country codes for which the configuration is invalid. */
+  countryCodes: Array<Scalars["String"]>;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxConfigurationUpdateErrorCode =
+  | "DUPLICATED_INPUT_ITEM"
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "NOT_FOUND";
+
+export type TaxConfigurationUpdateInput = {
+  /** Determines whether taxes are charged in the given channel. */
+  chargeTaxes?: InputMaybe<Scalars["Boolean"]>;
+  /** Determines whether prices displayed in a storefront should include taxes. */
+  displayGrossPrices?: InputMaybe<Scalars["Boolean"]>;
+  /** Determines whether prices are entered with the tax included. */
+  pricesEnteredWithTax?: InputMaybe<Scalars["Boolean"]>;
+  /** List of country codes for which to remove the tax configuration. */
+  removeCountriesConfiguration?: InputMaybe<Array<CountryCode>>;
+  /** The default strategy to use for tax calculation in the given channel. Taxes can be calculated either using user-defined flat rates or with a tax app. Empty value means that no method is selected and taxes are not calculated. */
+  taxCalculationStrategy?: InputMaybe<TaxCalculationStrategy>;
+  /** List of tax country configurations to create or update (identified by a country code). */
+  updateCountriesConfiguration?: InputMaybe<Array<TaxConfigurationPerCountryInput>>;
+};
+
+/**
+ * Tax class rates grouped by country.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TaxCountryConfiguration = {
+  __typename?: "TaxCountryConfiguration";
+  /** A country for which tax class rates are grouped. */
+  country: CountryDisplay;
+  /** List of tax class rates. */
+  taxClassCountryRates: Array<TaxClassCountryRate>;
+};
+
+/**
+ * Remove all tax class rates for a specific country.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxCountryConfigurationDelete = {
+  __typename?: "TaxCountryConfigurationDelete";
+  errors: Array<TaxCountryConfigurationDeleteError>;
+  /** Updated tax class rates grouped by a country. */
+  taxCountryConfiguration?: Maybe<TaxCountryConfiguration>;
+};
+
+export type TaxCountryConfigurationDeleteError = {
+  __typename?: "TaxCountryConfigurationDeleteError";
+  /** The error code. */
+  code: TaxCountryConfigurationDeleteErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxCountryConfigurationDeleteErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND";
+
+/**
+ * Update tax class rates for a specific country.
+ *
+ * Added in Saleor 3.9.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxCountryConfigurationUpdate = {
+  __typename?: "TaxCountryConfigurationUpdate";
+  errors: Array<TaxCountryConfigurationUpdateError>;
+  /** Updated tax class rates grouped by a country. */
+  taxCountryConfiguration?: Maybe<TaxCountryConfiguration>;
+};
+
+export type TaxCountryConfigurationUpdateError = {
+  __typename?: "TaxCountryConfigurationUpdateError";
+  /** The error code. */
+  code: TaxCountryConfigurationUpdateErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+  /** List of tax class IDs for which the update failed. */
+  taxClassIds: Array<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxCountryConfigurationUpdateErrorCode =
+  | "CANNOT_CREATE_NEGATIVE_RATE"
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "NOT_FOUND"
+  | "ONLY_ONE_DEFAULT_COUNTRY_RATE_ALLOWED";
+
+/**
+ * Exempt checkout or order from charging the taxes. When tax exemption is enabled, taxes won't be charged for the checkout or order. Taxes may still be calculated in cases when product prices are entered with the tax included and the net price needs to be known.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_TAXES.
+ */
+export type TaxExemptionManage = {
+  __typename?: "TaxExemptionManage";
+  errors: Array<TaxExemptionManageError>;
+  taxableObject?: Maybe<TaxSourceObject>;
+};
+
+export type TaxExemptionManageError = {
+  __typename?: "TaxExemptionManageError";
+  /** The error code. */
+  code: TaxExemptionManageErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TaxExemptionManageErrorCode =
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "NOT_EDITABLE_ORDER"
+  | "NOT_FOUND";
+
+export type TaxSourceLine = CheckoutLine | OrderLine;
+
+export type TaxSourceObject = Checkout | Order;
+
 /** Representation of tax types fetched from tax gateway. */
 export type TaxType = {
   __typename?: "TaxType";
@@ -19503,6 +20807,55 @@ export type TaxType = {
   description?: Maybe<Scalars["String"]>;
   /** External tax code used to identify given tax group. */
   taxCode?: Maybe<Scalars["String"]>;
+};
+
+/** Taxable object. */
+export type TaxableObject = {
+  __typename?: "TaxableObject";
+  /** The address data. */
+  address?: Maybe<Address>;
+  channel: Channel;
+  /** The currency of the object. */
+  currency: Scalars["String"];
+  /** List of discounts. */
+  discounts: Array<TaxableObjectDiscount>;
+  /** List of lines assigned to the object. */
+  lines: Array<TaxableObjectLine>;
+  /** Determines if prices contain entered tax.. */
+  pricesEnteredWithTax: Scalars["Boolean"];
+  /** The price of shipping method. */
+  shippingPrice: Money;
+  /** The source object related to this tax object. */
+  sourceObject: TaxSourceObject;
+};
+
+/** Taxable object discount. */
+export type TaxableObjectDiscount = {
+  __typename?: "TaxableObjectDiscount";
+  /** The amount of the discount. */
+  amount: Money;
+  /** The name of the discount. */
+  name?: Maybe<Scalars["String"]>;
+};
+
+export type TaxableObjectLine = {
+  __typename?: "TaxableObjectLine";
+  /** Determines if taxes are being charged for the product. */
+  chargeTaxes: Scalars["Boolean"];
+  /** The product name. */
+  productName: Scalars["String"];
+  /** The product sku. */
+  productSku?: Maybe<Scalars["String"]>;
+  /** Number of items. */
+  quantity: Scalars["Int"];
+  /** The source line related to this tax line. */
+  sourceLine: TaxSourceLine;
+  /** Price of the order line. */
+  totalPrice: Money;
+  /** Price of the single item in the order line. */
+  unitPrice: Money;
+  /** The variant name. */
+  variantName: Scalars["String"];
 };
 
 /** Represents a monetary value with taxes. In cases where taxes were not applied, net and gross values will be equal. */
@@ -19816,6 +21169,31 @@ export type TransactionItemPrivateMetafieldArgs = {
  */
 export type TransactionItemPrivateMetafieldsArgs = {
   keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/**
+ * Event sent when transaction item metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionItemMetadataUpdated = Event & {
+  __typename?: "TransactionItemMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /**
+   * Look up a transaction.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  transaction?: Maybe<TransactionItem>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** An enumeration. */
@@ -20839,6 +22217,38 @@ export type VoucherInput = {
 };
 
 /**
+ * Event sent when voucher metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type VoucherMetadataUpdated = Event & {
+  __typename?: "VoucherMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+  /** The voucher the event relates to. */
+  voucher?: Maybe<Voucher>;
+};
+
+/**
+ * Event sent when voucher metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type VoucherMetadataUpdatedVoucherArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+};
+
+/**
  * Removes products, categories, collections from a voucher.
  *
  * Requires one of the following permissions: MANAGE_DISCOUNTS.
@@ -21202,6 +22612,28 @@ export type WarehouseFilterInput = {
   ids?: InputMaybe<Array<Scalars["ID"]>>;
   isPrivate?: InputMaybe<Scalars["Boolean"]>;
   search?: InputMaybe<Scalars["String"]>;
+  slugs?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/**
+ * Event sent when warehouse metadata is updated.
+ *
+ * Added in Saleor 3.8.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type WarehouseMetadataUpdated = Event & {
+  __typename?: "WarehouseMetadataUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+  /** The warehouse the event relates to. */
+  warehouse?: Maybe<Warehouse>;
 };
 
 /**
@@ -21489,18 +22921,42 @@ export type WebhookEventTypeAsyncEnum =
   | "CHANNEL_UPDATED"
   /** A new checkout is created. */
   | "CHECKOUT_CREATED"
+  /**
+   * A checkout metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "CHECKOUT_METADATA_UPDATED"
   /** A checkout is updated. It also triggers all updates related to the checkout. */
   | "CHECKOUT_UPDATED"
   /** A new collection is created. */
   | "COLLECTION_CREATED"
   /** A collection is deleted. */
   | "COLLECTION_DELETED"
+  /**
+   * A collection metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "COLLECTION_METADATA_UPDATED"
   /** A collection is updated. */
   | "COLLECTION_UPDATED"
   /** A new customer account is created. */
   | "CUSTOMER_CREATED"
   /** A customer account is deleted. */
   | "CUSTOMER_DELETED"
+  /**
+   * A customer account metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "CUSTOMER_METADATA_UPDATED"
   /** A customer account is updated. */
   | "CUSTOMER_UPDATED"
   /** A draft order is created. */
@@ -21515,10 +22971,26 @@ export type WebhookEventTypeAsyncEnum =
   | "FULFILLMENT_CANCELED"
   /** A new fulfillment is created. */
   | "FULFILLMENT_CREATED"
+  /**
+   * A fulfillment metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "FULFILLMENT_METADATA_UPDATED"
   /** A new gift card created. */
   | "GIFT_CARD_CREATED"
   /** A gift card is deleted. */
   | "GIFT_CARD_DELETED"
+  /**
+   * A gift card metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "GIFT_CARD_METADATA_UPDATED"
   /** A gift card status is changed. */
   | "GIFT_CARD_STATUS_CHANGED"
   /** A gift card is updated. */
@@ -21555,6 +23027,14 @@ export type WebhookEventTypeAsyncEnum =
   | "ORDER_FULFILLED"
   /** Payment is made and an order is fully paid. */
   | "ORDER_FULLY_PAID"
+  /**
+   * An order metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "ORDER_METADATA_UPDATED"
   /** An order is updated; triggered for all changes related to an order; covers all other order webhooks, except for ORDER_CREATED. */
   | "ORDER_UPDATED"
   /** A new page is created. */
@@ -21579,6 +23059,14 @@ export type WebhookEventTypeAsyncEnum =
   | "PRODUCT_CREATED"
   /** A product is deleted. */
   | "PRODUCT_DELETED"
+  /**
+   * A product metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "PRODUCT_METADATA_UPDATED"
   /** A product is updated. */
   | "PRODUCT_UPDATED"
   /** A product variant is back in stock. */
@@ -21587,6 +23075,14 @@ export type WebhookEventTypeAsyncEnum =
   | "PRODUCT_VARIANT_CREATED"
   /** A product variant is deleted. */
   | "PRODUCT_VARIANT_DELETED"
+  /**
+   * A product variant metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "PRODUCT_VARIANT_METADATA_UPDATED"
   /** A product variant is out of stock. */
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
   /** A product variant is updated. */
@@ -21609,6 +23105,14 @@ export type WebhookEventTypeAsyncEnum =
   | "SHIPPING_ZONE_CREATED"
   /** A shipping zone is deleted. */
   | "SHIPPING_ZONE_DELETED"
+  /**
+   * A shipping zone metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "SHIPPING_ZONE_METADATA_UPDATED"
   /** A shipping zone is updated. */
   | "SHIPPING_ZONE_UPDATED"
   /** A new staff user is created. */
@@ -21619,6 +23123,14 @@ export type WebhookEventTypeAsyncEnum =
   | "STAFF_UPDATED"
   /** An action requested for transaction. */
   | "TRANSACTION_ACTION_REQUEST"
+  /**
+   * Transaction item metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_ITEM_METADATA_UPDATED"
   /** A new translation is created. */
   | "TRANSLATION_CREATED"
   /** A translation is updated. */
@@ -21627,12 +23139,28 @@ export type WebhookEventTypeAsyncEnum =
   | "VOUCHER_CREATED"
   /** A voucher is deleted. */
   | "VOUCHER_DELETED"
+  /**
+   * A voucher metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "VOUCHER_METADATA_UPDATED"
   /** A voucher is updated. */
   | "VOUCHER_UPDATED"
   /** A new warehouse created. */
   | "WAREHOUSE_CREATED"
   /** A warehouse is deleted. */
   | "WAREHOUSE_DELETED"
+  /**
+   * A warehouse metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "WAREHOUSE_METADATA_UPDATED"
   /** A warehouse is updated. */
   | "WAREHOUSE_UPDATED";
 
@@ -21692,18 +23220,42 @@ export type WebhookEventTypeEnum =
   | "CHECKOUT_CREATED"
   /** Filter shipping methods for checkout. */
   | "CHECKOUT_FILTER_SHIPPING_METHODS"
+  /**
+   * A checkout metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "CHECKOUT_METADATA_UPDATED"
   /** A checkout is updated. It also triggers all updates related to the checkout. */
   | "CHECKOUT_UPDATED"
   /** A new collection is created. */
   | "COLLECTION_CREATED"
   /** A collection is deleted. */
   | "COLLECTION_DELETED"
+  /**
+   * A collection metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "COLLECTION_METADATA_UPDATED"
   /** A collection is updated. */
   | "COLLECTION_UPDATED"
   /** A new customer account is created. */
   | "CUSTOMER_CREATED"
   /** A customer account is deleted. */
   | "CUSTOMER_DELETED"
+  /**
+   * A customer account metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "CUSTOMER_METADATA_UPDATED"
   /** A customer account is updated. */
   | "CUSTOMER_UPDATED"
   /** A draft order is created. */
@@ -21718,10 +23270,26 @@ export type WebhookEventTypeEnum =
   | "FULFILLMENT_CANCELED"
   /** A new fulfillment is created. */
   | "FULFILLMENT_CREATED"
+  /**
+   * A fulfillment metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "FULFILLMENT_METADATA_UPDATED"
   /** A new gift card created. */
   | "GIFT_CARD_CREATED"
   /** A gift card is deleted. */
   | "GIFT_CARD_DELETED"
+  /**
+   * A gift card metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "GIFT_CARD_METADATA_UPDATED"
   /** A gift card status is changed. */
   | "GIFT_CARD_STATUS_CHANGED"
   /** A gift card is updated. */
@@ -21768,6 +23336,14 @@ export type WebhookEventTypeEnum =
   | "ORDER_FULFILLED"
   /** Payment is made and an order is fully paid. */
   | "ORDER_FULLY_PAID"
+  /**
+   * An order metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "ORDER_METADATA_UPDATED"
   /** An order is updated; triggered for all changes related to an order; covers all other order webhooks, except for ORDER_CREATED. */
   | "ORDER_UPDATED"
   /** A new page is created. */
@@ -21806,6 +23382,14 @@ export type WebhookEventTypeEnum =
   | "PRODUCT_CREATED"
   /** A product is deleted. */
   | "PRODUCT_DELETED"
+  /**
+   * A product metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "PRODUCT_METADATA_UPDATED"
   /** A product is updated. */
   | "PRODUCT_UPDATED"
   /** A product variant is back in stock. */
@@ -21814,6 +23398,14 @@ export type WebhookEventTypeEnum =
   | "PRODUCT_VARIANT_CREATED"
   /** A product variant is deleted. */
   | "PRODUCT_VARIANT_DELETED"
+  /**
+   * A product variant metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "PRODUCT_VARIANT_METADATA_UPDATED"
   /** A product variant is out of stock. */
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
   /** A product variant is updated. */
@@ -21838,6 +23430,14 @@ export type WebhookEventTypeEnum =
   | "SHIPPING_ZONE_CREATED"
   /** A shipping zone is deleted. */
   | "SHIPPING_ZONE_DELETED"
+  /**
+   * A shipping zone metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "SHIPPING_ZONE_METADATA_UPDATED"
   /** A shipping zone is updated. */
   | "SHIPPING_ZONE_UPDATED"
   /** A new staff user is created. */
@@ -21848,6 +23448,14 @@ export type WebhookEventTypeEnum =
   | "STAFF_UPDATED"
   /** An action requested for transaction. */
   | "TRANSACTION_ACTION_REQUEST"
+  /**
+   * Transaction item metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_ITEM_METADATA_UPDATED"
   /** A new translation is created. */
   | "TRANSLATION_CREATED"
   /** A translation is updated. */
@@ -21856,12 +23464,28 @@ export type WebhookEventTypeEnum =
   | "VOUCHER_CREATED"
   /** A voucher is deleted. */
   | "VOUCHER_DELETED"
+  /**
+   * A voucher metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "VOUCHER_METADATA_UPDATED"
   /** A voucher is updated. */
   | "VOUCHER_UPDATED"
   /** A new warehouse created. */
   | "WAREHOUSE_CREATED"
   /** A warehouse is deleted. */
   | "WAREHOUSE_DELETED"
+  /**
+   * A warehouse metadata is updated.
+   *
+   * Added in Saleor 3.8.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "WAREHOUSE_METADATA_UPDATED"
   /** A warehouse is updated. */
   | "WAREHOUSE_UPDATED";
 
@@ -21927,12 +23551,15 @@ export type WebhookSampleEventTypeEnum =
   | "CHANNEL_STATUS_CHANGED"
   | "CHANNEL_UPDATED"
   | "CHECKOUT_CREATED"
+  | "CHECKOUT_METADATA_UPDATED"
   | "CHECKOUT_UPDATED"
   | "COLLECTION_CREATED"
   | "COLLECTION_DELETED"
+  | "COLLECTION_METADATA_UPDATED"
   | "COLLECTION_UPDATED"
   | "CUSTOMER_CREATED"
   | "CUSTOMER_DELETED"
+  | "CUSTOMER_METADATA_UPDATED"
   | "CUSTOMER_UPDATED"
   | "DRAFT_ORDER_CREATED"
   | "DRAFT_ORDER_DELETED"
@@ -21940,8 +23567,10 @@ export type WebhookSampleEventTypeEnum =
   | "FULFILLMENT_APPROVED"
   | "FULFILLMENT_CANCELED"
   | "FULFILLMENT_CREATED"
+  | "FULFILLMENT_METADATA_UPDATED"
   | "GIFT_CARD_CREATED"
   | "GIFT_CARD_DELETED"
+  | "GIFT_CARD_METADATA_UPDATED"
   | "GIFT_CARD_STATUS_CHANGED"
   | "GIFT_CARD_UPDATED"
   | "INVOICE_DELETED"
@@ -21960,6 +23589,7 @@ export type WebhookSampleEventTypeEnum =
   | "ORDER_CREATED"
   | "ORDER_FULFILLED"
   | "ORDER_FULLY_PAID"
+  | "ORDER_METADATA_UPDATED"
   | "ORDER_UPDATED"
   | "PAGE_CREATED"
   | "PAGE_DELETED"
@@ -21972,10 +23602,12 @@ export type WebhookSampleEventTypeEnum =
   | "PERMISSION_GROUP_UPDATED"
   | "PRODUCT_CREATED"
   | "PRODUCT_DELETED"
+  | "PRODUCT_METADATA_UPDATED"
   | "PRODUCT_UPDATED"
   | "PRODUCT_VARIANT_BACK_IN_STOCK"
   | "PRODUCT_VARIANT_CREATED"
   | "PRODUCT_VARIANT_DELETED"
+  | "PRODUCT_VARIANT_METADATA_UPDATED"
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
   | "PRODUCT_VARIANT_UPDATED"
   | "SALE_CREATED"
@@ -21987,18 +23619,22 @@ export type WebhookSampleEventTypeEnum =
   | "SHIPPING_PRICE_UPDATED"
   | "SHIPPING_ZONE_CREATED"
   | "SHIPPING_ZONE_DELETED"
+  | "SHIPPING_ZONE_METADATA_UPDATED"
   | "SHIPPING_ZONE_UPDATED"
   | "STAFF_CREATED"
   | "STAFF_DELETED"
   | "STAFF_UPDATED"
   | "TRANSACTION_ACTION_REQUEST"
+  | "TRANSACTION_ITEM_METADATA_UPDATED"
   | "TRANSLATION_CREATED"
   | "TRANSLATION_UPDATED"
   | "VOUCHER_CREATED"
   | "VOUCHER_DELETED"
+  | "VOUCHER_METADATA_UPDATED"
   | "VOUCHER_UPDATED"
   | "WAREHOUSE_CREATED"
   | "WAREHOUSE_DELETED"
+  | "WAREHOUSE_METADATA_UPDATED"
   | "WAREHOUSE_UPDATED";
 
 /**
@@ -24344,6 +25980,23 @@ export type OrderQuery = {
   } | null;
 };
 
+export type UserRegisterMutationVariables = Exact<{
+  input: AccountRegisterInput;
+}>;
+
+export type UserRegisterMutation = {
+  __typename?: "Mutation";
+  accountRegister?: {
+    __typename?: "AccountRegister";
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+  } | null;
+};
+
 export const AccountErrorFragmentDoc = gql`
   fragment AccountErrorFragment on AccountError {
     message
@@ -25057,4 +26710,21 @@ export const OrderDocument = gql`
 
 export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
   return Urql.useQuery<OrderQuery, OrderQueryVariables>({ query: OrderDocument, ...options });
+}
+export const UserRegisterDocument = gql`
+  mutation userRegister($input: AccountRegisterInput!) {
+    accountRegister(input: $input) {
+      errors {
+        message
+        field
+        code
+      }
+    }
+  }
+`;
+
+export function useUserRegisterMutation() {
+  return Urql.useMutation<UserRegisterMutation, UserRegisterMutationVariables>(
+    UserRegisterDocument
+  );
 }

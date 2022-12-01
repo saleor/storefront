@@ -63,7 +63,14 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
 
       setCheckoutUpdateState("success");
     },
-    [checkoutShippingAddressUpdate, locale, checkout.id, showErrors, setApiErrors]
+    [
+      setCheckoutUpdateState,
+      checkoutShippingAddressUpdate,
+      locale,
+      checkout.id,
+      showErrors,
+      setApiErrors,
+    ]
   );
 
   if (collapsed) {

@@ -118,7 +118,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       setCheckoutUpdateState("error");
       showErrors(errors);
     },
-    [updateDeliveryMethod, locale, checkout.id, setValue, showErrors]
+    [updateDeliveryMethod, locale, checkout.id, setValue, setCheckoutUpdateState, showErrors]
   );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({

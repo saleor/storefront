@@ -1,28 +1,28 @@
 import create from "zustand";
 import { CheckoutScope } from "@/checkout-storefront/hooks/useAlerts";
 import shallow from "zustand/shallow";
+import { useMemo } from "react";
 
 export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
 
-export type CheckoutUpdateStateScope =
-  | Extract<
-      CheckoutScope,
-      | "checkoutShippingUpdate"
-      | "checkoutCustomerAttach"
-      | "checkoutAddPromoCode"
-      | "checkoutDeliveryMethodUpdate"
-      | "checkoutEmailUpdate"
-      | "checkoutBillingUpdate"
-      | "checkoutLinesUpdate"
-      | "userRegister"
-    >
-  | "checkoutFetch";
+export type CheckoutUpdateStateScope = Extract<
+  CheckoutScope,
+  | "checkoutShippingUpdate"
+  | "checkoutCustomerAttach"
+  | "checkoutAddPromoCode"
+  | "checkoutDeliveryMethodUpdate"
+  | "checkoutEmailUpdate"
+  | "checkoutBillingUpdate"
+  | "checkoutLinesUpdate"
+  | "userRegister"
+>;
 
 interface CheckoutUpdateStateStore {
   shouldRegisterUser: boolean;
   loadingCheckout: boolean;
   updateState: Record<CheckoutUpdateStateScope, CheckoutUpdateStateStatus>;
   actions: {
+    setShouldRegisterUser: (shouldRegisterUser: boolean) => void;
     setLoadingCheckout: (loading: boolean) => void;
     setUpdateState: (
       scope: CheckoutUpdateStateScope
@@ -41,19 +41,30 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
     checkoutDeliveryMethodUpdate: "success",
     checkoutLinesUpdate: "success",
     checkoutEmailUpdate: "success",
-    checkoutFetch: "success",
     userRegister: "success",
   },
   actions: {
-    setShouldRegisterUser: (shouldRegisterUser: boolean) => ({ shouldRegisterUser }),
+    setShouldRegisterUser: (shouldRegisterUser: boolean) =>
+      set(() => ({
+        shouldRegisterUser,
+      })),
     setLoadingCheckout: (loading: boolean) => set(() => ({ loadingCheckout: loading })),
     setUpdateState: (scope) => (status) =>
-      set((state) => ({ updateState: { ...state.updateState, [scope]: status } })),
+      set((state) => ({
+        updateState: {
+          ...state.updateState,
+          [scope]: status,
+        },
+        // checkout will reload right after, this ensures there
+        // are no rerenders in between where there's no state updating
+        // also we might not need this once we get better caching
+        loadingCheckout: true,
+      })),
   },
 }));
 
-export const useCheckoutUpdateState = () =>
-  useCheckoutUpdateStateStore(
+export const useCheckoutUpdateState = () => {
+  const { updateState, loadingCheckout } = useCheckoutUpdateStateStore(
     ({ updateState, loadingCheckout }) => ({
       updateState,
       loadingCheckout,
@@ -61,8 +72,16 @@ export const useCheckoutUpdateState = () =>
     shallow
   );
 
-export const useUserRegisterState = () =>
-  useCheckoutUpdateStateStore((state) => state.shouldRegisterUser);
+  return useMemo(
+    () => ({ updateState, loadingCheckout }),
+    [loadingCheckout, ...Object.values(updateState)]
+  );
+};
+
+export const useUserRegisterState = () => {
+  const shouldUserRegister = useCheckoutUpdateStateStore((state) => state.shouldRegisterUser);
+  return useMemo(() => shouldUserRegister, [shouldUserRegister]);
+};
 
 export const useCheckoutUpdateStateActions = (
   scope: CheckoutUpdateStateScope | "checkoutLoading"

@@ -1,4 +1,7 @@
-import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
+import {
+  useCheckoutUpdateState,
+  useCheckoutUpdateStateActions,
+} from "@/checkout-storefront/state/updateStateStore";
 import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
@@ -6,22 +9,25 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useCheckoutFinalize } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFinalize";
 
-export const useCheckoutForm = () => {
+export const useCheckoutSubmit = () => {
   const { validateAllForms } = useCheckoutValidationActions();
   const { validating, validationState } = useCheckoutValidationState();
   const { updateState, loadingCheckout } = useCheckoutUpdateState();
+  const { setShouldRegisterUser } = useCheckoutUpdateStateActions("userRegister");
   const { checkoutFinalize } = useCheckoutFinalize();
 
   const [submitInProgress, setSubmitInProgress] = useState(false);
 
-  const submitInitialize = () => {
+  const submitInitialize = useCallback(() => {
     setSubmitInProgress(true);
+    setShouldRegisterUser(true);
     validateAllForms();
-  };
+  }, [setShouldRegisterUser, validateAllForms]);
 
   const updateStateValues = Object.values(updateState);
 
-  const anyRequestsInProgress = updateStateValues.some((status) => status === "loading");
+  const anyRequestsInProgress =
+    updateStateValues.some((status) => status === "loading") || loadingCheckout;
 
   const finishedApiChangesWithNoError =
     !updateStateValues.some((status) => status === "loading") &&
@@ -32,6 +38,7 @@ export const useCheckoutForm = () => {
     !validating && !Object.values(validationState).every((value) => value === "valid");
 
   const handleSubmit = useCallback(async () => {
+    console.log({ updateState, loadingCheckout, submitInProgress, allFormsValid });
     if (submitInProgress && finishedApiChangesWithNoError && allFormsValid) {
       void checkoutFinalize();
       return;
@@ -46,13 +53,10 @@ export const useCheckoutForm = () => {
     allFormsValid,
     checkoutFinalize,
     anyRequestsInProgress,
+    updateState,
   ]);
 
-  useEffect(
-    () => void handleSubmit(),
-
-    [handleSubmit]
-  );
+  useEffect(() => void handleSubmit(), [handleSubmit]);
 
   return {
     handleSubmit: submitInitialize,

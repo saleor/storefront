@@ -77,7 +77,14 @@ export const BillingAddressSection = () => {
 
       setCheckoutUpdateState("success");
     },
-    [checkoutBillingAddressUpdate, checkoutId, locale, setApiErrors, showErrors]
+    [
+      checkoutBillingAddressUpdate,
+      checkoutId,
+      locale,
+      setApiErrors,
+      setCheckoutUpdateState,
+      showErrors,
+    ]
   );
 
   const setBillingSameAsShipping = useCallback(async () => {
