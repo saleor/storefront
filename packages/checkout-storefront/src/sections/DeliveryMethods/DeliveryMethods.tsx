@@ -20,9 +20,10 @@ import {
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
-import { useCheckoutUpdateStateTrigger, useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
+import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 
 interface FormData {
   selectedMethodId: string | undefined;
@@ -35,13 +36,13 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
 
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutDeliveryMethodUpdate");
+
   const previousShippingCountry = useRef<CountryCode | undefined | null>(
     shippingAddress?.country?.code as CountryCode | undefined
   );
 
-  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
-
-  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
+  const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
 
   const getAutoSetMethod = useCallback(() => {
     if (!shippingMethods.length) {
@@ -65,8 +66,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { watch, getValues, setValue, control } = formProps;
 
   const selectedMethodId = watch("selectedMethodId");
-
-  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
 
   const hasValidMethodSelected =
     selectedMethodId && shippingMethods.some(getById(selectedMethodId));
@@ -111,12 +110,15 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       const [hasErrors, errors] = extractMutationErrors(result);
 
       if (!hasErrors) {
+        setCheckoutUpdateState("success");
         return;
       }
+
       setValue("selectedMethodId", selectedMethodId);
+      setCheckoutUpdateState("error");
       showErrors(errors);
     },
-    [updateDeliveryMethod, locale, checkout.id, setValue, showErrors]
+    [updateDeliveryMethod, locale, checkout.id, setValue, setCheckoutUpdateState, showErrors]
   );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
@@ -137,6 +139,9 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   };
 
   useEffect(() => {
+    // this useffects needs to go in favor of doing whatever's here
+    // in onChange once the we switch to formik
+    // setCheckoutUpdateState("loading");
     void debouncedSubmit();
   }, [selectedMethodId, debouncedSubmit]);
 

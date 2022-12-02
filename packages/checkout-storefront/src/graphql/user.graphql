@@ -1,0 +1,9 @@
+mutation userRegister($input: AccountRegisterInput!) {
+  accountRegister(input: $input) {
+    errors {
+      message
+      field
+      code
+    }
+  }
+}

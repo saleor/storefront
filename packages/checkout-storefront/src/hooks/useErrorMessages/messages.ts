@@ -17,6 +17,11 @@ export const errorMessages = defineMessages<ErrorCode>({
     id: "useErrorMessages/messages/GrUSxl",
     description: "value must be unique",
   },
+  passwordAtLeastCharacters: {
+    defaultMessage: "Password must be at least 8 characters",
+    id: "useErrorMessages/messages/Hz38OL",
+    description: "password must be at least 8 characters",
+  },
   passwordTooShort: {
     defaultMessage: "Provided password is too short. Minimum length is 8 characters.",
     id: "useErrorMessages/messages/W/xrYy",

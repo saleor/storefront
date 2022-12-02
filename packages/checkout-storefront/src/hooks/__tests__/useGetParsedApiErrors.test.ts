@@ -2,10 +2,9 @@ import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/us
 import { renderHook } from "@testing-library/react-hooks";
 import { apiErrors } from "@/checkout-storefront/lib/fixtures";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
-import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
 import { getMockProviders } from "@/checkout-storefront/__tests__/utils";
 
-type TestFormData = AddressFormData & CheckoutFormData;
+type TestFormData = AddressFormData;
 
 describe("useGetParsedApiErrors", () => {
   it("should return properly formatted errors from api errors array", () => {

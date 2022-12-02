@@ -19,6 +19,7 @@ import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 
 interface FormData {
   promoCode: string;
@@ -30,6 +31,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const formatMessage = useFormattedMessages();
   const { setApiErrors, errors } = useErrors<FormData>();
   const { showErrors } = useAlerts("checkoutAddPromoCode");
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutAddPromoCode");
 
   const schema = object({
     code: string(),
@@ -45,19 +47,24 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const showApplyButton = !!watch("promoCode");
 
   const onSubmit = async ({ promoCode }: FormData) => {
+    setCheckoutUpdateState("loading");
+
     const result = await checkoutAddPromoCode({
       languageCode: localeToLanguageCode(locale),
       promoCode,
       checkoutId: checkout.id,
     });
+
     const [hasErrors, apiErrors] = extractMutationErrors(result);
 
     if (hasErrors) {
+      setCheckoutUpdateState("error");
       setApiErrors(apiErrors);
       showErrors(apiErrors);
       return;
     }
 
+    setCheckoutUpdateState("success");
     reset();
   };
 

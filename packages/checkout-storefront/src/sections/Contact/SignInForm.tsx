@@ -12,7 +12,7 @@ import {
   useValidationResolver,
 } from "@/checkout-storefront/lib/utils";
 import { useState } from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { object, string, ValidationError } from "yup";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
@@ -42,7 +42,6 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const { login, requestPasswordReset } = useAuth();
   const { authenticating } = useAuthState();
-  const { getValues: getContextValues, setValue: setContextValue } = useFormContext();
   const { getFormErrorsFromApiErrors } = useGetParsedApiErrors<FormData>();
 
   const schema = object({
@@ -55,7 +54,11 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
   const formProps = useForm<FormData>({
     resolver,
     mode: "onTouched",
-    defaultValues: { email: getContextValues("email"), password: "" },
+    defaultValues: {
+      email: "", // once we move to formik it should share email between
+      // sign in, register and guest user form
+      password: "",
+    },
   });
 
   const { handleSubmit, getValues, watch, setError, clearErrors } = formProps;
@@ -110,7 +113,6 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
     } catch (error) {
       const { path, type, message } = extractValidationError(error as ValidationError);
 
-      console.log({ path, type, message });
       setError(path, { type, message });
     }
   };
@@ -120,9 +122,6 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
   useEffect(() => {
     setPasswordResetSent(false);
   }, [emailValue]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setContextValue("email", emailValue), [emailValue]);
 
   return (
     <SignInFormContainer

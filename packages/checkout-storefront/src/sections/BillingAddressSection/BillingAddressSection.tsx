@@ -4,7 +4,6 @@ import {
   useCheckoutBillingAddressUpdateMutation,
   useUserQuery,
 } from "@/checkout-storefront/graphql";
-import { useCheckoutUpdateStateTrigger } from "@/checkout-storefront/hooks";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
@@ -23,6 +22,7 @@ import {
 } from "@/checkout-storefront/lib/utils";
 import { billingMessages } from "./messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -30,6 +30,7 @@ export const BillingAddressSection = () => {
   const { user: authUser } = useAuthState();
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress, id: checkoutId } = checkout;
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutBillingUpdate");
 
   const hasBillingSameAsShipping = isMatchingAddress(shippingAddress, billingAddress);
 
@@ -51,14 +52,13 @@ export const BillingAddressSection = () => {
 
   const { showErrors } = useAlerts();
 
-  const [{ fetching }, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
+  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
   const isBillingSameAsShippingRef = useRef<boolean>(isBillingSameAsShipping);
   const shippingAddressRef = useRef<Address>(shippingAddress);
 
-  useCheckoutUpdateStateTrigger("checkoutBillingUpdate", fetching);
-
   const updateBillingAddress = useCallback(
     async ({ autoSave, ...addressInput }: AddressFormData) => {
+      setCheckoutUpdateState("loading");
       const result = await checkoutBillingAddressUpdate({
         languageCode: localeToLanguageCode(locale),
         checkoutId,
@@ -69,11 +69,22 @@ export const BillingAddressSection = () => {
       const [hasErrors, errors] = extractMutationErrors(result);
 
       if (hasErrors) {
+        setCheckoutUpdateState("error");
         showErrors(errors, "checkoutBillingUpdate");
         setApiErrors(errors);
+        return;
       }
+
+      setCheckoutUpdateState("success");
     },
-    [checkoutBillingAddressUpdate, checkoutId, locale, setApiErrors, showErrors]
+    [
+      checkoutBillingAddressUpdate,
+      checkoutId,
+      locale,
+      setApiErrors,
+      setCheckoutUpdateState,
+      showErrors,
+    ]
   );
 
   const setBillingSameAsShipping = useCallback(async () => {
@@ -141,6 +152,7 @@ export const BillingAddressSection = () => {
           ) : (
             <GuestAddressSection
               {...errorProps}
+              type="BILLING"
               checkAddressAvailability={false}
               defaultAddress={passDefaultFormDataAddress ? checkout?.billingAddress : undefined}
               title={formatMessage(billingMessages.billingAddress)}

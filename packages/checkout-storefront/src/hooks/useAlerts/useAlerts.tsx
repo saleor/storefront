@@ -16,7 +16,7 @@ function useAlerts(scope: CheckoutScope): {
 
 function useAlerts(): {
   showErrors: (errors: ApiErrors<any>, scope: CheckoutScope) => void;
-  showCustomErrors: (errors: CustomError[], scope: CheckoutScope) => void;
+  showCustomErrors: (errors: CustomError[], scope?: CheckoutScope) => void;
 };
 
 function useAlerts(globalScope?: any): any {

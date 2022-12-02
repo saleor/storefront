@@ -1487,10 +1487,6 @@
     "developer_comment": "login - email inactive error",
     "string": "Account with provided email is inactive"
   },
-  "useAlerts/messages/Em5uvP": {
-    "developer_comment": "checkout finalize - shipping address invalid error",
-    "string": "Please fill in a valid shipping address before finalizing checkout"
-  },
   "useAlerts/messages/EwTHLm": {
     "developer_comment": "reset password - token invalid error",
     "string": "Provided reset password token is expired or invalid"
@@ -1523,14 +1519,6 @@
     "developer_comment": "checkout email update - email required error",
     "string": "Email cannot be empty"
   },
-  "useAlerts/messages/b1SQCj": {
-    "developer_comment": "checkout finalize payment provider required error",
-    "string": "Please select a payment method before finalizing checkout"
-  },
-  "useAlerts/messages/cRtX18": {
-    "developer_comment": "checkout finalize - email invalid error",
-    "string": "Please provide valid email before finalizing checkout"
-  },
   "useAlerts/messages/dCkgOw": {
     "developer_comment": "checkout finalize password required error",
     "string": "Please set user password before finalizing checkout"
@@ -1555,10 +1543,6 @@
     "developer_comment": "checkout pay - shipping method not set error",
     "string": "Please choose delivery method before finalizing checkout"
   },
-  "useAlerts/messages/kiBZQ6": {
-    "developer_comment": "please provide a valid billing address before finalizing",
-    "string": "Please provide a valid billing address before finalizing"
-  },
   "useAlerts/messages/mJ81Pa": {
     "developer_comment": "user register - password too short error",
     "string": "Provided password is too short"
@@ -1567,17 +1551,9 @@
     "developer_comment": "login - invalid credentials error",
     "string": "Invalid credentials provided to login"
   },
-  "useAlerts/messages/ow9nan": {
-    "developer_comment": "please provide a valid shipping address before finalizing checkout",
-    "string": "Please provide a valid shipping address before finalizing checkout"
-  },
   "useAlerts/messages/oyFho2": {
     "developer_comment": "checkout lines update - insufficient stock error",
     "string": "Couldn't update line - insufficient stock in warehouse"
-  },
-  "useAlerts/messages/rVGqj8": {
-    "developer_comment": "checkout finalize email required error",
-    "string": "Please provide a valid email before finalizing checkout"
   },
   "useAlerts/messages/uc7gzX": {
     "developer_comment": "user address update - postal code invalid error",
@@ -1610,6 +1586,10 @@
   "useErrorMessages/messages/GrUSxl": {
     "developer_comment": "value must be unique",
     "string": "Value must be unique"
+  },
+  "useErrorMessages/messages/Hz38OL": {
+    "developer_comment": "password must be at least 8 characters",
+    "string": "Password must be at least 8 characters"
   },
   "useErrorMessages/messages/OOj8Aa": {
     "developer_comment": "insufficient stock",
