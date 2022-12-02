@@ -24,6 +24,7 @@ import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 
 interface FormData {
   selectedMethodId: string | undefined;
@@ -95,31 +96,40 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     setValue,
   ]);
 
-  const handleSubmit = useCallback(
-    async ({ selectedMethodId }: FormData) => {
-      if (!selectedMethodId) {
-        return;
-      }
-
-      const result = await updateDeliveryMethod({
-        languageCode: localeToLanguageCode(locale),
-        deliveryMethodId: selectedMethodId,
-        checkoutId: checkout.id,
-      });
-
-      const [hasErrors, errors] = extractMutationErrors(result);
-
-      if (!hasErrors) {
-        setCheckoutUpdateState("success");
-        return;
-      }
-
+  const handleSubmit = useSubmit<FormData>({
+    scope: "checkoutDeliveryMethodUpdate",
+    onSubmit: updateDeliveryMethod,
+    formDataParse: ({ selectedMethodId }) => ({ deliveryMethodId: selectedMethodId }),
+    onError: ({ selectedMethodId }) => {
       setValue("selectedMethodId", selectedMethodId);
-      setCheckoutUpdateState("error");
-      showErrors(errors);
     },
-    [updateDeliveryMethod, locale, checkout.id, setValue, setCheckoutUpdateState, showErrors]
-  );
+  });
+
+  // const handleSubmit = useCallback(
+  //   async ({ selectedMethodId }: FormData) => {
+  //     if (!selectedMethodId) {
+  //       return;
+  //     }
+
+  //     const result = await updateDeliveryMethod({
+  //       languageCode: localeToLanguageCode(locale),
+  //       deliveryMethodId: selectedMethodId,
+  //       checkoutId: checkout.id,
+  //     });
+
+  //     const [hasErrors, errors] = extractMutationErrors(result);
+
+  //     if (!hasErrors) {
+  //       setCheckoutUpdateState("success");
+  //       return;
+  //     }
+
+  //     setValue("selectedMethodId", selectedMethodId);
+  //     setCheckoutUpdateState("error");
+  //     showErrors(errors);
+  //   },
+  //   [updateDeliveryMethod, locale, checkout.id, setValue, setCheckoutUpdateState, showErrors]
+  // );
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
     onSubmit: handleSubmit,
