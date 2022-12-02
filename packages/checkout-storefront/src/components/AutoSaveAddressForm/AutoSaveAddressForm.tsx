@@ -29,7 +29,7 @@ export const AutoSaveAddressForm: React.FC<AutoSaveAddressFormProps> = ({
 
   useCheckoutFormValidationTrigger({
     formProps,
-    scope: isShippingForm ? "billingAddress" : "shippingAddress",
+    scope: isShippingForm ? "shippingAddress" : "billingAddress",
   });
 
   const debouncedSubmit = useFormDebouncedSubmit<AddressFormData>({

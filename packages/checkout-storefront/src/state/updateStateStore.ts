@@ -75,12 +75,7 @@ export const useCheckoutUpdateState = () => {
     shallow
   );
 
-  return useMemo(
-    () => ({ updateState, loadingCheckout }),
-    // because we want to compare array of strings instead of object
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [loadingCheckout, ...Object.values(updateState)]
-  );
+  return { updateState, loadingCheckout };
 };
 
 export const useUserRegisterState = () => {
@@ -93,15 +88,5 @@ export const useCheckoutUpdateStateActions = () =>
 
 export const useCheckoutUpdateStateChange = (scope: CheckoutUpdateStateScope) =>
   useCheckoutUpdateStateStore(({ actions: { setUpdateState } }) => ({
-    setCheckoutUpdateState: (status: CheckoutUpdateStateStatus) => {
-      const updateState = setUpdateState(scope);
-      updateState(status);
-      // // we need to make sure after mutations successes it
-      // // comes back to being success in the state
-      // if (status === "success") {
-      //   setTimeout(() => {
-      //     updateState("success");
-      //   }, 0);
-      // }
-    },
+    setCheckoutUpdateState: setUpdateState(scope),
   }));

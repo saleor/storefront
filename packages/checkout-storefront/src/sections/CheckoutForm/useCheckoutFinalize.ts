@@ -2,16 +2,12 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 import { usePay } from "@/checkout-storefront/hooks/usePay";
 import { useCallback, useEffect } from "react";
-import {
-  SelectedPaymentData,
-  useSelectedPaymentData,
-} from "@/checkout-storefront/state/paymentDataStore";
+import { useSelectedPaymentData } from "@/checkout-storefront/state/paymentDataStore";
 
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
   const { checkoutPay, loading, error: payError, data: _payData } = usePay();
-  // const { showCustomErrors } = useAlerts();
-  const { paymentMethod, paymentProvider } = useSelectedPaymentData() as SelectedPaymentData;
+  const { paymentMethod, paymentProvider } = useSelectedPaymentData();
 
   useEffect(() => {
     // @todo should this show a notification?
@@ -21,6 +17,10 @@ export const useCheckoutFinalize = () => {
   }, [payError]);
 
   const checkoutFinalize = useCallback(async () => {
+    if (!paymentMethod || !paymentProvider) {
+      return;
+    }
+
     const result = await checkoutPay({
       provider: paymentProvider,
       method: paymentMethod,
