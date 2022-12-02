@@ -111,17 +111,16 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
         return { hasErrors, errors };
       }
 
-      const updatedAddress = result?.data?.accountAddressUpdate?.address as AddressFragment;
+      const updatedAddress = result?.data?.accountAddressUpdate?.address;
 
       const updatedList = addressList.map((existingAddress) =>
-        existingAddress.id === updatedAddress.id ? updatedAddress : existingAddress
+        existingAddress.id === updatedAddress?.id ? updatedAddress : existingAddress
       );
 
       setAddressList(updatedList);
 
-      if (isAvailable(updatedAddress)) {
+      if (updatedAddress && isAvailable(updatedAddress)) {
         setSelectedAddressId(updatedAddress.id);
-
         handleCheckoutAddressUpdate(updatedAddress);
       }
 
@@ -168,13 +167,14 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
       if (hasErrors) {
         showErrors(errors, "userAddressCreate");
       } else {
-        const address = result?.data?.accountAddressCreate?.address as AddressFragment;
+        const address = result?.data?.accountAddressCreate?.address;
+        if (address) {
+          setAddressList([...addressList, address]);
 
-        setAddressList([...addressList, address]);
-
-        if (isAvailable(address)) {
-          setSelectedAddressId(address.id);
-          handleCheckoutAddressUpdate(address);
+          if (isAvailable(address)) {
+            setSelectedAddressId(address.id);
+            handleCheckoutAddressUpdate(address);
+          }
         }
       }
 
@@ -195,7 +195,10 @@ export const AddressListProvider: React.FC<PropsWithChildren<AddressListProvider
   const handleAddressSelect = useCallback(
     (addressId: string) => {
       setSelectedAddressId(addressId);
-      debouncedUpdate(getSelectedAddress(addressId) as AddressFragment);
+      const address = getSelectedAddress(addressId);
+      if (address) {
+        debouncedUpdate(address);
+      }
     },
     [getSelectedAddress, debouncedUpdate]
   );
