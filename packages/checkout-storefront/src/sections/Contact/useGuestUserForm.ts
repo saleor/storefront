@@ -19,7 +19,6 @@ import { useAuthState } from "@saleor/sdk";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
-// import { errorMessages as passwordErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages/messages";
 
 export interface GuestUserFormData {
   email: string;
@@ -27,7 +26,6 @@ export interface GuestUserFormData {
 }
 
 export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) => {
-  // const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { user } = useAuthState();
   const { showErrors } = useAlerts("userRegister");
