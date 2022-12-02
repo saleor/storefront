@@ -2,12 +2,7 @@ import {
   useCheckoutEmailUpdateMutation,
   useUserRegisterMutation,
 } from "@/checkout-storefront/graphql";
-import {
-  useAlerts,
-  useCheckout,
-  useErrorMessages,
-  useFormattedMessages,
-} from "@/checkout-storefront/hooks";
+import { useAlerts, useCheckout, useErrorMessages } from "@/checkout-storefront/hooks";
 import {
   useCheckoutUpdateStateActions,
   useCheckoutUpdateStateChange,
