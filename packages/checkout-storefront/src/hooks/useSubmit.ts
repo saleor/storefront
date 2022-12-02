@@ -1,5 +1,7 @@
+import { Exact, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { ApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
 import { extractMutationErrors, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
@@ -10,27 +12,31 @@ import {
 import { useCallback } from "react";
 import { OperationResult } from "urql";
 
-export type MutationVars<MutationFn> = MutationFn extends (vars: infer Vars) => any ? Vars : never;
-export type MutationData<MutationFn> = MutationFn extends (vars: any) => infer Data ? Data : never;
+type MutationVars<MutationFn> = MutationFn extends (vars: Exact<infer Vars>) => any ? Vars : never;
+type MutationData<MutationFn> = MutationFn extends (vars: any) => infer Data ? Data : never;
 
-const commonVars = ["locale", "channel", "checkoutId"] as const;
+const commonVars = ["languageCode", "channel", "checkoutId"] as const;
 type CommonVar = typeof commonVars[number];
 
-// want to pass only FormData
-// but we also need MutationVariables, MutationResult, Errors
+type CommonVars = Record<CommonVar, string> & { languageCode: LanguageCodeEnum };
 
-interface UseSubmitProps<TData extends FormDataBase> {
+interface UseSubmitProps<
+  TData extends FormDataBase,
+  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
+> {
   scope: CheckoutUpdateStateScope;
-  onSubmit: (vars: MutationVars<TMutation>) => Promise<MutationData<TMutation>>;
-  formDataParse?: (formData: TData) => Omit<MutationVars<TMutation>, CommonVar>;
-  submitDataOpts?: CommonVar[];
+  onSubmit: (vars: MutationVars<TMutationFn>) => MutationData<TMutationFn>;
+  formDataParse: (formData: TData, commonData: CommonVars) => MutationVars<TMutationFn>;
   shouldAbort?: (formData: TData) => boolean;
   onAbort?: (FormData: TData) => void;
   onSuccess?: (formData: TData) => void;
-  onError?: (formData: TData, errors: ApiErrors<>) => void;
+  onError?: (formData: TData, errors: ApiErrors<TData>) => void;
 }
 
-export const useSubmit = <TData extends FormDataBase>({
+export const useSubmit = <
+  TData extends FormDataBase,
+  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
+>({
   onSuccess,
   onError,
   scope,
@@ -38,36 +44,11 @@ export const useSubmit = <TData extends FormDataBase>({
   onSubmit,
   onAbort,
   formDataParse,
-  submitDataOpts = [],
-}: UseSubmitProps<TData>) => {
+}: UseSubmitProps<TData, TMutationFn>) => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
   const localeData = useLocale();
-
-  const getMutationData = useCallback(
-    (formData: TData) => {
-      const shouldParse = typeof formDataParse === "function";
-      const locale = localeToLanguageCode(localeData.locale);
-
-      const submitData = shouldParse ? formDataParse(formData) : formData;
-
-      const dataMap: Record<CommonVar, string> = {
-        locale,
-        channel: checkout.channel.slug,
-        checkoutId: checkout.id,
-      };
-
-      return submitDataOpts.reduce(
-        (result, varName) => ({
-          ...result,
-          [varName]: dataMap[varName],
-        }),
-        submitData
-      ) as MutationData;
-    },
-    [checkout.id, formDataParse, localeData.locale, submitDataOpts]
-  );
 
   const handleSubmit = useCallback(
     async (formData: TData) => {
@@ -78,9 +59,15 @@ export const useSubmit = <TData extends FormDataBase>({
         return;
       }
 
-      const result = await onSubmit(getMutationData(formData) as TMutationVars);
+      const commonData: CommonVars = {
+        languageCode: localeToLanguageCode(localeData.locale),
+        channel: checkout.channel.slug,
+        checkoutId: checkout.id,
+      };
 
-      const [hasErrors, errors] = extractMutationErrors(result);
+      const result = await onSubmit(formDataParse(formData, commonData));
+
+      const [hasErrors, errors] = extractMutationErrors<TData>(result);
 
       if (!hasErrors) {
         typeof onSuccess === "function" && onSuccess(formData);
@@ -92,7 +79,19 @@ export const useSubmit = <TData extends FormDataBase>({
       setCheckoutUpdateState("error");
       showErrors(errors);
     },
-    [getMutationData, onError, onSubmit, onSuccess, setCheckoutUpdateState, shouldAbort, showErrors]
+    [
+      checkout.channel.slug,
+      checkout.id,
+      formDataParse,
+      localeData.locale,
+      onAbort,
+      onError,
+      onSubmit,
+      onSuccess,
+      setCheckoutUpdateState,
+      shouldAbort,
+      showErrors,
+    ]
   );
 
   return handleSubmit;
