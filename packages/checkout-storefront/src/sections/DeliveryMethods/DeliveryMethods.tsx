@@ -1,7 +1,6 @@
 import { Title } from "@/checkout-storefront/components/Title";
 import { Text } from "@saleor/ui-kit";
 import {
-  CheckoutDeliveryMethodUpdateMutationVariables,
   CountryCode,
   ShippingMethod,
   useCheckoutDeliveryMethodUpdateMutation,
@@ -93,7 +92,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
       deliveryMethodId: selectedMethodId as string,
       languageCode,
       checkoutId,
-      lol: 5,
     }),
     onError: ({ selectedMethodId }) => {
       setValue("selectedMethodId", selectedMethodId);
