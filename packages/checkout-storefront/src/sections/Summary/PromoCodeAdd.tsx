@@ -1,37 +1,26 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useCheckoutAddPromoCodeMutation } from "@/checkout-storefront/graphql";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
 import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
-import {
-  extractMutationErrors,
-  localeToLanguageCode,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
+import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { summaryLabels, summaryMessages } from "./messages";
 import clsx from "clsx";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
-import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 
-interface FormData {
+interface PromoCodeAddFormData {
   promoCode: string;
 }
 
 export const PromoCodeAdd: FC<Classes> = ({ className }) => {
-  const { locale } = useLocale();
-  const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
-  const { setApiErrors, errors } = useErrors<FormData>();
-  const { showErrors } = useAlerts("checkoutAddPromoCode");
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutAddPromoCode");
+  const { setApiErrors, errors } = useErrors<PromoCodeAddFormData>();
 
   const schema = object({
     code: string(),
@@ -40,35 +29,25 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
 
   const [, checkoutAddPromoCode] = useCheckoutAddPromoCodeMutation();
 
-  const formProps = useForm<FormData>({ resolver, defaultValues: { promoCode: "" } });
+  const formProps = useForm<PromoCodeAddFormData>({ resolver, defaultValues: { promoCode: "" } });
   const { handleSubmit, watch, setError, reset } = formProps;
   const getInputProps = useGetInputProps(formProps);
 
   const showApplyButton = !!watch("promoCode");
 
-  const onSubmit = async ({ promoCode }: FormData) => {
-    setCheckoutUpdateState("loading");
-
-    const result = await checkoutAddPromoCode({
-      languageCode: localeToLanguageCode(locale),
+  const onSubmit = useSubmit<PromoCodeAddFormData, typeof checkoutAddPromoCode>({
+    scope: "checkoutAddPromoCode",
+    onSubmit: checkoutAddPromoCode,
+    formDataParse: ({ promoCode, languageCode, checkoutId }) => ({
       promoCode,
-      checkoutId: checkout.id,
-    });
+      checkoutId,
+      languageCode,
+    }),
+    onError: (errors) => setApiErrors(errors),
+    onSuccess: () => reset(),
+  });
 
-    const [hasErrors, apiErrors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      setCheckoutUpdateState("error");
-      setApiErrors(apiErrors);
-      showErrors(apiErrors);
-      return;
-    }
-
-    setCheckoutUpdateState("success");
-    reset();
-  };
-
-  useSetFormErrors<FormData>({
+  useSetFormErrors<PromoCodeAddFormData>({
     setError,
     errors,
   });

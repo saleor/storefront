@@ -88,12 +88,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     scope: "checkoutDeliveryMethodUpdate",
     onSubmit: updateDeliveryMethod,
     shouldAbort: ({ selectedMethodId }) => !selectedMethodId,
-    formDataParse: ({ selectedMethodId }, { languageCode, checkoutId }) => ({
+    formDataParse: ({ selectedMethodId, languageCode, checkoutId }) => ({
       deliveryMethodId: selectedMethodId as string,
       languageCode,
       checkoutId,
     }),
-    onError: ({ selectedMethodId }) => {
+    onError: (_, { selectedMethodId }) => {
       setValue("selectedMethodId", selectedMethodId);
     },
   });

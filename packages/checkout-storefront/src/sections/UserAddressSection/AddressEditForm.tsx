@@ -28,7 +28,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   };
 
   const handleDelete = async () => {
-    const { hasErrors, errors } = await addressDelete(defaultValues.id);
+    const { hasErrors, errors } = await addressDelete({ id: defaultValues.id });
 
     if (!hasErrors) {
       setApiErrors(errors);

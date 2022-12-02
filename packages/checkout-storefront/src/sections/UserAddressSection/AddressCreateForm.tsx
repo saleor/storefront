@@ -11,22 +11,11 @@ export interface AddressCreateFormProps extends Pick<AddressFormProps, "title"> 
 
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onClose, ...rest }) => {
   const { addressCreate, creating } = useAddressList();
-  const { setApiErrors, ...errorsRest } = useErrors<AddressFormData>();
-
-  const handleSubmit = async (formData: AddressFormData) => {
-    const { hasErrors, errors } = await addressCreate(formData);
-
-    if (hasErrors) {
-      setApiErrors(errors);
-      return;
-    }
-
-    onClose();
-  };
+  const { ...errorsRest } = useErrors<AddressFormData>();
 
   return (
     <ManualSaveAddressForm
-      onSubmit={handleSubmit}
+      onSubmit={addressCreate}
       onCancel={onClose}
       loading={creating}
       {...errorsRest}

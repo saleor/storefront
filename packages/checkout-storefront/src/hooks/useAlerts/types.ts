@@ -33,6 +33,7 @@ export type CheckoutScope =
   | "userRegister"
   | "requestPasswordReset"
   | "checkoutLinesUpdate"
+  | "checkoutLinesDelete"
   | "checkoutEmailUpdate"
   | "resetPassword"
   | "login";

@@ -1,23 +1,23 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
-import { extractMutationErrors, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { contactLabels, contactMessages } from "./messages";
-import { useAuth } from "@saleor/sdk";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
 import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { usePasswordResetMutation } from "@/checkout-storefront/graphql";
 
 interface ResetPasswordProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onResetPasswordSuccess: () => void;
 }
 
-interface FormData {
+interface ResetPasswordFormData {
   password: string;
 }
 
@@ -27,37 +27,30 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
 }) => {
   const formatMessage = useFormattedMessages();
   const { errorMessages } = useErrorMessages();
-  const { setPassword: resetPassword } = useAuth();
-  const { showErrors } = useAlerts("resetPassword");
+
+  const [, passwordReset] = usePasswordResetMutation();
 
   const schema = object({
     password: string().required(errorMessages.required),
   });
 
   const resolver = useValidationResolver(schema);
-  const { handleSubmit, ...rest } = useForm<FormData>({ resolver });
+  const { handleSubmit, ...rest } = useForm<ResetPasswordFormData>({ resolver });
 
   const getInputProps = useGetInputProps(rest);
 
-  const onSubmit = async ({ password }: FormData) => {
-    const { passwordResetEmail, passwordResetToken } = getQueryParams();
-
-    const result = await resetPassword({
-      password,
-      email: passwordResetEmail as string,
-      token: passwordResetToken as string,
-    });
-
-    const [hasErrors, errors] = extractMutationErrors(result);
-
-    if (hasErrors) {
-      showErrors(errors);
-      return;
-    }
-
-    clearQueryParams("passwordResetToken", "passwordResetEmail");
-    onResetPasswordSuccess();
-  };
+  const onSubmit = useSubmit<ResetPasswordFormData, typeof passwordReset>({
+    onSubmit: passwordReset,
+    scope: "resetPassword",
+    formDataParse: ({ password }) => {
+      const { passwordResetEmail, passwordResetToken } = getQueryParams();
+      return { password, email: passwordResetEmail || "", token: passwordResetToken || "" };
+    },
+    onSuccess: () => {
+      clearQueryParams("passwordResetToken", "passwordResetEmail");
+      onResetPasswordSuccess();
+    },
+  });
 
   return (
     <SignInFormContainer

@@ -25997,6 +25997,44 @@ export type UserRegisterMutation = {
   } | null;
 };
 
+export type PasswordResetMutationVariables = Exact<{
+  email: Scalars["String"];
+  token: Scalars["String"];
+  password: Scalars["String"];
+}>;
+
+export type PasswordResetMutation = {
+  __typename?: "Mutation";
+  setPassword?: {
+    __typename?: "SetPassword";
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+  } | null;
+};
+
+export type RequestPasswordResetMutationVariables = Exact<{
+  email: Scalars["String"];
+  channel: Scalars["String"];
+  redirectUrl: Scalars["String"];
+}>;
+
+export type RequestPasswordResetMutation = {
+  __typename?: "Mutation";
+  requestPasswordReset?: {
+    __typename?: "RequestPasswordReset";
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+  } | null;
+};
+
 export const AccountErrorFragmentDoc = gql`
   fragment AccountErrorFragment on AccountError {
     message
@@ -26726,5 +26764,39 @@ export const UserRegisterDocument = gql`
 export function useUserRegisterMutation() {
   return Urql.useMutation<UserRegisterMutation, UserRegisterMutationVariables>(
     UserRegisterDocument
+  );
+}
+export const PasswordResetDocument = gql`
+  mutation passwordReset($email: String!, $token: String!, $password: String!) {
+    setPassword(email: $email, token: $token, password: $password) {
+      errors {
+        message
+        field
+        code
+      }
+    }
+  }
+`;
+
+export function usePasswordResetMutation() {
+  return Urql.useMutation<PasswordResetMutation, PasswordResetMutationVariables>(
+    PasswordResetDocument
+  );
+}
+export const RequestPasswordResetDocument = gql`
+  mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
+    requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
+      errors {
+        message
+        field
+        code
+      }
+    }
+  }
+`;
+
+export function useRequestPasswordResetMutation() {
+  return Urql.useMutation<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(
+    RequestPasswordResetDocument
   );
 }
