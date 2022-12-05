@@ -37,8 +37,8 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
 
   // Avoid hydration warning by setting authenticated state in useEffect
   useEffect(() => {
-    setAuthenticated(actuallyAuthenticated)
-  }, [actuallyAuthenticated])
+    setAuthenticated(actuallyAuthenticated);
+  }, [actuallyAuthenticated]);
 
   if (error) {
     console.error("BurgerMenu component error", error.message);
