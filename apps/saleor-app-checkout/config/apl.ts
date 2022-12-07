@@ -36,9 +36,9 @@ const getApl = () => {
       invariant(REST_APL_ENDPOINT, "Missing REST_APL_ENDPOINT!");
       invariant(REST_APL_TOKEN, "Missing REST_APL_TOKEN!");
       return new RestAPL({
-        resourceUrl: REST_APL_ENDPOINT as string,
+        resourceUrl: REST_APL_ENDPOINT,
         headers: {
-          Authorization: `Bearer ${REST_APL_TOKEN as string}`,
+          Authorization: `Bearer ${REST_APL_TOKEN}`,
         },
       });
     default:
