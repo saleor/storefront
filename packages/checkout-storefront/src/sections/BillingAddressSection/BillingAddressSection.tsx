@@ -47,7 +47,7 @@ export const BillingAddressSection = () => {
       billingAddress: getAddressInputData(omit(rest, "channel")),
       validationRules: getAddressVlidationRulesVariables(autoSave),
     }),
-    onError: (errors) => setApiErrors(errors),
+    onError: setApiErrors,
   });
 
   const { isBillingSameAsShipping, setIsBillingSameAsShipping, passDefaultFormDataAddress } =
