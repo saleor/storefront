@@ -3,7 +3,8 @@ export function DemoBanner() {
     <div className="flex flex-row items-center h-16 space-x-4 border-b-2 border-dashed text-md">
       <div className="justify-self-start px-4 mr-auto">
         <a href="https://github.com/saleor/saleor/">
-          <span className="uppercase font-semibold">⭐️ Star us on Github</span>
+          <span className="hidden md:inline text-gray-600">⭐️ Star us on&nbsp;</span>
+          <span className="uppercase font-semibold">Github</span>
         </a>
       </div>
 
