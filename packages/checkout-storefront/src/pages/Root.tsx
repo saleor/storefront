@@ -28,7 +28,7 @@ export const Root = ({ env }: RootProps) => {
         ? createClient({
             url: saleorApiUrl,
             suspense: true,
-            requestPolicy: "cache-and-network",
+            requestPolicy: "cache-first",
             fetch: authorizedFetch as ClientOptions["fetch"],
           })
         : null,

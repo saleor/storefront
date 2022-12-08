@@ -1,20 +1,13 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useErrors } from "@/checkout-storefront/hooks/useErrors";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils";
-import { useAuth, useAuthState } from "@saleor/sdk";
 
 import { usePay } from "@/checkout-storefront/hooks/usePay";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCallback, useEffect } from "react";
-import { CheckoutFormData } from "@/checkout-storefront/sections/CheckoutForm/types";
+import { useSelectedPaymentData } from "@/checkout-storefront/state/paymentDataStore";
 
 export const useCheckoutFinalize = () => {
   const { checkout } = useCheckout();
-  const { register } = useAuth();
-  const { user } = useAuthState();
   const { checkoutPay, loading, error: payError, data: _payData } = usePay();
-  const { showErrors, showCustomErrors } = useAlerts();
-  const { errors, setApiErrors } = useErrors<CheckoutFormData>();
+  const { paymentMethod, paymentProvider } = useSelectedPaymentData();
 
   useEffect(() => {
     // @todo should this show a notification?
@@ -23,69 +16,41 @@ export const useCheckoutFinalize = () => {
     }
   }, [payError]);
 
-  const userRegister = useCallback(
-    async (formData: CheckoutFormData): Promise<boolean> => {
-      const { createAccount, email, password } = formData;
+  const checkoutFinalize = useCallback(async () => {
+    if (!paymentMethod || !paymentProvider) {
+      return;
+    }
 
-      if (user || !createAccount) {
-        return true;
-      }
+    const result = await checkoutPay({
+      provider: paymentProvider,
+      method: paymentMethod,
+      checkoutId: checkout?.id,
+      totalAmount: checkout?.totalPrice?.gross?.amount,
+    });
 
-      const registerFormData = { email, password };
+    if (!result) {
+      console.error("Unexpected empty result!", { result });
+      return;
+    }
 
-      // adding redirect url because some saleor envs require it
-      const result = await register({
-        ...registerFormData,
-        redirectUrl: location.href,
-      });
-
-      const [hasErrors, errors] = extractMutationErrors(result);
-
-      if (hasErrors) {
-        showErrors(errors, "userRegister");
-        setApiErrors(errors);
-        return !hasErrors;
-      }
-
-      return true;
-    },
-    [register, setApiErrors, showErrors, user]
-  );
-
-  const checkoutFinalize = useCallback(
-    async (formData: CheckoutFormData) => {
-      const userRegisterSuccessOrPassed = await userRegister(formData);
-
-      if (userRegisterSuccessOrPassed) {
-        const result = await checkoutPay({
-          provider: formData.paymentProviderId,
-          method: formData.paymentMethodId,
-          checkoutId: checkout?.id,
-          totalAmount: checkout?.totalPrice?.gross?.amount,
-        });
-
-        if (!result) {
-          console.error("Unexpected empty result!", { result });
-          return;
-        }
-
-        if ("ok" in result && result.ok === false) {
-          const { errors } = result;
-
-          const parsedErrors = errors.map((error) => ({
-            code: error,
-          }));
-
-          showCustomErrors(parsedErrors, "checkoutPay");
-        }
-      }
-    },
-    [checkout?.id, checkout?.totalPrice?.gross?.amount, checkoutPay, showCustomErrors, userRegister]
-  );
+    if ("ok" in result && result.ok === false) {
+      // for now api doesn't return errors in some cases
+      // const { errors } = result;
+      // const parsedErrors = errors.map((error) => ({
+      //   code: error,
+      // }));
+      // showCustomErrors(parsedErrors, "checkoutPay");
+    }
+  }, [
+    checkout?.id,
+    checkout?.totalPrice?.gross?.amount,
+    checkoutPay,
+    paymentMethod,
+    paymentProvider,
+  ]);
 
   return {
     checkoutFinalize,
-    submitting: loading,
-    errors,
+    finalizing: loading,
   };
 };

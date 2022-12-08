@@ -3,12 +3,14 @@ import { Address, AddressFormData } from "../../components/AddressForm/types";
 import { UseErrors } from "@/checkout-storefront/hooks/useErrors";
 import { getAddressFormDataFromAddress } from "@/checkout-storefront/lib/utils";
 import { AutoSaveAddressForm } from "@/checkout-storefront/components/AutoSaveAddressForm";
+import { AddressTypeEnum } from "@/checkout-storefront/graphql";
 
 interface GuestAddressSectionProps extends UseErrors<AddressFormData> {
   onSubmit: (address: AddressFormData) => void;
   title: string;
   defaultAddress: Address;
   checkAddressAvailability: boolean;
+  type: AddressTypeEnum;
 }
 
 export const GuestAddressSection: React.FC<GuestAddressSectionProps> = ({

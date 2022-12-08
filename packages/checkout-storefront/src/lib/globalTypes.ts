@@ -30,7 +30,8 @@ export type PasswordErrorCode =
   | "passwordTooShort"
   | "passwordTooSimilar"
   | "passwordTooCommon"
-  | "passwordInvalid";
+  | "passwordInvalid"
+  | "passwordAtLeastCharacters";
 
 export type CheckoutFinalizeErrorCode = "missingFields";
 

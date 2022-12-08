@@ -3,7 +3,7 @@ import { debounce, isEqual } from "lodash-es";
 import { useCallback, useRef } from "react";
 
 interface UseFormAutofillSubmit<TFormData extends FormDataBase> {
-  onSubmit: (formData: TFormData) => Promise<void> | void;
+  onSubmit: (formData: TFormData) => Promise<any> | void;
   getValues: () => TFormData;
   defaultFormData?: TFormData;
 }

@@ -10,19 +10,13 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
-import {
-  extractMutationErrors,
-  getById,
-  getFormattedMoney,
-  localeToLanguageCode,
-} from "@/checkout-storefront/lib/utils";
+import { getById, getFormattedMoney } from "@/checkout-storefront/lib/utils";
 import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
-import { useCheckoutUpdateStateTrigger, useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
+import { useFormDebouncedSubmit } from "@/checkout-storefront/hooks";
 import { Controller, useForm } from "react-hook-form";
-import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 
 interface FormData {
   selectedMethodId: string | undefined;
@@ -30,18 +24,14 @@ interface FormData {
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
-  const { locale } = useLocale();
   const { checkout } = useCheckout();
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
-  const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
 
   const previousShippingCountry = useRef<CountryCode | undefined | null>(
     shippingAddress?.country?.code as CountryCode | undefined
   );
 
-  const [{ fetching }, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
-
-  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
+  const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
 
   const getAutoSetMethod = useCallback(() => {
     if (!shippingMethods.length) {
@@ -65,8 +55,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { watch, getValues, setValue, control } = formProps;
 
   const selectedMethodId = watch("selectedMethodId");
-
-  useCheckoutUpdateStateTrigger("checkoutDeliveryMethodUpdate", fetching);
 
   const hasValidMethodSelected =
     selectedMethodId && shippingMethods.some(getById(selectedMethodId));
@@ -96,28 +84,19 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     setValue,
   ]);
 
-  const handleSubmit = useCallback(
-    async ({ selectedMethodId }: FormData) => {
-      if (!selectedMethodId) {
-        return;
-      }
-
-      const result = await updateDeliveryMethod({
-        languageCode: localeToLanguageCode(locale),
-        deliveryMethodId: selectedMethodId,
-        checkoutId: checkout.id,
-      });
-
-      const [hasErrors, errors] = extractMutationErrors(result);
-
-      if (!hasErrors) {
-        return;
-      }
+  const handleSubmit = useSubmit<FormData, typeof updateDeliveryMethod>({
+    scope: "checkoutDeliveryMethodUpdate",
+    onSubmit: updateDeliveryMethod,
+    shouldAbort: ({ selectedMethodId }) => !selectedMethodId,
+    formDataParse: ({ selectedMethodId, languageCode, checkoutId }) => ({
+      deliveryMethodId: selectedMethodId as string,
+      languageCode,
+      checkoutId,
+    }),
+    onError: (_, { selectedMethodId }) => {
       setValue("selectedMethodId", selectedMethodId);
-      showErrors(errors);
     },
-    [updateDeliveryMethod, locale, checkout.id, setValue, showErrors]
-  );
+  });
 
   const debouncedSubmit = useFormDebouncedSubmit<FormData>({
     onSubmit: handleSubmit,
@@ -137,6 +116,9 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   };
 
   useEffect(() => {
+    // this useffects needs to go in favor of doing whatever's here
+    // in onChange once the we switch to formik
+    // setCheckoutUpdateState("loading");
     void debouncedSubmit();
   }, [selectedMethodId, debouncedSubmit]);
 

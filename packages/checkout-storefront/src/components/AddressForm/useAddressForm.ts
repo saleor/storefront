@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { DefaultValues, Resolver, useForm, UseFormReturn } from "react-hook-form";
 import { AddressFormData } from "./types";
 import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
-import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { countries } from "@/checkout-storefront/lib/consts/countries";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
@@ -49,8 +48,6 @@ export const useAddressForm = ({
   });
 
   const { trigger, getValues, setValue } = formProps;
-
-  useCheckoutFormValidationTrigger(trigger);
 
   const hasDataChanged = useCallback(
     (formData: AddressFormData) => !isMatchingAddressFormData(formData, defaultValuesRef.current),
