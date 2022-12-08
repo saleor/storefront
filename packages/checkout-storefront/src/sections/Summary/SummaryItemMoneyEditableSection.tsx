@@ -1,20 +1,13 @@
 import { Text } from "@saleor/ui-kit";
 import {
   CheckoutLineFragment,
-  CheckoutLinesUpdateMutationVariables,
   useCheckoutLineDeleteMutation,
   useCheckoutLinesUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
-import {
-  extractMutationErrors,
-  localeToLanguageCode,
-  useValidationResolver,
-} from "@/checkout-storefront/lib/utils";
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
@@ -23,25 +16,22 @@ import { Skeleton } from "@/checkout-storefront/components";
 import { useErrorMessages } from "@/checkout-storefront/hooks";
 import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 import { summaryMessages } from "./messages";
-import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 
 interface LineItemQuantitySelectorProps {
   line: CheckoutLineFragment;
 }
 
-export interface FormData {
+export interface SummaryLineFormData {
   quantity: string;
 }
 
 export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
   line,
 }) => {
-  const { locale } = useLocale();
   const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
-  const { checkout } = useCheckout();
-  const { showErrors } = useAlerts("checkoutLinesUpdate");
-  const { setApiErrors, clearErrors } = useErrors<FormData>();
+  const { setApiErrors } = useErrors<SummaryLineFormData>();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
 
@@ -50,59 +40,43 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   });
 
   const resolver = useValidationResolver(schema);
-  const methods = useForm<FormData>({
+  const methods = useForm<SummaryLineFormData>({
     resolver,
     defaultValues: { quantity: line.quantity.toString() },
   });
 
   const { watch, setValue } = methods;
 
+  const getInputProps = useGetInputProps(methods);
+
   const quantityString = watch("quantity");
   const quantity = Number(quantityString);
 
-  const onLineQuantityUpdate = async ({ quantity }: FormData) => {
-    const result = await updateLines(getUpdateLineVars({ quantity }));
-    const [hasMutationErrors, errors] = extractMutationErrors(result);
-
-    if (!hasMutationErrors) {
-      clearErrors();
-      return;
-    }
-
-    setValue("quantity", line.quantity.toString());
-    setApiErrors(errors);
-    showErrors(errors);
-  };
-
-  const getInputProps = useGetInputProps(methods);
-
-  const getUpdateLineVars = ({ quantity }: FormData): CheckoutLinesUpdateMutationVariables => ({
-    languageCode: localeToLanguageCode(locale),
-    checkoutId: checkout.id,
-    lines: [
-      {
-        quantity: Number(quantity),
-        variantId: line.variant.id,
-      },
-    ],
+  const handleLineQuantityUpdate = useSubmit<SummaryLineFormData, typeof updateLines>({
+    scope: "checkoutLinesUpdate",
+    onSubmit: updateLines,
+    formDataParse: ({ quantity, languageCode, checkoutId }) => ({
+      languageCode,
+      checkoutId,
+      lines: [
+        {
+          quantity: Number(quantity),
+          variantId: line.variant.id,
+        },
+      ],
+    }),
+    onError: (errors, { quantity }) => {
+      setValue("quantity", quantity);
+      setApiErrors(errors);
+    },
   });
 
-  const onLineDelete = async () => {
-    const result = await deleteLines({
-      languageCode: localeToLanguageCode(locale),
-      checkoutId: checkout.id,
-      lineId: line.id,
-    });
-    const [hasMutationErrors, errors] = extractMutationErrors(result);
-
-    if (!hasMutationErrors) {
-      clearErrors();
-      return;
-    }
-
-    setApiErrors(errors);
-    showErrors(errors);
-  };
+  const handleLineDelete = useSubmit<{}, typeof deleteLines>({
+    scope: "checkoutLinesDelete",
+    onSubmit: deleteLines,
+    formDataParse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId, line: line.id }),
+    onError: (errors) => setApiErrors(errors),
+  });
 
   const handleQuantityInputBlur = () => {
     if (quantity === line.quantity) {
@@ -117,11 +91,11 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
     }
 
     if (quantity === 0) {
-      void onLineDelete();
+      void handleLineDelete({});
       return;
     }
 
-    void onLineQuantityUpdate({ quantity: quantityString });
+    void handleLineQuantityUpdate({ quantity: quantityString });
   };
 
   return (

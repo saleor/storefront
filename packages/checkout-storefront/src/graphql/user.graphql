@@ -7,3 +7,23 @@ mutation userRegister($input: AccountRegisterInput!) {
     }
   }
 }
+
+mutation passwordReset($email: String!, $token: String!, $password: String!) {
+  setPassword(email: $email, token: $token, password: $password) {
+    errors {
+      message
+      field
+      code
+    }
+  }
+}
+
+mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
+  requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
+    errors {
+      message
+      field
+      code
+    }
+  }
+}

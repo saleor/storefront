@@ -6,16 +6,9 @@ import { memoize, omit } from "lodash-es";
 
 export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
 
-export type CheckoutUpdateStateScope = Extract<
+export type CheckoutUpdateStateScope = Exclude<
   CheckoutScope,
-  | "checkoutShippingUpdate"
-  | "checkoutCustomerAttach"
-  | "checkoutAddPromoCode"
-  | "checkoutDeliveryMethodUpdate"
-  | "checkoutEmailUpdate"
-  | "checkoutBillingUpdate"
-  | "checkoutLinesUpdate"
-  | "userRegister"
+  "checkoutPay" | "checkoutFinalize" | "login"
 >;
 
 interface CheckoutUpdateStateStore {
@@ -43,6 +36,12 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
     checkoutLinesUpdate: "success",
     checkoutEmailUpdate: "success",
     userRegister: "success",
+    resetPassword: "success",
+    requestPasswordReset: "success",
+    checkoutLinesDelete: "success",
+    userAddressCreate: "success",
+    userAddressDelete: "success",
+    userAddressUpdate: "success",
   },
   actions: {
     setShouldRegisterUser: (shouldRegisterUser: boolean) =>
