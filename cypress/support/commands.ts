@@ -61,7 +61,9 @@ Cypress.Commands.add("fillUpBasicAddress", (address) => {
     .get(CHECKOUT_ELEMENTS.postalCodeInput)
     .type(address.postalCode)
     .get(CHECKOUT_ELEMENTS.areaSelect)
-    .select(address.countryArea);
+    .select(address.countryArea)
+    .get(CHECKOUT_ELEMENTS.phoneInput)
+    .type(address.phone);
 });
 
 Cypress.Commands.add("sendRequestWithQuery", (query, authorization = "auth", variables = "") => {
