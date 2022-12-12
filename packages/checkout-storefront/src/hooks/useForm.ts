@@ -3,6 +3,8 @@ import { useCallback } from "react";
 
 export type FormDataBase = Record<string, any>;
 
+export type UseFormReturn<TData extends FormDataBase> = ReturnType<typeof useFormik<TData>>;
+
 export const useForm = <TData extends FormDataBase>(formProps: FormikConfig<TData>) => {
   const form = useFormik<TData>(formProps);
   const { dirty, handleSubmit: handleFormikSubmit } = form;

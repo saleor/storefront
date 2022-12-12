@@ -1,55 +1,24 @@
-import React, { AllHTMLAttributes, ForwardedRef, forwardRef } from "react";
+import React, { AllHTMLAttributes } from "react";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
-import { Control, FieldPath, UseFormRegisterReturn, useWatch } from "react-hook-form";
-import { ControlFormData } from "@/checkout-storefront/hooks/useGetInputProps";
-import { Error } from "../hooks/useErrors";
 import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
+import { ErrorMessage, useField } from "formik";
 
-export interface TextInputProps<
-  TControl extends Control<any, any>,
-  TFormData extends ControlFormData<TControl>
-> extends Omit<AllHTMLAttributes<HTMLInputElement>, "onBlur" | "onChange" | "name" | "ref">,
-    Omit<UseFormRegisterReturn, "ref">,
+export interface TextInputProps<TName extends string>
+  extends Omit<AllHTMLAttributes<HTMLInputElement>, "onBlur" | "onChange" | "name" | "ref">,
     Pick<UiKitTextInputProps, "classNames"> {
-  error: Pick<Error<TFormData>, "message"> | undefined;
-  control: TControl;
-  name: FieldPath<TFormData>;
+  name: TName;
   label: string;
   optional?: boolean;
-  icon?: React.ReactNode;
+  // icon?: React.ReactNode;
 }
 
-const TextInputComponent = <
-  TControl extends Control<any, any>,
-  TFormData extends ControlFormData<TControl>
->(
-  props: TextInputProps<TControl, TFormData>,
-  ref: ForwardedRef<HTMLInputElement>
-) => {
-  const { name, control, optional, error, ...rest } = props;
-
-  const value = useWatch({
-    control,
-    name,
-  });
+export const TextInput = <TName extends string>({ name, optional }: TextInputProps<TName>) => {
+  const [field] = useField(name);
 
   return (
-    <UiKitTextInput
-      {...rest}
-      error={error}
-      ref={ref}
-      name={name}
-      value={value}
-      required={!optional}
-    />
+    <>
+      <UiKitTextInput {...field} required={!optional} />
+      <ErrorMessage name={name} />
+    </>
   );
 };
-
-export const TextInput = forwardRef(TextInputComponent) as <
-  TControl extends Control<any, any>,
-  TFormData extends ControlFormData<TControl>
->(
-  props: TextInputProps<TControl, TFormData> & {
-    ref?: ForwardedRef<HTMLInputElement>;
-  }
-) => ReturnType<typeof TextInputComponent>;

@@ -1,12 +1,12 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React from "react";
-import { SignInFormContainer, SignInFormContainerProps } from "./SignInFormContainer";
+import { SignInFormContainer, SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { Text } from "@saleor/ui-kit";
 import { useAuth, useAuthState } from "@saleor/sdk";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { contactLabels, contactMessages } from "./messages";
+import { contactLabels, contactMessages } from "../Contact/messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 

@@ -1,74 +1,55 @@
-import {
-  useCheckoutEmailUpdateMutation,
-  useUserRegisterMutation,
-} from "@/checkout-storefront/graphql";
-import { useCheckout, useErrorMessages } from "@/checkout-storefront/hooks";
+import { useUserRegisterMutation } from "@/checkout-storefront/graphql";
+import { useCheckout } from "@/checkout-storefront/hooks";
 import {
   useCheckoutUpdateStateActions,
   useCheckoutUpdateStateChange,
   useUserRegisterState,
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
-import { getCurrentHref, useValidationResolver } from "@/checkout-storefront/lib/utils";
+import { getCurrentHref } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { object, string } from "yup";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useForm } from "@/checkout-storefront/hooks/useForm";
 
 export interface GuestUserFormData {
   email: string;
   password: string;
+  createAccount: boolean;
 }
 
-export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) => {
+export const useGuestUserForm = () => {
   const { checkout } = useCheckout();
   const { user } = useAuthState();
   const shouldUserRegister = useUserRegisterState();
   const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
-  const { errorMessages } = useErrorMessages();
+  // const { errorMessages } = useErrorMessages();
   const { setCheckoutUpdateState: setRegisterState } = useCheckoutUpdateStateChange("userRegister");
-  const [, updateEmail] = useCheckoutEmailUpdateMutation();
   const [, userRegister] = useUserRegisterMutation();
   const [userRegisterDisabled, setUserRegistrationDisabled] = useState(false);
 
-  const schema = object({
-    email: string().email(errorMessages.invalid).required(errorMessages.required),
-    password: string(),
-    // add when we add formik and can validate only part of the form
-    // .min(8, formatMessage(passwordErrorMessages.passwordAtLeastCharacters)),
-  });
+  // const schema = object({
+  //   email: string().email(errorMessages.invalid).required(errorMessages.required),
+  //   password: string(),
+  //   // add when we add formik and can validate only part of the form
+  //   // .min(8, formatMessage(passwordErrorMessages.passwordAtLeastCharacters)),
+  // });
 
-  const resolver = useValidationResolver(schema);
+  // const resolver = useValidationResolver(schema);
 
-  const defaultValues = { email: checkout.email || "", password: "", createAccount: false };
+  const defaultFormData: GuestUserFormData = {
+    email: checkout.email || "",
+    password: "",
+    createAccount: false,
+  };
 
-  const formProps = useForm<GuestUserFormData>({
-    resolver,
-    mode: "onChange",
-    defaultValues,
-  });
-
-  const { getValues, watch, trigger } = formProps;
-
-  useCheckoutFormValidationTrigger({
-    scope: "guestUser",
-    formProps,
-  });
-
-  const email = watch("email");
-
-  useEffect(() => {
-    setUserRegistrationDisabled(false);
-  }, [email]);
-
-  const handleUserRegister = useSubmit<GuestUserFormData, typeof userRegister>({
+  const { onSubmit } = useSubmit<GuestUserFormData, typeof userRegister>({
     scope: "userRegister",
     onSubmit: userRegister,
     onEnter: () => setShouldRegisterUser(false),
-    shouldAbort: async () => {
-      const isValid = await trigger();
-      return !isValid;
+    shouldAbort: async ({ formData, validateForm }) => {
+      const errors = validateForm(formData);
+      return !!Object.values(errors);
     },
     formDataParse: ({ email, password, channel }) => ({
       input: {
@@ -78,7 +59,7 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
         redirectUrl: getCurrentHref(),
       },
     }),
-    onError: (errors) => {
+    onError: ({ errors }) => {
       const hasAccountForCurrentEmail = errors.some(({ code }) => code === "UNIQUE");
 
       if (hasAccountForCurrentEmail) {
@@ -90,30 +71,32 @@ export const useGuestUserForm = ({ createAccount }: { createAccount: boolean }) 
     onSuccess: () => setUserRegistrationDisabled(true),
   });
 
+  const form = useForm({
+    initialValues: defaultFormData,
+    onSubmit,
+  });
+
+  const {
+    values: { email, createAccount },
+    handleSubmit,
+  } = form;
+
+  useCheckoutFormValidationTrigger({
+    scope: "guestUser",
+    formProps: form,
+  });
+
+  useEffect(() => {
+    setUserRegistrationDisabled(false);
+  }, [email]);
+
   useEffect(() => {
     if (!shouldUserRegister || user || !createAccount || userRegisterDisabled) {
       return;
     }
 
-    void handleUserRegister(getValues());
-  }, [
-    createAccount,
-    getValues,
-    handleUserRegister,
-    shouldUserRegister,
-    user,
-    userRegisterDisabled,
-  ]);
+    void handleSubmit();
+  }, [createAccount, handleSubmit, shouldUserRegister, user, userRegisterDisabled]);
 
-  const handleCheckoutEmailUpdate = useSubmit<GuestUserFormData, typeof updateEmail>({
-    scope: "checkoutEmailUpdate",
-    onSubmit: updateEmail,
-    formDataParse: ({ languageCode, checkoutId, email }) => ({ languageCode, checkoutId, email }),
-  });
-
-  return {
-    formProps,
-    onCheckoutEmailUpdate: handleCheckoutEmailUpdate,
-    defaultFormData: defaultValues,
-  };
+  return form;
 };

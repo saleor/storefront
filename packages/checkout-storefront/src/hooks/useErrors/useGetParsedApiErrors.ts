@@ -1,4 +1,5 @@
-import { FormDataBase, GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
+import { GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { useErrorMessages } from "../useErrorMessages";

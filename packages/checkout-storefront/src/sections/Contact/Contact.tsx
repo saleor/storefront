@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { SignInForm } from "./SignInForm";
-import { SignedInUser } from "./SignedInUser";
-import { ResetPassword } from "./ResetPassword";
-import { GuestUserForm } from "./GuestUserForm";
+import { SignedInUser } from "../SignedInUser/SignedInUser";
+import { ResetPassword } from "../ResetPassword/ResetPassword";
+import { GuestUserForm } from "../GuestUser/GuestUser";
 import { useAuthState } from "@saleor/sdk";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";

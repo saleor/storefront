@@ -27,43 +27,60 @@ interface UseSubmitProps<
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   formDataParse: (data: TData & CommonVars) => MutationVars<TMutationFn>;
-  shouldAbort?: ((formData: TData) => Promise<boolean>) | ((formData: TData) => boolean);
-  onAbort?: (props: any) => void;
-  onSuccess?: (props: any) => void;
-  onError?: (props: any) => void;
-  onEnter?: (props: any) => void;
 }
 
-interface UseSubmitCallbacks<
-  TData extends FormDataBase,
-  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>,
-  TProps extends FormikHelpers<TData> | {} = {}
-> {
-  onAbort?: (props: { formData: TData } & TProps) => void;
-  onSuccess?: (props: { formData: TData; result: MutationData<TMutationFn> } & TProps) => void;
-  onError?: (props: { formData: TData; errors: ApiErrors<TData> } & TProps) => void;
-  onEnter?: (props: { formData: TData } & TProps) => void;
-}
+// interface UseSubmitCallbacks<
+//   TData extends FormDataBase,
+//   TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>,
+//   TProps extends FormikHelpers<TData>
+// > {
+//   onAbort?: (props: { formData: TData } & TProps) => void;
+//   onSuccess?: (props: { formData: TData; result: MutationData<TMutationFn> } & TProps) => void;
+//   onError?: (props: { formData: TData; errors: ApiErrors<TData> } & TProps) => void;
+//   onEnter?: (props: { formData: TData } & TProps) => void;
+// }
 
 function useSubmit<
   TData extends FormDataBase,
   TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
 >(
-  props: UseSubmitProps<TData, TMutationFn> & UseSubmitCallbacks<TData, TMutationFn>
+  props: UseSubmitProps<TData, TMutationFn> & {
+    onAbort?: (props: { formData: TData } & FormikHelpers<TData>) => void;
+    onSuccess?: (
+      props: { formData: TData; result: MutationData<TMutationFn> } & FormikHelpers<TData>
+    ) => void;
+    onError?: (
+      props: {
+        formData: TData;
+        errors: ApiErrors<TData>;
+      } & FormikHelpers<TData>
+    ) => void;
+    onEnter?: (props: { formData: TData } & FormikHelpers<TData>) => void;
+    shouldAbort?:
+      | ((props: { formData: TData } & FormikHelpers<TData>) => Promise<boolean>)
+      | ((props: { formData: TData } & FormikHelpers<TData>) => boolean);
+  }
 ): {
-  debouncedSubmit: DebouncedFunc<SimpleSubmitFn<TData>>;
-  onSubmit: SimpleSubmitFn<TData>;
+  debouncedSubmit: DebouncedFunc<FormSubmitFn<TData>>;
+  onSubmit: FormSubmitFn<TData>;
 };
 
 function useSubmit<
   TData extends FormDataBase,
   TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
 >(
-  props: UseSubmitProps<TData, TMutationFn> &
-    UseSubmitCallbacks<TData, TMutationFn, FormikHelpers<TData>>
+  props: UseSubmitProps<TData, TMutationFn> & {
+    onAbort?: (props: { formData: TData }) => void;
+    onSuccess?: (props: { formData: TData; result: MutationData<TMutationFn> }) => void;
+    onError?: (props: { formData: TData; errors: ApiErrors<TData> }) => void;
+    onEnter?: (props: { formData: TData }) => void;
+    shouldAbort?:
+      | ((props: { formData: TData }) => Promise<boolean>)
+      | ((props: { formData: TData }) => boolean);
+  }
 ): {
-  debouncedSubmit: DebouncedFunc<FormSubmitFn<TData>>;
-  onSubmit: FormSubmitFn<TData>;
+  debouncedSubmit: DebouncedFunc<SimpleSubmitFn<TData>>;
+  onSubmit: SimpleSubmitFn<TData>;
 };
 
 function useSubmit<
@@ -78,7 +95,13 @@ function useSubmit<
   scope,
   shouldAbort,
   formDataParse,
-}: UseSubmitProps<TData, TMutationFn>) {
+}: UseSubmitProps<TData, TMutationFn> & {
+  onAbort?: (props: any) => any;
+  onSuccess?: (props: any) => any;
+  onError?: (props: any) => any;
+  onEnter?: (props: any) => any;
+  shouldAbort?: (props: any) => any;
+}) {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
@@ -88,14 +111,14 @@ function useSubmit<
   const handleSubmit = useCallback(
     async (formData: TData = {} as TData, formHelpers?: FormikHelpers<TData>) => {
       const { setErrors } = formHelpers || {};
-      const callbackProps = { ...formHelpers, formData };
+      const callbackProps = { formHelpers, formData };
 
       if (typeof onEnter === "function") {
         onEnter(callbackProps);
       }
 
       const shouldAbortSubmit =
-        typeof shouldAbort === "function" ? await shouldAbort(formData) : false;
+        typeof shouldAbort === "function" ? await shouldAbort(callbackProps) : false;
 
       if (shouldAbortSubmit) {
         if (typeof onAbort === "function") {

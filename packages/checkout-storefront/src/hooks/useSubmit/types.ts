@@ -1,9 +1,7 @@
 import { Exact, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
-import { FormikHelpers, useFormik } from "formik";
-
-export type UseFormReturn<TData extends FormDataBase> = ReturnType<typeof useFormik<TData>>;
+import { FormikHelpers } from "formik";
 
 export type MutationVars<MutationFn> = MutationFn extends (vars: Exact<infer Vars>) => any
   ? Vars

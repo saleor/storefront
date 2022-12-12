@@ -4,8 +4,8 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
-import { UseFormReturn, useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { getById } from "@/checkout-storefront/lib/utils";
 import { useCallback, useEffect, useRef } from "react";
 
@@ -43,7 +43,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
   const { debouncedSubmit } = useSubmit<DeliveryMethodsFormData, typeof updateDeliveryMethod>({
     scope: "checkoutDeliveryMethodUpdate",
     onSubmit: updateDeliveryMethod,
-    shouldAbort: ({ selectedMethodId }) =>
+    shouldAbort: ({ formData: { selectedMethodId } }) =>
       !selectedMethodId || selectedMethodId === checkout.deliveryMethod?.id,
     formDataParse: ({ selectedMethodId, languageCode, checkoutId }) => ({
       deliveryMethodId: selectedMethodId as string,
@@ -67,8 +67,6 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
   } = form;
 
   useEffect(() => {
-    console.log("YOO");
-
     handleSubmit();
   }, [handleSubmit, selectedMethodId]);
 
