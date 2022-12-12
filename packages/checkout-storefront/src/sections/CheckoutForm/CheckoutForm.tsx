@@ -41,7 +41,7 @@ export const CheckoutForm = () => {
           {/* temporarily hide until we figure out how to show this */}
           {/* along with payment providers section */}
           {/* <AdyenDropIn /> */}
-          <PaymentSection collapsed={showOnlyContact} />
+          {/* <PaymentSection collapsed={showOnlyContact} /> */}
         </>
       </div>
       {!showOnlyContact &&

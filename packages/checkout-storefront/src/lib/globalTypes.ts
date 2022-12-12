@@ -59,5 +59,3 @@ export type ApiAddressField = AddressField | "name";
 export interface CommonSectionProps {
   collapsed: boolean;
 }
-
-export type FormDataBase = Record<string, any>;

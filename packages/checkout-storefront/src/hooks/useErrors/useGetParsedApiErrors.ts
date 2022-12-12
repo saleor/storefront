@@ -1,17 +1,16 @@
-import { GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { FormDataBase, GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
-import { FieldValues } from "react-hook-form";
 import { useErrorMessages } from "../useErrorMessages";
 import { Error, ApiErrors, Errors } from "./types";
 
-type GetErrorsFromApiErrors<TFormData extends FieldValues> = {
+type GetErrorsFromApiErrors<TFormData extends FormDataBase> = {
   getParsedApiErrors: (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];
   getFormErrorsFromApiErrors: (apiErrors: ApiErrors<TFormData>) => Errors<TFormData>;
 };
 
 export const useGetParsedApiErrors = <
-  TFormData extends FieldValues
+  TFormData extends FormDataBase
 >(): GetErrorsFromApiErrors<TFormData> => {
   const { getMessageByErrorCode } = useErrorMessages();
 

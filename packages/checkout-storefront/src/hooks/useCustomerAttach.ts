@@ -10,7 +10,7 @@ export const useCustomerAttach = () => {
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
-  const handleSubmit = useSubmit<{}, typeof customerAttach>({
+  const { onSubmit } = useSubmit<{}, typeof customerAttach>({
     scope: "checkoutCustomerAttach",
     shouldAbort: () => checkout?.user?.id === user?.id || fetching || loading,
     onSubmit: customerAttach,
@@ -18,6 +18,6 @@ export const useCustomerAttach = () => {
   });
 
   useEffect(() => {
-    void handleSubmit({});
-  }, [authenticated, handleSubmit]);
+    void onSubmit();
+  }, [authenticated, onSubmit]);
 };
