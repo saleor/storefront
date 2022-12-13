@@ -9,16 +9,17 @@ import {
 import { PaymentResponse as AdyenApiPaymentResponse } from "@adyen/api-library/lib/src/typings/checkout/paymentResponse";
 import { replaceUrl } from "@/checkout-storefront/lib/utils/url";
 
+export type AdyenCheckoutInstanceState = {
+  isValid?: boolean;
+  data: CardElementData & Record<string, any>;
+};
 export type AdyenCheckoutInstanceOnSubmit = (
-  state: {
-    isValid?: boolean;
-    data: CardElementData & Record<string, any>;
-  },
+  state: AdyenCheckoutInstanceState,
   component: DropinElement
 ) => Promise<void> | void;
 
 export type AdyenCheckoutInstanceOnAdditionalDetails = (
-  state: { isValid?: boolean; data: CardElementData & Record<string, any> },
+  state: AdyenCheckoutInstanceState,
   component: DropinElement
 ) => Promise<void> | void;
 
