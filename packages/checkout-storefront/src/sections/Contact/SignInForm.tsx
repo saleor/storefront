@@ -66,6 +66,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
   const handleSignIn = useSubmit<SignInFormData, typeof login>({
     onSubmit: login,
     onSuccess: onSignInSuccess,
+    formDataParse: (data) => data,
     onError: (errors) => {
       //  api will attribute invalid credentials error to
       // email but we'd rather highlight both fields

@@ -15,7 +15,7 @@ import { AddressFormData, UserAddressFormData } from "../../components/AddressFo
 import { UserAddressSection } from "../UserAddressSection/UserAddressSection";
 import {
   getAddressInputData,
-  getAddressVlidationRulesVariables,
+  getAddressValidationRulesVariables,
 } from "@/checkout-storefront/lib/utils";
 import { shippingMessages } from "./messages";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
@@ -43,7 +43,7 @@ export const ShippingAddressSection: React.FC<CommonSectionProps> = ({ collapsed
       languageCode,
       checkoutId,
       shippingAddress: getAddressInputData(omit(rest, "channel")),
-      validationRules: getAddressVlidationRulesVariables(autoSave),
+      validationRules: getAddressValidationRulesVariables(autoSave),
     }),
     onError: (errors) => setApiErrors(errors),
   });
