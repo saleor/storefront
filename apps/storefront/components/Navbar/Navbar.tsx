@@ -22,9 +22,15 @@ export function Navbar() {
   const router = useRouter();
 
   const [isBurgerOpen, setBurgerOpen] = useState(false);
-  const { authenticated } = useAuthState();
+  const [authenticated, setAuthenticated] = useState(false);
+  const { authenticated: actuallyAuthenticated } = useAuthState();
   const { checkout } = useCheckout();
   const { currentLocale, currentChannel } = useRegions();
+
+  // Avoid hydration warning by setting authenticated state in useEffect
+  useEffect(() => {
+    setAuthenticated(actuallyAuthenticated);
+  }, [actuallyAuthenticated]);
 
   const saleorApiUrl = process.env.NEXT_PUBLIC_API_URI;
   invariant(saleorApiUrl, "Missing NEXT_PUBLIC_API_URI");

@@ -2,6 +2,7 @@ import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 
 import { useLogout } from "@/lib/auth";
@@ -26,12 +27,18 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   const { query } = useRegions();
   const t = useIntl();
 
-  const { authenticated } = useAuthState();
+  const [authenticated, setAuthenticated] = useState(false);
+  const { authenticated: actuallyAuthenticated } = useAuthState();
   const router = useRouter();
 
   const { error, data } = useMainMenuQuery({
     variables: { ...query },
   });
+
+  // Avoid hydration warning by setting authenticated state in useEffect
+  useEffect(() => {
+    setAuthenticated(actuallyAuthenticated);
+  }, [actuallyAuthenticated]);
 
   if (error) {
     console.error("BurgerMenu component error", error.message);
