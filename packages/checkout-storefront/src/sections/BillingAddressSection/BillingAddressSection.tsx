@@ -12,7 +12,7 @@ import { GuestAddressSection } from "../GuestAddressSection/GuestAddressSection"
 import { AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
 import { UserAddressSection } from "../UserAddressSection/UserAddressSection";
 import {
-  getAddressVlidationRulesVariables,
+  getAddressValidationRulesVariables,
   getAddressInputData,
 } from "@/checkout-storefront/lib/utils";
 import { billingMessages } from "./messages";
@@ -45,7 +45,7 @@ export const BillingAddressSection = () => {
       languageCode,
       checkoutId,
       billingAddress: getAddressInputData(omit(rest, "channel")),
-      validationRules: getAddressVlidationRulesVariables(autoSave),
+      validationRules: getAddressValidationRulesVariables(autoSave),
     }),
     onError: setApiErrors,
   });
