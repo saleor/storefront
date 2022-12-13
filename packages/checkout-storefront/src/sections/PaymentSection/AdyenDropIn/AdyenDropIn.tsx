@@ -38,7 +38,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   } = useAppConfig();
 
   const { checkout, loading: isCheckoutLoading } = useCheckout();
-  const { validating, validationState } = useCheckoutValidationState();
+  const { validating } = useCheckoutValidationState();
   const { allFormsValid, validateAllForms } = useCheckoutSubmit();
 
   const { showCustomErrors } = useAlerts("checkoutPay");
