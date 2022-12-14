@@ -1,8 +1,8 @@
-name: QA
+name: Check Prettier
 on: [pull_request]
 
 concurrency:
-  group: build-${{ github.event.pull_request.number || github.ref }}
+  group: prettier-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
