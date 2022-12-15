@@ -12,7 +12,7 @@ export const useCheckoutEmailUpdate = ({ email }: CheckoutEmailUpdateFormData) =
   const { debouncedSubmit } = useSubmit<CheckoutEmailUpdateFormData, typeof updateEmail>({
     scope: "checkoutEmailUpdate",
     onSubmit: updateEmail,
-    formDataParse: ({ languageCode, checkoutId, email }) => ({ languageCode, checkoutId, email }),
+    parse: ({ languageCode, checkoutId, email }) => ({ languageCode, checkoutId, email }),
   });
 
   useEffect(() => {

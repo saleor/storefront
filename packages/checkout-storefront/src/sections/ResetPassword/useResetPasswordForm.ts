@@ -17,7 +17,7 @@ export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) =
   const { onSubmit } = useSubmit<ResetPasswordFormData, typeof passwordReset>({
     onSubmit: passwordReset,
     scope: "resetPassword",
-    formDataParse: ({ password }) => {
+    parse: ({ password }) => {
       const { passwordResetEmail, passwordResetToken } = getQueryParams();
       return { password, email: passwordResetEmail || "", token: passwordResetToken || "" };
     },

@@ -1,4 +1,6 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 
 export const countries: CountryCode[] = [
   "AF",

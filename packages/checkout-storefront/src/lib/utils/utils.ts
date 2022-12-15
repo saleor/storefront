@@ -1,6 +1,6 @@
 import { CountryCode, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks";
-import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
+import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
 import { Locale } from "@/checkout-storefront/lib/regions";
 import { reduce, snakeCase } from "lodash-es";
 import { ChangeEvent, ReactEventHandler } from "react";
@@ -23,10 +23,14 @@ export const getCurrentHref = () => location.href;
 
 export const getParsedLocaleData = (
   locale: Locale
-): { locale: Locale; countryCode: CountryCode } => {
-  const [, countryCode] = locale?.split("-");
+): { locale: Locale; countryCode: CountryCode; languageCode: LanguageCodeEnum } => {
+  const [languageCode, countryCode] = locale?.split("-");
 
-  return { countryCode: countryCode as CountryCode, locale };
+  return {
+    countryCode: countryCode as CountryCode,
+    locale,
+    languageCode: languageCode as LanguageCodeEnum,
+  };
 };
 
 export const extractMutationErrors = <TData extends FormDataBase, TVars extends AnyVariables = any>(

@@ -20,7 +20,7 @@ export const usePasswordResetRequest = ({ email }: PasswordResetFormData) => {
       setFieldError("password", undefined);
     },
     onSuccess: () => setPasswordResetSent(true),
-    formDataParse: ({ email, channel }) => ({ email, redirectUrl: getCurrentHref(), channel }),
+    parse: ({ email, channel }) => ({ email, redirectUrl: getCurrentHref(), channel }),
   });
 
   const onPasswordResetRequest = () => onSubmit({ email });

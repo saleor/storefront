@@ -1,63 +1,33 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
-import { Option, Select } from "@saleor/ui-kit";
-import { UseErrors, useFormattedMessages, useGetInputProps } from "@/checkout-storefront/hooks";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
-import { Path, RegisterOptions, UseFormReturn } from "react-hook-form";
-import { FC, PropsWithChildren, useEffect, useMemo, useRef } from "react";
-import { difference, omit } from "lodash-es";
+import { FC, PropsWithChildren, useEffect, useRef } from "react";
+import { difference } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
-import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
 import { autocompleteTags, typeTags } from "@/checkout-storefront/lib/consts/inputAttributes";
 import { useAddressFormUtils } from "@/checkout-storefront/hooks";
-import { emptyFormData, isMatchingAddressFormData } from "@/checkout-storefront/lib/utils";
-import { countriesMessages } from "@/checkout-storefront/components/AddressForm/messages";
-import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
+import { CountrySelect } from "@/checkout-storefront/components/CountrySelect";
+import { Select } from "@/checkout-storefront/components/Select";
+import {
+  emptyAddressFormData,
+  isMatchingAddressFormData,
+} from "@/checkout-storefront/components/AddressForm/utils";
+import { UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 
-interface CountryOption extends Option {
-  value: CountryCode;
-}
-
-export interface AddressFormProps extends Pick<UseErrors<AddressFormData>, "errors"> {
-  loading?: boolean;
+export interface AddressFormProps extends UseFormReturn<AddressFormData> {
   title: string;
-  checkAddressAvailability?: boolean;
-  formProps: UseFormReturn<AddressFormData>;
-  defaultInputOptions?: RegisterOptions<AddressFormData, any>;
+  availableCountries?: CountryCode[];
 }
 
 export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
-  errors,
   title,
   children,
-  formProps,
-  defaultInputOptions = {},
+  availableCountries,
+  values,
+  setValues,
+  dirty,
 }) => {
-  const {
-    setValue,
-    watch,
-    setError,
-    trigger,
-    formState: { isDirty },
-  } = formProps;
-  const formData = watch();
-  const previousFormData = useRef(formData);
-  const formatMessage = useFormattedMessages();
-  const getInputProps = useGetInputProps(formProps, defaultInputOptions);
-  const { availableShippingCountries } = useAvailableShippingCountries();
-
-  useSetFormErrors({ setError, errors });
-
-  const countryOptions: CountryOption[] = useMemo(
-    () =>
-      availableShippingCountries
-        .sort((a, b) => a.localeCompare(b))
-        .map((code) => ({
-          label: formatMessage(countriesMessages[code]),
-          value: code,
-        })),
-    [formatMessage, availableShippingCountries]
-  );
+  const previousValues = useRef(values);
 
   const {
     orderedAddressFields,
@@ -65,46 +35,42 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     isRequiredField,
     countryAreaChoices,
     allowedFields,
-    requiredFields,
-  } = useAddressFormUtils(formData.countryCode);
+  } = useAddressFormUtils(values.countryCode);
 
   const allowedFieldsRef = useRef(allowedFields || []);
 
   // prevents outdated data to remain in the form when a field is
   // no longer allowed
   useEffect(() => {
-    const hasFormDataChanged = !isMatchingAddressFormData(formData, previousFormData.current);
+    const hasFormDataChanged = !isMatchingAddressFormData(values, previousValues.current);
 
     if (!hasFormDataChanged) {
       return;
     }
 
-    previousFormData.current = formData;
+    previousValues.current = values;
 
     const removedFields = difference(allowedFieldsRef.current, allowedFields);
 
-    removedFields.forEach((field) => {
-      setValue(field as Path<AddressFormData>, emptyFormData[field as Path<AddressFormData>]);
-    });
-
-    const isFormDirty =
-      isDirty && Object.values(omit(formData, ["countryCode", "id"])).some((value) => !!value);
-
-    if (removedFields.length && isFormDirty) {
-      void trigger();
+    if (removedFields.length && dirty) {
+      void setValues(
+        removedFields.reduce(
+          (result, field) => ({
+            ...result,
+            [field]: emptyAddressFormData[field],
+          }),
+          values
+        ),
+        true
+      );
     }
-  }, [allowedFields, requiredFields, setValue, trigger, isDirty, formData]);
+  }, [allowedFields, dirty, setValues, values]);
 
   return (
     <form>
       <div className="flex flex-row justify-between items-baseline">
         <Title className="flex-1">{title}</Title>
-        <Select
-          classNames={{ container: "flex-1 inline-block !w-auto" }}
-          options={countryOptions}
-          {...getInputProps("countryCode")}
-          autoComplete={autocompleteTags.countryCode}
-        />
+        <CountrySelect only={availableCountries} />
       </div>
       <div className="mt-2">
         {orderedAddressFields.map((field) => {
@@ -114,11 +80,11 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
           if (field === "countryArea" && isRequired) {
             return (
               <Select
-                {...getInputProps("countryArea")}
                 key={field}
+                name="countryArea"
                 classNames={{ container: "mb-4" }}
                 placeholder={getFieldLabel("countryArea")}
-                autoComplete={autocompleteTags.countryArea}
+                autocomplete={autocompleteTags.countryArea}
                 options={
                   countryAreaChoices?.map(({ verbose, raw }) => ({
                     label: verbose as string,
@@ -132,9 +98,9 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
           return (
             <TextInput
               key={field}
+              name={field}
               label={label}
               autoComplete={autocompleteTags[field]}
-              {...getInputProps(field as Path<AddressFormData>)}
               type={typeTags[field] || "text"}
               optional={!isRequired}
             />

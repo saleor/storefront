@@ -8,18 +8,18 @@ import { useCallback, useEffect } from "react";
 
 interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
   scope: CheckoutFormScope;
-  formProps: Pick<UseFormReturn<TData>, "validateForm" | "values">;
+  form: Pick<UseFormReturn<TData>, "validateForm" | "values">;
 }
 
 // tells forms to validate once the pay button is clicked
 export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   scope,
-  formProps,
+  form,
 }: UseCheckoutFormValidationTriggerProps<TData>) => {
   const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
 
-  const { values, validateForm } = formProps;
+  const { values, validateForm } = form;
 
   const handleGlobalValidationTrigger = useCallback(async () => {
     if (validating) {

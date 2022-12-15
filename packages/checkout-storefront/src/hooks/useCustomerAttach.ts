@@ -14,7 +14,7 @@ export const useCustomerAttach = () => {
     scope: "checkoutCustomerAttach",
     shouldAbort: () => checkout?.user?.id === user?.id || fetching || loading,
     onSubmit: customerAttach,
-    formDataParse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
+    parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
   });
 
   useEffect(() => {

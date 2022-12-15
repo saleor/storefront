@@ -1,24 +1,13 @@
 import { Checkbox } from "@/checkout-storefront/components/Checkbox";
-import {
-  AddressFragment,
-  useCheckoutBillingAddressUpdateMutation,
-  useUserQuery,
-} from "@/checkout-storefront/graphql";
+import { AddressFragment, useUserQuery } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useAuthState } from "@saleor/sdk";
 import { GuestAddressSection } from "../GuestAddressSection/GuestAddressSection";
-import { AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
 import { UserAddressSection } from "../UserAddressSection/UserAddressSection";
-import {
-  getAddressVlidationRulesVariables,
-  getAddressInputData,
-} from "@/checkout-storefront/lib/utils";
 import { billingMessages } from "./messages";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { useSetBillingSameAsShipping } from "@/checkout-storefront/sections/BillingAddressSection/useSetBillingSameAsShipping";
-import { omit } from "lodash-es";
+import { useSetBillingSameAsShipping } from "@/checkout-storefront/hooks/useBillingSameAsShippingForm";
+import { GuestBillingAddressForm } from "@/checkout-storefront/sections/BillingAddressSection/GuestBillingAddressForm";
 
 export const BillingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -33,22 +22,6 @@ export const BillingAddressSection = () => {
 
   const user = data?.me;
   const addresses = user?.addresses;
-  const errorProps = useErrors<UserAddressFormData>();
-  const { setApiErrors } = errorProps;
-
-  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
-
-  const handleSubmit = useSubmit<AddressFormData, typeof checkoutBillingAddressUpdate>({
-    scope: "checkoutBillingUpdate",
-    onSubmit: checkoutBillingAddressUpdate,
-    formDataParse: ({ autoSave, languageCode, checkoutId, ...rest }) => ({
-      languageCode,
-      checkoutId,
-      billingAddress: getAddressInputData(omit(rest, "channel")),
-      validationRules: getAddressVlidationRulesVariables(autoSave),
-    }),
-    onError: setApiErrors,
-  });
 
   const { isBillingSameAsShipping, setIsBillingSameAsShipping, passDefaultFormDataAddress } =
     useSetBillingSameAsShipping({
@@ -79,10 +52,7 @@ export const BillingAddressSection = () => {
               defaultAddress={user?.defaultBillingAddress}
             />
           ) : (
-            <GuestAddressSection
-              {...errorProps}
-              type="BILLING"
-              checkAddressAvailability={false}
+            <GuestBillingAddressForm
               defaultAddress={passDefaultFormDataAddress ? billingAddress : undefined}
               title={formatMessage(billingMessages.billingAddress)}
               onSubmit={handleSubmit}

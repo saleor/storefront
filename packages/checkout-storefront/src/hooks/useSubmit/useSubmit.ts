@@ -9,24 +9,22 @@ import {
 } from "@/checkout-storefront/state/updateStateStore";
 import { FormikHelpers } from "formik";
 import { useCallback } from "react";
-import { OperationResult } from "urql";
 import { debounce, DebouncedFunc } from "lodash-es";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
 import {
   CommonVars,
   FormSubmitFn,
+  MutationBaseFn,
   MutationData,
   MutationVars,
+  ParserFunction,
   SimpleSubmitFn,
 } from "@/checkout-storefront/hooks/useSubmit/types";
 
-interface UseSubmitProps<
-  TData extends FormDataBase,
-  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
-> {
+interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
-  formDataParse: (data: TData & CommonVars) => MutationVars<TMutationFn>;
+  parse: ParserFunction<TData, TMutationFn>;
 }
 
 // interface UseSubmitCallbacks<
@@ -40,10 +38,7 @@ interface UseSubmitProps<
 //   onEnter?: (props: { formData: TData } & TProps) => void;
 // }
 
-function useSubmit<
-  TData extends FormDataBase,
-  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
->(
+function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseFn>(
   props: UseSubmitProps<TData, TMutationFn> & {
     onAbort?: (props: { formData: TData } & FormikHelpers<TData>) => void;
     onSuccess?: (
@@ -65,10 +60,7 @@ function useSubmit<
   onSubmit: FormSubmitFn<TData>;
 };
 
-function useSubmit<
-  TData extends FormDataBase,
-  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
->(
+function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseFn>(
   props: UseSubmitProps<TData, TMutationFn> & {
     onAbort?: (props: { formData: TData }) => void;
     onSuccess?: (props: { formData: TData; result: MutationData<TMutationFn> }) => void;
@@ -83,10 +75,7 @@ function useSubmit<
   onSubmit: SimpleSubmitFn<TData>;
 };
 
-function useSubmit<
-  TData extends FormDataBase,
-  TMutationFn extends (vars: any) => Promise<OperationResult<any, any>>
->({
+function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
   onSuccess,
   onError,
   onEnter,
@@ -94,7 +83,7 @@ function useSubmit<
   onAbort,
   scope,
   shouldAbort,
-  formDataParse,
+  parse,
 }: UseSubmitProps<TData, TMutationFn> & {
   onAbort?: (props: any) => any;
   onSuccess?: (props: any) => any;
@@ -133,7 +122,7 @@ function useSubmit<
         checkoutId: checkout.id,
       };
 
-      const result = await onSubmit(formDataParse({ ...formData, ...commonData }));
+      const result = await onSubmit(parse({ ...formData, ...commonData }));
 
       const [hasErrors, errors] = extractMutationErrors<TData>(result);
 
@@ -154,7 +143,7 @@ function useSubmit<
     [
       checkout.channel.slug,
       checkout.id,
-      formDataParse,
+      parse,
       getFormErrorsFromApiErrors,
       localeData.locale,
       onAbort,

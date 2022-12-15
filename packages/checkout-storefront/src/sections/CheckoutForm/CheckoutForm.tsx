@@ -4,18 +4,22 @@ import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods"
 import { Suspense, useState } from "react";
 import { Button } from "@/checkout-storefront/components/Button";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { PaymentSection } from "../PaymentSection";
-import { ShippingAddressSection } from "../ShippingAddressSection/ShippingAddressSection";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
-import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
+import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
 import { useCheckoutSubmit } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutSubmit";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { CollapseSection } from "@/checkout-storefront/sections/CheckoutForm/CollapseSection";
+import { Divider } from "@/checkout-storefront/components";
+import { UserShippingAddressSection } from "@/checkout-storefront/sections/UserShippingAddressSection";
+import { useAuthState } from "@saleor/sdk";
+import { GuestShippingAddressSection } from "@/checkout-storefront/sections/GuestShippingAddressSection";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
+  const { user } = useAuthState();
   const { checkout } = useCheckout();
   const { passwordResetToken } = getQueryParams();
 
@@ -28,11 +32,16 @@ export const CheckoutForm = () => {
       <div className="checkout-form">
         <Suspense fallback={<ContactSkeleton />}>
           <Contact setShowOnlyContact={setShowOnlyContact} />
+          <Divider />
         </Suspense>
         <>
           {checkout?.isShippingRequired && (
             <Suspense fallback={<AddressSectionSkeleton />}>
-              <ShippingAddressSection collapsed={showOnlyContact} />
+              <CollapseSection collapse={showOnlyContact}>
+                <div className="section" data-testid="shippingAddressSection">
+                  {user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
+                </div>
+              </CollapseSection>
             </Suspense>
           )}
           <Suspense fallback={<DeliveryMethodsSkeleton />}>

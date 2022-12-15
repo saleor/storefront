@@ -9,15 +9,18 @@ export interface TextInputProps<TName extends string>
   name: TName;
   label: string;
   optional?: boolean;
-  // icon?: React.ReactNode;
 }
 
-export const TextInput = <TName extends string>({ name, optional }: TextInputProps<TName>) => {
+export const TextInput = <TName extends string>({
+  name,
+  optional,
+  ...rest
+}: TextInputProps<TName>) => {
   const [field] = useField(name);
 
   return (
     <>
-      <UiKitTextInput {...field} required={!optional} />
+      <UiKitTextInput {...rest} {...field} required={!optional} />
       <ErrorMessage name={name} />
     </>
   );

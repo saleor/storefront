@@ -2,6 +2,7 @@ import { Exact, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { ApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
 import { FormikHelpers } from "formik";
+import { OperationResult } from "urql";
 
 export type MutationVars<MutationFn> = MutationFn extends (vars: Exact<infer Vars>) => any
   ? Vars
@@ -28,3 +29,11 @@ export type FormSubmitFn<TData extends FormDataBase> = (
   formData: TData,
   formHelpers: FormikHelpers<TData>
 ) => SubmitReturnWithErrors<TData>;
+
+export type MutationBaseFn = (vars: any) => Promise<OperationResult<any, any>>;
+
+export type ParserProps<TData> = TData & CommonVars;
+
+export type ParserFunction<TData extends FormDataBase, TMutationFn extends MutationBaseFn> = (
+  data: ParserProps<TData>
+) => MutationVars<TMutationFn>;

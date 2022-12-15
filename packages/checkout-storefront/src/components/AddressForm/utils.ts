@@ -1,6 +1,10 @@
+import { countries } from "@/checkout-storefront/lib/consts/countries";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import {
   AddressFragment,
   AddressInput,
+  AddressTypeEnum,
   CheckoutAddressValidationRules,
   CountryCode,
   CountryDisplay,
@@ -8,8 +12,10 @@ import {
 import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
 import { isEqual, omit, reduce, uniq } from "lodash-es";
 import { Address, AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
+import { ParserProps } from "@/checkout-storefront/hooks/useSubmit";
+import { TdHTMLAttributes } from "react";
 
-export const emptyFormData: AddressFormData = {
+export const emptyAddressFormData: AddressFormData = {
   firstName: "",
   lastName: "",
   streetAddress1: "",
@@ -22,6 +28,17 @@ export const emptyFormData: AddressFormData = {
   phone: "",
   countryCode: "" as CountryCode,
 };
+
+const getInitialCountryCode = (countryCode?: CountryCode) => {
+  const countryCodeInOptions = countries.find((code) => code === countryCode);
+
+  return countryCodeInOptions || getParsedLocaleData(getQueryParams().locale).countryCode;
+};
+
+export const getInitialAddresFormData = (formData: AddressFormData = emptyAddressFormData) => ({
+  ...formData,
+  countryCode: getInitialCountryCode(formData?.countryCode),
+});
 
 export const getAddressInputData = ({
   countryCode,
@@ -37,9 +54,20 @@ export const getAddressInputData = ({
   country: countryCode || (country?.code as CountryCode),
 });
 
+export const getAddressInputDataFromAddress = ({
+  country,
+  phone,
+  ...rest
+}: Partial<AddressFragment>): AddressInput => ({
+  ...omit(rest, ["id", "__typename"]),
+  country: country?.code as CountryCode,
+  // cause in api phone can be null
+  phone: phone || "",
+});
+
 export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
-    return emptyFormData;
+    return emptyAddressFormData;
   }
 
   const { country, ...rest } = address;
@@ -68,8 +96,8 @@ export const getUserAddressFormDataFromAddress = (
 };
 
 export const isMatchingAddress = (
-  address?: AddressFragment | null,
-  addressToMatch?: AddressFragment | null
+  address?: Partial<AddressFragment> | null,
+  addressToMatch?: Partial<AddressFragment> | null
 ) => {
   const isTheSameAddressById =
     typeof address?.id === "string" &&
@@ -83,15 +111,9 @@ export const isMatchingAddress = (
   return isEqual(omit(address, "id"), omit(addressToMatch, "id"));
 };
 
-export const getMatchingAddressFromList =
-  (addressList: AddressFragment[] = []) =>
-  (addressToMatch: Address) => {
-    if (!addressToMatch) {
-      return undefined;
-    }
-
-    return addressList.find((address) => isMatchingAddress(address, addressToMatch));
-  };
+export const getByMatchingAddress =
+  (addressToMatch: Partial<AddressFragment> | undefined | null) => (address: AddressFragment) =>
+    isMatchingAddress(address, addressToMatch);
 
 export const isMatchingAddressFormData = (
   address?: Partial<AddressFormData> | null,
@@ -102,7 +124,7 @@ export const isMatchingAddressFormData = (
   return isEqual(omit(address, propsToOmit), omit(addressToMatch, propsToOmit));
 };
 
-export const getAddressVlidationRulesVariables = (
+export const getAddressValidationRulesVariables = (
   autoSave = false
 ): CheckoutAddressValidationRules =>
   autoSave

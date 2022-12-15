@@ -5,7 +5,7 @@ import { Checkbox } from "@/checkout-storefront/components/Checkbox";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { contactMessages } from "../Contact/messages";
 import { useGuestUserForm } from "@/checkout-storefront/sections/Contact/useGuestUserForm";
-import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/Contact/useCheckoutEmailUpdate";
+import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 
 type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange">;

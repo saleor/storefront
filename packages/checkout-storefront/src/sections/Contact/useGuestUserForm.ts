@@ -51,7 +51,7 @@ export const useGuestUserForm = () => {
       const errors = validateForm(formData);
       return !!Object.values(errors);
     },
-    formDataParse: ({ email, password, channel }) => ({
+    parse: ({ email, password, channel }) => ({
       input: {
         email,
         password,

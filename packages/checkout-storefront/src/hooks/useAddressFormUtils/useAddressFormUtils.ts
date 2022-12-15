@@ -6,7 +6,6 @@ import {
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
-import { getRequiredAddressFields, getOrderedAddressFields } from "@/checkout-storefront/lib/utils";
 import { Address } from "@/checkout-storefront/components/AddressForm/types";
 import { defaultCountry } from "@/checkout-storefront/lib/consts/countries";
 import {
@@ -17,6 +16,10 @@ import {
 } from "@/checkout-storefront/hooks/useAddressFormUtils/messages";
 import camelCase from "lodash-es/camelCase";
 import { useCallback, useMemo } from "react";
+import {
+  getOrderedAddressFields,
+  getRequiredAddressFields,
+} from "@/checkout-storefront/components/AddressForm/utils";
 
 export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
   const formatMessage = useFormattedMessages();
