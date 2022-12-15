@@ -74,7 +74,11 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const handleLineDelete = useSubmit<{}, typeof deleteLines>({
     scope: "checkoutLinesDelete",
     onSubmit: deleteLines,
-    formDataParse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId, line: line.id }),
+    formDataParse: ({ languageCode, checkoutId }) => ({
+      languageCode,
+      checkoutId,
+      lineId: line.id,
+    }),
     onError: (errors) => setApiErrors(errors),
   });
 
