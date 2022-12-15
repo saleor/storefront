@@ -22,8 +22,7 @@ export const useBillingSameAsShippingForm = () => {
 
   const hasBillingSameAsShipping = isMatchingAddress(shippingAddress, billingAddress);
 
-  const [{ fetching: updating }, checkoutBillingAddressUpdate] =
-    useCheckoutBillingAddressUpdateMutation();
+  const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
   const { onSubmit } = useSubmit<
     BillingSameAsShippingFormData,
@@ -54,12 +53,13 @@ export const useBillingSameAsShippingForm = () => {
   const {
     values: { billingSameAsShipping },
     setFieldValue,
+    isSubmitting,
     handleSubmit,
   } = form;
 
   useEffect(() => {
     const handleBillingSameAsShippingChanged = async () => {
-      if (billingSameAsShipping && !updating && !hasBillingSameAsShipping) {
+      if (billingSameAsShipping && !isSubmitting && !hasBillingSameAsShipping) {
         await setFieldValue("billingAddress", shippingAddress);
         handleSubmit();
       }
@@ -70,9 +70,9 @@ export const useBillingSameAsShippingForm = () => {
     billingSameAsShipping,
     handleSubmit,
     hasBillingSameAsShipping,
+    isSubmitting,
     setFieldValue,
     shippingAddress,
-    updating,
   ]);
 
   useEffect(() => {

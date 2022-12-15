@@ -71,7 +71,7 @@ export const useGuestUserForm = () => {
     onSuccess: () => setUserRegistrationDisabled(true),
   });
 
-  const form = useForm({
+  const form = useForm<GuestUserFormData>({
     initialValues: defaultFormData,
     onSubmit,
   });
@@ -83,7 +83,7 @@ export const useGuestUserForm = () => {
 
   useCheckoutFormValidationTrigger({
     scope: "guestUser",
-    formProps: form,
+    form,
   });
 
   useEffect(() => {

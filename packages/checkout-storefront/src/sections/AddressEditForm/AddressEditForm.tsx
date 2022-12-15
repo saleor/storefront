@@ -58,7 +58,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const { handleSubmit } = form;
 
   return (
-    <FormProvider value={form}>
+    <FormProvider form={form}>
       <AddressForm title={formatMessage("editAddress")} {...form}>
         <AddressFormActions
           onSubmit={handleSubmit}

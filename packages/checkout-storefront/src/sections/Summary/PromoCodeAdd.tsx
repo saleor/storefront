@@ -1,41 +1,24 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { useCheckoutAddPromoCodeMutation } from "@/checkout-storefront/graphql";
-import { useErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useGetInputProps } from "@/checkout-storefront/hooks/useGetInputProps";
-import { useSetFormErrors } from "@/checkout-storefront/hooks/useSetFormErrors/useSetFormErrors";
 import { Classes } from "@/checkout-storefront/lib/globalTypes";
-import { useValidationResolver } from "@/checkout-storefront/lib/utils";
 import { summaryLabels, summaryMessages } from "./messages";
 import clsx from "clsx";
 import React, { FC } from "react";
-import { useForm } from "react-hook-form";
-import { object, string } from "yup";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { useForm } from "@/checkout-storefront/hooks/useForm";
 
-interface PromoCodeAddFormData {
+interface PromoCodeFormData {
   promoCode: string;
 }
 
 export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const formatMessage = useFormattedMessages();
-  const { setApiErrors, errors } = useErrors<PromoCodeAddFormData>();
-
-  const schema = object({
-    code: string(),
-  });
-  const resolver = useValidationResolver(schema);
-
   const [, checkoutAddPromoCode] = useCheckoutAddPromoCodeMutation();
 
-  const formProps = useForm<PromoCodeAddFormData>({ resolver, defaultValues: { promoCode: "" } });
-  const { handleSubmit, watch, setError, reset } = formProps;
-  const getInputProps = useGetInputProps(formProps);
-
-  const showApplyButton = !!watch("promoCode");
-
-  const onSubmit = useSubmit<PromoCodeAddFormData, typeof checkoutAddPromoCode>({
+  const { onSubmit } = useSubmit<PromoCodeFormData, typeof checkoutAddPromoCode>({
     scope: "checkoutAddPromoCode",
     onSubmit: checkoutAddPromoCode,
     parse: ({ promoCode, languageCode, checkoutId }) => ({
@@ -43,31 +26,34 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
       checkoutId,
       languageCode,
     }),
-    onError: (errors) => setApiErrors(errors),
-    onSuccess: () => reset(),
+    onSuccess: ({ resetForm }) => resetForm(),
   });
 
-  useSetFormErrors<PromoCodeAddFormData>({
-    setError,
-    errors,
+  const form = useForm<PromoCodeFormData>({
+    onSubmit,
+    initialValues: { promoCode: "" },
   });
+  const {
+    values: { promoCode },
+    handleSubmit,
+  } = form;
+
+  const showApplyButton = promoCode.length > 0;
 
   return (
-    <div className={clsx("relative px-4 pt-4", className)}>
-      <TextInput
-        label={formatMessage(summaryMessages.addDiscount)}
-        {...getInputProps("promoCode")}
-        optional
-      />
-      {showApplyButton && (
-        <Button
-          className="absolute right-7 top-7"
-          variant="tertiary"
-          ariaLabel={formatMessage(summaryLabels.apply)}
-          label={formatMessage(summaryMessages.apply)}
-          onClick={handleSubmit(onSubmit)}
-        />
-      )}
-    </div>
+    <FormProvider form={form}>
+      <div className={clsx("relative px-4 pt-4", className)}>
+        <TextInput optional name="promoCode" label={formatMessage(summaryMessages.addDiscount)} />
+        {showApplyButton && (
+          <Button
+            className="absolute right-7 top-7"
+            variant="tertiary"
+            ariaLabel={formatMessage(summaryLabels.apply)}
+            label={formatMessage(summaryMessages.apply)}
+            onClick={handleSubmit}
+          />
+        )}
+      </div>
+    </FormProvider>
   );
 };

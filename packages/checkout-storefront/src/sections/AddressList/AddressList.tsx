@@ -32,7 +32,7 @@ export const AddressList: React.FC<AddressListProps> = ({
   const { isAvailable } = useAddressAvailability(!checkAddressAvailability);
 
   return (
-    <FormProvider value={form}>
+    <FormProvider form={form}>
     <div className="flex flex-col">
       <Title>{title}</Title>
       {addressList.length < 1 && (

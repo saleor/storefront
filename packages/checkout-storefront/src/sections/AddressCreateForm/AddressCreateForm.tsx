@@ -19,7 +19,7 @@ export interface AddressCreateFormProps {
 
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess, onClose }) => {
   const formatMessage = useFormattedMessages();
-  const [{ fetching }, userAddressCreate] = useUserAddressCreateMutation();
+  const [, userAddressCreate] = useUserAddressCreateMutation();
 
   const { onSubmit } = useSubmit<AddressFormData, typeof userAddressCreate>({
     scope: "userAddressCreate",
@@ -33,12 +33,12 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
     onSubmit,
   });
 
-  const { handleSubmit } = form;
+  const { handleSubmit, isSubmitting } = form;
 
   return (
-    <FormProvider value={form}>
+    <FormProvider form={form}>
       <AddressForm title={formatMessage("createAddress")} {...form}>
-        <AddressFormActions onSubmit={handleSubmit} loading={fetching} onCancel={onClose} />
+        <AddressFormActions onSubmit={handleSubmit} loading={isSubmitting} onCancel={onClose} />
       </AddressForm>
     </FormProvider>
   );

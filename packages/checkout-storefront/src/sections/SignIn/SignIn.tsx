@@ -33,7 +33,7 @@ export const SignIn: React.FC<SignInProps> = ({ onSectionChange, onSignInSuccess
       redirectButtonLabel={formatMessage(contactMessages.guestCheckout)}
       onSectionChange={onSectionChange}
     >
-      <FormProvider value={form}>
+      <FormProvider form={form}>
         <TextInput name="email" label={formatMessage(contactMessages.email)} />
         <PasswordInput name="password" label={formatMessage(contactMessages.password)} />
         <div className="actions">

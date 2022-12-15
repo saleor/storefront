@@ -24,7 +24,7 @@ export const GuestUser: React.FC<GuestUserProps> = ({ onSectionChange }) => {
       redirectButtonLabel={formatMessage(contactMessages.signIn)}
       onSectionChange={onSectionChange}
     >
-      <FormProvider value={form}>
+      <FormProvider form={form}>
         <TextInput name="email" label={formatMessage(contactMessages.email)} />
         <Checkbox
           name="createAccount"

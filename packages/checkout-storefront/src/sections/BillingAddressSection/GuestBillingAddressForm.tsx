@@ -29,7 +29,7 @@ export const GuestBillingAddressForm = () => {
   // }, [isBillingSameAsShipping]);
 
   return (
-    <FormProvider value={form}>
+    <FormProvider form={form}>
       <AddressForm title={formatMessage(billingMessages.billingAddress)} {...form} />
     </FormProvider>
   );

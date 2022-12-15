@@ -1,8 +1,10 @@
 import { AccountErrorCode } from "@/checkout-storefront/graphql";
-import { ApiError, useGetParsedApiErrors } from "@/checkout-storefront/hooks";
+import { useErrorMessages } from "@/checkout-storefront/hooks";
+import { errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { useAuth } from "@saleor/sdk";
+import { object, string } from "yup";
 
 interface SignInFormData {
   email: string;
@@ -12,10 +14,11 @@ interface SignInFormData {
 export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { login } = useAuth();
   const { getFormErrorsFromApiErrors } = useGetParsedApiErrors<SignInFormData>();
-  //   const schema = object({
-  //     password: string().required(errorMessages.required),
-  //   });
-  //   const resolver = useValidationResolver(schema);
+  const { errorMessages } = useErrorMessages();
+
+  const schema = object({
+    password: string().required(errorMessages.required),
+  });
 
   const defaultFormData: SignInFormData = {
     email: "",
@@ -40,7 +43,7 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
 
-  const form = useForm({
+  const form = useForm<SignInFormData>({
     initialValues: defaultFormData,
     onSubmit,
   });

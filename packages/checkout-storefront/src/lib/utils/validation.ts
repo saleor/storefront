@@ -1,6 +1,7 @@
-import { ValidationError, ErrorCode, FormDataBase } from "@/checkout-storefront/lib/globalTypes";
+import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
+import { ValidationError, ErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { FormikErrors } from "formik";
 import { useCallback } from "react";
-import { FieldErrors } from "react-hook-form";
 import { ObjectSchema, ValidationError as YupValidationErrorObject } from "yup";
 
 export const getAllValidationErrors = <TFormData>({
@@ -26,10 +27,10 @@ export const extractValidationError = <TFormData>({
 
 export const getErrorsAsObject = <TFormData extends Record<string, any>>(
   errors: ValidationError<TFormData>[]
-): FieldErrors<TFormData> =>
+): FormikErrors<TFormData> =>
   errors.reduce(
     (result, { path, ...rest }) => ({ ...result, [path]: rest }),
-    {} as FieldErrors<TFormData>
+    {} as FormikErrors<TFormData>
   );
 
 export const useValidationResolver = <

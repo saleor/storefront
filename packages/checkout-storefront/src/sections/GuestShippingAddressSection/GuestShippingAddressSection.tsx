@@ -17,7 +17,7 @@ export const GuestShippingAddressSection = () => {
   });
 
   return (
-    <FormProvider value={form}>
+    <FormProvider form={form}>
       <AddressForm
         title={formatMessage(shippingMessages.shippingAddress)}
         availableCountries={availableShippingCountries}

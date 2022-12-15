@@ -26,7 +26,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
       onSectionChange={onSectionChange}
       subtitle={formatMessage(contactMessages.providePassword)}
     >
-      <FormProvider value={form}>
+      <FormProvider form={form}>
         <PasswordInput name="password" label={formatMessage(contactMessages.password)} />
         <div className="mt-4 actions">
           <Button

@@ -4,7 +4,7 @@ import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
 import { ErrorMessage, useField } from "formik";
 
 export interface TextInputProps<TName extends string>
-  extends Omit<AllHTMLAttributes<HTMLInputElement>, "onBlur" | "onChange" | "name" | "ref">,
+  extends AllHTMLAttributes<HTMLInputElement>,
     Pick<UiKitTextInputProps, "classNames"> {
   name: TName;
   label: string;

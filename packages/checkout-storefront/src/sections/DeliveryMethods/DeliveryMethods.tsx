@@ -34,7 +34,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   }
 
   return (
-    <FormProvider value={form}>
+    <FormProvider form={form}>
       <Divider />
       <div className="section" data-testid="deliveryMethods">
         <Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>

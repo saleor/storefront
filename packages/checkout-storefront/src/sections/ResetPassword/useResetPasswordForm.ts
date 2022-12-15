@@ -1,7 +1,9 @@
 import { usePasswordResetMutation } from "@/checkout-storefront/graphql";
+import { useErrorMessages } from "@/checkout-storefront/hooks";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { object, string } from "yup";
 
 interface ResetPasswordFormData {
   password: string;
@@ -9,10 +11,11 @@ interface ResetPasswordFormData {
 
 export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [, passwordReset] = usePasswordResetMutation();
+  const { errorMessages } = useErrorMessages();
 
-  // const schema = object({
-  //     password: string().required(errorMessages.required),
-  //   });
+  const validationSchema = object({
+    password: string().required(errorMessages.required),
+  });
 
   const { onSubmit } = useSubmit<ResetPasswordFormData, typeof passwordReset>({
     onSubmit: passwordReset,
@@ -29,9 +32,10 @@ export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) =
 
   const initialValues: ResetPasswordFormData = { password: "" };
 
-  const form = useForm({
+  const form = useForm<ResetPasswordFormData>({
     initialValues,
     onSubmit,
+    validationSchema,
   });
 
   return form;

@@ -31,7 +31,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
       {isShippingRequired && (
-        <FormProvider value={billingSameAsShippingForm}>
+        <FormProvider form={billingSameAsShippingForm}>
           <Checkbox
             classNames={{ container: "!mb-0" }}
             name="billingSameAsShipping"
