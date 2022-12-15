@@ -7,7 +7,7 @@ import { useFormattedMessages } from "@/saleor-app-checkout/frontend/hooks/useFo
 import AppContainer from "@/saleor-app-checkout/frontend/components/elements/AppContainer";
 import AppProvider from "@/saleor-app-checkout/frontend/components/elements/AppProvider";
 import PrivateSettingsProvider from "@/saleor-app-checkout/frontend/components/elements/PrivateSettingsProvider";
-import "@saleor/checkout-storefront/dist/esm/index.css";
+import "@saleor/checkout-storefront/dist/index.css";
 import { useEffect } from "react";
 
 declare global {

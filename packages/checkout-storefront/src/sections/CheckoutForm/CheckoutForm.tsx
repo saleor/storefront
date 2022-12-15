@@ -14,6 +14,7 @@ import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingA
 // import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
+import { Button } from "@saleor/ui-kit";
 
 export const CheckoutForm = () => {
   // const formatMessage = useFormattedMessages();

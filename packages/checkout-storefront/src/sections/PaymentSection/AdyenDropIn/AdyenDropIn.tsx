@@ -21,6 +21,7 @@ import {
 import { Checkout } from "@/checkout-storefront/graphql";
 import { useCheckoutSubmit } from "../../CheckoutForm/useCheckoutSubmit";
 import { useCheckoutValidationState } from "@/checkout-storefront/state/checkoutValidationStateStore";
+import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
@@ -160,6 +161,8 @@ function useDropinAdyenElement(
     "IDLE" | "IN_PROGRESS" | "DONE" | "ERROR"
   >("IDLE");
   const { saleorApiUrl } = useAppConfig();
+  const { locale } = useLocale();
+  const previousLocale = useRef(locale);
 
   const [adyenSessionResponse] = useFetch(createDropInAdyenSession, {
     args: {
@@ -176,6 +179,17 @@ function useDropinAdyenElement(
     skip: isCheckoutLoading,
   });
 
+  // reset dropin on locale change
+  useEffect(() => {
+    if (previousLocale.current !== locale) {
+      if (dropinComponentRef.current) {
+        dropinComponentRef.current.unmount();
+      }
+      setAdyenCheckoutInstanceCreationStatus("IDLE");
+    }
+    previousLocale.current = locale;
+  }, [locale]);
+
   useEffect(() => {
     if (
       !dropinContainerElRef.current ||
@@ -188,7 +202,11 @@ function useDropinAdyenElement(
     }
 
     setAdyenCheckoutInstanceCreationStatus("IN_PROGRESS");
-    createAdyenCheckoutInstance(adyenSessionResponse.data, { onSubmit, onAdditionalDetails })
+    createAdyenCheckoutInstance(adyenSessionResponse.data, {
+      onSubmit,
+      onAdditionalDetails,
+      locale,
+    })
       .then((adyenCheckout) => {
         dropinComponentRef.current = adyenCheckout
           .create("dropin")
@@ -208,6 +226,7 @@ function useDropinAdyenElement(
     adyenSessionResponse.data,
     onAdditionalDetails,
     onSubmit,
+    locale,
   ]);
 
   return { dropinContainerElRef };
