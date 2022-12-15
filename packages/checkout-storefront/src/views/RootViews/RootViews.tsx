@@ -5,9 +5,9 @@ import {
 } from "@/checkout-storefront/views/OrderConfirmation";
 import { Suspense } from "react";
 import { DummyPayment } from "../DummyPayment/DummyPayment";
-import { useFormattedMessages } from "../../hooks";
 import { rootViewsMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 export const RootViews = () => {
   const orderId = getQueryParams().orderId;

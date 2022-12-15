@@ -1,10 +1,8 @@
-import { countries } from "@/checkout-storefront/lib/consts/countries";
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import {
   AddressFragment,
   AddressInput,
-  AddressTypeEnum,
   CheckoutAddressValidationRules,
   CountryCode,
   CountryDisplay,
@@ -12,8 +10,6 @@ import {
 import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
 import { isEqual, omit, reduce, uniq } from "lodash-es";
 import { Address, AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
-import { ParserProps } from "@/checkout-storefront/hooks/useSubmit";
-import { TdHTMLAttributes } from "react";
 
 export const emptyAddressFormData: AddressFormData = {
   firstName: "",
@@ -28,17 +24,6 @@ export const emptyAddressFormData: AddressFormData = {
   phone: "",
   countryCode: "" as CountryCode,
 };
-
-const getInitialCountryCode = (countryCode?: CountryCode) => {
-  const countryCodeInOptions = countries.find((code) => code === countryCode);
-
-  return countryCodeInOptions || getParsedLocaleData(getQueryParams().locale).countryCode;
-};
-
-export const getInitialAddresFormData = (formData: AddressFormData = emptyAddressFormData) => ({
-  ...formData,
-  countryCode: getInitialCountryCode(formData?.countryCode),
-});
 
 export const getAddressInputData = ({
   countryCode,
@@ -67,7 +52,10 @@ export const getAddressInputDataFromAddress = ({
 
 export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
-    return emptyAddressFormData;
+    return {
+      ...emptyAddressFormData,
+      countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
+    };
   }
 
   const { country, ...rest } = address;
@@ -125,7 +113,7 @@ export const isMatchingAddressFormData = (
 };
 
 export const getAddressValidationRulesVariables = (
-  autoSave = false
+  { autoSave }: { autoSave: boolean } = { autoSave: false }
 ): CheckoutAddressValidationRules =>
   autoSave
     ? {

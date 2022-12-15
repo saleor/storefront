@@ -1,6 +1,5 @@
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { extractMutationErrors, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import {
@@ -20,6 +19,8 @@ import {
   ParserFunction,
   SimpleSubmitFn,
 } from "@/checkout-storefront/hooks/useSubmit/types";
+import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
+import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 
 interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
   scope: CheckoutUpdateStateScope;
@@ -94,7 +95,7 @@ function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseF
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
-  const { getFormErrorsFromApiErrors } = useGetParsedApiErrors<TData>();
+  const { getFormErrorsFromApiErrors } = useGetParsedErrors<TData>();
   const localeData = useLocale();
 
   const handleSubmit = useCallback(

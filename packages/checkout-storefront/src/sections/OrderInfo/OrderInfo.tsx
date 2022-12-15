@@ -1,8 +1,8 @@
 import { Address } from "@/checkout-storefront/components/Address";
 import { OrderFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { billingMessages } from "@/checkout-storefront/sections/BillingAddressSection/messages";
 import { contactMessages } from "@/checkout-storefront/sections/Contact/messages";
+import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";
 import { shippingMessages } from "@/checkout-storefront/sections/UserShippingAddressSection/messages";
 import { Text } from "@saleor/ui-kit";
 

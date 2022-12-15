@@ -3,16 +3,11 @@ import { Title } from "@/checkout-storefront/components/Title";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { PaymentMethods } from "./PaymentMethods";
 import React from "react";
-import { BillingAddressSection } from "../BillingAddressSection/BillingAddressSection";
-import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
+import { Children } from "@/checkout-storefront/lib/globalTypes";
 import { paymentSectionMessages } from "./messages";
 
-export const PaymentSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
+export const PaymentSection: React.FC<Children> = ({ children }) => {
   const formatMessage = useFormattedMessages();
-
-  if (collapsed) {
-    return null;
-  }
 
   return (
     <>
@@ -20,7 +15,7 @@ export const PaymentSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
       <div className="section" data-testid="paymentMethods">
         <Title>{formatMessage(paymentSectionMessages.paymentProviders)}</Title>
         <PaymentMethods />
-        <BillingAddressSection />
+        {children}
       </div>
     </>
   );

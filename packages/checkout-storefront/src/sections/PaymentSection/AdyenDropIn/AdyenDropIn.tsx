@@ -6,7 +6,6 @@ import {
 
 import type { PaymentResponse as AdyenWebPaymentResponse } from "@adyen/adyen-web/dist/types/components/types";
 
-import { useAlerts, useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
 import { memo, useEffect, useRef, useState } from "react";
@@ -18,6 +17,9 @@ import {
   handlePaymentResult,
 } from "./createAdyenCheckout";
 import { Checkout } from "@/checkout-storefront/graphql";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 

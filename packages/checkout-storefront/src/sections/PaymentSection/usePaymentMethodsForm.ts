@@ -1,11 +1,12 @@
 import { getPaymentMethods } from "@/checkout-storefront/fetch";
-import { useCheckout, useFetch } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { usePaymentDataActions } from "@/checkout-storefront/state/paymentDataStore";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { useEffect } from "react";
 import { getParsedPaymentMethods } from "@/checkout-storefront/sections/PaymentSection/utils";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { PaymentMethodID, PaymentProviderID } from "checkout-common";
+import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 
 interface PaymentProvidersFormData {
   selectedMethodId: PaymentMethodID | undefined;

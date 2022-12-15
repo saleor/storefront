@@ -1,14 +1,14 @@
 import React from "react";
 import { Button, TextInput } from "../../components";
 import { useOrderQuery } from "../../graphql";
-import { useFormattedMessages } from "../../hooks";
 import { dummyPaymentMessages } from "./messages";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useDummyPaymentForm } from "@/checkout-storefront/views/DummyPayment/useDummyPaymentForm";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { getOrderConfirmationUrl } from "@/checkout-storefront/views/DummyPayment/utils";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 export const DummyPayment = () => {
   const orderId = getQueryParams().orderId ?? "";
@@ -27,7 +27,7 @@ export const DummyPayment = () => {
     initialValues: { amount: paymentBalance, currency: orderPaymentCurrency },
   });
 
-  const { handleSubmit, isSubmitting } = form;
+  const { isSubmitting } = form;
 
   React.useEffect(() => {
     if (orderResult.data?.order?.isPaid) {
@@ -67,8 +67,8 @@ export const DummyPayment = () => {
                 max={paymentBalance}
               />
               <Button
+                type="submit"
                 disabled={orderResult.fetching}
-                onClick={handleSubmit}
                 ariaLabel={formatMessage(dummyPaymentMessages.dummyPay)}
                 label={
                   isSubmitting

@@ -4,9 +4,10 @@ import {
   isMatchingAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { AddressFragment } from "@/checkout-storefront/graphql";
+import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { FormSubmitFn } from "@/checkout-storefront/hooks/useSubmit";
-import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils";
+import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils/common";
 import { useAuthState } from "@saleor/sdk";
 import { compact, DebouncedFunc } from "lodash-es";
 import { useCallback, useEffect, useRef } from "react";
@@ -21,6 +22,7 @@ interface UseAddressListProps {
   debouncedSubmit: DebouncedFunc<FormSubmitFn<AddressListFormData>>;
   checkoutAddress: Address;
   defaultAddress: Address;
+  checkAddressAvailability?: boolean;
 }
 
 export const useAddressListForm = ({
@@ -28,8 +30,12 @@ export const useAddressListForm = ({
   debouncedSubmit,
   checkoutAddress,
   defaultAddress,
+  checkAddressAvailability = false,
 }: UseAddressListProps) => {
   const { user } = useAuthState();
+
+  const { isAvailable } = useAddressAvailability(!checkAddressAvailability);
+
   // sdk has outdated types
   const addresses = (user?.addresses || []) as AddressFragment[];
 

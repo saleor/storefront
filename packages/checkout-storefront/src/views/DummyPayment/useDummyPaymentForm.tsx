@@ -1,4 +1,4 @@
-import { useFetch, useFormattedMessages } from "@/checkout-storefront/hooks";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import { Text } from "@saleor/ui-kit";
 import { dummyPaymentMessages } from "@/checkout-storefront/views/DummyPayment/messages";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { getOrderConfirmationUrl } from "@/checkout-storefront/views/DummyPayment/utils";
+import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 
 interface DummyPaymentFormData {
   amount: number;

@@ -4,7 +4,11 @@ import {
   CheckoutShippingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { apiErrors, checkout, urqlError } from "@/checkout-storefront/lib/fixtures";
-import { extractMutationErrors, getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils";
+import {
+  extractMutationErrors,
+  getById,
+  getByUnmatchingId,
+} from "@/checkout-storefront/lib/utils/common";
 import { getUrl } from "@/checkout-storefront/lib/utils/url";
 import { OperationResult } from "urql";
 

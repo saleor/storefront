@@ -1,10 +1,10 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { IconButton } from "@/checkout-storefront/components/IconButton";
 import { manualSaveAddressFormMessages, manualSaveAddressFormLabels } from "./messages";
-import { useFormattedMessages } from "@/checkout-storefront/hooks";
 import { TrashIcon } from "@/checkout-storefront/icons";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 interface AddressFormActionsProps {
   onDelete?: () => void;

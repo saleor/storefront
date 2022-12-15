@@ -13,7 +13,7 @@ import {
   addressFieldMessages,
   LocalizedAddressFieldLabel,
   localizedAddressFieldMessages,
-} from "@/checkout-storefront/hooks/useAddressFormUtils/messages";
+} from "@/checkout-storefront/components/AddressForm/messages";
 import camelCase from "lodash-es/camelCase";
 import { useCallback, useMemo } from "react";
 import {

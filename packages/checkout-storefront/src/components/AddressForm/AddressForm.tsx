@@ -5,7 +5,6 @@ import { difference } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { autocompleteTags, typeTags } from "@/checkout-storefront/lib/consts/inputAttributes";
-import { useAddressFormUtils } from "@/checkout-storefront/hooks";
 import { CountrySelect } from "@/checkout-storefront/components/CountrySelect";
 import { Select } from "@/checkout-storefront/components/Select";
 import {
@@ -13,6 +12,7 @@ import {
   isMatchingAddressFormData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { UseFormReturn } from "@/checkout-storefront/hooks/useForm";
+import { useAddressFormUtils } from "@/checkout-storefront/hooks/useAddressFormUtils";
 
 export interface AddressFormProps extends UseFormReturn<AddressFormData> {
   title: string;
@@ -67,7 +67,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   }, [allowedFields, dirty, setValues, values]);
 
   return (
-    <form>
+    <>
       <div className="flex flex-row justify-between items-baseline">
         <Title className="flex-1">{title}</Title>
         <CountrySelect only={availableCountries} />
@@ -108,6 +108,6 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
         })}
         {children}
       </div>
-    </form>
+    </>
   );
 };

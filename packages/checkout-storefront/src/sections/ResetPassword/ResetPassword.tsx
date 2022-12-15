@@ -31,8 +31,8 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
         <div className="mt-4 actions">
           <Button
             ariaLabel={formatMessage(contactLabels.resetPassword)}
-            onClick={form.handleSubmit}
             label={formatMessage(contactMessages.resetPassword)}
+            type="submit"
           />
         </div>
       </FormProvider>

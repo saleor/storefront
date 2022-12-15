@@ -1,5 +1,5 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { getById } from "@/checkout-storefront/lib/utils";
+import { getById } from "@/checkout-storefront/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
 import { UserAddressSection } from "@/checkout-storefront/sections/UserAddressSection";
 import { useUserBillingAddressForm } from "@/checkout-storefront/sections/UserBillingAddressSection/useUserBillingAddressForm";
@@ -7,11 +7,11 @@ import { AddressCreateForm } from "@/checkout-storefront/sections/AddressCreateF
 import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm/AddressEditForm";
 import { AddressList } from "@/checkout-storefront/sections/AddressList/AddressList";
 import React, { Suspense } from "react";
-import { billingMessages } from "@/checkout-storefront/sections/BillingAddressSection/messages";
 import { Checkbox } from "@/checkout-storefront/components";
-import { useCheckout } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
-import { useBillingSameAsShippingForm } from "@/checkout-storefront/hooks/useBillingSameAsShippingForm";
+import { useBillingSameAsShippingForm } from "@/checkout-storefront/sections/GuestBillingAddressSection/useBillingSameAsShippingForm";
+import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";
 
 interface UserBillingAddressSectionProps {}
 
@@ -71,7 +71,6 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
                 onEditChange={setDisplayAddressEdit}
                 onAddAddressClick={() => setDisplayAddressCreate(true)}
                 title={formatMessage(billingMessages.billingAddress)}
-                checkAddressAvailability={true}
                 form={form}
               />
             )}

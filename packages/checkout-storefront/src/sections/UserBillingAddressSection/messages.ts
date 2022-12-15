@@ -6,4 +6,9 @@ export const billingMessages = defineMessages({
     id: "UserBillingAddressSection/messages/OLzmaE",
     description: "billing address",
   },
+  useShippingAsBilling: {
+    defaultMessage: "Use shipping address as billing address",
+    id: "UserBillingAddressSection/messages/OIgRhk",
+    description: "Use shipping address as billing address",
+  },
 });

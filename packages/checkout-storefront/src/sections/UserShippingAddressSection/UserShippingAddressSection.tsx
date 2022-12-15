@@ -1,5 +1,5 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { getById } from "@/checkout-storefront/lib/utils";
+import { getById } from "@/checkout-storefront/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
 import { shippingMessages } from "@/checkout-storefront/sections/UserShippingAddressSection/messages";
 import { UserAddressSection } from "@/checkout-storefront/sections/UserAddressSection";

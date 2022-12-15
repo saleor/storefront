@@ -1,10 +1,10 @@
 import React from "react";
 import { ClassNames, Text } from "@saleor/ui-kit";
 import { Money } from "@/checkout-storefront/components";
-import { useFormattedMessages } from "@/checkout-storefront/hooks";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { Money as MoneyType } from "@/checkout-storefront/graphql";
 import clsx from "clsx";
-import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
+import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
 import { GrossMoney } from "@/checkout-storefront/lib/globalTypes";
 import { summaryLabels, summaryMessages } from "./messages";
 

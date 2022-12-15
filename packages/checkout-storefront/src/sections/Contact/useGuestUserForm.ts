@@ -1,5 +1,5 @@
 import { useUserRegisterMutation } from "@/checkout-storefront/graphql";
-import { useCheckout } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import {
   useCheckoutUpdateStateActions,
   useCheckoutUpdateStateChange,

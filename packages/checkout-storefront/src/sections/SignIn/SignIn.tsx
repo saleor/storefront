@@ -49,9 +49,9 @@ export const SignIn: React.FC<SignInProps> = ({ onSectionChange, onSignInSuccess
             onClick={onPasswordResetRequest}
           />
           <Button
+            type="submit"
             disabled={authenticating}
             ariaLabel={formatMessage(contactLabels.signIn)}
-            onClick={form.handleSubmit}
             label={formatMessage(
               authenticating ? commonMessages.processing : contactMessages.signIn
             )}

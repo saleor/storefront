@@ -10,7 +10,7 @@ import {
   useUserAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
-import { useFormattedMessages } from "@/checkout-storefront/hooks";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
   getAddressInputData,
   getUserAddressFormDataFromAddress,
@@ -18,6 +18,7 @@ import {
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
+import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
 
 export interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
   address: AddressFragment;
@@ -36,10 +37,10 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
   const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
 
-  const { onSubmit } = useSubmit<UserAddressFormData, typeof userAddressUpdate>({
+  const { onSubmit } = useSubmit<AddressFormData, typeof userAddressUpdate>({
     scope: "userAddressUpdate",
     onSubmit: userAddressUpdate,
-    parse: ({ id, ...formData }) => ({ id, address: { ...getAddressInputData(formData) } }),
+    parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),
     onSuccess: ({ result }) => onUpdate(result.data?.accountAddressEdit?.address),
   });
 
@@ -59,7 +60,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
   return (
     <FormProvider form={form}>
-      <AddressForm title={formatMessage("editAddress")} {...form}>
+      <AddressForm title={formatMessage(addressEditMessages.editAddress)} {...form}>
         <AddressFormActions
           onSubmit={handleSubmit}
           loading={updating || deleting}

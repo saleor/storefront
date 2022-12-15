@@ -1,7 +1,7 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
 import { DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useMemo, useState } from "react";
 

@@ -5,14 +5,14 @@ import { useCallback } from "react";
 import { useErrorMessages } from "../useErrorMessages";
 import { Error, ApiErrors, Errors } from "./types";
 
-type GetErrorsFromApiErrors<TFormData extends FormDataBase> = {
+type UseGetParsedErrors<TFormData extends FormDataBase> = {
   getParsedApiErrors: (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];
   getFormErrorsFromApiErrors: (apiErrors: ApiErrors<TFormData>) => Errors<TFormData>;
 };
 
-export const useGetParsedApiErrors = <
+export const useGetParsedErrors = <
   TFormData extends FormDataBase
->(): GetErrorsFromApiErrors<TFormData> => {
+>(): UseGetParsedErrors<TFormData> => {
   const { getMessageByErrorCode } = useErrorMessages();
 
   const getParsedApiErrors = useCallback(

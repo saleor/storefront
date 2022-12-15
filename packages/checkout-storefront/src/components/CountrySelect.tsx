@@ -1,7 +1,7 @@
 import { Select } from "@/checkout-storefront/components/Select";
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { countries } from "@/checkout-storefront/lib/consts/countries";
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import React from "react";
 

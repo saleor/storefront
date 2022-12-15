@@ -35,7 +35,6 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   });
   const {
     values: { promoCode },
-    handleSubmit,
   } = form;
 
   const showApplyButton = promoCode.length > 0;
@@ -50,7 +49,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
             variant="tertiary"
             ariaLabel={formatMessage(summaryLabels.apply)}
             label={formatMessage(summaryMessages.apply)}
-            onClick={handleSubmit}
+            type="submit"
           />
         )}
       </div>

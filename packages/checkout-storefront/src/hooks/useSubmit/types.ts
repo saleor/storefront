@@ -1,6 +1,6 @@
 import { Exact, LanguageCodeEnum } from "@/checkout-storefront/graphql";
-import { ApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
+import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import { FormikHelpers } from "formik";
 import { OperationResult } from "urql";
 

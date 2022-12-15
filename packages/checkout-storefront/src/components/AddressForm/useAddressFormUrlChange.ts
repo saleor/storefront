@@ -1,7 +1,7 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { UrlChangeHandlerArgs, useUrlChange } from "@/checkout-storefront/hooks/useUrlChange";
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils";
+import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
 import { omit } from "lodash-es";
 import { useCallback } from "react";
 

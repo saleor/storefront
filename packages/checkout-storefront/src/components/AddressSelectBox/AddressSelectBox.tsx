@@ -8,18 +8,19 @@ import { Address } from "@/checkout-storefront/components/Address";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { addressSelectBoxLabels, addressSelectBoxMessages } from "./messages";
 
-interface AddressSelectBoxProps extends Omit<SelectBoxProps, "children"> {
+interface AddressSelectBoxProps<TFieldName extends string>
+  extends Omit<SelectBoxProps<TFieldName>, "children"> {
   address: Partial<Record<AddressField, any>>;
   onEdit: () => void;
   unavailable: boolean;
 }
 
-export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
+export const AddressSelectBox = <TFieldName extends string>({
   address,
   onEdit,
   unavailable,
   ...rest
-}) => {
+}: AddressSelectBoxProps<TFieldName>) => {
   const formatMessage = useFormattedMessages();
 
   const textProps: Pick<TextProps, "color"> = unavailable

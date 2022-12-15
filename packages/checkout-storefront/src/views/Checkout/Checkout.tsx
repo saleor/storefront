@@ -4,7 +4,7 @@ import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout-storefront/sectio
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuthState } from "@saleor/sdk";
-import { useCheckout } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";

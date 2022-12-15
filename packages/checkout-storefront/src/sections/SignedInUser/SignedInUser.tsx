@@ -8,7 +8,7 @@ import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "../Contact/messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignOutSuccess: () => void;

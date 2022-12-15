@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
-import { SignInForm } from "./SignInForm";
 import { SignedInUser } from "../SignedInUser/SignedInUser";
 import { ResetPassword } from "../ResetPassword/ResetPassword";
-import { GuestUserForm } from "../GuestUser/GuestUser";
 import { useAuthState } from "@saleor/sdk";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { SignIn } from "@/checkout-storefront/sections/SignIn/SignIn";
+import { GuestUser } from "@/checkout-storefront/sections/GuestUser/GuestUser";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -62,11 +62,11 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   return (
     <div>
       {isCurrentSection("guestUser") && (
-        <GuestUserForm onSectionChange={handleChangeSection("signIn")} />
+        <GuestUser onSectionChange={handleChangeSection("signIn")} />
       )}
 
       {isCurrentSection("signIn") && (
-        <SignInForm
+        <SignIn
           onSectionChange={handleChangeSection("guestUser")}
           onSignInSuccess={handleChangeSection("signedInUser")}
         />

@@ -16,6 +16,9 @@ import { Divider } from "@/checkout-storefront/components";
 import { UserShippingAddressSection } from "@/checkout-storefront/sections/UserShippingAddressSection";
 import { useAuthState } from "@saleor/sdk";
 import { GuestShippingAddressSection } from "@/checkout-storefront/sections/GuestShippingAddressSection";
+import { UserBillingAddressSection } from "@/checkout-storefront/sections/UserBillingAddressSection";
+import { PaymentSection } from "@/checkout-storefront/sections/PaymentSection";
+import { GuestBillingAddressSection } from "@/checkout-storefront/sections/GuestBillingAddressSection";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -50,7 +53,11 @@ export const CheckoutForm = () => {
           {/* temporarily hide until we figure out how to show this */}
           {/* along with payment providers section */}
           {/* <AdyenDropIn /> */}
-          {/* <PaymentSection collapsed={showOnlyContact} /> */}
+          <CollapseSection collapse={showOnlyContact}>
+            <PaymentSection>
+              {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+            </PaymentSection>
+          </CollapseSection>
         </>
       </div>
       {!showOnlyContact &&

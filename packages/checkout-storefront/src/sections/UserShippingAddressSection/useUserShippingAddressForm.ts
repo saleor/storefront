@@ -1,14 +1,19 @@
-import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import {
-  getAddressInputData,
+  getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
+  getByMatchingAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
-import { useCheckoutShippingAddressUpdateMutation } from "@/checkout-storefront/graphql";
-import { useCheckout } from "@/checkout-storefront/hooks";
+import {
+  AddressFragment,
+  useCheckoutShippingAddressUpdateMutation,
+} from "@/checkout-storefront/graphql";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { useAddressListForm } from "@/checkout-storefront/sections/AddressList/useAddressListForm";
+import {
+  AddressListFormData,
+  useAddressListForm,
+} from "@/checkout-storefront/sections/AddressList/useAddressListForm";
 import { useAuthState } from "@saleor/sdk";
-import { omit } from "lodash-es";
 
 export const useUserShippingAddressForm = () => {
   const { checkout } = useCheckout();
@@ -16,16 +21,18 @@ export const useUserShippingAddressForm = () => {
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
   const { onSubmit, debouncedSubmit } = useSubmit<
-    AddressFormData,
+    AddressListFormData,
     typeof checkoutShippingAddressUpdate
   >({
     scope: "checkoutShippingUpdate",
     onSubmit: checkoutShippingAddressUpdate,
-    parse: ({ autoSave, languageCode, checkoutId, ...rest }) => ({
+    parse: ({ languageCode, checkoutId, selectedAddressId, addressList }) => ({
       languageCode,
       checkoutId,
-      shippingAddress: getAddressInputData(omit(rest, "channel")),
-      validationRules: getAddressValidationRulesVariables(autoSave),
+      validationRules: getAddressValidationRulesVariables(),
+      shippingAddress: getAddressInputDataFromAddress(
+        addressList.find(getByMatchingAddress({ id: selectedAddressId })) as AddressFragment
+      ),
     }),
   });
 

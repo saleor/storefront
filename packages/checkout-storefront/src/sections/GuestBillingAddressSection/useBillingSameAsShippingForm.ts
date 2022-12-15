@@ -5,7 +5,7 @@ import {
   isMatchingAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/graphql";
-import { useCheckout } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { useEffect, useRef } from "react";

@@ -11,7 +11,7 @@ import { PromoCodeAdd } from "./PromoCodeAdd";
 import { SummaryMoneyRow } from "./SummaryMoneyRow";
 import { SummaryPromoCodeRow } from "./SummaryPromoCodeRow";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
-import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
+import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
 import { Divider, Money, Title } from "@/checkout-storefront/components";
 import {
   CheckoutLineFragment,

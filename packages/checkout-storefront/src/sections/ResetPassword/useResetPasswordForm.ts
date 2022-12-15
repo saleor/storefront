@@ -1,5 +1,5 @@
 import { usePasswordResetMutation } from "@/checkout-storefront/graphql";
-import { useErrorMessages } from "@/checkout-storefront/hooks";
+import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";

@@ -1,5 +1,4 @@
 import {
-  getAddressInputData,
   getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
   getByMatchingAddress,
@@ -8,7 +7,7 @@ import {
   AddressFragment,
   useCheckoutBillingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
-import { useCheckout } from "@/checkout-storefront/hooks";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import {
   AddressListFormData,

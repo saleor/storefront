@@ -3,7 +3,7 @@ import React from "react";
 import { AddressForm } from "@/checkout-storefront/components/AddressForm";
 import { AddressFragment, useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
-import { useFormattedMessages } from "@/checkout-storefront/hooks";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
   emptyAddressFormData,
   getAddressInputData,
@@ -11,6 +11,7 @@ import {
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
+import { addressCreateMessages } from "@/checkout-storefront/sections/AddressCreateForm/messages";
 
 export interface AddressCreateFormProps {
   onSuccess: (address: AddressFragment) => void;
@@ -37,7 +38,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
 
   return (
     <FormProvider form={form}>
-      <AddressForm title={formatMessage("createAddress")} {...form}>
+      <AddressForm title={formatMessage(addressCreateMessages.addressCreate)} {...form}>
         <AddressFormActions onSubmit={handleSubmit} loading={isSubmitting} onCancel={onClose} />
       </AddressForm>
     </FormProvider>
