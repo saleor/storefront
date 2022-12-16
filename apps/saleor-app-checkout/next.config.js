@@ -1,8 +1,8 @@
 const { withSentryConfig } = require("@sentry/nextjs");
-const withTM = require("next-transpile-modules")(
-  ["@saleor/checkout-storefront", "checkout-common"],
-  { debug: true }
-);
+const withTM = require("next-transpile-modules")([
+  "@saleor/checkout-storefront",
+  "checkout-common",
+]);
 
 const isSentryEnabled = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
