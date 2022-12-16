@@ -6,30 +6,45 @@ import { paymentSectionLabels, paymentMethodsMessages } from "./messages";
 import { usePaymentMethodsForm } from "@/checkout-storefront/sections/PaymentSection/usePaymentMethodsForm";
 import { PaymentMethodID } from "checkout-common";
 import { ChangeEvent } from "react";
+import { AdyenDropIn } from "./AdyenDropIn/AdyenDropIn";
 
 export const PaymentMethods = () => {
   const formatMessage = useFormattedMessages();
-  const { availablePaymentMethods, onSelectPaymentMethod, selectedPaymentMethod } =
-    usePaymentMethodsForm();
+  const {
+    availablePaymentMethods,
+    availablePaymentProviders,
+    onSelectPaymentMethod,
+    selectedPaymentMethod,
+  } = usePaymentMethodsForm();
+
+  const showAdyenDropin = availablePaymentProviders.includes("adyen");
+  const showOtherPaymentProviders = availablePaymentProviders.some(
+    (provider) => provider && provider !== "adyen"
+  );
 
   return (
-    <SelectBoxGroup
-      label={formatMessage(paymentSectionLabels.paymentProviders)}
-      className="flex flex-row gap-2"
-    >
-      {availablePaymentMethods.map((paymentMethodId) => (
-        <SelectBox
-          key={paymentMethodId}
-          className="shrink"
-          value={paymentMethodId}
-          selectedValue={selectedPaymentMethod || availablePaymentMethods[0]}
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            onSelectPaymentMethod(event.target.value as PaymentMethodID)
-          }
+    <>
+      {showAdyenDropin && <AdyenDropIn />}
+      {showOtherPaymentProviders && (
+        <SelectBoxGroup
+          label={formatMessage(paymentSectionLabels.paymentProviders)}
+          className="flex flex-row gap-2"
         >
-          <Text>{formatMessage(paymentMethodsMessages[paymentMethodId])}</Text>
-        </SelectBox>
-      ))}
-    </SelectBoxGroup>
+          {availablePaymentMethods.map((paymentMethodId) => (
+            <SelectBox
+              key={paymentMethodId}
+              className="shrink"
+              value={paymentMethodId}
+              selectedValue={selectedPaymentMethod || availablePaymentMethods[0]}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                onSelectPaymentMethod(event.target.value as PaymentMethodID)
+              }
+            >
+              <Text>{formatMessage(paymentMethodsMessages[paymentMethodId])}</Text>
+            </SelectBox>
+          ))}
+        </SelectBoxGroup>
+      )}
+    </>
   );
 };

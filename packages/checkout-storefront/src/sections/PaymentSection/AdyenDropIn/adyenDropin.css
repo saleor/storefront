@@ -1,3 +1,7 @@
+.adyen-checkout__dropin {
+  @apply -mx-4 mb-4;
+}
+
 .adyen-checkout__payment-method,
 .adyen-checkout__payment-method--selected + .adyen-checkout__payment-method,
 .adyen-checkout__payment-method:first-child,
@@ -36,11 +40,11 @@
 .adyen-checkout__spinner__wrapper {
   /* Spinning icon */
 }
-.adyen-checkout__button {
+.adyen-checkout__button.adyen-checkout__button--pay {
   @apply bg-button-primary hover:bg-button-secondary hover:text-text-secondary active:bg-button-tertiary disabled:border-none disabled:bg-button-quaternary transition-none hover:border hover:border-button-primary hover:border-solid;
 }
 
-.adyen-checkout__button:hover .adyen-checkout__button__icon {
+.adyen-checkout__button.adyen-checkout__button--pay:hover .adyen-checkout__button__icon {
   @apply filter brightness-[0.25];
 }
 
