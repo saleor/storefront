@@ -2,27 +2,32 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
 import { Suspense, useState } from "react";
-// import { Button } from "@/checkout-storefront/components/Button";
-// import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { Button } from "@/checkout-storefront/components/Button";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { PaymentSection } from "../PaymentSection";
 import { ShippingAddressSection } from "../ShippingAddressSection/ShippingAddressSection";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
-// import { useCheckoutSubmit } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutSubmit";
-// import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
-// import { checkoutFormLabels, checkoutFormMessages } from "./messages";
+import { useCheckoutSubmit } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutSubmit";
+import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
+import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
-import { AdyenDropIn } from "../PaymentSection/AdyenDropIn/AdyenDropIn";
+import { useFetchPaymentMethods } from "@/checkout-storefront/hooks/useFetchPaymentMethods";
 
 export const CheckoutForm = () => {
-  // const formatMessage = useFormattedMessages();
+  const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { passwordResetToken } = getQueryParams();
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
-  // const { handleSubmit, isProcessing } = useCheckoutSubmit();
+  const { handleSubmit, isProcessing } = useCheckoutSubmit();
+
+  const { availablePaymentProviders } = useFetchPaymentMethods();
+  const shouldShowPayButton = availablePaymentProviders.some(
+    (provider) => provider && provider !== "adyen"
+  );
 
   return (
     <div className="checkout-form-container">
@@ -40,10 +45,10 @@ export const CheckoutForm = () => {
             <DeliveryMethods collapsed={showOnlyContact} />
           </Suspense>
           <PaymentSection collapsed={showOnlyContact} />
-          <AdyenDropIn />
         </>
       </div>
-      {/* {!showOnlyContact &&
+      {shouldShowPayButton &&
+        !showOnlyContact &&
         (isProcessing ? (
           <Button
             className="pay-button"
@@ -59,7 +64,7 @@ export const CheckoutForm = () => {
             onClick={handleSubmit}
             data-testid="pay-button"
           />
-        ))} */}
+        ))}
     </div>
   );
 };

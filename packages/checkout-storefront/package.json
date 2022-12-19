@@ -93,7 +93,7 @@
     "eslint-plugin-formatjs": "4.3.4",
     "graphql-tag": "2.12.6",
     "jest": "27.5.1",
-    "next": "13.0.0",
+    "next": "13.0.4",
     "postcss": "8.4.18",
     "postcss-import": "15.0.0",
     "prettier": "2.7.1",

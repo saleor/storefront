@@ -1,0 +1,114 @@
+.adyen-checkout__dropin {
+  @apply -mx-4 mb-4;
+}
+
+.adyen-checkout__payment-method,
+.adyen-checkout__payment-method--selected + .adyen-checkout__payment-method,
+.adyen-checkout__payment-method:first-child,
+.adyen-checkout__payment-method--next-selected {
+  @apply rounded-none border-l-0 border-r-0;
+}
+
+.adyen-checkout__payment-method {
+  @apply bg-transparent;
+}
+
+.adyen-checkout__payment-method:last-child {
+  @apply rounded-b-none rounded-bl-lg rounded-br-lg;
+}
+
+.adyen-checkout__payment-method--selected {
+  @apply bg-transparent -mt-[1px] mb-0;
+}
+
+.adyen-checkout__payment-method--selected + .adyen-checkout__payment-method {
+  @apply -mt-[1px];
+}
+
+.adyen-checkout__payment-method__header {
+  /* Payment method icon and name */
+}
+.adyen-checkout__payment-method__radio {
+  /* Radio button in payment method header */
+}
+.adyen-checkout__payment-method__radio--selected {
+  /* Selected radio button in payment method header */
+}
+.adyen-checkout__payment-method__name {
+  /* Payment method name in the payment method header */
+}
+.adyen-checkout__spinner__wrapper {
+  /* Spinning icon */
+}
+.adyen-checkout__button.adyen-checkout__button--pay {
+  @apply bg-button-primary hover:bg-button-secondary hover:text-text-secondary active:bg-button-tertiary disabled:border-none disabled:bg-button-quaternary transition-none hover:border hover:border-button-primary hover:border-solid;
+}
+
+.adyen-checkout__button.adyen-checkout__button--pay:hover .adyen-checkout__button__icon {
+  @apply filter brightness-[0.25];
+}
+
+.adyen-checkout__button--pay {
+  /* Pay button */
+}
+.adyen-checkout__field {
+  /* Form field container */
+}
+.adyen-checkout__label {
+  /* Form label container */
+}
+.adyen-checkout__label__text {
+  /* Text element inside the form label container */
+}
+.adyen-checkout__input {
+  @apply border px-3 rounded border-border-primary;
+}
+
+.adyen-checkout__input--focus,
+.adyen-checkout__input--focus:hover,
+.adyen-checkout__input:active,
+.adyen-checkout__input:active:hover,
+.adyen-checkout__input:focus,
+.adyen-checkout__input:focus:hover {
+  @apply border border-solid border-[rgb(137,196,235)] outline-none shadow-none;
+}
+
+.adyen-checkout__input--error {
+  /* Error state for the input fields */
+}
+.adyen-checkout__error-text {
+  /* Error message text */
+}
+.adyen-checkout__card__cardNumber__input {
+  /* Input field for the card number */
+}
+.adyen-checkout__field--expiryDate {
+  /* Input field for the expiry date */
+}
+.adyen-checkout__field__cvc {
+  /* Input field for the CVC security code */
+}
+.adyen-checkout__card__holderName {
+  /* Input field for cardholder name */
+}
+.adyen-checkout__checkbox__input {
+  /* Checkboxes */
+}
+.adyen-checkout__checkbox__label {
+  /* Checkbox labels */
+}
+.adyen-checkout__radio_group__input {
+  /* Radio buttons */
+}
+.adyen-checkout__dropdown__button {
+  /* Dropdown button showing list of options */
+}
+.adyen-checkout__dropdown__list {
+  /* Dropdown list */
+}
+.adyen-checkout__dropdown__element {
+  /* Elements in the dropdown list */
+}
+.adyen-checkout__link {
+  /* Links */
+}
