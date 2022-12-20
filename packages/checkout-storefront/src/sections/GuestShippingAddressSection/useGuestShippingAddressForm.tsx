@@ -1,7 +1,7 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { useAddressFormUrlChange } from "@/checkout-storefront/components/AddressForm/useAddressFormUrlChange";
 import { useCheckoutShippingAddressUpdateMutation } from "@/checkout-storefront/graphql";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { omit } from "lodash-es";
 import {
   getAddressFormDataFromAddress,
@@ -23,7 +23,7 @@ export const useGuestShippingAddressForm = () => {
   const validationSchema = useAddressFormSchema();
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
-  const { debouncedSubmit } = useSubmit<
+  const { debouncedSubmit } = useFormSubmit<
     AutoSaveAddressFormData,
     typeof checkoutShippingAddressUpdate
   >({

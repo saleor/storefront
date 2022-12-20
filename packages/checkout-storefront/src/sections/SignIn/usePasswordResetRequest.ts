@@ -5,29 +5,33 @@ import { useEffect, useState } from "react";
 
 interface PasswordResetFormData {
   email: string;
+  onRequest: () => void;
 }
 
-export const usePasswordResetRequest = ({ email }: PasswordResetFormData) => {
+export const usePasswordResetRequest = ({ email, onRequest }: PasswordResetFormData) => {
   const [, requestPasswordReset] = useRequestPasswordResetMutation();
 
   const [passwordResetSent, setPasswordResetSent] = useState(false);
 
-  const { onSubmit } = useSubmit<PasswordResetFormData, typeof requestPasswordReset>({
+  const { onSubmit } = useSubmit<{}, typeof requestPasswordReset>({
     scope: "requestPasswordReset",
     onSubmit: requestPasswordReset,
-    onEnter: ({ setFieldError }) => {
+    onEnter: () => {
       setPasswordResetSent(true);
-      setFieldError("password", undefined);
+      onRequest();
     },
     onSuccess: () => setPasswordResetSent(true),
-    parse: ({ email, channel }) => ({ email, redirectUrl: getCurrentHref(), channel }),
+    parse: ({ channel }) => ({ email, redirectUrl: getCurrentHref(), channel }),
   });
-
-  const onPasswordResetRequest = () => onSubmit({ email });
 
   useEffect(() => {
     setPasswordResetSent(false);
   }, [email]);
 
-  return { onPasswordResetRequest, passwordResetSent };
+  return {
+    onPasswordResetRequest: () => {
+      void onSubmit();
+    },
+    passwordResetSent,
+  };
 };

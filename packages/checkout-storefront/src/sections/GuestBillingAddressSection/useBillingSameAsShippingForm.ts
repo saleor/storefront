@@ -7,7 +7,7 @@ import {
 import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { useEffect, useRef } from "react";
 
 interface BillingSameAsShippingFormData {
@@ -30,7 +30,7 @@ export const useBillingSameAsShippingForm = (
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
-  const { onSubmit } = useSubmit<
+  const { onSubmit } = useFormSubmit<
     BillingSameAsShippingFormData,
     typeof checkoutBillingAddressUpdate
   >({

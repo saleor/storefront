@@ -1,71 +1,34 @@
 import { Text } from "@saleor/ui-kit";
-import {
-  CheckoutLineFragment,
-  useCheckoutLineDeleteMutation,
-  useCheckoutLinesUpdateMutation,
-} from "@/checkout-storefront/graphql";
+import { CheckoutLineFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 
 import { Skeleton } from "@/checkout-storefront/components";
 import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 import { summaryMessages } from "./messages";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { useSummaryItemForm } from "@/checkout-storefront/sections/Summary/useSummaryItemForm";
+import { useMemo } from "react";
 
-interface LineItemQuantitySelectorProps {
+interface SummaryItemMoneyEditableSectionProps {
   line: CheckoutLineFragment;
 }
 
-export interface SummaryLineFormData {
-  quantity: string;
-}
-
-export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorProps> = ({
+export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableSectionProps> = ({
   line,
 }) => {
-  const [{ fetching: updating }, updateLines] = useCheckoutLinesUpdateMutation();
-  const [, deleteLines] = useCheckoutLineDeleteMutation();
   const formatMessage = useFormattedMessages();
-
-  const { onSubmit } = useSubmit<SummaryLineFormData, typeof updateLines>({
-    scope: "checkoutLinesUpdate",
-    onSubmit: updateLines,
-    parse: ({ quantity, languageCode, checkoutId }) => ({
-      languageCode,
-      checkoutId,
-      lines: [
-        {
-          quantity: Number(quantity),
-          variantId: line.variant.id,
-        },
-      ],
-    }),
-    onError: ({ formData: { quantity }, setFieldValue }) => {
-      setFieldValue("quantity", quantity);
-    },
-  });
-
-  const form = useForm<SummaryLineFormData>({
-    onSubmit,
-    initialValues: { quantity: line.quantity.toString() },
-  });
+  const { form, onLineDelete } = useSummaryItemForm({ line });
 
   const {
     handleBlur,
-    handleSubmit,
     setFieldValue,
+    handleSubmit,
+    isSubmitting,
     values: { quantity: quantityString },
   } = form;
 
-  const quantity = parseInt(quantityString);
-
-  const { onSubmit: onLineDelete } = useSubmit<{}, typeof deleteLines>({
-    scope: "checkoutLinesDelete",
-    onSubmit: deleteLines,
-    parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId, lineId: line.id }),
-  });
+  const quantity = useMemo(() => parseInt(quantityString), [quantityString]);
 
   const handleQuantityInputBlur = (event: React.FocusEvent<any, Element>) => {
     handleBlur(event);
@@ -104,7 +67,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
           />
         </FormProvider>
       </div>
-      {updating ? (
+      {isSubmitting ? (
         <div className="flex flex-col items-end mt-3 w-full">
           <Skeleton className="w-full" />
           <Skeleton className="w-2/3" />

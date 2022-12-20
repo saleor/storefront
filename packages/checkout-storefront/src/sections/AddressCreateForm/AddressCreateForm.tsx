@@ -9,7 +9,7 @@ import {
   getAddressInputData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressCreateMessages } from "@/checkout-storefront/sections/AddressCreateForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
@@ -24,7 +24,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
   const validationSchema = useAddressFormSchema();
   const [, userAddressCreate] = useUserAddressCreateMutation();
 
-  const { onSubmit } = useSubmit<AddressFormData, typeof userAddressCreate>({
+  const { onSubmit } = useFormSubmit<AddressFormData, typeof userAddressCreate>({
     scope: "userAddressCreate",
     onSubmit: userAddressCreate,
     parse: (addressFormData) => ({ address: getAddressInputData(addressFormData) }),

@@ -8,7 +8,7 @@ import {
   useCheckoutShippingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import {
   AddressListFormData,
   useAddressListForm,
@@ -20,7 +20,7 @@ export const useUserShippingAddressForm = () => {
   const { user } = useAuthState();
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
-  const { onSubmit, debouncedSubmit } = useSubmit<
+  const { onSubmit, debouncedSubmit } = useFormSubmit<
     AddressListFormData,
     typeof checkoutShippingAddressUpdate
   >({

@@ -8,7 +8,7 @@ import {
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useAuthState } from "@saleor/sdk";
 import { useEffect, useState } from "react";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
@@ -45,11 +45,11 @@ export const useGuestUserForm = () => {
     createAccount: false,
   };
 
-  const { onSubmit } = useSubmit<GuestUserFormData, typeof userRegister>({
+  const { onSubmit } = useFormSubmit<GuestUserFormData, typeof userRegister>({
     scope: "userRegister",
     onSubmit: userRegister,
     onEnter: () => setShouldRegisterUser(false),
-    shouldAbort: async ({ formData, validateForm }) => {
+    shouldAbort: async ({ formData, formHelpers: { validateForm } }) => {
       const errors = validateForm(formData);
       return !!Object.values(errors);
     },

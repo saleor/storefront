@@ -23,8 +23,10 @@ export const SignIn: React.FC<SignInProps> = ({ onSectionChange, onSignInSuccess
   const formatMessage = useFormattedMessages();
   const { authenticating } = useAuthState();
   const form = useSignInForm({ onSuccess: onSignInSuccess });
-  const { email } = form.values;
-  const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({ email });
+  const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
+    email: form.values.email,
+    onRequest: () => form.setFieldError("password", undefined),
+  });
 
   return (
     <SignInFormContainer

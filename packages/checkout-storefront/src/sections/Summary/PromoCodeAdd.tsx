@@ -6,7 +6,7 @@ import { Classes } from "@/checkout-storefront/lib/globalTypes";
 import { summaryLabels, summaryMessages } from "./messages";
 import clsx from "clsx";
 import React, { FC } from "react";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 
@@ -18,7 +18,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const formatMessage = useFormattedMessages();
   const [, checkoutAddPromoCode] = useCheckoutAddPromoCodeMutation();
 
-  const { onSubmit } = useSubmit<PromoCodeFormData, typeof checkoutAddPromoCode>({
+  const { onSubmit } = useFormSubmit<PromoCodeFormData, typeof checkoutAddPromoCode>({
     scope: "checkoutAddPromoCode",
     onSubmit: checkoutAddPromoCode,
     parse: ({ promoCode, languageCode, checkoutId }) => ({
@@ -26,7 +26,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
       checkoutId,
       languageCode,
     }),
-    onSuccess: ({ resetForm }) => resetForm(),
+    onSuccess: ({ formHelpers: { resetForm } }) => resetForm(),
   });
 
   const form = useForm<PromoCodeFormData>({

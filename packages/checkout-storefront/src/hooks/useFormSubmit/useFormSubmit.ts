@@ -5,40 +5,51 @@ import {
   CheckoutUpdateStateScope,
   useCheckoutUpdateStateChange,
 } from "@/checkout-storefront/state/updateStateStore";
+import { FormikHelpers } from "formik";
 import { useCallback } from "react";
 import { debounce, DebouncedFunc } from "lodash-es";
-import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
+import { FormDataBase, FormHelpers } from "@/checkout-storefront/hooks/useForm";
 import {
   CommonVars,
   MutationBaseFn,
   MutationData,
   MutationVars,
   ParserFunction,
-  SimpleSubmitFn,
 } from "@/checkout-storefront/hooks/useSubmit/types";
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
+import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils/common";
 import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
+import { FormSubmitFn } from "@/checkout-storefront/hooks/useFormSubmit/types";
 
-interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
+interface CallbackProps<TData extends FormDataBase> {
+  formHelpers: FormHelpers<TData>;
+  formData: TData;
+}
+
+interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   parse: ParserFunction<TData, TMutationFn>;
-  onAbort?: (props: { formData: TData }) => void;
-  onSuccess?: (props: { formData: TData; result: MutationData<TMutationFn> }) => void;
-  onError?: (props: { formData: TData; errors: ApiErrors<TData> }) => void;
-  onEnter?: (props: { formData: TData }) => void;
+  onAbort?: (props: CallbackProps<TData>) => void;
+  onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
+  onError?: (
+    props: CallbackProps<TData> & {
+      errors: ApiErrors<TData>;
+    }
+  ) => void;
+  onEnter?: (props: CallbackProps<TData>) => void;
   shouldAbort?:
-    | ((props: { formData: TData }) => Promise<boolean>)
-    | ((props: { formData: TData }) => boolean);
+    | ((props: CallbackProps<TData>) => Promise<boolean>)
+    | ((props: CallbackProps<TData>) => boolean);
 }
 
-interface UseSubmitReturn<TData extends FormDataBase> {
-  debouncedSubmit: DebouncedFunc<SimpleSubmitFn<TData>>;
-  onSubmit: SimpleSubmitFn<TData>;
+interface UseFormSubmitReturn<TData extends FormDataBase> {
+  debouncedSubmit: DebouncedFunc<FormSubmitFn<TData>>;
+  onSubmit: FormSubmitFn<TData>;
 }
 
-export const useSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
+const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
   onSuccess,
   onError,
   onEnter,
@@ -47,15 +58,17 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
   scope,
   shouldAbort,
   parse,
-}: UseSubmitProps<TData, TMutationFn>): UseSubmitReturn<TData> => {
+}: UseFormSubmitProps<TData, TMutationFn>): UseFormSubmitReturn<TData> => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
+  const { getFormErrorsFromApiErrors } = useGetParsedErrors<TData>();
   const localeData = useLocale();
 
   const handleSubmit = useCallback(
-    async (formData: TData = {} as TData) => {
-      const callbackProps = { formData };
+    async (formData: TData = {} as TData, formHelpers: FormikHelpers<TData>) => {
+      const { setErrors, setSubmitting } = formHelpers || {};
+      const callbackProps = { formHelpers, formData };
 
       if (typeof onEnter === "function") {
         onEnter(callbackProps);
@@ -69,6 +82,11 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
           onAbort(callbackProps);
         }
         return { hasErrors: false, errors: [] };
+      }
+
+      if (typeof setSubmitting === "function") {
+        console.log("SETTINNNN");
+        setSubmitting(true);
       }
 
       const commonData: CommonVars = {
@@ -91,6 +109,9 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
       typeof onError === "function" && onError({ ...callbackProps, errors });
       setCheckoutUpdateState("error");
       showErrors(errors);
+      if (typeof setErrors === "function") {
+        setErrors(getFormErrorsFromApiErrors(errors));
+      }
 
       return { hasErrors, errors };
     },
@@ -98,6 +119,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
       checkout.channel.slug,
       checkout.id,
       parse,
+      getFormErrorsFromApiErrors,
       localeData.locale,
       onAbort,
       onEnter,
@@ -113,9 +135,14 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
   // because eslint is unable to read deps inside of debounce
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSubmit = useCallback(
-    debounce((formData: TData = {} as TData) => handleSubmit(formData), 2000),
+    debounce(
+      (formData: TData, formHelpers?: FormikHelpers<TData>) => handleSubmit(formData, formHelpers),
+      2000
+    ),
     [onSubmit]
   );
 
   return { onSubmit: handleSubmit, debouncedSubmit };
 };
+
+export { useFormSubmit };

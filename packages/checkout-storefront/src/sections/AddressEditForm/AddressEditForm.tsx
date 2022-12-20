@@ -13,7 +13,7 @@ import {
   getAddressInputData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
@@ -36,14 +36,14 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
   const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
 
-  const { onSubmit } = useSubmit<AddressFormData, typeof userAddressUpdate>({
+  const { onSubmit } = useFormSubmit<AddressFormData, typeof userAddressUpdate>({
     scope: "userAddressUpdate",
     onSubmit: userAddressUpdate,
     parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),
     onSuccess: ({ result }) => onUpdate(result.data?.accountAddressEdit?.address),
   });
 
-  const { onSubmit: onAddressDelete } = useSubmit<{ id: string }, typeof userAddressDelete>({
+  const { onSubmit: onAddressDelete } = useFormSubmit<{ id: string }, typeof userAddressDelete>({
     scope: "userAddressDelete",
     onSubmit: userAddressDelete,
     parse: ({ id }) => ({ id }),

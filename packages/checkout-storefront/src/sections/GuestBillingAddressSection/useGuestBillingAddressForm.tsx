@@ -3,7 +3,7 @@ import { useAddressFormUrlChange } from "@/checkout-storefront/components/Addres
 import { getAddressFormDataFromAddress } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/graphql";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { omit } from "lodash-es";
 import {
   getAddressInputData,
@@ -20,7 +20,7 @@ export const useGuestBillingAddressForm = () => {
   const validationSchema = useAddressFormSchema();
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
-  const { debouncedSubmit } = useSubmit<AddressFormData, typeof checkoutBillingAddressUpdate>({
+  const { debouncedSubmit } = useFormSubmit<AddressFormData, typeof checkoutBillingAddressUpdate>({
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
     parse: ({ languageCode, checkoutId, ...rest }) => ({
