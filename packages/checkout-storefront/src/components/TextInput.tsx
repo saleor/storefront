@@ -1,27 +1,30 @@
-import React, { AllHTMLAttributes } from "react";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
 import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
-import { ErrorMessage, useField } from "formik";
+import { Field, FieldProps } from "formik";
+import { AllHTMLAttributes } from "react";
 
 export interface TextInputProps<TName extends string>
-  extends AllHTMLAttributes<HTMLInputElement>,
+  extends Omit<AllHTMLAttributes<HTMLInputElement>, "form">,
     Pick<UiKitTextInputProps, "classNames"> {
   name: TName;
   label: string;
   optional?: boolean;
 }
 
-export const TextInput = <TName extends string>({
-  name,
-  optional,
-  ...rest
-}: TextInputProps<TName>) => {
-  const [field] = useField(name);
+export const TextInput = <TName extends string>(props: TextInputProps<TName>) => (
+  <Field {...props} component={TextInputComponent} />
+);
 
-  return (
-    <>
-      <UiKitTextInput {...rest} {...field} required={!optional} />
-      <ErrorMessage name={name} />
-    </>
-  );
-};
+const TextInputComponent = <TName extends string>({
+  field,
+  form: { touched, errors },
+  optional,
+  ...props
+}: FieldProps<TName> & TextInputProps<TName>) => (
+  <UiKitTextInput
+    required={!optional}
+    error={touched[field.name] ? (errors[field.name] as string) : undefined}
+    {...field}
+    {...props}
+  />
+);

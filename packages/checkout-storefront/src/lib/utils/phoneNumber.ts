@@ -1,10 +1,12 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
+import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 
 import {
   parsePhoneNumberWithError,
   CountryCode as PhoneNumberLibCountryCode,
   PhoneNumber,
 } from "libphonenumber-js/max";
+import { useCallback } from "react";
 
 const getPhoneNumberInstance = (
   phone: string,
@@ -18,8 +20,22 @@ const getPhoneNumberInstance = (
   }
 };
 
-export const isValidPhoneNumber = (phone: string, countryCode: CountryCode | undefined) =>
+const isValidPhoneNumber = (phone: string, countryCode: CountryCode | undefined) =>
   !!getPhoneNumberInstance(phone, countryCode)?.isValid();
+
+export const usePhoneNumberValidator = (countryCode: CountryCode) => {
+  const { errorMessages } = useErrorMessages();
+
+  const isValid = useCallback(
+    (phone: string) => {
+      const valid = isValidPhoneNumber(phone, countryCode);
+      return valid ? undefined : errorMessages.invalid;
+    },
+    [countryCode, errorMessages.invalid]
+  );
+
+  return isValid;
+};
 
 const isMissingCountryCallingCode = (phone: string, countryCode: CountryCode) => {
   const isValidWithoutCountryCode = isValidPhoneNumber(phone, undefined);

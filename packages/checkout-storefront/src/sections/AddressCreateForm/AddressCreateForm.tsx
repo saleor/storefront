@@ -12,6 +12,7 @@ import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressCreateMessages } from "@/checkout-storefront/sections/AddressCreateForm/messages";
+import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
 
 export interface AddressCreateFormProps {
   onSuccess: (address: AddressFragment) => void;
@@ -20,6 +21,7 @@ export interface AddressCreateFormProps {
 
 export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess, onClose }) => {
   const formatMessage = useFormattedMessages();
+  const validationSchema = useAddressFormSchema();
   const [, userAddressCreate] = useUserAddressCreateMutation();
 
   const { onSubmit } = useSubmit<AddressFormData, typeof userAddressCreate>({
@@ -30,6 +32,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
   });
 
   const form = useForm<AddressFormData>({
+    validationSchema,
     initialValues: emptyAddressFormData,
     onSubmit,
   });
@@ -38,7 +41,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
 
   return (
     <FormProvider form={form}>
-      <AddressForm title={formatMessage(addressCreateMessages.addressCreate)} {...form}>
+      <AddressForm title={formatMessage(addressCreateMessages.addressCreate)}>
         <AddressFormActions onSubmit={handleSubmit} loading={isSubmitting} onCancel={onClose} />
       </AddressForm>
     </FormProvider>

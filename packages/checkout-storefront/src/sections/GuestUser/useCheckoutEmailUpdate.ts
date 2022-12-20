@@ -1,6 +1,6 @@
 import { useCheckoutEmailUpdateMutation } from "@/checkout-storefront/graphql";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface CheckoutEmailUpdateFormData {
   email: string;
@@ -8,6 +8,7 @@ interface CheckoutEmailUpdateFormData {
 
 export const useCheckoutEmailUpdate = ({ email }: CheckoutEmailUpdateFormData) => {
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
+  const previousEmail = useRef(email);
 
   const { debouncedSubmit } = useSubmit<CheckoutEmailUpdateFormData, typeof updateEmail>({
     scope: "checkoutEmailUpdate",
@@ -16,6 +17,9 @@ export const useCheckoutEmailUpdate = ({ email }: CheckoutEmailUpdateFormData) =
   });
 
   useEffect(() => {
-    void debouncedSubmit({ email });
+    if (email !== previousEmail.current) {
+      previousEmail.current = email;
+      void debouncedSubmit({ email });
+    }
   }, [debouncedSubmit, email]);
 };

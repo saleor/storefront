@@ -1,7 +1,6 @@
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { extractMutationErrors, localeToLanguageCode } from "@/checkout-storefront/lib/utils";
 import {
   CheckoutUpdateStateScope,
   useCheckoutUpdateStateChange,
@@ -9,7 +8,7 @@ import {
 import { FormikHelpers } from "formik";
 import { useCallback } from "react";
 import { debounce, DebouncedFunc } from "lodash-es";
-import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
+import { FormDataBase, FormHelpers } from "@/checkout-storefront/hooks/useForm";
 import {
   CommonVars,
   FormSubmitFn,
@@ -21,6 +20,8 @@ import {
 } from "@/checkout-storefront/hooks/useSubmit/types";
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
 import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
+import { extractMutationErrors } from "@/checkout-storefront/lib/utils/common";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 
 interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
   scope: CheckoutUpdateStateScope;
@@ -39,22 +40,24 @@ interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends Mutatio
 //   onEnter?: (props: { formData: TData } & TProps) => void;
 // }
 
+interface CallbackProps<TData extends FormDataBase> {
+  formHelpers: FormHelpers<TData>;
+  formData: TData;
+}
+
 function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseFn>(
   props: UseSubmitProps<TData, TMutationFn> & {
-    onAbort?: (props: { formData: TData } & FormikHelpers<TData>) => void;
-    onSuccess?: (
-      props: { formData: TData; result: MutationData<TMutationFn> } & FormikHelpers<TData>
-    ) => void;
+    onAbort?: (props: CallbackProps<TData>) => void;
+    onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
     onError?: (
-      props: {
-        formData: TData;
+      props: CallbackProps<TData> & {
         errors: ApiErrors<TData>;
-      } & FormikHelpers<TData>
+      }
     ) => void;
-    onEnter?: (props: { formData: TData } & FormikHelpers<TData>) => void;
+    onEnter?: (props: CallbackProps<TData>) => void;
     shouldAbort?:
-      | ((props: { formData: TData } & FormikHelpers<TData>) => Promise<boolean>)
-      | ((props: { formData: TData } & FormikHelpers<TData>) => boolean);
+      | ((props: CallbackProps<TData>) => Promise<boolean>)
+      | ((props: CallbackProps<TData>) => boolean);
   }
 ): {
   debouncedSubmit: DebouncedFunc<FormSubmitFn<TData>>;
@@ -100,7 +103,7 @@ function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseF
 
   const handleSubmit = useCallback(
     async (formData: TData = {} as TData, formHelpers?: FormikHelpers<TData>) => {
-      const { setErrors } = formHelpers || {};
+      const { setErrors, setSubmitting } = formHelpers || {};
       const callbackProps = { formHelpers, formData };
 
       if (typeof onEnter === "function") {
@@ -117,6 +120,11 @@ function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseF
         return { hasErrors: false, errors: [] };
       }
 
+      if (typeof setSubmitting === "function") {
+        console.log("SETTINNNN");
+        setSubmitting(true);
+      }
+
       const commonData: CommonVars = {
         languageCode: localeToLanguageCode(localeData.locale),
         channel: checkout.channel.slug,
@@ -130,6 +138,10 @@ function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseF
       if (!hasErrors) {
         typeof onSuccess === "function" && onSuccess({ ...callbackProps, result });
         setCheckoutUpdateState("success");
+        if (typeof setSubmitting === "function") {
+          console.log("SETTINNNN");
+          setSubmitting(true);
+        }
         return { hasErrors, errors };
       }
 
@@ -138,6 +150,10 @@ function useSubmit<TData extends FormDataBase, TMutationFn extends MutationBaseF
       showErrors(errors);
       if (typeof setErrors === "function") {
         setErrors(getFormErrorsFromApiErrors(errors));
+      }
+      if (typeof setSubmitting === "function") {
+        console.log("SETTINNNN");
+        setSubmitting(true);
       }
       return { hasErrors, errors };
     },

@@ -9,7 +9,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
 import { isEqual, omit, reduce, uniq } from "lodash-es";
-import { Address, AddressFormData, UserAddressFormData } from "../../components/AddressForm/types";
+import { Address, AddressFormData } from "../../components/AddressForm/types";
 
 export const emptyAddressFormData: AddressFormData = {
   firstName: "",
@@ -39,16 +39,22 @@ export const getAddressInputData = ({
   country: countryCode || (country?.code as CountryCode),
 });
 
-export const getAddressInputDataFromAddress = ({
-  country,
-  phone,
-  ...rest
-}: Partial<AddressFragment>): AddressInput => ({
-  ...omit(rest, ["id", "__typename"]),
-  country: country?.code as CountryCode,
-  // cause in api phone can be null
-  phone: phone || "",
-});
+export const getAddressInputDataFromAddress = (
+  address: Address | Partial<AddressFragment>
+): AddressInput => {
+  if (!address) {
+    return {};
+  }
+
+  const { country, phone, ...rest } = address;
+
+  return {
+    ...omit(rest, ["id", "__typename"]),
+    country: country?.code as CountryCode,
+    // cause in api phone can be null
+    phone: phone || "",
+  };
+};
 
 export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
@@ -71,16 +77,8 @@ export const getAddressFormDataFromAddress = (address: Address): AddressFormData
       ...parsedAddressBase,
       countryCode: country.code as CountryCode,
     },
-    ["__typename"]
+    ["id", "__typename"]
   ) as AddressFormData;
-};
-
-export const getUserAddressFormDataFromAddress = (
-  address: AddressFragment
-): UserAddressFormData => {
-  const { id } = address;
-  const formData = getAddressFormDataFromAddress(address);
-  return { id, ...formData };
 };
 
 export const isMatchingAddress = (

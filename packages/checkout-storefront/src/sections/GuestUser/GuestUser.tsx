@@ -5,7 +5,6 @@ import { Checkbox } from "@/checkout-storefront/components/Checkbox";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { contactMessages } from "../Contact/messages";
 import { useGuestUserForm } from "@/checkout-storefront/sections/Contact/useGuestUserForm";
-import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 
 type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange">;
@@ -13,9 +12,7 @@ type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange">;
 export const GuestUser: React.FC<GuestUserProps> = ({ onSectionChange }) => {
   const formatMessage = useFormattedMessages();
   const form = useGuestUserForm();
-  const { createAccount, email } = form.values;
-
-  useCheckoutEmailUpdate({ email });
+  const { createAccount } = form.values;
 
   return (
     <SignInFormContainer

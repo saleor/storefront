@@ -6,8 +6,4 @@ export interface AddressFormData
   countryCode: CountryCode;
 }
 
-export interface UserAddressFormData extends AddressFormData {
-  id: string;
-}
-
 export type Address = AddressFragment | undefined | null;

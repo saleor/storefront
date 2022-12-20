@@ -64,7 +64,7 @@ export const SummaryItemMoneyEditableSection: React.FC<LineItemQuantitySelectorP
   const { onSubmit: onLineDelete } = useSubmit<{}, typeof deleteLines>({
     scope: "checkoutLinesDelete",
     onSubmit: deleteLines,
-    parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId, line: line.id }),
+    parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId, lineId: line.id }),
   });
 
   const handleQuantityInputBlur = (event: React.FocusEvent<any, Element>) => {

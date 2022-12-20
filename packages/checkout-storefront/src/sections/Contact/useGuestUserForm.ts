@@ -6,11 +6,16 @@ import {
   useUserRegisterState,
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
-import { getCurrentHref } from "@/checkout-storefront/lib/utils";
 import { useAuthState } from "@saleor/sdk";
 import { useEffect, useState } from "react";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
+import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
+import { object, string } from "yup";
+import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { passwordMessages } from "@/checkout-storefront/sections/SignIn/messages";
 
 export interface GuestUserFormData {
   email: string;
@@ -23,19 +28,16 @@ export const useGuestUserForm = () => {
   const { user } = useAuthState();
   const shouldUserRegister = useUserRegisterState();
   const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
-  // const { errorMessages } = useErrorMessages();
+  const { errorMessages } = useErrorMessages();
+  const formatMessage = useFormattedMessages();
   const { setCheckoutUpdateState: setRegisterState } = useCheckoutUpdateStateChange("userRegister");
   const [, userRegister] = useUserRegisterMutation();
   const [userRegisterDisabled, setUserRegistrationDisabled] = useState(false);
 
-  // const schema = object({
-  //   email: string().email(errorMessages.invalid).required(errorMessages.required),
-  //   password: string(),
-  //   // add when we add formik and can validate only part of the form
-  //   // .min(8, formatMessage(passwordErrorMessages.passwordAtLeastCharacters)),
-  // });
-
-  // const resolver = useValidationResolver(schema);
+  const validationSchema = object({
+    email: string().email(errorMessages.invalid).required(errorMessages.required),
+    password: string().min(8, formatMessage(passwordMessages.passwordAtLeastCharacters)),
+  });
 
   const defaultFormData: GuestUserFormData = {
     email: checkout.email || "",
@@ -74,6 +76,7 @@ export const useGuestUserForm = () => {
   const form = useForm<GuestUserFormData>({
     initialValues: defaultFormData,
     onSubmit,
+    validationSchema,
   });
 
   const {
@@ -97,6 +100,8 @@ export const useGuestUserForm = () => {
 
     void handleSubmit();
   }, [createAccount, handleSubmit, shouldUserRegister, user, userRegisterDisabled]);
+
+  useCheckoutEmailUpdate({ email });
 
   return form;
 };

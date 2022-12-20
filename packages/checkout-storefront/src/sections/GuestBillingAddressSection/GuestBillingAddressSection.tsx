@@ -17,7 +17,11 @@ export const GuestBillingAddressSection = () => {
 
   const form = useGuestBillingAddressForm();
 
-  const billingSameAsShippingForm = useBillingSameAsShippingForm();
+  const billingSameAsShippingForm = useBillingSameAsShippingForm({ autoSave: true });
+
+  const {
+    values: { billingSameAsShipping },
+  } = billingSameAsShippingForm;
 
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
@@ -31,9 +35,11 @@ export const GuestBillingAddressSection = () => {
           />
         </FormProvider>
       )}
-      <FormProvider form={form}>
-        <AddressForm title={formatMessage(billingMessages.billingAddress)} {...form} />
-      </FormProvider>
+      {!billingSameAsShipping && (
+        <FormProvider form={form}>
+          <AddressForm title={formatMessage(billingMessages.billingAddress)} />
+        </FormProvider>
+      )}
     </Suspense>
   );
 };

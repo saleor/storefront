@@ -1,6 +1,6 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
-import { FC, PropsWithChildren, useEffect, useRef } from "react";
+import { ChangeEvent, FC, PropsWithChildren, useEffect, useRef } from "react";
 import { difference } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
@@ -11,22 +11,28 @@ import {
   emptyAddressFormData,
   isMatchingAddressFormData,
 } from "@/checkout-storefront/components/AddressForm/utils";
-import { UseFormReturn } from "@/checkout-storefront/hooks/useForm";
-import { useAddressFormUtils } from "@/checkout-storefront/hooks/useAddressFormUtils";
+import { useFormContext } from "@/checkout-storefront/hooks/useForm";
+import { useAddressFormUtils } from "@/checkout-storefront/components/AddressForm/useAddressFormUtils";
+import { usePhoneNumberValidator } from "@/checkout-storefront/lib/utils/phoneNumber";
+import { AddressField } from "@/checkout-storefront/lib/globalTypes";
+import { FieldValidator } from "formik";
 
-export interface AddressFormProps extends UseFormReturn<AddressFormData> {
+export interface AddressFormProps {
   title: string;
   availableCountries?: CountryCode[];
+  fieldProps?: {
+    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  };
 }
 
 export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   title,
   children,
   availableCountries,
-  values,
-  setValues,
-  dirty,
+  fieldProps = {},
 }) => {
+  const { values, setValues, dirty } = useFormContext<AddressFormData>();
+  const isValidPhoneNumber = usePhoneNumberValidator(values.countryCode);
   const previousValues = useRef(values);
 
   const {
@@ -38,6 +44,10 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   } = useAddressFormUtils(values.countryCode);
 
   const allowedFieldsRef = useRef(allowedFields || []);
+
+  const customValidators: Partial<Record<AddressField, FieldValidator>> = {
+    phone: isValidPhoneNumber,
+  };
 
   // prevents outdated data to remain in the form when a field is
   // no longer allowed
@@ -77,14 +87,22 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
           const isRequired = isRequiredField(field);
           const label = getFieldLabel(field);
 
+          const commonProps = {
+            key: field,
+            name: field,
+            label: label,
+            autoComplete: autocompleteTags[field],
+            optional: !isRequired,
+            validate: customValidators[field],
+            ...fieldProps,
+          };
+
           if (field === "countryArea" && isRequired) {
             return (
               <Select
-                key={field}
-                name="countryArea"
+                {...commonProps}
                 classNames={{ container: "mb-4" }}
                 placeholder={getFieldLabel("countryArea")}
-                autocomplete={autocompleteTags.countryArea}
                 options={
                   countryAreaChoices?.map(({ verbose, raw }) => ({
                     label: verbose as string,
@@ -95,16 +113,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
             );
           }
 
-          return (
-            <TextInput
-              key={field}
-              name={field}
-              label={label}
-              autoComplete={autocompleteTags[field]}
-              type={typeTags[field] || "text"}
-              optional={!isRequired}
-            />
-          );
+          return <TextInput {...commonProps} type={typeTags[field] || "text"} />;
         })}
         {children}
       </div>

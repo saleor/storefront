@@ -11,11 +11,13 @@ import {
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
 
 export const useGuestBillingAddressForm = () => {
   const {
     checkout: { billingAddress },
   } = useCheckout();
+  const validationSchema = useAddressFormSchema();
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
   const { debouncedSubmit } = useSubmit<AddressFormData, typeof checkoutBillingAddressUpdate>({
@@ -24,7 +26,7 @@ export const useGuestBillingAddressForm = () => {
     parse: ({ languageCode, checkoutId, ...rest }) => ({
       languageCode,
       checkoutId,
-      billingAddress: getAddressInputData(omit(rest, "channel")),
+      billingAddress: getAddressInputData(omit(rest, ["channel"])),
       validationRules: getAddressValidationRulesVariables({ autoSave: true }),
     }),
   });
@@ -32,6 +34,7 @@ export const useGuestBillingAddressForm = () => {
   const form = useForm<AddressFormData>({
     onSubmit: debouncedSubmit,
     initialValues: getAddressFormDataFromAddress(billingAddress),
+    validationSchema,
   });
 
   useAddressFormUrlChange(form);

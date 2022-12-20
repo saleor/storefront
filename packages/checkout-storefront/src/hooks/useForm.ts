@@ -1,4 +1,4 @@
-import { FormikConfig, FormikErrors, useFormik, useFormikContext } from "formik";
+import { FormikConfig, FormikErrors, FormikHelpers, useFormik, useFormikContext } from "formik";
 import { useCallback } from "react";
 
 export type FormDataBase = Record<string, any>;
@@ -14,15 +14,22 @@ export type UseFormReturn<TData extends FormDataBase> = Omit<
   ) => Promise<FormikErrors<TData>> | Promise<void>;
 };
 
+export type FormProps<TData> = FormikConfig<TData>;
+
+export type FormHelpers<TData> = FormikHelpers<TData>;
+
+export type ChangeHandler = (e: React.ChangeEvent<any>) => void;
+
 export const useForm = <TData extends FormDataBase>(
-  formProps: FormikConfig<TData>
+  formProps: FormProps<TData>
 ): UseFormReturn<TData> => {
   const form = useFormik<TData>(formProps);
+
   const { dirty, handleSubmit: handleFormikSubmit } = form;
 
   const handleSubmit = useCallback(
     (e?: React.FormEvent<HTMLFormElement>) => {
-      // we do it here because formik doesn't pass props like dirty to onSubmit :(
+      // we do it here because formik doesn't pass props like dirty to onSubmit
       if (dirty) {
         handleFormikSubmit(e);
       }

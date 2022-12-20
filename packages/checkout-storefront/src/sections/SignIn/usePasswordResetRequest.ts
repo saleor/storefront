@@ -1,6 +1,6 @@
 import { useRequestPasswordResetMutation } from "@/checkout-storefront/graphql";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { getCurrentHref } from "@/checkout-storefront/lib/utils";
+import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useEffect, useState } from "react";
 
 interface PasswordResetFormData {

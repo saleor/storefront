@@ -1,6 +1,6 @@
 import { Address } from "@/checkout-storefront/components/AddressForm/types";
 import {
-  getAddressFormDataFromAddress,
+  getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
   isMatchingAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
@@ -15,7 +15,13 @@ interface BillingSameAsShippingFormData {
   billingAddress: Address;
 }
 
-export const useBillingSameAsShippingForm = () => {
+interface BillingSameAsShippingFormProps {
+  autoSave: boolean;
+}
+
+export const useBillingSameAsShippingForm = (
+  { autoSave }: BillingSameAsShippingFormProps = { autoSave: false }
+) => {
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress } = checkout;
   const shippingAddressRef = useRef<Address>(shippingAddress);
@@ -33,9 +39,12 @@ export const useBillingSameAsShippingForm = () => {
     parse: ({ languageCode, checkoutId, billingAddress }) => ({
       languageCode,
       checkoutId,
-      billingAddress: getAddressFormDataFromAddress(billingAddress),
-      validationRules: getAddressValidationRulesVariables(),
+      billingAddress: getAddressInputDataFromAddress(billingAddress),
+      validationRules: getAddressValidationRulesVariables({ autoSave }),
     }),
+    onSuccess: ({ formHelpers: { resetForm } }) => {
+      resetForm();
+    },
   });
 
   const initialValues = {
@@ -60,6 +69,9 @@ export const useBillingSameAsShippingForm = () => {
   useEffect(() => {
     const handleBillingSameAsShippingChanged = async () => {
       if (billingSameAsShipping && !isSubmitting && !hasBillingSameAsShipping) {
+        console.log({
+          isSubmitting,
+        });
         await setFieldValue("billingAddress", shippingAddress);
         handleSubmit();
       }
@@ -97,5 +109,6 @@ export const useBillingSameAsShippingForm = () => {
     void handleShippingAddressChanged();
   }, [billingSameAsShipping, handleSubmit, setFieldValue, shippingAddress]);
 
+  console.log({ isSubmitting });
   return form;
 };

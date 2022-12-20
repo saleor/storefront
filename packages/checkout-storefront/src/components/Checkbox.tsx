@@ -13,15 +13,13 @@ export const Checkbox = <TName extends string>({ name, label }: CheckboxProps<TN
   const { value } = meta;
   const { setValue } = helpers;
 
-  const checked = value === field.value;
-
   return (
     <UiKitCheckbox
       {...field}
       label={label}
       name={name}
-      checked={checked}
-      onChange={() => setValue(!checked)}
+      checked={value}
+      onChange={() => setValue(!value)}
     />
   );
 };
