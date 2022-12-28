@@ -7,7 +7,6 @@ import {
 } from "@/checkout-storefront/state/updateStateStore";
 import { FormikHelpers } from "formik";
 import { useCallback } from "react";
-import { debounce, DebouncedFunc } from "lodash-es";
 import { FormDataBase, FormHelpers } from "@/checkout-storefront/hooks/useForm";
 import {
   CommonVars,
@@ -45,7 +44,6 @@ interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends Mut
 }
 
 interface UseFormSubmitReturn<TData extends FormDataBase> {
-  debouncedSubmit: DebouncedFunc<FormSubmitFn<TData>>;
   onSubmit: FormSubmitFn<TData>;
 }
 
@@ -66,8 +64,8 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
   const localeData = useLocale();
 
   const handleSubmit = useCallback(
-    async (formData: TData = {} as TData, formHelpers: FormikHelpers<TData>) => {
-      const { setErrors, setSubmitting } = formHelpers || {};
+    async (formData: TData = {} as TData, formHelpers: FormHelpers<TData>) => {
+      const { setErrors, setSubmitting } = formHelpers;
       const callbackProps = { formHelpers, formData };
 
       if (typeof onEnter === "function") {
@@ -85,7 +83,6 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
       }
 
       if (typeof setSubmitting === "function") {
-        console.log("SETTINNNN");
         setSubmitting(true);
       }
 
@@ -110,6 +107,7 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
       setCheckoutUpdateState("error");
       showErrors(errors);
       if (typeof setErrors === "function") {
+        console.log(666, getFormErrorsFromApiErrors(errors));
         setErrors(getFormErrorsFromApiErrors(errors));
       }
 
@@ -132,17 +130,17 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
     ]
   );
 
-  // because eslint is unable to read deps inside of debounce
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSubmit = useCallback(
-    debounce(
-      (formData: TData, formHelpers?: FormikHelpers<TData>) => handleSubmit(formData, formHelpers),
-      2000
-    ),
-    [onSubmit]
-  );
+  // // because eslint is unable to read deps inside of debounce
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // const debouncedSubmit = useCallback(
+  //   debounce(
+  //     (formData: TData, formHelpers?: FormikHelpers<TData>) => handleSubmit(formData, formHelpers),
+  //     2000
+  //   ),
+  //   [onSubmit]
+  // );
 
-  return { onSubmit: handleSubmit, debouncedSubmit };
+  return { onSubmit: handleSubmit, debouncedSubmit: () => {} };
 };
 
 export { useFormSubmit };

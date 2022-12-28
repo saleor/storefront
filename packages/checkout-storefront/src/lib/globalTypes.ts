@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { TaxedMoney } from "@/checkout-storefront/graphql";
-import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
-import { FormikErrors } from "formik";
+import { FocusEvent } from "react";
 
 export interface Classes {
   className?: string;
@@ -61,3 +60,5 @@ export type ApiAddressField = AddressField | "name";
 export interface CommonSectionProps {
   collapsed: boolean;
 }
+
+export type BlurHandler = (event: FocusEvent<HTMLInputElement>) => void;

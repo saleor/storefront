@@ -1,6 +1,6 @@
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
-import { ChangeEvent, FC, PropsWithChildren, useEffect, useRef } from "react";
+import { FC, PropsWithChildren, useEffect, useRef } from "react";
 import { difference } from "lodash-es";
 import { Title } from "@/checkout-storefront/components/Title";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
@@ -14,14 +14,14 @@ import {
 import { useFormContext } from "@/checkout-storefront/hooks/useForm";
 import { useAddressFormUtils } from "@/checkout-storefront/components/AddressForm/useAddressFormUtils";
 import { usePhoneNumberValidator } from "@/checkout-storefront/lib/utils/phoneNumber";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
+import { AddressField, BlurHandler } from "@/checkout-storefront/lib/globalTypes";
 import { FieldValidator } from "formik";
 
 export interface AddressFormProps {
   title: string;
   availableCountries?: CountryCode[];
   fieldProps?: {
-    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: BlurHandler;
   };
 }
 

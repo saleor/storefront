@@ -32,7 +32,7 @@ export const useGetParsedErrors = <
   const getFormErrorsFromApiErrors = useCallback(
     (apiErrors: ApiErrors<TFormData>) =>
       getParsedApiErrors(apiErrors).reduce(
-        (result, { field, ...rest }) => ({ ...result, [field]: rest }),
+        (result, { field, message }) => ({ ...result, [field]: message }),
         {}
       ),
 

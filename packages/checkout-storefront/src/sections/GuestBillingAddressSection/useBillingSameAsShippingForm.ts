@@ -69,9 +69,6 @@ export const useBillingSameAsShippingForm = (
   useEffect(() => {
     const handleBillingSameAsShippingChanged = async () => {
       if (billingSameAsShipping && !isSubmitting && !hasBillingSameAsShipping) {
-        console.log({
-          isSubmitting,
-        });
         await setFieldValue("billingAddress", shippingAddress);
         handleSubmit();
       }
@@ -109,6 +106,5 @@ export const useBillingSameAsShippingForm = (
     void handleShippingAddressChanged();
   }, [billingSameAsShipping, handleSubmit, setFieldValue, shippingAddress]);
 
-  console.log({ isSubmitting });
   return form;
 };

@@ -5,8 +5,7 @@ import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAv
 import { useGuestShippingAddressForm } from "@/checkout-storefront/sections/GuestShippingAddressSection/useGuestShippingAddressForm";
 import React from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { Field } from "formik";
-import { ChangeHandler } from "@/checkout-storefront/hooks/useForm";
+import { BlurHandler } from "@/checkout-storefront/lib/globalTypes";
 
 export const GuestShippingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -14,21 +13,20 @@ export const GuestShippingAddressSection = () => {
 
   const form = useGuestShippingAddressForm();
 
-  const { handleSubmit, handleChange } = form;
+  const { handleSubmit, handleBlur } = form;
 
-  const onChange: ChangeHandler = (event) => {
-    handleChange(event);
+  const onBlur: BlurHandler = (event) => {
+    handleBlur(event);
     handleSubmit();
   };
 
   return (
     <FormProvider form={form}>
-      <Field />
       <AddressForm
         title={formatMessage(shippingMessages.shippingAddress)}
         availableCountries={availableShippingCountries}
         fieldProps={{
-          onChange,
+          onBlur,
         }}
       />
     </FormProvider>
