@@ -45,7 +45,7 @@ export const useGuestUserForm = () => {
     createAccount: false,
   };
 
-  const { onSubmit } = useFormSubmit<GuestUserFormData, typeof userRegister>({
+  const onSubmit = useFormSubmit<GuestUserFormData, typeof userRegister>({
     scope: "userRegister",
     onSubmit: userRegister,
     onEnter: () => setShouldRegisterUser(false),
@@ -77,6 +77,9 @@ export const useGuestUserForm = () => {
     initialValues: defaultFormData,
     onSubmit,
     validationSchema,
+    validateOnChange: true,
+    validateOnBlur: false,
+    initialTouched: { email: true },
   });
 
   const {

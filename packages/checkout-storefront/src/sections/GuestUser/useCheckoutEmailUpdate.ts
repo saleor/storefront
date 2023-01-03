@@ -1,6 +1,8 @@
 import { useCheckoutEmailUpdateMutation } from "@/checkout-storefront/graphql";
+import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { string } from "yup";
 
 interface CheckoutEmailUpdateFormData {
   email: string;
@@ -10,14 +12,37 @@ export const useCheckoutEmailUpdate = ({ email }: CheckoutEmailUpdateFormData) =
   const [, updateEmail] = useCheckoutEmailUpdateMutation();
   const previousEmail = useRef(email);
 
-  const { debouncedSubmit } = useSubmit<CheckoutEmailUpdateFormData, typeof updateEmail>({
-    scope: "checkoutEmailUpdate",
-    onSubmit: updateEmail,
-    parse: ({ languageCode, checkoutId, email }) => ({ languageCode, checkoutId, email }),
-  });
+  const isValidEmail = async (email: string) => {
+    try {
+      await string().email().validate(email);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const onSubmit = useSubmit<CheckoutEmailUpdateFormData, typeof updateEmail>(
+    useMemo(
+      () => ({
+        scope: "checkoutEmailUpdate",
+        onSubmit: updateEmail,
+        shouldAbort: async ({ formData: { email } }) => {
+          const isValid = await isValidEmail(email);
+
+          return !isValid;
+        },
+        parse: ({ languageCode, checkoutId, email }) => ({ languageCode, checkoutId, email }),
+      }),
+      [updateEmail]
+    )
+  );
+
+  const debouncedSubmit = useDebouncedSubmit(onSubmit);
 
   useEffect(() => {
-    if (email !== previousEmail.current) {
+    const hasEmailChanged = email !== previousEmail.current;
+
+    if (hasEmailChanged) {
       previousEmail.current = email;
       void debouncedSubmit({ email });
     }

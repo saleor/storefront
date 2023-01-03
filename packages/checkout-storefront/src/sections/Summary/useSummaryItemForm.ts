@@ -19,7 +19,7 @@ export const useSummaryItemForm = ({ line }: SummaryItemFormProps) => {
   const [, updateLines] = useCheckoutLinesUpdateMutation();
   const [, deleteLines] = useCheckoutLineDeleteMutation();
 
-  const { onSubmit } = useFormSubmit<SummaryLineFormData, typeof updateLines>({
+  const onSubmit = useFormSubmit<SummaryLineFormData, typeof updateLines>({
     scope: "checkoutLinesUpdate",
     onSubmit: updateLines,
     parse: ({ quantity, languageCode, checkoutId }) => ({

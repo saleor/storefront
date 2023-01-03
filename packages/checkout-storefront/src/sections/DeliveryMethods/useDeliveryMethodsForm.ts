@@ -4,6 +4,7 @@ import {
   useCheckoutDeliveryMethodUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import { useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { getById } from "@/checkout-storefront/lib/utils/common";
@@ -40,7 +41,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
     selectedMethodId: deliveryMethod?.id || getAutoSetMethod()?.id,
   };
 
-  const { debouncedSubmit } = useFormSubmit<DeliveryMethodsFormData, typeof updateDeliveryMethod>({
+  const onSubmit = useFormSubmit<DeliveryMethodsFormData, typeof updateDeliveryMethod>({
     scope: "checkoutDeliveryMethodUpdate",
     onSubmit: updateDeliveryMethod,
     shouldAbort: ({ formData: { selectedMethodId } }) =>
@@ -54,6 +55,8 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
       setValues({ selectedMethodId });
     },
   });
+
+  const debouncedSubmit = useDebouncedSubmit(onSubmit);
 
   const form = useForm<DeliveryMethodsFormData>({
     initialValues: defaultFormData,

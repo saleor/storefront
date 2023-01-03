@@ -5,7 +5,6 @@ import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAv
 import { useGuestShippingAddressForm } from "@/checkout-storefront/sections/GuestShippingAddressSection/useGuestShippingAddressForm";
 import React from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { BlurHandler } from "@/checkout-storefront/lib/globalTypes";
 
 export const GuestShippingAddressSection = () => {
   const formatMessage = useFormattedMessages();
@@ -13,12 +12,7 @@ export const GuestShippingAddressSection = () => {
 
   const form = useGuestShippingAddressForm();
 
-  const { handleSubmit, handleBlur } = form;
-
-  const onBlur: BlurHandler = (event) => {
-    handleBlur(event);
-    handleSubmit();
-  };
+  const { handleChange, handleBlur } = form;
 
   return (
     <FormProvider form={form}>
@@ -26,7 +20,8 @@ export const GuestShippingAddressSection = () => {
         title={formatMessage(shippingMessages.shippingAddress)}
         availableCountries={availableShippingCountries}
         fieldProps={{
-          onBlur,
+          onChange: handleChange,
+          onBlur: handleBlur,
         }}
       />
     </FormProvider>

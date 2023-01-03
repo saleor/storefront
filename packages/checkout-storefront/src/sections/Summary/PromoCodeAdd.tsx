@@ -18,7 +18,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
   const formatMessage = useFormattedMessages();
   const [, checkoutAddPromoCode] = useCheckoutAddPromoCodeMutation();
 
-  const { onSubmit } = useFormSubmit<PromoCodeFormData, typeof checkoutAddPromoCode>({
+  const onSubmit = useFormSubmit<PromoCodeFormData, typeof checkoutAddPromoCode>({
     scope: "checkoutAddPromoCode",
     onSubmit: checkoutAddPromoCode,
     parse: ({ promoCode, languageCode, checkoutId }) => ({

@@ -36,7 +36,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
   const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
 
-  const { onSubmit } = useFormSubmit<AddressFormData, typeof userAddressUpdate>({
+  const onSubmit = useFormSubmit<AddressFormData, typeof userAddressUpdate>({
     scope: "userAddressUpdate",
     onSubmit: userAddressUpdate,
     parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),

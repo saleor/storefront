@@ -14,7 +14,6 @@ import {
   AutoSaveAddressFormData,
   useAutoSaveAddressForm,
 } from "@/checkout-storefront/hooks/useAutoSaveAddressForm";
-import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 
 export const useGuestShippingAddressForm = () => {
   const {
@@ -23,18 +22,19 @@ export const useGuestShippingAddressForm = () => {
   const validationSchema = useAddressFormSchema();
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
-  const { onSubmit } = useFormSubmit<AutoSaveAddressFormData, typeof checkoutShippingAddressUpdate>(
-    {
-      scope: "checkoutShippingUpdate",
-      onSubmit: checkoutShippingAddressUpdate,
-      parse: ({ languageCode, checkoutId, ...rest }) => ({
-        languageCode,
-        checkoutId,
-        shippingAddress: getAddressInputData(omit(rest, "channel")),
-        validationRules: getAddressValidationRulesVariables({ autoSave: true }),
-      }),
-    }
-  );
+  const onSubmit = useFormSubmit<AutoSaveAddressFormData, typeof checkoutShippingAddressUpdate>({
+    scope: "checkoutShippingUpdate",
+    onSubmit: checkoutShippingAddressUpdate,
+    parse: ({ languageCode, checkoutId, ...rest }) => ({
+      languageCode,
+      checkoutId,
+      shippingAddress: getAddressInputData(omit(rest, "channel")),
+      validationRules: getAddressValidationRulesVariables({ autoSave: true }),
+    }),
+    onSuccess: ({ formData, formHelpers: { resetForm } }) => {
+      resetForm({ values: formData });
+    },
+  });
 
   const form = useAutoSaveAddressForm({
     onSubmit,

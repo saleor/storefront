@@ -17,6 +17,8 @@ export const GuestBillingAddressSection = () => {
 
   const form = useGuestBillingAddressForm();
 
+  const { handleBlur, handleChange } = form;
+
   const billingSameAsShippingForm = useBillingSameAsShippingForm({ autoSave: true });
 
   const {
@@ -37,7 +39,13 @@ export const GuestBillingAddressSection = () => {
       )}
       {!billingSameAsShipping && (
         <FormProvider form={form}>
-          <AddressForm title={formatMessage(billingMessages.billingAddress)} />
+          <AddressForm
+            title={formatMessage(billingMessages.billingAddress)}
+            fieldProps={{
+              onChange: handleChange,
+              onBlur: handleBlur,
+            }}
+          />
         </FormProvider>
       )}
     </Suspense>

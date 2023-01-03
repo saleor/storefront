@@ -43,10 +43,6 @@ interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends Mut
     | ((props: CallbackProps<TData>) => boolean);
 }
 
-interface UseFormSubmitReturn<TData extends FormDataBase> {
-  onSubmit: FormSubmitFn<TData>;
-}
-
 const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
   onSuccess,
   onError,
@@ -56,7 +52,7 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
   scope,
   shouldAbort,
   parse,
-}: UseFormSubmitProps<TData, TMutationFn>): UseFormSubmitReturn<TData> => {
+}: UseFormSubmitProps<TData, TMutationFn>): FormSubmitFn<TData> => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
@@ -130,17 +126,7 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
     ]
   );
 
-  // // because eslint is unable to read deps inside of debounce
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // const debouncedSubmit = useCallback(
-  //   debounce(
-  //     (formData: TData, formHelpers?: FormikHelpers<TData>) => handleSubmit(formData, formHelpers),
-  //     2000
-  //   ),
-  //   [onSubmit]
-  // );
-
-  return { onSubmit: handleSubmit, debouncedSubmit: () => {} };
+  return handleSubmit;
 };
 
 export { useFormSubmit };

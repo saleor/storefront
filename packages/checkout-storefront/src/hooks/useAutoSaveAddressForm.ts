@@ -1,9 +1,15 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
-import { FormHelpers, useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
+import {
+  BlurHandler,
+  ChangeHandler,
+  FormHelpers,
+  useForm,
+  UseFormReturn,
+} from "@/checkout-storefront/hooks/useForm";
 import { FormikConfig } from "formik";
 import { pick } from "lodash-es";
-import { ChangeEvent, useCallback } from "react";
+import { useCallback } from "react";
 
 export type AutoSaveAddressFormData = Partial<AddressFormData>;
 
@@ -14,7 +20,7 @@ export const useAutoSaveAddressForm = (
   const { onSubmit } = formProps;
 
   const form = useForm<AutoSaveAddressFormData>(formProps);
-  const { touched, values, validateForm, dirty, setFieldTouched, setFieldValue } = form;
+  const { values, validateForm, dirty, handleBlur, handleChange } = form;
 
   const debouncedSubmit = useDebouncedSubmit(onSubmit);
 
@@ -38,29 +44,27 @@ export const useAutoSaveAddressForm = (
   // request for forever now https://github.com/jaredpalmer/formik/issues/2675
   // so we're just gonna add a partial submit for guest address form to work
   const partialSubmit = useCallback(async () => {
-    console.log("ENTERIN", touched);
-    if (!Object.keys(touched).length) {
-      return;
-    }
-
-    const touchedValues = pick(values, Object.keys(touched));
-
-    console.log({ touched, touchedValues, dirty });
-
     const formErrors = await validateForm(values);
 
-    const hasTouchedFieldsErrors = !!Object.keys(formErrors).filter((field) =>
-      Object.keys(touchedValues).includes(field)
-    ).length;
+    const hasFieldsErrors = !!Object.keys(formErrors).length;
 
-    if (!hasTouchedFieldsErrors && dirty) {
-      console.log("SUBMITEN");
+    if (!hasFieldsErrors && dirty) {
       void debouncedSubmit(
-        { ...initialValues, countryCode: values.countryCode, ...touchedValues },
+        { ...initialValues, countryCode: values.countryCode, ...values },
         formHelpers
       );
     }
-  }, [values, touched, dirty, validateForm, debouncedSubmit, initialValues, formHelpers]);
+  }, [values, dirty, validateForm, debouncedSubmit, initialValues, formHelpers]);
 
-  return { ...form, handleSubmit: partialSubmit };
+  const onChange: ChangeHandler = (event) => {
+    handleChange(event);
+    void partialSubmit();
+  };
+
+  const onBlur: BlurHandler = (event) => {
+    handleBlur(event);
+    void partialSubmit();
+  };
+
+  return { ...form, handleChange: onChange, handleBlur: onBlur, handleSubmit: partialSubmit };
 };

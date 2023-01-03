@@ -17,7 +17,7 @@ export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) =
     password: string().required(errorMessages.required),
   });
 
-  const { onSubmit } = useFormSubmit<ResetPasswordFormData, typeof passwordReset>({
+  const onSubmit = useFormSubmit<ResetPasswordFormData, typeof passwordReset>({
     onSubmit: passwordReset,
     scope: "resetPassword",
     parse: ({ password }) => {

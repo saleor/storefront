@@ -6,7 +6,6 @@ import {
   useCheckoutUpdateStateChange,
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCallback } from "react";
-import { debounce, DebouncedFunc } from "lodash-es";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
 import {
   CommonVars,
@@ -33,11 +32,6 @@ interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends Mutatio
     | ((props: { formData: TData }) => boolean);
 }
 
-interface UseSubmitReturn<TData extends FormDataBase> {
-  debouncedSubmit: DebouncedFunc<SimpleSubmitFn<TData>>;
-  onSubmit: SimpleSubmitFn<TData>;
-}
-
 export const useSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
   onSuccess,
   onError,
@@ -47,7 +41,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
   scope,
   shouldAbort,
   parse,
-}: UseSubmitProps<TData, TMutationFn>): UseSubmitReturn<TData> => {
+}: UseSubmitProps<TData, TMutationFn>): SimpleSubmitFn<TData> => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { checkout } = useCheckout();
   const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
@@ -97,7 +91,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
     [
       checkout.channel.slug,
       checkout.id,
-      parse,
+      // parse,
       localeData.locale,
       onAbort,
       onEnter,
@@ -105,17 +99,10 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
       onSubmit,
       onSuccess,
       setCheckoutUpdateState,
-      shouldAbort,
+      // shouldAbort,
       showErrors,
     ]
   );
 
-  // because eslint is unable to read deps inside of debounce
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSubmit = useCallback(
-    debounce((formData: TData = {} as TData) => handleSubmit(formData), 2000),
-    [onSubmit]
-  );
-
-  return { onSubmit: handleSubmit, debouncedSubmit };
+  return handleSubmit;
 };

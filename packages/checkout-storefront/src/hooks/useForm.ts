@@ -1,5 +1,5 @@
 import { FormikConfig, FormikErrors, FormikHelpers, useFormik, useFormikContext } from "formik";
-import { useCallback } from "react";
+import { useCallback, FocusEvent } from "react";
 
 export type FormDataBase = Record<string, any>;
 
@@ -19,6 +19,8 @@ export type FormProps<TData> = FormikConfig<TData>;
 export type FormHelpers<TData> = FormikHelpers<TData>;
 
 export type ChangeHandler = (e: React.ChangeEvent<any>) => void;
+
+export type BlurHandler = (event: FocusEvent<HTMLInputElement>) => void;
 
 export const useForm = <TData extends FormDataBase>(
   formProps: FormProps<TData>

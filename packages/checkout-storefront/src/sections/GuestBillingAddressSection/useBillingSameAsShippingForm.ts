@@ -30,7 +30,7 @@ export const useBillingSameAsShippingForm = (
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
-  const { onSubmit } = useFormSubmit<
+  const onSubmit = useFormSubmit<
     BillingSameAsShippingFormData,
     typeof checkoutBillingAddressUpdate
   >({

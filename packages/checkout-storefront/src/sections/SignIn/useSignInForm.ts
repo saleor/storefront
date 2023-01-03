@@ -28,7 +28,7 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   // @ts-ignore because login comes from the sdk which is no longer
   // maintained so we'll eventually have to implement our own auth flow
-  const { onSubmit } = useFormSubmit<SignInFormData, typeof login>({
+  const onSubmit = useFormSubmit<SignInFormData, typeof login>({
     onSubmit: login,
     onSuccess,
     onError: ({ errors, formHelpers: { setErrors } }) => {

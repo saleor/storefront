@@ -24,7 +24,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
   const validationSchema = useAddressFormSchema();
   const [, userAddressCreate] = useUserAddressCreateMutation();
 
-  const { onSubmit } = useFormSubmit<AddressFormData, typeof userAddressCreate>({
+  const onSubmit = useFormSubmit<AddressFormData, typeof userAddressCreate>({
     scope: "userAddressCreate",
     onSubmit: userAddressCreate,
     parse: (addressFormData) => ({ address: getAddressInputData(addressFormData) }),

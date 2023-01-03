@@ -1,14 +1,20 @@
 import { debounce } from "lodash-es";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
-export const useDebouncedSubmit = (onSubmit) => {
+export const useDebouncedSubmit = (onSubmit: (...args: any) => Promise<any>) => {
   const debouncedSubmit = useCallback(
     debounce((...args) => {
-      console.log("LALALA", ...args);
+      console.log("SUBMIT", ...args);
       void onSubmit(...args);
     }, 2000),
-    []
+    [onSubmit]
   );
+
+  // useEffect(() => {
+  //   return () => {
+  //     debouncedSubmit.cancel();
+  //   };
+  // }, []);
 
   return debouncedSubmit;
 };

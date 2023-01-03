@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { TaxedMoney } from "@/checkout-storefront/graphql";
-import { FocusEvent } from "react";
 
 export interface Classes {
   className?: string;
@@ -42,23 +41,6 @@ export interface ValidationError<TFormData> {
   message: string;
 }
 
-export type AddressField =
-  | "city"
-  | "firstName"
-  | "lastName"
-  | "countryArea"
-  | "cityArea"
-  | "postalCode"
-  | "countryCode"
-  | "companyName"
-  | "streetAddress1"
-  | "streetAddress2"
-  | "phone";
-
-export type ApiAddressField = AddressField | "name";
-
 export interface CommonSectionProps {
   collapsed: boolean;
 }
-
-export type BlurHandler = (event: FocusEvent<HTMLInputElement>) => void;
