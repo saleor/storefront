@@ -40,7 +40,9 @@ function LoginPage() {
     setError: setErrorForm,
   } = useForm<LoginFormData>({ defaultValues });
 
-  const redirectURL = router.query.next?.toString() || paths.$url();
+  const routerQueryNext = router.query.next?.toString() || "";
+  const isExternalUrl = /^\w+:\/\//.test(routerQueryNext);
+  const redirectURL = !routerQueryNext || isExternalUrl ? paths.$url() : routerQueryNext;
 
   const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
     const { data } = await login({
