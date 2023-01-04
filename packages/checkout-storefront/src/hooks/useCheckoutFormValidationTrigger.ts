@@ -4,7 +4,6 @@ import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
-import { map } from "lodash-es";
 import { useCallback, useEffect } from "react";
 
 interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
