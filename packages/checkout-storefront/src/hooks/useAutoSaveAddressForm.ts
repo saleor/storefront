@@ -44,6 +44,7 @@ export const useAutoSaveAddressForm = (
   // request for forever now https://github.com/jaredpalmer/formik/issues/2675
   // so we're just gonna add a partial submit for guest address form to work
   const partialSubmit = useCallback(async () => {
+    console.log({ values });
     const formErrors = await validateForm(values);
 
     const hasFieldsErrors = !!Object.keys(formErrors).length;

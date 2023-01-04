@@ -8,7 +8,7 @@ import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubm
 import { useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { getById } from "@/checkout-storefront/lib/utils/common";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 interface DeliveryMethodsFormData {
   selectedMethodId: string | undefined;
@@ -41,20 +41,25 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
     selectedMethodId: deliveryMethod?.id || getAutoSetMethod()?.id,
   };
 
-  const onSubmit = useFormSubmit<DeliveryMethodsFormData, typeof updateDeliveryMethod>({
-    scope: "checkoutDeliveryMethodUpdate",
-    onSubmit: updateDeliveryMethod,
-    shouldAbort: ({ formData: { selectedMethodId } }) =>
-      !selectedMethodId || selectedMethodId === checkout.deliveryMethod?.id,
-    parse: ({ selectedMethodId, languageCode, checkoutId }) => ({
-      deliveryMethodId: selectedMethodId as string,
-      languageCode,
-      checkoutId,
-    }),
-    onError: ({ formData: { selectedMethodId }, formHelpers: { setValues } }) => {
-      setValues({ selectedMethodId });
-    },
-  });
+  const onSubmit = useFormSubmit<DeliveryMethodsFormData, typeof updateDeliveryMethod>(
+    useMemo(
+      () => ({
+        scope: "checkoutDeliveryMethodUpdate",
+        onSubmit: updateDeliveryMethod,
+        shouldAbort: ({ formData: { selectedMethodId } }) =>
+          !selectedMethodId || selectedMethodId === checkout.deliveryMethod?.id,
+        parse: ({ selectedMethodId, languageCode, checkoutId }) => ({
+          deliveryMethodId: selectedMethodId as string,
+          languageCode,
+          checkoutId,
+        }),
+        onError: ({ formData: { selectedMethodId }, formHelpers: { setValues } }) => {
+          setValues({ selectedMethodId });
+        },
+      }),
+      [checkout.deliveryMethod?.id, updateDeliveryMethod]
+    )
+  );
 
   const debouncedSubmit = useDebouncedSubmit(onSubmit);
 

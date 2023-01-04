@@ -10,11 +10,11 @@ export const useDebouncedSubmit = (onSubmit: (...args: any) => Promise<any>) => 
     [onSubmit]
   );
 
-  // useEffect(() => {
-  //   return () => {
-  //     debouncedSubmit.cancel();
-  //   };
-  // }, []);
+  useEffect(() => {
+    return () => {
+      debouncedSubmit.cancel();
+    };
+  }, []);
 
   return debouncedSubmit;
 };
