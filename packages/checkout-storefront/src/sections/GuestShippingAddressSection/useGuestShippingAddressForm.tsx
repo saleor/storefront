@@ -46,6 +46,7 @@ export const useGuestShippingAddressForm = () => {
     onSubmit,
     initialValues: getAddressFormDataFromAddress(shippingAddress),
     validationSchema,
+    scope: "checkoutShippingUpdate",
   });
 
   useAddressFormUrlChange(form);

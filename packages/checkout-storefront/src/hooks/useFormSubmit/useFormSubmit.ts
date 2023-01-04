@@ -5,7 +5,6 @@ import {
   CheckoutUpdateStateScope,
   useCheckoutUpdateStateChange,
 } from "@/checkout-storefront/state/updateStateStore";
-import { FormikHelpers } from "formik";
 import { useCallback } from "react";
 import { FormDataBase, FormHelpers } from "@/checkout-storefront/hooks/useForm";
 import {

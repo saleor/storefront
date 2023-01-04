@@ -4,20 +4,28 @@ import {
   BlurHandler,
   ChangeHandler,
   FormHelpers,
+  hasErrors,
   useForm,
   UseFormReturn,
 } from "@/checkout-storefront/hooks/useForm";
+import {
+  CheckoutUpdateStateScope,
+  useCheckoutUpdateStateChange,
+} from "@/checkout-storefront/state/updateStateStore";
 import { FormikConfig } from "formik";
 import { pick } from "lodash-es";
 import { useCallback } from "react";
 
 export type AutoSaveAddressFormData = Partial<AddressFormData>;
 
-export const useAutoSaveAddressForm = (
-  formProps: FormikConfig<AutoSaveAddressFormData>
-): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
-  const { initialValues } = formProps;
-  const { onSubmit } = formProps;
+export const useAutoSaveAddressForm = ({
+  scope,
+  ...formProps
+}: FormikConfig<AutoSaveAddressFormData> & {
+  scope: CheckoutUpdateStateScope;
+}): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
+  const { initialValues, onSubmit } = formProps;
 
   const form = useForm<AutoSaveAddressFormData>(formProps);
   const { values, validateForm, dirty, handleBlur, handleChange } = form;
@@ -44,18 +52,24 @@ export const useAutoSaveAddressForm = (
   // request for forever now https://github.com/jaredpalmer/formik/issues/2675
   // so we're just gonna add a partial submit for guest address form to work
   const partialSubmit = useCallback(async () => {
-    console.log({ values });
     const formErrors = await validateForm(values);
 
-    const hasFieldsErrors = !!Object.keys(formErrors).length;
-
-    if (!hasFieldsErrors && dirty) {
+    if (!hasErrors(formErrors) && dirty) {
+      setCheckoutUpdateState("loading");
       void debouncedSubmit(
         { ...initialValues, countryCode: values.countryCode, ...values },
         formHelpers
       );
     }
-  }, [values, dirty, validateForm, debouncedSubmit, initialValues, formHelpers]);
+  }, [
+    validateForm,
+    values,
+    dirty,
+    setCheckoutUpdateState,
+    debouncedSubmit,
+    initialValues,
+    formHelpers,
+  ]);
 
   const onChange: ChangeHandler = (event) => {
     handleChange(event);

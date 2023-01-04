@@ -43,13 +43,14 @@ export const useGuestBillingAddressForm = () => {
     onSubmit,
     initialValues: getAddressFormDataFromAddress(billingAddress),
     validationSchema,
+    scope: "checkoutBillingUpdate",
   });
 
   useAddressFormUrlChange(form);
 
   useCheckoutFormValidationTrigger({
     form,
-    scope: "shippingAddress",
+    scope: "billingAddress",
   });
 
   return form;

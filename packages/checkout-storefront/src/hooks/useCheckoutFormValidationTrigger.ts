@@ -1,14 +1,15 @@
-import { FormDataBase, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
+import { FormDataBase, hasErrors, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import {
   CheckoutFormScope,
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
+import { map } from "lodash-es";
 import { useCallback, useEffect } from "react";
 
 interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
   scope: CheckoutFormScope;
-  form: Pick<UseFormReturn<TData>, "validateForm" | "values">;
+  form: UseFormReturn<TData>;
 }
 
 // tells forms to validate once the pay button is clicked
@@ -19,19 +20,26 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
 
-  const { values, validateForm } = form;
+  const { values, validateForm, setTouched } = form;
 
   const handleGlobalValidationTrigger = useCallback(async () => {
     if (validating) {
-      const formValid = await validateForm(values);
-      if (formValid) {
+      const formErrors = await validateForm(values);
+      if (!hasErrors(formErrors)) {
         setValidationState(scope, "valid");
         return;
       }
 
+      const touched = Object.keys(formErrors).reduce(
+        (result, key) => ({ ...result, [key]: true }),
+        {}
+      );
+
+      console.log({ touched });
+      void setTouched(touched, true);
       setValidationState(scope, "invalid");
     }
-  }, [scope, setValidationState, validateForm, validating, values]);
+  }, [scope, setTouched, setValidationState, validateForm, validating, values]);
 
   useEffect(() => {
     void handleGlobalValidationTrigger();

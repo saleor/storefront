@@ -9,7 +9,7 @@ import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/us
 import { useAuthState } from "@saleor/sdk";
 import { useEffect, useState } from "react";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
 import { object, string } from "yup";
@@ -33,6 +33,7 @@ export const useGuestUserForm = () => {
   const { setCheckoutUpdateState: setRegisterState } = useCheckoutUpdateStateChange("userRegister");
   const [, userRegister] = useUserRegisterMutation();
   const [userRegisterDisabled, setUserRegistrationDisabled] = useState(false);
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutEmailUpdate");
 
   const validationSchema = object({
     email: string().email(errorMessages.invalid).required(errorMessages.required),
@@ -85,6 +86,8 @@ export const useGuestUserForm = () => {
   const {
     values: { email, createAccount },
     handleSubmit,
+    handleChange,
+    validateField,
   } = form;
 
   useCheckoutFormValidationTrigger({
@@ -106,5 +109,17 @@ export const useGuestUserForm = () => {
 
   useCheckoutEmailUpdate({ email });
 
-  return form;
+  // since we use debounced submit, set update
+  // state as "loading" right away
+  const onChange: ChangeHandler = async (event) => {
+    handleChange(event);
+
+    const error = await validateField("email");
+
+    if (!error) {
+      setCheckoutUpdateState("loading");
+    }
+  };
+
+  return { ...form, handleChange: onChange };
 };

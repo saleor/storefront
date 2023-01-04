@@ -28,6 +28,7 @@ export const useCheckoutEmailUpdate = ({ email }: CheckoutEmailUpdateFormData) =
         onSubmit: updateEmail,
         shouldAbort: async ({ formData: { email } }) => {
           const isValid = await isValidEmail(email);
+          console.log("VALID?", isValid);
 
           return !isValid;
         },
