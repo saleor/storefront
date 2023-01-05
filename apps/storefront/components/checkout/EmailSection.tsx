@@ -59,7 +59,7 @@ export function EmailSection({ checkout }: EmailSectionProps) {
           </Button>
         </div>
       ) : (
-        <form onSubmit={onEmailFormSubmit}>
+        <form method="post" onSubmit={onEmailFormSubmit}>
           <div className="grid grid-cols-12 gap-4 w-full">
             <div className="col-span-full">
               <input

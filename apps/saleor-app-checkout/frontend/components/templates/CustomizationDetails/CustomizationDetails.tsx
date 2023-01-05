@@ -92,7 +92,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
   };
 
   return (
-    <form>
+    <form method="post">
       <AppNavigation />
       <div className={classes.root}>
         <OffsettedList gridTemplate={["1fr"]} className={classes.optionList}>

@@ -3,7 +3,7 @@
  */
 module.exports = {
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "formatjs"],
+  plugins: ["@typescript-eslint", "formatjs", "require-form-method"],
   extends: [
     "next",
     "next/core-web-vitals",
@@ -22,7 +22,7 @@ module.exports = {
       version: "detect",
     },
   },
-  ignorePatterns: ["build/", ".turbo/", "dist/", "node_modules/", "*.js", "*.jsx"],
+  ignorePatterns: ["build/", ".turbo/", "dist/", "node_modules/", "*.js", "*.jsx", "*.d.ts"],
   rules: {
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",
@@ -42,6 +42,9 @@ module.exports = {
         },
       },
     ],
+
+    "require-form-method/require-form-method": "error",
+    "react/button-has-type": ["error", { button: true, submit: true, reset: false }],
 
     // we allow empty interfaces
     "no-empty-pattern": "off",

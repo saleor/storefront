@@ -41,3 +41,4 @@ export const Checkbox = forwardRef(
     );
   }
 );
+Checkbox.displayName = "Checkbox";

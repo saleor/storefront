@@ -12,6 +12,7 @@
     "eslint-config-next": "13.0.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-formatjs": "4.3.4",
-    "eslint-plugin-import": "2.26.0"
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-require-form-method": "1.0.2"
   }
 }

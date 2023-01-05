@@ -104,7 +104,7 @@ export function DummyCreditCardSection({ checkout }: DummyCreditCardSectionInter
 
   return (
     <div className="py-8">
-      <form onSubmit={handleSubmit}>
+      <form method="post" onSubmit={handleSubmit}>
         <div className="py-8">
           <div className="mt-4 grid grid-cols-12 gap-x-2 gap-y-4">
             <div className="col-span-6">

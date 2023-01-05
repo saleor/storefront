@@ -7,5 +7,5 @@ import {
 export type IconButtonProps = AriaLabel & UiKitIconButtonProps;
 
 export const IconButton: React.FC<IconButtonProps> = ({ ariaLabel, ...rest }) => (
-  <UiKitIconButton aria-label={ariaLabel} {...rest} />
+  <UiKitIconButton type="button" aria-label={ariaLabel} {...rest} />
 );

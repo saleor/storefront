@@ -67,7 +67,7 @@ function LoginPage() {
       <div className="flex justify-end">
         <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
           <div>
-            <form onSubmit={handleLogin}>
+            <form method="post" onSubmit={handleLogin}>
               <div>
                 <span className="text-sm text-gray-900">
                   {t.formatMessage(messages.loginWelcomeMessage)}

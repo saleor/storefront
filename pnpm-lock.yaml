@@ -550,6 +550,7 @@ importers:
       eslint-config-prettier: 8.5.0
       eslint-plugin-formatjs: 4.3.4
       eslint-plugin-import: 2.26.0
+      eslint-plugin-require-form-method: 1.0.2
     dependencies:
       eslint: registry.npmjs.org/eslint/8.26.0
     devDependencies:
@@ -559,6 +560,7 @@ importers:
       eslint-config-prettier: registry.npmjs.org/eslint-config-prettier/8.5.0_eslint@8.26.0
       eslint-plugin-formatjs: registry.npmjs.org/eslint-plugin-formatjs/4.3.4_eslint@8.26.0
       eslint-plugin-import: registry.npmjs.org/eslint-plugin-import/2.26.0_c2flhriocdzler6lrwbyxxyoca
+      eslint-plugin-require-form-method: registry.npmjs.org/eslint-plugin-require-form-method/1.0.2
 
   packages/tsconfig:
     specifiers: {}
@@ -17699,6 +17701,15 @@ packages:
       string.prototype.matchall: registry.npmjs.org/string.prototype.matchall/4.0.8
     dev: true
 
+  registry.npmjs.org/eslint-plugin-require-form-method/1.0.2:
+    resolution: {integrity: sha512-cdHE+LTMAMwwHo4Rk8ZP/of7t3bekT65wuBmm37Is+if0PzADDN1x6ctPX7k2Xam2XDQdaWvzv6Dg3oJfMZxnA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-require-form-method/-/eslint-plugin-require-form-method-1.0.2.tgz}
+    name: eslint-plugin-require-form-method
+    version: 1.0.2
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      requireindex: registry.npmjs.org/requireindex/1.1.0
+    dev: true
+
   registry.npmjs.org/eslint-plugin-testing-library/5.9.1_wyqvi574yv7oiwfeinomdzmc3m:
     resolution: {integrity: sha512-6BQp3tmb79jLLasPHJmy8DnxREe+2Pgf7L+7o09TSWPfdqqtQfRZmZNetr5mOs3yqZk/MRNxpN3RUpJe0wB4LQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-testing-library/-/eslint-plugin-testing-library-5.9.1.tgz}
     id: registry.npmjs.org/eslint-plugin-testing-library/5.9.1
@@ -28703,6 +28714,13 @@ packages:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/require-main-filename/-/require-main-filename-2.0.0.tgz}
     name: require-main-filename
     version: 2.0.0
+
+  registry.npmjs.org/requireindex/1.1.0:
+    resolution: {integrity: sha512-LBnkqsDE7BZKvqylbmn7lTIVdpx4K/QCduRATpO5R+wtPmky/a8pN1bO2D6wXppn1497AJF9mNjqAXr6bdl9jg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/requireindex/-/requireindex-1.1.0.tgz}
+    name: requireindex
+    version: 1.1.0
+    engines: {node: '>=0.10.5'}
+    dev: true
 
   registry.npmjs.org/requires-port/1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz}

@@ -63,3 +63,4 @@ export const TextInput = forwardRef(
     </div>
   )
 );
+TextInput.displayName = "TextInput";
