@@ -49,7 +49,7 @@ export function EmailPreferences() {
   return (
     <div className="mt-4 mb-4">
       <h2 className="checkout-section-header-active mb-2">Change email</h2>
-      <form onSubmit={onEmailPreferenceSubmit}>
+      <form method="post" onSubmit={onEmailPreferenceSubmit}>
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
             <label htmlFor="newEmail" className="block pl-1 text-sm font-medium text-gray-700">

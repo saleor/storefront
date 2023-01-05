@@ -117,7 +117,11 @@ export const DummyPayment = () => {
               : {paymentCaptured?.amount} {paymentCaptured?.currency}
             </p>
           </div>
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit(submitHandler)}>
+          <form
+            method="post"
+            className="flex flex-col gap-4"
+            onSubmit={handleSubmit(submitHandler)}
+          >
             <TextInput
               {...getInputProps("amount")}
               name="amount"

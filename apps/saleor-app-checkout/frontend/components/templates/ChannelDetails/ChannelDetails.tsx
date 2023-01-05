@@ -105,7 +105,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({
   };
 
   return (
-    <form>
+    <form method="post">
       <AppLayout
         title={channelPaymentOptions.channel.name}
         onBackClick={onBackClick}

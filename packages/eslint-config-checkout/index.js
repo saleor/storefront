@@ -3,7 +3,7 @@
  */
 module.exports = {
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "formatjs"],
+  plugins: ["@typescript-eslint", "formatjs", "require-form-method"],
   extends: [
     "next",
     "next/core-web-vitals",
@@ -42,6 +42,8 @@ module.exports = {
         },
       },
     ],
+
+    "require-form-method/require-form-method": "error",
 
     // we allow empty interfaces
     "no-empty-pattern": "off",

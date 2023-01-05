@@ -54,7 +54,7 @@ export function PasswordPreferences() {
       <h2 className="checkout-section-header-active mb-2">
         {t.formatMessage(messages.changePasswordHeader)}
       </h2>
-      <form onSubmit={onPasswordPreferenceSubmit}>
+      <form method="post" onSubmit={onPasswordPreferenceSubmit}>
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-full">
             <label htmlFor="oldPassword" className="block pl-1 text-sm font-medium text-gray-700">

@@ -102,7 +102,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSectionChange, onSignI
       redirectButtonLabel={formatMessage(contactMessages.guestCheckout)}
       onSectionChange={onSectionChange}
     >
-      <form>
+      <form method="post">
         <TextInput label={formatMessage(contactMessages.email)} {...getInputProps("email")} />
         <PasswordInput
           label={formatMessage(contactMessages.password)}
