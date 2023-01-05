@@ -62,7 +62,7 @@ export function AddressForm({
     toggleEdit();
   });
   return (
-    <form onSubmit={onAddressFormSubmit}>
+    <form method="post" onSubmit={onAddressFormSubmit}>
       <div className="grid grid-cols-12 gap-4 w-full">
         <div className="col-span-full">
           <label htmlFor="address" className="block text-sm font-medium text-gray-700">

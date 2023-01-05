@@ -96,7 +96,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
   }, [allowedFields, requiredFields, setValue, trigger, isDirty, formData]);
 
   return (
-    <form>
+    <form method="post">
       <div className="flex flex-row justify-between items-baseline">
         <Title className="flex-1">{title}</Title>
         <Select

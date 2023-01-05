@@ -26,7 +26,10 @@ export const Snackbar: FC<SnackbarProps> = ({ content, variant, className, ...re
   const icon = selectIcon(variant);
 
   return (
-    <div className={clsx(styles.snackbar, styles[`snackbar-${variant}`], className)} {...rest}>
+    <div
+      className={clsx(styles.snackbar, variant && styles[`snackbar-${variant}`], className)}
+      {...rest}
+    >
       {icon}
       <Text className={clsx({ [styles["snackbar-label-margin"]]: !!icon })}>{content}</Text>
     </div>

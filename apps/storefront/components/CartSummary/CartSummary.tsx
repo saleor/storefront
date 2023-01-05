@@ -45,7 +45,7 @@ export function CartSummary({ checkout }: CartSummaryProps) {
     <section>
       <div className="bg-gray-50 rounded p-8 border">
         {(editPromoCode || !discount?.amount) && (
-          <form className="pb-4" onSubmit={onAddPromoCode}>
+          <form method="post" className="pb-4" onSubmit={onAddPromoCode}>
             <label htmlFor="discount-code" className="block text-sm font-medium text-gray-700">
               {t.formatMessage(messages.discountCodeFieldLabel)}
             </label>

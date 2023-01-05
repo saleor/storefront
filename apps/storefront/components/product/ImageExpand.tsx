@@ -16,6 +16,7 @@ export function ImageExpand({ image, onRemoveExpand }: ImageExpandProps) {
   return (
     <div className="min-h-screen absolute overflow-hidden grid grid-cols-1 mx-auto px-8 md:h-full w-full bg-gray-100">
       <button
+        type="button"
         className="absolute grid content-center justify-center right-0 p-8 h-6 w-6 z-40 mt-18"
         aria-label="Close"
         onClick={onRemoveExpand}

@@ -20,7 +20,11 @@ export const Chip: FC<ChipProps> = ({ label, icon, classNames, onClick, ...rest 
       content={label}
       className={clsx({ [styles["chip-label-margin"]]: !!icon }, classNames?.label)}
     />
-    <button className={clsx(styles["chip-button"], classNames?.button)} onClick={onClick}>
+    <button
+      type="button"
+      className={clsx(styles["chip-button"], classNames?.button)}
+      onClick={onClick}
+    >
       <RemoveIcon />
     </button>
   </div>

@@ -23,7 +23,7 @@ export const IconButton: FC<IconButtonProps> = ({
 }) => {
   if (variant === "bare") {
     return (
-      <button className={clsx(styles["bare-icon-button"], className)} {...rest}>
+      <button type="button" className={clsx(styles["bare-icon-button"], className)} {...rest}>
         {icon}
       </button>
     );
