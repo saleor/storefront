@@ -23,7 +23,6 @@ const PasswordInputComponent = <
       <TextInput ref={ref} {...props} type={passwordVisible ? "text" : "password"} />
       <div className="password-input-icon">
         <IconButton
-          type="button"
           variant="bare"
           ariaLabel={formatMessage(labels.passwordVisibility)}
           onClick={() => setPasswordVisible(!passwordVisible)}
