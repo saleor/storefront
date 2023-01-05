@@ -8,7 +8,7 @@ export default {
   component: TextInput,
 } as ComponentMeta<typeof TextInput>;
 
-const Template: ComponentStory<typeof TextInput> = ({ value, ...args }) => {
+const Template: ComponentStory<typeof TextInput> = ({ value: _value, ...args }) => {
   const [inputValue, setInputValue] = useStateWithOnChangeHandler();
 
   return <TextInput {...args} value={inputValue} onChange={setInputValue} />;

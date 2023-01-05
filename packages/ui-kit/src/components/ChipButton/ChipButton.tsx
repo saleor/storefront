@@ -10,6 +10,7 @@ export interface ChipButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 
 export const ChipButton: FC<ChipButtonProps> = ({ label, active, className, ...rest }) => (
   <button
+    type="button"
     className={clsx(
       styles["chip-button"],
       {

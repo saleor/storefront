@@ -25,7 +25,7 @@ export const Button: FC<ButtonProps> = ({
   className,
   variant = "primary",
   disabled = false,
-  children,
+  children: _children,
   type = "button",
   ...rest
 }) => {
@@ -40,7 +40,12 @@ export const Button: FC<ButtonProps> = ({
   );
 
   return (
-    <button disabled={disabled} className={classes} type={type} {...rest}>
+    <button
+      disabled={disabled}
+      className={classes}
+      type={type === "submit" ? "submit" : "button"}
+      {...rest}
+    >
       {typeof label === "string" ? <ButtonLabel content={label} /> : label}
     </button>
   );
