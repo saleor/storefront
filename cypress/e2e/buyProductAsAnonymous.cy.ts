@@ -4,15 +4,19 @@ import { SHARED_ELEMENTS } from "../elements/shared-elements";
 import { productsToSearch } from "../fixtures/search";
 import { addItemToCart, openProductPage } from "../support/pages/product-page";
 import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
-import { payByDummyPayment } from "../support/pages/checkout-page";
+import { payByAdyenPayment } from "../support/pages/checkout-page";
 import { checkIfOrderNumberAndPaymentStatusAreCorrect } from "../support/pages/order-confirmation-page";
 
 describe("Buy product as anonymous user", () => {
   let address;
+  let paymentDetails;
 
   before(() => {
     cy.fixture("addresses").then(({ usAddress }) => {
       address = usAddress;
+    });
+    cy.fixture("payment-details").then(({ adyenCard }) => {
+      paymentDetails = adyenCard;
     });
   });
 
@@ -52,7 +56,7 @@ describe("Buy product as anonymous user", () => {
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 
@@ -76,7 +80,7 @@ describe("Buy product as anonymous user", () => {
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 });
