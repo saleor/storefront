@@ -12,6 +12,15 @@ on:
           - https://staging-demo.saleor.io/
           - https://demo.saleor.io/
           - https://react-storefront-e2e.vercel.app/
+      api:
+        required: true
+        description: "API to run tests against"
+        default: "https://storefront-automation.staging.saleor.cloud/graphql/"
+        type: choice
+        options:
+          - https://staging-demo.saleor.io/graphql/
+          - https://demo.saleor.io/graphql/
+          - https://storefront-automation.staging.saleor.cloud/graphql/
 
   schedule:
     - cron: "00 2 * * 1-5"
@@ -37,17 +46,12 @@ jobs:
         run: |
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
-      - name: Get backend url for demo envs
-        id: get-demo-be
-        if: ${{ steps.get-env-uri.outputs.ENV_URI }} === "https://staging-demo.saleor.io/"  || ${{ steps.get-env-uri.outputs.ENV_URI }} === "https://demo.saleor.io/""
+      - name: Get API
+        id: get-api-url
+        env:
+          DEFAULT_API_URL: "https://storefront-automation.staging.saleor.cloud/graphql/"
         run: |
-          echo "SALEOR_API_URL=${{ ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/ }}" >> $GITHUB_OUTPUT
-
-      - name: Get backend url for test envs
-        id: get-test-be
-        if: ${{ steps.get-env-uri.outputs.ENV_URI }} === "https://react-storefront-e2e.vercel.app/"
-        run: |
-          echo "SALEOR_API_URL=${{ https://storefront-automation.staging.saleor.cloud/graphql/ }}" >> $GITHUB_OUTPUT
+          echo "SALEOR_API_URL=${{ github.event.inputs.api || env.DEFAULT_API_URL }}" >> $GITHUB_OUTPUT
 
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
@@ -57,7 +61,7 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SALEOR_API_URL: ${{ steps.outputs.SALEOR_API_URL }}
+          SALEOR_API_URL: ${{ steps.get-api-url.outputs.SALEOR_API_URL }}
           CYPRESS_USER_EMAIL: "admin@example.com"
           CYPRESS_USER_PASSWORD: "admin"
           CYPRESS_DIGITAL_PRODUCT: "cloud"
