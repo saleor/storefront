@@ -57,7 +57,7 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SALEOR_API_URL: ${{ outputs.SALEOR_API_URL }}
+          SALEOR_API_URL: ${{ steps.get-be-url.outputs.SALEOR_API_URL }}
           CYPRESS_USER_EMAIL: "admin@example.com"
           CYPRESS_USER_PASSWORD: "admin"
           CYPRESS_DIGITAL_PRODUCT: "cloud"
