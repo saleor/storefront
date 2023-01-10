@@ -45,7 +45,7 @@ jobs:
 
       - name: Get backend url for test envs
         id: get-be-url
-        if: ${{ get-env-uri == https://react-storefront-e2e.vercel.app/' }}
+        if: ${{ get-env-uri == 'https://react-storefront-e2e.vercel.app/' }}
         run: |
           echo "SALEOR_API_URL: https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
 
