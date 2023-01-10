@@ -41,6 +41,12 @@ jobs:
         if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
         run: |
           echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_EMAIL= 'admin@example.com'" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_PASSWORD= 'admin'" >> $GITHUB_OUTPUT
+          echo "CYPRESS_DIGITAL_PRODUCT= 'cloud'" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITHOUT_VARIANTS= 'beanie'" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITH_VARIANTS= 'zoom'" >> $GITHUB_OUTPUT
+          echo "CYPRESS_PRODUCT_TO_SEARCH= 'polo'" >> $GITHUB_OUTPUT
 
       - name: Get BE url
         if: ${{ !contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
@@ -56,9 +62,9 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALEOR_API_URL: ${{ steps.outputs.SALEOR_API_URL }}
-          CYPRESS_USER_EMAIL: "admin@example.com"
-          CYPRESS_USER_PASSWORD: "admin"
-          CYPRESS_DIGITAL_PRODUCT: "cloud"
-          CYPRESS_WITHOUT_VARIANTS: "beanie"
-          CYPRESS_WITH_VARIANTS: "zoom"
-          CYPRESS_PRODUCT_TO_SEARCH: "polo"
+          CYPRESS_USER_EMAIL: ${{ steps.outputs.CYPRESS_USER_EMAIL }}
+          CYPRESS_USER_PASSWORD: ${{ steps.outputs.CYPRESS_USER_PASSWORD }}
+          CYPRESS_DIGITAL_PRODUCT: ${{ steps.outputs.CYPRESS_DIGITAL_PRODUCT }}
+          CYPRESS_WITHOUT_VARIANTS: ${{ steps.outputs.CYPRESS_WITHOUT_VARIANTS }}
+          CYPRESS_WITH_VARIANTS: ${{ steps.outputs.CYPRESS_WITH_VARIANTS }}
+          CYPRESS_PRODUCT_TO_SEARCH: ${{ steps.outputs.CYPRESS_WITHOUT_VARIANTS }}
