@@ -12,15 +12,6 @@ on:
           - https://staging-demo.saleor.io/
           - https://demo.saleor.io/
           - https://react-storefront-e2e.vercel.app/
-      api:
-        required: true
-        description: "API to run tests against"
-        default: "https://storefront-automation.staging.saleor.cloud/graphql/"
-        type: choice
-        options:
-          - https://staging-demo.saleor.io/graphql/
-          - https://demo.saleor.io/graphql/
-          - https://storefront-automation.staging.saleor.cloud/graphql/
 
   schedule:
     - cron: "00 2 * * 1-5"
@@ -46,12 +37,11 @@ jobs:
         run: |
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
-      - name: Get API
+      - name: Get BE url
         id: get-api-url
-        env:
-          DEFAULT_API_URL: "https://storefront-automation.staging.saleor.cloud/graphql/"
+        if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, "demo") }}
         run: |
-          echo "SALEOR_API_URL=${{ github.event.inputs.api || env.DEFAULT_API_URL }}" >> $GITHUB_OUTPUT
+          echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/" >> $GITHUB_OUTPUT
 
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
