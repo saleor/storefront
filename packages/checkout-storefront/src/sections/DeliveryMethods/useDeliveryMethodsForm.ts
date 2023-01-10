@@ -5,9 +5,10 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
-import { useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
+import { ChangeHandler, useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { getById } from "@/checkout-storefront/lib/utils/common";
+import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 interface DeliveryMethodsFormData {
@@ -18,6 +19,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
   const { checkout } = useCheckout();
   const { shippingMethods, shippingAddress, deliveryMethod } = checkout;
   const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutDeliveryMethodUpdate");
 
   const previousShippingCountry = useRef<CountryCode | undefined | null>(
     shippingAddress?.country?.code as CountryCode | undefined
@@ -72,6 +74,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
     setValues,
     values: { selectedMethodId },
     handleSubmit,
+    handleChange,
   } = form;
 
   useEffect(() => {
@@ -96,5 +99,10 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
     }
   }, [shippingAddress, shippingMethods, getAutoSetMethod, selectedMethodId, setValues]);
 
-  return form;
+  const onChange: ChangeHandler = (event) => {
+    setCheckoutUpdateState("loading");
+    handleChange(event);
+  };
+
+  return { ...form, handleChange: onChange };
 };

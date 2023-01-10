@@ -102,7 +102,6 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
       setCheckoutUpdateState("error");
       showErrors(errors);
       if (typeof setErrors === "function") {
-        console.log(666, getFormErrorsFromApiErrors(errors));
         setErrors(getFormErrorsFromApiErrors(errors));
       }
 

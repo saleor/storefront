@@ -2,14 +2,15 @@ import {
   getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
   getByMatchingAddress,
+  isMatchingAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import {
   AddressFragment,
   useCheckoutShippingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { getById } from "@/checkout-storefront/lib/utils/common";
 import {
   AddressListFormData,
   useAddressListForm,
@@ -19,6 +20,7 @@ import { useMemo } from "react";
 
 export const useUserShippingAddressForm = () => {
   const { checkout } = useCheckout();
+  const { shippingAddress } = checkout;
   const { user } = useAuthState();
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
@@ -27,6 +29,8 @@ export const useUserShippingAddressForm = () => {
       () => ({
         scope: "checkoutShippingUpdate",
         onSubmit: checkoutShippingAddressUpdate,
+        shouldAbort: ({ formData: { addressList, selectedAddressId } }) =>
+          isMatchingAddress(shippingAddress, addressList.find(getById(selectedAddressId))),
         parse: ({ languageCode, checkoutId, selectedAddressId, addressList }) => ({
           languageCode,
           checkoutId,
@@ -35,18 +39,16 @@ export const useUserShippingAddressForm = () => {
             addressList.find(getByMatchingAddress({ id: selectedAddressId })) as AddressFragment
           ),
         }),
+        onSuccess: ({ formHelpers: { resetForm }, formData }) => resetForm({ values: formData }),
       }),
-      [checkoutShippingAddressUpdate]
+      [checkoutShippingAddressUpdate, shippingAddress]
     )
   );
 
-  const debouncedSubmit = useDebouncedSubmit(onSubmit);
-
   const { form, userAddressActions } = useAddressListForm({
     onSubmit,
-    debouncedSubmit,
     defaultAddress: user?.defaultShippingAddress,
-    checkoutAddress: checkout.shippingAddress,
+    checkoutAddress: shippingAddress,
   });
 
   return { form, userAddressActions };

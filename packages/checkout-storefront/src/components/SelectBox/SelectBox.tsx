@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { Children, Classes } from "@/checkout-storefront/lib/globalTypes";
 import { HTMLAttributes } from "react";
-import { useField, useFormikContext } from "formik";
+import { useFormContext } from "@/checkout-storefront/hooks/useForm";
+import { useField } from "formik";
 
 export interface SelectBoxProps<TFieldName extends string>
   extends Classes,
@@ -15,19 +16,27 @@ export interface SelectBoxProps<TFieldName extends string>
 export const SelectBox = <TFieldName extends string>({
   children,
   className,
-  id,
   disabled = false,
   name,
   value,
+  id,
 }: SelectBoxProps<TFieldName>) => {
-  const { values } = useFormikContext<Record<TFieldName, string>>();
+  const identifier = id || value;
+  const { values, handleChange } = useFormContext<Record<TFieldName, string>>();
   const [field] = useField(name);
   const selected = values[name] === value;
 
   return (
     <div className={clsx("select-box", { selected, disabled }, className)}>
-      <input type="radio" {...field} id={value || id} value={value} checked={selected} />
-      <label className="w-full" htmlFor={value || id}>
+      <input
+        type="radio"
+        {...field}
+        onChange={handleChange}
+        value={value}
+        checked={selected}
+        id={identifier}
+      />
+      <label className="w-full" htmlFor={identifier}>
         {children}
       </label>
     </div>

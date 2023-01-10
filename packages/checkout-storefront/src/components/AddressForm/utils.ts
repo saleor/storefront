@@ -7,11 +7,15 @@ import {
   CountryCode,
   CountryDisplay,
 } from "@/checkout-storefront/graphql";
-import { AddressField, ApiAddressField } from "@/checkout-storefront/lib/globalTypes";
-import { isEqual, omit, reduce, uniq } from "lodash-es";
-import { Address, AddressFormData } from "../../components/AddressForm/types";
+import { isEqual, omit, pick, reduce, uniq } from "lodash-es";
+import {
+  Address,
+  AddressField,
+  AddressFormData,
+  ApiAddressField,
+} from "../../components/AddressForm/types";
 
-export const emptyAddressFormData: AddressFormData = {
+export const getEmptyAddressFormData = (): AddressFormData => ({
   firstName: "",
   lastName: "",
   streetAddress1: "",
@@ -22,8 +26,10 @@ export const emptyAddressFormData: AddressFormData = {
   countryArea: "",
   postalCode: "",
   phone: "",
-  countryCode: "" as CountryCode,
-};
+  countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
+});
+
+const getAllAddressFieldKeys = () => Object.keys(getEmptyAddressFormData());
 
 export const getAddressInputData = ({
   countryCode,
@@ -35,7 +41,7 @@ export const getAddressInputData = ({
     country: CountryDisplay;
   }
 >): AddressInput => ({
-  ...omit(rest, ["id", "__typename"]),
+  ...pick(rest, getAllAddressFieldKeys()),
   country: countryCode || (country?.code as CountryCode),
 });
 
@@ -49,7 +55,7 @@ export const getAddressInputDataFromAddress = (
   const { country, phone, ...rest } = address;
 
   return {
-    ...omit(rest, ["id", "__typename"]),
+    ...pick(rest, getAllAddressFieldKeys()),
     country: country?.code as CountryCode,
     // cause in api phone can be null
     phone: phone || "",
@@ -59,7 +65,7 @@ export const getAddressInputDataFromAddress = (
 export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
   if (!address) {
     return {
-      ...emptyAddressFormData,
+      ...getEmptyAddressFormData(),
       countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
     };
   }
@@ -81,6 +87,7 @@ export const getAddressFormDataFromAddress = (address: Address): AddressFormData
   ) as AddressFormData;
 };
 
+// checks for address related data and id
 export const isMatchingAddress = (
   address?: Partial<AddressFragment> | null,
   addressToMatch?: Partial<AddressFragment> | null
@@ -94,8 +101,15 @@ export const isMatchingAddress = (
     return true;
   }
 
-  return isEqual(omit(address, "id"), omit(addressToMatch, "id"));
+  return isMatchingAddressData(address, addressToMatch);
 };
+
+// checks only for address related data
+export const isMatchingAddressData = (
+  address?: Partial<AddressFragment> | null,
+  addressToMatch?: Partial<AddressFragment> | null
+) =>
+  isEqual(pick(address, getAllAddressFieldKeys()), pick(addressToMatch, getAllAddressFieldKeys()));
 
 export const getByMatchingAddress =
   (addressToMatch: Partial<AddressFragment> | undefined | null) => (address: AddressFragment) =>

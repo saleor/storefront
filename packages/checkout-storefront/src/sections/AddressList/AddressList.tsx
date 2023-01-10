@@ -11,6 +11,7 @@ import { UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { AddressListFormData } from "@/checkout-storefront/sections/AddressList/useAddressListForm";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
+import { camelCase } from "lodash-es";
 
 interface AddressListProps {
   onEditChange: (id: string) => void;
@@ -49,16 +50,21 @@ export const AddressList: React.FC<AddressListProps> = ({
           className="mb-4 w-full"
         />
         <SelectBoxGroup label={formatMessage(userAddressLabels.userAddresses)}>
-          {addressList.map(({ id, ...rest }: AddressFragment) => (
-            <AddressSelectBox
-              name="selectedAddressId"
-              value={id}
-              key={`${checkAddressAvailability ? "shipping" : "billing"}-${id}`}
-              address={{ ...rest }}
-              onEdit={() => onEditChange(id)}
-              unavailable={!isAvailable(rest)}
-            />
-          ))}
+          {addressList.map(({ id, ...rest }: AddressFragment) => {
+            const identifier = `${camelCase(title)}-${id}}`;
+
+            return (
+              <AddressSelectBox
+                name="selectedAddressId"
+                id={identifier}
+                key={identifier}
+                value={id}
+                address={{ ...rest }}
+                onEdit={() => onEditChange(id)}
+                unavailable={!isAvailable(rest)}
+              />
+            );
+          })}
         </SelectBoxGroup>
       </div>
     </FormProvider>

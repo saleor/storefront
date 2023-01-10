@@ -4,8 +4,8 @@ import { AddressSectionSkeleton } from "@/checkout-storefront/components/Address
 import { shippingMessages } from "@/checkout-storefront/sections/UserShippingAddressSection/messages";
 import { UserAddressSection } from "@/checkout-storefront/sections/UserAddressSection";
 import { useUserShippingAddressForm } from "@/checkout-storefront/sections/UserShippingAddressSection/useUserShippingAddressForm";
-import { AddressCreateForm } from "@/checkout-storefront/sections/AddressCreateForm/AddressCreateForm";
-import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm/AddressEditForm";
+import { AddressCreateForm } from "@/checkout-storefront/sections/AddressCreateForm";
+import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm";
 import { AddressList } from "@/checkout-storefront/sections/AddressList/AddressList";
 import React, { Suspense } from "react";
 

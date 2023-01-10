@@ -5,7 +5,7 @@ import { AddressFragment, useUserAddressCreateMutation } from "@/checkout-storef
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
-  emptyAddressFormData,
+  getEmptyAddressFormData,
   getAddressInputData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
@@ -28,12 +28,15 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
     scope: "userAddressCreate",
     onSubmit: userAddressCreate,
     parse: (addressFormData) => ({ address: getAddressInputData(addressFormData) }),
-    onSuccess: ({ result }) => onSuccess(result.data?.accountAddressCreate?.address),
+    onSuccess: ({ result }) => {
+      onSuccess(result.data?.accountAddressCreate?.address);
+      onClose();
+    },
   });
 
   const form = useForm<AddressFormData>({
     validationSchema,
-    initialValues: emptyAddressFormData,
+    initialValues: getEmptyAddressFormData(),
     onSubmit,
   });
 

@@ -31,6 +31,7 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const onSubmit = useFormSubmit<SignInFormData, typeof login>({
     onSubmit: login,
     onSuccess,
+    parse: (formData) => formData,
     onError: ({ errors, formHelpers: { setErrors } }) => {
       //  api will attribute invalid credentials error to
       // email but we'd rather highlight both fields

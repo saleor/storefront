@@ -5,11 +5,12 @@ import {
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
+import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { FormSubmitFn } from "@/checkout-storefront/hooks/useFormSubmit";
 import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils/common";
 import { useAuthState } from "@saleor/sdk";
-import { compact, DebouncedFunc } from "lodash-es";
+import { compact } from "lodash-es";
 import { useCallback, useEffect, useRef } from "react";
 
 export interface AddressListFormData {
@@ -19,7 +20,6 @@ export interface AddressListFormData {
 
 interface UseAddressListProps {
   onSubmit: FormSubmitFn<AddressListFormData>;
-  debouncedSubmit: DebouncedFunc<FormSubmitFn<AddressListFormData>>;
   checkoutAddress: Address;
   defaultAddress: Address;
   checkAddressAvailability?: boolean;
@@ -27,7 +27,6 @@ interface UseAddressListProps {
 
 export const useAddressListForm = ({
   onSubmit,
-  debouncedSubmit,
   checkoutAddress,
   defaultAddress,
   checkAddressAvailability = false,
@@ -39,7 +38,7 @@ export const useAddressListForm = ({
   // sdk has outdated types
   const addresses = (user?.addresses || []) as AddressFragment[];
 
-  const checkoutAddressRef = useRef<Address>(null);
+  const previousCheckoutAddress = useRef<Address>(null);
 
   const form = useForm<AddressListFormData>({
     initialValues: {
@@ -49,18 +48,26 @@ export const useAddressListForm = ({
     onSubmit,
   });
 
-  const { values, setValues, setFieldValue, handleSubmit } = form;
+  const { values, setValues, setFieldValue, handleSubmit, handleChange } = form;
+
+  const debouncedSubmit = useDebouncedSubmit(handleSubmit);
+
   const { addressList, selectedAddressId } = values;
   const selectedAddress = addressList.find(getById(selectedAddressId));
 
-  const addressListUpdate = async (address: Address, addressList: AddressFragment[]) => {
-    if (!address) {
+  const onChange: ChangeHandler = (e) => {
+    handleChange(e);
+    debouncedSubmit();
+  };
+
+  const addressListUpdate = async (selectedAddress: Address, addressList: AddressFragment[]) => {
+    if (!selectedAddress) {
       return;
     }
 
     await setValues({
       addressList,
-      selectedAddressId: address.id,
+      selectedAddressId: selectedAddress.id,
     });
 
     handleSubmit();
@@ -69,13 +76,14 @@ export const useAddressListForm = ({
   const onAddressCreateSuccess = async (address: Address) =>
     addressListUpdate(address, compact([...addressList, address]));
 
-  const onAddressUpdateSuccess = async (address: Address) =>
-    addressListUpdate(
+  const onAddressUpdateSuccess = async (address: Address) => {
+    void addressListUpdate(
       address,
       addressList.map((existingAddress) =>
         existingAddress.id === address?.id ? address : existingAddress
       )
     );
+  };
 
   const onAddressDeleteSuccess = (id: string) =>
     addressListUpdate(addressList[0], addressList.filter(getByUnmatchingId(id)));
@@ -83,9 +91,9 @@ export const useAddressListForm = ({
   const handleAutoAddressSelect = useCallback(
     async (address: AddressFragment) => {
       await setFieldValue("selectedAddressId", address.id);
-      debouncedSubmit(values);
+      debouncedSubmit();
     },
-    [debouncedSubmit, setFieldValue, values]
+    [debouncedSubmit, setFieldValue]
   );
 
   const handleDefaultAddressSet = useCallback(async () => {
@@ -94,7 +102,7 @@ export const useAddressListForm = ({
 
     const hasCheckoutAddressChanged = !isMatchingAddress(
       checkoutAddress,
-      checkoutAddressRef.current
+      previousCheckoutAddress.current
     );
 
     // currently selected address is the same as checkout or
@@ -103,10 +111,26 @@ export const useAddressListForm = ({
       return;
     }
 
-    // in case some address needs to be set prefer to select
-    // user default address
+    // a new address has been added but since it's a user address
+    // its id doesn't match checkout address id
+    if (
+      checkoutAddress &&
+      checkoutAddress.id !== selectedAddressId &&
+      isMatchingAddress(checkoutAddress, selectedAddress)
+    ) {
+      previousCheckoutAddress.current = checkoutAddress;
+      void setValues({
+        addressList: addressList.map((existingAddress) =>
+          existingAddress.id === selectedAddressId ? checkoutAddress : existingAddress
+        ),
+        selectedAddressId: checkoutAddress.id,
+      });
+      return;
+    }
+
+    // if not, prefer user default address
     if (defaultAddress) {
-      checkoutAddressRef.current = defaultAddress;
+      previousCheckoutAddress.current = defaultAddress;
       void handleAutoAddressSelect(defaultAddress);
       return;
     }
@@ -115,7 +139,7 @@ export const useAddressListForm = ({
 
     // otherwise just choose any available
     if (firstAvailableAddress) {
-      checkoutAddressRef.current = firstAvailableAddress;
+      previousCheckoutAddress.current = firstAvailableAddress;
       void handleAutoAddressSelect(firstAvailableAddress);
     }
 
@@ -128,7 +152,7 @@ export const useAddressListForm = ({
   }, [handleDefaultAddressSet]);
 
   return {
-    form,
+    form: { ...form, handleChange: onChange },
     userAddressActions: {
       onAddressCreateSuccess,
       onAddressUpdateSuccess,

@@ -34,7 +34,6 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
         {}
       );
 
-      console.log({ touched });
       void setTouched(touched, true);
       setValidationState(scope, "invalid");
     }

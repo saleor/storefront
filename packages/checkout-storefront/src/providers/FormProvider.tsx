@@ -10,6 +10,6 @@ export const FormProvider = <TData extends FormDataBase>({
   form: UseFormReturn<TData>;
 }>) => (
   <FormikProvider value={form}>
-    <Form>{children}</Form>
+    <Form action="post">{children}</Form>
   </FormikProvider>
 );

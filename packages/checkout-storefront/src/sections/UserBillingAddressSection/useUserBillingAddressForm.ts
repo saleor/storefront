@@ -2,6 +2,7 @@ import {
   getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
   getByMatchingAddress,
+  isMatchingAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import {
   AddressFragment,
@@ -9,6 +10,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { getById } from "@/checkout-storefront/lib/utils/common";
 import {
   AddressListFormData,
   useAddressListForm,
@@ -17,15 +19,15 @@ import { useAuthState } from "@saleor/sdk";
 
 export const useUserBillingAddressForm = () => {
   const { checkout } = useCheckout();
+  const { billingAddress } = checkout;
   const { user } = useAuthState();
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
-  const { onSubmit, debouncedSubmit } = useFormSubmit<
-    AddressListFormData,
-    typeof checkoutBillingAddressUpdate
-  >({
+  const onSubmit = useFormSubmit<AddressListFormData, typeof checkoutBillingAddressUpdate>({
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
+    shouldAbort: ({ formData: { addressList, selectedAddressId } }) =>
+      isMatchingAddress(billingAddress, addressList.find(getById(selectedAddressId))),
     parse: ({ languageCode, checkoutId, selectedAddressId, addressList }) => ({
       languageCode,
       checkoutId,
@@ -38,7 +40,6 @@ export const useUserBillingAddressForm = () => {
 
   const { form, userAddressActions } = useAddressListForm({
     onSubmit,
-    debouncedSubmit,
     defaultAddress: user?.defaultBillingAddress,
     checkoutAddress: checkout.shippingAddress,
   });

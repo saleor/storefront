@@ -17,6 +17,7 @@ import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 
 export interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
   address: AddressFragment;
@@ -40,14 +41,20 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     scope: "userAddressUpdate",
     onSubmit: userAddressUpdate,
     parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),
-    onSuccess: ({ result }) => onUpdate(result.data?.accountAddressEdit?.address),
+    onSuccess: ({ result }) => {
+      onUpdate(result.data?.accountAddressUpdate?.address);
+      onClose();
+    },
   });
 
-  const { onSubmit: onAddressDelete } = useFormSubmit<{ id: string }, typeof userAddressDelete>({
+  const onAddressDelete = useSubmit<{ id: string }, typeof userAddressDelete>({
     scope: "userAddressDelete",
     onSubmit: userAddressDelete,
     parse: ({ id }) => ({ id }),
-    onSuccess: ({ formData: { id } }) => onDelete(id),
+    onSuccess: ({ formData: { id } }) => {
+      onDelete(id);
+      onClose();
+    },
   });
 
   const form = useForm<AddressFormData>({
@@ -65,7 +72,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
           onSubmit={handleSubmit}
           loading={updating || deleting}
           onCancel={onClose}
-          onDelete={onAddressDelete}
+          onDelete={() => onAddressDelete({ id: address.id })}
         />
       </AddressForm>
     </FormProvider>

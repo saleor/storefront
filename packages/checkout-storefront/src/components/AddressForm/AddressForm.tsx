@@ -8,7 +8,7 @@ import { autocompleteTags, typeTags } from "@/checkout-storefront/lib/consts/inp
 import { CountrySelect } from "@/checkout-storefront/components/CountrySelect";
 import { Select } from "@/checkout-storefront/components/Select";
 import {
-  emptyAddressFormData,
+  getEmptyAddressFormData,
   isMatchingAddressFormData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { BlurHandler, ChangeHandler, useFormContext } from "@/checkout-storefront/hooks/useForm";
@@ -63,6 +63,8 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
     const removedFields = difference(allowedFieldsRef.current, allowedFields);
 
     if (removedFields.length && dirty) {
+      const emptyAddressFormData = getEmptyAddressFormData();
+
       void setValues(
         removedFields.reduce(
           (result, field) => ({
