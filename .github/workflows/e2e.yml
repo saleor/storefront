@@ -6,11 +6,12 @@ on:
       environment:
         required: true
         description: "Environment to run tests against"
-        default: "https://staging-demo.saleor.io/"
+        default: "https://react-storefront-e2e.vercel.app/"
         type: choice
         options:
           - https://staging-demo.saleor.io/
           - https://demo.saleor.io/
+          - https://react-storefront-e2e.vercel.app/
 
   schedule:
     - cron: "00 2 * * 1-5"
@@ -32,9 +33,21 @@ jobs:
       - name: Get env
         id: get-env-uri
         env:
-          DEFAULT_ENV_URI: "https://staging-demo.saleor.io/"
+          DEFAULT_ENV_URI: "https://react-storefront-e2e.vercel.app/"
         run: |
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
+
+      - name: Get backend url for demo envs
+        id: get-be-url
+        if: ${{ get-env-uri == 'https://staging-demo.saleor.io/'  || 'https://demo.saleor.io/'}}
+        run: |
+          echo "SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/" >> $GITHUB_OUTPUT
+
+      - name: Get backend url for test envs
+        id: get-be-url
+        if: ${{ get-env-uri == https://react-storefront-e2e.vercel.app/' }}
+        run: |
+          echo "SALEOR_API_URL: https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
 
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
@@ -44,7 +57,7 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
+          SALEOR_API_URL: ${{ outputs.SALEOR_API_URL }}
           CYPRESS_USER_EMAIL: "admin@example.com"
           CYPRESS_USER_PASSWORD: "admin"
           CYPRESS_DIGITAL_PRODUCT: "cloud"
