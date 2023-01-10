@@ -38,11 +38,14 @@ jobs:
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
       - name: Get BE url Demo
-        env:
-          DEFAULT_API_URL: "https://storefront-automation.staging.saleor.cloud/graphql/"
         if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
         run: |
-          echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/ || env.DEFAULT_API_URL" >> $GITHUB_OUTPUT
+          echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/" >> $GITHUB_OUTPUT
+
+      - name: Get BE url
+        if: ${{ !contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
+        run: |
+          echo "SALEOR_API_URL=https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
 
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
@@ -52,7 +55,7 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SALEOR_API_URL: ${{ steps.get-api-url.outputs.SALEOR_API_URL }}
+          SALEOR_API_URL: ${{ steps.outputs.SALEOR_API_URL }}
           CYPRESS_USER_EMAIL: "admin@example.com"
           CYPRESS_USER_PASSWORD: "admin"
           CYPRESS_DIGITAL_PRODUCT: "cloud"
