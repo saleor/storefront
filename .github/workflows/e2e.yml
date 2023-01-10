@@ -39,7 +39,7 @@ jobs:
 
       - name: Get backend url for demo envs
         id: get-demo-be
-        if: get-env-uri == 'https://staging-demo.saleor.io/'  || 'https://demo.saleor.io/'
+        if: get-env-uri == 'https://staging-demo.saleor.io/'  || get-env-uri == 'https://demo.saleor.io/'
         run: |
           echo "SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/" >> $GITHUB_OUTPUT
 
