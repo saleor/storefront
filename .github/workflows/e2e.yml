@@ -39,13 +39,13 @@ jobs:
 
       - name: Get backend url for demo envs
         id: get-demo-be
-        if: get-env-uri == 'https://staging-demo.saleor.io/'  || get-env-uri == 'https://demo.saleor.io/'
+        if: ${{ steps.get-env-uri.outputs.ENV_URI }} == 'https://staging-demo.saleor.io/'  || ${{ steps.get-env-uri.outputs.ENV_URI }} == 'https://demo.saleor.io/'
         run: |
           echo "SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/" >> $GITHUB_OUTPUT
 
       - name: Get backend url for test envs
         id: get-test-be
-        if: get-env-uri == 'https://react-storefront-e2e.vercel.app/'
+        if: ${{ steps.get-env-uri.outputs.ENV_URI }} == 'https://react-storefront-e2e.vercel.app/'
         run: |
           echo "SALEOR_API_URL: https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
 
