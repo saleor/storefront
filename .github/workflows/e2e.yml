@@ -41,13 +41,13 @@ jobs:
         id: get-demo-be
         if: ${{ steps.get-env-uri.outputs.ENV_URI }} === "https://staging-demo.saleor.io/"  || ${{ steps.get-env-uri.outputs.ENV_URI }} === "https://demo.saleor.io/""
         run: |
-          echo "SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/" >> $GITHUB_OUTPUT
+          echo "SALEOR_API_URL=${{ ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/ }}" >> $GITHUB_OUTPUT
 
       - name: Get backend url for test envs
         id: get-test-be
         if: ${{ steps.get-env-uri.outputs.ENV_URI }} === "https://react-storefront-e2e.vercel.app/"
         run: |
-          echo "SALEOR_API_URL: https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
+          echo "SALEOR_API_URL=${{ https://storefront-automation.staging.saleor.cloud/graphql/ }}" >> $GITHUB_OUTPUT
 
       - name: Cypress run on demo
         uses: cypress-io/github-action@v4
