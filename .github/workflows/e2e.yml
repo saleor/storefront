@@ -39,7 +39,7 @@ jobs:
 
       - name: Get BE url
         id: get-api-url
-        if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, "demo") }}
+        if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
         run: |
           echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/" >> $GITHUB_OUTPUT
 
