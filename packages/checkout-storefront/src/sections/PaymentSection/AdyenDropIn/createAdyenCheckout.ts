@@ -60,6 +60,10 @@ export function createAdyenCheckoutInstance(
         holderNameRequired: true,
         billingAddressRequired: false,
       },
+      applepay: {
+        buttonType: "buy",
+        buttonColor: "black",
+      },
     },
     analytics: {
       enabled: false,

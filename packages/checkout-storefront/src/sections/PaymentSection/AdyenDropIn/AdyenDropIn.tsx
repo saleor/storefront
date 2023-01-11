@@ -157,6 +157,7 @@ function useDropinAdyenElement(
 ) {
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
+  const adyenCheckoutInstanceRef = useRef<AdyenCheckoutInstance | null>(null);
   const [adyenCheckoutInstanceCreationStatus, setAdyenCheckoutInstanceCreationStatus] = useState<
     "IDLE" | "IN_PROGRESS" | "DONE" | "ERROR"
   >("IDLE");
@@ -208,6 +209,7 @@ function useDropinAdyenElement(
       locale,
     })
       .then((adyenCheckout) => {
+        adyenCheckoutInstanceRef.current = adyenCheckout;
         dropinComponentRef.current = adyenCheckout
           .create("dropin")
           .mount(dropinContainerElRef?.current as HTMLDivElement);
@@ -229,5 +231,28 @@ function useDropinAdyenElement(
     locale,
   ]);
 
-  return { dropinContainerElRef };
+  useEffect(() => {
+    if (!adyenCheckoutInstanceRef) {
+      return;
+    }
+
+    adyenCheckoutInstanceRef.current
+      ?.update({
+        amount: {
+          value: checkout.totalPrice.gross.amount,
+          currency: checkout.totalPrice.gross.currency,
+        },
+        paymentMethodsConfiguration: {
+          applepay: {
+            amount: {
+              value: checkout.totalPrice.gross.amount,
+              currency: checkout.totalPrice.gross.currency,
+            },
+          },
+        },
+      })
+      .catch(console.error);
+  }, [adyenCheckoutInstanceRef, checkout]);
+
+  return { dropinContainerElRef, adyenCheckoutInstanceRef };
 }
