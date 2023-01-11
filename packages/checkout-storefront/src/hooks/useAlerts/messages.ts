@@ -141,4 +141,9 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/2leXNc",
     description: "checkout shipping update - postal code invalid error",
   },
+  checkoutDeliveryMethodUpdatePromoCodeInvalidError: {
+    defaultMessage: "Please provide a valid discount code.",
+    id: "useAlerts/messages/OUpWUk",
+    description: "please provide a valid discount code",
+  },
 });
