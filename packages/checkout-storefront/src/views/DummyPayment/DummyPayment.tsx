@@ -27,7 +27,7 @@ export const DummyPayment = () => {
     initialValues: { amount: paymentBalance, currency: orderPaymentCurrency },
   });
 
-  const { isSubmitting, handleSubmit } = form;
+  const { isSubmitting } = form;
 
   React.useEffect(() => {
     if (orderResult.data?.order?.isPaid) {

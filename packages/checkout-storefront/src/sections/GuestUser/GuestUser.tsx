@@ -4,7 +4,7 @@ import { SignInFormContainer, SignInFormContainerProps } from "../Contact/SignIn
 import { Checkbox } from "@/checkout-storefront/components/Checkbox";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { contactMessages } from "../Contact/messages";
-import { useGuestUserForm } from "@/checkout-storefront/sections/Contact/useGuestUserForm";
+import { useGuestUserForm } from "@/checkout-storefront/sections/GuestUser/useGuestUserForm";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 
 type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange">;

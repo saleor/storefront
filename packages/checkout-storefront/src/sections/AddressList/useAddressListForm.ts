@@ -6,7 +6,7 @@ import {
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAvailability";
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
-import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
+import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { FormSubmitFn } from "@/checkout-storefront/hooks/useFormSubmit";
 import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils/common";
 import { useAuthState } from "@saleor/sdk";

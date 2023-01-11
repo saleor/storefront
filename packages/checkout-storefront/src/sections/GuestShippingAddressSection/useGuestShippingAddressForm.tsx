@@ -34,9 +34,6 @@ export const useGuestShippingAddressForm = () => {
           shippingAddress: getAddressInputData(omit(rest, "channel")),
           validationRules: getAddressValidationRulesVariables({ autoSave: true }),
         }),
-        onSuccess: ({ formData, formHelpers: { resetForm } }) => {
-          // resetForm({ values: formData });
-        },
       }),
       [checkoutShippingAddressUpdate]
     )
