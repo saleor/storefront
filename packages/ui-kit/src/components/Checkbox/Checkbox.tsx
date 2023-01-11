@@ -1,4 +1,4 @@
-import { Ref, ReactNode, InputHTMLAttributes, useId } from "react";
+import { ReactNode, InputHTMLAttributes, useId } from "react";
 import clsx from "clsx";
 
 import styles from "./Checkbox.module.css";

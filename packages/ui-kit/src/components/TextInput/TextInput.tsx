@@ -1,6 +1,6 @@
 import { ClassNames } from "@lib/globalTypes";
 import clsx from "clsx";
-import { Children, InputHTMLAttributes, PropsWithChildren } from "react";
+import { InputHTMLAttributes } from "react";
 
 import { Label } from "../Label";
 import { Text } from "../Text";
