@@ -8,6 +8,7 @@ import { AddressCreateForm } from "@/checkout-storefront/sections/AddressCreateF
 import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm";
 import { AddressList } from "@/checkout-storefront/sections/AddressList/AddressList";
 import React, { Suspense } from "react";
+import { AddressFragment } from "@/checkout-storefront/graphql";
 
 interface UserShippingAddressSectionProps {}
 
@@ -39,8 +40,9 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
 
             {displayAddressEdit && (
               <AddressEditForm
+                title={formatMessage(shippingMessages.shippingAddress)}
                 onClose={() => setDisplayAddressEdit()}
-                address={form.values.addressList.find(getById(editedAddressId))}
+                address={form.values.addressList.find(getById(editedAddressId)) as AddressFragment}
                 onUpdate={onAddressUpdateSuccess}
                 onDelete={onAddressDeleteSuccess}
               />

@@ -1,4 +1,4 @@
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
+import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import { defineMessages } from "react-intl";
 
 export type LocalizedAddressFieldLabel =

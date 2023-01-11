@@ -22,9 +22,15 @@ interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> 
 export const SignIn: React.FC<SignInProps> = ({ onSectionChange, onSignInSuccess }) => {
   const formatMessage = useFormattedMessages();
   const { authenticating } = useAuthState();
+
   const form = useSignInForm({ onSuccess: onSignInSuccess });
+
+  const {
+    values: { email },
+  } = form;
+
   const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
-    email: form.values.email,
+    email,
     onRequest: () => form.setFieldError("password", undefined),
   });
 

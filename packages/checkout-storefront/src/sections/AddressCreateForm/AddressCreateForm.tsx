@@ -29,7 +29,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
     onSubmit: userAddressCreate,
     parse: (addressFormData) => ({ address: getAddressInputData(addressFormData) }),
     onSuccess: ({ result }) => {
-      onSuccess(result.data?.accountAddressCreate?.address);
+      onSuccess(result.data?.accountAddressCreate?.address as AddressFragment);
       onClose();
     },
   });

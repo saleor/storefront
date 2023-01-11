@@ -20,7 +20,7 @@ const getPhoneNumberInstance = (
   }
 };
 
-const isValidPhoneNumber = (phone: string, countryCode: CountryCode | undefined) =>
+export const isValidPhoneNumber = (phone: string, countryCode: CountryCode | undefined) =>
   !!getPhoneNumberInstance(phone, countryCode)?.isValid();
 
 export const usePhoneNumberValidator = (countryCode: CountryCode) => {

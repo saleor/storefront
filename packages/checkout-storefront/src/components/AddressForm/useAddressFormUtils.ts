@@ -4,9 +4,8 @@ import {
   ValidationRulesFragment,
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
-import { Address } from "@/checkout-storefront/components/AddressForm/types";
+import { Address, AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import { defaultCountry } from "@/checkout-storefront/lib/consts/countries";
 import {
   AddressFieldLabel,

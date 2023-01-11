@@ -42,7 +42,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     onSubmit: userAddressUpdate,
     parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),
     onSuccess: ({ result }) => {
-      onUpdate(result.data?.accountAddressUpdate?.address);
+      onUpdate(result.data?.accountAddressUpdate?.address as AddressFragment);
       onClose();
     },
   });

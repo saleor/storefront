@@ -42,7 +42,7 @@ export const useSummaryItemForm = ({ line }: SummaryItemFormProps) => {
     initialValues: { quantity: line.quantity.toString() },
   });
 
-  const { onSubmit: onLineDelete } = useSubmit<{}, typeof deleteLines>({
+  const onLineDelete = useSubmit<{}, typeof deleteLines>({
     scope: "checkoutLinesDelete",
     onSubmit: deleteLines,
     parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId, lineId: line.id }),

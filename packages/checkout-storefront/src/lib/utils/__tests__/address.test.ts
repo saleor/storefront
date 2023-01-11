@@ -1,19 +1,19 @@
+import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import {
-  emptyAddressFormData,
   getAddressFormDataFromAddress,
+  getEmptyAddressFormData,
   getOrderedAddressFields,
   isMatchingAddress,
   isMatchingAddressFormData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { addresses } from "@/checkout-storefront/lib/fixtures/address";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 
 import { omit } from "lodash-es";
 
 describe("getAddressFormDataFromAddress", () => {
   it("should return empty form data for non-existing address", () => {
-    expect(getAddressFormDataFromAddress(null)).toEqual(emptyAddressFormData);
+    expect(getAddressFormDataFromAddress(null)).toEqual(getEmptyAddressFormData());
   });
 
   it("should return properly formatted form data from adress", () => {

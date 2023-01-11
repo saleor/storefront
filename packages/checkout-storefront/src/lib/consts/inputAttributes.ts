@@ -1,4 +1,4 @@
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
+import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 
 export const autocompleteTags: Record<AddressField, string> = {
   firstName: "given-name",

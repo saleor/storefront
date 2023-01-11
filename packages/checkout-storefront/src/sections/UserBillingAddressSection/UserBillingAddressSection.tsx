@@ -14,6 +14,7 @@ import { useBillingSameAsShippingForm } from "@/checkout-storefront/sections/Gue
 import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";
 import { Address } from "@/checkout-storefront/components/AddressForm/types";
 import { getByMatchingAddress } from "@/checkout-storefront/components/AddressForm/utils";
+import { AddressFragment } from "@/checkout-storefront/graphql";
 
 interface UserBillingAddressSectionProps {}
 
@@ -84,8 +85,11 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
 
               {displayAddressEdit && (
                 <AddressEditForm
+                  title={formatMessage(billingMessages.billingAddress)}
                   onClose={() => setDisplayAddressEdit()}
-                  address={form.values.addressList.find(getById(editedAddressId))}
+                  address={
+                    form.values.addressList.find(getById(editedAddressId)) as AddressFragment
+                  }
                   onUpdate={onAddressUpdateSuccess}
                   onDelete={onAddressDeleteSuccess}
                 />
