@@ -87,13 +87,13 @@
     "developer_comment": "add address",
     "string": "Add address"
   },
-  "AddressSelectBox/messages//II2Kl": {
-    "developer_comment": "edit address accessibility label",
-    "string": "edit address"
-  },
   "AddressSelectBox/messages/X3KwgL": {
     "developer_comment": "can't ship to address",
     "string": "Can't ship to this address"
+  },
+  "AddressSelectBox/messages/ZWx1tB": {
+    "developer_comment": "edit address accessibility label",
+    "string": "edit"
   },
   "AddressSelectBox/messages/rHpDYH": {
     "developer_comment": "edit address",
@@ -514,6 +514,10 @@
   "useAlerts/messages/LrYpGU": {
     "developer_comment": "login - email not found error",
     "string": "Account with provided email was not found"
+  },
+  "useAlerts/messages/OUpWUk": {
+    "developer_comment": "please provide a valid discount code",
+    "string": "Please provide a valid discount code."
   },
   "useAlerts/messages/Vx4W5S": {
     "developer_comment": "user register - email unique error",
