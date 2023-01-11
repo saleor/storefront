@@ -6,3 +6,4 @@ pnpm-lock.yaml
 **/.next
 **/_next
 **/.turbo
+saleor-app-checkout/content/compiled-locales/*
