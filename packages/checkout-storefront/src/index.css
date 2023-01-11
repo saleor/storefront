@@ -11,26 +11,18 @@
 @import "./sections/Summary/SummaryStyles.css";
 @import "./sections/PageHeader/PageHeaderStyles.css";
 @import "@adyen/adyen-web/dist/adyen.css";
+@import "./sections/PaymentSection/AdyenDropIn/adyenDropin.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Font size set for rem */
-
 html {
+  /* Font size set for rem */
   font-size: 62.5%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  @apply antialiased;
 }
 
 body {
   @apply overscroll-none;
-}
-
-.adyen-checkout__button {
-  @apply bg-button-primary hover:bg-button-secondary hover:text-text-secondary hover:border-border-active active:bg-button-tertiary disabled:border-none disabled:bg-button-quaternary;
-}
-.adyen-checkout__button:hover .adyen-checkout__button__icon {
-  filter: brightness(0.25);
 }

@@ -161,7 +161,7 @@ function StripeCardForm({ checkout }: StripeCardFormInterface) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form method="post" onSubmit={handleSubmit}>
       <CardElement />
       <CompleteCheckoutButton
         isProcessing={isPaymentProcessing}

@@ -75,7 +75,7 @@ const theme = {
 };
 
 module.exports = {
-  content: ["./src/**/*.{tsx,ts}"],
+  content: ["./src/**/*.{tsx,ts,css}"],
   mode: "jit",
   theme: theme,
   plugins: [],

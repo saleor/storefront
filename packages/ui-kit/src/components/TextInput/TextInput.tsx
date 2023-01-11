@@ -57,3 +57,4 @@ export const TextInput = ({
     )}
   </div>
 );
+TextInput.displayName = "TextInput";

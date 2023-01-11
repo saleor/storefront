@@ -7,6 +7,7 @@ import { getParsedPaymentMethods } from "@/checkout-storefront/sections/PaymentS
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { PaymentMethodID, PaymentProviderID } from "checkout-common";
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
+import { uniq } from "lodash-es";
 
 interface PaymentProvidersFormData {
   selectedMethodId: PaymentMethodID | undefined;
@@ -78,5 +79,13 @@ export const usePaymentMethodsForm = () => {
     handleSubmit();
   }, [handleSubmit, selectedMethodId]);
 
-  return { form, availablePaymentMethods };
+  const availablePaymentProviders: PaymentProviderID[] = allPaymentOptions
+    ? (uniq(Object.values(allPaymentOptions)) as PaymentProviderID[])
+    : [];
+
+  return {
+    form,
+    availablePaymentMethods,
+    availablePaymentProviders,
+  };
 };

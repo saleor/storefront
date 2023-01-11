@@ -1,5 +1,5 @@
 import { Root } from "@saleor/checkout-storefront";
-import "@saleor/checkout-storefront/dist/esm/index.css";
+import "@saleor/checkout-storefront/dist/index.css";
 import invariant from "ts-invariant";
 
 const checkoutApiUrl =

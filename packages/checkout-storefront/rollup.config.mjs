@@ -56,6 +56,16 @@ export default [
     ]),
   },
   {
+    input: "./src/index.css",
+    output: [{ file: "dist/index.css" }],
+    plugins: [
+      postcss({
+        extract: true,
+        plugins: [tailwindcss(), autoprefixer(), postcssImport()],
+      }),
+    ],
+  },
+  {
     input: "./dist/esm/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "esm" }],
     external: [/\.css$/],

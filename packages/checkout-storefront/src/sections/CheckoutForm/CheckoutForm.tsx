@@ -19,6 +19,7 @@ import { GuestShippingAddressSection } from "@/checkout-storefront/sections/Gues
 import { UserBillingAddressSection } from "@/checkout-storefront/sections/UserBillingAddressSection";
 import { PaymentSection } from "@/checkout-storefront/sections/PaymentSection";
 import { GuestBillingAddressSection } from "@/checkout-storefront/sections/GuestBillingAddressSection";
+import { useFetchPaymentMethods } from "@/checkout-storefront/hooks/useFetchPaymentMethods";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
@@ -29,6 +30,12 @@ export const CheckoutForm = () => {
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
   const { handleSubmit, isProcessing } = useCheckoutSubmit();
+
+  const { availablePaymentProviders } = useFetchPaymentMethods();
+
+  const shouldShowPayButton = availablePaymentProviders.some(
+    (provider) => provider && provider !== "adyen"
+  );
 
   return (
     <div className="checkout-form-container">
@@ -50,9 +57,6 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods collapsed={showOnlyContact} />
           </Suspense>
-          {/* temporarily hide until we figure out how to show this */}
-          {/* along with payment providers section */}
-          {/* <AdyenDropIn /> */}
           <CollapseSection collapse={showOnlyContact}>
             <PaymentSection>
               {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
@@ -60,7 +64,8 @@ export const CheckoutForm = () => {
           </CollapseSection>
         </>
       </div>
-      {!showOnlyContact &&
+      {shouldShowPayButton &&
+        !showOnlyContact &&
         (isProcessing ? (
           <Button
             className="pay-button"

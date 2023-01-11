@@ -56,7 +56,7 @@ function RegisterPage() {
       <div className="flex justify-end">
         <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
           <div>
-            <form onSubmit={handleRegister}>
+            <form method="post" onSubmit={handleRegister}>
               <div>
                 <h1 className="text-2xl font-bold">{t.formatMessage(messages.registerHeader)}</h1>
               </div>

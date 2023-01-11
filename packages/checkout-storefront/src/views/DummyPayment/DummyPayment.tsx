@@ -27,7 +27,7 @@ export const DummyPayment = () => {
     initialValues: { amount: paymentBalance, currency: orderPaymentCurrency },
   });
 
-  const { isSubmitting } = form;
+  const { isSubmitting, handleSubmit } = form;
 
   React.useEffect(() => {
     if (orderResult.data?.order?.isPaid) {
@@ -56,8 +56,8 @@ export const DummyPayment = () => {
               : {paymentCaptured?.amount} {paymentCaptured?.currency}
             </p>
           </div>
-          <FormProvider form={form}>
-            <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
+            <FormProvider form={form}>
               <TextInput
                 name="amount"
                 type="number"
@@ -67,8 +67,8 @@ export const DummyPayment = () => {
                 max={paymentBalance}
               />
               <Button
-                type="submit"
                 disabled={orderResult.fetching}
+                type="submit"
                 ariaLabel={formatMessage(dummyPaymentMessages.dummyPay)}
                 label={
                   isSubmitting
@@ -77,8 +77,8 @@ export const DummyPayment = () => {
                 }
                 data-testid="dummyPay"
               />
-            </div>
-          </FormProvider>
+            </FormProvider>
+          </div>
         </div>
       </div>
     </section>

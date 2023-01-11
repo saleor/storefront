@@ -103,7 +103,7 @@ const PaymentProviderDetails: React.FC<PaymentProviderDetailsProps> = ({
   };
 
   return (
-    <form>
+    <form method="post">
       <FormProvider {...formMethods}>
         <AppLayout
           title={intl.formatMessage(sectionMessages.settings)}

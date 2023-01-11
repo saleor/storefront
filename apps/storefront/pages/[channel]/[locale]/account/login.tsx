@@ -40,7 +40,9 @@ function LoginPage() {
     setError: setErrorForm,
   } = useForm<LoginFormData>({ defaultValues });
 
-  const redirectURL = router.query.next?.toString() || paths.$url();
+  const routerQueryNext = router.query.next?.toString() || "";
+  const isExternalUrl = /^\w+:\/\//.test(routerQueryNext);
+  const redirectURL = !routerQueryNext || isExternalUrl ? paths.$url() : routerQueryNext;
 
   const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
     const { data } = await login({
@@ -65,7 +67,7 @@ function LoginPage() {
       <div className="flex justify-end">
         <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
           <div>
-            <form onSubmit={handleLogin}>
+            <form method="post" onSubmit={handleLogin}>
               <div>
                 <span className="text-sm text-gray-900">
                   {t.formatMessage(messages.loginWelcomeMessage)}

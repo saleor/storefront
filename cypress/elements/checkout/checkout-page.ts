@@ -10,6 +10,7 @@ export const CHECKOUT_ELEMENTS = {
   cityInput: "input[name='city']",
   postalCodeInput: "input[name='postalCode']",
   areaSelect: "select[name='countryArea']",
+  phoneInput: "input[name='phone']",
   deliveryMethods: "[data-testid='deliveryMethods']",
   paymentMethods: "[data-testid='paymentMethods']",
   addressSkeleton: "[data-testid='addressSkeleton']",

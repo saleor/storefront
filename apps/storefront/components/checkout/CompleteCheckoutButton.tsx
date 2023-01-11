@@ -16,6 +16,7 @@ export function CompleteCheckoutButton({
     <>
       {isProcessing ? (
         <button
+          type="button"
           disabled
           className="w-full mt-6 bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white flex items-center justify-center"
         >

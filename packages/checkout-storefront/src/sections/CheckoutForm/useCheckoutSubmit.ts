@@ -57,5 +57,8 @@ export const useCheckoutSubmit = () => {
   return {
     handleSubmit: submitInitialize,
     isProcessing: (submitInProgress && anyRequestsInProgress) || finalizing,
+
+    validateAllForms,
+    allFormsValid,
   };
 };

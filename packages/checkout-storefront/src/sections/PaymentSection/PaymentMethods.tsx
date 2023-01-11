@@ -5,12 +5,17 @@ import { Text } from "@saleor/ui-kit";
 import { paymentSectionLabels, paymentMethodsMessages } from "./messages";
 import { usePaymentMethodsForm } from "@/checkout-storefront/sections/PaymentSection/usePaymentMethodsForm";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { AdyenDropIn } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/AdyenDropIn";
 
 export const PaymentMethods = () => {
   const formatMessage = useFormattedMessages();
-  const { form, availablePaymentMethods } = usePaymentMethodsForm();
+  const { form, availablePaymentMethods, availablePaymentProviders } = usePaymentMethodsForm();
 
-  return (
+  const showAdyenDropin = availablePaymentProviders.includes("adyen");
+
+  return showAdyenDropin ? (
+    <AdyenDropIn />
+  ) : (
     <FormProvider form={form}>
       <SelectBoxGroup
         label={formatMessage(paymentSectionLabels.paymentProviders)}
