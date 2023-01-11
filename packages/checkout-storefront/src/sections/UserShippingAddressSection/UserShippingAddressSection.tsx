@@ -2,7 +2,7 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { getById } from "@/checkout-storefront/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
 import { shippingMessages } from "@/checkout-storefront/sections/UserShippingAddressSection/messages";
-import { UserAddressSection } from "@/checkout-storefront/sections/UserAddressSection";
+import { UserAddressSectionContainer } from "@/checkout-storefront/sections/UserAddressSectionContainer";
 import { useUserShippingAddressForm } from "@/checkout-storefront/sections/UserShippingAddressSection/useUserShippingAddressForm";
 import { AddressCreateForm } from "@/checkout-storefront/sections/AddressCreateForm";
 import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm";
@@ -20,7 +20,7 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
 
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
-      <UserAddressSection>
+      <UserAddressSectionContainer>
         {({
           displayAddressCreate,
           displayAddressEdit,
@@ -57,7 +57,7 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
             )}
           </>
         )}
-      </UserAddressSection>
+      </UserAddressSectionContainer>
     </Suspense>
   );
 };

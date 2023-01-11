@@ -1,7 +1,7 @@
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getById } from "@/checkout-storefront/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
-import { UserAddressSection } from "@/checkout-storefront/sections/UserAddressSection";
+import { UserAddressSectionContainer } from "@/checkout-storefront/sections/UserAddressSectionContainer";
 import { useUserBillingAddressForm } from "@/checkout-storefront/sections/UserBillingAddressSection/useUserBillingAddressForm";
 import { AddressCreateForm } from "@/checkout-storefront/sections/AddressCreateForm/AddressCreateForm";
 import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm/AddressEditForm";
@@ -12,6 +12,8 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { useBillingSameAsShippingForm } from "@/checkout-storefront/sections/GuestBillingAddressSection/useBillingSameAsShippingForm";
 import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";
+import { Address } from "@/checkout-storefront/components/AddressForm/types";
+import { getByMatchingAddress } from "@/checkout-storefront/components/AddressForm/utils";
 
 interface UserBillingAddressSectionProps {}
 
@@ -26,7 +28,25 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
     userAddressActions: { onAddressCreateSuccess, onAddressDeleteSuccess, onAddressUpdateSuccess },
   } = useUserBillingAddressForm();
 
-  const billingSameAsShippingForm = useBillingSameAsShippingForm();
+  const {
+    resetForm,
+    values: { addressList },
+  } = form;
+
+  const handleSetBillingSameAsShipping = (address: Address) => {
+    const matchingAddress = addressList.find(getByMatchingAddress(address));
+
+    if (!address || !matchingAddress) {
+      return;
+    }
+
+    resetForm({ values: { selectedAddressId: matchingAddress.id, addressList } });
+  };
+
+  const billingSameAsShippingForm = useBillingSameAsShippingForm({
+    autoSave: false,
+    onSetBillingSameAsShipping: handleSetBillingSameAsShipping,
+  });
 
   const {
     values: { billingSameAsShipping },
@@ -45,7 +65,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
         </FormProvider>
       )}
       {!billingSameAsShipping && (
-        <UserAddressSection>
+        <UserAddressSectionContainer>
           {({
             displayAddressCreate,
             displayAddressEdit,
@@ -81,7 +101,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
               )}
             </>
           )}
-        </UserAddressSection>
+        </UserAddressSectionContainer>
       )}
     </Suspense>
   );

@@ -3,6 +3,7 @@ import {
   getAddressValidationRulesVariables,
   getByMatchingAddress,
   isMatchingAddress,
+  isMatchingAddressData,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import {
   AddressFragment,
@@ -41,7 +42,7 @@ export const useUserBillingAddressForm = () => {
   const { form, userAddressActions } = useAddressListForm({
     onSubmit,
     defaultAddress: user?.defaultBillingAddress,
-    checkoutAddress: checkout.shippingAddress,
+    checkoutAddress: checkout.billingAddress,
   });
 
   return { form, userAddressActions };

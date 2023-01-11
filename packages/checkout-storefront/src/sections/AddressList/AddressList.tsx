@@ -13,7 +13,7 @@ import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { camelCase } from "lodash-es";
 
-interface AddressListProps {
+export interface AddressListProps {
   onEditChange: (id: string) => void;
   onAddAddressClick: () => void;
   checkAddressAvailability?: boolean;

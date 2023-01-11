@@ -48,17 +48,16 @@ export const useAddressListForm = ({
     onSubmit,
   });
 
-  const { values, setValues, setFieldValue, handleSubmit, handleChange } = form;
+  const { values, setValues, setFieldValue, handleSubmit } = form;
 
   const debouncedSubmit = useDebouncedSubmit(handleSubmit);
 
   const { addressList, selectedAddressId } = values;
   const selectedAddress = addressList.find(getById(selectedAddressId));
 
-  const onChange: ChangeHandler = (e) => {
-    handleChange(e);
+  useEffect(() => {
     debouncedSubmit();
-  };
+  }, [debouncedSubmit, selectedAddressId]);
 
   const addressListUpdate = async (selectedAddress: Address, addressList: AddressFragment[]) => {
     if (!selectedAddress) {
@@ -76,25 +75,16 @@ export const useAddressListForm = ({
   const onAddressCreateSuccess = async (address: Address) =>
     addressListUpdate(address, compact([...addressList, address]));
 
-  const onAddressUpdateSuccess = async (address: Address) => {
-    void addressListUpdate(
+  const onAddressUpdateSuccess = async (address: Address) =>
+    addressListUpdate(
       address,
       addressList.map((existingAddress) =>
         existingAddress.id === address?.id ? address : existingAddress
       )
     );
-  };
 
   const onAddressDeleteSuccess = (id: string) =>
     addressListUpdate(addressList[0], addressList.filter(getByUnmatchingId(id)));
-
-  const handleAutoAddressSelect = useCallback(
-    async (address: AddressFragment) => {
-      await setFieldValue("selectedAddressId", address.id);
-      debouncedSubmit();
-    },
-    [debouncedSubmit, setFieldValue]
-  );
 
   const handleDefaultAddressSet = useCallback(async () => {
     const isSelectedAddressSameAsCheckout =
@@ -111,27 +101,11 @@ export const useAddressListForm = ({
       return;
     }
 
-    // a new address has been added but since it's a user address
-    // its id doesn't match checkout address id
-    if (
-      checkoutAddress &&
-      checkoutAddress.id !== selectedAddressId &&
-      isMatchingAddress(checkoutAddress, selectedAddress)
-    ) {
-      previousCheckoutAddress.current = checkoutAddress;
-      void setValues({
-        addressList: addressList.map((existingAddress) =>
-          existingAddress.id === selectedAddressId ? checkoutAddress : existingAddress
-        ),
-        selectedAddressId: checkoutAddress.id,
-      });
-      return;
-    }
-
     // if not, prefer user default address
     if (defaultAddress) {
       previousCheckoutAddress.current = defaultAddress;
-      void handleAutoAddressSelect(defaultAddress);
+      void setFieldValue("selectedAddressId", defaultAddress.id);
+      // void handleAutoAddressSelect(defaultAddress);
       return;
     }
 
@@ -140,19 +114,19 @@ export const useAddressListForm = ({
     // otherwise just choose any available
     if (firstAvailableAddress) {
       previousCheckoutAddress.current = firstAvailableAddress;
-      void handleAutoAddressSelect(firstAvailableAddress);
+      void setFieldValue("selectedAddressId", firstAvailableAddress.id);
     }
 
     // otherwise it gets way overcomplicated to get this to run only when needed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultAddress?.id, checkoutAddress?.id, addressList.length]);
+  }, [defaultAddress?.id, checkoutAddress?.id]);
 
   useEffect(() => {
     void handleDefaultAddressSet();
   }, [handleDefaultAddressSet]);
 
   return {
-    form: { ...form, handleChange: onChange },
+    form,
     userAddressActions: {
       onAddressCreateSuccess,
       onAddressUpdateSuccess,

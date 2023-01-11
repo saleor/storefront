@@ -13,7 +13,7 @@ interface UserAddressSectionProps {
   children: (props: ChildrenProps) => React.ReactElement;
 }
 
-export const UserAddressSection = ({ children }: UserAddressSectionProps) => {
+export const UserAddressSectionContainer = ({ children }: UserAddressSectionProps) => {
   const [displayAddressCreate, setDisplayAddressCreate] = useState(false);
 
   const [editedAddressId, setDisplayAddressEdit] = useState<string | undefined>();

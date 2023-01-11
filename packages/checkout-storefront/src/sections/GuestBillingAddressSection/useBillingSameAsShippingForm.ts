@@ -7,9 +7,9 @@ import {
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 interface BillingSameAsShippingFormData {
   billingSameAsShipping: boolean;
@@ -18,16 +18,15 @@ interface BillingSameAsShippingFormData {
 
 interface BillingSameAsShippingFormProps {
   autoSave: boolean;
+  onSetBillingSameAsShipping?: (address: Address) => void;
 }
 
 export const useBillingSameAsShippingForm = (
-  { autoSave }: BillingSameAsShippingFormProps = { autoSave: false }
+  { autoSave, onSetBillingSameAsShipping }: BillingSameAsShippingFormProps = { autoSave: false }
 ) => {
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress } = checkout;
   const previousShippingAddress = useRef<Address>(shippingAddress);
-
-  const hasBillingSameAsShipping = isMatchingAddress(shippingAddress, billingAddress);
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
@@ -37,16 +36,6 @@ export const useBillingSameAsShippingForm = (
   >({
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
-    shouldAbort: ({ formData }) => {
-      if (isMatchingAddress(shippingAddress, formData.billingAddress)) {
-        console.log("ABORTIEREN");
-        console.log(formData.billingAddress, billingAddress);
-        return true;
-      } else {
-        console.log("PROCEDIEREN");
-        return false;
-      }
-    },
     parse: ({ languageCode, checkoutId, billingAddress }) => ({
       languageCode,
       checkoutId,
@@ -63,10 +52,16 @@ export const useBillingSameAsShippingForm = (
     },
   });
 
+  const getInitialShippingAsBillingValue = useCallback(() => {
+    if (!checkout.isShippingRequired) {
+      return false;
+    }
+
+    return !billingAddress || isMatchingAddress(shippingAddress, billingAddress);
+  }, [shippingAddress, billingAddress, checkout.isShippingRequired]);
+
   const initialValues = {
-    billingSameAsShipping: checkout?.isShippingRequired
-      ? !billingAddress || hasBillingSameAsShipping
-      : false,
+    billingSameAsShipping: getInitialShippingAsBillingValue(),
     billingAddress: billingAddress,
   };
 
@@ -81,26 +76,46 @@ export const useBillingSameAsShippingForm = (
     values: { billingSameAsShipping },
     setFieldValue,
     handleSubmit,
+    handleChange,
   } = form;
+
+  const onChange: ChangeHandler = (event) => {
+    if (event.target.name === "billingSameAsShipping") {
+      previousBillingSameAsShipping.current = billingSameAsShipping;
+    }
+    handleChange(event);
+  };
 
   useEffect(() => {
     const handleBillingSameAsShippingChanged = async () => {
       const hasBillingSameAsShippingChanged =
         billingSameAsShipping && !previousBillingSameAsShipping.current;
 
-      if (hasBillingSameAsShippingChanged) {
-        console.log("SAME SAME");
-        previousBillingSameAsShipping.current = true;
-        await setFieldValue("billingAddress", shippingAddress);
-        handleSubmit();
+      if (!hasBillingSameAsShippingChanged) {
         return;
       }
 
-      previousBillingSameAsShipping.current = false;
+      previousBillingSameAsShipping.current = true;
+      await setFieldValue("billingAddress", shippingAddress);
+      if (typeof onSetBillingSameAsShipping === "function") {
+        onSetBillingSameAsShipping(shippingAddress);
+      }
     };
 
     void handleBillingSameAsShippingChanged();
-  }, [billingSameAsShipping, handleSubmit, setFieldValue, shippingAddress]);
+  }, [
+    billingSameAsShipping,
+    handleSubmit,
+    onSetBillingSameAsShipping,
+    setFieldValue,
+    shippingAddress,
+  ]);
+
+  useEffect(() => {
+    if (!isMatchingAddress(billingAddress, form.values.billingAddress)) {
+      handleSubmit();
+    }
+  }, [billingAddress, form.values.billingAddress, handleSubmit]);
 
   useEffect(() => {
     const handleShippingAddressChanged = async () => {
@@ -109,12 +124,6 @@ export const useBillingSameAsShippingForm = (
         previousShippingAddress.current
       );
 
-      console.log({
-        hasShippingAddressChanged,
-        shippingAddress,
-        prev: previousShippingAddress.current,
-      });
-
       if (!hasShippingAddressChanged) {
         return;
       }
@@ -122,7 +131,6 @@ export const useBillingSameAsShippingForm = (
       previousShippingAddress.current = shippingAddress;
 
       if (billingSameAsShipping) {
-        console.log("SUBMITEN");
         await setFieldValue("billingAddress", shippingAddress);
         handleSubmit();
       }
@@ -131,5 +139,8 @@ export const useBillingSameAsShippingForm = (
     void handleShippingAddressChanged();
   }, [billingSameAsShipping, handleSubmit, setFieldValue, shippingAddress]);
 
-  return form;
+  return {
+    ...form,
+    handleChange: onChange,
+  };
 };

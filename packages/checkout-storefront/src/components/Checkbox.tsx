@@ -1,6 +1,7 @@
 import React from "react";
 import { Checkbox as UiKitCheckbox, ClassNames } from "@saleor/ui-kit";
 import { useField } from "formik";
+import { useFormContext } from "@/checkout-storefront/hooks/useForm";
 
 interface CheckboxProps<TName extends string> {
   name: TName;
@@ -9,17 +10,10 @@ interface CheckboxProps<TName extends string> {
 }
 
 export const Checkbox = <TName extends string>({ name, label }: CheckboxProps<TName>) => {
-  const [field, meta, helpers] = useField(name);
-  const { value } = meta;
-  const { setValue } = helpers;
+  const { handleChange } = useFormContext<Record<TName, string>>();
+  const [field, { value }] = useField(name);
 
   return (
-    <UiKitCheckbox
-      {...field}
-      label={label}
-      name={name}
-      checked={value}
-      onChange={() => setValue(!value)}
-    />
+    <UiKitCheckbox {...field} label={label} name={name} checked={value} onChange={handleChange} />
   );
 };
