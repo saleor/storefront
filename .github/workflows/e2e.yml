@@ -41,12 +41,12 @@ jobs:
         if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
         run: |
           echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/" >> $GITHUB_OUTPUT
-          echo "CYPRESS_USER_EMAIL= 'admin@example.com'" >> $GITHUB_OUTPUT
-          echo "CYPRESS_USER_PASSWORD= 'admin'" >> $GITHUB_OUTPUT
-          echo "CYPRESS_DIGITAL_PRODUCT= 'cloud'" >> $GITHUB_OUTPUT
-          echo "CYPRESS_WITHOUT_VARIANTS= 'beanie'" >> $GITHUB_OUTPUT
-          echo "CYPRESS_WITH_VARIANTS= 'zoom'" >> $GITHUB_OUTPUT
-          echo "CYPRESS_PRODUCT_TO_SEARCH= 'polo'" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_EMAIL=admin@example.com" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_PASSWORD=admin" >> $GITHUB_OUTPUT
+          echo "CYPRESS_DIGITAL_PRODUCT=cloud" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITHOUT_VARIANTS=beanie" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITH_VARIANTS=zoom" >> $GITHUB_OUTPUT
+          echo "CYPRESS_PRODUCT_TO_SEARCH=polo" >> $GITHUB_OUTPUT
 
       - name: Get BE url
         if: ${{ !contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
