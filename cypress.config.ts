@@ -12,7 +12,7 @@ export default defineConfig({
   viewportWidth: 1400,
   viewportHeight: 660,
   retries: {
-    runMode: 1,
+    runMode: 0,
     openMode: 0,
   },
   env: {
@@ -25,7 +25,7 @@ export default defineConfig({
     productToSearch: process.env.CYPRESS_PRODUCT_TO_SEARCH,
   },
   e2e: {
-    baseUrl: "http://localhost:3000/",
+    baseUrl: "http://localhost:3000",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
   },
 });
