@@ -189,7 +189,10 @@ function useDropinAdyenElement(
     adyenCheckoutInstanceRef.current
       ?.update({
         amount: {
-          value: checkout.totalPrice.gross.amount,
+          value: getAdyenIntegerAmountFromSaleor(
+            checkout.totalPrice.gross.amount,
+            checkout.totalPrice.gross.currency
+          ),
           currency: checkout.totalPrice.gross.currency,
         },
         paymentMethodsConfiguration: {
