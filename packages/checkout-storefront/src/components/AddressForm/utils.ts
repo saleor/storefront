@@ -29,7 +29,7 @@ export const getEmptyAddressFormData = (): AddressFormData => ({
   countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
 });
 
-const getAllAddressFieldKeys = () => Object.keys(getEmptyAddressFormData());
+export const getAllAddressFieldKeys = () => Object.keys(getEmptyAddressFormData());
 
 export const getAddressInputData = ({
   countryCode,
@@ -78,12 +78,12 @@ export const getAddressFormDataFromAddress = (address: Address): AddressFormData
     {}
   ) as Omit<AddressFormData, "countryCode">;
 
-  return omit(
+  return pick(
     {
       ...parsedAddressBase,
       countryCode: country.code as CountryCode,
     },
-    ["id", "__typename"]
+    getAllAddressFieldKeys()
   ) as AddressFormData;
 };
 

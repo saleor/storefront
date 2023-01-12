@@ -62,18 +62,9 @@ describe("useGetParsedApiErrors", () => {
     ];
 
     expect(hook.current.getFormErrorsFromApiErrors(errors as ApiErrors<TestFormData>)).toEqual({
-      streetAddress1: {
-        message: "Required field",
-        code: "required",
-      },
-      postalCode: {
-        message: "Invalid value",
-        code: "invalid",
-      },
-      password: {
-        message: "Provided password is too short. Minimum length is 8 characters.",
-        code: "passwordTooShort",
-      },
+      streetAddress1: "Required field",
+      postalCode: "Invalid value",
+      password: "Provided password is too short. Minimum length is 8 characters.",
     });
   });
 });

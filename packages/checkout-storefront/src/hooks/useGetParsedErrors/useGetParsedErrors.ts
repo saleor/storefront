@@ -3,11 +3,11 @@ import { GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { useErrorMessages } from "../useErrorMessages";
-import { Error, ApiErrors, Errors } from "./types";
+import { ApiErrors, FormErrors, ParsedApiErrors } from "./types";
 
 type UseGetParsedErrors<TFormData extends FormDataBase> = {
-  getParsedApiErrors: (apiErrors: ApiErrors<TFormData>) => Error<TFormData>[];
-  getFormErrorsFromApiErrors: (apiErrors: ApiErrors<TFormData>) => Errors<TFormData>;
+  getParsedApiErrors: (apiErrors: ApiErrors<TFormData>) => ParsedApiErrors<TFormData>;
+  getFormErrorsFromApiErrors: (apiErrors: ApiErrors<TFormData>) => FormErrors<TFormData>;
 };
 
 export const useGetParsedErrors = <
@@ -25,7 +25,7 @@ export const useGetParsedErrors = <
           code: errorCode,
           message: getMessageByErrorCode(errorCode as GenericErrorCode),
         };
-      }) as Error<TFormData>[],
+      }) as ParsedApiErrors<TFormData>,
     [getMessageByErrorCode]
   );
 
@@ -34,8 +34,7 @@ export const useGetParsedErrors = <
       getParsedApiErrors(apiErrors).reduce(
         (result, { field, message }) => ({ ...result, [field]: message }),
         {}
-      ),
-
+      ) as FormErrors<TFormData>,
     [getParsedApiErrors]
   );
 
