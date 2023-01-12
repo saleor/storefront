@@ -3,6 +3,7 @@ import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubm
 import {
   BlurHandler,
   ChangeHandler,
+  FormConfig,
   FormHelpers,
   hasErrors,
   useForm,
@@ -12,7 +13,6 @@ import {
   CheckoutUpdateStateScope,
   useCheckoutUpdateStateChange,
 } from "@/checkout-storefront/state/updateStateStore";
-import { FormikConfig } from "formik";
 import { pick } from "lodash-es";
 import { useCallback } from "react";
 
@@ -21,7 +21,7 @@ export type AutoSaveAddressFormData = Partial<AddressFormData>;
 export const useAutoSaveAddressForm = ({
   scope,
   ...formProps
-}: FormikConfig<AutoSaveAddressFormData> & {
+}: FormConfig<AutoSaveAddressFormData> & {
   scope: CheckoutUpdateStateScope;
 }): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);

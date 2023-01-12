@@ -1,5 +1,5 @@
 import { FormDataBase, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
-import { FormikProvider } from "formik";
+import { FormikProvider, useFormik } from "formik";
 import { PropsWithChildren } from "react";
 import { Form } from "formik";
 
@@ -9,7 +9,8 @@ export const FormProvider = <TData extends FormDataBase>({
 }: PropsWithChildren<{
   form: UseFormReturn<TData>;
 }>) => (
-  <FormikProvider value={form}>
+  // casting because formik doesn't fancy our stricter typing
+  <FormikProvider value={form as ReturnType<typeof useFormik<TData>>}>
     <Form action="post">{children}</Form>
   </FormikProvider>
 );

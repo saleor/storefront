@@ -100,6 +100,7 @@ const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationB
 
       typeof onError === "function" && onError({ ...callbackProps, errors });
       setCheckoutUpdateState("error");
+
       showErrors(errors);
       if (typeof setErrors === "function") {
         setErrors(getFormErrorsFromApiErrors(errors));
