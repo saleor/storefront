@@ -24,6 +24,8 @@ export type AdyenCheckoutInstanceOnAdditionalDetails = (
   component: DropinElement
 ) => Promise<void> | void;
 
+type ApplePayCallback = <T>(value: T) => void;
+
 export function createAdyenCheckoutInstance(
   adyenSessionResponse: AdyenDropInCreateSessionResponse,
   {
@@ -61,8 +63,20 @@ export function createAdyenCheckoutInstance(
         billingAddressRequired: false,
       },
       applepay: {
-        buttonType: "buy",
+        buttonType: "plain",
         buttonColor: "black",
+        onPaymentMethodSelected: (resolve: ApplePayCallback, reject: ApplePayCallback, event) => {
+          console.log({ "event.paymentMethod": event.paymentMethod, event });
+          resolve(event.paymentMethod);
+        },
+        onShippingContactSelected: (resolve: ApplePayCallback, reject: ApplePayCallback, event) => {
+          console.log({ "event.shippingContact": event.shippingContact, event });
+          resolve(event.shippingContact);
+        },
+        onShippingMethodSelected: (resolve: ApplePayCallback, reject: ApplePayCallback, event) => {
+          console.log({ "event.shippingMethod": event.shippingMethod, event });
+          resolve(event.shippingMethod);
+        },
       },
     },
     analytics: {
