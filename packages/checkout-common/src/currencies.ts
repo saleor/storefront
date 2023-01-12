@@ -1,4 +1,7 @@
 const getDecimalsForAdyen = (currency: string) => {
+  if (currency.length !== 3) {
+    throw new Error(`currency needs to be a 3-letter code`);
+  }
   const adyenCurrency = adyenCurrencies[currency.toUpperCase() as keyof typeof adyenCurrencies];
   const decimals = adyenCurrency ? adyenCurrency.decimals : 2;
   return decimals;

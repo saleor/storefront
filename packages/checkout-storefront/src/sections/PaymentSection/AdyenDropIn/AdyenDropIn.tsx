@@ -22,6 +22,7 @@ import { Checkout } from "@/checkout-storefront/graphql";
 import { useCheckoutSubmit } from "../../CheckoutForm/useCheckoutSubmit";
 import { useCheckoutValidationState } from "@/checkout-storefront/state/checkoutValidationStateStore";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { getAdyenIntegerAmountFromSaleor } from "checkout-common";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
@@ -245,7 +246,10 @@ function useDropinAdyenElement(
         paymentMethodsConfiguration: {
           applepay: {
             amount: {
-              value: checkout.totalPrice.gross.amount,
+              value: getAdyenIntegerAmountFromSaleor(
+                checkout.totalPrice.gross.amount,
+                checkout.totalPrice.gross.currency
+              ),
               currency: checkout.totalPrice.gross.currency,
             },
           },
