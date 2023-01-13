@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
-      - name: Get BE url Demo
+      - name: Get BE url and variables for demo
         id: demo
         if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
         run: |
@@ -49,7 +49,7 @@ jobs:
           echo "CYPRESS_WITHOUT_VARIANTS=beanie" >> $GITHUB_OUTPUT
           echo "CYPRESS_PRODUCT_TO_SEARCH=polo" >> $GITHUB_OUTPUT
 
-      - name: Get BE url
+      - name: Get BE url and variables for non demo environment
         id: testenv
         if: ${{ !contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
         run: |
@@ -61,7 +61,7 @@ jobs:
           echo "CYPRESS_WITHOUT_VARIANTS=lager" >> $GITHUB_OUTPUT
           echo "CYPRESS_PRODUCT_TO_SEARCH=polo" >> $GITHUB_OUTPUT
 
-      - name: Cypress run on demo
+      - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
           record: true
