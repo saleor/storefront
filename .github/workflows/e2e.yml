@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "SALEOR_API_URL=https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
           echo "CYPRESS_USER_EMAIL=testers+dashboard@saleor.io" >> $GITHUB_OUTPUT
-          echo "CYPRESS_USER_PASSWORD= ${{ secrets.CYPRESS_USER_PASSWORD }}" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_PASSWORD=${{secrets.CYPRESS_USER_PASSWORD}}" >> $GITHUB_OUTPUT
           echo "CYPRESS_DIGITAL_PRODUCT=sea" >> $GITHUB_OUTPUT
           echo "CYPRESS_WITH_VARIANTS=carrot" >> $GITHUB_OUTPUT
           echo "CYPRESS_WITHOUT_VARIANTS=lager" >> $GITHUB_OUTPUT
