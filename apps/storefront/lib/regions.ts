@@ -10,6 +10,7 @@ export const LOCALES = [
   },
   { slug: "pl-PL", code: "PL_PL" as LanguageCodeEnum, name: "Polski" },
   { slug: "fr-FR", code: "FR_FR" as LanguageCodeEnum, name: "Français" },
+  { slug: "sk-SK", code: "SK_SK" as LanguageCodeEnum, name: "Slovenčina" },
   { slug: "vi-VN", code: "VI_VN" as LanguageCodeEnum, name: "Việt Nam" },
   { slug: "ar-AE", code: "AR_AE" as LanguageCodeEnum, name: "العربية" },
 ];

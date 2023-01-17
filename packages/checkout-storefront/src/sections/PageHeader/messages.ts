@@ -12,4 +12,9 @@ export const languagesMessages = defineMessages<Locale>({
     id: "PageHeader/messages/kd+Ya5",
     description: "polish",
   },
+  "sk-SK": {
+    defaultMessage: "Slovak",
+    id: "PageHeader/messages/Pu4BST",
+    description: "slovak",
+  },
 });

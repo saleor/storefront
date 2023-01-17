@@ -3,6 +3,7 @@ import { useMemo } from "react";
 
 import English from "../../content/compiled-locales/en.json";
 import Polish from "../../content/compiled-locales/pl.json";
+import Slovak from "../../content/compiled-locales/sk.json";
 
 export const useFormattedMessages = () => {
   const { locale } = useRouter();
@@ -12,6 +13,8 @@ export const useFormattedMessages = () => {
     switch (shortLocale) {
       case "pl":
         return Polish;
+      case "sk":
+        return Slovak;
       case "en":
         return English;
       default:

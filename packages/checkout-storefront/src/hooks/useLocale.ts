@@ -7,10 +7,12 @@ import { useMemo, useState } from "react";
 
 import EN_US from "../../content/compiled-locales/en-US.json";
 import PL_PL from "../../content/compiled-locales/pl-PL.json";
+import SK_SK from "../../content/compiled-locales/sk-SK.json";
 
 const localeToMessages: Record<Locale, any> = {
   "en-US": EN_US,
   "pl-PL": PL_PL,
+  "sk-SK": SK_SK,
 };
 
 interface UseLocale {

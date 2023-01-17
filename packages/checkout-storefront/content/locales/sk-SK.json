@@ -1,0 +1,1526 @@
+{
+  "AddressForm/messages/+3/str": {
+    "developer_comment": "Romania",
+    "string": "Rumunsko"
+  },
+  "AddressForm/messages/+35USE": {
+    "developer_comment": "Monaco",
+    "string": "Monako"
+  },
+  "AddressForm/messages/+LTFwE": {
+    "developer_comment": "Zimbabwe",
+    "string": "Zimbabwe"
+  },
+  "AddressForm/messages/+Re6RX": {
+    "developer_comment": "Panama",
+    "string": "Panama"
+  },
+  "AddressForm/messages/+dJgMv": {
+    "developer_comment": "Egypt",
+    "string": "Egypt"
+  },
+  "AddressForm/messages//QPMOC": {
+    "developer_comment": "Rwanda",
+    "string": "Rwanda"
+  },
+  "AddressForm/messages//i/8+x": {
+    "developer_comment": "Russia",
+    "string": "Rusko"
+  },
+  "AddressForm/messages/0981cj": {
+    "developer_comment": "Mali",
+    "string": "Mali"
+  },
+  "AddressForm/messages/0OhS/E": {
+    "developer_comment": "Guernsey",
+    "string": "Guernsey"
+  },
+  "AddressForm/messages/0qM4AQ": {
+    "developer_comment": "Christmas Island",
+    "string": "Vianočný ostrov"
+  },
+  "AddressForm/messages/1BVFqL": {
+    "developer_comment": "Dominican Republic",
+    "string": "Dominikánska republika"
+  },
+  "AddressForm/messages/1G/9/v": {
+    "developer_comment": "Saint Barthélemy",
+    "string": "Svätý Bartolomej"
+  },
+  "AddressForm/messages/1gMboq": {
+    "developer_comment": "Cambodia",
+    "string": "Kambodža"
+  },
+  "AddressForm/messages/24zJ2G": {
+    "developer_comment": "Pitcairn",
+    "string": "Pitcairn"
+  },
+  "AddressForm/messages/2Ia9yk": {
+    "developer_comment": "Montenegro",
+    "string": "Čierna Hora"
+  },
+  "AddressForm/messages/2aZjsy": {
+    "developer_comment": "Saint Vincent and the Grenadines",
+    "string": "Svätý Vincent a Grenadíny"
+  },
+  "AddressForm/messages/2lrvGQ": {
+    "developer_comment": "Guatemala",
+    "string": "Guatemala"
+  },
+  "AddressForm/messages/3+K3eR": {
+    "developer_comment": "Central African Republic",
+    "string": "Stredoafrická republika"
+  },
+  "AddressForm/messages/35l+5O": {
+    "developer_comment": "Nigeria",
+    "string": "Nigéria"
+  },
+  "AddressForm/messages/3LyeiO": {
+    "developer_comment": "China",
+    "string": "Čina"
+  },
+  "AddressForm/messages/3Mu0o5": {
+    "developer_comment": "Mexico",
+    "string": "Mexiko"
+  },
+  "AddressForm/messages/3RJLTO": {
+    "developer_comment": "Virgin Islands (British)",
+    "string": "Britské Panenské ostrovy"
+  },
+  "AddressForm/messages/3Yiy2F": {
+    "developer_comment": "Bermuda",
+    "string": "Bermudy"
+  },
+  "AddressForm/messages/3lb6zY": {
+    "developer_comment": "Guyana",
+    "string": "Guyana"
+  },
+  "AddressForm/messages/3qmq7r": {
+    "developer_comment": "Saint Martin (French part)",
+    "string": "Saint Martin (francúzska časť)"
+  },
+  "AddressForm/messages/3vhsEZ": {
+    "developer_comment": "Argentina",
+    "string": "Argentína"
+  },
+  "AddressForm/messages/4KynCH": {
+    "developer_comment": "Åland Islands",
+    "string": "Ålandy"
+  },
+  "AddressForm/messages/5E5/lt": {
+    "developer_comment": "Timor-Leste",
+    "string": "Východný Timor"
+  },
+  "AddressForm/messages/5x+w4L": {
+    "developer_comment": "Brunei",
+    "string": "Brunej"
+  },
+  "AddressForm/messages/6CFBZ2": {
+    "developer_comment": "Togo",
+    "string": "Togo"
+  },
+  "AddressForm/messages/7GxtRT": {
+    "developer_comment": "Slovenia",
+    "string": "Slovinsko"
+  },
+  "AddressForm/messages/7lrRGn": {
+    "developer_comment": "Moldova",
+    "string": "Moldavsko"
+  },
+  "AddressForm/messages/8/elLk": {
+    "developer_comment": "Czechia",
+    "string": "Česko"
+  },
+  "AddressForm/messages/87OAV1": {
+    "developer_comment": "Angola",
+    "string": "Angola"
+  },
+  "AddressForm/messages/8Fcqnm": {
+    "developer_comment": "European Union",
+    "string": "Európska Únia"
+  },
+  "AddressForm/messages/8KuAMg": {
+    "developer_comment": "Botswana",
+    "string": "Botswana"
+  },
+  "AddressForm/messages/8Wse/t": {
+    "developer_comment": "Samoa",
+    "string": "Samoa"
+  },
+  "AddressForm/messages/9E5e9n": {
+    "developer_comment": "Bahamas",
+    "string": "Bahamy"
+  },
+  "AddressForm/messages/9txxUj": {
+    "developer_comment": "Croatia",
+    "string": "Chorvátsko"
+  },
+  "AddressForm/messages/9uWNKf": {
+    "developer_comment": "Bangladesh",
+    "string": "Bangladéš"
+  },
+  "AddressForm/messages/A5G1Cb": {
+    "developer_comment": "Mozambique",
+    "string": "Mozambik"
+  },
+  "AddressForm/messages/AKU/rl": {
+    "developer_comment": "Mongolia",
+    "string": "Mongolsko"
+  },
+  "AddressForm/messages/AMeNrv": {
+    "developer_comment": "Congo",
+    "string": "Kongo"
+  },
+  "AddressForm/messages/AWsbha": {
+    "developer_comment": "Canada",
+    "string": "Kanada"
+  },
+  "AddressForm/messages/B/27YJ": {
+    "developer_comment": "Poland",
+    "string": "Poľsko"
+  },
+  "AddressForm/messages/BDg+fo": {
+    "developer_comment": "Cayman Islands",
+    "string": "Kajmanie ostrovy"
+  },
+  "AddressForm/messages/BSH40T": {
+    "developer_comment": "Djibouti",
+    "string": "Džibutsko"
+  },
+  "AddressForm/messages/BY/v/V": {
+    "developer_comment": "Singapore",
+    "string": "Singapur"
+  },
+  "AddressForm/messages/BnhxSK": {
+    "developer_comment": "French Polynesia",
+    "string": "Francúzska Polynézia"
+  },
+  "AddressForm/messages/BuYzls": {
+    "developer_comment": "Vietnam",
+    "string": "Vietnam"
+  },
+  "AddressForm/messages/C9IT3L": {
+    "developer_comment": "French Southern Territories",
+    "string": "Francúzske južné územie"
+  },
+  "AddressForm/messages/CThFlC": {
+    "developer_comment": "Belgium",
+    "string": "Belgicko"
+  },
+  "AddressForm/messages/CXJMbm": {
+    "developer_comment": "Aruba",
+    "string": "Aruba"
+  },
+  "AddressForm/messages/CeU6Ku": {
+    "developer_comment": "Papua New Guinea",
+    "string": "Papua-Nová Guinea"
+  },
+  "AddressForm/messages/ChmgQI": {
+    "developer_comment": "Puerto Rico",
+    "string": "Portoriko"
+  },
+  "AddressForm/messages/Cn9SxV": {
+    "developer_comment": "Bahrain",
+    "string": "Bahrajn"
+  },
+  "AddressForm/messages/CxrUJZ": {
+    "developer_comment": "Cocos (Keeling) Islands",
+    "string": "Kokosové ostrovy"
+  },
+  "AddressForm/messages/D69IYs": {
+    "developer_comment": "Kyrgyzstan",
+    "string": "Kirgizsko"
+  },
+  "AddressForm/messages/DOoSpc": {
+    "developer_comment": "Cabo Verde",
+    "string": "Kapverdy"
+  },
+  "AddressForm/messages/DUOOIr": {
+    "developer_comment": "Niger",
+    "string": "Niger"
+  },
+  "AddressForm/messages/Dlvlwl": {
+    "developer_comment": "Laos",
+    "string": "Laos"
+  },
+  "AddressForm/messages/DmI8N+": {
+    "developer_comment": "Paraguay",
+    "string": "Paraguaj"
+  },
+  "AddressForm/messages/DnWk6V": {
+    "developer_comment": "Turkmenistan",
+    "string": "Turkménsko"
+  },
+  "AddressForm/messages/E8OaB7": {
+    "developer_comment": "Senegal",
+    "string": "Senegal"
+  },
+  "AddressForm/messages/E8ZfO1": {
+    "developer_comment": "Equatorial Guinea",
+    "string": "Rovníková Guinea"
+  },
+  "AddressForm/messages/EE8FUW": {
+    "developer_comment": "Honduras",
+    "string": "Honduras"
+  },
+  "AddressForm/messages/EWeTWr": {
+    "developer_comment": "Mauritius",
+    "string": "Maurícius"
+  },
+  "AddressForm/messages/EmA9sW": {
+    "developer_comment": "Faroe Islands",
+    "string": "Faerské ostrovy"
+  },
+  "AddressForm/messages/Ev/r0d": {
+    "developer_comment": "Grenada",
+    "string": "Grenada"
+  },
+  "AddressForm/messages/FFcAZ+": {
+    "developer_comment": "Mayotte",
+    "string": "Mayotte"
+  },
+  "AddressForm/messages/FOyXKV": {
+    "developer_comment": "Greenland",
+    "string": "Grónsko"
+  },
+  "AddressForm/messages/GlpjNg": {
+    "developer_comment": "Saint Kitts and Nevis",
+    "string": "Svätý Krištof a Nevis"
+  },
+  "AddressForm/messages/Gv7Nkl": {
+    "developer_comment": "Latvia",
+    "string": "Lotyšsko"
+  },
+  "AddressForm/messages/H03l8S": {
+    "developer_comment": "Guam",
+    "string": "Guam"
+  },
+  "AddressForm/messages/HMzYxx": {
+    "developer_comment": "El Salvador",
+    "string": "Salvádor"
+  },
+  "AddressForm/messages/HX23kM": {
+    "developer_comment": "Germany",
+    "string": "Nemecko"
+  },
+  "AddressForm/messages/I6YMLq": {
+    "developer_comment": "Iraq",
+    "string": "Irak"
+  },
+  "AddressForm/messages/I7N5d5": {
+    "developer_comment": "Montserrat",
+    "string": "Montserrat"
+  },
+  "AddressForm/messages/ICWko4": {
+    "developer_comment": "Guadeloupe",
+    "string": "Guadeloupe"
+  },
+  "AddressForm/messages/IL/4HV": {
+    "developer_comment": "Iceland",
+    "string": "Island"
+  },
+  "AddressForm/messages/ITFSvw": {
+    "developer_comment": "Yemen",
+    "string": "Jemen"
+  },
+  "AddressForm/messages/IaAMRl": {
+    "developer_comment": "Comoros",
+    "string": "Komory"
+  },
+  "AddressForm/messages/IojxYs": {
+    "developer_comment": "Chile",
+    "string": "Čile"
+  },
+  "AddressForm/messages/IqNqYb": {
+    "developer_comment": "Micronesia (Federated States of)",
+    "string": "Mikronézia"
+  },
+  "AddressForm/messages/J23dee": {
+    "developer_comment": "Japan",
+    "string": "Japonsko"
+  },
+  "AddressForm/messages/JTn7TI": {
+    "developer_comment": "Uganda",
+    "string": "Uganda"
+  },
+  "AddressForm/messages/JZGrjz": {
+    "developer_comment": "Australia",
+    "string": "Austrália"
+  },
+  "AddressForm/messages/Jcr//0": {
+    "developer_comment": "Norfolk Island",
+    "string": "Norfolk (ostrov)"
+  },
+  "AddressForm/messages/Jn/c3X": {
+    "developer_comment": "South Africa",
+    "string": "Juhoafrická republika"
+  },
+  "AddressForm/messages/JwzwDf": {
+    "developer_comment": "Serbia",
+    "string": "Srbsko"
+  },
+  "AddressForm/messages/KONzNF": {
+    "developer_comment": "Jordan",
+    "string": "Jordánsko"
+  },
+  "AddressForm/messages/Kzfc+V": {
+    "developer_comment": "Suriname",
+    "string": "Surinam"
+  },
+  "AddressForm/messages/LH4nev": {
+    "developer_comment": "Ukraine",
+    "string": "Ukrajina"
+  },
+  "AddressForm/messages/LVSZhV": {
+    "developer_comment": "Costa Rica",
+    "string": "Kostarika"
+  },
+  "AddressForm/messages/LfEV9c": {
+    "developer_comment": "Bolivia",
+    "string": "Bolívia"
+  },
+  "AddressForm/messages/Lz6TZd": {
+    "developer_comment": "Falkland Islands (Malvinas)",
+    "string": "Falklandy"
+  },
+  "AddressForm/messages/MJ3p0z": {
+    "developer_comment": "Maldives",
+    "string": "Maldivy"
+  },
+  "AddressForm/messages/Msh2z5": {
+    "developer_comment": "Iran",
+    "string": "Irán"
+  },
+  "AddressForm/messages/N1JKvx": {
+    "developer_comment": "Malaysia",
+    "string": "Malajzia"
+  },
+  "AddressForm/messages/N1Q+6G": {
+    "developer_comment": "Cuba",
+    "string": "Kuba"
+  },
+  "AddressForm/messages/NdXWB5": {
+    "developer_comment": "Wallis and Futuna",
+    "string": "Wallis a Futuna"
+  },
+  "AddressForm/messages/Nt5rKh": {
+    "developer_comment": "Andorra",
+    "string": "Andorra"
+  },
+  "AddressForm/messages/Nvbipr": {
+    "developer_comment": "Georgia",
+    "string": "Gruzínsko"
+  },
+  "AddressForm/messages/O2de3e": {
+    "developer_comment": "Spain",
+    "string": "Španielsko"
+  },
+  "AddressForm/messages/O3mm9/": {
+    "developer_comment": "Marshall Islands",
+    "string": "Marshallove ostrovy"
+  },
+  "AddressForm/messages/OQ+Olf": {
+    "developer_comment": "Saint Helena, Ascension and Tristan da Cunha",
+    "string": "Svätá Helena, Ascension a Tristan da Cunha"
+  },
+  "AddressForm/messages/OSzrGw": {
+    "developer_comment": "Curaçao",
+    "string": "Curaçao"
+  },
+  "AddressForm/messages/PXdiHI": {
+    "developer_comment": "Trinidad and Tobago",
+    "string": "Trinidad a Tobago"
+  },
+  "AddressForm/messages/QFKhj9": {
+    "developer_comment": "Cook Islands",
+    "string": "Cookove ostrovy"
+  },
+  "AddressForm/messages/QOTB1q": {
+    "developer_comment": "Luxembourg",
+    "string": "Luxembursko"
+  },
+  "AddressForm/messages/QpbfVe": {
+    "developer_comment": "American Samoa",
+    "string": "Americké Samoa"
+  },
+  "AddressForm/messages/QrZxS5": {
+    "developer_comment": "Albania",
+    "string": "Albánsko"
+  },
+  "AddressForm/messages/R3SQiE": {
+    "developer_comment": "Chad",
+    "string": "Čad"
+  },
+  "AddressForm/messages/R3YX6x": {
+    "developer_comment": "Turks and Caicos Islands",
+    "string": "Turks a Caicos"
+  },
+  "AddressForm/messages/RIE26p": {
+    "developer_comment": "Peru",
+    "string": "Peru"
+  },
+  "AddressForm/messages/Rec3oK": {
+    "developer_comment": "Israel",
+    "string": "Izrael"
+  },
+  "AddressForm/messages/S17KaW": {
+    "developer_comment": "Tokelau",
+    "string": "Tokelau"
+  },
+  "AddressForm/messages/S8InDN": {
+    "developer_comment": "Colombia",
+    "string": "Kolumbia"
+  },
+  "AddressForm/messages/SGi7gS": {
+    "developer_comment": "Netherlands",
+    "string": "Holandsko"
+  },
+  "AddressForm/messages/SH5Jnu": {
+    "developer_comment": "South Korea",
+    "string": "Kórejská republika"
+  },
+  "AddressForm/messages/Sgfz6i": {
+    "developer_comment": "Antigua and Barbuda",
+    "string": "Antigua a Barbuda"
+  },
+  "AddressForm/messages/ShtpIG": {
+    "developer_comment": "New Caledonia",
+    "string": "Nová Kaledónia"
+  },
+  "AddressForm/messages/SiD5zn": {
+    "developer_comment": "Svalbard and Jan Mayen",
+    "string": "Svalbard a Jan Mayen"
+  },
+  "AddressForm/messages/TJWI4F": {
+    "developer_comment": "Ecuador",
+    "string": "Ekvádor"
+  },
+  "AddressForm/messages/TTBXCb": {
+    "developer_comment": "Myanmar",
+    "string": "Mjanmarsko"
+  },
+  "AddressForm/messages/TYzswE": {
+    "developer_comment": "Côte d'Ivoire",
+    "string": "Pobrežie Slonoviny"
+  },
+  "AddressForm/messages/TaJXxW": {
+    "developer_comment": "Palau",
+    "string": "Palau"
+  },
+  "AddressForm/messages/Tz8NeM": {
+    "developer_comment": "Jamaica",
+    "string": "Jamajka"
+  },
+  "AddressForm/messages/Uw1fwi": {
+    "developer_comment": "Holy See",
+    "string": "Svätá stolica"
+  },
+  "AddressForm/messages/UwnYL4": {
+    "developer_comment": "Lithuania",
+    "string": "Litva"
+  },
+  "AddressForm/messages/V+VLpH": {
+    "developer_comment": "Eritrea",
+    "string": "Eritrea"
+  },
+  "AddressForm/messages/VA5Ius": {
+    "developer_comment": "North Korea",
+    "string": "Kórejská ľudovodemokratická republika"
+  },
+  "AddressForm/messages/VVk1wF": {
+    "developer_comment": "Nauru",
+    "string": "Nauru"
+  },
+  "AddressForm/messages/VpVsVE": {
+    "developer_comment": "Heard Island and McDonald Islands",
+    "string": "Heardov ostrov a Macdonaldové ostrovy"
+  },
+  "AddressForm/messages/Vty5er": {
+    "developer_comment": "Dominica",
+    "string": "Dominika"
+  },
+  "AddressForm/messages/Vwjf0I": {
+    "developer_comment": "Kazakhstan",
+    "string": "Kazachstan"
+  },
+  "AddressForm/messages/WH/GNk": {
+    "developer_comment": "Tuvalu",
+    "string": "Tuvalu"
+  },
+  "AddressForm/messages/WHUUaK": {
+    "developer_comment": "Réunion",
+    "string": "Réunion"
+  },
+  "AddressForm/messages/WW/g37": {
+    "developer_comment": "Hong Kong",
+    "string": "Hongkong"
+  },
+  "AddressForm/messages/WXy06l": {
+    "developer_comment": "Belarus",
+    "string": "Bielorusko"
+  },
+  "AddressForm/messages/XVI43y": {
+    "developer_comment": "Lebanon",
+    "string": "Libanon"
+  },
+  "AddressForm/messages/XdlbBW": {
+    "developer_comment": "South Georgia and the South Sandwich Islands",
+    "string": "Južná Georgia a Južné Sandwichove ostrovy"
+  },
+  "AddressForm/messages/YOjgGK": {
+    "developer_comment": "Morocco",
+    "string": "Maroko"
+  },
+  "AddressForm/messages/YW2Rgu": {
+    "developer_comment": "Seychelles",
+    "string": "Seychely"
+  },
+  "AddressForm/messages/ZgL3J3": {
+    "developer_comment": "Norway",
+    "string": "Nórsko"
+  },
+  "AddressForm/messages/Zx6/Wd": {
+    "developer_comment": "India",
+    "string": "India"
+  },
+  "AddressForm/messages/a/HhAT": {
+    "developer_comment": "Malawi",
+    "string": "Malawi"
+  },
+  "AddressForm/messages/a0Q5EY": {
+    "developer_comment": "Barbados",
+    "string": "Barbados"
+  },
+  "AddressForm/messages/a5hpgt": {
+    "developer_comment": "Slovakia",
+    "string": "Slovensko"
+  },
+  "AddressForm/messages/aFeJk2": {
+    "developer_comment": "Haiti",
+    "string": "Haiti"
+  },
+  "AddressForm/messages/aFf8xn": {
+    "developer_comment": "Algeria",
+    "string": "Alžírsko"
+  },
+  "AddressForm/messages/aREuhs": {
+    "developer_comment": "Fiji",
+    "string": "Fidži"
+  },
+  "AddressForm/messages/aSLBUy": {
+    "developer_comment": "Thailand",
+    "string": "Thajsko"
+  },
+  "AddressForm/messages/b3rvTZ": {
+    "developer_comment": "Guinea",
+    "string": "Guinea"
+  },
+  "AddressForm/messages/bC+63M": {
+    "developer_comment": "Bhutan",
+    "string": "Bhután"
+  },
+  "AddressForm/messages/bDMNqd": {
+    "developer_comment": "New Zealand",
+    "string": "Nový Zéland"
+  },
+  "AddressForm/messages/bNXMjj": {
+    "developer_comment": "Malta",
+    "string": "Malta"
+  },
+  "AddressForm/messages/bbEGxs": {
+    "developer_comment": "Congo (the Democratic Republic of the)",
+    "string": "Konžská demokratická republika"
+  },
+  "AddressForm/messages/bgCInd": {
+    "developer_comment": "Brazil",
+    "string": "Brazília"
+  },
+  "AddressForm/messages/bx18RE": {
+    "developer_comment": "Sint Maarten (Dutch part)",
+    "string": "Sint Maarten (holandská časť)"
+  },
+  "AddressForm/messages/cEUj16": {
+    "developer_comment": "Nicaragua",
+    "string": "Nikaragua"
+  },
+  "AddressForm/messages/cfKJbG": {
+    "developer_comment": "Burkina Faso",
+    "string": "Burkina Faso"
+  },
+  "AddressForm/messages/chgM/b": {
+    "developer_comment": "Venezuela",
+    "string": "Venezuela"
+  },
+  "AddressForm/messages/d9f9F7": {
+    "developer_comment": "Syria",
+    "string": "Sýria"
+  },
+  "AddressForm/messages/dDPcLg": {
+    "developer_comment": "Sao Tome and Principe",
+    "string": "Svätý Tomáš a Princov ostrov"
+  },
+  "AddressForm/messages/dHwCKw": {
+    "developer_comment": "Portugal",
+    "string": "Portugalsko"
+  },
+  "AddressForm/messages/dhTIfP": {
+    "developer_comment": "Antarctica",
+    "string": "Antarktída"
+  },
+  "AddressForm/messages/e4oQUX": {
+    "developer_comment": "Tunisia",
+    "string": "Tunisko"
+  },
+  "AddressForm/messages/ehL1qR": {
+    "developer_comment": "Qatar",
+    "string": "Katar"
+  },
+  "AddressForm/messages/ejmNM1": {
+    "developer_comment": "Saint Pierre and Miquelon",
+    "string": "Saint Pierre a Miquelon"
+  },
+  "AddressForm/messages/f//ZhL": {
+    "developer_comment": "British Indian Ocean Territory",
+    "string": "Britské indickooceánske územie"
+  },
+  "AddressForm/messages/f7hDXo": {
+    "developer_comment": "Belize",
+    "string": "Belize"
+  },
+  "AddressForm/messages/fN0/YF": {
+    "developer_comment": "Gabon",
+    "string": "Gabon"
+  },
+  "AddressForm/messages/gABGvv": {
+    "developer_comment": "United Kingdom",
+    "string": "Spojené kráľovstvo"
+  },
+  "AddressForm/messages/gSfZWs": {
+    "developer_comment": "Isle of Man",
+    "string": "Ostrov Man"
+  },
+  "AddressForm/messages/gcO54p": {
+    "developer_comment": "Libya",
+    "string": "Líbya"
+  },
+  "AddressForm/messages/gkNUOW": {
+    "developer_comment": "Saudi Arabia",
+    "string": "Saudská Arábia"
+  },
+  "AddressForm/messages/gmp08N": {
+    "developer_comment": "Tonga",
+    "string": "Tonga"
+  },
+  "AddressForm/messages/h3kviB": {
+    "developer_comment": "Gibraltar",
+    "string": "Gibraltár"
+  },
+  "AddressForm/messages/hEqPVT": {
+    "developer_comment": "Benin",
+    "string": "Benin"
+  },
+  "AddressForm/messages/hF+SJn": {
+    "developer_comment": "Western Sahara",
+    "string": "Západná Sahara"
+  },
+  "AddressForm/messages/hINdUv": {
+    "developer_comment": "Jersey",
+    "string": "Jersey"
+  },
+  "AddressForm/messages/hQKX9A": {
+    "developer_comment": "Taiwan",
+    "string": "Taiwan"
+  },
+  "AddressForm/messages/hR6Dsj": {
+    "developer_comment": "Macao",
+    "string": "Macao"
+  },
+  "AddressForm/messages/hyjjwk": {
+    "developer_comment": "Martinique",
+    "string": "Martinik"
+  },
+  "AddressForm/messages/i4LHfV": {
+    "developer_comment": "Somalia",
+    "string": "Somálsko"
+  },
+  "AddressForm/messages/iCux5z": {
+    "developer_comment": "Ghana",
+    "string": "Ghana"
+  },
+  "AddressForm/messages/iSL4lW": {
+    "developer_comment": "Nepal",
+    "string": "Nepál"
+  },
+  "AddressForm/messages/ifvs0d": {
+    "developer_comment": "Guinea-Bissau",
+    "string": "Guinea-Bissau"
+  },
+  "AddressForm/messages/iswnHN": {
+    "developer_comment": "United States Minor Outlying Islands",
+    "string": "Menšie odľahlé ostrovy USA"
+  },
+  "AddressForm/messages/jD5+pT": {
+    "developer_comment": "France",
+    "string": "Francúzsko"
+  },
+  "AddressForm/messages/jzUm6I": {
+    "developer_comment": "Eswatini",
+    "string": "Eswatini"
+  },
+  "AddressForm/messages/l1KbE7": {
+    "developer_comment": "French Guiana",
+    "string": "Francúzska Guyana"
+  },
+  "AddressForm/messages/lJsAwX": {
+    "developer_comment": "Finland",
+    "string": "Fínsko"
+  },
+  "AddressForm/messages/lfa27y": {
+    "developer_comment": "Greece",
+    "string": "Grécko"
+  },
+  "AddressForm/messages/mbQguu": {
+    "developer_comment": "Estonia",
+    "string": "Estónsko"
+  },
+  "AddressForm/messages/mfEieV": {
+    "developer_comment": "Denmark",
+    "string": "Dánsko"
+  },
+  "AddressForm/messages/nI5eDJ": {
+    "developer_comment": "Ethiopia",
+    "string": "Etiópia"
+  },
+  "AddressForm/messages/nKinNt": {
+    "developer_comment": "North Macedonia",
+    "string": "Severné Macedónsko"
+  },
+  "AddressForm/messages/nRLW35": {
+    "developer_comment": "Namibia",
+    "string": "Namíbia"
+  },
+  "AddressForm/messages/nY7lQ3": {
+    "developer_comment": "South Sudan",
+    "string": "Južný Sudán"
+  },
+  "AddressForm/messages/nnh9Bk": {
+    "developer_comment": "Bulgaria",
+    "string": "Bulharsko"
+  },
+  "AddressForm/messages/np1zL8": {
+    "developer_comment": "Azerbaijan",
+    "string": "Azerbajdžan"
+  },
+  "AddressForm/messages/ntGFyq": {
+    "developer_comment": "Austria",
+    "string": "Rakúsko"
+  },
+  "AddressForm/messages/o/1QQo": {
+    "developer_comment": "Solomon Islands",
+    "string": "Šalamúnove ostrovy"
+  },
+  "AddressForm/messages/oA/ktV": {
+    "developer_comment": "Madagascar",
+    "string": "Madagaskar"
+  },
+  "AddressForm/messages/pgPJJ/": {
+    "developer_comment": "Sweden",
+    "string": "Švédsko"
+  },
+  "AddressForm/messages/pgVv/N": {
+    "developer_comment": "Virgin Islands (U.S.)",
+    "string": "Americké Panenské ostrovy"
+  },
+  "AddressForm/messages/q4CJGn": {
+    "developer_comment": "Niue",
+    "string": "Niue"
+  },
+  "AddressForm/messages/qJhQH+": {
+    "developer_comment": "Kenya",
+    "string": "Keňa"
+  },
+  "AddressForm/messages/qOzgfA": {
+    "developer_comment": "Armenia",
+    "string": "Arménsko"
+  },
+  "AddressForm/messages/qTX4+E": {
+    "developer_comment": "Saint Lucia",
+    "string": "Svätá Lucia"
+  },
+  "AddressForm/messages/qYb5Jk": {
+    "developer_comment": "United Arab Emirates",
+    "string": "Spojené arabské emiráty"
+  },
+  "AddressForm/messages/qeafX4": {
+    "developer_comment": "Bouvet Island",
+    "string": "Bouvetov ostrov"
+  },
+  "AddressForm/messages/qormkg": {
+    "developer_comment": "Uruguay",
+    "string": "Uruguaj"
+  },
+  "AddressForm/messages/qtwUHg": {
+    "developer_comment": "Sierra Leone",
+    "string": "Sierra Leone"
+  },
+  "AddressForm/messages/sJb+g5": {
+    "developer_comment": "Uzbekistan",
+    "string": "Uzbekistan"
+  },
+  "AddressForm/messages/skQIxY": {
+    "developer_comment": "United States of America",
+    "string": "Spojené štáty"
+  },
+  "AddressForm/messages/t+/kLN": {
+    "developer_comment": "Italy",
+    "string": "Taliansko"
+  },
+  "AddressForm/messages/tIboLQ": {
+    "developer_comment": "Pakistan",
+    "string": "Pakistan"
+  },
+  "AddressForm/messages/tK6E11": {
+    "developer_comment": "Vanuatu",
+    "string": "Vanuatu"
+  },
+  "AddressForm/messages/tP/Oze": {
+    "developer_comment": "Northern Mariana Islands",
+    "string": "Severné Mariány"
+  },
+  "AddressForm/messages/tYEJBL": {
+    "developer_comment": "Lesotho",
+    "string": "Lesotho"
+  },
+  "AddressForm/messages/ti2ZL4": {
+    "developer_comment": "Tajikistan",
+    "string": "Tadžikistan"
+  },
+  "AddressForm/messages/tpJaze": {
+    "developer_comment": "Sri Lanka",
+    "string": "Srí Lanka"
+  },
+  "AddressForm/messages/tzgM0t": {
+    "developer_comment": "Mauritania",
+    "string": "Mauritánia"
+  },
+  "AddressForm/messages/u+YfYt": {
+    "developer_comment": "Sudan",
+    "string": "Sudán"
+  },
+  "AddressForm/messages/u61Uce": {
+    "developer_comment": "Turkey",
+    "string": "Turecko"
+  },
+  "AddressForm/messages/u91qY4": {
+    "developer_comment": "Cameroon",
+    "string": "Kamerun"
+  },
+  "AddressForm/messages/uE53ck": {
+    "developer_comment": "San Marino",
+    "string": "San Maríno"
+  },
+  "AddressForm/messages/uKkCu3": {
+    "developer_comment": "Ireland",
+    "string": "Írsko"
+  },
+  "AddressForm/messages/ugRA1N": {
+    "developer_comment": "Palestine, State of",
+    "string": "Palestína"
+  },
+  "AddressForm/messages/uz7aXC": {
+    "developer_comment": "Liechtenstein",
+    "string": "Lichtenštajnsko"
+  },
+  "AddressForm/messages/v5+WFh": {
+    "developer_comment": "Switzerland",
+    "string": "Švajčiarsko"
+  },
+  "AddressForm/messages/v7V3TJ": {
+    "developer_comment": "Philippines",
+    "string": "Filipíny"
+  },
+  "AddressForm/messages/vB4cu8": {
+    "developer_comment": "Kiribati",
+    "string": "Kiribati"
+  },
+  "AddressForm/messages/vVqZDn": {
+    "developer_comment": "Oman",
+    "string": "Omán"
+  },
+  "AddressForm/messages/vhPQFk": {
+    "developer_comment": "Liberia",
+    "string": "Libéria"
+  },
+  "AddressForm/messages/wQRvOc": {
+    "developer_comment": "Indonesia",
+    "string": "Indonézia"
+  },
+  "AddressForm/messages/wb7BE+": {
+    "developer_comment": "Gambia",
+    "string": "Gambia"
+  },
+  "AddressForm/messages/xQTOMT": {
+    "developer_comment": "Zambia",
+    "string": "Zambia"
+  },
+  "AddressForm/messages/yEktUH": {
+    "developer_comment": "Cyprus",
+    "string": "Cyprus"
+  },
+  "AddressForm/messages/yIymyU": {
+    "developer_comment": "Kuwait",
+    "string": "Kuvajt"
+  },
+  "AddressForm/messages/ye07k9": {
+    "developer_comment": "Bosnia and Herzegovina",
+    "string": "Bosna a Hercegovina"
+  },
+  "AddressForm/messages/ykbN9o": {
+    "developer_comment": "Hungary",
+    "string": "Maďarsko"
+  },
+  "AddressForm/messages/z7tOzp": {
+    "developer_comment": "Tanzania",
+    "string": "Tanzánia"
+  },
+  "AddressForm/messages/zKLtUg": {
+    "developer_comment": "Anguilla",
+    "string": "Anguilla"
+  },
+  "AddressForm/messages/zV566+": {
+    "developer_comment": "Afghanistan",
+    "string": "Afganistan"
+  },
+  "AddressForm/messages/zVAmwy": {
+    "developer_comment": "Burundi",
+    "string": "Burundi"
+  },
+  "AddressForm/messages/zyu9ti": {
+    "developer_comment": "Bonaire, Sint Eustatius and Saba",
+    "string": "Bonaire, Sint Eustatius a Saba"
+  },
+  "AddressSelectBox/messages//II2Kl": {
+    "developer_comment": "edit address accessibility label",
+    "string": "upraviť adresu"
+  },
+  "AddressSelectBox/messages/X3KwgL": {
+    "developer_comment": "can't ship to address",
+    "string": "Nie je možné doručiť na túto adresu"
+  },
+  "AddressSelectBox/messages/rHpDYH": {
+    "developer_comment": "edit address",
+    "string": "upraviť"
+  },
+  "BillingAddressSection/messages/OLzmaE": {
+    "developer_comment": "billing address",
+    "string": "Fakturačná adresa"
+  },
+  "BillingAddressSection/messages/qFJDT2": {
+    "developer_comment": "use shipping as billing",
+    "string": "Použiť doručovaciu adresu ako fakturačnú"
+  },
+  "CheckoutForm/messages/+qM8r0": {
+    "developer_comment": "missing fields in billing address",
+    "string": "Niektoré polia vo fakturačnom formulári chýbajú alebo sú neplatné"
+  },
+  "CheckoutForm/messages/UDs7fN": {
+    "developer_comment": "pay accessibility label",
+    "string": "zaplatiť"
+  },
+  "CheckoutForm/messages/guvzy3": {
+    "developer_comment": "missing fields in shipping address",
+    "string": "Niektoré polia vo doručovacom formulári chýbajú alebo sú neplatné"
+  },
+  "CheckoutForm/messages/jLJToZ": {
+    "developer_comment": "pay",
+    "string": "Zaplatiť"
+  },
+  "Contact/messages//BXzqC": {
+    "developer_comment": "new customer?",
+    "string": "Nový zákazník?"
+  },
+  "Contact/messages//Iazj+": {
+    "developer_comment": "resend?",
+    "string": "Odoslať znova?"
+  },
+  "Contact/messages/5hAp9w": {
+    "developer_comment": "already have account?",
+    "string": "Už máte účet?"
+  },
+  "Contact/messages/Cu74z+": {
+    "developer_comment": "reset password",
+    "string": "Obnoviť heslo"
+  },
+  "Contact/messages/E8oPzo": {
+    "developer_comment": "account",
+    "string": "Účet"
+  },
+  "Contact/messages/HvSpKk": {
+    "developer_comment": "send password reset link",
+    "string": "Odoslať odkaz pre obnovenie hesla"
+  },
+  "Contact/messages/IbOUpe": {
+    "developer_comment": "password",
+    "string": "Heslo"
+  },
+  "Contact/messages/JX+fPs": {
+    "developer_comment": "Guest checkout",
+    "string": "Nakúpiť bez registrácie"
+  },
+  "Contact/messages/Ng/PvP": {
+    "developer_comment": "a link has been sent to",
+    "string": "Na adresu {email} bol odoslaný odkaz"
+  },
+  "Contact/messages/bHaSzm": {
+    "developer_comment": "password confirmation",
+    "string": "Potvrdenie hesla"
+  },
+  "Contact/messages/dE8fQO": {
+    "developer_comment": "change section",
+    "string": "zmeniť sekciu"
+  },
+  "Contact/messages/ljwlqe": {
+    "developer_comment": "sign in",
+    "string": "Prihlásiť sa"
+  },
+  "Contact/messages/reCzHf": {
+    "developer_comment": "sign out",
+    "string": "Odhlásiť sa"
+  },
+  "Contact/messages/tCwlQg": {
+    "developer_comment": "email",
+    "string": "E-mail"
+  },
+  "Contact/messages/uEp7uy": {
+    "developer_comment": "forgot password",
+    "string": "Zabudli ste heslo?"
+  },
+  "Contact/messages/v8Xp5+": {
+    "developer_comment": "i want to create account",
+    "string": "Chcem si založiť účet"
+  },
+  "Contact/messages/vPJeeQ": {
+    "developer_comment": "contact",
+    "string": "Kontaktné údaje"
+  },
+  "Contact/messages/xRJQ5g": {
+    "developer_comment": "provide a new password",
+    "string": "Zadajte nové heslo"
+  },
+  "DeliveryMethods/messages/927KCY": {
+    "developer_comment": "no shipping address message",
+    "string": "Spôsoby dopravy sa zobrazia po vyplnení adresy doručenia"
+  },
+  "DeliveryMethods/messages/DGFTo/": {
+    "developer_comment": "business days",
+    "string": "{min}-{max} pracovných dní"
+  },
+  "DeliveryMethods/messages/IPzOnb": {
+    "developer_comment": "delivery methods accessibility label",
+    "string": "spôsoby doručenia"
+  },
+  "DeliveryMethods/messages/TitWRN": {
+    "developer_comment": "shipping method not applicable",
+    "string": "Neuplatňuje sa"
+  },
+  "DeliveryMethods/messages/U/hMpC": {
+    "developer_comment": "delivery methods",
+    "string": "Spôsoby doručenia"
+  },
+  "DeliveryMethods/messages/ZHOxoA": {
+    "developer_comment": "delivery method",
+    "string": "Spôsob doručenia"
+  },
+  "DummyPayment/messages/2uijFy": {
+    "developer_comment": "how much is left to pay",
+    "string": "Zostáva zaplatiť ({currency})"
+  },
+  "DummyPayment/messages/9FUEKB": {
+    "developer_comment": "dummy pay",
+    "string": "Fiktívna platba"
+  },
+  "DummyPayment/messages/Cm6A9z": {
+    "developer_comment": "loading",
+    "string": "Načítavam…"
+  },
+  "DummyPayment/messages/Hm9+RE": {
+    "developer_comment": "error",
+    "string": "Niečo sa pokazilo"
+  },
+  "DummyPayment/messages/S0J+0M": {
+    "developer_comment": "dummy payment",
+    "string": "Fiktívna platba"
+  },
+  "DummyPayment/messages/eJ2qAk": {
+    "developer_comment": "order total price",
+    "string": "Spolu"
+  },
+  "DummyPayment/messages/qCpYR4": {
+    "developer_comment": "order already paid",
+    "string": "Zaplatené"
+  },
+  "EmptyCartPage/messages/CLKTRp": {
+    "developer_comment": "go back to store",
+    "string": "Späť do obchodu"
+  },
+  "EmptyCartPage/messages/CMDZDI": {
+    "developer_comment": "add to cart to continue",
+    "string": "Pridajte niečo do košíka pre pokračovanie"
+  },
+  "EmptyCartPage/messages/qfic6J": {
+    "developer_comment": "cart is empty",
+    "string": "Košík je prázdny"
+  },
+  "ManualSaveAddressForm/messages/BfROpq": {
+    "developer_comment": "save address",
+    "string": "Uložiť adresu"
+  },
+  "ManualSaveAddressForm/messages/NeZoqm": {
+    "developer_comment": "delete address accessibility label",
+    "string": "Vymazať adresu"
+  },
+  "ManualSaveAddressForm/messages/a4P38R": {
+    "developer_comment": "cancel accessibility label",
+    "string": "Zrušiť úpravu"
+  },
+  "ManualSaveAddressForm/messages/js69XA": {
+    "developer_comment": "cancel",
+    "string": "Zrušiť"
+  },
+  "ManualSaveAddressForm/messages/khhC7s": {
+    "developer_comment": "save accessibility label",
+    "string": "Uložiť adresu"
+  },
+  "OrderInfo/messages/4IPxGY": {
+    "developer_comment": "order unpaid message",
+    "string": "Objednávka nebola zaplatená. Ak ste si vykonali platbu, skontrolujte jej potvrdenie."
+  },
+  "OrderInfo/messages/9VWqRC": {
+    "developer_comment": "payment",
+    "string": "Platba"
+  },
+  "OrderInfo/messages/H+et6P": {
+    "developer_comment": "pay for the order",
+    "string": "Zaplatiť objednávku"
+  },
+  "OrderInfo/messages/MY0OAh": {
+    "developer_comment": "payment pending",
+    "string": "Prebieha spracovanie vašej platby."
+  },
+  "OrderInfo/messages/VjsJkY": {
+    "developer_comment": "order confirmed",
+    "string": "Objednávka #{number} bola potvrdená"
+  },
+  "OrderInfo/messages/fdFTXC": {
+    "developer_comment": "order pay accessibility label",
+    "string": "úhrada objednávky"
+  },
+  "OrderInfo/messages/nkRLWD": {
+    "developer_comment": "order payment status missing",
+    "string": "Informácie o vašej platbe sa nepodarilo načítať. Ak ste vykonali platbu, skontrolujte jej potvrdenie a kontaktujte nás."
+  },
+  "OrderInfo/messages/ty5n+J": {
+    "developer_comment": "order confirmed subtitle",
+    "string": "Ďakujeme za Vašu objednávku. Budeme vás kontaktovať hneď, ako bude odoslaná. Na adresu {email} sme odoslali potvrdzujúci e-mail."
+  },
+  "OrderInfo/messages/vcXZR6": {
+    "developer_comment": "paid order message",
+    "string": "Prijali sme vašu platbu"
+  },
+  "PageHeader/messages/Pu4BST": {
+    "developer_comment": "slovak",
+    "string": "Slovenčina"
+  },
+  "PageHeader/messages/eXrxj4": {
+    "developer_comment": "english usa",
+    "string": "Angličtina (USA)"
+  },
+  "PageHeader/messages/kd+Ya5": {
+    "developer_comment": "polish",
+    "string": "Poľština"
+  },
+  "PageNotFound/messages/Q7DOPP": {
+    "developer_comment": "couldn't find info about your checkout",
+    "string": "Nepodarilo sa načítať informácie o košíku. Vráťte sa do obchodu a skúste to znova."
+  },
+  "PasswordInput/messages/fClTvW": {
+    "developer_comment": "change password visibility accessibility label",
+    "string": "zmeniť viditeľnosť hesla"
+  },
+  "PaymentSection/messages/8YE5b7": {
+    "developer_comment": "payment providers",
+    "string": "Platobné brány"
+  },
+  "PaymentSection/messages/FK5Bg/": {
+    "developer_comment": "payment providers accessibility label",
+    "string": "platobné brány"
+  },
+  "PaymentSection/messages/bFYz7Q": {
+    "developer_comment": "dropin",
+    "string": "Drop-in"
+  },
+  "PaymentSection/messages/im88Fe": {
+    "developer_comment": "credit card",
+    "string": "Kreditná karta"
+  },
+  "PaymentSection/messages/jdRifS": {
+    "developer_comment": "paypal",
+    "string": "PayPal"
+  },
+  "PaymentSection/messages/p7Zg+S": {
+    "developer_comment": "apple pay",
+    "string": "Apple Pay"
+  },
+  "PaymentSection/messages/xXCQ+K": {
+    "developer_comment": "dummy payment method",
+    "string": "Fiktívna platba"
+  },
+  "RootViews/messages/Cm6A9z": {
+    "developer_comment": "loading",
+    "string": "Načítavam…"
+  },
+  "ShippingAddressSection/messages/BUg4yp": {
+    "developer_comment": "shipping address",
+    "string": "Adresa doručenia"
+  },
+  "Summary/messages/+3aZyi": {
+    "developer_comment": "shipping cost acessibility label",
+    "string": "cena dopravy"
+  },
+  "Summary/messages/0e730y": {
+    "developer_comment": "single piece price acessibility label",
+    "string": "cena za jeden kus"
+  },
+  "Summary/messages/5J0ywS": {
+    "developer_comment": "quantity",
+    "string": "množstvo"
+  },
+  "Summary/messages/62kM+I": {
+    "developer_comment": "summary title",
+    "string": "Zhrnutie"
+  },
+  "Summary/messages/8yNMpu": {
+    "developer_comment": "remove promo code",
+    "string": "vymazať promokód"
+  },
+  "Summary/messages/9hELnS": {
+    "developer_comment": "subtotal price acessibility label",
+    "string": "medzisúčet"
+  },
+  "Summary/messages/CDMWR5": {
+    "developer_comment": "gift card acessibility label",
+    "string": "darčeková karta"
+  },
+  "Summary/messages/DrvEK3": {
+    "developer_comment": "total price acessibility label",
+    "string": "spolu"
+  },
+  "Summary/messages/I+Nu5r": {
+    "developer_comment": "shipping cost",
+    "string": "Cena dopravy"
+  },
+  "Summary/messages/LXBBAY": {
+    "developer_comment": "gift card",
+    "string": "Darčeková karta: {giftCardCode}"
+  },
+  "Summary/messages/LmzMmY": {
+    "developer_comment": "each",
+    "string": "každý"
+  },
+  "Summary/messages/MgTWsL": {
+    "developer_comment": "voucher",
+    "string": "Kupón: {voucherCode}"
+  },
+  "Summary/messages/U9SMA8": {
+    "developer_comment": "add discount",
+    "string": "Pridať darčekovú kartu alebo zľavový kód"
+  },
+  "Summary/messages/eUwD3W": {
+    "developer_comment": "tax cost",
+    "string": "vrátane {taxCost} daní"
+  },
+  "Summary/messages/fDpo5E": {
+    "developer_comment": "total price",
+    "string": "Spolu"
+  },
+  "Summary/messages/gfKEVQ": {
+    "developer_comment": "apply",
+    "string": "Použiť"
+  },
+  "Summary/messages/r/8W3/": {
+    "developer_comment": "undiscounted price acessibility label",
+    "string": "cena bez zľavy"
+  },
+  "Summary/messages/sUYq4a": {
+    "developer_comment": "apply acessibility label",
+    "string": "použiť"
+  },
+  "Summary/messages/svpQPb": {
+    "developer_comment": "voucher acessibility label",
+    "string": "kupón"
+  },
+  "Summary/messages/xUvWaP": {
+    "developer_comment": "subtotal price",
+    "string": "Medzisúčet"
+  },
+  "Summary/messages/ydrYcS": {
+    "developer_comment": "variant name acessibility label",
+    "string": "názov verzie"
+  },
+  "UserAddressSection/messages/E6w89b": {
+    "developer_comment": "add address accessibility label",
+    "string": "pridať adresu"
+  },
+  "UserAddressSection/messages/OMv17k": {
+    "developer_comment": "billing user addresses",
+    "string": "fakturačné adresy používateľov"
+  },
+  "UserAddressSection/messages/YpnLAd": {
+    "developer_comment": "shipping user addresses",
+    "string": "dodacie adresy používateľov"
+  },
+  "UserAddressSection/messages/lhYBSH": {
+    "developer_comment": "you have no addresses",
+    "string": "Nemáte uložené žiadne adresy."
+  },
+  "UserAddressSection/messages/xPCC/5": {
+    "developer_comment": "add address",
+    "string": "Pridať adresu"
+  },
+  "lib/commonMessages/03Jmny": {
+    "developer_comment": "processing",
+    "string": "Prebieha spracovanie…"
+  },
+  "lib/commonMessages/9NmWSQ": {
+    "developer_comment": "check icon",
+    "string": "háčik"
+  },
+  "lib/commonMessages/sklVAb": {
+    "developer_comment": "remove icon",
+    "string": "vymazať"
+  },
+  "useAddressFormUtils/messages/0KU6nT": {
+    "developer_comment": "postal code",
+    "string": "PSČ"
+  },
+  "useAddressFormUtils/messages/7bJ7Hd": {
+    "developer_comment": "city area",
+    "string": "Mestská časť"
+  },
+  "useAddressFormUtils/messages/Jbz2k6": {
+    "developer_comment": "first name",
+    "string": "Meno"
+  },
+  "useAddressFormUtils/messages/K/a8rS": {
+    "developer_comment": "last name",
+    "string": "Priezvisko"
+  },
+  "useAddressFormUtils/messages/KyH9NK": {
+    "developer_comment": "country",
+    "string": "Krajina"
+  },
+  "useAddressFormUtils/messages/OxxX1m": {
+    "developer_comment": "post town",
+    "string": "Poštové mesto"
+  },
+  "useAddressFormUtils/messages/QXvSmh": {
+    "developer_comment": "company",
+    "string": "Spoločnosť"
+  },
+  "useAddressFormUtils/messages/X/8oa4": {
+    "developer_comment": "district",
+    "string": "Okres"
+  },
+  "useAddressFormUtils/messages/X51P1g": {
+    "developer_comment": "city",
+    "string": "Mesto"
+  },
+  "useAddressFormUtils/messages/XI2F1P": {
+    "developer_comment": "province",
+    "string": "Kraj"
+  },
+  "useAddressFormUtils/messages/Y6dLvp": {
+    "developer_comment": "street address",
+    "string": "Ulica a dom"
+  },
+  "useAddressFormUtils/messages/Zdvjjr": {
+    "developer_comment": "state",
+    "string": "Štát"
+  },
+  "useAddressFormUtils/messages/ljLaVr": {
+    "developer_comment": "phone number",
+    "string": "Telefónne číslo"
+  },
+  "useAddressFormUtils/messages/mbEUWh": {
+    "developer_comment": "street address continue",
+    "string": "Pokračovanie adresy"
+  },
+  "useAddressFormUtils/messages/tGSbvd": {
+    "developer_comment": "zip code",
+    "string": "PSČ"
+  },
+  "useAlerts/messages/2leXNc": {
+    "developer_comment": "checkout shipping update - postal code invalid error",
+    "string": "Nebolo zadané správne PSČ"
+  },
+  "useAlerts/messages/7/Bo7+": {
+    "developer_comment": "checkout pay - email not set error",
+    "string": "Pred ukončením je potrebné zadať e-mail"
+  },
+  "useAlerts/messages/7yexjS": {
+    "developer_comment": "something went wrong",
+    "string": "Niečo sa pokazilo. Skúste to znova o chvíľu."
+  },
+  "useAlerts/messages/8fk/m5": {
+    "developer_comment": "checkout billing update - postal code invalid error",
+    "string": "Nebolo zadane správne PSČ pre fakturáciu"
+  },
+  "useAlerts/messages/ESuR0A": {
+    "developer_comment": "login - email inactive error",
+    "string": "Účet s týmto e-mailom nie je aktívny"
+  },
+  "useAlerts/messages/EwTHLm": {
+    "developer_comment": "reset password - token invalid error",
+    "string": "Tento kód na obnovenie hesla nie je platný"
+  },
+  "useAlerts/messages/FggIw/": {
+    "developer_comment": "request password reset - email not found error",
+    "string": "Účet s týmto e-mailom neexistuje"
+  },
+  "useAlerts/messages/JBUgUT": {
+    "developer_comment": "checkout billing update country area required error",
+    "string": "Zadajte krajinu pre fakturáciu"
+  },
+  "useAlerts/messages/LrYpGU": {
+    "developer_comment": "login - email not found error",
+    "string": "Účet s týmto e-mailom neexistuje"
+  },
+  "useAlerts/messages/Vx4W5S": {
+    "developer_comment": "user register - email unique error",
+    "string": "Nie je možné vytvoriť účet s e-mailom, ktorý už bol použitý"
+  },
+  "useAlerts/messages/Xd2N1c": {
+    "developer_comment": "reset password - password too short error",
+    "string": "Heslo je príliš krátke"
+  },
+  "useAlerts/messages/a77ZZO": {
+    "developer_comment": "checkout email update - email required error",
+    "string": "E-mail nemôže byť prázdny"
+  },
+  "useAlerts/messages/dCkgOw": {
+    "developer_comment": "checkout finalize password required error",
+    "string": "Pred dokončením je potrebné zadať heslo"
+  },
+  "useAlerts/messages/dKzVev": {
+    "developer_comment": "checkout email update email invalid error",
+    "string": "Zadaný e-mail nie je platný"
+  },
+  "useAlerts/messages/glpqLA": {
+    "developer_comment": "checkout pay - total amount mismatch error",
+    "string": "Nepodarilo sa dokončiť objednávku, skúste to znova"
+  },
+  "useAlerts/messages/iTl+Qz": {
+    "developer_comment": "login - account not confirmed error",
+    "string": "Účet nebol potvrdený"
+  }
+}
