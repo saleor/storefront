@@ -1,4 +1,4 @@
-import { FileAPL, UpstashAPL, RestAPL } from "@saleor/app-sdk/APL";
+import { FileAPL, UpstashAPL, SaleorCloudAPL } from "@saleor/app-sdk/APL";
 import invariant from "ts-invariant";
 import Fs from "fs/promises";
 import { unpackPromise } from "../utils/unpackErrors";
@@ -29,17 +29,15 @@ const getApl = () => {
       return new FileAPL();
     case "vercel":
       return new CheckoutVercelAPL();
-    case "rest":
+    case "saleor-cloud":
       const REST_APL_ENDPOINT = process.env.REST_APL_ENDPOINT;
       const REST_APL_TOKEN = process.env.REST_APL_TOKEN;
 
       invariant(REST_APL_ENDPOINT, "Missing REST_APL_ENDPOINT!");
       invariant(REST_APL_TOKEN, "Missing REST_APL_TOKEN!");
-      return new RestAPL({
+      return new SaleorCloudAPL({
         resourceUrl: REST_APL_ENDPOINT,
-        headers: {
-          Authorization: `Bearer ${REST_APL_TOKEN}`,
-        },
+        token: REST_APL_TOKEN,
       });
     default:
       invariant(
