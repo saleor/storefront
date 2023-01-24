@@ -22,6 +22,7 @@ import { Checkout } from "@/checkout-storefront/graphql";
 import { useCheckoutSubmit } from "../../CheckoutForm/useCheckoutSubmit";
 import { useCheckoutValidationState } from "@/checkout-storefront/state/checkoutValidationStateStore";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { getAdyenIntegerAmountFromSaleor } from "checkout-common";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
@@ -157,6 +158,7 @@ function useDropinAdyenElement(
 ) {
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
+  const adyenCheckoutInstanceRef = useRef<AdyenCheckoutInstance | null>(null);
   const [adyenCheckoutInstanceCreationStatus, setAdyenCheckoutInstanceCreationStatus] = useState<
     "IDLE" | "IN_PROGRESS" | "DONE" | "ERROR"
   >("IDLE");
@@ -178,6 +180,35 @@ function useDropinAdyenElement(
     },
     skip: isCheckoutLoading,
   });
+
+  const updateApplePayAmount = useCallback(() => {
+    if (!adyenCheckoutInstanceRef) {
+      return;
+    }
+
+    adyenCheckoutInstanceRef.current
+      ?.update({
+        amount: {
+          value: getAdyenIntegerAmountFromSaleor(
+            checkout.totalPrice.gross.amount,
+            checkout.totalPrice.gross.currency
+          ),
+          currency: checkout.totalPrice.gross.currency,
+        },
+        paymentMethodsConfiguration: {
+          applepay: {
+            amount: {
+              value: getAdyenIntegerAmountFromSaleor(
+                checkout.totalPrice.gross.amount,
+                checkout.totalPrice.gross.currency
+              ),
+              currency: checkout.totalPrice.gross.currency,
+            },
+          },
+        },
+      })
+      .catch(console.error);
+  }, [checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency]);
 
   // reset dropin on locale change
   useEffect(() => {
@@ -208,9 +239,12 @@ function useDropinAdyenElement(
       locale,
     })
       .then((adyenCheckout) => {
+        adyenCheckoutInstanceRef.current = adyenCheckout;
         dropinComponentRef.current = adyenCheckout
-          .create("dropin")
+          .create("dropin", { instantPaymentTypes: ["applepay"] })
           .mount(dropinContainerElRef?.current as HTMLDivElement);
+        updateApplePayAmount();
+
         setAdyenCheckoutInstanceCreationStatus("DONE");
       })
       .catch((err) => {
@@ -227,7 +261,12 @@ function useDropinAdyenElement(
     onAdditionalDetails,
     onSubmit,
     locale,
+    updateApplePayAmount,
   ]);
 
-  return { dropinContainerElRef };
+  useEffect(() => {
+    updateApplePayAmount();
+  }, [updateApplePayAmount]);
+
+  return { dropinContainerElRef, adyenCheckoutInstanceRef };
 }

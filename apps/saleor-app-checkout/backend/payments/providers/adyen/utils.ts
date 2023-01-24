@@ -11,7 +11,7 @@ import { CheckoutAPI, Client, Types } from "@adyen/api-library";
 import currency from "currency.js";
 import { getTransactionAmountGetterAsMoney } from "../../utils";
 import { failedEvents } from "./consts";
-import { getIntegerAmountFromSaleor, getSaleorAmountFromInteger } from "../../utils";
+import { getAdyenIntegerAmountFromSaleor, getSaleorAmountFromAdyenInteger } from "checkout-common";
 import invariant from "ts-invariant";
 
 const OperationsEnum = Types.notification.NotificationRequestItem.OperationsEnum;
@@ -68,9 +68,18 @@ export const getLineItems = (lines: OrderFragment["lines"]): Types.checkout.Line
     description: line.productName + " - " + line.variantName,
     quantity: line.quantity,
     taxPercentage: line.taxRate * 100,
-    taxAmount: getIntegerAmountFromSaleor(line.totalPrice.tax.amount),
-    amountExcludingTax: getIntegerAmountFromSaleor(line.totalPrice.tax.amount),
-    amountIncludingTax: getIntegerAmountFromSaleor(line.totalPrice.gross.amount),
+    taxAmount: getAdyenIntegerAmountFromSaleor(
+      line.totalPrice.tax.amount,
+      line.totalPrice.tax.currency
+    ),
+    amountExcludingTax: getAdyenIntegerAmountFromSaleor(
+      line.totalPrice.net.amount,
+      line.totalPrice.net.currency
+    ),
+    amountIncludingTax: getAdyenIntegerAmountFromSaleor(
+      line.totalPrice.gross.amount,
+      line.totalPrice.gross.currency
+    ),
     id: line.id,
     imageUrl: line.thumbnail?.url,
     itemCategory: line.variant?.product.category?.name,
@@ -127,7 +136,7 @@ const getCurrencyFromTransaction = (transaction: TransactionFragment | null) => 
 
 export const isNotificationAmountValid = (
   notification: Partial<Pick<Types.notification.NotificationRequestItem, "amount">>
-) => {
+): notification is { amount: { value: number; currency: string } } => {
   if (
     typeof notification?.amount?.currency !== "string" ||
     typeof notification?.amount?.value !== "number"
@@ -161,8 +170,6 @@ export const getTransactionAmountFromAdyen = (
     refunded: transaction?.refundedAmount?.amount,
     authorized: transaction?.authorizedAmount?.amount,
   });
-  const notificationAmount = currency(getSaleorAmountFromInteger(notification.amount.value ?? 0));
-  const notificationCurrency = notification.amount.currency!;
 
   if (notification.success === Types.notification.NotificationRequestItem.SuccessEnum.False) {
     return {};
@@ -173,7 +180,11 @@ export const getTransactionAmountFromAdyen = (
     throw new Error("Notification doesn't contain amount or currency");
   }
 
-  if (!isNotificationCurrencyMatchingTransaction(notificationCurrency, transaction)) {
+  const notificationAmount = currency(
+    getSaleorAmountFromAdyenInteger(notification.amount.value, notification.amount.currency)
+  );
+
+  if (!isNotificationCurrencyMatchingTransaction(notification.amount.currency, transaction)) {
     console.error("(Adyen webhook) Mistmatch between notification and transaction currency");
     throw new Error("Mismatch between notification and transaction currency");
   }
@@ -187,7 +198,7 @@ export const getTransactionAmountFromAdyen = (
       return {
         amountAuthorized: {
           amount: notificationAmount.value,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
       };
 
@@ -198,11 +209,11 @@ export const getTransactionAmountFromAdyen = (
           amount: nonNegative(
             getTransactionAmount("authorized").subtract(notificationAmount).value
           ),
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
         amountCharged: {
           amount: notificationAmount.value,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
       };
 
@@ -211,11 +222,11 @@ export const getTransactionAmountFromAdyen = (
       return {
         amountAuthorized: {
           amount: 0,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
         amountVoided: {
           amount: authorizedAmount > 0 ? authorizedAmount : notificationAmount,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
       };
 
@@ -226,11 +237,11 @@ export const getTransactionAmountFromAdyen = (
       return {
         amountAuthorized: {
           amount: getTransactionAmount("authorized").add(notificationAmount).value,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
         amountCharged: {
           amount: 0,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
       };
 
@@ -244,11 +255,11 @@ export const getTransactionAmountFromAdyen = (
       return {
         amountRefunded: {
           amount: getTransactionAmount("refunded").add(notificationAmount).value,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
         amountCharged: {
           amount: nonNegative(getTransactionAmount("charged").subtract(notificationAmount).value),
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
       };
 
@@ -262,11 +273,11 @@ export const getTransactionAmountFromAdyen = (
       return {
         amountRefunded: {
           amount: nonNegative(getTransactionAmount("refunded").subtract(notificationAmount).value),
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
         amountCharged: {
           amount: getTransactionAmount("charged").add(notificationAmount).value,
-          currency: notificationCurrency,
+          currency: notification.amount.currency,
         },
       };
 
@@ -281,11 +292,11 @@ export const getTransactionAmountFromAdyen = (
         return {
           amountAuthorized: {
             amount: 0,
-            currency: notificationCurrency,
+            currency: notification.amount.currency,
           },
           amountVoided: {
             amount: authorizedAmount > 0 ? authorizedAmount : notificationAmount.value,
-            currency: notificationCurrency,
+            currency: notification.amount.currency,
           },
         };
       } else {
@@ -293,11 +304,11 @@ export const getTransactionAmountFromAdyen = (
         return {
           amountCharged: {
             amount: nonNegative(getTransactionAmount("charged").subtract(notificationAmount).value),
-            currency: notificationCurrency,
+            currency: notification.amount.currency,
           },
           amountRefunded: {
             amount: notificationAmount.value,
-            currency: notificationCurrency,
+            currency: notification.amount.currency,
           },
         };
       }

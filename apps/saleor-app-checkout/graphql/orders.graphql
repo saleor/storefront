@@ -44,6 +44,9 @@ fragment OrderLine on OrderLine {
     gross {
       ...Money
     }
+    net {
+      ...Money
+    }
     tax {
       ...Money
     }
