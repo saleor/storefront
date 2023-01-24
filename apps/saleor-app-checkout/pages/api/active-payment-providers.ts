@@ -5,6 +5,8 @@ import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const handler: NextApiHandler = async (req, res) => {
+  console.debug("Active payment providers called");
+
   const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
   if (saleorApiUrlError) {
@@ -13,8 +15,6 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const providersSettings = await getActivePaymentProvidersSettings(saleorApiUrl);
-
-  console.log(providersSettings); // for deployment debug pusposes
 
   res.status(200).json(providersSettings);
 };

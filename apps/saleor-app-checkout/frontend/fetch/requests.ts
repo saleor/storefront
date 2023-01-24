@@ -17,7 +17,8 @@ export const requestGetPaymentProviderSettings = ({
     {
       method: "GET",
       headers: {
-        Authorization: token ? `Bearer ${token}` : "",
+        "authorization-bearer": token,
+        "saleor-api-url": saleorApiUrl,
       },
     }
   );
@@ -35,7 +36,8 @@ export const requestSetPaymentProviderSettings = ({
     {
       method: "POST",
       headers: {
-        Authorization: token ? `Bearer ${token}` : "",
+        "authorization-bearer": token,
+        "saleor-api-url": saleorApiUrl,
       },
       body: JSON.stringify(data),
     }

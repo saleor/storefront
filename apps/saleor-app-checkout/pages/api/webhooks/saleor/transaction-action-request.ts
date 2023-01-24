@@ -1,14 +1,12 @@
 import * as Sentry from "@sentry/nextjs";
-import { TransactionActionPayloadFragment } from "@/saleor-app-checkout/graphql";
+import {
+  TransactionActionPayloadFragment,
+  TransactionActionRequestSubscriptionDocument,
+} from "@/saleor-app-checkout/graphql";
 import { TransactionReversal } from "@/saleor-app-checkout/types/refunds";
 import { handleMolieRefund } from "@/saleor-app-checkout/backend/payments/providers/mollie";
 import { handleAdyenRefund } from "@/saleor-app-checkout/backend/payments/providers/adyen";
-import { toNextHandler } from "retes/adapter";
-import { withSaleorEventMatch, withWebhookSignatureVerified } from "@saleor/app-sdk/middleware";
-import { Handler, HTTPMethod } from "retes";
 import { Response } from "retes/response";
-import { withMethod } from "retes/middleware";
-import { withSaleorDomainMatch } from "@/saleor-app-checkout/backend/middlewares";
 import { getTransactionProcessedEvents } from "@/saleor-app-checkout/backend/payments/getTransactionProcessedEvents";
 import { updateTransactionProcessedEvents } from "@/saleor-app-checkout/backend/payments/updateTransactionProcessedEvents";
 import {
@@ -17,6 +15,8 @@ import {
   isMollieTransaction,
 } from "@/saleor-app-checkout/backend/payments/utils";
 import { handleDummyRefund } from "@/saleor-app-checkout/backend/payments/providers/dummy/refunds";
+import { NextWebhookApiHandler, SaleorAsyncWebhook } from "@saleor/app-sdk/handlers/next";
+import { saleorApp } from "@/saleor-app-checkout/config/saleorApp";
 
 export const SALEOR_WEBHOOK_TRANSACTION_ENDPOINT = "api/webhooks/saleor/transaction-action-request";
 
@@ -26,18 +26,25 @@ export const config = {
   },
 };
 
-export type TransactionActionPayloadParams = TransactionActionPayloadFragment & {
-  saleorApiUrl: string;
-};
+export const transactionActionRequestWebhook =
+  new SaleorAsyncWebhook<TransactionActionPayloadFragment>({
+    name: "Checkout app payment notifications",
+    webhookPath: "api/webhooks/saleor/transaction-action-request",
+    asyncEvent: "TRANSACTION_ACTION_REQUEST",
+    apl: saleorApp.apl,
+    subscriptionQueryAst: TransactionActionRequestSubscriptionDocument,
+  });
 
-const handler: Handler<TransactionActionPayloadParams> = async (req) => {
-  const saleorApiUrl = req.params.saleorApiUrl;
+const handler: NextWebhookApiHandler<TransactionActionPayloadFragment> = async (
+  req,
+  res,
+  context
+) => {
+  const {
+    authData: { saleorApiUrl },
+    payload: { transaction, action },
+  } = context;
 
-  if (!saleorApiUrl) {
-    return Response.BadRequest({ success: false, message: "Saleor saleorApiUrl param is missing" });
-  }
-
-  const { transaction, action } = req.params;
   console.log("Start processing Saleor transaction action", action, transaction);
 
   if (!transaction?.type || !action?.amount) {
@@ -103,7 +110,7 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
   } catch (err) {
     console.error(err);
     Sentry.captureException(err);
-    return Response.InternalServerError({
+    return res.status(500).json({
       success: false,
       message: "Error while processing event",
     });
@@ -115,13 +122,7 @@ const handler: Handler<TransactionActionPayloadParams> = async (req) => {
   });
 
   console.log("Refund processing complete");
-  return Response.OK({ success: true });
+  return res.status(200).json({ success: true });
 };
 
-export default toNextHandler([
-  withMethod(HTTPMethod.POST),
-  withSaleorDomainMatch,
-  withSaleorEventMatch("transaction_action_request"),
-  withWebhookSignatureVerified(),
-  handler as Handler,
-]);
+export default transactionActionRequestWebhook.createHandler(handler);
