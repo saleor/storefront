@@ -5,7 +5,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { warnAboutMissingTranslation } from "@/checkout-storefront/hooks/useFormattedMessages/utils";
-import { Address, AddressField } from "@/checkout-storefront/components/AddressForm/types";
+import { OptionalAddress, AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import { defaultCountry } from "@/checkout-storefront/lib/consts/countries";
 import {
   AddressFieldLabel,
@@ -47,7 +47,7 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
   );
 
   const getMissingFieldsFromAddress = useCallback(
-    (address: Address) => {
+    (address: OptionalAddress) => {
       if (!address) {
         return [];
       }
@@ -64,7 +64,7 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
   );
 
   const hasAllRequiredFields = useCallback(
-    (address: Address) => !getMissingFieldsFromAddress(address).length,
+    (address: OptionalAddress) => !getMissingFieldsFromAddress(address).length,
     [getMissingFieldsFromAddress]
   );
 

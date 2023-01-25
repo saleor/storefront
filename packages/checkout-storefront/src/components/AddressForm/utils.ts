@@ -9,7 +9,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { isEqual, omit, pick, reduce, uniq } from "lodash-es";
 import {
-  Address,
+  OptionalAddress,
   AddressField,
   AddressFormData,
   ApiAddressField,
@@ -46,7 +46,7 @@ export const getAddressInputData = ({
 });
 
 export const getAddressInputDataFromAddress = (
-  address: Address | Partial<AddressFragment>
+  address: OptionalAddress | Partial<AddressFragment>
 ): AddressInput => {
   if (!address) {
     return {};
@@ -62,7 +62,7 @@ export const getAddressInputDataFromAddress = (
   };
 };
 
-export const getAddressFormDataFromAddress = (address: Address): AddressFormData => {
+export const getAddressFormDataFromAddress = (address: OptionalAddress): AddressFormData => {
   if (!address) {
     return {
       ...getEmptyAddressFormData(),

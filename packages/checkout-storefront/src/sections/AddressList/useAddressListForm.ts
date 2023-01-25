@@ -1,4 +1,4 @@
-import { Address } from "@/checkout-storefront/components/AddressForm/types";
+import { OptionalAddress } from "@/checkout-storefront/components/AddressForm/types";
 import {
   getByMatchingAddress,
   isMatchingAddress,
@@ -20,8 +20,8 @@ export interface AddressListFormData {
 
 interface UseAddressListProps {
   onSubmit: FormSubmitFn<AddressListFormData>;
-  checkoutAddress: Address;
-  defaultAddress: Address;
+  checkoutAddress: OptionalAddress;
+  defaultAddress: OptionalAddress;
   checkAddressAvailability?: boolean;
 }
 
@@ -38,7 +38,7 @@ export const useAddressListForm = ({
   // sdk has outdated types
   const addresses = (user?.addresses || []) as AddressFragment[];
 
-  const previousCheckoutAddress = useRef<Address>(null);
+  const previousCheckoutAddress = useRef<OptionalAddress>(null);
 
   const form = useForm<AddressListFormData>({
     initialValues: {
@@ -59,7 +59,10 @@ export const useAddressListForm = ({
     debouncedSubmit();
   }, [debouncedSubmit, selectedAddressId]);
 
-  const addressListUpdate = async (selectedAddress: Address, addressList: AddressFragment[]) => {
+  const addressListUpdate = async (
+    selectedAddress: OptionalAddress,
+    addressList: AddressFragment[]
+  ) => {
     if (!selectedAddress) {
       return;
     }
@@ -72,10 +75,10 @@ export const useAddressListForm = ({
     handleSubmit();
   };
 
-  const onAddressCreateSuccess = async (address: Address) =>
+  const onAddressCreateSuccess = async (address: OptionalAddress) =>
     addressListUpdate(address, compact([...addressList, address]));
 
-  const onAddressUpdateSuccess = async (address: Address) =>
+  const onAddressUpdateSuccess = async (address: OptionalAddress) =>
     addressListUpdate(
       address,
       addressList.map((existingAddress) =>

@@ -1,4 +1,4 @@
-import { Address } from "@/checkout-storefront/components/AddressForm/types";
+import { OptionalAddress } from "@/checkout-storefront/components/AddressForm/types";
 import {
   getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
@@ -13,12 +13,12 @@ import { useCallback, useEffect, useRef } from "react";
 
 interface BillingSameAsShippingFormData {
   billingSameAsShipping: boolean;
-  billingAddress: Address;
+  billingAddress: OptionalAddress;
 }
 
 interface BillingSameAsShippingFormProps {
   autoSave: boolean;
-  onSetBillingSameAsShipping?: (address: Address) => void;
+  onSetBillingSameAsShipping?: (address: OptionalAddress) => void;
 }
 
 export const useBillingSameAsShippingForm = (
@@ -26,7 +26,7 @@ export const useBillingSameAsShippingForm = (
 ) => {
   const { checkout } = useCheckout();
   const { billingAddress, shippingAddress } = checkout;
-  const previousShippingAddress = useRef<Address>(shippingAddress);
+  const previousShippingAddress = useRef<OptionalAddress>(shippingAddress);
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 

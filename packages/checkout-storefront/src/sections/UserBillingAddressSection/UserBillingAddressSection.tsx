@@ -12,7 +12,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
 import { useBillingSameAsShippingForm } from "@/checkout-storefront/sections/GuestBillingAddressSection/useBillingSameAsShippingForm";
 import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";
-import { Address } from "@/checkout-storefront/components/AddressForm/types";
+import { OptionalAddress } from "@/checkout-storefront/components/AddressForm/types";
 import { getByMatchingAddress } from "@/checkout-storefront/components/AddressForm/utils";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 
@@ -34,7 +34,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
     values: { addressList },
   } = form;
 
-  const handleSetBillingSameAsShipping = (address: Address) => {
+  const handleSetBillingSameAsShipping = (address: OptionalAddress) => {
     const matchingAddress = addressList.find(getByMatchingAddress(address));
 
     if (!address || !matchingAddress) {

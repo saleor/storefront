@@ -5,7 +5,7 @@ export interface AddressFormData
   countryCode: CountryCode;
 }
 
-export type Address = AddressFragment | undefined | null;
+export type OptionalAddress = AddressFragment | undefined | null;
 
 export type AddressField =
   | "city"

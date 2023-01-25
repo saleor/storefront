@@ -72,6 +72,7 @@ export const useAutoSaveAddressForm = ({
   ]);
 
   const onChange: ChangeHandler = (event) => {
+    console.log({ event });
     handleChange(event);
     void partialSubmit();
   };
