@@ -26,7 +26,7 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
     password: "",
   };
 
-  // @ts-ignore because login comes from the sdk which is no longer
+  // @ts-expect-error because login comes from the sdk which is no longer
   // maintained so we'll eventually have to implement our own auth flow
   const onSubmit = useFormSubmit<SignInFormData, typeof login>({
     onSubmit: login,
