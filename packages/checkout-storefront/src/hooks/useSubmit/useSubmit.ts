@@ -19,17 +19,22 @@ import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types"
 import { extractMutationErrors } from "@/checkout-storefront/lib/utils/common";
 import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 
-interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
+interface CallbackProps<TData> {
+  formData: TData;
+  formHelpers?: any;
+}
+
+export interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   parse: ParserFunction<TData, TMutationFn>;
-  onAbort?: (props: { formData: TData }) => void;
-  onSuccess?: (props: { formData: TData; result: MutationData<TMutationFn> }) => void;
-  onError?: (props: { formData: TData; errors: ApiErrors<TData> }) => void;
-  onEnter?: (props: { formData: TData }) => void;
+  onAbort?: (props: CallbackProps<TData>) => void;
+  onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
+  onError?: (props: CallbackProps<TData> & { errors: ApiErrors<TData> }) => void;
+  onEnter?: (props: CallbackProps<TData>) => void;
   shouldAbort?:
-    | ((props: { formData: TData }) => Promise<boolean>)
-    | ((props: { formData: TData }) => boolean);
+    | ((props: CallbackProps<TData>) => Promise<boolean>)
+    | ((props: CallbackProps<TData>) => boolean);
 }
 
 export const useSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
@@ -43,13 +48,13 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
   parse,
 }: UseSubmitProps<TData, TMutationFn>): SimpleSubmitFn<TData> => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
+  const { showErrors } = useAlerts(scope);
   const { checkout } = useCheckout();
-  const { showErrors } = useAlerts("checkoutDeliveryMethodUpdate");
   const localeData = useLocale();
 
   const handleSubmit = useCallback(
-    async (formData: TData = {} as TData) => {
-      const callbackProps = { formData };
+    async (formData: TData = {} as TData, formHelpers?: any) => {
+      const callbackProps: CallbackProps<TData> = { formData, formHelpers };
 
       if (typeof onEnter === "function") {
         onEnter(callbackProps);
@@ -91,7 +96,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
     [
       checkout.channel.slug,
       checkout.id,
-      // parse,
+      parse,
       localeData.locale,
       onAbort,
       onEnter,
@@ -99,7 +104,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
       onSubmit,
       onSuccess,
       setCheckoutUpdateState,
-      // shouldAbort,
+      shouldAbort,
       showErrors,
     ]
   );
