@@ -12,8 +12,8 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 export const Checkbox = ({ label, checked, value, classNames, ...rest }: CheckboxProps) => {
-  const generaredId = useId();
-  const id = rest?.id || generaredId;
+  const generatedId = useId();
+  const id = rest?.id || generatedId;
 
   return (
     <Label className={clsx(styles.label, classNames?.label)} htmlFor={id}>
