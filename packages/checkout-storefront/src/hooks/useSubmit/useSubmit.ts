@@ -31,7 +31,7 @@ export interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends 
   onAbort?: (props: CallbackProps<TData>) => void;
   onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
   onError?: (props: CallbackProps<TData> & { errors: ApiErrors<TData> }) => void;
-  onEnter?: (props: CallbackProps<TData>) => void;
+  onStart?: (props: CallbackProps<TData>) => void;
   shouldAbort?:
     | ((props: CallbackProps<TData>) => Promise<boolean>)
     | ((props: CallbackProps<TData>) => boolean);
@@ -40,7 +40,7 @@ export interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends 
 export const useSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
   onSuccess,
   onError,
-  onEnter,
+  onStart,
   onSubmit,
   onAbort,
   scope,
@@ -56,8 +56,8 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
     async (formData: TData = {} as TData, formHelpers?: any) => {
       const callbackProps: CallbackProps<TData> = { formData, formHelpers };
 
-      if (typeof onEnter === "function") {
-        onEnter(callbackProps);
+      if (typeof onStart === "function") {
+        onStart(callbackProps);
       }
 
       const shouldAbortSubmit =
@@ -99,7 +99,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
       parse,
       localeData.locale,
       onAbort,
-      onEnter,
+      onStart,
       onError,
       onSubmit,
       onSuccess,

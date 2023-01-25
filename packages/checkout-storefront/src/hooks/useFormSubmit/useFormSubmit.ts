@@ -31,7 +31,7 @@ interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends Mut
       errors: ApiErrors<TData>;
     }
   ) => void;
-  onEnter?: (props: CallbackProps<TData>) => void;
+  onStart?: (props: CallbackProps<TData>) => void;
   shouldAbort?:
     | ((props: CallbackProps<TData>) => Promise<boolean>)
     | ((props: CallbackProps<TData>) => boolean);

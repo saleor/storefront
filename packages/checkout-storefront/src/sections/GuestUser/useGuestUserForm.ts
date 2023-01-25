@@ -49,7 +49,7 @@ export const useGuestUserForm = () => {
   const onSubmit = useFormSubmit<GuestUserFormData, typeof userRegister>({
     scope: "userRegister",
     onSubmit: userRegister,
-    onEnter: () => setShouldRegisterUser(false),
+    onStart: () => setShouldRegisterUser(false),
     shouldAbort: async ({ formData, formHelpers: { validateForm } }) => {
       const errors = validateForm(formData);
       return !!Object.values(errors);

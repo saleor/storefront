@@ -16,7 +16,7 @@ export const usePasswordResetRequest = ({ email, onRequest }: PasswordResetFormD
   const onSubmit = useSubmit<{}, typeof requestPasswordReset>({
     scope: "requestPasswordReset",
     onSubmit: requestPasswordReset,
-    onEnter: () => {
+    onStart: () => {
       setPasswordResetSent(true);
       onRequest();
     },
