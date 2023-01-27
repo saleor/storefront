@@ -2,21 +2,24 @@ import { FormDataBase, FormProps, UseFormReturn } from "@/checkout-storefront/ho
 import { useFormik, useFormikContext } from "formik";
 import { useCallback } from "react";
 
-export const useForm = <TData extends FormDataBase>(
-  formProps: FormProps<TData>
-): UseFormReturn<TData> => {
+export const useForm = <TData extends FormDataBase>({
+  initialDirty,
+  ...formProps
+}: FormProps<TData>): UseFormReturn<TData> => {
   const form = useFormik<TData>(formProps);
 
   const { dirty, handleSubmit: handleFormikSubmit } = form;
 
   const handleSubmit = useCallback(
-    (e?: React.FormEvent<HTMLFormElement>) => {
+    (event?: React.FormEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+
       // we do it here because formik doesn't pass props like dirty to onSubmit
-      if (dirty) {
-        handleFormikSubmit(e);
+      if (initialDirty || dirty) {
+        handleFormikSubmit(event);
       }
     },
-    [dirty, handleFormikSubmit]
+    [dirty, handleFormikSubmit, initialDirty]
   );
 
   //@ts-ignore beause keyof Record<string, any> is not string

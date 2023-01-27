@@ -51,6 +51,7 @@ export const useDummyPaymentForm = ({ initialValues }: { initialValues: DummyPay
   const form = useForm<DummyPaymentFormData>({
     onSubmit: dummyPay,
     initialValues,
+    initialDirty: true,
   });
 
   return form;

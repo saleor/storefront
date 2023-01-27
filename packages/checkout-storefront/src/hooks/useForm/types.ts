@@ -22,7 +22,7 @@ export type UseFormReturn<TData extends FormDataBase> = Omit<
   validateForm: (values: Partial<TData>) => Promise<FormErrors<TData>>;
 };
 
-export type FormProps<TData> = FormikConfig<TData>;
+export type FormProps<TData> = FormikConfig<TData> & { initialDirty?: boolean };
 
 export type FormHelpers<TData extends FormDataBase> = Omit<FormikHelpers<TData>, "setErrors"> &
   Pick<UseFormReturn<TData>, "setErrors">;

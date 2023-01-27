@@ -4,12 +4,6 @@ import { AriaLabel } from "@/checkout-storefront/lib/globalTypes";
 
 export interface ButtonProps extends UiKitButtonProps, AriaLabel {}
 
-export const Button: React.FC<ButtonProps> = ({ ariaLabel, onClick, ...rest }) => {
-  return (
-    <UiKitButton
-      {...rest}
-      aria-label={ariaLabel}
-      onClick={onClick as (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void}
-    />
-  );
+export const Button: React.FC<ButtonProps> = ({ ariaLabel, ...rest }) => {
+  return <UiKitButton {...rest} aria-label={ariaLabel} />;
 };
