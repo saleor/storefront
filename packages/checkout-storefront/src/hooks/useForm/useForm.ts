@@ -22,7 +22,6 @@ export const useForm = <TData extends FormDataBase>({
     [dirty, handleFormikSubmit, initialDirty]
   );
 
-  //@ts-ignore beause keyof Record<string, any> is not string
   return { ...form, handleSubmit };
 };
 
