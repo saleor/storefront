@@ -1,6 +1,6 @@
 import { useCheckoutCustomerAttachMutation } from "@/checkout-storefront/graphql";
 import { useAuthState } from "@saleor/sdk";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
 
@@ -10,12 +10,17 @@ export const useCustomerAttach = () => {
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
-  const onSubmit = useSubmit<{}, typeof customerAttach>({
-    scope: "checkoutCustomerAttach",
-    shouldAbort: () => checkout?.user?.id === user?.id || fetching || loading,
-    onSubmit: customerAttach,
-    parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
-  });
+  const onSubmit = useSubmit<{}, typeof customerAttach>(
+    useMemo(
+      () => ({
+        scope: "checkoutCustomerAttach",
+        shouldAbort: () => checkout?.user?.id === user?.id || fetching || loading,
+        onSubmit: customerAttach,
+        parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
+      }),
+      [checkout?.user?.id, customerAttach, fetching, loading, user?.id]
+    )
+  );
 
   useEffect(() => {
     void onSubmit();
