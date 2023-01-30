@@ -80,7 +80,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 
   return (
     <>
-      <div className="flex flex-row justify-between items-baseline">
+      <div className="flex flex-row justify-between items-baseline mb-3">
         <Title className="flex-1">{title}</Title>
         <CountrySelect only={availableCountries} />
       </div>
