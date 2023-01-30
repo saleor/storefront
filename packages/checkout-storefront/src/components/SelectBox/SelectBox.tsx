@@ -21,6 +21,8 @@ export const SelectBox = <TFieldName extends string>({
   value,
   id,
 }: SelectBoxProps<TFieldName>) => {
+  // normally we pass value which is sufficient as an id but in case of doubled forms
+  // such as shipping addresses and billing addresses etc. we need to pass a unique id
   const identifier = id || value;
   const { values, handleChange } = useFormContext<Record<TFieldName, string>>();
   const [field] = useField(name);

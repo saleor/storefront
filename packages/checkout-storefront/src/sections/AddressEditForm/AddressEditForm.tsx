@@ -18,6 +18,7 @@ import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveA
 import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import invariant from "ts-invariant";
 
 export interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
   address: AddressFragment;
@@ -42,7 +43,11 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     onSubmit: userAddressUpdate,
     parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),
     onSuccess: ({ result }) => {
-      onUpdate(result.data?.accountAddressUpdate?.address as AddressFragment);
+      invariant(
+        result.data?.accountAddressUpdate?.address,
+        "Api didn't return address in AccountAddressUpdate mutation. This is most likely a bug in core."
+      );
+      onUpdate(result.data.accountAddressUpdate.address);
       onClose();
     },
   });
