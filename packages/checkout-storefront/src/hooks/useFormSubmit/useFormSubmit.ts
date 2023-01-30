@@ -8,7 +8,7 @@ import {
   SubmitReturnWithErrors,
 } from "@/checkout-storefront/hooks/useSubmit/types";
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
-import { useSubmit, UseSubmitProps } from "@/checkout-storefront/hooks/useSubmit";
+import { useSubmit, UseSubmitProps } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
 
 export type FormSubmitFn<TData extends FormDataBase> = (
   formData: TData,
