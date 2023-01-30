@@ -2,7 +2,7 @@ import { useCheckoutCustomerAttachMutation } from "@/checkout-storefront/graphql
 import { useAuthState } from "@saleor/sdk";
 import { useEffect, useMemo } from "react";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
 
 export const useCustomerAttach = () => {
   const { checkout, loading } = useCheckout();

@@ -5,7 +5,7 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
 
 export interface SummaryItemFormProps {
   line: CheckoutLineFragment;

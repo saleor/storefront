@@ -1,5 +1,5 @@
 import { useRequestPasswordResetMutation } from "@/checkout-storefront/graphql";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useEffect, useState } from "react";
 

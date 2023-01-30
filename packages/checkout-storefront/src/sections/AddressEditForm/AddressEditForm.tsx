@@ -17,7 +17,7 @@ import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
-import { useSubmit } from "@/checkout-storefront/hooks/useSubmit";
+import { useSubmit } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
 
 export interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
   address: AddressFragment;
