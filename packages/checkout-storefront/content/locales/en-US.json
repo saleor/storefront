@@ -371,10 +371,6 @@
     "developer_comment": "single piece price acessibility label",
     "string": "single piece price"
   },
-  "Summary/messages/5J0ywS": {
-    "developer_comment": "quantity",
-    "string": "quantity"
-  },
   "Summary/messages/62kM+I": {
     "developer_comment": "summary title",
     "string": "Summary"
@@ -430,6 +426,10 @@
   "Summary/messages/gfKEVQ": {
     "developer_comment": "apply",
     "string": "Apply"
+  },
+  "Summary/messages/p8ps7O": {
+    "developer_comment": "quantity",
+    "string": "Qty"
   },
   "Summary/messages/r/8W3/": {
     "developer_comment": "undiscounted price acessibility label",
