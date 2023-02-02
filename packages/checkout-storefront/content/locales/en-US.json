@@ -503,6 +503,10 @@
     "developer_comment": "request password reset - email not found error",
     "string": "User with provided email has not been found"
   },
+  "useAlerts/messages/HmxWx+": {
+    "developer_comment": "the account youre trying to sign in to is inactive",
+    "string": "The account you're trying to sign in to is inactive"
+  },
   "useAlerts/messages/JBUgUT": {
     "developer_comment": "checkout billing update country area required error",
     "string": "Please select country area for billing address"
