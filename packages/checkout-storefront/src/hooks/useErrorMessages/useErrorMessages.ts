@@ -4,14 +4,12 @@ import { useFormattedMessages } from "../useFormattedMessages";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import { errorMessages } from "./messages";
 
-export type ErrorMessages = Record<GenericErrorCode, string>;
+export type ErrorMessages = Record<ErrorCode, string>;
 
 interface UseErrorMessages {
   errorMessages: ErrorMessages;
   getMessageByErrorCode: (code: GenericErrorCode) => string;
 }
-
-const errorMessageKeys: ErrorCode[] = ["invalid", "required", "unique"];
 
 export const useErrorMessages = (): UseErrorMessages => {
   const formatMessage = useFormattedMessages();
@@ -31,10 +29,10 @@ export const useErrorMessages = (): UseErrorMessages => {
 
   const translatedErrorMessages: ErrorMessages = useMemo(
     () =>
-      errorMessageKeys.reduce(
+      Object.keys(errorMessages).reduce(
         (result, key) => ({
           ...result,
-          [key]: getMessageByErrorCode(key),
+          [key]: getMessageByErrorCode(key as ErrorCode),
         }),
         {} as ErrorMessages
       ),

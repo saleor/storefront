@@ -634,5 +634,9 @@
   "useErrorMessages/messages/wVsmCj": {
     "developer_comment": "password too similar",
     "string": "Provided password is too similar to your previous password."
+  },
+  "useErrorMessages/messages/y5NEQs": {
+    "developer_comment": "email must be a valid email",
+    "string": "Email must be a valid email"
   }
 }

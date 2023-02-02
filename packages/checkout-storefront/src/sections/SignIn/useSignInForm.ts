@@ -19,6 +19,7 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const validationSchema = object({
     password: string().required(errorMessages.required),
+    email: string().email(errorMessages.emailInvalid).required(errorMessages.required),
   });
 
   const defaultFormData: SignInFormData = {

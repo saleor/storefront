@@ -17,6 +17,11 @@ export const errorMessages = defineMessages<ErrorCode>({
     id: "useErrorMessages/messages/GrUSxl",
     description: "value must be unique",
   },
+  emailInvalid: {
+    defaultMessage: "Email must be a valid email",
+    id: "useErrorMessages/messages/y5NEQs",
+    description: "email must be a valid email",
+  },
   passwordAtLeastCharacters: {
     defaultMessage: "Password must be at least 8 characters",
     id: "useErrorMessages/messages/Hz38OL",

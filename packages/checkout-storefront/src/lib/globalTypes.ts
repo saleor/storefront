@@ -23,6 +23,7 @@ export type ErrorCode =
   | "quantityGreaterThanLimit"
   | "insufficientStock"
   | "invalidCredentials"
+  | "emailInvalid"
   | PasswordErrorCode
   | CheckoutFinalizeErrorCode;
 
