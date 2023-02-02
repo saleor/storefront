@@ -28,6 +28,10 @@ export const usePhoneNumberValidator = (countryCode: CountryCode) => {
 
   const isValid = useCallback(
     (phone: string) => {
+      if (phone === "") {
+        return undefined;
+      }
+
       const valid = isValidPhoneNumber(phone, countryCode);
       return valid ? undefined : errorMessages.invalid;
     },
