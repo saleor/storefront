@@ -11,7 +11,7 @@ export const FormProvider = <TData extends FormDataBase>({
 }>) => (
   // casting because formik doesn't fancy our stricter typing
   <FormikProvider value={form as ReturnType<typeof useFormik<TData>>}>
-    <Form action="post" onSubmit={form.handleSubmit}>
+    <Form action="post" noValidate={true} onSubmit={form.handleSubmit}>
       {children}
     </Form>
   </FormikProvider>
