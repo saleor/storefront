@@ -22,39 +22,43 @@ export const TextInput = ({
   classNames = {},
   type = "text",
   ...rest
-}: TextInputProps) => (
-  <div className={clsx(styles["text-input-container"], classNames.container)}>
-    <input
-      className={clsx(
-        styles["text-input"],
-        {
-          [styles["text-input-error"]]: !!error,
-          [styles["text-input-nolabel"]]: !label,
-        },
-        classNames.input
+}: TextInputProps) => {
+  const hasError = typeof error === "string";
+
+  return (
+    <div className={clsx(styles["text-input-container"], classNames.container)}>
+      <input
+        className={clsx(
+          styles["text-input"],
+          {
+            [styles["text-input-error"]]: hasError,
+            [styles["text-input-nolabel"]]: !label,
+          },
+          classNames.input
+        )}
+        placeholder={placeholder}
+        value={value}
+        required={required}
+        spellCheck={false}
+        {...rest}
+        type={type}
+      />
+      {label && (
+        <Label
+          className={clsx(styles["text-input-label"], {
+            [styles["text-input-filled-label"]]: value || placeholder,
+          })}
+        >
+          {label}
+          {required && "*"}
+        </Label>
       )}
-      placeholder={placeholder}
-      value={value}
-      required={required}
-      spellCheck={false}
-      {...rest}
-      type={type}
-    />
-    {label && (
-      <Label
-        className={clsx(styles["text-input-label"], {
-          [styles["text-input-filled-label"]]: value || placeholder,
-        })}
-      >
-        {label}
-        {required && "*"}
-      </Label>
-    )}
-    {error?.length && (
-      <Text size="sm" color="error" className={styles["text-input-error-caption"]}>
-        {error}
-      </Text>
-    )}
-  </div>
-);
+      {hasError && (
+        <Text size="sm" color="error" className={styles["text-input-error-caption"]}>
+          {error}
+        </Text>
+      )}
+    </div>
+  );
+};
 TextInput.displayName = "TextInput";

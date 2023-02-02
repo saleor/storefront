@@ -31,18 +31,20 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
   // maintained so we'll eventually have to implement our own auth flow
   const onSubmit = useFormSubmit<SignInFormData, typeof login>({
     onSubmit: login,
+    scope: "signIn",
     onSuccess,
     parse: (formData) => formData,
     onError: ({ errors, formHelpers: { setErrors } }) => {
+      const parsedApiErrors = getFormErrorsFromApiErrors(errors);
       //  api will attribute invalid credentials error to
       // email but we'd rather highlight both fields
-      const fieldsErrors = errors.some(
+      const allErrors = errors.some(
         ({ code }) => (code as AccountErrorCode) === "INVALID_CREDENTIALS"
       )
-        ? [...errors, { code: "", message: "", field: "password" } as ApiError<SignInFormData>]
-        : errors;
+        ? { ...parsedApiErrors, password: "" }
+        : parsedApiErrors;
 
-      setErrors(getFormErrorsFromApiErrors(fieldsErrors));
+      setErrors(allErrors);
     },
   });
 

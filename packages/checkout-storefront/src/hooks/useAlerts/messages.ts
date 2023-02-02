@@ -116,7 +116,7 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/oyFho2",
     description: "checkout lines update - insufficient stock error",
   },
-  loginEmailInvalidCredentialsError: {
+  signInEmailInvalidCredentialsError: {
     defaultMessage: "Invalid credentials provided to login",
     id: "useAlerts/messages/nX71XF",
     description: "login - invalid credentials error",
