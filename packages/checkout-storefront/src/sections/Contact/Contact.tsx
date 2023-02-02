@@ -17,8 +17,9 @@ interface ContactProps {
 }
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
-  const { authenticated } = useAuthState();
   useCustomerAttach();
+  const { authenticated, user } = useAuthState();
+  const [email, setEmail] = useState(user?.email || "");
 
   const [passwordResetShown, setPasswordResetShown] = useState(false);
 
@@ -62,13 +63,19 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   return (
     <div>
       {isCurrentSection("guestUser") && (
-        <GuestUser onSectionChange={handleChangeSection("signIn")} />
+        <GuestUser
+          onSectionChange={handleChangeSection("signIn")}
+          onEmailChange={setEmail}
+          email={email}
+        />
       )}
 
       {isCurrentSection("signIn") && (
         <SignIn
           onSectionChange={handleChangeSection("guestUser")}
           onSignInSuccess={handleChangeSection("signedInUser")}
+          onEmailChange={setEmail}
+          email={email}
         />
       )}
 

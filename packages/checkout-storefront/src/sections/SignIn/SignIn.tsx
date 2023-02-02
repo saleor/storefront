@@ -17,16 +17,24 @@ import {
 
 interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignInSuccess: () => void;
+  onEmailChange: (email: string) => void;
+  email: string;
 }
 
-export const SignIn: React.FC<SignInProps> = ({ onSectionChange, onSignInSuccess }) => {
+export const SignIn: React.FC<SignInProps> = ({
+  onSectionChange,
+  onSignInSuccess,
+  onEmailChange,
+  email: initialEmail,
+}) => {
   const formatMessage = useFormattedMessages();
   const { authenticating } = useAuthState();
 
-  const form = useSignInForm({ onSuccess: onSignInSuccess });
+  const form = useSignInForm({ onSuccess: onSignInSuccess, initialEmail });
 
   const {
     values: { email },
+    handleChange,
   } = form;
 
   const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
@@ -42,7 +50,14 @@ export const SignIn: React.FC<SignInProps> = ({ onSectionChange, onSignInSuccess
       onSectionChange={onSectionChange}
     >
       <FormProvider form={form}>
-        <TextInput name="email" label={formatMessage(contactMessages.email)} />
+        <TextInput
+          name="email"
+          label={formatMessage(contactMessages.email)}
+          onChange={(event) => {
+            handleChange(event);
+            onEmailChange(event.target.value);
+          }}
+        />
         <PasswordInput name="password" label={formatMessage(contactMessages.password)} />
         <div className="actions">
           {passwordResetSent && <Text>{formatMessage(contactMessages.linkSent, { email })}</Text>}

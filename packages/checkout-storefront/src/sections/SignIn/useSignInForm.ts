@@ -1,6 +1,5 @@
 import { AccountErrorCode } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
-import { ApiError } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
 import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
@@ -12,7 +11,13 @@ interface SignInFormData {
   password: string;
 }
 
-export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
+interface SignInFormProps {
+  onSuccess: () => void;
+  // shared between sign in form and guest user form
+  initialEmail: string;
+}
+
+export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
   const { login } = useAuth();
   const { getFormErrorsFromApiErrors } = useGetParsedErrors<SignInFormData>();
   const { errorMessages } = useErrorMessages();
@@ -23,7 +28,7 @@ export const useSignInForm = ({ onSuccess }: { onSuccess: () => void }) => {
   });
 
   const defaultFormData: SignInFormData = {
-    email: "",
+    email: initialEmail,
     password: "",
   };
 

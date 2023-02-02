@@ -22,7 +22,7 @@ export type FormProps<TData> = FormikConfig<TData> & { initialDirty?: boolean };
 
 export type FormHelpers<TData extends FormDataBase> = FormikHelpers<TData>;
 
-export type ChangeHandler = (e: React.ChangeEvent<any>) => void;
+export type ChangeHandler<TElement = any> = (e: React.ChangeEvent<TElement>) => void;
 
 export type BlurHandler = (event: FocusEvent<HTMLInputElement>) => void;
 

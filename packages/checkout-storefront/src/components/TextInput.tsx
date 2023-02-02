@@ -1,3 +1,4 @@
+import { ChangeHandler } from "@/checkout-storefront/hooks/useForm";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
 import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
 import { Field, FieldProps } from "formik";
@@ -9,6 +10,7 @@ export interface TextInputProps<TName extends string>
   name: TName;
   label: string;
   optional?: boolean;
+  onChange?: ChangeHandler<HTMLInputElement>;
 }
 
 export const TextInput = <TName extends string>(props: TextInputProps<TName>) => (

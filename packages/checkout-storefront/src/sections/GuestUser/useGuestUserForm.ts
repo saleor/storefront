@@ -23,7 +23,12 @@ export interface GuestUserFormData {
   createAccount: boolean;
 }
 
-export const useGuestUserForm = () => {
+interface GuestUserFormProps {
+  // shared between sign in form and guest user form
+  initialEmail: string;
+}
+
+export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
   const { checkout } = useCheckout();
   const { user } = useAuthState();
   const shouldUserRegister = useUserRegisterState();
@@ -41,7 +46,7 @@ export const useGuestUserForm = () => {
   });
 
   const defaultFormData: GuestUserFormData = {
-    email: checkout.email || "",
+    email: initialEmail || checkout.email || "",
     password: "",
     createAccount: false,
   };
