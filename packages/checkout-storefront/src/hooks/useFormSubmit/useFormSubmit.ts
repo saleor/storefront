@@ -20,7 +20,11 @@ interface CallbackProps<TData extends FormDataBase> {
   formData: TData;
 }
 
-interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
+interface UseFormSubmitProps<
+  TData extends FormDataBase,
+  TMutationFn extends MutationBaseFn,
+  TErrorCodes extends string = string
+> {
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   parse: ParserFunction<TData, TMutationFn>;
@@ -28,7 +32,7 @@ interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends Mut
   onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
   onError?: (
     props: CallbackProps<TData> & {
-      errors: ApiErrors<TData>;
+      errors: ApiErrors<TData, TErrorCodes>;
     }
   ) => void;
   onStart?: (props: CallbackProps<TData>) => void;
@@ -37,11 +41,15 @@ interface UseFormSubmitProps<TData extends FormDataBase, TMutationFn extends Mut
     | ((props: CallbackProps<TData>) => boolean);
 }
 
-const useFormSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>(
-  props: UseFormSubmitProps<TData, TMutationFn>
+const useFormSubmit = <
+  TData extends FormDataBase,
+  TMutationFn extends MutationBaseFn,
+  TErrorCodes extends string = string
+>(
+  props: UseFormSubmitProps<TData, TMutationFn, TErrorCodes>
 ): FormSubmitFn<TData> => {
-  const handleSubmit: FormSubmitFn<TData> = useSubmit<TData, TMutationFn>(
-    props as UseSubmitProps<TData, TMutationFn>
+  const handleSubmit: FormSubmitFn<TData> = useSubmit<TData, TMutationFn, TErrorCodes>(
+    props as UseSubmitProps<TData, TMutationFn, TErrorCodes>
   );
 
   return handleSubmit;

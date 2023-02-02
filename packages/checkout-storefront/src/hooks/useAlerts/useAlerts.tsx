@@ -5,7 +5,7 @@ import { camelCase } from "lodash-es";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import { Text } from "@saleor/ui-kit";
 import { useCallback } from "react";
-import { errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
+import { apiErrorMessages as errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
 import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";

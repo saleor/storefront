@@ -1,7 +1,7 @@
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { defineMessages } from "react-intl";
 
-export const errorMessages = defineMessages<ErrorCode>({
+export const fieldErrorMessages = defineMessages<ErrorCode>({
   invalid: {
     defaultMessage: "Invalid value",
     id: "useErrorMessages/messages/ebt/9V",

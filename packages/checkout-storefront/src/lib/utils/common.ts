@@ -13,10 +13,14 @@ export const getByUnmatchingId =
   (obj: T) =>
     obj.id !== idToCompare;
 
-export const extractMutationErrors = <TData extends FormDataBase, TVars extends AnyVariables = any>(
+export const extractMutationErrors = <
+  TData extends FormDataBase,
+  TErrorCodes extends string = string,
+  TVars extends AnyVariables = any
+>(
   result: OperationResult<TData, TVars> | any // any to cover apollo client
   // mutations, to be removed once we remove apollo client from sdk
-): [boolean, ApiErrors<TData>] => {
+): [boolean, ApiErrors<TData, TErrorCodes>] => {
   const urqlErrors = result?.error ? [result.error] : [];
 
   const graphqlErrors = reduce(

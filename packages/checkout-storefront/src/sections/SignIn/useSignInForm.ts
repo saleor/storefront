@@ -19,7 +19,7 @@ interface SignInFormProps {
 
 export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
   const { login } = useAuth();
-  const { getFormErrorsFromApiErrors } = useGetParsedErrors<SignInFormData>();
+  const { getParsedApiError } = useGetParsedErrors<SignInFormData, AccountErrorCode>();
   const { errorMessages } = useErrorMessages();
 
   const validationSchema = object({
@@ -34,22 +34,31 @@ export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
 
   // @ts-expect-error because login comes from the sdk which is no longer
   // maintained so we'll eventually have to implement our own auth flow
-  const onSubmit = useFormSubmit<SignInFormData, typeof login>({
+  const onSubmit = useFormSubmit<SignInFormData, typeof login, AccountErrorCode>({
     onSubmit: login,
     scope: "signIn",
     onSuccess,
     parse: (formData) => formData,
     onError: ({ errors, formHelpers: { setErrors } }) => {
-      const parsedApiErrors = getFormErrorsFromApiErrors(errors);
-      //  api will attribute invalid credentials error to
-      // email but we'd rather highlight both fields
-      const allErrors = errors.some(
-        ({ code }) => (code as AccountErrorCode) === "INVALID_CREDENTIALS"
-      )
-        ? { ...parsedApiErrors, password: "" }
-        : parsedApiErrors;
+      const parsedErrors = errors.reduce((result, error) => {
+        const { code, field } = error;
+        const parsedError = getParsedApiError(error);
 
-      setErrors(allErrors);
+        if (code === "INVALID_CREDENTIALS" && field === "email") {
+          //  api will attribute invalid credentials error to
+          // email but we'd rather highlight both fields
+          return { ...result, email: parsedError.message, password: "" };
+        }
+
+        if (code === "INACTIVE") {
+          // we don't really want to show anything here
+          return result;
+        }
+
+        return { ...result, [field]: parsedError.message };
+      }, {});
+
+      setErrors(parsedErrors);
     },
   });
 

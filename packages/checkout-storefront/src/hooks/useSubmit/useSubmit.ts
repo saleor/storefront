@@ -24,20 +24,28 @@ interface CallbackProps<TData> {
   formHelpers?: any;
 }
 
-export interface UseSubmitProps<TData extends FormDataBase, TMutationFn extends MutationBaseFn> {
+export interface UseSubmitProps<
+  TData extends FormDataBase,
+  TMutationFn extends MutationBaseFn,
+  TErrorCodes extends string = string
+> {
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   parse: ParserFunction<TData, TMutationFn>;
   onAbort?: (props: CallbackProps<TData>) => void;
   onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
-  onError?: (props: CallbackProps<TData> & { errors: ApiErrors<TData> }) => void;
+  onError?: (props: CallbackProps<TData> & { errors: ApiErrors<TData, TErrorCodes> }) => void;
   onStart?: (props: CallbackProps<TData>) => void;
   shouldAbort?:
     | ((props: CallbackProps<TData>) => Promise<boolean>)
     | ((props: CallbackProps<TData>) => boolean);
 }
 
-export const useSubmit = <TData extends FormDataBase, TMutationFn extends MutationBaseFn>({
+export const useSubmit = <
+  TData extends FormDataBase,
+  TMutationFn extends MutationBaseFn,
+  TErrorCodes extends string = string
+>({
   onSuccess,
   onError,
   onStart,
@@ -46,7 +54,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
   scope,
   shouldAbort,
   parse,
-}: UseSubmitProps<TData, TMutationFn>): SimpleSubmitFn<TData> => {
+}: UseSubmitProps<TData, TMutationFn, TErrorCodes>): SimpleSubmitFn<TData> => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { showErrors } = useAlerts(scope);
   const { checkout } = useCheckout();
@@ -78,7 +86,7 @@ export const useSubmit = <TData extends FormDataBase, TMutationFn extends Mutati
 
       const result = await onSubmit(parse({ ...formData, ...commonData }));
 
-      const [hasErrors, errors] = extractMutationErrors<TData>(result);
+      const [hasErrors, errors] = extractMutationErrors<TData, TErrorCodes>(result);
 
       if (!hasErrors) {
         typeof onSuccess === "function" && onSuccess({ ...callbackProps, result });

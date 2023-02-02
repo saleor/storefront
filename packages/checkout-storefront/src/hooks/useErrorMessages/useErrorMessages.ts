@@ -2,7 +2,7 @@ import { ErrorCode, GenericErrorCode } from "@/checkout-storefront/lib/globalTyp
 import { useCallback, useMemo } from "react";
 import { useFormattedMessages } from "../useFormattedMessages";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
-import { errorMessages } from "./messages";
+import { fieldErrorMessages as errorMessages } from "./messages";
 
 export type ErrorMessages = Record<ErrorCode, string>;
 

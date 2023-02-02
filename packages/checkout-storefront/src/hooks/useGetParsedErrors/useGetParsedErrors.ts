@@ -1,36 +1,37 @@
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
-import { GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { ErrorCode, GenericErrorCode } from "@/checkout-storefront/lib/globalTypes";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
 import { useErrorMessages } from "../useErrorMessages";
-import { ApiErrors, FormErrors, ParsedApiErrors } from "./types";
-
-type UseGetParsedErrors<TFormData extends FormDataBase> = {
-  getParsedApiErrors: (apiErrors: ApiErrors<TFormData>) => ParsedApiErrors<TFormData>;
-  getFormErrorsFromApiErrors: (apiErrors: ApiErrors<TFormData>) => FormErrors<TFormData>;
-};
+import { ApiError, ApiErrors, FormErrors, ParsedApiError, ParsedApiErrors } from "./types";
 
 export const useGetParsedErrors = <
-  TFormData extends FormDataBase
->(): UseGetParsedErrors<TFormData> => {
+  TFormData extends FormDataBase,
+  TErrorCodes extends string = string
+>() => {
   const { getMessageByErrorCode } = useErrorMessages();
 
-  const getParsedApiErrors = useCallback(
-    (apiErrors: ApiErrors<TFormData>) =>
-      apiErrors.map(({ code, field }) => {
-        const errorCode = camelCase(code);
+  const getParsedApiError = useCallback(
+    ({ code, field }: ApiError<TFormData, TErrorCodes>): ParsedApiError<TFormData> => {
+      const errorCode = camelCase(code) as ErrorCode;
 
-        return {
-          field,
-          code: errorCode,
-          message: getMessageByErrorCode(errorCode as GenericErrorCode),
-        };
-      }) as ParsedApiErrors<TFormData>,
+      return {
+        field,
+        code: errorCode,
+        message: getMessageByErrorCode(errorCode as GenericErrorCode),
+      };
+    },
     [getMessageByErrorCode]
   );
 
+  const getParsedApiErrors = useCallback(
+    (apiErrors: ApiErrors<TFormData, TErrorCodes>) =>
+      apiErrors.map(getParsedApiError) as ParsedApiErrors<TFormData>,
+    [getParsedApiError]
+  );
+
   const getFormErrorsFromApiErrors = useCallback(
-    (apiErrors: ApiErrors<TFormData>) =>
+    (apiErrors: ApiErrors<TFormData, TErrorCodes>) =>
       getParsedApiErrors(apiErrors).reduce(
         (result, { field, message }) => ({ ...result, [field]: message }),
         {}
@@ -38,5 +39,5 @@ export const useGetParsedErrors = <
     [getParsedApiErrors]
   );
 
-  return { getParsedApiErrors, getFormErrorsFromApiErrors };
+  return { getParsedApiError, getParsedApiErrors, getFormErrorsFromApiErrors };
 };
