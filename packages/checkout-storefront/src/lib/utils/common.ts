@@ -2,6 +2,7 @@ import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types"
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
 import { reduce } from "lodash-es";
 import { AnyVariables, OperationResult } from "urql";
+import { string } from "yup";
 
 export const getById =
   <T extends { id: string }>(idToCompare: string | undefined) =>
@@ -34,4 +35,13 @@ export const extractMutationErrors = <
   const errors = [...urqlErrors, ...graphqlErrors];
 
   return [errors.length > 0, errors];
+};
+
+export const isValidEmail = async (email: string) => {
+  try {
+    await string().required().email().validate(email);
+    return true;
+  } catch (e) {
+    return false;
+  }
 };

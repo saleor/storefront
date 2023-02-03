@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 
 interface PasswordResetFormData {
   email: string;
-  onRequest: () => void;
+  shouldAbort: () => Promise<boolean>;
 }
 
-export const usePasswordResetRequest = ({ email, onRequest }: PasswordResetFormData) => {
+export const usePasswordResetRequest = ({ email, shouldAbort }: PasswordResetFormData) => {
   const [, requestPasswordReset] = useRequestPasswordResetMutation();
 
   const [passwordResetSent, setPasswordResetSent] = useState(false);
@@ -16,10 +16,7 @@ export const usePasswordResetRequest = ({ email, onRequest }: PasswordResetFormD
   const onSubmit = useSubmit<{}, typeof requestPasswordReset>({
     scope: "requestPasswordReset",
     onSubmit: requestPasswordReset,
-    onStart: () => {
-      setPasswordResetSent(true);
-      onRequest();
-    },
+    shouldAbort,
     onSuccess: () => setPasswordResetSent(true),
     parse: ({ channel }) => ({ email, redirectUrl: getCurrentHref(), channel }),
   });

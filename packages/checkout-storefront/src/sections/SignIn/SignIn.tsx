@@ -14,6 +14,10 @@ import {
   SignInFormContainer,
   SignInFormContainerProps,
 } from "@/checkout-storefront/sections/Contact/SignInFormContainer";
+import { hasErrors } from "@/checkout-storefront/hooks/useForm";
+import { isValidEmail } from "@/checkout-storefront/lib/utils/common";
+import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
+import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 
 interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignInSuccess: () => void;
@@ -27,6 +31,7 @@ export const SignIn: React.FC<SignInProps> = ({
   onEmailChange,
   email: initialEmail,
 }) => {
+  const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
   const { authenticating } = useAuthState();
 
@@ -35,11 +40,26 @@ export const SignIn: React.FC<SignInProps> = ({
   const {
     values: { email },
     handleChange,
+    setErrors,
+    setTouched,
   } = form;
 
   const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
     email,
-    onRequest: () => form.setFieldError("password", undefined),
+    shouldAbort: async () => {
+      // we'll use validateField once we fix it because
+      // https://github.com/jaredpalmer/formik/issues/1755
+      const isValid = await isValidEmail(email);
+
+      if (!isValid) {
+        await setTouched({ email: true });
+        setErrors({ email: errorMessages.emailInvalid });
+        return true;
+      }
+      setErrors({});
+
+      return false;
+    },
   });
 
   return (

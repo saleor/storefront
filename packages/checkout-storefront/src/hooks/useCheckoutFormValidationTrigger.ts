@@ -33,13 +33,11 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
         return;
       }
 
-      const touched = Object.keys(formErrors).reduce(
-        (result, key) => ({ ...result, [key]: true }),
-        {}
+      await setTouched(
+        Object.keys(formErrors).reduce((result, key) => ({ ...result, [key]: true }), {})
       );
 
       setSubmitInProgress(false);
-      void setTouched(touched, true);
       setValidationState(scope, "invalid");
     }
   }, [
