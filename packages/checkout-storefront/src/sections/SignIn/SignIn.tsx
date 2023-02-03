@@ -47,7 +47,7 @@ export const SignIn: React.FC<SignInProps> = ({
   const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
     email,
     shouldAbort: async () => {
-      // we'll use validateField once we fix it because
+      // @todo we'll use validateField once we fix it because
       // https://github.com/jaredpalmer/formik/issues/1755
       const isValid = await isValidEmail(email);
 
