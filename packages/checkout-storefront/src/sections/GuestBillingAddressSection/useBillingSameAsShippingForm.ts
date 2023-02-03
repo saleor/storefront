@@ -26,8 +26,9 @@ export const useBillingSameAsShippingForm = (
   { autoSave, onSetBillingSameAsShipping }: BillingSameAsShippingFormProps = { autoSave: false }
 ) => {
   const { checkout } = useCheckout();
-  const { billingAddress, shippingAddress } = checkout;
+  const { billingAddress, shippingAddress, isShippingRequired } = checkout;
   const previousShippingAddress = useRef<OptionalAddress>(shippingAddress);
+  const previousIsShippingRequired = useRef(isShippingRequired);
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
@@ -150,6 +151,12 @@ export const useBillingSameAsShippingForm = (
 
     void handleShippingAddressChanged();
   }, [billingSameAsShipping, handleSubmit, setFieldValue, shippingAddress]);
+
+  useEffect(() => {
+    if (!isShippingRequired && previousIsShippingRequired) {
+      void setFieldValue("billingSameAsShipping", false);
+    }
+  }, [isShippingRequired, setFieldValue]);
 
   return {
     ...form,
