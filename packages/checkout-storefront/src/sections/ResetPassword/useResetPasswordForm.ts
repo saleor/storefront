@@ -18,6 +18,8 @@ export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) =
     password: string().required(errorMessages.required),
   });
 
+  // @ts-expect-error because login comes from the sdk which is no longer
+  // maintained so we'll eventually have to implement our own auth flow
   const onSubmit = useFormSubmit<ResetPasswordFormData, typeof setPassword>({
     onSubmit: setPassword,
     scope: "resetPassword",
