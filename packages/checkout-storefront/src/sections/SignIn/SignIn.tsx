@@ -14,9 +14,7 @@ import {
   SignInFormContainer,
   SignInFormContainerProps,
 } from "@/checkout-storefront/sections/Contact/SignInFormContainer";
-import { hasErrors } from "@/checkout-storefront/hooks/useForm";
 import { isValidEmail } from "@/checkout-storefront/lib/utils/common";
-import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 
 interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
