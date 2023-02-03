@@ -32,7 +32,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
   const { checkout } = useCheckout();
   const { user } = useAuthState();
   const shouldUserRegister = useUserRegisterState();
-  const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
+  const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
   const { setCheckoutUpdateState: setRegisterState } = useCheckoutUpdateStateChange("userRegister");
@@ -70,6 +70,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
           },
         }),
         onError: ({ errors }) => {
+          setSubmitInProgress(false);
           const hasAccountForCurrentEmail = errors.some(({ code }) => code === "UNIQUE");
 
           if (hasAccountForCurrentEmail) {
@@ -80,7 +81,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
         },
         onSuccess: () => setUserRegistrationDisabled(true),
       }),
-      [setRegisterState, setShouldRegisterUser, userRegister]
+      [setRegisterState, setShouldRegisterUser, setSubmitInProgress, userRegister]
     )
   );
 

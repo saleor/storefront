@@ -73,6 +73,7 @@ export const useSubmit = <
 
       if (shouldAbortSubmit) {
         if (typeof onAbort === "function") {
+          setCheckoutUpdateState("success");
           onAbort(callbackProps);
         }
         return { hasErrors: false, errors: [] };
