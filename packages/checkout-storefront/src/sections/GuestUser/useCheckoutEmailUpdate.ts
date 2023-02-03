@@ -18,7 +18,7 @@ export const useCheckoutEmailUpdate = ({ email }: CheckoutEmailUpdateFormData) =
         scope: "checkoutEmailUpdate",
         onSubmit: updateEmail,
         shouldAbort: async ({ formData: { email } }) => {
-          // we'll use validateField once we fix it because
+          // @todo we'll use validateField once we fix it because
           // https://github.com/jaredpalmer/formik/issues/1755
           const isValid = await isValidEmail(email);
           return !isValid;
