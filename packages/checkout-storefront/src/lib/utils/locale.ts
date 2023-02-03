@@ -1,5 +1,6 @@
 import { CountryCode, LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { Locale } from "@/checkout-storefront/lib/regions";
+import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { snakeCase } from "lodash-es";
 
 export const localeToLanguageCode = (locale: Locale) =>
@@ -17,4 +18,13 @@ export const getParsedLocaleData = (
     locale,
     languageCode: languageCode as LanguageCodeEnum,
   };
+};
+
+export const createGetCountryNames = () => {
+  const countryNames = new Intl.DisplayNames(
+    [getParsedLocaleData(getQueryParams().locale).languageCode],
+    { type: "region" }
+  );
+
+  return (countryCode: CountryCode): string => countryNames.of(countryCode) as string;
 };

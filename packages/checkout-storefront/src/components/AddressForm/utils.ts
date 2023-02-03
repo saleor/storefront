@@ -1,4 +1,4 @@
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
+import { createGetCountryNames, getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import {
   AddressFragment,
@@ -28,6 +28,21 @@ export const getEmptyAddressFormData = (): AddressFormData => ({
   phone: "",
   countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
 });
+
+export const getEmptyAddress = (): AddressFragment => {
+  const getCountryName = createGetCountryNames();
+
+  const { countryCode, ...emptyAddressRest } = getEmptyAddressFormData();
+
+  return {
+    ...emptyAddressRest,
+    id: "",
+    country: {
+      code: countryCode,
+      country: getCountryName(countryCode),
+    },
+  };
+};
 
 export const getAllAddressFieldKeys = () => Object.keys(getEmptyAddressFormData());
 

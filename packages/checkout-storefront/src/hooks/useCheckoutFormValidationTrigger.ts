@@ -9,12 +9,14 @@ import { useCallback, useEffect } from "react";
 interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
   scope: CheckoutFormScope;
   form: UseFormReturn<TData>;
+  skip?: boolean;
 }
 
 // tells forms to validate once the pay button is clicked
 export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   scope,
   form,
+  skip = false,
 }: UseCheckoutFormValidationTriggerProps<TData>) => {
   const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
@@ -40,6 +42,8 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   }, [scope, setTouched, setValidationState, validateForm, validating, values]);
 
   useEffect(() => {
-    void handleGlobalValidationTrigger();
-  }, [handleGlobalValidationTrigger]);
+    if (!skip) {
+      void handleGlobalValidationTrigger();
+    }
+  }, [handleGlobalValidationTrigger, skip]);
 };

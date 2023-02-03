@@ -1,8 +1,7 @@
 import { Select } from "@/checkout-storefront/components/Select";
 import { CountryCode } from "@/checkout-storefront/graphql";
-import { countries } from "@/checkout-storefront/lib/consts/countries";
-import { getParsedLocaleData } from "@/checkout-storefront/lib/utils/locale";
-import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { countries as allCountries } from "@/checkout-storefront/lib/consts/countries";
+import { createGetCountryNames } from "@/checkout-storefront/lib/utils/locale";
 import React from "react";
 
 interface CountrySelectProps {
@@ -10,16 +9,13 @@ interface CountrySelectProps {
 }
 
 export const CountrySelect: React.FC<CountrySelectProps> = ({ only = [] }) => {
-  const countryNames = new Intl.DisplayNames(
-    [getParsedLocaleData(getQueryParams().locale).languageCode],
-    { type: "region" }
-  );
+  const getCountryName = createGetCountryNames();
 
-  const countriesToMap = only.length ? only : countries;
+  const countriesToMap = only.length ? only : allCountries;
 
   const countryOptions = countriesToMap.map((countryCode) => ({
     value: countryCode,
-    label: countryNames.of(countryCode),
+    label: getCountryName(countryCode),
   }));
 
   return (

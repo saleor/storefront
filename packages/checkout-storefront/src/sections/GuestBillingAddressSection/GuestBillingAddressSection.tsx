@@ -15,15 +15,16 @@ export const GuestBillingAddressSection = () => {
     checkout: { isShippingRequired },
   } = useCheckout();
 
-  const form = useGuestBillingAddressForm();
-
-  const { handleBlur, handleChange } = form;
-
   const billingSameAsShippingForm = useBillingSameAsShippingForm({ autoSave: true });
 
   const {
     values: { billingSameAsShipping },
   } = billingSameAsShippingForm;
+
+  // we want to avoid validating this form on "pay" click when it's not visible
+  const form = useGuestBillingAddressForm({ skipValidation: billingSameAsShipping });
+
+  const { handleBlur, handleChange } = form;
 
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>

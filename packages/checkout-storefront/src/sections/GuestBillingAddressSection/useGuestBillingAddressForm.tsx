@@ -16,7 +16,11 @@ import {
 } from "@/checkout-storefront/hooks/useAutoSaveAddressForm";
 import { useMemo } from "react";
 
-export const useGuestBillingAddressForm = () => {
+interface GuestBillingAddressFormProps {
+  skipValidation: boolean;
+}
+
+export const useGuestBillingAddressForm = ({ skipValidation }: GuestBillingAddressFormProps) => {
   const {
     checkout: { billingAddress },
   } = useCheckout();
@@ -51,6 +55,7 @@ export const useGuestBillingAddressForm = () => {
   useCheckoutFormValidationTrigger({
     form,
     scope: "billingAddress",
+    skip: skipValidation,
   });
 
   return form;

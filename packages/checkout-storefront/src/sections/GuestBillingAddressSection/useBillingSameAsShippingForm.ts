@@ -2,6 +2,7 @@ import { OptionalAddress } from "@/checkout-storefront/components/AddressForm/ty
 import {
   getAddressInputDataFromAddress,
   getAddressValidationRulesVariables,
+  getEmptyAddress,
   isMatchingAddress,
   isMatchingAddressData,
 } from "@/checkout-storefront/components/AddressForm/utils";
@@ -86,12 +87,22 @@ export const useBillingSameAsShippingForm = (
     handleChange(event);
   };
 
+  // handle "billing same as shipping" checkbox value changes
   useEffect(() => {
     const handleBillingSameAsShippingChanged = async () => {
-      const hasBillingSameAsShippingChanged =
+      const hasBillingSameAsShippingChangedToTrue =
         billingSameAsShipping && !previousBillingSameAsShipping.current;
 
-      if (!hasBillingSameAsShippingChanged) {
+      const hasBillingSameAsShippingChangedToFalse =
+        !billingSameAsShipping && previousBillingSameAsShipping.current;
+
+      if (hasBillingSameAsShippingChangedToFalse) {
+        // we want to clear all the fields in api
+        await setFieldValue("billingAddress", getEmptyAddress());
+        return;
+      }
+
+      if (!hasBillingSameAsShippingChangedToTrue) {
         return;
       }
 
@@ -111,12 +122,14 @@ export const useBillingSameAsShippingForm = (
     shippingAddress,
   ]);
 
+  // once billing address in api and form don't match, submit
   useEffect(() => {
     if (!isMatchingAddress(billingAddress, form.values.billingAddress)) {
       handleSubmit();
     }
   }, [billingAddress, form.values.billingAddress, handleSubmit]);
 
+  // when shipping address changes in the api, set it as billing address
   useEffect(() => {
     const handleShippingAddressChanged = async () => {
       const hasShippingAddressChanged = !isMatchingAddressData(
@@ -132,7 +145,6 @@ export const useBillingSameAsShippingForm = (
 
       if (billingSameAsShipping) {
         await setFieldValue("billingAddress", shippingAddress);
-        handleSubmit();
       }
     };
 
