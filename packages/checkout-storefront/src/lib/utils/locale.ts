@@ -26,5 +26,5 @@ export const createGetCountryNames = () => {
     { type: "region" }
   );
 
-  return (countryCode: CountryCode): string => countryNames.of(countryCode) as string;
+  return (countryCode: CountryCode): string => countryNames.of(countryCode) || countryCode;
 };
