@@ -1,40 +1,58 @@
+import { FormDataBase, hasErrors, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import {
   CheckoutFormScope,
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
-import { FormDataBase } from "@/checkout-storefront/lib/globalTypes";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 import { useCallback, useEffect } from "react";
-import { UseFormReturn } from "react-hook-form";
 
 interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
   scope: CheckoutFormScope;
-  formProps: Pick<UseFormReturn<TData>, "trigger" | "formState">;
+  form: UseFormReturn<TData>;
+  skip?: boolean;
 }
 
 // tells forms to validate once the pay button is clicked
 export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   scope,
-  formProps,
+  form,
+  skip = false,
 }: UseCheckoutFormValidationTriggerProps<TData>) => {
+  const { setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
 
-  const { trigger } = formProps;
+  const { values, validateForm, setTouched } = form;
 
   const handleGlobalValidationTrigger = useCallback(async () => {
     if (validating) {
-      const formValid = await trigger();
-      if (formValid) {
+      const formErrors = await validateForm(values);
+      if (!hasErrors(formErrors)) {
         setValidationState(scope, "valid");
         return;
       }
 
+      await setTouched(
+        Object.keys(formErrors).reduce((result, key) => ({ ...result, [key]: true }), {})
+      );
+
+      setSubmitInProgress(false);
       setValidationState(scope, "invalid");
     }
-  }, [scope, setValidationState, trigger, validating]);
+  }, [
+    scope,
+    setSubmitInProgress,
+    setTouched,
+    setValidationState,
+    validateForm,
+    validating,
+    values,
+  ]);
 
   useEffect(() => {
-    void handleGlobalValidationTrigger();
-  }, [handleGlobalValidationTrigger]);
+    if (!skip) {
+      void handleGlobalValidationTrigger();
+    }
+  }, [handleGlobalValidationTrigger, skip]);
 };

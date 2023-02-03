@@ -35,7 +35,7 @@ export const Errored = Template.bind({});
 Errored.args = {
   label: "Label",
   value: "Filled value",
-  error: { message: "This is an error mesage for this specific field" },
+  error: "This is an error mesage for this specific field",
   required: true,
 };
 

@@ -6,23 +6,27 @@ import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useCheckoutFinalize } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFinalize";
+import { useAuthState } from "@saleor/sdk";
 
 export const useCheckoutSubmit = () => {
+  const { user } = useAuthState();
   const { validateAllForms } = useCheckoutValidationActions();
   const { validating, validationState } = useCheckoutValidationState();
-  const { updateState, loadingCheckout } = useCheckoutUpdateState();
-  const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
+  const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateState();
+  const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { checkoutFinalize, finalizing } = useCheckoutFinalize();
-
-  const [submitInProgress, setSubmitInProgress] = useState(false);
 
   const submitInitialize = useCallback(() => {
     setSubmitInProgress(true);
     setShouldRegisterUser(true);
-    validateAllForms();
-  }, [setShouldRegisterUser, validateAllForms]);
+
+    // only guest forms should be validated here
+    if (!user) {
+      validateAllForms();
+    }
+  }, [setShouldRegisterUser, setSubmitInProgress, user, validateAllForms]);
 
   const updateStateValues = Object.values(updateState);
 
@@ -50,6 +54,7 @@ export const useCheckoutSubmit = () => {
     allFormsValid,
     anyRequestsInProgress,
     checkoutFinalize,
+    setSubmitInProgress,
   ]);
 
   useEffect(() => void handleSubmit(), [handleSubmit]);

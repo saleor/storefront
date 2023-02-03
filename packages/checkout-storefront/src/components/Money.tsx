@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Text, TextProps } from "@saleor/ui-kit";
-import { Money as MoneyType, getFormattedMoney } from "@/checkout-storefront/lib/utils";
+import { Money as MoneyType, getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
 
 import { AriaLabel, Classes } from "@/checkout-storefront/lib/globalTypes";
 

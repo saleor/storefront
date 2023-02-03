@@ -1,25 +1,26 @@
 import { Text, TextProps } from "@saleor/ui-kit";
 import React from "react";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox, SelectBoxProps } from "@/checkout-storefront/components/SelectBox";
 import { Button } from "@/checkout-storefront/components/Button";
 import { Address } from "@/checkout-storefront/components/Address";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { addressSelectBoxLabels, addressSelectBoxMessages } from "./messages";
+import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 
-interface AddressSelectBoxProps extends Omit<SelectBoxProps, "children"> {
+interface AddressSelectBoxProps<TFieldName extends string>
+  extends Omit<SelectBoxProps<TFieldName>, "children"> {
   address: Partial<Record<AddressField, any>>;
   onEdit: () => void;
   unavailable: boolean;
 }
 
-export const AddressSelectBox: React.FC<AddressSelectBoxProps> = ({
+export const AddressSelectBox = <TFieldName extends string>({
   address,
   onEdit,
   unavailable,
   ...rest
-}) => {
+}: AddressSelectBoxProps<TFieldName>) => {
   const formatMessage = useFormattedMessages();
 
   const textProps: Pick<TextProps, "color"> = unavailable

@@ -36,4 +36,4 @@ export type CheckoutScope =
   | "checkoutLinesDelete"
   | "checkoutEmailUpdate"
   | "resetPassword"
-  | "login";
+  | "signIn";

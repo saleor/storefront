@@ -1,4 +1,4 @@
-import { useFormattedMessages } from "@/checkout-storefront/hooks";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { POPSTATE_EVENT } from "@/checkout-storefront/hooks/useUrlChange";
 import { LanguageIcon } from "@/checkout-storefront/icons";

@@ -1,64 +1,91 @@
+import { getPaymentMethods } from "@/checkout-storefront/fetch";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { usePaymentDataActions } from "@/checkout-storefront/state/paymentDataStore";
-import {
-  ChannelActivePaymentProvidersByChannel,
-  PaymentMethodID,
-  PaymentProviderID,
-} from "checkout-common";
-import { useCallback, useEffect, useState } from "react";
-import { useFetchPaymentMethods } from "@/checkout-storefront/hooks/useFetchPaymentMethods";
+import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
+import { useEffect } from "react";
+import { getParsedPaymentMethods } from "@/checkout-storefront/sections/PaymentSection/utils";
+import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { PaymentMethodID, PaymentProviderID } from "checkout-common";
+import { useFetch } from "@/checkout-storefront/hooks/useFetch";
+import { uniq } from "lodash-es";
+
+interface PaymentProvidersFormData {
+  selectedMethodId: PaymentMethodID | undefined;
+}
 
 export const usePaymentMethodsForm = () => {
   const { setPaymentData } = usePaymentDataActions();
 
-  // possibly change to form once we switch to formik
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodID | null>(null);
+  const {
+    checkout: {
+      channel: { id: channelId },
+    },
+  } = useCheckout();
 
   const {
-    availablePaymentMethods,
-    availablePaymentProviders,
-    activePaymentProvidersByChannel,
-    loading,
-  } = useFetchPaymentMethods();
+    env: { checkoutApiUrl },
+    saleorApiUrl,
+  } = useAppConfig();
 
-  const handleSelect = useCallback(
-    (paymentMethod: PaymentMethodID) => {
-      setSelectedPaymentMethod(paymentMethod);
-      setPaymentData({
-        paymentMethod,
-        paymentProvider: (
-          activePaymentProvidersByChannel as ChannelActivePaymentProvidersByChannel
-        )[paymentMethod] as PaymentProviderID,
-      });
-    },
-    [activePaymentProvidersByChannel, setPaymentData]
-  );
+  const [{ data: allPaymentOptions, loading }] = useFetch(getPaymentMethods, {
+    args: { channelId, checkoutApiUrl, saleorApiUrl },
+    skip: !channelId,
+  });
+
+  const availablePaymentMethods = getParsedPaymentMethods(allPaymentOptions);
 
   const firstAvailableMethod = availablePaymentMethods[0];
+
+  const form = useForm<PaymentProvidersFormData>({
+    initialValues: { selectedMethodId: firstAvailableMethod },
+    onSubmit: ({ selectedMethodId }) => {
+      if (!selectedMethodId || !allPaymentOptions) {
+        return;
+      }
+
+      setPaymentData({
+        paymentMethod: selectedMethodId,
+        paymentProvider: allPaymentOptions[selectedMethodId] as PaymentProviderID,
+      });
+    },
+  });
+
+  const {
+    values: { selectedMethodId },
+    setFieldValue,
+    handleSubmit,
+  } = form;
 
   useEffect(() => {
     if (loading) {
       return;
     }
 
-    if (activePaymentProvidersByChannel && !availablePaymentMethods.length) {
+    if (allPaymentOptions && !availablePaymentMethods.length) {
       throw new Error("No available payment providers");
-    } else if (!selectedPaymentMethod && firstAvailableMethod) {
-      handleSelect(firstAvailableMethod);
+    } else if (!selectedMethodId && firstAvailableMethod) {
+      void setFieldValue("selectedMethodId", firstAvailableMethod);
     }
   }, [
-    loading,
-    activePaymentProvidersByChannel,
+    allPaymentOptions,
     availablePaymentMethods.length,
-    selectedPaymentMethod,
-    handleSelect,
     firstAvailableMethod,
+    loading,
+    selectedMethodId,
+    setFieldValue,
   ]);
 
+  useEffect(() => {
+    handleSubmit();
+  }, [handleSubmit, selectedMethodId]);
+
+  const availablePaymentProviders: PaymentProviderID[] = allPaymentOptions
+    ? (uniq(Object.values(allPaymentOptions)) as PaymentProviderID[])
+    : [];
+
   return {
-    onSelectPaymentMethod: handleSelect,
+    form,
     availablePaymentMethods,
     availablePaymentProviders,
-    activePaymentProvidersByChannel,
-    selectedPaymentMethod,
   };
 };

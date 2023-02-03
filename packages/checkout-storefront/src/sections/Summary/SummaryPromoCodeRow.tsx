@@ -6,7 +6,7 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { getSvgSrc } from "@/checkout-storefront/lib/svgSrc";
 import { useCheckoutRemovePromoCodeMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { summaryLabels } from "./messages";
 import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";

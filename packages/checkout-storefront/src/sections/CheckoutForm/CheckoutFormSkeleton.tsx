@@ -4,7 +4,7 @@ import { ContactSkeleton } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods";
 import { PaymentSectionSkeleton } from "@/checkout-storefront/sections/PaymentSection";
 import { Button, Divider } from "@/checkout-storefront/components";
-import { AddressSectionSkeleton } from "@/checkout-storefront/sections/ShippingAddressSection/AddressSectionSkeleton";
+import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
 import { checkoutFormLabels, checkoutFormMessages } from "./messages";
 
 export const CheckoutFormSkeleton = () => {

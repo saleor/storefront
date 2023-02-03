@@ -1,55 +1,32 @@
-import React, { AllHTMLAttributes, ForwardedRef, forwardRef } from "react";
+import { ChangeHandler } from "@/checkout-storefront/hooks/useForm";
 import { TextInput as UiKitTextInput } from "@saleor/ui-kit";
-import { Control, FieldPath, UseFormRegisterReturn, useWatch } from "react-hook-form";
-import { ControlFormData } from "@/checkout-storefront/hooks/useGetInputProps";
-import { Error } from "../hooks/useErrors";
 import { TextInputProps as UiKitTextInputProps } from "@saleor/ui-kit";
+import { Field, FieldProps } from "formik";
+import { AllHTMLAttributes } from "react";
 
-export interface TextInputProps<
-  TControl extends Control<any, any>,
-  TFormData extends ControlFormData<TControl>
-> extends Omit<AllHTMLAttributes<HTMLInputElement>, "onBlur" | "onChange" | "name" | "ref">,
-    Omit<UseFormRegisterReturn, "ref">,
+export interface TextInputProps<TName extends string>
+  extends Omit<AllHTMLAttributes<HTMLInputElement>, "form">,
     Pick<UiKitTextInputProps, "classNames"> {
-  error: Pick<Error<TFormData>, "message"> | undefined;
-  control: TControl;
-  name: FieldPath<TFormData>;
+  name: TName;
   label: string;
   optional?: boolean;
-  icon?: React.ReactNode;
+  onChange?: ChangeHandler<HTMLInputElement>;
 }
 
-const TextInputComponent = <
-  TControl extends Control<any, any>,
-  TFormData extends ControlFormData<TControl>
->(
-  props: TextInputProps<TControl, TFormData>,
-  ref: ForwardedRef<HTMLInputElement>
-) => {
-  const { name, control, optional, error, ...rest } = props;
+export const TextInput = <TName extends string>(props: TextInputProps<TName>) => (
+  <Field {...props} component={TextInputComponent} />
+);
 
-  const value = useWatch({
-    control,
-    name,
-  });
-
-  return (
-    <UiKitTextInput
-      {...rest}
-      error={error}
-      ref={ref}
-      name={name}
-      value={value}
-      required={!optional}
-    />
-  );
-};
-
-export const TextInput = forwardRef(TextInputComponent) as <
-  TControl extends Control<any, any>,
-  TFormData extends ControlFormData<TControl>
->(
-  props: TextInputProps<TControl, TFormData> & {
-    ref?: ForwardedRef<HTMLInputElement>;
-  }
-) => ReturnType<typeof TextInputComponent>;
+const TextInputComponent = <TName extends string>({
+  field,
+  form: { touched, errors },
+  optional,
+  ...props
+}: FieldProps<TName> & TextInputProps<TName>) => (
+  <UiKitTextInput
+    required={!optional}
+    error={touched[field.name] ? (errors[field.name] as string) : undefined}
+    {...field}
+    {...props}
+  />
+);

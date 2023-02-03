@@ -2,12 +2,13 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./types";
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
-import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import { Text } from "@saleor/ui-kit";
 import { useCallback } from "react";
-import { errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
+import { apiErrorMessages as errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
+import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 
 function useAlerts(scope: CheckoutScope): {
   showErrors: (errors: ApiErrors<any>) => void;
@@ -21,7 +22,7 @@ function useAlerts(): {
 
 function useAlerts(globalScope?: any): any {
   const formatMessage = useFormattedMessages();
-  const { getParsedApiErrors } = useGetParsedApiErrors<any>();
+  const { getParsedApiErrors } = useGetParsedErrors<any>();
 
   const getMessageKey = ({ scope, field, code }: AlertErrorData, { error } = { error: false }) => {
     const keyBase = `${scope}-${field}-${code}`;

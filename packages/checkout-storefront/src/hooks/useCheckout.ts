@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 
 import { Checkout, useCheckoutQuery } from "@/checkout-storefront/graphql";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useAuthState } from "@saleor/sdk";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils/url";

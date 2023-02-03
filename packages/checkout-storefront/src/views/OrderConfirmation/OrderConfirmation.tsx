@@ -4,9 +4,9 @@ import { PageHeader } from "@/checkout-storefront/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout-storefront/sections/Summary";
 import { OrderInfo } from "@/checkout-storefront/sections/OrderInfo";
 import { Text } from "@saleor/ui-kit";
-import { useFormattedMessages } from "@/checkout-storefront/hooks";
-import { useOrder } from "@/checkout-storefront/hooks";
 import { orderInfoMessages } from "@/checkout-storefront/sections/OrderInfo/messages";
+import { useOrder } from "@/checkout-storefront/hooks/useOrder";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
   const { order } = useOrder(orderId);

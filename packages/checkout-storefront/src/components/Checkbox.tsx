@@ -1,12 +1,19 @@
 import React from "react";
-import { Checkbox as UiKitCheckbox, CheckboxProps as UiKitCheckboxProps } from "@saleor/ui-kit";
+import { Checkbox as UiKitCheckbox, ClassNames } from "@saleor/ui-kit";
+import { useField } from "formik";
+import { useFormContext } from "@/checkout-storefront/hooks/useForm";
 
-interface CheckboxProps extends Omit<UiKitCheckboxProps, "onChange"> {
-  onChange: (value: boolean) => void;
+interface CheckboxProps<TName extends string> {
+  name: TName;
+  label: string;
+  classNames: ClassNames<"container">;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({ onChange, ...rest }) => {
-  const { checked } = rest;
+export const Checkbox = <TName extends string>({ name, label }: CheckboxProps<TName>) => {
+  const { handleChange } = useFormContext<Record<TName, string>>();
+  const [field, { value }] = useField(name);
 
-  return <UiKitCheckbox onChange={() => onChange(!checked)} {...rest} />;
+  return (
+    <UiKitCheckbox {...field} label={label} name={name} checked={value} onChange={handleChange} />
+  );
 };

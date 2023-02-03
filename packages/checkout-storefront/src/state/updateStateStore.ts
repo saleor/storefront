@@ -6,16 +6,15 @@ import { memoize, omit } from "lodash-es";
 
 export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
 
-export type CheckoutUpdateStateScope = Exclude<
-  CheckoutScope,
-  "checkoutPay" | "checkoutFinalize" | "login"
->;
+export type CheckoutUpdateStateScope = Exclude<CheckoutScope, "checkoutPay" | "checkoutFinalize">;
 
 interface CheckoutUpdateStateStore {
   shouldRegisterUser: boolean;
+  submitInProgress: boolean;
   loadingCheckout: boolean;
   updateState: Record<CheckoutUpdateStateScope, CheckoutUpdateStateStatus>;
   actions: {
+    setSubmitInProgress: (submitInProgress: boolean) => void;
     setShouldRegisterUser: (shouldRegisterUser: boolean) => void;
     setLoadingCheckout: (loading: boolean) => void;
     setUpdateState: (
@@ -26,6 +25,7 @@ interface CheckoutUpdateStateStore {
 
 const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
   shouldRegisterUser: false,
+  submitInProgress: false,
   loadingCheckout: false,
   updateState: {
     checkoutShippingUpdate: "success",
@@ -37,6 +37,7 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
     checkoutEmailUpdate: "success",
     userRegister: "success",
     resetPassword: "success",
+    signIn: "success",
     requestPasswordReset: "success",
     checkoutLinesDelete: "success",
     userAddressCreate: "success",
@@ -44,6 +45,7 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
     userAddressUpdate: "success",
   },
   actions: {
+    setSubmitInProgress: (submitInProgress: boolean) => set({ submitInProgress }),
     setShouldRegisterUser: (shouldRegisterUser: boolean) =>
       set({
         shouldRegisterUser,
@@ -66,15 +68,16 @@ const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
 }));
 
 export const useCheckoutUpdateState = () => {
-  const { updateState, loadingCheckout } = useCheckoutUpdateStateStore(
-    ({ updateState, loadingCheckout }) => ({
+  const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateStateStore(
+    ({ updateState, loadingCheckout, submitInProgress }) => ({
       updateState,
       loadingCheckout,
+      submitInProgress,
     }),
     shallow
   );
 
-  return { updateState, loadingCheckout };
+  return { updateState, loadingCheckout, submitInProgress };
 };
 
 export const useUserRegisterState = () => {
