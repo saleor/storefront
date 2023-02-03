@@ -4,6 +4,7 @@ import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 import { useCallback, useEffect } from "react";
 
 interface UseCheckoutFormValidationTriggerProps<TData extends FormDataBase> {
@@ -18,6 +19,7 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
   form,
   skip = false,
 }: UseCheckoutFormValidationTriggerProps<TData>) => {
+  const { setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { setValidationState } = useCheckoutValidationActions();
   const { validating } = useCheckoutValidationState();
 
@@ -36,10 +38,19 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
         {}
       );
 
+      setSubmitInProgress(false);
       void setTouched(touched, true);
       setValidationState(scope, "invalid");
     }
-  }, [scope, setTouched, setValidationState, validateForm, validating, values]);
+  }, [
+    scope,
+    setSubmitInProgress,
+    setTouched,
+    setValidationState,
+    validateForm,
+    validating,
+    values,
+  ]);
 
   useEffect(() => {
     if (!skip) {

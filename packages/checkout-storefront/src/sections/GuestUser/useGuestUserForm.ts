@@ -7,9 +7,9 @@ import {
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useAuthState } from "@saleor/sdk";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
+import { ChangeHandler, hasErrors, useForm } from "@/checkout-storefront/hooks/useForm";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
 import { object, string } from "yup";
@@ -51,33 +51,38 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
     createAccount: false,
   };
 
-  const onSubmit = useFormSubmit<GuestUserFormData, typeof userRegister>({
-    scope: "userRegister",
-    onSubmit: userRegister,
-    onStart: () => setShouldRegisterUser(false),
-    shouldAbort: async ({ formData, formHelpers: { validateForm } }) => {
-      const errors = validateForm(formData);
-      return !!Object.values(errors);
-    },
-    parse: ({ email, password, channel }) => ({
-      input: {
-        email,
-        password,
-        channel,
-        redirectUrl: getCurrentHref(),
-      },
-    }),
-    onError: ({ errors }) => {
-      const hasAccountForCurrentEmail = errors.some(({ code }) => code === "UNIQUE");
+  const onSubmit = useFormSubmit<GuestUserFormData, typeof userRegister>(
+    useMemo(
+      () => ({
+        scope: "userRegister",
+        onSubmit: userRegister,
+        onStart: () => setShouldRegisterUser(false),
+        shouldAbort: async ({ formData, formHelpers: { validateForm } }) => {
+          const errors = await validateForm(formData);
+          return hasErrors(errors);
+        },
+        parse: ({ email, password, channel }) => ({
+          input: {
+            email,
+            password,
+            channel,
+            redirectUrl: getCurrentHref(),
+          },
+        }),
+        onError: ({ errors }) => {
+          const hasAccountForCurrentEmail = errors.some(({ code }) => code === "UNIQUE");
 
-      if (hasAccountForCurrentEmail) {
-        setUserRegistrationDisabled(true);
-        // this logic will be removed once new register flow is implemented
-        setTimeout(() => setRegisterState("success"), 100);
-      }
-    },
-    onSuccess: () => setUserRegistrationDisabled(true),
-  });
+          if (hasAccountForCurrentEmail) {
+            setUserRegistrationDisabled(true);
+            // this logic will be removed once new register flow is implemented
+            setTimeout(() => setRegisterState("success"), 100);
+          }
+        },
+        onSuccess: () => setUserRegistrationDisabled(true),
+      }),
+      [setRegisterState, setShouldRegisterUser, userRegister]
+    )
+  );
 
   const form = useForm<GuestUserFormData>({
     initialValues: defaultFormData,
