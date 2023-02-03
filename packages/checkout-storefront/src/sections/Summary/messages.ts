@@ -44,8 +44,8 @@ export const summaryMessages = defineMessages({
     description: "apply",
   },
   quantity: {
-    defaultMessage: "quantity",
-    id: "Summary/messages/5J0ywS",
+    defaultMessage: "Qty",
+    id: "Summary/messages/p8ps7O",
     description: "quantity",
   },
   each: {
