@@ -38,10 +38,5 @@ export const extractMutationErrors = <
 };
 
 export const isValidEmail = async (email: string) => {
-  try {
-    await string().required().email().validate(email);
-    return true;
-  } catch (e) {
-    return false;
-  }
+  return string().required().email().isValidSync(email);
 };
