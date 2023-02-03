@@ -75,7 +75,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 
           if (hasAccountForCurrentEmail) {
             setUserRegistrationDisabled(true);
-            // this logic will be removed once new register flow is implemented
+            // @todo this logic will be removed once new register flow is implemented
             setTimeout(() => setRegisterState("success"), 100);
           }
         },
