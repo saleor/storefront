@@ -11,7 +11,7 @@ interface ResetPasswordFormData {
 
 export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { errorMessages } = useErrorMessages();
-  // change to our own mutation once we rewrite auth
+  // @todo change to our own mutation once we rewrite auth
   const { setPassword } = useAuth();
 
   const validationSchema = object({
