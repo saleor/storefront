@@ -1,9 +1,8 @@
-import { AccountErrorCode } from "@/checkout-storefront/graphql";
+import { AccountErrorCode, useSignInMutation } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { useAuth } from "@saleor/sdk";
 import { object, string } from "yup";
 
 interface SignInFormData {
@@ -18,9 +17,9 @@ interface SignInFormProps {
 }
 
 export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
-  const { login } = useAuth();
   const { getParsedApiError } = useGetParsedErrors<SignInFormData, AccountErrorCode>();
   const { errorMessages } = useErrorMessages();
+  const [, signIn] = useSignInMutation();
 
   const validationSchema = object({
     password: string().required(errorMessages.required),
@@ -32,10 +31,8 @@ export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
     password: "",
   };
 
-  // @ts-expect-error because login comes from the sdk which is no longer
-  // maintained so we'll eventually have to implement our own auth flow
-  const onSubmit = useFormSubmit<SignInFormData, typeof login, AccountErrorCode>({
-    onSubmit: login,
+  const onSubmit = useFormSubmit<SignInFormData, typeof signIn, AccountErrorCode>({
+    onSubmit: signIn,
     scope: "signIn",
     onSuccess,
     parse: (formData) => formData,

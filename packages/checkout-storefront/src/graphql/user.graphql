@@ -1,3 +1,19 @@
+query user {
+  user: me {
+    id
+    email
+    addresses {
+      ...AddressFragment
+    }
+    defaultBillingAddress {
+      ...AddressFragment
+    }
+    defaultShippingAddress {
+      ...AddressFragment
+    }
+  }
+}
+
 mutation userRegister($input: AccountRegisterInput!) {
   accountRegister(input: $input) {
     errors {
@@ -20,6 +36,18 @@ mutation passwordReset($email: String!, $token: String!, $password: String!) {
 
 mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
   requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
+    errors {
+      message
+      field
+      code
+    }
+  }
+}
+
+mutation signIn($email: String!, $password: String!) {
+  tokenCreate(email: $email, password: $password) {
+    token
+    refreshToken
     errors {
       message
       field

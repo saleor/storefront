@@ -208,25 +208,98 @@ export type AccountUpdate = {
 };
 
 /** Represents user address data. */
-export type Address = Node & {
-  __typename?: "Address";
-  city: Scalars["String"];
-  cityArea: Scalars["String"];
-  companyName: Scalars["String"];
-  /** Shop's default country. */
-  country: CountryDisplay;
-  countryArea: Scalars["String"];
-  firstName: Scalars["String"];
-  id: Scalars["ID"];
-  /** Address is user's default billing address. */
-  isDefaultBillingAddress?: Maybe<Scalars["Boolean"]>;
-  /** Address is user's default shipping address. */
-  isDefaultShippingAddress?: Maybe<Scalars["Boolean"]>;
-  lastName: Scalars["String"];
-  phone?: Maybe<Scalars["String"]>;
-  postalCode: Scalars["String"];
-  streetAddress1: Scalars["String"];
-  streetAddress2: Scalars["String"];
+export type Address = Node &
+  ObjectWithMetadata & {
+    __typename?: "Address";
+    city: Scalars["String"];
+    cityArea: Scalars["String"];
+    companyName: Scalars["String"];
+    /** Shop's default country. */
+    country: CountryDisplay;
+    countryArea: Scalars["String"];
+    firstName: Scalars["String"];
+    id: Scalars["ID"];
+    /** Address is user's default billing address. */
+    isDefaultBillingAddress?: Maybe<Scalars["Boolean"]>;
+    /** Address is user's default shipping address. */
+    isDefaultShippingAddress?: Maybe<Scalars["Boolean"]>;
+    lastName: Scalars["String"];
+    /**
+     * List of public metadata items. Can be accessed without permissions.
+     *
+     * Added in Saleor 3.10.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metadata: Array<MetadataItem>;
+    /**
+     * A single key from public metadata.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.10.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafield?: Maybe<Scalars["String"]>;
+    /**
+     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.10.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafields?: Maybe<Scalars["Metadata"]>;
+    phone?: Maybe<Scalars["String"]>;
+    postalCode: Scalars["String"];
+    /**
+     * List of private metadata items. Requires staff permissions to access.
+     *
+     * Added in Saleor 3.10.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetadata: Array<MetadataItem>;
+    /**
+     * A single key from private metadata. Requires staff permissions to access.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.10.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafield?: Maybe<Scalars["String"]>;
+    /**
+     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.10.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafields?: Maybe<Scalars["Metadata"]>;
+    streetAddress1: Scalars["String"];
+    streetAddress2: Scalars["String"];
+  };
+
+/** Represents user address data. */
+export type AddressMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/** Represents user address data. */
+export type AddressMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/** Represents user address data. */
+export type AddressPrivateMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/** Represents user address data. */
+export type AddressPrivateMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /**
@@ -1042,15 +1115,27 @@ export type AssignedVariantAttribute = {
 export type Attribute = Node &
   ObjectWithMetadata & {
     __typename?: "Attribute";
-    /** Whether the attribute can be displayed in the admin product list. Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
+    /**
+     * Whether the attribute can be displayed in the admin product list. Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
+     * @deprecated This field will be removed in Saleor 4.0.
+     */
     availableInGrid: Scalars["Boolean"];
     /** List of attribute's values. */
     choices?: Maybe<AttributeValueCountableConnection>;
     /** The entity type which can be used as a reference. */
     entityType?: Maybe<AttributeEntityTypeEnum>;
+    /**
+     * External ID of this attribute.
+     *
+     * Added in Saleor 3.10.
+     */
+    externalReference?: Maybe<Scalars["String"]>;
     /** Whether the attribute can be filtered in dashboard. Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
     filterableInDashboard: Scalars["Boolean"];
-    /** Whether the attribute can be filtered in storefront. Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
+    /**
+     * Whether the attribute can be filtered in storefront. Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
+     * @deprecated This field will be removed in Saleor 4.0.
+     */
     filterableInStorefront: Scalars["Boolean"];
     id: Scalars["ID"];
     /** The input type to use for entering attribute values in the dashboard. */
@@ -1101,7 +1186,10 @@ export type Attribute = Node &
     productVariantTypes: ProductTypeCountableConnection;
     /** Internal representation of an attribute name. */
     slug?: Maybe<Scalars["String"]>;
-    /** The position of the attribute in the storefront navigation (0 by default). Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES. */
+    /**
+     * The position of the attribute in the storefront navigation (0 by default). Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES, MANAGE_PRODUCTS, MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES.
+     * @deprecated This field will be removed in Saleor 4.0.
+     */
     storefrontSearchPosition: Scalars["Int"];
     /** Returns translated attribute fields for the given language code. */
     translation?: Maybe<AttributeTranslation>;
@@ -1222,13 +1310,27 @@ export type AttributeCreate = {
 };
 
 export type AttributeCreateInput = {
-  /** Whether the attribute can be displayed in the admin product list. */
+  /**
+   * Whether the attribute can be displayed in the admin product list.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   availableInGrid?: InputMaybe<Scalars["Boolean"]>;
   /** The entity type which can be used as a reference. */
   entityType?: InputMaybe<AttributeEntityTypeEnum>;
+  /**
+   * External ID of this attribute.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Whether the attribute can be filtered in dashboard. */
   filterableInDashboard?: InputMaybe<Scalars["Boolean"]>;
-  /** Whether the attribute can be filtered in storefront. */
+  /**
+   * Whether the attribute can be filtered in storefront.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   filterableInStorefront?: InputMaybe<Scalars["Boolean"]>;
   /** The input type to use for entering attribute values in the dashboard. */
   inputType?: InputMaybe<AttributeInputTypeEnum>;
@@ -1238,7 +1340,11 @@ export type AttributeCreateInput = {
   name: Scalars["String"];
   /** Internal representation of an attribute name. */
   slug?: InputMaybe<Scalars["String"]>;
-  /** The position of the attribute in the storefront navigation (0 by default). */
+  /**
+   * The position of the attribute in the storefront navigation (0 by default).
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   storefrontSearchPosition?: InputMaybe<Scalars["Int"]>;
   /** The attribute type. */
   type: AttributeTypeEnum;
@@ -1310,6 +1416,13 @@ export type AttributeDeleted = Event & {
 /** An enumeration. */
 export type AttributeEntityTypeEnum = "PAGE" | "PRODUCT" | "PRODUCT_VARIANT";
 
+export type AttributeEntityTypeEnumFilterInput = {
+  /** The value equal to. */
+  eq?: InputMaybe<AttributeEntityTypeEnum>;
+  /** The value included in. */
+  oneOf?: InputMaybe<Array<AttributeEntityTypeEnum>>;
+};
+
 export type AttributeError = {
   __typename?: "AttributeError";
   /** The error code. */
@@ -1379,6 +1492,13 @@ export type AttributeInputTypeEnum =
   | "REFERENCE"
   | "RICH_TEXT"
   | "SWATCH";
+
+export type AttributeInputTypeEnumFilterInput = {
+  /** The value equal to. */
+  eq?: InputMaybe<AttributeInputTypeEnum>;
+  /** The value included in. */
+  oneOf?: InputMaybe<Array<AttributeInputTypeEnum>>;
+};
 
 /**
  * Reorder the values of an attribute.
@@ -1462,6 +1582,13 @@ export type AttributeTranslation = Node & {
 /** An enumeration. */
 export type AttributeTypeEnum = "PAGE_TYPE" | "PRODUCT_TYPE";
 
+export type AttributeTypeEnumFilterInput = {
+  /** The value equal to. */
+  eq?: InputMaybe<AttributeTypeEnum>;
+  /** The value included in. */
+  oneOf?: InputMaybe<Array<AttributeTypeEnum>>;
+};
+
 /**
  * Updates attribute.
  *
@@ -1478,11 +1605,25 @@ export type AttributeUpdate = {
 export type AttributeUpdateInput = {
   /** New values to be created for this attribute. */
   addValues?: InputMaybe<Array<AttributeValueUpdateInput>>;
-  /** Whether the attribute can be displayed in the admin product list. */
+  /**
+   * Whether the attribute can be displayed in the admin product list.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   availableInGrid?: InputMaybe<Scalars["Boolean"]>;
+  /**
+   * External ID of this product.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Whether the attribute can be filtered in dashboard. */
   filterableInDashboard?: InputMaybe<Scalars["Boolean"]>;
-  /** Whether the attribute can be filtered in storefront. */
+  /**
+   * Whether the attribute can be filtered in storefront.
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   filterableInStorefront?: InputMaybe<Scalars["Boolean"]>;
   /** Whether the attribute is for variants only. */
   isVariantOnly?: InputMaybe<Scalars["Boolean"]>;
@@ -1492,7 +1633,11 @@ export type AttributeUpdateInput = {
   removeValues?: InputMaybe<Array<Scalars["ID"]>>;
   /** Internal representation of an attribute name. */
   slug?: InputMaybe<Scalars["String"]>;
-  /** The position of the attribute in the storefront navigation (0 by default). */
+  /**
+   * The position of the attribute in the storefront navigation (0 by default).
+   *
+   * DEPRECATED: this field will be removed in Saleor 4.0.
+   */
   storefrontSearchPosition?: InputMaybe<Scalars["Int"]>;
   /** The unit of attribute values. */
   unit?: InputMaybe<MeasurementUnitsEnum>;
@@ -1532,6 +1677,12 @@ export type AttributeValue = Node & {
   date?: Maybe<Scalars["Date"]>;
   /** Represents the date/time value of the attribute value. */
   dateTime?: Maybe<Scalars["DateTime"]>;
+  /**
+   * External ID of this attribute value.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: Maybe<Scalars["String"]>;
   /** Represents file URL and content type (if attribute value is a file). */
   file?: Maybe<File>;
   id: Scalars["ID"];
@@ -1611,6 +1762,12 @@ export type AttributeValueCreate = {
 export type AttributeValueCreateInput = {
   /** File content type. */
   contentType?: InputMaybe<Scalars["String"]>;
+  /**
+   * External ID of this attribute value.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** URL of the file attribute. Every time, a new value is created. */
   fileUrl?: InputMaybe<Scalars["String"]>;
   /** Name of a value displayed in the interface. */
@@ -1704,18 +1861,54 @@ export type AttributeValueInput = {
   date?: InputMaybe<Scalars["Date"]>;
   /** Represents the date/time value of the attribute value. */
   dateTime?: InputMaybe<Scalars["DateTime"]>;
+  /**
+   * Attribute value ID.
+   *
+   * Added in Saleor 3.9.
+   */
+  dropdown?: InputMaybe<AttributeValueSelectableTypeInput>;
   /** URL of the file attribute. Every time, a new value is created. */
   file?: InputMaybe<Scalars["String"]>;
   /** ID of the selected attribute. */
   id?: InputMaybe<Scalars["ID"]>;
+  /**
+   * List of attribute value IDs.
+   *
+   * Added in Saleor 3.9.
+   */
+  multiselect?: InputMaybe<Array<AttributeValueSelectableTypeInput>>;
+  /**
+   * Numeric value of an attribute.
+   *
+   * Added in Saleor 3.9.
+   */
+  numeric?: InputMaybe<Scalars["String"]>;
   /** Plain text content. */
   plainText?: InputMaybe<Scalars["String"]>;
   /** List of entity IDs that will be used as references. */
   references?: InputMaybe<Array<Scalars["ID"]>>;
   /** Text content in JSON format. */
   richText?: InputMaybe<Scalars["JSONString"]>;
-  /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. */
+  /**
+   * Attribute value ID.
+   *
+   * Added in Saleor 3.9.
+   */
+  swatch?: InputMaybe<AttributeValueSelectableTypeInput>;
+  /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. This field will be removed in Saleor 4.0. */
   values?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/**
+ * Represents attribute value. If no ID provided, value will be resolved.
+ *
+ * Added in Saleor 3.9.
+ */
+export type AttributeValueSelectableTypeInput = {
+  /** ID of an attribute value. */
+  id?: InputMaybe<Scalars["ID"]>;
+  /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. */
+  value?: InputMaybe<Scalars["String"]>;
 };
 
 export type AttributeValueTranslatableContent = Node & {
@@ -1808,6 +2001,12 @@ export type AttributeValueUpdate = {
 export type AttributeValueUpdateInput = {
   /** File content type. */
   contentType?: InputMaybe<Scalars["String"]>;
+  /**
+   * External ID of this attribute value.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** URL of the file attribute. Every time, a new value is created. */
   fileUrl?: InputMaybe<Scalars["String"]>;
   /** Name of a value displayed in the interface. */
@@ -1849,6 +2048,34 @@ export type AttributeValueUpdated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Where filtering options.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type AttributeWhereInput = {
+  /** List of conditions that must be met. */
+  AND?: InputMaybe<Array<AttributeWhereInput>>;
+  /** A list of conditions of which at least one must be met. */
+  OR?: InputMaybe<Array<AttributeWhereInput>>;
+  entityType?: InputMaybe<AttributeEntityTypeEnumFilterInput>;
+  filterableInDashboard?: InputMaybe<Scalars["Boolean"]>;
+  ids?: InputMaybe<Array<Scalars["ID"]>>;
+  inCategory?: InputMaybe<Scalars["ID"]>;
+  inCollection?: InputMaybe<Scalars["ID"]>;
+  inputType?: InputMaybe<AttributeInputTypeEnumFilterInput>;
+  metadata?: InputMaybe<Array<MetadataFilter>>;
+  name?: InputMaybe<StringFilterInput>;
+  slug?: InputMaybe<StringFilterInput>;
+  type?: InputMaybe<AttributeTypeEnumFilterInput>;
+  unit?: InputMaybe<MeasurementUnitsEnumFilterInput>;
+  valueRequired?: InputMaybe<Scalars["Boolean"]>;
+  visibleInStorefront?: InputMaybe<Scalars["Boolean"]>;
+  withChoices?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type BulkAttributeValueInput = {
@@ -2062,8 +2289,10 @@ export type CategoryProductsArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
   channel?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<ProductFilterInput>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+  sortBy?: InputMaybe<ProductOrder>;
 };
 
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
@@ -3117,14 +3346,20 @@ export type CheckoutLine = Node &
   ObjectWithMetadata & {
     __typename?: "CheckoutLine";
     id: Scalars["ID"];
-    /** List of public metadata items. Can be accessed without permissions. */
+    /**
+     * List of public metadata items. Can be accessed without permissions.
+     *
+     * Added in Saleor 3.5.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
     metadata: Array<MetadataItem>;
     /**
      * A single key from public metadata.
      *
      * Tip: Use GraphQL aliases to fetch multiple keys.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
@@ -3132,19 +3367,25 @@ export type CheckoutLine = Node &
     /**
      * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     metafields?: Maybe<Scalars["Metadata"]>;
-    /** List of private metadata items. Requires staff permissions to access. */
+    /**
+     * List of private metadata items. Requires staff permissions to access.
+     *
+     * Added in Saleor 3.5.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
     privateMetadata: Array<MetadataItem>;
     /**
      * A single key from private metadata. Requires staff permissions to access.
      *
      * Tip: Use GraphQL aliases to fetch multiple keys.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
@@ -3152,7 +3393,7 @@ export type CheckoutLine = Node &
     /**
      * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
@@ -4540,6 +4781,12 @@ export type CustomerInput = {
   defaultShippingAddress?: InputMaybe<AddressInput>;
   /** The unique email address of the user. */
   email?: InputMaybe<Scalars["String"]>;
+  /**
+   * External ID of the customer.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Given name. */
   firstName?: InputMaybe<Scalars["String"]>;
   /** User account is active. */
@@ -4960,6 +5207,12 @@ export type DraftOrderCreateInput = {
   customerNote?: InputMaybe<Scalars["String"]>;
   /** Discount amount for the order. */
   discount?: InputMaybe<Scalars["PositiveDecimal"]>;
+  /**
+   * External ID of this order.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Variant line input consisting of variant ID and quantity of products. */
   lines?: InputMaybe<Array<OrderLineCreateInput>>;
   /** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
@@ -5040,6 +5293,12 @@ export type DraftOrderInput = {
   customerNote?: InputMaybe<Scalars["String"]>;
   /** Discount amount for the order. */
   discount?: InputMaybe<Scalars["PositiveDecimal"]>;
+  /**
+   * External ID of this order.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** URL of a view where users should be redirected to see the order details. URL in RFC 1808 format. */
   redirectUrl?: InputMaybe<Scalars["String"]>;
   /** Shipping address of the customer. */
@@ -5101,6 +5360,14 @@ export type DraftOrderUpdated = Event & {
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
+
+export type ErrorPolicyEnum =
+  /** Save what is possible within a single row. If there are errors in an input data row, try to save it partially and skip the invalid part. */
+  | "IGNORE_FAILED"
+  /** Reject all rows if there is at least one error in any of them. */
+  | "REJECT_EVERYTHING"
+  /** Reject rows with errors. */
+  | "REJECT_FAILED_ROWS";
 
 export type Event = {
   /** Time of the event. */
@@ -6726,6 +6993,12 @@ export type Invoice = Job &
      */
     metafields?: Maybe<Scalars["Metadata"]>;
     number?: Maybe<Scalars["String"]>;
+    /**
+     * Order related to the invoice.
+     *
+     * Added in Saleor 3.10.
+     */
+    order?: Maybe<Order>;
     /** List of private metadata items. Requires staff permissions to access. */
     privateMetadata: Array<MetadataItem>;
     /**
@@ -6821,6 +7094,12 @@ export type InvoiceDeleted = Event & {
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * Order related to the invoice.
+   *
+   * Added in Saleor 3.10.
+   */
+  order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
@@ -6891,6 +7170,12 @@ export type InvoiceRequested = Event & {
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * Order related to the invoice.
+   *
+   * Added in Saleor 3.10.
+   */
+  order: Order;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
@@ -6925,6 +7210,12 @@ export type InvoiceSent = Event & {
   issuedAt?: Maybe<Scalars["DateTime"]>;
   /** The user or application that triggered the event. */
   issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * Order related to the invoice.
+   *
+   * Added in Saleor 3.10.
+   */
+  order?: Maybe<Order>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
@@ -7847,6 +8138,24 @@ export type MeasurementUnitsEnum =
   | "SQ_YD"
   | "TONNE"
   | "YD";
+
+export type MeasurementUnitsEnumFilterInput = {
+  /** The value equal to. */
+  eq?: InputMaybe<MeasurementUnitsEnum>;
+  /** The value included in. */
+  oneOf?: InputMaybe<Array<MeasurementUnitsEnum>>;
+};
+
+export type MediaChoicesSortField =
+  /** Sort media by ID. */
+  "ID";
+
+export type MediaSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort media by the selected field. */
+  field: MediaChoicesSortField;
+};
 
 /** Represents a single menu - an object that is used to help navigate through the store. */
 export type Menu = Node &
@@ -9727,6 +10036,16 @@ export type Mutation = {
    */
   productVariantBulkDelete?: Maybe<ProductVariantBulkDelete>;
   /**
+   * Update multiple product variants.
+   *
+   * Added in Saleor 3.11.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productVariantBulkUpdate?: Maybe<ProductVariantBulkUpdate>;
+  /**
    * Manage product variant prices in channels.
    *
    * Requires one of the following permissions: MANAGE_PRODUCTS.
@@ -10216,11 +10535,31 @@ export type Mutation = {
    */
   webhookCreate?: Maybe<WebhookCreate>;
   /**
-   * Deletes a webhook subscription.
+   * Delete a webhook. Before the deletion, the webhook is deactivated to pause any deliveries that are already scheduled. The deletion might fail if delivery is in progress. In such a case, the webhook is not deleted but remains deactivated.
    *
    * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookDelete?: Maybe<WebhookDelete>;
+  /**
+   * Performs a dry run of a webhook event. Supports a single event (the first, if multiple provided in the `query`). Requires permission relevant to processed event.
+   *
+   * Added in Saleor 3.11.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+   */
+  webhookDryRun?: Maybe<WebhookDryRun>;
+  /**
+   * Trigger a webhook event. Supports a single event (the first, if multiple provided in the `webhook.subscription_query`). Requires permission relevant to processed event. Successfully delivered webhook returns `delivery` with status='PENDING' and empty payload.
+   *
+   * Added in Saleor 3.11.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+   */
+  webhookTrigger?: Maybe<WebhookTrigger>;
   /**
    * Updates a webhook subscription.
    *
@@ -10354,7 +10693,8 @@ export type MutationAttributeCreateArgs = {
 };
 
 export type MutationAttributeDeleteArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type MutationAttributeReorderValuesArgs = {
@@ -10369,7 +10709,8 @@ export type MutationAttributeTranslateArgs = {
 };
 
 export type MutationAttributeUpdateArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
   input: AttributeUpdateInput;
 };
 
@@ -10383,7 +10724,8 @@ export type MutationAttributeValueCreateArgs = {
 };
 
 export type MutationAttributeValueDeleteArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type MutationAttributeValueTranslateArgs = {
@@ -10393,7 +10735,8 @@ export type MutationAttributeValueTranslateArgs = {
 };
 
 export type MutationAttributeValueUpdateArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
   input: AttributeValueUpdateInput;
 };
 
@@ -10633,11 +10976,13 @@ export type MutationCustomerCreateArgs = {
 };
 
 export type MutationCustomerDeleteArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type MutationCustomerUpdateArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
   input: CustomerInput;
 };
 
@@ -10686,7 +11031,8 @@ export type MutationDraftOrderCreateArgs = {
 };
 
 export type MutationDraftOrderDeleteArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type MutationDraftOrderLinesBulkDeleteArgs = {
@@ -10694,7 +11040,8 @@ export type MutationDraftOrderLinesBulkDeleteArgs = {
 };
 
 export type MutationDraftOrderUpdateArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
   input: DraftOrderInput;
 };
 
@@ -10979,7 +11326,8 @@ export type MutationOrderSettingsUpdateArgs = {
 };
 
 export type MutationOrderUpdateArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
   input: OrderUpdateInput;
 };
 
@@ -11135,7 +11483,8 @@ export type MutationProductCreateArgs = {
 };
 
 export type MutationProductDeleteArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type MutationProductMediaBulkDeleteArgs = {
@@ -11196,11 +11545,13 @@ export type MutationProductTypeUpdateArgs = {
 };
 
 export type MutationProductUpdateArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
   input: ProductInput;
 };
 
 export type MutationProductVariantBulkCreateArgs = {
+  errorPolicy?: InputMaybe<ErrorPolicyEnum>;
   product: Scalars["ID"];
   variants: Array<ProductVariantBulkCreateInput>;
 };
@@ -11208,6 +11559,12 @@ export type MutationProductVariantBulkCreateArgs = {
 export type MutationProductVariantBulkDeleteArgs = {
   ids?: InputMaybe<Array<Scalars["ID"]>>;
   skus?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+export type MutationProductVariantBulkUpdateArgs = {
+  errorPolicy?: InputMaybe<ErrorPolicyEnum>;
+  product: Scalars["ID"];
+  variants: Array<ProductVariantBulkUpdateInput>;
 };
 
 export type MutationProductVariantChannelListingUpdateArgs = {
@@ -11221,6 +11578,7 @@ export type MutationProductVariantCreateArgs = {
 };
 
 export type MutationProductVariantDeleteArgs = {
+  externalReference?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["ID"]>;
   sku?: InputMaybe<Scalars["String"]>;
 };
@@ -11269,6 +11627,7 @@ export type MutationProductVariantTranslateArgs = {
 };
 
 export type MutationProductVariantUpdateArgs = {
+  externalReference?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["ID"]>;
   input: ProductVariantInput;
   sku?: InputMaybe<Scalars["String"]>;
@@ -11583,6 +11942,16 @@ export type MutationWebhookDeleteArgs = {
   id: Scalars["ID"];
 };
 
+export type MutationWebhookDryRunArgs = {
+  objectId: Scalars["ID"];
+  query: Scalars["String"];
+};
+
+export type MutationWebhookTriggerArgs = {
+  objectId: Scalars["ID"];
+  webhookId: Scalars["ID"];
+};
+
 export type MutationWebhookUpdateArgs = {
   id: Scalars["ID"];
   input: WebhookUpdateInput;
@@ -11611,19 +11980,9 @@ export type ObjectWithMetadata = {
    * A single key from public metadata.
    *
    * Tip: Use GraphQL aliases to fetch multiple keys.
-   *
-   * Added in Saleor 3.3.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   metafield?: Maybe<Scalars["String"]>;
-  /**
-   * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
-   *
-   * Added in Saleor 3.3.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   */
+  /** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything. */
   metafields?: Maybe<Scalars["Metadata"]>;
   /** List of private metadata items. Requires staff permissions to access. */
   privateMetadata: Array<MetadataItem>;
@@ -11631,19 +11990,9 @@ export type ObjectWithMetadata = {
    * A single key from private metadata. Requires staff permissions to access.
    *
    * Tip: Use GraphQL aliases to fetch multiple keys.
-   *
-   * Added in Saleor 3.3.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   privateMetafield?: Maybe<Scalars["String"]>;
-  /**
-   * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
-   *
-   * Added in Saleor 3.3.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   */
+  /** Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything. */
   privateMetafields?: Maybe<Scalars["Metadata"]>;
 };
 
@@ -11703,6 +12052,12 @@ export type Order = Node &
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     chargeStatus: OrderChargeStatusEnum;
+    /**
+     * ID of the checkout that the order was created from.
+     *
+     * Added in Saleor 3.11.
+     */
+    checkoutId?: Maybe<Scalars["ID"]>;
     collectionPointName?: Maybe<Scalars["String"]>;
     created: Scalars["DateTime"];
     customerNote: Scalars["String"];
@@ -11742,6 +12097,12 @@ export type Order = Node &
      * Requires one of the following permissions: MANAGE_ORDERS.
      */
     events: Array<OrderEvent>;
+    /**
+     * External ID of this order.
+     *
+     * Added in Saleor 3.10.
+     */
+    externalReference?: Maybe<Scalars["String"]>;
     /** List of shipments for the order. */
     fulfillments: Array<Fulfillment>;
     /** List of user gift cards. */
@@ -12481,6 +12842,7 @@ export type OrderFilterInput = {
   authorizeStatus?: InputMaybe<Array<OrderAuthorizeStatusEnum>>;
   channels?: InputMaybe<Array<Scalars["ID"]>>;
   chargeStatus?: InputMaybe<Array<OrderChargeStatusEnum>>;
+  checkoutIds?: InputMaybe<Array<Scalars["ID"]>>;
   created?: InputMaybe<DateRangeInput>;
   customer?: InputMaybe<Scalars["String"]>;
   giftCardBought?: InputMaybe<Scalars["Boolean"]>;
@@ -12625,14 +12987,20 @@ export type OrderLine = Node &
     digitalContentUrl?: Maybe<DigitalContentUrl>;
     id: Scalars["ID"];
     isShippingRequired: Scalars["Boolean"];
-    /** List of public metadata items. Can be accessed without permissions. */
+    /**
+     * List of public metadata items. Can be accessed without permissions.
+     *
+     * Added in Saleor 3.5.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
     metadata: Array<MetadataItem>;
     /**
      * A single key from public metadata.
      *
      * Tip: Use GraphQL aliases to fetch multiple keys.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
@@ -12640,19 +13008,25 @@ export type OrderLine = Node &
     /**
      * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     metafields?: Maybe<Scalars["Metadata"]>;
-    /** List of private metadata items. Requires staff permissions to access. */
+    /**
+     * List of private metadata items. Requires staff permissions to access.
+     *
+     * Added in Saleor 3.5.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
     privateMetadata: Array<MetadataItem>;
     /**
      * A single key from private metadata. Requires staff permissions to access.
      *
      * Tip: Use GraphQL aliases to fetch multiple keys.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
@@ -12660,7 +13034,7 @@ export type OrderLine = Node &
     /**
      * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
      *
-     * Added in Saleor 3.3.
+     * Added in Saleor 3.5.
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
@@ -13077,6 +13451,12 @@ export type OrderUpdate = {
 export type OrderUpdateInput = {
   /** Billing address of the customer. */
   billingAddress?: InputMaybe<AddressInput>;
+  /**
+   * External ID of this order.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Shipping address of the customer. */
   shippingAddress?: InputMaybe<AddressInput>;
   /** Email address of the customer. */
@@ -13696,6 +14076,7 @@ export type PageTypeAvailableAttributesArgs = {
   filter?: InputMaybe<AttributeFilterInput>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+  where?: InputMaybe<AttributeWhereInput>;
 };
 
 /** Represents a type of page. It defines what attributes are available to pages of this type. */
@@ -14779,6 +15160,12 @@ export type PriceRangeInput = {
 export type Product = Node &
   ObjectWithMetadata & {
     __typename?: "Product";
+    /**
+     * Get a single attribute attached to product by attribute slug.
+     *
+     * Added in Saleor 3.9.
+     */
+    attribute?: Maybe<SelectedAttribute>;
     /** List of attributes assigned to this product. */
     attributes: Array<SelectedAttribute>;
     /**
@@ -14816,6 +15203,12 @@ export type Product = Node &
      * @deprecated This field will be removed in Saleor 4.0. Use the `description` field instead.
      */
     descriptionJson?: Maybe<Scalars["JSONString"]>;
+    /**
+     * External ID of this product.
+     *
+     * Added in Saleor 3.10.
+     */
+    externalReference?: Maybe<Scalars["String"]>;
     id: Scalars["ID"];
     /**
      * Get a single product image by ID.
@@ -14898,10 +15291,22 @@ export type Product = Node &
     /** Returns translated product fields for the given language code. */
     translation?: Maybe<ProductTranslation>;
     updatedAt: Scalars["DateTime"];
+    /**
+     * Get a single variant by SKU or ID.
+     *
+     * Added in Saleor 3.9.
+     * @deprecated This field will be removed in Saleor 4.0. Use top-level `variant` query.
+     */
+    variant?: Maybe<ProductVariant>;
     /** List of variants for the product. Requires the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
     variants?: Maybe<Array<ProductVariant>>;
     weight?: Maybe<Weight>;
   };
+
+/** Represents an individual item for sale in the storefront. */
+export type ProductAttributeArgs = {
+  slug: Scalars["String"];
+};
 
 /** Represents an individual item for sale in the storefront. */
 export type ProductImageByIdArgs = {
@@ -14911,6 +15316,11 @@ export type ProductImageByIdArgs = {
 /** Represents an individual item for sale in the storefront. */
 export type ProductIsAvailableArgs = {
   address?: InputMaybe<AddressInput>;
+};
+
+/** Represents an individual item for sale in the storefront. */
+export type ProductMediaArgs = {
+  sortBy?: InputMaybe<MediaSortingInput>;
 };
 
 /** Represents an individual item for sale in the storefront. */
@@ -14952,6 +15362,12 @@ export type ProductThumbnailArgs = {
 /** Represents an individual item for sale in the storefront. */
 export type ProductTranslationArgs = {
   languageCode: LanguageCodeEnum;
+};
+
+/** Represents an individual item for sale in the storefront. */
+export type ProductVariantArgs = {
+  id?: InputMaybe<Scalars["ID"]>;
+  sku?: InputMaybe<Scalars["String"]>;
 };
 
 /**
@@ -15214,6 +15630,12 @@ export type ProductCreateInput = {
    */
   description?: InputMaybe<Scalars["JSONString"]>;
   /**
+   * External ID of this product.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
+  /**
    * Fields required to update the product metadata.
    *
    * Added in Saleor 3.8.
@@ -15352,6 +15774,7 @@ export type ProductErrorCode =
   | "DUPLICATED_INPUT_ITEM"
   | "GRAPHQL_ERROR"
   | "INVALID"
+  | "INVALID_PRICE"
   | "MEDIA_ALREADY_ASSIGNED"
   | "NOT_FOUND"
   | "NOT_PRODUCTS_IMAGE"
@@ -15469,6 +15892,12 @@ export type ProductInput = {
    * Rich text format. For reference see https://editorjs.io/
    */
   description?: InputMaybe<Scalars["JSONString"]>;
+  /**
+   * External ID of this product.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /**
    * Fields required to update the product metadata.
    *
@@ -15933,6 +16362,7 @@ export type ProductTypeAvailableAttributesArgs = {
   filter?: InputMaybe<AttributeFilterInput>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+  where?: InputMaybe<AttributeWhereInput>;
 };
 
 /** Represents a type of product. It defines what attributes are available to products of this type. */
@@ -16182,6 +16612,12 @@ export type ProductVariant = Node &
      * Requires one of the following permissions: MANAGE_PRODUCTS.
      */
     digitalContent?: Maybe<DigitalContent>;
+    /**
+     * External ID of this product.
+     *
+     * Added in Saleor 3.10.
+     */
+    externalReference?: Maybe<Scalars["String"]>;
     id: Scalars["ID"];
     /**
      * List of images for the product variant.
@@ -16371,8 +16807,14 @@ export type ProductVariantBulkCreate = {
   /** Returns how many objects were created. */
   count: Scalars["Int"];
   errors: Array<BulkProductError>;
-  /** List of the created variants. */
+  /** List of the created variants.This field will be removed in Saleor 4.0. */
   productVariants: Array<ProductVariant>;
+  /**
+   * List of the created variants.
+   *
+   * Added in Saleor 3.11.
+   */
+  results: Array<ProductVariantBulkResult>;
 };
 
 export type ProductVariantBulkCreateInput = {
@@ -16380,6 +16822,12 @@ export type ProductVariantBulkCreateInput = {
   attributes: Array<BulkAttributeValueInput>;
   /** List of prices assigned to channels. */
   channelListings?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
+  /**
+   * External ID of this product variant.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /**
    * Fields required to update the product variant metadata.
    *
@@ -16432,6 +16880,123 @@ export type ProductVariantBulkDelete = {
   errors: Array<ProductError>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   productErrors: Array<ProductError>;
+};
+
+export type ProductVariantBulkError = {
+  __typename?: "ProductVariantBulkError";
+  /** List of attributes IDs which causes the error. */
+  attributes?: Maybe<Array<Scalars["ID"]>>;
+  /** List of channel IDs which causes the error. */
+  channels?: Maybe<Array<Scalars["ID"]>>;
+  /** The error code. */
+  code: ProductVariantBulkErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+  /** List of attribute values IDs which causes the error. */
+  values?: Maybe<Array<Scalars["ID"]>>;
+  /** List of warehouse IDs which causes the error. */
+  warehouses?: Maybe<Array<Scalars["ID"]>>;
+};
+
+/** An enumeration. */
+export type ProductVariantBulkErrorCode =
+  | "ATTRIBUTE_ALREADY_ASSIGNED"
+  | "ATTRIBUTE_CANNOT_BE_ASSIGNED"
+  | "ATTRIBUTE_VARIANTS_DISABLED"
+  | "DUPLICATED_INPUT_ITEM"
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "INVALID_PRICE"
+  | "NOT_FOUND"
+  | "NOT_PRODUCTS_VARIANT"
+  | "PRODUCT_NOT_ASSIGNED_TO_CHANNEL"
+  | "REQUIRED"
+  | "UNIQUE";
+
+export type ProductVariantBulkResult = {
+  __typename?: "ProductVariantBulkResult";
+  /** List of errors occurred on create attempt. */
+  errors?: Maybe<Array<ProductVariantBulkError>>;
+  /** Product variant data. */
+  productVariant?: Maybe<ProductVariant>;
+};
+
+/**
+ * Update multiple product variants.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductVariantBulkUpdate = {
+  __typename?: "ProductVariantBulkUpdate";
+  /** Returns how many objects were updated. */
+  count: Scalars["Int"];
+  errors: Array<ProductVariantBulkError>;
+  /** List of the updated variants. */
+  results: Array<ProductVariantBulkResult>;
+};
+
+/**
+ * Input fields to update product variants.
+ *
+ * Added in Saleor 3.11.
+ */
+export type ProductVariantBulkUpdateInput = {
+  /** List of attributes specific to this variant. */
+  attributes?: InputMaybe<Array<BulkAttributeValueInput>>;
+  /** List of prices assigned to channels. */
+  channelListings?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
+  /**
+   * External ID of this product variant.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
+  /** ID of the product variant to update. */
+  id: Scalars["ID"];
+  /**
+   * Fields required to update the product variant metadata.
+   *
+   * Added in Saleor 3.8.
+   */
+  metadata?: InputMaybe<Array<MetadataInput>>;
+  /** Variant name. */
+  name?: InputMaybe<Scalars["String"]>;
+  /**
+   * Determines if variant is in preorder.
+   *
+   * Added in Saleor 3.1.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  preorder?: InputMaybe<PreorderSettingsInput>;
+  /**
+   * Fields required to update the product variant private metadata.
+   *
+   * Added in Saleor 3.8.
+   */
+  privateMetadata?: InputMaybe<Array<MetadataInput>>;
+  /**
+   * Determines maximum quantity of `ProductVariant`,that can be bought in a single checkout.
+   *
+   * Added in Saleor 3.1.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  quantityLimitPerCustomer?: InputMaybe<Scalars["Int"]>;
+  /** Stock keeping unit. */
+  sku?: InputMaybe<Scalars["String"]>;
+  /** Stocks of a product available for sale. */
+  stocks?: InputMaybe<Array<StockInput>>;
+  /** Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. */
+  trackInventory?: InputMaybe<Scalars["Boolean"]>;
+  /** Weight of the Product Variant. */
+  weight?: InputMaybe<Scalars["WeightScalar"]>;
 };
 
 /** Represents product varaint channel listing. */
@@ -16522,6 +17087,12 @@ export type ProductVariantCreate = {
 export type ProductVariantCreateInput = {
   /** List of attributes specific to this variant. */
   attributes: Array<AttributeValueInput>;
+  /**
+   * External ID of this product variant.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /**
    * Fields required to update the product variant metadata.
    *
@@ -16652,6 +17223,12 @@ export type ProductVariantFilterInput = {
 export type ProductVariantInput = {
   /** List of attributes specific to this variant. */
   attributes?: InputMaybe<Array<AttributeValueInput>>;
+  /**
+   * External ID of this product variant.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /**
    * Fields required to update the product variant metadata.
    *
@@ -16821,6 +17398,40 @@ export type ProductVariantSortingInput = {
   direction: OrderDirection;
   /** Sort productVariants by the selected field. */
   field: ProductVariantSortField;
+};
+
+/**
+ * Event sent when product variant stock is updated.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ProductVariantStockUpdated = Event & {
+  __typename?: "ProductVariantStockUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The product variant the event relates to. */
+  productVariant?: Maybe<ProductVariant>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+  /** Look up a warehouse. */
+  warehouse?: Maybe<Warehouse>;
+};
+
+/**
+ * Event sent when product variant stock is updated.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type ProductVariantStockUpdatedProductVariantArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
 };
 
 /**
@@ -17015,7 +17626,7 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_APPS.
    */
   appsInstallations: Array<AppInstallation>;
-  /** Look up an attribute by ID. */
+  /** Look up an attribute by ID, slug or external reference. */
   attribute?: Maybe<Attribute>;
   /** List of the shop's attributes. */
   attributes?: Maybe<AttributeCountableConnection>;
@@ -17139,7 +17750,7 @@ export type Query = {
   menuItems?: Maybe<MenuItemCountableConnection>;
   /** List of the storefront's menus. */
   menus?: Maybe<MenuCountableConnection>;
-  /** Look up an order by ID. */
+  /** Look up an order by ID or external reference. */
   order?: Maybe<Order>;
   /**
    * Look up an order by token.
@@ -17430,6 +18041,7 @@ export type QueryAppsArgs = {
 };
 
 export type QueryAttributeArgs = {
+  externalReference?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["ID"]>;
   slug?: InputMaybe<Scalars["String"]>;
 };
@@ -17441,7 +18053,9 @@ export type QueryAttributesArgs = {
   filter?: InputMaybe<AttributeFilterInput>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+  search?: InputMaybe<Scalars["String"]>;
   sortBy?: InputMaybe<AttributeSortingInput>;
+  where?: InputMaybe<AttributeWhereInput>;
 };
 
 export type QueryCategoriesArgs = {
@@ -17605,7 +18219,8 @@ export type QueryMenusArgs = {
 };
 
 export type QueryOrderArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type QueryOrderByTokenArgs = {
@@ -17694,6 +18309,7 @@ export type QueryPluginsArgs = {
 
 export type QueryProductArgs = {
   channel?: InputMaybe<Scalars["String"]>;
+  externalReference?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["ID"]>;
   slug?: InputMaybe<Scalars["String"]>;
 };
@@ -17713,6 +18329,7 @@ export type QueryProductTypesArgs = {
 
 export type QueryProductVariantArgs = {
   channel?: InputMaybe<Scalars["String"]>;
+  externalReference?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["ID"]>;
   sku?: InputMaybe<Scalars["String"]>;
 };
@@ -17846,6 +18463,7 @@ export type QueryTranslationsArgs = {
 
 export type QueryUserArgs = {
   email?: InputMaybe<Scalars["String"]>;
+  externalReference?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["ID"]>;
 };
 
@@ -17866,7 +18484,8 @@ export type QueryVouchersArgs = {
 };
 
 export type QueryWarehouseArgs = {
-  id: Scalars["ID"];
+  externalReference?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type QueryWarehousesArgs = {
@@ -18572,19 +19191,9 @@ export type ShippingMethod = Node &
      * A single key from public metadata.
      *
      * Tip: Use GraphQL aliases to fetch multiple keys.
-     *
-     * Added in Saleor 3.3.
-     *
-     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     metafield?: Maybe<Scalars["String"]>;
-    /**
-     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
-     *
-     * Added in Saleor 3.3.
-     *
-     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-     */
+    /** Public metadata. Use `keys` to control which fields you want to include. The default is to include everything. */
     metafields?: Maybe<Scalars["Metadata"]>;
     /** Minimum delivery days for this shipping method. */
     minimumDeliveryDays?: Maybe<Scalars["Int"]>;
@@ -18605,19 +19214,9 @@ export type ShippingMethod = Node &
      * A single key from private metadata. Requires staff permissions to access.
      *
      * Tip: Use GraphQL aliases to fetch multiple keys.
-     *
-     * Added in Saleor 3.3.
-     *
-     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     privateMetafield?: Maybe<Scalars["String"]>;
-    /**
-     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
-     *
-     * Added in Saleor 3.3.
-     *
-     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-     */
+    /** Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything. */
     privateMetafields?: Maybe<Scalars["Metadata"]>;
     /** Returns translated shipping method fields for the given language code. */
     translation?: Maybe<ShippingMethodTranslation>;
@@ -19624,6 +20223,12 @@ export type Shop = {
    */
   reserveStockDurationAuthenticatedUser?: Maybe<Scalars["Int"]>;
   /**
+   * Minor Saleor API version.
+   *
+   * Added in Saleor 3.5.
+   */
+  schemaVersion: Scalars["String"];
+  /**
    * List of staff notification recipients.
    *
    * Requires one of the following permissions: MANAGE_SETTINGS.
@@ -20190,6 +20795,20 @@ export type StorePaymentMethodEnum =
   | "OFF_SESSION"
   /** On session storage type. The payment is stored only to be reused when the customer is present in the checkout flow. */
   | "ON_SESSION";
+
+/**
+ * Define the filtering options for string fields.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type StringFilterInput = {
+  /** The value equal to. */
+  eq?: InputMaybe<Scalars["String"]>;
+  /** The value included in. */
+  oneOf?: InputMaybe<Array<Scalars["String"]>>;
+};
 
 export type Subscription = {
   __typename?: "Subscription";
@@ -21496,6 +22115,12 @@ export type User = Node &
      * Requires one of the following permissions: MANAGE_USERS, MANAGE_STAFF.
      */
     events?: Maybe<Array<CustomerEvent>>;
+    /**
+     * External ID of this user.
+     *
+     * Added in Saleor 3.10.
+     */
+    externalReference?: Maybe<Scalars["String"]>;
     firstName: Scalars["String"];
     /** List of the user gift cards. */
     giftCards?: Maybe<GiftCardCountableConnection>;
@@ -21697,6 +22322,12 @@ export type UserCreateInput = {
   defaultShippingAddress?: InputMaybe<AddressInput>;
   /** The unique email address of the user. */
   email?: InputMaybe<Scalars["String"]>;
+  /**
+   * External ID of the customer.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Given name. */
   firstName?: InputMaybe<Scalars["String"]>;
   /** User account is active. */
@@ -22405,6 +23036,12 @@ export type Warehouse = Node &
      */
     companyName: Scalars["String"];
     email: Scalars["String"];
+    /**
+     * External ID of this warehouse.
+     *
+     * Added in Saleor 3.10.
+     */
+    externalReference?: Maybe<Scalars["String"]>;
     id: Scalars["ID"];
     isPrivate: Scalars["Boolean"];
     /** List of public metadata items. Can be accessed without permissions. */
@@ -22518,6 +23155,12 @@ export type WarehouseCreateInput = {
   address: AddressInput;
   /** The email address of the warehouse. */
   email?: InputMaybe<Scalars["String"]>;
+  /**
+   * External ID of the warehouse.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
   /** Warehouse name. */
   name: Scalars["String"];
   /**
@@ -22700,6 +23343,12 @@ export type WarehouseUpdateInput = {
   /** The email address of the warehouse. */
   email?: InputMaybe<Scalars["String"]>;
   /**
+   * External ID of the warehouse.
+   *
+   * Added in Saleor 3.10.
+   */
+  externalReference?: InputMaybe<Scalars["String"]>;
+  /**
    * Visibility of warehouse stocks.
    *
    * Added in Saleor 3.1.
@@ -22823,7 +23472,7 @@ export type WebhookCreateInput = {
 };
 
 /**
- * Deletes a webhook subscription.
+ * Delete a webhook. Before the deletion, the webhook is deactivated to pause any deliveries that are already scheduled. The deletion might fail if delivery is in progress. In such a case, the webhook is not deleted but remains deactivated.
  *
  * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
  */
@@ -22834,6 +23483,44 @@ export type WebhookDelete = {
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   webhookErrors: Array<WebhookError>;
 };
+
+/**
+ * Performs a dry run of a webhook event. Supports a single event (the first, if multiple provided in the `query`). Requires permission relevant to processed event.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+ */
+export type WebhookDryRun = {
+  __typename?: "WebhookDryRun";
+  errors: Array<WebhookDryRunError>;
+  /** JSON payload, that would be sent out to webhook's target URL. */
+  payload?: Maybe<Scalars["JSONString"]>;
+};
+
+export type WebhookDryRunError = {
+  __typename?: "WebhookDryRunError";
+  /** The error code. */
+  code: WebhookDryRunErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type WebhookDryRunErrorCode =
+  | "GRAPHQL_ERROR"
+  | "INVALID_ID"
+  | "MISSING_EVENT"
+  | "MISSING_PERMISSION"
+  | "MISSING_SUBSCRIPTION"
+  | "NOT_FOUND"
+  | "SYNTAX"
+  | "TYPE_NOT_SUPPORTED"
+  | "UNABLE_TO_PARSE";
 
 export type WebhookError = {
   __typename?: "WebhookError";
@@ -22846,7 +23533,17 @@ export type WebhookError = {
 };
 
 /** An enumeration. */
-export type WebhookErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED" | "UNIQUE";
+export type WebhookErrorCode =
+  | "DELETE_FAILED"
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "MISSING_EVENT"
+  | "MISSING_SUBSCRIPTION"
+  | "NOT_FOUND"
+  | "REQUIRED"
+  | "SYNTAX"
+  | "UNABLE_TO_PARSE"
+  | "UNIQUE";
 
 /** Webhook event. */
 export type WebhookEvent = {
@@ -23085,6 +23782,8 @@ export type WebhookEventTypeAsyncEnum =
   | "PRODUCT_VARIANT_METADATA_UPDATED"
   /** A product variant is out of stock. */
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
+  /** A product variant stock is updated */
+  | "PRODUCT_VARIANT_STOCK_UPDATED"
   /** A product variant is updated. */
   | "PRODUCT_VARIANT_UPDATED"
   /** A sale is created. */
@@ -23408,6 +24107,8 @@ export type WebhookEventTypeEnum =
   | "PRODUCT_VARIANT_METADATA_UPDATED"
   /** A product variant is out of stock. */
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
+  /** A product variant stock is updated */
+  | "PRODUCT_VARIANT_STOCK_UPDATED"
   /** A product variant is updated. */
   | "PRODUCT_VARIANT_UPDATED"
   /** A sale is created. */
@@ -23609,6 +24310,7 @@ export type WebhookSampleEventTypeEnum =
   | "PRODUCT_VARIANT_DELETED"
   | "PRODUCT_VARIANT_METADATA_UPDATED"
   | "PRODUCT_VARIANT_OUT_OF_STOCK"
+  | "PRODUCT_VARIANT_STOCK_UPDATED"
   | "PRODUCT_VARIANT_UPDATED"
   | "SALE_CREATED"
   | "SALE_DELETED"
@@ -23636,6 +24338,44 @@ export type WebhookSampleEventTypeEnum =
   | "WAREHOUSE_DELETED"
   | "WAREHOUSE_METADATA_UPDATED"
   | "WAREHOUSE_UPDATED";
+
+/**
+ * Trigger a webhook event. Supports a single event (the first, if multiple provided in the `webhook.subscription_query`). Requires permission relevant to processed event. Successfully delivered webhook returns `delivery` with status='PENDING' and empty payload.
+ *
+ * Added in Saleor 3.11.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+ */
+export type WebhookTrigger = {
+  __typename?: "WebhookTrigger";
+  delivery?: Maybe<EventDelivery>;
+  errors: Array<WebhookTriggerError>;
+};
+
+export type WebhookTriggerError = {
+  __typename?: "WebhookTriggerError";
+  /** The error code. */
+  code: WebhookTriggerErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type WebhookTriggerErrorCode =
+  | "GRAPHQL_ERROR"
+  | "INVALID_ID"
+  | "MISSING_EVENT"
+  | "MISSING_PERMISSION"
+  | "MISSING_QUERY"
+  | "MISSING_SUBSCRIPTION"
+  | "NOT_FOUND"
+  | "SYNTAX"
+  | "TYPE_NOT_SUPPORTED"
+  | "UNABLE_TO_PARSE";
 
 /**
  * Updates a webhook subscription.
@@ -24081,61 +24821,6 @@ export type CheckoutQuery = {
         }> | null;
       };
     }>;
-  } | null;
-};
-
-export type UserQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserQuery = {
-  __typename?: "Query";
-  me?: {
-    __typename?: "User";
-    id: string;
-    addresses: Array<{
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    }>;
-    defaultBillingAddress?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-    defaultShippingAddress?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
   } | null;
 };
 
@@ -25980,6 +26665,62 @@ export type OrderQuery = {
   } | null;
 };
 
+export type UserQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserQuery = {
+  __typename?: "Query";
+  user?: {
+    __typename?: "User";
+    id: string;
+    email: string;
+    addresses: Array<{
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    }>;
+    defaultBillingAddress?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+    defaultShippingAddress?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+  } | null;
+};
+
 export type UserRegisterMutationVariables = Exact<{
   input: AccountRegisterInput;
 }>;
@@ -26026,6 +26767,26 @@ export type RequestPasswordResetMutation = {
   __typename?: "Mutation";
   requestPasswordReset?: {
     __typename?: "RequestPasswordReset";
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+  } | null;
+};
+
+export type SignInMutationVariables = Exact<{
+  email: Scalars["String"];
+  password: Scalars["String"];
+}>;
+
+export type SignInMutation = {
+  __typename?: "Mutation";
+  tokenCreate?: {
+    __typename?: "CreateToken";
+    token?: string | null;
+    refreshToken?: string | null;
     errors: Array<{
       __typename?: "AccountError";
       message?: string | null;
@@ -26379,27 +27140,6 @@ export function useCheckoutQuery(
     ...options,
   });
 }
-export const UserDocument = gql`
-  query user {
-    me {
-      id
-      addresses {
-        ...AddressFragment
-      }
-      defaultBillingAddress {
-        ...AddressFragment
-      }
-      defaultShippingAddress {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AddressFragmentDoc}
-`;
-
-export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
-  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options });
-}
 export const ChannelDocument = gql`
   query channel($slug: String!) {
     channel(slug: $slug) {
@@ -26749,6 +27489,28 @@ export const OrderDocument = gql`
 export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
   return Urql.useQuery<OrderQuery, OrderQueryVariables>({ query: OrderDocument, ...options });
 }
+export const UserDocument = gql`
+  query user {
+    user: me {
+      id
+      email
+      addresses {
+        ...AddressFragment
+      }
+      defaultBillingAddress {
+        ...AddressFragment
+      }
+      defaultShippingAddress {
+        ...AddressFragment
+      }
+    }
+  }
+  ${AddressFragmentDoc}
+`;
+
+export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
+  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options });
+}
 export const UserRegisterDocument = gql`
   mutation userRegister($input: AccountRegisterInput!) {
     accountRegister(input: $input) {
@@ -26799,4 +27561,21 @@ export function useRequestPasswordResetMutation() {
   return Urql.useMutation<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(
     RequestPasswordResetDocument
   );
+}
+export const SignInDocument = gql`
+  mutation signIn($email: String!, $password: String!) {
+    tokenCreate(email: $email, password: $password) {
+      token
+      refreshToken
+      errors {
+        message
+        field
+        code
+      }
+    }
+  }
+`;
+
+export function useSignInMutation() {
+  return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
 }

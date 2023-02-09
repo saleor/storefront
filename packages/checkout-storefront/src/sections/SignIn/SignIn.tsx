@@ -16,6 +16,7 @@ import {
 } from "@/checkout-storefront/sections/Contact/SignInFormContainer";
 import { isValidEmail } from "@/checkout-storefront/lib/utils/common";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignInSuccess: () => void;
@@ -29,11 +30,17 @@ export const SignIn: React.FC<SignInProps> = ({
   onEmailChange,
   email: initialEmail,
 }) => {
+  const {
+    checkout: { email: checkoutEmail },
+  } = useCheckout();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
   const { authenticating } = useAuthState();
 
-  const form = useSignInForm({ onSuccess: onSignInSuccess, initialEmail });
+  const form = useSignInForm({
+    onSuccess: onSignInSuccess,
+    initialEmail: initialEmail || checkoutEmail || "",
+  });
 
   const {
     values: { email },

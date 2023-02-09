@@ -45,6 +45,7 @@
     "concurrently": "7.5.0",
     "formik": "^2.2.9",
     "hex-rgb": "5.0.0",
+    "jose": "4.10.3",
     "libphonenumber-js": "^1.10.14",
     "lodash-es": "4.17.21",
     "query-string": "7.1.1",

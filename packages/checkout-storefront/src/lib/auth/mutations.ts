@@ -10,8 +10,8 @@ export const accountErrorFragment = gql`
 
 export const REFRESH_TOKEN = gql`
   ${accountErrorFragment}
-  mutation refreshToken($csrfToken: String!) {
-    tokenRefresh(csrfToken: $csrfToken) {
+  mutation refreshToken($refreshToken: String!) {
+    tokenRefresh(refreshToken: $refreshToken) {
       token
       errors {
         ...AccountErrorFragment

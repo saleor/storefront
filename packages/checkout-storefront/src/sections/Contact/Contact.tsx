@@ -2,11 +2,11 @@ import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { SignedInUser } from "../SignedInUser/SignedInUser";
 import { ResetPassword } from "../ResetPassword/ResetPassword";
-import { useAuthState } from "@saleor/sdk";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { SignIn } from "@/checkout-storefront/sections/SignIn/SignIn";
 import { GuestUser } from "@/checkout-storefront/sections/GuestUser/GuestUser";
+import { useUserQuery } from "@/checkout-storefront/graphql";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -18,9 +18,11 @@ interface ContactProps {
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   useCustomerAttach();
-  const { authenticated, user } = useAuthState();
+  const [{ data }] = useUserQuery();
+  const user = data?.user;
   const [email, setEmail] = useState(user?.email || "");
 
+  console.log({ user });
   const [passwordResetShown, setPasswordResetShown] = useState(false);
 
   const selectInitialSection = (): Section => {
@@ -30,7 +32,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       return "resetPassword";
     }
 
-    return authenticated ? "signedInUser" : "guestUser";
+    return user ? "signedInUser" : "guestUser";
   };
 
   const passwordResetToken = getQueryParams().passwordResetToken;
