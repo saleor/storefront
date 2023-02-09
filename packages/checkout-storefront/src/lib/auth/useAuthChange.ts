@@ -1,8 +1,4 @@
-import {
-  AuthState,
-  AUTH_STATE_KEY,
-  STORAGE_EVENT_KEY,
-} from "@/checkout-storefront/lib/auth/localStorage";
+import { AuthState, AUTH_STATE_KEY, STORAGE_EVENT_KEY } from "./localStorage";
 
 interface UseAuthChangeProps {
   onAuthSuccess: () => void;
@@ -42,7 +38,7 @@ export const useAuthChange = ({ onAuthSuccess, onAuthError }: UseAuthChangeProps
   };
 
   // for current window
-  window.addEventListener(STORAGE_EVENT_KEY, handleStorageChange);
+  window.addEventListener(STORAGE_EVENT_KEY, handleStorageChange as EventListener);
   //  for other windows
   window.addEventListener("storage", handleStorageChange);
 };

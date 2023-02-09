@@ -1,4 +1,4 @@
-import { clearAuthState, clearRefreshToken } from "@/checkout-storefront/lib/auth/localStorage";
+import { clearAuthState, clearRefreshToken } from "./localStorage";
 
 export const useAuthActions = () => {
   const logout = () => {

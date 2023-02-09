@@ -1,37 +1,10 @@
-import {
-  AuthState,
-  getAuthState,
-  getRefreshToken,
-  setAuthState,
-  setRefreshToken,
-} from "@/checkout-storefront/lib/auth/localStorage";
+import { AuthState, getAuthState, getRefreshToken, setRefreshToken } from "./localStorage";
 import { REFRESH_TOKEN } from "./mutations";
 import { print } from "graphql/language/printer";
+import { handleAuthFail, handleAuthSuccess, isExpiredToken } from "./utils";
+import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
 
 const TOKEN_CREATE_MUTATION_NAME = "tokenCreate";
-const MILLI_MULTIPLYER = 1000;
-
-type Fetch = typeof fetch;
-
-// returns timestamp
-const getTokenExpiry = (token: string): number => {
-  const tokenParts = token.split(".");
-  const decodedTokenData: string = Buffer.from(tokenParts[1] || "", "base64");
-  const parsedTokenData = JSON.parse(decodedTokenData);
-
-  console.log({ parsedTokenData });
-  return parsedTokenData.exp || 0;
-};
-
-const isExpiredToken = (token: string) => {
-  // we'll assume api needing some time to process our request
-  const expiryTime = (getTokenExpiry(token) - 2) * MILLI_MULTIPLYER;
-  return expiryTime <= Date.now();
-};
-
-const handleAuthFail = () => setAuthState(AuthState.fail);
-
-const handleAuthSuccess = () => setAuthState(AuthState.success);
 
 export const createFetch = (saleorApiUrl: string): Fetch => {
   let accessToken: string | null = null;
@@ -39,6 +12,12 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
   let tokenRefreshPromise: null | Promise<Response> = null;
 
   const runAuthorizedRequest: Fetch = (input, init) => {
+    // technically we run this only when token is there
+    // but just to make typescript happy
+    if (!accessToken) {
+      return fetch(input, init);
+    }
+
     const headers = init?.headers || {};
 
     return fetch(input, {
@@ -51,7 +30,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
     if (tokenRefreshPromise) {
       const response = await tokenRefreshPromise;
 
-      const res = await response.json();
+      const res: TokenRefreshResponse = await response.json();
 
       const {
         data: {
@@ -59,7 +38,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
         },
       } = res;
 
-      if (errors.length) {
+      if (errors.length || !token) {
         handleAuthFail();
         return fetch(input, init);
       }
@@ -91,7 +70,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
       data: {
         tokenCreate: { errors, token, refreshToken },
       },
-    } = await tokenCreateResponse.json();
+    }: TokenCreateResponse = await tokenCreateResponse.json();
 
     if (!token || errors.length) {
       handleAuthFail();
