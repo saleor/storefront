@@ -1,4 +1,10 @@
-import { getAuthState, getRefreshToken, setAuthState, setRefreshToken } from "./localStorage";
+import {
+  getAuthState,
+  getRefreshToken,
+  setAuthState,
+  setRefreshAuthState,
+  setRefreshToken,
+} from "./localStorage";
 import { REFRESH_TOKEN } from "./mutations";
 import { print } from "graphql/language/printer";
 import { isExpiredToken } from "./utils";
@@ -26,6 +32,8 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
   };
 
   const handleRequestWithTokenRefresh: Fetch = async (input, init) => {
+    setRefreshAuthState(true);
+
     if (tokenRefreshPromise) {
       const response = await tokenRefreshPromise;
 
@@ -37,11 +45,14 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
         },
       } = res;
 
+      setRefreshAuthState(false);
+
       if (errors.length || !token) {
         setAuthState("fail");
         return fetch(input, init);
       }
 
+      setAuthState("success");
       accessToken = token;
       return runAuthorizedRequest(input, init);
     }
@@ -101,7 +112,6 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
       return handleSignIn(input, init);
     }
 
-    // console.log("???", init, accessToken, accessToken && isExpiredToken(accessToken));
     // access token is fine, add it to the request and proceed
     if (accessToken && !isExpiredToken(accessToken)) {
       // authState is "none" + no refresh token means logout has been run

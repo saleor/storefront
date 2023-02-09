@@ -2,7 +2,6 @@ import { Button } from "@/checkout-storefront/components/Button";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
@@ -35,7 +34,6 @@ export const SignIn: React.FC<SignInProps> = ({
   } = useCheckout();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
-  const { authenticating } = useAuthState();
 
   const form = useSignInForm({
     onSuccess: onSignInSuccess,
@@ -47,6 +45,7 @@ export const SignIn: React.FC<SignInProps> = ({
     handleChange,
     setErrors,
     setTouched,
+    isSubmitting,
   } = form;
 
   const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
@@ -87,7 +86,7 @@ export const SignIn: React.FC<SignInProps> = ({
         <div className="actions">
           {passwordResetSent && <Text>{formatMessage(contactMessages.linkSent, { email })}</Text>}
           <Button
-            disabled={authenticating}
+            disabled={isSubmitting}
             ariaLabel={formatMessage(contactLabels.sendResetLink)}
             variant="tertiary"
             label={formatMessage(
@@ -98,11 +97,9 @@ export const SignIn: React.FC<SignInProps> = ({
           />
           <Button
             type="submit"
-            disabled={authenticating}
+            disabled={isSubmitting}
             ariaLabel={formatMessage(contactLabels.signIn)}
-            label={formatMessage(
-              authenticating ? commonMessages.processing : contactMessages.signIn
-            )}
+            label={formatMessage(isSubmitting ? commonMessages.processing : contactMessages.signIn)}
           />
         </div>
       </FormProvider>

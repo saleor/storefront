@@ -8,7 +8,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "../Contact/messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
-import { useAuthActions } from "@/checkout-storefront/lib/auth/useAuthActions";
+import { useAuth } from "@/checkout-storefront/lib/auth/useAuth";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
@@ -23,7 +23,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
   const { locale } = useLocale();
 
   const { checkout } = useCheckout();
-  const { logout } = useAuthActions();
+  const { logout } = useAuth();
   const { user } = useUser();
 
   const [, customerDetach] = useCheckoutCustomerDetachMutation();

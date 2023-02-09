@@ -3,15 +3,15 @@ import { Summary, SummarySkeleton } from "@/checkout-storefront/sections/Summary
 import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout-storefront/sections/CheckoutForm";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useAuthState } from "@saleor/sdk";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
+import { useAuth } from "@/checkout-storefront/lib/auth";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
-  const { authenticating } = useAuthState();
+  const { authenticating } = useAuth();
 
   const isCheckoutInvalid = !loading && !checkout && !authenticating;
 
