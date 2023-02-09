@@ -1,5 +1,3 @@
-import { AuthState, setAuthState } from "./localStorage";
-
 const MILLI_MULTIPLYER = 1000;
 
 // returns timestamp
@@ -15,7 +13,3 @@ export const isExpiredToken = (token: string) => {
   // we'll assume api needing some time to process our request
   return getTokenExpiry(token) - 2 <= Date.now();
 };
-
-export const handleAuthFail = () => setAuthState(AuthState.fail);
-
-export const handleAuthSuccess = () => setAuthState(AuthState.success);

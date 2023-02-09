@@ -1,14 +1,13 @@
-import { AuthState, getAuthState, getRefreshToken, setRefreshToken } from "./localStorage";
+import { getAuthState, getRefreshToken, setAuthState, setRefreshToken } from "./localStorage";
 import { REFRESH_TOKEN } from "./mutations";
 import { print } from "graphql/language/printer";
-import { handleAuthFail, handleAuthSuccess, isExpiredToken } from "./utils";
+import { isExpiredToken } from "./utils";
 import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
 
 const TOKEN_CREATE_MUTATION_NAME = "tokenCreate";
 
 export const createFetch = (saleorApiUrl: string): Fetch => {
   let accessToken: string | null = null;
-
   let tokenRefreshPromise: null | Promise<Response> = null;
 
   const runAuthorizedRequest: Fetch = (input, init) => {
@@ -39,7 +38,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
       } = res;
 
       if (errors.length || !token) {
-        handleAuthFail();
+        setAuthState("fail");
         return fetch(input, init);
       }
 
@@ -73,7 +72,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
     }: TokenCreateResponse = await tokenCreateResponse.json();
 
     if (!token || errors.length) {
-      handleAuthFail();
+      setAuthState("fail");
       return tokenCreateResponse;
     }
 
@@ -85,7 +84,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
       setRefreshToken(refreshToken);
     }
 
-    handleAuthSuccess();
+    setAuthState("success");
     return requestResponse;
   };
 
@@ -106,7 +105,7 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
     // access token is fine, add it to the request and proceed
     if (accessToken && !isExpiredToken(accessToken)) {
       // authState is "none" + no refresh token means logout has been run
-      if (getAuthState() === AuthState.none && !refreshToken) {
+      if (getAuthState() === "none" && !refreshToken) {
         accessToken = null;
         return fetch(input, init);
       }

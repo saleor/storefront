@@ -7,9 +7,9 @@ interface UseAuthChangeProps {
 
 export const useAuthChange = ({ onAuthSuccess, onAuthError }: UseAuthChangeProps) => {
   const handleAuthChange = (state: AuthState) => {
-    if (state === AuthState.success) {
+    if (state === "success") {
       onAuthSuccess();
-    } else if (state === AuthState.fail) {
+    } else if (state === "fail") {
       onAuthError();
     }
   };
