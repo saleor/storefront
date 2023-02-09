@@ -6,7 +6,6 @@ import {
   useUserRegisterState,
 } from "@/checkout-storefront/state/updateStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
-import { useAuthState } from "@saleor/sdk";
 import { useEffect, useState, useMemo } from "react";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { ChangeHandler, hasErrors, useForm } from "@/checkout-storefront/hooks/useForm";
@@ -16,6 +15,7 @@ import { object, string } from "yup";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { passwordMessages } from "@/checkout-storefront/sections/SignIn/messages";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export interface GuestUserFormData {
   email: string;
@@ -30,7 +30,7 @@ interface GuestUserFormProps {
 
 export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
   const { checkout } = useCheckout();
-  const { user } = useAuthState();
+  const { user } = useUser();
   const shouldUserRegister = useUserRegisterState();
   const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { errorMessages } = useErrorMessages();

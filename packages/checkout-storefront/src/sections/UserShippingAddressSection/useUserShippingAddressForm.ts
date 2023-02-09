@@ -10,18 +10,18 @@ import {
 } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 import { getById } from "@/checkout-storefront/lib/utils/common";
 import {
   AddressListFormData,
   useAddressListForm,
 } from "@/checkout-storefront/sections/AddressList/useAddressListForm";
-import { useAuthState } from "@saleor/sdk";
 import { useMemo } from "react";
 
 export const useUserShippingAddressForm = () => {
   const { checkout } = useCheckout();
   const { shippingAddress } = checkout;
-  const { user } = useAuthState();
+  const { user } = useUser();
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
 
   const onSubmit = useFormSubmit<AddressListFormData, typeof checkoutShippingAddressUpdate>(

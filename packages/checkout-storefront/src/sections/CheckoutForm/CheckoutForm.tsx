@@ -14,16 +14,16 @@ import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { CollapseSection } from "@/checkout-storefront/sections/CheckoutForm/CollapseSection";
 import { Divider } from "@/checkout-storefront/components";
 import { UserShippingAddressSection } from "@/checkout-storefront/sections/UserShippingAddressSection";
-import { useAuthState } from "@saleor/sdk";
 import { GuestShippingAddressSection } from "@/checkout-storefront/sections/GuestShippingAddressSection";
 import { UserBillingAddressSection } from "@/checkout-storefront/sections/UserBillingAddressSection";
 import { PaymentSection } from "@/checkout-storefront/sections/PaymentSection";
 import { GuestBillingAddressSection } from "@/checkout-storefront/sections/GuestBillingAddressSection";
 import { useFetchPaymentMethods } from "@/checkout-storefront/hooks/useFetchPaymentMethods";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export const CheckoutForm = () => {
   const formatMessage = useFormattedMessages();
-  const { user } = useAuthState();
+  const { user } = useUser();
   const { checkout } = useCheckout();
   const { passwordResetToken } = getQueryParams();
 

@@ -7,6 +7,7 @@ import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { SignIn } from "@/checkout-storefront/sections/SignIn/SignIn";
 import { GuestUser } from "@/checkout-storefront/sections/GuestUser/GuestUser";
 import { useUserQuery } from "@/checkout-storefront/graphql";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -18,8 +19,7 @@ interface ContactProps {
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   useCustomerAttach();
-  const [{ data }] = useUserQuery();
-  const user = data?.user;
+  const { user } = useUser();
   const [email, setEmail] = useState(user?.email || "");
 
   console.log({ user });

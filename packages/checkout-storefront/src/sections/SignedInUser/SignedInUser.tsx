@@ -3,12 +3,13 @@ import React from "react";
 import { SignInFormContainer, SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { Text } from "@saleor/ui-kit";
 import { Button } from "@/checkout-storefront/components/Button";
-import { useCheckoutCustomerDetachMutation, useUserQuery } from "@/checkout-storefront/graphql";
+import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "../Contact/messages";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useAuthActions } from "@/checkout-storefront/lib/auth/useAuthActions";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignOutSuccess: () => void;
@@ -23,7 +24,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
 
   const { checkout } = useCheckout();
   const { logout } = useAuthActions();
-  const [{ data }] = useUserQuery();
+  const { user } = useUser();
 
   const [, customerDetach] = useCheckoutCustomerDetachMutation();
 
@@ -40,7 +41,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
     >
       <div className="flex flex-row justify-between">
         <Text weight="bold" size="md">
-          {data?.user?.email}
+          {user?.email}
         </Text>
         <Button
           ariaLabel={formatMessage(contactLabels.signOut)}

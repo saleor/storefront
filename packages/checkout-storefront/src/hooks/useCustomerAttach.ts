@@ -3,10 +3,12 @@ import { useAuthState } from "@saleor/sdk";
 import { useEffect, useMemo } from "react";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export const useCustomerAttach = () => {
   const { checkout, loading } = useCheckout();
-  const { user, authenticated } = useAuthState();
+  const { user } = useUser();
+  const { authenticated } = useAuthState();
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 

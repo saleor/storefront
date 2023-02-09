@@ -8,8 +8,8 @@ import { useAddressAvailability } from "@/checkout-storefront/hooks/useAddressAv
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { FormSubmitFn } from "@/checkout-storefront/hooks/useFormSubmit";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils/common";
-import { useAuthState } from "@saleor/sdk";
 import { compact } from "lodash-es";
 import { useCallback, useEffect, useRef } from "react";
 
@@ -31,7 +31,7 @@ export const useAddressListForm = ({
   defaultAddress,
   checkAddressAvailability = false,
 }: UseAddressListProps) => {
-  const { user } = useAuthState();
+  const { user } = useUser();
 
   const { isAvailable } = useAddressAvailability(!checkAddressAvailability);
 
