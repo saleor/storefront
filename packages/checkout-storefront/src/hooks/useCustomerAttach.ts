@@ -14,15 +14,15 @@ export const useCustomerAttach = () => {
     useMemo(
       () => ({
         scope: "checkoutCustomerAttach",
-        shouldAbort: () => checkout?.user?.id === user?.id || fetching || loading,
+        shouldAbort: () => checkout?.user?.id === user?.id || !authenticated || fetching || loading,
         onSubmit: customerAttach,
         parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
       }),
-      [checkout?.user?.id, customerAttach, fetching, loading, user?.id]
+      [authenticated, checkout?.user?.id, customerAttach, fetching, loading, user?.id]
     )
   );
 
   useEffect(() => {
     void onSubmit();
-  }, [onSubmit, authenticated]);
+  }, [onSubmit]);
 };

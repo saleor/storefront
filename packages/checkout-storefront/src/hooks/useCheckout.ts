@@ -5,12 +5,12 @@ import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { extractCheckoutIdFromUrl } from "@/checkout-storefront/lib/utils/url";
 import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
-import { useAuth } from "@/checkout-storefront/lib/auth";
+import { useAuthState } from "@/checkout-storefront/lib/auth";
 
 export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);
   const { locale } = useLocale();
-  const { authenticating } = useAuth();
+  const { authenticating } = useAuthState();
   const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
   const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({

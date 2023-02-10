@@ -10,6 +10,8 @@ interface UseAuthChangeProps {
   onAuthError: () => void;
 }
 
+// used to handle client cache invalidation on login / logout and when
+// token refreshin fails
 export const useAuthChange = ({ onAuthSuccess, onAuthError }: UseAuthChangeProps) => {
   const handleAuthChange = (state: AuthState) => {
     if (state === "success") {

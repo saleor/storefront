@@ -7,11 +7,11 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
-import { useAuth } from "@/checkout-storefront/lib/auth";
+import { useAuthState } from "@/checkout-storefront/lib/auth";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
-  const { authenticating } = useAuth();
+  const { authenticating } = useAuthState();
 
   const isCheckoutInvalid = !loading && !checkout && !authenticating;
 

@@ -1,14 +1,12 @@
 import { useMemo, useState } from "react";
 import {
-  clearAuthState,
-  clearRefreshToken,
   getRefreshAuthState,
   handleStorageChange,
   REFRESH_STATE_KEY,
   STORAGE_REFRESH_EVENT_KEY,
 } from "./localStorage";
 
-export const useAuth = () => {
+export const useAuthState = () => {
   const [authenticating, setAuthenticating] = useState(getRefreshAuthState());
 
   const handler = handleStorageChange(
@@ -22,10 +20,5 @@ export const useAuth = () => {
   //  for other windows
   window.addEventListener("storage", handler);
 
-  const logout = () => {
-    clearAuthState();
-    clearRefreshToken();
-  };
-
-  return useMemo(() => ({ logout, authenticating }), [authenticating]);
+  return useMemo(() => ({ authenticating }), [authenticating]);
 };

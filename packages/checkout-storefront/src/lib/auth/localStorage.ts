@@ -1,4 +1,4 @@
-/* authentication state */
+/* manual auth state */
 export const AUTH_STATE_KEY = "saleor_auth_module_auth_state";
 export const STORAGE_AUTH_EVENT_KEY = "saleor_storage_auth_change";
 
@@ -13,8 +13,6 @@ export const setAuthState = (state: AuthState) => {
   const event = new CustomEvent(STORAGE_AUTH_EVENT_KEY, { detail: { newValue: state } });
   window.dispatchEvent(event);
 };
-
-export const clearAuthState = () => setAuthState("none");
 
 /* auth refresh state */
 export const REFRESH_STATE_KEY = "saleor_auth_module_refreshing_auth";
@@ -41,7 +39,9 @@ export const setRefreshToken = (token: string) => {
   window.localStorage.setItem(REFRESH_TOKEN_KEY, token);
 };
 
-export const clearRefreshToken = () => {
+/* performed on logout */
+export const clearAuthStorage = () => {
+  setAuthState("none");
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 

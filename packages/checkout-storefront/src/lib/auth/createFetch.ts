@@ -1,14 +1,12 @@
 import {
-  getAuthState,
+  clearAuthStorage,
   getRefreshToken,
   setAuthState,
   setRefreshAuthState,
   setRefreshToken,
 } from "./localStorage";
-import { isExpiredToken, refreshTokenRequest } from "./utils";
+import { isExpiredToken, isMutationType, refreshTokenRequest } from "./utils";
 import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
-
-const TOKEN_CREATE_MUTATION_NAME = "tokenCreate";
 
 export const createFetch = (saleorApiUrl: string): Fetch => {
   let accessToken: string | null = null;
@@ -95,27 +93,33 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
     return requestResponse;
   };
 
-  const fetchWithAuth: Fetch = (input, init) => {
+  const fetchWithAuth: Fetch = async (input, init) => {
     const refreshToken: string | null = getRefreshToken();
 
     const requestBody = init?.body?.toString() || "";
 
-    const isTokenCreateMutation =
-      requestBody.includes("mutation") && requestBody.includes(TOKEN_CREATE_MUTATION_NAME);
+    const isTokenCreateMutation = isMutationType(requestBody, "tokenCreate");
+
+    const isCustomerDetachMutation = isMutationType(requestBody, "checkoutCustomerDetach");
 
     // it's a token create mutation so we'll do some special magic
     if (isTokenCreateMutation) {
       return handleSignIn(input, init);
     }
 
+    // means logout
+    if (isCustomerDetachMutation) {
+      // customer detach needs auth so run it and then remove all the tokens
+      const response = await runAuthorizedRequest(input, init);
+
+      accessToken = null;
+      clearAuthStorage();
+
+      return response;
+    }
+
     // access token is fine, add it to the request and proceed
     if (accessToken && !isExpiredToken(accessToken)) {
-      // authState is "none" + no refresh token means logout has been run
-      if (getAuthState() === "none" && !refreshToken) {
-        accessToken = null;
-        return fetch(input, init);
-      }
-
       return runAuthorizedRequest(input, init);
     }
 
