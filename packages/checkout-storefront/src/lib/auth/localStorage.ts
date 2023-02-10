@@ -22,11 +22,13 @@ export const STORAGE_REFRESH_EVENT_KEY = "saleor_storage_refresh_change";
 export const setRefreshAuthState = (refreshing: boolean) => {
   const event = new CustomEvent(STORAGE_REFRESH_EVENT_KEY, { detail: { newValue: refreshing } });
   window.dispatchEvent(event);
-  window.localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(refreshing));
+  window.localStorage.setItem(REFRESH_STATE_KEY, JSON.stringify(refreshing));
 };
 
-export const getRefreshAuthState = (): boolean =>
-  JSON.parse(window.localStorage.getItem(AUTH_STATE_KEY) || "") || false;
+export const getRefreshAuthState = (): boolean => {
+  const refreshState = window.localStorage.getItem(REFRESH_STATE_KEY);
+  return refreshState ? JSON.parse(refreshState) : false;
+};
 
 /* refresh token */
 export const REFRESH_TOKEN_KEY = "saleor_auth_module_refresh_token";

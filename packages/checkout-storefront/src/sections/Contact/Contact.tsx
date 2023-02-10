@@ -6,7 +6,6 @@ import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { SignIn } from "@/checkout-storefront/sections/SignIn/SignIn";
 import { GuestUser } from "@/checkout-storefront/sections/GuestUser/GuestUser";
-import { useUserQuery } from "@/checkout-storefront/graphql";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";

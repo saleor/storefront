@@ -24,13 +24,15 @@ export const extractMutationErrors = <
 ): [boolean, ApiErrors<TData, TErrorCodes>] => {
   const urqlErrors = result?.error ? [result.error] : [];
 
-  const graphqlErrors = reduce(
-    (result?.data || {}) as object,
-    (result, { errors = [] }) => {
-      return [...result, ...errors];
-    },
-    []
-  );
+  const graphqlErrors = result?.data?.errors?.lenght
+    ? reduce(
+        (result?.data || {}) as object,
+        (result, { errors = [] }) => {
+          return [...result, ...errors];
+        },
+        []
+      )
+    : [];
 
   const errors = [...urqlErrors, ...graphqlErrors];
 
