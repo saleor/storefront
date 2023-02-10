@@ -5,9 +5,7 @@ import {
   setRefreshAuthState,
   setRefreshToken,
 } from "./localStorage";
-import { REFRESH_TOKEN } from "./mutations";
-import { print } from "graphql/language/printer";
-import { isExpiredToken } from "./utils";
+import { isExpiredToken, refreshTokenRequest } from "./utils";
 import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
 
 const TOKEN_CREATE_MUTATION_NAME = "tokenCreate";
@@ -32,8 +30,15 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
   };
 
   const handleRequestWithTokenRefresh: Fetch = async (input, init) => {
+    // the refresh already, finished, proceed as normal
+    if (accessToken) {
+      tokenRefreshPromise = null;
+      return fetchWithAuth(input, init);
+    }
+
     setRefreshAuthState(true);
 
+    // if the promise is already there, use it
     if (tokenRefreshPromise) {
       const response = await tokenRefreshPromise;
 
@@ -57,17 +62,8 @@ export const createFetch = (saleorApiUrl: string): Fetch => {
       return runAuthorizedRequest(input, init);
     }
 
-    tokenRefreshPromise = fetch(saleorApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: print(REFRESH_TOKEN),
-        variables: { refreshToken: getRefreshToken() },
-      }),
-    });
-
+    // this is the first failed request, initialize refresh
+    tokenRefreshPromise = refreshTokenRequest(saleorApiUrl, getRefreshToken());
     return fetchWithAuth(input, init);
   };
 

@@ -8,9 +8,10 @@ export const getAuthState = (): AuthState =>
   (window.localStorage.getItem(AUTH_STATE_KEY) as AuthState | undefined) || "none";
 
 export const setAuthState = (state: AuthState) => {
+  window.localStorage.setItem(AUTH_STATE_KEY, state);
+
   const event = new CustomEvent(STORAGE_AUTH_EVENT_KEY, { detail: { newValue: state } });
   window.dispatchEvent(event);
-  window.localStorage.setItem(AUTH_STATE_KEY, state);
 };
 
 export const clearAuthState = () => setAuthState("none");
@@ -20,9 +21,10 @@ export const REFRESH_STATE_KEY = "saleor_auth_module_refreshing_auth";
 export const STORAGE_REFRESH_EVENT_KEY = "saleor_storage_refresh_change";
 
 export const setRefreshAuthState = (refreshing: boolean) => {
+  window.localStorage.setItem(REFRESH_STATE_KEY, JSON.stringify(refreshing));
+
   const event = new CustomEvent(STORAGE_REFRESH_EVENT_KEY, { detail: { newValue: refreshing } });
   window.dispatchEvent(event);
-  window.localStorage.setItem(REFRESH_STATE_KEY, JSON.stringify(refreshing));
 };
 
 export const getRefreshAuthState = (): boolean => {
@@ -32,6 +34,7 @@ export const getRefreshAuthState = (): boolean => {
 
 /* refresh token */
 export const REFRESH_TOKEN_KEY = "saleor_auth_module_refresh_token";
+
 export const getRefreshToken = () => window.localStorage.getItem(REFRESH_TOKEN_KEY) || null;
 
 export const setRefreshToken = (token: string) => {

@@ -10,12 +10,12 @@ import { useAuth } from "@/checkout-storefront/lib/auth";
 export const useCheckout = ({ pause = false } = {}) => {
   const id = useMemo(() => extractCheckoutIdFromUrl(), []);
   const { locale } = useLocale();
-  // const { authenticating } = useAuth();
+  const { authenticating } = useAuth();
   const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
   const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
     variables: { id, languageCode: localeToLanguageCode(locale) },
-    pause: pause /*|| authenticating*/,
+    pause: pause || authenticating,
   });
 
   useEffect(() => setLoadingCheckout(loading || stale), [loading, setLoadingCheckout, stale]);

@@ -23,7 +23,6 @@ export const useCustomerAttach = () => {
   );
 
   useEffect(() => {
-    console.log("YOOOO");
     void onSubmit();
   }, [onSubmit, authenticated]);
 };
