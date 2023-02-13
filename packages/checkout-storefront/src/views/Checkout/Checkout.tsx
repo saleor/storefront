@@ -4,25 +4,18 @@ import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout-storefront/sectio
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
-import { useAuthState } from "@/checkout-storefront/lib/auth";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
-  const { authenticating } = useAuthState();
 
-  const isCheckoutInvalid = !loading && !checkout && !authenticating;
-
-  const isInitiallyAuthenticating = authenticating && !checkout;
+  const isCheckoutInvalid = !loading && !checkout;
 
   const isEmptyCart = checkout && !checkout.lines.length;
 
   return isCheckoutInvalid ? (
     <PageNotFound />
-  ) : isInitiallyAuthenticating ? (
-    <CheckoutSkeleton />
   ) : (
     <ErrorBoundary FallbackComponent={PageNotFound}>
       <div className="page">

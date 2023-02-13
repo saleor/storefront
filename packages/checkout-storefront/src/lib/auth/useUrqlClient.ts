@@ -1,4 +1,5 @@
 import { createFetch } from "@/checkout-storefront/lib/auth/createFetch";
+import { useAuthChange } from "@/checkout-storefront/lib/auth/useAuthChange";
 import { useMemo, useState } from "react";
 import { Client, ClientOptions, createClient } from "urql";
 
@@ -19,5 +20,8 @@ export const useUrqlClient = (opts: ClientOptions) => {
 
   const resetClient = () => setClient(createNewClient());
 
-  return { client, resetClient };
+  // reset once user has been signed in / out
+  useAuthChange({ onAuthError: resetClient, onAuthSuccess: resetClient });
+
+  return { client };
 };

@@ -12,7 +12,6 @@ import { useLocale } from "../hooks/useLocale";
 import { DEFAULT_LOCALE } from "../lib/regions";
 import { getQueryParams } from "../lib/utils/url";
 import { useUrqlClient } from "@/checkout-storefront/lib/auth/useUrqlClient";
-import { useAuthChange } from "@/checkout-storefront/lib/auth/useAuthChange";
 
 export interface RootProps {
   env: AppEnv;
@@ -21,8 +20,7 @@ export interface RootProps {
 export const Root = ({ env }: RootProps) => {
   const { saleorApiUrl } = getQueryParams();
   const { locale, messages } = useLocale();
-  const { client, resetClient } = useUrqlClient({ url: saleorApiUrl || "" });
-  useAuthChange({ onAuthSuccess: resetClient, onAuthError: resetClient });
+  const { client } = useUrqlClient({ url: saleorApiUrl || "" });
 
   if (!saleorApiUrl) {
     console.warn(`Missing "saleorApiUrl" query param!`);
