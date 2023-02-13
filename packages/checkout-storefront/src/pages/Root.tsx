@@ -12,6 +12,8 @@ import { useLocale } from "../hooks/useLocale";
 import { DEFAULT_LOCALE } from "../lib/regions";
 import { getQueryParams } from "../lib/utils/url";
 import { useUrqlClient } from "@/checkout-storefront/lib/auth/useUrqlClient";
+import { SaleorAuthProvider } from "@/checkout-storefront/lib/auth/SaleorAuthProvider";
+import { useSaleorAuthClient } from "@/checkout-storefront/lib/auth/useSaleorAuthClient";
 
 export interface RootProps {
   env: AppEnv;
@@ -20,30 +22,36 @@ export interface RootProps {
 export const Root = ({ env }: RootProps) => {
   const { saleorApiUrl } = getQueryParams();
   const { locale, messages } = useLocale();
-  const { client } = useUrqlClient({ url: saleorApiUrl || "" });
+  const { saleorAuthClient, ...authRest } = useSaleorAuthClient({
+    saleorApiUrl,
+    storage: localStorage,
+  });
+  const urqlClient = useUrqlClient(saleorAuthClient);
 
   if (!saleorApiUrl) {
     console.warn(`Missing "saleorApiUrl" query param!`);
     return null;
   }
 
-  if (!client) {
+  if (!urqlClient) {
     console.warn(`Couldn't create URQL client!`);
     return null;
   }
 
   return (
     <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={locale} messages={messages}>
-      <UrqlProvider value={client}>
-        <AppConfigProvider env={env}>
-          <div className="app">
-            <ToastContainer {...alertsContainerProps} />
-            <ErrorBoundary FallbackComponent={PageNotFound}>
-              <RootViews />
-            </ErrorBoundary>
-          </div>
-        </AppConfigProvider>
-      </UrqlProvider>
+      <SaleorAuthProvider client={{ saleorAuthClient, ...authRest }}>
+        <UrqlProvider value={urqlClient}>
+          <AppConfigProvider env={env}>
+            <div className="app">
+              <ToastContainer {...alertsContainerProps} />
+              <ErrorBoundary FallbackComponent={PageNotFound}>
+                <RootViews />
+              </ErrorBoundary>
+            </div>
+          </AppConfigProvider>
+        </UrqlProvider>
+      </SaleorAuthProvider>
     </IntlProvider>
   );
 };

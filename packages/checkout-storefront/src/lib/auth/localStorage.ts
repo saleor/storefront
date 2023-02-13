@@ -46,21 +46,3 @@ export const clearAuthStorage = () => {
 };
 
 /* handler for storage changes */
-export const handleStorageChange =
-  <TValue>(eventType: string, storageKey: string, callback: (value: TValue) => void) =>
-  (event: StorageEvent | CustomEvent) => {
-    const isCustomAuthEvent = event?.type === eventType;
-
-    const isStorageAuthEvent =
-      event?.type === "storage" && (event as StorageEvent)?.key === storageKey;
-
-    if (!isCustomAuthEvent && !isStorageAuthEvent) {
-      return;
-    }
-
-    const valueToSet = isCustomAuthEvent
-      ? (event as CustomEvent).detail.newValue
-      : (event as StorageEvent).newValue;
-
-    callback(valueToSet as TValue);
-  };

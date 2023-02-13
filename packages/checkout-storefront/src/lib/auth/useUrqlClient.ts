@@ -23,5 +23,5 @@ export const useUrqlClient = (opts: ClientOptions) => {
   // reset once user has been signed in / out
   useAuthChange({ onAuthError: resetClient, onAuthSuccess: resetClient });
 
-  return { client };
+  return client;
 };

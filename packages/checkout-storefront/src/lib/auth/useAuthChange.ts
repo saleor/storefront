@@ -1,7 +1,5 @@
+import { EventHandler, useEffect } from "react";
 import {
-  AuthState,
-  AUTH_STATE_KEY,
-  handleStorageChange,
   STORAGE_AUTH_EVENT_KEY,
 } from "./localStorage";
 
@@ -13,22 +11,30 @@ interface UseAuthChangeProps {
 // used to handle client cache invalidation on login / logout and when
 // token refreshin fails
 export const useAuthChange = ({ onAuthSuccess, onAuthError }: UseAuthChangeProps) => {
-  const handleAuthChange = (state: AuthState) => {
-    if (state === "success") {
+  export const handleAuthChange = (event: CustomEvent) => {
+    const isCustomAuthEvent = event?.type === STORAGE_AUTH_EVENT_KEY;
+
+    if (!isCustomAuthEvent) {
+      return;
+    }
+
+    const {authState} = event.detail
+
+    if (authState === "success") {
       onAuthSuccess();
-    } else if (state === "fail") {
+    } else if authState === "fail") {
       onAuthError();
     }
   };
 
-  const handler = handleStorageChange(
-    STORAGE_AUTH_EVENT_KEY,
-    AUTH_STATE_KEY,
-    handleAuthChange
-  ) as EventListener;
-
-  // for current window
-  window.addEventListener(STORAGE_AUTH_EVENT_KEY, handler);
-  //  for other windows
-  window.addEventListener("storage", handler);
+  useEffect(() => {
+    // for current window
+    window.addEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventHandler);
+    // //  for other windows
+    // window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventHandler);
+      // window.removeEventListener("storage", handler);
+    };
+  }, []);
 };
