@@ -25,6 +25,7 @@ interface UseFormSubmitProps<
   TMutationFn extends MutationBaseFn,
   TErrorCodes extends string = string
 > {
+  hideAlerts?: boolean;
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   parse: ParserFunction<TData, TMutationFn>;

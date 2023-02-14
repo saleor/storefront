@@ -19,7 +19,7 @@ export const useUrqlClient = ({ saleorAuthClient, opts }: UseUrqlClientProps) =>
       ...opts,
       suspense: true,
       requestPolicy: "cache-first",
-      fetch: authFetch,
+      // fetch: authFetch,
     });
 
   const [client, setClient] = useState<Client>(createNewClient());
@@ -28,7 +28,7 @@ export const useUrqlClient = ({ saleorAuthClient, opts }: UseUrqlClientProps) =>
 
   // reset once user has been signed in / out
   useAuthChange({
-    onSignedOut: resetClient,
+    onSignedOut: () => resetClient(),
     onSignedIn: () => {
       console.log("YOYOYOYOYOYOYOY");
       resetClient();

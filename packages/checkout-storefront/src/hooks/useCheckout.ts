@@ -13,13 +13,15 @@ export const useCheckout = ({ pause = false } = {}) => {
   const { isAuthenticating } = useAuthProvider();
   const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
+  console.log(111, { isAuthenticating });
   const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
     variables: { id, languageCode: localeToLanguageCode(locale) },
-    pause: pause || isAuthenticating,
+    // pause: pause || isAuthenticating,
   });
 
   useEffect(() => setLoadingCheckout(loading || stale), [loading, setLoadingCheckout, stale]);
 
+  console.log(123, { che: data?.checkout, loading, stale, isAuthenticating, pause });
   return useMemo(
     () => ({ checkout: data?.checkout as Checkout, loading: loading || stale, refetch }),
     [data?.checkout, loading, refetch, stale]
