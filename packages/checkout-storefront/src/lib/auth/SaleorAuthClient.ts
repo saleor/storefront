@@ -1,6 +1,15 @@
-import { clearAuthStorage, getRefreshToken, setAuthState, setRefreshToken } from "./localStorage";
+import {
+  AuthState,
+  clearAuthStorage,
+  getRefreshToken,
+  sendAuthStateEvent,
+  setAuthState,
+  setRefreshToken,
+  STORAGE_AUTH_STATE_KEY,
+} from "./localStorage";
 import { isExpiredToken, isMutationType, refreshTokenRequest } from "./utils";
 import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
+import invariant from "ts-invariant";
 
 export interface SaleorAuthClientProps {
   onAuthRefresh: (isAuthenticating: boolean) => void;
@@ -13,11 +22,30 @@ export class SaleorAuthClient {
   private tokenRefreshPromise: null | Promise<Response> = null;
   private onAuthRefresh: (isAuthenticating: boolean) => void;
   private saleorApiUrl: string;
+  private storage: Storage;
 
-  constructor({ saleorApiUrl, storage }: SaleorAuthClientProps) {
+  constructor({ saleorApiUrl, storage, onAuthRefresh }: SaleorAuthClientProps) {
+    this.storage = storage;
     this.onAuthRefresh = onAuthRefresh;
     this.saleorApiUrl = saleorApiUrl;
+
+    window.addEventListener("storage", this.handleStorageChange);
   }
+
+  private handleStorageChange = (event: StorageEvent) => {
+    const { oldValue, newValue, type, key } = event;
+
+    if (oldValue === newValue || type !== "storage" || key !== STORAGE_AUTH_STATE_KEY) {
+      return;
+    }
+
+    console.log({ oldValue, newValue, type, key });
+    sendAuthStateEvent(newValue as AuthState);
+  };
+
+  cleanup = () => {
+    window.removeEventListener("storage", this.handleStorageChange);
+  };
 
   private runAuthorizedRequest: Fetch = (input, init) => {
     // technically we run this only when token is there
@@ -35,6 +63,10 @@ export class SaleorAuthClient {
   };
 
   private handleRequestWithTokenRefresh: Fetch = async (input, init) => {
+    const refreshToken = getRefreshToken();
+
+    invariant(refreshToken, "Missing refresh token in token refresh handler");
+
     // the refresh already, finished, proceed as normal
     if (this.accessToken) {
       this.tokenRefreshPromise = null;
@@ -58,17 +90,17 @@ export class SaleorAuthClient {
       this.onAuthRefresh(false);
 
       if (errors.length || !token) {
-        setAuthState("fail");
+        setAuthState("signedOut");
         return fetch(input, init);
       }
 
-      setAuthState("success");
+      setAuthState("signedIn");
       this.accessToken = token;
       return this.runAuthorizedRequest(input, init);
     }
 
     // this is the first failed request, initialize refresh
-    this.tokenRefreshPromise = refreshTokenRequest(this.saleorApiUrl, getRefreshToken());
+    this.tokenRefreshPromise = refreshTokenRequest(this.saleorApiUrl, refreshToken);
     return this.fetchWithAuth(input, init);
   };
 
@@ -84,7 +116,7 @@ export class SaleorAuthClient {
     }: TokenCreateResponse = await tokenCreateResponse.json();
 
     if (!token || errors.length) {
-      setAuthState("fail");
+      setAuthState("signedOut");
       return tokenCreateResponse;
     }
 
@@ -96,7 +128,7 @@ export class SaleorAuthClient {
       setRefreshToken(refreshToken);
     }
 
-    setAuthState("success");
+    setAuthState("signedIn");
     return requestResponse;
   };
 

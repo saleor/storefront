@@ -1,11 +1,9 @@
-import { Fetch } from "./types";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren } from "react";
 import invariant from "ts-invariant";
 import { SaleorAuthClient } from "./SaleorAuthClient";
 
 interface SaleorAuthContextConsumerProps {
-  fetchWithAuth: Fetch;
   logout: () => void;
   isAuthenticating: boolean;
 }
@@ -14,21 +12,21 @@ const [useAuthProvider, Provider] = createSafeContext<SaleorAuthContextConsumerP
 export { useAuthProvider };
 
 interface SaleorAuthProviderProps {
-  saleorApiUrl: string;
+  client: SaleorAuthClient;
+  isAuthenticating: boolean;
 }
 
 export const SaleorAuthProvider = ({
   children,
-  saleorApiUrl,
+  client,
+  isAuthenticating,
 }: PropsWithChildren<SaleorAuthProviderProps>) => {
-  invariant(saleorApiUrl, "Missing Saleor Api Url");
+  invariant(
+    client,
+    "Missing Saleor Auth Client - are you sure you created it using useSaleorAuthClient?"
+  );
 
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { logout } = client;
 
-  const { fetchWithAuth, logout } = new SaleorAuthClient({
-    onAuthRefresh: setIsAuthenticating,
-    saleorApiUrl,
-  });
-
-  return <Provider value={{ isAuthenticating, fetchWithAuth, logout }}>{children}</Provider>;
+  return <Provider value={{ isAuthenticating, logout }}>{children}</Provider>;
 };

@@ -6,7 +6,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 export const useCustomerAttach = () => {
   const { checkout, loading } = useCheckout();
-  const { user, authenticated } = useUser();
+  const { authenticated } = useUser();
 
   const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
@@ -14,11 +14,11 @@ export const useCustomerAttach = () => {
     useMemo(
       () => ({
         scope: "checkoutCustomerAttach",
-        shouldAbort: () => checkout?.user?.id === user?.id || !authenticated || fetching || loading,
+        shouldAbort: () => !!checkout?.user?.id || !authenticated || fetching || loading,
         onSubmit: customerAttach,
         parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
       }),
-      [authenticated, checkout?.user?.id, customerAttach, fetching, loading, user?.id]
+      [authenticated, checkout?.user?.id, customerAttach, fetching, loading]
     )
   );
 

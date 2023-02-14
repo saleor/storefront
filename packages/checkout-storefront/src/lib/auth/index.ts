@@ -1,4 +1,4 @@
-export * from "./createFetch";
 export * from "./useUrqlClient";
-export * from "./useAuthState";
+export * from "./SaleorAuthClient";
+export * from "./SaleorAuthProvider";
 export * from "./useAuthChange";

@@ -22,11 +22,12 @@ export interface RootProps {
 export const Root = ({ env }: RootProps) => {
   const { saleorApiUrl } = getQueryParams();
   const { locale, messages } = useLocale();
-  const { saleorAuthClient, ...authRest } = useSaleorAuthClient({
+  const { saleorAuthClient, isAuthenticating } = useSaleorAuthClient({
     saleorApiUrl,
     storage: localStorage,
   });
-  const urqlClient = useUrqlClient(saleorAuthClient);
+
+  const urqlClient = useUrqlClient({ saleorAuthClient, opts: { url: saleorApiUrl } });
 
   if (!saleorApiUrl) {
     console.warn(`Missing "saleorApiUrl" query param!`);
@@ -40,7 +41,7 @@ export const Root = ({ env }: RootProps) => {
 
   return (
     <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={locale} messages={messages}>
-      <SaleorAuthProvider client={{ saleorAuthClient, ...authRest }}>
+      <SaleorAuthProvider client={saleorAuthClient} isAuthenticating={isAuthenticating}>
         <UrqlProvider value={urqlClient}>
           <AppConfigProvider env={env}>
             <div className="app">

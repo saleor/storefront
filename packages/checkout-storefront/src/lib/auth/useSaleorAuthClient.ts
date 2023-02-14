@@ -2,7 +2,7 @@ import {
   SaleorAuthClient,
   SaleorAuthClientProps,
 } from "@/checkout-storefront/lib/auth/SaleorAuthClient";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const useSaleorAuthClient = ({ saleorApiUrl, storage }: SaleorAuthClientProps) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -10,6 +10,13 @@ export const useSaleorAuthClient = ({ saleorApiUrl, storage }: SaleorAuthClientP
   const saleorAuthClient = useMemo(
     () => new SaleorAuthClient({ storage, saleorApiUrl, onAuthRefresh: setIsAuthenticating }),
     [storage, saleorApiUrl]
+  );
+
+  useEffect(
+    () => () => {
+      saleorAuthClient.cleanup();
+    },
+    []
   );
 
   return { saleorAuthClient, isAuthenticating };

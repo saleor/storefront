@@ -1,33 +1,22 @@
-/* manual auth state */
-export const AUTH_STATE_KEY = "saleor_auth_module_auth_state";
+/* auth state when user signs in / out */
+export const STORAGE_AUTH_STATE_KEY = "saleor_auth_module_auth_state";
 export const STORAGE_AUTH_EVENT_KEY = "saleor_storage_auth_change";
 
-export type AuthState = "none" | "fail" | "success";
+export type AuthState = "signedIn" | "signedOut";
+
+export type SaleorAuthEvent = CustomEvent<{ authState: AuthState }>;
+
+export const sendAuthStateEvent = (authState: AuthState) => {
+  const event = new CustomEvent(STORAGE_AUTH_EVENT_KEY, { detail: { authState } });
+  window.dispatchEvent(event);
+};
 
 export const getAuthState = (): AuthState =>
-  (window.localStorage.getItem(AUTH_STATE_KEY) as AuthState | undefined) || "none";
+  (window.localStorage.getItem(STORAGE_AUTH_STATE_KEY) as AuthState | undefined) || "signedOut";
 
-export const setAuthState = (state: AuthState) => {
-  window.localStorage.setItem(AUTH_STATE_KEY, state);
-
-  const event = new CustomEvent(STORAGE_AUTH_EVENT_KEY, { detail: { newValue: state } });
-  window.dispatchEvent(event);
-};
-
-/* auth refresh state */
-export const REFRESH_STATE_KEY = "saleor_auth_module_refreshing_auth";
-export const STORAGE_REFRESH_EVENT_KEY = "saleor_storage_refresh_change";
-
-export const setRefreshAuthState = (refreshing: boolean) => {
-  window.localStorage.setItem(REFRESH_STATE_KEY, JSON.stringify(refreshing));
-
-  const event = new CustomEvent(STORAGE_REFRESH_EVENT_KEY, { detail: { newValue: refreshing } });
-  window.dispatchEvent(event);
-};
-
-export const getRefreshAuthState = (): boolean => {
-  const refreshState = window.localStorage.getItem(REFRESH_STATE_KEY);
-  return refreshState ? JSON.parse(refreshState) : false;
+export const setAuthState = (authState: AuthState) => {
+  window.localStorage.setItem(STORAGE_AUTH_STATE_KEY, authState);
+  sendAuthStateEvent(authState);
 };
 
 /* refresh token */
@@ -41,7 +30,7 @@ export const setRefreshToken = (token: string) => {
 
 /* performed on logout */
 export const clearAuthStorage = () => {
-  setAuthState("none");
+  setAuthState("signedOut");
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
