@@ -1,18 +1,14 @@
 import {
   AuthState,
-  clearAuthStorage,
-  getRefreshToken,
-  sendAuthStateEvent,
-  setAuthState,
-  setRefreshToken,
+  SaleorAuthStorageHandler,
   STORAGE_AUTH_STATE_KEY,
-} from "./localStorage";
+} from "./SaleorAuthStorageHandler";
 import { isExpiredToken, isMutationType, refreshTokenRequest } from "./utils";
 import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
 import invariant from "ts-invariant";
 
 export interface SaleorAuthClientProps {
-  onAuthRefresh: (isAuthenticating: boolean) => void;
+  onAuthRefresh?: (isAuthenticating: boolean) => void;
   saleorApiUrl: string;
   storage: Storage;
 }
@@ -20,12 +16,12 @@ export interface SaleorAuthClientProps {
 export class SaleorAuthClient {
   private accessToken: string | null = null;
   private tokenRefreshPromise: null | Promise<Response> = null;
-  private onAuthRefresh: (isAuthenticating: boolean) => void;
+  private onAuthRefresh?: (isAuthenticating: boolean) => void;
   private saleorApiUrl: string;
-  private storage: Storage;
+  private storageHandler: SaleorAuthStorageHandler;
 
   constructor({ saleorApiUrl, storage, onAuthRefresh }: SaleorAuthClientProps) {
-    this.storage = storage;
+    this.storageHandler = new SaleorAuthStorageHandler(storage);
     this.onAuthRefresh = onAuthRefresh;
     this.saleorApiUrl = saleorApiUrl;
 
@@ -39,8 +35,7 @@ export class SaleorAuthClient {
       return;
     }
 
-    console.log({ oldValue, newValue, type, key });
-    sendAuthStateEvent(newValue as AuthState);
+    this.storageHandler.sendAuthStateEvent(newValue as AuthState);
   };
 
   cleanup = () => {
@@ -63,7 +58,7 @@ export class SaleorAuthClient {
   };
 
   private handleRequestWithTokenRefresh: Fetch = async (input, init) => {
-    const refreshToken = getRefreshToken();
+    const refreshToken = this.storageHandler.getRefreshToken();
 
     invariant(refreshToken, "Missing refresh token in token refresh handler");
 
@@ -73,7 +68,7 @@ export class SaleorAuthClient {
       return this.fetchWithAuth(input, init);
     }
 
-    this.onAuthRefresh(true);
+    typeof this.onAuthRefresh === "function" && this.onAuthRefresh(true);
 
     // if the promise is already there, use it
     if (this.tokenRefreshPromise) {
@@ -87,14 +82,14 @@ export class SaleorAuthClient {
         },
       } = res;
 
-      this.onAuthRefresh(false);
+      typeof this.onAuthRefresh === "function" && this.onAuthRefresh(false);
 
       if (errors.length || !token) {
-        setAuthState("signedOut");
+        this.storageHandler.setAuthState("signedOut");
         return fetch(input, init);
       }
 
-      setAuthState("signedIn");
+      this.storageHandler.setAuthState("signedIn");
       this.accessToken = token;
       return this.runAuthorizedRequest(input, init);
     }
@@ -116,7 +111,7 @@ export class SaleorAuthClient {
     }: TokenCreateResponse = await tokenCreateResponse.json();
 
     if (!token || errors.length) {
-      setAuthState("signedOut");
+      this.storageHandler.setAuthState("signedOut");
       return tokenCreateResponse;
     }
 
@@ -125,15 +120,15 @@ export class SaleorAuthClient {
     }
 
     if (refreshToken) {
-      setRefreshToken(refreshToken);
+      this.storageHandler.setRefreshToken(refreshToken);
     }
 
-    setAuthState("signedIn");
+    this.storageHandler.setAuthState("signedIn");
     return requestResponse;
   };
 
   fetchWithAuth: Fetch = async (input, init) => {
-    const refreshToken: string | null = getRefreshToken();
+    const refreshToken: string | null = this.storageHandler.getRefreshToken();
 
     const requestBody = init?.body?.toString() || "";
 
@@ -152,7 +147,7 @@ export class SaleorAuthClient {
       const response = await this.runAuthorizedRequest(input, init);
 
       this.accessToken = null;
-      clearAuthStorage();
+      this.storageHandler.clearAuthStorage();
 
       return response;
     }

@@ -1,15 +1,26 @@
-import {
-  SaleorAuthClient,
-  SaleorAuthClientProps,
-} from "@/checkout-storefront/lib/auth/SaleorAuthClient";
+import { SaleorAuthClient, SaleorAuthClientProps } from "./SaleorAuthClient";
 import { useEffect, useMemo, useState } from "react";
 
-export const useSaleorAuthClient = ({ saleorApiUrl, storage }: SaleorAuthClientProps) => {
+export const useSaleorAuthClient = ({
+  saleorApiUrl,
+  storage,
+  onAuthRefresh,
+}: SaleorAuthClientProps) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   const saleorAuthClient = useMemo(
-    () => new SaleorAuthClient({ storage, saleorApiUrl, onAuthRefresh: setIsAuthenticating }),
-    [storage, saleorApiUrl]
+    () =>
+      new SaleorAuthClient({
+        storage,
+        saleorApiUrl,
+        onAuthRefresh: (value) => {
+          setIsAuthenticating(value);
+          if (typeof onAuthRefresh === "function") {
+            onAuthRefresh(value);
+          }
+        },
+      }),
+    [storage, saleorApiUrl, onAuthRefresh]
   );
 
   useEffect(

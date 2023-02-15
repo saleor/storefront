@@ -1,5 +1,5 @@
 import { EventHandler, useEffect } from "react";
-import { SaleorAuthEvent, STORAGE_AUTH_EVENT_KEY } from "./localStorage";
+import { SaleorAuthEvent, STORAGE_AUTH_EVENT_KEY } from "./SaleorAuthStorageHandler";
 
 interface UseAuthChangeProps {
   onSignedIn: () => void;
@@ -11,7 +11,6 @@ interface UseAuthChangeProps {
 export const useAuthChange = ({ onSignedOut, onSignedIn }: UseAuthChangeProps) => {
   const handleAuthChange = (event: SaleorAuthEvent) => {
     const isCustomAuthEvent = event?.type === STORAGE_AUTH_EVENT_KEY;
-    console.log({ isCustomAuthEvent, event });
 
     if (!isCustomAuthEvent) {
       return;

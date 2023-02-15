@@ -8,8 +8,8 @@ interface SaleorAuthContextConsumerProps {
   isAuthenticating: boolean;
 }
 
-const [useAuthProvider, Provider] = createSafeContext<SaleorAuthContextConsumerProps>();
-export { useAuthProvider };
+const [useSaleorAuthContext, Provider] = createSafeContext<SaleorAuthContextConsumerProps>();
+export { useSaleorAuthContext };
 
 interface SaleorAuthProviderProps {
   client: SaleorAuthClient;

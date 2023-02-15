@@ -14,6 +14,7 @@ import { getQueryParams } from "../lib/utils/url";
 import { useUrqlClient } from "@/checkout-storefront/lib/auth/useUrqlClient";
 import { SaleorAuthProvider } from "@/checkout-storefront/lib/auth/SaleorAuthProvider";
 import { useSaleorAuthClient } from "@/checkout-storefront/lib/auth/useSaleorAuthClient";
+import { useAuthChange } from "@/checkout-storefront/lib/auth";
 
 export interface RootProps {
   env: AppEnv;
@@ -27,7 +28,18 @@ export const Root = ({ env }: RootProps) => {
     storage: localStorage,
   });
 
-  const urqlClient = useUrqlClient({ saleorAuthClient, opts: { url: saleorApiUrl } });
+  const { client: urqlClient, resetClient } = useUrqlClient({
+    suspense: true,
+    requestPolicy: "cache-and-network",
+    url: saleorApiUrl,
+    // fetch: saleorAuthClient.fetchWithAuth,
+  });
+
+  // reset once user has been signed in / out
+  useAuthChange({
+    onSignedOut: () => resetClient(),
+    onSignedIn: () => resetClient(),
+  });
 
   if (!saleorApiUrl) {
     console.warn(`Missing "saleorApiUrl" query param!`);

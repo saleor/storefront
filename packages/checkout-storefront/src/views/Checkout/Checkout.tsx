@@ -6,12 +6,12 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
-import { useAuthProvider } from "@/checkout-storefront/lib/auth";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
 import { CheckoutSkeleton } from "@/checkout-storefront/views/Checkout/CheckoutSkeleton";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
-  const { isAuthenticating } = useAuthProvider();
+  const { isAuthenticating } = useSaleorAuthContext();
 
   const isCheckoutInvalid = !loading && !checkout && !isAuthenticating;
 
