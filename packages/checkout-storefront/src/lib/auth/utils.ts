@@ -1,4 +1,5 @@
 import { DocumentNode } from "graphql";
+import { print } from "graphql/language";
 
 const MILLI_MULTIPLYER = 1000;
 
@@ -23,5 +24,5 @@ export const getRequestData = <TVars extends object>(query: DocumentNode, variab
   headers: {
     "Content-Type": "application/json",
   },
-  body: JSON.stringify({ query, variables }),
+  body: JSON.stringify({ query: print(query), variables }),
 });

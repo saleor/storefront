@@ -123,7 +123,7 @@ export class SaleorAuthClient {
     const readResponse: TOperation = await response.json();
 
     const responseData = Object.values(readResponse.data).find(
-      (value) => typeof value === "object" && Object.values(value).includes("token")
+      (value) => typeof value === "object" && Object.keys(value).includes("token")
     );
 
     if (!responseData) {
@@ -198,7 +198,7 @@ export class SaleorAuthClient {
       },
     } = readResponse;
 
-    if (errors?.length) {
+    if (!errors?.length) {
       this.signOut();
     }
 
