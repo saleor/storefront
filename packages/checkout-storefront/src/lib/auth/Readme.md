@@ -80,7 +80,7 @@ Once the successful sign in or sign out happens, as well as failed authenticatio
 
 ## How do I sign in?
 
-#### **`SaleorAuthClient.signIn: ({ email: string, password: string }) => Promise<TokenCreateResponse>`**
+#### **`SaleorAuthClient.signIn: ({ email, password }: TokenCreateVariables) => Promise<TokenCreateResponse>`**
 
 SaleorAuthClient returns a `signIn` method. You can also access it via the **useSaleorAuthContext** hook.
 
@@ -109,14 +109,30 @@ signOut();
 
 ## How do I sign out in checkout?
 
-#### **`SaleorAuthClient.checkoutSignOut: () => Promise<CustomerDetachResponse>`**
+#### **`SaleorAuthClient.checkoutSignOut: ({ checkoutId }: CustomerDetachVariables) => Promise<CustomerDetachResponse>`**
 
 On top of the regular sign out login, in checkout we need to start signing out process with detaching customer from checkout. Since detach requires a signed in user, it'll happen first and removing tokens from state / storage will only happen if the mutation returned success:
 
 ```javascript
 const { checkoutSignOut } = useSaleorAuthContext();
 
-const response = await checkoutSignOut(checkout.id);
+const response = await checkoutSignOut({ checkoutId: checkout.id });
+```
+
+## How does auth handle resetting password?
+
+#### **`SaleorAuthClient.resetPassword: ({ email, password, token }: PasswordResetVariables) => Promise<PasswordResetResponse>`**
+
+SaleorAuthClient class provides you with a reset password method. If the reset password mutation is successful, it'll log you in automatically just like after a regular sign in. The [onSignIn method of useAuthChange hook](#how-do-i-tell-my-graphql-client-to-refresh-queries-on-signin--signout) will also be triggered.
+
+```javascript
+const { resetPassword } = useSaleorAuthContext();
+
+const response = await resetPassword({
+  email: "example@mail.com",
+  password: "newPassword",
+  token: "apiToken",
+});
 ```
 
 ## How do I use this with Urql?

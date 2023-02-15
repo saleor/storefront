@@ -1,7 +1,7 @@
-import { usePasswordResetMutation } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
 import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { object, string } from "yup";
 
@@ -11,7 +11,7 @@ interface ResetPasswordFormData {
 
 export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { errorMessages } = useErrorMessages();
-  const [, resetPassword] = usePasswordResetMutation();
+  const { resetPassword } = useSaleorAuthContext();
 
   const validationSchema = object({
     password: string().required(errorMessages.required),

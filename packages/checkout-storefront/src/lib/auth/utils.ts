@@ -1,5 +1,4 @@
-import { CHECKOUT_CUSTOMER_DETACH, REFRESH_TOKEN, TOKEN_CREATE } from "./mutations";
-import { print } from "graphql/language/printer";
+import { DocumentNode } from "graphql";
 
 const MILLI_MULTIPLYER = 1000;
 
@@ -19,26 +18,10 @@ export const isExpiredToken = (token: string) => {
   return getTokenExpiry(token) - 2000 <= Date.now();
 };
 
-export const getTokenRefreshRequest = (refreshToken: string) =>
-  getRequestData(
-    JSON.stringify({
-      query: print(REFRESH_TOKEN),
-      variables: { refreshToken },
-    })
-  );
-
-export const getCustomerDetachRequest = (checkoutId: string) =>
-  getRequestData(
-    JSON.stringify({ query: print(CHECKOUT_CUSTOMER_DETACH), variables: { checkoutId } })
-  );
-
-export const getTokenCreateRequest = (email: string, password: string) =>
-  getRequestData(JSON.stringify({ query: print(TOKEN_CREATE), variables: { email, password } }));
-
-const getRequestData = (body = "") => ({
+export const getRequestData = <TVars extends object>(query: DocumentNode, variables: TVars) => ({
   method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
-  body,
+  body: JSON.stringify({ query, variables }),
 });

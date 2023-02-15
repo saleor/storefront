@@ -2612,6 +2612,14 @@ export type Channel = Node & {
    * Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
    */
   name: Scalars["String"];
+  /**
+   * Channel-specific order settings.
+   *
+   * Added in Saleor 3.12.
+   *
+   * Requires one of the following permissions: MANAGE_CHANNELS, MANAGE_ORDERS.
+   */
+  orderSettings: OrderSettings;
   /** Slug of the channel. */
   slug: Scalars["String"];
   /**
@@ -2693,6 +2701,12 @@ export type ChannelCreateInput = {
   isActive?: InputMaybe<Scalars["Boolean"]>;
   /** Name of the channel. */
   name: Scalars["String"];
+  /**
+   * The channel order settings
+   *
+   * Added in Saleor 3.12.
+   */
+  orderSettings?: InputMaybe<OrderSettingsInput>;
   /** Slug of the channel. */
   slug: Scalars["String"];
   /**
@@ -2805,6 +2819,17 @@ export type ChannelErrorCode =
   | "REQUIRED"
   | "UNIQUE";
 
+export type ChannelListingUpdateInput = {
+  /** ID of a channel listing. */
+  channelListing: Scalars["ID"];
+  /** Cost price of the variant in channel. */
+  costPrice?: InputMaybe<Scalars["PositiveDecimal"]>;
+  /** The threshold for preorder variant in channel. */
+  preorderThreshold?: InputMaybe<Scalars["Int"]>;
+  /** Price of the particular variant in channel. */
+  price?: InputMaybe<Scalars["PositiveDecimal"]>;
+};
+
 /**
  * Reorder the warehouses of a channel.
  *
@@ -2846,6 +2871,7 @@ export type ChannelStatusChanged = Event & {
  * Update a channel.
  *
  * Requires one of the following permissions: MANAGE_CHANNELS.
+ * Requires one of the following permissions when updating only orderSettings field: MANAGE_CHANNELS, MANAGE_ORDERS.
  */
 export type ChannelUpdate = {
   __typename?: "ChannelUpdate";
@@ -2876,6 +2902,12 @@ export type ChannelUpdateInput = {
   isActive?: InputMaybe<Scalars["Boolean"]>;
   /** Name of the channel. */
   name?: InputMaybe<Scalars["String"]>;
+  /**
+   * The channel order settings
+   *
+   * Added in Saleor 3.12.
+   */
+  orderSettings?: InputMaybe<OrderSettingsInput>;
   /** List of shipping zones to unassign from the channel. */
   removeShippingZones?: InputMaybe<Array<Scalars["ID"]>>;
   /**
@@ -9146,6 +9178,7 @@ export type Mutation = {
    * Update a channel.
    *
    * Requires one of the following permissions: MANAGE_CHANNELS.
+   * Requires one of the following permissions when updating only orderSettings field: MANAGE_CHANNELS, MANAGE_ORDERS.
    */
   channelUpdate?: Maybe<ChannelUpdate>;
   /** Adds a gift card or a voucher to a checkout. */
@@ -9742,9 +9775,12 @@ export type Mutation = {
    */
   orderRefund?: Maybe<OrderRefund>;
   /**
-   * Update shop order settings.
+   * Update shop order settings across all channels. Returns `orderSettings` for the first `channel` in alphabetical order.
    *
    * Requires one of the following permissions: MANAGE_ORDERS.
+   * @deprecated
+   *
+   * DEPRECATED: this mutation will be removed in Saleor 4.0. Use `channelUpdate` mutation instead.
    */
   orderSettingsUpdate?: Maybe<OrderSettingsUpdate>;
   /**
@@ -13341,10 +13377,12 @@ export type OrderReturnProductsInput = {
   refund?: InputMaybe<Scalars["Boolean"]>;
 };
 
-/** Order related settings from site settings. */
+/** Represents the channel-specific order settings. */
 export type OrderSettings = {
   __typename?: "OrderSettings";
+  /** When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately. */
   automaticallyConfirmAllNewOrders: Scalars["Boolean"];
+  /** When enabled, all non-shippable gift card orders will be fulfilled automatically. */
   automaticallyFulfillNonShippableGiftCard: Scalars["Boolean"];
 };
 
@@ -13361,8 +13399,15 @@ export type OrderSettingsError = {
 /** An enumeration. */
 export type OrderSettingsErrorCode = "INVALID";
 
+export type OrderSettingsInput = {
+  /** When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately. By default set to True */
+  automaticallyConfirmAllNewOrders?: InputMaybe<Scalars["Boolean"]>;
+  /** When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True. */
+  automaticallyFulfillNonShippableGiftCard?: InputMaybe<Scalars["Boolean"]>;
+};
+
 /**
- * Update shop order settings.
+ * Update shop order settings across all channels. Returns `orderSettings` for the first `channel` in alphabetical order.
  *
  * Requires one of the following permissions: MANAGE_ORDERS.
  */
@@ -13376,9 +13421,9 @@ export type OrderSettingsUpdate = {
 };
 
 export type OrderSettingsUpdateInput = {
-  /** When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately. */
+  /** When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately. By default set to True */
   automaticallyConfirmAllNewOrders?: InputMaybe<Scalars["Boolean"]>;
-  /** When enabled, all non-shippable gift card orders will be fulfilled automatically. */
+  /** When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True. */
   automaticallyFulfillNonShippableGiftCard?: InputMaybe<Scalars["Boolean"]>;
 };
 
@@ -15931,14 +15976,93 @@ export type ProductInput = {
 };
 
 /** Represents a product media. */
-export type ProductMedia = Node & {
-  __typename?: "ProductMedia";
-  alt: Scalars["String"];
-  id: Scalars["ID"];
-  oembedData: Scalars["JSONString"];
-  sortOrder?: Maybe<Scalars["Int"]>;
-  type: ProductMediaType;
-  url: Scalars["String"];
+export type ProductMedia = Node &
+  ObjectWithMetadata & {
+    __typename?: "ProductMedia";
+    alt: Scalars["String"];
+    id: Scalars["ID"];
+    /**
+     * List of public metadata items. Can be accessed without permissions.
+     *
+     * Added in Saleor 3.12.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metadata: Array<MetadataItem>;
+    /**
+     * A single key from public metadata.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.12.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafield?: Maybe<Scalars["String"]>;
+    /**
+     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.12.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafields?: Maybe<Scalars["Metadata"]>;
+    oembedData: Scalars["JSONString"];
+    /**
+     * List of private metadata items. Requires staff permissions to access.
+     *
+     * Added in Saleor 3.12.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetadata: Array<MetadataItem>;
+    /**
+     * A single key from private metadata. Requires staff permissions to access.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.12.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafield?: Maybe<Scalars["String"]>;
+    /**
+     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.12.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafields?: Maybe<Scalars["Metadata"]>;
+    /**
+     * Product id the media refers to.
+     *
+     * Added in Saleor 3.12.
+     */
+    productId?: Maybe<Scalars["ID"]>;
+    sortOrder?: Maybe<Scalars["Int"]>;
+    type: ProductMediaType;
+    url: Scalars["String"];
+  };
+
+/** Represents a product media. */
+export type ProductMediaMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/** Represents a product media. */
+export type ProductMediaMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/** Represents a product media. */
+export type ProductMediaPrivateMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/** Represents a product media. */
+export type ProductMediaPrivateMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 /** Represents a product media. */
@@ -15987,6 +16111,25 @@ export type ProductMediaCreateInput = {
 };
 
 /**
+ * Event sent when new product media is created.
+ *
+ * Added in Saleor 3.12.
+ */
+export type ProductMediaCreated = Event & {
+  __typename?: "ProductMediaCreated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The product media the event relates to. */
+  productMedia?: Maybe<ProductMedia>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
  * Deletes a product media.
  *
  * Requires one of the following permissions: MANAGE_PRODUCTS.
@@ -15998,6 +16141,25 @@ export type ProductMediaDelete = {
   product?: Maybe<Product>;
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
   productErrors: Array<ProductError>;
+};
+
+/**
+ * Event sent when product media is deleted.
+ *
+ * Added in Saleor 3.12.
+ */
+export type ProductMediaDeleted = Event & {
+  __typename?: "ProductMediaDeleted";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The product media the event relates to. */
+  productMedia?: Maybe<ProductMedia>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /**
@@ -16034,6 +16196,25 @@ export type ProductMediaUpdate = {
 export type ProductMediaUpdateInput = {
   /** Alt text for a product media. */
   alt?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when product media is updated.
+ *
+ * Added in Saleor 3.12.
+ */
+export type ProductMediaUpdated = Event & {
+  __typename?: "ProductMediaUpdated";
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The product media the event relates to. */
+  productMedia?: Maybe<ProductMedia>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /**
@@ -16886,7 +17067,13 @@ export type ProductVariantBulkError = {
   __typename?: "ProductVariantBulkError";
   /** List of attributes IDs which causes the error. */
   attributes?: Maybe<Array<Scalars["ID"]>>;
-  /** List of channel IDs which causes the error. */
+  /** List of channel listings IDs which causes the error. */
+  channelListings?: Maybe<Array<Scalars["ID"]>>;
+  /**
+   * List of channel IDs which causes the error.
+   *
+   * Added in Saleor 3.12.
+   */
   channels?: Maybe<Array<Scalars["ID"]>>;
   /** The error code. */
   code: ProductVariantBulkErrorCode;
@@ -16894,6 +17081,12 @@ export type ProductVariantBulkError = {
   field?: Maybe<Scalars["String"]>;
   /** The error message. */
   message?: Maybe<Scalars["String"]>;
+  /**
+   * List of stocks IDs which causes the error.
+   *
+   * Added in Saleor 3.12.
+   */
+  stocks?: Maybe<Array<Scalars["ID"]>>;
   /** List of attribute values IDs which causes the error. */
   values?: Maybe<Array<Scalars["ID"]>>;
   /** List of warehouse IDs which causes the error. */
@@ -16949,8 +17142,14 @@ export type ProductVariantBulkUpdate = {
 export type ProductVariantBulkUpdateInput = {
   /** List of attributes specific to this variant. */
   attributes?: InputMaybe<Array<BulkAttributeValueInput>>;
-  /** List of prices assigned to channels. */
-  channelListings?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
+  /**
+   * Channel listings input.
+   *
+   * Added in Saleor 3.12.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  channelListings?: InputMaybe<ProductVariantChannelListingUpdateInput>;
   /**
    * External ID of this product variant.
    *
@@ -16991,8 +17190,14 @@ export type ProductVariantBulkUpdateInput = {
   quantityLimitPerCustomer?: InputMaybe<Scalars["Int"]>;
   /** Stock keeping unit. */
   sku?: InputMaybe<Scalars["String"]>;
-  /** Stocks of a product available for sale. */
-  stocks?: InputMaybe<Array<StockInput>>;
+  /**
+   * Stocks input.
+   *
+   * Added in Saleor 3.12.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  stocks?: InputMaybe<ProductVariantStocksUpdateInput>;
   /** Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. */
   trackInventory?: InputMaybe<Scalars["Boolean"]>;
   /** Weight of the Product Variant. */
@@ -17052,6 +17257,15 @@ export type ProductVariantChannelListingUpdate = {
   productChannelListingErrors: Array<ProductChannelListingError>;
   /** An updated product variant instance. */
   variant?: Maybe<ProductVariant>;
+};
+
+export type ProductVariantChannelListingUpdateInput = {
+  /** List of channels to create variant channel listings. */
+  create?: InputMaybe<Array<ProductVariantChannelListingAddInput>>;
+  /** List of channel listings to remove. */
+  remove?: InputMaybe<Array<Scalars["ID"]>>;
+  /** List of channel listings to update. */
+  update?: InputMaybe<Array<ChannelListingUpdateInput>>;
 };
 
 export type ProductVariantCountableConnection = {
@@ -17476,6 +17690,15 @@ export type ProductVariantStocksUpdate = {
   productVariant?: Maybe<ProductVariant>;
 };
 
+export type ProductVariantStocksUpdateInput = {
+  /** List of warehouses to create stocks. */
+  create?: InputMaybe<Array<StockInput>>;
+  /** List of stocks to remove. */
+  remove?: InputMaybe<Array<Scalars["ID"]>>;
+  /** List of stocks to update. */
+  update?: InputMaybe<Array<StockUpdateInput>>;
+};
+
 export type ProductVariantTranslatableContent = Node & {
   __typename?: "ProductVariantTranslatableContent";
   /** List of product variant attribute values that can be translated. */
@@ -17758,9 +17981,10 @@ export type Query = {
    */
   orderByToken?: Maybe<Order>;
   /**
-   * Order related settings from site settings.
+   * Order related settings from site settings. Returns `orderSettings` for the first `channel` in alphabetical order.
    *
    * Requires one of the following permissions: MANAGE_ORDERS.
+   * @deprecated This field will be removed in Saleor 4.0. Use the `channel` query to fetch the `orderSettings` field instead.
    */
   orderSettings?: Maybe<OrderSettings>;
   /**
@@ -20787,6 +21011,13 @@ export type StockSettingsInput = {
   allocationStrategy: AllocationStrategyEnum;
 };
 
+export type StockUpdateInput = {
+  /** Quantity of items available for sell. */
+  quantity: Scalars["Int"];
+  /** Stock. */
+  stock: Scalars["ID"];
+};
+
 /** Enum representing the type of a payment storage in a gateway. */
 export type StorePaymentMethodEnum =
   /** Storage is disabled. The payment is not stored. */
@@ -21497,6 +21728,47 @@ export type TaxedMoneyRange = {
   start?: Maybe<TaxedMoney>;
   /** Upper bound of a price range. */
   stop?: Maybe<TaxedMoney>;
+};
+
+/**
+ * Event sent when thumbnail is created.
+ *
+ * Added in Saleor 3.12.
+ */
+export type ThumbnailCreated = Event & {
+  __typename?: "ThumbnailCreated";
+  /**
+   * Thumbnail id.
+   *
+   * Added in Saleor 3.12.
+   */
+  id?: Maybe<Scalars["ID"]>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /**
+   * Original media url.
+   *
+   * Added in Saleor 3.12.
+   */
+  mediaUrl?: Maybe<Scalars["String"]>;
+  /**
+   * Object the thumbnail refers to.
+   *
+   * Added in Saleor 3.12.
+   */
+  objectId?: Maybe<Scalars["ID"]>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /**
+   * Thumbnail url.
+   *
+   * Added in Saleor 3.12.
+   */
+  url?: Maybe<Scalars["String"]>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /** An enumeration. */
@@ -23757,6 +24029,24 @@ export type WebhookEventTypeAsyncEnum =
   /** A product is deleted. */
   | "PRODUCT_DELETED"
   /**
+   * A new product media is created.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "PRODUCT_MEDIA_CREATED"
+  /**
+   * A product media is deleted.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "PRODUCT_MEDIA_DELETED"
+  /**
+   * A product media is updated.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "PRODUCT_MEDIA_UPDATED"
+  /**
    * A product metadata is updated.
    *
    * Added in Saleor 3.8.
@@ -23820,6 +24110,12 @@ export type WebhookEventTypeAsyncEnum =
   | "STAFF_DELETED"
   /** A staff user is updated. */
   | "STAFF_UPDATED"
+  /**
+   * A thumbnail is created.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "THUMBNAIL_CREATED"
   /** An action requested for transaction. */
   | "TRANSACTION_ACTION_REQUEST"
   /**
@@ -24082,6 +24378,24 @@ export type WebhookEventTypeEnum =
   /** A product is deleted. */
   | "PRODUCT_DELETED"
   /**
+   * A new product media is created.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "PRODUCT_MEDIA_CREATED"
+  /**
+   * A product media is deleted.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "PRODUCT_MEDIA_DELETED"
+  /**
+   * A product media is updated.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "PRODUCT_MEDIA_UPDATED"
+  /**
    * A product metadata is updated.
    *
    * Added in Saleor 3.8.
@@ -24147,6 +24461,12 @@ export type WebhookEventTypeEnum =
   | "STAFF_DELETED"
   /** A staff user is updated. */
   | "STAFF_UPDATED"
+  /**
+   * A thumbnail is created.
+   *
+   * Added in Saleor 3.12.
+   */
+  | "THUMBNAIL_CREATED"
   /** An action requested for transaction. */
   | "TRANSACTION_ACTION_REQUEST"
   /**
@@ -24303,6 +24623,9 @@ export type WebhookSampleEventTypeEnum =
   | "PERMISSION_GROUP_UPDATED"
   | "PRODUCT_CREATED"
   | "PRODUCT_DELETED"
+  | "PRODUCT_MEDIA_CREATED"
+  | "PRODUCT_MEDIA_DELETED"
+  | "PRODUCT_MEDIA_UPDATED"
   | "PRODUCT_METADATA_UPDATED"
   | "PRODUCT_UPDATED"
   | "PRODUCT_VARIANT_BACK_IN_STOCK"
@@ -24326,6 +24649,7 @@ export type WebhookSampleEventTypeEnum =
   | "STAFF_CREATED"
   | "STAFF_DELETED"
   | "STAFF_UPDATED"
+  | "THUMBNAIL_CREATED"
   | "TRANSACTION_ACTION_REQUEST"
   | "TRANSACTION_ITEM_METADATA_UPDATED"
   | "TRANSLATION_CREATED"
@@ -25280,150 +25604,6 @@ export type CheckoutCustomerAttachMutation = {
   __typename?: "Mutation";
   checkoutCustomerAttach?: {
     __typename?: "CheckoutCustomerAttach";
-    errors: Array<{
-      __typename?: "CheckoutError";
-      message?: string | null;
-      field?: string | null;
-      code: CheckoutErrorCode;
-    }>;
-    checkout?: {
-      __typename?: "Checkout";
-      id: string;
-      email?: string | null;
-      voucherCode?: string | null;
-      discountName?: string | null;
-      translatedDiscountName?: string | null;
-      isShippingRequired: boolean;
-      discount?: { __typename?: "Money"; currency: string; amount: number } | null;
-      giftCards: Array<{
-        __typename?: "GiftCard";
-        displayCode: string;
-        id: string;
-        currentBalance: { __typename?: "Money"; currency: string; amount: number };
-      }>;
-      channel: { __typename?: "Channel"; id: string; slug: string };
-      shippingAddress?: {
-        __typename?: "Address";
-        id: string;
-        city: string;
-        phone?: string | null;
-        postalCode: string;
-        companyName: string;
-        cityArea: string;
-        streetAddress1: string;
-        streetAddress2: string;
-        countryArea: string;
-        firstName: string;
-        lastName: string;
-        country: { __typename?: "CountryDisplay"; country: string; code: string };
-      } | null;
-      billingAddress?: {
-        __typename?: "Address";
-        id: string;
-        city: string;
-        phone?: string | null;
-        postalCode: string;
-        companyName: string;
-        cityArea: string;
-        streetAddress1: string;
-        streetAddress2: string;
-        countryArea: string;
-        firstName: string;
-        lastName: string;
-        country: { __typename?: "CountryDisplay"; country: string; code: string };
-      } | null;
-      user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
-      deliveryMethod?:
-        | { __typename?: "ShippingMethod"; id: string }
-        | { __typename?: "Warehouse"; id: string }
-        | null;
-      shippingMethods: Array<{
-        __typename?: "ShippingMethod";
-        id: string;
-        name: string;
-        maximumDeliveryDays?: number | null;
-        minimumDeliveryDays?: number | null;
-        price: { __typename?: "Money"; currency: string; amount: number };
-      }>;
-      totalPrice: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
-        tax: { __typename?: "Money"; currency: string; amount: number };
-      };
-      shippingPrice: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; currency: string; amount: number };
-      };
-      subtotalPrice: {
-        __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; currency: string; amount: number };
-      };
-      lines: Array<{
-        __typename?: "CheckoutLine";
-        id: string;
-        quantity: number;
-        totalPrice: {
-          __typename?: "TaxedMoney";
-          gross: { __typename?: "Money"; currency: string; amount: number };
-        };
-        unitPrice: {
-          __typename?: "TaxedMoney";
-          gross: { __typename?: "Money"; currency: string; amount: number };
-        };
-        undiscountedUnitPrice: { __typename?: "Money"; currency: string; amount: number };
-        variant: {
-          __typename?: "ProductVariant";
-          id: string;
-          name: string;
-          attributes: Array<{
-            __typename?: "SelectedAttribute";
-            values: Array<{
-              __typename?: "AttributeValue";
-              name?: string | null;
-              dateTime?: string | null;
-              boolean?: boolean | null;
-              translation?: { __typename?: "AttributeValueTranslation"; name: string } | null;
-            }>;
-          }>;
-          translation?: { __typename?: "ProductVariantTranslation"; name: string } | null;
-          product: {
-            __typename?: "Product";
-            name: string;
-            translation?: {
-              __typename?: "ProductTranslation";
-              id: string;
-              name?: string | null;
-              language: { __typename?: "LanguageDisplay"; code: LanguageCodeEnum };
-            } | null;
-            media?: Array<{
-              __typename?: "ProductMedia";
-              alt: string;
-              type: ProductMediaType;
-              url: string;
-            }> | null;
-          };
-          media?: Array<{
-            __typename?: "ProductMedia";
-            alt: string;
-            type: ProductMediaType;
-            url: string;
-          }> | null;
-        };
-      }>;
-    } | null;
-  } | null;
-};
-
-export type CheckoutCustomerDetachMutationVariables = Exact<{
-  checkoutId: Scalars["ID"];
-  languageCode: LanguageCodeEnum;
-}>;
-
-export type CheckoutCustomerDetachMutation = {
-  __typename?: "Mutation";
-  checkoutCustomerDetach?: {
-    __typename?: "CheckoutCustomerDetach";
     errors: Array<{
       __typename?: "CheckoutError";
       message?: string | null;
@@ -26738,25 +26918,6 @@ export type UserRegisterMutation = {
   } | null;
 };
 
-export type PasswordResetMutationVariables = Exact<{
-  email: Scalars["String"];
-  token: Scalars["String"];
-  password: Scalars["String"];
-}>;
-
-export type PasswordResetMutation = {
-  __typename?: "Mutation";
-  setPassword?: {
-    __typename?: "SetPassword";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-  } | null;
-};
-
 export type RequestPasswordResetMutationVariables = Exact<{
   email: Scalars["String"];
   channel: Scalars["String"];
@@ -26767,26 +26928,6 @@ export type RequestPasswordResetMutation = {
   __typename?: "Mutation";
   requestPasswordReset?: {
     __typename?: "RequestPasswordReset";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-  } | null;
-};
-
-export type SignInMutationVariables = Exact<{
-  email: Scalars["String"];
-  password: Scalars["String"];
-}>;
-
-export type SignInMutation = {
-  __typename?: "Mutation";
-  tokenCreate?: {
-    __typename?: "CreateToken";
-    token?: string | null;
-    refreshToken?: string | null;
     errors: Array<{
       __typename?: "AccountError";
       message?: string | null;
@@ -27241,26 +27382,6 @@ export function useCheckoutCustomerAttachMutation() {
     CheckoutCustomerAttachDocument
   );
 }
-export const CheckoutCustomerDetachDocument = gql`
-  mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
-    checkoutCustomerDetach(id: $checkoutId) {
-      errors {
-        ...CheckoutErrorFragment
-      }
-      checkout {
-        ...CheckoutFragment
-      }
-    }
-  }
-  ${CheckoutErrorFragmentDoc}
-  ${CheckoutFragmentDoc}
-`;
-
-export function useCheckoutCustomerDetachMutation() {
-  return Urql.useMutation<CheckoutCustomerDetachMutation, CheckoutCustomerDetachMutationVariables>(
-    CheckoutCustomerDetachDocument
-  );
-}
 export const UserAddressDeleteDocument = gql`
   mutation userAddressDelete($id: ID!) {
     accountAddressDelete(id: $id) {
@@ -27528,23 +27649,6 @@ export function useUserRegisterMutation() {
     UserRegisterDocument
   );
 }
-export const PasswordResetDocument = gql`
-  mutation passwordReset($email: String!, $token: String!, $password: String!) {
-    setPassword(email: $email, token: $token, password: $password) {
-      errors {
-        message
-        field
-        code
-      }
-    }
-  }
-`;
-
-export function usePasswordResetMutation() {
-  return Urql.useMutation<PasswordResetMutation, PasswordResetMutationVariables>(
-    PasswordResetDocument
-  );
-}
 export const RequestPasswordResetDocument = gql`
   mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
     requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
@@ -27561,21 +27665,4 @@ export function useRequestPasswordResetMutation() {
   return Urql.useMutation<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(
     RequestPasswordResetDocument
   );
-}
-export const SignInDocument = gql`
-  mutation signIn($email: String!, $password: String!) {
-    tokenCreate(email: $email, password: $password) {
-      token
-      refreshToken
-      errors {
-        message
-        field
-        code
-      }
-    }
-  }
-`;
-
-export function useSignInMutation() {
-  return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
 }

@@ -1,4 +1,4 @@
-import { EventHandler, useEffect } from "react";
+import { useEffect } from "react";
 import { SaleorAuthEvent, STORAGE_AUTH_EVENT_KEY } from "./SaleorAuthStorageHandler";
 
 interface UseAuthChangeProps {
@@ -27,10 +27,10 @@ export const useAuthChange = ({ onSignedOut, onSignedIn }: UseAuthChangeProps) =
 
   useEffect(() => {
     // for current window
-    window.addEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventHandler);
+    window.addEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventListener);
     // //  for other windows
     return () => {
-      window.removeEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventHandler);
+      window.removeEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventListener);
     };
   }, []);
 };

@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 import invariant from "ts-invariant";
 
 type SaleorAuthContextConsumerProps = Pick<UseSaleorAuthClient, "isAuthenticating"> &
-  Pick<SaleorAuthClient, "signIn" | "signOut" | "checkoutSignOut">;
+  Omit<SaleorAuthClient, "fetchWithAuth" | "cleanup">;
 
 const [useSaleorAuthContext, Provider] = createSafeContext<SaleorAuthContextConsumerProps>();
 export { useSaleorAuthContext };
@@ -20,9 +20,11 @@ export const SaleorAuthProvider = ({
     "Missing Saleor Auth Client - are you sure you created it using useSaleorAuthClient?"
   );
 
-  const { signIn, signOut, checkoutSignOut } = saleorAuthClient;
+  const { signIn, signOut, checkoutSignOut, resetPassword } = saleorAuthClient;
 
   return (
-    <Provider value={{ isAuthenticating, signIn, signOut, checkoutSignOut }}>{children}</Provider>
+    <Provider value={{ isAuthenticating, signIn, signOut, checkoutSignOut, resetPassword }}>
+      {children}
+    </Provider>
   );
 };

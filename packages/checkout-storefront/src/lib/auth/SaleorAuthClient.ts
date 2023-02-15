@@ -3,14 +3,24 @@ import {
   SaleorAuthStorageHandler,
   STORAGE_AUTH_STATE_KEY,
 } from "./SaleorAuthStorageHandler";
+import { getRequestData, isExpiredToken } from "./utils";
 import {
-  getCustomerDetachRequest,
-  getTokenCreateRequest,
-  getTokenRefreshRequest,
-  isExpiredToken,
-} from "./utils";
-import { CustomerDetachResponse, Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
+  CustomerDetachResponse,
+  CustomerDetachVariables,
+  Fetch,
+  PasswordResetResponse,
+  PasswordResetVariables,
+  TokenCreateResponse,
+  TokenCreateVariables,
+  TokenRefreshResponse,
+} from "./types";
 import invariant from "ts-invariant";
+import {
+  CHECKOUT_CUSTOMER_DETACH,
+  PASSWORD_RESET,
+  TOKEN_CREATE,
+  TOKEN_REFRESH,
+} from "@/checkout-storefront/lib/auth/mutations";
 
 export interface SaleorAuthClientProps {
   onAuthRefresh?: (isAuthenticating: boolean) => void;
@@ -100,8 +110,43 @@ export class SaleorAuthClient {
     }
 
     // this is the first failed request, initialize refresh
-    this.tokenRefreshPromise = fetch(this.saleorApiUrl, getTokenRefreshRequest(refreshToken));
+    this.tokenRefreshPromise = fetch(
+      this.saleorApiUrl,
+      getRequestData(TOKEN_REFRESH, { refreshToken })
+    );
     return this.fetchWithAuth(input, init);
+  };
+
+  private handleSignIn = async <TOperation extends TokenCreateResponse | PasswordResetResponse>(
+    response: Response
+  ): Promise<TOperation> => {
+    const readResponse: TOperation = await response.json();
+
+    const responseData = Object.values(readResponse.data).find(
+      (value) => typeof value === "object" && Object.values(value).includes("token")
+    );
+
+    if (!responseData) {
+      return readResponse;
+    }
+
+    const { errors, token, refreshToken } = responseData;
+
+    if (!token || errors.length) {
+      this.storageHandler.setAuthState("signedOut");
+      return readResponse;
+    }
+
+    if (token) {
+      this.accessToken = token;
+    }
+
+    if (refreshToken) {
+      this.storageHandler.setRefreshToken(refreshToken);
+    }
+
+    this.storageHandler.setAuthState("signedIn");
+    return readResponse;
   };
 
   fetchWithAuth: Fetch = async (input, init) => {
@@ -121,32 +166,16 @@ export class SaleorAuthClient {
     return fetch(input, init);
   };
 
-  signIn = async ({ email, password }: { email: string; password: string }) => {
-    const response = await fetch(this.saleorApiUrl, getTokenCreateRequest(email, password));
+  resetPassword = async (variables: PasswordResetVariables) => {
+    const response = await fetch(this.saleorApiUrl, getRequestData(PASSWORD_RESET, variables));
 
-    const readResponse: TokenCreateResponse = await response.json();
+    return this.handleSignIn<PasswordResetResponse>(response);
+  };
 
-    const {
-      data: {
-        tokenCreate: { errors, token, refreshToken },
-      },
-    } = readResponse;
+  signIn = async (variables: TokenCreateVariables) => {
+    const response = await fetch(this.saleorApiUrl, getRequestData(TOKEN_CREATE, variables));
 
-    if (!token || errors.length) {
-      this.storageHandler.setAuthState("signedOut");
-      return readResponse;
-    }
-
-    if (token) {
-      this.accessToken = token;
-    }
-
-    if (refreshToken) {
-      this.storageHandler.setRefreshToken(refreshToken);
-    }
-
-    this.storageHandler.setAuthState("signedIn");
-    return readResponse;
+    return this.handleSignIn<TokenCreateResponse>(response);
   };
 
   signOut = () => {
@@ -154,11 +183,11 @@ export class SaleorAuthClient {
     this.storageHandler.clearAuthStorage();
   };
 
-  checkoutSignOut = async (checkoutId: string) => {
+  checkoutSignOut = async (variables: CustomerDetachVariables) => {
     // customer detach needs auth so run it and then remove all the tokens
     const response = await this.runAuthorizedRequest(
       this.saleorApiUrl,
-      getCustomerDetachRequest(checkoutId)
+      getRequestData(CHECKOUT_CUSTOMER_DETACH, variables)
     );
 
     const readResponse: CustomerDetachResponse = await response.json();

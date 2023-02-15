@@ -13044,6 +13044,22 @@
             "deprecationReason": null
           },
           {
+            "name": "orderSettings",
+            "description": "Channel-specific order settings.\n\nAdded in Saleor 3.12.\n\nRequires one of the following permissions: MANAGE_CHANNELS, MANAGE_ORDERS.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "OrderSettings",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "slug",
             "description": "Slug of the channel.",
             "args": [],
@@ -13354,6 +13370,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "orderSettings",
+            "description": "The channel order settings\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "OrderSettingsInput",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -13872,6 +13900,69 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "ChannelListingUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "channelListing",
+            "description": "ID of a channel listing.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "costPrice",
+            "description": "Cost price of the variant in channel.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "PositiveDecimal",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "preorderThreshold",
+            "description": "The threshold for preorder variant in channel.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "price",
+            "description": "Price of the particular variant in channel.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "PositiveDecimal",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "ChannelReorderWarehouses",
         "description": "Reorder the warehouses of a channel.\n\nAdded in Saleor 3.7.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_CHANNELS.",
@@ -13998,7 +14089,7 @@
       {
         "kind": "OBJECT",
         "name": "ChannelUpdate",
-        "description": "Update a channel. \n\nRequires one of the following permissions: MANAGE_CHANNELS.",
+        "description": "Update a channel.\n\nRequires one of the following permissions: MANAGE_CHANNELS.\nRequires one of the following permissions when updating only orderSettings field: MANAGE_CHANNELS, MANAGE_ORDERS.",
         "fields": [
           {
             "name": "channel",
@@ -14142,6 +14233,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "orderSettings",
+            "description": "The channel order settings\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "OrderSettingsInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -26946,6 +27049,21 @@
           },
           {
             "kind": "OBJECT",
+            "name": "ProductMediaCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ProductMediaDeleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ProductMediaUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "ProductMetadataUpdated",
             "ofType": null
           },
@@ -27062,6 +27180,11 @@
           {
             "kind": "OBJECT",
             "name": "StaffUpdated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ThumbnailCreated",
             "ofType": null
           },
           {
@@ -46586,7 +46709,7 @@
           },
           {
             "name": "channelUpdate",
-            "description": "Update a channel. \n\nRequires one of the following permissions: MANAGE_CHANNELS.",
+            "description": "Update a channel.\n\nRequires one of the following permissions: MANAGE_CHANNELS.\nRequires one of the following permissions when updating only orderSettings field: MANAGE_CHANNELS, MANAGE_ORDERS.",
             "args": [
               {
                 "name": "id",
@@ -51285,7 +51408,7 @@
           },
           {
             "name": "orderSettingsUpdate",
-            "description": "Update shop order settings. \n\nRequires one of the following permissions: MANAGE_ORDERS.",
+            "description": "Update shop order settings across all channels. Returns `orderSettings` for the first `channel` in alphabetical order.  \n\nRequires one of the following permissions: MANAGE_ORDERS.",
             "args": [
               {
                 "name": "input",
@@ -51309,8 +51432,8 @@
               "name": "OrderSettingsUpdate",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "\n\nDEPRECATED: this mutation will be removed in Saleor 4.0. Use `channelUpdate` mutation instead."
           },
           {
             "name": "orderUpdate",
@@ -57826,6 +57949,11 @@
           {
             "kind": "OBJECT",
             "name": "Product",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ProductMedia",
             "ofType": null
           },
           {
@@ -64575,11 +64703,11 @@
       {
         "kind": "OBJECT",
         "name": "OrderSettings",
-        "description": "Order related settings from site settings.",
+        "description": "Represents the channel-specific order settings.",
         "fields": [
           {
             "name": "automaticallyConfirmAllNewOrders",
-            "description": null,
+            "description": "When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -64595,7 +64723,7 @@
           },
           {
             "name": "automaticallyFulfillNonShippableGiftCard",
-            "description": null,
+            "description": "When enabled, all non-shippable gift card orders will be fulfilled automatically.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -64684,9 +64812,44 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "OrderSettingsInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "automaticallyConfirmAllNewOrders",
+            "description": "When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately. By default set to True",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "automaticallyFulfillNonShippableGiftCard",
+            "description": "When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "OrderSettingsUpdate",
-        "description": "Update shop order settings. \n\nRequires one of the following permissions: MANAGE_ORDERS.",
+        "description": "Update shop order settings across all channels. Returns `orderSettings` for the first `channel` in alphabetical order.  \n\nRequires one of the following permissions: MANAGE_ORDERS.",
         "fields": [
           {
             "name": "errors",
@@ -64762,7 +64925,7 @@
         "inputFields": [
           {
             "name": "automaticallyConfirmAllNewOrders",
-            "description": "When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately.",
+            "description": "When disabled, all new orders from checkout will be marked as unconfirmed. When enabled orders from checkout will become unfulfilled immediately. By default set to True",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -64774,7 +64937,7 @@
           },
           {
             "name": "automaticallyFulfillNonShippableGiftCard",
-            "description": "When enabled, all non-shippable gift card orders will be fulfilled automatically.",
+            "description": "When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True.",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -72997,7 +73160,7 @@
       {
         "kind": "SCALAR",
         "name": "PositiveDecimal",
-        "description": "Positive Decimal scalar implementation.\n\nShould be used in places where value must be positive.",
+        "description": "Nonnegative Decimal scalar implementation.\n\nShould be used in places where value must be nonnegative (0 or greater).",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -76780,6 +76943,92 @@
             "deprecationReason": null
           },
           {
+            "name": "metadata",
+            "description": "List of public metadata items. Can be accessed without permissions.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MetadataItem",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metafield",
+            "description": "A single key from public metadata.\n\nTip: Use GraphQL aliases to fetch multiple keys.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "key",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "metafields",
+            "description": "Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "keys",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Metadata",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "oembedData",
             "description": null,
             "args": [],
@@ -76791,6 +77040,104 @@
                 "name": "JSONString",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetadata",
+            "description": "List of private metadata items. Requires staff permissions to access.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MetadataItem",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetafield",
+            "description": "A single key from private metadata. Requires staff permissions to access.\n\nTip: Use GraphQL aliases to fetch multiple keys.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "key",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "privateMetafields",
+            "description": "Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [
+              {
+                "name": "keys",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Metadata",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "productId",
+            "description": "Product id the media refers to.\n\nAdded in Saleor 3.12.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -76870,6 +77217,11 @@
           {
             "kind": "INTERFACE",
             "name": "Node",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "ObjectWithMetadata",
             "ofType": null
           }
         ],
@@ -77099,6 +77451,83 @@
       },
       {
         "kind": "OBJECT",
+        "name": "ProductMediaCreated",
+        "description": "Event sent when new product media is created.\n\nAdded in Saleor 3.12.",
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "productMedia",
+            "description": "The product media the event relates to.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductMedia",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "ProductMediaDelete",
         "description": "Deletes a product media. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.",
         "fields": [
@@ -77177,6 +77606,83 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ProductMediaDeleted",
+        "description": "Event sent when product media is deleted.\n\nAdded in Saleor 3.12.",
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "productMedia",
+            "description": "The product media the event relates to.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductMedia",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -77397,6 +77903,83 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ProductMediaUpdated",
+        "description": "Event sent when product media is updated.\n\nAdded in Saleor 3.12.",
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "productMedia",
+            "description": "The product media the event relates to.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductMedia",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -81039,8 +81622,28 @@
             "deprecationReason": null
           },
           {
+            "name": "channelListings",
+            "description": "List of channel listings IDs which causes the error.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "channels",
-            "description": "List of channel IDs which causes the error.",
+            "description": "List of channel IDs which causes the error.\n\nAdded in Saleor 3.12.",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -81094,6 +81697,26 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stocks",
+            "description": "List of stocks IDs which causes the error.\n\nAdded in Saleor 3.12.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -81373,19 +81996,11 @@
           },
           {
             "name": "channelListings",
-            "description": "List of prices assigned to channels.",
+            "description": "Channel listings input.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "ProductVariantChannelListingAddInput",
-                  "ofType": null
-                }
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "ProductVariantChannelListingUpdateInput",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -81509,19 +82124,11 @@
           },
           {
             "name": "stocks",
-            "description": "Stocks of a product available for sale.",
+            "description": "Stocks input.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "StockInput",
-                  "ofType": null
-                }
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "ProductVariantStocksUpdateInput",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -81788,6 +82395,77 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ProductVariantChannelListingUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": "List of channels to create variant channel listings.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ProductVariantChannelListingAddInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "remove",
+            "description": "List of channel listings to remove.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update",
+            "description": "List of channel listings to update.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ChannelListingUpdateInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -83480,6 +84158,77 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ProductVariantStocksUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": "List of warehouses to create stocks.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "StockInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "remove",
+            "description": "List of stocks to remove.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update",
+            "description": "List of stocks to update.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "StockUpdateInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -86077,15 +86826,15 @@
           },
           {
             "name": "orderSettings",
-            "description": "Order related settings from site settings.\n\nRequires one of the following permissions: MANAGE_ORDERS.",
+            "description": "Order related settings from site settings. Returns `orderSettings` for the first `channel` in alphabetical order.\n\nRequires one of the following permissions: MANAGE_ORDERS.",
             "args": [],
             "type": {
               "kind": "OBJECT",
               "name": "OrderSettings",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use the `channel` query to fetch the `orderSettings` field instead."
           },
           {
             "name": "orders",
@@ -99026,6 +99775,49 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "StockUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "quantity",
+            "description": "Quantity of items available for sell.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stock",
+            "description": "Stock.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "StorePaymentMethodEnum",
         "description": "Enum representing the type of a payment storage in a gateway.",
@@ -102123,6 +102915,119 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ThumbnailCreated",
+        "description": "Event sent when thumbnail is created.\n\nAdded in Saleor 3.12.",
+        "fields": [
+          {
+            "name": "id",
+            "description": "Thumbnail id.\n\nAdded in Saleor 3.12.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "mediaUrl",
+            "description": "Original media url.\n\nAdded in Saleor 3.12.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "objectId",
+            "description": "Object the thumbnail refers to.\n\nAdded in Saleor 3.12.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "url",
+            "description": "Thumbnail url.\n\nAdded in Saleor 3.12.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -112682,6 +113587,24 @@
             "deprecationReason": null
           },
           {
+            "name": "PRODUCT_MEDIA_CREATED",
+            "description": "A new product media is created.\n\nAdded in Saleor 3.12.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRODUCT_MEDIA_DELETED",
+            "description": "A product media is deleted.\n\nAdded in Saleor 3.12.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRODUCT_MEDIA_UPDATED",
+            "description": "A product media is updated.\n\nAdded in Saleor 3.12.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PRODUCT_METADATA_UPDATED",
             "description": "A product metadata is updated.\n\nAdded in Saleor 3.8.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "isDeprecated": false,
@@ -112816,6 +113739,12 @@
           {
             "name": "STAFF_UPDATED",
             "description": "A staff user is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "THUMBNAIL_CREATED",
+            "description": "A thumbnail is created.\n\nAdded in Saleor 3.12.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -113407,6 +114336,24 @@
             "deprecationReason": null
           },
           {
+            "name": "PRODUCT_MEDIA_CREATED",
+            "description": "A new product media is created.\n\nAdded in Saleor 3.12.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRODUCT_MEDIA_DELETED",
+            "description": "A product media is deleted.\n\nAdded in Saleor 3.12.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRODUCT_MEDIA_UPDATED",
+            "description": "A product media is updated.\n\nAdded in Saleor 3.12.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PRODUCT_METADATA_UPDATED",
             "description": "A product metadata is updated.\n\nAdded in Saleor 3.8.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "isDeprecated": false,
@@ -113547,6 +114494,12 @@
           {
             "name": "STAFF_UPDATED",
             "description": "A staff user is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "THUMBNAIL_CREATED",
+            "description": "A thumbnail is created.\n\nAdded in Saleor 3.12.",
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -114149,6 +115102,24 @@
             "deprecationReason": null
           },
           {
+            "name": "PRODUCT_MEDIA_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRODUCT_MEDIA_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRODUCT_MEDIA_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PRODUCT_METADATA_UPDATED",
             "description": null,
             "isDeprecated": false,
@@ -114282,6 +115253,12 @@
           },
           {
             "name": "STAFF_UPDATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "THUMBNAIL_CREATED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
