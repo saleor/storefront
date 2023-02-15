@@ -18,3 +18,11 @@ export interface TokenCreateResponse {
     };
   };
 }
+
+export interface CustomerDetachResponse {
+  data: {
+    checkoutCustomerDetach: {
+      errors: any[];
+    };
+  };
+}

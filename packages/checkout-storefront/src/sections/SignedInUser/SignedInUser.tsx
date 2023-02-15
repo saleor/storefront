@@ -3,12 +3,10 @@ import React from "react";
 import { SignInFormContainer, SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { Text } from "@saleor/ui-kit";
 import { Button } from "@/checkout-storefront/components/Button";
-import { useCheckoutCustomerDetachMutation } from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "../Contact/messages";
-import { useLocale } from "@/checkout-storefront/hooks/useLocale";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignOutSuccess: () => void;
@@ -19,15 +17,13 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({
   onSignOutSuccess,
 }) => {
   const formatMessage = useFormattedMessages();
-  const { locale } = useLocale();
+  const { checkoutSignOut } = useSaleorAuthContext();
 
   const { checkout } = useCheckout();
   const { user } = useUser();
 
-  const [, customerDetach] = useCheckoutCustomerDetachMutation();
-
   const handleLogout = async () => {
-    await customerDetach({ languageCode: localeToLanguageCode(locale), checkoutId: checkout.id });
+    await checkoutSignOut(checkout.id);
     onSignOutSuccess();
   };
 

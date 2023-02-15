@@ -20,7 +20,7 @@ export type SubmitReturnWithErrors<TData extends FormDataBase> = Promise<{
   errors: ApiErrors<TData>;
 }>;
 
-export type MutationBaseFn = (vars: any) => Promise<OperationResult<any, any>>;
+export type MutationBaseFn = (vars: any) => Promise<Pick<OperationResult<any, any>, "data">>;
 
 export type ParserProps<TData> = TData & CommonVars;
 

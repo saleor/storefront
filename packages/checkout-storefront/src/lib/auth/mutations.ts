@@ -33,3 +33,29 @@ export const VERIFY_TOKEN = gql`
     }
   }
 `;
+
+export const CHECKOUT_CUSTOMER_DETACH = gql`
+  mutation checkoutCustomerDetach($checkoutId: ID!) {
+    checkoutCustomerDetach(id: $checkoutId) {
+      errors {
+        message
+        field
+        code
+      }
+    }
+  }
+`;
+
+export const TOKEN_CREATE = gql`
+  mutation tokenCreate($email: String!, $password: String!) {
+    tokenCreate(email: $email, password: $password) {
+      token
+      refreshToken
+      errors {
+        message
+        field
+        code
+      }
+    }
+  }
+`;

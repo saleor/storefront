@@ -1,4 +1,4 @@
-import { REFRESH_TOKEN } from "./mutations";
+import { CHECKOUT_CUSTOMER_DETACH, REFRESH_TOKEN, TOKEN_CREATE } from "./mutations";
 import { print } from "graphql/language/printer";
 
 const MILLI_MULTIPLYER = 1000;
@@ -19,19 +19,26 @@ export const isExpiredToken = (token: string) => {
   return getTokenExpiry(token) - 2000 <= Date.now();
 };
 
-export const refreshTokenRequest = (saleorApiUrl: string, refreshToken: string) =>
-  fetch(saleorApiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+export const getTokenRefreshRequest = (refreshToken: string) =>
+  getRequestData(
+    JSON.stringify({
       query: print(REFRESH_TOKEN),
       variables: { refreshToken },
-    }),
-  });
+    })
+  );
 
-export const isMutationType = (
-  mutationString: string,
-  mutationName: "tokenCreate" | "checkoutCustomerDetach"
-) => mutationString.includes("mutation") && mutationString.includes(mutationName);
+export const getCustomerDetachRequest = (checkoutId: string) =>
+  getRequestData(
+    JSON.stringify({ query: print(CHECKOUT_CUSTOMER_DETACH), variables: { checkoutId } })
+  );
+
+export const getTokenCreateRequest = (email: string, password: string) =>
+  getRequestData(JSON.stringify({ query: print(TOKEN_CREATE), variables: { email, password } }));
+
+const getRequestData = (body = "") => ({
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body,
+});

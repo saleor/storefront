@@ -23,19 +23,20 @@ export interface RootProps {
 export const Root = ({ env }: RootProps) => {
   const { saleorApiUrl } = getQueryParams();
   const { locale, messages } = useLocale();
-  const { saleorAuthClient, isAuthenticating } = useSaleorAuthClient({
+  const useSaleorAuthClientProps = useSaleorAuthClient({
     saleorApiUrl,
     storage: localStorage,
   });
 
+  const { saleorAuthClient } = useSaleorAuthClientProps;
+
   const { client: urqlClient, resetClient } = useUrqlClient({
     suspense: true,
-    requestPolicy: "cache-and-network",
+    requestPolicy: "cache-first",
     url: saleorApiUrl,
-    // fetch: saleorAuthClient.fetchWithAuth,
+    fetch: saleorAuthClient.fetchWithAuth,
   });
 
-  // reset once user has been signed in / out
   useAuthChange({
     onSignedOut: () => resetClient(),
     onSignedIn: () => resetClient(),
@@ -53,7 +54,7 @@ export const Root = ({ env }: RootProps) => {
 
   return (
     <IntlProvider defaultLocale={DEFAULT_LOCALE} locale={locale} messages={messages}>
-      <SaleorAuthProvider client={saleorAuthClient} isAuthenticating={isAuthenticating}>
+      <SaleorAuthProvider {...useSaleorAuthClientProps}>
         <UrqlProvider value={urqlClient}>
           <AppConfigProvider env={env}>
             <div className="app">

@@ -1,9 +1,10 @@
-import { AccountErrorCode, useSignInMutation } from "@/checkout-storefront/graphql";
+import { AccountErrorCode } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { object, string } from "yup";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
 
 interface SignInFormData {
   email: string;
@@ -19,7 +20,7 @@ interface SignInFormProps {
 export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
   const { getParsedApiError } = useGetParsedErrors<SignInFormData, AccountErrorCode>();
   const { errorMessages } = useErrorMessages();
-  const [, signIn] = useSignInMutation();
+  const { signIn } = useSaleorAuthContext();
 
   const validationSchema = object({
     password: string().required(errorMessages.required),

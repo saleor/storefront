@@ -262,17 +262,6 @@ mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnu
   }
 }
 
-mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
-  checkoutCustomerDetach(id: $checkoutId) {
-    errors {
-      ...CheckoutErrorFragment
-    }
-    checkout {
-      ...CheckoutFragment
-    }
-  }
-}
-
 mutation userAddressDelete($id: ID!) {
   accountAddressDelete(id: $id) {
     errors {

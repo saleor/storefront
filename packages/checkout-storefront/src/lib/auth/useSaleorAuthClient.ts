@@ -1,11 +1,16 @@
 import { SaleorAuthClient, SaleorAuthClientProps } from "./SaleorAuthClient";
 import { useEffect, useMemo, useState } from "react";
 
+export interface UseSaleorAuthClient {
+  saleorAuthClient: SaleorAuthClient;
+  isAuthenticating: boolean;
+}
+
 export const useSaleorAuthClient = ({
   saleorApiUrl,
   storage,
   onAuthRefresh,
-}: SaleorAuthClientProps) => {
+}: SaleorAuthClientProps): UseSaleorAuthClient => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   const saleorAuthClient = useMemo(

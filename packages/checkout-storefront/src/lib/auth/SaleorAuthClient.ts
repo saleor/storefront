@@ -3,8 +3,13 @@ import {
   SaleorAuthStorageHandler,
   STORAGE_AUTH_STATE_KEY,
 } from "./SaleorAuthStorageHandler";
-import { isExpiredToken, isMutationType, refreshTokenRequest } from "./utils";
-import { Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
+import {
+  getCustomerDetachRequest,
+  getTokenCreateRequest,
+  getTokenRefreshRequest,
+  isExpiredToken,
+} from "./utils";
+import { CustomerDetachResponse, Fetch, TokenCreateResponse, TokenRefreshResponse } from "./types";
 import invariant from "ts-invariant";
 
 export interface SaleorAuthClientProps {
@@ -95,62 +100,12 @@ export class SaleorAuthClient {
     }
 
     // this is the first failed request, initialize refresh
-    this.tokenRefreshPromise = refreshTokenRequest(this.saleorApiUrl, refreshToken);
+    this.tokenRefreshPromise = fetch(this.saleorApiUrl, getTokenRefreshRequest(refreshToken));
     return this.fetchWithAuth(input, init);
-  };
-
-  private handleSignIn: Fetch = async (input, init) => {
-    const tokenCreateResponse = await fetch(input, init);
-    // because we need to pass unchanged response
-    const requestResponse = tokenCreateResponse.clone();
-
-    const {
-      data: {
-        tokenCreate: { errors, token, refreshToken },
-      },
-    }: TokenCreateResponse = await tokenCreateResponse.json();
-
-    if (!token || errors.length) {
-      this.storageHandler.setAuthState("signedOut");
-      return tokenCreateResponse;
-    }
-
-    if (token) {
-      this.accessToken = token;
-    }
-
-    if (refreshToken) {
-      this.storageHandler.setRefreshToken(refreshToken);
-    }
-
-    this.storageHandler.setAuthState("signedIn");
-    return requestResponse;
   };
 
   fetchWithAuth: Fetch = async (input, init) => {
     const refreshToken: string | null = this.storageHandler.getRefreshToken();
-
-    const requestBody = init?.body?.toString() || "";
-
-    const isTokenCreateMutation = isMutationType(requestBody, "tokenCreate");
-
-    const isCustomerDetachMutation = isMutationType(requestBody, "checkoutCustomerDetach");
-
-    // it's a token create mutation so we'll do some special magic
-    if (isTokenCreateMutation) {
-      return this.handleSignIn(input, init);
-    }
-
-    // means logout
-    if (isCustomerDetachMutation) {
-      // customer detach needs auth so run it and then remove all the tokens
-      const response = await this.runAuthorizedRequest(input, init);
-
-      this.accessToken = null;
-      this.storageHandler.clearAuthStorage();
-
-      return response;
-    }
 
     // access token is fine, add it to the request and proceed
     if (this.accessToken && !isExpiredToken(this.accessToken)) {
@@ -164,5 +119,60 @@ export class SaleorAuthClient {
 
     // any regular mutation, no previous sign in, proceed
     return fetch(input, init);
+  };
+
+  signIn = async ({ email, password }: { email: string; password: string }) => {
+    const response = await fetch(this.saleorApiUrl, getTokenCreateRequest(email, password));
+
+    const readResponse: TokenCreateResponse = await response.json();
+
+    const {
+      data: {
+        tokenCreate: { errors, token, refreshToken },
+      },
+    } = readResponse;
+
+    if (!token || errors.length) {
+      this.storageHandler.setAuthState("signedOut");
+      return readResponse;
+    }
+
+    if (token) {
+      this.accessToken = token;
+    }
+
+    if (refreshToken) {
+      this.storageHandler.setRefreshToken(refreshToken);
+    }
+
+    this.storageHandler.setAuthState("signedIn");
+    return readResponse;
+  };
+
+  signOut = () => {
+    this.accessToken = null;
+    this.storageHandler.clearAuthStorage();
+  };
+
+  checkoutSignOut = async (checkoutId: string) => {
+    // customer detach needs auth so run it and then remove all the tokens
+    const response = await this.runAuthorizedRequest(
+      this.saleorApiUrl,
+      getCustomerDetachRequest(checkoutId)
+    );
+
+    const readResponse: CustomerDetachResponse = await response.json();
+
+    const {
+      data: {
+        checkoutCustomerDetach: { errors },
+      },
+    } = readResponse;
+
+    if (errors?.length) {
+      this.signOut();
+    }
+
+    return readResponse;
   };
 }

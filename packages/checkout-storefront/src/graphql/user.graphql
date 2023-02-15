@@ -43,15 +43,3 @@ mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: 
     }
   }
 }
-
-mutation signIn($email: String!, $password: String!) {
-  tokenCreate(email: $email, password: $password) {
-    token
-    refreshToken
-    errors {
-      message
-      field
-      code
-    }
-  }
-}

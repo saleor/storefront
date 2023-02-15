@@ -1,32 +1,28 @@
+import { SaleorAuthClient } from "@/checkout-storefront/lib/auth/SaleorAuthClient";
+import { UseSaleorAuthClient } from "@/checkout-storefront/lib/auth/useSaleorAuthClient";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { PropsWithChildren } from "react";
 import invariant from "ts-invariant";
-import { SaleorAuthClient } from "./SaleorAuthClient";
 
-interface SaleorAuthContextConsumerProps {
-  logout: () => void;
-  isAuthenticating: boolean;
-}
+type SaleorAuthContextConsumerProps = Pick<UseSaleorAuthClient, "isAuthenticating"> &
+  Pick<SaleorAuthClient, "signIn" | "signOut" | "checkoutSignOut">;
 
 const [useSaleorAuthContext, Provider] = createSafeContext<SaleorAuthContextConsumerProps>();
 export { useSaleorAuthContext };
 
-interface SaleorAuthProviderProps {
-  client: SaleorAuthClient;
-  isAuthenticating: boolean;
-}
-
 export const SaleorAuthProvider = ({
   children,
-  client,
+  saleorAuthClient,
   isAuthenticating,
-}: PropsWithChildren<SaleorAuthProviderProps>) => {
+}: PropsWithChildren<UseSaleorAuthClient>) => {
   invariant(
-    client,
+    saleorAuthClient,
     "Missing Saleor Auth Client - are you sure you created it using useSaleorAuthClient?"
   );
 
-  const { logout } = client;
+  const { signIn, signOut, checkoutSignOut } = saleorAuthClient;
 
-  return <Provider value={{ isAuthenticating, logout }}>{children}</Provider>;
+  return (
+    <Provider value={{ isAuthenticating, signIn, signOut, checkoutSignOut }}>{children}</Provider>
+  );
 };
