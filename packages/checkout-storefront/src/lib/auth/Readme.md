@@ -8,15 +8,15 @@ Most of the authentication flow is managed to by a vanilla JS class SaleorAuthCl
 interface SaleorAuthClientProps {
   saleorApiUrl: string;
   onAuthRefresh?: (isAuthenticating: boolean) => void;
-  storage?: Storage;
+  storage: Storage;
 }
 ```
 
 `saleorApiUrl` is required so the auth module can refresh access token on its own.
 
-### Providing authenticated fetch to a graphql client
+## How do I tell my graphql client to use authentication?
 
-The class provdies an `fetchWithAuth` method, that can be passed down to a graphql client of choice:
+SaleorAuthClient class provdies an `fetchWithAuth` method, that you should pass to your graphql client. That'll ensure that once user signs in, every request will be authenticated.
 
 ```javascript
 const { authFetch } = new SaleorAuthClient(clientProps);
@@ -27,18 +27,22 @@ createClient({
 });
 ```
 
-### Using saleor auth client hook
+## How do I tell React that the authentication is happening?
 
-We want to have an `isAuthenticating` prop that'll cause rerenders. On top of that, because the client sets event listeners on the window, we need to remove those once we're done. Hence we're proving an `useSaleorAuthClient` hook that does exactly that. It takes up the same props as `SaleorAuthClient` and returns the instance of SaleorAuthClient along with isAuthenticating prop.
+#### **`useSaleorAuthClient({ saleorApiUrl, storage, onAuthRefresh }: UseSaleorAuthClientProps) => SaleorAuthClientProps`**
+
+On top of taking part in react component lifecycle, because the client sets event listeners on the window, we need to remove those once we're done. Hence we're proving an `useSaleorAuthClient` hook that does exactly that. It takes up the same props as `SaleorAuthClient` and returns the instance of SaleorAuthClient along with isAuthenticating prop.
 
 ```javascript
-const { client, isAuthenticating } = useSaleorAuthClient({
+const { saleorAuthClient, isAuthenticating } = useSaleorAuthClient({
   saleorApiUrl: "https://master.staging.saleor.cloud",
   storage: window.localStorage,
 });
 ```
 
-### Using saleor auth provider
+## How do I use the methods and props without prop drilling?
+
+#### **`SaleorAuthProvider({ saleorAuthClient, isAuthenticating, children }: PropsWithChildren<UseSaleorAuthClient>) => JSX.Element`**
 
 The hook is supposed to be used only in the root of your project. If you'd like to access the client methods or isAuthenticating prop down the tree without extensive prop drilling, you can use `SaleorAuthProvider` passing it down the return value of useSaleorAuthClient hook.
 
@@ -50,13 +54,19 @@ const saleorAuthClientData = useSaleorAuthClient(authClientProps)
 </SaleorAuthProvider>
 ```
 
+---
+
+#### **`useSaleorAuthContext() => SaleorAuthContextConsumerProps`**
+
 The provider also equips you with `useSaleorAuthContext` hook
 
 ```javascript
-const { isAuthenticating } = useSaleorAuthContext();
+const { isAuthenticating, signIn, signOut, checkoutSignOut } = useSaleorAuthContext();
 ```
 
-### Using saleor auth change hook
+## How do I tell my graphql client to refresh queries on signIn / signOut?
+
+#### **`useAuthChange({ onSignedIn, onSignedOut }: UseAuthChangeProps) => void`**
 
 Once the successful sign in or sign out happens, as well as failed authentication (for e.g when refresh token is expired and there's no way to obtain a new access token from the api) you'll probably want to trigger some actions. Hence we're provided a `useAuthChange` hook that'll listen to storage changes and trigger callbacks.
 
@@ -68,7 +78,48 @@ Once the successful sign in or sign out happens, as well as failed authenticatio
   });
 ```
 
-## Usage with Urql
+## How do I sign in?
+
+#### **`SaleorAuthClient.signIn: ({ email: string, password: string }) => Promise<TokenCreateResponse>`**
+
+SaleorAuthClient returns a `signIn` method. You can also access it via the **useSaleorAuthContext** hook.
+
+```javascript
+const { signIn } = useSaleorAuthContext();
+
+const response = await signIn({
+  email: "example@mail.com",
+  passowrd: "password",
+});
+```
+
+## How do I sign out?
+
+#### **`SaleorAuthClient.signOut: () => void`**
+
+This method will remove access and refresh tokens from SaleorAuthClient state and storage. It'll also trigger sign out event, which in turn will trigger [onSignOut method of useAuthChange hook](#how-do-i-tell-my-graphql-client-to-refresh-queries-on-signin--signout)
+
+```javascript
+const { signOut } = useSaleorAuthContext();
+
+signOut();
+```
+
+⚠️ For checkout sign out see [signing out in checkout](#how-do-i-sign-out-in-checkout)
+
+## How do I sign out in checkout?
+
+#### **`SaleorAuthClient.checkoutSignOut: () => Promise<CustomerDetachResponse>`**
+
+On top of the regular sign out login, in checkout we need to start signing out process with detaching customer from checkout. Since detach requires a signed in user, it'll happen first and removing tokens from state / storage will only happen if the mutation returned success:
+
+```javascript
+const { checkoutSignOut } = useSaleorAuthContext();
+
+const response = await checkoutSignOut(checkout.id);
+```
+
+## How do I use this with Urql?
 
 Once an authentication change happens, you might want to refetch some of your queries. Because Urql doesn't provide a direct way to invalidate cache manually, we're following urql's [proposed approach](https://github.com/urql-graphql/urql/issues/297#issuecomment-501646761) of installing a new instance of the client in place of the old one. We have a hook for that called `useUrqlClient` that takes Urql `ClientOptions` as an only argument and returns the current `client` and `resetClient` function:
 
