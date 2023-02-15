@@ -36,7 +36,6 @@ export const extractMutationErrors = <
 
   const errors = [...urqlErrors, ...graphqlErrors];
 
-  console.log({ errors });
   return [errors.length > 0, errors];
 };
 

@@ -19,7 +19,6 @@ export const useCustomerAttach = () => {
         onSubmit: customerAttach,
         parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
         onError: ({ errors }) => {
-          console.log({ authenticated, fetching, loading });
           if (
             errors.some((error) =>
               error?.message?.includes(
@@ -27,7 +26,6 @@ export const useCustomerAttach = () => {
               )
             )
           ) {
-            console.log("HAPENNIN");
             refetch();
           }
         },
