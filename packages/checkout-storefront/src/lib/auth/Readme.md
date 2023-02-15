@@ -40,7 +40,7 @@ const { saleorAuthClient, isAuthenticating } = useSaleorAuthClient({
 });
 ```
 
-## How do I use the methods and props without prop drilling?
+## How do I use the auth without prop drilling?
 
 #### **`SaleorAuthProvider({ saleorAuthClient, isAuthenticating, children }: PropsWithChildren<UseSaleorAuthClient>) => JSX.Element`**
 
