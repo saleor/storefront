@@ -1,6 +1,5 @@
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
-import { reduce } from "lodash-es";
 import { AnyVariables, OperationResult } from "urql";
 import { string } from "yup";
 
