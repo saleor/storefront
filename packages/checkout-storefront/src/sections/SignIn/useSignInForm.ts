@@ -28,9 +28,8 @@ export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
   });
 
   const defaultFormData: SignInFormData = {
-    // email: initialEmail,
-    email: "testers+dashboard@saleor.io",
-    password: "test123",
+    email: initialEmail,
+    password: "",
   };
 
   const onSubmit = useFormSubmit<SignInFormData, typeof signIn, AccountErrorCode>({
