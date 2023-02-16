@@ -2,6 +2,7 @@ import { print, DocumentNode } from "graphql/language";
 import gql from "graphql-tag";
 
 const MILLI_MULTIPLYER = 1000;
+const TOKEN_GRACE_PERIOD = 2000;
 
 // returns timestamp
 const getTokenExpiry = (token: string): number => {
@@ -16,7 +17,7 @@ const getTokenExpiry = (token: string): number => {
 export const isExpiredToken = (token: string) => {
   // we'll assume a generous time of 2 seconds for api to
   // process our request
-  return getTokenExpiry(token) - 2000 <= Date.now();
+  return getTokenExpiry(token) - TOKEN_GRACE_PERIOD <= Date.now();
 };
 
 // query here is document node but because of graphql-tag using

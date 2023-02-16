@@ -30,12 +30,24 @@ export class SaleorAuthClient {
   private onAuthRefresh?: (isAuthenticating: boolean) => void;
   private saleorApiUrl: string;
   private storageHandler: SaleorAuthStorageHandler;
+  /**
+   * Use ths method to clear event listeners from storageHandler
+   *  @example
+   *  ```jsx
+   *  useEffect(() => {
+   *    return () => {
+   *      SaleorAuthClient.cleanup();
+   *    }
+   *  }, [])
+   *  ```
+   */
   cleanup: SaleorAuthStorageHandler["cleanup"];
 
   constructor({ saleorApiUrl, storage, onAuthRefresh }: SaleorAuthClientProps) {
     this.storageHandler = new SaleorAuthStorageHandler(storage);
     this.onAuthRefresh = onAuthRefresh;
     this.saleorApiUrl = saleorApiUrl;
+
     this.cleanup = this.storageHandler.cleanup;
   }
 
@@ -59,9 +71,8 @@ export class SaleorAuthClient {
 
     invariant(refreshToken, "Missing refresh token in token refresh handler");
 
-    // the refresh already, finished, proceed as normal
+    // the refresh already finished, proceed as normal
     if (this.accessToken) {
-      this.tokenRefreshPromise = null;
       return this.fetchWithAuth(input, init);
     }
 
@@ -88,6 +99,7 @@ export class SaleorAuthClient {
 
       this.storageHandler.setAuthState("signedIn");
       this.accessToken = token;
+      this.tokenRefreshPromise = null;
       return this.runAuthorizedRequest(input, init);
     }
 
