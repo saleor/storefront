@@ -13,7 +13,23 @@ export class SaleorAuthStorageHandler {
 
   constructor(storage: Storage) {
     this.storage = storage;
+
+    window.addEventListener("storage", this.handleStorageChange);
   }
+
+  private handleStorageChange = (event: StorageEvent) => {
+    const { oldValue, newValue, type, key } = event;
+
+    if (oldValue === newValue || type !== "storage" || key !== STORAGE_AUTH_STATE_KEY) {
+      return;
+    }
+
+    this.sendAuthStateEvent(newValue as AuthState);
+  };
+
+  cleanup = () => {
+    window.removeEventListener("storage", this.handleStorageChange);
+  };
 
   /* auth state */
   sendAuthStateEvent = (authState: AuthState) => {

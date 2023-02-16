@@ -1,8 +1,4 @@
-import {
-  AuthState,
-  SaleorAuthStorageHandler,
-  STORAGE_AUTH_STATE_KEY,
-} from "./SaleorAuthStorageHandler";
+import { SaleorAuthStorageHandler } from "./SaleorAuthStorageHandler";
 import { getRequestData, isExpiredToken } from "./utils";
 import {
   CustomerDetachResponse,
@@ -34,28 +30,14 @@ export class SaleorAuthClient {
   private onAuthRefresh?: (isAuthenticating: boolean) => void;
   private saleorApiUrl: string;
   private storageHandler: SaleorAuthStorageHandler;
+  cleanup: SaleorAuthStorageHandler["cleanup"];
 
   constructor({ saleorApiUrl, storage, onAuthRefresh }: SaleorAuthClientProps) {
     this.storageHandler = new SaleorAuthStorageHandler(storage);
     this.onAuthRefresh = onAuthRefresh;
     this.saleorApiUrl = saleorApiUrl;
-
-    window.addEventListener("storage", this.handleStorageChange);
+    this.cleanup = this.storageHandler.cleanup;
   }
-
-  private handleStorageChange = (event: StorageEvent) => {
-    const { oldValue, newValue, type, key } = event;
-
-    if (oldValue === newValue || type !== "storage" || key !== STORAGE_AUTH_STATE_KEY) {
-      return;
-    }
-
-    this.storageHandler.sendAuthStateEvent(newValue as AuthState);
-  };
-
-  cleanup = () => {
-    window.removeEventListener("storage", this.handleStorageChange);
-  };
 
   private runAuthorizedRequest: Fetch = (input, init) => {
     // technically we run this only when token is there
