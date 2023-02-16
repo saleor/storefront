@@ -1,4 +1,5 @@
 import { print, DocumentNode } from "graphql/language";
+import gql from "graphql-tag";
 
 const MILLI_MULTIPLYER = 1000;
 
@@ -18,10 +19,18 @@ export const isExpiredToken = (token: string) => {
   return getTokenExpiry(token) - 2000 <= Date.now();
 };
 
-export const getRequestData = <TVars extends object>(query: DocumentNode, variables: TVars) => ({
+// query here is document node but because of graphql-tag using
+// a different version of graphql and pnpm overrides not working
+// https://github.com/pnpm/pnpm/issues/4097
+// we're gonna do this instead
+export const getRequestData = <TVars extends object>(
+  query: ReturnType<typeof gql>,
+  variables: TVars
+) => ({
   method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
-  body: JSON.stringify({ query: print(query), variables }),
+
+  body: JSON.stringify({ query: print(query as unknown as DocumentNode), variables }),
 });
