@@ -83,7 +83,7 @@ export class SaleorAuthClient {
       return this.fetchWithAuth(input, init);
     }
 
-    typeof this.onAuthRefresh === "function" && this.onAuthRefresh(true);
+    this.onAuthRefresh?.(true);
 
     // if the promise is already there, use it
     if (this.tokenRefreshPromise) {
@@ -97,7 +97,7 @@ export class SaleorAuthClient {
         },
       } = res;
 
-      typeof this.onAuthRefresh === "function" && this.onAuthRefresh(false);
+      this.onAuthRefresh?.(false);
 
       if (errors.length || !token) {
         this.storageHandler.setAuthState("signedOut");
@@ -122,9 +122,10 @@ export class SaleorAuthClient {
   ): Promise<TOperation> => {
     const readResponse: TOperation = await response.json();
 
-    const responseData = Object.values(readResponse.data).find(
-      (value) => typeof value === "object" && Object.keys(value).includes("token")
-    );
+    const responseData =
+      "tokenCreate" in readResponse.data
+        ? readResponse.data.tokenCreate
+        : readResponse.data.setPassword;
 
     if (!responseData) {
       return readResponse;

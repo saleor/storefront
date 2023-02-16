@@ -6,6 +6,11 @@ export interface UseSaleorAuthClient {
   isAuthenticating: boolean;
 }
 
+/**
+ * This hook should be used only once per application.
+ * @see Use {@link useSaleorAuthContext} for accessing the auth state.
+ */
+
 export const useSaleorAuthClient = ({
   saleorApiUrl,
   storage,
@@ -20,9 +25,7 @@ export const useSaleorAuthClient = ({
         saleorApiUrl,
         onAuthRefresh: (value) => {
           setIsAuthenticating(value);
-          if (typeof onAuthRefresh === "function") {
-            onAuthRefresh(value);
-          }
+          onAuthRefresh?.(value);
         },
       }),
     [storage, saleorApiUrl, onAuthRefresh]
