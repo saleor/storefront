@@ -1,5 +1,4 @@
-import { DocumentNode } from "graphql";
-import { print } from "graphql/language";
+import { print, DocumentNode } from "graphql/language";
 
 const MILLI_MULTIPLYER = 1000;
 
