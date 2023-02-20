@@ -45,7 +45,7 @@ export const useCheckoutSubmit = () => {
       return;
     }
 
-    if (!anyRequestsInProgress) {
+    if (!validating && !anyRequestsInProgress) {
       setSubmitInProgress(false);
     }
   }, [
@@ -55,6 +55,7 @@ export const useCheckoutSubmit = () => {
     anyRequestsInProgress,
     checkoutFinalize,
     setSubmitInProgress,
+    validating,
   ]);
 
   useEffect(() => void handleSubmit(), [handleSubmit]);
@@ -62,7 +63,6 @@ export const useCheckoutSubmit = () => {
   return {
     handleSubmit: submitInitialize,
     isProcessing: (submitInProgress && anyRequestsInProgress) || finalizing,
-
     validateAllForms,
     allFormsValid,
   };
