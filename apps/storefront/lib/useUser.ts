@@ -1,9 +1,13 @@
+import { useUserQuery } from "@/saleor/api";
+
 export const useUser = () => {
-  const [{ data, fetching: loading, stale }] = useUserQuery();
+  const { data, loading } = useUserQuery();
 
   const user = data?.user;
 
+  console.log({ data, loading });
+
   const authenticated = !!user?.id;
 
-  return { user, loading: loading || stale, authenticated };
+  return { user, loading, authenticated };
 };

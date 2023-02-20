@@ -7,8 +7,8 @@ import {
   CollectionPathsQueryVariables,
 } from "@/saleor/api";
 
-import apolloClient from "../graphql";
 import { CHANNELS, LOCALES, Path } from "../regions";
+import { staticApolloClient } from "@/lib/auth/useApolloClient";
 
 export interface CollectionPathArguments extends ParsedUrlQuery {
   channel: string;
@@ -25,7 +25,7 @@ export const collectionPaths = async () => {
     let endCursor = "";
 
     while (hasNextPage) {
-      const response: ApolloQueryResult<CollectionPathsQuery> = await apolloClient.query<
+      const response: ApolloQueryResult<CollectionPathsQuery> = await staticApolloClient.query<
         CollectionPathsQuery,
         CollectionPathsQueryVariables
       >({

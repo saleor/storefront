@@ -5,11 +5,6 @@ import { NextPage } from "next";
 import { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import React, { ReactElement, ReactNode } from "react";
-import {
-  SaleorAuthProvider,
-  useAuthChange,
-  useSaleorAuthClient,
-} from "@saleor/checkout-storefront/src/lib/auth";
 
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
@@ -17,6 +12,7 @@ import { BaseSeo } from "@/components/seo/BaseSeo";
 import { API_URI, DEMO_MODE } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
 import { useApolloClient } from "@/lib/auth/useApolloClient";
+import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@/lib/auth";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -31,15 +27,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const useSaleorAuthClientProps = useSaleorAuthClient({
     saleorApiUrl: API_URI,
-    storage: localStorage,
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
   });
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { apolloClient, resetClient } = useApolloClient({
-    uri: API_URI,
-    fetch: saleorAuthClient.fetchWithAuth,
-  });
+  const { apolloClient, resetClient } = useApolloClient(saleorAuthClient.fetchWithAuth);
 
   useAuthChange({
     onSignedOut: () => resetClient(),

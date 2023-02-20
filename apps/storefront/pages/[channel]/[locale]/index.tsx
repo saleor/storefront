@@ -21,6 +21,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     query: HomepageBlocksQueryDocument,
     variables: { slug: HOMEPAGE_MENU, ...contextToRegionQuery(context) },
   });
+  console.log({ result });
   return {
     props: {
       menuData: result?.data,

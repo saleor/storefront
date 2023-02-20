@@ -1,16 +1,22 @@
-import { ApolloClient, createHttpLink, InMemoryCache, HttpOptions } from "@apollo/client";
+import { Fetch } from "@/lib/auth/types";
+import { API_URI } from "@/lib/const";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { useMemo } from "react";
 
 import { typePolicies } from "./typePolicies";
 
 // for static geenration of pages, we don't need auth there
 export const staticApolloClient = new ApolloClient({
+  link: createHttpLink({ uri: API_URI }),
   cache: new InMemoryCache({ typePolicies }),
   ssrMode: true,
 });
 
-export const useApolloClient = (httpOptions: HttpOptions) => {
-  const httpLink = createHttpLink(httpOptions);
+export const useApolloClient = (fetchWithAuth: Fetch) => {
+  const httpLink = createHttpLink({
+    uri: API_URI,
+    fetch: fetchWithAuth,
+  });
 
   const apolloClient = useMemo(
     () =>
@@ -18,7 +24,7 @@ export const useApolloClient = (httpOptions: HttpOptions) => {
         link: httpLink,
         cache: new InMemoryCache({ typePolicies }),
       }),
-    [httpLink]
+    []
   );
 
   return { apolloClient, resetClient: () => apolloClient.resetStore() };

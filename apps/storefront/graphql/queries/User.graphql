@@ -3,13 +3,13 @@ query User {
     id
     email
     addresses {
-      ...AddressFragment
+      ...AddressDetailsFragment
     }
     defaultBillingAddress {
-      ...AddressFragment
+      ...AddressDetailsFragment
     }
     defaultShippingAddress {
-      ...AddressFragment
+      ...AddressDetailsFragment
     }
   }
 }

@@ -1,5 +1,4 @@
 import { ApolloQueryResult } from "@apollo/client";
-import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Link from "next/link";
@@ -28,6 +27,7 @@ import {
   useCreateCheckoutMutation,
 } from "@/saleor/api";
 import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { useUser } from "@/lib/useUser";
 
 export type OptionalQuery = {
   variant?: string;
@@ -75,7 +75,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
 
   const [createCheckout] = useCreateCheckoutMutation();
-  const { user } = useAuthState();
+  const { user } = useUser();
 
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
