@@ -48,7 +48,7 @@ export const TOKEN_CREATE = gql`
 
 export const PASSWORD_RESET = gql`
   mutation passwordReset($email: String!, $password: String!, $token: String!) {
-    passwordReset(email: $email, password: $password, token: $token) {
+    setPassword(email: $email, password: $password, token: $token) {
       token
       refreshToken
       errors {
