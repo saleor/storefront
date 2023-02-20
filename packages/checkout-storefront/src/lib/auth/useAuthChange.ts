@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { SaleorAuthEvent, STORAGE_AUTH_EVENT_KEY } from "./SaleorAuthStorageHandler";
 
 interface UseAuthChangeProps {
-  onSignedIn: () => void;
-  onSignedOut: () => void;
+  onSignedIn?: () => void;
+  onSignedOut?: () => void;
 }
 
 // used to handle client cache invalidation on login / logout and when
@@ -19,9 +19,9 @@ export const useAuthChange = ({ onSignedOut, onSignedIn }: UseAuthChangeProps) =
     const { authState } = event.detail;
 
     if (authState === "signedIn") {
-      onSignedIn();
+      onSignedIn?.();
     } else if (authState === "signedOut") {
-      onSignedOut();
+      onSignedOut?.();
     }
   };
 
