@@ -14,7 +14,6 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
-import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -28,6 +27,7 @@ import {
   useCheckoutAddProductLineMutation,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
+import { staticApolloClient } from "@/lib/auth/useApolloClient";
 
 export type OptionalQuery = {
   variant?: string;
@@ -49,7 +49,7 @@ export const getStaticProps = async (
   }
 
   const productSlug = context.params.slug.toString();
-  const response: ApolloQueryResult<ProductBySlugQuery> = await apolloClient.query<
+  const response: ApolloQueryResult<ProductBySlugQuery> = await staticApolloClient.query<
     ProductBySlugQuery,
     ProductBySlugQueryVariables
   >({

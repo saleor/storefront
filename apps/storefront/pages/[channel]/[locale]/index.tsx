@@ -5,16 +5,16 @@ import React, { ReactElement } from "react";
 import { HomepageBlock, Layout } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { HOMEPAGE_MENU } from "@/lib/const";
-import apolloClient from "@/lib/graphql";
 import { contextToRegionQuery } from "@/lib/regions";
 import {
   HomepageBlocksQuery,
   HomepageBlocksQueryDocument,
   HomepageBlocksQueryVariables,
 } from "@/saleor/api";
+import { staticApolloClient } from "@/lib/auth/useApolloClient";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const result: ApolloQueryResult<HomepageBlocksQuery> = await apolloClient.query<
+  const result: ApolloQueryResult<HomepageBlocksQuery> = await staticApolloClient.query<
     HomepageBlocksQuery,
     HomepageBlocksQueryVariables
   >({
