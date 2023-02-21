@@ -392,7 +392,6 @@ importers:
       '@rollup/plugin-json': 5.0.1
       '@rollup/plugin-node-resolve': 15.0.1
       '@rollup/plugin-typescript': 9.0.2
-      '@saleor/sdk': 0.4.4
       '@saleor/ui-kit': workspace:*
       '@stripe/react-stripe-js': 1.14.0
       '@stripe/stripe-js': 1.42.0
@@ -455,7 +454,6 @@ importers:
       '@apollo/client': 3.7.1_wxfjnvblbhu4ianu4f2qg722fu
       '@headlessui/react': 1.7.3_biqbaboplfbrettd7655fr4n2y
       '@react-types/button': 3.6.2_react@18.2.0
-      '@saleor/sdk': 0.4.4_moi7uhxqmdrnxtd7eg6kpwhfja
       '@saleor/ui-kit': link:../ui-kit
       '@stripe/react-stripe-js': 1.14.0_6nr2xug6y4biiuh7urbys4ixky
       '@stripe/stripe-js': 1.42.0
@@ -6658,23 +6656,6 @@ packages:
       react-inlinesvg: 2.3.0_react@18.2.0
     transitivePeerDependencies:
       - '@types/react'
-    dev: false
-
-  /@saleor/sdk/0.4.4_moi7uhxqmdrnxtd7eg6kpwhfja:
-    resolution: {integrity: sha512-VQe4jQTZ4GSemQhgIETXf4Mt2Vy271H/MMwklhQISJWwVXqMPV6X892dOcAnqIvxexWbQQW43+4xKJVtRPFNCg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      '@apollo/client': ^3.3.19
-      graphql: ^15.5.0
-      react: ^16.8.0 || ^17.0.0
-    dependencies:
-      '@apollo/client': 3.7.1_wxfjnvblbhu4ianu4f2qg722fu
-      cross-fetch: 3.1.5
-      graphql: 15.8.0
-      jwt-decode: 3.1.2
-      react: 18.2.0
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
   /@saleor/sdk/0.4.4_ydvm26ae5yhbju2x3rkxrdfexu:

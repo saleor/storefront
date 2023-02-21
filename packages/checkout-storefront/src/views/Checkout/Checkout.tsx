@@ -3,19 +3,19 @@ import { Summary, SummarySkeleton } from "@/checkout-storefront/sections/Summary
 import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout-storefront/sections/CheckoutForm";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useAuthState } from "@saleor/sdk";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { CheckoutSkeleton } from "./CheckoutSkeleton";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
+import { CheckoutSkeleton } from "@/checkout-storefront/views/Checkout/CheckoutSkeleton";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
-  const { authenticating } = useAuthState();
+  const { isAuthenticating } = useSaleorAuthContext();
 
-  const isCheckoutInvalid = !loading && !checkout && !authenticating;
+  const isCheckoutInvalid = !loading && !checkout && !isAuthenticating;
 
-  const isInitiallyAuthenticating = authenticating && !checkout;
+  const isInitiallyAuthenticating = isAuthenticating && !checkout;
 
   const isEmptyCart = checkout && !checkout.lines.length;
 

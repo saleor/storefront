@@ -29,6 +29,7 @@ export interface UseSubmitProps<
   TMutationFn extends MutationBaseFn,
   TErrorCodes extends string = string
 > {
+  hideAlerts?: boolean;
   scope: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
   parse: ParserFunction<TData, TMutationFn>;
@@ -54,6 +55,7 @@ export const useSubmit = <
   scope,
   shouldAbort,
   parse,
+  hideAlerts = false,
 }: UseSubmitProps<TData, TMutationFn, TErrorCodes>): SimpleSubmitFn<TData> => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { showErrors } = useAlerts(scope);
@@ -98,22 +100,25 @@ export const useSubmit = <
 
       typeof onError === "function" && onError({ ...callbackProps, errors });
       setCheckoutUpdateState("error");
-      showErrors(errors);
+      if (!hideAlerts) {
+        showErrors(errors);
+      }
 
       return { hasErrors, errors };
     },
     [
+      onStart,
+      shouldAbort,
+      localeData.locale,
       checkout.channel.slug,
       checkout.id,
-      parse,
-      localeData.locale,
-      onAbort,
-      onStart,
-      onError,
       onSubmit,
-      onSuccess,
+      parse,
+      onError,
       setCheckoutUpdateState,
-      shouldAbort,
+      hideAlerts,
+      onAbort,
+      onSuccess,
       showErrors,
     ]
   );

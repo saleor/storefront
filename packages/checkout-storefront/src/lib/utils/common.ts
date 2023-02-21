@@ -1,6 +1,5 @@
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
-import { reduce } from "lodash-es";
 import { AnyVariables, OperationResult } from "urql";
 import { string } from "yup";
 
@@ -24,13 +23,11 @@ export const extractMutationErrors = <
 ): [boolean, ApiErrors<TData, TErrorCodes>] => {
   const urqlErrors = result?.error ? [result.error] : [];
 
-  const graphqlErrors = reduce(
-    (result?.data || {}) as object,
-    (result, { errors = [] }) => {
-      return [...result, ...errors];
-    },
-    []
-  );
+  const graphqlErrors = result?.data
+    ? Object.values(
+        result.data as Record<string, { errors: ApiErrors<TData, TErrorCodes> }>
+      ).reduce((result, { errors }) => [...result, ...errors], [] as ApiErrors<TData, TErrorCodes>)
+    : [];
 
   const errors = [...urqlErrors, ...graphqlErrors];
 

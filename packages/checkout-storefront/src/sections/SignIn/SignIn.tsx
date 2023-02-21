@@ -2,7 +2,6 @@ import { Button } from "@/checkout-storefront/components/Button";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { useAuthState } from "@saleor/sdk";
 import React from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
@@ -16,6 +15,7 @@ import {
 } from "@/checkout-storefront/sections/Contact/SignInFormContainer";
 import { isValidEmail } from "@/checkout-storefront/lib/utils/common";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 
 interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignInSuccess: () => void;
@@ -29,17 +29,23 @@ export const SignIn: React.FC<SignInProps> = ({
   onEmailChange,
   email: initialEmail,
 }) => {
+  const {
+    checkout: { email: checkoutEmail },
+  } = useCheckout();
   const { errorMessages } = useErrorMessages();
   const formatMessage = useFormattedMessages();
-  const { authenticating } = useAuthState();
 
-  const form = useSignInForm({ onSuccess: onSignInSuccess, initialEmail });
+  const form = useSignInForm({
+    onSuccess: onSignInSuccess,
+    initialEmail: initialEmail || checkoutEmail || "",
+  });
 
   const {
     values: { email },
     handleChange,
     setErrors,
     setTouched,
+    isSubmitting,
   } = form;
 
   const { onPasswordResetRequest, passwordResetSent } = usePasswordResetRequest({
@@ -80,7 +86,7 @@ export const SignIn: React.FC<SignInProps> = ({
         <div className="actions">
           {passwordResetSent && <Text>{formatMessage(contactMessages.linkSent, { email })}</Text>}
           <Button
-            disabled={authenticating}
+            disabled={isSubmitting}
             ariaLabel={formatMessage(contactLabels.sendResetLink)}
             variant="tertiary"
             label={formatMessage(
@@ -91,11 +97,9 @@ export const SignIn: React.FC<SignInProps> = ({
           />
           <Button
             type="submit"
-            disabled={authenticating}
+            disabled={isSubmitting}
             ariaLabel={formatMessage(contactLabels.signIn)}
-            label={formatMessage(
-              authenticating ? commonMessages.processing : contactMessages.signIn
-            )}
+            label={formatMessage(isSubmitting ? commonMessages.processing : contactMessages.signIn)}
           />
         </div>
       </FormProvider>

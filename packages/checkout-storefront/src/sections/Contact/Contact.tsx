@@ -2,11 +2,11 @@ import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { SignedInUser } from "../SignedInUser/SignedInUser";
 import { ResetPassword } from "../ResetPassword/ResetPassword";
-import { useAuthState } from "@saleor/sdk";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { SignIn } from "@/checkout-storefront/sections/SignIn/SignIn";
 import { GuestUser } from "@/checkout-storefront/sections/GuestUser/GuestUser";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -18,7 +18,7 @@ interface ContactProps {
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   useCustomerAttach();
-  const { authenticated, user } = useAuthState();
+  const { user, authenticated } = useUser();
   const [email, setEmail] = useState(user?.email || "");
 
   const [passwordResetShown, setPasswordResetShown] = useState(false);
@@ -30,7 +30,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       return "resetPassword";
     }
 
-    return authenticated ? "signedInUser" : "guestUser";
+    return user ? "signedInUser" : "guestUser";
   };
 
   const passwordResetToken = getQueryParams().passwordResetToken;
@@ -59,6 +59,14 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
   useEffect(() => {
     setShowOnlyContact(shouldShowOnlyContact);
   }, [currentSection, setShowOnlyContact, shouldShowOnlyContact]);
+
+  useEffect(() => {
+    if (authenticated && currentSection !== "signedInUser") {
+      setCurrentSection("signedInUser");
+    } else if (!authenticated && currentSection === "signedInUser") {
+      setCurrentSection("guestUser");
+    }
+  }, [authenticated, currentSection]);
 
   return (
     <div>

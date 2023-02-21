@@ -1,11 +1,9 @@
-import { Exact, LanguageCodeEnum } from "@/checkout-storefront/graphql";
+import { LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 import { OperationResult } from "urql";
 
-export type MutationVars<MutationFn> = MutationFn extends (vars: Exact<infer Vars>) => any
-  ? Vars
-  : never;
+export type MutationVars<MutationFn> = MutationFn extends (vars: infer Vars) => any ? Vars : never;
 export type MutationData<MutationFn> = MutationFn extends (vars: any) => Promise<infer Data>
   ? Data
   : never;
@@ -20,7 +18,7 @@ export type SubmitReturnWithErrors<TData extends FormDataBase> = Promise<{
   errors: ApiErrors<TData>;
 }>;
 
-export type MutationBaseFn = (vars: any) => Promise<OperationResult<any, any>>;
+export type MutationBaseFn = (vars: any) => Promise<Pick<OperationResult<any, any>, "data">>;
 
 export type ParserProps<TData> = TData & CommonVars;
 

@@ -24,6 +24,7 @@ interface CustomTypedQueryParams {
   countryCode: CountryCode;
   locale: Locale;
   channel: string;
+  saleorApiUrl: string;
 }
 
 type RawQueryParams = Record<UnmappedQueryParam, ParamBasicValue> & CustomTypedQueryParams;

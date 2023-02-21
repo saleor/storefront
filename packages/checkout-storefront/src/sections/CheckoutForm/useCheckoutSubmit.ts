@@ -8,10 +8,10 @@ import {
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
 import { useCallback, useEffect } from "react";
 import { useCheckoutFinalize } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFinalize";
-import { useAuthState } from "@saleor/sdk";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export const useCheckoutSubmit = () => {
-  const { user } = useAuthState();
+  const { user } = useUser();
   const { validateAllForms } = useCheckoutValidationActions();
   const { validating, validationState } = useCheckoutValidationState();
   const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateState();
@@ -45,7 +45,7 @@ export const useCheckoutSubmit = () => {
       return;
     }
 
-    if (!anyRequestsInProgress) {
+    if (!validating && !anyRequestsInProgress) {
       setSubmitInProgress(false);
     }
   }, [
@@ -55,6 +55,7 @@ export const useCheckoutSubmit = () => {
     anyRequestsInProgress,
     checkoutFinalize,
     setSubmitInProgress,
+    validating,
   ]);
 
   useEffect(() => void handleSubmit(), [handleSubmit]);
@@ -62,7 +63,6 @@ export const useCheckoutSubmit = () => {
   return {
     handleSubmit: submitInitialize,
     isProcessing: (submitInProgress && anyRequestsInProgress) || finalizing,
-
     validateAllForms,
     allFormsValid,
   };

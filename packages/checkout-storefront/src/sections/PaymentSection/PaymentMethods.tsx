@@ -19,7 +19,7 @@ export const PaymentMethods = () => {
     <FormProvider form={form}>
       <SelectBoxGroup
         label={formatMessage(paymentSectionLabels.paymentProviders)}
-        className="flex flex-row gap-2"
+        className="flex flex-row gap-2 mb-8"
       >
         {availablePaymentMethods.map((paymentMethodId) => (
           <SelectBox

@@ -1,8 +1,8 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
 import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
-import { useAuth } from "@saleor/sdk";
 import { object, string } from "yup";
 
 interface ResetPasswordFormData {
@@ -11,17 +11,14 @@ interface ResetPasswordFormData {
 
 export const useResetPasswordForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { errorMessages } = useErrorMessages();
-  // @todo change to our own mutation once we rewrite auth
-  const { setPassword } = useAuth();
+  const { resetPassword } = useSaleorAuthContext();
 
   const validationSchema = object({
     password: string().required(errorMessages.required),
   });
 
-  // @ts-expect-error because login comes from the sdk which is no longer
-  // maintained so we'll eventually have to implement our own auth flow
-  const onSubmit = useFormSubmit<ResetPasswordFormData, typeof setPassword>({
-    onSubmit: setPassword,
+  const onSubmit = useFormSubmit<ResetPasswordFormData, typeof resetPassword>({
+    onSubmit: resetPassword,
     scope: "resetPassword",
     parse: ({ password }) => {
       const { passwordResetEmail, passwordResetToken } = getQueryParams();

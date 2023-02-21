@@ -36,7 +36,6 @@
     "@apollo/client": "3.7.1",
     "@headlessui/react": "1.7.3",
     "@react-types/button": "3.6.2",
-    "@saleor/sdk": "0.4.4",
     "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "1.14.0",
     "@stripe/stripe-js": "1.42.0",
