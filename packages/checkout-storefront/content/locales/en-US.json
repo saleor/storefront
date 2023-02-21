@@ -139,6 +139,10 @@
     "developer_comment": "send password reset link",
     "string": "send password reset link"
   },
+  "Contact/messages/IbOUpe": {
+    "developer_comment": "password",
+    "string": "Password"
+  },
   "Contact/messages/JX+fPs": {
     "developer_comment": "Guest checkout",
     "string": "Guest checkout"

@@ -13,11 +13,13 @@ import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErro
 function useAlerts(scope: CheckoutScope): {
   showErrors: (errors: ApiErrors<any>) => void;
   showCustomErrors: (errors: CustomError[]) => void;
+  showSuccess: (message: string) => void;
 };
 
 function useAlerts(): {
   showErrors: (errors: ApiErrors<any>, scope: CheckoutScope) => void;
   showCustomErrors: (errors: CustomError[], scope?: CheckoutScope) => void;
+  showSuccess: (message: string) => void;
 };
 
 function useAlerts(globalScope?: any): any {
@@ -102,7 +104,14 @@ function useAlerts(globalScope?: any): any {
     [globalScope, showAlert, showDefaultAlert]
   );
 
-  return { showErrors, showCustomErrors };
+  const showSuccess = useCallback(
+    (message: string) => {
+      showAlert({ message, type: "success" });
+    },
+    [showAlert]
+  );
+
+  return { showErrors, showCustomErrors, showSuccess };
 }
 
 export { useAlerts };

@@ -32,6 +32,11 @@ export const contactMessages = defineMessages({
     description: "i want to create account",
   },
   password: {
+    defaultMessage: "Password",
+    id: "Contact/messages/IbOUpe",
+    description: "password",
+  },
+  passwordWithRequirements: {
     defaultMessage: "Password (minimum 8 characters)",
     id: "Contact/messages/aGetQg",
     description: "password (min 8 characters)",

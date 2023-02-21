@@ -1,6 +1,5 @@
 import { Button } from "@/checkout-storefront/components/Button";
 import { PasswordInput } from "@/checkout-storefront/components/PasswordInput";
-import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import React from "react";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
@@ -84,7 +83,6 @@ export const SignIn: React.FC<SignInProps> = ({
         />
         <PasswordInput name="password" label={formatMessage(contactMessages.password)} />
         <div className="actions">
-          {passwordResetSent && <Text>{formatMessage(contactMessages.linkSent, { email })}</Text>}
           <Button
             disabled={isSubmitting}
             ariaLabel={formatMessage(contactLabels.sendResetLink)}
