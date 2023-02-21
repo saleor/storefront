@@ -7,6 +7,7 @@ import { useIntl } from "react-intl";
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
 import { useRegisterMutation } from "@/saleor/api";
+import { useRegions } from "@/components/RegionsProvider";
 
 export interface RegisterFormData {
   email: string;
@@ -17,6 +18,7 @@ function RegisterPage() {
   const router = useRouter();
   const paths = usePaths();
   const [register] = useRegisterMutation();
+  const { currentChannel } = useRegions();
   const t = useIntl();
 
   const {
@@ -33,6 +35,7 @@ function RegisterPage() {
           email: formData.email,
           password: formData.password,
           redirectUrl: `${window.location.origin}/account/confirm`,
+          channel: currentChannel.slug,
         },
       },
     });

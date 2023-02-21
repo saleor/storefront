@@ -78,7 +78,7 @@ export class SaleorAuthClient {
     if (this.tokenRefreshPromise) {
       const response = await this.tokenRefreshPromise;
 
-      const res: TokenRefreshResponse = await response.json();
+      const res: TokenRefreshResponse = await response.clone().json();
 
       const {
         data: {

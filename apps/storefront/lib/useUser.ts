@@ -5,8 +5,6 @@ export const useUser = () => {
 
   const user = data?.user;
 
-  console.log({ data, loading });
-
   const authenticated = !!user?.id;
 
   return { user, loading, authenticated };
