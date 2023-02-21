@@ -26,6 +26,10 @@ export const useAuthChange = ({ onSignedOut, onSignedIn }: UseAuthChangeProps) =
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     // for current window
     window.addEventListener(STORAGE_AUTH_EVENT_KEY, handleAuthChange as EventListener);
 

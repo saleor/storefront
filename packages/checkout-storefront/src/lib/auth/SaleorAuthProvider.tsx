@@ -1,5 +1,5 @@
-import { SaleorAuthClient } from "@/checkout-storefront/lib/auth/SaleorAuthClient";
-import { UseSaleorAuthClient } from "@/checkout-storefront/lib/auth/useSaleorAuthClient";
+import { SaleorAuthClient } from "./SaleorAuthClient";
+import { UseSaleorAuthClient } from "./useSaleorAuthClient";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { PropsWithChildren } from "react";
 import invariant from "ts-invariant";

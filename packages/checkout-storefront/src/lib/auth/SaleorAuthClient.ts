@@ -11,17 +11,12 @@ import {
   TokenRefreshResponse,
 } from "./types";
 import invariant from "ts-invariant";
-import {
-  CHECKOUT_CUSTOMER_DETACH,
-  PASSWORD_RESET,
-  TOKEN_CREATE,
-  TOKEN_REFRESH,
-} from "@/checkout-storefront/lib/auth/mutations";
+import { CHECKOUT_CUSTOMER_DETACH, PASSWORD_RESET, TOKEN_CREATE, TOKEN_REFRESH } from "./mutations";
 
 export interface SaleorAuthClientProps {
   onAuthRefresh?: (isAuthenticating: boolean) => void;
   saleorApiUrl: string;
-  storage: Storage;
+  storage: Storage | undefined;
 }
 
 export class SaleorAuthClient {
@@ -29,7 +24,7 @@ export class SaleorAuthClient {
   private tokenRefreshPromise: null | Promise<Response> = null;
   private onAuthRefresh?: (isAuthenticating: boolean) => void;
   private saleorApiUrl: string;
-  private storageHandler: SaleorAuthStorageHandler;
+  private storageHandler: SaleorAuthStorageHandler | null;
   /**
    * Use ths method to clear event listeners from storageHandler
    *  @example
@@ -41,15 +36,16 @@ export class SaleorAuthClient {
    *  }, [])
    *  ```
    */
-  cleanup: SaleorAuthStorageHandler["cleanup"];
 
   constructor({ saleorApiUrl, storage, onAuthRefresh }: SaleorAuthClientProps) {
-    this.storageHandler = new SaleorAuthStorageHandler(storage);
+    this.storageHandler = storage ? new SaleorAuthStorageHandler(storage) : null;
     this.onAuthRefresh = onAuthRefresh;
     this.saleorApiUrl = saleorApiUrl;
-
-    this.cleanup = this.storageHandler.cleanup;
   }
+
+  cleanup = () => {
+    this.storageHandler?.cleanup();
+  };
 
   private runAuthorizedRequest: Fetch = (input, init) => {
     // technically we run this only when token is there
@@ -67,7 +63,7 @@ export class SaleorAuthClient {
   };
 
   private handleRequestWithTokenRefresh: Fetch = async (input, init) => {
-    const refreshToken = this.storageHandler.getRefreshToken();
+    const refreshToken = this.storageHandler?.getRefreshToken();
 
     invariant(refreshToken, "Missing refresh token in token refresh handler");
 
@@ -82,7 +78,7 @@ export class SaleorAuthClient {
     if (this.tokenRefreshPromise) {
       const response = await this.tokenRefreshPromise;
 
-      const res: TokenRefreshResponse = await response.json();
+      const res: TokenRefreshResponse = await response.clone().json();
 
       const {
         data: {
@@ -93,11 +89,11 @@ export class SaleorAuthClient {
       this.onAuthRefresh?.(false);
 
       if (errors.length || !token) {
-        this.storageHandler.setAuthState("signedOut");
+        this.storageHandler?.setAuthState("signedOut");
         return fetch(input, init);
       }
 
-      this.storageHandler.setAuthState("signedIn");
+      this.storageHandler?.setAuthState("signedIn");
       this.accessToken = token;
       this.tokenRefreshPromise = null;
       return this.runAuthorizedRequest(input, init);
@@ -128,7 +124,7 @@ export class SaleorAuthClient {
     const { errors, token, refreshToken } = responseData;
 
     if (!token || errors.length) {
-      this.storageHandler.setAuthState("signedOut");
+      this.storageHandler?.setAuthState("signedOut");
       return readResponse;
     }
 
@@ -137,15 +133,15 @@ export class SaleorAuthClient {
     }
 
     if (refreshToken) {
-      this.storageHandler.setRefreshToken(refreshToken);
+      this.storageHandler?.setRefreshToken(refreshToken);
     }
 
-    this.storageHandler.setAuthState("signedIn");
+    this.storageHandler?.setAuthState("signedIn");
     return readResponse;
   };
 
   fetchWithAuth: Fetch = async (input, init) => {
-    const refreshToken: string | null = this.storageHandler.getRefreshToken();
+    const refreshToken = this.storageHandler?.getRefreshToken();
 
     // access token is fine, add it to the request and proceed
     if (this.accessToken && !isExpiredToken(this.accessToken)) {
@@ -175,7 +171,7 @@ export class SaleorAuthClient {
 
   signOut = () => {
     this.accessToken = null;
-    this.storageHandler.clearAuthStorage();
+    this.storageHandler?.clearAuthStorage();
   };
 
   checkoutSignOut = async (variables: CustomerDetachVariables) => {

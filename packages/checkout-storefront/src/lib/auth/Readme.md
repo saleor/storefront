@@ -137,10 +137,10 @@ const response = await resetPassword({
 
 ## How do I use this with Urql?
 
-Once an authentication change happens, you might want to refetch some of your queries. Because Urql doesn't provide a direct way to invalidate cache manually, we're following urql's [proposed approach](https://github.com/urql-graphql/urql/issues/297#issuecomment-501646761) of installing a new instance of the client in place of the old one. We have a hook for that called `useUrqlClient` that takes Urql `ClientOptions` as an only argument and returns the current `client` and `resetClient` function:
+Once an authentication change happens, you might want to refetch some of your queries. Because Urql doesn't provide a direct way to invalidate cache manually, we're following urql's [proposed approach](https://github.com/urql-graphql/urql/issues/297#issuecomment-501646761) of installing a new instance of the client in place of the old one. We have a hook for that called `useUrqlClient` that takes Urql `ClientOptions` as an only argument and returns the current `urqlClient` and `resetClient` function:
 
 ```javascript
-const { client, resetClient } = useUrqlClient({
+const { urqlClient, resetClient } = useUrqlClient({
   url: saleorApiUrl,
   fetch: saleorAuthClient.fetchWithAuth,
   // other client props
@@ -157,9 +157,7 @@ useAuthChange({
 });
 ```
 
-## How to put it all together?
-
-Example with Urql:
+### How to put it all together?
 
 ```jsx
 export const App = () => {
@@ -172,7 +170,7 @@ export const App = () => {
 
   const { saleorAuthClient } = saleorAuthClientProps;
 
-  const { client: urqlClient, resetClient } = useUrqlClient({
+  const { urqlClient, resetClient } = useUrqlClient({
     suspense: true,
     requestPolicy: "cache-first",
     url: saleorApiUrl,
@@ -189,6 +187,79 @@ export const App = () => {
       <UrqlProvider value={urqlClient}>
         <Home />
       </UrqlProvider>
+    </SaleorAuthProvider>
+  );
+};
+```
+
+### How do I use it with Apollo?
+
+We have a hook for that called useApolloClient that authenticated fetch as its only argument and returns the current client and resetClient function
+
+```javascript
+const { apolloClient, resetClient } = useApolloClient(saleorAuthClient.fetchWithAuth);
+```
+
+Becasue we're using the client to also retrieve unauthenticated data in SSR, we separated them into two - one for SSR, that can be used outside of React flow, and the other returned by our hook.
+
+```javascript
+export const staticApolloClient = new ApolloClient({
+  link: createHttpLink({ uri: API_URI }),
+  cache: new InMemoryCache({ typePolicies }),
+  ssrMode: true,
+});
+
+export const useApolloClient = (fetchWithAuth: Fetch) => {
+  const httpLink = createHttpLink({
+    uri: API_URI,
+    fetch: fetchWithAuth,
+  });
+
+  const apolloClient = useMemo(
+    () =>
+      new ApolloClient({
+        link: httpLink,
+        cache: new InMemoryCache({ typePolicies }),
+      }),
+    []
+  );
+
+  return { apolloClient, resetClient: () => apolloClient.resetStore() };
+};
+```
+
+Once you get the client with authenticated fetch, you'll want to pass the `resetClient` function to the useAuthChange hook
+
+```javascript
+useAuthChange({
+  storage,
+  onSignedOut: () => resetClient(),
+  onSignedIn: () => resetClient(),
+});
+```
+
+```jsx
+export const App = () => {
+  const { saleorApiUrl } = getQueryParams();
+  const saleorAuthClientProps = useSaleorAuthClient({
+    saleorApiUrl,
+    storage: localStorage,
+  });
+
+  const { saleorAuthClient } = saleorAuthClientProps;
+
+  const { apolloClient, resetClient } = useApolloClient(saleorAuthClient.fetchWithAuth);
+
+  useAuthChange({
+    onSignedOut: () => resetClient(),
+    onSignedIn: () => resetClient(),
+  });
+
+  return (
+    <SaleorAuthProvider {...saleorAuthClientProps}>
+      <ApolloProvider value={apolloClient}>
+        <Home />
+      </ApolloProvider>
     </SaleorAuthProvider>
   );
 };
