@@ -8,7 +8,7 @@ import {
 } from "@/saleor/api";
 
 import { CHANNELS, LOCALES, Path } from "../regions";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface CategoryPathArguments extends ParsedUrlQuery {
   channel: string;
@@ -23,7 +23,7 @@ export const categoryPaths = async () => {
   let endCursor = "";
 
   while (hasNextPage) {
-    const response: ApolloQueryResult<CategoryPathsQuery> = await staticApolloClient.query<
+    const response: ApolloQueryResult<CategoryPathsQuery> = await serverApolloClient.query<
       CategoryPathsQuery,
       CategoryPathsQueryVariables
     >({

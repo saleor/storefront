@@ -7,7 +7,7 @@ import { Layout, RichText } from "@/components";
 import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import { PageDocument, PageQuery, PageQueryVariables } from "@/saleor/api";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface pathParams {
   channel: string;
@@ -31,7 +31,7 @@ export const getStaticProps = async (
   }
 
   const pageSlug = context.params.slug.toString();
-  const response: ApolloQueryResult<PageQuery> = await staticApolloClient.query<
+  const response: ApolloQueryResult<PageQuery> = await serverApolloClient.query<
     PageQuery,
     PageQueryVariables
   >({

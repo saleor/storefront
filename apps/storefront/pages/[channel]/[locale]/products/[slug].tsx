@@ -26,7 +26,7 @@ import {
   useCheckoutAddProductLineMutation,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 import { useUser } from "@/lib/useUser";
 
 export type OptionalQuery = {
@@ -49,7 +49,7 @@ export const getStaticProps = async (
   }
 
   const productSlug = context.params.slug.toString();
-  const response: ApolloQueryResult<ProductBySlugQuery> = await staticApolloClient.query<
+  const response: ApolloQueryResult<ProductBySlugQuery> = await serverApolloClient.query<
     ProductBySlugQuery,
     ProductBySlugQueryVariables
   >({

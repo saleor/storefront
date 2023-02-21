@@ -11,7 +11,7 @@ import { RegionsProvider } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { API_URI, DEMO_MODE } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
-import { useApolloClient } from "@/lib/auth/useApolloClient";
+import { useAuthenticatedApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@/lib/auth";
 
 type NextPageWithLayout = NextPage & {
@@ -32,7 +32,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { apolloClient, resetClient } = useApolloClient(saleorAuthClient.fetchWithAuth);
+  const { apolloClient, resetClient } = useAuthenticatedApolloClient(
+    saleorAuthClient.fetchWithAuth
+  );
 
   useAuthChange({
     onSignedOut: () => resetClient(),

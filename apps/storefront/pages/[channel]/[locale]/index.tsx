@@ -11,17 +11,16 @@ import {
   HomepageBlocksQueryDocument,
   HomepageBlocksQueryVariables,
 } from "@/saleor/api";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const result: ApolloQueryResult<HomepageBlocksQuery> = await staticApolloClient.query<
+  const result: ApolloQueryResult<HomepageBlocksQuery> = await serverApolloClient.query<
     HomepageBlocksQuery,
     HomepageBlocksQueryVariables
   >({
     query: HomepageBlocksQueryDocument,
     variables: { slug: HOMEPAGE_MENU, ...contextToRegionQuery(context) },
   });
-  console.log({ result });
   return {
     props: {
       menuData: result?.data,

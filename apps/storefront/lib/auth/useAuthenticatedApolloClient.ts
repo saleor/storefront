@@ -6,13 +6,13 @@ import { useMemo } from "react";
 import { typePolicies } from "./typePolicies";
 
 // for static geenration of pages, we don't need auth there
-export const staticApolloClient = new ApolloClient({
+export const serverApolloClient = new ApolloClient({
   link: createHttpLink({ uri: API_URI }),
   cache: new InMemoryCache({ typePolicies }),
   ssrMode: true,
 });
 
-export const useApolloClient = (fetchWithAuth: Fetch) => {
+export const useAuthenticatedApolloClient = (fetchWithAuth: Fetch) => {
   const httpLink = createHttpLink({
     uri: API_URI,
     fetch: fetchWithAuth,

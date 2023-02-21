@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 import { PagePathsDocument, PagePathsQuery, PagePathsQueryVariables } from "@/saleor/api";
 
 import { CHANNELS, LOCALES, Path } from "../regions";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface PagePathArguments extends ParsedUrlQuery {
   channel: string;
@@ -19,7 +19,7 @@ export const pagePaths = async () => {
   let endCursor = "";
 
   while (hasNextPage) {
-    const response: ApolloQueryResult<PagePathsQuery> = await staticApolloClient.query<
+    const response: ApolloQueryResult<PagePathsQuery> = await serverApolloClient.query<
       PagePathsQuery,
       PagePathsQueryVariables
     >({

@@ -10,7 +10,7 @@ import {
   ProductPathsDocument,
   ProductPathsQuery,
 } from "@/saleor/api";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let fields: { loc: string }[] = [];
@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (ctx.params) {
     if (ctx.params.sitemap === "category") {
       const result: ApolloQueryResult<CategoryPathsQuery | undefined> =
-        await staticApolloClient.query({
+        await serverApolloClient.query({
           query: CategoryPathsDocument,
           variables: {},
         });
@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }));
     } else if (ctx.params.sitemap === "collection") {
       const result: ApolloQueryResult<CollectionPathsQuery | undefined> =
-        await staticApolloClient.query({
+        await serverApolloClient.query({
           query: CollectionPathsDocument,
           variables: {},
         });
@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }));
     } else if (ctx.params.sitemap === "product") {
       const result: ApolloQueryResult<ProductPathsQuery | undefined> =
-        await staticApolloClient.query({
+        await serverApolloClient.query({
           query: ProductPathsDocument,
           variables: {},
         });

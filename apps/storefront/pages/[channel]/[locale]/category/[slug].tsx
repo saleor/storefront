@@ -20,7 +20,7 @@ import {
   FilteringAttributesQueryDocument,
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
-import { staticApolloClient } from "@/lib/auth/useApolloClient";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
@@ -33,7 +33,7 @@ export const getStaticProps = async (
   }
 
   const categorySlug = context.params.slug.toString();
-  const response: ApolloQueryResult<CategoryBySlugQuery> = await staticApolloClient.query<
+  const response: ApolloQueryResult<CategoryBySlugQuery> = await serverApolloClient.query<
     CategoryBySlugQuery,
     CategoryBySlugQueryVariables
   >({
@@ -45,7 +45,7 @@ export const getStaticProps = async (
   });
 
   const attributesResponse: ApolloQueryResult<FilteringAttributesQuery> =
-    await staticApolloClient.query<FilteringAttributesQuery, FilteringAttributesQueryVariables>({
+    await serverApolloClient.query<FilteringAttributesQuery, FilteringAttributesQueryVariables>({
       query: FilteringAttributesQueryDocument,
       variables: {
         ...contextToRegionQuery(context),
