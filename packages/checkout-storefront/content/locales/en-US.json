@@ -139,10 +139,6 @@
     "developer_comment": "send password reset link",
     "string": "send password reset link"
   },
-  "Contact/messages/IbOUpe": {
-    "developer_comment": "password",
-    "string": "Password"
-  },
   "Contact/messages/JX+fPs": {
     "developer_comment": "Guest checkout",
     "string": "Guest checkout"
@@ -150,6 +146,10 @@
   "Contact/messages/Ng/PvP": {
     "developer_comment": "a link has been sent to",
     "string": "A magic link has been sent to {email}"
+  },
+  "Contact/messages/aGetQg": {
+    "developer_comment": "password (min 8 characters)",
+    "string": "Password (minimum 8 characters)"
   },
   "Contact/messages/bHaSzm": {
     "developer_comment": "password confirmation",
