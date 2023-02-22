@@ -1,14 +1,14 @@
-import { useAuthState } from "@saleor/sdk";
 import React, { ReactElement } from "react";
 import { useIntl } from "react-intl";
 
 import { AccountLayout, AddressBookCard, Spinner } from "@/components";
 import { messages } from "@/components/translations";
 import { useCurrentUserAddressesQuery } from "@/saleor/api";
+import { useUser } from "@/lib/useUser";
 
 function AddressBookPage() {
   const t = useIntl();
-  const { authenticated } = useAuthState();
+  const { authenticated } = useUser();
   const { loading, error, data, refetch } = useCurrentUserAddressesQuery({
     skip: !authenticated,
     fetchPolicy: "network-only",

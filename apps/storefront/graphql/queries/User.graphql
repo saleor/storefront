@@ -1,0 +1,15 @@
+query User {
+  user: me {
+    id
+    email
+    addresses {
+      ...AddressDetailsFragment
+    }
+    defaultBillingAddress {
+      ...AddressDetailsFragment
+    }
+    defaultShippingAddress {
+      ...AddressDetailsFragment
+    }
+  }
+}

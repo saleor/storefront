@@ -6,9 +6,9 @@ import { Client, ClientOptions, createClient } from "urql";
 export const useUrqlClient = (opts: ClientOptions) => {
   const createNewClient = () => createClient(opts);
 
-  const [client, setClient] = useState<Client>(createNewClient());
+  const [urqlClient, setUrqlClient] = useState<Client>(createNewClient());
 
-  const resetClient = () => setClient(createNewClient());
+  const resetClient = () => setUrqlClient(createNewClient());
 
-  return { client, resetClient };
+  return { urqlClient, resetClient };
 };

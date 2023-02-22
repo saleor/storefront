@@ -30,7 +30,7 @@ export const Root = ({ env }: RootProps) => {
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { client: urqlClient, resetClient } = useUrqlClient({
+  const { urqlClient, resetClient } = useUrqlClient({
     suspense: true,
     requestPolicy: "cache-first",
     url: saleorApiUrl,

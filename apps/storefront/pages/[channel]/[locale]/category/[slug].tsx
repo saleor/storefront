@@ -7,7 +7,6 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList/FilteredProductList";
 import { CategoryPageSeo } from "@/components/seo/CategoryPageSeo";
-import apolloClient from "@/lib/graphql";
 import { mapEdgesToItems } from "@/lib/maps";
 import { usePaths } from "@/lib/paths";
 import { contextToRegionQuery } from "@/lib/regions";
@@ -21,6 +20,7 @@ import {
   FilteringAttributesQueryDocument,
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
@@ -33,7 +33,7 @@ export const getStaticProps = async (
   }
 
   const categorySlug = context.params.slug.toString();
-  const response: ApolloQueryResult<CategoryBySlugQuery> = await apolloClient.query<
+  const response: ApolloQueryResult<CategoryBySlugQuery> = await serverApolloClient.query<
     CategoryBySlugQuery,
     CategoryBySlugQueryVariables
   >({
@@ -44,18 +44,16 @@ export const getStaticProps = async (
     },
   });
 
-  const attributesResponse: ApolloQueryResult<FilteringAttributesQuery> = await apolloClient.query<
-    FilteringAttributesQuery,
-    FilteringAttributesQueryVariables
-  >({
-    query: FilteringAttributesQueryDocument,
-    variables: {
-      ...contextToRegionQuery(context),
-      filter: {
-        inCategory: response.data.category?.id,
+  const attributesResponse: ApolloQueryResult<FilteringAttributesQuery> =
+    await serverApolloClient.query<FilteringAttributesQuery, FilteringAttributesQueryVariables>({
+      query: FilteringAttributesQueryDocument,
+      variables: {
+        ...contextToRegionQuery(context),
+        filter: {
+          inCategory: response.data.category?.id,
+        },
       },
-    },
-  });
+    });
 
   const attributes: AttributeFilterFragment[] = mapEdgesToItems(
     attributesResponse.data.attributes

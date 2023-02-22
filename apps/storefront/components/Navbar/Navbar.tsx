@@ -1,4 +1,3 @@
-import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,6 +15,7 @@ import Stamp from "./Stamp";
 import UserMenu from "./UserMenu";
 import { useRegions } from "@/components/RegionsProvider";
 import { invariant } from "@apollo/client/utilities/globals";
+import { useUser } from "@/lib/useUser";
 
 export function Navbar() {
   const paths = usePaths();
@@ -23,7 +23,7 @@ export function Navbar() {
 
   const [isBurgerOpen, setBurgerOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
-  const { authenticated: actuallyAuthenticated } = useAuthState();
+  const { authenticated: actuallyAuthenticated } = useUser();
   const { checkout } = useCheckout();
   const { currentLocale, currentChannel } = useRegions();
 

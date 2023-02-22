@@ -1,22 +1,19 @@
-import { useApolloClient } from "@apollo/client";
-import { useAuth } from "@saleor/sdk";
 import { useRouter } from "next/router";
 
 import { usePaths } from "@/lib/paths";
 
-import { useCheckout } from "./providers/CheckoutProvider";
+import { useCheckout } from "../providers/CheckoutProvider";
+import { useSaleorAuthContext } from "@/lib/auth";
 
 export const useLogout = () => {
-  const { logout } = useAuth();
+  const { signOut } = useSaleorAuthContext();
   const { resetCheckoutToken } = useCheckout();
   const router = useRouter();
-  const client = useApolloClient();
   const paths = usePaths();
 
   const onLogout = async () => {
-    await logout();
+    signOut();
     resetCheckoutToken();
-    await client.resetStore();
     void router.push(paths.$url());
   };
 
