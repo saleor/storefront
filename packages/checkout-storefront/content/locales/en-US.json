@@ -151,6 +151,10 @@
     "developer_comment": "a link has been sent to",
     "string": "A magic link has been sent to {email}"
   },
+  "Contact/messages/aGetQg": {
+    "developer_comment": "password (min 8 characters)",
+    "string": "Password (minimum 8 characters)"
+  },
   "Contact/messages/bHaSzm": {
     "developer_comment": "password confirmation",
     "string": "Password confirmation"
