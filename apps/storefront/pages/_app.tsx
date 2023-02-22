@@ -8,11 +8,11 @@ import React, { ReactElement, ReactNode } from "react";
 
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
-import { SaleorProviderWithChannels } from "@/components/SaleorProviderWithChannels";
 import { BaseSeo } from "@/components/seo/BaseSeo";
-import { DEMO_MODE } from "@/lib/const";
-import apolloClient from "@/lib/graphql";
+import { API_URI, DEMO_MODE } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
+import { useAuthenticatedApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@/lib/auth";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -25,19 +25,34 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
 
+  const useSaleorAuthClientProps = useSaleorAuthClient({
+    saleorApiUrl: API_URI,
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
+  });
+
+  const { saleorAuthClient } = useSaleorAuthClientProps;
+
+  const { apolloClient, resetClient } = useAuthenticatedApolloClient(
+    saleorAuthClient.fetchWithAuth
+  );
+
+  useAuthChange({
+    onSignedOut: () => resetClient(),
+  });
+
   return (
-    <ApolloProvider client={apolloClient}>
-      <CheckoutProvider>
-        <RegionsProvider>
-          <SaleorProviderWithChannels>
+    <SaleorAuthProvider {...useSaleorAuthClientProps}>
+      <ApolloProvider client={apolloClient}>
+        <CheckoutProvider>
+          <RegionsProvider>
             <BaseSeo />
             <NextNProgress color="#5B68E4" options={{ showSpinner: false }} />
             {DEMO_MODE && <DemoBanner />}
             {getLayout(<Component {...pageProps} />)}
-          </SaleorProviderWithChannels>
-        </RegionsProvider>
-      </CheckoutProvider>
-    </ApolloProvider>
+          </RegionsProvider>
+        </CheckoutProvider>
+      </ApolloProvider>
+    </SaleorAuthProvider>
   );
 }
 

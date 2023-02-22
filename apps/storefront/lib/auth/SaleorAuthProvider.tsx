@@ -1,8 +1,8 @@
 import { SaleorAuthClient } from "./SaleorAuthClient";
 import { UseSaleorAuthClient } from "./useSaleorAuthClient";
-import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { PropsWithChildren } from "react";
 import invariant from "ts-invariant";
+import createSafeContext from "@/lib/useSafeContext";
 
 type SaleorAuthContextConsumerProps = Pick<UseSaleorAuthClient, "isAuthenticating"> &
   Omit<SaleorAuthClient, "fetchWithAuth" | "cleanup">;

@@ -203,7 +203,7 @@ const { apolloClient, resetClient } = useApolloClient(saleorAuthClient.fetchWith
 Becasue we're using the client to also retrieve unauthenticated data in SSR, we separated them into two - one for SSR, that can be used outside of React flow, and the other returned by our hook.
 
 ```javascript
-export const staticApolloClient = new ApolloClient({
+export const serverApolloClient = new ApolloClient({
   link: createHttpLink({ uri: API_URI }),
   cache: new InMemoryCache({ typePolicies }),
   ssrMode: true,

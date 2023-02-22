@@ -3,8 +3,8 @@ import { ParsedUrlQuery } from "querystring";
 
 import { PagePathsDocument, PagePathsQuery, PagePathsQueryVariables } from "@/saleor/api";
 
-import apolloClient from "../graphql";
 import { CHANNELS, LOCALES, Path } from "../regions";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface PagePathArguments extends ParsedUrlQuery {
   channel: string;
@@ -19,7 +19,7 @@ export const pagePaths = async () => {
   let endCursor = "";
 
   while (hasNextPage) {
-    const response: ApolloQueryResult<PagePathsQuery> = await apolloClient.query<
+    const response: ApolloQueryResult<PagePathsQuery> = await serverApolloClient.query<
       PagePathsQuery,
       PagePathsQueryVariables
     >({

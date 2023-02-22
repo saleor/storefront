@@ -1,5 +1,4 @@
 import { ApolloQueryResult } from "@apollo/client";
-import { useAuthState } from "@saleor/sdk";
 import clsx from "clsx";
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Link from "next/link";
@@ -14,7 +13,6 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
-import apolloClient from "@/lib/graphql";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -28,6 +26,8 @@ import {
   useCheckoutAddProductLineMutation,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { useUser } from "@/lib/useUser";
 
 export type OptionalQuery = {
   variant?: string;
@@ -49,7 +49,7 @@ export const getStaticProps = async (
   }
 
   const productSlug = context.params.slug.toString();
-  const response: ApolloQueryResult<ProductBySlugQuery> = await apolloClient.query<
+  const response: ApolloQueryResult<ProductBySlugQuery> = await serverApolloClient.query<
     ProductBySlugQuery,
     ProductBySlugQueryVariables
   >({
@@ -75,7 +75,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
 
   const [createCheckout] = useCreateCheckoutMutation();
-  const { user } = useAuthState();
+  const { user } = useUser();
 
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);

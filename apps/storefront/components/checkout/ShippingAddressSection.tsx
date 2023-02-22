@@ -1,4 +1,3 @@
-import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
@@ -15,6 +14,7 @@ import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
 import { AddressDisplay } from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
+import { useUser } from "@/lib/useUser";
 
 export interface ShippingAddressSectionProps {
   active: boolean;
@@ -25,7 +25,7 @@ export function ShippingAddressSection({ active, checkout }: ShippingAddressSect
   const t = useIntl();
   const { query } = useRegions();
 
-  const { authenticated } = useAuthState();
+  const { authenticated } = useUser();
   const [editing, setEditing] = useState(!checkout.shippingAddress);
   const [shippingAddressUpdateMutation] = useCheckoutShippingAddressUpdateMutation({});
 

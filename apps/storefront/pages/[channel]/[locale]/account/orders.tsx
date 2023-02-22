@@ -1,12 +1,12 @@
-import { useAuthState } from "@saleor/sdk";
 import React, { ReactElement } from "react";
 
 import { AccountLayout, OrdersTable, Pagination, Spinner } from "@/components";
 import { mapEdgesToItems } from "@/lib/maps";
 import { useOrdersQuery } from "@/saleor/api";
+import { useUser } from "@/lib/useUser";
 
 function OrdersPage() {
-  const { authenticated } = useAuthState();
+  const { authenticated } = useUser();
   const {
     data: ordersCollection,
     loading,

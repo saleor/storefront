@@ -1,4 +1,3 @@
-import { useAuth, useAuthState } from "@saleor/sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -8,6 +7,7 @@ import { useIntl } from "react-intl";
 import { messages } from "@/components/translations";
 import { DEMO_MODE } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
+import { useSaleorAuthContext } from "@/lib/auth";
 
 export type OptionalQuery = {
   next?: string;
@@ -23,8 +23,7 @@ function LoginPage() {
   const paths = usePaths();
   const t = useIntl();
 
-  const { login } = useAuth();
-  const { authenticated } = useAuthState();
+  const { signIn } = useSaleorAuthContext();
 
   const defaultValues = DEMO_MODE
     ? {
@@ -45,22 +44,18 @@ function LoginPage() {
   const redirectURL = !routerQueryNext || isExternalUrl ? paths.$url() : routerQueryNext;
 
   const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
-    const { data } = await login({
+    const { data } = await signIn({
       email: formData.email,
       password: formData.password,
     });
 
-    if (data?.tokenCreate?.errors[0]) {
-      // Unable to sign in.
+    if (data?.tokenCreate?.errors?.length) {
       setErrorForm("email", { message: "Invalid credentials" });
+      return;
     }
-  });
 
-  if (authenticated) {
-    // User signed in successfully.
     void router.push(redirectURL);
-    return null;
-  }
+  });
 
   return (
     <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-blue-500">
