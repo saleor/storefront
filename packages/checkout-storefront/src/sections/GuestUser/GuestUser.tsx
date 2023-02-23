@@ -46,7 +46,10 @@ export const GuestUser: React.FC<GuestUserProps> = ({
         />
         {createAccount && (
           <div className="mt-2">
-            <PasswordInput name="password" label={formatMessage(contactMessages.password)} />
+            <PasswordInput
+              name="password"
+              label={formatMessage(contactMessages.passwordWithRequirements)}
+            />
           </div>
         )}
       </FormProvider>
