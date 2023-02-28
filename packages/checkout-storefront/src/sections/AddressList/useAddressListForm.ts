@@ -41,6 +41,7 @@ export const useAddressListForm = ({
   const previousCheckoutAddress = useRef<OptionalAddress>(null);
 
   const form = useForm<AddressListFormData>({
+    initialDirty: true,
     initialValues: {
       addressList: addresses,
       selectedAddressId: addresses.find(getByMatchingAddress(checkoutAddress))?.id,
@@ -108,7 +109,6 @@ export const useAddressListForm = ({
     if (defaultAddress) {
       previousCheckoutAddress.current = defaultAddress;
       void setFieldValue("selectedAddressId", defaultAddress.id);
-      // void handleAutoAddressSelect(defaultAddress);
       return;
     }
 
