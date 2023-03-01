@@ -14,6 +14,14 @@ export const Checkbox = <TName extends string>({ name, label }: CheckboxProps<TN
   const [field, { value }] = useField(name);
 
   return (
-    <UiKitCheckbox {...field} label={label} name={name} checked={value} onChange={handleChange} />
+    <UiKitCheckbox
+      {...field}
+      label={label}
+      name={name}
+      checked={value}
+      onChange={(event) => {
+        handleChange({ ...event, target: { ...event.target, name, value: !value } });
+      }}
+    />
   );
 };

@@ -98,8 +98,13 @@ export const useBillingSameAsShippingForm = (
         !billingSameAsShipping && previousBillingSameAsShipping.current;
 
       if (hasBillingSameAsShippingChangedToFalse) {
-        // we want to clear all the fields in api
-        await setFieldValue("billingAddress", getEmptyAddress());
+        previousBillingSameAsShipping.current = false;
+
+        // autosave means it's geust form and we want to show empty form
+        // and clear all the fields in api
+        if (autoSave) {
+          setFieldValue("billingAddress", getEmptyAddress());
+        }
         return;
       }
 
@@ -108,7 +113,7 @@ export const useBillingSameAsShippingForm = (
       }
 
       previousBillingSameAsShipping.current = true;
-      await setFieldValue("billingAddress", shippingAddress);
+      setFieldValue("billingAddress", shippingAddress);
       if (typeof onSetBillingSameAsShipping === "function") {
         onSetBillingSameAsShipping(shippingAddress);
       }
@@ -116,6 +121,7 @@ export const useBillingSameAsShippingForm = (
 
     void handleBillingSameAsShippingChanged();
   }, [
+    autoSave,
     billingSameAsShipping,
     handleSubmit,
     onSetBillingSameAsShipping,
@@ -145,7 +151,7 @@ export const useBillingSameAsShippingForm = (
       previousShippingAddress.current = shippingAddress;
 
       if (billingSameAsShipping) {
-        await setFieldValue("billingAddress", shippingAddress);
+        setFieldValue("billingAddress", shippingAddress);
       }
     };
 
