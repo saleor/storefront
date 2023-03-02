@@ -52,7 +52,6 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
   const {
     values: { billingSameAsShipping },
   } = billingSameAsShippingForm;
-  // console.log({ billingSameAsShipping });
 
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>
