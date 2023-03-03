@@ -94,7 +94,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
             name: field,
             label: label,
             autoComplete: autocompleteTags[field],
-            optional: !isRequired,
+            optional: isRequired ? undefined : true,
             validate: customValidators[field],
             ...fieldProps,
           };
