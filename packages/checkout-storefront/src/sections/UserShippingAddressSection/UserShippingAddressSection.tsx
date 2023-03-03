@@ -9,6 +9,7 @@ import { AddressEditForm } from "@/checkout-storefront/sections/AddressEditForm"
 import { AddressList } from "@/checkout-storefront/sections/AddressList/AddressList";
 import React, { Suspense } from "react";
 import { AddressFragment } from "@/checkout-storefront/graphql";
+import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 
 interface UserShippingAddressSectionProps {}
 
@@ -18,6 +19,11 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
     form,
     userAddressActions: { onAddressCreateSuccess, onAddressDeleteSuccess, onAddressUpdateSuccess },
   } = useUserShippingAddressForm();
+
+  useCheckoutFormValidationTrigger({
+    scope: "shippingAddress",
+    form: form,
+  });
 
   return (
     <Suspense fallback={<AddressSectionSkeleton />}>

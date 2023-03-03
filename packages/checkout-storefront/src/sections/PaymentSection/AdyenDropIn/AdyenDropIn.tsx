@@ -45,6 +45,8 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   const { validating } = useCheckoutValidationState();
   const { allFormsValid, validateAllForms } = useCheckoutSubmit();
 
+  console.log({ validating });
+
   const { showCustomErrors } = useAlerts("checkoutPay");
 
   const [, fetchCreateDropInAdyenPayment] = useFetch(createDropInAdyenPayment, {
@@ -61,12 +63,15 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
 
   const onSubmit: AdyenCheckoutInstanceOnSubmit = useEvent(async (state, component) => {
     component.setStatus("loading");
-    validateAllForms();
+    console.log(`Calling validateAllForms()`);
     setAdyenCheckoutSubmitParams({ state, component });
+    validateAllForms();
   });
 
   const afterSubmit = useCallback(async () => {
+    console.log(1, { validating, allFormsValid });
     if (!validating && !allFormsValid && adyenCheckoutSubmitParams) {
+      console.log(2);
       // validated, failed, let's reset the state
       adyenCheckoutSubmitParams.component.setStatus("ready");
       setAdyenCheckoutSubmitParams(null);
@@ -74,6 +79,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
     }
 
     if (!allFormsValid || !adyenCheckoutSubmitParams || validating) {
+      console.log(3);
       // not validated yet, or still validating, or not all forms valid
       return;
     }
@@ -89,7 +95,10 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
       adyenStateData: adyenCheckoutSubmitParams.state.data,
     });
 
+    console.log(4);
+
     if (!result || "message" in result) {
+      console.log(5);
       console.error(result);
       showCustomErrors([{ message: result?.message || "Something went wrong…" }]);
       adyenCheckoutSubmitParams.component.setStatus("ready");
@@ -97,12 +106,14 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
     }
 
     if (result.payment.action) {
+      console.log(6);
       adyenCheckoutSubmitParams.component.handleAction(
         // discrepancy between adyen-api and adyen-web types 🤦‍♂️
         result.payment.action as unknown as Exclude<AdyenWebPaymentResponse["action"], undefined>
       );
       return;
     } else {
+      console.log(7);
       return handlePaymentResult(saleorApiUrl, result, adyenCheckoutSubmitParams.component);
     }
   }, [

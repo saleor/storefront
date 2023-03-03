@@ -1,3 +1,4 @@
+import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { getById } from "@/checkout-storefront/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
@@ -47,6 +48,11 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
   const billingSameAsShippingForm = useBillingSameAsShippingForm({
     autoSave: false,
     onSetBillingSameAsShipping: handleSetBillingSameAsShipping,
+  });
+
+  useCheckoutFormValidationTrigger({
+    scope: "billingAddress",
+    form: billingSameAsShippingForm,
   });
 
   const {
