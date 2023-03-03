@@ -68,6 +68,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
   const form = useForm<DeliveryMethodsFormData>({
     initialValues: defaultFormData,
     onSubmit: debouncedSubmit,
+    initialDirty: true,
   });
 
   const {

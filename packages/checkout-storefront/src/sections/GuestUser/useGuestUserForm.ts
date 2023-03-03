@@ -16,6 +16,7 @@ import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { passwordMessages } from "@/checkout-storefront/sections/SignIn/messages";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
+import { isValidEmail } from "@/checkout-storefront/lib/utils/common";
 
 export interface GuestUserFormData {
   email: string;
@@ -98,7 +99,6 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
     values: { email, createAccount },
     handleSubmit,
     handleChange,
-    validateField,
   } = form;
 
   useCheckoutFormValidationTrigger({
@@ -125,7 +125,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
   const onChange: ChangeHandler = async (event) => {
     handleChange(event);
 
-    const error = await validateField("email");
+    const error = await isValidEmail(event.target.value as string);
 
     if (!error) {
       setCheckoutUpdateState("loading");

@@ -1,9 +1,4 @@
-import {
-  ChangeHandler,
-  FormDataBase,
-  FormProps,
-  UseFormReturn,
-} from "@/checkout-storefront/hooks/useForm/types";
+import { ChangeHandler, FormDataBase, FormDataField, FormProps, UseFormReturn } from "./types";
 import { useFormik, useFormikContext } from "formik";
 import { isEqual } from "lodash-es";
 import { useCallback, useState } from "react";
@@ -18,7 +13,11 @@ export const useForm = <TData extends FormDataBase>({
   const [dirty, setDirty] = useState(initialDirty);
   const [values, setValues] = useState(formProps.initialValues);
 
-  const { handleSubmit: handleFormikSubmit, handleChange: formikHandleChange } = form;
+  const {
+    handleSubmit: handleFormikSubmit,
+    handleChange: formikHandleChange,
+    setValues: setFormikValues,
+  } = form;
 
   const handleSubmit = useCallback(
     (event?: React.FormEvent<HTMLFormElement>) => {
@@ -45,7 +44,16 @@ export const useForm = <TData extends FormDataBase>({
     [formikHandleChange, values]
   );
 
-  return { ...form, handleSubmit, handleChange, values, dirty };
+  const setFieldValue = useCallback(
+    <TName extends FormDataField<TData>>(name: TName, value: TData[TName]) => {
+      const updatedValues = { ...values, [name]: value };
+      setValues(updatedValues);
+      void setFormikValues(updatedValues);
+    },
+    [setFormikValues, values]
+  );
+
+  return { ...form, handleSubmit, handleChange, values, dirty, setFieldValue };
 };
 
 export const useFormContext = useFormikContext;
