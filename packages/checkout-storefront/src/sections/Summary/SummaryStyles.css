@@ -26,7 +26,7 @@
   }
 
   .summary-items {
-    @apply px-4 overflow-visible lg:pt-2 lg:overflow-scroll;
+    @apply px-4 overflow-visible lg:pt-2;
   }
 
   .summary-item {

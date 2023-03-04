@@ -206,21 +206,6 @@ query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
   }
 }
 
-query user {
-  me {
-    id
-    addresses {
-      ...AddressFragment
-    }
-    defaultBillingAddress {
-      ...AddressFragment
-    }
-    defaultShippingAddress {
-      ...AddressFragment
-    }
-  }
-}
-
 query channel($slug: String!) {
   channel(slug: $slug) {
     countries {
@@ -268,17 +253,6 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: L
 
 mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
   checkoutCustomerAttach(id: $checkoutId) {
-    errors {
-      ...CheckoutErrorFragment
-    }
-    checkout {
-      ...CheckoutFragment
-    }
-  }
-}
-
-mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
-  checkoutCustomerDetach(id: $checkoutId) {
     errors {
       ...CheckoutErrorFragment
     }

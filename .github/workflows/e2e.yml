@@ -6,11 +6,12 @@ on:
       environment:
         required: true
         description: "Environment to run tests against"
-        default: "https://staging-demo.saleor.io/"
+        default: "https://react-storefront-e2e.vercel.app/"
         type: choice
         options:
           - https://staging-demo.saleor.io/
           - https://demo.saleor.io/
+          - https://react-storefront-e2e.vercel.app/
 
   schedule:
     - cron: "00 2 * * 1-5"
@@ -32,11 +33,35 @@ jobs:
       - name: Get env
         id: get-env-uri
         env:
-          DEFAULT_ENV_URI: "https://staging-demo.saleor.io/"
+          DEFAULT_ENV_URI: "https://react-storefront-e2e.vercel.app/"
         run: |
           echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
-      - name: Cypress run on demo
+      - name: Get BE url and variables for demo
+        id: demo
+        if: ${{ contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
+        run: |
+          echo "SALEOR_API_URL=${{steps.get-env-uri.outputs.ENV_URI}}graphql/" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_EMAIL=${{'admin@example.com'}}" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_PASSWORD=${{'admin'}}" >> $GITHUB_OUTPUT
+          echo "CYPRESS_DIGITAL_PRODUCT=cloud" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITH_VARIANTS=zoom" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITHOUT_VARIANTS=beanie" >> $GITHUB_OUTPUT
+          echo "CYPRESS_PRODUCT_TO_SEARCH=polo" >> $GITHUB_OUTPUT
+
+      - name: Get BE url and variables for non demo environment
+        id: testenv
+        if: ${{ !contains(steps.get-env-uri.outputs.ENV_URI, 'demo') }}
+        run: |
+          echo "SALEOR_API_URL=https://storefront-automation.staging.saleor.cloud/graphql/" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_EMAIL=testers+dashboard@saleor.io" >> $GITHUB_OUTPUT
+          echo "CYPRESS_USER_PASSWORD=${{secrets.CYPRESS_USER_PASSWORD}}" >> $GITHUB_OUTPUT
+          echo "CYPRESS_DIGITAL_PRODUCT=sea" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITH_VARIANTS=carrot" >> $GITHUB_OUTPUT
+          echo "CYPRESS_WITHOUT_VARIANTS=lager" >> $GITHUB_OUTPUT
+          echo "CYPRESS_PRODUCT_TO_SEARCH=polo" >> $GITHUB_OUTPUT
+
+      - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
           record: true
@@ -44,10 +69,10 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SALEOR_API_URL: ${{ steps.get-env-uri.outputs.ENV_URI }}graphql/
-          CYPRESS_USER_EMAIL: "admin@example.com"
-          CYPRESS_USER_PASSWORD: "admin"
-          CYPRESS_DIGITAL_PRODUCT: "cloud"
-          CYPRESS_WITHOUT_VARIANTS: "beanie"
-          CYPRESS_WITH_VARIANTS: "zoom"
-          CYPRESS_PRODUCT_TO_SEARCH: "polo"
+          SALEOR_API_URL: ${{ steps.demo.outputs.SALEOR_API_URL || steps.testenv.outputs.SALEOR_API_URL }}
+          CYPRESS_USER_EMAIL: ${{ steps.demo.outputs.CYPRESS_USER_EMAIL || steps.testenv.outputs.CYPRESS_USER_EMAIL}}
+          CYPRESS_USER_PASSWORD: ${{ steps.demo.outputs.CYPRESS_USER_PASSWORD || steps.testenv.outputs.CYPRESS_USER_PASSWORD }}
+          CYPRESS_DIGITAL_PRODUCT: ${{ steps.demo.outputs.CYPRESS_DIGITAL_PRODUCT || steps.testenv.outputs.CYPRESS_DIGITAL_PRODUCT }}
+          CYPRESS_WITHOUT_VARIANTS: ${{ steps.demo.outputs.CYPRESS_WITHOUT_VARIANTS || steps.testenv.outputs.CYPRESS_WITHOUT_VARIANTS }}
+          CYPRESS_WITH_VARIANTS: ${{ steps.demo.outputs.CYPRESS_WITHOUT_VARIANTS || steps.testenv.outputs.CYPRESS_WITHOUT_VARIANTS }}
+          CYPRESS_PRODUCT_TO_SEARCH: ${{ steps.demo.outputs.CYPRESS_PRODUCT_TO_SEARCH || steps.testenv.outputs.CYPRESS_PRODUCT_TO_SEARCH}}

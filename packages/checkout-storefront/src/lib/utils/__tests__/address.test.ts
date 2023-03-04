@@ -1,25 +1,26 @@
-import { AddressFragment } from "@/checkout-storefront/graphql";
-import { addresses } from "@/checkout-storefront/lib/fixtures/address";
-import { AddressField } from "@/checkout-storefront/lib/globalTypes";
+import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import {
-  emptyFormData,
   getAddressFormDataFromAddress,
-  getMatchingAddressFromList,
+  getAllAddressFieldKeys,
+  getEmptyAddressFormData,
   getOrderedAddressFields,
   isMatchingAddress,
   isMatchingAddressFormData,
-} from "@/checkout-storefront/lib/utils";
-import { omit } from "lodash-es";
+} from "@/checkout-storefront/components/AddressForm/utils";
+import { AddressFragment } from "@/checkout-storefront/graphql";
+import { addresses } from "@/checkout-storefront/lib/fixtures/address";
+
+import { pick } from "lodash-es";
 
 describe("getAddressFormDataFromAddress", () => {
   it("should return empty form data for non-existing address", () => {
-    expect(getAddressFormDataFromAddress(null)).toEqual(emptyFormData);
+    expect(getAddressFormDataFromAddress(null)).toEqual(getEmptyAddressFormData());
   });
 
   it("should return properly formatted form data from adress", () => {
     const address = addresses[0];
     expect(getAddressFormDataFromAddress(address)).toEqual({
-      ...omit(address, ["country", "__typename"]),
+      ...pick(address, getAllAddressFieldKeys()),
       countryCode: address?.country.code,
     });
   });
@@ -81,40 +82,6 @@ describe("isMatchingAddressFormData", () => {
     const addressToCompare = getAddressFormDataFromAddress(addressRest as AddressFragment);
 
     expect(isMatchingAddressFormData(address, addressToCompare)).toEqual(true);
-  });
-});
-
-describe("getMatchingAddressFromList", () => {
-  const [firstAddress, ...rest] = addresses;
-  const addressList = [{ ...firstAddress, id: "some-id" } as AddressFragment, ...rest];
-
-  const getMatchingAddress = getMatchingAddressFromList(addressList);
-
-  it("should return proper address for addresses of same id", () => {
-    const addressToCompare = { ...addresses[1], id: "some-id" } as AddressFragment;
-
-    expect(getMatchingAddress(addressToCompare)).toEqual(addressList[0]);
-  });
-
-  it("should return proper address for addresses of different id but same data", () => {
-    const addressToCompare = { ...addresses[0], id: "some-other-id" } as AddressFragment;
-
-    expect(getMatchingAddress(addressToCompare)).toEqual(addressList[0]);
-  });
-
-  it("should return undefined for address that doesn't match any in the list", () => {
-    const addressToCompare = {
-      ...emptyFormData,
-      country: { code: "PL", country: "Polska" },
-      id: "some-other-id",
-    } as AddressFragment;
-
-    expect(getMatchingAddress(addressToCompare)).toEqual(undefined);
-  });
-
-  it("should return undefined for not existing address passed to check function", () => {
-    expect(getMatchingAddress(null)).toEqual(undefined);
-    expect(getMatchingAddress(undefined)).toEqual(undefined);
   });
 });
 

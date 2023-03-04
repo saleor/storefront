@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useState } from "react";
 import { Text } from "@saleor/ui-kit";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SummaryItem, SummaryLine } from "./SummaryItem";
@@ -11,7 +11,7 @@ import { PromoCodeAdd } from "./PromoCodeAdd";
 import { SummaryMoneyRow } from "./SummaryMoneyRow";
 import { SummaryPromoCodeRow } from "./SummaryPromoCodeRow";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
-import { getFormattedMoney } from "@/checkout-storefront/lib/utils";
+import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
 import { Divider, Money, Title } from "@/checkout-storefront/components";
 import {
   CheckoutLineFragment,
@@ -22,11 +22,7 @@ import {
 import { SummaryItemMoneySection } from "@/checkout-storefront/sections/Summary/SummaryItemMoneySection";
 import { GrossMoney, GrossMoneyWithTax } from "@/checkout-storefront/lib/globalTypes";
 import { summaryLabels, summaryMessages } from "./messages";
-
-/* temporary solution */
-const PAGE_MARGINS_HEIGHT = 320;
-const LINE_HEIGHT = 104;
-const LG_BREAKPOINT = 1024;
+import { useSummaryHeightCalc } from "@/checkout-storefront/sections/Summary/useSummaryHeightCalc";
 
 interface SummaryProps {
   editable?: boolean;
@@ -49,39 +45,15 @@ export const Summary: FC<SummaryProps> = ({
   shippingPrice,
   discount,
 }) => {
-  const [isOpen, setOpen] = useState(true);
-  const recapRef = useRef<HTMLDivElement>(null);
-  const [maxSummaryHeight, setMaxSummaryHeight] = useState<number>(0);
-
   const formatMessage = useFormattedMessages();
+  const [isOpen, setOpen] = useState(true);
 
-  useEffect(() => {
-    const handleWindowResize = () => {
-      const isLg = window.innerWidth > LG_BREAKPOINT;
-
-      if (isLg) {
-        setOpen(true);
-      }
-
-      if (!recapRef.current) {
-        return;
-      }
-
-      const recapHeight = recapRef.current.clientHeight;
-
-      const maxHeight = isLg
-        ? window.innerHeight - PAGE_MARGINS_HEIGHT - recapHeight
-        : lines.length * LINE_HEIGHT;
-
-      // always set at least one line item height
-      setMaxSummaryHeight(Math.max(LINE_HEIGHT, maxHeight));
-    };
-
-    window.addEventListener("resize", handleWindowResize, { passive: true });
-    handleWindowResize();
-
-    return () => window.removeEventListener("resize", handleWindowResize);
-  }, [recapRef, lines.length]);
+  const { maxSummaryHeight, allItemsHeight } = useSummaryHeightCalc({
+    linesCount: lines.length,
+    onBreakpointChange: (breakpoint: "lg" | "md") => {
+      setOpen(breakpoint === "lg");
+    },
+  });
 
   return (
     <div className="summary">
@@ -112,7 +84,9 @@ export const Summary: FC<SummaryProps> = ({
           style={{ maxHeight: maxSummaryHeight ? `${maxSummaryHeight}px` : "" }}
           className={clsx(
             "summary-items",
-            lines.length * LINE_HEIGHT > maxSummaryHeight ? "border-b border-border-secondary" : ""
+            allItemsHeight > maxSummaryHeight
+              ? "border-b border-border-secondary lg:overflow-y-scroll"
+              : ""
           )}
         >
           {lines.map((line) => (
@@ -126,7 +100,7 @@ export const Summary: FC<SummaryProps> = ({
           ))}
         </ul>
         {editable && <PromoCodeAdd />}
-        <div className="summary-recap" ref={recapRef}>
+        <div className="summary-recap">
           <Divider className="mt-1 mb-4" />
           <SummaryMoneyRow
             label={formatMessage(summaryMessages.subtotalPrice)}

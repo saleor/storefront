@@ -6,7 +6,6 @@ import {
 
 import type { PaymentResponse as AdyenWebPaymentResponse } from "@adyen/adyen-web/dist/types/components/types";
 
-import { useAlerts, useCheckout, useFetch } from "@/checkout-storefront/hooks";
 import { useAppConfig } from "@/checkout-storefront/providers/AppConfigProvider";
 import AdyenCheckout from "@adyen/adyen-web";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -22,6 +21,10 @@ import { Checkout } from "@/checkout-storefront/graphql";
 import { useCheckoutSubmit } from "../../CheckoutForm/useCheckoutSubmit";
 import { useCheckoutValidationState } from "@/checkout-storefront/state/checkoutValidationStateStore";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
+import { useFetch } from "@/checkout-storefront/hooks/useFetch";
+import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { getAdyenIntegerAmountFromSaleor } from "checkout-common";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
@@ -42,6 +45,8 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
   const { validating } = useCheckoutValidationState();
   const { allFormsValid, validateAllForms } = useCheckoutSubmit();
 
+  console.log({ validating });
+
   const { showCustomErrors } = useAlerts("checkoutPay");
 
   const [, fetchCreateDropInAdyenPayment] = useFetch(createDropInAdyenPayment, {
@@ -58,12 +63,15 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
 
   const onSubmit: AdyenCheckoutInstanceOnSubmit = useEvent(async (state, component) => {
     component.setStatus("loading");
-    validateAllForms();
+    console.log(`Calling validateAllForms()`);
     setAdyenCheckoutSubmitParams({ state, component });
+    validateAllForms();
   });
 
   const afterSubmit = useCallback(async () => {
+    console.log(1, { validating, allFormsValid });
     if (!validating && !allFormsValid && adyenCheckoutSubmitParams) {
+      console.log(2);
       // validated, failed, let's reset the state
       adyenCheckoutSubmitParams.component.setStatus("ready");
       setAdyenCheckoutSubmitParams(null);
@@ -71,6 +79,7 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
     }
 
     if (!allFormsValid || !adyenCheckoutSubmitParams || validating) {
+      console.log(3);
       // not validated yet, or still validating, or not all forms valid
       return;
     }
@@ -86,7 +95,10 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
       adyenStateData: adyenCheckoutSubmitParams.state.data,
     });
 
+    console.log(4);
+
     if (!result || "message" in result) {
+      console.log(5);
       console.error(result);
       showCustomErrors([{ message: result?.message || "Something went wrong…" }]);
       adyenCheckoutSubmitParams.component.setStatus("ready");
@@ -94,12 +106,14 @@ export const AdyenDropIn = memo<AdyenDropInProps>(() => {
     }
 
     if (result.payment.action) {
+      console.log(6);
       adyenCheckoutSubmitParams.component.handleAction(
         // discrepancy between adyen-api and adyen-web types 🤦‍♂️
         result.payment.action as unknown as Exclude<AdyenWebPaymentResponse["action"], undefined>
       );
       return;
     } else {
+      console.log(7);
       return handlePaymentResult(saleorApiUrl, result, adyenCheckoutSubmitParams.component);
     }
   }, [
@@ -157,6 +171,7 @@ function useDropinAdyenElement(
 ) {
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
+  const adyenCheckoutInstanceRef = useRef<AdyenCheckoutInstance | null>(null);
   const [adyenCheckoutInstanceCreationStatus, setAdyenCheckoutInstanceCreationStatus] = useState<
     "IDLE" | "IN_PROGRESS" | "DONE" | "ERROR"
   >("IDLE");
@@ -178,6 +193,35 @@ function useDropinAdyenElement(
     },
     skip: isCheckoutLoading,
   });
+
+  const updateApplePayAmount = useCallback(() => {
+    if (!adyenCheckoutInstanceRef) {
+      return;
+    }
+
+    adyenCheckoutInstanceRef.current
+      ?.update({
+        amount: {
+          value: getAdyenIntegerAmountFromSaleor(
+            checkout.totalPrice.gross.amount,
+            checkout.totalPrice.gross.currency
+          ),
+          currency: checkout.totalPrice.gross.currency,
+        },
+        paymentMethodsConfiguration: {
+          applepay: {
+            amount: {
+              value: getAdyenIntegerAmountFromSaleor(
+                checkout.totalPrice.gross.amount,
+                checkout.totalPrice.gross.currency
+              ),
+              currency: checkout.totalPrice.gross.currency,
+            },
+          },
+        },
+      })
+      .catch(console.error);
+  }, [checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency]);
 
   // reset dropin on locale change
   useEffect(() => {
@@ -208,9 +252,12 @@ function useDropinAdyenElement(
       locale,
     })
       .then((adyenCheckout) => {
+        adyenCheckoutInstanceRef.current = adyenCheckout;
         dropinComponentRef.current = adyenCheckout
-          .create("dropin")
+          .create("dropin", { instantPaymentTypes: ["applepay"] })
           .mount(dropinContainerElRef?.current as HTMLDivElement);
+        updateApplePayAmount();
+
         setAdyenCheckoutInstanceCreationStatus("DONE");
       })
       .catch((err) => {
@@ -227,7 +274,12 @@ function useDropinAdyenElement(
     onAdditionalDetails,
     onSubmit,
     locale,
+    updateApplePayAmount,
   ]);
 
-  return { dropinContainerElRef };
+  useEffect(() => {
+    updateApplePayAmount();
+  }, [updateApplePayAmount]);
+
+  return { dropinContainerElRef, adyenCheckoutInstanceRef };
 }

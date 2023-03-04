@@ -15,8 +15,8 @@ export const addressSelectBoxMessages = defineMessages({
 
 export const addressSelectBoxLabels = defineMessages({
   editAddress: {
-    defaultMessage: "edit address",
-    id: "AddressSelectBox/messages//II2Kl",
+    defaultMessage: "edit",
+    id: "AddressSelectBox/messages/ZWx1tB",
     description: "edit address accessibility label",
   },
 });

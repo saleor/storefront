@@ -1,4 +1,3 @@
-import { useAuth } from "@saleor/sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -7,6 +6,8 @@ import { useIntl } from "react-intl";
 
 import { messages } from "@/components/translations";
 import { usePaths } from "@/lib/paths";
+import { useRegisterMutation } from "@/saleor/api";
+import { useRegions } from "@/components/RegionsProvider";
 
 export interface RegisterFormData {
   email: string;
@@ -16,9 +17,10 @@ export interface RegisterFormData {
 function RegisterPage() {
   const router = useRouter();
   const paths = usePaths();
+  const [register] = useRegisterMutation();
+  const { currentChannel } = useRegions();
   const t = useIntl();
 
-  const { register } = useAuth();
   const {
     register: registerForm,
     handleSubmit: handleSubmitForm,
@@ -28,18 +30,23 @@ function RegisterPage() {
 
   const handleRegister = handleSubmitForm(async (formData: RegisterFormData) => {
     const { data } = await register({
-      email: formData.email,
-      password: formData.password,
-      redirectUrl: `${window.location.origin}/account/confirm`,
+      variables: {
+        input: {
+          email: formData.email,
+          password: formData.password,
+          redirectUrl: `${window.location.origin}/account/confirm`,
+          channel: currentChannel.slug,
+        },
+      },
     });
 
     if (data?.accountRegister?.errors.length) {
       // Unable to sign in.
       data?.accountRegister?.errors.forEach((e) => {
         if (e.field === "email") {
-          setErrorForm("email", { message: e.message! });
+          setErrorForm("email", { message: e?.message || undefined });
         } else if (e.field === "password") {
-          setErrorForm("password", { message: e.message! });
+          setErrorForm("password", { message: e?.message || undefined });
         } else {
           console.error("Registration error:", e);
         }

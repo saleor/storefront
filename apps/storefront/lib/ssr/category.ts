@@ -7,8 +7,8 @@ import {
   CategoryPathsQueryVariables,
 } from "@/saleor/api";
 
-import apolloClient from "../graphql";
 import { CHANNELS, LOCALES, Path } from "../regions";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface CategoryPathArguments extends ParsedUrlQuery {
   channel: string;
@@ -23,7 +23,7 @@ export const categoryPaths = async () => {
   let endCursor = "";
 
   while (hasNextPage) {
-    const response: ApolloQueryResult<CategoryPathsQuery> = await apolloClient.query<
+    const response: ApolloQueryResult<CategoryPathsQuery> = await serverApolloClient.query<
       CategoryPathsQuery,
       CategoryPathsQueryVariables
     >({

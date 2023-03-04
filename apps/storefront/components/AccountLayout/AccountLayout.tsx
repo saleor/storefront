@@ -1,18 +1,21 @@
-import { useAuthState } from "@saleor/sdk";
 import { useRouter } from "next/router";
 import React, { ReactNode } from "react";
 
 import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
+import { useUser } from "@/lib/useUser";
+import { useSaleorAuthContext } from "@/lib/auth";
 
 export type AccountLayoutProps = { children: ReactNode };
 
 export function AccountLayout({ children }: AccountLayoutProps) {
   const router = useRouter();
   const paths = usePaths();
-  const { authenticated, authenticating } = useAuthState();
-  if (authenticating) {
+  const { authenticated } = useUser();
+  const { isAuthenticating } = useSaleorAuthContext();
+
+  if (isAuthenticating) {
     return (
       <Layout>
         <Spinner />

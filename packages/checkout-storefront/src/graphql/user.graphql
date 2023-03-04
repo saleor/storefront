@@ -1,15 +1,21 @@
-mutation userRegister($input: AccountRegisterInput!) {
-  accountRegister(input: $input) {
-    errors {
-      message
-      field
-      code
+query user {
+  user: me {
+    id
+    email
+    addresses {
+      ...AddressFragment
+    }
+    defaultBillingAddress {
+      ...AddressFragment
+    }
+    defaultShippingAddress {
+      ...AddressFragment
     }
   }
 }
 
-mutation passwordReset($email: String!, $token: String!, $password: String!) {
-  setPassword(email: $email, token: $token, password: $password) {
+mutation userRegister($input: AccountRegisterInput!) {
+  accountRegister(input: $input) {
     errors {
       message
       field

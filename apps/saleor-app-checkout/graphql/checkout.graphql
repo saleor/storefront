@@ -3,7 +3,10 @@ query Checkout($id: ID!) {
     id
     totalPrice {
       gross {
-        amount
+        ...Money
+      }
+      net {
+        ...Money
       }
     }
   }

@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import React, { ReactNode, useState } from "react";
 import { IntlProvider } from "react-intl";
 
-import apolloClient from "@/lib/graphql";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { Channel, CHANNELS, DEFAULT_CHANNEL, DEFAULT_LOCALE, localeToEnum } from "@/lib/regions";
 import createSafeContext from "@/lib/useSafeContext";
@@ -14,6 +13,7 @@ import * as fr from "../../locale/fr-FR.json";
 import * as pl from "../../locale/pl-PL.json";
 import * as vi from "../../locale/vi-VN.json";
 import * as ae from "../../locale/ar-AE.json";
+import { useApolloClient } from "@apollo/client";
 
 export interface RegionsConsumerProps {
   channels: Channel[];
@@ -55,6 +55,7 @@ export interface RegionsProviderProps {
 
 export function RegionsProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const apolloClient = useApolloClient();
   const { resetCheckoutToken } = useCheckout();
 
   const [currentChannelSlug, setCurrentChannelSlug] = useState(router.query.channel);

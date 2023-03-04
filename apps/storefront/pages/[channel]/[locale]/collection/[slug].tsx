@@ -6,7 +6,6 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList";
 import { CollectionPageSeo } from "@/components/seo/CollectionPageSeo";
-import apolloClient from "@/lib/graphql";
 import { mapEdgesToItems } from "@/lib/maps";
 import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
@@ -19,6 +18,7 @@ import {
   FilteringAttributesQueryDocument,
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
+import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
@@ -31,7 +31,7 @@ export const getStaticProps = async (
   }
 
   const collectionSlug = context.params.slug.toString();
-  const response: ApolloQueryResult<CollectionBySlugQuery> = await apolloClient.query<
+  const response: ApolloQueryResult<CollectionBySlugQuery> = await serverApolloClient.query<
     CollectionBySlugQuery,
     CollectionBySlugQueryVariables
   >({
@@ -42,18 +42,16 @@ export const getStaticProps = async (
     },
   });
 
-  const attributesResponse: ApolloQueryResult<FilteringAttributesQuery> = await apolloClient.query<
-    FilteringAttributesQuery,
-    FilteringAttributesQueryVariables
-  >({
-    query: FilteringAttributesQueryDocument,
-    variables: {
-      ...contextToRegionQuery(context),
-      filter: {
-        inCollection: response.data.collection?.id,
+  const attributesResponse: ApolloQueryResult<FilteringAttributesQuery> =
+    await serverApolloClient.query<FilteringAttributesQuery, FilteringAttributesQueryVariables>({
+      query: FilteringAttributesQueryDocument,
+      variables: {
+        ...contextToRegionQuery(context),
+        filter: {
+          inCollection: response.data.collection?.id,
+        },
       },
-    },
-  });
+    });
 
   let attributes: AttributeFilterFragment[] = mapEdgesToItems(attributesResponse.data.attributes);
   attributes = attributes.filter((attribute) => attribute.choices?.edges.length);

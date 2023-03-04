@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HTMLAttributes } from "react";
 import { useIntl } from "react-intl";
 
-import { useLogout } from "@/lib/auth";
+import { useLogout } from "@/lib/hooks/useLogout";
 import { usePaths } from "@/lib/paths";
 
 import { messages } from "../translations";

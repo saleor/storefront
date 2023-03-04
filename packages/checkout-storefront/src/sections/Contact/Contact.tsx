@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
-import { SignInForm } from "./SignInForm";
-import { SignedInUser } from "./SignedInUser";
-import { ResetPassword } from "./ResetPassword";
-import { GuestUserForm } from "./GuestUserForm";
-import { useAuthState } from "@saleor/sdk";
+import { SignedInUser } from "../SignedInUser/SignedInUser";
+import { ResetPassword } from "../ResetPassword/ResetPassword";
 import { useCustomerAttach } from "@/checkout-storefront/hooks/useCustomerAttach";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { SignIn } from "@/checkout-storefront/sections/SignIn/SignIn";
+import { GuestUser } from "@/checkout-storefront/sections/GuestUser/GuestUser";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 
@@ -17,8 +17,9 @@ interface ContactProps {
 }
 
 export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
-  const { authenticated } = useAuthState();
   useCustomerAttach();
+  const { user, authenticated } = useUser();
+  const [email, setEmail] = useState(user?.email || "");
 
   const [passwordResetShown, setPasswordResetShown] = useState(false);
 
@@ -29,7 +30,7 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
       return "resetPassword";
     }
 
-    return authenticated ? "signedInUser" : "guestUser";
+    return user ? "signedInUser" : "guestUser";
   };
 
   const passwordResetToken = getQueryParams().passwordResetToken;
@@ -59,16 +60,30 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
     setShowOnlyContact(shouldShowOnlyContact);
   }, [currentSection, setShowOnlyContact, shouldShowOnlyContact]);
 
+  useEffect(() => {
+    if (authenticated && currentSection !== "signedInUser") {
+      setCurrentSection("signedInUser");
+    } else if (!authenticated && currentSection === "signedInUser") {
+      setCurrentSection("guestUser");
+    }
+  }, [authenticated, currentSection]);
+
   return (
     <div>
       {isCurrentSection("guestUser") && (
-        <GuestUserForm onSectionChange={handleChangeSection("signIn")} />
+        <GuestUser
+          onSectionChange={handleChangeSection("signIn")}
+          onEmailChange={setEmail}
+          email={email}
+        />
       )}
 
       {isCurrentSection("signIn") && (
-        <SignInForm
+        <SignIn
           onSectionChange={handleChangeSection("guestUser")}
           onSignInSuccess={handleChangeSection("signedInUser")}
+          onEmailChange={setEmail}
+          email={email}
         />
       )}
 

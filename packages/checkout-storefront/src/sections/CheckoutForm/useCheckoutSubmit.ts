@@ -6,23 +6,28 @@ import {
   useCheckoutValidationActions,
   useCheckoutValidationState,
 } from "@/checkout-storefront/state/checkoutValidationStateStore";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useCheckoutFinalize } from "@/checkout-storefront/sections/CheckoutForm/useCheckoutFinalize";
+import { useUser } from "@/checkout-storefront/hooks/useUser";
 
 export const useCheckoutSubmit = () => {
+  const { user } = useUser();
   const { validateAllForms } = useCheckoutValidationActions();
   const { validating, validationState } = useCheckoutValidationState();
-  const { updateState, loadingCheckout } = useCheckoutUpdateState();
-  const { setShouldRegisterUser } = useCheckoutUpdateStateActions();
+  console.log({ validationState });
+  const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateState();
+  const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { checkoutFinalize, finalizing } = useCheckoutFinalize();
-
-  const [submitInProgress, setSubmitInProgress] = useState(false);
 
   const submitInitialize = useCallback(() => {
     setSubmitInProgress(true);
     setShouldRegisterUser(true);
-    validateAllForms();
-  }, [setShouldRegisterUser, validateAllForms]);
+
+    // only guest forms should be validated here
+    if (!user) {
+      validateAllForms();
+    }
+  }, [setShouldRegisterUser, setSubmitInProgress, user, validateAllForms]);
 
   const updateStateValues = Object.values(updateState);
 
@@ -41,7 +46,7 @@ export const useCheckoutSubmit = () => {
       return;
     }
 
-    if (!anyRequestsInProgress) {
+    if (!validating && !anyRequestsInProgress) {
       setSubmitInProgress(false);
     }
   }, [
@@ -50,6 +55,8 @@ export const useCheckoutSubmit = () => {
     allFormsValid,
     anyRequestsInProgress,
     checkoutFinalize,
+    setSubmitInProgress,
+    validating,
   ]);
 
   useEffect(() => void handleSubmit(), [handleSubmit]);
@@ -57,7 +64,6 @@ export const useCheckoutSubmit = () => {
   return {
     handleSubmit: submitInitialize,
     isProcessing: (submitInProgress && anyRequestsInProgress) || finalizing,
-
     validateAllForms,
     allFormsValid,
   };

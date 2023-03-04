@@ -2,26 +2,29 @@ import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMe
 import { Alert, AlertType, AlertErrorData, CheckoutScope, CustomError } from "./types";
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
-import { ApiErrors, useGetParsedApiErrors } from "@/checkout-storefront/hooks/useErrors";
 import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import { Text } from "@saleor/ui-kit";
 import { useCallback } from "react";
-import { errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
+import { apiErrorMessages as errorMessages } from "@/checkout-storefront/hooks/useAlerts/messages";
 import { ErrorCode } from "@/checkout-storefront/lib/globalTypes";
+import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
+import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
 
 function useAlerts(scope: CheckoutScope): {
   showErrors: (errors: ApiErrors<any>) => void;
   showCustomErrors: (errors: CustomError[]) => void;
+  showSuccess: (message: string) => void;
 };
 
 function useAlerts(): {
   showErrors: (errors: ApiErrors<any>, scope: CheckoutScope) => void;
   showCustomErrors: (errors: CustomError[], scope?: CheckoutScope) => void;
+  showSuccess: (message: string) => void;
 };
 
 function useAlerts(globalScope?: any): any {
   const formatMessage = useFormattedMessages();
-  const { getParsedApiErrors } = useGetParsedApiErrors<any>();
+  const { getParsedApiErrors } = useGetParsedErrors<any>();
 
   const getMessageKey = ({ scope, field, code }: AlertErrorData, { error } = { error: false }) => {
     const keyBase = `${scope}-${field}-${code}`;
@@ -101,7 +104,14 @@ function useAlerts(globalScope?: any): any {
     [globalScope, showAlert, showDefaultAlert]
   );
 
-  return { showErrors, showCustomErrors };
+  const showSuccess = useCallback(
+    (message: string) => {
+      showAlert({ message, type: "success" });
+    },
+    [showAlert]
+  );
+
+  return { showErrors, showCustomErrors, showSuccess };
 }
 
 export { useAlerts };

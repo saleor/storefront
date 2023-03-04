@@ -3,8 +3,8 @@ import { validationRules } from "@/checkout-storefront/lib/fixtures/address";
 import { renderHook } from "@testing-library/react-hooks";
 import { fromValue } from "wonka";
 import { getMockProviders } from "@/checkout-storefront/__tests__/utils";
-import { useAddressFormUtils } from "@/checkout-storefront/hooks/useAddressFormUtils";
 import { defaultCountry } from "@/checkout-storefront/lib/consts/countries";
+import { useAddressFormUtils } from "@/checkout-storefront/components/AddressForm/useAddressFormUtils";
 
 const mockedSuccessResponse = {
   executeQuery: () =>

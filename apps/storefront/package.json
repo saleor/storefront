@@ -23,7 +23,6 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "2.2.5",
     "@headlessui/react": "1.7.3",
     "@heroicons/react": "1.0.6",
-    "@saleor/sdk": "0.4.4",
     "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "1.14.0",
     "@stripe/stripe-js": "1.42.0",
@@ -47,6 +46,7 @@
     "react-intl": "6.2.1",
     "react-use": "17.4.0",
     "tailwind-scrollbar-hide": "1.1.7",
+    "ts-invariant": "0.10.3",
     "url-join": "4.0.1"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { Ref, ReactNode, InputHTMLAttributes, useId, forwardRef } from "react";
+import { ReactNode, InputHTMLAttributes, useId } from "react";
 import clsx from "clsx";
 
 import styles from "./Checkbox.module.css";
@@ -11,34 +11,30 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   classNames?: ClassNames<"container" | "inputContainer" | "input" | "checkbox" | "label">;
 }
 
-export const Checkbox = forwardRef(
-  ({ label, checked, value, classNames, ...rest }: CheckboxProps, ref: Ref<HTMLInputElement>) => {
-    const generaredId = useId();
-    const id = rest?.id || generaredId;
+export const Checkbox = ({ label, checked, value, classNames, ...rest }: CheckboxProps) => {
+  const generatedId = useId();
+  const id = rest?.id || generatedId;
 
-    return (
-      <Label className={clsx(styles.label, classNames?.label)} htmlFor={id}>
-        <>
-          <div className={clsx(styles.checkbox, classNames?.container)}>
-            <div className={clsx(styles["box"], "select-none")}>
-              <input
-                ref={ref}
-                {...rest}
-                type="checkbox"
-                value={value}
-                checked={!!checked}
-                id={id}
-                className={classNames?.input}
-              />
-              <div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
-                <CheckIcon />
-              </div>
+  return (
+    <Label className={clsx(styles.label, classNames?.label)} htmlFor={id}>
+      <>
+        <div className={clsx(styles.checkbox, classNames?.container)}>
+          <div className={clsx(styles["box"], "select-none")}>
+            <input
+              {...rest}
+              type="checkbox"
+              value={value}
+              checked={!!checked}
+              id={id}
+              className={classNames?.input}
+            />
+            <div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
+              <CheckIcon />
             </div>
-            <span className="pointer-events-none">{label && label}</span>
           </div>
-        </>
-      </Label>
-    );
-  }
-);
-Checkbox.displayName = "Checkbox";
+          <span className="pointer-events-none">{label && label}</span>
+        </div>
+      </>
+    </Label>
+  );
+};

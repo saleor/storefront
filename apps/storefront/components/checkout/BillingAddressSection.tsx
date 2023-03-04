@@ -1,4 +1,3 @@
-import { useAuthState } from "@saleor/sdk";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
@@ -11,6 +10,7 @@ import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
 import { AddressDisplay } from "./AddressDisplay";
 import { AddressForm, AddressFormData } from "./AddressForm";
+import { useUser } from "@/lib/useUser";
 
 export interface BillingAddressSection {
   active: boolean;
@@ -19,7 +19,7 @@ export interface BillingAddressSection {
 
 export function BillingAddressSection({ active, checkout }: BillingAddressSection) {
   const t = useIntl();
-  const { authenticated } = useAuthState();
+  const { authenticated } = useUser();
   const [editing, setEditing] = useState(!checkout.billingAddress);
   const [checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation({});
 

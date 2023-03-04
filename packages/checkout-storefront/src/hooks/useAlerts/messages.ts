@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
 
-export const errorMessages = defineMessages({
+export const apiErrorMessages = defineMessages({
   somethingWentWrong: {
     defaultMessage: "Sorry, something went wrong. Please try again in a moment.",
     id: "useAlerts/messages/7yexjS",
@@ -116,10 +116,15 @@ export const errorMessages = defineMessages({
     id: "useAlerts/messages/oyFho2",
     description: "checkout lines update - insufficient stock error",
   },
-  loginEmailInvalidCredentialsError: {
+  signInEmailInvalidCredentialsError: {
     defaultMessage: "Invalid credentials provided to login",
     id: "useAlerts/messages/nX71XF",
     description: "login - invalid credentials error",
+  },
+  signInEmailInactiveError: {
+    defaultMessage: "The account you're trying to sign in to is inactive",
+    id: "useAlerts/messages/HmxWx+",
+    description: "the account youre trying to sign in to is inactive",
   },
   checkoutShippingUpdatePostalCodeInvalidError: {
     defaultMessage: "Invalid postal code was provided for shipping address",
@@ -135,5 +140,15 @@ export const errorMessages = defineMessages({
     defaultMessage: "Invalid postal code was provided for billing address",
     id: "useAlerts/messages/8fk/m5",
     description: "checkout billing update - postal code invalid error",
+  },
+  checkoutDeliveryMethodUpdatePostalCodeInvalidError: {
+    defaultMessage: "Invalid postal code was provided for shipping address",
+    id: "useAlerts/messages/2leXNc",
+    description: "checkout shipping update - postal code invalid error",
+  },
+  checkoutDeliveryMethodUpdatePromoCodeInvalidError: {
+    defaultMessage: "Please provide a valid discount code.",
+    id: "useAlerts/messages/OUpWUk",
+    description: "please provide a valid discount code",
   },
 });

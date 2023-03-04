@@ -1,70 +1,14 @@
-import { DummyPayRequestBody, DummyPayRequestResult } from "checkout-common";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { Button, TextInput } from "../../components";
-import { dummyPay as dummyPayRequest } from "../../fetch";
 import { useOrderQuery } from "../../graphql";
-import { useFetch, useFormattedMessages, useGetInputProps } from "../../hooks";
-import { useAppConfig } from "../../providers/AppConfigProvider";
-import { toast } from "react-toastify";
-import { Text } from "@saleor/ui-kit";
 import { dummyPaymentMessages } from "./messages";
-import { localeToLanguageCode } from "@/checkout-storefront/lib/utils";
+import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
-
-const getOrderConfirmationUrl = () => {
-  const url = new URL(window.location.href);
-
-  url.searchParams.delete("dummyPayment");
-
-  return url.href;
-};
-
-type UseDummyPayValues = [
-  { data?: DummyPayRequestResult | undefined | null; loading: boolean; error?: unknown },
-  (charged: DummyPayRequestBody["amountCharged"]) => Promise<void>
-];
-
-const showError = (text: string) => toast(<Text>{text}</Text>, { type: "error" });
-
-const useDummyPay = (): UseDummyPayValues => {
-  const formatMessage = useFormattedMessages();
-  const orderId = getQueryParams().orderId ?? "";
-  const [dummyPayResult, pay] = useFetch(dummyPayRequest);
-  const {
-    env: { checkoutApiUrl },
-    saleorApiUrl,
-  } = useAppConfig();
-
-  const dummyPay = async (amountCharged: DummyPayRequestBody["amountCharged"]) => {
-    try {
-      const result = await pay({
-        orderId,
-        checkoutApiUrl,
-        saleorApiUrl,
-        amountCharged,
-      });
-
-      if (result && result.ok) {
-        window.location.href = getOrderConfirmationUrl();
-      }
-
-      if (result && !result.ok) {
-        showError(result.error);
-      }
-    } catch (e: unknown) {
-      const error = typeof e === "string" ? e : formatMessage(dummyPaymentMessages.error);
-      showError(error);
-    }
-  };
-
-  return [{ ...dummyPayResult }, dummyPay];
-};
-
-type DummyPaymentFormValues = {
-  amount: number;
-};
+import { useDummyPaymentForm } from "@/checkout-storefront/views/DummyPayment/useDummyPaymentForm";
+import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { getOrderConfirmationUrl } from "@/checkout-storefront/views/DummyPayment/utils";
+import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
 export const DummyPayment = () => {
   const orderId = getQueryParams().orderId ?? "";
@@ -73,22 +17,17 @@ export const DummyPayment = () => {
   const [orderResult] = useOrderQuery({
     variables: { languageCode: localeToLanguageCode(locale), id: orderId },
   });
-  const [dummyPayResult, dummyPay] = useDummyPay();
 
   const orderPaymentAmount = orderResult.data?.order?.total.gross.amount ?? 0;
   const orderPaymentCurrency = orderResult.data?.order?.total.gross.currency ?? "";
   const paymentBalance = Math.abs(orderResult.data?.order?.totalBalance.amount ?? 0);
   const paymentCaptured = orderResult.data?.order?.totalCaptured;
 
-  const formProps = useForm<DummyPaymentFormValues>({
-    defaultValues: { amount: paymentBalance },
+  const form = useDummyPaymentForm({
+    initialValues: { amount: paymentBalance, currency: orderPaymentCurrency },
   });
-  const { handleSubmit } = formProps;
-  const getInputProps = useGetInputProps(formProps);
 
-  const submitHandler = async ({ amount }: DummyPaymentFormValues) => {
-    await dummyPay({ amount, currency: orderPaymentCurrency });
-  };
+  const { isSubmitting } = form;
 
   React.useEffect(() => {
     if (orderResult.data?.order?.isPaid) {
@@ -117,32 +56,29 @@ export const DummyPayment = () => {
               : {paymentCaptured?.amount} {paymentCaptured?.currency}
             </p>
           </div>
-          <form
-            method="post"
-            className="flex flex-col gap-4"
-            onSubmit={handleSubmit(submitHandler)}
-          >
-            <TextInput
-              {...getInputProps("amount")}
-              name="amount"
-              type="number"
-              label={formatMessage(dummyPaymentMessages.dummyPaymentAmountPlaceholder, {
-                currency: orderPaymentCurrency.toUpperCase(),
-              })}
-              max={paymentBalance}
-            />
-            <Button
-              disabled={orderResult.fetching}
-              type="submit"
-              ariaLabel={formatMessage(dummyPaymentMessages.dummyPay)}
-              label={
-                dummyPayResult.loading
-                  ? formatMessage(dummyPaymentMessages.loadingWithDots)
-                  : formatMessage(dummyPaymentMessages.dummyPay)
-              }
-              data-testid="dummyPay"
-            />
-          </form>
+          <div className="flex flex-col gap-4">
+            <FormProvider form={form}>
+              <TextInput
+                name="amount"
+                type="number"
+                label={formatMessage(dummyPaymentMessages.dummyPaymentAmountPlaceholder, {
+                  currency: orderPaymentCurrency.toUpperCase(),
+                })}
+                max={paymentBalance}
+              />
+              <Button
+                disabled={orderResult.fetching}
+                type="submit"
+                ariaLabel={formatMessage(dummyPaymentMessages.dummyPay)}
+                label={
+                  isSubmitting
+                    ? formatMessage(dummyPaymentMessages.loadingWithDots)
+                    : formatMessage(dummyPaymentMessages.dummyPay)
+                }
+                data-testid="dummyPay"
+              />
+            </FormProvider>
+          </div>
         </div>
       </div>
     </section>
