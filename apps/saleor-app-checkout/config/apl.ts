@@ -3,45 +3,41 @@ import invariant from "ts-invariant";
 import Fs from "fs/promises";
 import { unpackPromise } from "../utils/unpackErrors";
 
-export let apl: APL;
+const getAPL = () => {
+  switch (process.env.APL) {
+    case "upstash":
+      const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
+      const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-switch (process.env.APL) {
-  case "upstash":
-    const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
-    const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+      invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
+      invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
 
-    invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
-    invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
+      return new UpstashAPL({
+        restURL: UPSTASH_REDIS_REST_URL,
+        restToken: UPSTASH_REDIS_REST_TOKEN,
+      });
+    case "file":
+      void printFileAplWarning();
+      return new FileAPL();
+    case "saleor-cloud":
+      const REST_APL_ENDPOINT = process.env.REST_APL_ENDPOINT;
+      const REST_APL_TOKEN = process.env.REST_APL_TOKEN;
 
-    apl = new UpstashAPL({
-      restURL: UPSTASH_REDIS_REST_URL,
-      restToken: UPSTASH_REDIS_REST_TOKEN,
-    });
-    break;
-  case "file":
-    void printFileAplWarning();
-    apl = new FileAPL();
-    break;
-  case "saleor-cloud":
-    const REST_APL_ENDPOINT = process.env.REST_APL_ENDPOINT;
-    const REST_APL_TOKEN = process.env.REST_APL_TOKEN;
-
-    invariant(REST_APL_ENDPOINT, "Missing REST_APL_ENDPOINT!");
-    invariant(REST_APL_TOKEN, "Missing REST_APL_TOKEN!");
-    apl = new SaleorCloudAPL({
-      resourceUrl: REST_APL_ENDPOINT,
-      token: REST_APL_TOKEN,
-    });
-    break;
-  default:
-    invariant(
-      false,
-      `Unsupported APL env variable: ${
-        process.env.APL || "(no value)"
-      }. Use one of the supported values: "upstash", "file", "vercel".`
-    );
-}
-
+      invariant(REST_APL_ENDPOINT, "Missing REST_APL_ENDPOINT!");
+      invariant(REST_APL_TOKEN, "Missing REST_APL_TOKEN!");
+      return new SaleorCloudAPL({
+        resourceUrl: REST_APL_ENDPOINT,
+        token: REST_APL_TOKEN,
+      });
+    default:
+      invariant(
+        false,
+        `Unsupported APL env variable: ${
+          process.env.APL || "(no value)"
+        }. Use one of the supported values: "upstash", "file", "vercel".`
+      );
+  }
+};
 export const get = async (saleorApiUrl: string) => {
   const authData = await apl.get(saleorApiUrl);
 
@@ -52,6 +48,8 @@ export const get = async (saleorApiUrl: string) => {
 
   return authData;
 };
+
+export const apl: APL = getAPL();
 
 export const set = (authData: AuthData) => {
   return apl.set(authData);
