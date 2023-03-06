@@ -44,4 +44,4 @@ const handler: NextProtectedApiHandler = async (request, res, ctx) => {
   }
 };
 
-export default allowCors(createProtectedHandler(handler, saleorApp.apl));
+export default allowCors(createProtectedHandler(handler, saleorApp.apl, ["HANDLE_PAYMENTS"]));
