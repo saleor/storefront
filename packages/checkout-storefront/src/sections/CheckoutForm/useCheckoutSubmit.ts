@@ -14,7 +14,6 @@ export const useCheckoutSubmit = () => {
   const { user } = useUser();
   const { validateAllForms } = useCheckoutValidationActions();
   const { validating, validationState } = useCheckoutValidationState();
-  console.log({ validationState });
   const { updateState, loadingCheckout, submitInProgress } = useCheckoutUpdateState();
   const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
   const { checkoutFinalize, finalizing } = useCheckoutFinalize();
