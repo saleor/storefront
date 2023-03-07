@@ -1,6 +1,7 @@
 import {
   ChangeHandler,
   FormDataBase,
+  FormDataField,
   FormProps,
   UseFormReturn,
 } from "@/checkout-storefront/hooks/useForm/types";
@@ -18,7 +19,11 @@ export const useForm = <TData extends FormDataBase>({
   const [dirty, setDirty] = useState(initialDirty);
   const [values, setValues] = useState(formProps.initialValues);
 
-  const { handleSubmit: handleFormikSubmit, handleChange: formikHandleChange } = form;
+  const {
+    handleSubmit: handleFormikSubmit,
+    handleChange: formikHandleChange,
+    setFieldValue: setFormikFieldValue,
+  } = form;
 
   const handleSubmit = useCallback(
     (event?: React.FormEvent<HTMLFormElement>) => {
@@ -45,7 +50,12 @@ export const useForm = <TData extends FormDataBase>({
     [formikHandleChange, values]
   );
 
-  return { ...form, handleSubmit, handleChange, values, dirty };
+  const setFieldValue = async (field: FormDataField<TData>, value: TData[FormDataField<TData>]) => {
+    await setFormikFieldValue(field, value);
+    setValues({ ...values, [field]: value });
+  };
+
+  return { ...form, handleSubmit, handleChange, values, dirty, setFieldValue };
 };
 
 export const useFormContext = useFormikContext;

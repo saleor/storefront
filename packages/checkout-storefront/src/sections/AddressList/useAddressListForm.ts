@@ -105,10 +105,13 @@ export const useAddressListForm = ({
       return;
     }
 
+    const matchingDefaultAddressInAddresses = addressList.find(
+      getByMatchingAddress(defaultAddress)
+    );
     // if not, prefer user default address
-    if (defaultAddress) {
+    if (defaultAddress && matchingDefaultAddressInAddresses) {
       previousCheckoutAddress.current = defaultAddress;
-      void setFieldValue("selectedAddressId", defaultAddress.id);
+      void setFieldValue("selectedAddressId", matchingDefaultAddressInAddresses.id);
       return;
     }
 
