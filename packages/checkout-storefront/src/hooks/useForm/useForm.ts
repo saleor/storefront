@@ -51,6 +51,10 @@ export const useForm = <TData extends FormDataBase>({
   );
 
   const setFieldValue = async (field: FormDataField<TData>, value: TData[FormDataField<TData>]) => {
+    if (values[field] === value) {
+      return;
+    }
+
     await setFormikFieldValue(field, value);
     setValues({ ...values, [field]: value });
   };
