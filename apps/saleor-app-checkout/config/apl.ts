@@ -2,6 +2,7 @@ import { FileAPL, UpstashAPL, SaleorCloudAPL, AuthData, APL } from "@saleor/app-
 import invariant from "ts-invariant";
 import Fs from "fs/promises";
 import { unpackPromise } from "../utils/unpackErrors";
+import { CheckoutVercelAPL } from "./checkoutVercelApl";
 
 const getAPL = () => {
   switch (process.env.APL) {
@@ -29,6 +30,8 @@ const getAPL = () => {
         resourceUrl: REST_APL_ENDPOINT,
         token: REST_APL_TOKEN,
       });
+    case "vercel":
+      return new CheckoutVercelAPL();
     default:
       invariant(
         false,
@@ -38,6 +41,7 @@ const getAPL = () => {
       );
   }
 };
+
 export const get = async (saleorApiUrl: string) => {
   const authData = await apl.get(saleorApiUrl);
 
@@ -69,7 +73,7 @@ async function printFileAplWarning() {
       `
 ${h('WARNING!')} Looks like you're trying to use the "file" APL while deploying to Vercel.
 This is not recommended, as the file APL is not persistent and will be lost on every deployment.
-Please, set ${c('APL=vercel')}, ${c('NEXT_PUBLIC_SALEOR_API_URL')}, and ${c('SALEOR_APP_TOKEN')} env variables in Vercel configuration.
+Please, set ${c('APL=vercel')}, ${c('NEXT_PUBLIC_SALEOR_API_URL')}, ${c('SALEOR_APP_ID')}, ${c('SALEOR_APP_JWKS')} and ${c('SALEOR_APP_TOKEN')} env variables in Vercel configuration.
 `.trim()
     );
     return;
