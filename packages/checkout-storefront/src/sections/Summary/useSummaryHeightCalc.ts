@@ -39,7 +39,8 @@ export const useSummaryHeightCalc = ({ linesCount, onBreakpointChange }: UseSumm
     };
 
     window.addEventListener("resize", handleWindowResize, { passive: true });
-    return handleWindowResize;
+
+    return () => window.removeEventListener("resize", handleWindowResize);
   }, [linesCount, onBreakpointChange]);
 
   const allItemsHeight = useMemo(() => linesCount * ITEM_HEIGHT, [linesCount]);
