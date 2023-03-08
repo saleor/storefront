@@ -23,7 +23,6 @@ import { mapPrivateSettingsToMetadata } from "./mapPrivateSettingsToMetadata";
 import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings";
 import { mapPublicMetafieldsToSettings } from "@/saleor-app-checkout/frontend/misc/mapPublicMetafieldsToSettings";
 import { allPrivateSettingID, allPublicSettingID } from "@/saleor-app-checkout/types/common";
-import { getAppId } from "../environment";
 import * as Apl from "@/saleor-app-checkout/config/apl";
 
 export const getPrivateSettings = async ({
@@ -137,13 +136,11 @@ export const setPrivateSettings = async (
 
   const metadata = mapPrivateSettingsToMetadata(settings);
 
-  const appId = await getAppId(saleorApiUrl);
-
   const { data, error } = await client
     .mutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(
       UpdatePrivateMetadataDocument,
       {
-        id: appId,
+        id: authData.appId,
         input: metadata,
         keys: [...allPrivateSettingID],
       }
