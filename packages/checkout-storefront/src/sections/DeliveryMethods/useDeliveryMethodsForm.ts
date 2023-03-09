@@ -72,7 +72,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
   });
 
   const {
-    setValues,
+    setFieldValue,
     values: { selectedMethodId },
     handleSubmit,
     handleChange,
@@ -93,12 +93,19 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
       return;
     }
 
-    void setValues({ selectedMethodId: getAutoSetMethod()?.id });
+    void setFieldValue("selectedMethodId", getAutoSetMethod()?.id);
 
     if (hasShippingCountryChanged) {
       previousShippingCountry.current = shippingAddress?.country?.code as CountryCode;
     }
-  }, [shippingAddress, shippingMethods, getAutoSetMethod, selectedMethodId, setValues]);
+  }, [
+    shippingAddress,
+    shippingMethods,
+    getAutoSetMethod,
+    selectedMethodId,
+    setFieldValue,
+    form.values.selectedMethodId,
+  ]);
 
   const onChange: ChangeHandler = (event) => {
     setCheckoutUpdateState("loading");

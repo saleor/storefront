@@ -72,6 +72,7 @@ export const useBillingSameAsShippingForm = (
   const form = useForm<BillingSameAsShippingFormData>({
     onSubmit,
     initialValues,
+    initialDirty: true,
   });
 
   const {
@@ -131,7 +132,10 @@ export const useBillingSameAsShippingForm = (
 
   // once billing address in api and form don't match, submit
   useEffect(() => {
-    if (!isMatchingAddress(billingAddress, form.values.billingAddress)) {
+    if (
+      form.values.billingAddress &&
+      !isMatchingAddress(billingAddress, form.values.billingAddress)
+    ) {
       handleSubmit();
     }
   }, [billingAddress, form.values.billingAddress, handleSubmit]);

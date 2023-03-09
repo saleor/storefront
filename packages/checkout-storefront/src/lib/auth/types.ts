@@ -20,6 +20,7 @@ export interface TokenRefreshVariables {
 }
 
 export interface TokenRefreshResponse {
+  errors?: any[];
   data: {
     tokenRefresh: {
       token: string | undefined;

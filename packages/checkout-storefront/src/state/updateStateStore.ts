@@ -8,7 +8,7 @@ export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
 
 export type CheckoutUpdateStateScope = Exclude<CheckoutScope, "checkoutPay" | "checkoutFinalize">;
 
-interface CheckoutUpdateStateStore {
+export interface CheckoutUpdateStateStore {
   shouldRegisterUser: boolean;
   submitInProgress: boolean;
   loadingCheckout: boolean;
