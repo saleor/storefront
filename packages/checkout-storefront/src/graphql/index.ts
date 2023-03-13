@@ -747,6 +747,7 @@ export type AppErrorCode =
   | "FORBIDDEN"
   | "GRAPHQL_ERROR"
   | "INVALID"
+  | "INVALID_CUSTOM_HEADERS"
   | "INVALID_MANIFEST_FORMAT"
   | "INVALID_PERMISSION"
   | "INVALID_STATUS"
@@ -2081,9 +2082,75 @@ export type AttributeWhereInput = {
 export type BulkAttributeValueInput = {
   /** The boolean value of an attribute to resolve. If the passed value is non-existent, it will be created. */
   boolean?: InputMaybe<Scalars["Boolean"]>;
+  /**
+   * File content type.
+   *
+   * Added in Saleor 3.12.
+   */
+  contentType?: InputMaybe<Scalars["String"]>;
+  /**
+   * Represents the date value of the attribute value.
+   *
+   * Added in Saleor 3.12.
+   */
+  date?: InputMaybe<Scalars["Date"]>;
+  /**
+   * Represents the date/time value of the attribute value.
+   *
+   * Added in Saleor 3.12.
+   */
+  dateTime?: InputMaybe<Scalars["DateTime"]>;
+  /**
+   * Attribute value ID.
+   *
+   * Added in Saleor 3.12.
+   */
+  dropdown?: InputMaybe<AttributeValueSelectableTypeInput>;
+  /**
+   * URL of the file attribute. Every time, a new value is created.
+   *
+   * Added in Saleor 3.12.
+   */
+  file?: InputMaybe<Scalars["String"]>;
   /** ID of the selected attribute. */
   id?: InputMaybe<Scalars["ID"]>;
-  /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. */
+  /**
+   * List of attribute value IDs.
+   *
+   * Added in Saleor 3.12.
+   */
+  multiselect?: InputMaybe<Array<AttributeValueSelectableTypeInput>>;
+  /**
+   * Numeric value of an attribute.
+   *
+   * Added in Saleor 3.12.
+   */
+  numeric?: InputMaybe<Scalars["String"]>;
+  /**
+   * Plain text content.
+   *
+   * Added in Saleor 3.12.
+   */
+  plainText?: InputMaybe<Scalars["String"]>;
+  /**
+   * List of entity IDs that will be used as references.
+   *
+   * Added in Saleor 3.12.
+   */
+  references?: InputMaybe<Array<Scalars["ID"]>>;
+  /**
+   * Text content in JSON format.
+   *
+   * Added in Saleor 3.12.
+   */
+  richText?: InputMaybe<Scalars["JSONString"]>;
+  /**
+   * Attribute value ID.
+   *
+   * Added in Saleor 3.12.
+   */
+  swatch?: InputMaybe<AttributeValueSelectableTypeInput>;
+  /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created.This field will be removed in Saleor 4.0. */
   values?: InputMaybe<Array<Scalars["String"]>>;
 };
 
@@ -10363,6 +10430,16 @@ export type Mutation = {
    */
   staffUpdate?: Maybe<StaffUpdate>;
   /**
+   * Updates stocks for a given variant and warehouse.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  stockBulkUpdate?: Maybe<StockBulkUpdate>;
+  /**
    * Create a tax class.
    *
    * Added in Saleor 3.9.
@@ -11444,7 +11521,7 @@ export type MutationPageUpdateArgs = {
 
 export type MutationPasswordChangeArgs = {
   newPassword: Scalars["String"];
-  oldPassword: Scalars["String"];
+  oldPassword?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationPaymentCaptureArgs = {
@@ -11826,6 +11903,11 @@ export type MutationStaffNotificationRecipientUpdateArgs = {
 export type MutationStaffUpdateArgs = {
   id: Scalars["ID"];
   input: StaffUpdateInput;
+};
+
+export type MutationStockBulkUpdateArgs = {
+  errorPolicy?: InputMaybe<ErrorPolicyEnum>;
+  stocks: Array<StockBulkUpdateInput>;
 };
 
 export type MutationTaxClassCreateArgs = {
@@ -14060,13 +14142,13 @@ export type PageType = Node &
     /**
      * Attributes that can be assigned to the page type.
      *
-     * Requires one of the following permissions: MANAGE_PAGES.
+     * Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
      */
     availableAttributes?: Maybe<AttributeCountableConnection>;
     /**
      * Whether page type has pages assigned.
      *
-     * Requires one of the following permissions: MANAGE_PAGES.
+     * Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
      */
     hasPages?: Maybe<Scalars["Boolean"]>;
     id: Scalars["ID"];
@@ -20945,6 +21027,58 @@ export type Stock = Node & {
 
 export type StockAvailability = "IN_STOCK" | "OUT_OF_STOCK";
 
+export type StockBulkResult = {
+  __typename?: "StockBulkResult";
+  /** List of errors occurred on create or update attempt. */
+  errors?: Maybe<Array<StockBulkUpdateError>>;
+  /** Stock data. */
+  stock?: Maybe<Stock>;
+};
+
+/**
+ * Updates stocks for a given variant and warehouse.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type StockBulkUpdate = {
+  __typename?: "StockBulkUpdate";
+  /** Returns how many objects were updated. */
+  count: Scalars["Int"];
+  errors: Array<StockBulkUpdateError>;
+  /** List of the updated stocks. */
+  results: Array<StockBulkResult>;
+};
+
+export type StockBulkUpdateError = {
+  __typename?: "StockBulkUpdateError";
+  /** The error code. */
+  code: StockBulkUpdateErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type StockBulkUpdateErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED";
+
+export type StockBulkUpdateInput = {
+  /** Quantity of items available for sell. */
+  quantity: Scalars["Int"];
+  /** Variant external reference. */
+  variantExternalReference?: InputMaybe<Scalars["String"]>;
+  /** Variant ID. */
+  variantId?: InputMaybe<Scalars["ID"]>;
+  /** Warehouse external reference. */
+  warehouseExternalReference?: InputMaybe<Scalars["String"]>;
+  /** Warehouse ID. */
+  warehouseId?: InputMaybe<Scalars["ID"]>;
+};
+
 export type StockCountableConnection = {
   __typename?: "StockCountableConnection";
   edges: Array<StockCountableEdge>;
@@ -21772,7 +21906,7 @@ export type ThumbnailCreated = Event & {
 };
 
 /** An enumeration. */
-export type ThumbnailFormatEnum = "WEBP";
+export type ThumbnailFormatEnum = "AVIF" | "ORIGINAL" | "WEBP";
 
 export type TimePeriod = {
   __typename?: "TimePeriod";
@@ -23661,6 +23795,14 @@ export type Webhook = Node & {
   app: App;
   /** List of asynchronous webhook events. */
   asyncEvents: Array<WebhookEventAsync>;
+  /**
+   * Custom headers, which will be added to HTTP request.
+   *
+   * Added in Saleor 3.12.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  customHeaders?: Maybe<Scalars["JSONString"]>;
   /** Event deliveries. */
   eventDeliveries?: Maybe<EventDeliveryCountableConnection>;
   /**
@@ -23713,6 +23855,14 @@ export type WebhookCreateInput = {
   app?: InputMaybe<Scalars["ID"]>;
   /** The asynchronous events that webhook wants to subscribe. */
   asyncEvents?: InputMaybe<Array<WebhookEventTypeAsyncEnum>>;
+  /**
+   * Custom headers, which will be added to HTTP request. There is a limitation of 5 headers per webhook and 998 characters per header.Only "X-*" and "Authorization*" keys are allowed.
+   *
+   * Added in Saleor 3.12.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  customHeaders?: InputMaybe<Scalars["JSONString"]>;
   /**
    * The events that webhook wants to subscribe.
    *
@@ -23809,6 +23959,7 @@ export type WebhookErrorCode =
   | "DELETE_FAILED"
   | "GRAPHQL_ERROR"
   | "INVALID"
+  | "INVALID_CUSTOM_HEADERS"
   | "MISSING_EVENT"
   | "MISSING_SUBSCRIPTION"
   | "NOT_FOUND"
@@ -24719,6 +24870,14 @@ export type WebhookUpdateInput = {
   app?: InputMaybe<Scalars["ID"]>;
   /** The asynchronous events that webhook wants to subscribe. */
   asyncEvents?: InputMaybe<Array<WebhookEventTypeAsyncEnum>>;
+  /**
+   * Custom headers, which will be added to HTTP request. There is a limitation of 5 headers per webhook and 998 characters per header.Only "X-*" and "Authorization*" keys are allowed.
+   *
+   * Added in Saleor 3.12.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  customHeaders?: InputMaybe<Scalars["JSONString"]>;
   /**
    * The events that webhook wants to subscribe.
    *

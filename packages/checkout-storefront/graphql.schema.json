@@ -3748,6 +3748,12 @@
             "deprecationReason": null
           },
           {
+            "name": "INVALID_CUSTOM_HEADERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "INVALID_MANIFEST_FORMAT",
             "description": null,
             "isDeprecated": false,
@@ -10536,6 +10542,66 @@
             "deprecationReason": null
           },
           {
+            "name": "contentType",
+            "description": "File content type.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "date",
+            "description": "Represents the date value of the attribute value.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Date",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateTime",
+            "description": "Represents the date/time value of the attribute value.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dropdown",
+            "description": "Attribute value ID.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "AttributeValueSelectableTypeInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "file",
+            "description": "URL of the file attribute. Every time, a new value is created.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": "ID of the selected attribute.",
             "type": {
@@ -10548,8 +10614,96 @@
             "deprecationReason": null
           },
           {
+            "name": "multiselect",
+            "description": "List of attribute value IDs.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "AttributeValueSelectableTypeInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "numeric",
+            "description": "Numeric value of an attribute.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "plainText",
+            "description": "Plain text content.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "references",
+            "description": "List of entity IDs that will be used as references.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "richText",
+            "description": "Text content in JSON format.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "swatch",
+            "description": "Attribute value ID.\n\nAdded in Saleor 3.12.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "AttributeValueSelectableTypeInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "values",
-            "description": "The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created.",
+            "description": "The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created.This field will be removed in Saleor 4.0.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -11117,7 +11271,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -11129,7 +11283,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -18006,7 +18160,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -18018,7 +18172,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -52204,13 +52358,9 @@
                 "name": "oldPassword",
                 "description": "Current user password.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -55670,6 +55820,55 @@
             "type": {
               "kind": "OBJECT",
               "name": "StaffUpdate",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stockBulkUpdate",
+            "description": "Updates stocks for a given variant and warehouse.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.",
+            "args": [
+              {
+                "name": "errorPolicy",
+                "description": "Policies of error handling. DEFAULT: REJECT_EVERYTHING",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "ErrorPolicyEnum",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "stocks",
+                "description": "Input list of stocks to update.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "StockBulkUpdateInput",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "StockBulkUpdate",
               "ofType": null
             },
             "isDeprecated": false,
@@ -63377,7 +63576,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -63389,7 +63588,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -67806,7 +68005,7 @@
           },
           {
             "name": "availableAttributes",
-            "description": "Attributes that can be assigned to the page type.\n\nRequires one of the following permissions: MANAGE_PAGES.",
+            "description": "Attributes that can be assigned to the page type.\n\nRequires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES.",
             "args": [
               {
                 "name": "after",
@@ -67891,7 +68090,7 @@
           },
           {
             "name": "hasPages",
-            "description": "Whether page type has pages assigned.\n\nRequires one of the following permissions: MANAGE_PAGES.",
+            "description": "Whether page type has pages assigned.\n\nRequires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -74086,7 +74285,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -74098,7 +74297,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -76641,7 +76840,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -76653,7 +76852,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -77176,7 +77375,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -77188,7 +77387,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -99440,6 +99639,285 @@
       },
       {
         "kind": "OBJECT",
+        "name": "StockBulkResult",
+        "description": null,
+        "fields": [
+          {
+            "name": "errors",
+            "description": "List of errors occurred on create or update attempt.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StockBulkUpdateError",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stock",
+            "description": "Stock data.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Stock",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "StockBulkUpdate",
+        "description": "Updates stocks for a given variant and warehouse.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.",
+        "fields": [
+          {
+            "name": "count",
+            "description": "Returns how many objects were updated.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "errors",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "StockBulkUpdateError",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "results",
+            "description": "List of the updated stocks.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "StockBulkResult",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "StockBulkUpdateError",
+        "description": null,
+        "fields": [
+          {
+            "name": "code",
+            "description": "The error code.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "StockBulkUpdateErrorCode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "field",
+            "description": "Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "The error message.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "StockBulkUpdateErrorCode",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "GRAPHQL_ERROR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INVALID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NOT_FOUND",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "StockBulkUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "quantity",
+            "description": "Quantity of items available for sell.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variantExternalReference",
+            "description": "Variant external reference.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variantId",
+            "description": "Variant ID.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "warehouseExternalReference",
+            "description": "Warehouse external reference.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "warehouseId",
+            "description": "Warehouse ID.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "StockCountableConnection",
         "description": null,
         "fields": [
@@ -103040,6 +103518,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AVIF",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ORIGINAL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "WEBP",
             "description": null,
             "isDeprecated": false,
@@ -105861,7 +106351,7 @@
             "args": [
               {
                 "name": "format",
-                "description": "The format of the image. When not provided, format of the original image will be used. Must be provided together with the size value, otherwise original image will be returned.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+                "description": "The format of the image. When not provided, format of the original image will be used.\n\nAdded in Saleor 3.6.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
                 "type": {
                   "kind": "ENUM",
                   "name": "ThumbnailFormatEnum",
@@ -105873,7 +106363,7 @@
               },
               {
                 "name": "size",
-                "description": "Size of the image. If not provided, the original image will be returned.",
+                "description": "Desired longest side the image in pixels. Defaults to 4096. Images are never cropped. Pass 0 to retrieve the original size (not recommended).",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
@@ -112209,6 +112699,18 @@
             "deprecationReason": null
           },
           {
+            "name": "customHeaders",
+            "description": "Custom headers, which will be added to HTTP request.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "eventDeliveries",
             "description": "Event deliveries.",
             "args": [
@@ -112545,6 +113047,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "customHeaders",
+            "description": "Custom headers, which will be added to HTTP request. There is a limitation of 5 headers per webhook and 998 characters per header.Only \"X-*\" and \"Authorization*\" keys are allowed.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -112962,6 +113476,12 @@
           },
           {
             "name": "INVALID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INVALID_CUSTOM_HEADERS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -115611,6 +116131,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "customHeaders",
+            "description": "Custom headers, which will be added to HTTP request. There is a limitation of 5 headers per webhook and 998 characters per header.Only \"X-*\" and \"Authorization*\" keys are allowed.\n\nAdded in Saleor 3.12.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSONString",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
