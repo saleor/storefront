@@ -1,5 +1,5 @@
 import { debounce } from "lodash-es";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // once we add custom heights etc. we'll need to calculate
 // this from rendered elements
@@ -15,14 +15,18 @@ interface UseSummaryHeightCalc {
 
 export const useSummaryHeightCalc = ({ linesCount, onBreakpointChange }: UseSummaryHeightCalc) => {
   const [maxSummaryHeight, setMaxSummaryHeight] = useState<number>(0);
+  const previousWidth = useRef(window.innerWidth);
 
   useEffect(() => {
     const handleWindowResize = () => {
       const isLg = window.innerWidth > LG_BREAKPOINT;
 
-      debounce(() => {
-        onBreakpointChange(isLg ? "lg" : "md");
-      }, 500)();
+      if (previousWidth.current !== window.innerWidth) {
+        debounce(() => {
+          previousWidth.current = window.innerWidth;
+          onBreakpointChange(isLg ? "lg" : "md");
+        }, 500)();
+      }
 
       const maxHeight = isLg
         ? // function based on on the best result visually
@@ -35,7 +39,6 @@ export const useSummaryHeightCalc = ({ linesCount, onBreakpointChange }: UseSumm
     };
 
     window.addEventListener("resize", handleWindowResize, { passive: true });
-    handleWindowResize();
 
     return () => window.removeEventListener("resize", handleWindowResize);
   }, [linesCount, onBreakpointChange]);
