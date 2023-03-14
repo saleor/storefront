@@ -51,6 +51,8 @@ cd ../.. && pnpm run build:saleor-app-checkout
   - `SETTINGS_ENCRYPTION_SECRET` — Random string used for encrypting apps configuration (you can generate it using `openssl rand -hex 256`)
   - `NEXT_PUBLIC_SALEOR_API_URL` - URL to your Saleor GraphQL API
   - `SALEOR_APP_TOKEN` - Saleor App token, see below for instructions on how to generate it
+  - `SALEOR_APP_ID` - Saleor App ID
+  - `SALEOR_APP_JWKS` - JWKS as a JSON string – obtain it by opening `https://{you_saleor_domain}/.well-known/jwks.json` in your browser
   - `APL=vercel` - this is required for the single-tenant deployment to Vercel
 
 Here's the final result on configuration page:

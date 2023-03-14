@@ -5,6 +5,8 @@ import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
 import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
 
 const handler: NextApiHandler = async (req, res) => {
+  console.debug("Customization settings endpoint called");
+
   const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
   if (saleorApiUrlError) {
@@ -13,8 +15,6 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const settings = await getPublicSettings({ saleorApiUrl });
-
-  console.log(settings); // for deployment debug pusposes
 
   res.status(200).json(settings.customizations);
 };

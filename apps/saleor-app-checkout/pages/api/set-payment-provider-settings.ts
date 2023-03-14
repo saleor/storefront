@@ -3,27 +3,18 @@ import {
   getPrivateSettings,
   setPrivateSettings,
 } from "@/saleor-app-checkout/backend/configuration/settings";
-import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
+import { allowCors } from "@/saleor-app-checkout/backend/utils";
 import { merge } from "lodash-es";
-import { NextApiHandler } from "next";
-import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
-import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
+import { createProtectedHandler, NextProtectedApiHandler } from "@saleor/app-sdk/handlers/next";
+import { saleorApp } from "@/saleor-app-checkout/config/saleorApp";
 
-const handler: NextApiHandler = async (req, res) => {
-  // const tokenData = getTokenDataFromRequest(req);
-  // const tokenDomain = tokenData?.["iss"];
-  // if (!tokenDomain) {
-  //   return res.status(500).json({ error: "Token iss is not correct" });
-  // }
+const handler: NextProtectedApiHandler = async (request, res, ctx) => {
+  console.debug("Payment provider settings");
+  const {
+    authData: { saleorApiUrl },
+  } = ctx;
 
-  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
-
-  if (saleorApiUrlError) {
-    res.status(400).json({ message: saleorApiUrlError.message });
-    return;
-  }
-
-  const data = req.body as string;
+  const data = request.body as string;
 
   if (!data) {
     return res.status(400).json({
@@ -52,4 +43,5 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(500).json({ error });
   }
 };
-export default allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"]));
+
+export default allowCors(createProtectedHandler(handler, saleorApp.apl, ["HANDLE_PAYMENTS"]));

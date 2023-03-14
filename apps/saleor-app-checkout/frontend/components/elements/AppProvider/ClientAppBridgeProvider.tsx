@@ -26,9 +26,7 @@ export const ClientAppBridgeProvider = ({ children }: { children: ReactNode }) =
   const isAuthorized = useSubscribeToIsAuthorized(app);
   // useSynchronizedAppBridgePaths(app);
 
-  // @todo use `saleorApiUrl`
-  const { domain, token } = app.getState();
-  const saleorApiUrl = `https://${domain}/graphql/`;
+  const { token, saleorApiUrl } = app.getState();
   const client = useMemo(() => {
     return createGraphqlClient(saleorApiUrl, token);
   }, [saleorApiUrl, token]);

@@ -24,7 +24,7 @@ const handler: NextApiHandler = async (req, res) => {
     channelId: channelId.toString(),
   });
 
-  console.log(channelProvidersSettings); // for deployment debug pusposes
+  console.log(channelProvidersSettings);
 
   res.status(200).json(channelProvidersSettings);
 };

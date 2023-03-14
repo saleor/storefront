@@ -1,32 +1,35 @@
-import { FileAPL, UpstashAPL } from "@saleor/app-sdk/APL";
+import { FileAPL, UpstashAPL, SaleorCloudAPL, AuthData, APL } from "@saleor/app-sdk/APL";
 import invariant from "ts-invariant";
 import Fs from "fs/promises";
 import { unpackPromise } from "../utils/unpackErrors";
 import { CheckoutVercelAPL } from "./checkoutVercelApl";
 
-type Result = {
-  saleorApiUrl: string;
-  appToken: string;
-};
-
-const getApl = () => {
+const getAPL = () => {
   switch (process.env.APL) {
     case "upstash":
-      return (() => {
-        const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
-        const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+      const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
+      const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-        invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
-        invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
+      invariant(UPSTASH_REDIS_REST_URL, "Missing UPSTASH_REDIS_REST_URL!");
+      invariant(UPSTASH_REDIS_REST_TOKEN, "Missing UPSTASH_REDIS_REST_TOKEN!");
 
-        return new UpstashAPL({
-          restURL: UPSTASH_REDIS_REST_URL,
-          restToken: UPSTASH_REDIS_REST_TOKEN,
-        });
-      })();
+      return new UpstashAPL({
+        restURL: UPSTASH_REDIS_REST_URL,
+        restToken: UPSTASH_REDIS_REST_TOKEN,
+      });
     case "file":
       void printFileAplWarning();
       return new FileAPL();
+    case "saleor-cloud":
+      const REST_APL_ENDPOINT = process.env.REST_APL_ENDPOINT;
+      const REST_APL_TOKEN = process.env.REST_APL_TOKEN;
+
+      invariant(REST_APL_ENDPOINT, "Missing REST_APL_ENDPOINT!");
+      invariant(REST_APL_TOKEN, "Missing REST_APL_TOKEN!");
+      return new SaleorCloudAPL({
+        resourceUrl: REST_APL_ENDPOINT,
+        token: REST_APL_TOKEN,
+      });
     case "vercel":
       return new CheckoutVercelAPL();
     default:
@@ -39,9 +42,7 @@ const getApl = () => {
   }
 };
 
-const apl = getApl();
-
-export const get = async (saleorApiUrl: string): Promise<Result> => {
+export const get = async (saleorApiUrl: string) => {
   const authData = await apl.get(saleorApiUrl);
 
   invariant(
@@ -49,14 +50,13 @@ export const get = async (saleorApiUrl: string): Promise<Result> => {
     `No auth data found for given host: ${saleorApiUrl}. Is the app installed and configured?`
   );
 
-  return {
-    saleorApiUrl,
-    appToken: authData.token,
-  };
+  return authData;
 };
 
-export const set = ({ saleorApiUrl, authToken }: { saleorApiUrl: string; authToken: string }) => {
-  return apl.set({ domain: saleorApiUrl, token: authToken });
+export const apl: APL = getAPL();
+
+export const set = (authData: AuthData) => {
+  return apl.set(authData);
 };
 
 async function printFileAplWarning() {
@@ -73,7 +73,7 @@ async function printFileAplWarning() {
       `
 ${h('WARNING!')} Looks like you're trying to use the "file" APL while deploying to Vercel.
 This is not recommended, as the file APL is not persistent and will be lost on every deployment.
-Please, set ${c('APL=vercel')}, ${c('NEXT_PUBLIC_SALEOR_API_URL')}, and ${c('SALEOR_APP_TOKEN')} env variables in Vercel configuration.
+Please, set ${c('APL=vercel')}, ${c('NEXT_PUBLIC_SALEOR_API_URL')}, ${c('SALEOR_APP_ID')}, ${c('SALEOR_APP_JWKS')} and ${c('SALEOR_APP_TOKEN')} env variables in Vercel configuration.
 `.trim()
     );
     return;
