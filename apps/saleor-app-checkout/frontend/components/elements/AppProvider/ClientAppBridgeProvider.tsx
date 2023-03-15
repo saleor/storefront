@@ -3,7 +3,6 @@ import createSafeContext from "@/saleor-app-checkout/frontend/misc/createSafeCon
 import { AppBridge } from "@saleor/app-sdk/app-bridge";
 import { Provider as UrqlProvider } from "urql";
 import { ReactNode, useMemo } from "react";
-// import { useSynchronizedAppBridgePaths } from "./useSynchronizedAppBridgePaths";
 import { useSubscribeToIsAuthorized } from "./useSubscribeToIsAuthorized";
 import invariant from "ts-invariant";
 
@@ -24,7 +23,6 @@ export const ClientAppBridgeProvider = ({ children }: { children: ReactNode }) =
   invariant(app, "ClientAppBridgeProvider is not available on the server side");
 
   const isAuthorized = useSubscribeToIsAuthorized(app);
-  // useSynchronizedAppBridgePaths(app);
 
   const { token, saleorApiUrl } = app.getState();
   const client = useMemo(() => {
