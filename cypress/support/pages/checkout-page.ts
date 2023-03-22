@@ -11,8 +11,8 @@ export function payByDummyPayment() {
 
 export function payByAdyenPayment(card) {
   cy.addAliasToGraphRequest("order");
-  cy.get(CHECKOUT_ELEMENTS.paymentProviders).should("be.visible");
   cy.intercept("POST", "/saleor-app-checkout/api/drop-in/adyen/sessions/*").as("adyenSession");
+  cy.get(CHECKOUT_ELEMENTS.paymentProviders).should("be.visible");
   cy.wait("@adyenSession").then(() => {
     adyenIframeHandler(ADYEN_PAYMENT.iFrameCardNumber, ADYEN_PAYMENT.cardNumber, card.cardNumber);
     adyenIframeHandler(ADYEN_PAYMENT.iFrameExpiryDate, ADYEN_PAYMENT.expiryDate, card.expiryDate);

@@ -17,21 +17,16 @@ describe("Buy product as existing user", () => {
   });
 
   beforeEach(() => {
-    cy.clearLocalStorage();
+    cy.clearLocalStorage().loginUserViaRequest().visit("/");
     waitForProgressBarToNotBeVisible();
   });
 
-  it.only("should buy a product as logged in user SRS_1003", () => {
+  it("should buy a product as logged in user SRS_1003", () => {
     cy.addAliasToGraphRequest("user")
       .addAliasToGraphRequest("checkoutShippingAddressUpdate")
       .addAliasToGraphRequest("checkoutBillingAddressUpdate")
       .addAliasToGraphRequest("checkoutDeliveryMethodUpdate");
-    cy.loginUserViaRequest()
-      .visit("/")
-      .get(SHARED_ELEMENTS.productsList)
-      .children()
-      .first()
-      .click();
+    cy.get(SHARED_ELEMENTS.productsList).children().first().click();
     addItemToCart();
     cy.get(NAVIGATION.cartIcon)
       .click()

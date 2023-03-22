@@ -89,8 +89,10 @@ Cypress.Commands.add("sendRequestWithQuery", (query, authorization = "auth", var
   });
 });
 
-Cypress.Commands.add("loginUserViaRequest", (authorization = "auth", user = TEST_USER) => {
-  const mutation = `mutation TokenAuth{
+Cypress.Commands.add(
+  "loginUserViaRequest",
+  (authorization = "saleor_auth_module_refresh_token", user = TEST_USER) => {
+    const mutation = `mutation TokenAuth{
     tokenCreate(email: "${user.email}", password: "${user.password}") {
       token
       csrfToken
@@ -106,8 +108,9 @@ Cypress.Commands.add("loginUserViaRequest", (authorization = "auth", user = TEST
       }
     }
   }`;
-  return cy.sendRequestWithQuery(mutation).then((resp) => {
-    window.localStorage.setItem("_saleorCSRFToken", resp.body.data.tokenCreate.csrfToken);
-    window.sessionStorage.setItem(authorization, resp.body.data.tokenCreate.token);
-  });
-});
+    return cy.sendRequestWithQuery(mutation).then((resp) => {
+      window.localStorage.setItem("_saleorCSRFToken", resp.body.data.tokenCreate.csrfToken);
+      window.localStorage.setItem(authorization, resp.body.data.tokenCreate.refreshToken);
+    });
+  }
+);
