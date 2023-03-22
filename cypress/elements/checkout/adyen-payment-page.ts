@@ -1,8 +1,10 @@
 export const ADYEN_PAYMENT = {
-  cardNumber: "input[name^='adyen-checkout-encryptedCardNumber']",
-  expiryDate: "input[name^='adyen-checkout-encryptedExpiryDate']",
-  cVC: "input[name^='adyen-checkout-encryptedSecurityCode']",
-  nameOnCard: "input^[name='adyen-checkout-holderName']",
-  confirmPreauthorizationButton:
-    "[data-testid='adyen-checkout__button adyen-checkout__button--pay']",
+  cardNumber: "input[id^='adyen-checkout-encryptedCardNumber']",
+  expiryDate: "input[id^='adyen-checkout-encryptedExpiryDate']",
+  cVC: "input[id^='adyen-checkout-encryptedSecurityCode']",
+  nameOnCard: "id^[name='adyen-checkout-holderName']",
+  confirmPreauthorizationButton: ".adyen-checkout__button",
+  iFrameCardNumber: "iframe[title='Iframe for secured card number']",
+  iFrameExpiryDate: "iframe[title='Iframe for secured card expiry date']",
+  iFrameCVC: "iframe[title='Iframe for secured card security code']",
 };

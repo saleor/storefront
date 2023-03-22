@@ -45,7 +45,7 @@ Cypress.Commands.add("addAliasForSearchQuery", (operationName, searchQuery) => {
 Cypress.Commands.add("fillUpBasicAddress", (address) => {
   return cy
     .get(CHECKOUT_ELEMENTS.countrySelect)
-    .select(address.countryFullName)
+    .select(address.country)
     .get(CHECKOUT_ELEMENTS.firstNameInput)
     .type(address.firstName)
     .get(CHECKOUT_ELEMENTS.lastNameInput)

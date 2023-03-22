@@ -4,20 +4,30 @@ import { SHARED_ELEMENTS } from "../elements/shared-elements";
 import { productsToSearch } from "../fixtures/search";
 import { addItemToCart, openProductPage } from "../support/pages/product-page";
 import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
-import { payByDummyPayment } from "../support/pages/checkout-page";
+import { payByAdyenPayment } from "../support/pages/checkout-page";
 import { checkIfOrderNumberAndPaymentStatusAreCorrect } from "../support/pages/order-confirmation-page";
 
 describe("Buy product as existing user", () => {
+  let paymentDetails;
+
+  before(() => {
+    cy.fixture("payment-details").then(({ adyenCard }) => {
+      paymentDetails = adyenCard;
+    });
+  });
+
   beforeEach(() => {
-    cy.clearLocalStorage().loginUserViaRequest().visit("/");
+    cy.clearLocalStorage();
     waitForProgressBarToNotBeVisible();
   });
 
-  it("should buy a product as logged in user SRS_1003", () => {
+  it.only("should buy a product as logged in user SRS_1003", () => {
     cy.addAliasToGraphRequest("user")
       .addAliasToGraphRequest("checkoutShippingAddressUpdate")
       .addAliasToGraphRequest("checkoutBillingAddressUpdate")
-      .addAliasToGraphRequest("checkoutDeliveryMethodUpdate")
+      .addAliasToGraphRequest("checkoutDeliveryMethodUpdate");
+    cy.loginUserViaRequest()
+      .visit("/")
       .get(SHARED_ELEMENTS.productsList)
       .children()
       .first()
@@ -40,7 +50,7 @@ describe("Buy product as existing user", () => {
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 
@@ -60,7 +70,7 @@ describe("Buy product as existing user", () => {
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 });
