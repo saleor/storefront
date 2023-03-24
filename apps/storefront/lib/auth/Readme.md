@@ -68,7 +68,7 @@ const { isAuthenticating, signIn, signOut, checkoutSignOut } = useSaleorAuthCont
 
 #### **`useAuthChange({ onSignedIn, onSignedOut }: UseAuthChangeProps) => void`**
 
-Regardless of whether the sign-in or sign-out is successful, you probably want to react to it. Hence we provided a `useAuthChange` hook that listens to storage changes and triggers callbacks.
+We provided a `useAuthChange` hook that listens to storage changes and triggers callbacks.
 
 ```javascript
   useAuthChange({
@@ -203,7 +203,7 @@ const { apolloClient, resetClient } = useApolloClient(saleorAuthClient.fetchWith
 Because we're using the client to also retrieve unauthenticated data in SSR, we separated them into two - one for SSR, which can be used outside of React flow, and the other returned by our hook.
 
 ```javascript
-export const staticApolloClient = new ApolloClient({
+export const serverApolloClient = new ApolloClient({
   link: createHttpLink({ uri: API_URI }),
   cache: new InMemoryCache({ typePolicies }),
   ssrMode: true,
