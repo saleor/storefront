@@ -1,6 +1,14 @@
 name: Build, TypeScripts, tests
-on: [pull_request]
 
+on:
+  push:
+    branches: [ "main" ]  
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CI: false
+  
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -66,3 +74,54 @@ jobs:
 
           SALEOR_APP_TOKEN: "test"
         run: pnpm run test
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      pages: 'write'
+      actions: 'write'
+      checks: 'write'
+      deployments: 'write'
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Build
+      run: |
+        npm install
+        npm run build
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload build directory content
+        path: 'build/'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
+      env:  
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TEST_MOLLIE_KEY: ${{ secrets.TEST_MOLLIE_KEY }}
+        TEST_MOLLIE_PROFILE_ID: ${{ secrets.TEST_MOLLIE_PROFILE_ID }}
+
+        TEST_STRIPE_SECRET_KEY: ${{ secrets.TEST_STRIPE_SECRET_KEY }}
+        TEST_STRIPE_PUBLISHABLE_KEY: ${{ secrets.TEST_STRIPE_PUBLISHABLE_KEY }}
+        TEST_STRIPE_WEBHOOK_SECRET: ${{ secrets.TEST_STRIPE_WEBHOOK_SECRET }}
+
+        SETTINGS_ENCRYPTION_SECRET: "testng"
+
+        SALEOR_APP_TOKEN: "test"
