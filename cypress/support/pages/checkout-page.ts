@@ -26,6 +26,6 @@ function adyenIframeHandler(iframeSelector, cardElement, cardValue) {
     .should("be.visible")
     .then(($iframe) => {
       const $body = $iframe.contents().find("body");
-      cy.wrap($body).find(cardElement).should("be.enabled").type(cardValue);
+      cy.wrap($body).find(cardElement).wait(500).should("be.enabled").type(cardValue);
     });
 }
