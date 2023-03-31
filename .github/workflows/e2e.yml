@@ -16,9 +16,15 @@ on:
   schedule:
     - cron: "00 2 * * 1-5"
 
+  repository_dispatch:
+    types: [automation-tests-event]
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.cypress.outcome }}
+      dashboard_url: ${{ steps.cypress.outputs.dashboardUrl }}
     steps:
       - uses: actions/checkout@v3
 
@@ -30,12 +36,20 @@ jobs:
           node-version: "16"
           cache: "pnpm"
 
+      - name: Get env for release testing
+        if: ${{ github.event_name == 'repository_dispatch' }}
+        id: get-env-uri-for-release
+        env:
+          DEFAULT_ENV_URI: "https://staging-demo.saleor.io/"
+        run: |
+          echo "RELEASE_ENV_URI=${{ env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
+
       - name: Get env
         id: get-env-uri
         env:
           DEFAULT_ENV_URI: "https://react-storefront-e2e.vercel.app/"
         run: |
-          echo "ENV_URI=${{ github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
+          echo "ENV_URI=${{ steps.get-env-uri-for-release.outputs.RELEASE_ENV_URI || github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
       - name: Get BE url and variables for demo
         id: demo
@@ -62,6 +76,7 @@ jobs:
           echo "CYPRESS_PRODUCT_TO_SEARCH=polo" >> $GITHUB_OUTPUT
 
       - name: Cypress run
+        id: cypress
         uses: cypress-io/github-action@v4
         with:
           record: true
@@ -76,3 +91,37 @@ jobs:
           CYPRESS_WITHOUT_VARIANTS: ${{ steps.demo.outputs.CYPRESS_WITHOUT_VARIANTS || steps.testenv.outputs.CYPRESS_WITHOUT_VARIANTS }}
           CYPRESS_WITH_VARIANTS: ${{ steps.demo.outputs.CYPRESS_WITHOUT_VARIANTS || steps.testenv.outputs.CYPRESS_WITHOUT_VARIANTS }}
           CYPRESS_PRODUCT_TO_SEARCH: ${{ steps.demo.outputs.CYPRESS_PRODUCT_TO_SEARCH || steps.testenv.outputs.CYPRESS_PRODUCT_TO_SEARCH}}
+
+  add-comment-to-release-pull-request:
+    if: ${{ always() &&  github.event_name == 'repository_dispatch' }}
+    runs-on: ubuntu-latest
+    needs: [cypress-run]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.11.0 # version used by Vercel
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: |
+          cd .github/workflows
+          npm ci
+
+      - name: add comment do release PR
+        env:
+          tests_status: ${{ needs.cypress-run.outputs.status }}
+          version: ${{ github.event.client_payload.version }}
+          pull_request_number: ${{ github.event.client_payload.pullRequestNumber }}
+          dashboard_url: ${{ needs.cypress-run.outputs.dashboard_url }}
+        run: |
+          export GITHUB_TOKEN=$( \
+          curl --request GET --url ${{ secrets.VAULT_URL}} --header "Authorization: JWT ${{ secrets.VAULT_JWT }}" | jq -r .token \
+          )
+          node .github/workflows/addCommentToReleasePR.js \
+          --version $version \
+          --pull_request_number $pull_request_number \
+          --dashboard_url $dashboard_url
