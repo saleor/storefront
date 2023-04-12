@@ -56,7 +56,6 @@ program
   .parse();
 
 async function getCommentForPRIfTestsFailed(octokit, data, options) {
-  let requestBody;
   const failedNewTests = [];
   const listOfTestIssues = await getListOfTestsIssues(octokit);
   const testCases = await getFailedTestCases(data.runId);
@@ -82,15 +81,13 @@ async function getCommentForPRIfTestsFailed(octokit, data, options) {
   });
 
   if (failedNewTests.length === 0) {
-    requestBody = `All failed tests are known bugs, can be merged. See results at ${options.dashboard_url}`;
-    testsStatus = "PASSED";
+    return `All failed tests are known bugs, can be merged. See results at ${options.dashboard_url}`;
   } else if (failedNewTests.length > 10) {
     //If there are more than 10 new bugs it's probably caused by something else. Server responses with 500, or test user was deleted, etc.
 
-    requestBody =
-      "There is more than 10 new bugs, check results manually and create issues for them if necessary";
+    return "There is more than 10 new bugs, check results manually and create issues for them if necessary";
   } else {
-    requestBody = `New bugs found, results at: ${options.dashboard_url}. List of issues to check: `;
+    let requestBody = `New bugs found, results at: ${options.dashboard_url}. List of issues to check: `;
     for (const newBug of failedNewTests) {
       if (!newBug.url) {
         const issueUrl = await createIssue(newBug, options.version, octokit);
@@ -123,28 +120,23 @@ async function getTestsStatusAndId(dashboardUrl) {
   return { status: data.status, runId: data.id };
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function waitForTestsToFinish(requestVariables) {
-  return new Promise((resolve, reject) => {
-    client
-      .request(
-        `query ($projectId: String!, $buildNumber: ID!) {
+  const response = await client.request(
+    `query ($projectId: String!, $buildNumber: ID!) {
       runByBuildNumber(buildNumber: $buildNumber, projectId: $projectId) {
         status,
         id
       }
     }`,
-        requestVariables
-      )
-      .then((response) => {
-        if (response.runByBuildNumber.status === "RUNNING") {
-          setTimeout(async function () {
-            resolve(await waitForTestsToFinish(requestVariables));
-          }, 10000);
-        } else {
-          resolve(response.runByBuildNumber);
-        }
-      });
-  });
+    requestVariables
+  );
+  if (response.runByBuildNumber.status === "RUNNING") {
+    await wait(10000);
+    return waitForTestsToFinish(requestVariables);
+  }
+  return response.runByBuildNumber;
 }
 
 async function getFailedTestCases(runId) {
@@ -155,23 +147,18 @@ async function getFailedTestCases(runId) {
     },
   };
 
-  return new Promise((resolve, reject) => {
-    client
-      .request(
-        `query RunTestResults($input: TestResultsTableInput!) {
-          testResults(input: $input) {
-            ... on TestResult {
-            ...RunTestResult
-            }
+  const response = await client.request(
+    `query RunTestResults($input: TestResultsTableInput!) {
+        testResults(input: $input) {
+          ... on TestResult {
+          ...RunTestResult
           }
         }
-        fragment RunTestResult on TestResult {  id  titleParts  state}`,
-        requestVariables
-      )
-      .then((response) => {
-        resolve(response.testResults);
-      });
-  });
+      }
+      fragment RunTestResult on TestResult {  id  titleParts  state}`,
+    requestVariables
+  );
+  return response.testResults;
 }
 
 async function getListOfTestsIssues(octokit) {
