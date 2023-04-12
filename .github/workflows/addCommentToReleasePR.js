@@ -9,8 +9,8 @@ const repo = "saleor-cloud-deployments";
 const owner = "saleor";
 
 program
-  .name("Add comment to release PR and create issues if TC failed")
-  .description("Add comment to release PR and create issues if TC failed")
+  .name("Add comment to release PR and create issues if test case failed")
+  .description("Add comment to release PR and create issues if test case failed")
   .option("--version <version>", "version of a project")
   .option("--pull_request_number <pull_request_number>", "Pull Request number")
   .option("--dashboard_url <dashboard_url>", "Cypress dashboard url")
