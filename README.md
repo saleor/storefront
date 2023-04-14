@@ -77,8 +77,12 @@ saleor storefront create
 First install [`pnpm`](https://pnpm.io/) (an alternative to `npm`, focused on performance) globally:
 
 ```
-npm install -g pnpm
+npm install -g pnpm@7.11.0
 ```
+
+> **Note**
+>
+> `react-storefront` requires version 7.11.0 of pnpm to run properly, using newer versions won't work
 
 Then install dependencies:
 
