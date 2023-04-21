@@ -37,6 +37,7 @@ export const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = (
   };
 
   const [isProcessingPayment, setIsProcessingPayment] = useState(getInitialProcessing());
+
   const handleSetProcessing = (processing: boolean) => {
     handleSetStyles(processing);
     setIsProcessingPayment(processing);

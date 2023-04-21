@@ -43,6 +43,7 @@ import { apiErrorMessages } from "@/checkout-storefront/hooks/useAlerts/messages
 import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 import { getUrlForTransactionInitialize } from "@/checkout-storefront/sections/PaymentSection/utils";
+import { usePaymentProcessingScreen } from "@/checkout-storefront/sections/PaymentSection/PaymentProcessingScreen";
 
 export interface AdyenDropinProps {
   config: ParsedAdyenGateway;
@@ -64,6 +65,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   const { showCustomErrors } = useAlerts();
   const { submitInProgress } = useCheckoutUpdateState();
   const { setSubmitInProgress } = useCheckoutUpdateStateActions();
+  const { setIsProcessingPayment } = usePaymentProcessingScreen();
 
   const [currentTransactionId, setCurrentTransactionId] = useState<ParamBasicValue>(
     getQueryParams().transaction
@@ -178,6 +180,8 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
       () => ({
         onSubmit: transactionProccess,
         onError: () => {
+          // will tell the processing screen to disappear
+          setIsProcessingPayment(false);
           // we don't do these at onFinished since redirect will happen first
           clearQueryParams("transaction");
           setCurrentTransactionId(null);
@@ -211,6 +215,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
         adyenCheckoutSubmitParams?.component,
         commonErrorMessages.somethingWentWrong,
         handlePaymentResult,
+        setIsProcessingPayment,
         showCustomErrors,
         transactionProccess,
       ]
