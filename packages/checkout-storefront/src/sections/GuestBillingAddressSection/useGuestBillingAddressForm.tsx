@@ -15,6 +15,8 @@ import {
   useAutoSaveAddressForm,
 } from "@/checkout-storefront/hooks/useAutoSaveAddressForm";
 import { useMemo } from "react";
+import { useSetCheckoutFormValidationState } from "@/checkout-storefront/hooks/useSetCheckoutFormValidationState";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 
 interface GuestBillingAddressFormProps {
   skipValidation: boolean;
@@ -26,20 +28,41 @@ export const useGuestBillingAddressForm = ({ skipValidation }: GuestBillingAddre
   } = useCheckout();
   const validationSchema = useAddressFormSchema();
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
+  const { setCheckoutFormValidationState } = useSetCheckoutFormValidationState("billingAddress");
+  const { setChangingBillingCountry } = useCheckoutUpdateStateActions();
 
   const onSubmit = useFormSubmit<AutoSaveAddressFormData, typeof checkoutBillingAddressUpdate>(
     useMemo(
       () => ({
         scope: "checkoutBillingUpdate",
         onSubmit: checkoutBillingAddressUpdate,
+        onStart: ({ formData }) => {
+          if (formData.countryCode !== billingAddress?.country.code) {
+            setChangingBillingCountry(true);
+          }
+        },
         parse: ({ languageCode, checkoutId, ...rest }) => ({
           languageCode,
           checkoutId,
           billingAddress: getAddressInputData(omit(rest, ["channel"])),
           validationRules: getAddressValidationRulesVariables({ autoSave: true }),
         }),
+        onSuccess: ({ data, formHelpers }) => {
+          void setCheckoutFormValidationState({
+            ...formHelpers,
+            values: getAddressFormDataFromAddress(data.checkout?.billingAddress),
+          });
+        },
+        onFinished: () => {
+          setChangingBillingCountry(false);
+        },
       }),
-      [checkoutBillingAddressUpdate]
+      [
+        billingAddress?.country.code,
+        checkoutBillingAddressUpdate,
+        setChangingBillingCountry,
+        setCheckoutFormValidationState,
+      ]
     )
   );
 

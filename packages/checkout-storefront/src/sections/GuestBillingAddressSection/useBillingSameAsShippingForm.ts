@@ -10,6 +10,7 @@ import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/g
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
 import { useCallback, useEffect, useRef } from "react";
 
 interface BillingSameAsShippingFormData {
@@ -29,6 +30,7 @@ export const useBillingSameAsShippingForm = (
   const { billingAddress, shippingAddress, isShippingRequired } = checkout;
   const previousShippingAddress = useRef<OptionalAddress>(shippingAddress);
   const previousIsShippingRequired = useRef(isShippingRequired);
+  const { setChangingBillingCountry } = useCheckoutUpdateStateActions();
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
@@ -38,19 +40,30 @@ export const useBillingSameAsShippingForm = (
   >({
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
+    shouldAbort: ({ formData: { billingAddress } }) => {
+      return !billingAddress || !Object.keys(billingAddress).length;
+    },
+    onStart: ({ formData }) => {
+      if (formData.billingAddress?.country.code !== billingAddress?.country.code) {
+        setChangingBillingCountry(true);
+      }
+    },
     parse: ({ languageCode, checkoutId, billingAddress }) => ({
       languageCode,
       checkoutId,
       billingAddress: getAddressInputDataFromAddress(billingAddress),
       validationRules: getAddressValidationRulesVariables({ autoSave }),
     }),
-    onSuccess: ({ formData, formHelpers: { resetForm }, result }) => {
+    onSuccess: ({ formData, formHelpers: { resetForm }, data }) => {
       resetForm({
         values: {
           ...formData,
-          billingAddress: result?.data?.checkoutBillingAddressUpdate?.checkout?.billingAddress,
+          billingAddress: data.checkout?.billingAddress,
         },
       });
+    },
+    onFinished: () => {
+      setChangingBillingCountry(false);
     },
   });
 

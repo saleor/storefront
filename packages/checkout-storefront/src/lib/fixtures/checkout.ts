@@ -1,6 +1,8 @@
 import { CheckoutFragment } from "@/checkout-storefront/graphql";
 
 export const checkout: CheckoutFragment = {
+  authorizeStatus: "NONE",
+  chargeStatus: "NONE",
   id: "Q2hlY2tvdXQ6OTJmOGRkMWItNGY5OC00Y2Y0LWI0MzgtNDE2MjIwYmRlYjMw",
   email: null,
   discount: {
@@ -60,6 +62,8 @@ export const checkout: CheckoutFragment = {
   availablePaymentGateways: [
     {
       id: "mirumee.payments.dummy",
+      currencies: ["EUR"],
+      config: [],
       name: "Dummy",
       __typename: "PaymentGateway",
     },
@@ -67,16 +71,22 @@ export const checkout: CheckoutFragment = {
       id: "mirumee.payments.stripe",
       name: "Stripe (Deprecated)",
       __typename: "PaymentGateway",
+      currencies: ["EUR"],
+      config: [],
     },
     {
       id: "saleor.payments.stripe",
       name: "Stripe",
       __typename: "PaymentGateway",
+      currencies: ["EUR"],
+      config: [],
     },
     {
       id: "mirumee.payments.adyen",
       name: "Adyen",
       __typename: "PaymentGateway",
+      currencies: ["EUR"],
+      config: [],
     },
   ],
   deliveryMethod: {
