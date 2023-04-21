@@ -47,10 +47,12 @@ export class SaleorAuthClient {
     this.storageHandler?.cleanup();
   };
 
+  private hasValidAccessToken = () => !!this.accessToken && !isExpiredToken(this.accessToken);
+
   private runAuthorizedRequest: Fetch = (input, init) => {
     // technically we run this only when token is there
     // but just to make typescript happy
-    if (!this.accessToken) {
+    if (!this.hasValidAccessToken()) {
       return fetch(input, init);
     }
 
@@ -58,7 +60,7 @@ export class SaleorAuthClient {
 
     return fetch(input, {
       ...init,
-      headers: { ...headers, Authorization: `Bearer ${this.accessToken}` },
+      headers: { ...headers, Authorization: `Bearer ${this.accessToken as string}` },
     });
   };
 
@@ -68,7 +70,7 @@ export class SaleorAuthClient {
     invariant(refreshToken, "Missing refresh token in token refresh handler");
 
     // the refresh already finished, proceed as normal
-    if (this.accessToken) {
+    if (this.hasValidAccessToken()) {
       return this.fetchWithAuth(input, init);
     }
 
@@ -106,7 +108,37 @@ export class SaleorAuthClient {
       this.saleorApiUrl,
       getRequestData(TOKEN_REFRESH, { refreshToken })
     );
+
     return this.fetchWithAuth(input, init);
+  };
+
+  fetchWithAuth: Fetch = async (input, init) => {
+    const refreshToken = this.storageHandler?.getRefreshToken();
+
+    // access token is fine, add it to the request and proceed
+    if (this.hasValidAccessToken()) {
+      return this.runAuthorizedRequest(input, init);
+    }
+
+    // refresh token exists, try to authenticate if possible
+    if (refreshToken) {
+      return this.handleRequestWithTokenRefresh(input, init);
+    }
+
+    // any regular mutation, no previous sign in, proceed
+    return fetch(input, init);
+  };
+
+  resetPassword = async (variables: PasswordResetVariables) => {
+    const response = await fetch(this.saleorApiUrl, getRequestData(PASSWORD_RESET, variables));
+
+    return this.handleSignIn<PasswordResetResponse>(response);
+  };
+
+  signIn = async (variables: TokenCreateVariables) => {
+    const response = await fetch(this.saleorApiUrl, getRequestData(TOKEN_CREATE, variables));
+
+    return this.handleSignIn<TokenCreateResponse>(response);
   };
 
   private handleSignIn = async <TOperation extends TokenCreateResponse | PasswordResetResponse>(
@@ -140,35 +172,6 @@ export class SaleorAuthClient {
 
     this.storageHandler?.setAuthState("signedIn");
     return readResponse;
-  };
-
-  fetchWithAuth: Fetch = async (input, init) => {
-    const refreshToken = this.storageHandler?.getRefreshToken();
-
-    // access token is fine, add it to the request and proceed
-    if (this.accessToken && !isExpiredToken(this.accessToken)) {
-      return this.runAuthorizedRequest(input, init);
-    }
-
-    // refresh token exists, try to authenticate if possible
-    if (refreshToken) {
-      return this.handleRequestWithTokenRefresh(input, init);
-    }
-
-    // any regular mutation, no previous sign in, proceed
-    return fetch(input, init);
-  };
-
-  resetPassword = async (variables: PasswordResetVariables) => {
-    const response = await fetch(this.saleorApiUrl, getRequestData(PASSWORD_RESET, variables));
-
-    return this.handleSignIn<PasswordResetResponse>(response);
-  };
-
-  signIn = async (variables: TokenCreateVariables) => {
-    const response = await fetch(this.saleorApiUrl, getRequestData(TOKEN_CREATE, variables));
-
-    return this.handleSignIn<TokenCreateResponse>(response);
   };
 
   signOut = () => {
