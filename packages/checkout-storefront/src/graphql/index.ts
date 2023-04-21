@@ -26146,13 +26146,6 @@ export type _Service = {
   sdl?: Maybe<Scalars["String"]>;
 };
 
-export type AccountErrorFragment = {
-  __typename?: "AccountError";
-  message?: string | null;
-  field?: string | null;
-  code: AccountErrorCode;
-};
-
 export type CheckoutErrorFragment = {
   __typename?: "CheckoutError";
   message?: string | null;
@@ -28319,6 +28312,13 @@ export type TransactionProcessMutation = {
   } | null;
 };
 
+export type AccountErrorFragment = {
+  __typename?: "AccountError";
+  message?: string | null;
+  field?: string | null;
+  code: AccountErrorCode;
+};
+
 export type UserFragment = {
   __typename?: "User";
   id: string;
@@ -28710,13 +28710,6 @@ export type UserAddressCreateMutation = {
   } | null;
 };
 
-export const AccountErrorFragmentDoc = gql`
-  fragment AccountErrorFragment on AccountError {
-    message
-    field
-    code
-  }
-`;
 export const CheckoutErrorFragmentDoc = gql`
   fragment CheckoutErrorFragment on CheckoutError {
     message
@@ -29027,6 +29020,13 @@ export const OrderFragmentDoc = gql`
   ${AddressFragmentDoc}
   ${ShippingFragmentDoc}
   ${OrderLineFragmentDoc}
+`;
+export const AccountErrorFragmentDoc = gql`
+  fragment AccountErrorFragment on AccountError {
+    message
+    field
+    code
+  }
 `;
 export const UserFragmentDoc = gql`
   fragment UserFragment on User {
