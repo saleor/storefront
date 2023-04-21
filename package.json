@@ -45,5 +45,11 @@
     "node": ">=16.0.0",
     "pnpm": ">=7.7.1"
   },
-  "packageManager": "pnpm@7.11.0"
+  "packageManager": "pnpm@7.11.0",
+  "pnpm": {
+    "overrides": {
+      "@urql/exchange-auth>@urql/core": "3.2.2",
+      "@urql/exchange-multipart-fetch>@urql/core": "3.2.2"
+    }
+  }
 }
