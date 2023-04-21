@@ -11,7 +11,7 @@ import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { ChangeHandler, hasErrors, useForm } from "@/checkout-storefront/hooks/useForm";
 import { getCurrentHref } from "@/checkout-storefront/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout-storefront/sections/GuestUser/useCheckoutEmailUpdate";
-import { object, string } from "yup";
+import { bool, object, Schema, string } from "yup";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { passwordMessages } from "@/checkout-storefront/sections/SignIn/messages";
@@ -42,9 +42,14 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutEmailUpdate");
 
   const validationSchema = object({
+    createAccount: bool(),
     email: string().email(errorMessages.invalid).required(errorMessages.required),
-    password: string().min(8, formatMessage(passwordMessages.passwordAtLeastCharacters)),
-  });
+    password: string().when(["createAccount"], ([createAccount], field) =>
+      createAccount
+        ? field.min(8, formatMessage(passwordMessages.passwordAtLeastCharacters)).required()
+        : field
+    ),
+  }) as Schema<GuestUserFormData>;
 
   const defaultFormData: GuestUserFormData = {
     email: initialEmail || checkout.email || "",
@@ -58,8 +63,8 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
         scope: "userRegister",
         onSubmit: userRegister,
         onStart: () => setShouldRegisterUser(false),
-        shouldAbort: async ({ formData, formHelpers: { validateForm } }) => {
-          const errors = await validateForm(formData);
+        shouldAbort: ({ formData, formHelpers: { validateForm } }) => {
+          const errors = validateForm(formData);
           return hasErrors(errors);
         },
         parse: ({ email, password, channel }) => ({
