@@ -6,7 +6,7 @@
   }
 
   .select-box {
-    @apply flex flex-row items-center justify-start border rounded border-border-secondary mb-2 py-2 px-3 cursor-pointer;
+    @apply flex flex-row items-center justify-start border rounded border-border-secondary mb-2 py-2 px-3 cursor-pointer relative;
   }
 
   .select-box label {
@@ -15,6 +15,10 @@
 
   .select-box:hover {
     @apply border border-border-active;
+  }
+
+  div.select-box.disabled {
+    @apply pointer-events-none;
   }
 
   div.select-box.selected {

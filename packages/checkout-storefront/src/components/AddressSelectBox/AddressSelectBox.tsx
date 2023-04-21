@@ -47,7 +47,7 @@ export const AddressSelectBox = <TFieldName extends string>({
               onEdit();
             }}
             ariaLabel={formatMessage(addressSelectBoxMessages.editAddress)}
-            className="mr-2"
+            className="absolute right-4 pointer-events-auto"
             label={formatMessage(addressSelectBoxLabels.editAddress)}
           />
         </div>
