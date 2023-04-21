@@ -6,7 +6,7 @@ import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
 import { useLocale } from "@/checkout-storefront/hooks/useLocale";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useDummyPaymentForm } from "@/checkout-storefront/views/DummyPayment/useDummyPaymentForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { getOrderConfirmationUrl } from "@/checkout-storefront/views/DummyPayment/utils";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 

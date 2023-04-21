@@ -8,16 +8,20 @@ import {
 import { useFormik, useFormikContext } from "formik";
 import { isEqual } from "lodash-es";
 import { useCallback, useState } from "react";
+import { ValidationError } from "yup";
 
 export const useForm = <TData extends FormDataBase>({
   initialDirty = false,
   ...formProps
 }: FormProps<TData>): UseFormReturn<TData> => {
+  const { validationSchema } = formProps;
+  // @ts-expect-error because the props we pass and overwrite here don't
+  // always match what formik wants like e.g validateForm
   const form = useFormik<TData>(formProps);
   // we do this because in some cases it's not updated properly
   // https://github.com/jaredpalmer/formik/issues/3165
   const [dirty, setDirty] = useState(initialDirty);
-  const [values, setValues] = useState(formProps.initialValues);
+  const [formValues, setFormValues] = useState(formProps.initialValues);
 
   const {
     handleSubmit: handleFormikSubmit,
@@ -37,29 +41,67 @@ export const useForm = <TData extends FormDataBase>({
     [dirty, handleFormikSubmit]
   );
 
+  const setValues = useCallback(
+    (newValues: Partial<TData>) => {
+      const updatedValues = { ...formValues, ...newValues };
+      setDirty(!isEqual(formValues, updatedValues));
+      setFormValues(updatedValues);
+    },
+    [formValues]
+  );
+
   const handleChange: ChangeHandler = useCallback(
     (event) => {
       const { name, value } = event.target;
 
-      const updatedValues = { ...values, [name]: value };
+      setValues({ [name]: value } as Partial<TData>);
 
-      setDirty(!isEqual(values, updatedValues));
-      setValues(updatedValues);
       formikHandleChange(event);
     },
-    [formikHandleChange, values]
+    [setValues, formikHandleChange]
   );
 
   const setFieldValue = async (field: FormDataField<TData>, value: TData[FormDataField<TData>]) => {
-    if (values[field] === value) {
+    if (formValues[field] === value) {
       return;
     }
 
     await setFormikFieldValue(field, value);
-    setValues({ ...values, [field]: value });
+    setFormValues({ ...formValues, [field]: value });
   };
 
-  return { ...form, handleSubmit, handleChange, values, dirty, setFieldValue };
+  const validateForm = (values: TData) => {
+    if (!validationSchema) {
+      return {};
+    }
+
+    try {
+      validationSchema.validateSync(values, { abortEarly: false });
+      return {};
+    } catch (e) {
+      const errors: ValidationError = { ...(e as ValidationError) };
+
+      if (!errors?.inner) {
+        return {};
+      }
+
+      return errors.inner.reduce(
+        (result, { path, message }) => (path ? { ...result, [path]: message } : result),
+        {}
+      );
+    }
+  };
+
+  return {
+    ...form,
+    handleSubmit,
+    handleChange,
+    values: formValues,
+    dirty,
+    setFieldValue,
+    validateForm,
+    setValues,
+  };
 };
 
 export const useFormContext = useFormikContext;

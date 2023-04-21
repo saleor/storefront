@@ -10,7 +10,7 @@ import { Divider } from "@/checkout-storefront/components/Divider";
 import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useDeliveryMethodsForm } from "@/checkout-storefront/sections/DeliveryMethods/useDeliveryMethodsForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
