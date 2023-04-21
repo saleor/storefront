@@ -11,13 +11,18 @@ import {
   CommonVars,
   MutationBaseFn,
   MutationData,
+  MutationSuccessData,
   MutationVars,
   ParserFunction,
   SimpleSubmitFn,
 } from "@/checkout-storefront/hooks/useSubmit/types";
 import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors/types";
-import { extractMutationErrors } from "@/checkout-storefront/lib/utils/common";
 import { localeToLanguageCode } from "@/checkout-storefront/lib/utils/locale";
+import {
+  extractMutationData,
+  extractMutationErrors,
+} from "@/checkout-storefront/hooks/useSubmit/utils";
+import { CombinedError } from "urql";
 
 interface CallbackProps<TData> {
   formData: TData;
@@ -30,12 +35,20 @@ export interface UseSubmitProps<
   TErrorCodes extends string = string
 > {
   hideAlerts?: boolean;
-  scope: CheckoutUpdateStateScope;
+  scope?: CheckoutUpdateStateScope;
   onSubmit: (vars: MutationVars<TMutationFn>) => Promise<MutationData<TMutationFn>>;
-  parse: ParserFunction<TData, TMutationFn>;
+  parse?: ParserFunction<TData, TMutationFn>;
   onAbort?: (props: CallbackProps<TData>) => void;
-  onSuccess?: (props: CallbackProps<TData> & { result: MutationData<TMutationFn> }) => void;
-  onError?: (props: CallbackProps<TData> & { errors: ApiErrors<TData, TErrorCodes> }) => void;
+  onSuccess?: (props: CallbackProps<TData> & { data: MutationSuccessData<TMutationFn> }) => void;
+  onFinished?: () => void;
+  onError?: (
+    props: CallbackProps<TData> & {
+      errors: ApiErrors<TData, TErrorCodes>;
+      customErrors: any[];
+      graphqlErrors: CombinedError[];
+    }
+  ) => void;
+  extractCustomErrors?: (data: MutationData<TMutationFn>) => any[];
   onStart?: (props: CallbackProps<TData>) => void;
   shouldAbort?:
     | ((props: CallbackProps<TData>) => Promise<boolean>)
@@ -55,10 +68,14 @@ export const useSubmit = <
   scope,
   shouldAbort,
   parse,
+  onFinished,
+  extractCustomErrors,
   hideAlerts = false,
-}: UseSubmitProps<TData, TMutationFn, TErrorCodes>): SimpleSubmitFn<TData> => {
-  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
-  const { showErrors } = useAlerts(scope);
+}: UseSubmitProps<TData, TMutationFn, TErrorCodes>): SimpleSubmitFn<TData, TErrorCodes> => {
+  const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(
+    scope as CheckoutUpdateStateScope
+  );
+  const { showErrors } = useAlerts();
   const { checkout } = useCheckout();
   const localeData = useLocale();
 
@@ -66,9 +83,7 @@ export const useSubmit = <
     async (formData: TData = {} as TData, formHelpers?: any) => {
       const callbackProps: CallbackProps<TData> = { formData, formHelpers };
 
-      if (typeof onStart === "function") {
-        onStart(callbackProps);
-      }
+      onStart?.(callbackProps);
 
       const shouldAbortSubmit =
         typeof shouldAbort === "function" ? await shouldAbort(callbackProps) : false;
@@ -78,8 +93,10 @@ export const useSubmit = <
           setCheckoutUpdateState("success");
           onAbort(callbackProps);
         }
-        return { hasErrors: false, errors: [] };
+        return { hasErrors: false, apiErrors: [], customErrors: [], graphqlErrors: [] };
       }
+
+      setCheckoutUpdateState("loading");
 
       const commonData: CommonVars = {
         languageCode: localeToLanguageCode(localeData.locale),
@@ -87,36 +104,55 @@ export const useSubmit = <
         checkoutId: checkout.id,
       };
 
-      const result = await onSubmit(parse({ ...formData, ...commonData }));
+      const unparsedMutationVars = { ...formData, ...commonData };
 
-      const [hasErrors, errors] = extractMutationErrors<TData, TErrorCodes>(result);
+      const result = await onSubmit(
+        typeof parse === "function"
+          ? parse(unparsedMutationVars)
+          : (unparsedMutationVars as MutationVars<TMutationFn>)
+      );
 
-      if (!hasErrors) {
-        typeof onSuccess === "function" && onSuccess({ ...callbackProps, result });
+      const { hasErrors, apiErrors, ...errorsRest } = extractMutationErrors<
+        TData,
+        TMutationFn,
+        TErrorCodes
+      >(result, extractCustomErrors);
+
+      const { success, data } = extractMutationData(result);
+
+      if (!hasErrors && success) {
+        onSuccess?.({ ...callbackProps, data });
         setCheckoutUpdateState("success");
 
-        return { hasErrors, errors };
+        onFinished?.();
+        return { hasErrors, apiErrors, ...errorsRest };
       }
 
-      typeof onError === "function" && onError({ ...callbackProps, errors });
+      onError?.({ ...callbackProps, errors: apiErrors, ...errorsRest });
+
       setCheckoutUpdateState("error");
-      if (!hideAlerts) {
-        showErrors(errors);
+
+      if (!hideAlerts && scope) {
+        showErrors(apiErrors, scope);
       }
 
-      return { hasErrors, errors };
+      onFinished?.();
+      return { hasErrors, apiErrors, ...errorsRest };
     },
     [
       onStart,
       shouldAbort,
+      setCheckoutUpdateState,
       localeData.locale,
       checkout.channel.slug,
       checkout.id,
       onSubmit,
       parse,
+      extractCustomErrors,
       onError,
-      setCheckoutUpdateState,
       hideAlerts,
+      scope,
+      onFinished,
       onAbort,
       onSuccess,
       showErrors,
