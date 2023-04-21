@@ -38,8 +38,12 @@ export const Root = ({ env }: RootProps) => {
   });
 
   useAuthChange({
-    onSignedOut: () => resetClient(),
-    onSignedIn: () => resetClient(),
+    onSignedOut: () => {
+      resetClient();
+    },
+    onSignedIn: () => {
+      resetClient();
+    },
   });
 
   if (!saleorApiUrl) {
