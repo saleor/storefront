@@ -77,7 +77,7 @@ export const useSubmit = <
   );
   const { showErrors } = useAlerts();
   const { checkout } = useCheckout();
-  const localeData = useLocale();
+  const { locale } = useLocale();
 
   const handleSubmit = useCallback(
     async (formData: TData = {} as TData, formHelpers?: any) => {
@@ -99,7 +99,7 @@ export const useSubmit = <
       setCheckoutUpdateState("loading");
 
       const commonData: CommonVars = {
-        languageCode: localeToLanguageCode(localeData.locale),
+        languageCode: localeToLanguageCode(locale),
         channel: checkout.channel.slug,
         checkoutId: checkout.id,
       };
@@ -143,7 +143,7 @@ export const useSubmit = <
       onStart,
       shouldAbort,
       setCheckoutUpdateState,
-      localeData.locale,
+      locale,
       checkout.channel.slug,
       checkout.id,
       onSubmit,
