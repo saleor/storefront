@@ -68,7 +68,7 @@ export const useAddressListForm = ({
       return;
     }
 
-    await setValues({
+    setValues({
       addressList,
       selectedAddressId: selectedAddress.id,
     });
