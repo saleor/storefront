@@ -36,7 +36,6 @@ export const useSignInForm = ({ onSuccess, initialEmail }: SignInFormProps) => {
     onSubmit: signIn,
     scope: "signIn",
     onSuccess,
-    parse: (formData) => formData,
     onError: ({ errors, formHelpers: { setErrors } }) => {
       const parsedErrors = errors.reduce((result, error) => {
         const { code, field } = error;

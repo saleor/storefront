@@ -1,4 +1,5 @@
 import { CheckoutLineFragment, OrderLineFragment } from "@/checkout-storefront/graphql";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import compact from "lodash-es/compact";
 import { useIntl } from "react-intl";
 
@@ -29,7 +30,7 @@ export const useSummaryLineLineAttributesText = (
   const intl = useIntl();
 
   const parsedValues =
-    line.variant?.attributes?.reduce<Array<string | undefined | null>>(
+    line.variant?.attributes?.reduce<Array<MightNotExist<string>>>(
       (result, { values }) => [
         ...result,
         ...values.map(({ name, dateTime, translation }) => {
