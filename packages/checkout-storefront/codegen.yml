@@ -16,6 +16,7 @@ extensions:
         config:
           scalars:
             JSONString: string
+            JSON: Record<string, any>
             UUID: string
             Metadata: Record<string, string>
             DateTime: string

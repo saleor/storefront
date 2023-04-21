@@ -15,15 +15,56 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /**
+   * The `Date` scalar type represents a Date
+   * value as specified by
+   * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+   */
   Date: any;
+  /**
+   * The `DateTime` scalar type represents a DateTime
+   * value as specified by
+   * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+   */
   DateTime: string;
+  /**
+   * Custom Decimal implementation.
+   *
+   * Returns Decimal as a float in the API,
+   * parses float to the Decimal on the way back.
+   */
+  Decimal: any;
+  /**
+   * The `GenericScalar` scalar type represents a generic
+   * GraphQL scalar value that could be:
+   * String, Boolean, Int, Float, List or Object.
+   */
   GenericScalar: any;
+  JSON: Record<string, any>;
   JSONString: string;
+  /**
+   * Metadata is a map of key-value pairs, both keys and values are `String`.
+   *
+   * Example:
+   * ```
+   * {
+   *     "key1": "value1",
+   *     "key2": "value2"
+   * }
+   * ```
+   */
   Metadata: Record<string, string>;
+  /**
+   * Nonnegative Decimal scalar implementation.
+   *
+   * Should be used in places where value must be nonnegative (0 or greater).
+   */
   PositiveDecimal: any;
   UUID: string;
+  /** Variables of this type must be set to null in mutations. They will be replaced with a filename from a following multipart part containing a binary file. See: https://github.com/jaydenseric/graphql-multipart-request-spec. */
   Upload: any;
   WeightScalar: any;
+  /** _Any value scalar as defined by Federation spec. */
   _Any: any;
 };
 
@@ -77,6 +118,7 @@ export type AccountDelete = {
   user?: Maybe<User>;
 };
 
+/** Represents errors in account mutations. */
 export type AccountError = {
   __typename?: "AccountError";
   /** A type of address that causes the error. */
@@ -119,12 +161,14 @@ export type AccountErrorCode =
   | "OUT_OF_SCOPE_PERMISSION"
   | "OUT_OF_SCOPE_USER"
   | "PASSWORD_ENTIRELY_NUMERIC"
+  | "PASSWORD_RESET_ALREADY_REQUESTED"
   | "PASSWORD_TOO_COMMON"
   | "PASSWORD_TOO_SHORT"
   | "PASSWORD_TOO_SIMILAR"
   | "REQUIRED"
   | "UNIQUE";
 
+/** Fields required to update the user. */
 export type AccountInput = {
   /** Billing address of the customer. */
   defaultBillingAddress?: InputMaybe<AddressInput>;
@@ -149,6 +193,7 @@ export type AccountRegister = {
   user?: Maybe<User>;
 };
 
+/** Fields required to create a user. */
 export type AccountRegisterInput = {
   /** Slug of a channel which will be used to notify users. Optional when only one channel exists. */
   channel?: InputMaybe<Scalars["String"]>;
@@ -452,6 +497,7 @@ export type AddressUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
+/** Represents address validation rules for a country. */
 export type AddressValidationData = {
   __typename?: "AddressValidationData";
   addressFormat: Scalars["String"];
@@ -498,7 +544,6 @@ export type Allocation = Node & {
  *     within the channel
  *
  *     PRIORITIZE_HIGH_STOCK - allocate stock in a warehouse with the most stock
- *
  */
 export type AllocationStrategyEnum = "PRIORITIZE_HIGH_STOCK" | "PRIORITIZE_SORTING_ORDER";
 
@@ -512,6 +557,14 @@ export type App = Node &
     accessToken?: Maybe<Scalars["String"]>;
     /** URL to iframe with the app. */
     appUrl?: Maybe<Scalars["String"]>;
+    /**
+     * The App's author name.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    author?: Maybe<Scalars["String"]>;
     /**
      * URL to iframe with the configuration for the app.
      * @deprecated This field will be removed in Saleor 4.0. Use `appUrl` instead.
@@ -757,7 +810,8 @@ export type AppErrorCode =
   | "OUT_OF_SCOPE_APP"
   | "OUT_OF_SCOPE_PERMISSION"
   | "REQUIRED"
-  | "UNIQUE";
+  | "UNIQUE"
+  | "UNSUPPORTED_SALEOR_VERSION";
 
 /** Represents app data. */
 export type AppExtension = Node & {
@@ -823,7 +877,6 @@ export type AppExtensionMountEnum =
  *
  *     POPUP - app's extension will be mounted as a popup window
  *     APP_PAGE - redirect to app's page
- *
  */
 export type AppExtensionTargetEnum = "APP_PAGE" | "POPUP";
 
@@ -923,6 +976,26 @@ export type AppManifestExtension = {
   target: AppExtensionTargetEnum;
   /** URL of a view where extension's iframe is placed. */
   url: Scalars["String"];
+};
+
+export type AppManifestRequiredSaleorVersion = {
+  __typename?: "AppManifestRequiredSaleorVersion";
+  /**
+   * Required Saleor version as semver range.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  constraint: Scalars["String"];
+  /**
+   * Informs if the Saleor version matches the required one.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  satisfied: Scalars["Boolean"];
 };
 
 export type AppManifestWebhook = {
@@ -3023,6 +3096,14 @@ export type Checkout = Node &
   ObjectWithMetadata & {
     __typename?: "Checkout";
     /**
+     * The authorize status of the checkout.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    authorizeStatus: CheckoutAuthorizeStatusEnum;
+    /**
      * Collection points that can be used for this order.
      *
      * Added in Saleor 3.1.
@@ -3039,6 +3120,14 @@ export type Checkout = Node &
     availableShippingMethods: Array<ShippingMethod>;
     billingAddress?: Maybe<Address>;
     channel: Channel;
+    /**
+     * The charge status of the checkout.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    chargeStatus: CheckoutChargeStatusEnum;
     created: Scalars["DateTime"];
     /**
      * The delivery method selected for this checkout.
@@ -3067,6 +3156,7 @@ export type Checkout = Node &
     isShippingRequired: Scalars["Boolean"];
     /** Checkout language code. */
     languageCode: LanguageCodeEnum;
+    /** @deprecated This field will be removed in Saleor 4.0. Use `updatedAt` instead. */
     lastChange: Scalars["DateTime"];
     /** A list of checkout lines, each containing information about an item in the checkout. */
     lines: Array<CheckoutLine>;
@@ -3141,6 +3231,14 @@ export type Checkout = Node &
     taxExemption: Scalars["Boolean"];
     /** The checkout's token. */
     token: Scalars["UUID"];
+    /**
+     * The difference between the paid and the checkout total amount.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    totalBalance: Money;
     /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
     totalPrice: TaxedMoney;
     /**
@@ -3152,6 +3250,8 @@ export type Checkout = Node &
      */
     transactions?: Maybe<Array<TransactionItem>>;
     translatedDiscountName?: Maybe<Scalars["String"]>;
+    /** Time of last modification of the given checkout. */
+    updatedAt: Scalars["DateTime"];
     user?: Maybe<User>;
     voucherCode?: Maybe<Scalars["String"]>;
   };
@@ -3195,6 +3295,22 @@ export type CheckoutAddressValidationRules = {
   enableFieldsNormalization?: InputMaybe<Scalars["Boolean"]>;
 };
 
+/**
+ * Determine a current authorize status for checkout.
+ *
+ *     We treat the checkout as fully authorized when the sum of authorized and charged
+ *     funds cover the checkout.total.
+ *     We treat the checkout as partially authorized when the sum of authorized and charged
+ *     funds covers only part of the checkout.total
+ *     We treat the checkout as not authorized when the sum of authorized and charged funds
+ *     is 0.
+ *
+ *     NONE - the funds are not authorized
+ *     PARTIAL - the cover funds don't cover fully the checkout's total
+ *     FULL - the cover funds covers the checkout's total
+ */
+export type CheckoutAuthorizeStatusEnum = "FULL" | "NONE" | "PARTIAL";
+
 /** Update billing address in the existing checkout. */
 export type CheckoutBillingAddressUpdate = {
   __typename?: "CheckoutBillingAddressUpdate";
@@ -3204,6 +3320,24 @@ export type CheckoutBillingAddressUpdate = {
   checkoutErrors: Array<CheckoutError>;
   errors: Array<CheckoutError>;
 };
+
+/**
+ * Determine the current charge status for the checkout.
+ *
+ *     The checkout is considered overcharged when the sum of the transactionItem's charge
+ *     amounts exceeds the value of `checkout.total`.
+ *     If the sum of the transactionItem's charge amounts equals
+ *     `checkout.total`, we consider the checkout to be fully charged.
+ *     If the sum of the transactionItem's charge amounts covers a part of the
+ *     `checkout.total`, we treat the checkout as partially charged.
+ *
+ *
+ *     NONE - the funds are not charged.
+ *     PARTIAL - the funds that are charged don't cover the checkout's total
+ *     FULL - the funds that are charged fully cover the checkout's total
+ *     OVERCHARGED - the charged funds are bigger than checkout's total
+ */
+export type CheckoutChargeStatusEnum = "FULL" | "NONE" | "OVERCHARGED" | "PARTIAL";
 
 /** Completes the checkout. As a result a new order is created and a payment charge is made. This action requires a successful payment before it can be performed. In case additional confirmation step as 3D secure is required confirmationNeeded flag will be set to True and no order created until payment is confirmed with second call of this mutation. */
 export type CheckoutComplete = {
@@ -3394,11 +3528,14 @@ export type CheckoutErrorCode =
   | "ZERO_QUANTITY";
 
 export type CheckoutFilterInput = {
+  authorizeStatus?: InputMaybe<Array<CheckoutAuthorizeStatusEnum>>;
   channels?: InputMaybe<Array<Scalars["ID"]>>;
+  chargeStatus?: InputMaybe<Array<CheckoutChargeStatusEnum>>;
   created?: InputMaybe<DateRangeInput>;
   customer?: InputMaybe<Scalars["String"]>;
   metadata?: InputMaybe<Array<MetadataFilter>>;
   search?: InputMaybe<Scalars["String"]>;
+  updatedAt?: InputMaybe<DateRangeInput>;
 };
 
 /**
@@ -3426,6 +3563,27 @@ export type CheckoutFilterShippingMethods = Event & {
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   shippingMethods?: Maybe<Array<ShippingMethod>>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when checkout is fully paid with transactions.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type CheckoutFullyPaid = Event & {
+  __typename?: "CheckoutFullyPaid";
+  /** The checkout the event relates to. */
+  checkout?: Maybe<Checkout>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
@@ -5775,7 +5933,7 @@ export type ExternalAuthentication = {
   name?: Maybe<Scalars["String"]>;
 };
 
-/** Prepare external authentication url for user by custom plugin. */
+/** Prepare external authentication URL for user by custom plugin. */
 export type ExternalAuthenticationUrl = {
   __typename?: "ExternalAuthenticationUrl";
   /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
@@ -8171,6 +8329,14 @@ export type Manifest = {
    */
   audience?: Maybe<Scalars["String"]>;
   /**
+   * The App's author name.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  author?: Maybe<Scalars["String"]>;
+  /**
    * URL to iframe with the configuration for the app.
    * @deprecated This field will be removed in Saleor 4.0. Use `appUrl` instead.
    */
@@ -8186,6 +8352,14 @@ export type Manifest = {
   identifier: Scalars["String"];
   name: Scalars["String"];
   permissions?: Maybe<Array<Permission>>;
+  /**
+   * Determines the app's required Saleor version as semver range.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  requiredSaleorVersion?: Maybe<AppManifestRequiredSaleorVersion>;
   supportUrl?: Maybe<Scalars["String"]>;
   tokenTargetUrl?: Maybe<Scalars["String"]>;
   version: Scalars["String"];
@@ -8204,6 +8378,17 @@ export type Margin = {
   start?: Maybe<Scalars["Int"]>;
   stop?: Maybe<Scalars["Int"]>;
 };
+
+/**
+ * Determine the mark as paid strategy for the channel.
+ *
+ *     TRANSACTION_FLOW - new orders marked as paid will receive a
+ *     `TransactionItem` object, that will cover the `order.total`.
+ *
+ *     PAYMENT_FLOW - new orders marked as paid will receive a
+ *     `Payment` object, that will cover the `order.total`.
+ */
+export type MarkAsPaidStrategyEnum = "PAYMENT_FLOW" | "TRANSACTION_FLOW";
 
 /** An enumeration. */
 export type MeasurementUnitsEnum =
@@ -9487,7 +9672,7 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportProducts?: Maybe<ExportProducts>;
-  /** Prepare external authentication url for user by custom plugin. */
+  /** Prepare external authentication URL for user by custom plugin. */
   externalAuthenticationUrl?: Maybe<ExternalAuthenticationUrl>;
   /** Logout user by custom plugin. */
   externalLogout?: Maybe<ExternalLogout>;
@@ -9800,6 +9985,26 @@ export type Mutation = {
    */
   orderFulfillmentUpdateTracking?: Maybe<FulfillmentUpdateTracking>;
   /**
+   * Adds granted refund to the order.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  orderGrantRefundCreate?: Maybe<OrderGrantRefundCreate>;
+  /**
+   * Updates granted refund.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  orderGrantRefundUpdate?: Maybe<OrderGrantRefundUpdate>;
+  /**
    * Deletes an order line from an order.
    *
    * Requires one of the following permissions: MANAGE_ORDERS.
@@ -9845,9 +10050,7 @@ export type Mutation = {
    * Update shop order settings across all channels. Returns `orderSettings` for the first `channel` in alphabetical order.
    *
    * Requires one of the following permissions: MANAGE_ORDERS.
-   * @deprecated
-   *
-   * DEPRECATED: this mutation will be removed in Saleor 4.0. Use `channelUpdate` mutation instead.
+   * @deprecated \n\nDEPRECATED: this mutation will be removed in Saleor 4.0. Use `channelUpdate` mutation instead.
    */
   orderSettingsUpdate?: Maybe<OrderSettingsUpdate>;
   /**
@@ -9966,6 +10169,14 @@ export type Mutation = {
   paymentCapture?: Maybe<PaymentCapture>;
   /** Check payment balance. */
   paymentCheckBalance?: Maybe<PaymentCheckBalance>;
+  /**
+   * Initializes a payment gateway session. It triggers the webhook `PAYMENT_GATEWAY_INITIALIZE_SESSION`, to the requested `paymentGateways`. If `paymentGateways` is not provided, the webhook will be send to all subscribed payment gateways.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  paymentGatewayInitialize?: Maybe<PaymentGatewayInitialize>;
   /** Initializes payment process when it is required by gateway. */
   paymentInitialize?: Maybe<PaymentInitialize>;
   /**
@@ -10370,9 +10581,7 @@ export type Mutation = {
    * Fetch tax rates.
    *
    * Requires one of the following permissions: MANAGE_SETTINGS.
-   * @deprecated
-   *
-   * DEPRECATED: this mutation will be removed in Saleor 4.0.
+   * @deprecated \n\nDEPRECATED: this mutation will be removed in Saleor 4.0.
    */
   shopFetchTaxRates?: Maybe<ShopFetchTaxRates>;
   /**
@@ -10522,13 +10731,41 @@ export type Mutation = {
    */
   tokensDeactivateAll?: Maybe<DeactivateAllUserTokens>;
   /**
-   * Create transaction for checkout or order. Requires the following permissions: AUTHENTICATED_APP and HANDLE_PAYMENTS.
+   * Create transaction for checkout or order.
    *
    * Added in Saleor 3.4.
    *
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires one of the following permissions: HANDLE_PAYMENTS.
    */
   transactionCreate?: Maybe<TransactionCreate>;
+  /**
+   * Report the event for the transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires the following permissions: OWNER and HANDLE_PAYMENTS.
+   */
+  transactionEventReport?: Maybe<TransactionEventReport>;
+  /**
+   * Initializes a transaction session. It triggers the webhook `TRANSACTION_INITIALIZE_SESSION`, to the requested `paymentGateways`.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  transactionInitialize?: Maybe<TransactionInitialize>;
+  /**
+   * Processes a transaction session. It triggers the webhook `TRANSACTION_PROCESS_SESSION`, to the assigned `paymentGateways`.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  transactionProcess?: Maybe<TransactionProcess>;
   /**
    * Request an action for payment transaction.
    *
@@ -10536,15 +10773,17 @@ export type Mutation = {
    *
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    *
-   * Requires one of the following permissions: HANDLE_PAYMENTS, MANAGE_ORDERS.
+   * Requires one of the following permissions: HANDLE_PAYMENTS.
    */
   transactionRequestAction?: Maybe<TransactionRequestAction>;
   /**
-   * Create transaction for checkout or order. Requires the following permissions: AUTHENTICATED_APP and HANDLE_PAYMENTS.
+   * Create transaction for checkout or order.
    *
    * Added in Saleor 3.4.
    *
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   *
+   * Requires the following permissions: OWNER and HANDLE_PAYMENTS.
    */
   transactionUpdate?: Maybe<TransactionUpdate>;
   /**
@@ -11401,6 +11640,16 @@ export type MutationOrderFulfillmentUpdateTrackingArgs = {
   input: FulfillmentUpdateTrackingInput;
 };
 
+export type MutationOrderGrantRefundCreateArgs = {
+  id: Scalars["ID"];
+  input: OrderGrantRefundCreateInput;
+};
+
+export type MutationOrderGrantRefundUpdateArgs = {
+  id: Scalars["ID"];
+  input: OrderGrantRefundUpdateInput;
+};
+
 export type MutationOrderLineDeleteArgs = {
   id: Scalars["ID"];
 };
@@ -11531,6 +11780,12 @@ export type MutationPaymentCaptureArgs = {
 
 export type MutationPaymentCheckBalanceArgs = {
   input: PaymentCheckBalanceInput;
+};
+
+export type MutationPaymentGatewayInitializeArgs = {
+  amount?: InputMaybe<Scalars["PositiveDecimal"]>;
+  id: Scalars["ID"];
+  paymentGateways?: InputMaybe<Array<PaymentGatewayToInitialize>>;
 };
 
 export type MutationPaymentInitializeArgs = {
@@ -11963,6 +12218,29 @@ export type MutationTransactionCreateArgs = {
   transactionEvent?: InputMaybe<TransactionEventInput>;
 };
 
+export type MutationTransactionEventReportArgs = {
+  amount: Scalars["PositiveDecimal"];
+  availableActions?: InputMaybe<Array<TransactionActionEnum>>;
+  externalUrl?: InputMaybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  message?: InputMaybe<Scalars["String"]>;
+  pspReference: Scalars["String"];
+  time?: InputMaybe<Scalars["DateTime"]>;
+  type: TransactionEventTypeEnum;
+};
+
+export type MutationTransactionInitializeArgs = {
+  action?: InputMaybe<TransactionFlowStrategyEnum>;
+  amount?: InputMaybe<Scalars["PositiveDecimal"]>;
+  id: Scalars["ID"];
+  paymentGateway: PaymentGatewayToInitialize;
+};
+
+export type MutationTransactionProcessArgs = {
+  data?: InputMaybe<Scalars["JSON"]>;
+  id: Scalars["ID"];
+};
+
 export type MutationTransactionRequestActionArgs = {
   actionType: TransactionActionEnum;
   amount?: InputMaybe<Scalars["PositiveDecimal"]>;
@@ -12225,6 +12503,16 @@ export type Order = Node &
     fulfillments: Array<Fulfillment>;
     /** List of user gift cards. */
     giftCards: Array<GiftCard>;
+    /**
+     * List of granted refunds.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    grantedRefunds: Array<OrderGrantedRefund>;
     id: Scalars["ID"];
     /** List of order invoices. Can be fetched for orders created in Saleor 3.2 and later, for other orders requires one of the following permissions: MANAGE_ORDERS, OWNER. */
     invoices: Array<Invoice>;
@@ -12310,7 +12598,7 @@ export type Order = Node &
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      *
-     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
      */
     shippingTaxClass?: Maybe<TaxClass>;
     /**
@@ -12356,12 +12644,95 @@ export type Order = Node &
     token: Scalars["String"];
     /** Total amount of the order. */
     total: TaxedMoney;
+    /**
+     * Total amount of ongoing authorize requests for the order's transactions.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    totalAuthorizePending: Money;
     /** Amount authorized for the order. */
     totalAuthorized: Money;
     /** The difference between the paid and the order total amount. */
     totalBalance: Money;
-    /** Amount captured by payment. */
+    /**
+     * Total amount of ongoing cancel requests for the order's transactions.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    totalCancelPending: Money;
+    /**
+     * Amount canceled for the order.
+     *
+     * Added in Saleor 3.13.
+     */
+    totalCanceled: Money;
+    /**
+     * Amount captured for the order.
+     * @deprecated This field will be removed in Saleor 4.0. Use `totalCharged` instead.
+     */
     totalCaptured: Money;
+    /**
+     * Total amount of ongoing charge requests for the order's transactions.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    totalChargePending: Money;
+    /**
+     * Amount charged for the order.
+     *
+     * Added in Saleor 3.13.
+     */
+    totalCharged: Money;
+    /**
+     * Total amount of granted refund.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    totalGrantedRefund: Money;
+    /**
+     * Total amount of ongoing refund requests for the order's transactions.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    totalRefundPending: Money;
+    /**
+     * Total refund amount for the order.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    totalRefunded: Money;
+    /**
+     * The difference amount between granted refund and the amounts that are pending and refunded.
+     *
+     * Added in Saleor 3.13.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     *
+     * Requires one of the following permissions: MANAGE_ORDERS.
+     */
+    totalRemainingGrant: Money;
     trackingClientId: Scalars["String"];
     /**
      * List of transactions for the order. Requires one of the following permissions: MANAGE_ORDERS, HANDLE_PAYMENTS.
@@ -12442,17 +12813,17 @@ export type OrderAddNoteInput = {
  * Determine a current authorize status for order.
  *
  *     We treat the order as fully authorized when the sum of authorized and charged funds
- *     cover the order.total.
+ *     cover the `order.total`-`order.totalGrantedRefund`.
  *     We treat the order as partially authorized when the sum of authorized and charged
- *     funds covers only part of the order.total
+ *     funds covers only part of the `order.total`-`order.totalGrantedRefund`.
  *     We treat the order as not authorized when the sum of authorized and charged funds is
  *     0.
  *
  *     NONE - the funds are not authorized
- *     PARTIAL - the funds that are authorized or charged don't cover fully the order's
- *     total
- *     FULL - the funds that are authorized or charged fully cover the order's total
- *
+ *     PARTIAL - the funds that are authorized and charged don't cover fully the
+ *     `order.total`-`order.totalGrantedRefund`
+ *     FULL - the funds that are authorized and charged fully cover the
+ *     `order.total`-`order.totalGrantedRefund`
  */
 export type OrderAuthorizeStatusEnum = "FULL" | "NONE" | "PARTIAL";
 
@@ -12522,16 +12893,22 @@ export type OrderCapture = {
 /**
  * Determine the current charge status for the order.
  *
- *     We treat the order as overcharged when the charged amount is bigger that order.total
- *     We treat the order as fully charged when the charged amount is equal to order.total.
- *     We treat the order as partially charged when the charged amount covers only part of
- *     the order.total
+ *     An order is considered overcharged when the sum of the
+ *     transactionItem's charge amounts exceeds the value of
+ *     `order.total` - `order.totalGrantedRefund`.
+ *     If the sum of the transactionItem's charge amounts equals
+ *     `order.total` - `order.totalGrantedRefund`, we consider the order to be fully
+ *     charged.
+ *     If the sum of the transactionItem's charge amounts covers a part of the
+ *     `order.total` - `order.totalGrantedRefund`, we treat the order as partially charged.
  *
  *     NONE - the funds are not charged.
- *     PARTIAL - the funds that are charged don't cover the order's total
- *     FULL - the funds that are charged fully cover the order's total
- *     OVERCHARGED - the charged funds are bigger than order's total
- *
+ *     PARTIAL - the funds that are charged don't cover the
+ *     `order.total`-`order.totalGrantedRefund`
+ *     FULL - the funds that are charged fully cover the
+ *     `order.total`-`order.totalGrantedRefund`
+ *     OVERCHARGED - the charged funds are bigger than the
+ *     `order.total`-`order.totalGrantedRefund`
  */
 export type OrderChargeStatusEnum = "FULL" | "NONE" | "OVERCHARGED" | "PARTIAL";
 
@@ -12777,7 +13154,6 @@ export type OrderErrorCode =
   | "INSUFFICIENT_STOCK"
   | "INVALID"
   | "INVALID_QUANTITY"
-  | "MISSING_TRANSACTION_ACTION_REQUEST_WEBHOOK"
   | "NOT_AVAILABLE_IN_CHANNEL"
   | "NOT_EDITABLE"
   | "NOT_FOUND"
@@ -12790,6 +13166,7 @@ export type OrderErrorCode =
   | "SHIPPING_METHOD_NOT_APPLICABLE"
   | "SHIPPING_METHOD_REQUIRED"
   | "TAX_ERROR"
+  | "TRANSACTION_ERROR"
   | "UNIQUE"
   | "VOID_INACTIVE_PAYMENT"
   | "ZERO_QUANTITY";
@@ -12836,7 +13213,10 @@ export type OrderEvent = Node & {
   relatedOrder?: Maybe<Order>;
   /** Define if shipping costs were included to the refund. */
   shippingCostsIncluded?: Maybe<Scalars["Boolean"]>;
-  /** The status of payment's transaction. */
+  /**
+   * The status of payment's transaction.
+   * @deprecated This field will be removed in Saleor 3.14 (Preview Feature).Use `TransactionEvent` to track the status of `TransactionItem`.
+   */
   status?: Maybe<TransactionStatus>;
   /** The transaction reference of captured payment. */
   transactionReference?: Maybe<Scalars["String"]>;
@@ -12907,7 +13287,7 @@ export type OrderEventsEmailsEnum =
   | "SHIPPING_CONFIRMATION"
   | "TRACKING_UPDATED";
 
-/** An enumeration. */
+/** The different order event types. */
 export type OrderEventsEnum =
   | "ADDED_PRODUCTS"
   | "CANCELED"
@@ -12950,9 +13330,14 @@ export type OrderEventsEnum =
   | "PLACED_FROM_DRAFT"
   | "REMOVED_PRODUCTS"
   | "TRACKING_UPDATED"
+  | "TRANSACTION_CANCEL_REQUESTED"
+  /** This field will be removed in Saleor 3.14 (Preview Feature). Use `TRANSACTION_CHARGE_REQUESTED` instead. */
   | "TRANSACTION_CAPTURE_REQUESTED"
+  | "TRANSACTION_CHARGE_REQUESTED"
   | "TRANSACTION_EVENT"
+  | "TRANSACTION_MARK_AS_PAID_FAILED"
   | "TRANSACTION_REFUND_REQUESTED"
+  /** This field will be removed in Saleor 3.14 (Preview Feature). Use `TRANSACTION_CANCEL_REQUESTED` instead. */
   | "TRANSACTION_VOID_REQUESTED"
   | "UPDATED_ADDRESS";
 
@@ -13092,6 +13477,107 @@ export type OrderFullyPaid = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
+/**
+ * Adds granted refund to the order.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type OrderGrantRefundCreate = {
+  __typename?: "OrderGrantRefundCreate";
+  errors: Array<OrderGrantRefundCreateError>;
+  /** Created granted refund. */
+  grantedRefund?: Maybe<OrderGrantedRefund>;
+  /** Order which has assigned new grant refund. */
+  order?: Maybe<Order>;
+};
+
+export type OrderGrantRefundCreateError = {
+  __typename?: "OrderGrantRefundCreateError";
+  /** The error code. */
+  code: OrderGrantRefundCreateErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type OrderGrantRefundCreateErrorCode = "GRAPHQL_ERROR" | "NOT_FOUND";
+
+export type OrderGrantRefundCreateInput = {
+  /** Amount of the granted refund. */
+  amount: Scalars["Decimal"];
+  /** Reason of the granted refund. */
+  reason?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * Updates granted refund.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type OrderGrantRefundUpdate = {
+  __typename?: "OrderGrantRefundUpdate";
+  errors: Array<OrderGrantRefundUpdateError>;
+  /** Created granted refund. */
+  grantedRefund?: Maybe<OrderGrantedRefund>;
+  /** Order which has assigned updated grant refund. */
+  order?: Maybe<Order>;
+  orderGrantedRefund?: Maybe<OrderGrantedRefund>;
+};
+
+export type OrderGrantRefundUpdateError = {
+  __typename?: "OrderGrantRefundUpdateError";
+  /** The error code. */
+  code: OrderGrantRefundUpdateErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type OrderGrantRefundUpdateErrorCode = "GRAPHQL_ERROR" | "NOT_FOUND" | "REQUIRED";
+
+export type OrderGrantRefundUpdateInput = {
+  /** Amount of the granted refund. */
+  amount?: InputMaybe<Scalars["Decimal"]>;
+  /** Reason of the granted refund. */
+  reason?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * The details of granted refund.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type OrderGrantedRefund = {
+  __typename?: "OrderGrantedRefund";
+  /** Refund amount. */
+  amount: Money;
+  /** App that performed the action. */
+  app?: Maybe<App>;
+  /** Time of creation. */
+  createdAt: Scalars["DateTime"];
+  id: Scalars["ID"];
+  /** Reason of the refund. */
+  reason?: Maybe<Scalars["String"]>;
+  /** Time of last update. */
+  updatedAt: Scalars["DateTime"];
+  /** User who performed the action. Requires of of the following permissions: MANAGE_USERS, MANAGE_STAFF, OWNER. */
+  user?: Maybe<User>;
+};
+
 /** Represents order line of particular order. */
 export type OrderLine = Node &
   ObjectWithMetadata & {
@@ -13175,7 +13661,7 @@ export type OrderLine = Node &
      *
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      *
-     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
      */
     taxClass?: Maybe<TaxClass>;
     /**
@@ -13386,6 +13872,8 @@ export type OrderMetadataUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
 };
 
+export type OrderOrCheckout = Checkout | Order;
+
 /** An enumeration. */
 export type OrderOriginEnum = "CHECKOUT" | "DRAFT" | "REISSUE";
 
@@ -13466,6 +13954,24 @@ export type OrderSettings = {
   automaticallyConfirmAllNewOrders: Scalars["Boolean"];
   /** When enabled, all non-shippable gift card orders will be fulfilled automatically. */
   automaticallyFulfillNonShippableGiftCard: Scalars["Boolean"];
+  /**
+   * Determine the transaction flow strategy to be used. Include the selected option in the payload sent to the payment app, as a requested action for the transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  defaultTransactionFlowStrategy: TransactionFlowStrategyEnum;
+  /**
+   * Determine what strategy will be used to mark the order as paid. Based on the chosen option, the proper object will be created and attached to the order when it's manually marked as paid.
+   * `PAYMENT_FLOW` - [default option] creates the `Payment` object.
+   * `TRANSACTION_FLOW` - creates the `TransactionItem` object.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  markAsPaidStrategy: MarkAsPaidStrategyEnum;
 };
 
 export type OrderSettingsError = {
@@ -13486,6 +13992,24 @@ export type OrderSettingsInput = {
   automaticallyConfirmAllNewOrders?: InputMaybe<Scalars["Boolean"]>;
   /** When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True. */
   automaticallyFulfillNonShippableGiftCard?: InputMaybe<Scalars["Boolean"]>;
+  /**
+   * Determine the transaction flow strategy to be used. Include the selected option in the payload sent to the payment app, as a requested action for the transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  defaultTransactionFlowStrategy?: InputMaybe<TransactionFlowStrategyEnum>;
+  /**
+   * Determine what strategy will be used to mark the order as paid. Based on the chosen option, the proper object will be created and attached to the order when it's manually marked as paid.
+   * `PAYMENT_FLOW` - [default option] creates the `Payment` object.
+   * `TRANSACTION_FLOW` - creates the `TransactionItem` object.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  markAsPaidStrategy?: InputMaybe<MarkAsPaidStrategyEnum>;
 };
 
 /**
@@ -14753,6 +15277,86 @@ export type PaymentGateway = {
   name: Scalars["String"];
 };
 
+export type PaymentGatewayConfig = {
+  __typename?: "PaymentGatewayConfig";
+  /** The JSON data required to initialize the payment gateway. */
+  data?: Maybe<Scalars["JSON"]>;
+  errors?: Maybe<Array<PaymentGatewayConfigError>>;
+  /** The app identifier. */
+  id: Scalars["String"];
+};
+
+export type PaymentGatewayConfigError = {
+  __typename?: "PaymentGatewayConfigError";
+  /** The error code. */
+  code: PaymentGatewayConfigErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type PaymentGatewayConfigErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND";
+
+/**
+ * Initializes a payment gateway session. It triggers the webhook `PAYMENT_GATEWAY_INITIALIZE_SESSION`, to the requested `paymentGateways`. If `paymentGateways` is not provided, the webhook will be send to all subscribed payment gateways.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type PaymentGatewayInitialize = {
+  __typename?: "PaymentGatewayInitialize";
+  errors: Array<PaymentGatewayInitializeError>;
+  gatewayConfigs?: Maybe<Array<PaymentGatewayConfig>>;
+};
+
+export type PaymentGatewayInitializeError = {
+  __typename?: "PaymentGatewayInitializeError";
+  /** The error code. */
+  code: PaymentGatewayInitializeErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type PaymentGatewayInitializeErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND";
+
+/**
+ * Event sent when user wants to initialize the payment gateway.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type PaymentGatewayInitializeSession = Event & {
+  __typename?: "PaymentGatewayInitializeSession";
+  /** Amount requested for initializing the payment gateway. */
+  amount?: Maybe<Scalars["PositiveDecimal"]>;
+  /** Payment gateway data in JSON format, recieved from storefront. */
+  data?: Maybe<Scalars["JSON"]>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Checkout or order */
+  sourceObject: OrderOrCheckout;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+export type PaymentGatewayToInitialize = {
+  /** The data that will be passed to the payment gateway. */
+  data?: InputMaybe<Scalars["JSON"]>;
+  /** The identifier of the payment gateway app to initialize. */
+  id: Scalars["String"];
+};
+
 /** Initializes payment process when it is required by gateway. */
 export type PaymentInitialize = {
   __typename?: "PaymentInitialize";
@@ -15069,6 +15673,7 @@ export type PermissionGroupFilterInput = {
   search?: InputMaybe<Scalars["String"]>;
 };
 
+/** Sorting options for permission groups. */
 export type PermissionGroupSortField =
   /** Sort permission group accounts by name. */
   "NAME";
@@ -15406,7 +16011,7 @@ export type Product = Node &
     /**
      * Tax class assigned to this product type. All products of this product type use this tax class, unless it's overridden in the `Product` type.
      *
-     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
      */
     taxClass?: Maybe<TaxClass>;
     /**
@@ -15789,7 +16394,7 @@ export type ProductCreateInput = {
   /**
    * Tax rate for enabled tax gateway.
    *
-   * DEPRECATED: this field will be removed in Saleor 4.0. Use tax classes to control the tax calculation for a product.
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use tax classes to control the tax calculation for a product. If taxCode is provided, Saleor will try to find a tax class with given code (codes are stored in metadata) and assign it. If no tax class is found, it would be created and assigned.
    */
   taxCode?: InputMaybe<Scalars["String"]>;
   /** Weight of the Product. */
@@ -16050,7 +16655,7 @@ export type ProductInput = {
   /**
    * Tax rate for enabled tax gateway.
    *
-   * DEPRECATED: this field will be removed in Saleor 4.0. Use tax classes to control the tax calculation for a product.
+   * DEPRECATED: this field will be removed in Saleor 4.0. Use tax classes to control the tax calculation for a product. If taxCode is provided, Saleor will try to find a tax class with given code (codes are stored in metadata) and assign it. If no tax class is found, it would be created and assigned.
    */
   taxCode?: InputMaybe<Scalars["String"]>;
   /** Weight of the Product. */
@@ -16597,7 +17202,7 @@ export type ProductType = Node &
     /**
      * Tax class assigned to this product type. All products of this product type use this tax class, unless it's overridden in the `Product` type.
      *
-     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
      */
     taxClass?: Maybe<TaxClass>;
     /**
@@ -16753,7 +17358,7 @@ export type ProductTypeInput = {
   /**
    * Tax rate for enabled tax gateway.
    *
-   * DEPRECATED: this field will be removed in Saleor 4.0.. Use tax classes to control the tax calculation for a product type.
+   * DEPRECATED: this field will be removed in Saleor 4.0.. Use tax classes to control the tax calculation for a product type. If taxCode is provided, Saleor will try to find a tax class with given code (codes are stored in metadata) and assign it. If no tax class is found, it would be created and assigned.
    */
   taxCode?: InputMaybe<Scalars["String"]>;
   /** List of attributes used to distinguish between different variants of a product. */
@@ -18233,11 +18838,7 @@ export type Query = {
    * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
    */
   taxCountryConfiguration?: Maybe<TaxCountryConfiguration>;
-  /**
-   *
-   *
-   * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
-   */
+  /** \n\nRequires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP. */
   taxCountryConfigurations?: Maybe<Array<TaxCountryConfiguration>>;
   /** List of all tax rates available from tax gateway. */
   taxTypes?: Maybe<Array<TaxType>>;
@@ -19735,7 +20336,7 @@ export type ShippingMethodType = Node &
     /**
      * Tax class assigned to this shipping method.
      *
-     * Requires one of the following permissions: MANAGE_TAXES, MANAGE_SHIPPING.
+     * Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
      */
     taxClass?: Maybe<TaxClass>;
     /** Returns translated shipping method fields for the given language code. */
@@ -20786,6 +21387,7 @@ export type StaffCreate = {
   user?: Maybe<User>;
 };
 
+/** Fields required to create a staff user. */
 export type StaffCreateInput = {
   /** List of permission group IDs to which user should be assigned. */
   addGroups?: InputMaybe<Array<Scalars["ID"]>>;
@@ -20876,6 +21478,7 @@ export type StaffError = {
   users?: Maybe<Array<Scalars["ID"]>>;
 };
 
+/** Represents status of a staff account. */
 export type StaffMemberStatus =
   /** User account has been activated. */
   | "ACTIVE"
@@ -20955,6 +21558,7 @@ export type StaffUpdate = {
   user?: Maybe<User>;
 };
 
+/** Fields required to update a staff user. */
 export type StaffUpdateInput = {
   /** List of permission group IDs to which user should be assigned. */
   addGroups?: InputMaybe<Array<Scalars["ID"]>>;
@@ -21955,27 +22559,22 @@ export type TransactionAction = {
  *     The following actions are possible:
  *     CHARGE - Represents the charge action.
  *     REFUND - Represents a refund action.
- *     VOID - Represents a void action.
- *
+ *     VOID - Represents a void action. This field will be removed
+ *     in Saleor 3.14 (Preview Feature). Use `CANCEL` instead.
+ *     CANCEL - Represents a cancel action. Added in Saleor 3.12.
  */
-export type TransactionActionEnum = "CHARGE" | "REFUND" | "VOID";
+export type TransactionActionEnum = "CANCEL" | "CHARGE" | "REFUND" | "VOID";
 
 /**
  * Event sent when transaction action is requested.
  *
  * Added in Saleor 3.4.
  *
- * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ * DEPRECATED: this subscription will be removed in Saleor 3.14 (Preview Feature). Use `TransactionChargeRequested`, `TransactionRefundRequested`, `TransactionCancelationRequested` instead.
  */
 export type TransactionActionRequest = Event & {
   __typename?: "TransactionActionRequest";
-  /**
-   * Requested action data.
-   *
-   * Added in Saleor 3.4.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   */
+  /** Requested action data. */
   action: TransactionAction;
   /** Time of the event. */
   issuedAt?: Maybe<Scalars["DateTime"]>;
@@ -21983,24 +22582,66 @@ export type TransactionActionRequest = Event & {
   issuingPrincipal?: Maybe<IssuingPrincipal>;
   /** The application receiving the webhook. */
   recipient?: Maybe<App>;
-  /**
-   * Look up a transaction.
-   *
-   * Added in Saleor 3.4.
-   *
-   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
-   */
+  /** Look up a transaction. */
   transaction?: Maybe<TransactionItem>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
 };
 
 /**
- * Create transaction for checkout or order. Requires the following permissions: AUTHENTICATED_APP and HANDLE_PAYMENTS.
+ * Event sent when transaction cancelation is requested.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionCancelationRequested = Event & {
+  __typename?: "TransactionCancelationRequested";
+  /** Requested action data. */
+  action: TransactionAction;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Look up a transaction. */
+  transaction?: Maybe<TransactionItem>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when transaction charge is requested.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionChargeRequested = Event & {
+  __typename?: "TransactionChargeRequested";
+  /** Requested action data. */
+  action: TransactionAction;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Look up a transaction. */
+  transaction?: Maybe<TransactionItem>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Create transaction for checkout or order.
  *
  * Added in Saleor 3.4.
  *
  * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires one of the following permissions: HANDLE_PAYMENTS.
  */
 export type TransactionCreate = {
   __typename?: "TransactionCreate";
@@ -22024,52 +22665,321 @@ export type TransactionCreateErrorCode =
   | "INCORRECT_CURRENCY"
   | "INVALID"
   | "METADATA_KEY_REQUIRED"
-  | "NOT_FOUND";
+  | "NOT_FOUND"
+  | "UNIQUE";
 
 export type TransactionCreateInput = {
   /** Amount authorized by this transaction. */
   amountAuthorized?: InputMaybe<MoneyInput>;
+  /**
+   * Amount canceled by this transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  amountCanceled?: InputMaybe<MoneyInput>;
   /** Amount charged by this transaction. */
   amountCharged?: InputMaybe<MoneyInput>;
   /** Amount refunded by this transaction. */
   amountRefunded?: InputMaybe<MoneyInput>;
-  /** Amount voided by this transaction. */
+  /**
+   * Amount voided by this transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `amountCanceled` instead.
+   */
   amountVoided?: InputMaybe<MoneyInput>;
   /** List of all possible actions for the transaction */
   availableActions?: InputMaybe<Array<TransactionActionEnum>>;
+  /**
+   * The url that will allow to redirect user to payment provider page with transaction event details.
+   *
+   * Added in Saleor 3.13.
+   */
+  externalUrl?: InputMaybe<Scalars["String"]>;
+  /**
+   * The message of the transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  message?: InputMaybe<Scalars["String"]>;
   /** Payment public metadata. */
   metadata?: InputMaybe<Array<MetadataInput>>;
+  /**
+   * Payment name of the transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  name?: InputMaybe<Scalars["String"]>;
   /** Payment private metadata. */
   privateMetadata?: InputMaybe<Array<MetadataInput>>;
-  /** Reference of the transaction. */
+  /**
+   * PSP Reference of the transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  pspReference?: InputMaybe<Scalars["String"]>;
+  /**
+   * Reference of the transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `pspReference` instead.
+   */
   reference?: InputMaybe<Scalars["String"]>;
-  /** Status of the transaction. */
-  status: Scalars["String"];
-  /** Payment type used for this transaction. */
-  type: Scalars["String"];
+  /**
+   * Status of the transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). The `status` is not needed. The amounts can be used to define the current status of transactions.
+   */
+  status?: InputMaybe<Scalars["String"]>;
+  /**
+   * Payment type used for this transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `name` and `message` instead.
+   */
+  type?: InputMaybe<Scalars["String"]>;
 };
 
 /** Represents transaction's event. */
 export type TransactionEvent = Node & {
   __typename?: "TransactionEvent";
+  /**
+   * The amount related to this event.
+   *
+   * Added in Saleor 3.13.
+   */
+  amount: Money;
   createdAt: Scalars["DateTime"];
+  /**
+   * User or App that created the transaction event.
+   *
+   * Added in Saleor 3.13.
+   */
+  createdBy?: Maybe<UserOrApp>;
+  /**
+   * The url that will allow to redirect user to payment provider page with transaction details.
+   *
+   * Added in Saleor 3.13.
+   */
+  externalUrl: Scalars["String"];
   /** The ID of the object. */
   id: Scalars["ID"];
-  /** Name of the transaction's event. */
+  /**
+   * Message related to the transaction's event.
+   *
+   * Added in Saleor 3.13.
+   */
+  message: Scalars["String"];
+  /**
+   * Name of the transaction's event.
+   * @deprecated This field will be removed in Saleor 3.14 (Preview Feature). Use `message` instead.
+   */
   name?: Maybe<Scalars["String"]>;
-  /** Reference of transaction's event. */
+  /**
+   * PSP reference of transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  pspReference: Scalars["String"];
+  /**
+   * Reference of transaction's event.
+   * @deprecated This field will be removed in Saleor 3.14 (Preview Feature).Use `pspReference` instead.
+   */
   reference: Scalars["String"];
-  /** Status of transaction's event. */
-  status: TransactionStatus;
+  /**
+   * Status of transaction's event.
+   * @deprecated This field will be removed in Saleor 3.14 (Preview Feature). Use `type` instead.
+   */
+  status?: Maybe<TransactionStatus>;
+  /**
+   * The type of action related to this event.
+   *
+   * Added in Saleor 3.13.
+   */
+  type?: Maybe<TransactionEventTypeEnum>;
 };
 
 export type TransactionEventInput = {
-  /** Name of the transaction. */
+  /**
+   * The message related to the event.
+   *
+   * Added in Saleor 3.13.
+   */
+  message?: InputMaybe<Scalars["String"]>;
+  /**
+   * Name of the transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `message` instead. `name` field will be added to `message`.
+   */
   name?: InputMaybe<Scalars["String"]>;
-  /** Reference of the transaction. */
+  /**
+   * PSP Reference related to this action.
+   *
+   * Added in Saleor 3.13.
+   */
+  pspReference?: InputMaybe<Scalars["String"]>;
+  /**
+   * Reference of the transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `pspReference` instead.
+   */
   reference?: InputMaybe<Scalars["String"]>;
-  /** Current status of the payment transaction. */
-  status: TransactionStatus;
+  /**
+   * Current status of the payment transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Status will be calculated by Saleor.
+   */
+  status?: InputMaybe<TransactionStatus>;
+};
+
+/**
+ * Report the event for the transaction.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires the following permissions: OWNER and HANDLE_PAYMENTS.
+ */
+export type TransactionEventReport = {
+  __typename?: "TransactionEventReport";
+  /** Defines if the reported event hasn't been processed earlier. */
+  alreadyProcessed?: Maybe<Scalars["Boolean"]>;
+  errors: Array<TransactionEventReportError>;
+  /** The transaction related to the reported event. */
+  transaction?: Maybe<TransactionItem>;
+  /** The event assigned to this report. if `alreadyProcessed` is set to `true`, the previously processed event will be returned. */
+  transactionEvent?: Maybe<TransactionEvent>;
+};
+
+export type TransactionEventReportError = {
+  __typename?: "TransactionEventReportError";
+  /** The error code. */
+  code: TransactionEventReportErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TransactionEventReportErrorCode =
+  | "ALREADY_EXISTS"
+  | "GRAPHQL_ERROR"
+  | "INCORRECT_DETAILS"
+  | "INVALID"
+  | "NOT_FOUND";
+
+/**
+ * Represents possible event types.
+ *
+ *     Added in Saleor 3.12.
+ *
+ *     The following types are possible:
+ *     AUTHORIZATION_SUCCESS - represents success authorization.
+ *     AUTHORIZATION_FAILURE - represents failure authorization.
+ *     AUTHORIZATION_ADJUSTMENT - represents authorization adjustment.
+ *     AUTHORIZATION_REQUEST - represents authorization request.
+ *     AUTHORIZATION_ACTION_REQUIRED - represents authorization that needs
+ *     additional actions from the customer.
+ *     CHARGE_ACTION_REQUIRED - represents charge that needs
+ *     additional actions from the customer.
+ *     CHARGE_SUCCESS - represents success charge.
+ *     CHARGE_FAILURE - represents failure charge.
+ *     CHARGE_BACK - represents chargeback.
+ *     CHARGE_REQUEST - represents charge request.
+ *     REFUND_SUCCESS - represents success refund.
+ *     REFUND_FAILURE - represents failure refund.
+ *     REFUND_REVERSE - represents reverse refund.
+ *     REFUND_REQUEST - represents refund request.
+ *     CANCEL_SUCCESS - represents success cancel.
+ *     CANCEL_FAILURE - represents failure cancel.
+ *     CANCEL_REQUEST - represents cancel request.
+ *     INFO - represents info event.
+ */
+export type TransactionEventTypeEnum =
+  | "AUTHORIZATION_ACTION_REQUIRED"
+  | "AUTHORIZATION_ADJUSTMENT"
+  | "AUTHORIZATION_FAILURE"
+  | "AUTHORIZATION_REQUEST"
+  | "AUTHORIZATION_SUCCESS"
+  | "CANCEL_FAILURE"
+  | "CANCEL_REQUEST"
+  | "CANCEL_SUCCESS"
+  | "CHARGE_ACTION_REQUIRED"
+  | "CHARGE_BACK"
+  | "CHARGE_FAILURE"
+  | "CHARGE_REQUEST"
+  | "CHARGE_SUCCESS"
+  | "INFO"
+  | "REFUND_FAILURE"
+  | "REFUND_REQUEST"
+  | "REFUND_REVERSE"
+  | "REFUND_SUCCESS";
+
+/**
+ * Determine the transaction flow strategy.
+ *
+ *     AUTHORIZATION - the processed transaction should be only authorized
+ *     CHARGE - the processed transaction should be charged.
+ */
+export type TransactionFlowStrategyEnum = "AUTHORIZATION" | "CHARGE";
+
+/**
+ * Initializes a transaction session. It triggers the webhook `TRANSACTION_INITIALIZE_SESSION`, to the requested `paymentGateways`.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionInitialize = {
+  __typename?: "TransactionInitialize";
+  /** The JSON data required to finalize the payment. */
+  data?: Maybe<Scalars["JSON"]>;
+  errors: Array<TransactionInitializeError>;
+  /** The initialized transaction. */
+  transaction?: Maybe<TransactionItem>;
+  /** The event created for the initialized transaction. */
+  transactionEvent?: Maybe<TransactionEvent>;
+};
+
+export type TransactionInitializeError = {
+  __typename?: "TransactionInitializeError";
+  /** The error code. */
+  code: TransactionInitializeErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TransactionInitializeErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND";
+
+/**
+ * Event sent when user starts processing the payment.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionInitializeSession = Event & {
+  __typename?: "TransactionInitializeSession";
+  /** Action to proceed for the transaction */
+  action: TransactionProcessAction;
+  /** Payment gateway data in JSON format, recieved from storefront. */
+  data?: Maybe<Scalars["JSON"]>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** Merchant reference assigned to this payment. */
+  merchantReference: Scalars["String"];
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Checkout or order */
+  sourceObject: OrderOrCheckout;
+  /** Look up a transaction. */
+  transaction: TransactionItem;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
 };
 
 /**
@@ -22084,15 +22994,57 @@ export type TransactionItem = Node &
     __typename?: "TransactionItem";
     /** List of actions that can be performed in the current state of a payment. */
     actions: Array<TransactionActionEnum>;
+    /**
+     * Total amount of ongoing authorization requests for the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    authorizePendingAmount: Money;
     /** Total amount authorized for this payment. */
     authorizedAmount: Money;
+    /**
+     * Total amount of ongoing cancel requests for the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    cancelPendingAmount: Money;
+    /**
+     * Total amount canceled for this payment.
+     *
+     * Added in Saleor 3.13.
+     */
+    canceledAmount: Money;
+    /**
+     * Total amount of ongoing charge requests for the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    chargePendingAmount: Money;
     /** Total amount charged for this payment. */
     chargedAmount: Money;
     createdAt: Scalars["DateTime"];
+    /**
+     * User or App that created the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    createdBy?: Maybe<UserOrApp>;
     /** List of all transaction's events. */
     events: Array<TransactionEvent>;
+    /**
+     * The url that will allow to redirect user to payment provider page with transaction details.
+     *
+     * Added in Saleor 3.13.
+     */
+    externalUrl: Scalars["String"];
     /** The ID of the object. */
     id: Scalars["ID"];
+    /**
+     * Message related to the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    message: Scalars["String"];
     /** List of public metadata items. Can be accessed without permissions. */
     metadata: Array<MetadataItem>;
     /**
@@ -22114,6 +23066,12 @@ export type TransactionItem = Node &
      */
     metafields?: Maybe<Scalars["Metadata"]>;
     modifiedAt: Scalars["DateTime"];
+    /**
+     * Name of the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    name: Scalars["String"];
     /**
      * The related order.
      *
@@ -22140,15 +23098,39 @@ export type TransactionItem = Node &
      * Note: this API is currently in Feature Preview and can be subject to changes at later point.
      */
     privateMetafields?: Maybe<Scalars["Metadata"]>;
-    /** Reference of transaction. */
+    /**
+     * PSP reference of transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    pspReference: Scalars["String"];
+    /**
+     * Reference of transaction.
+     * @deprecated This field will be removed in Saleor 3.14 (Preview Feature).Use `pspReference` instead.
+     */
     reference: Scalars["String"];
+    /**
+     * Total amount of ongoing refund requests for the transaction.
+     *
+     * Added in Saleor 3.13.
+     */
+    refundPendingAmount: Money;
     /** Total amount refunded for this payment. */
     refundedAmount: Money;
-    /** Status of transaction. */
+    /**
+     * Status of transaction.
+     * @deprecated This field will be removed in Saleor 3.14 (Preview Feature). The `status` is not needed. The amounts can be used to define the current status of transactions.
+     */
     status: Scalars["String"];
-    /** Type of transaction. */
+    /**
+     * Type of transaction.
+     * @deprecated This field will be removed in Saleor 3.14 (Preview Feature). Use `name` or `message` instead.
+     */
     type: Scalars["String"];
-    /** Total amount voided for this payment. */
+    /**
+     * Total amount voided for this payment.
+     * @deprecated This field will be removed in Saleor 3.14 (Preview Feature).Use `canceledAmount` instead.
+     */
     voidedAmount: Money;
   };
 
@@ -22235,13 +23217,111 @@ export type TransactionKind =
   | "VOID";
 
 /**
+ * Processes a transaction session. It triggers the webhook `TRANSACTION_PROCESS_SESSION`, to the assigned `paymentGateways`.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionProcess = {
+  __typename?: "TransactionProcess";
+  /** The json data required to finalize the payment. */
+  data?: Maybe<Scalars["JSON"]>;
+  errors: Array<TransactionProcessError>;
+  /** The processed transaction. */
+  transaction?: Maybe<TransactionItem>;
+  /** The event created for the processed transaction. */
+  transactionEvent?: Maybe<TransactionEvent>;
+};
+
+export type TransactionProcessAction = {
+  __typename?: "TransactionProcessAction";
+  actionType: TransactionFlowStrategyEnum;
+  /** Transaction amount to process. */
+  amount: Scalars["PositiveDecimal"];
+  /** Currency of the amount. */
+  currency: Scalars["String"];
+};
+
+export type TransactionProcessError = {
+  __typename?: "TransactionProcessError";
+  /** The error code. */
+  code: TransactionProcessErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+/** An enumeration. */
+export type TransactionProcessErrorCode =
+  | "GRAPHQL_ERROR"
+  | "INVALID"
+  | "MISSING_PAYMENT_APP"
+  | "MISSING_PAYMENT_APP_RELATION"
+  | "NOT_FOUND"
+  | "TRANSACTION_ALREADY_PROCESSED";
+
+/**
+ * Event sent when user has additional payment action to process.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionProcessSession = Event & {
+  __typename?: "TransactionProcessSession";
+  /** Action to proceed for the transaction */
+  action: TransactionProcessAction;
+  /** Payment gateway data in JSON format, recieved from storefront. */
+  data?: Maybe<Scalars["JSON"]>;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** Merchant reference assigned to this payment. */
+  merchantReference: Scalars["String"];
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Checkout or order */
+  sourceObject: OrderOrCheckout;
+  /** Look up a transaction. */
+  transaction: TransactionItem;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Event sent when transaction refund is requested.
+ *
+ * Added in Saleor 3.13.
+ *
+ * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ */
+export type TransactionRefundRequested = Event & {
+  __typename?: "TransactionRefundRequested";
+  /** Requested action data. */
+  action: TransactionAction;
+  /** Time of the event. */
+  issuedAt?: Maybe<Scalars["DateTime"]>;
+  /** The user or application that triggered the event. */
+  issuingPrincipal?: Maybe<IssuingPrincipal>;
+  /** The application receiving the webhook. */
+  recipient?: Maybe<App>;
+  /** Look up a transaction. */
+  transaction?: Maybe<TransactionItem>;
+  /** Saleor version that triggered the event. */
+  version?: Maybe<Scalars["String"]>;
+};
+
+/**
  * Request an action for payment transaction.
  *
  * Added in Saleor 3.4.
  *
  * Note: this API is currently in Feature Preview and can be subject to changes at later point.
  *
- * Requires one of the following permissions: HANDLE_PAYMENTS, MANAGE_ORDERS.
+ * Requires one of the following permissions: HANDLE_PAYMENTS.
  */
 export type TransactionRequestAction = {
   __typename?: "TransactionRequestAction";
@@ -22266,15 +23346,24 @@ export type TransactionRequestActionErrorCode =
   | "MISSING_TRANSACTION_ACTION_REQUEST_WEBHOOK"
   | "NOT_FOUND";
 
-/** An enumeration. */
+/**
+ * Represents a status of payment transaction.
+ *
+ *     The following statuses are possible:
+ *     SUCCESS - Represents a sucess action.
+ *     FAILURE - Represents a failure action.
+ *     PENDING - Represents a pending action.
+ */
 export type TransactionStatus = "FAILURE" | "PENDING" | "SUCCESS";
 
 /**
- * Create transaction for checkout or order. Requires the following permissions: AUTHENTICATED_APP and HANDLE_PAYMENTS.
+ * Create transaction for checkout or order.
  *
  * Added in Saleor 3.4.
  *
  * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+ *
+ * Requires the following permissions: OWNER and HANDLE_PAYMENTS.
  */
 export type TransactionUpdate = {
   __typename?: "TransactionUpdate";
@@ -22298,28 +23387,75 @@ export type TransactionUpdateErrorCode =
   | "INCORRECT_CURRENCY"
   | "INVALID"
   | "METADATA_KEY_REQUIRED"
-  | "NOT_FOUND";
+  | "NOT_FOUND"
+  | "UNIQUE";
 
 export type TransactionUpdateInput = {
   /** Amount authorized by this transaction. */
   amountAuthorized?: InputMaybe<MoneyInput>;
+  /**
+   * Amount canceled by this transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  amountCanceled?: InputMaybe<MoneyInput>;
   /** Amount charged by this transaction. */
   amountCharged?: InputMaybe<MoneyInput>;
   /** Amount refunded by this transaction. */
   amountRefunded?: InputMaybe<MoneyInput>;
-  /** Amount voided by this transaction. */
+  /**
+   * Amount voided by this transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `amountCanceled` instead.
+   */
   amountVoided?: InputMaybe<MoneyInput>;
   /** List of all possible actions for the transaction */
   availableActions?: InputMaybe<Array<TransactionActionEnum>>;
+  /**
+   * The url that will allow to redirect user to payment provider page with transaction event details.
+   *
+   * Added in Saleor 3.13.
+   */
+  externalUrl?: InputMaybe<Scalars["String"]>;
+  /**
+   * The message of the transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  message?: InputMaybe<Scalars["String"]>;
   /** Payment public metadata. */
   metadata?: InputMaybe<Array<MetadataInput>>;
+  /**
+   * Payment name of the transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  name?: InputMaybe<Scalars["String"]>;
   /** Payment private metadata. */
   privateMetadata?: InputMaybe<Array<MetadataInput>>;
-  /** Reference of the transaction. */
+  /**
+   * PSP Reference of the transaction.
+   *
+   * Added in Saleor 3.13.
+   */
+  pspReference?: InputMaybe<Scalars["String"]>;
+  /**
+   * Reference of the transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `pspReference` instead.
+   */
   reference?: InputMaybe<Scalars["String"]>;
-  /** Status of the transaction. */
+  /**
+   * Status of the transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). The `status` is not needed. The amounts can be used to define the current status of transactions.
+   */
   status?: InputMaybe<Scalars["String"]>;
-  /** Payment type used for this transaction. */
+  /**
+   * Payment type used for this transaction.
+   *
+   * DEPRECATED: this field will be removed in Saleor 3.14 (Preview Feature). Use `name` and `message` instead.
+   */
   type?: InputMaybe<Scalars["String"]>;
 };
 
@@ -22748,6 +23884,9 @@ export type UserCreateInput = {
   redirectUrl?: InputMaybe<Scalars["String"]>;
 };
 
+export type UserOrApp = App | User;
+
+/** Represents user's permissions. */
 export type UserPermission = {
   __typename?: "UserPermission";
   /** Internal code for permission. */
@@ -22758,6 +23897,7 @@ export type UserPermission = {
   sourcePermissionGroups?: Maybe<Array<Group>>;
 };
 
+/** Represents user's permissions. */
 export type UserPermissionSourcePermissionGroupsArgs = {
   userId: Scalars["ID"];
 };
@@ -24041,6 +25181,7 @@ export type WebhookEventTypeAsyncEnum =
   | "CHANNEL_UPDATED"
   /** A new checkout is created. */
   | "CHECKOUT_CREATED"
+  | "CHECKOUT_FULLY_PAID"
   /**
    * A checkout metadata is updated.
    *
@@ -24267,7 +25408,11 @@ export type WebhookEventTypeAsyncEnum =
    * Added in Saleor 3.12.
    */
   | "THUMBNAIL_CREATED"
-  /** An action requested for transaction. */
+  /**
+   * An action requested for transaction.
+   *
+   * DEPRECATED: this subscription will be removed in Saleor 3.14 (Preview Feature). Use `TRANSACTION_CHARGE_REQUESTED`, `TRANSACTION_REFUND_REQUESTED`, `TRANSACTION_CANCELATION_REQUESTED` instead.
+   */
   | "TRANSACTION_ACTION_REQUEST"
   /**
    * Transaction item metadata is updated.
@@ -24366,6 +25511,7 @@ export type WebhookEventTypeEnum =
   | "CHECKOUT_CREATED"
   /** Filter shipping methods for checkout. */
   | "CHECKOUT_FILTER_SHIPPING_METHODS"
+  | "CHECKOUT_FULLY_PAID"
   /**
    * A checkout metadata is updated.
    *
@@ -24510,6 +25656,7 @@ export type WebhookEventTypeEnum =
   | "PAYMENT_CAPTURE"
   /** Confirm payment. */
   | "PAYMENT_CONFIRM"
+  | "PAYMENT_GATEWAY_INITIALIZE_SESSION"
   /** Listing available payment gateways. */
   | "PAYMENT_LIST_GATEWAYS"
   /** Process payment. */
@@ -24618,8 +25765,29 @@ export type WebhookEventTypeEnum =
    * Added in Saleor 3.12.
    */
   | "THUMBNAIL_CREATED"
-  /** An action requested for transaction. */
+  /**
+   * An action requested for transaction.
+   *
+   * DEPRECATED: this subscription will be removed in Saleor 3.14 (Preview Feature). Use `TRANSACTION_CHARGE_REQUESTED`, `TRANSACTION_REFUND_REQUESTED`, `TRANSACTION_CANCELATION_REQUESTED` instead.
+   */
   | "TRANSACTION_ACTION_REQUEST"
+  /**
+   * Event called when cancel has been requested for transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_CANCELATION_REQUESTED"
+  /**
+   * Event called when charge has been requested for transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_CHARGE_REQUESTED"
+  | "TRANSACTION_INITIALIZE_SESSION"
   /**
    * Transaction item metadata is updated.
    *
@@ -24628,6 +25796,15 @@ export type WebhookEventTypeEnum =
    * Note: this API is currently in Feature Preview and can be subject to changes at later point.
    */
   | "TRANSACTION_ITEM_METADATA_UPDATED"
+  | "TRANSACTION_PROCESS_SESSION"
+  /**
+   * Event called when refund has been requested for transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_REFUND_REQUESTED"
   /** A new translation is created. */
   | "TRANSLATION_CREATED"
   /** A translation is updated. */
@@ -24689,6 +25866,7 @@ export type WebhookEventTypeSyncEnum =
   | "PAYMENT_CAPTURE"
   /** Confirm payment. */
   | "PAYMENT_CONFIRM"
+  | "PAYMENT_GATEWAY_INITIALIZE_SESSION"
   /** Listing available payment gateways. */
   | "PAYMENT_LIST_GATEWAYS"
   /** Process payment. */
@@ -24698,7 +25876,33 @@ export type WebhookEventTypeSyncEnum =
   /** Void payment. */
   | "PAYMENT_VOID"
   /** Fetch external shipping methods for checkout. */
-  | "SHIPPING_LIST_METHODS_FOR_CHECKOUT";
+  | "SHIPPING_LIST_METHODS_FOR_CHECKOUT"
+  /**
+   * Event called when cancel has been requested for transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_CANCELATION_REQUESTED"
+  /**
+   * Event called when charge has been requested for transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_CHARGE_REQUESTED"
+  | "TRANSACTION_INITIALIZE_SESSION"
+  | "TRANSACTION_PROCESS_SESSION"
+  /**
+   * Event called when refund has been requested for transaction.
+   *
+   * Added in Saleor 3.13.
+   *
+   * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+   */
+  | "TRANSACTION_REFUND_REQUESTED";
 
 /** An enumeration. */
 export type WebhookSampleEventTypeEnum =
@@ -24723,6 +25927,7 @@ export type WebhookSampleEventTypeEnum =
   | "CHANNEL_STATUS_CHANGED"
   | "CHANNEL_UPDATED"
   | "CHECKOUT_CREATED"
+  | "CHECKOUT_FULLY_PAID"
   | "CHECKOUT_METADATA_UPDATED"
   | "CHECKOUT_UPDATED"
   | "COLLECTION_CREATED"
@@ -24927,6 +26132,7 @@ export type _Entity =
   | Category
   | Collection
   | Group
+  | Order
   | PageType
   | Product
   | ProductMedia
@@ -24976,6 +26182,14 @@ export type ValidationRulesFragment = {
   }>;
 };
 
+export type PaymentGatewayFragment = {
+  __typename?: "PaymentGateway";
+  id: string;
+  name: string;
+  currencies: Array<string>;
+  config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+};
+
 export type CheckoutFragment = {
   __typename?: "Checkout";
   id: string;
@@ -24983,6 +26197,8 @@ export type CheckoutFragment = {
   voucherCode?: string | null;
   discountName?: string | null;
   translatedDiscountName?: string | null;
+  authorizeStatus: CheckoutAuthorizeStatusEnum;
+  chargeStatus: CheckoutChargeStatusEnum;
   isShippingRequired: boolean;
   discount?: { __typename?: "Money"; currency: string; amount: number } | null;
   giftCards: Array<{
@@ -25023,7 +26239,13 @@ export type CheckoutFragment = {
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   user?: { __typename?: "User"; id: string; email: string } | null;
-  availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+  availablePaymentGateways: Array<{
+    __typename?: "PaymentGateway";
+    id: string;
+    name: string;
+    currencies: Array<string>;
+    config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+  }>;
   deliveryMethod?:
     | { __typename?: "ShippingMethod"; id: string }
     | { __typename?: "Warehouse"; id: string }
@@ -25038,7 +26260,7 @@ export type CheckoutFragment = {
   }>;
   totalPrice: {
     __typename?: "TaxedMoney";
-    gross: { __typename?: "Money"; amount: number; currency: string };
+    gross: { __typename?: "Money"; currency: string; amount: number };
     tax: { __typename?: "Money"; currency: string; amount: number };
   };
   shippingPrice: {
@@ -25186,6 +26408,8 @@ export type CheckoutQuery = {
     voucherCode?: string | null;
     discountName?: string | null;
     translatedDiscountName?: string | null;
+    authorizeStatus: CheckoutAuthorizeStatusEnum;
+    chargeStatus: CheckoutChargeStatusEnum;
     isShippingRequired: boolean;
     discount?: { __typename?: "Money"; currency: string; amount: number } | null;
     giftCards: Array<{
@@ -25226,7 +26450,13 @@ export type CheckoutQuery = {
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     user?: { __typename?: "User"; id: string; email: string } | null;
-    availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+    availablePaymentGateways: Array<{
+      __typename?: "PaymentGateway";
+      id: string;
+      name: string;
+      currencies: Array<string>;
+      config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+    }>;
     deliveryMethod?:
       | { __typename?: "ShippingMethod"; id: string }
       | { __typename?: "Warehouse"; id: string }
@@ -25241,7 +26471,7 @@ export type CheckoutQuery = {
     }>;
     totalPrice: {
       __typename?: "TaxedMoney";
-      gross: { __typename?: "Money"; amount: number; currency: string };
+      gross: { __typename?: "Money"; currency: string; amount: number };
       tax: { __typename?: "Money"; currency: string; amount: number };
     };
     shippingPrice: {
@@ -25342,6 +26572,8 @@ export type CheckoutLinesUpdateMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -25382,7 +26614,13 @@ export type CheckoutLinesUpdateMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -25397,7 +26635,7 @@ export type CheckoutLinesUpdateMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -25487,6 +26725,8 @@ export type CheckoutLineDeleteMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -25527,7 +26767,13 @@ export type CheckoutLineDeleteMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -25542,7 +26788,7 @@ export type CheckoutLineDeleteMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -25632,6 +26878,8 @@ export type CheckoutEmailUpdateMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -25672,7 +26920,13 @@ export type CheckoutEmailUpdateMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -25687,7 +26941,7 @@ export type CheckoutEmailUpdateMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -25776,6 +27030,8 @@ export type CheckoutCustomerAttachMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -25816,7 +27072,13 @@ export type CheckoutCustomerAttachMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -25831,7 +27093,7 @@ export type CheckoutCustomerAttachMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -25898,104 +27160,6 @@ export type CheckoutCustomerAttachMutation = {
   } | null;
 };
 
-export type UserAddressDeleteMutationVariables = Exact<{
-  id: Scalars["ID"];
-}>;
-
-export type UserAddressDeleteMutation = {
-  __typename?: "Mutation";
-  accountAddressDelete?: {
-    __typename?: "AccountAddressDelete";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-    address?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-  } | null;
-};
-
-export type UserAddressUpdateMutationVariables = Exact<{
-  id: Scalars["ID"];
-  address: AddressInput;
-}>;
-
-export type UserAddressUpdateMutation = {
-  __typename?: "Mutation";
-  accountAddressUpdate?: {
-    __typename?: "AccountAddressUpdate";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-    address?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-  } | null;
-};
-
-export type UserAddressCreateMutationVariables = Exact<{
-  address: AddressInput;
-  type?: InputMaybe<AddressTypeEnum>;
-}>;
-
-export type UserAddressCreateMutation = {
-  __typename?: "Mutation";
-  accountAddressCreate?: {
-    __typename?: "AccountAddressCreate";
-    errors: Array<{
-      __typename?: "AccountError";
-      message?: string | null;
-      field?: string | null;
-      code: AccountErrorCode;
-    }>;
-    address?: {
-      __typename?: "Address";
-      id: string;
-      city: string;
-      phone?: string | null;
-      postalCode: string;
-      companyName: string;
-      cityArea: string;
-      streetAddress1: string;
-      streetAddress2: string;
-      countryArea: string;
-      firstName: string;
-      lastName: string;
-      country: { __typename?: "CountryDisplay"; country: string; code: string };
-    } | null;
-  } | null;
-};
-
 export type CheckoutShippingAddressUpdateMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   shippingAddress: AddressInput;
@@ -26020,6 +27184,8 @@ export type CheckoutShippingAddressUpdateMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -26060,7 +27226,13 @@ export type CheckoutShippingAddressUpdateMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -26075,7 +27247,7 @@ export type CheckoutShippingAddressUpdateMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -26166,6 +27338,8 @@ export type CheckoutBillingAddressUpdateMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -26206,7 +27380,13 @@ export type CheckoutBillingAddressUpdateMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -26221,7 +27401,7 @@ export type CheckoutBillingAddressUpdateMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -26311,6 +27491,8 @@ export type CheckoutDeliveryMethodUpdateMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -26351,7 +27533,13 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -26366,7 +27554,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -26478,6 +27666,8 @@ export type CheckoutAddPromoCodeMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -26518,7 +27708,13 @@ export type CheckoutAddPromoCodeMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -26533,7 +27729,7 @@ export type CheckoutAddPromoCodeMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -26624,6 +27820,8 @@ export type CheckoutRemovePromoCodeMutation = {
       voucherCode?: string | null;
       discountName?: string | null;
       translatedDiscountName?: string | null;
+      authorizeStatus: CheckoutAuthorizeStatusEnum;
+      chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
@@ -26664,7 +27862,13 @@ export type CheckoutRemovePromoCodeMutation = {
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
-      availablePaymentGateways: Array<{ __typename?: "PaymentGateway"; id: string; name: string }>;
+      availablePaymentGateways: Array<{
+        __typename?: "PaymentGateway";
+        id: string;
+        name: string;
+        currencies: Array<string>;
+        config: Array<{ __typename?: "GatewayConfigLine"; field: string; value?: string | null }>;
+      }>;
       deliveryMethod?:
         | { __typename?: "ShippingMethod"; id: string }
         | { __typename?: "Warehouse"; id: string }
@@ -26679,7 +27883,7 @@ export type CheckoutRemovePromoCodeMutation = {
       }>;
       totalPrice: {
         __typename?: "TaxedMoney";
-        gross: { __typename?: "Money"; amount: number; currency: string };
+        gross: { __typename?: "Money"; currency: string; amount: number };
         tax: { __typename?: "Money"; currency: string; amount: number };
       };
       shippingPrice: {
@@ -26746,6 +27950,24 @@ export type CheckoutRemovePromoCodeMutation = {
   } | null;
 };
 
+export type CheckoutCompleteMutationVariables = Exact<{
+  checkoutId: Scalars["ID"];
+}>;
+
+export type CheckoutCompleteMutation = {
+  __typename?: "Mutation";
+  checkoutComplete?: {
+    __typename?: "CheckoutComplete";
+    errors: Array<{
+      __typename?: "CheckoutError";
+      message?: string | null;
+      field?: string | null;
+      code: CheckoutErrorCode;
+    }>;
+    order?: { __typename?: "Order"; id: string } | null;
+  } | null;
+};
+
 export type MoneyFragment = { __typename?: "Money"; currency: string; amount: number };
 
 export type OrderLineFragment = {
@@ -26796,6 +28018,8 @@ export type OrderFragment = {
   number: string;
   userEmail?: string | null;
   isPaid: boolean;
+  chargeStatus: OrderChargeStatusEnum;
+  authorizeStatus: OrderAuthorizeStatusEnum;
   discounts: Array<{
     __typename?: "OrderDiscount";
     type: OrderDiscountType;
@@ -26906,6 +28130,8 @@ export type OrderQuery = {
     number: string;
     userEmail?: string | null;
     isPaid: boolean;
+    chargeStatus: OrderChargeStatusEnum;
+    authorizeStatus: OrderAuthorizeStatusEnum;
     discounts: Array<{
       __typename?: "OrderDiscount";
       type: OrderDiscountType;
@@ -27004,6 +28230,146 @@ export type OrderQuery = {
   } | null;
 };
 
+export type PaymentGatewaysInitializeMutationVariables = Exact<{
+  checkoutId: Scalars["ID"];
+  paymentGateways?: InputMaybe<Array<PaymentGatewayToInitialize> | PaymentGatewayToInitialize>;
+}>;
+
+export type PaymentGatewaysInitializeMutation = {
+  __typename?: "Mutation";
+  paymentGatewayInitialize?: {
+    __typename?: "PaymentGatewayInitialize";
+    errors: Array<{
+      __typename?: "PaymentGatewayInitializeError";
+      field?: string | null;
+      message?: string | null;
+      code: PaymentGatewayInitializeErrorCode;
+    }>;
+    gatewayConfigs?: Array<{
+      __typename?: "PaymentGatewayConfig";
+      id: string;
+      data?: Record<string, any> | null;
+      errors?: Array<{
+        __typename?: "PaymentGatewayConfigError";
+        field?: string | null;
+        message?: string | null;
+        code: PaymentGatewayConfigErrorCode;
+      }> | null;
+    }> | null;
+  } | null;
+};
+
+export type TransactionInitializeMutationVariables = Exact<{
+  checkoutId: Scalars["ID"];
+  action?: InputMaybe<TransactionFlowStrategyEnum>;
+  paymentGateway: PaymentGatewayToInitialize;
+  amount?: InputMaybe<Scalars["PositiveDecimal"]>;
+}>;
+
+export type TransactionInitializeMutation = {
+  __typename?: "Mutation";
+  transactionInitialize?: {
+    __typename?: "TransactionInitialize";
+    data?: Record<string, any> | null;
+    transaction?: {
+      __typename?: "TransactionItem";
+      id: string;
+      actions: Array<TransactionActionEnum>;
+    } | null;
+    transactionEvent?: {
+      __typename?: "TransactionEvent";
+      message: string;
+      type?: TransactionEventTypeEnum | null;
+    } | null;
+    errors: Array<{
+      __typename?: "TransactionInitializeError";
+      field?: string | null;
+      code: TransactionInitializeErrorCode;
+      message?: string | null;
+    }>;
+  } | null;
+};
+
+export type TransactionProcessMutationVariables = Exact<{
+  id: Scalars["ID"];
+  data?: InputMaybe<Scalars["JSON"]>;
+}>;
+
+export type TransactionProcessMutation = {
+  __typename?: "Mutation";
+  transactionProcess?: {
+    __typename?: "TransactionProcess";
+    data?: Record<string, any> | null;
+    transaction?: {
+      __typename?: "TransactionItem";
+      id: string;
+      actions: Array<TransactionActionEnum>;
+    } | null;
+    transactionEvent?: {
+      __typename?: "TransactionEvent";
+      message: string;
+      type?: TransactionEventTypeEnum | null;
+    } | null;
+    errors: Array<{
+      __typename?: "TransactionProcessError";
+      field?: string | null;
+      code: TransactionProcessErrorCode;
+      message?: string | null;
+    }>;
+  } | null;
+};
+
+export type UserFragment = {
+  __typename?: "User";
+  id: string;
+  email: string;
+  addresses: Array<{
+    __typename?: "Address";
+    id: string;
+    city: string;
+    phone?: string | null;
+    postalCode: string;
+    companyName: string;
+    cityArea: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    countryArea: string;
+    firstName: string;
+    lastName: string;
+    country: { __typename?: "CountryDisplay"; country: string; code: string };
+  }>;
+  defaultBillingAddress?: {
+    __typename?: "Address";
+    id: string;
+    city: string;
+    phone?: string | null;
+    postalCode: string;
+    companyName: string;
+    cityArea: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    countryArea: string;
+    firstName: string;
+    lastName: string;
+    country: { __typename?: "CountryDisplay"; country: string; code: string };
+  } | null;
+  defaultShippingAddress?: {
+    __typename?: "Address";
+    id: string;
+    city: string;
+    phone?: string | null;
+    postalCode: string;
+    companyName: string;
+    cityArea: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    countryArea: string;
+    firstName: string;
+    lastName: string;
+    country: { __typename?: "CountryDisplay"; country: string; code: string };
+  } | null;
+};
+
 export type UserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserQuery = {
@@ -27096,6 +28462,254 @@ export type RequestPasswordResetMutation = {
   } | null;
 };
 
+export type UserAddressDeleteMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type UserAddressDeleteMutation = {
+  __typename?: "Mutation";
+  accountAddressDelete?: {
+    __typename?: "AccountAddressDelete";
+    user?: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      addresses: Array<{
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      }>;
+      defaultBillingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      defaultShippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+    } | null;
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+    address?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+  } | null;
+};
+
+export type UserAddressUpdateMutationVariables = Exact<{
+  id: Scalars["ID"];
+  address: AddressInput;
+}>;
+
+export type UserAddressUpdateMutation = {
+  __typename?: "Mutation";
+  accountAddressUpdate?: {
+    __typename?: "AccountAddressUpdate";
+    user?: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      addresses: Array<{
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      }>;
+      defaultBillingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      defaultShippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+    } | null;
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+    address?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+  } | null;
+};
+
+export type UserAddressCreateMutationVariables = Exact<{
+  address: AddressInput;
+  type?: InputMaybe<AddressTypeEnum>;
+}>;
+
+export type UserAddressCreateMutation = {
+  __typename?: "Mutation";
+  accountAddressCreate?: {
+    __typename?: "AccountAddressCreate";
+    user?: {
+      __typename?: "User";
+      id: string;
+      email: string;
+      addresses: Array<{
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      }>;
+      defaultBillingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+      defaultShippingAddress?: {
+        __typename?: "Address";
+        id: string;
+        city: string;
+        phone?: string | null;
+        postalCode: string;
+        companyName: string;
+        cityArea: string;
+        streetAddress1: string;
+        streetAddress2: string;
+        countryArea: string;
+        firstName: string;
+        lastName: string;
+        country: { __typename?: "CountryDisplay"; country: string; code: string };
+      } | null;
+    } | null;
+    errors: Array<{
+      __typename?: "AccountError";
+      message?: string | null;
+      field?: string | null;
+      code: AccountErrorCode;
+    }>;
+    address?: {
+      __typename?: "Address";
+      id: string;
+      city: string;
+      phone?: string | null;
+      postalCode: string;
+      companyName: string;
+      cityArea: string;
+      streetAddress1: string;
+      streetAddress2: string;
+      countryArea: string;
+      firstName: string;
+      lastName: string;
+      country: { __typename?: "CountryDisplay"; country: string; code: string };
+    } | null;
+  } | null;
+};
+
 export const AccountErrorFragmentDoc = gql`
   fragment AccountErrorFragment on AccountError {
     message
@@ -27157,6 +28771,17 @@ export const AddressFragmentDoc = gql`
     }
     firstName
     lastName
+  }
+`;
+export const PaymentGatewayFragmentDoc = gql`
+  fragment PaymentGatewayFragment on PaymentGateway {
+    id
+    name
+    currencies
+    config {
+      field
+      value
+    }
   }
 `;
 export const CheckoutLineFragmentDoc = gql`
@@ -27240,38 +28865,15 @@ export const CheckoutFragmentDoc = gql`
     billingAddress {
       ...AddressFragment
     }
+    authorizeStatus
+    chargeStatus
     isShippingRequired
     user {
       id
       email
     }
     availablePaymentGateways {
-      id
-      name
-    }
-    deliveryMethod {
-      ... on ShippingMethod {
-        id
-      }
-      ... on Warehouse {
-        id
-      }
-    }
-    shippingMethods {
-      id
-      name
-      price {
-        ...Money
-      }
-    }
-    totalPrice {
-      gross {
-        amount
-      }
-    }
-    availablePaymentGateways {
-      id
-      name
+      ...PaymentGatewayFragment
     }
     deliveryMethod {
       ... on ShippingMethod {
@@ -27315,10 +28917,11 @@ export const CheckoutFragmentDoc = gql`
   ${MoneyFragmentDoc}
   ${GiftCardFragmentDoc}
   ${AddressFragmentDoc}
+  ${PaymentGatewayFragmentDoc}
   ${CheckoutLineFragmentDoc}
 `;
 export const ShippingFragmentDoc = gql`
-  fragment Shipping on ShippingMethod {
+  fragment ShippingFragment on ShippingMethod {
     name
     minimumDeliveryDays
     maximumDeliveryDays
@@ -27366,7 +28969,7 @@ export const OrderLineFragmentDoc = gql`
   ${MoneyFragmentDoc}
 `;
 export const OrderFragmentDoc = gql`
-  fragment Order on Order {
+  fragment OrderFragment on Order {
     id
     number
     userEmail
@@ -27378,6 +28981,8 @@ export const OrderFragmentDoc = gql`
         ...Money
       }
     }
+    chargeStatus
+    authorizeStatus
     shippingAddress {
       ...AddressFragment
     }
@@ -27385,7 +28990,7 @@ export const OrderFragmentDoc = gql`
       ...AddressFragment
     }
     deliveryMethod {
-      ...Shipping
+      ...ShippingFragment
     }
     total {
       gross {
@@ -27422,6 +29027,22 @@ export const OrderFragmentDoc = gql`
   ${AddressFragmentDoc}
   ${ShippingFragmentDoc}
   ${OrderLineFragmentDoc}
+`;
+export const UserFragmentDoc = gql`
+  fragment UserFragment on User {
+    id
+    email
+    addresses {
+      ...AddressFragment
+    }
+    defaultBillingAddress {
+      ...AddressFragment
+    }
+    defaultShippingAddress {
+      ...AddressFragment
+    }
+  }
+  ${AddressFragmentDoc}
 `;
 export const CheckoutDocument = gql`
   query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
@@ -27539,66 +29160,6 @@ export const CheckoutCustomerAttachDocument = gql`
 export function useCheckoutCustomerAttachMutation() {
   return Urql.useMutation<CheckoutCustomerAttachMutation, CheckoutCustomerAttachMutationVariables>(
     CheckoutCustomerAttachDocument
-  );
-}
-export const UserAddressDeleteDocument = gql`
-  mutation userAddressDelete($id: ID!) {
-    accountAddressDelete(id: $id) {
-      errors {
-        ...AccountErrorFragment
-      }
-      address {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AccountErrorFragmentDoc}
-  ${AddressFragmentDoc}
-`;
-
-export function useUserAddressDeleteMutation() {
-  return Urql.useMutation<UserAddressDeleteMutation, UserAddressDeleteMutationVariables>(
-    UserAddressDeleteDocument
-  );
-}
-export const UserAddressUpdateDocument = gql`
-  mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
-    accountAddressUpdate(id: $id, input: $address) {
-      errors {
-        ...AccountErrorFragment
-      }
-      address {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AccountErrorFragmentDoc}
-  ${AddressFragmentDoc}
-`;
-
-export function useUserAddressUpdateMutation() {
-  return Urql.useMutation<UserAddressUpdateMutation, UserAddressUpdateMutationVariables>(
-    UserAddressUpdateDocument
-  );
-}
-export const UserAddressCreateDocument = gql`
-  mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
-    accountAddressCreate(type: $type, input: $address) {
-      errors {
-        ...AccountErrorFragment
-      }
-      address {
-        ...AddressFragment
-      }
-    }
-  }
-  ${AccountErrorFragmentDoc}
-  ${AddressFragmentDoc}
-`;
-
-export function useUserAddressCreateMutation() {
-  return Urql.useMutation<UserAddressCreateMutation, UserAddressCreateMutationVariables>(
-    UserAddressCreateDocument
   );
 }
 export const CheckoutShippingAddressUpdateDocument = gql`
@@ -27757,10 +29318,29 @@ export function useCheckoutRemovePromoCodeMutation() {
     CheckoutRemovePromoCodeMutationVariables
   >(CheckoutRemovePromoCodeDocument);
 }
+export const CheckoutCompleteDocument = gql`
+  mutation checkoutComplete($checkoutId: ID!) {
+    checkoutComplete(id: $checkoutId) {
+      errors {
+        ...CheckoutErrorFragment
+      }
+      order {
+        id
+      }
+    }
+  }
+  ${CheckoutErrorFragmentDoc}
+`;
+
+export function useCheckoutCompleteMutation() {
+  return Urql.useMutation<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>(
+    CheckoutCompleteDocument
+  );
+}
 export const OrderDocument = gql`
   query order($id: ID!, $languageCode: LanguageCodeEnum!) {
     order(id: $id) {
-      ...Order
+      ...OrderFragment
     }
   }
   ${OrderFragmentDoc}
@@ -27769,23 +29349,105 @@ export const OrderDocument = gql`
 export function useOrderQuery(options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, "query">) {
   return Urql.useQuery<OrderQuery, OrderQueryVariables>({ query: OrderDocument, ...options });
 }
-export const UserDocument = gql`
-  query user {
-    user: me {
-      id
-      email
-      addresses {
-        ...AddressFragment
+export const PaymentGatewaysInitializeDocument = gql`
+  mutation paymentGatewaysInitialize(
+    $checkoutId: ID!
+    $paymentGateways: [PaymentGatewayToInitialize!]
+  ) {
+    paymentGatewayInitialize(id: $checkoutId, paymentGateways: $paymentGateways) {
+      errors {
+        field
+        message
+        code
       }
-      defaultBillingAddress {
-        ...AddressFragment
-      }
-      defaultShippingAddress {
-        ...AddressFragment
+      gatewayConfigs {
+        id
+        data
+        errors {
+          field
+          message
+          code
+        }
       }
     }
   }
-  ${AddressFragmentDoc}
+`;
+
+export function usePaymentGatewaysInitializeMutation() {
+  return Urql.useMutation<
+    PaymentGatewaysInitializeMutation,
+    PaymentGatewaysInitializeMutationVariables
+  >(PaymentGatewaysInitializeDocument);
+}
+export const TransactionInitializeDocument = gql`
+  mutation transactionInitialize(
+    $checkoutId: ID!
+    $action: TransactionFlowStrategyEnum
+    $paymentGateway: PaymentGatewayToInitialize!
+    $amount: PositiveDecimal
+  ) {
+    transactionInitialize(
+      id: $checkoutId
+      action: $action
+      paymentGateway: $paymentGateway
+      amount: $amount
+    ) {
+      transaction {
+        id
+        actions
+      }
+      transactionEvent {
+        message
+        type
+      }
+      data
+      errors {
+        field
+        code
+        message
+      }
+    }
+  }
+`;
+
+export function useTransactionInitializeMutation() {
+  return Urql.useMutation<TransactionInitializeMutation, TransactionInitializeMutationVariables>(
+    TransactionInitializeDocument
+  );
+}
+export const TransactionProcessDocument = gql`
+  mutation transactionProcess($id: ID!, $data: JSON) {
+    transactionProcess(id: $id, data: $data) {
+      transaction {
+        id
+        actions
+      }
+      transactionEvent {
+        message
+        type
+      }
+      data
+      errors {
+        field
+        code
+        message
+      }
+    }
+  }
+`;
+
+export function useTransactionProcessMutation() {
+  return Urql.useMutation<TransactionProcessMutation, TransactionProcessMutationVariables>(
+    TransactionProcessDocument
+  );
+}
+export const UserDocument = gql`
+  query user {
+    user: me {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentDoc}
 `;
 
 export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">) {
@@ -27823,5 +29485,77 @@ export const RequestPasswordResetDocument = gql`
 export function useRequestPasswordResetMutation() {
   return Urql.useMutation<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(
     RequestPasswordResetDocument
+  );
+}
+export const UserAddressDeleteDocument = gql`
+  mutation userAddressDelete($id: ID!) {
+    accountAddressDelete(id: $id) {
+      user {
+        ...UserFragment
+      }
+      errors {
+        ...AccountErrorFragment
+      }
+      address {
+        ...AddressFragment
+      }
+    }
+  }
+  ${UserFragmentDoc}
+  ${AccountErrorFragmentDoc}
+  ${AddressFragmentDoc}
+`;
+
+export function useUserAddressDeleteMutation() {
+  return Urql.useMutation<UserAddressDeleteMutation, UserAddressDeleteMutationVariables>(
+    UserAddressDeleteDocument
+  );
+}
+export const UserAddressUpdateDocument = gql`
+  mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
+    accountAddressUpdate(id: $id, input: $address) {
+      user {
+        ...UserFragment
+      }
+      errors {
+        ...AccountErrorFragment
+      }
+      address {
+        ...AddressFragment
+      }
+    }
+  }
+  ${UserFragmentDoc}
+  ${AccountErrorFragmentDoc}
+  ${AddressFragmentDoc}
+`;
+
+export function useUserAddressUpdateMutation() {
+  return Urql.useMutation<UserAddressUpdateMutation, UserAddressUpdateMutationVariables>(
+    UserAddressUpdateDocument
+  );
+}
+export const UserAddressCreateDocument = gql`
+  mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
+    accountAddressCreate(type: $type, input: $address) {
+      user {
+        ...UserFragment
+      }
+      errors {
+        ...AccountErrorFragment
+      }
+      address {
+        ...AddressFragment
+      }
+    }
+  }
+  ${UserFragmentDoc}
+  ${AccountErrorFragmentDoc}
+  ${AddressFragmentDoc}
+`;
+
+export function useUserAddressCreateMutation() {
+  return Urql.useMutation<UserAddressCreateMutation, UserAddressCreateMutationVariables>(
+    UserAddressCreateDocument
   );
 }
