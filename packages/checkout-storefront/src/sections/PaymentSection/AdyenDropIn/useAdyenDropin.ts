@@ -57,7 +57,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     checkout: { id: checkoutId, totalPrice },
   } = useCheckout();
   const { authenticated } = useUser();
-  const { errorMessages } = useErrorMessages(adyenErrorMessages);
+  const { getMessageByErrorCode } = useErrorMessages(adyenErrorMessages);
   const { errorMessages: commonErrorMessages } = useErrorMessages(apiErrorMessages);
   const { validateAllForms } = useCheckoutValidationActions();
   const { validationState } = useCheckoutValidationState();
@@ -122,12 +122,17 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
           const messageKey = camelCase(paymentResponse.refusalReason);
 
-          showCustomErrors([{ message: errorMessages[messageKey as keyof typeof errorMessages] }]);
+          showCustomErrors([{ message: getMessageByErrorCode(messageKey) }]);
 
           return;
       }
     },
-    [adyenCheckoutSubmitParams?.component, errorMessages, onCheckoutComplete, showCustomErrors]
+    [
+      adyenCheckoutSubmitParams?.component,
+      getMessageByErrorCode,
+      onCheckoutComplete,
+      showCustomErrors,
+    ]
   );
 
   const onTransactionInitialize = useSubmit<
@@ -222,6 +227,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     )
   );
 
+  // handler for when user presses submit in the dropin
   const onSubmitInitialize: AdyenCheckoutInstanceOnSubmit = useEvent(async (state, component) => {
     component.setStatus("loading");
     setAdyenCheckoutSubmitParams({ state, component });
@@ -229,27 +235,26 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     setSubmitInProgress(true);
   });
 
+  // when submission is initialized, awaits for all the other requests to finish,
+  // forms to validate, then either does transaction initialize or process
   useEffect(() => {
     const validating = anyFormsValidating(validationState);
     const allFormsValid = areAllFormsValid(validationState);
 
-    // any of the conditions below - do nothing
     if (!submitInProgress || validating || anyRequestsInProgress || !adyenCheckoutSubmitParams) {
       return;
     }
+
+    // submit was finished - we can mark it as complete
+    setSubmitInProgress(false);
 
     // there was en error either in some other request or form validation
     // - stop the submission altogether
     if (!finishedApiChangesWithNoError || !allFormsValid) {
       adyenCheckoutSubmitParams?.component.setStatus("ready");
-      setSubmitInProgress(false);
       return;
     }
 
-    // submit in progress only means that submit has been initialized
-    // we want to disable it here so it's not run again until the user
-    // initializes manually
-    setSubmitInProgress(false);
     adyenCheckoutSubmitParams.component.setStatus("loading");
 
     // there is a previous transaction going on, we want to process instead of initialize

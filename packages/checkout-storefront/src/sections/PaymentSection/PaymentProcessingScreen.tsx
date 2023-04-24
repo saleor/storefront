@@ -8,6 +8,7 @@ import { BarLoader } from "react-spinners";
 import React, { useEffect, useState } from "react";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { PAGE_ID } from "@/checkout-storefront/views/Checkout/consts";
 
 interface PaymentProcessingContextConsumerProps {
   setIsProcessingPayment: (processing: boolean) => void;
@@ -22,7 +23,7 @@ export const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = (
   const formatMessage = useFormattedMessages();
 
   const handleSetStyles = (processing: boolean) => {
-    const el = document.getElementById("page");
+    const el = document.getElementById(PAGE_ID);
 
     if (el) {
       el.style.maxHeight = processing ? "100vh" : "auto";

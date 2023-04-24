@@ -12,6 +12,7 @@ import { adyenGatewayId } from "@/checkout-storefront/sections/PaymentSection/Ad
 import {
   ParsedPaymentGateways,
   PaymentGatewayId,
+  PaymentStatus,
 } from "@/checkout-storefront/sections/PaymentSection/types";
 import { compact } from "lodash-es";
 
@@ -71,8 +72,6 @@ export const getFilteredPaymentGateways = (
 };
 
 export const getUrlForTransactionInitialize = () => getUrl({ query: { processingPayment: true } });
-
-type PaymentStatus = "paidInFull" | "overpaid" | "none" | "authorized";
 
 export const usePaymentStatus = ({
   chargeStatus,

@@ -3,7 +3,7 @@ import DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { PaymentMethodsResponseObject } from "@adyen/adyen-web/dist/types/core/ProcessResponse/PaymentMethodsResponse/types";
 import { PaymentResponse } from "@adyen/adyen-web/dist/types/components/types";
 
-export const adyenGatewayId = "app.saleor.adyen";
+export const adyenGatewayId = "app.kreweta.adyen";
 export type AdyenGatewayId = typeof adyenGatewayId;
 
 // because it's defined to these in the docs but it's a string in the response type

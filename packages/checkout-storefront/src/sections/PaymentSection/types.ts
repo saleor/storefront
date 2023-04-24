@@ -17,3 +17,5 @@ export interface ParsedPaymentGateway<TData extends Record<string, any>>
   data: TData;
   id: PaymentGatewayId;
 }
+
+export type PaymentStatus = "paidInFull" | "overpaid" | "none" | "authorized";

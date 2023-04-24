@@ -1,8 +1,11 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useCheckoutComplete } from "@/checkout-storefront/hooks/useCheckoutComplete";
+import { PaymentStatus } from "@/checkout-storefront/sections/PaymentSection/types";
 import { usePaymentGatewaysInitialize } from "@/checkout-storefront/sections/PaymentSection/usePaymentGatewaysInitialize";
 import { usePaymentStatus } from "@/checkout-storefront/sections/PaymentSection/utils";
 import { useEffect } from "react";
+
+const paidStatuses: PaymentStatus[] = ["overpaid", "paidInFull", "authorized"];
 
 export const usePayments = () => {
   const { checkout } = useCheckout();
@@ -14,10 +17,7 @@ export const usePayments = () => {
 
   useEffect(() => {
     // the checkout was already paid earlier, complete
-    if (
-      !completingCheckout &&
-      ["overpaid", "paidInFull", "authentorized"].includes(paymentStatus)
-    ) {
+    if (!completingCheckout && paidStatuses.includes(paymentStatus)) {
       void onCheckoutComplete();
     }
   }, []);

@@ -401,7 +401,6 @@ importers:
       '@types/react-dom': 18.0.7
       '@types/url-join': 4.0.1
       '@types/webpack-env': 1.18.0
-      '@types/yup': ^0.32.0
       autoprefixer: 10.4.12
       checkout-common: workspace:*
       clsx: 1.2.1
@@ -426,7 +425,7 @@ importers:
       react-dom: 18.2.0
       react-error-boundary: 3.1.4
       react-intl: 6.2.1
-      react-spinners: ^0.13.8
+      react-spinners: 0.13.8
       react-test-renderer: 18.2.0
       react-toastify: 9.0.8
       rollup: 3.2.3
@@ -453,7 +452,6 @@ importers:
       '@saleor/ui-kit': link:../ui-kit
       '@stripe/react-stripe-js': 1.14.0_6nr2xug6y4biiuh7urbys4ixky
       '@stripe/stripe-js': 1.42.0
-      '@types/yup': 0.32.0
       checkout-common: link:../checkout-common
       clsx: 1.2.1
       concurrently: 7.5.0
@@ -10032,13 +10030,6 @@ packages:
       '@types/node': 14.18.42
     dev: true
     optional: true
-
-  /@types/yup/0.32.0:
-    resolution: {integrity: sha512-Gr2lllWTDxGVYHgWfL8szjdedERpNgm44L9BDL2cmcHG7Bfd6taEpiW3ayMFLaYvlJr/6bFXDJdh6L406AGlFg==}
-    deprecated: This is a stub types definition. yup provides its own type definitions, so you do not need this installed.
-    dependencies:
-      yup: 1.1.1
-    dev: false
 
   /@typescript-eslint/eslint-plugin/5.41.0_jl26ridceu45l56u77wvqktmne:
     resolution: {integrity: sha512-DXUS22Y57/LAFSg3x7Vi6RNAuLpTXwxB9S2nIA7msBb/Zt8p7XqMwdpdc1IU7CkOQUPgAqR5fWvxuKCbneKGmA==}
@@ -26113,6 +26104,7 @@ packages:
   /type-fest/2.19.0:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
+    dev: true
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
@@ -27569,15 +27561,6 @@ packages:
       property-expr: 2.0.5
       tiny-case: 1.0.3
       toposort: 2.0.2
-    dev: false
-
-  /yup/1.1.1:
-    resolution: {integrity: sha512-KfCGHdAErqFZWA5tZf7upSUnGKuTOnsI3hUsLr7fgVtx+DK04NPV01A68/FslI4t3s/ZWpvXJmgXhd7q6ICnag==}
-    dependencies:
-      property-expr: 2.0.5
-      tiny-case: 1.0.3
-      toposort: 2.0.2
-      type-fest: 2.19.0
     dev: false
 
   /zen-observable-ts/1.2.5:

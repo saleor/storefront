@@ -46,7 +46,6 @@ export const createAdyenCheckoutConfig = ({
         reject: ApplePayCallback,
         event: ApplePayJS.ApplePayPaymentMethodSelectedEvent
       ) => {
-        console.log({ "event.paymentMethod": event.paymentMethod, event });
         resolve(event.paymentMethod);
       },
       onShippingContactSelected: (
@@ -54,7 +53,6 @@ export const createAdyenCheckoutConfig = ({
         reject: ApplePayCallback,
         event: ApplePayJS.ApplePayShippingContactSelectedEvent
       ) => {
-        console.log({ "event.shippingContact": event.shippingContact, event });
         resolve(event.shippingContact);
       },
       onShippingMethodSelected: (
@@ -62,7 +60,6 @@ export const createAdyenCheckoutConfig = ({
         reject: ApplePayCallback,
         event: ApplePayJS.ApplePayShippingMethodSelectedEvent
       ) => {
-        console.log({ "event.shippingMethod": event.shippingMethod, event });
         resolve(event.shippingMethod);
       },
     },

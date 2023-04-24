@@ -9,8 +9,6 @@ import {
 } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/useAdyenDropin";
 import "@adyen/adyen-web/dist/adyen.css";
 import { Locale } from "@/checkout-storefront/lib/regions";
-import { ParsedAdyenGateway } from "@/checkout-storefront/sections/PaymentSection/types";
-import { isEqual } from "lodash-es";
 import { AdyenGatewayInitializePayload } from "@/checkout-storefront/sections/PaymentSection/AdyenDropIn/types";
 
 type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
@@ -23,8 +21,6 @@ type DropinElement = ReturnType<typeof _hack>;
 export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
   const { locale } = useLocale();
   const { onSubmit, onAdditionalDetails } = useAdyenDropin({ config });
-  const prevConfig = useRef<ParsedAdyenGateway>(config);
-  const prevLocale = useRef<Locale>(locale);
   const dropinContainerElRef = useRef<HTMLDivElement>(null);
   const dropinComponentRef = useRef<DropinElement | null>(null);
 
@@ -34,31 +30,14 @@ export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
         createAdyenCheckoutConfig({ ...data, locale, onSubmit, onAdditionalDetails })
       );
 
+      dropinComponentRef.current?.unmount();
+
       const dropin = adyenCheckout.create("dropin").mount(container);
 
       dropinComponentRef.current = dropin;
     },
     [onAdditionalDetails, onSubmit]
   );
-
-  useEffect(() => {
-    const hasConfigChanged = !isEqual(config, prevConfig.current);
-    const hasLocaleChanged = locale !== prevLocale.current;
-
-    if (!dropinContainerElRef.current || (!hasConfigChanged && !hasLocaleChanged)) {
-      return;
-    }
-
-    if (hasLocaleChanged) {
-      prevLocale.current = locale;
-    }
-
-    if (hasConfigChanged) {
-      prevConfig.current = config;
-    }
-
-    void createAdyenCheckoutInstance(locale, dropinContainerElRef.current, config.data);
-  }, [config, createAdyenCheckoutInstance, locale]);
 
   useEffect(() => {
     if (dropinContainerElRef.current && !dropinComponentRef.current) {

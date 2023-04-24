@@ -32,7 +32,7 @@ export type FormProps<TData extends FormDataBase> = Omit<
     | ((data: TData, helpers: FormHelpers<TData>) => Promise<void>)
     | DebouncedFunc<(data: TData, helpers: FormHelpers<TData>) => Promise<void>>;
   initialDirty?: boolean;
-  // TMP because there seems to be something weird going on with the type
+  // FIXME: because there seems to be something weird going on with the type
   // yup returns when schema has some uncommon typings
   validationSchema?: any; // Schema<TData> | ObjectSchema<TData>;
 };

@@ -15,7 +15,7 @@ export const useErrorMessages = <TKey extends string = ErrorCode>(
   const messagesToUse = customMessages || errorMessages;
 
   const getMessageByErrorCode = useCallback(
-    (errorCode: TKey) => {
+    (errorCode: string) => {
       try {
         const formattedMessage = formatMessage(
           messagesToUse[errorCode as keyof typeof messagesToUse] as MessageDescriptor

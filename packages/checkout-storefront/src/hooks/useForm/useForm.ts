@@ -78,7 +78,7 @@ export const useForm = <TData extends FormDataBase>({
     try {
       //  formik also has this types to "any"
       // will be fixed along with adding proper type to schema
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       validationSchema.validateSync(values, { abortEarly: false });
       return {};
     } catch (e) {

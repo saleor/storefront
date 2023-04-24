@@ -17,8 +17,6 @@ export const useSetCheckoutFormValidationState = (scope: CheckoutFormScope) => {
       const formErrors = validateForm(values);
 
       if (!hasErrors(formErrors)) {
-        if (scope === "guestUser") {
-        }
         setValidationState(scope, "valid");
         return;
       }
@@ -27,8 +25,6 @@ export const useSetCheckoutFormValidationState = (scope: CheckoutFormScope) => {
         Object.keys(formErrors).reduce((result, key) => ({ ...result, [key]: true }), {})
       );
 
-      if (scope === "guestUser") {
-      }
       setValidationState(scope, "invalid");
     },
     [scope, setValidationState]
