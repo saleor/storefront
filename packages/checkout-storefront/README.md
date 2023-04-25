@@ -2,21 +2,20 @@
 
 Checkout Storefront is a component used for connecting Saleor based storefronts with checkout logic.
 
-## Project structure
-
 ### URL structure
 
-The supported query parameters are:
+| Query param (raw) | Casted name        | Type / value                                       | Required | What does it do                                                                                                                                                                |     |
+| ----------------- | ------------------ | -------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| checkout          | checkoutId         | String (checkout id)                               | yes      | Tells the api which checkout you'd like to handle                                                                                                                              |     |
+| saleorApiUrl      | saleorApiUrl       | String                                             | yes      | Tells the checkout which Saleor environment to use                                                                                                                             |     |
+| locale            | locale             | Locale (defined in apps/storefront/lib/regions.ts) | no       | Tells the checkout which locale to use on the site. That'll mean the automatically selected address for guest checkout address form and auto selected language of the checkout |     |
+| order             | orderId            | String (order id)                                  | no       | Tells the checkout to show order confirmation for the order instead                                                                                                            |     |
+| email             | passwordResetEmail | String                                             | no       | Email that Saleor api adds to the url when requested account password change                                                                                                   |     |
+| token             | passwordResetToken | String                                             | no       | Token that Saleor api adds to the url when requested account password change                                                                                                   |     |
+| transaction       | transaction        | String (transaction id)                            | no       | Added by checkout in payment flow to be able to finish up the transaction after redirects                                                                                      |     |
+| processingPayment | processingPayment  | Boolean                                            | no       | Added by checkout in payment flow for the Payment processing screen to be able to display                                                                                      |     |
 
-- locale - locale, passed from storefront to checkout, will be used to display messages in the correct language
-- checkout - checkout id, it will be provided when transitioning from the cart to checkout
-- channel - channel slug for which we've created the checkout for
-
-An example URL can look something like this:
-
-```
-https://example-saleor-app.com?locale=pl-PL&checkout=Q2hlY2tvdXQ6ZTcwZjBlYzgtOWMyMS00Y2FkLWE4YzktZWQ3ODcwYjNhN2I5&channel=channel-pln
-```
+> ⚠ Please note that there are more query params than mentioned here, that come from specific payment gateways. All can be found in `src/lib/utils/url.ts`
 
 ### API requests and types
 
@@ -42,12 +41,6 @@ border: {
   secondary: "rgba(var(--border-color-primary-rgb), 0.15)",
 }
 ```
-
-### Forms and error handling
-
-Checkout uses [React Hook Form](https://react-hook-form.com/) for forms handling, with [yup](https://github.com/jquense/yup) as validation library.
-
-There is a top level `ErrorsProvider` for global error handling. It keeps an object of all errors from forms and api requests based on `ErrorScope` respective to the given code section e.g `checkoutShippingUpdate` or `userRegister`. Components can access selected errors using `useErrors` hook with provided scope.
 
 ## Project structure
 
@@ -82,7 +75,7 @@ graph LR
 
 ```
 
-### Checkout update state
+## Checkout update state
 
 Because many checkout elements depend on one another, we use `CheckoutUpdateStateStore`. It keeps the information about the progress of mutations and their outcome.
 Each mutation in the `updateState` part of the store can have a value of `success` `error` or `loading`. We later use these props e.g for showing skeletons instead of certain sections of checkout that depend on given mutations. What's more important, we use them to let checkout finalization flow know if it should wait for some mutations to finish before the finalization can take place.
@@ -102,7 +95,42 @@ sequenceDiagram
     Note over Other Component: Takes action based on updated state values
 ```
 
-### Forms
+## Checkout validation state
+
+We use a separate store for keeping information about the current validation status of some of the forms. Since we don't want to proceed with payment in case e.g the user forgot to put in his email or shipping address, we need to be able to trigger the validation on submission initialization and await for all of these to finish, without some hardcore prop drilling. Hence comes the `CheckoutValidationStateStore` and [useCheckoutFormValidationTrigger hook](#useCheckoutFormValidationTrigger).
+
+```mermaid
+sequenceDiagram
+    Component ->> Form: form props
+    Form ->>useCheckoutFormValidationTrigger: useForm result + scope
+
+    Note over PaymentFlow: initializes submission
+    loop Payment flow awaiting all validation results
+    PaymentFlow ->> ValidationStateStore: validateAllForms()
+
+    ValidationStateStore ->> useCheckoutFormValidationTrigger: triggers validation
+
+    Note over Form, useCheckoutFormValidationTrigger: performs validation
+
+    alt validation success
+        useCheckoutFormValidationTrigger ->> ValidationStateStore: sets state for scope: valid
+    else unsuccessful submit
+        useCheckoutFormValidationTrigger ->> ValidationStateStore: sets state for scope: invalid
+        useCheckoutFormValidationTrigger ->> Form: sets errors
+        Form ->> Component: displays errors
+    end
+    end
+    alt all forms valid
+        PaymentFlow ->> Api: proceed with submission
+    else some forms invalid
+        Note over PaymentFlow: stop submission
+    end
+
+
+
+```
+
+## Forms
 
 Each component containing a form logic has a corresponding form-wrapping hook. So for instance `GuestShippingAddressForm` has a correspondig hook called `useGuestShippingAddressForm`. This approach makes it predictable and keeps the ux related logic of components and forms separated.
 
@@ -155,11 +183,24 @@ Because both guest billing and shipping address forms are autosaving data under 
 
 Because billing address may depend of the shipping address if `use billing same as shipping` checkbox is selected, we use `useBillingSameAsShippingForm` to handle the necessary updates in that regard.
 
-### useSubmit hook
+## useSubmit
 
 In order to reuse the common submitting logic as well as reduce boilerplate for those, we use `useSubmit` hook, as well as corresponding `useFormSubmit`, when passing on to `useForm`. UseFormSubmit is a wrapper around useSubmit, with only one difference. While most callbacks supplied to useSubmit pass on the `CallbackProps` object that has one property inside - `formData`, useFormSubmit also adds `formHelpers`.
 
 **`useSubmit<TData, TMutationFn, TErrorCodes>(props: UseSubmitProps<TData, TMutationFn, TErrorCodes>) => SimpleSubmitFn<TData, TErrorCodes>`**
+
+The simplified flow is as follows:
+
+```mermaid
+flowchart LR
+    onStart --> shouldAbort
+    shouldAbort -- no --> parse
+    onAbort --> return
+    shouldAbort -- yes --> onAbort
+    parse --> onSubmit
+    onSubmit -- success --> onSucces --> onFinished --> return
+    onSubmit -- error --> onError --> onFinished --> return
+```
 
 | Prop name           | Type                                                                                                         | Required | What is it                                                                                                                                                                                 |
 | ------------------- | ------------------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -175,25 +216,27 @@ In order to reuse the common submitting logic as well as reduce boilerplate for 
 | hideAlerts          | boolean                                                                                                      | no       | By default, useSubmit will show alerts from extracted api errors if the mutation fails. Set to `false` to disable. You can still show errors manually in `onError` callback.               |
 | parse               | ParserFunction<TData, TMutationFn>                                                                           | no       | Takes in form data and returned parsed variables, ready for submission. If not supplied, the contents of form data will be passed as variables.                                            |
 
-### Other useful hooks:
+## Other useful hooks:
+
+### **useFormattedMessages**
 
 **`useFormattedMessages() => (message: MessageDescriptor, values?: Record<string, number | string>) => string`**
 
 Used for translations. Uses react-intl under the hood.
 
----
+### **useErrorMessages**
 
 **`useErrorMessages<TKey extends string = ErrorCode>(customMessages?: Record<TKey, MessageDescriptor>) => { errorMessages, getMessageByErrorCode,}`**
 
 Used for providing easier way to transate error messages. Without provided customMessages prop it'll return generic error messages for `required`, `missing` etc. form fields. For e.g AdyenDropin component, we provide custom messages so we can later show translated error messages specifically for adyen without wrapping each message into `formatMessage`
 
----
+### **useUrlChange**
 
 **`useUrlChange = (onLocationChange: ({ queryParams }: UrlChangeHandlerArgs) => void`**
 
 Used to handle url changes in components.
 
----
+### **useLocale**
 
 **`useLocale() => () => UseLocale`**
 
@@ -208,20 +251,24 @@ interface UseLocale {
 
 The returned messages are all translated messages supplied in `Root.tsx` to the `IntlProvider`.
 
----
+### **useOrder**
 
 **`useOrder() => { order: OrderFragment, loading: boolean }`**
 
 Used on OrderConfirmation page.
 
----
+### **useCheckout**
 
 **`useCheckout() => { checkout: CheckoutFragment, loading: boolean }`**
 
----
+### **useUser**
 
 **`useUser() => { user: UserFragment, loading: boolean, authenticated: boolean }`**
 
 Returns currently signed in user.
 
----
+### **useCheckoutFormValidationTrigger**
+
+**`useCheckoutFormValidationTrigger = <TData extends FormDataBase>({ scope, form, skip = false, }: { scope: CheckoutFormScope; form: UseFormReturn<TData>; skip?: boolean;}) => void`**
+
+Attached to a form, it'll run validation once `validateAllForms` method is run on `checkoutValidationStateStore`. It'll change the state of validation forms to `validating`. Then it'll run the validation and set either `valid` or `invalid` on each one.
