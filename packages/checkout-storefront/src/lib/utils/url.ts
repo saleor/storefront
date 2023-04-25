@@ -7,8 +7,6 @@ export type ParamBasicValue = MightNotExist<string>;
 
 const queryParamsMap = {
   locale: "locale",
-  dummyPayment: "dummyPayment",
-  channel: "channel",
   redirectUrl: "redirectUrl",
   checkout: "checkoutId",
   order: "orderId",
