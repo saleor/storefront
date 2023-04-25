@@ -355,34 +355,6 @@
     "developer_comment": "delivery method",
     "string": "Delivery method"
   },
-  "DummyPayment/messages/2uijFy": {
-    "developer_comment": "how much is left to pay",
-    "string": "Left to pay ({currency})"
-  },
-  "DummyPayment/messages/9FUEKB": {
-    "developer_comment": "dummy pay",
-    "string": "Dummy Pay"
-  },
-  "DummyPayment/messages/Cm6A9z": {
-    "developer_comment": "loading",
-    "string": "Loading..."
-  },
-  "DummyPayment/messages/Hm9+RE": {
-    "developer_comment": "error",
-    "string": "Something went wrong"
-  },
-  "DummyPayment/messages/S0J+0M": {
-    "developer_comment": "dummy payment",
-    "string": "Dummy Payment"
-  },
-  "DummyPayment/messages/eJ2qAk": {
-    "developer_comment": "order total price",
-    "string": "Total price"
-  },
-  "DummyPayment/messages/qCpYR4": {
-    "developer_comment": "order already paid",
-    "string": "Already paid"
-  },
   "EmptyCartPage/messages/CLKTRp": {
     "developer_comment": "go back to store",
     "string": "Go back to store"
@@ -485,10 +457,6 @@
   "PaymentSection/messages/yz03kH": {
     "developer_comment": "payment methods",
     "string": "Payment methods"
-  },
-  "RootViews/messages/Cm6A9z": {
-    "developer_comment": "loading",
-    "string": "Loading..."
   },
   "SignIn/messages/Hz38OL": {
     "developer_comment": "password must be at least 8 characters",
