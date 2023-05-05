@@ -6,12 +6,16 @@ import {
   isMatchingAddress,
   isMatchingAddressData,
 } from "@/checkout-storefront/components/AddressForm/utils";
-import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/graphql";
+import {
+  AddressFragment,
+  useCheckoutBillingAddressUpdateMutation,
+} from "@/checkout-storefront/graphql";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { useCheckoutUpdateStateActions } from "@/checkout-storefront/state/updateStateStore";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface BillingSameAsShippingFormData {
   billingSameAsShipping: boolean;
@@ -31,6 +35,8 @@ export const useBillingSameAsShippingForm = (
   const previousShippingAddress = useRef<OptionalAddress>(shippingAddress);
   const previousIsShippingRequired = useRef(isShippingRequired);
   const { setChangingBillingCountry } = useCheckoutUpdateStateActions();
+  const [formBillingAddress, setFormBillingAddress] =
+    useState<MightNotExist<AddressFragment>>(billingAddress);
 
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 
@@ -43,8 +49,8 @@ export const useBillingSameAsShippingForm = (
     shouldAbort: ({ formData: { billingAddress } }) => {
       return !billingAddress || !Object.keys(billingAddress).length;
     },
-    onStart: ({ formData }) => {
-      if (formData.billingAddress?.country.code !== billingAddress?.country.code) {
+    onStart: () => {
+      if (formBillingAddress?.country.code !== billingAddress?.country.code) {
         setChangingBillingCountry(true);
       }
     },
@@ -54,13 +60,8 @@ export const useBillingSameAsShippingForm = (
       billingAddress: getAddressInputDataFromAddress(billingAddress),
       validationRules: getAddressValidationRulesVariables({ autoSave }),
     }),
-    onSuccess: ({ formData, formHelpers: { resetForm }, data }) => {
-      resetForm({
-        values: {
-          ...formData,
-          billingAddress: data.checkout?.billingAddress,
-        },
-      });
+    onSuccess: ({ data }) => {
+      setFormBillingAddress(data.checkout?.billingAddress);
     },
     onFinished: () => {
       setChangingBillingCountry(false);
@@ -117,7 +118,7 @@ export const useBillingSameAsShippingForm = (
         // autosave means it's geust form and we want to show empty form
         // and clear all the fields in api
         if (autoSave) {
-          setFieldValue("billingAddress", getEmptyAddress());
+          setFormBillingAddress(getEmptyAddress());
         }
         return;
       }
@@ -127,7 +128,7 @@ export const useBillingSameAsShippingForm = (
       }
 
       previousBillingSameAsShipping.current = true;
-      setFieldValue("billingAddress", shippingAddress);
+      setFormBillingAddress(shippingAddress);
       if (typeof onSetBillingSameAsShipping === "function") {
         onSetBillingSameAsShipping(shippingAddress);
       }
@@ -145,13 +146,10 @@ export const useBillingSameAsShippingForm = (
 
   // once billing address in api and form don't match, submit
   useEffect(() => {
-    if (
-      form.values.billingAddress &&
-      !isMatchingAddress(billingAddress, form.values.billingAddress)
-    ) {
+    if (formBillingAddress && !isMatchingAddress(billingAddress, formBillingAddress)) {
       handleSubmit();
     }
-  }, [billingAddress, form.values.billingAddress, handleSubmit]);
+  }, [billingAddress, formBillingAddress, handleSubmit]);
 
   // when shipping address changes in the api, set it as billing address
   useEffect(() => {
@@ -168,12 +166,12 @@ export const useBillingSameAsShippingForm = (
       previousShippingAddress.current = shippingAddress;
 
       if (billingSameAsShipping) {
-        setFieldValue("billingAddress", shippingAddress);
+        setFormBillingAddress(shippingAddress);
       }
     };
 
     void handleShippingAddressChanged();
-  }, [billingSameAsShipping, handleSubmit, setFieldValue, shippingAddress]);
+  }, [billingSameAsShipping, handleSubmit, shippingAddress]);
 
   useEffect(() => {
     if (!isShippingRequired && previousIsShippingRequired) {
