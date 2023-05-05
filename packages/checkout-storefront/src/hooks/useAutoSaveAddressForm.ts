@@ -1,4 +1,6 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
+import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
+import { CountryCode } from "@/checkout-storefront/graphql";
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import {
   BlurHandler,
@@ -26,8 +28,9 @@ export const useAutoSaveAddressForm = ({
 }): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { initialValues, onSubmit } = formProps;
+  const { setCountryCode, validationSchema } = useAddressFormSchema(initialValues.countryCode);
 
-  const form = useForm<AutoSaveAddressFormData>(formProps);
+  const form = useForm<AutoSaveAddressFormData>({ ...formProps, validationSchema });
   const { values, validateForm, dirty, handleBlur, handleChange } = form;
 
   const debouncedSubmit = useDebouncedSubmit(onSubmit);
@@ -72,6 +75,12 @@ export const useAutoSaveAddressForm = ({
   ]);
 
   const onChange: ChangeHandler = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "countryCode") {
+      setCountryCode(value as CountryCode);
+    }
+
     handleChange(event);
     void partialSubmit();
   };

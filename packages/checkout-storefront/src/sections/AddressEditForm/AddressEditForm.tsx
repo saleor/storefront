@@ -3,6 +3,7 @@ import React from "react";
 import { AddressForm, AddressFormProps } from "@/checkout-storefront/components/AddressForm";
 import {
   AddressFragment,
+  CountryCode,
   useUserAddressDeleteMutation,
   useUserAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
@@ -12,7 +13,7 @@ import {
   getAddressFormDataFromAddress,
   getAddressInputData,
 } from "@/checkout-storefront/components/AddressForm/utils";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
@@ -35,9 +36,9 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   availableCountries,
 }) => {
   const formatMessage = useFormattedMessages();
-  const validationSchema = useAddressFormSchema();
   const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
   const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
+  const { setCountryCode, validationSchema } = useAddressFormSchema();
 
   const onSubmit = useFormSubmit<AddressFormData, typeof userAddressUpdate>({
     scope: "userAddressUpdate",
@@ -67,10 +68,20 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     onSubmit,
   });
 
-  const { handleSubmit } = form;
+  const { handleSubmit, handleChange } = form;
+
+  const onChange: ChangeHandler = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "countryCode") {
+      setCountryCode(value as CountryCode);
+    }
+
+    handleChange(event);
+  };
 
   return (
-    <FormProvider form={form}>
+    <FormProvider form={{ ...form, handleChange: onChange }}>
       <AddressForm
         title={formatMessage(addressEditMessages.editAddress)}
         availableCountries={availableCountries}
