@@ -46,18 +46,16 @@ export const useBillingSameAsShippingForm = (
   >({
     scope: "checkoutBillingUpdate",
     onSubmit: checkoutBillingAddressUpdate,
-    shouldAbort: ({ formData: { billingAddress } }) => {
-      return !billingAddress || !Object.keys(billingAddress).length;
-    },
+    shouldAbort: () => !formBillingAddress || !Object.keys(formBillingAddress).length,
     onStart: () => {
       if (formBillingAddress?.country.code !== billingAddress?.country.code) {
         setChangingBillingCountry(true);
       }
     },
-    parse: ({ languageCode, checkoutId, billingAddress }) => ({
+    parse: ({ languageCode, checkoutId }) => ({
       languageCode,
       checkoutId,
-      billingAddress: getAddressInputDataFromAddress(billingAddress),
+      billingAddress: getAddressInputDataFromAddress(formBillingAddress),
       validationRules: getAddressValidationRulesVariables({ autoSave }),
     }),
     onSuccess: ({ data }) => {
@@ -149,7 +147,7 @@ export const useBillingSameAsShippingForm = (
     if (formBillingAddress && !isMatchingAddress(billingAddress, formBillingAddress)) {
       handleSubmit();
     }
-  }, [billingAddress, formBillingAddress, handleSubmit]);
+  }, [billingAddress, billingSameAsShipping, formBillingAddress, handleSubmit, shippingAddress]);
 
   // when shipping address changes in the api, set it as billing address
   useEffect(() => {

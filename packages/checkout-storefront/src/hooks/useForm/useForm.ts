@@ -44,10 +44,10 @@ export const useForm = <TData extends FormDataBase>({
   const setValues = useCallback(
     (newValues: Partial<TData>) => {
       const updatedValues = { ...formValues, ...newValues };
-      setDirty(!isEqual(formValues, updatedValues));
+      setDirty(!isEqual(formProps.initialValues, updatedValues));
       setFormValues(updatedValues);
     },
-    [formValues]
+    [formProps.initialValues, formValues]
   );
 
   const handleChange: ChangeHandler = useCallback(
