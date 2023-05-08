@@ -1,8 +1,6 @@
-import { PermissionEnum } from "@/saleor-app-checkout/graphql";
 import { NextApiHandler } from "next";
 import invariant from "ts-invariant";
 import { debugEnvVars } from "../constants";
-import { isAuthenticated, isAuthorized } from "./auth";
 
 export const allowCors =
   (fn: NextApiHandler): NextApiHandler =>
@@ -17,32 +15,6 @@ export const allowCors =
     if (req.method === "OPTIONS") {
       res.status(200).end();
       return;
-    }
-
-    return fn(req, res);
-  };
-
-export const requireAuthorization =
-  (fn: NextApiHandler, requiredPermissions?: PermissionEnum[]): NextApiHandler =>
-  async (req, res) => {
-    const authenticated = await isAuthenticated(req);
-
-    if (!authenticated) {
-      return res.status(401).json({
-        error: {
-          message: "Unauthenticated",
-        },
-      });
-    }
-
-    const authorized = isAuthorized(req, requiredPermissions);
-
-    if (!authorized) {
-      return res.status(403).json({
-        error: {
-          message: "Unauthorized",
-        },
-      });
     }
 
     return fn(req, res);

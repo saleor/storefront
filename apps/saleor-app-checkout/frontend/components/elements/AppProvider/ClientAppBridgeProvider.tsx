@@ -1,9 +1,8 @@
 import { createGraphqlClient } from "@/saleor-app-checkout/frontend/misc/client";
 import createSafeContext from "@/saleor-app-checkout/frontend/misc/createSafeContext";
-import { AppBridge } from "@saleor/app-sdk/app-bridge";
+import { AppBridge, AppBridgeProvider } from "@saleor/app-sdk/app-bridge";
 import { Provider as UrqlProvider } from "urql";
 import { ReactNode, useMemo } from "react";
-// import { useSynchronizedAppBridgePaths } from "./useSynchronizedAppBridgePaths";
 import { useSubscribeToIsAuthorized } from "./useSubscribeToIsAuthorized";
 import invariant from "ts-invariant";
 
@@ -24,11 +23,8 @@ export const ClientAppBridgeProvider = ({ children }: { children: ReactNode }) =
   invariant(app, "ClientAppBridgeProvider is not available on the server side");
 
   const isAuthorized = useSubscribeToIsAuthorized(app);
-  // useSynchronizedAppBridgePaths(app);
 
-  // @todo use `saleorApiUrl`
-  const { domain, token } = app.getState();
-  const saleorApiUrl = `https://${domain}/graphql/`;
+  const { token, saleorApiUrl } = app.getState();
   const client = useMemo(() => {
     return createGraphqlClient(saleorApiUrl, token);
   }, [saleorApiUrl, token]);
@@ -36,8 +32,10 @@ export const ClientAppBridgeProvider = ({ children }: { children: ReactNode }) =
   const appContext = useMemo(() => ({ app, isAuthorized }), [app, isAuthorized]);
 
   return (
-    <UrqlProvider value={client}>
-      <AppContextProvider value={appContext}>{children}</AppContextProvider>
-    </UrqlProvider>
+    <AppBridgeProvider appBridgeInstance={appBridge}>
+      <UrqlProvider value={client}>
+        <AppContextProvider value={appContext}>{children}</AppContextProvider>
+      </UrqlProvider>
+    </AppBridgeProvider>
   );
 };

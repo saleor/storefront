@@ -1,24 +1,15 @@
 import * as Sentry from "@sentry/nextjs";
 import { getPrivateSettings } from "@/saleor-app-checkout/backend/configuration/settings";
-import { allowCors, requireAuthorization } from "@/saleor-app-checkout/backend/utils";
-import { NextApiHandler } from "next";
-import { getSaleorApiUrlFromRequest } from "@/saleor-app-checkout/backend/auth";
-import { unpackThrowable } from "@/saleor-app-checkout/utils/unpackErrors";
+import { allowCors } from "@/saleor-app-checkout/backend/utils";
+import { createProtectedHandler, NextProtectedApiHandler } from "@saleor/app-sdk/handlers/next";
+import { saleorApp } from "@/saleor-app-checkout/config/saleorApp";
 
-const handler: NextApiHandler = async (req, res) => {
-  // const tokenData = getTokenDataFromRequest(req);
-  // const tokenDomain = tokenData?.["iss"];
-  // if (!tokenDomain) {
-  //   return res.status(500).json({ error: "Token iss is not correct" });
-  // }
-  // const apiUrl = `https://${tokenDomain}/graphql/`;
+const handler: NextProtectedApiHandler = async (request, res, ctx) => {
+  console.debug("Payment provider settings called ");
 
-  const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
-
-  if (saleorApiUrlError) {
-    res.status(400).json({ message: saleorApiUrlError.message });
-    return;
-  }
+  const {
+    authData: { saleorApiUrl },
+  } = ctx;
 
   try {
     const settings = await getPrivateSettings({ saleorApiUrl, obfuscateEncryptedData: true });
@@ -32,4 +23,5 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(500).json({ error });
   }
 };
-export default allowCors(requireAuthorization(handler, ["HANDLE_PAYMENTS"]));
+
+export default allowCors(createProtectedHandler(handler, saleorApp.apl, ["HANDLE_PAYMENTS"]));

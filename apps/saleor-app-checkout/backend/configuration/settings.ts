@@ -23,7 +23,6 @@ import { mapPrivateSettingsToMetadata } from "./mapPrivateSettingsToMetadata";
 import { mapPrivateMetafieldsToSettings } from "./mapPrivateMetafieldsToSettings";
 import { mapPublicMetafieldsToSettings } from "@/saleor-app-checkout/frontend/misc/mapPublicMetafieldsToSettings";
 import { allPrivateSettingID, allPublicSettingID } from "@/saleor-app-checkout/types/common";
-import { getAppId } from "../environment";
 import * as Apl from "@/saleor-app-checkout/config/apl";
 
 export const getPrivateSettings = async ({
@@ -67,13 +66,11 @@ export const getPublicSettings = async ({ saleorApiUrl }: { saleorApiUrl: string
     )
     .toPromise();
 
-  console.log(data, error); // for deployment debug pusposes
+  console.log("getPublicSettings request result:", data, error);
 
   if (error) {
     throw error;
   }
-
-  console.log(data?.app?.metafields); // for deployment debug pusposes
 
   const settingsValues = mapPublicMetafieldsToSettings(data?.app?.metafields || {});
 
@@ -84,13 +81,11 @@ export const getActivePaymentProvidersSettings = async (saleorApiUrl: string) =>
   const authData = await Apl.get(saleorApiUrl);
   const settings = await getPublicSettings({ saleorApiUrl });
 
-  console.log({ saleorApiUrl });
-
   const { data, error } = await getClientForAuthData(authData)
     .query<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, {})
     .toPromise();
 
-  console.log(data, error); // for deployment debug purposes
+  console.log("getActivePaymentProvidersSettings request result", data, error);
 
   if (error) {
     throw error;
@@ -120,7 +115,7 @@ export const getChannelActivePaymentProvidersSettings = async ({
     })
     .toPromise();
 
-  console.log(data, error); // for deployment debug pusposes
+  console.log("getChannelActivePaymentProvidersSettings request result:", data, error);
 
   if (error) {
     throw error;
@@ -141,26 +136,22 @@ export const setPrivateSettings = async (
 
   const metadata = mapPrivateSettingsToMetadata(settings);
 
-  const appId = await getAppId(saleorApiUrl);
-
   const { data, error } = await client
     .mutation<UpdatePrivateMetadataMutation, UpdatePrivateMetadataMutationVariables>(
       UpdatePrivateMetadataDocument,
       {
-        id: appId,
+        id: authData.appId,
         input: metadata,
         keys: [...allPrivateSettingID],
       }
     )
     .toPromise();
 
-  console.log(data, error); // for deployment debug pusposes
+  console.log("setPrivateSettings request result", data, error);
 
   if (error) {
     throw error;
   }
-
-  console.log(data?.updatePrivateMetadata?.item?.privateMetafields); // for deployment debug pusposes
 
   const settingsValues = mapPrivateMetafieldsToSettings(
     data?.updatePrivateMetadata?.item?.privateMetafields || {},

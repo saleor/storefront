@@ -81,6 +81,7 @@ export class SaleorAuthClient {
       const res: TokenRefreshResponse = await response.clone().json();
 
       const {
+        errors: graphqlErrors,
         data: {
           tokenRefresh: { errors, token },
         },
@@ -88,8 +89,9 @@ export class SaleorAuthClient {
 
       this.onAuthRefresh?.(false);
 
-      if (errors.length || !token) {
-        this.storageHandler?.setAuthState("signedOut");
+      if (errors.length || graphqlErrors?.length || !token) {
+        this.tokenRefreshPromise = null;
+        this.storageHandler?.clearAuthStorage();
         return fetch(input, init);
       }
 

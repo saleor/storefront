@@ -132,6 +132,8 @@ const getPaymentResponse = async ({
 };
 
 const handler: NextApiHandler = async (req, res) => {
+  console.debug("Pay endpoint called");
+
   if (req.method !== "POST") {
     res.status(405).send({ message: "Only POST requests allowed" });
     return;
@@ -170,7 +172,6 @@ const handler: NextApiHandler = async (req, res) => {
 
     console.error(err);
     Sentry.captureException(err);
-
     if (err instanceof UnknownPaymentError) {
       return res.status(500).json({
         ok: false,

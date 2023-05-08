@@ -22,6 +22,8 @@ async function buffer(readable: Readable) {
 }
 
 const stripeWebhook: NextApiHandler = async (req, res) => {
+  console.debug("stripeWebhook handler called");
+
   const [saleorApiUrlError, saleorApiUrl] = unpackThrowable(() => getSaleorApiUrlFromRequest(req));
 
   if (saleorApiUrlError) {
@@ -36,7 +38,6 @@ const stripeWebhook: NextApiHandler = async (req, res) => {
   }
 
   const [stripeSecretsError, stripeSecrets] = await unpackPromise(getStripeSecrets(saleorApiUrl));
-
   if (stripeSecretsError) {
     console.error(stripeSecretsError);
 
