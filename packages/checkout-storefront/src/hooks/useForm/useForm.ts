@@ -26,6 +26,7 @@ export const useForm = <TData extends FormDataBase>({
   const {
     handleSubmit: handleFormikSubmit,
     handleChange: formikHandleChange,
+    setErrors: setFormikErrors,
     setFieldValue: setFormikFieldValue,
   } = form;
 
@@ -88,10 +89,12 @@ export const useForm = <TData extends FormDataBase>({
         return {};
       }
 
-      return errors.inner.reduce(
+      const parsedErrors = errors.inner.reduce(
         (result, { path, message }) => (path ? { ...result, [path]: message } : result),
         {}
       );
+      setFormikErrors(parsedErrors);
+      return parsedErrors;
     }
   };
 
