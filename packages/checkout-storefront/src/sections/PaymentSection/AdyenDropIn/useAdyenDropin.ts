@@ -64,7 +64,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
   const { updateState, loadingCheckout, ...rest } = useCheckoutUpdateState();
   const { showCustomErrors } = useAlerts();
   const { submitInProgress } = useCheckoutUpdateState();
-  const { setSubmitInProgress } = useCheckoutUpdateStateActions();
+  const { setSubmitInProgress, setShouldRegisterUser } = useCheckoutUpdateStateActions();
   const { setIsProcessingPayment } = usePaymentProcessingScreen();
 
   const [currentTransactionId, setCurrentTransactionId] = useState<ParamBasicValue>(
@@ -232,6 +232,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
     component.setStatus("loading");
     setAdyenCheckoutSubmitParams({ state, component });
     validateAllForms(authenticated);
+    setShouldRegisterUser(true);
     setSubmitInProgress(true);
   });
 
