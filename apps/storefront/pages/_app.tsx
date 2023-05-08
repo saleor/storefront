@@ -38,6 +38,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   useAuthChange({
     onSignedOut: () => resetClient(),
+    onSignedIn: () =>
+      apolloClient.refetchQueries({
+        include: ["User"],
+      }),
   });
 
   return (
