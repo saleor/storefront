@@ -3,4 +3,5 @@ export const NAVIGATION = {
   searchIcon: "[data-testid='searchIcon']",
   cartIcon: "[data-testid='cartIcon']",
   cartCounter: "[data-testid='cartCounter']",
+  userIcon: "[data-testid='userIcon']",
 };
