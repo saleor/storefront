@@ -99,21 +99,157 @@
     "developer_comment": "edit address",
     "string": "edit"
   },
-  "CheckoutForm/messages/+qM8r0": {
-    "developer_comment": "missing fields in billing address",
-    "string": "There are certain fields in billing form that are missing or invalid"
+  "AdyenDropIn/errorMessages/0NXVfz": {
+    "developer_comment": "The card used for the transaction is blocked, therefore unusable.",
+    "string": "The card used for the transaction is blocked, therefore unusable."
   },
-  "CheckoutForm/messages/UDs7fN": {
-    "developer_comment": "pay accessibility label",
-    "string": "pay"
+  "AdyenDropIn/errorMessages/33ekFH": {
+    "developer_comment": "The transaction was canceled by the shopper.",
+    "string": "The transaction was canceled by the shopper."
   },
-  "CheckoutForm/messages/guvzy3": {
-    "developer_comment": "missing fields in shipping address",
-    "string": "There are certain fields in shipping address form that are missing or invalid"
+  "AdyenDropIn/errorMessages/3Nt7TE": {
+    "developer_comment": "The issuer declined the authentication exemption request and requires authentication for the transaction. Retry with 3D Secure.",
+    "string": "The issuer declined the authentication exemption request and requires authentication for the transaction. Retry with 3D Secure."
   },
-  "CheckoutForm/messages/jLJToZ": {
-    "developer_comment": "pay",
-    "string": "Pay"
+  "AdyenDropIn/errorMessages/5WO+oy": {
+    "developer_comment": "The shopper's bank requires the shopper to enter an online PIN.",
+    "string": "The shopper's bank requires the shopper to enter an online PIN."
+  },
+  "AdyenDropIn/errorMessages/6Kwq8L": {
+    "developer_comment": "the payment network can't be reached. retry the transaction with a different payment method.",
+    "string": "the payment network can't be reached. retry the transaction with a different payment method."
+  },
+  "AdyenDropIn/errorMessages/71wcNF": {
+    "developer_comment": "The transaction did not go through due to an error that occurred on the acquirer's end.",
+    "string": "The transaction did not go through due to an error that occurred on the acquirer's end."
+  },
+  "AdyenDropIn/errorMessages/7L60IY": {
+    "developer_comment": "The shopper's bank does not support or does not allow this type of transaction.",
+    "string": "The shopper's bank does not support or does not allow this type of transaction."
+  },
+  "AdyenDropIn/errorMessages/H3UOYb": {
+    "developer_comment": "It is not possible to contact the shopper's bank to authorise the transaction.",
+    "string": "It is not possible to contact the shopper's bank to authorise the transaction."
+  },
+  "AdyenDropIn/errorMessages/HmkjpZ": {
+    "developer_comment": "The specified card number is incorrect or invalid.",
+    "string": "The specified card number is incorrect or invalid."
+  },
+  "AdyenDropIn/errorMessages/J2yHC9": {
+    "developer_comment": "The withdrawal amount permitted for the shopper's card has exceeded.",
+    "string": "The withdrawal amount permitted for the shopper's card has exceeded."
+  },
+  "AdyenDropIn/errorMessages/Jej9AD": {
+    "developer_comment": "The issuer or the scheme wasn't able to communicate the outcome via RReq.",
+    "string": "The issuer or the scheme wasn't able to communicate the outcome via RReq."
+  },
+  "AdyenDropIn/errorMessages/OVcUz1": {
+    "developer_comment": "An amount mismatch occurred during the transaction process.",
+    "string": "An amount mismatch occurred during the transaction process."
+  },
+  "AdyenDropIn/errorMessages/S23GlJ": {
+    "developer_comment": "The specified CVC (card security code) is invalid.",
+    "string": "The specified CVC (card security code) is invalid."
+  },
+  "AdyenDropIn/errorMessages/Tzeq1v": {
+    "developer_comment": "It is not possible to validate the specified PIN number.",
+    "string": "It is not possible to validate the specified PIN number."
+  },
+  "AdyenDropIn/errorMessages/U5W4KS": {
+    "developer_comment": "Issuer reported the transaction as suspected fraud.",
+    "string": "Issuer reported the transaction as suspected fraud."
+  },
+  "AdyenDropIn/errorMessages/UBOLt2": {
+    "developer_comment": "The 3D Secure authentication failed due to an issue at the card network or issuer. Retry the transaction, or retry the transaction with a different payment method.",
+    "string": "The 3D Secure authentication failed due to an issue at the card network or issuer. Retry the transaction, or retry the transaction with a different payment method."
+  },
+  "AdyenDropIn/errorMessages/UTbebI": {
+    "developer_comment": "The transaction was cancelled by the provider.",
+    "string": "The transaction was cancelled by the provider."
+  },
+  "AdyenDropIn/errorMessages/VFX2HQ": {
+    "developer_comment": "The transaction was refused.",
+    "string": "The transaction was refused."
+  },
+  "AdyenDropIn/errorMessages/WISh4I": {
+    "developer_comment": "The specified PIN is incorrect or invalid.",
+    "string": "The specified PIN is incorrect or invalid."
+  },
+  "AdyenDropIn/errorMessages/XQ/LIQ": {
+    "developer_comment": "A PIN or signature is required. Retry the transaction.",
+    "string": "A PIN or signature is required. Retry the transaction."
+  },
+  "AdyenDropIn/errorMessages/b5X/WP": {
+    "developer_comment": "The transaction was not submitted correctly for processing.",
+    "string": "The transaction was not submitted correctly for processing."
+  },
+  "AdyenDropIn/errorMessages/dFVdlJ": {
+    "developer_comment": "The card does not have enough money to cover the payable amount.",
+    "string": "The card does not have enough money to cover the payable amount."
+  },
+  "AdyenDropIn/errorMessages/fQP7a3": {
+    "developer_comment": "Possible fraud.",
+    "string": "Possible fraud."
+  },
+  "AdyenDropIn/errorMessages/gDaWeJ": {
+    "developer_comment": "The shopper specified an incorrect PIN more that three times in a row.",
+    "string": "The shopper specified an incorrect PIN more that three times in a row."
+  },
+  "AdyenDropIn/errorMessages/h+IiPj": {
+    "developer_comment": "The number of withdrawals permitted for the shopper's card has exceeded.",
+    "string": "The number of withdrawals permitted for the shopper's card has exceeded."
+  },
+  "AdyenDropIn/errorMessages/hZwB12": {
+    "developer_comment": "The address data the shopper entered is incorrect.",
+    "string": "The address data the shopper entered is incorrect."
+  },
+  "AdyenDropIn/errorMessages/jSTNBf": {
+    "developer_comment": "The shopper's bank requires the shopper to enter a mobile PIN.",
+    "string": "The shopper's bank requires the shopper to enter a mobile PIN."
+  },
+  "AdyenDropIn/errorMessages/jnHZIN": {
+    "developer_comment": "The shopper's bank requires a savings account to complete the purchase.",
+    "string": "The shopper's bank requires a savings account to complete the purchase."
+  },
+  "AdyenDropIn/errorMessages/lGTFe5": {
+    "developer_comment": "The pre-authorisation risk checks resulted in a fraud score of 100 or more. Therefore, the transaction was flagged as fraudulent, and was refused.",
+    "string": "The pre-authorisation risk checks resulted in a fraud score of 100 or more. Therefore, the transaction was flagged as fraudulent, and was refused."
+  },
+  "AdyenDropIn/errorMessages/q0ee+A": {
+    "developer_comment": "The sum of pre-authorisation and post-authorisation risk checks resulted in a fraud score of 100 or more. Therefore, the transaction was flagged as fraudulent, and was refused.",
+    "string": "The sum of pre-authorisation and post-authorisation risk checks resulted in a fraud score of 100 or more. Therefore, the transaction was flagged as fraudulent, and was refused."
+  },
+  "AdyenDropIn/errorMessages/qFhxLR": {
+    "developer_comment": "An error occured while trying to proceed with the payment. Try another payment method.",
+    "string": "An error occured while trying to proceed with the payment. Try another payment method."
+  },
+  "AdyenDropIn/errorMessages/qeGblU": {
+    "developer_comment": "The card used for the transaction has expired. Therefore it is unusable.",
+    "string": "The card used for the transaction has expired. Therefore it is unusable."
+  },
+  "AdyenDropIn/errorMessages/r/nPYl": {
+    "developer_comment": "3D Secure authentication was not executed, or it did not execute successfully.",
+    "string": "3D Secure authentication was not executed, or it did not execute successfully."
+  },
+  "AdyenDropIn/errorMessages/st595D": {
+    "developer_comment": "The card you provided is either not viable to use in the country of the store or is restricted to use.",
+    "string": "The card you provided is either not viable to use in the country of the store or is restricted to use."
+  },
+  "AdyenDropIn/errorMessages/tpU5ix": {
+    "developer_comment": "The shopper abandoned the transaction after they attempted a contactless payment and were prompted to try a different card entry method (PIN or swipe).",
+    "string": "The shopper abandoned the transaction after they attempted a contactless payment and were prompted to try a different card entry method (PIN or swipe)."
+  },
+  "AdyenDropIn/errorMessages/uMWIuO": {
+    "developer_comment": "Transaction not permitted to issuer, cardholder or the merchant.",
+    "string": "Transaction not permitted to issuer, cardholder or the merchant."
+  },
+  "AdyenDropIn/errorMessages/x6Bmw3": {
+    "developer_comment": "Cancel of the transaction requested by the shopper",
+    "string": "Cancel of the transaction requested by the shopper"
+  },
+  "AdyenDropIn/errorMessages/xC2/8c": {
+    "developer_comment": "The shopper's bank requires a checking account to complete the purchase.",
+    "string": "The shopper's bank requires a checking account to complete the purchase."
   },
   "Contact/messages//BXzqC": {
     "developer_comment": "new customer?",
@@ -219,34 +355,6 @@
     "developer_comment": "delivery method",
     "string": "Delivery method"
   },
-  "DummyPayment/messages/2uijFy": {
-    "developer_comment": "how much is left to pay",
-    "string": "Left to pay ({currency})"
-  },
-  "DummyPayment/messages/9FUEKB": {
-    "developer_comment": "dummy pay",
-    "string": "Dummy Pay"
-  },
-  "DummyPayment/messages/Cm6A9z": {
-    "developer_comment": "loading",
-    "string": "Loading..."
-  },
-  "DummyPayment/messages/Hm9+RE": {
-    "developer_comment": "error",
-    "string": "Something went wrong"
-  },
-  "DummyPayment/messages/S0J+0M": {
-    "developer_comment": "dummy payment",
-    "string": "Dummy Payment"
-  },
-  "DummyPayment/messages/eJ2qAk": {
-    "developer_comment": "order total price",
-    "string": "Total price"
-  },
-  "DummyPayment/messages/qCpYR4": {
-    "developer_comment": "order already paid",
-    "string": "Already paid"
-  },
   "EmptyCartPage/messages/CLKTRp": {
     "developer_comment": "go back to store",
     "string": "Go back to store"
@@ -278,6 +386,13 @@
   "ManualSaveAddressForm/messages/khhC7s": {
     "developer_comment": "save accessibility label",
     "string": "Save address"
+  },
+  "OrderInfo/messages/+SXlNJ": {
+    "developer_comment": "We've received your payment authorization",
+    "string": "We've received your payment authorization"
+  },
+  "OrderInfo/messages/1hMnDx": {
+    "string": "Your order has been paid more than owed. This may be an error during payment. Contact your shop staff for help."
   },
   "OrderInfo/messages/4IPxGY": {
     "developer_comment": "order unpaid message",
@@ -331,37 +446,17 @@
     "developer_comment": "change password visibility accessibility label",
     "string": "change password visibility"
   },
-  "PaymentSection/messages/8YE5b7": {
-    "developer_comment": "payment providers",
-    "string": "Payment providers"
-  },
   "PaymentSection/messages/FK5Bg/": {
     "developer_comment": "payment providers accessibility label",
     "string": "payment providers"
   },
-  "PaymentSection/messages/bFYz7Q": {
-    "developer_comment": "dropin",
-    "string": "Drop in"
+  "PaymentSection/messages/qEunhG": {
+    "developer_comment": "Almost done",
+    "string": "Almost done..."
   },
-  "PaymentSection/messages/im88Fe": {
-    "developer_comment": "credit card",
-    "string": "Credit card"
-  },
-  "PaymentSection/messages/jdRifS": {
-    "developer_comment": "paypal",
-    "string": "PayPal"
-  },
-  "PaymentSection/messages/p7Zg+S": {
-    "developer_comment": "apple pay",
-    "string": "Apple Pay"
-  },
-  "PaymentSection/messages/xXCQ+K": {
-    "developer_comment": "dummy payment method",
-    "string": "Dummy"
-  },
-  "RootViews/messages/Cm6A9z": {
-    "developer_comment": "loading",
-    "string": "Loading..."
+  "PaymentSection/messages/yz03kH": {
+    "developer_comment": "payment methods",
+    "string": "Payment methods"
   },
   "SignIn/messages/Hz38OL": {
     "developer_comment": "password must be at least 8 characters",
@@ -474,6 +569,10 @@
   "lib/commonMessages/9NmWSQ": {
     "developer_comment": "check icon",
     "string": "check icon"
+  },
+  "lib/commonMessages/NkE75z": {
+    "developer_comment": "exclamation icon",
+    "string": "exclamation icon"
   },
   "lib/commonMessages/sklVAb": {
     "developer_comment": "remove icon",

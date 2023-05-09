@@ -30,6 +30,7 @@ export const useUserShippingAddressForm = () => {
         scope: "checkoutShippingUpdate",
         onSubmit: checkoutShippingAddressUpdate,
         shouldAbort: ({ formData: { addressList, selectedAddressId } }) =>
+          !selectedAddressId ||
           isMatchingAddress(shippingAddress, addressList.find(getById(selectedAddressId))),
         parse: ({ languageCode, checkoutId, selectedAddressId, addressList }) => ({
           languageCode,

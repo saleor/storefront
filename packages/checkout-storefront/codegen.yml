@@ -16,6 +16,9 @@ extensions:
         config:
           scalars:
             JSONString: string
+            # for now the only case where the api returns JSON the data returned
+            # from payment gateways so it's safe to assume it's an object
+            JSON: Record<string, any>
             UUID: string
             Metadata: Record<string, string>
             DateTime: string

@@ -5,7 +5,7 @@ import { contactLabels, contactMessages } from "../Contact/messages";
 import React from "react";
 import { SignInFormContainer, SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { useResetPasswordForm } from "@/checkout-storefront/sections/ResetPassword/useResetPasswordForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 
 interface ResetPasswordProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onResetPasswordSuccess: () => void;

@@ -20,6 +20,7 @@ export interface Alert {
 }
 
 export type CheckoutScope =
+  | "paymentGatewaysInitialize"
   | "checkoutFinalize"
   | "checkoutShippingUpdate"
   | "checkoutCustomerAttach"

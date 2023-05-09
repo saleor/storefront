@@ -7,7 +7,7 @@ import { summaryLabels, summaryMessages } from "./messages";
 import clsx from "clsx";
 import React, { FC } from "react";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 
 interface PromoCodeFormData {
@@ -41,7 +41,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
 
   return (
     <FormProvider form={form}>
-      <div className={clsx("relative px-4 pt-4", className)}>
+      <div className={clsx("relative px-4 mt-4 mb-4", className)}>
         <TextInput optional name="promoCode" label={formatMessage(summaryMessages.addDiscount)} />
         {showApplyButton && (
           <Button

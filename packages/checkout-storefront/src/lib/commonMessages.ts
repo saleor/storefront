@@ -14,6 +14,11 @@ export const imageAltMessages = defineMessages({
     id: "lib/commonMessages/9NmWSQ",
     description: "check icon",
   },
+  exclamationIcon: {
+    defaultMessage: "exclamation icon",
+    id: "lib/commonMessages/NkE75z",
+    description: "exclamation icon",
+  },
   removeIcon: {
     defaultMessage: "remove icon",
     id: "lib/commonMessages/sklVAb",

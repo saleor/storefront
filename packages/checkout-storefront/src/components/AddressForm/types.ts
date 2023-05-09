@@ -1,11 +1,12 @@
 import { AddressFragment, CountryCode } from "@/checkout-storefront/graphql";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 
 export interface AddressFormData
   extends Omit<Record<AddressField, string>, "country" | "countryCode"> {
   countryCode: CountryCode;
 }
 
-export type OptionalAddress = AddressFragment | undefined | null;
+export type OptionalAddress = MightNotExist<AddressFragment>;
 
 export type AddressField =
   | "city"

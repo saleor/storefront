@@ -1,5 +1,5 @@
 import { AddressForm } from "@/checkout-storefront/components/AddressForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useGuestBillingAddressForm } from "@/checkout-storefront/sections/GuestBillingAddressSection/useGuestBillingAddressForm";
 import React, { Suspense } from "react";
 import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";

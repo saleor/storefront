@@ -50,7 +50,7 @@
   }
 
   .summary-recap {
-    @apply flex flex-col max-w-full;
+    @apply flex flex-col max-w-full mt-4;
   }
 
   .summary-recap > .summary-row {

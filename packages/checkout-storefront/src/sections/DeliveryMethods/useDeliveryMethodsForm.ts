@@ -7,6 +7,7 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import { ChangeHandler, useForm, UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 import { getById } from "@/checkout-storefront/lib/utils/common";
 import { useCheckoutUpdateStateChange } from "@/checkout-storefront/state/updateStateStore";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -21,7 +22,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
   const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutDeliveryMethodUpdate");
 
-  const previousShippingCountry = useRef<CountryCode | undefined | null>(
+  const previousShippingCountry = useRef<MightNotExist<CountryCode>>(
     shippingAddress?.country?.code as CountryCode | undefined
   );
 

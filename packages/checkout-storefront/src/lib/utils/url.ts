@@ -1,19 +1,25 @@
 import { DEFAULT_CHANNEL, DEFAULT_LOCALE, Locale } from "@/checkout-storefront/lib/regions";
 import queryString from "query-string";
 import { CountryCode } from "@/checkout-storefront/graphql";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 
-type ParamBasicValue = string | undefined | null;
+export type ParamBasicValue = MightNotExist<string>;
 
 const queryParamsMap = {
   locale: "locale",
-  dummyPayment: "dummyPayment",
-  channel: "channel",
   redirectUrl: "redirectUrl",
   checkout: "checkoutId",
   order: "orderId",
   token: "passwordResetToken",
   email: "passwordResetEmail",
   saleorApiUrl: "saleorApiUrl",
+  // payment flow
+  transaction: "transaction", // allows us to process started transaction
+  processingPayment: "processingPayment", // tell the processing screen to show up
+  // adyen
+  redirectResult: "redirectResult",
+  resultCode: "resultCode",
+  type: "type",
 } as const;
 
 type UnmappedQueryParam = keyof typeof queryParamsMap;
