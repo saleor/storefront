@@ -65,6 +65,9 @@ Cypress.Commands.add("fillUpBasicAddress", (address) => {
     .get(CHECKOUT_ELEMENTS.phoneInput)
     .type(address.phone);
 });
+Cypress.Commands.add("checkNumberOfElements", (selector: string, numberOfElements: number) => {
+  return cy.get(selector).should("have.length", numberOfElements);
+});
 
 Cypress.Commands.add("sendRequestWithQuery", (query, authorization = "auth", variables = "") => {
   cy.request({
