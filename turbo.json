@@ -11,12 +11,14 @@
         "content/compiled-locales/**"
       ],
       "env": [
+        "ALLOWED_SALEOR_API_REGEX",
         "APL",
         "BROWSER",
         "CHECKOUT_APP_URL",
         "CHECKOUT_STOREFRONT_URL",
         "CLOUD_DEPLOYMENT_URL",
         "NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS",
+        "NEXT_PUBLIC_ALLOWED_SALEOR_API_REGEX",
         "NEXT_PUBLIC_API_URI",
         "NEXT_PUBLIC_CHECKOUT_APP_URL",
         "NEXT_PUBLIC_CHECKOUT_URL",
@@ -30,6 +32,7 @@
         "NEXT_PUBLIC_STOREFRONT_NAME",
         "NEXT_PUBLIC_VERCEL_URL",
         "PORT",
+        "REACT_APP_ALLOWED_SALEOR_API_REGEX",
         "REACT_APP_CHECKOUT_APP_URL",
         "SALEOR_API_URL",
         "SALEOR_APP_TOKEN",
