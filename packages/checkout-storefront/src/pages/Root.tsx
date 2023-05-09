@@ -15,13 +15,25 @@ import { useUrqlClient } from "@/checkout-storefront/lib/auth/useUrqlClient";
 import { SaleorAuthProvider } from "@/checkout-storefront/lib/auth/SaleorAuthProvider";
 import { useSaleorAuthClient } from "@/checkout-storefront/lib/auth/useSaleorAuthClient";
 import { useAuthChange } from "@/checkout-storefront/lib/auth";
+import invariant from "ts-invariant";
 
 export interface RootProps {
   env: AppEnv;
+  saleorApiUrlRegex: RegExp;
 }
 
-export const Root = ({ env }: RootProps) => {
+export const Root = ({ env, saleorApiUrlRegex }: RootProps) => {
   const { saleorApiUrl } = getQueryParams();
+
+  invariant(
+    saleorApiUrlRegex.test(saleorApiUrl),
+    `
+Provided saleorApiUrl doesn't match allowed regex!
+Provided: ${saleorApiUrl}
+Allowed: ${String(saleorApiUrlRegex)}
+    `.trim()
+  );
+
   const { locale, messages } = useLocale();
   const useSaleorAuthClientProps = useSaleorAuthClient({
     saleorApiUrl,
