@@ -4,7 +4,9 @@ const search = "?checkout=1234&locale=en-US&email=dummy@saeor.io";
 
 describe("getRawQueryParams", () => {
   it("should return query params with unmapped names", () => {
-    global.window = Object.create(window);
+    if (global.window === undefined) {
+      global.window = Object.create(window);
+    }
     Object.defineProperty(window, "location", {
       value: {
         search,
@@ -21,7 +23,9 @@ describe("getRawQueryParams", () => {
 
 describe("getQueryParams", () => {
   it("should return query params with mapped names", () => {
-    global.window = Object.create(window);
+    if (global.window === undefined) {
+      global.window = Object.create(window);
+    }
     Object.defineProperty(window, "location", {
       value: {
         search,

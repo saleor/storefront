@@ -99,9 +99,13 @@ export const Summary: FC<SummaryProps> = ({
             </SummaryItem>
           ))}
         </ul>
-        {editable && <PromoCodeAdd />}
+        {editable && (
+          <>
+            <PromoCodeAdd />
+            <Divider />
+          </>
+        )}
         <div className="summary-recap">
-          <Divider className="mt-1 mb-4" />
           <SummaryMoneyRow
             label={formatMessage(summaryMessages.subtotalPrice)}
             money={subtotalPrice?.gross}

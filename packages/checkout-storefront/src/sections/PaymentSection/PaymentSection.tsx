@@ -13,7 +13,7 @@ export const PaymentSection: React.FC<Children> = ({ children }) => {
     <>
       <Divider />
       <div className="section" data-testid="paymentMethods">
-        <Title>{formatMessage(paymentSectionMessages.paymentProviders)}</Title>
+        <Title>{formatMessage(paymentSectionMessages.paymentMethods)}</Title>
         <PaymentMethods />
         {children}
       </div>

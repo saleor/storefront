@@ -1,5 +1,5 @@
 import { AddressForm } from "@/checkout-storefront/components/AddressForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { shippingMessages } from "@/checkout-storefront/sections/UserShippingAddressSection/messages";
 import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
 import { useGuestShippingAddressForm } from "@/checkout-storefront/sections/GuestShippingAddressSection/useGuestShippingAddressForm";

@@ -10,11 +10,13 @@ import { AddressList } from "@/checkout-storefront/sections/AddressList/AddressL
 import React, { Suspense } from "react";
 import { AddressFragment } from "@/checkout-storefront/graphql";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
+import { useAvailableShippingCountries } from "@/checkout-storefront/hooks/useAvailableShippingCountries";
 
 interface UserShippingAddressSectionProps {}
 
 export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProps> = ({}) => {
   const formatMessage = useFormattedMessages();
+  const { availableShippingCountries } = useAvailableShippingCountries();
   const {
     form,
     userAddressActions: { onAddressCreateSuccess, onAddressDeleteSuccess, onAddressUpdateSuccess },
@@ -39,6 +41,7 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
           <>
             {displayAddressCreate && (
               <AddressCreateForm
+                availableCountries={availableShippingCountries}
                 onClose={() => setDisplayAddressCreate(false)}
                 onSuccess={onAddressCreateSuccess}
               />
@@ -46,6 +49,7 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
 
             {displayAddressEdit && (
               <AddressEditForm
+                availableCountries={availableShippingCountries}
                 title={formatMessage(shippingMessages.shippingAddress)}
                 onClose={() => setDisplayAddressEdit()}
                 address={form.values.addressList.find(getById(editedAddressId)) as AddressFragment}

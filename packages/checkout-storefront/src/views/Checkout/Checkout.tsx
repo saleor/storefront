@@ -8,6 +8,7 @@ import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
 import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
 import { CheckoutSkeleton } from "@/checkout-storefront/views/Checkout/CheckoutSkeleton";
+import { PAGE_ID } from "@/checkout-storefront/views/Checkout/consts";
 
 export const Checkout = () => {
   const { checkout, loading } = useCheckout();
@@ -25,7 +26,7 @@ export const Checkout = () => {
     <CheckoutSkeleton />
   ) : (
     <ErrorBoundary FallbackComponent={PageNotFound}>
-      <div className="page">
+      <div className="page" id={PAGE_ID}>
         <PageHeader />
         <div className="page-content">
           {isEmptyCart ? (

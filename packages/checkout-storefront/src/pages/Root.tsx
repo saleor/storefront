@@ -7,7 +7,7 @@ import { AppEnv } from "@/checkout-storefront/providers/AppConfigProvider/types"
 import { PageNotFound } from "@/checkout-storefront/views/PageNotFound";
 import { ToastContainer } from "react-toastify";
 import { alertsContainerProps } from "../hooks/useAlerts/consts";
-import { RootViews } from "../views/RootViews/RootViews";
+import { RootViews } from "../views/RootViews";
 import { useLocale } from "../hooks/useLocale";
 import { DEFAULT_LOCALE } from "../lib/regions";
 import { getQueryParams } from "../lib/utils/url";
@@ -50,8 +50,12 @@ Allowed: ${String(saleorApiUrlRegex)}
   });
 
   useAuthChange({
-    onSignedOut: () => resetClient(),
-    onSignedIn: () => resetClient(),
+    onSignedOut: () => {
+      resetClient();
+    },
+    onSignedIn: () => {
+      resetClient();
+    },
   });
 
   if (!saleorApiUrl) {

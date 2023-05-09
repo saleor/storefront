@@ -1,7 +1,6 @@
-import { useField } from "formik";
 import React from "react";
 import { Select as UiKitSelect, SelectProps as UiKitSelectProps } from "@saleor/ui-kit";
-import { useFormContext } from "@/checkout-storefront/hooks/useForm";
+import { useField } from "@/checkout-storefront/hooks/useForm/useField";
 
 interface SelectProps<TName extends string, TData extends string>
   extends Pick<UiKitSelectProps<TData>, "options" | "classNames" | "placeholder" | "autoComplete"> {
@@ -12,8 +11,7 @@ export const Select = <TName extends string, TData extends string>({
   name,
   ...rest
 }: SelectProps<TName, TData>) => {
-  const [field] = useField(name);
-  const { handleChange } = useFormContext();
+  const fieldProps = useField(name);
 
-  return <UiKitSelect {...rest} {...field} onChange={handleChange} />;
+  return <UiKitSelect {...fieldProps} {...rest} />;
 };

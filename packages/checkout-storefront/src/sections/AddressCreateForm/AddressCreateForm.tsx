@@ -1,8 +1,8 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
 import React from "react";
-import { AddressForm } from "@/checkout-storefront/components/AddressForm";
+import { AddressForm, AddressFormProps } from "@/checkout-storefront/components/AddressForm";
 import { AddressFragment, useUserAddressCreateMutation } from "@/checkout-storefront/graphql";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
   getEmptyAddressFormData,
@@ -14,12 +14,16 @@ import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveA
 import { addressCreateMessages } from "@/checkout-storefront/sections/AddressCreateForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
 
-export interface AddressCreateFormProps {
+export interface AddressCreateFormProps extends Pick<AddressFormProps, "availableCountries"> {
   onSuccess: (address: AddressFragment) => void;
   onClose: () => void;
 }
 
-export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess, onClose }) => {
+export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
+  onSuccess,
+  onClose,
+  availableCountries,
+}) => {
   const formatMessage = useFormattedMessages();
   const validationSchema = useAddressFormSchema();
   const [, userAddressCreate] = useUserAddressCreateMutation();
@@ -28,8 +32,8 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
     scope: "userAddressCreate",
     onSubmit: userAddressCreate,
     parse: (addressFormData) => ({ address: getAddressInputData(addressFormData) }),
-    onSuccess: ({ result }) => {
-      onSuccess(result.data?.accountAddressCreate?.address as AddressFragment);
+    onSuccess: ({ data }) => {
+      onSuccess(data.address as AddressFragment);
       onClose();
     },
   });
@@ -44,7 +48,10 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({ onSuccess,
 
   return (
     <FormProvider form={form}>
-      <AddressForm title={formatMessage(addressCreateMessages.addressCreate)}>
+      <AddressForm
+        title={formatMessage(addressCreateMessages.addressCreate)}
+        availableCountries={availableCountries}
+      >
         <AddressFormActions onSubmit={handleSubmit} loading={isSubmitting} onCancel={onClose} />
       </AddressForm>
     </FormProvider>

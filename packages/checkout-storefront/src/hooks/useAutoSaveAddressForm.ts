@@ -3,8 +3,8 @@ import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubm
 import {
   BlurHandler,
   ChangeHandler,
-  FormConfig,
   FormHelpers,
+  FormProps,
   hasErrors,
   useForm,
   UseFormReturn,
@@ -21,7 +21,7 @@ export type AutoSaveAddressFormData = Partial<AddressFormData>;
 export const useAutoSaveAddressForm = ({
   scope,
   ...formProps
-}: FormConfig<AutoSaveAddressFormData> & {
+}: FormProps<AutoSaveAddressFormData> & {
   scope: CheckoutUpdateStateScope;
 }): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
@@ -52,7 +52,7 @@ export const useAutoSaveAddressForm = ({
   // request for forever now https://github.com/jaredpalmer/formik/issues/2675
   // so we're just gonna add a partial submit for guest address form to work
   const partialSubmit = useCallback(async () => {
-    const formErrors = await validateForm(values);
+    const formErrors = validateForm(values);
 
     if (!hasErrors(formErrors) && dirty) {
       setCheckoutUpdateState("loading");

@@ -1,6 +1,7 @@
+import { CountryCode } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useMemo } from "react";
-import { object, string } from "yup";
+import { mixed, object, string } from "yup";
 
 export const useAddressFormSchema = () => {
   const { errorMessages } = useErrorMessages();
@@ -18,7 +19,7 @@ export const useAddressFormSchema = () => {
         countryArea: string(),
         phone: string(),
         postalCode: string().required(errorMessages.required),
-        countryCode: string(),
+        countryCode: mixed<CountryCode>().required(errorMessages.required),
       }),
     [errorMessages]
   );

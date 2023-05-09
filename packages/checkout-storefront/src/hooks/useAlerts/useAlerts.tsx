@@ -98,10 +98,12 @@ function useAlerts(globalScope?: any): any {
           showAlert({ message });
         } else if (field && code) {
           showDefaultAlert({ scope, field, code: code as ErrorCode });
+        } else {
+          showAlert({ message: formatMessage(errorMessages.somethingWentWrong) });
         }
       });
     },
-    [globalScope, showAlert, showDefaultAlert]
+    [formatMessage, globalScope, showAlert, showDefaultAlert]
   );
 
   const showSuccess = useCallback(

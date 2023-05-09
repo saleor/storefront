@@ -14,6 +14,7 @@ import {
   AddressFormData,
   ApiAddressField,
 } from "../../components/AddressForm/types";
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
 
 export const getEmptyAddressFormData = (): AddressFormData => ({
   firstName: "",
@@ -127,7 +128,7 @@ export const isMatchingAddressData = (
   isEqual(pick(address, getAllAddressFieldKeys()), pick(addressToMatch, getAllAddressFieldKeys()));
 
 export const getByMatchingAddress =
-  (addressToMatch: Partial<AddressFragment> | undefined | null) => (address: AddressFragment) =>
+  (addressToMatch: MightNotExist<Partial<AddressFragment>>) => (address: AddressFragment) =>
     isMatchingAddress(address, addressToMatch);
 
 export const isMatchingAddressFormData = (

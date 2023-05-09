@@ -41,8 +41,10 @@ export class SaleorAuthStorageHandler {
     (this.storage.getItem(STORAGE_AUTH_STATE_KEY) as AuthState | undefined) || "signedOut";
 
   setAuthState = (authState: AuthState) => {
-    this.storage.setItem(STORAGE_AUTH_STATE_KEY, authState);
-    this.sendAuthStateEvent(authState);
+    if (this.storage.getItem(STORAGE_AUTH_STATE_KEY) !== authState) {
+      this.storage.setItem(STORAGE_AUTH_STATE_KEY, authState);
+      this.sendAuthStateEvent(authState);
+    }
   };
 
   /* refresh token */
