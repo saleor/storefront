@@ -24,6 +24,7 @@ export const useUserBillingAddressForm = () => {
   const { checkout } = useCheckout();
   const { billingAddress } = checkout;
   const { setChangingBillingCountry } = useCheckoutUpdateStateActions();
+
   const { user } = useUser();
   const [, checkoutBillingAddressUpdate] = useCheckoutBillingAddressUpdateMutation();
 

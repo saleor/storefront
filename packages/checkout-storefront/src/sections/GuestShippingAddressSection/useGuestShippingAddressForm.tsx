@@ -9,7 +9,6 @@ import {
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
 import {
   AutoSaveAddressFormData,
   useAutoSaveAddressForm,
@@ -21,7 +20,7 @@ export const useGuestShippingAddressForm = () => {
   const {
     checkout: { shippingAddress },
   } = useCheckout();
-  const validationSchema = useAddressFormSchema();
+
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
   const { setCheckoutFormValidationState } = useSetCheckoutFormValidationState("shippingAddress");
 
@@ -50,7 +49,6 @@ export const useGuestShippingAddressForm = () => {
   const form = useAutoSaveAddressForm({
     onSubmit,
     initialValues: getAddressFormDataFromAddress(shippingAddress),
-    validationSchema,
     scope: "checkoutShippingUpdate",
   });
 
