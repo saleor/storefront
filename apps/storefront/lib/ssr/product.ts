@@ -3,8 +3,9 @@ import { ParsedUrlQuery } from "querystring";
 
 import { ProductPathsDocument, ProductPathsQuery, ProductPathsQueryVariables } from "@/saleor/api";
 
+import { API_URI } from "@/lib/const";
+import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { CHANNELS, LOCALES, Path } from "../regions";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface ProductPathArguments extends ParsedUrlQuery {
   channel: string;
@@ -13,6 +14,7 @@ export interface ProductPathArguments extends ParsedUrlQuery {
 }
 
 export const productPaths = async () => {
+  const serverApolloClient = createServerSideApolloClient(API_URI);
   const paths: Path<ProductPathArguments>[] = [];
 
   for (const channel of CHANNELS) {

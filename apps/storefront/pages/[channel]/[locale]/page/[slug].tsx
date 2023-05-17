@@ -4,10 +4,11 @@ import Custom404 from "pages/404";
 import { ReactElement } from "react";
 
 import { Layout, RichText } from "@/components";
+import { API_URI } from "@/lib/const";
 import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
 import { PageDocument, PageQuery, PageQueryVariables } from "@/saleor/api";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
 
 export interface pathParams {
   channel: string;
@@ -29,6 +30,8 @@ export const getStaticProps = async (
       notFound: true,
     };
   }
+
+  const serverApolloClient = createServerSideApolloClient(API_URI);
 
   const pageSlug = context.params.slug.toString();
   const response: ApolloQueryResult<PageQuery> = await serverApolloClient.query<

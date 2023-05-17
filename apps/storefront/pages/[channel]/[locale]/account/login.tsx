@@ -7,7 +7,7 @@ import { useIntl } from "react-intl";
 import { messages } from "@/components/translations";
 import { DEMO_MODE } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
-import { useSaleorAuthContext } from "@/lib/auth";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 
 export type OptionalQuery = {
   next?: string;

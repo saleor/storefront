@@ -3,8 +3,9 @@ import { ParsedUrlQuery } from "querystring";
 
 import { PagePathsDocument, PagePathsQuery, PagePathsQueryVariables } from "@/saleor/api";
 
+import { API_URI } from "@/lib/const";
+import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { CHANNELS, LOCALES, Path } from "../regions";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 
 export interface PagePathArguments extends ParsedUrlQuery {
   channel: string;
@@ -13,6 +14,7 @@ export interface PagePathArguments extends ParsedUrlQuery {
 }
 
 export const pagePaths = async () => {
+  const serverApolloClient = createServerSideApolloClient(API_URI);
   const paths: Path<PagePathArguments>[] = [];
 
   let hasNextPage = true;

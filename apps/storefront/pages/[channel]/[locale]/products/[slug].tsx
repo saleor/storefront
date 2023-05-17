@@ -13,6 +13,7 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
+import { API_URI } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -26,7 +27,7 @@ import {
   useCheckoutAddProductLineMutation,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { useUser } from "@/lib/useUser";
 
 export type OptionalQuery = {
@@ -47,6 +48,8 @@ export const getStaticProps = async (
       notFound: true,
     };
   }
+
+  const serverApolloClient = createServerSideApolloClient(API_URI);
 
   const productSlug = context.params.slug.toString();
   const response: ApolloQueryResult<ProductBySlugQuery> = await serverApolloClient.query<

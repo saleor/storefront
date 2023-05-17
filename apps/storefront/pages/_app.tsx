@@ -11,8 +11,8 @@ import { RegionsProvider } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { API_URI, DEMO_MODE } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
-import { useAuthenticatedApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
-import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@/lib/auth";
+import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@saleor/auth-sdk/react";
+import { useAuthenticatedApolloClient } from "@saleor/auth-sdk/react/apollo";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -32,12 +32,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { apolloClient, resetClient } = useAuthenticatedApolloClient(
-    saleorAuthClient.fetchWithAuth
-  );
+  // FIXME missing typePolicies in InMemoryCache
+  const { apolloClient, reset } = useAuthenticatedApolloClient({
+    fetchWithAuth: saleorAuthClient.fetchWithAuth,
+    url: API_URI,
+  });
 
   useAuthChange({
-    onSignedOut: () => resetClient(),
+    onSignedOut: () => reset(),
     onSignedIn: () =>
       apolloClient.refetchQueries({
         include: ["User"],
