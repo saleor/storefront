@@ -555,6 +555,9 @@ importers:
       '@react-types/button':
         specifier: 3.6.2
         version: 3.6.2(react@18.2.0)
+      '@saleor/auth-sdk':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@saleor/ui-kit':
         specifier: workspace:*
         version: link:../ui-kit
@@ -622,8 +625,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       urql:
-        specifier: 3.0.3
-        version: 3.0.3(graphql@15.8.0)(react@18.2.0)
+        specifier: 4.0.2
+        version: 4.0.2(graphql@15.8.0)(react@18.2.0)
       yup:
         specifier: 1.0.0-beta.7
         version: 1.0.0-beta.7
@@ -934,6 +937,17 @@ importers:
         version: 4.8.4
 
 packages:
+
+  /@0no-co/graphql.web@1.0.1(graphql@15.8.0):
+    resolution: {integrity: sha512-6Yaxyv6rOwRkLIvFaL0NrLDgfNqC/Ng9QOPmTmlqW4mORXMEKmh5NYGkIvvt5Yw8fZesnMAqkj8cIqTj8f40cQ==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      graphql:
+        optional: true
+    dependencies:
+      graphql: 15.8.0
+    dev: false
 
   /@0no-co/graphql.web@1.0.1(graphql@16.6.0):
     resolution: {integrity: sha512-6Yaxyv6rOwRkLIvFaL0NrLDgfNqC/Ng9QOPmTmlqW4mORXMEKmh5NYGkIvvt5Yw8fZesnMAqkj8cIqTj8f40cQ==}
@@ -10336,15 +10350,6 @@ packages:
       eslint-visitor-keys: 3.4.1
     dev: true
 
-  /@urql/core@3.2.2(graphql@15.8.0):
-    resolution: {integrity: sha512-i046Cz8cZ4xIzGMTyHZrbdgzcFMcKD7+yhCAH5FwWBRjcKrc+RjEOuR9X5AMuBvr8c6IAaE92xAqa4wmlGfWTQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      graphql: 15.8.0
-      wonka: 6.3.2
-    dev: false
-
   /@urql/core@3.2.2(graphql@16.6.0):
     resolution: {integrity: sha512-i046Cz8cZ4xIzGMTyHZrbdgzcFMcKD7+yhCAH5FwWBRjcKrc+RjEOuR9X5AMuBvr8c6IAaE92xAqa4wmlGfWTQ==}
     peerDependencies:
@@ -10352,6 +10357,15 @@ packages:
     dependencies:
       graphql: 16.6.0
       wonka: 6.3.2
+    dev: false
+
+  /@urql/core@4.0.7(graphql@15.8.0):
+    resolution: {integrity: sha512-UtZ9oSbSFODXzFydgLCXpAQz26KGT1d6uEfcylKphiRWNXSWZi8k7vhJXNceNm/Dn0MiZ+kaaJHKcnGY1jvHRQ==}
+    dependencies:
+      '@0no-co/graphql.web': 1.0.1(graphql@15.8.0)
+      wonka: 6.3.2
+    transitivePeerDependencies:
+      - graphql
     dev: false
 
   /@urql/core@4.0.7(graphql@16.6.0):
@@ -10678,21 +10692,21 @@ packages:
     resolution: {integrity: sha512-WBGObg2bxt9UYGX4Dh3heUpHeULiFIP/yLpKrcebPfwaLuwCSj6rS7kpQegQ/K7jbkTQ1nLGZnfyAvY1T2LG4g==}
     engines: {node: '>=8'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.4.0
     dev: false
 
   /@wry/equality@0.5.5:
     resolution: {integrity: sha512-tI95+tJlL2LoOY27EHy0V0zKRVgbPp6vk9p6ZqWZOCSVslEhYEGeI+gaskc2rnjQxfszsXhtgYZTQ1xAUrMkOg==}
     engines: {node: '>=8'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.4.0
     dev: false
 
   /@wry/trie@0.3.2:
     resolution: {integrity: sha512-yRTyhWSls2OY/pYLfwff867r8ekooZ4UI+/gxot5Wj8EFwSf2rG+n+Mo/6LoLQm1TKA4GRj2+LCpbfS937dClQ==}
     engines: {node: '>=8'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.4.0
     dev: false
 
   /@xmldom/xmldom@0.8.7:
@@ -14134,7 +14148,7 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-is: 17.0.2
-      tslib: 2.5.0
+      tslib: 2.4.0
     dev: false
 
   /dset@3.1.2:
@@ -25899,18 +25913,6 @@ packages:
     resolution: {integrity: sha512-Qp95D4TPJl1kC9SKigDcqgyM2VDVO4RiJc2d4qe5GrYm+zbIQCWWKAFaJNQ4BhdFeDGwBmAxqJBwWSJDb9T3BQ==}
     dev: true
 
-  /urql@3.0.3(graphql@15.8.0)(react@18.2.0):
-    resolution: {integrity: sha512-aVUAMRLdc5AOk239DxgXt6ZxTl/fEmjr7oyU5OGo8uvpqu42FkeJErzd2qBzhAQ3DyusoZIbqbBLPlnKo/yy2A==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      react: '>= 16.8.0'
-    dependencies:
-      '@urql/core': 3.2.2(graphql@15.8.0)
-      graphql: 15.8.0
-      react: 18.2.0
-      wonka: 6.1.0
-    dev: false
-
   /urql@3.0.3(graphql@16.6.0)(react@18.2.0):
     resolution: {integrity: sha512-aVUAMRLdc5AOk239DxgXt6ZxTl/fEmjr7oyU5OGo8uvpqu42FkeJErzd2qBzhAQ3DyusoZIbqbBLPlnKo/yy2A==}
     peerDependencies:
@@ -25921,6 +25923,18 @@ packages:
       graphql: 16.6.0
       react: 18.2.0
       wonka: 6.1.0
+    dev: false
+
+  /urql@4.0.2(graphql@15.8.0)(react@18.2.0):
+    resolution: {integrity: sha512-jMb71UGtoAHI4A0TO15ZUSG8qvUxC5fBTXmUq/DyE3WWcnJkZbnMCBlcZIzMrXK4txAMIHE718jsaUujRkdlkg==}
+    peerDependencies:
+      react: '>= 16.8.0'
+    dependencies:
+      '@urql/core': 4.0.7(graphql@15.8.0)
+      react: 18.2.0
+      wonka: 6.3.2
+    transitivePeerDependencies:
+      - graphql
     dev: false
 
   /urql@4.0.2(graphql@16.6.0)(react@18.2.0):
