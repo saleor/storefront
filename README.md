@@ -84,6 +84,9 @@ npm install -g pnpm@7.11.0
 >
 > `react-storefront` requires version 7.11.0 of pnpm to run properly, using newer versions won't work
 
+> **Note**
+> You might also consider using [proto](https://moonrepo.dev/docs/proto/install) for managing your `pnpm` and `node` versions across different projects. This repository has a configuration for proto.
+
 Then install dependencies:
 
 ```
@@ -99,6 +102,8 @@ pnpm dev
 [The command will boot up 4 applications running on different ports](./docs/development.md#ports).
 
 Read more about development in [docs/development.md](./docs/development.md).
+
+If you have any issues with setting up the app please refer to our [FAQ](./docs/faq.md)
 
 ## Payment gateways
 
