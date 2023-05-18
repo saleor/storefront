@@ -6,6 +6,7 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList";
 import { CollectionPageSeo } from "@/components/seo/CollectionPageSeo";
+import typePolicies from "@/lib/auth/typePolicies";
 import { API_URI } from "@/lib/const";
 import { mapEdgesToItems } from "@/lib/maps";
 import { contextToRegionQuery } from "@/lib/regions";
@@ -31,7 +32,7 @@ export const getStaticProps = async (
     };
   }
 
-  const serverApolloClient = createServerSideApolloClient(API_URI);
+  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
 
   const collectionSlug = context.params.slug.toString();
   const response: ApolloQueryResult<CollectionBySlugQuery> = await serverApolloClient.query<

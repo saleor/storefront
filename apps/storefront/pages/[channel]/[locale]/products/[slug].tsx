@@ -8,17 +8,19 @@ import React, { ReactElement, useState } from "react";
 import { useIntl } from "react-intl";
 
 import { Layout, RichText, VariantSelector } from "@/components";
+import { useRegions } from "@/components/RegionsProvider";
 import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
-import { useRegions } from "@/components/RegionsProvider";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
+import typePolicies from "@/lib/auth/typePolicies";
 import { API_URI } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { contextToRegionQuery } from "@/lib/regions";
 import { translate } from "@/lib/translations";
+import { useUser } from "@/lib/useUser";
 import {
   CheckoutError,
   ProductBySlugDocument,
@@ -28,7 +30,6 @@ import {
   useCreateCheckoutMutation,
 } from "@/saleor/api";
 import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
-import { useUser } from "@/lib/useUser";
 
 export type OptionalQuery = {
   variant?: string;
@@ -49,7 +50,7 @@ export const getStaticProps = async (
     };
   }
 
-  const serverApolloClient = createServerSideApolloClient(API_URI);
+  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
 
   const productSlug = context.params.slug.toString();
   const response: ApolloQueryResult<ProductBySlugQuery> = await serverApolloClient.query<

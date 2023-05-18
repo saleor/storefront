@@ -5,6 +5,7 @@ import { PagePathsDocument, PagePathsQuery, PagePathsQueryVariables } from "@/sa
 
 import { API_URI } from "@/lib/const";
 import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
+import typePolicies from "../auth/typePolicies";
 import { CHANNELS, LOCALES, Path } from "../regions";
 
 export interface PagePathArguments extends ParsedUrlQuery {
@@ -14,7 +15,7 @@ export interface PagePathArguments extends ParsedUrlQuery {
 }
 
 export const pagePaths = async () => {
-  const serverApolloClient = createServerSideApolloClient(API_URI);
+  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
   const paths: Path<PagePathArguments>[] = [];
 
   let hasNextPage = true;

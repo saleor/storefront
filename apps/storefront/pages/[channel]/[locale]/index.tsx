@@ -4,6 +4,7 @@ import React, { ReactElement } from "react";
 
 import { HomepageBlock, Layout } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
+import typePolicies from "@/lib/auth/typePolicies";
 import { API_URI, HOMEPAGE_MENU } from "@/lib/const";
 import { contextToRegionQuery } from "@/lib/regions";
 import {
@@ -14,7 +15,7 @@ import {
 import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const serverApolloClient = createServerSideApolloClient(API_URI);
+  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
 
   const result: ApolloQueryResult<HomepageBlocksQuery> = await serverApolloClient.query<
     HomepageBlocksQuery,

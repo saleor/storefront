@@ -42,7 +42,7 @@ Allowed: ${String(saleorApiUrlRegex)}
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { urqlClient, resetClient } = useUrqlClient({
+  const { urqlClient, reset, refetch } = useUrqlClient({
     suspense: true,
     requestPolicy: "cache-first",
     url: saleorApiUrl,
@@ -52,10 +52,10 @@ Allowed: ${String(saleorApiUrlRegex)}
 
   useAuthChange({
     onSignedOut: () => {
-      resetClient();
+      reset();
     },
     onSignedIn: () => {
-      resetClient();
+      refetch();
     },
   });
 

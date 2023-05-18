@@ -9,6 +9,7 @@ import React, { ReactElement, ReactNode } from "react";
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
+import typePolicies from "@/lib/auth/typePolicies";
 import { API_URI, DEMO_MODE } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
 import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@saleor/auth-sdk/react";
@@ -32,18 +33,15 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  // FIXME missing typePolicies in InMemoryCache
-  const { apolloClient, reset } = useAuthenticatedApolloClient({
+  const { apolloClient, reset, refetch } = useAuthenticatedApolloClient({
     fetchWithAuth: saleorAuthClient.fetchWithAuth,
-    url: API_URI,
+    uri: API_URI,
+    typePolicies,
   });
 
   useAuthChange({
     onSignedOut: () => reset(),
-    onSignedIn: () =>
-      apolloClient.refetchQueries({
-        include: ["User"],
-      }),
+    onSignedIn: () => refetch(),
   });
 
   return (

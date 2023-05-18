@@ -9,6 +9,7 @@ import {
 
 import { API_URI } from "@/lib/const";
 import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
+import typePolicies from "../auth/typePolicies";
 import { CHANNELS, LOCALES, Path } from "../regions";
 
 export interface CollectionPathArguments extends ParsedUrlQuery {
@@ -18,7 +19,7 @@ export interface CollectionPathArguments extends ParsedUrlQuery {
 }
 
 export const collectionPaths = async () => {
-  const serverApolloClient = createServerSideApolloClient(API_URI);
+  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
   const paths: Path<CollectionPathArguments>[] = [];
 
   for (const channel of CHANNELS) {

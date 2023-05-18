@@ -5,6 +5,7 @@ import { ProductPathsDocument, ProductPathsQuery, ProductPathsQueryVariables } f
 
 import { API_URI } from "@/lib/const";
 import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
+import typePolicies from "../auth/typePolicies";
 import { CHANNELS, LOCALES, Path } from "../regions";
 
 export interface ProductPathArguments extends ParsedUrlQuery {
@@ -14,7 +15,7 @@ export interface ProductPathArguments extends ParsedUrlQuery {
 }
 
 export const productPaths = async () => {
-  const serverApolloClient = createServerSideApolloClient(API_URI);
+  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
   const paths: Path<ProductPathArguments>[] = [];
 
   for (const channel of CHANNELS) {
