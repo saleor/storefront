@@ -27,6 +27,8 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
+    "clean-envs": "find . -maxdepth 3 -name \".env.local\" -type f -exec rm -i {} \\;",
+    "clean-auth-files": "find . -maxdepth 3 -name \".auth_token\" -exec rm -i {} \\;",
     "clean": "rm -rf .turbo; turbo run clean",
     "cy:run": "cypress run",
     "cy:open": "cypress open"
