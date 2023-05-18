@@ -4,7 +4,7 @@ import { useGetParsedErrors } from "@/checkout-storefront/hooks/useGetParsedErro
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { object, string } from "yup";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react/SaleorAuthProvider";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 
 interface SignInFormData {
   email: string;
