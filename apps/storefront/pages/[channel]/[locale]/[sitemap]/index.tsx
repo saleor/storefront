@@ -2,8 +2,6 @@ import { ApolloQueryResult } from "@apollo/client";
 import { GetServerSideProps } from "next";
 import { getServerSideSitemap } from "next-sitemap";
 
-import typePolicies from "@/lib/auth/typePolicies";
-import { API_URI } from "@/lib/const";
 import {
   CategoryPathsDocument,
   CategoryPathsQuery,
@@ -12,11 +10,9 @@ import {
   ProductPathsDocument,
   ProductPathsQuery,
 } from "@/saleor/api";
-import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
+import { serverApolloClient } from "@/lib/ssr/common";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
-
   let fields: { loc: string }[] = [];
 
   if (ctx.params) {

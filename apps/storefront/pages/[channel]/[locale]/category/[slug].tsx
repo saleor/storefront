@@ -7,8 +7,6 @@ import React, { ReactElement } from "react";
 import { Layout, PageHero } from "@/components";
 import { FilteredProductList } from "@/components/productList/FilteredProductList/FilteredProductList";
 import { CategoryPageSeo } from "@/components/seo/CategoryPageSeo";
-import typePolicies from "@/lib/auth/typePolicies";
-import { API_URI } from "@/lib/const";
 import { mapEdgesToItems } from "@/lib/maps";
 import { usePaths } from "@/lib/paths";
 import { contextToRegionQuery } from "@/lib/regions";
@@ -22,7 +20,7 @@ import {
   FilteringAttributesQueryDocument,
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
-import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
+import { serverApolloClient } from "@/lib/ssr/common";
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>
@@ -33,8 +31,6 @@ export const getStaticProps = async (
       notFound: true,
     };
   }
-
-  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
 
   const categorySlug = context.params.slug.toString();
   const response: ApolloQueryResult<CategoryBySlugQuery> = await serverApolloClient.query<

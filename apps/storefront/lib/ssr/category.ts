@@ -7,10 +7,8 @@ import {
   CategoryPathsQueryVariables,
 } from "@/saleor/api";
 
-import { API_URI } from "@/lib/const";
-import { createServerSideApolloClient } from "@saleor/auth-sdk/react/apollo";
-import typePolicies from "../auth/typePolicies";
 import { CHANNELS, LOCALES, Path } from "../regions";
+import { serverApolloClient } from "./common";
 
 export interface CategoryPathArguments extends ParsedUrlQuery {
   channel: string;
@@ -19,7 +17,6 @@ export interface CategoryPathArguments extends ParsedUrlQuery {
 }
 
 export const categoryPaths = async () => {
-  const serverApolloClient = createServerSideApolloClient({ uri: API_URI, typePolicies });
   const paths: Path<CategoryPathArguments>[] = [];
 
   let hasNextPage = true;
