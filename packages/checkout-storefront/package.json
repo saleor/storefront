@@ -35,7 +35,7 @@
     "@adyen/api-library": "12.0.0",
     "@headlessui/react": "1.7.3",
     "@react-types/button": "3.6.2",
-    "@saleor/auth-sdk": "^0.5.1",
+    "@saleor/auth-sdk": "^0.6.0",
     "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "1.14.0",
     "@stripe/stripe-js": "1.42.0",

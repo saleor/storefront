@@ -18,12 +18,12 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
-    "@apollo/client": "3.7.1",
+    "@apollo/client": "3.7.14",
     "@formatjs/swc-plugin": "1.4.14",
     "@graphql-codegen/typescript-apollo-client-helpers": "2.2.5",
     "@headlessui/react": "1.7.3",
     "@heroicons/react": "1.0.6",
-    "@saleor/auth-sdk": "^0.5.1",
+    "@saleor/auth-sdk": "^0.6.0",
     "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "1.14.0",
     "@stripe/stripe-js": "1.42.0",
