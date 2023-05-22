@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 import { PagePathsDocument, PagePathsQuery, PagePathsQueryVariables } from "@/saleor/api";
 
 import { CHANNELS, LOCALES, Path } from "../regions";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { serverApolloClient } from "./common";
 
 export interface PagePathArguments extends ParsedUrlQuery {
   channel: string;

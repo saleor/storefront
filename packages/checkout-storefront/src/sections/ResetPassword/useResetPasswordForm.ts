@@ -1,7 +1,7 @@
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
-import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { clearQueryParams, getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { object, string } from "yup";
 

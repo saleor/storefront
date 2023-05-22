@@ -6,7 +6,7 @@ import { Button } from "@/checkout-storefront/components/Button";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { contactLabels, contactMessages } from "../Contact/messages";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
-import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
   onSignOutSuccess: () => void;

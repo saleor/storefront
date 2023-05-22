@@ -5,7 +5,7 @@ import { Layout, Spinner } from "@/components";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { usePaths } from "@/lib/paths";
 import { useUser } from "@/lib/useUser";
-import { useSaleorAuthContext } from "@/lib/auth";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 
 export type AccountLayoutProps = { children: ReactNode };
 

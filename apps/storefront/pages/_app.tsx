@@ -9,10 +9,11 @@ import React, { ReactElement, ReactNode } from "react";
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
+import typePolicies from "@/lib/auth/typePolicies";
 import { API_URI, DEMO_MODE } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
-import { useAuthenticatedApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
-import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@/lib/auth";
+import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@saleor/auth-sdk/react";
+import { useAuthenticatedApolloClient } from "@saleor/auth-sdk/react/apollo";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -32,16 +33,15 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { apolloClient, resetClient } = useAuthenticatedApolloClient(
-    saleorAuthClient.fetchWithAuth
-  );
+  const { apolloClient, reset, refetch } = useAuthenticatedApolloClient({
+    fetchWithAuth: saleorAuthClient.fetchWithAuth,
+    uri: API_URI,
+    typePolicies,
+  });
 
   useAuthChange({
-    onSignedOut: () => resetClient(),
-    onSignedIn: () =>
-      apolloClient.refetchQueries({
-        include: ["User"],
-      }),
+    onSignedOut: () => reset(),
+    onSignedIn: () => refetch(),
   });
 
   return (

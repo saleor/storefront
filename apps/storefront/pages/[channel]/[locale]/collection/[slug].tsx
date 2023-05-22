@@ -18,7 +18,7 @@ import {
   FilteringAttributesQueryDocument,
   FilteringAttributesQueryVariables,
 } from "@/saleor/api";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { serverApolloClient } from "@/lib/ssr/common";
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<{ channel: string; locale: string; slug: string }>

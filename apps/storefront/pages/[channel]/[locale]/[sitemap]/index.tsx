@@ -10,7 +10,7 @@ import {
   ProductPathsDocument,
   ProductPathsQuery,
 } from "@/saleor/api";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { serverApolloClient } from "@/lib/ssr/common";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let fields: { loc: string }[] = [];

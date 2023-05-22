@@ -8,7 +8,7 @@ import {
 } from "@/saleor/api";
 
 import { CHANNELS, LOCALES, Path } from "../regions";
-import { serverApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
+import { serverApolloClient } from "./common";
 
 export interface CategoryPathArguments extends ParsedUrlQuery {
   channel: string;

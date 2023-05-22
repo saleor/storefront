@@ -6,7 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
-import { useSaleorAuthContext } from "@/checkout-storefront/lib/auth";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { CheckoutSkeleton } from "@/checkout-storefront/views/Checkout/CheckoutSkeleton";
 import { PAGE_ID } from "@/checkout-storefront/views/Checkout/consts";
 

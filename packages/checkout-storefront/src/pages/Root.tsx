@@ -1,6 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { IntlProvider } from "react-intl";
-import { Provider as UrqlProvider } from "urql";
+import { Provider as UrqlProvider, cacheExchange, dedupExchange, fetchExchange } from "urql";
 
 import { AppConfigProvider } from "@/checkout-storefront/providers/AppConfigProvider";
 import { AppEnv } from "@/checkout-storefront/providers/AppConfigProvider/types";
@@ -11,10 +11,10 @@ import { RootViews } from "../views/RootViews";
 import { useLocale } from "../hooks/useLocale";
 import { DEFAULT_LOCALE } from "../lib/regions";
 import { getQueryParams } from "../lib/utils/url";
-import { useUrqlClient } from "@/checkout-storefront/lib/auth/useUrqlClient";
-import { SaleorAuthProvider } from "@/checkout-storefront/lib/auth/SaleorAuthProvider";
-import { useSaleorAuthClient } from "@/checkout-storefront/lib/auth/useSaleorAuthClient";
-import { useAuthChange } from "@/checkout-storefront/lib/auth";
+import { useUrqlClient } from "@saleor/auth-sdk/react/urql";
+import { SaleorAuthProvider } from "@saleor/auth-sdk/react";
+import { useSaleorAuthClient } from "@saleor/auth-sdk/react";
+import { useAuthChange } from "@saleor/auth-sdk/react";
 import invariant from "ts-invariant";
 
 export interface RootProps {
@@ -42,19 +42,20 @@ Allowed: ${String(saleorApiUrlRegex)}
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
-  const { urqlClient, resetClient } = useUrqlClient({
+  const { urqlClient, reset, refetch } = useUrqlClient({
     suspense: true,
     requestPolicy: "cache-first",
     url: saleorApiUrl,
     fetch: saleorAuthClient.fetchWithAuth,
+    exchanges: [dedupExchange, cacheExchange, fetchExchange],
   });
 
   useAuthChange({
     onSignedOut: () => {
-      resetClient();
+      reset();
     },
     onSignedIn: () => {
-      resetClient();
+      refetch();
     },
   });
 
