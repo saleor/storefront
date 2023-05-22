@@ -1,4 +1,6 @@
+import { FormSubmitFn } from "@/checkout-storefront/hooks/useFormSubmit";
 import { FormikConfig, FormikErrors, FormikHelpers, useFormik } from "formik";
+import { DebouncedFunc } from "lodash-es";
 import { FocusEvent } from "react";
 
 export type FormDataBase = Record<string, any>;
@@ -10,23 +12,37 @@ export type FormDataField<TData extends FormDataBase> = Extract<keyof TData, str
 // we make these types more strict than default formik ones
 export type UseFormReturn<TData extends FormDataBase> = Omit<
   ReturnType<typeof useFormik<TData>>,
-  "setFieldValue"
+  "setFieldValue" | "validateForm" | "setValues"
 > & {
   // we use keyof FormData instead of plain string
   setFieldValue: <TFieldName extends FormDataField<TData>>(
     field: TFieldName,
     value: TData[TFieldName]
   ) => void;
+  validateForm: (values: TData) => FormErrors<TData>;
+  setValues: (values: Partial<TData>) => void;
 };
 
-export type FormProps<TData> = FormikConfig<TData> & { initialDirty?: boolean };
+export type FormProps<TData extends FormDataBase> = Omit<
+  FormikConfig<TData>,
+  "validationSchema" | "onSubmit"
+> & {
+  onSubmit:
+    | FormSubmitFn<TData>
+    | ((data: TData, helpers: FormHelpers<TData>) => Promise<void>)
+    | DebouncedFunc<(data: TData, helpers: FormHelpers<TData>) => Promise<void>>;
+  initialDirty?: boolean;
+  // FIXME: because there seems to be something weird going on with the type
+  // yup returns when schema has some uncommon typings
+  validationSchema?: any; // Schema<TData> | ObjectSchema<TData>;
+};
 
-export type FormHelpers<TData extends FormDataBase> = FormikHelpers<TData>;
+export type FormHelpers<TData extends FormDataBase> = Omit<
+  FormikHelpers<TData>,
+  "validateForm" | "setTouched"
+> &
+  Pick<UseFormReturn<TData>, "validateForm" | "setTouched">;
 
 export type ChangeHandler<TElement = any> = (e: React.ChangeEvent<TElement>) => void;
 
 export type BlurHandler = (event: FocusEvent<HTMLInputElement>) => void;
-
-export type FormConfig<TData extends FormDataBase> = Omit<FormikConfig<TData>, "onSubmit"> & {
-  onSubmit: (formData: TData, formHelpers: FormHelpers<TData>) => void | Promise<any>;
-};

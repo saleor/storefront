@@ -1,5 +1,6 @@
 import Dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import invariant from "ts-invariant";
 import urlJoin from "url-join";
 
 const CheckoutStoreFront = Dynamic(
@@ -24,6 +25,8 @@ export default function CheckoutSpa() {
   }
 
   const checkoutAppUrl = urlJoin(window.location.origin, "saleor-app-checkout", "/");
+  const allowedSaleorApiRegex = process.env.NEXT_PUBLIC_ALLOWED_SALEOR_API_REGEX;
+  invariant(allowedSaleorApiRegex, `Missing NEXT_PUBLIC_ALLOWED_SALEOR_API_REGEX`);
 
   return (
     <CheckoutStoreFront
@@ -31,6 +34,7 @@ export default function CheckoutSpa() {
         checkoutApiUrl: urlJoin(checkoutAppUrl, "api", "/"),
         checkoutAppUrl,
       }}
+      saleorApiUrlRegex={new RegExp(allowedSaleorApiRegex)}
     />
   );
 }

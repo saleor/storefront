@@ -1,7 +1,7 @@
 import { useFetch } from "@/checkout-storefront/hooks/useFetch";
 import { createSafeContext } from "@/checkout-storefront/providers/createSafeContext";
 import { getAppConfig } from "@/checkout-storefront/fetch";
-import { PropsWithChildren, useCallback, useEffect, useRef } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
 import type { AppConfig, AppEnv, BrandingColors, BrandingColorsData } from "./types";
 import { getParsedCssBody } from "./utils";
 import { defaultAppColors, STYLE_ELEMENT_ID } from "./consts";
@@ -75,10 +75,14 @@ export const AppConfigProvider: React.FC<PropsWithChildren<{ env: AppEnv }>> = (
 
   useEffect(handleAppStylingUpdate, [appConfig, appendStylingToBody]);
 
+  const value = useMemo(() => {
+    return { config: appConfig, env, loading, saleorApiUrl };
+  }, [appConfig, env, loading, saleorApiUrl]);
+
   if (!saleorApiUrl) {
     console.warn(`Missing saleorApiUrl query param`);
     return null;
   }
 
-  return <Provider value={{ config: appConfig, env, loading, saleorApiUrl }}>{children}</Provider>;
+  return <Provider value={value}>{children}</Provider>;
 };

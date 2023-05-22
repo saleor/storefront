@@ -18,6 +18,11 @@
   <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
 </div>
 
+> **Note**
+> This app uses [older flow for making payments in Saleor](https://docs.saleor.io/docs/3.x/developer/payments#processing-a-payment-with-checkout-app).
+>
+> Current version of checkout uses [Payment Apps](https://docs.saleor.io/docs/3.x/developer/payments#processing-a-payment-with-payment-app) instead
+
 ## Setup
 
 ### Prerequisites

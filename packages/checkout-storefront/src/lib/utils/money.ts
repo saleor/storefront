@@ -1,10 +1,12 @@
+import { MightNotExist } from "@/checkout-storefront/lib/globalTypes";
+
 export type Money = {
   currency: string;
   amount: number;
 } | null;
 
 export const getFormattedMoney = <TMoney extends Money>(
-  money: TMoney | undefined | null,
+  money: MightNotExist<TMoney>,
   negative = false
 ) => {
   if (!money) {

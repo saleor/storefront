@@ -86,6 +86,63 @@ Clear `.next` folder inside app or package that's producing this issue
 rm -rf apps/storefront/.next
 ```
 
+## I get error "Looks like you're using the deprecated `.auth_token` file or the deprecated `NEXT_PUBLIC_SALEOR_API_URL` env variable."
+
+Please remove the `.auth_token` in all folders:
+
+```bash
+pnpm run clean-auth-files
+```
+
+then follow the instruction displayed in that error message and create a `.saleor-app-auth.json` files
+
+Make sure you're not using `NEXT_PUBLIC_SALEOR_API_URL` environment variable.
+
+## Adyen dropin displays "Unauthorized origin"
+
+Please add `http://localhost:3000`, `http://localhost:3001`, `http://localhost:3002` to your credentials allowed origins in Adyen Dashboard or inside [Adyen Payment App](https://github.com/saleor/saleor-app-payment-adyen)
+
+## I get weird error messages while installing dependencies
+
+Make sure you're using the correct `pnpm` version. Check your version:
+
+```bash
+pnpm --version
+```
+
+and compare it to the version described in README.md and in `package.json` > engines > pnpm
+
+If your using newer or older version, install the correct one by using the command in README.md or use a version manager like [proto](https://moonrepo.dev/docs/proto/install)
+
+After that remove all dependencies and `pnpm-lock.yaml`:
+
+```bash
+pnpm run clean-deps
+```
+
+## I get error `Invariant Violation: No auth data found for given host: https://witoszek-dev.eu.saleor.cloud/graphql/. Is the app installed and configured?`
+
+Make sure that the app is installed in the displayed Saleor instance by visiting Dashboard and checking the list of apps.
+
+## The products displayed in storefront don't match my products in Saleor
+
+Make sure you've updated your `SALEOR_API_URL` env variable to match URL to your Saleor instance GraphQL endpoint (e.g. `https://my-saleor.saleor.cloud/graphql/`).
+
+You can override environment variables by creating `.env.local` file or, if you want to update your production deployment, settings in your hosting provider (e.g. [Vercel](https://vercel.com/docs/concepts/projects/environment-variables))
+
+### Local development
+
+If the app is installed correctly, check if the credentials for accessing Saleor were saved in `.saleor-app-auth.json` file.
+If it's missing, delete that file and install the app again.
+Make sure that the `APL` env variable is set to `file`.
+
+### Production
+
+If the app is installed correctly, make sure that the selected method for storing credentials set in `APL` env variable works corerctly.
+The implementation for different APLs is located in `apps/saleor-app-checkout/config/apl.ts`
+
+For example if you're using `upstash`, make sure it's reachable by your app.
+
 ## For contributors
 
 ### My env vars are empty / don't have correct values

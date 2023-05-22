@@ -100,6 +100,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
             {options.map((option, optionIdx) => (
               <Accordion key={option.id} className={classes.option} elevation={0}>
                 <AccordionSummary
+                  data-testid={`customization-details-tab-${option.id}`}
                   expandIcon={<ExpandMoreIcon />}
                   className={classes.optionExpander}
                 >
@@ -160,6 +161,7 @@ const CustomizationDetails: React.FC<CustomizationDetailsProps> = ({
                       name={field.name}
                       value={field.value}
                       label={intl.formatMessage(messages.checkoutUrl)}
+                      data-testid="checkout-url-input"
                       className={classes.designUrlInput}
                       onChange={(event) => {
                         field.onChange(event);

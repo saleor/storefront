@@ -9,19 +9,20 @@ import {
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
 import {
   AutoSaveAddressFormData,
   useAutoSaveAddressForm,
 } from "@/checkout-storefront/hooks/useAutoSaveAddressForm";
 import { useMemo } from "react";
+import { useSetCheckoutFormValidationState } from "@/checkout-storefront/hooks/useSetCheckoutFormValidationState";
 
 export const useGuestShippingAddressForm = () => {
   const {
     checkout: { shippingAddress },
   } = useCheckout();
-  const validationSchema = useAddressFormSchema();
+
   const [, checkoutShippingAddressUpdate] = useCheckoutShippingAddressUpdateMutation();
+  const { setCheckoutFormValidationState } = useSetCheckoutFormValidationState("shippingAddress");
 
   const onSubmit = useFormSubmit<AutoSaveAddressFormData, typeof checkoutShippingAddressUpdate>(
     useMemo(
@@ -34,15 +35,20 @@ export const useGuestShippingAddressForm = () => {
           shippingAddress: getAddressInputData(omit(rest, "channel")),
           validationRules: getAddressValidationRulesVariables({ autoSave: true }),
         }),
+        onSuccess: ({ data, formHelpers }) => {
+          void setCheckoutFormValidationState({
+            ...formHelpers,
+            values: getAddressFormDataFromAddress(data.checkout?.shippingAddress),
+          });
+        },
       }),
-      [checkoutShippingAddressUpdate]
+      [checkoutShippingAddressUpdate, setCheckoutFormValidationState]
     )
   );
 
   const form = useAutoSaveAddressForm({
     onSubmit,
     initialValues: getAddressFormDataFromAddress(shippingAddress),
-    validationSchema,
     scope: "checkoutShippingUpdate",
   });
 

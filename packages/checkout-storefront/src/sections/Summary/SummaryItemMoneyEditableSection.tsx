@@ -6,7 +6,7 @@ import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { Skeleton } from "@/checkout-storefront/components";
 import { SummaryItemMoneyInfo } from "@/checkout-storefront/sections/Summary/SummaryItemMoneyInfo";
 import { summaryMessages } from "./messages";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useSummaryItemForm } from "@/checkout-storefront/sections/Summary/useSummaryItemForm";
 import { useMemo } from "react";
 

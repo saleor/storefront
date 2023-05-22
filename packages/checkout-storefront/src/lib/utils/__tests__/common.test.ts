@@ -3,12 +3,9 @@ import {
   CheckoutError,
   CheckoutShippingAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
+import { extractMutationErrors } from "@/checkout-storefront/hooks/useSubmit/utils";
 import { apiErrors, checkout, urqlError } from "@/checkout-storefront/lib/fixtures";
-import {
-  extractMutationErrors,
-  getById,
-  getByUnmatchingId,
-} from "@/checkout-storefront/lib/utils/common";
+import { getById, getByUnmatchingId } from "@/checkout-storefront/lib/utils/common";
 import { getUrl } from "@/checkout-storefront/lib/utils/url";
 import { OperationResult } from "urql";
 
@@ -21,6 +18,8 @@ const items = [
 
 describe("getById", () => {
   it("should allow filtering only matching elements", () => {
+    // @ts-expect-error because the object we're testing isn't typed
+    // unlike the objects we actually use in the codebase
     expect(items.filter(getById("one"))).toEqual([items[0]]);
   });
 });

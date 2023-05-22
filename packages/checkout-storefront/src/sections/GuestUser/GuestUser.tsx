@@ -5,7 +5,7 @@ import { Checkbox } from "@/checkout-storefront/components/Checkbox";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
 import { contactMessages } from "../Contact/messages";
 import { useGuestUserForm } from "@/checkout-storefront/sections/GuestUser/useGuestUserForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 
 type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange"> & {
   onEmailChange: (email: string) => void;

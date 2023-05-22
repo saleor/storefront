@@ -7,7 +7,7 @@ import { commonMessages } from "@/checkout-storefront/lib/commonMessages";
 import { useSignInForm } from "@/checkout-storefront/sections/SignIn/useSignInForm";
 import { usePasswordResetRequest } from "@/checkout-storefront/sections/SignIn/usePasswordResetRequest";
 import { contactLabels, contactMessages } from "@/checkout-storefront/sections/Contact/messages";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import {
   SignInFormContainer,
   SignInFormContainerProps,

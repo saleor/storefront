@@ -8,8 +8,8 @@ import { orderInfoMessages } from "@/checkout-storefront/sections/OrderInfo/mess
 import { useOrder } from "@/checkout-storefront/hooks/useOrder";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 
-export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
-  const { order } = useOrder(orderId);
+export const OrderConfirmation = () => {
+  const { order } = useOrder();
   const formatMessage = useFormattedMessages();
 
   return (
@@ -26,7 +26,7 @@ export const OrderConfirmation = ({ orderId }: { orderId: string }) => {
         </Text>
       </header>
       <main className="order-content overflow-hidden">
-        <OrderInfo order={order} />
+        <OrderInfo />
         <div className="order-divider" />
         <Suspense fallback={<SummarySkeleton />}>
           <Summary

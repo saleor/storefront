@@ -10,7 +10,7 @@ import { AddressList } from "@/checkout-storefront/sections/AddressList/AddressL
 import React, { Suspense } from "react";
 import { Checkbox } from "@/checkout-storefront/components";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useBillingSameAsShippingForm } from "@/checkout-storefront/sections/GuestBillingAddressSection/useBillingSameAsShippingForm";
 import { billingMessages } from "@/checkout-storefront/sections/UserBillingAddressSection/messages";
 import { OptionalAddress } from "@/checkout-storefront/components/AddressForm/types";

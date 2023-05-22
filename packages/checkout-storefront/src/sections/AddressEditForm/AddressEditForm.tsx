@@ -3,24 +3,25 @@ import React from "react";
 import { AddressForm, AddressFormProps } from "@/checkout-storefront/components/AddressForm";
 import {
   AddressFragment,
+  CountryCode,
   useUserAddressDeleteMutation,
   useUserAddressUpdateMutation,
 } from "@/checkout-storefront/graphql";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import {
   getAddressFormDataFromAddress,
   getAddressInputData,
 } from "@/checkout-storefront/components/AddressForm/utils";
-import { useForm } from "@/checkout-storefront/hooks/useForm";
+import { ChangeHandler, useForm } from "@/checkout-storefront/hooks/useForm";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout-storefront/components/ManualSaveAddressForm";
 import { addressEditMessages } from "@/checkout-storefront/sections/AddressEditForm/messages";
 import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
-import invariant from "ts-invariant";
 import { useSubmit } from "@/checkout-storefront/hooks/useSubmit/useSubmit";
 
-export interface AddressEditFormProps extends Pick<AddressFormProps, "title"> {
+export interface AddressEditFormProps
+  extends Pick<AddressFormProps, "title" | "availableCountries"> {
   address: AddressFragment;
   onUpdate: (address: AddressFragment) => void;
   onDelete: (id: string) => void;
@@ -32,22 +33,21 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
   onClose,
   onDelete,
   address,
+  availableCountries,
 }) => {
   const formatMessage = useFormattedMessages();
-  const validationSchema = useAddressFormSchema();
   const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
   const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
+  const { setCountryCode, validationSchema } = useAddressFormSchema();
 
   const onSubmit = useFormSubmit<AddressFormData, typeof userAddressUpdate>({
     scope: "userAddressUpdate",
     onSubmit: userAddressUpdate,
     parse: (formData) => ({ id: address.id, address: { ...getAddressInputData(formData) } }),
-    onSuccess: ({ result }) => {
-      invariant(
-        result.data?.accountAddressUpdate?.address,
-        "Api didn't return address in AccountAddressUpdate mutation. This is most likely a bug in core."
-      );
-      onUpdate(result.data.accountAddressUpdate.address);
+    onSuccess: ({ data: { address } }) => {
+      if (address) {
+        onUpdate(address);
+      }
       onClose();
     },
   });
@@ -68,11 +68,24 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
     onSubmit,
   });
 
-  const { handleSubmit } = form;
+  const { handleSubmit, handleChange } = form;
+
+  const onChange: ChangeHandler = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "countryCode") {
+      setCountryCode(value as CountryCode);
+    }
+
+    handleChange(event);
+  };
 
   return (
-    <FormProvider form={form}>
-      <AddressForm title={formatMessage(addressEditMessages.editAddress)}>
+    <FormProvider form={{ ...form, handleChange: onChange }}>
+      <AddressForm
+        title={formatMessage(addressEditMessages.editAddress)}
+        availableCountries={availableCountries}
+      >
         <AddressFormActions
           onSubmit={handleSubmit}
           loading={updating || deleting}

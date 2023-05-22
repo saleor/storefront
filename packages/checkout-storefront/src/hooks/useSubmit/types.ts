@@ -1,6 +1,6 @@
 import { LanguageCodeEnum } from "@/checkout-storefront/graphql";
 import { FormDataBase } from "@/checkout-storefront/hooks/useForm";
-import { ApiErrors } from "@/checkout-storefront/hooks/useGetParsedErrors";
+import { ExtractedMutationErrors } from "@/checkout-storefront/hooks/useSubmit/utils";
 import { OperationResult } from "urql";
 
 export type MutationVars<MutationFn> = MutationFn extends (vars: infer Vars) => any ? Vars : never;
@@ -13,12 +13,14 @@ export type CommonVar = typeof commonVars[number];
 
 export type CommonVars = Record<CommonVar, string> & { languageCode: LanguageCodeEnum };
 
-export type SubmitReturnWithErrors<TData extends FormDataBase> = Promise<{
-  hasErrors: boolean;
-  errors: ApiErrors<TData>;
-}>;
+export type SubmitReturnWithErrors<
+  TData extends FormDataBase,
+  TErrorCodes extends string = string
+> = Promise<ExtractedMutationErrors<TData, TErrorCodes>>;
 
-export type MutationBaseFn = (vars: any) => Promise<Pick<OperationResult<any, any>, "data">>;
+export type MutationBaseFn = (
+  vars: any
+) => Promise<Pick<OperationResult<any, any>, "data" | "error">>;
 
 export type ParserProps<TData> = TData & CommonVars;
 
@@ -26,6 +28,33 @@ export type ParserFunction<TData extends FormDataBase, TMutationFn extends Mutat
   data: ParserProps<TData>
 ) => MutationVars<TMutationFn>;
 
-export type SimpleSubmitFn<TData extends FormDataBase | {}> = keyof TData extends never
-  ? () => SubmitReturnWithErrors<TData>
-  : (formData: TData) => SubmitReturnWithErrors<TData>;
+export type SimpleSubmitFn<
+  TData extends FormDataBase | {},
+  TErrorCodes extends string = string
+> = keyof TData extends never
+  ? () => SubmitReturnWithErrors<TData, TErrorCodes>
+  : (formData: TData) => SubmitReturnWithErrors<TData, TErrorCodes>;
+
+type ResultOf<TMutationFn extends MutationBaseFn> =
+  MutationData<TMutationFn> extends OperationResult<infer TData, any> ? TData : never;
+
+export type OperationName<TMutationFn extends MutationBaseFn> = Exclude<
+  keyof ResultOf<TMutationFn>,
+  "__typename"
+>;
+
+export type MutationReturn<TMutationFn extends MutationBaseFn> = TMutationFn extends (
+  vars: any
+) => Promise<OperationResult<infer TData>>
+  ? TData
+  : never;
+
+export type MutationResultData<TMutationFn extends MutationBaseFn> =
+  OperationName<TMutationFn> extends keyof MutationReturn<TMutationFn>
+    ? MutationReturn<TMutationFn>[OperationName<TMutationFn>]
+    : never;
+
+export type MutationSuccessData<TMutationFn extends MutationBaseFn> = Exclude<
+  MutationResultData<TMutationFn>,
+  null | undefined
+>;

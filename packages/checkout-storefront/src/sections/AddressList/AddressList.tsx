@@ -9,7 +9,7 @@ import { Button } from "@/checkout-storefront/components/Button";
 import { Title } from "@/checkout-storefront/components/Title";
 import { UseFormReturn } from "@/checkout-storefront/hooks/useForm";
 import { AddressListFormData } from "@/checkout-storefront/sections/AddressList/useAddressListForm";
-import { FormProvider } from "@/checkout-storefront/providers/FormProvider";
+import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { camelCase } from "lodash-es";
 

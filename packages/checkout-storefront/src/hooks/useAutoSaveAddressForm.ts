@@ -1,10 +1,12 @@
 import { AddressFormData } from "@/checkout-storefront/components/AddressForm/types";
+import { useAddressFormSchema } from "@/checkout-storefront/components/AddressForm/useAddressFormSchema";
+import { CountryCode } from "@/checkout-storefront/graphql";
 import { useDebouncedSubmit } from "@/checkout-storefront/hooks/useDebouncedSubmit";
 import {
   BlurHandler,
   ChangeHandler,
-  FormConfig,
   FormHelpers,
+  FormProps,
   hasErrors,
   useForm,
   UseFormReturn,
@@ -21,13 +23,14 @@ export type AutoSaveAddressFormData = Partial<AddressFormData>;
 export const useAutoSaveAddressForm = ({
   scope,
   ...formProps
-}: FormConfig<AutoSaveAddressFormData> & {
+}: FormProps<AutoSaveAddressFormData> & {
   scope: CheckoutUpdateStateScope;
 }): UseFormReturn<AutoSaveAddressFormData> & { handleSubmit: (event: any) => Promise<void> } => {
   const { setCheckoutUpdateState } = useCheckoutUpdateStateChange(scope);
   const { initialValues, onSubmit } = formProps;
+  const { setCountryCode, validationSchema } = useAddressFormSchema(initialValues.countryCode);
 
-  const form = useForm<AutoSaveAddressFormData>(formProps);
+  const form = useForm<AutoSaveAddressFormData>({ ...formProps, validationSchema });
   const { values, validateForm, dirty, handleBlur, handleChange } = form;
 
   const debouncedSubmit = useDebouncedSubmit(onSubmit);
@@ -52,7 +55,7 @@ export const useAutoSaveAddressForm = ({
   // request for forever now https://github.com/jaredpalmer/formik/issues/2675
   // so we're just gonna add a partial submit for guest address form to work
   const partialSubmit = useCallback(async () => {
-    const formErrors = await validateForm(values);
+    const formErrors = validateForm(values);
 
     if (!hasErrors(formErrors) && dirty) {
       setCheckoutUpdateState("loading");
@@ -72,6 +75,12 @@ export const useAutoSaveAddressForm = ({
   ]);
 
   const onChange: ChangeHandler = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "countryCode") {
+      setCountryCode(value as CountryCode);
+    }
+
     handleChange(event);
     void partialSubmit();
   };
