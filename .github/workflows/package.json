@@ -1,0 +1,17 @@
+{
+  "name": "saleor-storefront",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@octokit/core": "^4.0.4",
+    "commander": "^9.4.0",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.0.0",
+    "node-fetch": "^2.6.7"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
+  }
+}
