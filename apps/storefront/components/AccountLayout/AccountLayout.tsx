@@ -23,8 +23,10 @@ export function AccountLayout({ children }: AccountLayoutProps) {
     );
   }
 
-  if (!authenticated && typeof window !== "undefined") {
-    void router.push(paths.account.login.$url({ query: { next: router?.pathname } }));
+  if (!authenticated) {
+    if (router.isReady && typeof window !== "undefined") {
+      void router.replace(paths.account.login.$url({ query: { next: router?.asPath } }));
+    }
     return null;
   }
 

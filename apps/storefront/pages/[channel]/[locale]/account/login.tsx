@@ -40,8 +40,6 @@ function LoginPage() {
   } = useForm<LoginFormData>({ defaultValues });
 
   const routerQueryNext = router.query.next?.toString() || "";
-  const isExternalUrl = /^\w+:\/\//.test(routerQueryNext);
-  const redirectURL = !routerQueryNext || isExternalUrl ? paths.$url() : routerQueryNext;
 
   const handleLogin = handleSubmitForm(async (formData: LoginFormData) => {
     const { data } = await signIn({
@@ -54,6 +52,9 @@ function LoginPage() {
       return;
     }
 
+    const redirectURL =
+      (routerQueryNext && new URL(routerQueryNext, window.location.toString()).pathname) ||
+      paths.$url();
     void router.push(redirectURL);
   });
 
