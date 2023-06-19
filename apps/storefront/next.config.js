@@ -107,6 +107,10 @@ module.exports = withBundleAnalyzer({
               destination: `${cloudDeploymentUrl}/digital-download/:match*`,
             },
             {
+              source: "/thumbnail/:instance/:size/:format/",
+              destination: `${cloudDeploymentUrl}/thumbnail/:instance/:size/:format/`,
+            },
+            {
               source: "/thumbnail/:instance/:size/",
               destination: `${cloudDeploymentUrl}/thumbnail/:instance/:size/`,
             },
