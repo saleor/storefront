@@ -55,7 +55,7 @@ const SelectComponent = <TData extends string = string>(
           </option>
         )}
         {options.map(({ label, value, disabled = false }) => (
-          <option value={value} disabled={disabled} key={value}>
+          <option value={value} disabled={disabled} key={label + "_" + value}>
             {label}
           </option>
         ))}
