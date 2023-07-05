@@ -42,6 +42,7 @@ describe("Buy product as anonymous user", () => {
       .type("user@examle.com")
       .wait("@checkoutEmailUpdate")
       .fillUpBasicAddress(address)
+      .clickOutside()
       .wait("@checkoutShippingAddressUpdate")
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.billingAddress")
@@ -75,6 +76,7 @@ describe("Buy product as anonymous user", () => {
       .type("user@examle.com")
       .wait("@checkoutEmailUpdate")
       .fillUpBasicAddress(address)
+      .clickOutside()
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.totalPrice.gross.amount")
       .then((totalPrice) => {

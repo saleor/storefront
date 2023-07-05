@@ -7,5 +7,6 @@ declare namespace Cypress {
     loginUserViaRequest(authorization?: string, user?: {}): Chainable<any>;
     sendRequestWithQuery(query: string): Chainable<any>;
     checkNumberOfElements(selector: string, numberOfElements: number): Chainable<any>;
+    clickOutside(): Chainable<any>;
   }
 }
