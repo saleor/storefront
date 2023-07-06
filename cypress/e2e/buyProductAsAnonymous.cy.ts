@@ -52,6 +52,7 @@ describe("Buy product as anonymous user", () => {
       .should("be.visible")
       .first()
       .click()
+      .clickOutside()
       .wait("@checkoutDeliveryMethodUpdate")
       .its("response.body.data.checkoutDeliveryMethodUpdate.checkout.totalPrice.gross.amount")
       .then((totalPrice) => {

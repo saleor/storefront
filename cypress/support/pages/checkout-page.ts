@@ -11,12 +11,16 @@ export function payByDummyPayment() {
 
 export function payByAdyenPayment(card) {
   cy.addAliasToGraphRequest("order");
-  cy.intercept("POST", "/saleor-app-checkout/api/drop-in/adyen/sessions/*").as("adyenSession");
   cy.get(CHECKOUT_ELEMENTS.paymentProviders).should("be.visible");
   adyenIframeHandler(ADYEN_PAYMENT.iFrameCardNumber, ADYEN_PAYMENT.cardNumber, card.cardNumber);
   adyenIframeHandler(ADYEN_PAYMENT.iFrameExpiryDate, ADYEN_PAYMENT.expiryDate, card.expiryDate);
   adyenIframeHandler(ADYEN_PAYMENT.iFrameCVC, ADYEN_PAYMENT.cVC, card.cvc);
-  cy.get(ADYEN_PAYMENT.nameOnCard).type(card.nameOnCard);
+  // condition is required because sometimes Adyen is configured with card holder name
+  cy.get("body").then(($body) => {
+    if ($body.find(ADYEN_PAYMENT.nameOnCard).length > 0) {
+      cy.get(ADYEN_PAYMENT.nameOnCard).type(card.nameOnCard);
+    }
+  });
   cy.get(ADYEN_PAYMENT.confirmPreauthorizationButton).click();
 }
 
