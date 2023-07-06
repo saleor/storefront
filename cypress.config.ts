@@ -25,7 +25,7 @@ export default defineConfig({
     productToSearch: process.env.CYPRESS_PRODUCT_TO_SEARCH,
   },
   e2e: {
-    baseUrl: "https://staging-demo.saleor.io",
+    baseUrl: "http://localhost:3000/",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
   },
 });
