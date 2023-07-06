@@ -51,6 +51,7 @@ Allowed: ${String(saleorApiUrlRegex)}
   });
 
   useAuthChange({
+    saleorApiUrl,
     onSignedOut: () => {
       reset();
     },
