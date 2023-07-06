@@ -368,6 +368,12 @@ export const messages = defineMessages({
     description: "Set billing default button label",
     defaultMessage: "Set as billing default",
   },
+  categoriesHome: {
+    id: "app.pages.channel.locale.index",
+    description: "Message displayed on homepage for categories section",
+    defaultMessage:
+      "Not sure where to look for your favorite products? Use our clear categories and easily find what you're looking for.",
+  },
 });
 
 export default messages;

@@ -10733,7 +10733,7 @@ export type Mutation = {
   /**
    * Updates a webhook subscription.
    *
-   * Requires one of the following permissions: MANAGE_APPS.
+   * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookUpdate?: Maybe<WebhookUpdate>;
 };
@@ -15355,7 +15355,8 @@ export type PermissionEnum =
   | "MANAGE_STAFF"
   | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
-  | "MANAGE_USERS";
+  | "MANAGE_USERS"
+  | "MANAGE_WMS";
 
 /**
  * Create new permission group. Apps are not allowed to perform this mutation.
@@ -25713,7 +25714,7 @@ export type WebhookTriggerErrorCode =
 /**
  * Updates a webhook subscription.
  *
- * Requires one of the following permissions: MANAGE_APPS.
+ * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
  */
 export type WebhookUpdate = {
   __typename?: "WebhookUpdate";
@@ -27794,20 +27795,15 @@ export type CategoryPathsQuery = {
       node: {
         __typename?: "Category";
         slug: string;
-        name: string;
         id: string;
+        name: string;
         ancestors?: {
           __typename?: "CategoryCountableConnection";
           edges: Array<{
             __typename?: "CategoryCountableEdge";
-            node: {
-              __typename?: "Category";
-              id: string;
-              name: string;
-              slug: string;
-            };
+            node: { __typename?: "Category"; id: string; name: string; slug: string };
           }>;
-        };
+        } | null;
       };
     }>;
   } | null;
@@ -30201,7 +30197,7 @@ export type CategoryBySlugQueryResult = Apollo.QueryResult<
 >;
 export const CategoryPathsDocument = gql`
   query CategoryPaths($after: String) {
-    categories(first: 3, after: $after) {
+    categories(first: 50, after: $after) {
       pageInfo {
         ...PageInfoFragment
       }
@@ -30608,7 +30604,6 @@ export function useFooterMenuLazyQuery(
 export type FooterMenuQueryHookResult = ReturnType<typeof useFooterMenuQuery>;
 export type FooterMenuLazyQueryHookResult = ReturnType<typeof useFooterMenuLazyQuery>;
 export type FooterMenuQueryResult = Apollo.QueryResult<FooterMenuQuery, FooterMenuQueryVariables>;
-
 export const MainMenuDocument = gql`
   query MainMenu($locale: LanguageCodeEnum!, $channel: String!) {
     menu(slug: "navbar", channel: $channel) {

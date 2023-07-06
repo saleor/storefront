@@ -58690,7 +58690,7 @@
           },
           {
             "name": "webhookUpdate",
-            "description": "Updates a webhook subscription. \n\nRequires one of the following permissions: MANAGE_APPS.",
+            "description": "Updates a webhook subscription. \n\nRequires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.",
             "args": [
               {
                 "name": "id",
@@ -74451,6 +74451,12 @@
           },
           {
             "name": "MANAGE_USERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MANAGE_WMS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -121176,7 +121182,7 @@
       {
         "kind": "OBJECT",
         "name": "WebhookUpdate",
-        "description": "Updates a webhook subscription. \n\nRequires one of the following permissions: MANAGE_APPS.",
+        "description": "Updates a webhook subscription. \n\nRequires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.",
         "fields": [
           {
             "name": "errors",

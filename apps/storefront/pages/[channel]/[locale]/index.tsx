@@ -10,6 +10,9 @@ import WomanCategory from "../../../images/homepage/woman-category.jpg";
 import ManCategory from "../../../images/homepage/man-category.jpg";
 import KidCategory from "../../../images/homepage/kid-category.jpg";
 import Link from "next/link";
+import { STOREFRONT_NAME } from "@/lib/const";
+import messages from "@/components/translations";
+import { useIntl } from "react-intl";
 
 export const WomanCategoryImg = WomanCategory;
 
@@ -35,9 +38,14 @@ export const getStaticProps = async () => {
 type HomeProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home: React.FC<HomeProps> = ({ categories }) => {
+  const t = useIntl();
+
   const categoriesExist = () => {
     return categories.length > 0;
   };
+
+  const visibleCategory =
+    STOREFRONT_NAME === "FASHION4YOU" ? categories.slice(0, -2) : categories.slice(0, -2);
 
   return (
     <>
@@ -53,33 +61,32 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
                     Nasze kategorie ułatwią Ci zadanie!
                   </h2>
                   <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
-                    Nie wiesz, gdzie szukać swoich ulubionych produktów? Skorzystaj z naszych
-                    przejrzystych kategorii i z łatwością znajdź to, czego szukasz.
+                    {t.formatMessage(messages.categoriesHome)}
                   </p>
                 </div>
                 <div className="container home-page__categories_container px-4 sm:px-0">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-                    {categories.map((category) => {
+                    {visibleCategory.map((category) => {
                       return (
                         <div
                           key={category.slug}
                           className="relative text-center flex flex-col items-center justify-center mt-0 gap-x-1.5 gap-y-1.5"
                         >
                           <div className="home-page__categories__text-image">
-                            {category.slug === "apparel" ? (
+                            {category.slug === "kobieta" ? (
                               <Image
                                 src={WomanCategoryImg}
                                 alt="1"
                                 className="object-cover w-full h-auto"
                               />
-                            ) : category.slug === "accessories" ? (
+                            ) : category.slug === "mezczyzna" ? (
                               <Image
                                 src={ManCategoryImg}
                                 alt="1"
                                 className="object-cover w-full h-auto"
                               />
                             ) : (
-                              category.slug === "default-category" && (
+                              category.slug === "dziecko" && (
                                 <Image
                                   src={KidCategoryImg}
                                   alt="1"
