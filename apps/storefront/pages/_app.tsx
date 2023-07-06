@@ -28,7 +28,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const useSaleorAuthClientProps = useSaleorAuthClient({
     saleorApiUrl: API_URI,
-    storage: typeof window !== "undefined" ? window.localStorage : undefined,
   });
 
   const { saleorAuthClient } = useSaleorAuthClientProps;
@@ -40,6 +39,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   });
 
   useAuthChange({
+    saleorApiUrl: API_URI,
     onSignedOut: () => reset(),
     onSignedIn: () => refetch(),
   });
