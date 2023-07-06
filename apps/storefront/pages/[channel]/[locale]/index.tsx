@@ -9,6 +9,7 @@ import { rootCategoryPaths } from "@/lib/ssr/category";
 import WomanCategory from "../../../images/homepage/woman-category.jpg";
 import ManCategory from "../../../images/homepage/man-category.jpg";
 import KidCategory from "../../../images/homepage/kid-category.jpg";
+import Link from "next/link";
 
 export const WomanCategoryImg = WomanCategory;
 
@@ -46,39 +47,56 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
           <div className="container">
             {categoriesExist() && (
               <section className="home-page__categories">
-                <div className="container home-page__categories-wrapper">
-                  <h2 className="home-page__categories-wrapper-title">
-                    Szukasz konkretnych <span>produktów?</span> Nasze kategorie ułatwią Ci zadanie!
+                <div className="container home-page__categories-wrapper px-4 sm:px-0">
+                  <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
+                    Szukasz konkretnych <span className="text-brand">produktów? </span>
+                    Nasze kategorie ułatwią Ci zadanie!
                   </h2>
-                  <p className="home-page__categories-wrapper-subtitle">
+                  <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
                     Nie wiesz, gdzie szukać swoich ulubionych produktów? Skorzystaj z naszych
                     przejrzystych kategorii i z łatwością znajdź to, czego szukasz.
                   </p>
                 </div>
-                <div className="container home-page__categories_container">
-                  <div className="home-page__categories__list">
+                <div className="container home-page__categories_container px-4 sm:px-0">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                     {categories.map((category) => {
                       return (
-                        <div key={category.slug} className="home-page__category-item">
+                        <div
+                          key={category.slug}
+                          className="relative text-center flex flex-col items-center justify-center mt-0 gap-x-1.5 gap-y-1.5"
+                        >
                           <div className="home-page__categories__text-image">
                             {category.slug === "apparel" ? (
-                              <Image src={WomanCategoryImg} alt="1" />
+                              <Image
+                                src={WomanCategoryImg}
+                                alt="1"
+                                className="object-cover w-full h-auto"
+                              />
                             ) : category.slug === "accessories" ? (
-                              <Image src={ManCategoryImg} alt="1" />
+                              <Image
+                                src={ManCategoryImg}
+                                alt="1"
+                                className="object-cover w-full h-auto"
+                              />
                             ) : (
                               category.slug === "default-category" && (
-                                <Image src={KidCategoryImg} alt="1" />
+                                <Image
+                                  src={KidCategoryImg}
+                                  alt="1"
+                                  className="object-cover w-full h-auto"
+                                />
                               )
                             )}
-                            <div className="home-page__categories-wrapper">
-                              {/* <Link
-                                href={generatePath(paths.category, {
-                                  slug: category.slug,
-                                })}
-                                key={category.id}
+                            <div className="absolute top-1/2 left-1/2 flex items-center transform -translate-x-1/2 -translate-y-1/2">
+                              <Link
+                                href={category.slug}
+                                className="whitespace-nowrap text-center bg-white text-black py-4 px-16 sm:py-6 sm:px-12 lg:py-8 lg:px-16 inline-block shadow-2xl text-2xl sm:text-3xl lg:text-4xl pt-0.3"
+                                style={{
+                                  boxShadow: "rgb(255, 255, 255) 0px -3.25em 0px 0px inset",
+                                }}
                               >
-                                <a className="home-page__categories__text-title">{category.name}</a>
-                              </Link> */}
+                                {category.slug}
+                              </Link>
                             </div>
                           </div>
                         </div>
