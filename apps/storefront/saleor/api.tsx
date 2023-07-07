@@ -10733,7 +10733,7 @@ export type Mutation = {
   /**
    * Updates a webhook subscription.
    *
-   * Requires one of the following permissions: MANAGE_APPS.
+   * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookUpdate?: Maybe<WebhookUpdate>;
 };
@@ -15355,7 +15355,8 @@ export type PermissionEnum =
   | "MANAGE_STAFF"
   | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
-  | "MANAGE_USERS";
+  | "MANAGE_USERS"
+  | "MANAGE_WMS";
 
 /**
  * Create new permission group. Apps are not allowed to perform this mutation.
@@ -25713,7 +25714,7 @@ export type WebhookTriggerErrorCode =
 /**
  * Updates a webhook subscription.
  *
- * Requires one of the following permissions: MANAGE_APPS.
+ * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
  */
 export type WebhookUpdate = {
   __typename?: "WebhookUpdate";
@@ -27791,7 +27792,19 @@ export type CategoryPathsQuery = {
     };
     edges: Array<{
       __typename?: "CategoryCountableEdge";
-      node: { __typename?: "Category"; slug: string };
+      node: {
+        __typename?: "Category";
+        slug: string;
+        id: string;
+        name: string;
+        ancestors?: {
+          __typename?: "CategoryCountableConnection";
+          edges: Array<{
+            __typename?: "CategoryCountableEdge";
+            node: { __typename?: "Category"; id: string; name: string; slug: string };
+          }>;
+        } | null;
+      };
     }>;
   } | null;
 };
@@ -28053,42 +28066,6 @@ export type FooterMenuQuery = {
       category?: { __typename?: "Category"; id: string; slug: string } | null;
       collection?: { __typename?: "Collection"; id: string; slug: string } | null;
       page?: { __typename?: "Page"; id: string; slug: string } | null;
-    }> | null;
-  } | null;
-};
-
-export type HomepageBlocksQueryVariables = Exact<{
-  slug: Scalars["String"];
-  channel: Scalars["String"];
-  locale: LanguageCodeEnum;
-}>;
-
-export type HomepageBlocksQuery = {
-  __typename?: "Query";
-  menu?: {
-    __typename?: "Menu";
-    id: string;
-    name: string;
-    slug: string;
-    items?: Array<{
-      __typename?: "MenuItem";
-      id: string;
-      name: string;
-      translation?: { __typename?: "MenuItemTranslation"; id: string; name: string } | null;
-      category?: { __typename?: "Category"; id: string; slug: string } | null;
-      collection?: { __typename?: "Collection"; id: string; slug: string } | null;
-      page?: {
-        __typename?: "Page";
-        id: string;
-        slug: string;
-        content?: string | null;
-        title: string;
-        translation?: {
-          __typename?: "PageTranslation";
-          content?: string | null;
-          title?: string | null;
-        } | null;
-      } | null;
     }> | null;
   } | null;
 };
@@ -30220,13 +30197,24 @@ export type CategoryBySlugQueryResult = Apollo.QueryResult<
 >;
 export const CategoryPathsDocument = gql`
   query CategoryPaths($after: String) {
-    categories(first: 100, after: $after) {
+    categories(first: 50, after: $after) {
       pageInfo {
         ...PageInfoFragment
       }
       edges {
         node {
           slug
+          id
+          name
+          ancestors(first: 1) {
+            edges {
+              node {
+                id
+                name
+                slug
+              }
+            }
+          }
         }
       }
     }
@@ -30616,64 +30604,6 @@ export function useFooterMenuLazyQuery(
 export type FooterMenuQueryHookResult = ReturnType<typeof useFooterMenuQuery>;
 export type FooterMenuLazyQueryHookResult = ReturnType<typeof useFooterMenuLazyQuery>;
 export type FooterMenuQueryResult = Apollo.QueryResult<FooterMenuQuery, FooterMenuQueryVariables>;
-export const HomepageBlocksQueryDocument = gql`
-  query HomepageBlocksQuery($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
-    menu(channel: $channel, slug: $slug) {
-      id
-      name
-      slug
-      items {
-        ...HomepageBlockFragment
-      }
-    }
-  }
-  ${HomepageBlockFragmentDoc}
-`;
-
-/**
- * __useHomepageBlocksQuery__
- *
- * To run a query within a React component, call `useHomepageBlocksQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomepageBlocksQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHomepageBlocksQuery({
- *   variables: {
- *      slug: // value for 'slug'
- *      channel: // value for 'channel'
- *      locale: // value for 'locale'
- *   },
- * });
- */
-export function useHomepageBlocksQuery(
-  baseOptions: Apollo.QueryHookOptions<HomepageBlocksQuery, HomepageBlocksQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
-    HomepageBlocksQueryDocument,
-    options
-  );
-}
-export function useHomepageBlocksQueryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<HomepageBlocksQuery, HomepageBlocksQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<HomepageBlocksQuery, HomepageBlocksQueryVariables>(
-    HomepageBlocksQueryDocument,
-    options
-  );
-}
-export type HomepageBlocksQueryHookResult = ReturnType<typeof useHomepageBlocksQuery>;
-export type HomepageBlocksQueryLazyQueryHookResult = ReturnType<
-  typeof useHomepageBlocksQueryLazyQuery
->;
-export type HomepageBlocksQueryQueryResult = Apollo.QueryResult<
-  HomepageBlocksQuery,
-  HomepageBlocksQueryVariables
->;
 export const MainMenuDocument = gql`
   query MainMenu($locale: LanguageCodeEnum!, $channel: String!) {
     menu(slug: "navbar", channel: $channel) {
