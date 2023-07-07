@@ -1,0 +1,76 @@
+query FeaturedProductsQuery($slug: String!, $channel: String!) {
+  collection(slug: $slug, channel: $channel) {
+    id
+    name
+    backgroundImage {
+      url
+    }
+    products(first: 20) {
+      edges {
+        node {
+          id
+          slug
+          name
+          thumbnail {
+            url
+            alt
+          }
+          thumbnail2x: thumbnail(size: 510) {
+            url
+          }
+          pricing {
+            onSale
+            priceRangeUndiscounted {
+              start {
+                gross {
+                  amount
+                  currency
+                }
+                net {
+                  amount
+                  currency
+                }
+              }
+              stop {
+                gross {
+                  amount
+                  currency
+                }
+                net {
+                  amount
+                  currency
+                }
+              }
+            }
+            priceRange {
+              start {
+                gross {
+                  amount
+                  currency
+                }
+                net {
+                  amount
+                  currency
+                }
+              }
+              stop {
+                gross {
+                  amount
+                  currency
+                }
+                net {
+                  amount
+                  currency
+                }
+              }
+            }
+          }
+          category {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}

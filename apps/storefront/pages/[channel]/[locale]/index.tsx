@@ -4,6 +4,14 @@ import Image from "next/image";
 
 import { Layout } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
+import { useShopInformation } from "@/lib/hooks/useShopInformation";
+import DefaultHeroWomanImg from "../../../images/homepage/hero-img.jpg";
+import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg";
+import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
+
+const DefaultHero =
+  STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
+
 import { rootCategoryPaths } from "@/lib/ssr/category";
 
 import WomanCategory from "../../../images/homepage/woman-category.jpg";
@@ -35,15 +43,15 @@ export const getStaticProps = async () => {
   };
 };
 
-type HomeProps = InferGetStaticPropsType<typeof getStaticProps>;
-
-const Home: React.FC<HomeProps> = ({ categories }) => {
+function Home() {
+  const { featuredProducts } = useFeaturedProducts();
+  const { shop } = useShopInformation();
   const t = useIntl();
 
   const categoriesExist = () => {
     return categories.length > 0;
   };
-
+    
   const visibleCategory =
     STOREFRONT_NAME === "FASHION4YOU" ? categories.slice(0, -2) : categories.slice(0, -2);
 
@@ -53,6 +61,35 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
       <div className="py-10">
         <header className="mb-4">
           <div className="container">
+            <div
+            className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh]"
+            style={
+              featuredProducts.backgroundImage
+                ? // FIXME: There is a problem with uncorrect link to featuredProduct collection image.
+                  //  {
+                  //     backgroundImage: `url(${featuredProducts.backgroundImage.url})`,
+                  //   }
+                  {
+                    backgroundImage: `url(${DefaultHero})`,
+                  }
+                : {
+                    backgroundImage: `url(${DefaultHero})`,
+                  }
+            }
+          >
+            <div className="overflow-hidden mb-5 text-center">
+              <div>
+                <h1 className="font-bold text-white text-[48px] md:text-[30px] max-w-[647px] md:max-w-full">
+                  Sklep {STOREFRONT_NAME}
+                </h1>
+              </div>
+              <div>
+                <p className="text-white text-[20px] md:text-[18px] max-w-[746px]">
+                  {shop?.description}
+                </p>
+              </div>
+            </div>
+            <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-between gap-8 md:gap-1.2rem"></div>
             <AdvantagesBlock />
             {categoriesExist() && (
               <section className="home-page__categories">
