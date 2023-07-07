@@ -12,6 +12,7 @@ import {
   HomepageBlocksQueryVariables,
 } from "@/saleor/api";
 import { serverApolloClient } from "@/lib/ssr/common";
+import { AdvantagesBlock } from "@/components/AdvantagesBlock";
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const result: ApolloQueryResult<HomepageBlocksQuery> = await serverApolloClient.query<
@@ -35,6 +36,7 @@ function Home({ menuData }: InferGetStaticPropsType<typeof getStaticProps>) {
       <div className="py-10">
         <header className="mb-4">
           <div className="container" />
+          <AdvantagesBlock />
         </header>
         <main>
           <div className="container">
