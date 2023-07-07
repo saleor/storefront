@@ -32,6 +32,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   } = useCheckoutByTokenQuery({
     variables: { checkoutToken, locale: localeToEnum(locale) },
     skip: !checkoutToken || typeof window === "undefined",
+    fetchPolicy: "cache-and-network",
   });
 
   const resetCheckoutToken = () => setCheckoutToken("");

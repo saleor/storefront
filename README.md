@@ -77,12 +77,8 @@ saleor storefront create
 First install [`pnpm`](https://pnpm.io/) (an alternative to `npm`, focused on performance) globally:
 
 ```
-npm install -g pnpm@7.11.0
+npm install -g pnpm
 ```
-
-> **Note**
->
-> `react-storefront` requires version 7.11.0 of pnpm to run properly, using newer versions won't work
 
 > **Note**
 > You might also consider using [proto](https://moonrepo.dev/docs/proto/install) for managing your `pnpm` and `node` versions across different projects. This repository has a configuration for proto.
