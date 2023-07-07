@@ -10731,7 +10731,7 @@ export type Mutation = {
   /**
    * Updates a webhook subscription.
    *
-   * Requires one of the following permissions: MANAGE_APPS.
+   * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookUpdate?: Maybe<WebhookUpdate>;
 };
@@ -15353,7 +15353,8 @@ export type PermissionEnum =
   | "MANAGE_STAFF"
   | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
-  | "MANAGE_USERS";
+  | "MANAGE_USERS"
+  | "MANAGE_WMS";
 
 /**
  * Create new permission group. Apps are not allowed to perform this mutation.
@@ -25711,7 +25712,7 @@ export type WebhookTriggerErrorCode =
 /**
  * Updates a webhook subscription.
  *
- * Requires one of the following permissions: MANAGE_APPS.
+ * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
  */
 export type WebhookUpdate = {
   __typename?: "WebhookUpdate";

@@ -10733,7 +10733,7 @@ export type Mutation = {
   /**
    * Updates a webhook subscription.
    *
-   * Requires one of the following permissions: MANAGE_APPS.
+   * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookUpdate?: Maybe<WebhookUpdate>;
 };
@@ -15355,7 +15355,8 @@ export type PermissionEnum =
   | "MANAGE_STAFF"
   | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
-  | "MANAGE_USERS";
+  | "MANAGE_USERS"
+  | "MANAGE_WMS";
 
 /**
  * Create new permission group. Apps are not allowed to perform this mutation.
@@ -25713,7 +25714,7 @@ export type WebhookTriggerErrorCode =
 /**
  * Updates a webhook subscription.
  *
- * Requires one of the following permissions: MANAGE_APPS.
+ * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
  */
 export type WebhookUpdate = {
   __typename?: "WebhookUpdate";
@@ -27984,6 +27985,66 @@ export type CurrentUserDetailsQuery = {
   } | null;
 };
 
+export type FeaturedProductsQueryVariables = Exact<{
+  slug: Scalars["String"];
+  channel: Scalars["String"];
+}>;
+
+export type FeaturedProductsQuery = {
+  __typename?: "Query";
+  collection?: {
+    __typename?: "Collection";
+    id: string;
+    name: string;
+    backgroundImage?: { __typename?: "Image"; url: string } | null;
+    products?: {
+      __typename?: "ProductCountableConnection";
+      edges: Array<{
+        __typename?: "ProductCountableEdge";
+        node: {
+          __typename?: "Product";
+          id: string;
+          slug: string;
+          name: string;
+          thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
+          thumbnail2x?: { __typename?: "Image"; url: string } | null;
+          pricing?: {
+            __typename?: "ProductPricingInfo";
+            onSale?: boolean | null;
+            priceRangeUndiscounted?: {
+              __typename?: "TaxedMoneyRange";
+              start?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+              stop?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+            } | null;
+            priceRange?: {
+              __typename?: "TaxedMoneyRange";
+              start?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+              stop?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+            } | null;
+          } | null;
+          category?: { __typename?: "Category"; id: string; name: string } | null;
+        };
+      }>;
+    } | null;
+  } | null;
+};
+
 export type FilteringAttributesQueryVariables = Exact<{
   filter: AttributeFilterInput;
   channel: Scalars["String"];
@@ -28522,6 +28583,13 @@ export type ProductPathsQuery = {
       node: { __typename?: "Product"; slug: string };
     }>;
   } | null;
+};
+
+export type ShopInformationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ShopInformationQuery = {
+  __typename?: "Query";
+  shop: { __typename?: "Shop"; description?: string | null };
 };
 
 export type UserQueryVariables = Exact<{ [key: string]: never }>;
@@ -30501,6 +30569,128 @@ export type CurrentUserDetailsQueryResult = Apollo.QueryResult<
   CurrentUserDetailsQuery,
   CurrentUserDetailsQueryVariables
 >;
+export const FeaturedProductsQueryDocument = gql`
+  query FeaturedProductsQuery($slug: String!, $channel: String!) {
+    collection(slug: $slug, channel: $channel) {
+      id
+      name
+      backgroundImage {
+        url
+      }
+      products(first: 20) {
+        edges {
+          node {
+            id
+            slug
+            name
+            thumbnail {
+              url
+              alt
+            }
+            thumbnail2x: thumbnail(size: 510) {
+              url
+            }
+            pricing {
+              onSale
+              priceRangeUndiscounted {
+                start {
+                  gross {
+                    amount
+                    currency
+                  }
+                  net {
+                    amount
+                    currency
+                  }
+                }
+                stop {
+                  gross {
+                    amount
+                    currency
+                  }
+                  net {
+                    amount
+                    currency
+                  }
+                }
+              }
+              priceRange {
+                start {
+                  gross {
+                    amount
+                    currency
+                  }
+                  net {
+                    amount
+                    currency
+                  }
+                }
+                stop {
+                  gross {
+                    amount
+                    currency
+                  }
+                  net {
+                    amount
+                    currency
+                  }
+                }
+              }
+            }
+            category {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useFeaturedProductsQuery__
+ *
+ * To run a query within a React component, call `useFeaturedProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeaturedProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFeaturedProductsQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function useFeaturedProductsQuery(
+  baseOptions: Apollo.QueryHookOptions<FeaturedProductsQuery, FeaturedProductsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<FeaturedProductsQuery, FeaturedProductsQueryVariables>(
+    FeaturedProductsQueryDocument,
+    options
+  );
+}
+export function useFeaturedProductsQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<FeaturedProductsQuery, FeaturedProductsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<FeaturedProductsQuery, FeaturedProductsQueryVariables>(
+    FeaturedProductsQueryDocument,
+    options
+  );
+}
+export type FeaturedProductsQueryHookResult = ReturnType<typeof useFeaturedProductsQuery>;
+export type FeaturedProductsQueryLazyQueryHookResult = ReturnType<
+  typeof useFeaturedProductsQueryLazyQuery
+>;
+export type FeaturedProductsQueryQueryResult = Apollo.QueryResult<
+  FeaturedProductsQuery,
+  FeaturedProductsQueryVariables
+>;
 export const FilteringAttributesQueryDocument = gql`
   query FilteringAttributesQuery(
     $filter: AttributeFilterInput!
@@ -31236,6 +31426,55 @@ export type ProductPathsLazyQueryHookResult = ReturnType<typeof useProductPathsL
 export type ProductPathsQueryResult = Apollo.QueryResult<
   ProductPathsQuery,
   ProductPathsQueryVariables
+>;
+export const ShopInformationQueryDocument = gql`
+  query ShopInformationQuery {
+    shop {
+      description
+    }
+  }
+`;
+
+/**
+ * __useShopInformationQuery__
+ *
+ * To run a query within a React component, call `useShopInformationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useShopInformationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useShopInformationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useShopInformationQuery(
+  baseOptions?: Apollo.QueryHookOptions<ShopInformationQuery, ShopInformationQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ShopInformationQuery, ShopInformationQueryVariables>(
+    ShopInformationQueryDocument,
+    options
+  );
+}
+export function useShopInformationQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ShopInformationQuery, ShopInformationQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ShopInformationQuery, ShopInformationQueryVariables>(
+    ShopInformationQueryDocument,
+    options
+  );
+}
+export type ShopInformationQueryHookResult = ReturnType<typeof useShopInformationQuery>;
+export type ShopInformationQueryLazyQueryHookResult = ReturnType<
+  typeof useShopInformationQueryLazyQuery
+>;
+export type ShopInformationQueryQueryResult = Apollo.QueryResult<
+  ShopInformationQuery,
+  ShopInformationQueryVariables
 >;
 export const UserDocument = gql`
   query User {
