@@ -31,13 +31,13 @@ function Dropdown({ menuItem }: DropdownProps) {
                       href={item.url}
                       target="_blank"
                       rel="noreferrer"
-                      className={styles["dropdown-main"]}
+                      className={`${styles["dropdown-main"]} whitespace-nowrap`}
                     >
                       {item?.name}
                     </a>
                   ) : (
                     <Link href={getLinkPath(item, slug, currentLocale)} passHref legacyBehavior>
-                      <a href="pass" className={styles["dropdown-main"]}>
+                      <a href="pass" className={`${styles["dropdown-main"]} whitespace-nowrap`}>
                         {item?.name}
                       </a>
                     </Link>

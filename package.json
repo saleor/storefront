@@ -53,5 +53,8 @@
       "@urql/exchange-auth>@urql/core": "3.2.2",
       "@urql/exchange-multipart-fetch>@urql/core": "3.2.2"
     }
+  },
+  "dependencies": {
+    "react-svg": "^16.1.18"
   }
 }

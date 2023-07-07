@@ -11,11 +11,13 @@ import { BurgerMenu } from "../BurgerMenu";
 import { Menu } from "./Menu";
 import styles from "./Navbar.module.css";
 import NavIconButton from "./NavIconButton";
-import Stamp from "./Stamp";
 import UserMenu from "./UserMenu";
 import { useRegions } from "@/components/RegionsProvider";
 import { invariant } from "@apollo/client/utilities/globals";
 import { useUser } from "@/lib/useUser";
+import Image from "next/image";
+import logo from "../../images/c4u_logo.svg";
+import Logo from "./Logo";
 
 export function Navbar() {
   const paths = usePaths();
@@ -77,7 +79,7 @@ export function Navbar() {
           <div className="flex-1 flex xs:justify-center">
             <Link href={paths.$url()} passHref legacyBehavior>
               <a href="pass" className={styles.logo}>
-                <Stamp />
+                <Logo />
               </a>
             </Link>
           </div>

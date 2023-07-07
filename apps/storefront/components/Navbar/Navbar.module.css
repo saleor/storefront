@@ -27,7 +27,7 @@
 }
 
 .dropdown-trigger {
-  @apply flex items-center text-center text-md font-bold hover:text-brand h-full px-4;
+  @apply flex items-center text-center text-md hover:text-brand h-full px-4;
 }
 
 .dropdown-menu {
@@ -40,7 +40,7 @@
 }
 
 .dropdown-main {
-  @apply inline-block text-[1.8rem] leading-[2.16rem] font-bold cursor-pointer hover:underline;
+  @apply inline-block text-[1.4rem] leading-[1.65rem] font-bold cursor-pointer hover:text-brand;
 }
 
 .dropdown-ul {
@@ -52,7 +52,7 @@
 }
 
 .dropdown-link {
-  @apply text-base text-main-2 cursor-pointer hover:underline;
+  @apply text-[1.1rem]  text-main-2 cursor-pointer hover:text-brand;
 }
 
 .nav-icon-button {
