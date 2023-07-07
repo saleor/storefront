@@ -24,11 +24,10 @@ export interface Channel {
 }
 
 export const DEFAULT_CHANNEL: Channel = {
-  slug: "default-channel",
+  slug: process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || "default-channel",
   name: "United States Dollar",
   currencyCode: "USD",
 };
-
 export const CHANNELS: Channel[] = [
   DEFAULT_CHANNEL,
   {

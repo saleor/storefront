@@ -71,5 +71,6 @@
   "app.ui.noProductsInfo": "Brak produktów",
   "app.ui.productCounter": "{currentItemsCount} z {totalItemsCount}",
   "app.ui.removeButton": "Usuń",
-  "app.ui.saveButton": "Zapisz"
+  "app.ui.saveButton": "Zapisz",
+  "app.pages.channel.locale.index": "Nie wiesz, gdzie szukać swoich ulubionych produktów? Skorzystaj z naszych przejrzystych kategorii i z łatwością znajdź to, czego szukasz."
 }
