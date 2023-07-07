@@ -53,6 +53,7 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
       <div className="py-10">
         <header className="mb-4">
           <div className="container">
+            <AdvantagesBlock />
             {categoriesExist() && (
               <section className="home-page__categories">
                 <div className="container home-page__categories-wrapper px-4 sm:px-0">
