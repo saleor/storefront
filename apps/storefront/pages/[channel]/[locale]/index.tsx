@@ -21,6 +21,7 @@ import Link from "next/link";
 import { STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
+import { AdvantagesBlock } from "@/components/AdvantagesBlock";
 
 export const WomanCategoryImg = WomanCategory;
 
@@ -43,7 +44,9 @@ export const getStaticProps = async () => {
   };
 };
 
-function Home() {
+type HomeProps = InferGetStaticPropsType<typeof getStaticProps>;
+
+const Home: React.FC<HomeProps> = ({ categories }) => {
   const { featuredProducts } = useFeaturedProducts();
   const { shop } = useShopInformation();
   const t = useIntl();
@@ -51,7 +54,7 @@ function Home() {
   const categoriesExist = () => {
     return categories.length > 0;
   };
-    
+
   const visibleCategory =
     STOREFRONT_NAME === "FASHION4YOU" ? categories.slice(0, -2) : categories.slice(0, -2);
 
@@ -62,34 +65,35 @@ function Home() {
         <header className="mb-4">
           <div className="container">
             <div
-            className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh]"
-            style={
-              featuredProducts.backgroundImage
-                ? // FIXME: There is a problem with uncorrect link to featuredProduct collection image.
-                  //  {
-                  //     backgroundImage: `url(${featuredProducts.backgroundImage.url})`,
-                  //   }
-                  {
-                    backgroundImage: `url(${DefaultHero})`,
-                  }
-                : {
-                    backgroundImage: `url(${DefaultHero})`,
-                  }
-            }
-          >
-            <div className="overflow-hidden mb-5 text-center">
-              <div>
-                <h1 className="font-bold text-white text-[48px] md:text-[30px] max-w-[647px] md:max-w-full">
-                  Sklep {STOREFRONT_NAME}
-                </h1>
+              className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh]"
+              style={
+                featuredProducts.backgroundImage
+                  ? // FIXME: There is a problem with uncorrect link to featuredProduct collection image.
+                    //  {
+                    //     backgroundImage: `url(${featuredProducts.backgroundImage.url})`,
+                    //   }
+                    {
+                      backgroundImage: `url(${DefaultHero})`,
+                    }
+                  : {
+                      backgroundImage: `url(${DefaultHero})`,
+                    }
+              }
+            >
+              <div className="overflow-hidden mb-5 text-center">
+                <div>
+                  <h1 className="font-bold text-white text-[48px] md:text-[30px] max-w-[647px] md:max-w-full">
+                    Sklep {STOREFRONT_NAME}
+                  </h1>
+                </div>
+                <div>
+                  <p className="text-white text-[20px] md:text-[18px] max-w-[746px]">
+                    {shop?.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-white text-[20px] md:text-[18px] max-w-[746px]">
-                  {shop?.description}
-                </p>
-              </div>
+              <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-between gap-8 md:gap-1.2rem"></div>
             </div>
-            <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-between gap-8 md:gap-1.2rem"></div>
             <AdvantagesBlock />
             {categoriesExist() && (
               <section className="home-page__categories">
