@@ -1,11 +1,22 @@
 query CategoryPaths($after: String) {
-  categories(first: 100, after: $after) {
+  categories(first: 50, after: $after) {
     pageInfo {
       ...PageInfoFragment
     }
     edges {
       node {
         slug
+        id
+        name
+        ancestors(first: 1) {
+          edges {
+            node {
+              id
+              name
+              slug
+            }
+          }
+        }
       }
     }
   }

@@ -37,7 +37,7 @@ module.exports = {
           DEFAULT: "#C2D1E4",
         },
         brand: {
-          DEFAULT: "#5B68E4",
+          DEFAULT: "#65c947",
         },
         main: {
           DEFAULT: "#394052",
@@ -56,7 +56,7 @@ module.exports = {
         DEFAULT: "1px",
       },
       fontFamily: {
-        sans: ["Inconsolata"],
+        sans: ["Poppins, sans-serif"],
       },
       fontWeight: {
         normal: 400,
