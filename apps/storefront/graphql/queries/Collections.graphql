@@ -1,0 +1,19 @@
+query CollectionsQuery($cursor: String, $perPage: Int, $channel: String) {
+  collections(after: $cursor, first: $perPage, channel: $channel) {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        backgroundImage {
+          url
+        }
+      }
+    }
+  }
+}
