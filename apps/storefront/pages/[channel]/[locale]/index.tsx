@@ -22,6 +22,7 @@ import { STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 import { AdvantagesBlock } from "@/components/AdvantagesBlock";
+import ProductsFeatured from "@/components/ProductsFeatured/ProductsFeatured";
 
 export const WomanCategoryImg = WomanCategory;
 
@@ -67,7 +68,7 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
             <div
               className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh]"
               style={
-                featuredProducts.backgroundImage
+                featuredProducts?.backgroundImage
                   ? // FIXME: There is a problem with uncorrect link to featuredProduct collection image.
                     //  {
                     //     backgroundImage: `url(${featuredProducts.backgroundImage.url})`,
@@ -155,6 +156,7 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
                 </div>
               </section>
             )}
+            <ProductsFeatured products={featuredProducts?.products} />
           </div>
         </header>
         <main>
