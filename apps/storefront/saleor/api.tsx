@@ -28561,6 +28561,29 @@ export type ProductPathsQuery = {
   } | null;
 };
 
+export type SalesQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars["String"]>;
+  perPage?: InputMaybe<Scalars["Int"]>;
+  channel?: InputMaybe<Scalars["String"]>;
+}>;
+
+export type SalesQuery = {
+  __typename?: "Query";
+  sales?: {
+    __typename?: "SaleCountableConnection";
+    pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: "SaleCountableEdge";
+      node: {
+        __typename?: "Sale";
+        id: string;
+        name: string;
+        products?: { __typename?: "ProductCountableConnection"; totalCount?: number | null } | null;
+      };
+    }>;
+  } | null;
+};
+
 export type ShopInformationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ShopInformationQuery = {
@@ -31356,6 +31379,59 @@ export type ProductPathsQueryResult = Apollo.QueryResult<
   ProductPathsQuery,
   ProductPathsQueryVariables
 >;
+export const SalesQueryDocument = gql`
+  query SalesQuery($cursor: String, $perPage: Int, $channel: String) {
+    sales(after: $cursor, first: $perPage, channel: $channel) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          name
+          products {
+            totalCount
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSalesQuery__
+ *
+ * To run a query within a React component, call `useSalesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSalesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSalesQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      perPage: // value for 'perPage'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function useSalesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SalesQuery, SalesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SalesQuery, SalesQueryVariables>(SalesQueryDocument, options);
+}
+export function useSalesQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SalesQuery, SalesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SalesQuery, SalesQueryVariables>(SalesQueryDocument, options);
+}
+export type SalesQueryHookResult = ReturnType<typeof useSalesQuery>;
+export type SalesQueryLazyQueryHookResult = ReturnType<typeof useSalesQueryLazyQuery>;
+export type SalesQueryQueryResult = Apollo.QueryResult<SalesQuery, SalesQueryVariables>;
 export const ShopInformationQueryDocument = gql`
   query ShopInformationQuery {
     shop {

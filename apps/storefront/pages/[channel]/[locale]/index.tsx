@@ -8,6 +8,7 @@ import { useShopInformation } from "@/lib/hooks/useShopInformation";
 import DefaultHeroWomanImg from "../../../images/homepage/hero-img.jpg";
 import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg";
 import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
+import { useSales } from "@/lib/hooks/useSales";
 
 const DefaultHero =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -49,11 +50,17 @@ type HomeProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home: React.FC<HomeProps> = ({ categories }) => {
   const { featuredProducts } = useFeaturedProducts();
+  const { sales } = useSales();
+
   const { shop } = useShopInformation();
   const t = useIntl();
 
   const categoriesExist = () => {
     return categories.length > 0;
+  };
+
+  const salesExist = () => {
+    return sales?.length > 0;
   };
 
   const visibleCategory =
@@ -157,6 +164,40 @@ const Home: React.FC<HomeProps> = ({ categories }) => {
               </section>
             )}
             <ProductsFeatured products={featuredProducts?.products} />
+
+            {salesExist() && (
+              <div id="sales" className="home-page__sale">
+                <div className="container home-page__sale-wrapper">
+                  <h2 className="home-page__sale-wrapper-title">
+                    Zakupy w dobrej cenie - sprawdź nasze <span>promocje</span> już teraz!
+                  </h2>
+                  <p className="home-page__sale-wrapper-subtitle">
+                    Znudziły Ci się standardowe zakupy? Szukasz czegoś wyjątkowego, co jednocześnie
+                    pozwoli Ci oszczędzić pieniądze? Nasza oferta promocyjna jest idealnym
+                    rozwiązaniem!
+                  </p>
+                </div>
+                <div className="home-page__sale-content container">
+                  {sales?.edges?.map(({ node: sale }) => {
+                    if (sale?.products?.totalCount > 0) {
+                      return (
+                        <a className="home-page__sale-content-item">
+                          {sales?.name?.match(/\d/) ? (
+                            <h2 className="sale-with-percent">
+                              <h3>-{sale.name}%</h3>
+                            </h2>
+                          ) : (
+                            <span className="sale-without-percent">
+                              <h3>{sale.name}</h3>
+                            </span>
+                          )}
+                        </a>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </header>
         <main>
