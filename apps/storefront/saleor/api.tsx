@@ -27980,6 +27980,31 @@ export type CollectionPathsQuery = {
   } | null;
 };
 
+export type CollectionsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars["String"]>;
+  perPage?: InputMaybe<Scalars["Int"]>;
+  channel?: InputMaybe<Scalars["String"]>;
+}>;
+
+export type CollectionsQuery = {
+  __typename?: "Query";
+  collections?: {
+    __typename?: "CollectionCountableConnection";
+    pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: "CollectionCountableEdge";
+      node: {
+        __typename?: "Collection";
+        id: string;
+        name: string;
+        slug: string;
+        description?: string | null;
+        backgroundImage?: { __typename?: "Image"; url: string } | null;
+      };
+    }>;
+  } | null;
+};
+
 export type CurrentUserDetailsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserDetailsQuery = {
@@ -30491,6 +30516,70 @@ export type CollectionPathsLazyQueryHookResult = ReturnType<typeof useCollection
 export type CollectionPathsQueryResult = Apollo.QueryResult<
   CollectionPathsQuery,
   CollectionPathsQueryVariables
+>;
+export const CollectionsQueryDocument = gql`
+  query CollectionsQuery($cursor: String, $perPage: Int, $channel: String) {
+    collections(after: $cursor, first: $perPage, channel: $channel) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          name
+          slug
+          description
+          backgroundImage {
+            url
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCollectionsQuery__
+ *
+ * To run a query within a React component, call `useCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      perPage: // value for 'perPage'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function useCollectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<CollectionsQuery, CollectionsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<CollectionsQuery, CollectionsQueryVariables>(
+    CollectionsQueryDocument,
+    options
+  );
+}
+export function useCollectionsQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CollectionsQuery, CollectionsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<CollectionsQuery, CollectionsQueryVariables>(
+    CollectionsQueryDocument,
+    options
+  );
+}
+export type CollectionsQueryHookResult = ReturnType<typeof useCollectionsQuery>;
+export type CollectionsQueryLazyQueryHookResult = ReturnType<typeof useCollectionsQueryLazyQuery>;
+export type CollectionsQueryQueryResult = Apollo.QueryResult<
+  CollectionsQuery,
+  CollectionsQueryVariables
 >;
 export const CurrentUserDetailsDocument = gql`
   query CurrentUserDetails {
