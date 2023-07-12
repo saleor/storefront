@@ -11,7 +11,7 @@ import { useShopInformation } from "@/lib/hooks/useShopInformation";
 import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
 import { useCollections } from "@/lib/hooks/useCollections";
 import { rootCategoryPaths } from "@/lib/ssr/category";
-import { STOREFRONT_NAME } from "@/lib/const";
+import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
@@ -20,6 +20,7 @@ import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg
 import WomanCategory from "../../../images/homepage/woman-category.jpg";
 import ManCategory from "../../../images/homepage/man-category.jpg";
 import KidCategory from "../../../images/homepage/kid-category.jpg";
+import { useNews } from "@/lib/hooks/useNews";
 
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -48,10 +49,12 @@ export const getStaticProps = async () => {
 const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ categories }) => {
   const { featuredProducts } = useFeaturedProducts();
   const { shop } = useShopInformation();
+  const { news } = useNews();
   const { collections } = useCollections();
   const t = useIntl();
 
   const hasCategories = categories.length > 0;
+  const hasNews = news?.length > 0;
   const hasCollections = collections && collections.edges && collections.edges.length > 0;
 
   const visibleCategories =
@@ -140,14 +143,10 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
               <div className="mt-32">
                 <div className="container">
                   <div className="flex flex-col items-center my-auto pb-4">
-                    <h2 className="max-w-672px text-38px leading-42px font-bold text-black text-center mb-2 lg:max-w-none lg:text-34px">
-                      Nasze najnowsze{" "}
-                      <span className="text-primary text-38px leading-42px font-bold lg:text-34px">
-                        trendy
-                      </span>{" "}
-                      - zobacz popularne kolekcje
+                    <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
+                      Nasze najnowsze trendy - zobacz popularne kolekcje
                     </h2>
-                    <p className="max-w-705px text-4e595a text-center">
+                    <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
                       Zobacz nasze bestsellery i podążaj za trendami! Nasze najnowsze trendy z
                       pewnością Cię zainspirują i pomogą znaleźć swój wyjątkowy styl.
                     </p>
@@ -184,6 +183,55 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
                       );
                     })}
                   </div>
+                </div>
+              </div>
+            )}
+            {hasNews && (
+              <div className="container mt-32">
+                <div className="flex flex-col items-center mx-auto">
+                  <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
+                    Nowe artykuły i najnowsze informacje
+                  </h2>
+                  <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+                    Poznaj świat mody i stylu dzięki naszym najnowszym treściom i aktualizacjom
+                  </p>
+                </div>
+                <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 mt-8 md:flex-row md:items-start md:justify-center md:gap-10">
+                  {news?.slice(0, 3).map(({ node: newsElem }) => {
+                    const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split(
+                      "/"
+                    );
+                    const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
+                      url[url.length - 1]
+                    }`;
+                    const { slug } = newsElem;
+                    const newsUrl = slug;
+
+                    const contentStringify = JSON.parse(
+                      newsElem?.content
+                    ).blocks[0].data.text.replace(/^(.{128}[^\s]*).*/, "$1");
+
+                    return (
+                      <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
+                        <Image
+                          src={correctedUrl}
+                          alt=""
+                          className="w-full h-80 object-cover rounded-lg"
+                          width={500}
+                          height={500}
+                        />
+                        <a
+                          href={newsUrl}
+                          className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
+                        >
+                          {newsElem?.title}
+                        </a>
+                        <p className="text-base text-gray-700 break-words">
+                          {contentStringify} [...]
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
