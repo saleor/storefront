@@ -12,6 +12,7 @@ import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
 import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
 import { useRegions } from "../RegionsProvider";
 import styles from "./Footer.module.css";
+import { STOREFRONT_NAME } from "@/lib/const";
 
 export type FooterProps = HTMLAttributes<HTMLElement>;
 
@@ -20,7 +21,22 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 // @todo remove this when the issue is fixed.
 const fixMenuItemLocalhostUrl = (url: string) => url.replace(/^https?:\/\/localhost:8000\//, "/");
 
+const getFooterItems = (shopName, itemName, itemChildren) => {
+  if (shopName === "FASHION4YOU") {
+    if (itemName === "Kategorie") {
+      return itemChildren.slice(0, -1);
+    }
+    if (itemName === "Kolekcje") {
+      return itemChildren.filter((subItem) => !subItem.name.includes("c4u"));
+    }
+  } else if (shopName === "CLOTHES4U" && itemName === "Kolekcje") {
+    return itemChildren.filter((subItem) => subItem.name !== "Polecane produkty");
+  }
+  return itemChildren;
+};
+
 export function Footer({ className, ...rest }: FooterProps) {
+  const shopName = STOREFRONT_NAME;
   const paths = usePaths();
   const { query, currentChannel, currentLocale } = useRegions();
 
@@ -67,7 +83,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                   </Link>
                 )}
                 <ul className={styles.menu}>
-                  {item?.children?.map((sub) => (
+                  {getFooterItems(shopName, item?.name, item?.children)?.map((sub) => (
                     <li key={sub?.id}>
                       {sub?.url ? (
                         <a
@@ -103,7 +119,7 @@ export function Footer({ className, ...rest }: FooterProps) {
         </div>
         <div className="flex items-center">
           <p className="text-sm text-main-3 flex-grow">
-            © Copyright 2018 - {new Date().getFullYear()} Saleor Commerce
+            © Copyright 2022 - {new Date().getFullYear()} {STOREFRONT_NAME}
           </p>
           <div className="invisible md:visible flex gap-4">
             <ChannelDropdown horizontalAlignment="right" />
