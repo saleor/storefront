@@ -28198,6 +28198,50 @@ export type MainMenuQuery = {
   } | null;
 };
 
+export type NewsQueryVariables = Exact<{
+  id: Scalars["ID"];
+  channelSlug?: InputMaybe<Scalars["String"]>;
+}>;
+
+export type NewsQuery = {
+  __typename?: "Query";
+  pages?: {
+    __typename?: "PageCountableConnection";
+    edges: Array<{
+      __typename?: "PageCountableEdge";
+      node: {
+        __typename?: "Page";
+        slug: string;
+        title: string;
+        content?: string | null;
+        seoDescription?: string | null;
+        seoTitle?: string | null;
+        created: string;
+        attributes: Array<{
+          __typename?: "SelectedAttribute";
+          values: Array<{
+            __typename?: "AttributeValue";
+            file?: { __typename?: "File"; url: string; contentType?: string | null } | null;
+          }>;
+        }>;
+      };
+    }>;
+  } | null;
+};
+
+export type NewsIdQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NewsIdQuery = {
+  __typename?: "Query";
+  pageTypes?: {
+    __typename?: "PageTypeCountableConnection";
+    edges: Array<{
+      __typename?: "PageTypeCountableEdge";
+      node: { __typename?: "PageType"; id: string; slug: string };
+    }>;
+  } | null;
+};
+
 export type OrderDetailsQueryVariables = Exact<{
   token: Scalars["UUID"];
 }>;
@@ -30926,6 +30970,108 @@ export function useMainMenuLazyQuery(
 export type MainMenuQueryHookResult = ReturnType<typeof useMainMenuQuery>;
 export type MainMenuLazyQueryHookResult = ReturnType<typeof useMainMenuLazyQuery>;
 export type MainMenuQueryResult = Apollo.QueryResult<MainMenuQuery, MainMenuQueryVariables>;
+export const NewsQueryDocument = gql`
+  query NewsQuery($id: ID!, $channelSlug: String) {
+    pages(
+      sortBy: { field: CREATION_DATE, direction: DESC }
+      first: 50
+      filter: { pageTypes: [$id], metadata: { key: "channel", value: $channelSlug } }
+    ) {
+      edges {
+        node {
+          slug
+          title
+          content
+          seoDescription
+          seoTitle
+          created
+          attributes {
+            values {
+              file {
+                url
+                contentType
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useNewsQuery__
+ *
+ * To run a query within a React component, call `useNewsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNewsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      channelSlug: // value for 'channelSlug'
+ *   },
+ * });
+ */
+export function useNewsQuery(baseOptions: Apollo.QueryHookOptions<NewsQuery, NewsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<NewsQuery, NewsQueryVariables>(NewsQueryDocument, options);
+}
+export function useNewsQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<NewsQuery, NewsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<NewsQuery, NewsQueryVariables>(NewsQueryDocument, options);
+}
+export type NewsQueryHookResult = ReturnType<typeof useNewsQuery>;
+export type NewsQueryLazyQueryHookResult = ReturnType<typeof useNewsQueryLazyQuery>;
+export type NewsQueryQueryResult = Apollo.QueryResult<NewsQuery, NewsQueryVariables>;
+export const NewsIdQueryDocument = gql`
+  query NewsIdQuery {
+    pageTypes(first: 5, filter: { search: "news" }) {
+      edges {
+        node {
+          id
+          slug
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useNewsIdQuery__
+ *
+ * To run a query within a React component, call `useNewsIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNewsIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewsIdQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewsIdQuery(
+  baseOptions?: Apollo.QueryHookOptions<NewsIdQuery, NewsIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<NewsIdQuery, NewsIdQueryVariables>(NewsIdQueryDocument, options);
+}
+export function useNewsIdQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<NewsIdQuery, NewsIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<NewsIdQuery, NewsIdQueryVariables>(NewsIdQueryDocument, options);
+}
+export type NewsIdQueryHookResult = ReturnType<typeof useNewsIdQuery>;
+export type NewsIdQueryLazyQueryHookResult = ReturnType<typeof useNewsIdQueryLazyQuery>;
+export type NewsIdQueryQueryResult = Apollo.QueryResult<NewsIdQuery, NewsIdQueryVariables>;
 export const OrderDetailsQueryDocument = gql`
   query OrderDetailsQuery($token: UUID!) {
     orderByToken(token: $token) {
