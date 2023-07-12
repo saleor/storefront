@@ -11,7 +11,7 @@ export const AdvantagesBlock = () => {
         <h2 className="max-w-[893px] text-center mb-2 font-semibold text-[38px] leading-[55px] text-black">
           Zapewniamy najlepszą obsługę <span className="text-primary">klienta</span>
         </h2>
-        <p className="max-w-[568px] text-center text-[#4E595A]">
+        <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
           Nasi doświadczeni specjaliści są zawsze gotowi, by odpowiedzieć na Twoje pytanie,
           rozwiązać problemy i pomóc Ci w zakupach.
         </p>

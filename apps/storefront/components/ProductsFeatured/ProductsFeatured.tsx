@@ -27,8 +27,8 @@ const ProductsFeatured = ({ products }) => {
         ]}
       >
         {products.map((product) => (
-          <Carousel.Slide>
-            <ProductCarouselItem product={product} key={product.id} />
+          <Carousel.Slide key={product.id}>
+            <ProductCarouselItem product={product} />
           </Carousel.Slide>
         ))}
       </Carousel>

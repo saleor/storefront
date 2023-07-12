@@ -1,7 +1,6 @@
 import React, { ReactElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { GetStaticPaths, InferGetStaticPropsType } from "next";
 
 import { Layout } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
@@ -21,6 +20,8 @@ import WomanCategory from "../../../images/homepage/woman-category.jpg";
 import ManCategory from "../../../images/homepage/man-category.jpg";
 import KidCategory from "../../../images/homepage/kid-category.jpg";
 import { useNews } from "@/lib/hooks/useNews";
+import { useCategories } from "@/lib/hooks/useCategories";
+import usePaths from "@/lib/paths";
 
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -31,48 +32,41 @@ const CATEGORY_IMAGES = {
   dziecko: KidCategory,
 };
 
-export const getStaticProps = async () => {
-  const paths = await rootCategoryPaths();
-
-  const categories = paths.map((path) => ({
-    slug: path.params.slug,
-  }));
-
-  return {
-    props: {
-      categories,
-    },
-    revalidate: 60 * 60,
-  };
-};
-
-const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ categories }) => {
+const Home = () => {
   const { featuredProducts } = useFeaturedProducts();
   const { shop } = useShopInformation();
   const { news } = useNews();
   const { collections } = useCollections();
+  const { categories } = useCategories();
+  const paths = usePaths();
+
   const t = useIntl();
 
-  const hasCategories = categories.length > 0;
+  const rootCategories = categories?.edges
+    ? categories.edges
+        .filter((edge) => edge.node.ancestors?.edges.length === 0)
+        .map((edge) => edge.node)
+    : [];
+
+  const hasCategories = rootCategories?.length > 0;
   const hasNews = news?.length > 0;
   const hasCollections = collections && collections.edges && collections.edges.length > 0;
 
   const visibleCategories =
-    STOREFRONT_NAME === "FASHION4YOU" ? categories.slice(0, -2) : categories.slice(0, -2);
+    STOREFRONT_NAME === "FASHION4YOU" ? rootCategories?.slice(0, -2) : rootCategories?.slice(0, -2);
 
   const renderCategoryImage = (slug: string) => {
     const ImageSrc = CATEGORY_IMAGES[slug];
     return <Image src={ImageSrc} alt={slug} className="object-cover w-full h-auto" />;
   };
-
   return (
     <>
       <BaseSeo />
       <div className="py-10">
-        <header className="mb-4">
+        <main>
           <div className="container">
             <div
-              className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh]"
+              className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] bg-neutral-50 py-24 px-6 text-center dark:bg-neutral-500"
               style={
                 featuredProducts?.backgroundImage
                   ? {
@@ -83,51 +77,58 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
                     }
               }
             >
-              <div className="overflow-hidden mb-5 text-center">
+              <div className="overflow-hidden mb-5">
                 <div>
-                  <h1 className="font-bold text-white text-[48px] md:text-[30px] max-w-[647px] md:max-w-full">
+                  <h1 className="mb-4 font-bold text-white text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
                     Sklep {STOREFRONT_NAME}
                   </h1>
                 </div>
                 <div>
-                  <p className="text-white text-[20px] md:text-[18px] max-w-[746px]">
+                  <p className="text-white text-base md:text-lg max-w-[846px]">
                     {shop?.description}
                   </p>
                 </div>
               </div>
-              <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-between gap-8 md:gap-1.2rem"></div>
+              <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
+                <a className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand">
+                  Aktualności
+                </a>
+                <a className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0">
+                  Promocje
+                </a>
+              </div>
             </div>
             <AdvantagesBlock />
             {hasCategories && (
-              <section className="home-page__categories">
-                <div className="container home-page__categories-wrapper px-4 sm:px-0">
+              <section className="mt-64">
+                <div className="container px-4 sm:px-0">
                   <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
                     Szukasz konkretnych <span className="text-brand">produktów? </span>
                     Nasze kategorie ułatwią Ci zadanie!
                   </h2>
-                  <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+                  <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
                     {t.formatMessage(messages.categoriesHome)}
                   </p>
                 </div>
-                <div className="container home-page__categories_container px-4 sm:px-0">
+                <div className="container px-4 sm:px-0">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                     {visibleCategories.map((category) => {
                       return (
                         <div
-                          key={category.slug}
+                          key={category.id}
                           className="relative text-center flex flex-col items-center justify-center mt-0 gap-x-1.5 gap-y-1.5"
                         >
                           <div className="home-page__categories__text-image">
                             {renderCategoryImage(category.slug)}
                             <div className="absolute top-1/2 left-1/2 flex items-center transform -translate-x-1/2 -translate-y-1/2">
                               <Link
-                                href={category.slug}
+                                href={paths.category._slug(category?.slug).$url()}
                                 className="whitespace-nowrap text-center bg-white text-black py-4 px-16 sm:py-6 sm:px-12 lg:py-8 lg:px-16 inline-block shadow-2xl text-2xl sm:text-3xl lg:text-4xl pt-0.3"
                                 style={{
                                   boxShadow: "rgb(255, 255, 255) 0px -3.25em 0px 0px inset",
                                 }}
                               >
-                                {category.slug}
+                                {category.name}
                               </Link>
                             </div>
                           </div>
@@ -146,7 +147,7 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
                     <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
                       Nasze najnowsze trendy - zobacz popularne kolekcje
                     </h2>
-                    <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+                    <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[768px]">
                       Zobacz nasze bestsellery i podążaj za trendami! Nasze najnowsze trendy z
                       pewnością Cię zainspirują i pomogą znaleźć swój wyjątkowy styl.
                     </p>
@@ -160,7 +161,10 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
                           key={collection.id}
                           className="lg:w-full hover:cursor-pointer mb-8 lg:mb-0"
                         >
-                          <Link href="localhost:3000" key={collection.id}>
+                          <Link
+                            href={paths.collection._slug(collection?.slug).$url()}
+                            key={collection.id}
+                          >
                             <div className="relative bg-cover bg-center w-full flex flex-wrap items-center">
                               <div
                                 className="h-auto max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-cover bg-no-repeat object-cover px-40 py-80 rounded-lg lg:w-full hover:brightness-[45%]"
@@ -198,14 +202,14 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
                 </div>
                 <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 mt-8 md:flex-row md:items-start md:justify-center md:gap-10">
                   {news?.slice(0, 3).map(({ node: newsElem }) => {
-                    const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split(
-                      "/"
-                    );
-                    const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
-                      url[url.length - 1]
-                    }`;
-                    const { slug } = newsElem;
-                    const newsUrl = slug;
+                    // const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split(
+                    //   "/"
+                    // );
+                    // const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
+                    //   url[url.length - 1]
+                    // }`;
+                    // const { slug } = newsElem;
+                    // const newsUrl = slug;
 
                     const contentStringify = JSON.parse(
                       newsElem?.content
@@ -214,14 +218,14 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
                     return (
                       <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
                         <Image
-                          src={correctedUrl}
+                          src={newsElem?.backgroundImage?.url}
                           alt=""
                           className="w-full h-80 object-cover rounded-lg"
                           width={500}
                           height={500}
                         />
                         <a
-                          href={newsUrl}
+                          href="localhost:3000"
                           className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
                         >
                           {newsElem?.title}
@@ -236,9 +240,6 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
               </div>
             )}
           </div>
-        </header>
-        <main>
-          <div className="container"></div>
         </main>
       </div>
     </>
@@ -246,11 +247,6 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ catego
 };
 
 export default Home;
-
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

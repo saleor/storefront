@@ -27717,6 +27717,35 @@ export type AvailableShippingMethodsQuery = {
   };
 };
 
+export type CategoriesQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars["String"]>;
+  perPage?: InputMaybe<Scalars["Int"]>;
+}>;
+
+export type CategoriesQuery = {
+  __typename?: "Query";
+  categories?: {
+    __typename?: "CategoryCountableConnection";
+    pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: "CategoryCountableEdge";
+      node: {
+        __typename?: "Category";
+        id: string;
+        name: string;
+        slug: string;
+        ancestors?: {
+          __typename?: "CategoryCountableConnection";
+          edges: Array<{
+            __typename?: "CategoryCountableEdge";
+            node: { __typename?: "Category"; id: string; name: string; slug: string };
+          }>;
+        } | null;
+      };
+    }>;
+  } | null;
+};
+
 export type CategoryBySlugQueryVariables = Exact<{
   slug: Scalars["String"];
   locale: LanguageCodeEnum;
@@ -30280,6 +30309,74 @@ export type AvailableShippingMethodsLazyQueryHookResult = ReturnType<
 export type AvailableShippingMethodsQueryResult = Apollo.QueryResult<
   AvailableShippingMethodsQuery,
   AvailableShippingMethodsQueryVariables
+>;
+export const CategoriesQueryDocument = gql`
+  query CategoriesQuery($cursor: String, $perPage: Int) {
+    categories(after: $cursor, first: $perPage) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          name
+          slug
+          ancestors(first: $perPage) {
+            edges {
+              node {
+                id
+                name
+                slug
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useCategoriesQuery(
+  baseOptions?: Apollo.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<CategoriesQuery, CategoriesQueryVariables>(
+    CategoriesQueryDocument,
+    options
+  );
+}
+export function useCategoriesQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(
+    CategoriesQueryDocument,
+    options
+  );
+}
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesQueryLazyQueryHookResult = ReturnType<typeof useCategoriesQueryLazyQuery>;
+export type CategoriesQueryQueryResult = Apollo.QueryResult<
+  CategoriesQuery,
+  CategoriesQueryVariables
 >;
 export const CategoryBySlugDocument = gql`
   query CategoryBySlug($slug: String!, $locale: LanguageCodeEnum!) {
