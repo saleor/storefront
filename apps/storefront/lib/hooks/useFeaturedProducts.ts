@@ -16,7 +16,7 @@ export const useFeaturedProducts = () => {
   }
 
   const featuredProducts = {
-    products: data?.collection?.products?.edges?.map((edge) => edge.node) || [],
+    products: data?.collection?.products?.edges?.map((edge: any) => edge.node) || [],
     name: data?.collection?.name,
     backgroundImage: data?.collection?.backgroundImage,
   };

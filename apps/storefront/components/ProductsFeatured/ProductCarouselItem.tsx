@@ -1,9 +1,14 @@
 import usePaths from "@/lib/paths";
+import { ProductDetailsFragment } from "@/saleor/api";
 import { PhotographIcon } from "@heroicons/react/outline";
 import Image from "next/image";
 import Link from "next/link";
 
-const ProductCarouselItem: React.FC<ProductListItemProps> = ({ product }) => {
+interface ProductCarouselItemProps {
+  product: ProductDetailsFragment;
+}
+
+const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) => {
   const paths = usePaths();
   const { category } = product;
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
@@ -19,7 +24,7 @@ const ProductCarouselItem: React.FC<ProductListItemProps> = ({ product }) => {
         <div className="text-center md:flex md:justify-center md:flex-col md:items-center">
           <div className="flex h-[350px] md:h-[210px]">
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} width={512} height={512} />
+              <Image src={thumbnailUrl} width={512} height={512} alt="" />
             ) : (
               <div className="grid place-items-center h-full w-full">
                 <PhotographIcon className="h-10 w-10" />

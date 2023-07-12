@@ -7,7 +7,7 @@ export const useCategories = () => {
   });
 
   if (error) {
-    console.error("Error loading collections:", error);
+    console.error("Error loading categories:", error);
     return { categories: null, loading, error };
   }
 

@@ -9,8 +9,7 @@ import ProductsFeatured from "@/components/ProductsFeatured/ProductsFeatured";
 import { useShopInformation } from "@/lib/hooks/useShopInformation";
 import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
 import { useCollections } from "@/lib/hooks/useCollections";
-import { rootCategoryPaths } from "@/lib/ssr/category";
-import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
+import { STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
@@ -44,8 +43,8 @@ const Home = () => {
 
   const rootCategories = categories?.edges
     ? categories.edges
-        .filter((edge) => edge.node.ancestors?.edges.length === 0)
-        .map((edge) => edge.node)
+        .filter((edge: any) => edge.node.ancestors?.edges.length === 0)
+        .map((edge: any) => edge.node)
     : [];
 
   const hasCategories = rootCategories?.length > 0;
@@ -56,7 +55,7 @@ const Home = () => {
     STOREFRONT_NAME === "FASHION4YOU" ? rootCategories?.slice(0, -2) : rootCategories?.slice(0, -2);
 
   const renderCategoryImage = (slug: string) => {
-    const ImageSrc = CATEGORY_IMAGES[slug];
+    const ImageSrc = CATEGORY_IMAGES[slug as keyof typeof CATEGORY_IMAGES];
     return <Image src={ImageSrc} alt={slug} className="object-cover w-full h-auto" />;
   };
   return (
@@ -64,46 +63,44 @@ const Home = () => {
       <BaseSeo />
       <div className="py-10">
         <main>
-          <div className="container">
-            <div
-              className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] bg-neutral-50 py-24 px-6 text-center dark:bg-neutral-500"
-              style={
-                featuredProducts?.backgroundImage
-                  ? {
-                      backgroundImage: `url(${featuredProducts.backgroundImage?.url})`,
-                    }
-                  : {
-                      backgroundImage: `url(${DEFAULT_HERO})`,
-                    }
-              }
-            >
-              <div className="overflow-hidden mb-5">
-                <div>
-                  <h1 className="mb-4 font-bold text-white text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
-                    Sklep {STOREFRONT_NAME}
-                  </h1>
-                </div>
-                <div>
-                  <p className="text-white text-base md:text-lg max-w-[846px]">
-                    {shop?.description}
-                  </p>
-                </div>
+          <div
+            className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] bg-neutral-50 py-24 px-6 text-center dark:bg-neutral-500"
+            style={
+              featuredProducts?.backgroundImage
+                ? {
+                    backgroundImage: `url(${featuredProducts.backgroundImage?.url as string})`,
+                  }
+                : {
+                    backgroundImage: `url(${DEFAULT_HERO})`,
+                  }
+            }
+          >
+            <div className="overflow-hidden mb-5">
+              <div>
+                <h1 className="mb-4 font-bold text-white text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
+                  Sklep {STOREFRONT_NAME}
+                </h1>
               </div>
-              <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
-                <a className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand">
-                  Aktualności
-                </a>
-                <a className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0">
-                  Promocje
-                </a>
+              <div>
+                <p className="text-white text-base md:text-lg max-w-[846px]">{shop?.description}</p>
               </div>
             </div>
+            <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
+              <a className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand">
+                Aktualności
+              </a>
+              <a className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0">
+                Promocje
+              </a>
+            </div>
+          </div>
+          <div className="container">
             <AdvantagesBlock />
             {hasCategories && (
               <section className="mt-64">
                 <div className="container px-4 sm:px-0">
-                  <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
-                    Szukasz konkretnych <span className="text-brand">produktów? </span>
+                  <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
+                    Szukasz konkretnych <span className="text-brand">produktów? </span> <br />
                     Nasze kategorie ułatwią Ci zadanie!
                   </h2>
                   <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
@@ -112,18 +109,18 @@ const Home = () => {
                 </div>
                 <div className="container px-4 sm:px-0">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-                    {visibleCategories.map((category) => {
+                    {visibleCategories.map((category: any) => {
                       return (
                         <div
                           key={category.id}
                           className="relative text-center flex flex-col items-center justify-center mt-0 gap-x-1.5 gap-y-1.5"
                         >
-                          <div className="home-page__categories__text-image">
-                            {renderCategoryImage(category.slug)}
+                          <div className="home-page__categories__text-image w-full">
+                            {renderCategoryImage(category.slug as string)}
                             <div className="absolute top-1/2 left-1/2 flex items-center transform -translate-x-1/2 -translate-y-1/2">
                               <Link
-                                href={paths.category._slug(category?.slug).$url()}
-                                className="whitespace-nowrap text-center bg-white text-black py-4 px-16 sm:py-6 sm:px-12 lg:py-8 lg:px-16 inline-block shadow-2xl text-2xl sm:text-3xl lg:text-4xl pt-0.3"
+                                href={paths.category._slug(category?.slug as string).$url()}
+                                className="whitespace-nowrap text-center bg-white text-black py-2 px-16 sm:py-6 sm:px-12 lg:py-4 lg:px-16 inline-block shadow-2xl text-2xl sm:text-3xl lg:text-4xl pt-0.3 transform hover:scale-110 transition-transform duration-300"
                                 style={{
                                   boxShadow: "rgb(255, 255, 255) 0px -3.25em 0px 0px inset",
                                 }}
@@ -141,10 +138,10 @@ const Home = () => {
             )}
             <ProductsFeatured products={featuredProducts?.products} />
             {hasCollections && (
-              <div className="mt-32">
+              <div className="mt-8">
                 <div className="container">
                   <div className="flex flex-col items-center my-auto pb-4">
-                    <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
+                    <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
                       Nasze najnowsze trendy - zobacz popularne kolekcje
                     </h2>
                     <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[768px]">
@@ -153,7 +150,7 @@ const Home = () => {
                     </p>
                   </div>
                   <div className="flex flex-col px-8 justify-center mt-13 lg:grid lg:grid-cols-2 lg:gap-12 lg:px-0">
-                    {collections?.edges?.map(({ node: collection }) => {
+                    {collections?.edges?.map(({ node: collection }: any) => {
                       return collection.name === "O nas" ? (
                         <></>
                       ) : (
@@ -162,7 +159,7 @@ const Home = () => {
                           className="lg:w-full hover:cursor-pointer mb-8 lg:mb-0"
                         >
                           <Link
-                            href={paths.collection._slug(collection?.slug).$url()}
+                            href={paths.collection._slug(collection?.slug as string).$url()}
                             key={collection.id}
                           >
                             <div className="relative bg-cover bg-center w-full flex flex-wrap items-center">
@@ -171,7 +168,9 @@ const Home = () => {
                                 style={
                                   collection.backgroundImage
                                     ? {
-                                        backgroundImage: `url(${collection.backgroundImage?.url})`,
+                                        backgroundImage: `url(${
+                                          collection.backgroundImage?.url as string
+                                        })`,
                                       }
                                     : {
                                         backgroundImage: `url(${DEFAULT_HERO})`,
@@ -201,7 +200,7 @@ const Home = () => {
                   </p>
                 </div>
                 <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 mt-8 md:flex-row md:items-start md:justify-center md:gap-10">
-                  {news?.slice(0, 3).map(({ node: newsElem }) => {
+                  {news?.slice(0, 3).map(({ node: newsElem }: any) => {
                     // const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split(
                     //   "/"
                     // );
@@ -212,7 +211,7 @@ const Home = () => {
                     // const newsUrl = slug;
 
                     const contentStringify = JSON.parse(
-                      newsElem?.content
+                      newsElem?.content as string
                     ).blocks[0].data.text.replace(/^(.{128}[^\s]*).*/, "$1");
 
                     return (
