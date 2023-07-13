@@ -13,6 +13,7 @@ import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
 import { useRegions } from "../RegionsProvider";
 import styles from "./Footer.module.css";
 import { STOREFRONT_NAME } from "@/lib/const";
+import { NavLink } from "../NavLink";
 
 export type FooterProps = HTMLAttributes<HTMLElement>;
 
@@ -20,20 +21,6 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 // This is a workaround to make the links work.
 // @todo remove this when the issue is fixed.
 const fixMenuItemLocalhostUrl = (url: string) => url.replace(/^https?:\/\/localhost:8000\//, "/");
-
-const getFooterItems = (shopName, itemName, itemChildren) => {
-  if (shopName === "FASHION4YOU") {
-    if (itemName === "Kategorie") {
-      return itemChildren.slice(0, -1);
-    }
-    if (itemName === "Kolekcje") {
-      return itemChildren.filter((subItem) => !subItem.name.includes("c4u"));
-    }
-  } else if (shopName === "CLOTHES4U" && itemName === "Kolekcje") {
-    return itemChildren.filter((subItem) => subItem.name !== "Polecane produkty");
-  }
-  return itemChildren;
-};
 
 export function Footer({ className, ...rest }: FooterProps) {
   const shopName = STOREFRONT_NAME;
@@ -83,35 +70,81 @@ export function Footer({ className, ...rest }: FooterProps) {
                   </Link>
                 )}
                 <ul className={styles.menu}>
-                  {getFooterItems(shopName, item?.name, item?.children)?.map((sub) => (
-                    <li key={sub?.id}>
-                      {sub?.url ? (
-                        <a
-                          href={fixMenuItemLocalhostUrl(sub.url)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={styles["menu-link"]}
-                          data-testid={`footerExternalLinks${sub?.name}`}
-                        >
-                          {sub?.name}
-                        </a>
-                      ) : (
-                        <Link
-                          href={getLinkPath(sub, currentChannel.slug, currentLocale)}
-                          passHref
-                          legacyBehavior
-                        >
-                          <a
-                            href="pass"
-                            className={styles["menu-link"]}
-                            data-testid={`footerInternalLinks${sub?.name}`}
-                          >
-                            {sub?.name}
-                          </a>
-                        </Link>
-                      )}
-                    </li>
-                  ))}
+                  {shopName === "FASHION4YOU"
+                    ? item.name === "Kategorie"
+                      ? item.children.slice(0, -1).map((subItem) => (
+                          <li key={subItem?.id}>
+                            <NavLink
+                              item={subItem}
+                              className={styles["menu-link"]}
+                              data-testid={`footerInternalLinks${subItem?.name}`}
+                            />
+                          </li>
+                        ))
+                      : item.name === "Kolekcje"
+                      ? item.children.map((subItem) =>
+                          subItem.name.includes("c4u") ? null : (
+                            <li key={subItem?.id}>
+                              <NavLink
+                                item={subItem}
+                                className={styles["menu-link"]}
+                                data-testid={`footerInternalLinks${subItem?.name}`}
+                              />
+                            </li>
+                          )
+                        )
+                      : item.children.map((subItem) => (
+                          <li key={subItem?.id}>
+                            <NavLink
+                              item={subItem}
+                              className={styles["menu-link"]}
+                              data-testid={`footerInternalLinks${subItem?.name}`}
+                            />
+                          </li>
+                        ))
+                    : shopName === "CLOTHES4U"
+                    ? item.name === "Kategorie"
+                      ? item.children.map((subItem) => (
+                          <li key={subItem?.id}>
+                            <NavLink
+                              item={subItem}
+                              className={styles["menu-link"]}
+                              data-testid={`footerInternalLinks${subItem?.name}`}
+                            />
+                          </li>
+                        ))
+                      : item.name === "Kolekcje"
+                      ? item.children.map((subItem) =>
+                          subItem.name === "Polecane produkty" ? null : (
+                            <li key={subItem?.id}>
+                              <NavLink
+                                item={subItem}
+                                className={styles["menu-link"]}
+                                data-testid={`footerInternalLinks${subItem?.name}`}
+                              />
+                            </li>
+                          )
+                        )
+                      : item.children.map((subItem) => (
+                          <li key={subItem?.id}>
+                            <NavLink
+                              item={subItem}
+                              className={styles["menu-link"]}
+                              data-testid={`footerInternalLinks${subItem?.name}`}
+                            />
+                          </li>
+                        ))
+                    : item.children.map((subItem) => (
+                        <p key={subItem.id}>
+                          <li key={subItem?.id}>
+                            <NavLink
+                              item={subItem}
+                              className={styles["menu-link"]}
+                              data-testid={`footerInternalLinks${subItem?.name}`}
+                            />
+                          </li>
+                        </p>
+                      ))}
                 </ul>
               </div>
             ))}
@@ -130,5 +163,3 @@ export function Footer({ className, ...rest }: FooterProps) {
     </footer>
   );
 }
-
-export default Footer;

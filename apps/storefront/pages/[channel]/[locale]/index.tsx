@@ -9,7 +9,7 @@ import ProductsFeatured from "@/components/ProductsFeatured/ProductsFeatured";
 import { useShopInformation } from "@/lib/hooks/useShopInformation";
 import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
 import { useCollections } from "@/lib/hooks/useCollections";
-import { STOREFRONT_NAME } from "@/lib/const";
+import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
@@ -138,10 +138,10 @@ const Home = () => {
             )}
             <ProductsFeatured products={featuredProducts?.products} />
             {hasCollections && (
-              <div className="mt-8">
+              <div className="mt-64">
                 <div className="container">
                   <div className="flex flex-col items-center my-auto pb-4">
-                    <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
+                    <h2 className="text-center font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
                       Nasze najnowsze trendy - zobacz popularne kolekcje
                     </h2>
                     <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[768px]">
@@ -199,16 +199,14 @@ const Home = () => {
                     Poznaj świat mody i stylu dzięki naszym najnowszym treściom i aktualizacjom
                   </p>
                 </div>
-                <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 mt-8 md:flex-row md:items-start md:justify-center md:gap-10">
+                <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
                   {news?.slice(0, 3).map(({ node: newsElem }: any) => {
-                    // const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split(
-                    //   "/"
-                    // );
-                    // const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
-                    //   url[url.length - 1]
-                    // }`;
-                    // const { slug } = newsElem;
-                    // const newsUrl = slug;
+                    const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split(
+                      "/"
+                    );
+                    const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
+                      url[url.length - 1]
+                    }`;
 
                     const contentStringify = JSON.parse(
                       newsElem?.content as string
@@ -217,18 +215,18 @@ const Home = () => {
                     return (
                       <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
                         <Image
-                          src={newsElem?.backgroundImage?.url}
+                          src={correctedUrl}
                           alt=""
                           className="w-full h-80 object-cover rounded-lg"
                           width={500}
                           height={500}
                         />
-                        <a
-                          href="localhost:3000"
+                        <Link
+                          href={paths.page._slug(newsElem?.slug as string).$url()}
                           className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
                         >
                           {newsElem?.title}
-                        </a>
+                        </Link>
                         <p className="text-base text-gray-700 break-words">
                           {contentStringify} [...]
                         </p>
