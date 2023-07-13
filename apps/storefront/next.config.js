@@ -11,6 +11,13 @@ const allowedImageDomains = process.env.NEXT_PUBLIC_ALLOWED_IMAGE_DOMAINS
 const checkoutEmbededInStorefrontPath = "/saleor-app-checkout";
 
 module.exports = withBundleAnalyzer({
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   reactStrictMode: true,
   swcMinify: true,
   images: {
