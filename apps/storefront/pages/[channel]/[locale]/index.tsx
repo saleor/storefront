@@ -9,7 +9,7 @@ import ProductsFeatured from "@/components/ProductsFeatured/ProductsFeatured";
 import { useShopInformation } from "@/lib/hooks/useShopInformation";
 import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
 import { useCollections } from "@/lib/hooks/useCollections";
-import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
+import { AWS_MEDIA_BUCKET, CHANNEL_SLUG, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
@@ -21,6 +21,29 @@ import KidCategory from "../../../images/homepage/kid-category.jpg";
 import { useNews } from "@/lib/hooks/useNews";
 import { useCategories } from "@/lib/hooks/useCategories";
 import usePaths from "@/lib/paths";
+import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import {
+  CategoriesQuery,
+  CategoriesQueryDocument,
+  CategoriesQueryVariables,
+  CollectionsQuery,
+  CollectionsQueryDocument,
+  CollectionsQueryVariables,
+  FeaturedProductsQuery,
+  FeaturedProductsQueryDocument,
+  FeaturedProductsQueryVariables,
+  NewsIdQuery,
+  NewsIdQueryDocument,
+  NewsIdQueryVariables,
+  NewsQuery,
+  NewsQueryDocument,
+  NewsQueryVariables,
+  ShopInformationQuery,
+  ShopInformationQueryDocument,
+  ShopInformationQueryVariables,
+} from "@/saleor/api";
+import { ApolloQueryResult } from "@apollo/client";
+import { serverApolloClient } from "@/lib/ssr/common";
 
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -31,12 +54,84 @@ const CATEGORY_IMAGES = {
   dziecko: KidCategory,
 };
 
-const Home = () => {
-  const { featuredProducts } = useFeaturedProducts();
-  const { shop } = useShopInformation();
-  const { news } = useNews();
-  const { collections } = useCollections();
-  const { categories } = useCategories();
+export const getStaticProps = async (context: GetStaticPropsContext) => {
+  const featuredProductsBranding =
+    process.env.STOREFRONT_NAME === "CLOTHES4U" ? "polecane-produkty-c4u" : "polecane-produkty";
+
+  const newsIdDataResult: ApolloQueryResult<NewsIdQuery> = await serverApolloClient.query<
+    NewsIdQuery,
+    NewsIdQueryVariables
+  >({
+    query: NewsIdQueryDocument,
+  });
+
+  const newsId = newsIdDataResult?.data?.pageTypes?.edges[0]?.node?.id;
+
+  const shopInfoResult: ApolloQueryResult<ShopInformationQuery> = await serverApolloClient.query<
+    ShopInformationQuery,
+    ShopInformationQueryVariables
+  >({
+    query: ShopInformationQueryDocument,
+  });
+
+  let newsResult;
+  if (newsId && CHANNEL_SLUG) {
+    newsResult = await serverApolloClient.query<NewsQuery, NewsQueryVariables>({
+      query: NewsQueryDocument,
+      variables: { id: newsId, channelSlug: CHANNEL_SLUG },
+    });
+  } else {
+    console.error("News or channel is undefined");
+  }
+
+  const collectionsResult: ApolloQueryResult<CollectionsQuery> = await serverApolloClient.query<
+    CollectionsQuery,
+    CollectionsQueryVariables
+  >({
+    query: CollectionsQueryDocument,
+    variables: { perPage: 5, channel: CHANNEL_SLUG },
+  });
+
+  const categoriesResult: ApolloQueryResult<CategoriesQuery> = await serverApolloClient.query<
+    CategoriesQuery,
+    CategoriesQueryVariables
+  >({
+    query: CategoriesQueryDocument,
+    variables: { perPage: 100 },
+  });
+
+  const featuredProductsResult: ApolloQueryResult<FeaturedProductsQuery> =
+    await serverApolloClient.query<FeaturedProductsQuery, FeaturedProductsQueryVariables>({
+      query: FeaturedProductsQueryDocument,
+      variables: { slug: featuredProductsBranding, channel: CHANNEL_SLUG },
+    });
+
+  const featuredProductsData = {
+    products:
+      featuredProductsResult.data?.collection?.products?.edges?.map((edge: any) => edge.node) || [],
+    name: featuredProductsResult.data?.collection?.name,
+    backgroundImage: featuredProductsResult.data?.collection?.backgroundImage,
+  };
+
+  return {
+    props: {
+      shop: shopInfoResult?.data?.shop,
+      featuredProducts: featuredProductsData,
+      news: newsResult?.data?.pages,
+      categories: categoriesResult?.data?.categories,
+      collections: collectionsResult?.data.collections,
+    },
+    revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
+  };
+};
+
+function Home({
+  shop,
+  featuredProducts,
+  news,
+  categories,
+  collections,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
 
   const t = useIntl();
@@ -68,7 +163,7 @@ const Home = () => {
             style={
               featuredProducts?.backgroundImage
                 ? {
-                    backgroundImage: `url(${featuredProducts.backgroundImage?.url as string})`,
+                    backgroundImage: `url(${featuredProducts.backgroundImage?.url})`,
                   }
                 : {
                     backgroundImage: `url(${DEFAULT_HERO})`,
@@ -241,9 +336,14 @@ const Home = () => {
       </div>
     </>
   );
-};
+}
 
 export default Home;
+
+export const getStaticPaths: GetStaticPaths = () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
