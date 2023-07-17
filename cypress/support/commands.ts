@@ -88,10 +88,12 @@ Cypress.Commands.add("sendRequestWithQuery", (query, authorization = "auth", var
     }
   });
 });
-
 Cypress.Commands.add(
   "loginUserViaRequest",
-  (authorization = "saleor_auth_module_refresh_token", user = TEST_USER) => {
+  (
+    authorization = Cypress.env("API_URL") + "+saleor_auth_module_refresh_token",
+    user = TEST_USER
+  ) => {
     const mutation = `mutation TokenAuth{
     tokenCreate(email: "${user.email}", password: "${user.password}") {
       token
@@ -109,7 +111,6 @@ Cypress.Commands.add(
     }
   }`;
     return cy.sendRequestWithQuery(mutation).then((resp) => {
-      window.localStorage.setItem("_saleorCSRFToken", resp.body.data.tokenCreate.csrfToken);
       window.localStorage.setItem(authorization, resp.body.data.tokenCreate.refreshToken);
     });
   }

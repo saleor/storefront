@@ -31,7 +31,9 @@ describe("Buy product as existing user", () => {
     cy.get(NAVIGATION.cartIcon)
       .click()
       .wait("@user")
-      .wait("@checkoutShippingAddressUpdate")
+      .its("response.body.data.user")
+      .should("not.be.null");
+    cy.wait("@checkoutShippingAddressUpdate")
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.billingAddress")
       .should("not.be.null")
@@ -57,7 +59,11 @@ describe("Buy product as existing user", () => {
       .addAliasToGraphRequest("checkoutBillingAddressUpdate");
     openProductPage(product);
     addItemToCart();
-    cy.get(NAVIGATION.cartIcon).click().wait("@user");
+    cy.get(NAVIGATION.cartIcon)
+      .click()
+      .wait("@user")
+      .its("response.body.data.user")
+      .should("not.be.null");
     cy.get(CHECKOUT_ELEMENTS.deliveryMethods)
       .should("not.exist")
       .wait("@checkoutBillingAddressUpdate")
