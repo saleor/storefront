@@ -109,15 +109,15 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   const featuredProductsData = {
     products:
       featuredProductsResult.data?.collection?.products?.edges?.map((edge: any) => edge.node) || [],
-    name: featuredProductsResult.data?.collection?.name,
-    backgroundImage: featuredProductsResult.data?.collection?.backgroundImage,
+    name: featuredProductsResult.data?.collection?.name || null,
+    backgroundImage: featuredProductsResult.data?.collection?.backgroundImage || null,
   };
 
   return {
     props: {
       shop: shopInfoResult?.data?.shop,
       featuredProducts: featuredProductsData,
-      news: newsResult?.data?.pages,
+      news: newsResult?.data?.pages?.edges,
       categories: categoriesResult?.data?.categories,
       collections: collectionsResult?.data.collections,
     },
