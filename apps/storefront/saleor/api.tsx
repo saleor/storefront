@@ -28506,7 +28506,6 @@ export type ProductBySlugQueryVariables = Exact<{
   slug: Scalars["String"]["input"];
   channel: Scalars["String"]["input"];
   locale: LanguageCodeEnum;
-  perPage?: InputMaybe<Scalars["Int"]["input"]>;
 }>;
 
 export type ProductBySlugQuery = {
@@ -31639,12 +31638,7 @@ export type PagePathsQueryHookResult = ReturnType<typeof usePagePathsQuery>;
 export type PagePathsLazyQueryHookResult = ReturnType<typeof usePagePathsLazyQuery>;
 export type PagePathsQueryResult = Apollo.QueryResult<PagePathsQuery, PagePathsQueryVariables>;
 export const ProductBySlugDocument = gql`
-  query ProductBySlug(
-    $slug: String!
-    $channel: String!
-    $locale: LanguageCodeEnum!
-    $perPage: Int
-  ) {
+  query ProductBySlug($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
     product(slug: $slug, channel: $channel) {
       ...ProductDetailsFragment
     }
@@ -31667,7 +31661,6 @@ export const ProductBySlugDocument = gql`
  *      slug: // value for 'slug'
  *      channel: // value for 'channel'
  *      locale: // value for 'locale'
- *      perPage: // value for 'perPage'
  *   },
  * });
  */
