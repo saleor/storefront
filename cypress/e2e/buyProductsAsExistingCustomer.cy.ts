@@ -4,10 +4,18 @@ import { SHARED_ELEMENTS } from "../elements/shared-elements";
 import { productsToSearch } from "../fixtures/search";
 import { addItemToCart, openProductPage } from "../support/pages/product-page";
 import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
-import { payByDummyPayment } from "../support/pages/checkout-page";
+import { payByAdyenPayment } from "../support/pages/checkout-page";
 import { checkIfOrderNumberAndPaymentStatusAreCorrect } from "../support/pages/order-confirmation-page";
 
 describe("Buy product as existing user", () => {
+  let paymentDetails;
+
+  before(() => {
+    cy.fixture("payment-details").then(({ adyenCard }) => {
+      paymentDetails = adyenCard;
+    });
+  });
+
   beforeEach(() => {
     cy.clearLocalStorage().loginUserViaRequest().visit("/");
     waitForProgressBarToNotBeVisible();
@@ -17,16 +25,15 @@ describe("Buy product as existing user", () => {
     cy.addAliasToGraphRequest("user")
       .addAliasToGraphRequest("checkoutShippingAddressUpdate")
       .addAliasToGraphRequest("checkoutBillingAddressUpdate")
-      .addAliasToGraphRequest("checkoutDeliveryMethodUpdate")
-      .get(SHARED_ELEMENTS.productsList)
-      .children()
-      .first()
-      .click();
+      .addAliasToGraphRequest("checkoutDeliveryMethodUpdate");
+    cy.get(SHARED_ELEMENTS.productsList).children().first().click();
     addItemToCart();
     cy.get(NAVIGATION.cartIcon)
       .click()
       .wait("@user")
-      .wait("@checkoutShippingAddressUpdate")
+      .its("response.body.data.user")
+      .should("not.be.null");
+    cy.wait("@checkoutShippingAddressUpdate")
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.billingAddress")
       .should("not.be.null")
@@ -40,7 +47,7 @@ describe("Buy product as existing user", () => {
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 
@@ -52,7 +59,11 @@ describe("Buy product as existing user", () => {
       .addAliasToGraphRequest("checkoutBillingAddressUpdate");
     openProductPage(product);
     addItemToCart();
-    cy.get(NAVIGATION.cartIcon).click().wait("@user");
+    cy.get(NAVIGATION.cartIcon)
+      .click()
+      .wait("@user")
+      .its("response.body.data.user")
+      .should("not.be.null");
     cy.get(CHECKOUT_ELEMENTS.deliveryMethods)
       .should("not.exist")
       .wait("@checkoutBillingAddressUpdate")
@@ -60,7 +71,7 @@ describe("Buy product as existing user", () => {
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 });

@@ -4,15 +4,19 @@ import { SHARED_ELEMENTS } from "../elements/shared-elements";
 import { productsToSearch } from "../fixtures/search";
 import { addItemToCart, openProductPage } from "../support/pages/product-page";
 import { waitForProgressBarToNotBeVisible } from "../support/shared-operations";
-import { payByDummyPayment } from "../support/pages/checkout-page";
+import { payByAdyenPayment } from "../support/pages/checkout-page";
 import { checkIfOrderNumberAndPaymentStatusAreCorrect } from "../support/pages/order-confirmation-page";
 
 describe("Buy product as anonymous user", () => {
   let address;
+  let paymentDetails;
 
   before(() => {
     cy.fixture("addresses").then(({ usAddress }) => {
       address = usAddress;
+    });
+    cy.fixture("payment-details").then(({ adyenCard }) => {
+      paymentDetails = adyenCard;
     });
   });
 
@@ -38,6 +42,7 @@ describe("Buy product as anonymous user", () => {
       .type("user@examle.com")
       .wait("@checkoutEmailUpdate")
       .fillUpBasicAddress(address)
+      .clickOutside()
       .wait("@checkoutShippingAddressUpdate")
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.billingAddress")
@@ -47,12 +52,13 @@ describe("Buy product as anonymous user", () => {
       .should("be.visible")
       .first()
       .click()
+      .clickOutside()
       .wait("@checkoutDeliveryMethodUpdate")
       .its("response.body.data.checkoutDeliveryMethodUpdate.checkout.totalPrice.gross.amount")
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 
@@ -71,12 +77,13 @@ describe("Buy product as anonymous user", () => {
       .type("user@examle.com")
       .wait("@checkoutEmailUpdate")
       .fillUpBasicAddress(address)
+      .clickOutside()
       .wait("@checkoutBillingAddressUpdate")
       .its("response.body.data.checkoutBillingAddressUpdate.checkout.totalPrice.gross.amount")
       .then((totalPrice) => {
         cy.get(CHECKOUT_ELEMENTS.totalOrderPrice).should("contain", totalPrice);
       });
-    payByDummyPayment();
+    payByAdyenPayment(paymentDetails);
     checkIfOrderNumberAndPaymentStatusAreCorrect();
   });
 });

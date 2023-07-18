@@ -6,7 +6,7 @@ on:
       environment:
         required: true
         description: "Environment to run tests against"
-        default: "https://react-storefront-e2e.vercel.app/"
+        default: "https://staging-demo.saleor.io/"
         type: choice
         options:
           - https://staging-demo.saleor.io/

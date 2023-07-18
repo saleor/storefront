@@ -1,0 +1,8 @@
+{
+  "adyenCard": {
+    "cardNumber": "4111 1111 4555 1142",
+    "expiryDate": "03/30",
+    "cvc": "737",
+    "nameOnCard": "John Smith"
+  }
+}
