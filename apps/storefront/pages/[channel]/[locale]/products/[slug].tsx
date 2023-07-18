@@ -1,19 +1,17 @@
 import { ApolloQueryResult } from "@apollo/client";
 import clsx from "clsx";
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Custom404 from "pages/404";
 import React, { ReactElement, useState } from "react";
 import { useIntl } from "react-intl";
 
-import { Layout, RichText, VariantSelector } from "@/components";
+import { Layout, VariantSelector } from "@/components";
 import { useRegions } from "@/components/RegionsProvider";
 import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
-import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { contextToRegionQuery } from "@/lib/regions";
@@ -28,6 +26,7 @@ import {
   useCreateCheckoutMutation,
 } from "@/saleor/api";
 import { serverApolloClient } from "@/lib/ssr/common";
+import { Tabs } from "@/components/Tabs/Tabs";
 
 export type OptionalQuery = {
   variant?: string;
@@ -68,7 +67,6 @@ export const getStaticProps = async (
 };
 function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
-  const paths = usePaths();
   const t = useIntl();
   const { currentChannel, formatPrice, query } = useRegions();
 
@@ -154,47 +152,28 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const isAddToCartButtonDisabled =
     !selectedVariant || selectedVariant?.quantityAvailable === 0 || loadingAddToCheckout;
 
-  const description = translate(product, "description");
-
   const price = product.pricing?.priceRange?.start?.gross;
   const shouldDisplayPrice = product.variants?.length === 1 && price;
 
   return (
     <>
       <ProductPageSeo product={product} />
-      <main
-        className={clsx(
-          "grid grid-cols-1 gap-[3rem] max-h-full overflow-auto md:overflow-hidden container pt-8 px-8 md:grid-cols-3"
-        )}
-      >
-        <div className="col-span-2">
+      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between">
+        <div className="col-span-2 lg:col-span-1 xl:col-span-2 md:w-2/3 lg:w-1/2 xl:w-2/3">
           <ProductGallery product={product} selectedVariant={selectedVariant} />
         </div>
-        <div className="space-y-5 mt-10 md:mt-0">
+        <div className="space-y-5 mt-10 md:mt-0 lg:col-span-1 xl:col-span-1 md:w-1/3 lg:w-1/2 xl:w-1/3">
           <div>
             <h1
-              className="text-4xl font-bold tracking-tight text-gray-800"
+              className="text-5xl font-bold tracking-tight text-gray-800"
               data-testid="productName"
             >
               {translate(product, "name")}
             </h1>
             {shouldDisplayPrice && (
-              <h2 className="text-xl font-bold tracking-tight text-gray-800">
+              <h2 className="mt-6 text-xl font-bold tracking-tight text-gray-800">
                 {formatPrice(price)}
               </h2>
-            )}
-            {!!product.category?.slug && (
-              <Link
-                href={paths.category._slug(product?.category?.slug).$url()}
-                passHref
-                legacyBehavior
-              >
-                <a>
-                  <p className="text-md mt-2 font-medium text-gray-600 cursor-pointer">
-                    {translate(product.category, "name")}
-                  </p>
-                </a>
-              </Link>
             )}
           </div>
 
@@ -205,7 +184,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             type="submit"
             disabled={isAddToCartButtonDisabled}
             className={clsx(
-              "w-full py-3 px-8 flex items-center justify-center text-base bg-action-1 text-white disabled:bg-disabled hover:bg-white border-2 border-transparent  focus:outline-none",
+              "mt-6 py-3 px-12 w-max rounded-lg flex items-center justify-center text-base bg-action-1 text-white disabled:bg-disabled hover:bg-white border-2 border-transparent  focus:outline-none",
               !isAddToCartButtonDisabled && "hover:border-action-1 hover:text-action-1"
             )}
             data-testid="addToCartButton"
@@ -216,28 +195,23 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           </button>
 
           {!selectedVariant && (
-            <p className="text-base text-yellow-600">
+            <p className="mt-6 text-base text-red-500">
               {t.formatMessage(messages.variantNotChosen)}
             </p>
           )}
 
           {selectedVariant?.quantityAvailable === 0 && (
-            <p className="text-base text-yellow-600" data-testid="soldOut">
+            <p className="mt-6 text-base text-red-500" data-testid="soldOut">
               {t.formatMessage(messages.soldOut)}
             </p>
           )}
 
           {!!addToCartError && <p>{addToCartError}</p>}
-
-          {description && (
-            <div className="space-y-6">
-              <RichText jsonStringData={description} />
-            </div>
-          )}
-
-          <AttributeDetails product={product} selectedVariant={selectedVariant} />
         </div>
       </main>
+      <div className="w-full break-words container mt-32">
+        <Tabs product={product} selectedVariant={selectedVariant} />
+      </div>
     </>
   );
 }

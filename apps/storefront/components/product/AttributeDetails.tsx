@@ -19,33 +19,28 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
   }
   return (
     <div>
-      <p className="text-lg mt-2 font-medium text-gray-500">
-        {t.formatMessage(messages.attributes)}
-      </p>
-      <div>
-        {attributes.map((attribute) => (
-          <div key={attribute.attribute.id} className="grid grid-cols-2">
-            <div>
-              <p className="text-base">{translate(attribute.attribute, "name")}</p>
-            </div>
-            <div>
-              {attribute.values.map((value, index) => {
-                if (!value) {
-                  return null;
-                }
-                return (
-                  <div key={value.id}>
-                    <p className="text-base">
-                      {translate(value, "name")}
-                      {attribute.values.length !== index + 1 && <div>{" | "}</div>}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
+      {attributes.map((attribute) => (
+        <div key={attribute.attribute.id} className="grid grid-cols-2">
+          <div>
+            <p className="text-3xl my-2">{translate(attribute.attribute, "name")}</p>
           </div>
-        ))}
-      </div>
+          <div>
+            {attribute.values.map((value, index) => {
+              if (!value) {
+                return null;
+              }
+              return (
+                <div key={value.id}>
+                  <p className="text-3xl my-2">
+                    {translate(value, "name")}
+                    {attribute.values.length !== index + 1 && <div>{" | "}</div>}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
