@@ -151,7 +151,9 @@ function Home({
 
   const renderCategoryImage = (slug: string) => {
     const ImageSrc = CATEGORY_IMAGES[slug as keyof typeof CATEGORY_IMAGES];
-    return <Image src={ImageSrc} alt={slug} className="object-cover w-full h-auto" />;
+    return (
+      <Image src={ImageSrc} alt={slug} loading="lazy" className="object-cover w-full h-auto" />
+    );
   };
   return (
     <>
@@ -315,6 +317,7 @@ function Home({
                           className="w-full h-80 object-cover rounded-lg"
                           width={500}
                           height={500}
+                          loading="lazy"
                         />
                         <Link
                           href={paths.page._slug(newsElem?.slug as string).$url()}
