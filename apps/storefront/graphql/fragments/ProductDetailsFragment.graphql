@@ -21,11 +21,22 @@ fragment ProductDetailsFragment on Product {
     ...ProductVariantDetailsFragment
   }
   pricing {
+    onSale
     priceRange {
       start {
-        gross {
-          ...PriceFragment
-        }
+        ...TaxedPriceFragment
+      }
+      stop {
+        ...TaxedPriceFragment
+      }
+    }
+    priceRangeUndiscounted {
+      start {
+        currency
+        ...TaxedPriceFragment
+      }
+      stop {
+        ...TaxedPriceFragment
       }
     }
   }

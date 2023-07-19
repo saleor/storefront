@@ -27,6 +27,9 @@ import {
 } from "@/saleor/api";
 import { serverApolloClient } from "@/lib/ssr/common";
 import { Tabs } from "@/components/Tabs/Tabs";
+import { TaxedMoney } from "@/components/TaxedMoney";
+import { DiscountInfo } from "@/components/DiscountInfo/DiscountInfo";
+import { salePercentage } from "@/components/ProductCard/ProductCard";
 
 export type OptionalQuery = {
   variant?: string;
@@ -155,6 +158,10 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const price = product.pricing?.priceRange?.start?.gross;
   const shouldDisplayPrice = product.variants?.length === 1 && price;
 
+  const isOnSale = product?.pricing?.onSale;
+
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;
+
   return (
     <>
       <ProductPageSeo product={product} />
@@ -163,18 +170,27 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           <ProductGallery product={product} selectedVariant={selectedVariant} />
         </div>
         <div className="space-y-5 mt-10 md:mt-0 lg:col-span-1 xl:col-span-1 md:w-1/3 lg:w-1/2 xl:w-1/3">
-          <div>
+          <div className="flex flex-col">
             <h1
               className="text-5xl font-bold tracking-tight text-gray-800"
               data-testid="productName"
             >
               {translate(product, "name")}
             </h1>
+          </div>
+          <div className="flex flex-row items-center gap-6 mt-6">
             {shouldDisplayPrice && (
-              <h2 className="mt-6 text-xl font-bold tracking-tight text-gray-800">
+              <h2 className="text-xl font-bold tracking-tight text-gray-800">
                 {formatPrice(price)}
               </h2>
             )}
+            <div className="flex flex-row gap-6 items-center">
+              <div className="line-through text-xl text-gray-400">
+                <TaxedMoney taxedMoney={undiscountedPrice} defaultValue="N/A" />
+              </div>
+
+              <DiscountInfo isOnSale={isOnSale} product={product} />
+            </div>
           </div>
 
           <VariantSelector product={product} selectedVariantID={selectedVariantID} />
@@ -184,8 +200,8 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             type="submit"
             disabled={isAddToCartButtonDisabled}
             className={clsx(
-              "mt-6 py-3 px-12 w-max rounded-lg flex items-center justify-center text-base bg-action-1 text-white disabled:bg-disabled hover:bg-white border-2 border-transparent  focus:outline-none",
-              !isAddToCartButtonDisabled && "hover:border-action-1 hover:text-action-1"
+              "mt-6 py-3 px-12 w-max rounded-lg flex items-center justify-center text-base bg-brand text-white disabled:border-gray-300 disabled:bg-gray-300 disabled:text-white hover:bg-white border-2 border-brand transition focus:outline-none",
+              !isAddToCartButtonDisabled && "hover:bg-brand hover:text-brand"
             )}
             data-testid="addToCartButton"
           >
@@ -206,7 +222,36 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
             </p>
           )}
 
-          {!!addToCartError && <p>{addToCartError}</p>}
+          {!!addToCartError && <p className="text-red-700 text-sm font-bold">{addToCartError}</p>}
+
+          <div className="bg-slate-100 w-full h-[1px]"></div>
+
+          <div className="mt-6 grid grid-cols-2">
+            <div className="text-base py-6 flex flex-row gap-3 items-center">
+              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
+                1
+              </div>
+              <p>Eco-Friendly</p>
+            </div>
+            <div className="text-base py-6 flex flex-row gap-3 items-center">
+              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
+                1
+              </div>
+              <p>Fast delivery</p>
+            </div>
+            <div className="text-base py-6 flex flex-row gap-3 items-center">
+              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
+                1
+              </div>
+              <p>14 days for returns</p>
+            </div>
+            <div className="text-base py-6 flex flex-row gap-3 items-center">
+              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
+                1
+              </div>
+              <p>Secure payment</p>
+            </div>
+          </div>
         </div>
       </main>
       <div className="w-full break-words container mt-32">

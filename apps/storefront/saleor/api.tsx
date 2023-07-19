@@ -26302,6 +26302,7 @@ export type ProductDetailsFragment = {
     __typename?: "ProductVariant";
     id: string;
     name: string;
+    sku?: string | null;
     quantityAvailable?: number | null;
     translation?: { __typename?: "ProductVariantTranslation"; id: string; name: string } | null;
     attributes: Array<{
@@ -26335,6 +26336,7 @@ export type ProductDetailsFragment = {
     }> | null;
     pricing?: {
       __typename?: "VariantPricingInfo";
+      onSale?: boolean | null;
       price?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
@@ -26343,11 +26345,32 @@ export type ProductDetailsFragment = {
   }> | null;
   pricing?: {
     __typename?: "ProductPricingInfo";
+    onSale?: boolean | null;
     priceRange?: {
       __typename?: "TaxedMoneyRange";
       start?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
+        net: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
+      stop?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+        net: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
+    } | null;
+    priceRangeUndiscounted?: {
+      __typename?: "TaxedMoneyRange";
+      start?: {
+        __typename?: "TaxedMoney";
+        currency: string;
+        gross: { __typename?: "Money"; currency: string; amount: number };
+        net: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
+      stop?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+        net: { __typename?: "Money"; currency: string; amount: number };
       } | null;
     } | null;
   } | null;
@@ -26371,6 +26394,7 @@ export type ProductVariantDetailsFragment = {
   __typename?: "ProductVariant";
   id: string;
   name: string;
+  sku?: string | null;
   quantityAvailable?: number | null;
   translation?: { __typename?: "ProductVariantTranslation"; id: string; name: string } | null;
   attributes: Array<{
@@ -26404,6 +26428,7 @@ export type ProductVariantDetailsFragment = {
   }> | null;
   pricing?: {
     __typename?: "VariantPricingInfo";
+    onSale?: boolean | null;
     price?: {
       __typename?: "TaxedMoney";
       gross: { __typename?: "Money"; currency: string; amount: number };
@@ -26433,6 +26458,12 @@ export type SelectedAttributeDetailsFragment = {
       richText?: string | null;
     } | null;
   }>;
+};
+
+export type TaxedPriceFragment = {
+  __typename?: "TaxedMoney";
+  gross: { __typename?: "Money"; currency: string; amount: number };
+  net: { __typename?: "Money"; currency: string; amount: number };
 };
 
 export type AddressDeleteMutationVariables = Exact<{
@@ -28559,6 +28590,7 @@ export type ProductBySlugQuery = {
       __typename?: "ProductVariant";
       id: string;
       name: string;
+      sku?: string | null;
       quantityAvailable?: number | null;
       translation?: { __typename?: "ProductVariantTranslation"; id: string; name: string } | null;
       attributes: Array<{
@@ -28592,6 +28624,7 @@ export type ProductBySlugQuery = {
       }> | null;
       pricing?: {
         __typename?: "VariantPricingInfo";
+        onSale?: boolean | null;
         price?: {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
@@ -28600,11 +28633,32 @@ export type ProductBySlugQuery = {
     }> | null;
     pricing?: {
       __typename?: "ProductPricingInfo";
+      onSale?: boolean | null;
       priceRange?: {
         __typename?: "TaxedMoneyRange";
         start?: {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
+          net: { __typename?: "Money"; currency: string; amount: number };
+        } | null;
+        stop?: {
+          __typename?: "TaxedMoney";
+          gross: { __typename?: "Money"; currency: string; amount: number };
+          net: { __typename?: "Money"; currency: string; amount: number };
+        } | null;
+      } | null;
+      priceRangeUndiscounted?: {
+        __typename?: "TaxedMoneyRange";
+        start?: {
+          __typename?: "TaxedMoney";
+          currency: string;
+          gross: { __typename?: "Money"; currency: string; amount: number };
+          net: { __typename?: "Money"; currency: string; amount: number };
+        } | null;
+        stop?: {
+          __typename?: "TaxedMoney";
+          gross: { __typename?: "Money"; currency: string; amount: number };
+          net: { __typename?: "Money"; currency: string; amount: number };
         } | null;
       } | null;
     } | null;
@@ -29311,6 +29365,7 @@ export const ProductVariantDetailsFragmentDoc = gql`
   fragment ProductVariantDetailsFragment on ProductVariant {
     id
     name
+    sku
     translation(languageCode: $locale) {
       id
       name
@@ -29323,6 +29378,7 @@ export const ProductVariantDetailsFragmentDoc = gql`
       ...ProductMediaFragment
     }
     pricing {
+      onSale
       price {
         gross {
           ...PriceFragment
@@ -29332,6 +29388,17 @@ export const ProductVariantDetailsFragmentDoc = gql`
   }
   ${SelectedAttributeDetailsFragmentDoc}
   ${ProductMediaFragmentDoc}
+  ${PriceFragmentDoc}
+`;
+export const TaxedPriceFragmentDoc = gql`
+  fragment TaxedPriceFragment on TaxedMoney {
+    gross {
+      ...PriceFragment
+    }
+    net {
+      ...PriceFragment
+    }
+  }
   ${PriceFragmentDoc}
 `;
 export const ProductDetailsFragmentDoc = gql`
@@ -29358,11 +29425,22 @@ export const ProductDetailsFragmentDoc = gql`
       ...ProductVariantDetailsFragment
     }
     pricing {
+      onSale
       priceRange {
         start {
-          gross {
-            ...PriceFragment
-          }
+          ...TaxedPriceFragment
+        }
+        stop {
+          ...TaxedPriceFragment
+        }
+      }
+      priceRangeUndiscounted {
+        start {
+          currency
+          ...TaxedPriceFragment
+        }
+        stop {
+          ...TaxedPriceFragment
         }
       }
     }
@@ -29379,7 +29457,7 @@ export const ProductDetailsFragmentDoc = gql`
   ${SelectedAttributeDetailsFragmentDoc}
   ${CategoryBasicFragmentDoc}
   ${ProductVariantDetailsFragmentDoc}
-  ${PriceFragmentDoc}
+  ${TaxedPriceFragmentDoc}
   ${ProductMediaFragmentDoc}
   ${ImageFragmentDoc}
 `;

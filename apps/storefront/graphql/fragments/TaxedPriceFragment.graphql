@@ -1,0 +1,8 @@
+fragment TaxedPriceFragment on TaxedMoney {
+  gross {
+    ...PriceFragment
+  }
+  net {
+    ...PriceFragment
+  }
+}

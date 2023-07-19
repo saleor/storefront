@@ -7,13 +7,13 @@ export const Tabs = ({ product, selectedVariant }) => {
   const description = translate(product, "description");
 
   const tabs = [
-    { name: "DESCRIPTION", content: <RichText jsonStringData={description} /> },
+    { name: "Opis", content: <RichText jsonStringData={description} /> },
     {
-      name: "ATTRIBUTES",
+      name: "Atrybuty",
       content: <AttributeDetails product={product} selectedVariant={selectedVariant} />,
     },
   ];
-  const [openTab, setOpenTab] = useState("DESCRIPTION");
+  const [openTab, setOpenTab] = useState("Opis");
 
   return (
     <>

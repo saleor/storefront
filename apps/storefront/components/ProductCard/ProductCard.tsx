@@ -6,6 +6,8 @@ import React from "react";
 import { usePaths } from "@/lib/paths";
 import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
+import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
+import { TaxedMoney } from "../TaxedMoney";
 
 export interface ProductCardProps {
   product: ProductCardFragment;
@@ -15,28 +17,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const paths = usePaths();
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
 
-  const price =
-    product.pricing && product.pricing.priceRange && product.pricing.priceRange.start
-      ? product.pricing.priceRange.start
-      : undefined;
-
-  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;
-
   const isOnSale = product.pricing?.onSale;
-
-  const salePercentage = (price: any, undiscountedPrice: any) => {
-    let salePercentageNumber = 0;
-    let discountPercent = 0;
-    if (price && undiscountedPrice) {
-      salePercentageNumber = (100 * price.net.amount) / undiscountedPrice.net.amount;
-      discountPercent = 100 - salePercentageNumber;
-      return (
-        <p className="absolute top-4 left-4 bg-red-600 px-4 py-2 text-white rounded-md text-md">
-          -{Math.round(discountPercent)}%
-        </p>
-      );
-    }
-  };
+  const price = product?.pricing?.priceRange?.start;
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;
 
   return (
     <li key={product.id} className="w-full">
@@ -55,16 +38,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 <PhotographIcon className="h-10 w-10 content-center" />
               </div>
             )}
-            {isOnSale
-              ? salePercentage(price, undiscountedPrice)
-              : product?.collections &&
-                product?.collections?.map((collection: any) =>
-                  collection.name === "Nowości" ? (
-                    <p className="absolute top-4 right-4 bg-green-600 px-4 py-2 text-white rounded-md text-md">
-                      Nowość!
-                    </p>
-                  ) : null
-                )}
+            <div className="absolute bg-red-600 left-4 top-4 text-white rounded-md text-md">
+              <DiscountInfo isOnSale={isOnSale} product={product} />
+            </div>
           </div>
           <p
             className="block mt-2 font-regular text-md text-main first-letter:uppercase lowercase"
@@ -72,13 +48,19 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             {product.name}
           </p>
-          <p
-            className="block mt-4 text font-semibold text-md text-main uppercase"
-            data-testid={`productName${product.name}`}
-          >
-            {product?.pricing?.priceRange?.start?.net?.amount}
-            {product?.pricing?.priceRange?.start?.net?.currency}
-          </p>
+          <div className="flex flex-row gap-3 items-center">
+            <p
+              className="block mt-4 text font-semibold text-md text-main uppercase"
+              data-testid={`productName${product.name}`}
+            >
+              <TaxedMoney taxedMoney={price} defaultValue="N/A" />
+            </p>
+            {isOnSale && (
+              <p className="block mt-4 text font-normal text-md uppercase line-through text-gray-400">
+                <TaxedMoney taxedMoney={undiscountedPrice} defaultValue="N/A" />
+              </p>
+            )}
+          </div>
         </a>
       </Link>
     </li>
