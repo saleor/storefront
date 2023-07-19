@@ -165,6 +165,15 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   return (
     <>
       <ProductPageSeo product={product} />
+      <div className="inline-flex container px-8">
+        <button
+          type="button"
+          onClick={() => history.back()}
+          className="mt-6 py-3 px-12 w-max rounded-lg text-base bg-brand text-white hover:text-brand hover:bg-white border-2 border-brand focus:outline-none transition"
+        >
+          Powrót
+        </button>
+      </div>
       <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between">
         <div className="col-span-2 lg:col-span-1 xl:col-span-2 md:w-2/3 lg:w-1/2 xl:w-2/3">
           <ProductGallery product={product} selectedVariant={selectedVariant} />
