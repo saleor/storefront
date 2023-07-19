@@ -49,6 +49,18 @@ module.exports = withBundleAnalyzer({
         source: "/checkout/(.*)",
         headers: [{ key: "x-frame-options", value: "ALLOWALL" }],
       },
+
+      {
+        source: "/graphql/(.*?)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate, max-age=0, s-maxage=0",
+          },
+          { key: "Expires", value: "0" },
+          { key: "Pragma", value: "no-cache" },
+        ],
+      },
     ];
   },
   async rewrites() {
