@@ -155,10 +155,16 @@ function Home({
               </div>
             </div>
             <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
-              <a className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand">
+              <a
+                href="#news"
+                className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand"
+              >
                 Aktualności
               </a>
-              <a className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0">
+              <a
+                href="#sales"
+                className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0"
+              >
                 Promocje
               </a>
             </div>
@@ -259,7 +265,7 @@ function Home({
               </div>
             )}
             {hasNews && (
-              <div className="container mt-32">
+              <div className="container pt-32" id="news">
                 <div className="flex flex-col items-center mx-auto">
                   <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
                     Nowe artykuły i najnowsze informacje

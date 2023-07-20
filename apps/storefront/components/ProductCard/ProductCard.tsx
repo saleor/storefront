@@ -4,10 +4,9 @@ import Link from "next/link";
 import React from "react";
 
 import { usePaths } from "@/lib/paths";
-import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
 import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
-import { TaxedMoney } from "../TaxedMoney";
+import { useRegions } from "../RegionsProvider";
 
 export interface ProductCardProps {
   product: ProductCardFragment;
@@ -15,11 +14,13 @@ export interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const paths = usePaths();
+  const { formatPrice } = useRegions();
+
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
 
   const isOnSale = product.pricing?.onSale;
-  const price = product?.pricing?.priceRange?.start;
-  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;
+  const price = product.pricing?.priceRange?.start?.gross;
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
 
   return (
     <li key={product.id} className="w-full">
@@ -53,11 +54,11 @@ export function ProductCard({ product }: ProductCardProps) {
               className="block mt-4 text font-semibold text-md text-main uppercase"
               data-testid={`productName${product.name}`}
             >
-              <TaxedMoney taxedMoney={price} defaultValue="N/A" />
+              {formatPrice(price)}
             </p>
             {isOnSale && (
               <p className="block mt-4 text font-normal text-md uppercase line-through text-gray-400">
-                <TaxedMoney taxedMoney={undiscountedPrice} defaultValue="N/A" />
+                {formatPrice(undiscountedPrice)}
               </p>
             )}
           </div>

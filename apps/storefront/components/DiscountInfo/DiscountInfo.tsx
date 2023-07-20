@@ -1,6 +1,5 @@
 import { ProductCardFragment } from "@/saleor/api";
 import React from "react";
-import { TaxedMoney } from "../TaxedMoney";
 
 interface DiscountInfoProps {
   product: ProductCardFragment;
@@ -16,7 +15,7 @@ export const DiscountInfo = ({ isOnSale, product }: DiscountInfoProps) => {
     let salePercentageNumber = 0;
     let discountPercent = 0;
     if (price && undiscountedPrice) {
-      salePercentageNumber = (100 * price.net.amount) / undiscountedPrice.net.amount;
+      salePercentageNumber = (100 * price.gross.amount) / undiscountedPrice.gross.amount;
       discountPercent = 100 - salePercentageNumber;
       return (
         <p className="bg-red-600 px-4 py-2 text-white rounded-md text-md">

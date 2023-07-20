@@ -26195,6 +26195,7 @@ export type ProductCardFragment = {
   id: string;
   slug: string;
   name: string;
+  productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
   translation?: { __typename?: "ProductTranslation"; id: string; name?: string | null } | null;
   thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
   category?: {
@@ -26351,26 +26352,21 @@ export type ProductDetailsFragment = {
       start?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
-        net: { __typename?: "Money"; currency: string; amount: number };
       } | null;
       stop?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
-        net: { __typename?: "Money"; currency: string; amount: number };
       } | null;
     } | null;
     priceRangeUndiscounted?: {
       __typename?: "TaxedMoneyRange";
       start?: {
         __typename?: "TaxedMoney";
-        currency: string;
         gross: { __typename?: "Money"; currency: string; amount: number };
-        net: { __typename?: "Money"; currency: string; amount: number };
       } | null;
       stop?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
-        net: { __typename?: "Money"; currency: string; amount: number };
       } | null;
     } | null;
   } | null;
@@ -26381,6 +26377,7 @@ export type ProductDetailsFragment = {
     type: ProductMediaType;
   }> | null;
   thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
+  productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
 };
 
 export type ProductMediaFragment = {
@@ -26458,12 +26455,6 @@ export type SelectedAttributeDetailsFragment = {
       richText?: string | null;
     } | null;
   }>;
-};
-
-export type TaxedPriceFragment = {
-  __typename?: "TaxedMoney";
-  gross: { __typename?: "Money"; currency: string; amount: number };
-  net: { __typename?: "Money"; currency: string; amount: number };
 };
 
 export type AddressDeleteMutationVariables = Exact<{
@@ -28639,26 +28630,21 @@ export type ProductBySlugQuery = {
         start?: {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
-          net: { __typename?: "Money"; currency: string; amount: number };
         } | null;
         stop?: {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
-          net: { __typename?: "Money"; currency: string; amount: number };
         } | null;
       } | null;
       priceRangeUndiscounted?: {
         __typename?: "TaxedMoneyRange";
         start?: {
           __typename?: "TaxedMoney";
-          currency: string;
           gross: { __typename?: "Money"; currency: string; amount: number };
-          net: { __typename?: "Money"; currency: string; amount: number };
         } | null;
         stop?: {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
-          net: { __typename?: "Money"; currency: string; amount: number };
         } | null;
       } | null;
     } | null;
@@ -28669,6 +28655,7 @@ export type ProductBySlugQuery = {
       type: ProductMediaType;
     }> | null;
     thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
+    productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
   } | null;
 };
 
@@ -28696,6 +28683,7 @@ export type ProductCollectionQuery = {
         id: string;
         slug: string;
         name: string;
+        productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
         translation?: {
           __typename?: "ProductTranslation";
           id: string;
@@ -29241,6 +29229,11 @@ export const ProductCardFragmentDoc = gql`
     id
     slug
     name
+    productType {
+      id
+      name
+      slug
+    }
     translation(languageCode: $locale) {
       id
       name
@@ -29306,29 +29299,26 @@ export const ProductCardFragmentDoc = gql`
         start {
           currency
           gross {
-            currency
-            amount
+            ...PriceFragment
           }
           net {
-            currency
-            amount
+            ...PriceFragment
           }
         }
         stop {
           currency
           gross {
-            currency
-            amount
+            ...PriceFragment
           }
           net {
-            currency
-            amount
+            ...PriceFragment
           }
         }
       }
     }
   }
   ${ImageFragmentDoc}
+  ${PriceFragmentDoc}
 `;
 export const SelectedAttributeDetailsFragmentDoc = gql`
   fragment SelectedAttributeDetailsFragment on SelectedAttribute {
@@ -29390,17 +29380,6 @@ export const ProductVariantDetailsFragmentDoc = gql`
   ${ProductMediaFragmentDoc}
   ${PriceFragmentDoc}
 `;
-export const TaxedPriceFragmentDoc = gql`
-  fragment TaxedPriceFragment on TaxedMoney {
-    gross {
-      ...PriceFragment
-    }
-    net {
-      ...PriceFragment
-    }
-  }
-  ${PriceFragmentDoc}
-`;
 export const ProductDetailsFragmentDoc = gql`
   fragment ProductDetailsFragment on Product {
     id
@@ -29428,19 +29407,26 @@ export const ProductDetailsFragmentDoc = gql`
       onSale
       priceRange {
         start {
-          ...TaxedPriceFragment
+          gross {
+            ...PriceFragment
+          }
         }
         stop {
-          ...TaxedPriceFragment
+          gross {
+            ...PriceFragment
+          }
         }
       }
       priceRangeUndiscounted {
         start {
-          currency
-          ...TaxedPriceFragment
+          gross {
+            ...PriceFragment
+          }
         }
         stop {
-          ...TaxedPriceFragment
+          gross {
+            ...PriceFragment
+          }
         }
       }
     }
@@ -29453,11 +29439,16 @@ export const ProductDetailsFragmentDoc = gql`
     category {
       name
     }
+    productType {
+      id
+      name
+      slug
+    }
   }
   ${SelectedAttributeDetailsFragmentDoc}
   ${CategoryBasicFragmentDoc}
   ${ProductVariantDetailsFragmentDoc}
-  ${TaxedPriceFragmentDoc}
+  ${PriceFragmentDoc}
   ${ProductMediaFragmentDoc}
   ${ImageFragmentDoc}
 `;

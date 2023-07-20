@@ -8,7 +8,6 @@ import { useIntl } from "react-intl";
 
 import { Layout, VariantSelector } from "@/components";
 import { useRegions } from "@/components/RegionsProvider";
-import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
@@ -27,9 +26,8 @@ import {
 } from "@/saleor/api";
 import { serverApolloClient } from "@/lib/ssr/common";
 import { Tabs } from "@/components/Tabs/Tabs";
-import { TaxedMoney } from "@/components/TaxedMoney";
 import { DiscountInfo } from "@/components/DiscountInfo/DiscountInfo";
-import { salePercentage } from "@/components/ProductCard/ProductCard";
+import { ProductInfoGrid } from "@/components/ProductInfoGrid/ProductInfoGrid";
 
 export type OptionalQuery = {
   variant?: string;
@@ -160,12 +158,12 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
 
   const isOnSale = product?.pricing?.onSale;
 
-  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
 
   return (
     <>
       <ProductPageSeo product={product} />
-      <div className="inline-flex container px-8">
+      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <button
           type="button"
           onClick={() => history.back()}
@@ -173,96 +171,75 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
         >
           Powrót
         </button>
-      </div>
-      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between">
-        <div className="col-span-2 lg:col-span-1 xl:col-span-2 md:w-2/3 lg:w-1/2 xl:w-2/3">
-          <ProductGallery product={product} selectedVariant={selectedVariant} />
-        </div>
-        <div className="space-y-5 mt-10 md:mt-0 lg:col-span-1 xl:col-span-1 md:w-1/3 lg:w-1/2 xl:w-1/3">
-          <div className="flex flex-col">
-            <h1
-              className="text-5xl font-bold tracking-tight text-gray-800"
-              data-testid="productName"
-            >
-              {translate(product, "name")}
-            </h1>
+      </main>
+      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+        <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
+          <div className="flex-grow-2 w-full md:w-1/2 lg:w-1/2 xl:w-2/3 md:pb-0 md:pr-8 box-border">
+            <ProductGallery product={product} selectedVariant={selectedVariant} />
           </div>
-          <div className="flex flex-row items-center gap-6 mt-6">
-            {shouldDisplayPrice && (
-              <h2 className="text-xl font-bold tracking-tight text-gray-800">
-                {formatPrice(price)}
-              </h2>
-            )}
-            <div className="flex flex-row gap-6 items-center">
-              <div className="line-through text-xl text-gray-400">
-                <TaxedMoney taxedMoney={undiscountedPrice} defaultValue="N/A" />
+          <div className="flex-grow w-full md:w-1/2 lg:w-1/2 xl:w-1/3 relative mt-8 md:mt-0">
+            <div className="flex flex-col space-y-8">
+              <h1 className="text-5xl font-bold text-gray-800" data-testid="productName">
+                {translate(product, "name")}
+              </h1>
+              <div className="flex flex-row items-center gap-6">
+                {shouldDisplayPrice && (
+                  <h2 className="text-xl font-bold text-gray-800">{formatPrice(price)}</h2>
+                )}
+                <div className="flex flex-row gap-6 items-center">
+                  <div className="line-through text-lg text-gray-400">
+                    {formatPrice(undiscountedPrice)}
+                  </div>
+
+                  <DiscountInfo isOnSale={isOnSale} product={product} />
+                </div>
               </div>
 
-              <DiscountInfo isOnSale={isOnSale} product={product} />
-            </div>
-          </div>
+              <VariantSelector product={product} selectedVariantID={selectedVariantID} />
 
-          <VariantSelector product={product} selectedVariantID={selectedVariantID} />
+              <button
+                onClick={onAddToCart}
+                type="submit"
+                disabled={isAddToCartButtonDisabled}
+                className={clsx(
+                  "mt-6 py-3 text-md px-12 w-max rounded-lg text-white bg-brand border-2 border-brand transition-all ease-in-out duration-300 focus:outline-none",
+                  {
+                    "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
+                    "hover:bg-white hover:text-brand hover:border-brand":
+                      !isAddToCartButtonDisabled,
+                  }
+                )}
+                data-testid="addToCartButton"
+              >
+                {loadingAddToCheckout
+                  ? t.formatMessage(messages.adding)
+                  : t.formatMessage(messages.addToCart)}
+              </button>
 
-          <button
-            onClick={onAddToCart}
-            type="submit"
-            disabled={isAddToCartButtonDisabled}
-            className={clsx(
-              "mt-6 py-3 px-12 w-max rounded-lg flex items-center justify-center text-base bg-brand text-white disabled:border-gray-300 disabled:bg-gray-300 disabled:text-white hover:bg-white border-2 border-brand transition focus:outline-none",
-              !isAddToCartButtonDisabled && "hover:bg-brand hover:text-brand"
-            )}
-            data-testid="addToCartButton"
-          >
-            {loadingAddToCheckout
-              ? t.formatMessage(messages.adding)
-              : t.formatMessage(messages.addToCart)}
-          </button>
+              {!selectedVariant && (
+                <p className="mt-6 text-base text-red-500">
+                  {t.formatMessage(messages.variantNotChosen)}
+                </p>
+              )}
 
-          {!selectedVariant && (
-            <p className="mt-6 text-base text-red-500">
-              {t.formatMessage(messages.variantNotChosen)}
-            </p>
-          )}
+              {selectedVariant?.quantityAvailable === 0 && (
+                <p className="mt-6 text-base text-red-500" data-testid="soldOut">
+                  {t.formatMessage(messages.soldOut)}
+                </p>
+              )}
 
-          {selectedVariant?.quantityAvailable === 0 && (
-            <p className="mt-6 text-base text-red-500" data-testid="soldOut">
-              {t.formatMessage(messages.soldOut)}
-            </p>
-          )}
+              {!!addToCartError && (
+                <p className="text-red-700 text-sm font-bold">{addToCartError}</p>
+              )}
 
-          {!!addToCartError && <p className="text-red-700 text-sm font-bold">{addToCartError}</p>}
+              <div className="bg-slate-100 w-full h-[1px]"></div>
 
-          <div className="bg-slate-100 w-full h-[1px]"></div>
-
-          <div className="mt-6 grid grid-cols-2">
-            <div className="text-base py-6 flex flex-row gap-3 items-center">
-              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
-                1
-              </div>
-              <p>Eco-Friendly</p>
-            </div>
-            <div className="text-base py-6 flex flex-row gap-3 items-center">
-              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
-                1
-              </div>
-              <p>Fast delivery</p>
-            </div>
-            <div className="text-base py-6 flex flex-row gap-3 items-center">
-              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
-                1
-              </div>
-              <p>14 days for returns</p>
-            </div>
-            <div className="text-base py-6 flex flex-row gap-3 items-center">
-              <div className="w-12 h-12 bg-slate-100 rounded-full text-center flex justify-center items-center">
-                1
-              </div>
-              <p>Secure payment</p>
+              <ProductInfoGrid />
             </div>
           </div>
         </div>
       </main>
+
       <div className="w-full break-words container mt-32">
         <Tabs product={product} selectedVariant={selectedVariant} />
       </div>

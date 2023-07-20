@@ -2,6 +2,11 @@ fragment ProductCardFragment on Product {
   id
   slug
   name
+  productType {
+    id
+    name
+    slug
+  }
   translation(languageCode: $locale) {
     id
     name
@@ -67,23 +72,19 @@ fragment ProductCardFragment on Product {
       start {
         currency
         gross {
-          currency
-          amount
+          ...PriceFragment
         }
         net {
-          currency
-          amount
+          ...PriceFragment
         }
       }
       stop {
         currency
         gross {
-          currency
-          amount
+          ...PriceFragment
         }
         net {
-          currency
-          amount
+          ...PriceFragment
         }
       }
     }

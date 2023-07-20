@@ -24,19 +24,26 @@ fragment ProductDetailsFragment on Product {
     onSale
     priceRange {
       start {
-        ...TaxedPriceFragment
+        gross {
+          ...PriceFragment
+        }
       }
       stop {
-        ...TaxedPriceFragment
+        gross {
+          ...PriceFragment
+        }
       }
     }
     priceRangeUndiscounted {
       start {
-        currency
-        ...TaxedPriceFragment
+        gross {
+          ...PriceFragment
+        }
       }
       stop {
-        ...TaxedPriceFragment
+        gross {
+          ...PriceFragment
+        }
       }
     }
   }
@@ -48,5 +55,10 @@ fragment ProductDetailsFragment on Product {
   }
   category {
     name
+  }
+  productType {
+    id
+    name
+    slug
   }
 }
