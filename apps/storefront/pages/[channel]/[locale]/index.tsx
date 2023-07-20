@@ -6,10 +6,7 @@ import { Layout } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { AdvantagesBlock } from "@/components/AdvantagesBlock";
 import ProductsFeatured from "@/components/ProductsFeatured/ProductsFeatured";
-import { useShopInformation } from "@/lib/hooks/useShopInformation";
-import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
-import { useCollections } from "@/lib/hooks/useCollections";
-import { AWS_MEDIA_BUCKET, CHANNEL_SLUG, STOREFRONT_NAME } from "@/lib/const";
+import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
@@ -18,34 +15,10 @@ import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg
 import WomanCategory from "../../../images/homepage/woman-category.jpg";
 import ManCategory from "../../../images/homepage/man-category.jpg";
 import KidCategory from "../../../images/homepage/kid-category.jpg";
-import { useNews } from "@/lib/hooks/useNews";
-import { useCategories } from "@/lib/hooks/useCategories";
 import usePaths from "@/lib/paths";
-import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import {
-  CategoriesQuery,
-  CategoriesQueryDocument,
-  CategoriesQueryVariables,
-  CollectionsQuery,
-  CollectionsQueryDocument,
-  CollectionsQueryVariables,
-  FeaturedProductsQuery,
-  FeaturedProductsQueryDocument,
-  FeaturedProductsQueryVariables,
-  NewsIdQuery,
-  NewsIdQueryDocument,
-  NewsIdQueryVariables,
-  NewsQuery,
-  NewsQueryDocument,
-  NewsQueryVariables,
-  ShopInformationQuery,
-  ShopInformationQueryDocument,
-  ShopInformationQueryVariables,
-} from "@/saleor/api";
-import { ApolloQueryResult } from "@apollo/client";
-import { serverApolloClient } from "@/lib/ssr/common";
+import { GetStaticPaths, InferGetStaticPropsType } from "next";
 import { getNewsData, getNewsIdData } from "@/lib/getNews";
-import { getShopInfo, getShopInfoData } from "@/lib/getShopInfo";
+import { getShopInfoData } from "@/lib/getShopInfo";
 import { getCollectionsData } from "@/lib/getCollections";
 import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
 import { getCategoriesData } from "@/lib/getCategories";
