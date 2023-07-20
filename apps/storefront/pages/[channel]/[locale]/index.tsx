@@ -44,6 +44,11 @@ import {
 } from "@/saleor/api";
 import { ApolloQueryResult } from "@apollo/client";
 import { serverApolloClient } from "@/lib/ssr/common";
+import { getNewsData, getNewsIdData } from "@/lib/getNews";
+import { getShopInfo, getShopInfoData } from "@/lib/getShopInfo";
+import { getCollectionsData } from "@/lib/getCollections";
+import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
+import { getCategoriesData } from "@/lib/getCategories";
 
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -54,72 +59,39 @@ const CATEGORY_IMAGES = {
   dziecko: KidCategory,
 };
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const featuredProductsBranding =
-    process.env.STOREFRONT_NAME === "CLOTHES4U" ? "polecane-produkty-c4u" : "polecane-produkty";
+export const getStaticProps = async () => {
+  const [
+    newsIdResult,
+    shopInfoResult,
+    collectionsResult,
+    categoriesResult,
+    featuredProductsResult,
+  ] = await Promise.allSettled([
+    getNewsIdData(),
+    getShopInfoData(),
+    getCollectionsData(),
+    getCategoriesData(),
+    getFeaturedProducts(),
+  ]);
 
-  const newsIdDataResult: ApolloQueryResult<NewsIdQuery> = await serverApolloClient.query<
-    NewsIdQuery,
-    NewsIdQueryVariables
-  >({
-    query: NewsIdQueryDocument,
-  });
+  const newsIdData = newsIdResult.status === "fulfilled" ? newsIdResult.value : null;
+  const shopInfoData = shopInfoResult.status === "fulfilled" ? shopInfoResult.value : null;
+  const collectionsData = collectionsResult.status === "fulfilled" ? collectionsResult.value : null;
+  const categoriesData = categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
+  const featuredProductsData =
+    featuredProductsResult.status === "fulfilled" ? featuredProductsResult.value : null;
 
-  const newsId = newsIdDataResult?.data?.pageTypes?.edges[0]?.node?.id;
+  const newsId = newsIdData?.data?.pageTypes?.edges[0]?.node?.id;
 
-  const shopInfoResult: ApolloQueryResult<ShopInformationQuery> = await serverApolloClient.query<
-    ShopInformationQuery,
-    ShopInformationQueryVariables
-  >({
-    query: ShopInformationQueryDocument,
-  });
-
-  let newsResult;
-  if (newsId && CHANNEL_SLUG) {
-    newsResult = await serverApolloClient.query<NewsQuery, NewsQueryVariables>({
-      query: NewsQueryDocument,
-      variables: { id: newsId, channelSlug: CHANNEL_SLUG },
-    });
-  } else {
-    console.error("News or channel is undefined");
-  }
-
-  const collectionsResult: ApolloQueryResult<CollectionsQuery> = await serverApolloClient.query<
-    CollectionsQuery,
-    CollectionsQueryVariables
-  >({
-    query: CollectionsQueryDocument,
-    variables: { perPage: 5, channel: CHANNEL_SLUG },
-  });
-
-  const categoriesResult: ApolloQueryResult<CategoriesQuery> = await serverApolloClient.query<
-    CategoriesQuery,
-    CategoriesQueryVariables
-  >({
-    query: CategoriesQueryDocument,
-    variables: { perPage: 100 },
-  });
-
-  const featuredProductsResult: ApolloQueryResult<FeaturedProductsQuery> =
-    await serverApolloClient.query<FeaturedProductsQuery, FeaturedProductsQueryVariables>({
-      query: FeaturedProductsQueryDocument,
-      variables: { slug: featuredProductsBranding, channel: CHANNEL_SLUG },
-    });
-
-  const featuredProductsData = {
-    products:
-      featuredProductsResult.data?.collection?.products?.edges?.map((edge: any) => edge.node) || [],
-    name: featuredProductsResult.data?.collection?.name || null,
-    backgroundImage: featuredProductsResult.data?.collection?.backgroundImage || null,
-  };
+  const newsData = newsId ? await getNewsData(newsId) : null;
 
   return {
     props: {
-      shop: shopInfoResult?.data?.shop,
+      shop: shopInfoData?.data?.shop,
       featuredProducts: featuredProductsData,
-      news: newsResult?.data?.pages?.edges,
-      categories: categoriesResult?.data?.categories,
-      collections: collectionsResult?.data.collections,
+      news: newsData?.data?.pages?.edges,
+      categories: categoriesData?.data?.categories,
+      collections: collectionsData?.data.collections,
     },
     revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
   };
