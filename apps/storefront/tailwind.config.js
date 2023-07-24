@@ -1,10 +1,10 @@
 const { env } = require("process");
 const fashion4YouTheme = require("./tailwind-configs/fashion4YouThemeConfig.js");
-const clothes4YouTheme = require("./tailwind-configs/clothes4YouThemeConfig.js");
+const clothes4uTheme = require("./tailwind-configs/clothes4uThemeConfig.js");
 
 const brands = {
   fashion4You: "FASHION4YOU",
-  clothes4You: "CLOTHES4YOU",
+  clothes4u: "CLOTHES4u",
 };
 
 const getSpacing = (base /* number */, unit /* "px" | "rem" */, values /* number[] */) =>
@@ -23,8 +23,8 @@ switch (env.NEXT_PUBLIC_STOREFRONT_NAME) {
   case brands.fashion4You:
     module.exports = fashion4YouTheme;
     break;
-  case brands.clothes4You:
-    module.exports = clothes4YouTheme;
+  case brands.clothes4u:
+    module.exports = clothes4uTheme;
     break;
   default:
     module.exports = {
