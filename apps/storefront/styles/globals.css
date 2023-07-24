@@ -32,3 +32,11 @@
 html {
   font-size: 62.5%;
 }
+
+.fashion4YouHueTransform {
+  filter: invert(79%) sepia(8%) saturate(3131%) hue-rotate(58deg) brightness(84%) contrast(102%);
+}
+
+.clothes4uHueTransform {
+  filter: invert(37%) sepia(21%) saturate(645%) hue-rotate(48deg) brightness(90%) contrast(88%);
+}

@@ -1,19 +1,16 @@
 import { ApolloQueryResult } from "@apollo/client";
 import clsx from "clsx";
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Custom404 from "pages/404";
 import React, { ReactElement, useState } from "react";
 import { useIntl } from "react-intl";
 
-import { Layout, RichText, VariantSelector } from "@/components";
+import { Layout, VariantSelector } from "@/components";
 import { useRegions } from "@/components/RegionsProvider";
-import { AttributeDetails } from "@/components/product/AttributeDetails";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPageSeo } from "@/components/seo/ProductPageSeo";
 import { messages } from "@/components/translations";
-import { usePaths } from "@/lib/paths";
 import { getSelectedVariantID } from "@/lib/product";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { contextToRegionQuery } from "@/lib/regions";
@@ -28,6 +25,9 @@ import {
   useCreateCheckoutMutation,
 } from "@/saleor/api";
 import { serverApolloClient } from "@/lib/ssr/common";
+import { Tabs } from "@/components/Tabs/Tabs";
+import { DiscountInfo } from "@/components/DiscountInfo/DiscountInfo";
+import { ProductInfoGrid } from "@/components/ProductInfoGrid/ProductInfoGrid";
 
 export type OptionalQuery = {
   variant?: string;
@@ -68,7 +68,6 @@ export const getStaticProps = async (
 };
 function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
-  const paths = usePaths();
   const t = useIntl();
   const { currentChannel, formatPrice, query } = useRegions();
 
@@ -154,90 +153,96 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const isAddToCartButtonDisabled =
     !selectedVariant || selectedVariant?.quantityAvailable === 0 || loadingAddToCheckout;
 
-  const description = translate(product, "description");
-
   const price = product.pricing?.priceRange?.start?.gross;
   const shouldDisplayPrice = product.variants?.length === 1 && price;
+
+  const isOnSale = product?.pricing?.onSale;
+
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
 
   return (
     <>
       <ProductPageSeo product={product} />
-      <main
-        className={clsx(
-          "grid grid-cols-1 gap-[3rem] max-h-full overflow-auto md:overflow-hidden container pt-8 px-8 md:grid-cols-3"
-        )}
-      >
-        <div className="col-span-2">
-          <ProductGallery product={product} selectedVariant={selectedVariant} />
-        </div>
-        <div className="space-y-5 mt-10 md:mt-0">
-          <div>
-            <h1
-              className="text-4xl font-bold tracking-tight text-gray-800"
-              data-testid="productName"
-            >
-              {translate(product, "name")}
-            </h1>
-            {shouldDisplayPrice && (
-              <h2 className="text-xl font-bold tracking-tight text-gray-800">
-                {formatPrice(price)}
-              </h2>
-            )}
-            {!!product.category?.slug && (
-              <Link
-                href={paths.category._slug(product?.category?.slug).$url()}
-                passHref
-                legacyBehavior
-              >
-                <a>
-                  <p className="text-md mt-2 font-medium text-gray-600 cursor-pointer">
-                    {translate(product.category, "name")}
-                  </p>
-                </a>
-              </Link>
-            )}
+      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+        <button
+          type="button"
+          onClick={() => history.back()}
+          className="mt-6 py-3 px-12 w-max rounded-lg text-base bg-brand text-white hover:text-brand hover:bg-white border-2 border-brand focus:outline-none transition"
+        >
+          Powrót
+        </button>
+      </main>
+      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+        <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
+          <div className="flex-grow-2 w-full md:w-1/2 lg:w-1/2 xl:w-2/3 md:pb-0 md:pr-8 box-border">
+            <ProductGallery product={product} selectedVariant={selectedVariant} />
           </div>
+          <div className="flex-grow w-full md:w-1/2 lg:w-1/2 xl:w-1/3 relative mt-8 md:mt-0">
+            <div className="flex flex-col space-y-8">
+              <h1 className="text-5xl font-bold text-gray-800" data-testid="productName">
+                {translate(product, "name")}
+              </h1>
+              <div className="flex flex-row items-center gap-6">
+                {shouldDisplayPrice && (
+                  <h2 className="text-xl font-bold text-gray-800">{formatPrice(price)}</h2>
+                )}
+                <div className="flex flex-row gap-6 items-center">
+                  <div className="line-through text-lg text-gray-400">
+                    {formatPrice(undiscountedPrice)}
+                  </div>
 
-          <VariantSelector product={product} selectedVariantID={selectedVariantID} />
+                  <DiscountInfo isOnSale={isOnSale} product={product} />
+                </div>
+              </div>
 
-          <button
-            onClick={onAddToCart}
-            type="submit"
-            disabled={isAddToCartButtonDisabled}
-            className={clsx(
-              "w-full py-3 px-8 flex items-center justify-center text-base bg-action-1 text-white disabled:bg-disabled hover:bg-white border-2 border-transparent  focus:outline-none",
-              !isAddToCartButtonDisabled && "hover:border-action-1 hover:text-action-1"
-            )}
-            data-testid="addToCartButton"
-          >
-            {loadingAddToCheckout
-              ? t.formatMessage(messages.adding)
-              : t.formatMessage(messages.addToCart)}
-          </button>
+              <VariantSelector product={product} selectedVariantID={selectedVariantID} />
 
-          {!selectedVariant && (
-            <p className="text-base text-yellow-600">
-              {t.formatMessage(messages.variantNotChosen)}
-            </p>
-          )}
+              <button
+                onClick={onAddToCart}
+                type="submit"
+                disabled={isAddToCartButtonDisabled}
+                className={clsx(
+                  "mt-6 py-3 text-md px-12 w-max rounded-lg text-white bg-brand border-2 border-brand transition-all ease-in-out duration-300 focus:outline-none",
+                  {
+                    "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
+                    "hover:bg-white hover:text-brand hover:border-brand":
+                      !isAddToCartButtonDisabled,
+                  }
+                )}
+                data-testid="addToCartButton"
+              >
+                {loadingAddToCheckout
+                  ? t.formatMessage(messages.adding)
+                  : t.formatMessage(messages.addToCart)}
+              </button>
 
-          {selectedVariant?.quantityAvailable === 0 && (
-            <p className="text-base text-yellow-600" data-testid="soldOut">
-              {t.formatMessage(messages.soldOut)}
-            </p>
-          )}
+              {!selectedVariant && (
+                <p className="mt-6 text-base text-red-500">
+                  {t.formatMessage(messages.variantNotChosen)}
+                </p>
+              )}
 
-          {!!addToCartError && <p>{addToCartError}</p>}
+              {selectedVariant?.quantityAvailable === 0 && (
+                <p className="mt-6 text-base text-red-500" data-testid="soldOut">
+                  {t.formatMessage(messages.soldOut)}
+                </p>
+              )}
 
-          {description && (
-            <div className="space-y-6">
-              <RichText jsonStringData={description} />
+              {!!addToCartError && (
+                <p className="text-red-700 text-sm font-bold">{addToCartError}</p>
+              )}
+
+              <div className="bg-slate-100 w-full h-[1px]"></div>
+
+              <ProductInfoGrid />
             </div>
-          )}
-
-          <AttributeDetails product={product} selectedVariant={selectedVariant} />
+          </div>
         </div>
       </main>
+
+      <div className="w-full break-words container mt-32">
+        <Tabs product={product} selectedVariant={selectedVariant} />
+      </div>
     </>
   );
 }

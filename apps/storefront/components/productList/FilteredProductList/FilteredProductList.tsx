@@ -185,7 +185,7 @@ export function FilteredProductList({
           filter={productsFilter}
           sortBy={sortBy || undefined}
           setCounter={setItemsCounter}
-          perPage={40}
+          perPage={12}
         />
       </div>
     </>

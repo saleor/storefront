@@ -18,6 +18,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "jsx-a11y/alt-text": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
     "import/no-restricted-paths": [
       "error",
       {
