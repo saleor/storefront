@@ -55,9 +55,11 @@ export const getStaticProps = async (
       },
     });
 
-  const attributes: AttributeFilterFragment[] = mapEdgesToItems(
-    attributesResponse.data.attributes
-  ).filter((attribute) => attribute.choices?.edges.length);
+  let attributes: AttributeFilterFragment[] = mapEdgesToItems(attributesResponse.data.attributes);
+  attributes = [...new Set(attributes.map((attribute) => JSON.stringify(attribute)))].map(
+    (jsonAttribute) => JSON.parse(jsonAttribute)
+  );
+  attributes = attributes.filter((attribute) => attribute.choices?.edges.length);
 
   return {
     props: {

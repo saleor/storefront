@@ -4,14 +4,10 @@ import urlJoin from "url-join";
 
 import { STOREFRONT_NAME } from "@/lib/const";
 
-interface BaseSeoProps {
-  title?: string;
-  description?: string;
-}
-
-export function BaseSeo({ title, description }: BaseSeoProps) {
-  const seoTitle = title ? `${title} - ${STOREFRONT_NAME}` : STOREFRONT_NAME;
-  const seoDescription = description || "";
+export function BaseSeo() {
+  const seoTitle = `Sklep ${STOREFRONT_NAME} z odzieżą używaną | Sklep internetowy`;
+  const seoDescription =
+    "Odkryj zróżnicowaną kolekcję ubrań używanych w naszym sklepie internetowym. Oferujemy wysokiej jakości odzież second hand, łącząc styl, wygodę i ekologiczne podejście.";
 
   const { asPath } = useRouter();
 
