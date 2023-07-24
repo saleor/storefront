@@ -34,23 +34,21 @@ function Custom404() {
   return (
     <>
       <NotFoundSeo />
-      <div className="min-h-screen bg-gray-100">
-        <Navbar />
-
-        <div className="inline columns-2 sm:flex items-center container mt-3">
+      <div className="min-h-screen bg-gray-100 pt-8">
+        <div className="inline columns-2 sm:flex md:flex items-center container">
           <div className="md:w-1/2 mx-2">
             <header className="mb-4 font-bold text-5xl md:text-7xl">
-              <div className="text-brand">Oops!</div>
-              <div className="">Ta kategoria nie istnieje lub została przeniesiona</div>
+              <div className="text-brand mb-4">Oops!</div>
+              <div className="">Ta strona nie istnieje lub została przeniesiona</div>
             </header>
             <div className="text-3xl md:text-4xl my-2">
-              Być może błędnie wpisałeś adres kategorii lub ona nie istnieje.
+              Być może błędnie wpisałeś adres strony lub ona nie istnieje.
             </div>
-            <div className="container my-12">
+            <div className="my-12">
               <Link
                 href={paths.$url()}
-                className="text-2xl md:text-3xl border-brand border-2 bg-brand hover:bg-brand-1
-               text-white font-bold py-2 px-4 rounded-full my-4"
+                className="text-2xl md:text-3xl border-brand border-2 bg-brand hover:border-brand hover:bg-white hover:text-brand transition
+               text-white font-bold py-4 px-8 rounded-full"
               >
                 Wróć na stronę główną
               </Link>
