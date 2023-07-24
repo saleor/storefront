@@ -172,12 +172,14 @@ function Home({
           >
             <div className="overflow-hidden mb-5">
               <div>
-                <h1 className="mb-4 font-bold text-white text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
+                <h1 className="mb-4 font-bold text-indexBanner text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
                   Sklep {STOREFRONT_NAME}
                 </h1>
               </div>
               <div>
-                <p className="text-white text-base md:text-lg max-w-[846px]">{shop?.description}</p>
+                <p className="text-indexBanner text-base md:text-lg max-w-[846px]">
+                  {shop?.description}
+                </p>
               </div>
             </div>
             <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">

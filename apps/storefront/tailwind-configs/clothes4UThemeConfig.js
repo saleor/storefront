@@ -10,11 +10,11 @@ const config = {
     DEFAULT: "#C2D1E4",
   },
   brand: {
-    DEFAULT: "#65c947",
-    hover: "#83d36b",
+    DEFAULT: "#526441",
+    hover: "#839b6b",
   },
   loginBg: {
-    DEFAULT: "#3b82f6",
+    DEFAULT: "#654783",
   },
   indexBanner: {
     DEFAULT: "white",
