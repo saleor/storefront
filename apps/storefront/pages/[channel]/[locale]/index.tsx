@@ -6,10 +6,7 @@ import { Layout } from "@/components";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import { AdvantagesBlock } from "@/components/AdvantagesBlock";
 import ProductsFeatured from "@/components/ProductsFeatured/ProductsFeatured";
-import { useShopInformation } from "@/lib/hooks/useShopInformation";
-import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
-import { useCollections } from "@/lib/hooks/useCollections";
-import { AWS_MEDIA_BUCKET, CHANNEL_SLUG, STOREFRONT_NAME } from "@/lib/const";
+import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
@@ -18,32 +15,13 @@ import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg
 import WomanCategory from "../../../images/homepage/woman-category.jpg";
 import ManCategory from "../../../images/homepage/man-category.jpg";
 import KidCategory from "../../../images/homepage/kid-category.jpg";
-import { useNews } from "@/lib/hooks/useNews";
-import { useCategories } from "@/lib/hooks/useCategories";
 import usePaths from "@/lib/paths";
-import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import {
-  CategoriesQuery,
-  CategoriesQueryDocument,
-  CategoriesQueryVariables,
-  CollectionsQuery,
-  CollectionsQueryDocument,
-  CollectionsQueryVariables,
-  FeaturedProductsQuery,
-  FeaturedProductsQueryDocument,
-  FeaturedProductsQueryVariables,
-  NewsIdQuery,
-  NewsIdQueryDocument,
-  NewsIdQueryVariables,
-  NewsQuery,
-  NewsQueryDocument,
-  NewsQueryVariables,
-  ShopInformationQuery,
-  ShopInformationQueryDocument,
-  ShopInformationQueryVariables,
-} from "@/saleor/api";
-import { ApolloQueryResult } from "@apollo/client";
-import { serverApolloClient } from "@/lib/ssr/common";
+import { GetStaticPaths, InferGetStaticPropsType } from "next";
+import { getNewsData, getNewsIdData } from "@/lib/getNews";
+import { getShopInfoData } from "@/lib/getShopInfo";
+import { getCollectionsData } from "@/lib/getCollections";
+import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
+import { getCategoriesData } from "@/lib/getCategories";
 
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -54,72 +32,39 @@ const CATEGORY_IMAGES = {
   dziecko: KidCategory,
 };
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const featuredProductsBranding =
-    process.env.STOREFRONT_NAME === "CLOTHES4U" ? "polecane-produkty-c4u" : "polecane-produkty";
+export const getStaticProps = async () => {
+  const [
+    newsIdResult,
+    shopInfoResult,
+    collectionsResult,
+    categoriesResult,
+    featuredProductsResult,
+  ] = await Promise.allSettled([
+    getNewsIdData(),
+    getShopInfoData(),
+    getCollectionsData(),
+    getCategoriesData(),
+    getFeaturedProducts(),
+  ]);
 
-  const newsIdDataResult: ApolloQueryResult<NewsIdQuery> = await serverApolloClient.query<
-    NewsIdQuery,
-    NewsIdQueryVariables
-  >({
-    query: NewsIdQueryDocument,
-  });
+  const newsIdData = newsIdResult.status === "fulfilled" ? newsIdResult.value : null;
+  const shopInfoData = shopInfoResult.status === "fulfilled" ? shopInfoResult.value : null;
+  const collectionsData = collectionsResult.status === "fulfilled" ? collectionsResult.value : null;
+  const categoriesData = categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
+  const featuredProductsData =
+    featuredProductsResult.status === "fulfilled" ? featuredProductsResult.value : null;
 
-  const newsId = newsIdDataResult?.data?.pageTypes?.edges[0]?.node?.id;
+  const newsId = newsIdData?.data?.pageTypes?.edges[0]?.node?.id;
 
-  const shopInfoResult: ApolloQueryResult<ShopInformationQuery> = await serverApolloClient.query<
-    ShopInformationQuery,
-    ShopInformationQueryVariables
-  >({
-    query: ShopInformationQueryDocument,
-  });
-
-  let newsResult;
-  if (newsId && CHANNEL_SLUG) {
-    newsResult = await serverApolloClient.query<NewsQuery, NewsQueryVariables>({
-      query: NewsQueryDocument,
-      variables: { id: newsId, channelSlug: CHANNEL_SLUG },
-    });
-  } else {
-    console.error("News or channel is undefined");
-  }
-
-  const collectionsResult: ApolloQueryResult<CollectionsQuery> = await serverApolloClient.query<
-    CollectionsQuery,
-    CollectionsQueryVariables
-  >({
-    query: CollectionsQueryDocument,
-    variables: { perPage: 5, channel: CHANNEL_SLUG },
-  });
-
-  const categoriesResult: ApolloQueryResult<CategoriesQuery> = await serverApolloClient.query<
-    CategoriesQuery,
-    CategoriesQueryVariables
-  >({
-    query: CategoriesQueryDocument,
-    variables: { perPage: 100 },
-  });
-
-  const featuredProductsResult: ApolloQueryResult<FeaturedProductsQuery> =
-    await serverApolloClient.query<FeaturedProductsQuery, FeaturedProductsQueryVariables>({
-      query: FeaturedProductsQueryDocument,
-      variables: { slug: featuredProductsBranding, channel: CHANNEL_SLUG },
-    });
-
-  const featuredProductsData = {
-    products:
-      featuredProductsResult.data?.collection?.products?.edges?.map((edge: any) => edge.node) || [],
-    name: featuredProductsResult.data?.collection?.name,
-    backgroundImage: featuredProductsResult.data?.collection?.backgroundImage,
-  };
+  const newsData = newsId ? await getNewsData(newsId) : null;
 
   return {
     props: {
-      shop: shopInfoResult?.data?.shop,
+      shop: shopInfoData?.data?.shop,
       featuredProducts: featuredProductsData,
-      news: newsResult?.data?.pages,
-      categories: categoriesResult?.data?.categories,
-      collections: collectionsResult?.data.collections,
+      news: newsData?.data?.pages?.edges,
+      categories: categoriesData?.data?.categories,
+      collections: collectionsData?.data.collections,
     },
     revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
   };
@@ -151,7 +96,9 @@ function Home({
 
   const renderCategoryImage = (slug: string) => {
     const ImageSrc = CATEGORY_IMAGES[slug as keyof typeof CATEGORY_IMAGES];
-    return <Image src={ImageSrc} alt={slug} className="object-cover w-full h-auto" />;
+    return (
+      <Image src={ImageSrc} alt={slug} loading="lazy" className="object-cover w-full h-auto" />
+    );
   };
   return (
     <>
@@ -181,10 +128,16 @@ function Home({
               </div>
             </div>
             <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
-              <a className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand">
+              <a
+                href="#news"
+                className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand"
+              >
                 Aktualności
               </a>
-              <a className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0">
+              <a
+                href="#sales"
+                className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0"
+              >
                 Promocje
               </a>
             </div>
@@ -285,7 +238,7 @@ function Home({
               </div>
             )}
             {hasNews && (
-              <div className="container mt-32">
+              <div className="container pt-32" id="news">
                 <div className="flex flex-col items-center mx-auto">
                   <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
                     Nowe artykuły i najnowsze informacje
@@ -315,6 +268,7 @@ function Home({
                           className="w-full h-80 object-cover rounded-lg"
                           width={500}
                           height={500}
+                          loading="lazy"
                         />
                         <Link
                           href={paths.page._slug(newsElem?.slug as string).$url()}

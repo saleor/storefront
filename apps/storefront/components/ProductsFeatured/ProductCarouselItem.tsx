@@ -11,7 +11,7 @@ interface ProductCarouselItemProps {
 const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) => {
   const paths = usePaths();
   const { category } = product;
-  const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
+  const thumbnailUrl = product.thumbnail?.url;
 
   return (
     <li key={product.id} className="w-full list-none hover: cursor-pointer">
@@ -24,7 +24,13 @@ const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) =>
         <div className="text-center md:flex md:justify-center md:flex-col md:items-center">
           <div className="flex h-[350px] md:h-[210px]">
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} width={512} height={512} alt="" />
+              <Image
+                src={thumbnailUrl}
+                width={512}
+                height={512}
+                alt=""
+                className="object-contain"
+              />
             ) : (
               <div className="grid place-items-center h-full w-full">
                 <PhotographIcon className="h-10 w-10" />

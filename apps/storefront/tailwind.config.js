@@ -107,4 +107,4 @@ switch (env.NEXT_PUBLIC_STOREFRONT_NAME) {
         require("tailwind-scrollbar-hide"), // eslint-disable-line
       ],
     };
-}
+

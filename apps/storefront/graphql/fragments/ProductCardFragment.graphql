@@ -2,6 +2,11 @@ fragment ProductCardFragment on Product {
   id
   slug
   name
+  productType {
+    id
+    name
+    slug
+  }
   translation(languageCode: $locale) {
     id
     name
@@ -28,6 +33,60 @@ fragment ProductCardFragment on Product {
     }
     values {
       name
+    }
+  }
+  collections {
+    name
+  }
+  pricing(address: $address) {
+    onSale
+    discount {
+      gross {
+        amount
+        currency
+      }
+    }
+    priceRange {
+      start {
+        gross {
+          amount
+          currency
+        }
+        net {
+          amount
+          currency
+        }
+      }
+      stop {
+        gross {
+          amount
+          currency
+        }
+        net {
+          amount
+          currency
+        }
+      }
+    }
+    priceRangeUndiscounted {
+      start {
+        currency
+        gross {
+          ...PriceFragment
+        }
+        net {
+          ...PriceFragment
+        }
+      }
+      stop {
+        currency
+        gross {
+          ...PriceFragment
+        }
+        net {
+          ...PriceFragment
+        }
+      }
     }
   }
 }
