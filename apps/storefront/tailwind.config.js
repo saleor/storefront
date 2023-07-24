@@ -4,7 +4,7 @@ const clothes4uTheme = require("./tailwind-configs/clothes4uThemeConfig.js");
 
 const brands = {
   fashion4You: "FASHION4YOU",
-  clothes4u: "CLOTHES4u",
+  clothes4u: "CLOTHES4U",
 };
 
 const getSpacing = (base /* number */, unit /* "px" | "rem" */, values /* number[] */) =>
@@ -107,4 +107,4 @@ switch (env.NEXT_PUBLIC_STOREFRONT_NAME) {
         require("tailwind-scrollbar-hide"), // eslint-disable-line
       ],
     };
-
+}
