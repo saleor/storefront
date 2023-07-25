@@ -18,8 +18,6 @@ export const Tabs = ({ product, selectedVariant }) => {
 
   const description = translate(product, "description");
 
-  console.log(product?.productType.id);
-
   const dimensionsTemplate = (product?.productType as unknown as ProductType)?.metadata?.find(
     (meta) => meta.key === "template"
   )?.value;
@@ -35,8 +33,6 @@ export const Tabs = ({ product, selectedVariant }) => {
       }
     }
   }, [description]);
-
-  console.log(dimensions);
 
   const tabs = [
     {
