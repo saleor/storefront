@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <CheckoutProvider>
           <RegionsProvider>
             <BaseSeo />
-            <NextNProgress color="#65c947" options={{ showSpinner: false }} />
+            <NextNProgress color="#fff" options={{ showSpinner: false }} />
             {DEMO_MODE && <DemoBanner />}
             {getLayout(<Component {...pageProps} />)}
           </RegionsProvider>
