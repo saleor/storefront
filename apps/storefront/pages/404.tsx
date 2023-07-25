@@ -12,7 +12,7 @@ import template404 from "../images/picture404forTransform.png";
 
 const brands = {
   fashion4You: "FASHION4YOU",
-  clothes4u: "CLOTHES4U",
+  clothes4U: "CLOTHES4U",
 };
 
 function Custom404() {
@@ -24,8 +24,8 @@ function Custom404() {
     case brands.fashion4You:
       hueTransform = "fashion4YouHueTransform";
       break;
-    case brands.clothes4u:
-      hueTransform = "clothes4uHueTransform";
+    case brands.clothes4U:
+      hueTransform = "clothes4UHueTransform";
       break;
     default:
       hueTransform = "fashion4YouHueTransform";
