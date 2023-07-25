@@ -59,7 +59,7 @@ function LoginPage() {
   });
 
   return (
-    <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-blue-500">
+    <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-loginBg">
       <div className="flex justify-end">
         <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
           <div>
@@ -107,7 +107,7 @@ function LoginPage() {
               <div className="">
                 <button
                   type="submit"
-                  className="mt-4 mb-3 w-full bg-green-500 hover:bg-green-400 text-white py-2 rounded-md transition duration-100"
+                  className="mt-4 mb-3 w-full bg-brand hover:bg-brand-hover text-white py-2 rounded-md transition duration-100"
                 >
                   {t.formatMessage(messages.logIn)}
                 </button>

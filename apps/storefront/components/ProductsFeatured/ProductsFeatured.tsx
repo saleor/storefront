@@ -15,7 +15,7 @@ const ProductsFeatured = ({ products }: ProductsFeaturedProps) => {
             <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
               Oto nasze <span className="text-brand">polecane produkty!</span>
             </h2>
-            <p className="max-w-[778px] text-center mx-auto mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+            <p className="max-w-[778px] text-center mx-auto mt-4 text-md sm:text-md md:text-md lg:text-md text-main-1 mb-12 sm:mb-16 md:mb-24 leading-relaxed">
               Nie masz czasu na przeglądanie setek produktów? Szukasz najlepszych propozycji, które
               pozwolą Ci zaoszczędzić czas i pieniądze? Nasze polecane produkty to gwarancja
               sukcesu!
