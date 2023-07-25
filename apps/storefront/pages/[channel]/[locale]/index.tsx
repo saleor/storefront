@@ -22,6 +22,7 @@ import { getShopInfoData } from "@/lib/getShopInfo";
 import { getCollectionsData } from "@/lib/getCollections";
 import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
 import { getCategoriesData } from "@/lib/getCategories";
+import { translate } from "@/lib/translations";
 
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
@@ -33,22 +34,15 @@ const CATEGORY_IMAGES = {
 };
 
 export const getStaticProps = async () => {
-  const [
-    newsIdResult,
-    shopInfoResult,
-    collectionsResult,
-    categoriesResult,
-    featuredProductsResult,
-  ] = await Promise.allSettled([
-    getNewsIdData(),
-    getShopInfoData(),
-    getCollectionsData(),
-    getCategoriesData(),
-    getFeaturedProducts(),
-  ]);
+  const [newsIdResult, collectionsResult, categoriesResult, featuredProductsResult] =
+    await Promise.allSettled([
+      getNewsIdData(),
+      getCollectionsData(),
+      getCategoriesData(),
+      getFeaturedProducts(),
+    ]);
 
   const newsIdData = newsIdResult.status === "fulfilled" ? newsIdResult.value : null;
-  const shopInfoData = shopInfoResult.status === "fulfilled" ? shopInfoResult.value : null;
   const collectionsData = collectionsResult.status === "fulfilled" ? collectionsResult.value : null;
   const categoriesData = categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
   const featuredProductsData =
@@ -60,7 +54,6 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      shop: shopInfoData?.data?.shop,
       featuredProducts: featuredProductsData,
       news: newsData?.data?.pages?.edges,
       categories: categoriesData?.data?.categories,
@@ -71,7 +64,6 @@ export const getStaticProps = async () => {
 };
 
 function Home({
-  shop,
   featuredProducts,
   news,
   categories,
@@ -120,12 +112,12 @@ function Home({
             <div className="overflow-hidden mb-5">
               <div>
                 <h1 className="mb-4 font-bold text-indexBanner text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
-                  Sklep {STOREFRONT_NAME}
+                  {t.formatMessage(messages.shop)} {STOREFRONT_NAME}
                 </h1>
               </div>
               <div>
                 <p className="text-indexBanner text-base md:text-lg max-w-[846px]">
-                  {shop?.description}
+                  {t.formatMessage(messages.shopDescription)}
                 </p>
               </div>
             </div>
@@ -134,13 +126,13 @@ function Home({
                 href="#news"
                 className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand"
               >
-                Aktualności
+                {t.formatMessage(messages.news)}
               </a>
               <a
                 href="#sales"
                 className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0"
               >
-                Promocje
+                {t.formatMessage(messages.sales)}
               </a>
             </div>
           </div>
@@ -150,11 +142,10 @@ function Home({
               <section className="mt-64">
                 <div className="container px-4 sm:px-0">
                   <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
-                    Szukasz konkretnych <span className="text-brand">produktów? </span> <br />
-                    Nasze kategorie ułatwią Ci zadanie!
+                    {t.formatMessage(messages.categories)}
                   </h2>
                   <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
-                    {t.formatMessage(messages.categoriesHome)}
+                    {t.formatMessage(messages.categoriesText)}
                   </p>
                 </div>
                 <div className="container px-4 sm:px-0">
@@ -192,11 +183,10 @@ function Home({
                 <div className="container">
                   <div className="flex flex-col items-center my-auto pb-4">
                     <h2 className="text-center font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
-                      Nasze najnowsze trendy - zobacz popularne kolekcje
+                      {t.formatMessage(messages.collections)}
                     </h2>
                     <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[768px]">
-                      Zobacz nasze bestsellery i podążaj za trendami! Nasze najnowsze trendy z
-                      pewnością Cię zainspirują i pomogą znaleźć swój wyjątkowy styl.
+                      {t.formatMessage(messages.collectionsText)}
                     </p>
                   </div>
                   <div className="flex flex-col px-8 justify-center mt-13 lg:grid lg:grid-cols-2 lg:gap-12 lg:px-0">
@@ -243,10 +233,10 @@ function Home({
               <div className="container pt-32" id="news">
                 <div className="flex flex-col items-center mx-auto">
                   <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
-                    Nowe artykuły i najnowsze informacje
+                    {t.formatMessage(messages.latestArticles)}
                   </h2>
                   <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
-                    Poznaj świat mody i stylu dzięki naszym najnowszym treściom i aktualizacjom
+                    {t.formatMessage(messages.latestArticlesText)}
                   </p>
                 </div>
                 <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">

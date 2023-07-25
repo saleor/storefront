@@ -1,13 +1,17 @@
 import React from "react";
+import { useIntl } from "react-intl";
+import { messages } from "../translations";
 
 export const InfoBanner = () => {
+  const t = useIntl();
+
   return (
     <section className="marketing-bar-global bg-primary text-white bg-brand py-3 text-center mb-8">
       <div className="marketing-bar-content">
         <div className="marketing-bar-content-description">
-          UŻYJ NASZEGO KODU{" "}
-          <strong className="marketing-bar-content-description-bold">DOSTAWA0</strong> ABY OTRZYMAĆ
-          DARMOWĄ DOSTAWĘ DLA ZAMÓWIEŃ POWYŻEJ 200ZŁ.
+          {t.formatMessage(messages.marketingFirstText)}
+          <strong className="marketing-bar-content-description-bold"> DOSTAWA0 </strong>
+          {t.formatMessage(messages.marketingSecondText)}
         </div>
       </div>
     </section>
