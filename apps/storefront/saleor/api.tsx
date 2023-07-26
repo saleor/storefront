@@ -26378,6 +26378,7 @@ export type ProductDetailsFragment = {
   }> | null;
   thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
   productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+  collections?: Array<{ __typename?: "Collection"; name: string }> | null;
 };
 
 export type ProductMediaFragment = {
@@ -28503,6 +28504,25 @@ export type PageQuery = {
       title?: string | null;
       content?: string | null;
     } | null;
+    attributes: Array<{
+      __typename?: "SelectedAttribute";
+      attribute: {
+        __typename?: "Attribute";
+        slug?: string | null;
+        id: string;
+        name?: string | null;
+        inputType?: AttributeInputTypeEnum | null;
+      };
+      values: Array<{
+        __typename?: "AttributeValue";
+        id: string;
+        name?: string | null;
+        slug?: string | null;
+        value?: string | null;
+        reference?: string | null;
+        file?: { __typename?: "File"; url: string; contentType?: string | null } | null;
+      }>;
+    }>;
   } | null;
 };
 
@@ -28656,6 +28676,7 @@ export type ProductBySlugQuery = {
     }> | null;
     thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
     productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+    collections?: Array<{ __typename?: "Collection"; name: string }> | null;
   } | null;
 };
 
@@ -28778,6 +28799,29 @@ export type ProductPathsQuery = {
     edges: Array<{
       __typename?: "ProductCountableEdge";
       node: { __typename?: "Product"; slug: string };
+    }>;
+  } | null;
+};
+
+export type SalesQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars["String"]["input"]>;
+  perPage?: InputMaybe<Scalars["Int"]["input"]>;
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type SalesQuery = {
+  __typename?: "Query";
+  sales?: {
+    __typename?: "SaleCountableConnection";
+    pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+    edges: Array<{
+      __typename?: "SaleCountableEdge";
+      node: {
+        __typename?: "Sale";
+        id: string;
+        name: string;
+        products?: { __typename?: "ProductCountableConnection"; totalCount?: number | null } | null;
+      };
     }>;
   } | null;
 };
@@ -29443,6 +29487,9 @@ export const ProductDetailsFragmentDoc = gql`
       id
       name
       slug
+    }
+    collections {
+      name
     }
   }
   ${SelectedAttributeDetailsFragmentDoc}
@@ -31625,6 +31672,25 @@ export const PageDocument = gql`
       slug
       created
       content
+      attributes {
+        attribute {
+          slug
+          id
+          name
+          inputType
+        }
+        values {
+          id
+          name
+          slug
+          value
+          reference
+          file {
+            url
+            contentType
+          }
+        }
+      }
     }
   }
 `;
@@ -31898,6 +31964,59 @@ export type ProductPathsQueryResult = Apollo.QueryResult<
   ProductPathsQuery,
   ProductPathsQueryVariables
 >;
+export const SalesQueryDocument = gql`
+  query SalesQuery($cursor: String, $perPage: Int, $channel: String) {
+    sales(after: $cursor, first: $perPage, channel: $channel) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          name
+          products {
+            totalCount
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSalesQuery__
+ *
+ * To run a query within a React component, call `useSalesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSalesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSalesQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      perPage: // value for 'perPage'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function useSalesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SalesQuery, SalesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SalesQuery, SalesQueryVariables>(SalesQueryDocument, options);
+}
+export function useSalesQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SalesQuery, SalesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SalesQuery, SalesQueryVariables>(SalesQueryDocument, options);
+}
+export type SalesQueryHookResult = ReturnType<typeof useSalesQuery>;
+export type SalesQueryLazyQueryHookResult = ReturnType<typeof useSalesQueryLazyQuery>;
+export type SalesQueryQueryResult = Apollo.QueryResult<SalesQuery, SalesQueryVariables>;
 export const ShopInformationQueryDocument = gql`
   query ShopInformationQuery {
     shop {

@@ -61,4 +61,7 @@ fragment ProductDetailsFragment on Product {
     name
     slug
   }
+  collections {
+    name
+  }
 }

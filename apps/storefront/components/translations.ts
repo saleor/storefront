@@ -368,11 +368,120 @@ export const messages = defineMessages({
     description: "Set billing default button label",
     defaultMessage: "Set as billing default",
   },
-  categoriesHome: {
-    id: "app.pages.channel.locale.index",
+  categories: {
+    id: "app.pages.channel.locale.index.categories",
+    description: "Message displayed on homepage for categories section",
+    defaultMessage: "Looking for specific products? Our categories will make your task easier!",
+  },
+  categoriesText: {
+    id: "app.pages.channel.locale.index.categoriesText",
     description: "Message displayed on homepage for categories section",
     defaultMessage:
       "Not sure where to look for your favorite products? Use our clear categories and easily find what you're looking for.",
+  },
+  latestArticles: {
+    id: "app.pages.channel.locale.index.latestArticles",
+    description: "Message displayed on homepage for latest articles section",
+    defaultMessage: "New articles and latest news",
+  },
+  latestArticlesText: {
+    id: "app.pages.channel.locale.index.latestArticlesText",
+    description: "Message displayed on homepage for latest articles section",
+    defaultMessage: "Explore the world of fashion and style with our latest content and updates",
+  },
+  collections: {
+    id: "app.pages.channel.locale.index.collections",
+    description: "Message displayed on homepage for collections section",
+    defaultMessage: "Explore the world of fashion and style with our latest content and updates",
+  },
+  collectionsText: {
+    id: "app.pages.channel.locale.index.collectionsText",
+    description: "Message displayed on homepage for collections section",
+    defaultMessage:
+      "Check out our bestsellers and follow the trends! Our latest trends are sure to inspire you and help you find your unique style.",
+  },
+  shop: {
+    id: "app.pages.channel.locale.index.shop",
+    description: "Shop name",
+    defaultMessage: "Shop",
+  },
+  news: {
+    id: "app.pages.channel.locale.index.news",
+    description: "News name",
+    defaultMessage: "News",
+  },
+  sales: {
+    id: "app.pages.channel.locale.index.sales",
+    description: "Sales name",
+    defaultMessage: "Current sales",
+  },
+  advantages: {
+    id: "app.components.advantagesblock.advantagesblock.advantages",
+    description: "Advantages heading",
+    defaultMessage: "We provide the best customer service",
+  },
+  advantagesText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesText",
+    description: "Advantages text",
+    defaultMessage:
+      "Our experienced specialists are always ready to answer your questions, solve your problems and help you with your purchases.",
+  },
+  advantagesShippingHeading: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesShippingHeading",
+    description: "Advantages shipping heading",
+    defaultMessage: "Fast delivery",
+  },
+  advantagesShippingText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesShippingText",
+    description: "Advantages shipping text",
+    defaultMessage: "We offer fast and efficient shipping",
+  },
+  advantagesPaymentsHeading: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesPaymentsHeading",
+    description: "Advantages Payments heading",
+    defaultMessage: "Secure payments",
+  },
+  advantagesPaymentsText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesPaymentsText",
+    description: "Advantages Payments text",
+    defaultMessage: "We accept payments with the popular PayU",
+  },
+  advantagesReturnsHeading: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesReturnsHeading",
+    description: "Advantages Returns heading",
+    defaultMessage: "Returns",
+  },
+  advantagesReturnsText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesReturnsText",
+    description: "Advantages Returns text",
+    defaultMessage: "You have 14 days to change your mind",
+  },
+  shopDescription: {
+    id: "app.pages.channel.locale.index.shopDescription",
+    description: "Shop description text",
+    defaultMessage:
+      "Online store for cheap used clothing for women, men and children. We carry used and outlet clothing in our online lumberyard. Hundreds of brands and lots of unique style.",
+  },
+  marketingFirstText: {
+    id: "app.components.infobanner.infobanner.marketingFirstText",
+    description: "Infobanner text",
+    defaultMessage: "USE OUR CODE",
+  },
+  marketingSecondText: {
+    id: "app.components.infobanner.infobanner.marketingSecondText",
+    description: "Infobanner text",
+    defaultMessage: "TO GET FREE DELIVERY FOR ORDERS OVER 200ZL",
+  },
+  featuredProducts: {
+    id: "app.pages.channel.locale.index.featuredProducts",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage: "Here are our recommended products!",
+  },
+  featuredProductsText: {
+    id: "app.pages.channel.locale.index.featuredProductsText",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage:
+      "Don't have time to browse through hundreds of products? Are you looking for the best suggestions that will save you time and money? Our recommended products are a guarantee of success!",
   },
 });
 

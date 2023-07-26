@@ -29,6 +29,17 @@ import { Tabs } from "@/components/Tabs/Tabs";
 import { DiscountInfo } from "@/components/DiscountInfo/DiscountInfo";
 import { ProductInfoGrid } from "@/components/ProductInfoGrid/ProductInfoGrid";
 
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+  EmailShareButton,
+  EmailIcon,
+} from "next-share";
+import { usePaths } from "@/lib/paths";
+import { STOREFRONT_NAME } from "@/lib/const";
+
 export type OptionalQuery = {
   variant?: string;
 };
@@ -69,6 +80,7 @@ export const getStaticProps = async (
 function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
   const t = useIntl();
+  const paths = usePaths();
   const { currentChannel, formatPrice, query } = useRegions();
 
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
@@ -160,6 +172,8 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
 
   const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
 
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
   return (
     <>
       <ProductPageSeo product={product} />
@@ -172,7 +186,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           Powrót
         </button>
       </main>
-      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+      <main className="container gap-[3rem] flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
           <div className="flex-grow-2 w-full md:w-1/2 lg:w-1/2 xl:w-2/3 md:pb-0 md:pr-8 box-border">
             <ProductGallery product={product} selectedVariant={selectedVariant} />
@@ -235,6 +249,30 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
               <div className="bg-slate-100 w-full h-[1px]"></div>
 
               <ProductInfoGrid />
+
+              <div className="flex flex-row gap-4">
+                <FacebookShareButton
+                  url={shareUrl}
+                  quote={"next-share is a social share buttons for your next React apps."}
+                  hashtag={"#ecommerce"}
+                >
+                  <FacebookIcon size={32} round />
+                </FacebookShareButton>
+                <WhatsappShareButton
+                  url={shareUrl}
+                  title={"next-share is a social share buttons for your next React apps."}
+                  separator=":: "
+                >
+                  <WhatsappIcon size={32} round />
+                </WhatsappShareButton>
+                <EmailShareButton
+                  url={shareUrl}
+                  subject={`${product?.name} - Produkt sklepu ${STOREFRONT_NAME}`}
+                  body="Sprawdź produkt, który Ci polecam"
+                >
+                  <EmailIcon size={32} round />
+                </EmailShareButton>
+              </div>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
-import { ProductCardFragment } from "@/saleor/api";
+import { ProductDetailsFragment } from "@/saleor/api";
 import React from "react";
 
 interface DiscountInfoProps {
-  product: ProductCardFragment;
+  product: ProductDetailsFragment;
   isOnSale: boolean | undefined | null;
 }
 

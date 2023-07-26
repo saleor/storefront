@@ -79,7 +79,7 @@ export function Navbar() {
           <div className="flex-1 flex xs:justify-center">
             <Link href={paths.$url()} passHref legacyBehavior>
               <a href="pass" className={styles.logo}>
-                <Logo />
+                <Logo height="46" width="100%" />
               </a>
             </Link>
           </div>
