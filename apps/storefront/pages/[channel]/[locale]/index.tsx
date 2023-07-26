@@ -18,15 +18,10 @@ import KidCategory from "../../../images/homepage/kid-category.jpg";
 import usePaths from "@/lib/paths";
 import { GetStaticPaths, InferGetStaticPropsType } from "next";
 import { getNewsData, getNewsIdData } from "@/lib/getNews";
-import { getShopInfoData } from "@/lib/getShopInfo";
 import { getCollectionsData } from "@/lib/getCollections";
 import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
 import { getCategoriesData } from "@/lib/getCategories";
-import { translate } from "@/lib/translations";
 
-import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
-import { useSales } from "@/lib/hooks/useSales";
-import { rootCategoryPaths } from "@/lib/ssr/category";
 import { getSales } from "@/lib/getSales";
 
 const DEFAULT_HERO =
@@ -80,8 +75,6 @@ function Home({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
   const t = useIntl();
-
-  console.log(sales);
 
   const rootCategories = categories?.edges
     ? categories.edges

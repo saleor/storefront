@@ -41,6 +41,7 @@
     "graphql-tag": "2.12.6",
     "next": "13.0.4",
     "next-seo": "5.8.0",
+    "next-share": "^0.24.0",
     "next-sitemap": "3.1.29",
     "next-usequerystate": "1.7.2",
     "nextjs-progressbar": "0.0.16",

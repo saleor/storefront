@@ -26378,6 +26378,7 @@ export type ProductDetailsFragment = {
   }> | null;
   thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
   productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+  collections?: Array<{ __typename?: "Collection"; name: string }> | null;
 };
 
 export type ProductMediaFragment = {
@@ -28675,6 +28676,7 @@ export type ProductBySlugQuery = {
     }> | null;
     thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
     productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+    collections?: Array<{ __typename?: "Collection"; name: string }> | null;
   } | null;
 };
 
@@ -28802,9 +28804,9 @@ export type ProductPathsQuery = {
 };
 
 export type SalesQueryVariables = Exact<{
-  cursor?: InputMaybe<Scalars["String"]>;
-  perPage?: InputMaybe<Scalars["Int"]>;
-  channel?: InputMaybe<Scalars["String"]>;
+  cursor?: InputMaybe<Scalars["String"]["input"]>;
+  perPage?: InputMaybe<Scalars["Int"]["input"]>;
+  channel?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type SalesQuery = {
@@ -29485,6 +29487,9 @@ export const ProductDetailsFragmentDoc = gql`
       id
       name
       slug
+    }
+    collections {
+      name
     }
   }
   ${SelectedAttributeDetailsFragmentDoc}
