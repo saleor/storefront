@@ -24,6 +24,10 @@ import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
 import { getCategoriesData } from "@/lib/getCategories";
 import { translate } from "@/lib/translations";
 
+import { useFeaturedProducts } from "@/lib/hooks/useFeaturedProducts";
+import { useSales } from "@/lib/hooks/useSales";
+import { rootCategoryPaths } from "@/lib/ssr/category";
+
 const DEFAULT_HERO =
   STOREFRONT_NAME === "FASHION4YOU" ? DefaultHeroWomanImg.src : DefaultHeroImgC4U.src;
 
@@ -40,9 +44,11 @@ export const getStaticProps = async () => {
       getCollectionsData(),
       getCategoriesData(),
       getFeaturedProducts(),
+      getSales()
     ]);
 
   const newsIdData = newsIdResult.status === "fulfilled" ? newsIdResult.value : null;
+  const salesData = salesResult.status === "fulfilled" ? salesResult.value : null;
   const collectionsData = collectionsResult.status === "fulfilled" ? collectionsResult.value : null;
   const categoriesData = categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
   const featuredProductsData =
@@ -70,7 +76,6 @@ function Home({
   collections,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
-
   const t = useIntl();
 
   const rootCategories = categories?.edges
@@ -78,6 +83,16 @@ function Home({
         .filter((edge: any) => edge.node.ancestors?.edges.length === 0)
         .map((edge: any) => edge.node)
     : [];
+
+  const rootCategories = categories?.edges
+    ? categories.edges
+        .filter((edge: any) => edge.node.ancestors?.edges.length === 0)
+        .map((edge: any) => edge.node)
+    : [];
+  
+  const salesExist = () => {
+    return sales?.length > 0;
+  };
 
   const hasCategories = rootCategories?.length > 0;
   const hasNews = news?.length > 0;
@@ -178,6 +193,37 @@ function Home({
               </section>
             )}
             <ProductsFeatured products={featuredProducts?.products} />
+            {salesExist() && (
+              <div id="sales" className="home-page__sale">
+                <div className="container home-page__sale-wrapper">
+                  <h2 className="home-page__sale-wrapper-title">
+                    Zakupy w dobrej cenie - sprawdź nasze <span>promocje</span> już teraz!
+                  </h2>
+                  <p className="home-page__sale-wrapper-subtitle">
+                    Znudziły Ci się standardowe zakupy? Szukasz czegoś wyjątkowego, co jednocześnie
+                    pozwoli Ci oszczędzić pieniądze? Nasza oferta promocyjna jest idealnym
+                    rozwiązaniem!
+                  </p>
+                </div>
+                <div className="home-page__sale-content container">
+                  {sales?.edges?.map(({ node: sale }) => {
+                    if (sale?.products?.totalCount > 0) {
+                      return (
+                        <a className="home-page__sale-content-item">
+                          {sales?.name?.match(/\d/) ? (
+                            <h2 className="sale-with-percent">
+                              <h3>-{sale.name}%</h3>
+                            </h2>
+                          ) : (
+                            <span className="sale-without-percent">
+                              <h3>{sale.name}</h3>
+                            </span>
+                          )}
+                        </a>
+                      );
+                    }
+                  }
+             </div>
             {hasCollections && (
               <div className="mt-64">
                 <div className="container">
