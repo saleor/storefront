@@ -10,11 +10,11 @@ import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
-import DefaultHeroWomanImg from "../../../images/homepage/hero-img.jpg";
-import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg";
-import WomanCategory from "../../../images/homepage/woman-category.jpg";
-import ManCategory from "../../../images/homepage/man-category.jpg";
-import KidCategory from "../../../images/homepage/kid-category.jpg";
+import DefaultHeroWomanImg from "../../images/homepage/hero-img.jpg";
+import DefaultHeroImgC4U from "../../images/homepage/hero-img-default-c4u.jpg";
+import WomanCategory from "../../images/homepage/woman-category.jpg";
+import ManCategory from "../../images/homepage/man-category.jpg";
+import KidCategory from "../../images/homepage/kid-category.jpg";
 import usePaths from "@/lib/paths";
 import { GetStaticPaths, InferGetStaticPropsType } from "next";
 import { getNewsData, getNewsIdData } from "@/lib/getNews";
