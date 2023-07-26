@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <a href="pass">
           <div className="w-full aspect-1 relative">
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} width={512} height={512} />
+              <Image src={thumbnailUrl} width={512} height={512} alt="" />
             ) : (
               <div className="grid justify-items-center content-center h-full w-full">
                 <PhotographIcon className="h-10 w-10 content-center" />

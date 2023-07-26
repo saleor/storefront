@@ -3,6 +3,7 @@ import { ProductDetailsFragment } from "@/saleor/api";
 import { PhotographIcon } from "@heroicons/react/outline";
 import Image from "next/image";
 import Link from "next/link";
+import { useRegions } from "../RegionsProvider";
 
 interface ProductCarouselItemProps {
   product: ProductDetailsFragment;
@@ -10,40 +11,53 @@ interface ProductCarouselItemProps {
 
 const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) => {
   const paths = usePaths();
-  const { category } = product;
   const thumbnailUrl = product.thumbnail?.url;
+  const { formatPrice } = useRegions();
+
+  const isOnSale = product.pricing?.onSale;
+  const price = product.pricing?.priceRange?.start?.gross;
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
 
   return (
-    <li key={product.id} className="w-full list-none hover: cursor-pointer">
+    <li key={product.id} className="w-full">
       <Link
         href={paths.products._slug(product.slug).$url()}
         prefetch={false}
         passHref
         legacyBehavior
       >
-        <div className="text-center md:flex md:justify-center md:flex-col md:items-center">
-          <div className="flex h-[350px] md:h-[210px]">
+        <a href="pass">
+          <div className="w-full aspect-1 relative">
             {thumbnailUrl ? (
-              <Image
-                src={thumbnailUrl}
-                width={512}
-                height={512}
-                alt=""
-                className="object-contain"
-              />
+              <Image src={thumbnailUrl} width={262} height={322} alt="" className="h-auto m-auto" />
             ) : (
-              <div className="grid place-items-center h-full w-full">
-                <PhotographIcon className="h-10 w-10" />
+              <div className="grid justify-items-center content-center h-full w-full">
+                <PhotographIcon className="h-10 w-10 content-center" />
               </div>
-            )}{" "}
+            )}
           </div>
-          <p className="bg-[#f4f4f4] text-[#c1c1c1] py-2 px-4 text-center mt-2 w-max">
-            {category?.name}
-          </p>
-          <h4 className="mt-8 mb-2 text-center capitalize text-md font-normal text-main underline">
-            {product.name}
-          </h4>
-        </div>
+          <div className="flex justify-center items-center mx-auto text-center flex-col">
+            <p
+              className="mt-2 font-regular text-md text-main first-letter:uppercase lowercase w-full md:w-auto"
+              data-testid={`productName${product.name}`}
+            >
+              {product.name}
+            </p>
+            <div className="flex flex-row gap-3 items-center">
+              <p
+                className="block mt-4 text font-semibold text-md text-main uppercase"
+                data-testid={`productName${product.name}`}
+              >
+                {formatPrice(price)}
+              </p>
+              {isOnSale && (
+                <p className="block mt-4 text font-normal text-md uppercase line-through text-gray-400">
+                  {formatPrice(undiscountedPrice)}
+                </p>
+              )}
+            </div>
+          </div>
+        </a>
       </Link>
     </li>
   );

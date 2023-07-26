@@ -25,7 +25,7 @@ const ProductsFeatured = ({ products }: ProductsFeaturedProps) => {
           <Carousel
             className="mt-8"
             withIndicators
-            height={750}
+            height={830}
             slideSize="33.333333%"
             slideGap="md"
             loop
@@ -36,7 +36,7 @@ const ProductsFeatured = ({ products }: ProductsFeaturedProps) => {
             ]}
           >
             {products.map((product) => (
-              <Carousel.Slide key={product.id}>
+              <Carousel.Slide key={product.id} className="list-none">
                 <ProductCarouselItem product={product} />
               </Carousel.Slide>
             ))}
