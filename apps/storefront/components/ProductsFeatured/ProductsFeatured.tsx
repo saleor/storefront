@@ -25,7 +25,7 @@ const ProductsFeatured = ({ products }: ProductsFeaturedProps) => {
           <Carousel
             className="mt-8"
             withIndicators
-            height={830}
+            height={700}
             slideSize="33.333333%"
             slideGap="md"
             loop

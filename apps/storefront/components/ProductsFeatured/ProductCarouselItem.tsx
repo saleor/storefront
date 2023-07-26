@@ -27,16 +27,16 @@ const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) =>
         legacyBehavior
       >
         <a href="pass">
-          <div className="w-full aspect-1 relative">
+          <div className="relative">
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} width={262} height={322} alt="" className="h-auto m-auto" />
+              <Image src={thumbnailUrl} width={222} height={222} alt="" className="m-auto" />
             ) : (
               <div className="grid justify-items-center content-center h-full w-full">
                 <PhotographIcon className="h-10 w-10 content-center" />
               </div>
             )}
           </div>
-          <div className="flex justify-center items-center mx-auto text-center flex-col">
+          <div className="flex justify-center items-center mx-auto text-center flex-col mt-8">
             <p
               className="mt-2 font-regular text-md text-main first-letter:uppercase lowercase w-full md:w-auto"
               data-testid={`productName${product.name}`}
