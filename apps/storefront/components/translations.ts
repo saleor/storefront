@@ -472,6 +472,17 @@ export const messages = defineMessages({
     description: "Infobanner text",
     defaultMessage: "TO GET FREE DELIVERY FOR ORDERS OVER 200ZL",
   },
+  featuredProducts: {
+    id: "app.pages.channel.locale.index.featuredProducts",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage: "Here are our recommended products!",
+  },
+  featuredProductsText: {
+    id: "app.pages.channel.locale.index.featuredProductsText",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage:
+      "Don't have time to browse through hundreds of products? Are you looking for the best suggestions that will save you time and money? Our recommended products are a guarantee of success!",
+  },
 });
 
 export default messages;

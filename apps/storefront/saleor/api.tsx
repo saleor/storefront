@@ -28503,6 +28503,25 @@ export type PageQuery = {
       title?: string | null;
       content?: string | null;
     } | null;
+    attributes: Array<{
+      __typename?: "SelectedAttribute";
+      attribute: {
+        __typename?: "Attribute";
+        slug?: string | null;
+        id: string;
+        name?: string | null;
+        inputType?: AttributeInputTypeEnum | null;
+      };
+      values: Array<{
+        __typename?: "AttributeValue";
+        id: string;
+        name?: string | null;
+        slug?: string | null;
+        value?: string | null;
+        reference?: string | null;
+        file?: { __typename?: "File"; url: string; contentType?: string | null } | null;
+      }>;
+    }>;
   } | null;
 };
 
@@ -31625,6 +31644,25 @@ export const PageDocument = gql`
       slug
       created
       content
+      attributes {
+        attribute {
+          slug
+          id
+          name
+          inputType
+        }
+        values {
+          id
+          name
+          slug
+          value
+          reference
+          file {
+            url
+            contentType
+          }
+        }
+      }
     }
   }
 `;

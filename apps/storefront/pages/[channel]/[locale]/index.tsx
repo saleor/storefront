@@ -140,11 +140,11 @@ function Home({
             <AdvantagesBlock />
             {hasCategories && (
               <section className="mt-64">
-                <div className="container px-4 sm:px-0">
-                  <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
+                <div className="flex flex-col items-center py-6 container">
+                  <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                     {t.formatMessage(messages.categories)}
                   </h2>
-                  <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+                  <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                     {t.formatMessage(messages.categoriesText)}
                   </p>
                 </div>
@@ -182,10 +182,10 @@ function Home({
               <div className="mt-64">
                 <div className="container">
                   <div className="flex flex-col items-center my-auto pb-4">
-                    <h2 className="text-center font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
+                    <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                       {t.formatMessage(messages.collections)}
                     </h2>
-                    <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[768px]">
+                    <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                       {t.formatMessage(messages.collectionsText)}
                     </p>
                   </div>
@@ -204,7 +204,7 @@ function Home({
                           >
                             <div className="relative bg-cover bg-center w-full flex flex-wrap items-center">
                               <div
-                                className="h-auto max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-cover bg-no-repeat object-cover px-40 py-80 rounded-lg lg:w-full hover:brightness-[45%]"
+                                className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-cover bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-lg"
                                 style={
                                   collection.backgroundImage
                                     ? {
@@ -232,10 +232,10 @@ function Home({
             {hasNews && (
               <div className="container pt-32" id="news">
                 <div className="flex flex-col items-center mx-auto">
-                  <h2 className="text-left lg:text-center mt-4 font-semibold text-4xl sm:text-5xl md:text-5xl lg:text-5xl leading-tight">
+                  <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                     {t.formatMessage(messages.latestArticles)}
                   </h2>
-                  <p className="mt-4 text-md sm:text-md md:text-md lg:text-md text-gray-700 text-left lg:text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+                  <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                     {t.formatMessage(messages.latestArticlesText)}
                   </p>
                 </div>

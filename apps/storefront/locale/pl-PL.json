@@ -91,5 +91,7 @@
   "app.pages.channel.locale.index.shopDescription": "Sklep internetowy z tanią odzieżą używaną damską, męską i dziecięcą. W naszym lumpeksie online posiadamy ubrania używane oraz z outletu. Setki marek i mnóstwo niepowtarzalnego stylu.",
   "app.components.infobanner.infobanner.marketingFirstText": "UŻYJ NASZEGO KODU",
   "app.components.infobanner.infobanner.marketingSecondText": "ABY OTRZYMAĆ DARMOWĄ DOSTAWĘ DLA ZAMÓWIEŃ POWYŻEJ 200ZŁ",
-  "app.pages.channel.locale.index.shop": "Sklep"
+  "app.pages.channel.locale.index.shop": "Sklep",
+  "app.pages.channel.locale.index.featuredProducts": "Oto nasze polecane produkty",
+  "app.pages.channel.locale.index.featuredProductsText": " Nie masz czasu na przeglądanie setek produktów? Szukasz najlepszych propozycji, które pozwolą Ci zaoszczędzić czas i pieniądze? Nasze polecane produkty to gwarancja sukcesu!"
 }
