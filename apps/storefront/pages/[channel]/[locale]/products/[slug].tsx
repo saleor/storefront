@@ -172,7 +172,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           Powrót
         </button>
       </main>
-      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+      <main className="container gap-[3rem] flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
           <div className="flex-grow-2 w-full md:w-1/2 lg:w-1/2 xl:w-2/3 md:pb-0 md:pr-8 box-border">
             <ProductGallery product={product} selectedVariant={selectedVariant} />
