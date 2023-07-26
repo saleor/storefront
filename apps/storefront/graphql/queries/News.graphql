@@ -1,0 +1,37 @@
+query NewsQuery($id: ID!, $channelSlug: String) {
+  pages(
+    sortBy: { field: CREATION_DATE, direction: DESC }
+    first: 50
+    filter: { pageTypes: [$id], metadata: { key: "channel", value: $channelSlug } }
+  ) {
+    edges {
+      node {
+        slug
+        title
+        content
+        seoDescription
+        seoTitle
+        created
+        attributes {
+          values {
+            file {
+              url
+              contentType
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query NewsIdQuery {
+  pageTypes(first: 5, filter: { search: "news" }) {
+    edges {
+      node {
+        id
+        slug
+      }
+    }
+  }
+}

@@ -73,7 +73,7 @@
 }
 
 .user-menu {
-  @apply absolute top-[100%] right-0 shadow-modal flex flex-col  invisible;
+  @apply absolute top-[100%] right-0 shadow-modal flex flex-col  invisible bg-white;
 }
 
 .user-menu-item {

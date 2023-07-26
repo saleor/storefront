@@ -4,31 +4,23 @@ import Link from "next/link";
 import React from "react";
 
 import { usePaths } from "@/lib/paths";
-import { translate } from "@/lib/translations";
 import { ProductCardFragment } from "@/saleor/api";
+import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
+import { useRegions } from "../RegionsProvider";
 
 export interface ProductCardProps {
   product: ProductCardFragment;
 }
 
-const getCardSecondaryDescription = (product: ProductCardFragment) => {
-  const artistAttribute = product.attributes.find(
-    (attribute) => attribute.attribute.slug === "artist"
-  );
-  const mainValue = artistAttribute?.values[0];
-  if (mainValue?.name) {
-    return mainValue.name;
-  }
-  if (product.category) {
-    return translate(product.category, "name");
-  }
-  return "";
-};
-
 export function ProductCard({ product }: ProductCardProps) {
   const paths = usePaths();
-  const secondaryDescription = getCardSecondaryDescription(product);
+  const { formatPrice } = useRegions();
+
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
+
+  const isOnSale = product.pricing?.onSale;
+  const price = product.pricing?.priceRange?.start?.gross;
+  const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
 
   return (
     <li key={product.id} className="w-full">
@@ -39,26 +31,37 @@ export function ProductCard({ product }: ProductCardProps) {
         legacyBehavior
       >
         <a href="pass">
-          <div className="bg-main active:bg-brand w-full aspect-1">
-            <div className="bg-white w-full h-full relative object-contain ">
-              {thumbnailUrl ? (
-                <Image src={thumbnailUrl} width={512} height={512} />
-              ) : (
-                <div className="grid justify-items-center content-center h-full w-full">
-                  <PhotographIcon className="h-10 w-10 content-center" />
-                </div>
-              )}
+          <div className="w-full aspect-1 relative">
+            {thumbnailUrl ? (
+              <Image src={thumbnailUrl} width={512} height={512} alt="" />
+            ) : (
+              <div className="grid justify-items-center content-center h-full w-full">
+                <PhotographIcon className="h-10 w-10 content-center" />
+              </div>
+            )}
+            <div className="absolute bg-red-600 left-4 top-4 text-white rounded-md text-md">
+              <DiscountInfo isOnSale={isOnSale} product={product} />
             </div>
           </div>
           <p
-            className="block mt-2 text-md font-extrabold text-main truncate"
+            className="block mt-2 font-regular text-md text-main first-letter:uppercase lowercase"
             data-testid={`productName${product.name}`}
           >
-            {translate(product, "name")}
+            {product.name}
           </p>
-          {secondaryDescription && (
-            <p className="block text-md font-normal text-main underline">{secondaryDescription}</p>
-          )}
+          <div className="flex flex-row gap-3 items-center">
+            <p
+              className="block mt-4 text font-semibold text-md text-main uppercase"
+              data-testid={`productName${product.name}`}
+            >
+              {formatPrice(price)}
+            </p>
+            {isOnSale && (
+              <p className="block mt-4 text font-normal text-md uppercase line-through text-gray-400">
+                {formatPrice(undiscountedPrice)}
+              </p>
+            )}
+          </div>
         </a>
       </Link>
     </li>
