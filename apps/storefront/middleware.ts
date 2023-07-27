@@ -36,7 +36,7 @@ export function LocaleRedirectionMiddleware({
   }
 
   const url = nextUrl.clone();
-  url.pathname = `/${channel}/${locale}`;
+  url.pathname = `/${locale}`;
   return NextResponse.redirect(url);
 }
 
