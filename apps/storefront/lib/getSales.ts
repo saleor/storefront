@@ -1,16 +1,8 @@
-import {
-  FeaturedProductsQuery,
-  FeaturedProductsQueryDocument,
-  FeaturedProductsQueryVariables,
-  SalesQuery,
-  SalesQueryDocument,
-  SalesQueryVariables,
-} from "@/saleor/api";
+import { SalesQuery, SalesQueryDocument, SalesQueryVariables } from "@/saleor/api";
 import { ApolloError, ApolloQueryResult } from "@apollo/client";
-import { CHANNEL_SLUG } from "./const";
 import { serverApolloClient } from "./ssr/common";
 
-class NetworkError extends Error {
+export class NetworkError extends Error {
   constructor(message?: string) {
     super(message);
     this.name = "NetworkError";

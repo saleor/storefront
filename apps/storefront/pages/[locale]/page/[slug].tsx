@@ -61,12 +61,15 @@ function PagePage({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
       {page?.attributes.slice(0, 1).map(({ attribute, values }, attributeIndex) => (
         <div key={attribute.id} data-test-id={attributeIndex}>
           {values.map((value) => {
-            const url = value?.file?.url.split("/");
-            const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
-              url[url.length - 1]
+            const url = value?.file?.url;
+            if (!url) return null;
+
+            const urlParts = url.split("/");
+            const correctedUrl = `${AWS_MEDIA_BUCKET}/${urlParts[urlParts.length - 2]}/${
+              urlParts[urlParts.length - 1]
             }`;
             return (
-              <Image src={correctedUrl} alt="attributes" key={value.id} width="400" height="400" />
+              <Image src={correctedUrl} alt="attributes" key={value.id} width={400} height={400} />
             );
           })}
         </div>
@@ -78,9 +81,12 @@ function PagePage({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
         {page?.attributes.slice(1, 3).map(({ attribute, values }, attributeIndex) => (
           <div key={attribute.id} data-test-id={attributeIndex}>
             {values.map((value) => {
-              const url = value?.file?.url.split("/");
-              const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
-                url[url.length - 1]
+              const url = value?.file?.url;
+              if (!url) return null;
+
+              const urlParts = url.split("/");
+              const correctedUrl = `${AWS_MEDIA_BUCKET}/${urlParts[urlParts.length - 2]}/${
+                urlParts[urlParts.length - 1]
               }`;
               return (
                 <div key={value.id} className="flex items-center justify-center">

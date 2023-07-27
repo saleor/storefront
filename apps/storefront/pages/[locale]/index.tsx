@@ -83,7 +83,6 @@ function Home({
     : [];
 
   const hasCategories = rootCategories?.length > 0;
-  const hasNews = news?.length > 0;
   const hasCollections = collections && collections.edges && collections.edges.length > 0;
 
   const visibleCategories =
@@ -95,6 +94,7 @@ function Home({
       <Image src={ImageSrc} alt={slug} loading="lazy" className="object-cover w-full h-auto" />
     );
   };
+
   return (
     <>
       <BaseSeo />
@@ -265,52 +265,48 @@ function Home({
               </div>
             </div>
           )}
-          {hasNews && (
-            <div className="container pt-32" id="news">
-              <div className="flex flex-col items-center mx-auto">
-                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
-                  {t.formatMessage(messages.latestArticles)}
-                </h2>
-                <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
-                  {t.formatMessage(messages.latestArticlesText)}
-                </p>
-              </div>
-              <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
-                {news?.slice(0, 3).map(({ node: newsElem }: any) => {
-                  const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
-                  const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
-                    url[url.length - 1]
-                  }`;
-
-                  const contentStringify = JSON.parse(
-                    newsElem?.content as string
-                  ).blocks[0].data.text.replace(/^(.{128}[^\s]*).*/, "$1");
-
-                  return (
-                    <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
-                      <Image
-                        src={correctedUrl}
-                        alt=""
-                        className="w-full h-80 object-cover rounded-lg"
-                        width={500}
-                        height={500}
-                        loading="lazy"
-                      />
-                      <Link
-                        href={paths.page._slug(newsElem?.slug as string).$url()}
-                        className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
-                      >
-                        {newsElem?.title}
-                      </Link>
-                      <p className="text-base text-gray-700 break-words">
-                        {contentStringify} [...]
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
+          <div className="container pt-32" id="news">
+            <div className="flex flex-col items-center mx-auto">
+              <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                {t.formatMessage(messages.latestArticles)}
+              </h2>
+              <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                {t.formatMessage(messages.latestArticlesText)}
+              </p>
             </div>
-          )}
+            <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
+              {news?.slice(0, 3).map(({ node: newsElem }: any) => {
+                const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
+                const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
+                  url[url.length - 1]
+                }`;
+
+                const contentStringify = JSON.parse(
+                  newsElem?.content as string
+                ).blocks[0].data.text.replace(/^(.{128}[^\s]*).*/, "$1");
+
+                return (
+                  <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
+                    <Image
+                      src={correctedUrl}
+                      alt=""
+                      className="w-full h-80 object-cover rounded-lg"
+                      width={500}
+                      height={500}
+                      loading="lazy"
+                    />
+                    <Link
+                      href={paths.page._slug(newsElem?.slug as string).$url()}
+                      className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
+                    >
+                      {newsElem?.title}
+                    </Link>
+                    <p className="text-base text-gray-700 break-words">{contentStringify} [...]</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </main>
       </div>
     </>

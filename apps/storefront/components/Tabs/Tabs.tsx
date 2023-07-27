@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AttributeDetails } from "../product/AttributeDetails";
 import RichText from "../RichText";
 import { translate } from "@/lib/translations";
-import { ProductType } from "@/saleor/api";
+import { ProductDetailsFragment, ProductType, ProductVariantDetailsFragment } from "@/saleor/api";
 import Image from "next/image";
 
 const dimensionsPhotos = {
@@ -13,7 +13,12 @@ const dimensionsPhotos = {
   templateE: "https://saleor-sandbox-media.s3.eu-central-1.amazonaws.com/templates/Szablon-5.png",
 };
 
-export const Tabs = ({ product, selectedVariant }) => {
+interface TabsProps {
+  product: ProductDetailsFragment;
+  selectedVariant?: ProductVariantDetailsFragment;
+}
+
+export const Tabs = ({ product, selectedVariant }: TabsProps) => {
   const [dimensions, setDimensions] = useState(null);
 
   const description = translate(product, "description");
@@ -24,7 +29,7 @@ export const Tabs = ({ product, selectedVariant }) => {
 
   useEffect(() => {
     if (description) {
-      const parsedDescription = JSON.parse(description as string);
+      const parsedDescription = JSON.parse(description);
       const dimensionsBlock = parsedDescription.blocks.find((block: any) =>
         block.data.text.startsWith("Wymiary: ")
       );
