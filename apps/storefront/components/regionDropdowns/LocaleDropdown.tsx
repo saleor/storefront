@@ -37,7 +37,6 @@ export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
       pathname: router.pathname,
       query: {
         ...router.query,
-        channel: currentChannel.slug,
         locale: localeSlug,
       },
     });
