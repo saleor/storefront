@@ -3,7 +3,7 @@ import { pagesPath } from "@/lib/$path";
 
 export const usePaths = () => {
   const { currentChannel, currentLocale: locale } = useRegions();
-  return pagesPath._locale(locale);
+  return pagesPath;
 };
 
 export default usePaths;

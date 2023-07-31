@@ -2,7 +2,7 @@ import { pagesPath } from "@/lib/$path";
 import { MenuItemFragment } from "@/saleor/api";
 
 export const getLinkPath = (item: MenuItemFragment, channel: string, locale: string) => {
-  const paths = pagesPath._locale(locale);
+  const paths = pagesPath;
 
   if (item.category) {
     return paths.category._slug(item.category?.slug).$url();
@@ -14,7 +14,7 @@ export const getLinkPath = (item: MenuItemFragment, channel: string, locale: str
     return paths.page._slug(item.page?.slug).$url();
   }
 
-  return paths.$url();
+  return paths.$baseurl();
 };
 
 export default getLinkPath;
