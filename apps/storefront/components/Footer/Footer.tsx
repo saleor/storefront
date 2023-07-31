@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import Image from "next/legacy/image";
 import Link from "next/link";
 import { HTMLAttributes } from "react";
 
@@ -7,7 +6,6 @@ import { getLinkPath } from "@/lib/menus";
 import { usePaths } from "@/lib/paths";
 import { useFooterMenuQuery } from "@/saleor/api";
 
-import { Box } from "../Box";
 import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
 import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
 import { useRegions } from "../RegionsProvider";
@@ -21,7 +19,7 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 // Saleor Cloud currently doesn't support relative URLs in the footer.
 // This is a workaround to make the links work.
 // @todo remove this when the issue is fixed.
-const fixMenuItemLocalhostUrl = (url: string) => url.replace(/^https?:\/\/localhost:8000\//, "/");
+// const fixMenuItemLocalhostUrl = (url: string) => url.replace(/^https?:\/\/localhost:8000\//, "/");
 
 export function Footer({ className, ...rest }: FooterProps) {
   const shopName = STOREFRONT_NAME;
@@ -72,7 +70,7 @@ export function Footer({ className, ...rest }: FooterProps) {
               <ul className={styles.menu}>
                 {shopName === "FASHION4YOU"
                   ? item.name === "Kategorie"
-                    ? item.children.slice(0, -1).map((subItem) => (
+                    ? item?.children?.slice(0, -1).map((subItem) => (
                         <li key={subItem?.id}>
                           <NavLink
                             item={subItem}
@@ -82,7 +80,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                         </li>
                       ))
                     : item.name === "Kolekcje"
-                    ? item.children.map((subItem) =>
+                    ? item?.children?.map((subItem) =>
                         subItem.name.includes("c4u") ? null : (
                           <li key={subItem?.id}>
                             <NavLink
@@ -93,7 +91,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                           </li>
                         )
                       )
-                    : item.children.map((subItem) => (
+                    : item?.children?.map((subItem) => (
                         <li key={subItem?.id}>
                           <NavLink
                             item={subItem}
@@ -104,7 +102,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                       ))
                   : shopName === "CLOTHES4U"
                   ? item.name === "Kategorie"
-                    ? item.children.map((subItem) => (
+                    ? item?.children?.map((subItem) => (
                         <li key={subItem?.id}>
                           <NavLink
                             item={subItem}
@@ -114,7 +112,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                         </li>
                       ))
                     : item.name === "Kolekcje"
-                    ? item.children.map((subItem) =>
+                    ? item?.children?.map((subItem) =>
                         subItem.name === "Polecane produkty" ? null : (
                           <li key={subItem?.id}>
                             <NavLink
@@ -125,7 +123,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                           </li>
                         )
                       )
-                    : item.children.map((subItem) => (
+                    : item?.children?.map((subItem) => (
                         <li key={subItem?.id}>
                           <NavLink
                             item={subItem}
@@ -134,7 +132,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                           />
                         </li>
                       ))
-                  : item.children.map((subItem) => (
+                  : item?.children?.map((subItem) => (
                       <p key={subItem.id}>
                         <li key={subItem?.id}>
                           <NavLink

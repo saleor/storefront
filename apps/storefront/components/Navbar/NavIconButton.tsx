@@ -6,9 +6,10 @@ import MenuIcon from "./menuIcon.svg"; // in the final version it should be impo
 import styles from "./Navbar.module.css"; // in the final version it should be imported from ui-kit package
 import Spyglass from "./spyglassIcon.svg"; // in the final version it should be imported from ui-kit package
 import User from "./userIcon.svg"; // in the final version it should be imported from ui-kit package
+import Heart from "./heart.svg";
 
 interface NavIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  icon: "user" | "bag" | "spyglass" | "menu" | "close";
+  icon: "user" | "bag" | "spyglass" | "menu" | "close" | "heart";
   counter?: number;
   isButton?: boolean;
 }
@@ -19,6 +20,8 @@ const getIcon = (iconName: NavIconButtonProps["icon"]) => {
       return <User />;
     case "bag":
       return <Bag />;
+    case "heart":
+      return <Heart width="22" height="22" />;
     case "spyglass":
       return <Spyglass />;
     case "menu":

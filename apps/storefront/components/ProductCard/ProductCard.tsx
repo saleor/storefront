@@ -1,15 +1,17 @@
 import { PhotographIcon } from "@heroicons/react/outline";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { usePaths } from "@/lib/paths";
-import { ProductCardFragment } from "@/saleor/api";
+import { ProductDetailsFragment } from "@/saleor/api";
 import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
 import { useRegions } from "../RegionsProvider";
+import { useWishlist } from "context/WishlistContext";
+import Heart from "../Navbar/heart.svg";
 
 export interface ProductCardProps {
-  product: ProductCardFragment;
+  product: ProductDetailsFragment;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -21,6 +23,32 @@ export function ProductCard({ product }: ProductCardProps) {
   const isOnSale = product.pricing?.onSale;
   const price = product.pricing?.priceRange?.start?.gross;
   const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start?.gross;
+
+  const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
+
+  const isItemInWishlist = (product: ProductDetailsFragment) => {
+    return wishlist.some((item) => item.id === product?.id);
+  };
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const handleAddToWishlist = async (product: ProductDetailsFragment) => {
+    if (product) {
+      addToWishlist(product);
+    }
+  };
+
+  const handleDeleteFromWishlist = (product: ProductDetailsFragment) => {
+    removeFromWishlist(product.id);
+  };
 
   return (
     <li key={product.id} className="w-full">
@@ -64,6 +92,27 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </a>
       </Link>
+      {isItemInWishlist(product) ? (
+        <button
+          onClick={() => handleDeleteFromWishlist(product)}
+          type="submit"
+          data-testid="addToWishlistButton"
+          className="text-md flex flex-row gap-3 mt-6"
+        >
+          <Heart width="22" height="22" />
+          Delete from wishlist
+        </button>
+      ) : (
+        <button
+          onClick={() => handleAddToWishlist(product)}
+          type="submit"
+          data-testid="addToWishlistButton"
+          className="text-md flex flex-row gap-3 mt-6"
+        >
+          <Heart width="22" height="22" />
+          Add to wishlist
+        </button>
+      )}
     </li>
   );
 }

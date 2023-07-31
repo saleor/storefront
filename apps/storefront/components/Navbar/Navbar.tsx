@@ -15,9 +15,8 @@ import UserMenu from "./UserMenu";
 import { useRegions } from "@/components/RegionsProvider";
 import { invariant } from "@apollo/client/utilities/globals";
 import { useUser } from "@/lib/useUser";
-import Image from "next/image";
-import logo from "../../images/c4u_logo.svg";
 import Logo from "./Logo";
+import { useWishlist } from "context/WishlistContext";
 
 export function Navbar() {
   const paths = usePaths();
@@ -28,6 +27,8 @@ export function Navbar() {
   const { authenticated: actuallyAuthenticated } = useUser();
   const { checkout } = useCheckout();
   const { currentLocale, currentChannel } = useRegions();
+
+  const { wishlistCounter } = useWishlist();
 
   // Avoid hydration warning by setting authenticated state in useEffect
   useEffect(() => {
@@ -96,6 +97,18 @@ export function Navbar() {
             <a href={externalCheckoutUrl} className="ml-2 hidden xs:flex" data-testid="cartIcon">
               <NavIconButton isButton={false} icon="bag" aria-hidden="true" counter={counter} />
             </a>
+            <Link
+              href={paths.wishlist.$url()}
+              className="ml-2 hidden xs:flex"
+              data-testid="wishlistIcon"
+            >
+              <NavIconButton
+                isButton={false}
+                icon="heart"
+                aria-hidden="true"
+                counter={wishlistCounter} // Display wishlistCounter as the counter value
+              />
+            </Link>
             <Link href={paths.search.$url()} passHref legacyBehavior>
               <a href="pass" className="hidden lg:flex ml-2" data-testid="searchIcon">
                 <NavIconButton isButton={false} icon="spyglass" />

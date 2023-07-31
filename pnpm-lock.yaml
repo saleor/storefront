@@ -401,6 +401,9 @@ importers:
       react:
         specifier: 18.2.0
         version: 18.2.0
+      react-cookie:
+        specifier: ^4.1.1
+        version: 4.1.1(react@18.2.0)
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
@@ -10625,6 +10628,10 @@ packages:
   /@types/content-type@1.1.5:
     resolution: {integrity: sha512-dgMN+syt1xb7Hk8LU6AODOfPlvz5z1CbXpPuJE5ZrX9STfBOIXF09pEB8N7a97WT9dbngt3ksDCm6GW6yMrxfQ==}
     dev: true
+
+  /@types/cookie@0.3.3:
+    resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
+    dev: false
 
   /@types/cookie@0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
@@ -23955,6 +23962,17 @@ packages:
       whatwg-fetch: 3.6.2
     dev: true
 
+  /react-cookie@4.1.1(react@18.2.0):
+    resolution: {integrity: sha512-ffn7Y7G4bXiFbnE+dKhHhbP+b8I34mH9jqnm8Llhj89zF4nPxPutxHT1suUqMeCEhLDBI7InYwf1tpaSoK5w8A==}
+    peerDependencies:
+      react: '>= 16.3.0'
+    dependencies:
+      '@types/hoist-non-react-statics': 3.3.1
+      hoist-non-react-statics: 3.3.2
+      react: 18.2.0
+      universal-cookie: 4.0.4
+    dev: false
+
   /react-dev-utils@12.0.1(eslint@8.26.0)(typescript@4.8.4)(webpack@5.83.1):
     resolution: {integrity: sha512-84Ivxmr17KjUupyqzFode6xKhjwuEJDROWKJy/BthkL7Wn6NJ8h4WE6k/exAv6ImS+0oZLRRW5j/aINMHyeGeQ==}
     engines: {node: '>=14'}
@@ -27445,6 +27463,13 @@ packages:
       unist-util-is: 4.1.0
       unist-util-visit-parents: 3.1.1
     dev: true
+
+  /universal-cookie@4.0.4:
+    resolution: {integrity: sha512-lbRVHoOMtItjWbM7TwDLdl8wug7izB0tq3/YVKhT/ahB4VDvWMyvnADfnJI8y6fSvsjh51Ix7lTGC6Tn4rMPhw==}
+    dependencies:
+      '@types/cookie': 0.3.3
+      cookie: 0.4.2
+    dev: false
 
   /universal-user-agent@6.0.0:
     resolution: {integrity: sha512-isyNax3wXoKaulPDZWHQqbmIx1k2tb9fb3GGDBRxCscfYV2Ch7WxPArBsFEG8s/safwXTT7H4QGhaIkTp9447w==}

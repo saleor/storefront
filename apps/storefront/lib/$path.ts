@@ -88,6 +88,12 @@ export const pagesPath = {
       hash: url?.hash,
     }),
   },
+  wishlist: {
+    $url: (url?: { hash?: string }) => ({
+      pathname: "/wishlist" as const,
+      hash: url?.hash,
+    }),
+  },
   page: {
     _slug: (slug: string | number) => ({
       $url: (url?: { hash?: string }) => ({

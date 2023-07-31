@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import { useRouter } from "next/router";
 import Custom404 from "pages/404";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 
 import { Layout, VariantSelector } from "@/components";
@@ -21,6 +21,7 @@ import {
   ProductBySlugDocument,
   ProductBySlugQuery,
   ProductBySlugQueryVariables,
+  ProductDetailsFragment,
   useCheckoutAddProductLineMutation,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
@@ -39,6 +40,8 @@ import {
 } from "next-share";
 import { usePaths } from "@/lib/paths";
 import { STOREFRONT_NAME } from "@/lib/const";
+import { useWishlist } from "context/WishlistContext";
+import Heart from "../../../components/Navbar/heart.svg";
 
 export type OptionalQuery = {
   variant?: string;
@@ -80,7 +83,6 @@ export const getStaticProps = async (
 function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
   const t = useIntl();
-  const paths = usePaths();
   const { currentChannel, formatPrice, query } = useRegions();
 
   const { checkoutToken, setCheckoutToken, checkout } = useCheckout();
@@ -91,6 +93,32 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
+
+  const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
+
+  const isItemInWishlist = (product: ProductDetailsFragment) => {
+    return wishlist.some((item) => item.id === product?.id);
+  };
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const handleAddToWishlist = async (product: ProductDetailsFragment) => {
+    if (product) {
+      addToWishlist(product);
+    }
+  };
+
+  const handleDeleteFromWishlist = (product: ProductDetailsFragment) => {
+    removeFromWishlist(product.id);
+  };
 
   if (!product?.id) {
     return <Custom404 />;
@@ -200,35 +228,59 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
                 {shouldDisplayPrice && (
                   <h2 className="text-xl font-bold text-gray-800">{formatPrice(price)}</h2>
                 )}
-                <div className="flex flex-row gap-6 items-center">
-                  <div className="line-through text-lg text-gray-400">
-                    {formatPrice(undiscountedPrice)}
-                  </div>
+                {isOnSale && (
+                  <div className="flex flex-row gap-6 items-center">
+                    <div className="line-through text-lg text-gray-400">
+                      {formatPrice(undiscountedPrice)}
+                    </div>
 
-                  <DiscountInfo isOnSale={isOnSale} product={product} />
-                </div>
+                    <DiscountInfo isOnSale={isOnSale} product={product} />
+                  </div>
+                )}
               </div>
 
               <VariantSelector product={product} selectedVariantID={selectedVariantID} />
-
-              <button
-                onClick={onAddToCart}
-                type="submit"
-                disabled={isAddToCartButtonDisabled}
-                className={clsx(
-                  "mt-6 py-3 text-md px-12 w-max rounded-lg text-white bg-brand border-2 border-brand transition-all ease-in-out duration-300 focus:outline-none",
-                  {
-                    "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
-                    "hover:bg-white hover:text-brand hover:border-brand":
-                      !isAddToCartButtonDisabled,
-                  }
+              <div className="flex flex-col items-start gap-8">
+                <button
+                  onClick={onAddToCart}
+                  type="submit"
+                  disabled={isAddToCartButtonDisabled}
+                  className={clsx(
+                    "mt-6 py-3 text-md px-12 w-max rounded-lg text-white bg-brand border-2 border-brand transition-all ease-in-out duration-300 focus:outline-none",
+                    {
+                      "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
+                      "hover:bg-white hover:text-brand hover:border-brand":
+                        !isAddToCartButtonDisabled,
+                    }
+                  )}
+                  data-testid="addToCartButton"
+                >
+                  {loadingAddToCheckout
+                    ? t.formatMessage(messages.adding)
+                    : t.formatMessage(messages.addToCart)}
+                </button>
+                {isItemInWishlist(product) ? (
+                  <button
+                    onClick={() => handleDeleteFromWishlist(product)}
+                    type="submit"
+                    data-testid="addToWishlistButton"
+                    className="text-sm flex flex-row gap-3"
+                  >
+                    <Heart width="22" height="22" />
+                    Delete from wishlist
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleAddToWishlist(product)}
+                    type="submit"
+                    data-testid="addToWishlistButton"
+                    className="text-sm flex flex-row gap-3"
+                  >
+                    <Heart width="22" height="22" />
+                    Add to wishlist
+                  </button>
                 )}
-                data-testid="addToCartButton"
-              >
-                {loadingAddToCheckout
-                  ? t.formatMessage(messages.adding)
-                  : t.formatMessage(messages.addToCart)}
-              </button>
+              </div>
 
               {!selectedVariant && (
                 <p className="mt-6 text-base text-red-500">
