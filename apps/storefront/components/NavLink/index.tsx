@@ -11,7 +11,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ item, ...props }) => {
   const paths = usePaths();
 
   const { name, url, category, collection, page } = item;
-  const link = (url: string) => (
+  const link = (url: any) => (
     <Link passHref href={url} {...props}>
       {name}
     </Link>

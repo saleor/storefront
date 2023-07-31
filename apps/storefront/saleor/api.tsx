@@ -5055,6 +5055,15 @@ export type DeactivateAllUserTokens = {
   errors: Array<AccountError>;
 };
 
+/** Delete object's private metadata. */
+export type DeleteMegapackPrivateMetadata = {
+  __typename?: "DeleteMegapackPrivateMetadata";
+  errors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  metadataErrors: Array<MetadataError>;
+};
+
 /** Delete metadata of an object. To use it, you need to have access to the modified object. */
 export type DeleteMetadata = {
   __typename?: "DeleteMetadata";
@@ -5318,6 +5327,11 @@ export type DiscountValueTypeEnum = "FIXED" | "PERCENTAGE";
 
 /** An enumeration. */
 export type DistanceUnitsEnum = "CM" | "FT" | "INCH" | "KM" | "M" | "YD";
+
+export type DocumentInput = {
+  /** Document of warehouse positions */
+  document?: InputMaybe<Scalars["String"]["input"]>;
+};
 
 /** Represents shop's domain. */
 export type Domain = {
@@ -5832,6 +5846,80 @@ export type ExportScope =
   | "FILTER"
   /** Export products with given ids. */
   | "IDS";
+
+/**
+ * Creates a correction invoice.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtInvoiceCorrectionRequest = {
+  __typename?: "ExtInvoiceCorrectionRequest";
+  errors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  invoiceErrors: Array<InvoiceError>;
+  /** Order related to an invoice. */
+  order?: Maybe<Order>;
+};
+
+/**
+ * Export products to csv file.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtMigloCsv = {
+  __typename?: "ExtMigloCsv";
+  errors: Array<InvoiceError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  exportErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+export type ExtReceiptInput = {
+  metadata?: InputMaybe<Scalars["GenericScalar"]["input"]>;
+  /** External receipt number */
+  receiptNumber?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/**
+ * Creates a ready to send invoice.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtReceiptRequest = {
+  __typename?: "ExtReceiptRequest";
+  errors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  invoiceErrors: Array<InvoiceError>;
+  payload?: Maybe<Scalars["GenericScalar"]["output"]>;
+};
+
+/**
+ * Updates externally created receipt info.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtReceiptUpdate = {
+  __typename?: "ExtReceiptUpdate";
+  errors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  invoiceErrors: Array<InvoiceError>;
+};
+
+/**
+ * Export products to csv file.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtTallyCsv = {
+  __typename?: "ExtTallyCsv";
+  errors: Array<InvoiceError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  exportErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
 
 export type ExternalAuthentication = {
   __typename?: "ExternalAuthentication";
@@ -7362,6 +7450,26 @@ export type Job = {
 
 /** An enumeration. */
 export type JobStatusEnum = "DELETED" | "FAILED" | "PENDING" | "SUCCESS";
+
+/**
+ * Generates a shipping label.
+ *
+ * Requires one of the following permissions: MANAGE_SHIPPING.
+ */
+export type LabelCreate = {
+  __typename?: "LabelCreate";
+  errors: Array<ShippingError>;
+  /** B64 label representation */
+  label?: Maybe<Scalars["String"]["output"]>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  shippingErrors: Array<ShippingError>;
+};
+
+export type LabelCreateInput = {
+  /** Order ID */
+  order: Scalars["String"]["input"];
+  packageId: Scalars["Int"]["input"];
+};
 
 /** An enumeration. */
 export type LanguageCodeEnum =
@@ -9423,6 +9531,8 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_USERS.
    */
   customerUpdate?: Maybe<CustomerUpdate>;
+  /** Delete object's private metadata. */
+  deleteMegapackPrivateMetadata?: Maybe<DeleteMegapackPrivateMetadata>;
   /** Delete metadata of an object. To use it, you need to have access to the modified object. */
   deleteMetadata?: Maybe<DeleteMetadata>;
   /** Delete object's private metadata. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
@@ -9514,6 +9624,36 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportProducts?: Maybe<ExportProducts>;
+  /**
+   * Creates a correction invoice.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extInvoiceCorrectionRequest?: Maybe<ExtInvoiceCorrectionRequest>;
+  /**
+   * Export products to csv file.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extMigloCsv?: Maybe<ExtMigloCsv>;
+  /**
+   * Creates a ready to send invoice.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extReceiptRequest?: Maybe<ExtReceiptRequest>;
+  /**
+   * Updates externally created receipt info.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extReceiptUpdate?: Maybe<ExtReceiptUpdate>;
+  /**
+   * Export products to csv file.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extTallyCsv?: Maybe<ExtTallyCsv>;
   /** Prepare external authentication URL for user by custom plugin. */
   externalAuthenticationUrl?: Maybe<ExternalAuthenticationUrl>;
   /** Logout user by custom plugin. */
@@ -9658,6 +9798,12 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_ORDERS.
    */
   invoiceUpdate?: Maybe<InvoiceUpdate>;
+  /**
+   * Generates a shipping label.
+   *
+   * Requires one of the following permissions: MANAGE_SHIPPING.
+   */
+  labelCreate?: Maybe<LabelCreate>;
   /**
    * Deletes menus.
    *
@@ -9900,6 +10046,12 @@ export type Mutation = {
    */
   orderVoid?: Maybe<OrderVoid>;
   /**
+   * Creates a new package.
+   *
+   * Requires one of the following permissions: MANAGE_SHIPPING.
+   */
+  packageCreate?: Maybe<PackageCreate>;
+  /**
    * Assign attributes to a given page type.
    *
    * Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
@@ -10064,6 +10216,12 @@ export type Mutation = {
    */
   productAttributeUnassign?: Maybe<ProductAttributeUnassign>;
   /**
+   * Remove Warehouse Locations
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productBulkClearWarehouseLocation?: Maybe<ProductBulkClearWarehouseLocation>;
+  /**
    * Creates products.
    *
    * Added in Saleor 3.13.
@@ -10079,6 +10237,12 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   productBulkDelete?: Maybe<ProductBulkDelete>;
+  /**
+   * Publish products.
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productBulkPublish?: Maybe<ProductBulkPublish>;
   /**
    * Manage product's availability in channels.
    *
@@ -10121,6 +10285,12 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   productMediaReorder?: Maybe<ProductMediaReorder>;
+  /**
+   * Retrieves a product media from backup.
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productMediaRetrieveFromBackup?: Maybe<ProductMediaRetrieveFromBackup>;
   /**
    * Updates a product media.
    *
@@ -10616,6 +10786,8 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   unassignWarehouseShippingZone?: Maybe<WarehouseShippingZoneUnassign>;
+  /** Updates private metadata of a megapack product. */
+  updateMegapackPrivateMetadata?: Maybe<UpdateMegapackPrivateMetadata>;
   /** Updates metadata of an object. To use it, you need to have access to the modified object. */
   updateMetadata?: Maybe<UpdateMetadata>;
   /** Updates private metadata of an object. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
@@ -10742,6 +10914,66 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookUpdate?: Maybe<WebhookUpdate>;
+  /**
+   * Creates a new WMS deliverer.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDelivererCreate?: Maybe<WmsDelivererCreate>;
+  /**
+   * Updates a new WMS deliverer.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDelivererDelete?: Maybe<WmsDelivererDelete>;
+  /**
+   * Updates a new WMS deliverer.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDelivererUpdate?: Maybe<WmsDelivererUpdate>;
+  /**
+   * Creates a new wms doc position.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocPositionCreate?: Maybe<WmsDocPositionCreate>;
+  /**
+   * Deletes a wms document position.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocPositionDelete?: Maybe<WmsDocPositionDelete>;
+  /**
+   * Updates an existing wms doc position.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocPositionUpdate?: Maybe<WmsDocPositionUpdate>;
+  /**
+   * Deletes wms documents.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentBulkDelete?: Maybe<WmsDocumentBulkDelete>;
+  /**
+   * Creates a new WMS document.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentCreate?: Maybe<WmsDocumentCreate>;
+  /**
+   * Deletes a wms document.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentDelete?: Maybe<WmsDocumentDelete>;
+  /**
+   * Updates an existing Wms document.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentUpdate?: Maybe<WmsDocumentUpdate>;
 };
 
 export type MutationAccountAddressCreateArgs = {
@@ -11167,6 +11399,11 @@ export type MutationCustomerUpdateArgs = {
   input: CustomerInput;
 };
 
+export type MutationDeleteMegapackPrivateMetadataArgs = {
+  id: Scalars["ID"]["input"];
+  keys: Array<Scalars["String"]["input"]>;
+};
+
 export type MutationDeleteMetadataArgs = {
   id: Scalars["ID"]["input"];
   keys: Array<Scalars["String"]["input"]>;
@@ -11236,6 +11473,29 @@ export type MutationExportGiftCardsArgs = {
 
 export type MutationExportProductsArgs = {
   input: ExportProductsInput;
+};
+
+export type MutationExtInvoiceCorrectionRequestArgs = {
+  orderId: Scalars["ID"]["input"];
+};
+
+export type MutationExtMigloCsvArgs = {
+  month: Scalars["String"]["input"];
+  year: Scalars["String"]["input"];
+};
+
+export type MutationExtReceiptRequestArgs = {
+  orderId: Scalars["ID"]["input"];
+};
+
+export type MutationExtReceiptUpdateArgs = {
+  id: Scalars["ID"]["input"];
+  input: ExtReceiptInput;
+};
+
+export type MutationExtTallyCsvArgs = {
+  month: Scalars["String"]["input"];
+  year: Scalars["String"]["input"];
 };
 
 export type MutationExternalAuthenticationUrlArgs = {
@@ -11348,6 +11608,10 @@ export type MutationInvoiceSendNotificationArgs = {
 export type MutationInvoiceUpdateArgs = {
   id: Scalars["ID"]["input"];
   input: UpdateInvoiceInput;
+};
+
+export type MutationLabelCreateArgs = {
+  input: LabelCreateInput;
 };
 
 export type MutationMenuBulkDeleteArgs = {
@@ -11531,6 +11795,10 @@ export type MutationOrderVoidArgs = {
   id: Scalars["ID"]["input"];
 };
 
+export type MutationPackageCreateArgs = {
+  input: PackageCreateInput;
+};
+
 export type MutationPageAttributeAssignArgs = {
   attributeIds: Array<Scalars["ID"]["input"]>;
   pageTypeId: Scalars["ID"]["input"];
@@ -11666,6 +11934,10 @@ export type MutationProductAttributeUnassignArgs = {
   productTypeId: Scalars["ID"]["input"];
 };
 
+export type MutationProductBulkClearWarehouseLocationArgs = {
+  skus: Array<InputMaybe<Scalars["String"]["input"]>>;
+};
+
 export type MutationProductBulkCreateArgs = {
   errorPolicy?: InputMaybe<ErrorPolicyEnum>;
   products: Array<ProductBulkCreateInput>;
@@ -11673,6 +11945,19 @@ export type MutationProductBulkCreateArgs = {
 
 export type MutationProductBulkDeleteArgs = {
   ids: Array<Scalars["ID"]["input"]>;
+};
+
+export type MutationProductBulkPublishArgs = {
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+  endingAtDate?: InputMaybe<Scalars["String"]["input"]>;
+  filter?: InputMaybe<ProductFilterInput>;
+  ids: Array<InputMaybe<Scalars["ID"]["input"]>>;
+  isPublished: Scalars["Boolean"]["input"];
+  mode: Scalars["String"]["input"];
+  offerType: Scalars["String"]["input"];
+  publishHour?: InputMaybe<Scalars["String"]["input"]>;
+  startingAt?: InputMaybe<Scalars["String"]["input"]>;
+  startingAtDate?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type MutationProductChannelListingUpdateArgs = {
@@ -11704,6 +11989,10 @@ export type MutationProductMediaDeleteArgs = {
 export type MutationProductMediaReorderArgs = {
   mediaIds: Array<Scalars["ID"]["input"]>;
   productId: Scalars["ID"]["input"];
+};
+
+export type MutationProductMediaRetrieveFromBackupArgs = {
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationProductMediaUpdateArgs = {
@@ -12092,6 +12381,11 @@ export type MutationUnassignWarehouseShippingZoneArgs = {
   shippingZoneIds: Array<Scalars["ID"]["input"]>;
 };
 
+export type MutationUpdateMegapackPrivateMetadataArgs = {
+  id: Scalars["ID"]["input"];
+  input: Array<MetadataInput>;
+};
+
 export type MutationUpdateMetadataArgs = {
   id: Scalars["ID"]["input"];
   input: Array<MetadataInput>;
@@ -12185,6 +12479,49 @@ export type MutationWebhookTriggerArgs = {
 export type MutationWebhookUpdateArgs = {
   id: Scalars["ID"]["input"];
   input: WebhookUpdateInput;
+};
+
+export type MutationWmsDelivererCreateArgs = {
+  input: WmsDelivererInput;
+};
+
+export type MutationWmsDelivererDeleteArgs = {
+  id: Scalars["ID"]["input"];
+};
+
+export type MutationWmsDelivererUpdateArgs = {
+  id: Scalars["ID"]["input"];
+  input: WmsDelivererInput;
+};
+
+export type MutationWmsDocPositionCreateArgs = {
+  input: WmsDocPositionInput;
+};
+
+export type MutationWmsDocPositionDeleteArgs = {
+  id: Scalars["ID"]["input"];
+};
+
+export type MutationWmsDocPositionUpdateArgs = {
+  id: Scalars["ID"]["input"];
+  input: WmsDocPositionInput;
+};
+
+export type MutationWmsDocumentBulkDeleteArgs = {
+  ids: Array<InputMaybe<Scalars["ID"]["input"]>>;
+};
+
+export type MutationWmsDocumentCreateArgs = {
+  input: WmsDocumentInput;
+};
+
+export type MutationWmsDocumentDeleteArgs = {
+  id: Scalars["ID"]["input"];
+};
+
+export type MutationWmsDocumentUpdateArgs = {
+  id: Scalars["ID"]["input"];
+  input: WmsDocumentInput;
 };
 
 export type NameTranslationInput = {
@@ -13991,6 +14328,39 @@ export type OrderVoid = {
   orderErrors: Array<OrderError>;
 };
 
+/**
+ * Creates a new package.
+ *
+ * Requires one of the following permissions: MANAGE_SHIPPING.
+ */
+export type PackageCreate = {
+  __typename?: "PackageCreate";
+  errors: Array<ShippingError>;
+  /** Package ID */
+  packageId?: Maybe<Scalars["String"]["output"]>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  shippingErrors: Array<ShippingError>;
+};
+
+export type PackageCreateInput = {
+  /** Order fullfilment ID */
+  fulfillment: Scalars["String"]["input"];
+  /** Order ID */
+  order: Scalars["String"]["input"];
+  packageData: Array<InputMaybe<PackageInput>>;
+};
+
+export type PackageInput = {
+  /** Width */
+  sizeX?: InputMaybe<Scalars["Int"]["input"]>;
+  /** Length */
+  sizeY?: InputMaybe<Scalars["Int"]["input"]>;
+  /** Height */
+  sizeZ?: InputMaybe<Scalars["Int"]["input"]>;
+  /** Weight */
+  weight: Scalars["Float"]["input"];
+};
+
 /** A static page that can be manually added by a shop operator through the dashboard. */
 export type Page = Node &
   ObjectWithMetadata & {
@@ -15295,6 +15665,12 @@ export type PaymentSource = {
   paymentMethodId?: Maybe<Scalars["String"]["output"]>;
 };
 
+/** data to generate redirect url for payment */
+export type PaymentUrl = {
+  __typename?: "PaymentUrl";
+  paymentUrl?: Maybe<Scalars["String"]["output"]>;
+};
+
 /**
  * Voids the authorized payment.
  *
@@ -15965,6 +16341,22 @@ export type ProductAttributeUnassign = {
 };
 
 /**
+ * Remove Warehouse Locations
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductBulkClearWarehouseLocation = {
+  __typename?: "ProductBulkClearWarehouseLocation";
+  /** Returns how many objects were affected. */
+  count: Scalars["Int"]["output"];
+  errors: Array<ProductError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  productErrors: Array<ProductError>;
+  /** List of products with location deleted */
+  productVariants: Array<ProductVariant>;
+};
+
+/**
  * Creates products.
  *
  * Added in Saleor 3.13.
@@ -16078,6 +16470,20 @@ export type ProductBulkCreateInput = {
  */
 export type ProductBulkDelete = {
   __typename?: "ProductBulkDelete";
+  /** Returns how many objects were affected. */
+  count: Scalars["Int"]["output"];
+  errors: Array<ProductError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  productErrors: Array<ProductError>;
+};
+
+/**
+ * Publish products.
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductBulkPublish = {
+  __typename?: "ProductBulkPublish";
   /** Returns how many objects were affected. */
   count: Scalars["Int"]["output"];
   errors: Array<ProductError>;
@@ -16777,6 +17183,20 @@ export type ProductMediaReorder = {
   productErrors: Array<ProductError>;
 };
 
+/**
+ * Retrieves a product media from backup.
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductMediaRetrieveFromBackup = {
+  __typename?: "ProductMediaRetrieveFromBackup";
+  errors: Array<ProductError>;
+  media?: Maybe<ProductMedia>;
+  product?: Maybe<Product>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  productErrors: Array<ProductError>;
+};
+
 /** An enumeration. */
 export type ProductMediaType = "IMAGE" | "VIDEO";
 
@@ -16816,6 +17236,11 @@ export type ProductMediaUpdated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type ProductMetadataFilterInput = {
+  metadata?: InputMaybe<MetadataInput>;
+  privateMetadata?: InputMaybe<MetadataInput>;
 };
 
 /**
@@ -17277,6 +17702,11 @@ export type ProductTypeInput = {
 
 /** An enumeration. */
 export type ProductTypeKindEnum = "GIFT_CARD" | "NORMAL";
+
+export type ProductTypeMetadataFilterInput = {
+  metadata?: InputMaybe<MetadataInput>;
+  privateMetadata?: InputMaybe<MetadataInput>;
+};
 
 /**
  * Reorder the attributes of a product type.
@@ -18458,6 +18888,8 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportFiles?: Maybe<ExportFileCountableConnection>;
+  /** Generates an url to redirect to payment gateway and complete payment */
+  generatePaymentUrl?: Maybe<PaymentUrl>;
   /**
    * Look up a gift card by ID.
    *
@@ -18582,14 +19014,22 @@ export type Query = {
   product?: Maybe<Product>;
   /** Look up a product type by ID. */
   productType?: Maybe<ProductType>;
+  productTypeWithMetadata?: Maybe<ProductType>;
   /** List of the shop's product types. */
   productTypes?: Maybe<ProductTypeCountableConnection>;
+  /** List of the shop's product types. */
+  productTypesWithMetadata?: Maybe<ProductTypeCountableConnection>;
   /** Look up a product variant by ID or SKU. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
   productVariant?: Maybe<ProductVariant>;
   /** List of product variants. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
   productVariants?: Maybe<ProductVariantCountableConnection>;
+  /** Look for a mega pack SKU number */
+  productVariantsSkus?: Maybe<ProductVariantCountableConnection>;
+  productWithMetadata?: Maybe<Product>;
   /** List of the shop's products. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
   products?: Maybe<ProductCountableConnection>;
+  /** List of the shop's products. */
+  productsWithMetadata?: Maybe<ProductCountableConnection>;
   /**
    * List of top selling products.
    *
@@ -18622,6 +19062,8 @@ export type Query = {
   shippingZones?: Maybe<ShippingZoneCountableConnection>;
   /** Return information about the shop. */
   shop: Shop;
+  /** Look for a mega pack SKU number */
+  sitemapSlugs?: Maybe<SitemapSlugs>;
   /**
    * List of the shop's staff users.
    *
@@ -18714,6 +19156,7 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_STAFF, MANAGE_USERS, MANAGE_ORDERS.
    */
   user?: Maybe<User>;
+  userWithMetadata?: Maybe<User>;
   /**
    * Look up a voucher by ID.
    *
@@ -18732,6 +19175,8 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING.
    */
   warehouse?: Maybe<Warehouse>;
+  /** B64 encoded Warehouse pdf files */
+  warehouseListsGenerate?: Maybe<WarehousePdfFiles>;
   /**
    * List of warehouses.
    *
@@ -18749,6 +19194,19 @@ export type Query = {
   webhookEvents?: Maybe<Array<WebhookEvent>>;
   /** Retrieve a sample payload for a given webhook event based on real data. It can be useful for some integrations where sample payload is required. */
   webhookSamplePayload?: Maybe<Scalars["JSONString"]["output"]>;
+  /** Look up a wms deliverer by id. */
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** List of wms deliverers */
+  wmsDeliverers?: Maybe<WmsDelivererCountableConnection>;
+  /** Look up a wms document position by id */
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** List of wms document positions */
+  wmsDocPositions?: Maybe<WmsDocPositionCountableConnection>;
+  /** Look up a wms document by id or number. */
+  wmsDocument?: Maybe<WmsDocument>;
+  wmsDocumentPdf?: Maybe<Scalars["String"]["output"]>;
+  /** List of wms documents */
+  wmsDocuments?: Maybe<WmsDocumentCountableConnection>;
 };
 
 export type Query_EntitiesArgs = {
@@ -18907,6 +19365,11 @@ export type QueryExportFilesArgs = {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   sortBy?: InputMaybe<ExportFileSortingInput>;
+};
+
+export type QueryGeneratePaymentUrlArgs = {
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+  paymentId: Scalars["ID"]["input"];
 };
 
 export type QueryGiftCardArgs = {
@@ -19069,6 +19532,13 @@ export type QueryProductTypeArgs = {
   id: Scalars["ID"]["input"];
 };
 
+export type QueryProductTypeWithMetadataArgs = {
+  metadataKey?: InputMaybe<Scalars["String"]["input"]>;
+  metadataValue?: InputMaybe<Scalars["String"]["input"]>;
+  privateMetadataKey?: InputMaybe<Scalars["String"]["input"]>;
+  privateMetadataValue?: InputMaybe<Scalars["String"]["input"]>;
+};
+
 export type QueryProductTypesArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
@@ -19076,6 +19546,14 @@ export type QueryProductTypesArgs = {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   sortBy?: InputMaybe<ProductTypeSortingInput>;
+};
+
+export type QueryProductTypesWithMetadataArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  filter?: InputMaybe<ProductTypeMetadataFilterInput>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type QueryProductVariantArgs = {
@@ -19096,6 +19574,21 @@ export type QueryProductVariantsArgs = {
   sortBy?: InputMaybe<ProductVariantSortingInput>;
 };
 
+export type QueryProductVariantsSkusArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  sku?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type QueryProductWithMetadataArgs = {
+  metadataKey?: InputMaybe<Scalars["String"]["input"]>;
+  metadataValue?: InputMaybe<Scalars["String"]["input"]>;
+  privateMetadataKey?: InputMaybe<Scalars["String"]["input"]>;
+  privateMetadataValue?: InputMaybe<Scalars["String"]["input"]>;
+};
+
 export type QueryProductsArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
@@ -19104,6 +19597,14 @@ export type QueryProductsArgs = {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   sortBy?: InputMaybe<ProductOrder>;
+};
+
+export type QueryProductsWithMetadataArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  filter?: InputMaybe<ProductMetadataFilterInput>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type QueryReportProductSalesArgs = {
@@ -19143,6 +19644,13 @@ export type QueryShippingZonesArgs = {
   filter?: InputMaybe<ShippingZoneFilterInput>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+export type QuerySitemapSlugsArgs = {
+  categoriesAmount?: InputMaybe<Scalars["Int"]["input"]>;
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+  pagesAmount?: InputMaybe<Scalars["Int"]["input"]>;
+  productsAmount?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type QueryStaffUsersArgs = {
@@ -19218,6 +19726,13 @@ export type QueryUserArgs = {
   id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
+export type QueryUserWithMetadataArgs = {
+  metadataKey?: InputMaybe<Scalars["String"]["input"]>;
+  metadataValue?: InputMaybe<Scalars["String"]["input"]>;
+  privateMetadataKey?: InputMaybe<Scalars["String"]["input"]>;
+  privateMetadataValue?: InputMaybe<Scalars["String"]["input"]>;
+};
+
 export type QueryVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]["input"]>;
   id: Scalars["ID"]["input"];
@@ -19239,6 +19754,11 @@ export type QueryWarehouseArgs = {
   id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
+export type QueryWarehouseListsGenerateArgs = {
+  filters?: InputMaybe<OrderFilterInput>;
+  orderIds?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+};
+
 export type QueryWarehousesArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
@@ -19254,6 +19774,48 @@ export type QueryWebhookArgs = {
 
 export type QueryWebhookSamplePayloadArgs = {
   eventType: WebhookSampleEventTypeEnum;
+};
+
+export type QueryWmsDelivererArgs = {
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+};
+
+export type QueryWmsDeliverersArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  filter?: InputMaybe<WmsDelivererFilterInput>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+export type QueryWmsDocPositionArgs = {
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+};
+
+export type QueryWmsDocPositionsArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  filter?: InputMaybe<WmsDocPositionFilterInput>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+export type QueryWmsDocumentArgs = {
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  number?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type QueryWmsDocumentPdfArgs = {
+  id: Scalars["ID"]["input"];
+};
+
+export type QueryWmsDocumentsArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  filter?: InputMaybe<WmsDocumentFilterInput>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  sortBy?: InputMaybe<WmsDocumentSortingInput>;
 };
 
 /** Represents a reduced VAT rate for a particular type of goods. */
@@ -21140,6 +21702,14 @@ export type SiteDomainInput = {
   domain?: InputMaybe<Scalars["String"]["input"]>;
   /** Shop site name. */
   name?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** Lists of slugs for sitemap generation */
+export type SitemapSlugs = {
+  __typename?: "SitemapSlugs";
+  categoriesSlugs?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  pagesSlugs?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  productSlugs?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
 };
 
 /**
@@ -23315,6 +23885,15 @@ export type UpdateInvoiceInput = {
   url?: InputMaybe<Scalars["String"]["input"]>;
 };
 
+/** Updates private metadata of a megapack product. */
+export type UpdateMegapackPrivateMetadata = {
+  __typename?: "UpdateMegapackPrivateMetadata";
+  errors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  metadataErrors: Array<MetadataError>;
+};
+
 /** Updates metadata of an object. To use it, you need to have access to the modified object. */
 export type UpdateMetadata = {
   __typename?: "UpdateMetadata";
@@ -24273,6 +24852,57 @@ export type VoucherUpdatedVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]["input"]>;
 };
 
+export type WmsDelivererCountableConnection = {
+  __typename?: "WMSDelivererCountableConnection";
+  edges: Array<WmsDelivererCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]["output"]>;
+};
+
+export type WmsDelivererCountableEdge = {
+  __typename?: "WMSDelivererCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"]["output"];
+  /** The item at the end of the edge. */
+  node: WmsDeliverer;
+};
+
+export type WmsDocPositionCountableConnection = {
+  __typename?: "WMSDocPositionCountableConnection";
+  edges: Array<WmsDocPositionCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]["output"]>;
+};
+
+export type WmsDocPositionCountableEdge = {
+  __typename?: "WMSDocPositionCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"]["output"];
+  /** The item at the end of the edge. */
+  node: WmsDocPosition;
+};
+
+export type WmsDocumentCountableConnection = {
+  __typename?: "WMSDocumentCountableConnection";
+  edges: Array<WmsDocumentCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]["output"]>;
+};
+
+export type WmsDocumentCountableEdge = {
+  __typename?: "WMSDocumentCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"]["output"];
+  /** The item at the end of the edge. */
+  node: WmsDocument;
+};
+
 /** Represents warehouse. */
 export type Warehouse = Node &
   ObjectWithMetadata & {
@@ -24525,6 +25155,13 @@ export type WarehouseMetadataUpdated = Event & {
   version?: Maybe<Scalars["String"]["output"]>;
   /** The warehouse the event relates to. */
   warehouse?: Maybe<Warehouse>;
+};
+
+/** Generated pdf warehouse list and wms docments list files encoded in B64 */
+export type WarehousePdfFiles = {
+  __typename?: "WarehousePdfFiles";
+  warehouseList?: Maybe<Scalars["String"]["output"]>;
+  wmsList?: Maybe<Scalars["String"]["output"]>;
 };
 
 /**
@@ -25782,6 +26419,290 @@ export type Weight = {
 
 /** An enumeration. */
 export type WeightUnitsEnum = "G" | "KG" | "LB" | "OZ" | "TONNE";
+
+/** Represents a wms deliverer */
+export type WmsDeliverer = Node & {
+  __typename?: "WmsDeliverer";
+  /** City */
+  city?: Maybe<Scalars["String"]["output"]>;
+  /** Company name */
+  companyName?: Maybe<Scalars["String"]["output"]>;
+  /** Country */
+  country?: Maybe<CountryCode>;
+  /** Email */
+  email?: Maybe<Scalars["String"]["output"]>;
+  /** First name */
+  firstName?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
+  /** Last name */
+  lastName?: Maybe<Scalars["String"]["output"]>;
+  /** Phone */
+  phone?: Maybe<Scalars["String"]["output"]>;
+  /** Postal Code */
+  postalCode?: Maybe<Scalars["String"]["output"]>;
+  /** Street */
+  street?: Maybe<Scalars["String"]["output"]>;
+  /** VAT ID */
+  vatId?: Maybe<Scalars["String"]["output"]>;
+};
+
+/**
+ * Creates a new WMS deliverer.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDelivererCreate = {
+  __typename?: "WmsDelivererCreate";
+  errors: Array<WmsDocumentError>;
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Updates a new WMS deliverer.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDelivererDelete = {
+  __typename?: "WmsDelivererDelete";
+  errors: Array<WmsDocumentError>;
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+export type WmsDelivererFilterInput = {
+  search?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type WmsDelivererInput = {
+  /** City */
+  city?: InputMaybe<Scalars["String"]["input"]>;
+  /** Company name */
+  companyName?: InputMaybe<Scalars["String"]["input"]>;
+  /** Country */
+  country?: InputMaybe<CountryCode>;
+  /** Email */
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  /** First name */
+  firstName?: InputMaybe<Scalars["String"]["input"]>;
+  /** Last name */
+  lastName?: InputMaybe<Scalars["String"]["input"]>;
+  /** Phone */
+  phone?: InputMaybe<Scalars["String"]["input"]>;
+  /** Postal Code */
+  postalCode?: InputMaybe<Scalars["String"]["input"]>;
+  /** Street */
+  street?: InputMaybe<Scalars["String"]["input"]>;
+  /** VAT ID */
+  vatId?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/**
+ * Updates a new WMS deliverer.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDelivererUpdate = {
+  __typename?: "WmsDelivererUpdate";
+  errors: Array<WmsDocumentError>;
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/** Represents a wms document */
+export type WmsDocPosition = Node & {
+  __typename?: "WmsDocPosition";
+  document?: Maybe<WmsDocument>;
+  id: Scalars["ID"]["output"];
+  productVariant?: Maybe<ProductVariant>;
+  quantity?: Maybe<Scalars["Int"]["output"]>;
+  weight?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/**
+ * Creates a new wms doc position.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocPositionCreate = {
+  __typename?: "WmsDocPositionCreate";
+  errors: Array<WmsDocumentError>;
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Deletes a wms document position.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocPositionDelete = {
+  __typename?: "WmsDocPositionDelete";
+  errors: Array<WmsDocumentError>;
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+export type WmsDocPositionFilterInput = {
+  document?: InputMaybe<DocumentInput>;
+};
+
+export type WmsDocPositionInput = {
+  /** wms document */
+  document?: InputMaybe<Scalars["ID"]["input"]>;
+  /** Product Variant */
+  productVariant?: InputMaybe<Scalars["ID"]["input"]>;
+  /** Quantity */
+  quantity?: InputMaybe<Scalars["Int"]["input"]>;
+  /** Weight */
+  weight?: InputMaybe<Scalars["Float"]["input"]>;
+};
+
+/**
+ * Updates an existing wms doc position.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocPositionUpdate = {
+  __typename?: "WmsDocPositionUpdate";
+  errors: Array<WmsDocumentError>;
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/** Represents a wms document */
+export type WmsDocument = Node & {
+  __typename?: "WmsDocument";
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  createdBy?: Maybe<User>;
+  deliverer?: Maybe<WmsDeliverer>;
+  documentType?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
+  location?: Maybe<Scalars["String"]["output"]>;
+  number?: Maybe<Scalars["String"]["output"]>;
+  recipient?: Maybe<User>;
+  status?: Maybe<Scalars["String"]["output"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  warehouse?: Maybe<Warehouse>;
+  warehouseSecond?: Maybe<Warehouse>;
+};
+
+/**
+ * Deletes wms documents.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentBulkDelete = {
+  __typename?: "WmsDocumentBulkDelete";
+  /** Returns how many objects were affected. */
+  count: Scalars["Int"]["output"];
+  errors: Array<WmsDocumentError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Creates a new WMS document.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentCreate = {
+  __typename?: "WmsDocumentCreate";
+  errors: Array<WmsDocumentError>;
+  wmsDocument?: Maybe<WmsDocument>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Deletes a wms document.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentDelete = {
+  __typename?: "WmsDocumentDelete";
+  errors: Array<WmsDocumentError>;
+  wmsDocument?: Maybe<WmsDocument>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+export type WmsDocumentError = {
+  __typename?: "WmsDocumentError";
+  /** The error code. */
+  code: WmsErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]["output"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type WmsDocumentFilterInput = {
+  createdAt?: InputMaybe<DateRangeInput>;
+  createdBy?: InputMaybe<Scalars["String"]["input"]>;
+  deliverers?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  documentType?: InputMaybe<Array<WmsDocumentTypeFilter>>;
+  location?: InputMaybe<Scalars["String"]["input"]>;
+  recipients?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  search?: InputMaybe<Scalars["String"]["input"]>;
+  status?: InputMaybe<Array<WmsDocumentStatusFilter>>;
+  updatedAt?: InputMaybe<DateRangeInput>;
+  warehouses?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+};
+
+export type WmsDocumentInput = {
+  /** CreatedBy ID */
+  createdBy?: InputMaybe<Scalars["ID"]["input"]>;
+  /** Deliverer */
+  deliverer?: InputMaybe<Scalars["ID"]["input"]>;
+  /** Document Type */
+  documentType?: InputMaybe<Scalars["String"]["input"]>;
+  /** Location */
+  location?: InputMaybe<Scalars["String"]["input"]>;
+  /** Recipient ID */
+  recipient?: InputMaybe<Scalars["ID"]["input"]>;
+  /** Document status */
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  /** Warehouse */
+  warehouse?: InputMaybe<Scalars["ID"]["input"]>;
+  /** Warehouse */
+  warehouseSecond?: InputMaybe<Scalars["ID"]["input"]>;
+};
+
+export type WmsDocumentSortField = "CREATED_AT" | "DOCUMENT_TYPE" | "NAME" | "STATUS" | "WAREHOUSE";
+
+export type WmsDocumentSortingInput = {
+  /** Specifies the direction in which to sort wmsDocuments. */
+  direction: OrderDirection;
+  /** Sort wmsDocuments by the selected field. */
+  field: WmsDocumentSortField;
+};
+
+export type WmsDocumentStatusFilter = "APPROVED" | "DRAFT";
+
+export type WmsDocumentTypeFilter = "FGTN" | "GIN" | "GRN" | "IO" | "IWM";
+
+/**
+ * Updates an existing Wms document.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentUpdate = {
+  __typename?: "WmsDocumentUpdate";
+  errors: Array<WmsDocumentError>;
+  wmsDocument?: Maybe<WmsDocument>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/** An enumeration. */
+export type WmsErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED" | "UNIQUE";
 
 /** _Entity union as defined by Federation spec. */
 export type _Entity =
@@ -29490,6 +30411,11 @@ export const ProductDetailsFragmentDoc = gql`
     }
     collections {
       name
+    }
+    productType {
+      id
+      name
+      slug
     }
   }
   ${SelectedAttributeDetailsFragmentDoc}
@@ -34684,6 +35610,17 @@ export type DeactivateAllUserTokensFieldPolicy = {
   accountErrors?: FieldPolicy<any> | FieldReadFunction<any>;
   errors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type DeleteMegapackPrivateMetadataKeySpecifier = (
+  | "errors"
+  | "item"
+  | "metadataErrors"
+  | DeleteMegapackPrivateMetadataKeySpecifier
+)[];
+export type DeleteMegapackPrivateMetadataFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  item?: FieldPolicy<any> | FieldReadFunction<any>;
+  metadataErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type DeleteMetadataKeySpecifier = (
   | "errors"
   | "item"
@@ -35139,6 +36076,65 @@ export type ExportProductsFieldPolicy = {
   errors?: FieldPolicy<any> | FieldReadFunction<any>;
   exportErrors?: FieldPolicy<any> | FieldReadFunction<any>;
   exportFile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExtInvoiceCorrectionRequestKeySpecifier = (
+  | "errors"
+  | "invoice"
+  | "invoiceErrors"
+  | "order"
+  | ExtInvoiceCorrectionRequestKeySpecifier
+)[];
+export type ExtInvoiceCorrectionRequestFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoice?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoiceErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+  order?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExtMigloCsvKeySpecifier = (
+  | "errors"
+  | "exportErrors"
+  | "invoice"
+  | ExtMigloCsvKeySpecifier
+)[];
+export type ExtMigloCsvFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  exportErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoice?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExtReceiptRequestKeySpecifier = (
+  | "errors"
+  | "invoice"
+  | "invoiceErrors"
+  | "payload"
+  | ExtReceiptRequestKeySpecifier
+)[];
+export type ExtReceiptRequestFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoice?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoiceErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+  payload?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExtReceiptUpdateKeySpecifier = (
+  | "errors"
+  | "invoice"
+  | "invoiceErrors"
+  | ExtReceiptUpdateKeySpecifier
+)[];
+export type ExtReceiptUpdateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoice?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoiceErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExtTallyCsvKeySpecifier = (
+  | "errors"
+  | "exportErrors"
+  | "invoice"
+  | ExtTallyCsvKeySpecifier
+)[];
+export type ExtTallyCsvFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  exportErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+  invoice?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ExternalAuthenticationKeySpecifier = (
   | "id"
@@ -36046,6 +37042,17 @@ export type JobFieldPolicy = {
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LabelCreateKeySpecifier = (
+  | "errors"
+  | "label"
+  | "shippingErrors"
+  | LabelCreateKeySpecifier
+)[];
+export type LabelCreateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  label?: FieldPolicy<any> | FieldReadFunction<any>;
+  shippingErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LanguageDisplayKeySpecifier = ("code" | "language" | LanguageDisplayKeySpecifier)[];
 export type LanguageDisplayFieldPolicy = {
   code?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -36539,6 +37546,7 @@ export type MutationKeySpecifier = (
   | "customerCreate"
   | "customerDelete"
   | "customerUpdate"
+  | "deleteMegapackPrivateMetadata"
   | "deleteMetadata"
   | "deletePrivateMetadata"
   | "deleteWarehouse"
@@ -36555,6 +37563,11 @@ export type MutationKeySpecifier = (
   | "eventDeliveryRetry"
   | "exportGiftCards"
   | "exportProducts"
+  | "extInvoiceCorrectionRequest"
+  | "extMigloCsv"
+  | "extReceiptRequest"
+  | "extReceiptUpdate"
+  | "extTallyCsv"
   | "externalAuthenticationUrl"
   | "externalLogout"
   | "externalNotificationTrigger"
@@ -36580,6 +37593,7 @@ export type MutationKeySpecifier = (
   | "invoiceRequestDelete"
   | "invoiceSendNotification"
   | "invoiceUpdate"
+  | "labelCreate"
   | "menuBulkDelete"
   | "menuCreate"
   | "menuDelete"
@@ -36618,6 +37632,7 @@ export type MutationKeySpecifier = (
   | "orderUpdate"
   | "orderUpdateShipping"
   | "orderVoid"
+  | "packageCreate"
   | "pageAttributeAssign"
   | "pageAttributeUnassign"
   | "pageBulkDelete"
@@ -36646,8 +37661,10 @@ export type MutationKeySpecifier = (
   | "productAttributeAssign"
   | "productAttributeAssignmentUpdate"
   | "productAttributeUnassign"
+  | "productBulkClearWarehouseLocation"
   | "productBulkCreate"
   | "productBulkDelete"
+  | "productBulkPublish"
   | "productChannelListingUpdate"
   | "productCreate"
   | "productDelete"
@@ -36655,6 +37672,7 @@ export type MutationKeySpecifier = (
   | "productMediaCreate"
   | "productMediaDelete"
   | "productMediaReorder"
+  | "productMediaRetrieveFromBackup"
   | "productMediaUpdate"
   | "productReorderAttributeValues"
   | "productTranslate"
@@ -36733,6 +37751,7 @@ export type MutationKeySpecifier = (
   | "transactionRequestAction"
   | "transactionUpdate"
   | "unassignWarehouseShippingZone"
+  | "updateMegapackPrivateMetadata"
   | "updateMetadata"
   | "updatePrivateMetadata"
   | "updateWarehouse"
@@ -36754,6 +37773,16 @@ export type MutationKeySpecifier = (
   | "webhookDryRun"
   | "webhookTrigger"
   | "webhookUpdate"
+  | "wmsDelivererCreate"
+  | "wmsDelivererDelete"
+  | "wmsDelivererUpdate"
+  | "wmsDocPositionCreate"
+  | "wmsDocPositionDelete"
+  | "wmsDocPositionUpdate"
+  | "wmsDocumentBulkDelete"
+  | "wmsDocumentCreate"
+  | "wmsDocumentDelete"
+  | "wmsDocumentUpdate"
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
@@ -36839,6 +37868,7 @@ export type MutationFieldPolicy = {
   customerCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   customerDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   customerUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteMegapackPrivateMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePrivateMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWarehouse?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -36855,6 +37885,11 @@ export type MutationFieldPolicy = {
   eventDeliveryRetry?: FieldPolicy<any> | FieldReadFunction<any>;
   exportGiftCards?: FieldPolicy<any> | FieldReadFunction<any>;
   exportProducts?: FieldPolicy<any> | FieldReadFunction<any>;
+  extInvoiceCorrectionRequest?: FieldPolicy<any> | FieldReadFunction<any>;
+  extMigloCsv?: FieldPolicy<any> | FieldReadFunction<any>;
+  extReceiptRequest?: FieldPolicy<any> | FieldReadFunction<any>;
+  extReceiptUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
+  extTallyCsv?: FieldPolicy<any> | FieldReadFunction<any>;
   externalAuthenticationUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   externalLogout?: FieldPolicy<any> | FieldReadFunction<any>;
   externalNotificationTrigger?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -36880,6 +37915,7 @@ export type MutationFieldPolicy = {
   invoiceRequestDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   invoiceSendNotification?: FieldPolicy<any> | FieldReadFunction<any>;
   invoiceUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
+  labelCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   menuBulkDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   menuCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   menuDelete?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -36918,6 +37954,7 @@ export type MutationFieldPolicy = {
   orderUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   orderUpdateShipping?: FieldPolicy<any> | FieldReadFunction<any>;
   orderVoid?: FieldPolicy<any> | FieldReadFunction<any>;
+  packageCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   pageAttributeAssign?: FieldPolicy<any> | FieldReadFunction<any>;
   pageAttributeUnassign?: FieldPolicy<any> | FieldReadFunction<any>;
   pageBulkDelete?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -36946,8 +37983,10 @@ export type MutationFieldPolicy = {
   productAttributeAssign?: FieldPolicy<any> | FieldReadFunction<any>;
   productAttributeAssignmentUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   productAttributeUnassign?: FieldPolicy<any> | FieldReadFunction<any>;
+  productBulkClearWarehouseLocation?: FieldPolicy<any> | FieldReadFunction<any>;
   productBulkCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   productBulkDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  productBulkPublish?: FieldPolicy<any> | FieldReadFunction<any>;
   productChannelListingUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   productCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   productDelete?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -36955,6 +37994,7 @@ export type MutationFieldPolicy = {
   productMediaCreate?: FieldPolicy<any> | FieldReadFunction<any>;
   productMediaDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   productMediaReorder?: FieldPolicy<any> | FieldReadFunction<any>;
+  productMediaRetrieveFromBackup?: FieldPolicy<any> | FieldReadFunction<any>;
   productMediaUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   productReorderAttributeValues?: FieldPolicy<any> | FieldReadFunction<any>;
   productTranslate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -37033,6 +38073,7 @@ export type MutationFieldPolicy = {
   transactionRequestAction?: FieldPolicy<any> | FieldReadFunction<any>;
   transactionUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   unassignWarehouseShippingZone?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateMegapackPrivateMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   updateMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePrivateMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWarehouse?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -37054,6 +38095,16 @@ export type MutationFieldPolicy = {
   webhookDryRun?: FieldPolicy<any> | FieldReadFunction<any>;
   webhookTrigger?: FieldPolicy<any> | FieldReadFunction<any>;
   webhookUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDelivererCreate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDelivererDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDelivererUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPositionCreate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPositionDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPositionUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocumentBulkDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocumentCreate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocumentDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocumentUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NodeKeySpecifier = ("id" | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
@@ -37956,6 +39007,17 @@ export type OrderVoidFieldPolicy = {
   order?: FieldPolicy<any> | FieldReadFunction<any>;
   orderErrors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PackageCreateKeySpecifier = (
+  | "errors"
+  | "packageId"
+  | "shippingErrors"
+  | PackageCreateKeySpecifier
+)[];
+export type PackageCreateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  packageId?: FieldPolicy<any> | FieldReadFunction<any>;
+  shippingErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PageKeySpecifier = (
   | "attributes"
   | "content"
@@ -38694,6 +39756,10 @@ export type PaymentSourceFieldPolicy = {
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   paymentMethodId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaymentUrlKeySpecifier = ("paymentUrl" | PaymentUrlKeySpecifier)[];
+export type PaymentUrlFieldPolicy = {
+  paymentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PaymentVoidKeySpecifier = (
   | "errors"
   | "payment"
@@ -39023,6 +40089,19 @@ export type ProductAttributeUnassignFieldPolicy = {
   productErrors?: FieldPolicy<any> | FieldReadFunction<any>;
   productType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ProductBulkClearWarehouseLocationKeySpecifier = (
+  | "count"
+  | "errors"
+  | "productErrors"
+  | "productVariants"
+  | ProductBulkClearWarehouseLocationKeySpecifier
+)[];
+export type ProductBulkClearWarehouseLocationFieldPolicy = {
+  count?: FieldPolicy<any> | FieldReadFunction<any>;
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  productErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+  productVariants?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ProductBulkCreateKeySpecifier = (
   | "count"
   | "errors"
@@ -39060,6 +40139,17 @@ export type ProductBulkDeleteKeySpecifier = (
   | ProductBulkDeleteKeySpecifier
 )[];
 export type ProductBulkDeleteFieldPolicy = {
+  count?: FieldPolicy<any> | FieldReadFunction<any>;
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  productErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ProductBulkPublishKeySpecifier = (
+  | "count"
+  | "errors"
+  | "productErrors"
+  | ProductBulkPublishKeySpecifier
+)[];
+export type ProductBulkPublishFieldPolicy = {
   count?: FieldPolicy<any> | FieldReadFunction<any>;
   errors?: FieldPolicy<any> | FieldReadFunction<any>;
   productErrors?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -39344,6 +40434,19 @@ export type ProductMediaReorderKeySpecifier = (
   | ProductMediaReorderKeySpecifier
 )[];
 export type ProductMediaReorderFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  media?: FieldPolicy<any> | FieldReadFunction<any>;
+  product?: FieldPolicy<any> | FieldReadFunction<any>;
+  productErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ProductMediaRetrieveFromBackupKeySpecifier = (
+  | "errors"
+  | "media"
+  | "product"
+  | "productErrors"
+  | ProductMediaRetrieveFromBackupKeySpecifier
+)[];
+export type ProductMediaRetrieveFromBackupFieldPolicy = {
   errors?: FieldPolicy<any> | FieldReadFunction<any>;
   media?: FieldPolicy<any> | FieldReadFunction<any>;
   product?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -40092,6 +41195,7 @@ export type QueryKeySpecifier = (
   | "draftOrders"
   | "exportFile"
   | "exportFiles"
+  | "generatePaymentUrl"
   | "giftCard"
   | "giftCardCurrencies"
   | "giftCardSettings"
@@ -40120,16 +41224,22 @@ export type QueryKeySpecifier = (
   | "plugins"
   | "product"
   | "productType"
+  | "productTypeWithMetadata"
   | "productTypes"
+  | "productTypesWithMetadata"
   | "productVariant"
   | "productVariants"
+  | "productVariantsSkus"
+  | "productWithMetadata"
   | "products"
+  | "productsWithMetadata"
   | "reportProductSales"
   | "sale"
   | "sales"
   | "shippingZone"
   | "shippingZones"
   | "shop"
+  | "sitemapSlugs"
   | "staffUsers"
   | "stock"
   | "stocks"
@@ -40144,13 +41254,22 @@ export type QueryKeySpecifier = (
   | "translation"
   | "translations"
   | "user"
+  | "userWithMetadata"
   | "voucher"
   | "vouchers"
   | "warehouse"
+  | "warehouseListsGenerate"
   | "warehouses"
   | "webhook"
   | "webhookEvents"
   | "webhookSamplePayload"
+  | "wmsDeliverer"
+  | "wmsDeliverers"
+  | "wmsDocPosition"
+  | "wmsDocPositions"
+  | "wmsDocument"
+  | "wmsDocumentPdf"
+  | "wmsDocuments"
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
@@ -40180,6 +41299,7 @@ export type QueryFieldPolicy = {
   draftOrders?: FieldPolicy<any> | FieldReadFunction<any>;
   exportFile?: FieldPolicy<any> | FieldReadFunction<any>;
   exportFiles?: FieldPolicy<any> | FieldReadFunction<any>;
+  generatePaymentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   giftCard?: FieldPolicy<any> | FieldReadFunction<any>;
   giftCardCurrencies?: FieldPolicy<any> | FieldReadFunction<any>;
   giftCardSettings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -40208,16 +41328,22 @@ export type QueryFieldPolicy = {
   plugins?: FieldPolicy<any> | FieldReadFunction<any>;
   product?: FieldPolicy<any> | FieldReadFunction<any>;
   productType?: FieldPolicy<any> | FieldReadFunction<any>;
+  productTypeWithMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   productTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  productTypesWithMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   productVariant?: FieldPolicy<any> | FieldReadFunction<any>;
   productVariants?: FieldPolicy<any> | FieldReadFunction<any>;
+  productVariantsSkus?: FieldPolicy<any> | FieldReadFunction<any>;
+  productWithMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   products?: FieldPolicy<any> | FieldReadFunction<any>;
+  productsWithMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   reportProductSales?: FieldPolicy<any> | FieldReadFunction<any>;
   sale?: FieldPolicy<any> | FieldReadFunction<any>;
   sales?: FieldPolicy<any> | FieldReadFunction<any>;
   shippingZone?: FieldPolicy<any> | FieldReadFunction<any>;
   shippingZones?: FieldPolicy<any> | FieldReadFunction<any>;
   shop?: FieldPolicy<any> | FieldReadFunction<any>;
+  sitemapSlugs?: FieldPolicy<any> | FieldReadFunction<any>;
   staffUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   stock?: FieldPolicy<any> | FieldReadFunction<any>;
   stocks?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -40232,13 +41358,22 @@ export type QueryFieldPolicy = {
   translation?: FieldPolicy<any> | FieldReadFunction<any>;
   translations?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+  userWithMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   voucher?: FieldPolicy<any> | FieldReadFunction<any>;
   vouchers?: FieldPolicy<any> | FieldReadFunction<any>;
   warehouse?: FieldPolicy<any> | FieldReadFunction<any>;
+  warehouseListsGenerate?: FieldPolicy<any> | FieldReadFunction<any>;
   warehouses?: FieldPolicy<any> | FieldReadFunction<any>;
   webhook?: FieldPolicy<any> | FieldReadFunction<any>;
   webhookEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   webhookSamplePayload?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDeliverer?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDeliverers?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPosition?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPositions?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocumentPdf?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ReducedRateKeySpecifier = ("rate" | "rateType" | ReducedRateKeySpecifier)[];
 export type ReducedRateFieldPolicy = {
@@ -41193,6 +42328,17 @@ export type ShopTranslationFieldPolicy = {
   headerText?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   language?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SitemapSlugsKeySpecifier = (
+  | "categoriesSlugs"
+  | "pagesSlugs"
+  | "productSlugs"
+  | SitemapSlugsKeySpecifier
+)[];
+export type SitemapSlugsFieldPolicy = {
+  categoriesSlugs?: FieldPolicy<any> | FieldReadFunction<any>;
+  pagesSlugs?: FieldPolicy<any> | FieldReadFunction<any>;
+  productSlugs?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StaffBulkDeleteKeySpecifier = (
   | "count"
@@ -42240,6 +43386,17 @@ export type TranslationUpdatedFieldPolicy = {
   translation?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UpdateMegapackPrivateMetadataKeySpecifier = (
+  | "errors"
+  | "item"
+  | "metadataErrors"
+  | UpdateMegapackPrivateMetadataKeySpecifier
+)[];
+export type UpdateMegapackPrivateMetadataFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  item?: FieldPolicy<any> | FieldReadFunction<any>;
+  metadataErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UpdateMetadataKeySpecifier = (
   | "errors"
   | "item"
@@ -42733,6 +43890,66 @@ export type VoucherUpdatedFieldPolicy = {
   version?: FieldPolicy<any> | FieldReadFunction<any>;
   voucher?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type WMSDelivererCountableConnectionKeySpecifier = (
+  | "edges"
+  | "pageInfo"
+  | "totalCount"
+  | WMSDelivererCountableConnectionKeySpecifier
+)[];
+export type WMSDelivererCountableConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WMSDelivererCountableEdgeKeySpecifier = (
+  | "cursor"
+  | "node"
+  | WMSDelivererCountableEdgeKeySpecifier
+)[];
+export type WMSDelivererCountableEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WMSDocPositionCountableConnectionKeySpecifier = (
+  | "edges"
+  | "pageInfo"
+  | "totalCount"
+  | WMSDocPositionCountableConnectionKeySpecifier
+)[];
+export type WMSDocPositionCountableConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WMSDocPositionCountableEdgeKeySpecifier = (
+  | "cursor"
+  | "node"
+  | WMSDocPositionCountableEdgeKeySpecifier
+)[];
+export type WMSDocPositionCountableEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WMSDocumentCountableConnectionKeySpecifier = (
+  | "edges"
+  | "pageInfo"
+  | "totalCount"
+  | WMSDocumentCountableConnectionKeySpecifier
+)[];
+export type WMSDocumentCountableConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WMSDocumentCountableEdgeKeySpecifier = (
+  | "cursor"
+  | "node"
+  | WMSDocumentCountableEdgeKeySpecifier
+)[];
+export type WMSDocumentCountableEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type WarehouseKeySpecifier = (
   | "address"
   | "clickAndCollectOption"
@@ -42869,6 +44086,15 @@ export type WarehouseMetadataUpdatedFieldPolicy = {
   recipient?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
   warehouse?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WarehousePdfFilesKeySpecifier = (
+  | "warehouseList"
+  | "wmsList"
+  | WarehousePdfFilesKeySpecifier
+)[];
+export type WarehousePdfFilesFieldPolicy = {
+  warehouseList?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsList?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WarehouseShippingZoneAssignKeySpecifier = (
   | "errors"
@@ -43041,6 +44267,198 @@ export type WeightKeySpecifier = ("unit" | "value" | WeightKeySpecifier)[];
 export type WeightFieldPolicy = {
   unit?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDelivererKeySpecifier = (
+  | "city"
+  | "companyName"
+  | "country"
+  | "email"
+  | "firstName"
+  | "id"
+  | "lastName"
+  | "phone"
+  | "postalCode"
+  | "street"
+  | "vatId"
+  | WmsDelivererKeySpecifier
+)[];
+export type WmsDelivererFieldPolicy = {
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  companyName?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
+  street?: FieldPolicy<any> | FieldReadFunction<any>;
+  vatId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDelivererCreateKeySpecifier = (
+  | "errors"
+  | "wmsDeliverer"
+  | "wmsErrors"
+  | WmsDelivererCreateKeySpecifier
+)[];
+export type WmsDelivererCreateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDeliverer?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDelivererDeleteKeySpecifier = (
+  | "errors"
+  | "wmsDeliverer"
+  | "wmsErrors"
+  | WmsDelivererDeleteKeySpecifier
+)[];
+export type WmsDelivererDeleteFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDeliverer?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDelivererUpdateKeySpecifier = (
+  | "errors"
+  | "wmsDeliverer"
+  | "wmsErrors"
+  | WmsDelivererUpdateKeySpecifier
+)[];
+export type WmsDelivererUpdateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDeliverer?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocPositionKeySpecifier = (
+  | "document"
+  | "id"
+  | "productVariant"
+  | "quantity"
+  | "weight"
+  | WmsDocPositionKeySpecifier
+)[];
+export type WmsDocPositionFieldPolicy = {
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  productVariant?: FieldPolicy<any> | FieldReadFunction<any>;
+  quantity?: FieldPolicy<any> | FieldReadFunction<any>;
+  weight?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocPositionCreateKeySpecifier = (
+  | "errors"
+  | "wmsDocPosition"
+  | "wmsErrors"
+  | WmsDocPositionCreateKeySpecifier
+)[];
+export type WmsDocPositionCreateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPosition?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocPositionDeleteKeySpecifier = (
+  | "errors"
+  | "wmsDocPosition"
+  | "wmsErrors"
+  | WmsDocPositionDeleteKeySpecifier
+)[];
+export type WmsDocPositionDeleteFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPosition?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocPositionUpdateKeySpecifier = (
+  | "errors"
+  | "wmsDocPosition"
+  | "wmsErrors"
+  | WmsDocPositionUpdateKeySpecifier
+)[];
+export type WmsDocPositionUpdateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocPosition?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocumentKeySpecifier = (
+  | "createdAt"
+  | "createdBy"
+  | "deliverer"
+  | "documentType"
+  | "id"
+  | "location"
+  | "number"
+  | "recipient"
+  | "status"
+  | "updatedAt"
+  | "warehouse"
+  | "warehouseSecond"
+  | WmsDocumentKeySpecifier
+)[];
+export type WmsDocumentFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  deliverer?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentType?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  number?: FieldPolicy<any> | FieldReadFunction<any>;
+  recipient?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  warehouse?: FieldPolicy<any> | FieldReadFunction<any>;
+  warehouseSecond?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocumentBulkDeleteKeySpecifier = (
+  | "count"
+  | "errors"
+  | "wmsErrors"
+  | WmsDocumentBulkDeleteKeySpecifier
+)[];
+export type WmsDocumentBulkDeleteFieldPolicy = {
+  count?: FieldPolicy<any> | FieldReadFunction<any>;
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocumentCreateKeySpecifier = (
+  | "errors"
+  | "wmsDocument"
+  | "wmsErrors"
+  | WmsDocumentCreateKeySpecifier
+)[];
+export type WmsDocumentCreateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocumentDeleteKeySpecifier = (
+  | "errors"
+  | "wmsDocument"
+  | "wmsErrors"
+  | WmsDocumentDeleteKeySpecifier
+)[];
+export type WmsDocumentDeleteFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocumentErrorKeySpecifier = (
+  | "code"
+  | "field"
+  | "message"
+  | WmsDocumentErrorKeySpecifier
+)[];
+export type WmsDocumentErrorFieldPolicy = {
+  code?: FieldPolicy<any> | FieldReadFunction<any>;
+  field?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WmsDocumentUpdateKeySpecifier = (
+  | "errors"
+  | "wmsDocument"
+  | "wmsErrors"
+  | WmsDocumentUpdateKeySpecifier
+)[];
+export type WmsDocumentUpdateFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  wmsErrors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type _ServiceKeySpecifier = ("sdl" | _ServiceKeySpecifier)[];
 export type _ServiceFieldPolicy = {
@@ -44091,6 +45509,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | DeactivateAllUserTokensKeySpecifier);
     fields?: DeactivateAllUserTokensFieldPolicy;
   };
+  DeleteMegapackPrivateMetadata?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | DeleteMegapackPrivateMetadataKeySpecifier
+      | (() => undefined | DeleteMegapackPrivateMetadataKeySpecifier);
+    fields?: DeleteMegapackPrivateMetadataFieldPolicy;
+  };
   DeleteMetadata?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | DeleteMetadataKeySpecifier | (() => undefined | DeleteMetadataKeySpecifier);
     fields?: DeleteMetadataFieldPolicy;
@@ -44312,6 +45737,35 @@ export type StrictTypedTypePolicies = {
   ExportProducts?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | ExportProductsKeySpecifier | (() => undefined | ExportProductsKeySpecifier);
     fields?: ExportProductsFieldPolicy;
+  };
+  ExtInvoiceCorrectionRequest?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ExtInvoiceCorrectionRequestKeySpecifier
+      | (() => undefined | ExtInvoiceCorrectionRequestKeySpecifier);
+    fields?: ExtInvoiceCorrectionRequestFieldPolicy;
+  };
+  ExtMigloCsv?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | ExtMigloCsvKeySpecifier | (() => undefined | ExtMigloCsvKeySpecifier);
+    fields?: ExtMigloCsvFieldPolicy;
+  };
+  ExtReceiptRequest?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ExtReceiptRequestKeySpecifier
+      | (() => undefined | ExtReceiptRequestKeySpecifier);
+    fields?: ExtReceiptRequestFieldPolicy;
+  };
+  ExtReceiptUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ExtReceiptUpdateKeySpecifier
+      | (() => undefined | ExtReceiptUpdateKeySpecifier);
+    fields?: ExtReceiptUpdateFieldPolicy;
+  };
+  ExtTallyCsv?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | ExtTallyCsvKeySpecifier | (() => undefined | ExtTallyCsvKeySpecifier);
+    fields?: ExtTallyCsvFieldPolicy;
   };
   ExternalAuthentication?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
@@ -44706,6 +46160,10 @@ export type StrictTypedTypePolicies = {
   Job?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | JobKeySpecifier | (() => undefined | JobKeySpecifier);
     fields?: JobFieldPolicy;
+  };
+  LabelCreate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | LabelCreateKeySpecifier | (() => undefined | LabelCreateKeySpecifier);
+    fields?: LabelCreateFieldPolicy;
   };
   LanguageDisplay?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
@@ -45174,6 +46632,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | OrderVoidKeySpecifier | (() => undefined | OrderVoidKeySpecifier);
     fields?: OrderVoidFieldPolicy;
   };
+  PackageCreate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | PackageCreateKeySpecifier | (() => undefined | PackageCreateKeySpecifier);
+    fields?: PackageCreateFieldPolicy;
+  };
   Page?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | PageKeySpecifier | (() => undefined | PageKeySpecifier);
     fields?: PageFieldPolicy;
@@ -45479,6 +46941,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PaymentSourceKeySpecifier | (() => undefined | PaymentSourceKeySpecifier);
     fields?: PaymentSourceFieldPolicy;
   };
+  PaymentUrl?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | PaymentUrlKeySpecifier | (() => undefined | PaymentUrlKeySpecifier);
+    fields?: PaymentUrlFieldPolicy;
+  };
   PaymentVoid?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | PaymentVoidKeySpecifier | (() => undefined | PaymentVoidKeySpecifier);
     fields?: PaymentVoidFieldPolicy;
@@ -45612,6 +47078,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ProductAttributeUnassignKeySpecifier);
     fields?: ProductAttributeUnassignFieldPolicy;
   };
+  ProductBulkClearWarehouseLocation?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ProductBulkClearWarehouseLocationKeySpecifier
+      | (() => undefined | ProductBulkClearWarehouseLocationKeySpecifier);
+    fields?: ProductBulkClearWarehouseLocationFieldPolicy;
+  };
   ProductBulkCreate?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
       | false
@@ -45632,6 +47105,13 @@ export type StrictTypedTypePolicies = {
       | ProductBulkDeleteKeySpecifier
       | (() => undefined | ProductBulkDeleteKeySpecifier);
     fields?: ProductBulkDeleteFieldPolicy;
+  };
+  ProductBulkPublish?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ProductBulkPublishKeySpecifier
+      | (() => undefined | ProductBulkPublishKeySpecifier);
+    fields?: ProductBulkPublishFieldPolicy;
   };
   ProductBulkResult?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
@@ -45744,6 +47224,13 @@ export type StrictTypedTypePolicies = {
       | ProductMediaReorderKeySpecifier
       | (() => undefined | ProductMediaReorderKeySpecifier);
     fields?: ProductMediaReorderFieldPolicy;
+  };
+  ProductMediaRetrieveFromBackup?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ProductMediaRetrieveFromBackupKeySpecifier
+      | (() => undefined | ProductMediaRetrieveFromBackupKeySpecifier);
+    fields?: ProductMediaRetrieveFromBackupFieldPolicy;
   };
   ProductMediaUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
@@ -46460,6 +47947,10 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ShopTranslationKeySpecifier);
     fields?: ShopTranslationFieldPolicy;
   };
+  SitemapSlugs?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | SitemapSlugsKeySpecifier | (() => undefined | SitemapSlugsKeySpecifier);
+    fields?: SitemapSlugsFieldPolicy;
+  };
   StaffBulkDelete?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
       | false
@@ -46967,6 +48458,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | TranslationUpdatedKeySpecifier);
     fields?: TranslationUpdatedFieldPolicy;
   };
+  UpdateMegapackPrivateMetadata?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | UpdateMegapackPrivateMetadataKeySpecifier
+      | (() => undefined | UpdateMegapackPrivateMetadataKeySpecifier);
+    fields?: UpdateMegapackPrivateMetadataFieldPolicy;
+  };
   UpdateMetadata?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | UpdateMetadataKeySpecifier | (() => undefined | UpdateMetadataKeySpecifier);
     fields?: UpdateMetadataFieldPolicy;
@@ -47159,6 +48657,48 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | VoucherUpdatedKeySpecifier | (() => undefined | VoucherUpdatedKeySpecifier);
     fields?: VoucherUpdatedFieldPolicy;
   };
+  WMSDelivererCountableConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WMSDelivererCountableConnectionKeySpecifier
+      | (() => undefined | WMSDelivererCountableConnectionKeySpecifier);
+    fields?: WMSDelivererCountableConnectionFieldPolicy;
+  };
+  WMSDelivererCountableEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WMSDelivererCountableEdgeKeySpecifier
+      | (() => undefined | WMSDelivererCountableEdgeKeySpecifier);
+    fields?: WMSDelivererCountableEdgeFieldPolicy;
+  };
+  WMSDocPositionCountableConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WMSDocPositionCountableConnectionKeySpecifier
+      | (() => undefined | WMSDocPositionCountableConnectionKeySpecifier);
+    fields?: WMSDocPositionCountableConnectionFieldPolicy;
+  };
+  WMSDocPositionCountableEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WMSDocPositionCountableEdgeKeySpecifier
+      | (() => undefined | WMSDocPositionCountableEdgeKeySpecifier);
+    fields?: WMSDocPositionCountableEdgeFieldPolicy;
+  };
+  WMSDocumentCountableConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WMSDocumentCountableConnectionKeySpecifier
+      | (() => undefined | WMSDocumentCountableConnectionKeySpecifier);
+    fields?: WMSDocumentCountableConnectionFieldPolicy;
+  };
+  WMSDocumentCountableEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WMSDocumentCountableEdgeKeySpecifier
+      | (() => undefined | WMSDocumentCountableEdgeKeySpecifier);
+    fields?: WMSDocumentCountableEdgeFieldPolicy;
+  };
   Warehouse?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | WarehouseKeySpecifier | (() => undefined | WarehouseKeySpecifier);
     fields?: WarehouseFieldPolicy;
@@ -47215,6 +48755,13 @@ export type StrictTypedTypePolicies = {
       | WarehouseMetadataUpdatedKeySpecifier
       | (() => undefined | WarehouseMetadataUpdatedKeySpecifier);
     fields?: WarehouseMetadataUpdatedFieldPolicy;
+  };
+  WarehousePdfFiles?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WarehousePdfFilesKeySpecifier
+      | (() => undefined | WarehousePdfFilesKeySpecifier);
+    fields?: WarehousePdfFilesFieldPolicy;
   };
   WarehouseShippingZoneAssign?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
@@ -47307,6 +48854,95 @@ export type StrictTypedTypePolicies = {
   Weight?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | WeightKeySpecifier | (() => undefined | WeightKeySpecifier);
     fields?: WeightFieldPolicy;
+  };
+  WmsDeliverer?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | WmsDelivererKeySpecifier | (() => undefined | WmsDelivererKeySpecifier);
+    fields?: WmsDelivererFieldPolicy;
+  };
+  WmsDelivererCreate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDelivererCreateKeySpecifier
+      | (() => undefined | WmsDelivererCreateKeySpecifier);
+    fields?: WmsDelivererCreateFieldPolicy;
+  };
+  WmsDelivererDelete?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDelivererDeleteKeySpecifier
+      | (() => undefined | WmsDelivererDeleteKeySpecifier);
+    fields?: WmsDelivererDeleteFieldPolicy;
+  };
+  WmsDelivererUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDelivererUpdateKeySpecifier
+      | (() => undefined | WmsDelivererUpdateKeySpecifier);
+    fields?: WmsDelivererUpdateFieldPolicy;
+  };
+  WmsDocPosition?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | WmsDocPositionKeySpecifier | (() => undefined | WmsDocPositionKeySpecifier);
+    fields?: WmsDocPositionFieldPolicy;
+  };
+  WmsDocPositionCreate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocPositionCreateKeySpecifier
+      | (() => undefined | WmsDocPositionCreateKeySpecifier);
+    fields?: WmsDocPositionCreateFieldPolicy;
+  };
+  WmsDocPositionDelete?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocPositionDeleteKeySpecifier
+      | (() => undefined | WmsDocPositionDeleteKeySpecifier);
+    fields?: WmsDocPositionDeleteFieldPolicy;
+  };
+  WmsDocPositionUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocPositionUpdateKeySpecifier
+      | (() => undefined | WmsDocPositionUpdateKeySpecifier);
+    fields?: WmsDocPositionUpdateFieldPolicy;
+  };
+  WmsDocument?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | WmsDocumentKeySpecifier | (() => undefined | WmsDocumentKeySpecifier);
+    fields?: WmsDocumentFieldPolicy;
+  };
+  WmsDocumentBulkDelete?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocumentBulkDeleteKeySpecifier
+      | (() => undefined | WmsDocumentBulkDeleteKeySpecifier);
+    fields?: WmsDocumentBulkDeleteFieldPolicy;
+  };
+  WmsDocumentCreate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocumentCreateKeySpecifier
+      | (() => undefined | WmsDocumentCreateKeySpecifier);
+    fields?: WmsDocumentCreateFieldPolicy;
+  };
+  WmsDocumentDelete?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocumentDeleteKeySpecifier
+      | (() => undefined | WmsDocumentDeleteKeySpecifier);
+    fields?: WmsDocumentDeleteFieldPolicy;
+  };
+  WmsDocumentError?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocumentErrorKeySpecifier
+      | (() => undefined | WmsDocumentErrorKeySpecifier);
+    fields?: WmsDocumentErrorFieldPolicy;
+  };
+  WmsDocumentUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | WmsDocumentUpdateKeySpecifier
+      | (() => undefined | WmsDocumentUpdateKeySpecifier);
+    fields?: WmsDocumentUpdateFieldPolicy;
   };
   _Service?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | _ServiceKeySpecifier | (() => undefined | _ServiceKeySpecifier);
