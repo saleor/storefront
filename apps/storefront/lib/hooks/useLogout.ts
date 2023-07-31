@@ -14,7 +14,7 @@ export const useLogout = () => {
   const onLogout = async () => {
     signOut();
     resetCheckoutToken();
-    void router.push(paths.$url());
+    void router.push(paths.$baseurl());
   };
 
   return onLogout;

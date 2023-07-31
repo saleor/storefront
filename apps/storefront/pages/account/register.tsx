@@ -55,7 +55,7 @@ function RegisterPage() {
     }
 
     // User signed in successfully.
-    void router.push(paths.$url());
+    void router.push(paths.$baseurl());
   });
 
   return (
