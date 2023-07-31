@@ -154,7 +154,7 @@ export function Footer({ className, ...rest }: FooterProps) {
         <p className="text-sm text-main-3 flex-grow">
           © Copyright 2022 - {new Date().getFullYear()} {STOREFRONT_NAME}
         </p>
-        <div className="invisible md:visible flex gap-4">
+        <div className="invisible md:visible flex gap-4 hidden">
           <ChannelDropdown horizontalAlignment="right" />
           <LocaleDropdown horizontalAlignment="right" />
         </div>
