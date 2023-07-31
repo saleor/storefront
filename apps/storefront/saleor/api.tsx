@@ -27116,7 +27116,13 @@ export type ProductCardFragment = {
   id: string;
   slug: string;
   name: string;
-  productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+  productType: {
+    __typename?: "ProductType";
+    id: string;
+    name: string;
+    slug: string;
+    metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+  };
   translation?: { __typename?: "ProductTranslation"; id: string; name?: string | null } | null;
   thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
   category?: {
@@ -27298,7 +27304,13 @@ export type ProductDetailsFragment = {
     type: ProductMediaType;
   }> | null;
   thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
-  productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+  productType: {
+    __typename?: "ProductType";
+    id: string;
+    name: string;
+    slug: string;
+    metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+  };
   collections?: Array<{ __typename?: "Collection"; name: string }> | null;
 };
 
@@ -29596,7 +29608,13 @@ export type ProductBySlugQuery = {
       type: ProductMediaType;
     }> | null;
     thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
-    productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+    productType: {
+      __typename?: "ProductType";
+      id: string;
+      name: string;
+      slug: string;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+    };
     collections?: Array<{ __typename?: "Collection"; name: string }> | null;
   } | null;
 };
@@ -29625,7 +29643,13 @@ export type ProductCollectionQuery = {
         id: string;
         slug: string;
         name: string;
-        productType: { __typename?: "ProductType"; id: string; name: string; slug: string };
+        productType: {
+          __typename?: "ProductType";
+          id: string;
+          name: string;
+          slug: string;
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        };
         translation?: {
           __typename?: "ProductTranslation";
           id: string;
@@ -30198,6 +30222,10 @@ export const ProductCardFragmentDoc = gql`
       id
       name
       slug
+      metadata {
+        key
+        value
+      }
     }
     translation(languageCode: $locale) {
       id
@@ -30416,6 +30444,10 @@ export const ProductDetailsFragmentDoc = gql`
       id
       name
       slug
+      metadata {
+        key
+        value
+      }
     }
   }
   ${SelectedAttributeDetailsFragmentDoc}

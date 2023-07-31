@@ -51,6 +51,8 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
                 dimensionsPhotos[`template${dimensionsTemplate}` as keyof typeof dimensionsPhotos]
               }
               alt=""
+              width="350"
+              height="250"
             />
           )}
         </>

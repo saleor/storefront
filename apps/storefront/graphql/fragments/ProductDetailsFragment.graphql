@@ -68,5 +68,9 @@ fragment ProductDetailsFragment on Product {
     id
     name
     slug
+    metadata {
+      key
+      value
+    }
   }
 }

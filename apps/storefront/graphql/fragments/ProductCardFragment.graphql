@@ -6,6 +6,10 @@ fragment ProductCardFragment on Product {
     id
     name
     slug
+    metadata {
+      key
+      value
+    }
   }
   translation(languageCode: $locale) {
     id
