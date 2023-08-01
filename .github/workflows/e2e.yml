@@ -47,7 +47,7 @@ jobs:
       - name: Get env
         id: get-env-uri
         env:
-          DEFAULT_ENV_URI: "https://react-storefront-e2e.vercel.app/"
+          DEFAULT_ENV_URI: "https://staging-demo.saleor.io/"
         run: |
           echo "ENV_URI=${{ steps.get-env-uri-for-release.outputs.RELEASE_ENV_URI || github.event.inputs.environment || env.DEFAULT_ENV_URI }}" >> $GITHUB_OUTPUT
 
