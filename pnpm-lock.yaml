@@ -323,6 +323,15 @@ importers:
       '@formatjs/swc-plugin':
         specifier: 1.4.14
         version: 1.4.14
+      '@fortawesome/fontawesome-svg-core':
+        specifier: ^6.4.0
+        version: 6.4.0
+      '@fortawesome/free-brands-svg-icons':
+        specifier: ^6.4.0
+        version: 6.4.0
+      '@fortawesome/react-fontawesome':
+        specifier: ^0.2.0
+        version: 0.2.0(@fortawesome/fontawesome-svg-core@6.4.0)(react@18.2.0)
       '@graphql-codegen/typescript-apollo-client-helpers':
         specifier: 2.2.5
         version: 2.2.5(graphql@16.6.0)
@@ -4713,6 +4722,39 @@ packages:
       tslib: 2.4.0
       typescript: 4.9.5
     dev: true
+
+  /@fortawesome/fontawesome-common-types@6.4.0:
+    resolution: {integrity: sha512-HNii132xfomg5QVZw0HwXXpN22s7VBHQBv9CeOu9tfJnhsWQNd2lmTNi8CSrnw5B+5YOmzu1UoPAyxaXsJ6RgQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dev: false
+
+  /@fortawesome/fontawesome-svg-core@6.4.0:
+    resolution: {integrity: sha512-Bertv8xOiVELz5raB2FlXDPKt+m94MQ3JgDfsVbrqNpLU9+UE2E18GKjLKw+d3XbeYPqg1pzyQKGsrzbw+pPaw==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.4.0
+    dev: false
+
+  /@fortawesome/free-brands-svg-icons@6.4.0:
+    resolution: {integrity: sha512-qvxTCo0FQ5k2N+VCXb/PZQ+QMhqRVM4OORiO6MXdG6bKolIojGU/srQ1ptvKk0JTbRgaJOfL2qMqGvBEZG7Z6g==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.4.0
+    dev: false
+
+  /@fortawesome/react-fontawesome@0.2.0(@fortawesome/fontawesome-svg-core@6.4.0)(react@18.2.0):
+    resolution: {integrity: sha512-uHg75Rb/XORTtVt7OS9WoK8uM276Ufi7gCzshVWkUJbHhh3svsUUeqXerrM96Wm7fRiDzfKRwSoahhMIkGAYHw==}
+    peerDependencies:
+      '@fortawesome/fontawesome-svg-core': ~1 || ~6
+      react: '>=16.3'
+    dependencies:
+      '@fortawesome/fontawesome-svg-core': 6.4.0
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
 
   /@gar/promisify@1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -20117,7 +20159,7 @@ packages:
       cli-truncate: 3.1.0
       colorette: 2.0.20
       commander: 9.5.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       execa: 6.1.0
       lilconfig: 2.0.5
       listr2: 4.0.5

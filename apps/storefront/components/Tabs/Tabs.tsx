@@ -23,7 +23,7 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
 
   const description = translate(product, "description");
 
-  const dimensionsTemplate = (product?.productType as unknown as ProductType)?.metadata?.find(
+  const dimensionsTemplate = product?.productType?.metadata?.find(
     (meta) => meta.key === "template"
   )?.value;
 
@@ -44,7 +44,7 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
       name: "Opis",
       content: (
         <>
-          <RichText jsonStringData={description} />
+          {description && <RichText jsonStringData={description} />}
           {dimensions && dimensionsTemplate && (
             <Image
               src={

@@ -1,5 +1,5 @@
 .footer {
-  @apply sm:container mb-18 sm:mb-15 mt-16;
+  @apply mt-16 bg-slate-100 sm:pb-6;
 }
 
 @screen sm {

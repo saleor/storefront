@@ -13,6 +13,9 @@ import styles from "./Footer.module.css";
 import { STOREFRONT_NAME } from "@/lib/const";
 import { NavLink } from "../NavLink";
 import Logo from "../Navbar/Logo";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { socialMediaLinks } from "@/lib/brandingConstants";
 
 export type FooterProps = HTMLAttributes<HTMLElement>;
 
@@ -34,9 +37,32 @@ export function Footer({ className, ...rest }: FooterProps) {
 
   const menu = data?.menu?.items || [];
 
+  const renderMenuItems = (items: any, classNamePrefix: string) => {
+    if (!items) return null;
+
+    return items.map((subItem: any) => {
+      if (
+        subItem.name.includes("c4u") ||
+        (shopName === "CLOTHES4U" && subItem.name === "Polecane produkty")
+      ) {
+        return null;
+      }
+
+      return (
+        <li key={subItem.id}>
+          <NavLink
+            item={subItem}
+            className={styles["menu-link"]}
+            data-testid={`footerInternalLinks${subItem.name}`}
+          />
+        </li>
+      );
+    });
+  };
+
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
-      <div className="flex mb-14 sm:mb-10">
+      <div className="flex sm:mb-8 sm:container pt-12">
         <Link href={paths.$baseurl()} passHref legacyBehavior>
           <a href="pass" className="hidden sm:inline-block">
             <div className="mt-px group block h-16 w-28 relative">
@@ -68,93 +94,33 @@ export function Footer({ className, ...rest }: FooterProps) {
                 </Link>
               )}
               <ul className={styles.menu}>
-                {shopName === "FASHION4YOU"
+                {STOREFRONT_NAME
                   ? item.name === "Kategorie"
-                    ? item?.children?.slice(0, -1).map((subItem) => (
-                        <li key={subItem?.id}>
-                          <NavLink
-                            item={subItem}
-                            className={styles["menu-link"]}
-                            data-testid={`footerInternalLinks${subItem?.name}`}
-                          />
-                        </li>
-                      ))
+                    ? renderMenuItems(item.children?.slice(0, -1), "footerInternalLinks")
                     : item.name === "Kolekcje"
-                    ? item?.children?.map((subItem) =>
-                        subItem.name.includes("c4u") ? null : (
-                          <li key={subItem?.id}>
-                            <NavLink
-                              item={subItem}
-                              className={styles["menu-link"]}
-                              data-testid={`footerInternalLinks${subItem?.name}`}
-                            />
-                          </li>
-                        )
-                      )
-                    : item?.children?.map((subItem) => (
-                        <li key={subItem?.id}>
-                          <NavLink
-                            item={subItem}
-                            className={styles["menu-link"]}
-                            data-testid={`footerInternalLinks${subItem?.name}`}
-                          />
-                        </li>
-                      ))
-                  : shopName === "CLOTHES4U"
-                  ? item.name === "Kategorie"
-                    ? item?.children?.map((subItem) => (
-                        <li key={subItem?.id}>
-                          <NavLink
-                            item={subItem}
-                            className={styles["menu-link"]}
-                            data-testid={`footerInternalLinks${subItem?.name}`}
-                          />
-                        </li>
-                      ))
-                    : item.name === "Kolekcje"
-                    ? item?.children?.map((subItem) =>
-                        subItem.name === "Polecane produkty" ? null : (
-                          <li key={subItem?.id}>
-                            <NavLink
-                              item={subItem}
-                              className={styles["menu-link"]}
-                              data-testid={`footerInternalLinks${subItem?.name}`}
-                            />
-                          </li>
-                        )
-                      )
-                    : item?.children?.map((subItem) => (
-                        <li key={subItem?.id}>
-                          <NavLink
-                            item={subItem}
-                            className={styles["menu-link"]}
-                            data-testid={`footerInternalLinks${subItem?.name}`}
-                          />
-                        </li>
-                      ))
-                  : item?.children?.map((subItem) => (
-                      <p key={subItem.id}>
-                        <li key={subItem?.id}>
-                          <NavLink
-                            item={subItem}
-                            className={styles["menu-link"]}
-                            data-testid={`footerInternalLinks${subItem?.name}`}
-                          />
-                        </li>
-                      </p>
-                    ))}
+                    ? renderMenuItems(item.children, "footerInternalLinks")
+                    : renderMenuItems(item.children, "footerInternalLinks")
+                  : renderMenuItems(item.children, "footerInternalLinks")}
               </ul>
             </div>
           ))}
         </div>
       </div>
-      <div className="flex items-center">
-        <p className="text-sm text-main-3 flex-grow">
+      <div className="flex items-center sm:container">
+        <p className="text-sm text-black flex-grow">
           © Copyright 2022 - {new Date().getFullYear()} {STOREFRONT_NAME}
         </p>
-        <div className="invisible md:visible flex gap-4 hidden">
+        <div className="invisible md:visible gap-4 hidden">
           <ChannelDropdown horizontalAlignment="right" />
           <LocaleDropdown horizontalAlignment="right" />
+        </div>
+        <div className="flex items-center gap-6 ">
+          <Link href={socialMediaLinks.facebook} target="_blank">
+            <FontAwesomeIcon icon={faFacebook} size="2xl" style={{ color: "#000000" }} />{" "}
+          </Link>
+          <Link href={socialMediaLinks.instagram} target="_blank">
+            <FontAwesomeIcon icon={faInstagram} size="2xl" style={{ color: "#000000" }} />
+          </Link>
         </div>
       </div>
     </footer>

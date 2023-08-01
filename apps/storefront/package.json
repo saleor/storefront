@@ -20,6 +20,9 @@
   "dependencies": {
     "@apollo/client": "3.7.14",
     "@formatjs/swc-plugin": "1.4.14",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@graphql-codegen/typescript-apollo-client-helpers": "2.2.5",
     "@headlessui/react": "1.7.3",
     "@heroicons/react": "1.0.6",
