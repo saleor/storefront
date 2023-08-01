@@ -16,7 +16,7 @@ import WomanCategory from "../images/homepage/woman-category.jpg";
 import ManCategory from "../images/homepage/man-category.jpg";
 import KidCategory from "../images/homepage/kid-category.jpg";
 import usePaths from "@/lib/paths";
-import { GetStaticPaths, InferGetStaticPropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 import { getNewsData, getNewsIdData } from "@/lib/getNews";
 import { getCollectionsData } from "@/lib/getCollections";
 import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
@@ -71,7 +71,6 @@ function Home({
   news,
   categories,
   collections,
-  sales,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
   const t = useIntl();
@@ -281,9 +280,15 @@ function Home({
                   url[url.length - 1]
                 }`;
 
-                const contentStringify = JSON.parse(
-                  newsElem?.content as string
-                ).blocks[0].data.text.replace(/^(.{128}[^\s]*).*/, "$1");
+                let contentStringify = "";
+                if (newsElem?.content) {
+                  try {
+                    const parsedContent = JSON.parse(newsElem.content as string);
+                    contentStringify = parsedContent.blocks[0]?.data?.text ?? "";
+                  } catch (error) {
+                    console.error("Error parsing content:", error);
+                  }
+                }
 
                 return (
                   <div key={newsElem?.id} className="flex flex-col gap-6 w-full">

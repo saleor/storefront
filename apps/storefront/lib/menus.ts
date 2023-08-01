@@ -1,7 +1,7 @@
 import { pagesPath } from "@/lib/$path";
 import { MenuItemFragment } from "@/saleor/api";
 
-export const getLinkPath = (item: MenuItemFragment, channel: string, locale: string) => {
+export const getLinkPath = (item: MenuItemFragment) => {
   const paths = pagesPath;
 
   if (item.category) {

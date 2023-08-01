@@ -1,14 +1,10 @@
 import { Carousel } from "@mantine/carousel";
 import ProductCarouselItem from "./ProductCarouselItem";
-import { ProductDetailsFragment } from "@/saleor/api";
 import { useIntl } from "react-intl";
 import { messages } from "../translations";
+import { ProductDetailsFragment } from "@/saleor/api";
 
-interface ProductsFeaturedProps {
-  products: ProductDetailsFragment[];
-}
-
-const ProductsFeatured = ({ products }: ProductsFeaturedProps) => {
+const ProductsFeatured = ({ products }: any) => {
   const t = useIntl();
   return (
     <>
@@ -35,7 +31,7 @@ const ProductsFeatured = ({ products }: ProductsFeaturedProps) => {
               { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
             ]}
           >
-            {products.map((product) => (
+            {products.map((product: ProductDetailsFragment) => (
               <Carousel.Slide key={product.id} className="list-none">
                 <ProductCarouselItem product={product} />
               </Carousel.Slide>

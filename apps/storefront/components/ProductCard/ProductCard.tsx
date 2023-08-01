@@ -4,14 +4,14 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { usePaths } from "@/lib/paths";
-import { ProductDetailsFragment } from "@/saleor/api";
+import { ProductCardFragment } from "@/saleor/api";
 import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
 import { useRegions } from "../RegionsProvider";
 import { useWishlist } from "context/WishlistContext";
 import Heart from "../Navbar/heart.svg";
 
 export interface ProductCardProps {
-  product: ProductDetailsFragment;
+  product: ProductCardFragment;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -26,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
 
-  const isItemInWishlist = (product: ProductDetailsFragment) => {
+  const isItemInWishlist = (product: any) => {
     return wishlist.some((item) => item.id === product?.id);
   };
 
@@ -40,14 +40,14 @@ export function ProductCard({ product }: ProductCardProps) {
     return <div>Loading...</div>;
   }
 
-  const handleAddToWishlist = async (product: ProductDetailsFragment) => {
+  const handleAddToWishlist = async (product: any) => {
     if (product) {
       addToWishlist(product);
     }
   };
 
-  const handleDeleteFromWishlist = (product: ProductDetailsFragment) => {
-    removeFromWishlist(product.id);
+  const handleDeleteFromWishlist = (product: any) => {
+    removeFromWishlist(product.id as string);
   };
 
   return (

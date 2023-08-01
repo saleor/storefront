@@ -23,18 +23,18 @@ function CheckoutPage() {
     return (
       <>
         <Spinner />
-        <BaseSeo title="Checkout" />
+        <BaseSeo />
       </>
     );
   }
 
   if (!checkout || checkout.lines?.length === 0) {
-    return <BaseSeo title="Checkout" />;
+    return <BaseSeo />;
   }
 
   return (
     <>
-      <BaseSeo title="Checkout" />
+      <BaseSeo />
 
       <main className="w-screen max-w-7xl md:px-8 md:mx-auto overflow-hidden flex md:flex-row flex-col justify-between">
         <div className="md:w-2/3 w-full">

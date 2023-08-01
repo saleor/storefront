@@ -1,5 +1,3 @@
-import { useIntl } from "react-intl";
-
 import { getProductAttributes } from "@/lib/product";
 import { translate } from "@/lib/translations";
 import { ProductDetailsFragment, ProductVariantDetailsFragment } from "@/saleor/api";
@@ -10,7 +8,6 @@ export interface AttributeDetailsProps {
 }
 
 export function AttributeDetails({ product, selectedVariant }: AttributeDetailsProps) {
-  const t = useIntl();
   const attributes = getProductAttributes(product, selectedVariant);
   const { variants } = product;
   if (attributes.length === 0) {
@@ -21,7 +18,7 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
       {attributes.map((attribute) => (
         <div key={attribute.attribute.id} className="w-max">
           <div>
-            {attribute.values.map((value, index) => {
+            {attribute.values.map((value) => {
               if (!value) {
                 return null;
               }

@@ -8,7 +8,7 @@ class MyDocument extends Document<{ lang?: string }> {
   }
 
   render() {
-    const uri = process.env.NEXT_PUBLIC_API_URI!;
+    const uri = process.env.NEXT_PUBLIC_API_URI || "";
     const { hostname } = new URL(uri);
 
     return (

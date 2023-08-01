@@ -1,5 +1,5 @@
-import type { OptionalQuery as OptionalQuery0 } from "../pages/[locale]/account/login";
-import type { OptionalQuery as OptionalQuery1 } from "../pages/[locale]/products/[slug]";
+import type { OptionalQuery as OptionalQuery0 } from "../pages/account/login";
+import type { OptionalQuery as OptionalQuery1 } from "../pages/products/[slug]";
 
 export const pagesPath = {
   $404: {

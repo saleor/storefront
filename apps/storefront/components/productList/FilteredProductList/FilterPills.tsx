@@ -1,4 +1,4 @@
-import { Chip, ChipButton } from "@saleor/ui-kit";
+import { Chip } from "@saleor/ui-kit";
 
 export interface FilterPill {
   label: string;

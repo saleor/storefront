@@ -1,12 +1,6 @@
-import { ProductDetailsFragment } from "@/saleor/api";
 import React from "react";
 
-interface DiscountInfoProps {
-  product: ProductDetailsFragment;
-  isOnSale: boolean | undefined | null;
-}
-
-export const DiscountInfo = ({ isOnSale, product }: DiscountInfoProps) => {
+export const DiscountInfo = ({ isOnSale, product }: any) => {
   const price = product?.pricing?.priceRange?.start;
 
   const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;

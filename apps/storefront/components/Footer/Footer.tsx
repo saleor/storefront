@@ -27,7 +27,7 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 export function Footer({ className, ...rest }: FooterProps) {
   const shopName = STOREFRONT_NAME;
   const paths = usePaths();
-  const { query, currentChannel, currentLocale } = useRegions();
+  const { query } = useRegions();
 
   const { data, error } = useFooterMenuQuery({ variables: { ...query } });
 
@@ -37,7 +37,7 @@ export function Footer({ className, ...rest }: FooterProps) {
 
   const menu = data?.menu?.items || [];
 
-  const renderMenuItems = (items: any, classNamePrefix: string) => {
+  const renderMenuItems = (items: any) => {
     if (!items) return null;
 
     return items.map((subItem: any) => {
@@ -50,11 +50,7 @@ export function Footer({ className, ...rest }: FooterProps) {
 
       return (
         <li key={subItem.id}>
-          <NavLink
-            item={subItem}
-            className={styles["menu-link"]}
-            data-testid={`footerInternalLinks${subItem.name}`}
-          />
+          <NavLink item={subItem} className={styles["menu-link"]} />
         </li>
       );
     });
@@ -83,11 +79,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                   {item?.name}
                 </a>
               ) : (
-                <Link
-                  href={getLinkPath(item, currentChannel.slug, currentLocale)}
-                  passHref
-                  legacyBehavior
-                >
+                <Link href={getLinkPath(item)} passHref legacyBehavior>
                   <a href="pass" className={styles["menu-heading"]}>
                     {item?.name}
                   </a>
@@ -96,11 +88,11 @@ export function Footer({ className, ...rest }: FooterProps) {
               <ul className={styles.menu}>
                 {STOREFRONT_NAME
                   ? item.name === "Kategorie"
-                    ? renderMenuItems(item.children?.slice(0, -1), "footerInternalLinks")
+                    ? renderMenuItems(item.children?.slice(0, -1))
                     : item.name === "Kolekcje"
-                    ? renderMenuItems(item.children, "footerInternalLinks")
-                    : renderMenuItems(item.children, "footerInternalLinks")
-                  : renderMenuItems(item.children, "footerInternalLinks")}
+                    ? renderMenuItems(item.children)
+                    : renderMenuItems(item.children)
+                  : renderMenuItems(item.children)}
               </ul>
             </div>
           ))}

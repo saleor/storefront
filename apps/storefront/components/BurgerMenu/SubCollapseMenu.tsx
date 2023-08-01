@@ -6,14 +6,12 @@ import { getLinkPath } from "@/lib/menus";
 import { translate } from "@/lib/translations";
 
 import { NavigationAnchor } from "../NavigationAnchor";
-import { useRegions } from "../RegionsProvider";
 import styles from "./BurgerMenu.module.css";
 import ChevronDown from "./chevronDownIcon.svg"; // in the final version it should be imported from ui-kit package
 import { CollapseMenuProps } from "./CollapseMenu";
 
 function SubCollapseMenu({ menuItem }: CollapseMenuProps) {
   const [open, setOpen] = useState(false);
-  const { currentChannel, currentLocale } = useRegions();
 
   const shouldDisplayAnchor = !menuItem.children?.length;
 
@@ -42,11 +40,7 @@ function SubCollapseMenu({ menuItem }: CollapseMenuProps) {
                       {sub.name}
                     </a>
                   ) : (
-                    <Link
-                      href={getLinkPath(sub, currentChannel.slug, currentLocale)}
-                      passHref
-                      legacyBehavior
-                    >
+                    <Link href={getLinkPath(sub)} passHref legacyBehavior>
                       <a href="pass">{sub.name}</a>
                     </Link>
                   )}

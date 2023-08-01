@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React from "react";
 
-import { Navbar } from "@/components/Navbar";
 import { NotFoundSeo } from "@/components/seo/NotFoundSeo";
 import { usePaths } from "@/lib/paths";
 import Image from "next/legacy/image";

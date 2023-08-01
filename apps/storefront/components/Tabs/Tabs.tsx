@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AttributeDetails } from "../product/AttributeDetails";
 import RichText from "../RichText";
 import { translate } from "@/lib/translations";
-import { ProductDetailsFragment, ProductType, ProductVariantDetailsFragment } from "@/saleor/api";
+import { ProductDetailsFragment, ProductVariantDetailsFragment } from "@/saleor/api";
 import Image from "next/image";
 
 const dimensionsPhotos = {
@@ -18,8 +18,16 @@ interface TabsProps {
   selectedVariant?: ProductVariantDetailsFragment;
 }
 
+interface DescriptionData {
+  blocks: {
+    data: {
+      text: string;
+    };
+  }[];
+}
+
 export const Tabs = ({ product, selectedVariant }: TabsProps) => {
-  const [dimensions, setDimensions] = useState(null);
+  const [dimensions, setDimensions] = useState<string | null>(null);
 
   const description = translate(product, "description");
 
@@ -29,12 +37,16 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
 
   useEffect(() => {
     if (description) {
-      const parsedDescription = JSON.parse(description);
-      const dimensionsBlock = parsedDescription.blocks.find((block: any) =>
-        block.data.text.startsWith("Wymiary: ")
-      );
-      if (dimensionsBlock) {
-        setDimensions(dimensionsBlock.data.text);
+      try {
+        const parsedDescription: DescriptionData = JSON.parse(description);
+        const dimensionsBlock = parsedDescription.blocks.find((block) =>
+          block.data.text.startsWith("Wymiary: ")
+        );
+        if (dimensionsBlock) {
+          setDimensions(dimensionsBlock.data.text);
+        }
+      } catch (error) {
+        console.error("Error parsing description:", error);
       }
     }
   }, [description]);

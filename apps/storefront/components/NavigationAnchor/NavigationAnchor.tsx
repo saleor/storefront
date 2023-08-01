@@ -4,19 +4,12 @@ import { getLinkPath } from "@/lib/menus";
 import { translate } from "@/lib/translations";
 import { MenuItemWithChildrenFragment } from "@/saleor/api";
 
-import { useRegions } from "../RegionsProvider";
-
 interface NavigationAnchorProps {
   menuItem: MenuItemWithChildrenFragment;
   className: string;
 }
 
 export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps) {
-  const {
-    currentChannel: { slug },
-    currentLocale,
-  } = useRegions();
-
   if (menuItem.url) {
     return (
       <a
@@ -32,7 +25,7 @@ export function NavigationAnchor({ menuItem, className }: NavigationAnchorProps)
   }
 
   return (
-    <Link href={getLinkPath(menuItem, slug, currentLocale)} passHref legacyBehavior>
+    <Link href={getLinkPath(menuItem)} passHref legacyBehavior>
       <a href="pass" className={className} data-testid={`categoriesList${menuItem.name}`}>
         {translate(menuItem, "name")}
       </a>

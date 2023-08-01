@@ -1,12 +1,10 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { useLocalStorage } from "@/lib/hooks/useLocalStorage";
-import { ProductDetailsFragment } from "@/saleor/api";
-
-interface WishlistItem extends ProductDetailsFragment {}
+import { ProductCardFragment } from "@/saleor/api";
 
 interface WishlistContextType {
-  wishlist: WishlistItem[];
-  addToWishlist: (item: WishlistItem) => void;
+  wishlist: ProductCardFragment[];
+  addToWishlist: (item: any) => void;
   removeFromWishlist: (itemId: string) => void;
   wishlistCounter: number;
 }
@@ -18,9 +16,9 @@ interface WishlistProviderProps {
 const WishlistContext = createContext<WishlistContextType | null>(null);
 
 export const WishlistProvider = ({ children }: WishlistProviderProps) => {
-  const [wishlist, setWishlist] = useLocalStorage<WishlistItem[]>("wishlist", []);
+  const [wishlist, setWishlist] = useLocalStorage<ProductCardFragment[]>("wishlist", []);
 
-  const addToWishlist = (item: WishlistItem) => {
+  const addToWishlist = (item: ProductCardFragment) => {
     const existingItem = wishlist.find((wishItem) => wishItem.id === item.id);
     if (!existingItem) {
       setWishlist((prevWishlist) => {

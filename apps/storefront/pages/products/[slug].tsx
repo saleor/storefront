@@ -38,7 +38,6 @@ import {
   EmailShareButton,
   EmailIcon,
 } from "next-share";
-import { usePaths } from "@/lib/paths";
 import { STOREFRONT_NAME } from "@/lib/const";
 import { useWishlist } from "context/WishlistContext";
 import Heart from "../../components/Navbar/heart.svg";

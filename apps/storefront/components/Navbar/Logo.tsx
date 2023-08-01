@@ -1,6 +1,6 @@
 import { STOREFRONT_NAME } from "@/lib/const";
 
-const Logo = ({ height, width }) => {
+const Logo = ({ height, width }: any) => {
   return (
     <>
       {STOREFRONT_NAME === "FASHION4YOU" ? (
