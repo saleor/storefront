@@ -14,7 +14,7 @@ const client = new ApolloClient({
 });
 
 function generateSiteMap(data: {
-  sitemapSlugs: { pagesSlugs: String[]; categoriesSlugs: String[]; productSlugs: String[] };
+  sitemapSlugs: { pagesSlugs: string[]; categoriesSlugs: string[]; productSlugs: string[] };
 }) {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
