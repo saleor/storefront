@@ -12,14 +12,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function generateSiteMap(data) {
+function generateSiteMap(data: {
+  sitemapSlugs: { pagesSlugs: any[]; categoriesSlugs: any[]; productSlugs: any[] };
+}) {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
       <loc>${process.env.STOREFRONT_URL}/</loc>
     </url>
   ${data.sitemapSlugs.pagesSlugs
-    .map((slug) => {
+    .map((slug: any) => {
       return `
     <url>
       <loc>${`${process.env.STOREFRONT_URL}/page/${slug}/`}</loc>
@@ -27,7 +29,7 @@ function generateSiteMap(data) {
     })
     .join("")}
   ${data.sitemapSlugs.categoriesSlugs
-    .map((slug) => {
+    .map((slug: any) => {
       return `
     <url>
       <loc>${`${process.env.STOREFRONT_URL}/category/${slug}/`}</loc>
@@ -35,7 +37,7 @@ function generateSiteMap(data) {
     })
     .join("")}
   ${data.sitemapSlugs.productSlugs
-    .map((slug) => {
+    .map((slug: any) => {
       return `
     <url>
       <loc>${`${process.env.STOREFRONT_URL}/product/${slug}/`}</loc>
@@ -47,7 +49,7 @@ function generateSiteMap(data) {
 
 function SiteMap() {}
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res }: any) {
   const { data } = await client.query({
     query: gql`
         query {
