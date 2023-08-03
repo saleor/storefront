@@ -2,50 +2,73 @@ import { gql } from "@apollo/client";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { ServerResponse } from "http";
 
-const API_URI = process.env.NEXT_PUBLIC_API_URI;
-const CHANNEL = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL;
+const API_URI: string = process.env.NEXT_PUBLIC_API_URI as string;
+const CHANNEL: string = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL as string;
+const HOST: string = process.env.STOREFRONT_URL as string;
 const DEFAULT_PRODUCTS_SLUGS = 1000;
 const DEFAULT_CATEGORIES_SLUGS = 1000;
 const DEFAULT_PAGES_SLUGS = 1000;
 
+type SitemapSlugs = {
+  sitemapSlugs: {
+    pagesSlugs?: string[];
+    categoriesSlugs?: string[];
+    productSlugs?: string[];
+  };
+};
 const client = new ApolloClient({
   uri: API_URI,
   cache: new InMemoryCache(),
 });
 
-function generateSiteMap(data: {
-  sitemapSlugs: { pagesSlugs: string[]; categoriesSlugs: string[]; productSlugs: string[] };
-}) {
-  return `<?xml version="1.0" encoding="UTF-8"?>
+function generateSiteMap(data: SitemapSlugs) {
+  let base = "";
+  let pages = "";
+  let categories = "";
+  let products = "";
+  let closer = "";
+
+  base = `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-      <loc>${process.env.STOREFRONT_URL}/</loc>
-    </url>
-  ${data.sitemapSlugs.pagesSlugs
-    .map((slug: any) => {
-      return `
-    <url>
-      <loc>${`${process.env.STOREFRONT_URL}/page/${slug}/`}</loc>
+      <loc>${HOST}/</loc>
     </url>`;
-    })
-    .join("")}
-  ${data.sitemapSlugs.categoriesSlugs
-    .map((slug: any) => {
-      return `
-    <url>
-      <loc>${`${process.env.STOREFRONT_URL}/category/${slug}/`}</loc>
-    </url>`;
-    })
-    .join("")}
-  ${data.sitemapSlugs.productSlugs
-    .map((slug: any) => {
-      return `
-    <url>
-      <loc>${`${process.env.STOREFRONT_URL}/product/${slug}/`}</loc>
-    </url>`;
-    })
-    .join("")}
-  </urlset>`;
+
+  if (data.sitemapSlugs.pagesSlugs) {
+    pages = `${data.sitemapSlugs.pagesSlugs
+      .map((slug: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/page/${slug}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+
+  if (data.sitemapSlugs.categoriesSlugs) {
+    categories = `${data.sitemapSlugs.categoriesSlugs
+      .map((slug: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/category/${slug}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+  if (data.sitemapSlugs.productSlugs) {
+    products = `${data.sitemapSlugs.productSlugs
+      .map((slug: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/product/${slug}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+
+  closer = `</urlset>`;
+  const sitemap = base + pages + categories + products + closer;
+  return sitemap;
 }
 
 function SiteMap() {}
@@ -67,7 +90,7 @@ export async function getServerSideProps({ res }: { res: ServerResponse }) {
         `,
   });
 
-  const posts = await data;
+  const posts: SitemapSlugs = await data;
 
   const sitemap = generateSiteMap(posts);
 
