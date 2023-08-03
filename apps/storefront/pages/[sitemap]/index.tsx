@@ -13,7 +13,7 @@ const client = new ApolloClient({
 });
 
 function generateSiteMap(data: {
-  sitemapSlugs: { pagesSlugs: any[]; categoriesSlugs: any[]; productSlugs: any[] };
+  sitemapSlugs: { pagesSlugs: String[]; categoriesSlugs: String[]; productSlugs: String[] };
 }) {
   return `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -49,7 +49,7 @@ function generateSiteMap(data: {
 
 function SiteMap() {}
 
-export async function getServerSideProps({ res }: any) {
+export async function getServerSideProps({ res }: { res: String }) {
   const { data } = await client.query({
     query: gql`
         query {
