@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ServerResponse } from "http";
 
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 const CHANNEL = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL;
@@ -49,7 +50,7 @@ function generateSiteMap(data: {
 
 function SiteMap() {}
 
-export async function getServerSideProps({ res }: { res: String }) {
+export async function getServerSideProps({ res }: { res: ServerResponse }) {
   const { data } = await client.query({
     query: gql`
         query {
