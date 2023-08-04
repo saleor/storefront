@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { ServerResponse } from "http";
 
-const API_URI: string = "https://saleor-test.gammasoft.pl/graphql/";
+const API_URI = "https://saleor-test.gammasoft.pl/graphql/";
 const CHANNEL: string = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL as string;
 const HOST: string = process.env.STOREFRONT_URL as string;
 const DEFAULT_PRODUCTS_SLUGS = 1000;
