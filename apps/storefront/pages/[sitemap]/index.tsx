@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { ServerResponse } from "http";
 
-const API_URI: string = process.env.NEXT_PUBLIC_API_URI as string;
+const API_URI: string = process.env.SALEOR_API_URL as string;
 const CHANNEL: string = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL as string;
 const HOST: string = process.env.STOREFRONT_URL as string;
 const DEFAULT_PRODUCTS_SLUGS = 1000;
