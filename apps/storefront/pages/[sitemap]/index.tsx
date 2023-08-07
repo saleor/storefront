@@ -1,66 +1,106 @@
-import { ApolloQueryResult } from "@apollo/client";
-import { GetServerSideProps } from "next";
-import { getServerSideSitemap } from "next-sitemap";
+import { gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ServerResponse } from "http";
 
-import {
-  CategoryPathsDocument,
-  CategoryPathsQuery,
-  CollectionPathsDocument,
-  CollectionPathsQuery,
-  ProductPathsDocument,
-  ProductPathsQuery,
-} from "@/saleor/api";
-import { serverApolloClient } from "@/lib/ssr/common";
+const API_URI = "https://saleor-test.gammasoft.pl/graphql/";
+const CHANNEL: string = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL as string;
+const HOST: string = process.env.STOREFRONT_URL as string;
+const DEFAULT_PRODUCTS_SLUGS = 1000;
+const DEFAULT_CATEGORIES_SLUGS = 1000;
+const DEFAULT_PAGES_SLUGS = 1000;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  let fields: { loc: string }[] = [];
-
-  if (ctx.params) {
-    if (ctx.params.sitemap === "category") {
-      const result: ApolloQueryResult<CategoryPathsQuery | undefined> =
-        await serverApolloClient.query({
-          query: CategoryPathsDocument,
-          variables: {},
-        });
-      const paths =
-        result.data?.categories?.edges.map(({ node }) => ({
-          params: { slug: node.slug },
-        })) || [];
-      fields = paths.map((path) => ({
-        loc: `https://localhost:3001/category/${path.params.slug}`,
-      }));
-    } else if (ctx.params.sitemap === "collection") {
-      const result: ApolloQueryResult<CollectionPathsQuery | undefined> =
-        await serverApolloClient.query({
-          query: CollectionPathsDocument,
-          variables: {},
-        });
-      const paths =
-        result.data?.collections?.edges.map(({ node }) => ({
-          params: { slug: node.slug },
-        })) || [];
-      fields = paths.map((path) => ({
-        loc: `https://localhost:3001/collection/${path.params.slug}`,
-      }));
-    } else if (ctx.params.sitemap === "product") {
-      const result: ApolloQueryResult<ProductPathsQuery | undefined> =
-        await serverApolloClient.query({
-          query: ProductPathsDocument,
-          variables: {},
-        });
-      const paths =
-        result.data?.products?.edges.map(({ node }) => ({
-          params: { slug: node.slug },
-        })) || [];
-      fields = paths.map((path) => ({
-        loc: `https://localhost:3001/product/${path.params.slug}`,
-      }));
-    }
-  }
-  return getServerSideSitemap(ctx, fields);
+type SitemapSlugs = {
+  sitemapSlugs: {
+    pagesSlugs?: string[];
+    categoriesSlugs?: string[];
+    productSlugs?: string[];
+  };
 };
+const client = new ApolloClient({
+  uri: API_URI,
+  cache: new InMemoryCache(),
+});
 
-/* eslint @typescript-eslint/no-empty-function: off */
-const Sitemap = () => {};
+function generateSiteMap(data: SitemapSlugs) {
+  let base = "";
+  let pages = "";
+  let categories = "";
+  let products = "";
+  let closer = "";
 
-export default Sitemap;
+  base = `<?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+      <loc>${HOST}/</loc>
+    </url>`;
+
+  if (data.sitemapSlugs.pagesSlugs) {
+    pages = `${data.sitemapSlugs.pagesSlugs
+      .map((slug: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/page/${slug}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+
+  if (data.sitemapSlugs.categoriesSlugs) {
+    categories = `${data.sitemapSlugs.categoriesSlugs
+      .map((slug: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/category/${slug}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+  if (data.sitemapSlugs.productSlugs) {
+    products = `${data.sitemapSlugs.productSlugs
+      .map((slug: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/product/${slug}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+
+  closer = `</urlset>`;
+  const sitemap = base + pages + categories + products + closer;
+  return sitemap;
+}
+
+function SiteMap() {}
+
+export async function getServerSideProps({ res }: { res: ServerResponse }) {
+  const { data } = await client.query({
+    query: gql`
+        query {
+          sitemapSlugs(
+              channel:"${CHANNEL}",
+              productsAmount: ${DEFAULT_PRODUCTS_SLUGS},
+              categoriesAmount: ${DEFAULT_CATEGORIES_SLUGS},
+              pagesAmount: ${DEFAULT_PAGES_SLUGS}
+              ){
+              productSlugs
+              categoriesSlugs
+              pagesSlugs
+          }}
+        `,
+  });
+
+  const posts: SitemapSlugs = await data;
+
+  const sitemap = generateSiteMap(posts);
+
+  res.setHeader("Content-Type", "text/xml");
+  res.write(sitemap);
+  res.end();
+
+  return {
+    props: {},
+  };
+}
+
+export default SiteMap;
