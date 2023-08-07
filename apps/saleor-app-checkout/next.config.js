@@ -13,7 +13,7 @@ const config = withTM({
   trailingSlash: true,
   i18n: {
     locales: ["en-US", "pl-PL", "fr-FR", "vi-VN", "ar-AE"],
-    defaultLocale: "en-US",
+    defaultLocale: "pl-PL",
   },
   reactStrictMode: true,
   productionBrowserSourceMaps: true,

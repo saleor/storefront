@@ -93,5 +93,6 @@
   "app.components.infobanner.infobanner.marketingSecondText": "ABY OTRZYMAĆ DARMOWĄ DOSTAWĘ DLA ZAMÓWIEŃ POWYŻEJ 200ZŁ",
   "app.pages.channel.locale.index.shop": "Sklep",
   "app.pages.channel.locale.index.featuredProducts": "Oto nasze polecane produkty",
-  "app.pages.channel.locale.index.featuredProductsText": " Nie masz czasu na przeglądanie setek produktów? Szukasz najlepszych propozycji, które pozwolą Ci zaoszczędzić czas i pieniądze? Nasze polecane produkty to gwarancja sukcesu!"
+  "app.pages.channel.locale.index.featuredProductsText": " Nie masz czasu na przeglądanie setek produktów? Szukasz najlepszych propozycji, które pozwolą Ci zaoszczędzić czas i pieniądze? Nasze polecane produkty to gwarancja sukcesu!",
+  "app.components.checkout.completeCheckoutButton.processingPayment": "Przetwarzanie..."
 }

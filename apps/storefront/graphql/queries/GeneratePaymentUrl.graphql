@@ -1,0 +1,5 @@
+query generatePaymentUrlQuery($paymentId: ID!) {
+  generatePaymentUrl(paymentId: $paymentId) {
+    paymentUrl
+  }
+}

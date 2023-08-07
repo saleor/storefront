@@ -1,0 +1,5 @@
+query PayuRedirectUrlQuery($paymentId: ID!, $channel: String!) {
+  generatePaymentUrl(paymentId: $paymentId, channel: $channel) {
+    paymentUrl
+  }
+}
