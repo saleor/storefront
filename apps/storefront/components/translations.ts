@@ -483,6 +483,11 @@ export const messages = defineMessages({
     defaultMessage:
       "Don't have time to browse through hundreds of products? Are you looking for the best suggestions that will save you time and money? Our recommended products are a guarantee of success!",
   },
+  processingPayment: {
+    id: "app.components.checkout.completeCheckoutButton.processingPayment",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage: "Processing...",
+  },
 });
 
 export default messages;

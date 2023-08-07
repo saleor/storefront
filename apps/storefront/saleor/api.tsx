@@ -29183,6 +29183,15 @@ export type FooterMenuQuery = {
   } | null;
 };
 
+export type GeneratePaymentUrlQueryVariables = Exact<{
+  paymentId: Scalars["ID"]["input"];
+}>;
+
+export type GeneratePaymentUrlQuery = {
+  __typename?: "Query";
+  generatePaymentUrl?: { __typename?: "PaymentUrl"; paymentUrl?: string | null } | null;
+};
+
 export type MainMenuQueryVariables = Exact<{
   locale: LanguageCodeEnum;
   channel: Scalars["String"]["input"];
@@ -29475,6 +29484,16 @@ export type PagePathsQuery = {
     };
     edges: Array<{ __typename?: "PageCountableEdge"; node: { __typename?: "Page"; slug: string } }>;
   } | null;
+};
+
+export type PayuRedirectUrlQueryVariables = Exact<{
+  paymentId: Scalars["ID"]["input"];
+  channel: Scalars["String"]["input"];
+}>;
+
+export type PayuRedirectUrlQuery = {
+  __typename?: "Query";
+  generatePaymentUrl?: { __typename?: "PaymentUrl"; paymentUrl?: string | null } | null;
 };
 
 export type ProductBySlugQueryVariables = Exact<{
@@ -32236,6 +32255,59 @@ export function useFooterMenuLazyQuery(
 export type FooterMenuQueryHookResult = ReturnType<typeof useFooterMenuQuery>;
 export type FooterMenuLazyQueryHookResult = ReturnType<typeof useFooterMenuLazyQuery>;
 export type FooterMenuQueryResult = Apollo.QueryResult<FooterMenuQuery, FooterMenuQueryVariables>;
+export const GeneratePaymentUrlQueryDocument = gql`
+  query generatePaymentUrlQuery($paymentId: ID!) {
+    generatePaymentUrl(paymentId: $paymentId) {
+      paymentUrl
+    }
+  }
+`;
+
+/**
+ * __useGeneratePaymentUrlQuery__
+ *
+ * To run a query within a React component, call `useGeneratePaymentUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGeneratePaymentUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGeneratePaymentUrlQuery({
+ *   variables: {
+ *      paymentId: // value for 'paymentId'
+ *   },
+ * });
+ */
+export function useGeneratePaymentUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<GeneratePaymentUrlQuery, GeneratePaymentUrlQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GeneratePaymentUrlQuery, GeneratePaymentUrlQueryVariables>(
+    GeneratePaymentUrlQueryDocument,
+    options
+  );
+}
+export function useGeneratePaymentUrlQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GeneratePaymentUrlQuery,
+    GeneratePaymentUrlQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GeneratePaymentUrlQuery, GeneratePaymentUrlQueryVariables>(
+    GeneratePaymentUrlQueryDocument,
+    options
+  );
+}
+export type GeneratePaymentUrlQueryHookResult = ReturnType<typeof useGeneratePaymentUrlQuery>;
+export type GeneratePaymentUrlQueryLazyQueryHookResult = ReturnType<
+  typeof useGeneratePaymentUrlQueryLazyQuery
+>;
+export type GeneratePaymentUrlQueryQueryResult = Apollo.QueryResult<
+  GeneratePaymentUrlQuery,
+  GeneratePaymentUrlQueryVariables
+>;
 export const MainMenuDocument = gql`
   query MainMenu($locale: LanguageCodeEnum!, $channel: String!) {
     menu(slug: "navbar", channel: $channel) {
@@ -32730,6 +32802,57 @@ export function usePagePathsLazyQuery(
 export type PagePathsQueryHookResult = ReturnType<typeof usePagePathsQuery>;
 export type PagePathsLazyQueryHookResult = ReturnType<typeof usePagePathsLazyQuery>;
 export type PagePathsQueryResult = Apollo.QueryResult<PagePathsQuery, PagePathsQueryVariables>;
+export const PayuRedirectUrlQueryDocument = gql`
+  query PayuRedirectUrlQuery($paymentId: ID!, $channel: String!) {
+    generatePaymentUrl(paymentId: $paymentId, channel: $channel) {
+      paymentUrl
+    }
+  }
+`;
+
+/**
+ * __usePayuRedirectUrlQuery__
+ *
+ * To run a query within a React component, call `usePayuRedirectUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePayuRedirectUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePayuRedirectUrlQuery({
+ *   variables: {
+ *      paymentId: // value for 'paymentId'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function usePayuRedirectUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<PayuRedirectUrlQuery, PayuRedirectUrlQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<PayuRedirectUrlQuery, PayuRedirectUrlQueryVariables>(
+    PayuRedirectUrlQueryDocument,
+    options
+  );
+}
+export function usePayuRedirectUrlQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<PayuRedirectUrlQuery, PayuRedirectUrlQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<PayuRedirectUrlQuery, PayuRedirectUrlQueryVariables>(
+    PayuRedirectUrlQueryDocument,
+    options
+  );
+}
+export type PayuRedirectUrlQueryHookResult = ReturnType<typeof usePayuRedirectUrlQuery>;
+export type PayuRedirectUrlQueryLazyQueryHookResult = ReturnType<
+  typeof usePayuRedirectUrlQueryLazyQuery
+>;
+export type PayuRedirectUrlQueryQueryResult = Apollo.QueryResult<
+  PayuRedirectUrlQuery,
+  PayuRedirectUrlQueryVariables
+>;
 export const ProductBySlugDocument = gql`
   query ProductBySlug($slug: String!, $channel: String!, $locale: LanguageCodeEnum!) {
     product(slug: $slug, channel: $channel) {
