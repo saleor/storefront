@@ -1,23 +1,15 @@
 import React, { useState, FormEvent } from "react";
-import { useIntl } from "react-intl";
 
-import { useRegions } from "@/components/RegionsProvider";
-import { messages } from "@/components/translations";
-import { usePaths } from "@/lib/paths";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import {
   CheckoutDetailsFragment,
-  PayuRedirectUrlQueryDocument,
   useCheckoutCompleteMutation,
   useCheckoutPaymentCreateMutation,
 } from "@/saleor/api";
 
 import { CompleteCheckoutButton } from "../CompleteCheckoutButton";
-import { useRouter } from "next/router";
 
-// Add these import statements
 import { API_URI, CHANNEL_SLUG } from "@/lib/const";
-import { gql } from "@apollo/client";
 
 export interface IPaymentGatewayConfig {
   field: string;
@@ -30,16 +22,10 @@ interface PayuSectionInterface {
 }
 
 export function PayuSection({ checkout }: PayuSectionInterface) {
-  const router = useRouter();
-  const paths = usePaths();
   const { resetCheckoutToken } = useCheckout();
   const [checkoutPaymentCreateMutation] = useCheckoutPaymentCreateMutation();
   const [checkoutCompleteMutation] = useCheckoutCompleteMutation();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-  const redirectToOrderDetailsPage = () => {
-    resetCheckoutToken();
-    void router.push(paths.order.$url());
-  };
 
   const generatePayuUrl = async (paymentId: string) => {
     const payuUrlQuery = `
@@ -67,7 +53,6 @@ export function PayuSection({ checkout }: PayuSectionInterface) {
 
       const data = await response.json();
       const payuUrl = data?.data?.generatePaymentUrl?.paymentUrl;
-      console.log("PayU URL:", payuUrl); // Log the generated PayU URL
       return payuUrl;
     } catch (error) {
       console.error("Failed to generate PayU URL:", error);
@@ -80,7 +65,6 @@ export function PayuSection({ checkout }: PayuSectionInterface) {
     setIsPaymentProcessing(true);
 
     try {
-      // Ensure checkout.token is valid before proceeding
       if (!checkout.token) {
         throw new Error("Invalid checkout token");
       }
@@ -102,14 +86,11 @@ export function PayuSection({ checkout }: PayuSectionInterface) {
         throw new Error("Failed to create payment");
       }
 
-      // Generate PayU URL
       const payuUrl = await generatePayuUrl(paymentId);
 
       if (payuUrl) {
-        // Redirect the user to the PayU payment page
         window.location.href = payuUrl;
-
-        const { data: completeData, errors: completeErrors } = await checkoutCompleteMutation({
+        const { errors: completeErrors } = await checkoutCompleteMutation({
           variables: {
             checkoutToken: checkout.token,
           },
@@ -119,9 +100,8 @@ export function PayuSection({ checkout }: PayuSectionInterface) {
           setIsPaymentProcessing(false);
           return;
         }
-        order = completeData?.checkoutComplete?.order;
+        resetCheckoutToken();
       } else {
-        // If payuUrl is null, throw an error to be caught in the catch block
         throw new Error("Failed to generate PayU URL");
       }
     } catch (error) {
@@ -131,7 +111,7 @@ export function PayuSection({ checkout }: PayuSectionInterface) {
   };
 
   return (
-    <div className="py-2">
+    <div className="py-8">
       <form method="post" onSubmit={handleSubmit}>
         <CompleteCheckoutButton isProcessing={isPaymentProcessing} isDisabled={isPaymentProcessing}>
           Zapłać z PayU
