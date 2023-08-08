@@ -45,7 +45,7 @@ function Custom404() {
             </div>
             <div className="my-12">
               <Link
-                href={paths.$baseurl()}
+                href={paths.$url()}
                 className="text-2xl md:text-3xl border-brand border-2 bg-brand hover:border-brand hover:bg-white hover:text-brand transition
                text-white font-bold py-4 px-8 rounded-full"
               >

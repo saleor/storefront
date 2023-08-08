@@ -59,7 +59,7 @@ export function Footer({ className, ...rest }: FooterProps) {
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
       <div className="flex sm:mb-8 sm:container pt-12">
-        <Link href={paths.$baseurl()} passHref legacyBehavior>
+        <Link href={paths.$url()} passHref legacyBehavior>
           <a href="pass" className="hidden sm:inline-block">
             <div className="mt-px group block h-16 w-28 relative">
               <Logo height="120" width="150" />

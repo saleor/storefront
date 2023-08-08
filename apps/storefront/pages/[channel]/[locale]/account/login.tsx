@@ -54,7 +54,7 @@ function LoginPage() {
 
     const redirectURL =
       (routerQueryNext && new URL(routerQueryNext, window.location.toString()).pathname) ||
-      paths.$baseurl();
+      paths.$url();
     void router.push(redirectURL);
   });
 
