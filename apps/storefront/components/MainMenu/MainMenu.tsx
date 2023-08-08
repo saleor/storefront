@@ -11,7 +11,7 @@ import { HamburgerButton } from "../HamburgerButton";
 import { useRegions } from "../RegionsProvider";
 
 export function MainMenu() {
-  const { query } = useRegions();
+  const { query, currentChannel, currentLocale } = useRegions();
 
   const { loading, error, data } = useMainMenuQuery({
     variables: { ...query },
@@ -64,7 +64,11 @@ export function MainMenu() {
                       }
                       return (
                         <li key={child.id}>
-                          <Link href={getLinkPath(child)} passHref legacyBehavior>
+                          <Link
+                            href={getLinkPath(child, currentChannel.slug, currentLocale)}
+                            passHref
+                            legacyBehavior
+                          >
                             <a
                               onClick={() => setOpenDropdown(false)}
                               href="pass"

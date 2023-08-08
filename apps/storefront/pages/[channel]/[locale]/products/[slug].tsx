@@ -40,7 +40,7 @@ import {
 } from "next-share";
 import { STOREFRONT_NAME } from "@/lib/const";
 import { useWishlist } from "context/WishlistContext";
-import Heart from "../../components/Navbar/heart.svg";
+import Heart from "../../../../components/Navbar/heart.svg";
 
 export type OptionalQuery = {
   variant?: string;
