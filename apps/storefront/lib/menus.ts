@@ -5,6 +5,7 @@ export const getLinkPath = (item: MenuItemFragment, channel: string, locale: str
   const paths = pagesPath._channel(channel)._locale(locale);
 
   if (item.category) {
+    console.log(paths.category._slug(item.category?.slug).$url());
     return paths.category._slug(item.category?.slug).$url();
   }
   if (item.collection) {

@@ -10,13 +10,13 @@ import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
-import DefaultHeroWomanImg from "../images/homepage/hero-img.jpg";
-import DefaultHeroImgC4U from "../images/homepage/hero-img-default-c4u.jpg";
-import WomanCategory from "../images/homepage/woman-category.jpg";
-import ManCategory from "../images/homepage/man-category.jpg";
-import KidCategory from "../images/homepage/kid-category.jpg";
+import DefaultHeroWomanImg from "../../../images/homepage/hero-img.jpg";
+import DefaultHeroImgC4U from "../../../images/homepage/hero-img-default-c4u.jpg";
+import WomanCategory from "../../../images/homepage/woman-category.jpg";
+import ManCategory from "../../../images/homepage/man-category.jpg";
+import KidCategory from "../../../images/homepage/kid-category.jpg";
 import usePaths from "@/lib/paths";
-import { InferGetStaticPropsType } from "next";
+import { GetStaticPaths, InferGetStaticPropsType } from "next";
 import { getNewsData, getNewsIdData } from "@/lib/getNews";
 import { getCollectionsData } from "@/lib/getCollections";
 import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
@@ -320,10 +320,10 @@ function Home({
 
 export default Home;
 
-// export const getStaticPaths: GetStaticPaths = () => ({
-//   paths: [],
-//   fallback: "blocking",
-// });
+export const getStaticPaths: GetStaticPaths = () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
