@@ -27,7 +27,7 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 export function Footer({ className, ...rest }: FooterProps) {
   const shopName = STOREFRONT_NAME;
   const paths = usePaths();
-  const { query, currentChannel, currentLocale } = useRegions();
+  const { query, currentLocale } = useRegions();
 
   const { data, error } = useFooterMenuQuery({ variables: { ...query } });
 
@@ -79,11 +79,7 @@ export function Footer({ className, ...rest }: FooterProps) {
                   {item?.name}
                 </a>
               ) : (
-                <Link
-                  href={getLinkPath(item, currentChannel.slug, currentLocale)}
-                  passHref
-                  legacyBehavior
-                >
+                <Link href={getLinkPath(item, currentLocale)} passHref legacyBehavior>
                   <a href="pass" className={styles["menu-heading"]}>
                     {item?.name}
                   </a>
