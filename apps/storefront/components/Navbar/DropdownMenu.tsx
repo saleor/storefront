@@ -12,10 +12,7 @@ interface DropdownProps {
 }
 
 function Dropdown({ menuItem }: DropdownProps) {
-  const {
-    currentChannel: { slug },
-    currentLocale,
-  } = useRegions();
+  const { currentLocale } = useRegions();
 
   return (
     <div className={styles.dropdown}>
@@ -36,7 +33,7 @@ function Dropdown({ menuItem }: DropdownProps) {
                       {item?.name}
                     </a>
                   ) : (
-                    <Link href={getLinkPath(item, slug, currentLocale)} passHref legacyBehavior>
+                    <Link href={getLinkPath(item, currentLocale)} passHref legacyBehavior>
                       <a href="pass" className={`${styles["dropdown-main"]} whitespace-nowrap`}>
                         {item?.name}
                       </a>
@@ -46,11 +43,7 @@ function Dropdown({ menuItem }: DropdownProps) {
                     <ul className={styles["dropdown-ul"]}>
                       {item?.children?.map((sub) => (
                         <li key={sub?.id}>
-                          <Link
-                            href={getLinkPath(sub, slug, currentLocale)}
-                            passHref
-                            legacyBehavior
-                          >
+                          <Link href={getLinkPath(sub, currentLocale)} passHref legacyBehavior>
                             <a href="pass" className={styles["dropdown-link"]}>
                               {sub?.name}
                             </a>

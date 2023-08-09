@@ -13,7 +13,7 @@ import { useRegions } from "../RegionsProvider";
 
 function SubCollapseMenu({ menuItem }: CollapseMenuProps) {
   const [open, setOpen] = useState(false);
-  const { currentChannel, currentLocale } = useRegions();
+  const { currentLocale } = useRegions();
 
   const shouldDisplayAnchor = !menuItem.children?.length;
 
@@ -42,11 +42,7 @@ function SubCollapseMenu({ menuItem }: CollapseMenuProps) {
                       {sub.name}
                     </a>
                   ) : (
-                    <Link
-                      href={getLinkPath(sub, currentChannel.slug, currentLocale)}
-                      passHref
-                      legacyBehavior
-                    >
+                    <Link href={getLinkPath(sub, currentLocale)} passHref legacyBehavior>
                       <a href="pass">{sub.name}</a>
                     </Link>
                   )}
