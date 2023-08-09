@@ -4,6 +4,7 @@ import { getLinkPath } from "@/lib/menus";
 import { MenuItemWithChildrenFragment } from "@/saleor/api";
 
 import { NavigationAnchor } from "../NavigationAnchor/NavigationAnchor";
+import { useRegions } from "../RegionsProvider";
 import styles from "./Navbar.module.css";
 
 interface DropdownProps {
@@ -11,6 +12,11 @@ interface DropdownProps {
 }
 
 function Dropdown({ menuItem }: DropdownProps) {
+  const {
+    currentChannel: { slug },
+    currentLocale,
+  } = useRegions();
+
   return (
     <div className={styles.dropdown}>
       <NavigationAnchor menuItem={menuItem} className={styles["dropdown-trigger"]} />
@@ -30,7 +36,7 @@ function Dropdown({ menuItem }: DropdownProps) {
                       {item?.name}
                     </a>
                   ) : (
-                    <Link href={getLinkPath(item)} passHref legacyBehavior>
+                    <Link href={getLinkPath(item, slug, currentLocale)} passHref legacyBehavior>
                       <a href="pass" className={`${styles["dropdown-main"]} whitespace-nowrap`}>
                         {item?.name}
                       </a>
@@ -40,7 +46,11 @@ function Dropdown({ menuItem }: DropdownProps) {
                     <ul className={styles["dropdown-ul"]}>
                       {item?.children?.map((sub) => (
                         <li key={sub?.id}>
-                          <Link href={getLinkPath(sub)} passHref legacyBehavior>
+                          <Link
+                            href={getLinkPath(sub, slug, currentLocale)}
+                            passHref
+                            legacyBehavior
+                          >
                             <a href="pass" className={styles["dropdown-link"]}>
                               {sub?.name}
                             </a>

@@ -27,7 +27,7 @@ export type FooterProps = HTMLAttributes<HTMLElement>;
 export function Footer({ className, ...rest }: FooterProps) {
   const shopName = STOREFRONT_NAME;
   const paths = usePaths();
-  const { query } = useRegions();
+  const { query, currentChannel, currentLocale } = useRegions();
 
   const { data, error } = useFooterMenuQuery({ variables: { ...query } });
 
@@ -59,7 +59,7 @@ export function Footer({ className, ...rest }: FooterProps) {
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
       <div className="flex sm:mb-8 sm:container pt-12">
-        <Link href={paths.$baseurl()} passHref legacyBehavior>
+        <Link href={paths.$url()} passHref legacyBehavior>
           <a href="pass" className="hidden sm:inline-block">
             <div className="mt-px group block h-16 w-28 relative">
               <Logo height="120" width="150" />
@@ -79,7 +79,11 @@ export function Footer({ className, ...rest }: FooterProps) {
                   {item?.name}
                 </a>
               ) : (
-                <Link href={getLinkPath(item)} passHref legacyBehavior>
+                <Link
+                  href={getLinkPath(item, currentChannel.slug, currentLocale)}
+                  passHref
+                  legacyBehavior
+                >
                   <a href="pass" className={styles["menu-heading"]}>
                     {item?.name}
                   </a>

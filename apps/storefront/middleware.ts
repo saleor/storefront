@@ -16,9 +16,9 @@ export function LocaleRedirectionMiddleware({
   if (!GEOLOCATION) {
     // redirection middleware can be turned on by setting the NEXT_PUBLIC_GEOLOCATION
     // env variable. If it's turned off we redirect to the default region
-    // const url = nextUrl.clone();
-    // url.pathname = `/${DEFAULT_LOCALE}`;
-    // return NextResponse.redirect(url);
+    const url = nextUrl.clone();
+    url.pathname = `/${DEFAULT_CHANNEL.slug}/${DEFAULT_LOCALE}`;
+    return NextResponse.redirect(url);
   }
   const requestLocale = headers.get("accept-language")?.split(",")?.[0] || DEFAULT_LOCALE;
   let locale = DEFAULT_LOCALE;
@@ -35,9 +35,9 @@ export function LocaleRedirectionMiddleware({
     channel = "channel-pln";
   }
 
-  // const url = nextUrl.clone();
-  // url.pathname = `/${locale}`;
-  // return NextResponse.redirect(url);
+  const url = nextUrl.clone();
+  url.pathname = `/${locale}`;
+  return NextResponse.redirect(url);
 }
 
 export default LocaleRedirectionMiddleware;

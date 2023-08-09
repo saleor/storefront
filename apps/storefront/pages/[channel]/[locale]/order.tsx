@@ -13,7 +13,7 @@ function OrderCompletedPage() {
       <CheckIcon className="text-green-700" />
       <div className="font-semibold text-3xl">Your order is completed!</div>
       <p className="mt-2">
-        <Link href={paths.$baseurl()}>Go back to homepage</Link>
+        <Link href={paths.$url()}>Go back to homepage</Link>
       </p>
     </main>
   );
