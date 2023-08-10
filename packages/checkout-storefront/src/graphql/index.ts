@@ -26764,6 +26764,7 @@ export type CheckoutFragment = {
   authorizeStatus: CheckoutAuthorizeStatusEnum;
   chargeStatus: CheckoutChargeStatusEnum;
   isShippingRequired: boolean;
+  token: string;
   discount?: { __typename?: "Money"; currency: string; amount: number } | null;
   giftCards: Array<{
     __typename?: "GiftCard";
@@ -26975,6 +26976,7 @@ export type CheckoutQuery = {
     authorizeStatus: CheckoutAuthorizeStatusEnum;
     chargeStatus: CheckoutChargeStatusEnum;
     isShippingRequired: boolean;
+    token: string;
     discount?: { __typename?: "Money"; currency: string; amount: number } | null;
     giftCards: Array<{
       __typename?: "GiftCard";
@@ -27139,6 +27141,7 @@ export type CheckoutLinesUpdateMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -27292,6 +27295,7 @@ export type CheckoutLineDeleteMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -27445,6 +27449,7 @@ export type CheckoutEmailUpdateMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -27597,6 +27602,7 @@ export type CheckoutCustomerAttachMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -27751,6 +27757,7 @@ export type CheckoutShippingAddressUpdateMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -27905,6 +27912,7 @@ export type CheckoutBillingAddressUpdateMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -28058,6 +28066,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -28233,6 +28242,7 @@ export type CheckoutAddPromoCodeMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -28387,6 +28397,7 @@ export type CheckoutRemovePromoCodeMutation = {
       authorizeStatus: CheckoutAuthorizeStatusEnum;
       chargeStatus: CheckoutChargeStatusEnum;
       isShippingRequired: boolean;
+      token: string;
       discount?: { __typename?: "Money"; currency: string; amount: number } | null;
       giftCards: Array<{
         __typename?: "GiftCard";
@@ -28529,6 +28540,24 @@ export type CheckoutCompleteMutation = {
       code: CheckoutErrorCode;
     }>;
     order?: { __typename?: "Order"; id: string } | null;
+  } | null;
+};
+
+export type CheckoutPaymentCreateMutationVariables = Exact<{
+  checkoutToken: Scalars["UUID"];
+  paymentInput: PaymentInput;
+}>;
+
+export type CheckoutPaymentCreateMutation = {
+  __typename?: "Mutation";
+  checkoutPaymentCreate?: {
+    __typename?: "CheckoutPaymentCreate";
+    payment?: {
+      __typename?: "Payment";
+      id: string;
+      total?: { __typename?: "Money"; currency: string; amount: number } | null;
+    } | null;
+    errors: Array<{ __typename?: "PaymentError"; field?: string | null; message?: string | null }>;
   } | null;
 };
 
@@ -29477,6 +29506,7 @@ export const CheckoutFragmentDoc = gql`
     lines {
       ...CheckoutLineFragment
     }
+    token
   }
   ${MoneyFragmentDoc}
   ${GiftCardFragmentDoc}
@@ -29906,6 +29936,29 @@ export const CheckoutCompleteDocument = gql`
 export function useCheckoutCompleteMutation() {
   return Urql.useMutation<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>(
     CheckoutCompleteDocument
+  );
+}
+export const CheckoutPaymentCreateDocument = gql`
+  mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
+    checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
+      payment {
+        id
+        total {
+          currency
+          amount
+        }
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+export function useCheckoutPaymentCreateMutation() {
+  return Urql.useMutation<CheckoutPaymentCreateMutation, CheckoutPaymentCreateMutationVariables>(
+    CheckoutPaymentCreateDocument
   );
 }
 export const OrderDocument = gql`
