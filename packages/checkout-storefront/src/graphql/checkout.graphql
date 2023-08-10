@@ -105,6 +105,7 @@ fragment CheckoutFragment on Checkout {
   lines {
     ...CheckoutLineFragment
   }
+  token
 }
 
 fragment CheckoutLineFragment on CheckoutLine {
@@ -346,6 +347,22 @@ mutation checkoutComplete($checkoutId: ID!) {
     }
     order {
       id
+    }
+  }
+}
+
+mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
+  checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
+    payment {
+      id
+      total {
+        currency
+        amount
+      }
+    }
+    errors {
+      field
+      message
     }
   }
 }

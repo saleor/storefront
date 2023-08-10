@@ -1,5 +1,6 @@
 overwrite: true
-schema: ${SALEOR_API_URL}
+schema:
+  - ${NEXT_PUBLIC_API_URI}
 documents: "src/**/*.graphql"
 extensions:
   codegen:
