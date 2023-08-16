@@ -40,10 +40,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     return null;
   }
 
-  const [selectedRadio, setSelectedRadioCode] = useState("");
+  const [selectedRadio, setSelectedRadio] = useState<string>("");
 
   const handleRadioChange = (value: string) => {
-    setSelectedRadioCode(value);
+    setSelectedRadio(value);
   };
 
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
