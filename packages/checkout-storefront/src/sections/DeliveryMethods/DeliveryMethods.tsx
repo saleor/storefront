@@ -1,7 +1,7 @@
 import { Title } from "@/checkout-storefront/components/Title";
 import { Text } from "@saleor/ui-kit";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
-import React from "react";
+import React, { useState } from "react";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
@@ -14,6 +14,8 @@ import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { useUser } from "@/checkout-storefront/hooks/useUser";
+import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
+import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -38,6 +40,22 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     return null;
   }
 
+  const [selectedRadio, setSelectedRadio] = useState<string>("");
+
+  const handleRadioChange = (value: string) => {
+    setSelectedRadio(value);
+  };
+
+  const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
+
+  const handleInpostDataChange = (data: InpostEventData | null) => {
+    setSelectedInpostData(data);
+  };
+
+  const resetInpostData = () => {
+    setSelectedInpostData(null);
+  };
+
   return (
     <FormProvider form={form}>
       <Divider />
@@ -52,7 +70,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
           <SelectBoxGroup label={formatMessage(deliveryMethodsLabels.deliveryMethods)}>
             {shippingMethods?.map(
               ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
-                <SelectBox key={id} name="selectedMethodId" value={id}>
+                <SelectBox
+                  key={id}
+                  name="selectedMethodId"
+                  value={id}
+                  onRadioChange={handleRadioChange}
+                >
                   <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
                     <div className="flex flex-row justify-between self-stretch items-center">
                       <Text>{name}</Text>
@@ -66,6 +89,25 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
               )
             )}
           </SelectBoxGroup>
+        )}
+        {selectedRadio == "U2hpcHBpbmdNZXRob2Q6NjQ=" && (
+          <div>
+            {selectedInpostData?.name != null && (
+              <div>
+                <p style={{ padding: "1.2rem" }}>Wybrany Paczkomat: {selectedInpostData?.name}</p>
+                <button
+                  className="Select-module_select__cjdcr"
+                  style={{ backgroundColor: "#ffcb04" }}
+                  onClick={resetInpostData}
+                >
+                  Zmień punkt odbioru InPost
+                </button>
+              </div>
+            )}
+            {selectedInpostData?.name == null && (
+              <ShippingMethodInpostMap onInpostDataChange={handleInpostDataChange} />
+            )}
+          </div>
         )}
       </div>
     </FormProvider>
