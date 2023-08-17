@@ -4,6 +4,8 @@ import CompleteCheckoutButton from "./CompleteCheckoutButton";
 import { useCheckoutPaymentCreateMutation } from "./useCheckoutPaymentCreateMutation";
 import { useCheckoutComplete } from "@/checkout-storefront/hooks/useCheckoutComplete";
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
+import { useIntl } from "react-intl";
+import { paymentSectionMessages } from "./messages";
 
 export interface IPaymentGatewayConfig {
   field: string;
@@ -17,6 +19,7 @@ export function PayuSection({ checkout }: any) {
   const { onCheckoutComplete } = useCheckoutComplete();
   const { saleorApiUrl } = getQueryParams();
   const { channel } = getQueryParams();
+  const t = useIntl();
 
   const generatePayuUrl = async (paymentId: string) => {
     const payuUrlQuery = `
@@ -93,7 +96,7 @@ export function PayuSection({ checkout }: any) {
     <div className="py-2">
       <form method="post" onSubmit={handleSubmit}>
         <CompleteCheckoutButton isProcessing={isPaymentProcessing} isDisabled={isPaymentProcessing}>
-          Zapłać z PayU
+          {t.formatMessage(paymentSectionMessages.payWithPayu)}
         </CompleteCheckoutButton>
       </form>
     </div>

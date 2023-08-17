@@ -7,9 +7,14 @@ export const paymentSectionMessages = defineMessages({
     description: "payment methods",
   },
   processingPayment: {
-    defaultMessage: "Almost done...",
-    id: "PaymentSection/messages/qEunhG",
-    description: "Almost done",
+    defaultMessage: "Processing...",
+    id: "PaymentSection/messages/luwPkv",
+    description: "Processing",
+  },
+  payWithPayu: {
+    defaultMessage: "Pay with PayU",
+    id: "PaymentSection/messages/GnBIrm",
+    description: "Pay with payu",
   },
 });
 

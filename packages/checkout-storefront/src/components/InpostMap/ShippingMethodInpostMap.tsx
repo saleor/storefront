@@ -3,10 +3,11 @@ import { useEffect } from "react";
 import { sanitize } from "isomorphic-dompurify";
 
 export interface InpostEventData {
-  name: String;
+  name: string;
 }
-const geoToken = process.env.NEXT_PUBLIC_INPOST_WIDGET_GEOTOKEN;
-const widgetUrl = process.env.NEXT_PUBLIC_INPOST_WIDGET_URL;
+
+const geoToken = process.env.NEXT_PUBLIC_INPOST_WIDGET_GEOTOKEN || "";
+const widgetUrl = process.env.NEXT_PUBLIC_INPOST_WIDGET_URL || "";
 
 export function ShippingMethodInpostMap({
   onInpostDataChange,

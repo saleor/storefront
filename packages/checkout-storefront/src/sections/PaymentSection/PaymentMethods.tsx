@@ -14,27 +14,22 @@ export function PaymentMethods() {
 
   return (
     <>
-      <div className="mt-4 mb-4">
-        <h2 className="checkout-section-header-active">Płatność</h2>
+      <div className="block">
+        <RadioGroup value={chosenGateway} onChange={setChosenGateway} className="mt-2 w-max">
+          {availableGateways?.map(({ id, name }) => (
+            <RadioGroup.Option key={id} value={id}>
+              <label
+                className="inline-flex items-center mb-4 text-base font-medium text-gray-900 cursor-pointer border-gray-300 bg-white border rounded shadow-sm p-4 hover:border-brand transition"
+                htmlFor={id}
+              >
+                <input type="radio" className="form-radio" name="radio" value={id} id={id} />
+                <span className="">{name}</span>
+              </label>
+            </RadioGroup.Option>
+          ))}
+        </RadioGroup>
       </div>
-      <>
-        <div className="block">
-          <RadioGroup value={chosenGateway} onChange={setChosenGateway} className="mt-2 w-max">
-            {availableGateways?.map(({ id, name }) => (
-              <RadioGroup.Option key={id} value={id}>
-                <label
-                  className="inline-flex items-center mt-6 text-base font-medium text-gray-900 cursor-pointer border-gray-300 bg-white border rounded shadow-sm p-4 hover:border-brand transition"
-                  htmlFor={id}
-                >
-                  <input type="radio" className="form-radio" name="radio" value={id} id={id} />
-                  <span className="">{name}</span>
-                </label>
-              </RadioGroup.Option>
-            ))}
-          </RadioGroup>
-        </div>
-        {chosenGateway === PAYU_GATEWAY && <PayuSection checkout={checkout} />}
-      </>
+      {chosenGateway === PAYU_GATEWAY && <PayuSection checkout={checkout} />}
     </>
   );
 }

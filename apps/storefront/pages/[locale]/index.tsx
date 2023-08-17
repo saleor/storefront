@@ -57,10 +57,10 @@ export const getStaticProps = async () => {
   return {
     props: {
       featuredProducts: featuredProductsData,
-      news: newsData?.data?.pages?.edges,
+      news: newsData?.data?.pages?.edges || null,
       sales: salesData?.data || null,
-      categories: categoriesData?.data?.categories,
-      collections: collectionsData?.data.collections,
+      categories: categoriesData?.data?.categories || null,
+      collections: collectionsData?.data.collections || null,
     },
     revalidate: 60 * 60, // value in seconds, how often ISR will trigger on the server
   };

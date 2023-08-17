@@ -1,6 +1,6 @@
 import { useIntl } from "react-intl";
+import { paymentSectionMessages } from "./messages";
 
-/* eslint-disable */ // component will be fulle redesigned
 interface CompleteCheckoutButtonProps {
   isDisabled: boolean;
   isProcessing: boolean;
@@ -21,7 +21,8 @@ export function CompleteCheckoutButton({
         <button
           type="button"
           disabled
-          className="w-full mt-6 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white flex items-center justify-center"
+          className="w-full mt-6 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white flex items-center justify-center gap-4"
+          style={{ backgroundColor: "#03C988", color: "#fff" }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -43,14 +44,15 @@ export function CompleteCheckoutButton({
               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          processing
+          {t.formatMessage(paymentSectionMessages.processingPayment)}
         </button>
       ) : (
         <button
           onClick={onClick}
           disabled={isDisabled}
           type="submit"
-          className="w-full mt-6 bg-green-500 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white hover:bg-green-600 flex items-center justify-center transition"
+          className="w-full mb-4 border border-transparent rounded-md shadow-sm py-2 px-4 text-lg font-medium text-white hover:bg-green-600 flex items-center justify-center transition"
+          style={{ backgroundColor: "#03C988", color: "#fff" }}
         >
           {children}
         </button>
