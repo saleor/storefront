@@ -16,7 +16,7 @@ import {
   useCheckoutUpdateStateChange,
 } from "@/checkout-storefront/state/updateStateStore";
 import { pick } from "lodash-es";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 export type AutoSaveAddressFormData = Partial<AddressFormData>;
 
@@ -35,21 +35,31 @@ export const useAutoSaveAddressForm = ({
 
   const debouncedSubmit = useDebouncedSubmit(onSubmit);
 
-  const formHelpers = pick(form, [
-    "setErrors",
-    "setStatus",
-    "setTouched",
-    "setValues",
-    "setSubmitting",
-    "setFormikState",
-    "setFieldValue",
-    "setFieldTouched",
-    "setFieldError",
-    "validateForm",
-    "validateField",
-    "resetForm",
-    "submitForm",
-  ]) as FormHelpers<AutoSaveAddressFormData>;
+  const formHelpers = useMemo(() => {
+    const formHelpersRaw = pick(form, [
+      "setErrors",
+      "setStatus",
+      "setTouched",
+      "setValues",
+      "setSubmitting",
+      "setFormikState",
+      "setFieldValue",
+      "setFieldTouched",
+      "setFieldError",
+      "validateForm",
+      "validateField",
+      "resetForm",
+      "submitForm",
+    ]);
+
+    return {
+      ...formHelpersRaw,
+      setFieldValue: (...args: Parameters<typeof form.setFieldValue>) => {
+        form.setFieldValue(...args);
+        return Promise.resolve();
+      },
+    } as FormHelpers<Partial<AddressFormData>>;
+  }, [form]);
 
   // it'd make sense for onSubmit prop to be optional but formik has ignored this
   // request for forever now https://github.com/jaredpalmer/formik/issues/2675

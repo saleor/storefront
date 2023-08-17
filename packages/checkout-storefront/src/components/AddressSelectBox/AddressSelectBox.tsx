@@ -13,12 +13,14 @@ interface AddressSelectBoxProps<TFieldName extends string>
   address: Partial<Record<AddressField, any>>;
   onEdit: () => void;
   unavailable: boolean;
+  onRadioChange: (value: string) => void;
 }
 
 export const AddressSelectBox = <TFieldName extends string>({
   address,
   onEdit,
   unavailable,
+  onRadioChange,
   ...rest
 }: AddressSelectBoxProps<TFieldName>) => {
   const formatMessage = useFormattedMessages();
@@ -30,7 +32,7 @@ export const AddressSelectBox = <TFieldName extends string>({
     : {};
 
   return (
-    <SelectBox {...rest} disabled={unavailable}>
+    <SelectBox {...rest} disabled={unavailable} onRadioChange={onRadioChange}>
       <div className="w-full flex flex-row justify-between">
         <Address address={address as AddressFragment} {...textProps}>
           {unavailable && (
