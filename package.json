@@ -55,6 +55,8 @@
     }
   },
   "dependencies": {
+    "@emotion/cache": "^11.11.0",
+    "@emotion/serialize": "^1.1.2",
     "react-svg": "^16.1.18"
   }
 }
