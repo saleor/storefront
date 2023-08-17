@@ -1514,6 +1514,14 @@
     "developer_comment": "payment providers",
     "string": "Metoda płatności"
   },
+  "PaymentSection/messages/GnBIrm": {
+    "developer_comment": "Pay with payu",
+    "string": "Zapłać z PayU"
+  },
+  "PaymentSection/messages/luwPkv": {
+    "developer_comment": "Processing",
+    "string": "Przetwarzanie..."
+  },
   "PaymentSection/messages/FK5Bg/": {
     "developer_comment": "payment providers accessibility label",
     "string": "metoda płatności"
