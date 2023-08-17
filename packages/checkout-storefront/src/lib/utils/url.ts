@@ -10,6 +10,7 @@ const queryParamsMap = {
   redirectUrl: "redirectUrl",
   checkout: "checkoutId",
   order: "orderId",
+  channel: "channel",
   token: "passwordResetToken",
   email: "passwordResetEmail",
   saleorApiUrl: "saleorApiUrl",
@@ -39,6 +40,7 @@ export type QueryParams = Record<QueryParam, ParamBasicValue> & CustomTypedQuery
 
 const defaultParams: Partial<RawQueryParams> = {
   locale: DEFAULT_LOCALE,
+  channel: DEFAULT_CHANNEL,
 };
 
 // this is intentional, we know what we'll get from the query but
