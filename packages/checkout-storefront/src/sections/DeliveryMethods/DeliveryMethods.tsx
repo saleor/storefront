@@ -16,6 +16,7 @@ import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/Delivery
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
+import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql";
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
@@ -24,6 +25,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { shippingMethods, shippingAddress } = checkout;
   const form = useDeliveryMethodsForm();
   const { updateState } = useCheckoutUpdateState();
+  const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
 
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -50,6 +52,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
   const handleInpostDataChange = (data: InpostEventData | null) => {
     setSelectedInpostData(data);
+    if (data?.name) {
+      const updateShippingLockerIdResponse = updateShippingLockerId({
+        checkoutId: checkout.id,
+        lockerId: data?.name,
+      });
+    }
   };
 
   const resetInpostData = () => {

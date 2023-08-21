@@ -366,3 +366,20 @@ mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInpu
     }
   }
 }
+
+  mutation UpdateShippingLockerId($checkoutId: ID!, $lockerId: String!) {
+    updateMetadata(
+      id: $checkoutId
+      input: [{ key: "locker_id", value: $lockerId }]
+    ) {
+      item {
+        metadata {
+          key
+          value
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
