@@ -28561,6 +28561,148 @@ export type CheckoutPaymentCreateMutation = {
   } | null;
 };
 
+export type UpdateShippingLockerIdMutationVariables = Exact<{
+  checkoutId: Scalars["ID"];
+  lockerId: Scalars["String"];
+}>;
+
+export type UpdateShippingLockerIdMutation = {
+  __typename?: "Mutation";
+  updateMetadata?: {
+    __typename: "UpdateMetadata";
+    item?:
+      | {
+          __typename: "Address";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "App";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Attribute";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Category";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Checkout";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "CheckoutLine";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Collection";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "DigitalContent";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Fulfillment";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "GiftCard";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Invoice";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Menu";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "MenuItem";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Order";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "OrderLine";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Page";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "PageType";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Payment";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Product";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "ProductMedia";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "ProductType";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "ProductVariant";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Sale";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "ShippingMethod";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "ShippingMethodType";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "ShippingZone";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "TaxClass";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "TaxConfiguration";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "TransactionItem";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "User";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Voucher";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename: "Warehouse";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | null;
+  } | null;
+};
+
 export type MoneyFragment = { __typename?: "Money"; currency: string; amount: number };
 
 export type OrderLineFragment = {
@@ -29959,6 +30101,27 @@ export const CheckoutPaymentCreateDocument = gql`
 export function useCheckoutPaymentCreateMutation() {
   return Urql.useMutation<CheckoutPaymentCreateMutation, CheckoutPaymentCreateMutationVariables>(
     CheckoutPaymentCreateDocument
+  );
+}
+export const UpdateShippingLockerIdDocument = gql`
+  mutation UpdateShippingLockerId($checkoutId: ID!, $lockerId: String!) {
+    updateMetadata(id: $checkoutId, input: [{ key: "locker_id", value: $lockerId }]) {
+      item {
+        metadata {
+          key
+          value
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+`;
+
+export function useUpdateShippingLockerIdMutation() {
+  return Urql.useMutation<UpdateShippingLockerIdMutation, UpdateShippingLockerIdMutationVariables>(
+    UpdateShippingLockerIdDocument
   );
 }
 export const OrderDocument = gql`
