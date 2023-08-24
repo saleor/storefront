@@ -13,9 +13,6 @@ on:
           - https://demo.saleor.io/
           - https://react-storefront-e2e.vercel.app/
 
-  schedule:
-    - cron: "00 2 * * 1-5"
-
   repository_dispatch:
     types: [automation-tests-event]
 
