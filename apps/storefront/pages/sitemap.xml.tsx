@@ -32,6 +32,9 @@ function generateSiteMap(data: SitemapSlugs) {
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
       <loc>${HOST}/</loc>
+    </url>
+    <url>
+      <loc>${HOST}/PL-pl/</loc>
     </url>`;
 
   if (data.sitemapSlugs.pagesSlugs) {
@@ -39,7 +42,7 @@ function generateSiteMap(data: SitemapSlugs) {
       .map((slug: string) => {
         return `
       <url>
-        <loc>${`${HOST}/page/${slug}/`}</loc>
+        <loc>${`${HOST}/PL-pl/page/${slug}/`}</loc>
       </url>`;
       })
       .join("")}`;
@@ -50,7 +53,7 @@ function generateSiteMap(data: SitemapSlugs) {
       .map((slug: string) => {
         return `
       <url>
-        <loc>${`${HOST}/category/${slug}/`}</loc>
+        <loc>${`${HOST}/PL-pl/category/${slug}/`}</loc>
       </url>`;
       })
       .join("")}`;
@@ -60,7 +63,7 @@ function generateSiteMap(data: SitemapSlugs) {
       .map((slug: string) => {
         return `
       <url>
-        <loc>${`${HOST}/product/${slug}/`}</loc>
+        <loc>${`${HOST}/PL-pl/product/${slug}/`}</loc>
       </url>`;
       })
       .join("")}`;
