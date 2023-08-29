@@ -320,10 +320,12 @@ function Home({
 
 export default Home;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { locale: "pl-PL" } }, { params: { locale: "en-US" } }],
+    fallback: false,
+  };
+}
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

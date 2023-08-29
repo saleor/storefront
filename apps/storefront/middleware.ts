@@ -11,14 +11,29 @@ export function LocaleRedirectionMiddleware({
 }: NextRequest): NextMiddlewareResult | Promise<NextMiddlewareResult> {
   if (nextUrl.pathname !== "/") {
     // redirect should only be applied on homepage, without any region/locale chosen
-    return null;
+
+    const posibbleUrls: string[] = [
+      "page",
+      "category",
+      "products",
+      "collection",
+      "wishlist",
+      "search",
+      "account",
+      "checkout",
+    ];
+
+    if (posibbleUrls.includes(nextUrl.pathname.split("/")[1])) {
+      const url = nextUrl.clone();
+      url.pathname = `/${DEFAULT_LOCALE}` + nextUrl.pathname;
+      return NextResponse.redirect(url);
+    } else {
+      return null;
+    }
   }
   if (!GEOLOCATION) {
     // redirection middleware can be turned on by setting the NEXT_PUBLIC_GEOLOCATION
     // env variable. If it's turned off we redirect to the default region
-    const url = nextUrl.clone();
-    url.pathname = `/${DEFAULT_LOCALE}`;
-    return NextResponse.redirect(url);
   }
   const requestLocale = headers.get("accept-language")?.split(",")?.[0] || DEFAULT_LOCALE;
   let locale = DEFAULT_LOCALE;
