@@ -117,6 +117,41 @@ export const messages = defineMessages({
     description: "Warning message when variant is sold out.",
     defaultMessage: "Sold out!",
   },
+  addToWishlist: {
+    id: "app.product.addToWishlist",
+    description: "Button to add product to user's wishlist",
+    defaultMessage: "Add to wishlist,",
+  },
+  productInStock: {
+    id: "app.product.productInStock",
+    description: "Informs whether product is in stock or not",
+    defaultMessage: "In stock",
+  },
+  paymentOptions: {
+    id: "app.product.paymentOptions",
+    description: "Lists possible payment options",
+    defaultMessage: "Payment options",
+  },
+  shippingOptions: {
+    id: "app.product.shippingOptions",
+    description: "Lists possible shipping option",
+    defaultMessage: "Shipping options",
+  },
+  cashOnDelivery: {
+    id: "app.product.shipping.cashOnDelivery",
+    description: "cash on delivery label",
+    defaultMessage: "Cash on delivery",
+  },
+  inpostParcelLocker: {
+    id: "app.product.shipping.inpostParcelLocker",
+    description: "inpost label",
+    defaultMessage: "Inpost Parcel Locker 24/7",
+  },
+  courier: {
+    id: "app.product.shipping.courier",
+    description: "courier label",
+    defaultMessage: "Courier",
+  },
   attributes: {
     id: "app.product.attributes",
     description: "Attributes table header.",
@@ -297,6 +332,11 @@ export const messages = defineMessages({
     id: "app.ui.saveButton",
     description: "Save button label.",
     defaultMessage: "Save",
+  },
+  backButton: {
+    id: "app.ui.backButton",
+    description: "back button label.",
+    defaultMessage: "Back",
   },
   paginationProductCounter: {
     id: "app.ui.productCounter",
@@ -487,6 +527,31 @@ export const messages = defineMessages({
     id: "app.components.checkout.completeCheckoutButton.processingPayment",
     description: "Message displayed on homepage for featured products section",
     defaultMessage: "Processing...",
+  },
+  searchedProducts: {
+    id: "app.search.searchedProducts",
+    description: "Products found in search or category",
+    defaultMessage: "items",
+  },
+  sortBy: {
+    id: "app.search.sortBy",
+    description: "Label for sort by option",
+    defaultMessage: "Sort by",
+  },
+  popularity: {
+    id: "app.search.sortBy.popularity",
+    description: "Label for sort by popularity",
+    defaultMessage: "Popularity",
+  },
+  nameAscending: {
+    id: "app.search.sortBy.nameAscending",
+    description: "Label for sort by nameAscending",
+    defaultMessage: "Name ascending",
+  },
+  nameDescending: {
+    id: "app.search.sortBy.nameDescending",
+    description: "Label for sort by nameDescending",
+    defaultMessage: "Name descending",
   },
 });
 

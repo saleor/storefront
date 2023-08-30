@@ -37,6 +37,8 @@ import {
   WhatsappIcon,
   EmailShareButton,
   EmailIcon,
+  TwitterShareButton,
+  TwitterIcon,
 } from "next-share";
 import { STOREFRONT_NAME } from "@/lib/const";
 import { useWishlist } from "context/WishlistContext";
@@ -204,16 +206,16 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   return (
     <>
       <ProductPageSeo product={product} />
-      <main className="container gap-[3rem] pt-8 px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+      <main className="lg:mx-16 gap-[3rem] px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <button
           type="button"
           onClick={() => history.back()}
-          className="mt-6 py-3 px-12 w-max rounded-lg text-base bg-brand text-white hover:text-brand hover:bg-white border-2 border-brand focus:outline-none transition"
+          className="mt-6 py-3 px-12 w-max rounded-full text-base bg-brand text-white hover:text-brand hover:bg-white border-2 border-brand focus:outline-none transition"
         >
-          Powrót
+          {t.formatMessage(messages.backButton)}
         </button>
       </main>
-      <main className="container gap-[3rem] flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+      <main className="lg:mx-16 mx-8 gap-[3rem] flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
           <div className="flex-grow-2 w-full md:w-1/2 lg:w-1/2 xl:w-2/3 md:pb-0 md:pr-8 box-border">
             <ProductGallery product={product} selectedVariant={selectedVariant} />
@@ -276,7 +278,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
                     className="text-sm flex flex-row gap-3"
                   >
                     <Heart width="22" height="22" />
-                    Add to wishlist
+                    {t.formatMessage(messages.addToWishlist)}
                   </button>
                 )}
               </div>
@@ -298,9 +300,6 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
               )}
 
               <div className="bg-slate-100 w-full h-[1px]"></div>
-
-              <ProductInfoGrid />
-
               <div className="flex flex-row gap-4">
                 <FacebookShareButton
                   url={shareUrl}
@@ -309,13 +308,6 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
                 >
                   <FacebookIcon size={32} round />
                 </FacebookShareButton>
-                <WhatsappShareButton
-                  url={shareUrl}
-                  title={"next-share is a social share buttons for your next React apps."}
-                  separator=":: "
-                >
-                  <WhatsappIcon size={32} round />
-                </WhatsappShareButton>
                 <EmailShareButton
                   url={shareUrl}
                   subject={`${product?.name} - Produkt sklepu ${STOREFRONT_NAME}`}
@@ -323,13 +315,27 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
                 >
                   <EmailIcon size={32} round />
                 </EmailShareButton>
+                <TwitterShareButton
+                  url={shareUrl}
+                  title={`${product?.name} - Produkt sklepu ${STOREFRONT_NAME} Sprawdź produkt, który Ci polecam`}
+                >
+                  <TwitterIcon size={32} round />
+                </TwitterShareButton>
+                <WhatsappShareButton
+                  url={shareUrl}
+                  title={"next-share is a social share buttons for your next React apps."}
+                  separator=":: "
+                >
+                  <WhatsappIcon size={32} round />
+                </WhatsappShareButton>
               </div>
+              <ProductInfoGrid />
             </div>
           </div>
         </div>
       </main>
 
-      <div className="w-full break-words container mt-32">
+      <div className="break-words mx-8 lg:mx-16 mt-32">
         <Tabs product={product} selectedVariant={selectedVariant} />
       </div>
     </>

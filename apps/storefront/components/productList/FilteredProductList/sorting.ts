@@ -1,4 +1,6 @@
+import messages from "@/components/translations";
 import { OrderDirection, ProductOrderField } from "@/saleor/api";
+import { useIntl } from "react-intl";
 
 export interface UrlSorting {
   field: ProductOrderField;
@@ -13,10 +15,22 @@ export interface SortingOption {
 }
 
 export const getSortingOptions = (chosenSorting: UrlSorting | null) => {
+  const t = useIntl();
+
   const options: SortingOption[] = [
-    { label: "Popularity", chosen: false },
-    { label: "Name ascending", field: "NAME", direction: "ASC", chosen: false },
-    { label: "Name descending", field: "NAME", direction: "DESC", chosen: false },
+    { label: t.formatMessage(messages.popularity), chosen: false },
+    {
+      label: t.formatMessage(messages.nameAscending),
+      field: "NAME",
+      direction: "ASC",
+      chosen: false,
+    },
+    {
+      label: t.formatMessage(messages.nameDescending),
+      field: "NAME",
+      direction: "DESC",
+      chosen: false,
+    },
   ];
 
   let isChosenSet = false;

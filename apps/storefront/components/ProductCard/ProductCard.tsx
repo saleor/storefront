@@ -9,12 +9,15 @@ import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
 import { useRegions } from "../RegionsProvider";
 import { useWishlist } from "context/WishlistContext";
 import Heart from "../Navbar/heart.svg";
+import { useIntl } from "react-intl";
+import messages from "../translations";
 
 export interface ProductCardProps {
   product: ProductCardFragment;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const t = useIntl();
   const paths = usePaths();
   const { formatPrice } = useRegions();
 
@@ -61,7 +64,13 @@ export function ProductCard({ product }: ProductCardProps) {
         <a href="pass">
           <div className="w-full aspect-1 relative">
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} width={512} height={512} alt="" />
+              <Image
+                src={thumbnailUrl}
+                width={512}
+                height={512}
+                alt=""
+                className="object-contain"
+              />
             ) : (
               <div className="grid justify-items-center content-center h-full w-full">
                 <PhotographIcon className="h-10 w-10 content-center" />
@@ -110,7 +119,7 @@ export function ProductCard({ product }: ProductCardProps) {
           className="text-md flex flex-row gap-3 mt-6"
         >
           <Heart width="22" height="22" />
-          Add to wishlist
+          {t.formatMessage(messages.addToWishlist)}
         </button>
       )}
     </li>

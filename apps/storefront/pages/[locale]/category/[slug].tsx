@@ -90,7 +90,7 @@ function CategoryPage({
     <>
       <CategoryPageSeo category={category} />
       <header className="mb-4 pt-4">
-        <div className="container px-8">
+        <div className="mx-8 lg:mx-16">
           <PageHero
             title={translate(category, "name")}
             description={translate(category, "description") || ""}
@@ -102,7 +102,7 @@ function CategoryPage({
         </div>
       </header>
       <main>
-        <div className="container px-8 mt-4">
+        <div className="mx-8 mt-4 lg:mx-16">
           <FilteredProductList
             attributeFiltersData={attributeFiltersData}
             categoryIDs={[category.id]}
