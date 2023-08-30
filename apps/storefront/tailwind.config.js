@@ -94,7 +94,7 @@ module.exports = {
       },
       borderRadius: {
         DEFAULT: "4px",
-        full: "50%",
+        full: "500rem",
       },
       boxShadow: {
         "decorative-center": "0 32px 0 -16px #394052",
