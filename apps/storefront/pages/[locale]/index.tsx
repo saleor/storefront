@@ -219,8 +219,8 @@ function Home({
             </div>
           )} */}
           {hasCollections && (
-            <div className="mt-64">
-              <div className="container">
+            <div className="mt-32 lg:mx-16">
+              <div className="container px-0">
                 <div className="flex flex-col items-center my-auto pb-4">
                   <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                     {t.formatMessage(messages.collections)}
@@ -244,7 +244,7 @@ function Home({
                         >
                           <div className="relative bg-cover bg-center w-full flex flex-wrap items-center">
                             <div
-                              className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-cover bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-lg"
+                              className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-lg bg-auto bg-center xs:bg-cover xs:bg-left"
                               style={
                                 collection.backgroundImage
                                   ? {
@@ -269,8 +269,8 @@ function Home({
               </div>
             </div>
           )}
-          <div className="container pt-32" id="news">
-            <div className="flex flex-col items-center mx-auto lg:mx-16">
+          <div className="pt-32 lg:mx-16" id="news">
+            <div className="flex flex-col items-center">
               <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                 {t.formatMessage(messages.latestArticles)}
               </h2>
@@ -278,7 +278,7 @@ function Home({
                 {t.formatMessage(messages.latestArticlesText)}
               </p>
             </div>
-            <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
+            <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 px-8">
               {news?.slice(0, 3).map(({ node: newsElem }: any) => {
                 const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
                 const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
