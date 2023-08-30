@@ -14,37 +14,40 @@ export interface SortingOption {
   chosen: boolean;
 }
 
-export const getSortingOptions = (chosenSorting: UrlSorting | null) => {
+export const useSortingOptions = (chosenSorting: UrlSorting | null) => {
   const t = useIntl();
 
-  const options: SortingOption[] = [
-    { label: t.formatMessage(messages.popularity), chosen: false },
-    {
-      label: t.formatMessage(messages.nameAscending),
-      field: "NAME",
-      direction: "ASC",
-      chosen: false,
-    },
-    {
-      label: t.formatMessage(messages.nameDescending),
-      field: "NAME",
-      direction: "DESC",
-      chosen: false,
-    },
-  ];
+  const getSortingOptions = () => {
+    const options: SortingOption[] = [
+      { label: t.formatMessage(messages.popularity), chosen: false },
+      {
+        label: t.formatMessage(messages.nameAscending),
+        field: "NAME",
+        direction: "ASC",
+        chosen: false,
+      },
+      {
+        label: t.formatMessage(messages.nameDescending),
+        field: "NAME",
+        direction: "DESC",
+        chosen: false,
+      },
+    ];
 
-  let isChosenSet = false;
-  for (const option of options) {
-    if (option.field === chosenSorting?.field && option.direction === chosenSorting?.direction) {
-      option.chosen = true;
-      isChosenSet = true;
-      break;
+    let isChosenSet = false;
+    for (const option of options) {
+      if (option.field === chosenSorting?.field && option.direction === chosenSorting?.direction) {
+        option.chosen = true;
+        isChosenSet = true;
+        break;
+      }
     }
-  }
-  if (!isChosenSet) {
-    options[0].chosen = true;
-  }
-  return options;
+    if (!isChosenSet) {
+      options[0].chosen = true;
+    }
+    return options;
+  };
+  return getSortingOptions();
 };
 
 export const parseQuerySort = (query: string | null): UrlSorting | null => {

@@ -5,7 +5,7 @@ import { Fragment } from "react";
 
 import { OrderDirection, ProductOrderField } from "@/saleor/api";
 
-import { getSortingOptions, UrlSorting } from "./sorting";
+import { useSortingOptions, UrlSorting } from "./sorting";
 import { useIntl } from "react-intl";
 import messages from "@/components/translations";
 
@@ -15,7 +15,7 @@ export interface SortingDropdownProps {
 }
 
 export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) {
-  const options = getSortingOptions(chosen);
+  const options = useSortingOptions(chosen);
   const t = useIntl();
 
   return (
