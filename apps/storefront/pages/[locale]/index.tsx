@@ -16,7 +16,7 @@ import WomanCategory from "../../images/homepage/woman-category.jpg";
 import ManCategory from "../../images/homepage/man-category.jpg";
 import KidCategory from "../../images/homepage/kid-category.jpg";
 import usePaths from "@/lib/paths";
-import { GetStaticPaths, InferGetStaticPropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 import { getNewsData, getNewsIdData } from "@/lib/getNews";
 import { getCollectionsData } from "@/lib/getCollections";
 import { getFeaturedProducts } from "@/lib/getFeaturedProducts";
@@ -320,10 +320,12 @@ function Home({
 
 export default Home;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { locale: "pl-PL" } }, { params: { locale: "en-US" } }],
+    fallback: false,
+  };
+}
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
