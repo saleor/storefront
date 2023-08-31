@@ -6,7 +6,7 @@ export const InfoBanner = () => {
   const t = useIntl();
 
   return (
-    <section className="marketing-bar-global bg-primary text-white bg-brand py-3 text-center mb-8">
+    <section className="marketing-bar-global bg-primary text-white bg-brand py-5 text-center text-base">
       <div className="marketing-bar-content">
         <div className="marketing-bar-content-description">
           {t.formatMessage(messages.marketingFirstText)}

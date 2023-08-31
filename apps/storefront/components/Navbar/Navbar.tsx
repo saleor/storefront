@@ -72,36 +72,47 @@ export function Navbar() {
 
   return (
     <>
+      <div className="hidden xs:block py-4 px-8">
+        <Link href={paths.$url()} passHref legacyBehavior>
+          <a href="pass" className={styles.logo}>
+            <Logo height="89" width="100%" />
+          </a>
+        </Link>
+      </div>
       <div className={clsx(styles.navbar)}>
         <div className={clsx(styles.inner)}>
+          <NavIconButton
+            icon="menu"
+            className="ml-2 lg:hidden "
+            onClick={() => setBurgerOpen(true)}
+          />
+          {!authenticated ? (
+            <Link href={paths.account.login.$url()} passHref legacyBehavior>
+              <a href="pass" data-testid="userIcon" className="xs:hidden">
+                <NavIconButton isButton={false} icon="user" aria-hidden="true" />
+              </a>
+            </Link>
+          ) : (
+            <UserMenu />
+          )}
           <div className="flex-1 h-full hidden xs:flex">
             <Menu />
           </div>
-          <div className="flex-1 flex xs:justify-center">
-            <Link href={paths.$url()} passHref legacyBehavior>
-              <a href="pass" className={styles.logo}>
-                <Logo height="46" width="100%" />
-              </a>
-            </Link>
-          </div>
+          <div className="flex-1 flex xs:justify-center"></div>
           <div className="flex-1 flex justify-end">
             {!authenticated ? (
               <Link href={paths.account.login.$url()} passHref legacyBehavior>
-                <a href="pass" data-testid="userIcon">
+                <a href="pass" data-testid="userIcon" className="hidden xs:flex">
                   <NavIconButton isButton={false} icon="user" aria-hidden="true" />
                 </a>
               </Link>
             ) : (
               <UserMenu />
             )}
-            <a href={externalCheckoutUrl} className="ml-2 hidden xs:flex" data-testid="cartIcon">
+            <a href={externalCheckoutUrl} className="ml-2 " data-testid="cartIcon">
               <NavIconButton isButton={false} icon="bag" aria-hidden="true" counter={counter} />
             </a>
-            <Link
-              href={paths.wishlist.$url()}
-              className="ml-2 hidden xs:flex"
-              data-testid="wishlistIcon"
-            >
+            <Link href={paths.wishlist.$url()} className="ml-2 " data-testid="wishlistIcon">
               <NavIconButton
                 isButton={false}
                 icon="heart"
@@ -110,15 +121,10 @@ export function Navbar() {
               />
             </Link>
             <Link href={paths.search.$url()} passHref legacyBehavior>
-              <a href="pass" className="hidden lg:flex ml-2" data-testid="searchIcon">
+              <a href="pass" className="ml-2" data-testid="searchIcon">
                 <NavIconButton isButton={false} icon="spyglass" />
               </a>
             </Link>
-            <NavIconButton
-              icon="menu"
-              className="ml-2 lg:hidden"
-              onClick={() => setBurgerOpen(true)}
-            />
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@
     "@mantine/carousel": "^6.0.16",
     "@mantine/core": "^6.0.16",
     "@mantine/hooks": "^6.0.16",
+    "@mui/material": "^5.14.7",
     "@saleor/auth-sdk": "^0.6.0",
     "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "1.14.0",

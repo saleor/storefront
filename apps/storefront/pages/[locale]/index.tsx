@@ -90,17 +90,22 @@ function Home({
   const renderCategoryImage = (slug: string) => {
     const ImageSrc = CATEGORY_IMAGES[slug as keyof typeof CATEGORY_IMAGES];
     return (
-      <Image src={ImageSrc} alt={slug} loading="lazy" className="object-cover w-full h-auto" />
+      <Image
+        src={ImageSrc}
+        alt={slug}
+        loading="lazy"
+        className="object-cover w-full h-auto brightness-50"
+      />
     );
   };
 
   return (
     <>
       <BaseSeo />
-      <div className="py-10">
+      <div className="pb-10">
         <main>
           <div
-            className="bg-black-overlay bg-blend-multiply bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] bg-neutral-50 py-24 px-6 text-center dark:bg-neutral-500"
+            className="bg-black-overlay bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] py-24 px-6 text-center dark:bg-neutral-500 bg-blend-multiply bg-neutral-400 lg:mx-16"
             style={
               featuredProducts?.backgroundImage
                 ? {
@@ -126,13 +131,13 @@ function Home({
             <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
               <a
                 href="#news"
-                className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand"
+                className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded-full font-medium uppercase xs:text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand text-[9px]"
               >
                 {t.formatMessage(messages.news)}
               </a>
               <a
                 href="#sales"
-                className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded font-medium uppercase text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0"
+                className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded-full font-medium uppercase xs:text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0 text-[9px]"
               >
                 {t.formatMessage(messages.sales)}
               </a>
@@ -140,7 +145,7 @@ function Home({
           </div>
           <AdvantagesBlock />
           {hasCategories && (
-            <section className="mt-64">
+            <section className="mt-64 lg:mx-16">
               <div className="flex flex-col items-center py-6 container">
                 <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.categories)}
@@ -150,7 +155,7 @@ function Home({
                 </p>
               </div>
               <div className="container px-4 sm:px-0">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-8">
                   {visibleCategories.map((category: any) => {
                     return (
                       <div
@@ -162,9 +167,9 @@ function Home({
                           <div className="absolute top-1/2 left-1/2 flex items-center transform -translate-x-1/2 -translate-y-1/2">
                             <Link
                               href={paths.category._slug(category?.slug as string).$url()}
-                              className="whitespace-nowrap text-center bg-white text-black py-2 px-16 sm:py-6 sm:px-12 lg:py-4 lg:px-16 inline-block shadow-2xl text-2xl sm:text-3xl lg:text-4xl pt-0.3 transform hover:scale-110 transition-transform duration-300"
+                              className="whitespace-nowrap text-cente bg-none px-10 text-4xl text-white  border-2 rounded-lg inline-block sm:text-3xl sm:px-6 lg:text-4xl lg:px-8 transition duration-500 hover:scale-125"
                               style={{
-                                boxShadow: "rgb(255, 255, 255) 0px -3.25em 0px 0px inset",
+                                lineHeight: "5rem",
                               }}
                             >
                               {category.name}
@@ -214,8 +219,8 @@ function Home({
             </div>
           )} */}
           {hasCollections && (
-            <div className="mt-64">
-              <div className="container">
+            <div className="mt-32 lg:mx-16">
+              <div className="container px-0">
                 <div className="flex flex-col items-center my-auto pb-4">
                   <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                     {t.formatMessage(messages.collections)}
@@ -239,7 +244,7 @@ function Home({
                         >
                           <div className="relative bg-cover bg-center w-full flex flex-wrap items-center">
                             <div
-                              className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-cover bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-lg"
+                              className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-lg bg-auto bg-center xs:bg-cover xs:bg-left"
                               style={
                                 collection.backgroundImage
                                   ? {
@@ -264,8 +269,8 @@ function Home({
               </div>
             </div>
           )}
-          <div className="container pt-32" id="news">
-            <div className="flex flex-col items-center mx-auto">
+          <div className="pt-32 lg:mx-16" id="news">
+            <div className="flex flex-col items-center">
               <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                 {t.formatMessage(messages.latestArticles)}
               </h2>
@@ -273,7 +278,7 @@ function Home({
                 {t.formatMessage(messages.latestArticlesText)}
               </p>
             </div>
-            <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
+            <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 px-8">
               {news?.slice(0, 3).map(({ node: newsElem }: any) => {
                 const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
                 const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${

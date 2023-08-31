@@ -10,7 +10,7 @@ const ProductsFeatured = ({ products }: any) => {
     <>
       {products?.length ? (
         <>
-          <div className="mt-64 text-center">
+          <div className="mt-64 text-center lg:mx-16">
             <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
               {t.formatMessage(messages.featuredProducts)}
             </h2>
@@ -19,7 +19,7 @@ const ProductsFeatured = ({ products }: any) => {
             </p>
           </div>
           <Carousel
-            className="mt-8"
+            className="mt-8 lg:mx-16"
             withIndicators
             height={700}
             slideSize="33.333333%"
@@ -27,8 +27,9 @@ const ProductsFeatured = ({ products }: any) => {
             loop
             align="start"
             breakpoints={[
-              { maxWidth: "md", slideSize: "75%" },
-              { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
+              { maxWidth: "xs", slideSize: "100%" },
+              { maxWidth: "md", slideSize: "33%" },
+              { maxWidth: "sm", slideSize: "50%", slideGap: 0 },
             ]}
           >
             {products.map((product: ProductDetailsFragment) => (

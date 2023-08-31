@@ -11,7 +11,7 @@ export const AdvantagesBlock = () => {
   const t = useIntl();
 
   return (
-    <section className="mt-16 md:mt-24">
+    <section className="mt-16 md:mt-24 lg:mx-16">
       <div className="flex flex-col items-center py-12 container">
         <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
           {t.formatMessage(messages.advantages)}

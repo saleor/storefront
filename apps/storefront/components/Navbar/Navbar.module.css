@@ -1,9 +1,9 @@
 .navbar {
-  @apply bg-white text-main sticky top-0 z-50;
+  @apply bg-zinc-100 text-main sticky top-0 z-50 lg:mx-16;
 }
 
 .inner {
-  @apply container h-18 flex flex-nowrap items-center;
+  @apply container h-14 flex flex-nowrap items-center;
 }
 
 .logo {
@@ -27,7 +27,7 @@
 }
 
 .dropdown-trigger {
-  @apply flex items-center text-center text-md hover:text-brand h-full px-4;
+  @apply flex items-center text-center text-3xl font-medium hover:text-brand h-full px-4;
 }
 
 .dropdown-menu {

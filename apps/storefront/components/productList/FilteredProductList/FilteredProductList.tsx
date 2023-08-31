@@ -22,6 +22,8 @@ import { FilterPill, FilterPills } from "./FilterPills";
 import { parseQuerySort, serializeQuerySort, UrlSorting } from "./sorting";
 import { SortingDropdown } from "./SortingDropdown";
 import { StockToggle } from "./StockToggle";
+import messages from "@/components/translations";
+import { useIntl } from "react-intl";
 
 export interface FilteredProductListProps {
   attributeFiltersData: AttributeFilterFragment[];
@@ -39,6 +41,8 @@ export function FilteredProductList({
   collectionIDs,
   categoryIDs,
 }: FilteredProductListProps) {
+  const t = useIntl();
+
   const [queryFilters, setQueryFilters] = useQueryState("filters", {
     parse: parseQueryAttributeFilters,
     serialize: serializeQueryAttributeFilters,
@@ -168,7 +172,9 @@ export function FilteredProductList({
             />
           </div>
           <div className="flex-none text-main-2 text-base">
-            <div>{itemsCounter} items</div>
+            <div>
+              {itemsCounter} {t.formatMessage(messages.searchedProducts)}
+            </div>
           </div>
         </div>
         {pills.length > 0 && (
