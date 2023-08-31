@@ -12,28 +12,34 @@ export const ProductInfoGrid = () => {
       <div className="w-3/4">
         <Accordion>
           <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-            <div className="flex">
-              <CreditCardIcon style={{ height: "50px" }} />
+            <div className="flex flex-row gap-3 items-center">
+              <CreditCardIcon style={{ height: "40px" }} />
               <span className="text-base leading-[5rem]">
                 {t.formatMessage(messages.paymentOptions)}
               </span>
             </div>
           </AccordionSummary>
-          <AccordionDetails className="text-base" style={{ paddingLeft: "30px", paddingTop: "0" }}>
+          <AccordionDetails
+            className="text-base flex flex-col gap-3"
+            style={{ paddingLeft: "30px", paddingTop: "0" }}
+          >
             <div className="pb-2">PayU</div>
             <div>{t.formatMessage(messages.cashOnDelivery)}</div>
           </AccordionDetails>
         </Accordion>
         <Accordion>
           <AccordionSummary aria-controls="panel2a-content" id="panel2a-header">
-            <div className="flex">
-              <TruckIcon style={{ height: "50px" }} />
+            <div className="flex flex-row gap-3 items-center">
+              <TruckIcon style={{ height: "40px" }} />
               <span className="text-base leading-[5rem]">
                 {t.formatMessage(messages.shippingOptions)}
               </span>
             </div>
           </AccordionSummary>
-          <AccordionDetails className="text-base" style={{ paddingLeft: "30px", paddingTop: "0" }}>
+          <AccordionDetails
+            className="text-base flex flex-col gap-3"
+            style={{ paddingLeft: "30px", paddingTop: "0" }}
+          >
             <div className="pb-2">{t.formatMessage(messages.inpostParcelLocker)}</div>
             <div className="pb-2">{t.formatMessage(messages.courier)} DPD</div>
             <div>

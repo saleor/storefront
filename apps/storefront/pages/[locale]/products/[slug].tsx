@@ -206,7 +206,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   return (
     <>
       <ProductPageSeo product={product} />
-      <main className="lg:mx-16 gap-[3rem] px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+      <main className="gap-[3rem] px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <button
           type="button"
           onClick={() => history.back()}
