@@ -20,7 +20,7 @@ export function LocaleRedirectionMiddleware({
       "wishlist",
       "search",
       "account",
-      "checkout",
+      // "checkout" has been removed to exclude it from redirection
     ];
 
     if (posibbleUrls.includes(nextUrl.pathname.split("/")[1])) {
