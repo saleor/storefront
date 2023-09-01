@@ -26,6 +26,8 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const form = useDeliveryMethodsForm();
   const { updateState } = useCheckoutUpdateState();
   const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
+  const [selectedRadio, setSelectedRadio] = useState<string>("");
+  const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
 
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -42,18 +44,14 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     return null;
   }
 
-  const [selectedRadio, setSelectedRadio] = useState<string>("");
-
   const handleRadioChange = (value: string) => {
     setSelectedRadio(value);
   };
 
-  const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
-
-  const handleInpostDataChange = (data: InpostEventData | null) => {
+  const handleInpostDataChange = async (data: InpostEventData | null) => {
     setSelectedInpostData(data);
     if (data?.name) {
-      const updateShippingLockerIdResponse = updateShippingLockerId({
+      await updateShippingLockerId({
         checkoutId: checkout.id,
         lockerId: data?.name,
       });
@@ -98,24 +96,25 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
             )}
           </SelectBoxGroup>
         )}
-        {selectedRadio == "U2hpcHBpbmdNZXRob2Q6NjQ=" && (
-          <div>
+        {selectedRadio === "U2hpcHBpbmdNZXRob2Q6NjQ=" && (
+          <React.Fragment>
             {selectedInpostData?.name != null && (
-              <div>
+              <React.Fragment>
                 <p style={{ padding: "1.2rem" }}>Wybrany Paczkomat: {selectedInpostData?.name}</p>
                 <button
+                  type="button"
                   className="Select-module_select__cjdcr"
                   style={{ backgroundColor: "#ffcb04" }}
                   onClick={resetInpostData}
                 >
                   Zmień punkt odbioru InPost
                 </button>
-              </div>
+              </React.Fragment>
             )}
             {selectedInpostData?.name == null && (
               <ShippingMethodInpostMap onInpostDataChange={handleInpostDataChange} />
             )}
-          </div>
+          </React.Fragment>
         )}
       </div>
     </FormProvider>
