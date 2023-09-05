@@ -1,9 +1,0 @@
-fragment CollectionBasicFragment on Collection {
-  id
-  name
-  translation(languageCode: $locale) {
-    id
-    name
-  }
-  slug
-}

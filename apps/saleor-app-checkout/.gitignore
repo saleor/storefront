@@ -1,6 +1,0 @@
-.env.local
-.envrc
-.auth_token
-
-# Sentry
-.sentryclirc

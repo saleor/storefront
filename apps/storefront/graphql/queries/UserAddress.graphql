@@ -1,7 +1,0 @@
-query CurrentUserAddresses {
-  me {
-    addresses {
-      ...AddressDetailsFragment
-    }
-  }
-}

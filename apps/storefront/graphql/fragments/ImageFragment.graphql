@@ -1,4 +1,0 @@
-fragment ImageFragment on Image {
-  url
-  alt
-}

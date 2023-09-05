@@ -1,57 +1,51 @@
 {
-  "name": "saleor-storefront",
-  "version": "0.0.0",
+  "name": "ourstore",
+  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
-    "build": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run build --cache-dir=.turbo",
-    "build:saleor-app-checkout": "pnpm run build --filter=saleor-app-checkout...",
-    "build:storefront": "pnpm run build --filter=storefront...",
-    "start": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run start --parallel --cache-dir=.turbo",
-    "start:saleor-app-checkout": "pnpm run start --filter=saleor-app-checkout...",
-    "start:storefront": "pnpm run start --filter=storefront...",
-    "generate": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run generate --cache-dir=.turbo",
-    "dev": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback pnpm run _dev",
-    "/*": "https://github.com/vercel/turborepo/issues/460",
-    "_dev": "turbo run build --filter=@saleor/checkout-storefront --cache-dir=.turbo && turbo run dev --parallel --cache-dir=.turbo --filter=!checkout",
-    "lint": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run lint --cache-dir=.turbo",
-    "lint:staged": "env-cmd --no-override -f .env env-cmd --no-override -f .env.local --fallback turbo run lint:staged",
-    "check-types": "turbo run check-types --cache-dir=.turbo",
-    "test": "env-cmd --no-override -f .env turbo run test --cache-dir=.turbo",
-    "i18n": "pnpm run i18n:extract && pnpm run i18n:compile",
-    "i18n:extract": "turbo run i18n:extract --cache-dir=.turbo",
-    "i18n:compile": "turbo run i18n:compile --cache-dir=.turbo",
-    "format": "prettier --write .",
-    "prepare": "husky install",
-    "clean-deps": "turbo run clean && rm -rf node_modules **/node_modules pnpm-lock.yaml",
-    "clean-envs": "find . -maxdepth 3 -name \".env.local\" -type f -exec rm -i {} \\;",
-    "clean-auth-files": "find . -maxdepth 3 -name \".auth_token\" -exec rm -i {} \\;",
-    "clean": "rm -rf .turbo; turbo run clean",
-    "cy:run": "cypress run",
-    "cy:open": "cypress open"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "codegen": "graphql-codegen --config .graphqlrc.ts"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.8.4",
+    "@headlessui/react": "^1.7.17",
+    "@mdx-js/loader": "^2.3.0",
+    "@mdx-js/react": "^2.3.0",
+    "@next/mdx": "^13.5.2",
+    "@saleor/auth-sdk": "^0.12.0",
+    "@stripe/stripe-js": "^2.1.6",
+    "@types/mdx": "^2.0.7",
+    "@types/node": "20.6.3",
+    "@types/react": "18.2.22",
+    "@types/react-dom": "18.2.7",
+    "autoprefixer": "10.4.16",
+    "clsx": "^2.0.0",
+    "editorjs-html": "^3.4.3",
+    "eslint": "8.49.0",
+    "eslint-config-next": "13.5.2",
+    "lucide-react": "^0.279.0",
+    "next": "13.5.2",
+    "postcss": "8.4.30",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "stripe": "^13.6.0",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.2.2"
   },
   "devDependencies": {
-    "cypress": "10.11.0",
-    "env-cmd": "10.1.0",
-    "husky": "8.0.1",
-    "lint-staged": "13.0.3",
-    "prettier": "2.7.1",
-    "turbo": "1.6.1",
-    "typescript": "4.8.4"
-  },
-  "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=16.0.0",
-    "pnpm": ">=8"
-  },
-  "packageManager": "pnpm@8.6.6",
-  "pnpm": {
-    "overrides": {
-      "@urql/exchange-auth>@urql/core": "3.2.2",
-      "@urql/exchange-multipart-fetch>@urql/core": "3.2.2"
-    }
+    "@graphql-codegen/cli": "5.0.0",
+    "@graphql-codegen/client-preset": "4.1.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@parcel/watcher": "^2.3.0",
+    "@tailwindcss/typography": "^0.5.10",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.4"
   }
 }

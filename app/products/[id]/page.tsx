@@ -1,0 +1,134 @@
+import { CheckoutAddLineDocument, CheckoutCreateDocument, CheckoutFindDocument, ProductElementDocument } from '@/gql/graphql';
+import { execute } from "@/lib";
+import { Image } from "@/ui/atoms";
+import edjsHTML from 'editorjs-html';
+import { revalidatePath } from "next/cache";
+import { cookies } from 'next/headers';
+import { notFound } from "next/navigation";
+import { AddButton } from "./AddButton";
+import { VariantSelector } from '@/ui/components/VariantSelector';
+import { CheckIcon } from 'lucide-react';
+
+export const metadata = {
+  title: 'My Page Title',
+};
+
+// export async function generateStaticParams() {
+//   const { products } = await execute({
+//     query: ProductListDocument
+//   })
+
+//   const paths = products.map(({ id }) => ({ id }));
+//   return paths
+// }
+
+const parser = edjsHTML();
+
+export default async function Page(props: { params: { id: string }, searchParams: { variant: string } }) {
+  const { params, searchParams } = props;
+  console.log('variant', searchParams.variant)
+
+  const { product } = await execute(ProductElementDocument,
+    {
+      variables: {
+        id: decodeURIComponent(params.id)
+      },
+      revalidate: 1,
+    })
+
+  if (!product) {
+    notFound();
+  }
+
+  const firstImage = product?.thumbnail;
+  const description = parser.parse(JSON.parse(product?.description as string || '{}'))
+
+  const variants = product?.variants || [];
+  const selectedVariantID = searchParams.variant || variants[0].id
+
+  async function addItem() {
+    'use server';
+
+    let cart = cookies().get('cart')?.value;
+
+    if (!cart) {
+      const { checkoutCreate } = await execute(CheckoutCreateDocument)
+
+      if (checkoutCreate && checkoutCreate?.checkout?.token) {
+        cookies().set('cart', checkoutCreate.checkout?.token as string);
+
+        cart = checkoutCreate.checkout.token as string
+      }
+    }
+
+    cart = cookies().get('cart')?.value;
+
+    if (cart) {
+      const { checkout } = await execute(CheckoutFindDocument,
+        {
+          variables: {
+            token: cart,
+          },
+        })
+
+      if (!checkout) {
+        cookies().delete('cart');
+      }
+
+      // const { orderItems: [orderItem] } = await execute({
+      //   query: OrderItemFindDocument,
+      //   variables: {
+      //     orderID: cart,
+      //     productID: params.id
+      //   } 
+      // })
+
+      // const quantity = orderItem?.quantity ? orderItem.quantity + 1 : 1;
+
+      // TODO: error handling
+      const r = await execute(CheckoutAddLineDocument, {
+        variables: {
+          token: cart,
+          productVariantId: decodeURIComponent(selectedVariantID),
+        },
+      })
+      console.log(cart, params.id, JSON.stringify(r))
+
+      revalidatePath("/cart")
+    } else {
+      throw new Error("Cart not found");
+    }
+  }
+
+  return (
+    <section className="mx-auto max-w-7xl p-8 grid">
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <form className="grid grid-cols-2 gap-4" action={addItem}>
+        {firstImage && (
+          <Image alt={'image'} src={firstImage?.url} />
+        )}
+        <div className="px-6 flex flex-col justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight flex-auto text-slate-900">
+              {product?.name}
+            </h1>
+
+          <VariantSelector variants={variants} />
+            <div className="mt-4 space-y-6">
+              <div dangerouslySetInnerHTML={{ __html: description }}></div>
+            </div>
+            <div className="mt-6 flex items-center">
+              <CheckIcon className="h-5 w-5 flex-shrink-0 text-blue-500" aria-hidden="true" />
+              <p className="ml-1 text-sm text-slate-500 font-semibold">In stock</p>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <AddButton />
+          </div>
+        </div>
+      </form>
+
+    </section>
+  )
+}

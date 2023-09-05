@@ -1,0 +1,16 @@
+mutation CheckoutCreate {
+  checkoutCreate(
+    input: {
+      channel: "default-channel"
+      lines: []
+    }
+  ) {
+    checkout {
+      token
+    }
+    errors {
+      field
+      code
+    }
+  }
+}

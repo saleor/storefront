@@ -1,0 +1,23 @@
+mutation CheckoutAddLine($token: UUID!, $productVariantId: ID!) {
+  checkoutLinesAdd(
+    token: $token,
+    lines: [{ quantity: 1, variantId: $productVariantId }]
+  ) {
+    checkout {
+      id
+      lines {
+        id
+        quantity
+        variant {
+          name
+          product {
+            name
+          }
+        }
+      }
+    }
+    errors {
+      message
+    }
+  }
+}
