@@ -96,6 +96,13 @@ export const pagesPath = {
         hash: url?.hash,
       }),
     },
+    cart: {
+      $url: (url?: { hash?: string }) => ({
+        pathname: "/[locale]/cart" as const,
+        query: { locale },
+        hash: url?.hash,
+      }),
+    },
     page: {
       _slug: (slug: string | number) => ({
         $url: (url?: { hash?: string }) => ({

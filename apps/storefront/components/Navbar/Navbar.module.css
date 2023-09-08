@@ -31,7 +31,7 @@
 }
 
 .dropdown-menu {
-  @apply absolute top-18 left-[50%] translate-x-[-50%] pt-8 bg-white w-full border-b border-main-4 invisible;
+  @apply absolute top-12 left-[50%] translate-x-[-50%] pt-8 bg-white w-full border-b border-main-4 invisible;
   padding-bottom: calc(theme("spacing.12") - theme("borderWidth.DEFAULT"));
 }
 

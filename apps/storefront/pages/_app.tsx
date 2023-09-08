@@ -15,6 +15,7 @@ import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
 import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@saleor/auth-sdk/react";
 import { useAuthenticatedApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { WishlistProvider } from "context/WishlistContext";
+import { CartProvider } from "context/CartContext";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -50,12 +51,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <ApolloProvider client={apolloClient}>
         <CheckoutProvider>
           <RegionsProvider>
-            <WishlistProvider>
-              <BaseSeo />
-              <NextNProgress color="#fff" options={{ showSpinner: false }} />
-              {DEMO_MODE && <DemoBanner />}
-              {getLayout(<Component {...pageProps} />)}
-            </WishlistProvider>{" "}
+            <CartProvider>
+              <WishlistProvider>
+                <BaseSeo />
+                <NextNProgress color="#fff" options={{ showSpinner: false }} />
+                {DEMO_MODE && <DemoBanner />}
+                {getLayout(<Component {...pageProps} />)}
+              </WishlistProvider>
+            </CartProvider>
           </RegionsProvider>
         </CheckoutProvider>
       </ApolloProvider>

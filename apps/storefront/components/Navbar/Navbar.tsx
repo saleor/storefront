@@ -109,9 +109,9 @@ export function Navbar() {
             ) : (
               <UserMenu />
             )}
-            <a href={externalCheckoutUrl} className="ml-2 " data-testid="cartIcon">
+            <Link href={paths.cart.$url()} className="ml-2 " data-testid="cartIcon">
               <NavIconButton isButton={false} icon="bag" aria-hidden="true" counter={counter} />
-            </a>
+            </Link>
             <Link href={paths.wishlist.$url()} className="ml-2 " data-testid="wishlistIcon">
               <NavIconButton
                 isButton={false}
