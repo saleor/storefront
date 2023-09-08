@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               <NextNProgress color="#fff" options={{ showSpinner: false }} />
               {DEMO_MODE && <DemoBanner />}
               {getLayout(<Component {...pageProps} />)}
-            </WishlistProvider>{" "}
+            </WishlistProvider>
           </RegionsProvider>
         </CheckoutProvider>
       </ApolloProvider>
