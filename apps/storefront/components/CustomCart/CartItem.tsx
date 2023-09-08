@@ -1,11 +1,9 @@
-// components/CartItem.tsx
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Image from "next/image";
 import Tooltip from "@mui/material/Tooltip";
 import clsx from "clsx";
 import { ErrorDetailsFragment } from "@/saleor/api";
-import { useState } from "react";
 import { useIntl } from "react-intl";
 import messages from "./messages";
 
@@ -24,7 +22,7 @@ interface CartItemProps {
   loadingLineUpdate: any;
   setErrors: any;
   quantity: any;
-  errors: ErrorDetailsFragment[] | null;
+  errors: Record<string, ErrorDetailsFragment[] | null>;
 }
 
 export const getAvailableQuantity = (
@@ -55,9 +53,9 @@ const CartItem: React.FC<CartItemProps> = ({
   errors,
 }) => {
   const t = useIntl();
-  const quantityLimitExceededError = errors[variantId]?.find(
-    (error) => error.code === "INSUFFICIENT_STOCK"
-  );
+  const quantityLimitExceededError =
+    errors && errors[variantId]?.find((error) => error.code === "INSUFFICIENT_STOCK");
+
   const renderErrorMessage = (message: string) => (
     <div>
       <p className="text-sm text-red-500 mt-2">{message}</p>
@@ -70,7 +68,7 @@ const CartItem: React.FC<CartItemProps> = ({
     <TableRow>
       <TableCell align="center">
         <div className="flex flex-row gap-6 items-center">
-          <Image src={thumbnail} alt="" width="150" height="150" />
+          <Image src={thumbnail} alt="" width="75" height="75" />
           <div className="flex flex-col items-start">
             <h4 className="mb-4 font-bold text-2xl tracking-tight max-w-[647px] md:max-w-full">
               {productName}
@@ -91,7 +89,7 @@ const CartItem: React.FC<CartItemProps> = ({
             type="number"
             className={clsx(
               "h-8 w-10 md:w-16 block border-gray-300 rounded-md shadow-sm text-base",
-              errors[variantId] && "border-red-500"
+              errors && errors[variantId] && "border-red-500"
             )}
             value={quantity}
             onFocus={() => {

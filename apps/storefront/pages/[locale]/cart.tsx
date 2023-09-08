@@ -1,4 +1,4 @@
-import React, { ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { invariant } from "@apollo/client/utilities/globals";
 import Link from "next/link";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
@@ -40,7 +40,7 @@ function CartPage() {
     setQuantities((prev) => ({ ...prev, [id]: value }));
   };
 
-  const updateLineQuantity = async (variantId, newQuantity) => {
+  const updateLineQuantity = async (variantId: string, newQuantity: number) => {
     const result = await checkoutLineUpdateMutation({
       variables: {
         token: checkout?.token,
@@ -62,12 +62,12 @@ function CartPage() {
     }
   };
 
-  const totalPrice = checkout?.totalPrice.gross.amount;
-  const totalCurrency = checkout?.totalPrice?.gross?.currency;
+  const totalPrice = checkout?.totalPrice.gross.amount || "";
+  const totalCurrency = checkout?.totalPrice?.gross?.currency || "";
   const totalPriceStr = `${totalPrice} ${totalCurrency}`;
 
-  const subtotalPrice = checkout?.subtotalPrice.net.amount;
-  const subtotalCurrency = checkout?.subtotalPrice?.net?.currency;
+  const subtotalPrice = checkout?.subtotalPrice.net.amount || "";
+  const subtotalCurrency = checkout?.subtotalPrice?.net?.currency || "";
   const subtotalPriceStr = `${subtotalPrice} ${subtotalCurrency}`;
 
   const saleorApiUrl = process.env.NEXT_PUBLIC_API_URI;
@@ -131,7 +131,7 @@ function CartPage() {
                       totalPriceCurrency={item?.totalPrice?.gross.currency}
                       quantity={quantities[item.id]}
                       changeLineState={(value) => changeLineState(item.id, value)}
-                      onQuantityUpdate={async (ev) => {
+                      onQuantityUpdate={async () => {
                         await updateLineQuantity(item.variant.id, quantities[item.id]);
                       }}
                       errors={errors}

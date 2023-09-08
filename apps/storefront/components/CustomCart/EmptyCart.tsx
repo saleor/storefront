@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function EmptyCart({ paths }) {
+function EmptyCart({ paths }: any) {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="mb-4 font-bold text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
