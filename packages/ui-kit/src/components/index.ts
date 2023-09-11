@@ -2,6 +2,7 @@ export * from "./Button";
 export * from "./Checkbox";
 export * from "./Chip";
 export * from "./ChipButton";
+export * from "./CheckoutHeaderBar";
 export * from "./IconButton";
 export * from "./icons";
 export * from "./InfoTip";
