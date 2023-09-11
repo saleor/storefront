@@ -1,4 +1,4 @@
-import { Text } from "@saleor/ui-kit";
+import { RemoveIcon, Text } from "@saleor/ui-kit";
 import { CheckoutLineFragment } from "@/checkout-storefront/graphql";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout-storefront/components/TextInput";
@@ -52,6 +52,10 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
     void handleSubmit();
   };
 
+  const handleRemoveItemButton = () => {
+    void onLineDelete();
+  };
+
   return (
     <div className="flex flex-col items-end h-20 relative -top-2">
       <div className="flex flex-row items-baseline">
@@ -66,6 +70,12 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
             label=""
           />
         </FormProvider>
+        <div>
+          <RemoveIcon
+            style={{ display: "inline", marginTop: "-7px", cursor: "pointer" }}
+            onClick={handleRemoveItemButton}
+          />
+        </div>
       </div>
       {isSubmitting ? (
         <div className="flex flex-col items-end mt-3 w-full">
