@@ -1502,6 +1502,10 @@
     "developer_comment": "minion",
     "string": "Minion"
   },
+  "PageHeader/messages/goBackToCart": {
+    "developer_comment": "label for go back to cart button",
+    "string": "Wróć do koszyka"
+  },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",
     "string": "Nie mogliśmy pobrać informacji o Twojej sesji. Wróć do sklepu i spróbuj ponownie."

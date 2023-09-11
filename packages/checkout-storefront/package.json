@@ -40,6 +40,7 @@
     "@saleor/ui-kit": "workspace:*",
     "@stripe/react-stripe-js": "1.14.0",
     "@stripe/stripe-js": "1.42.0",
+    "bufferutil": "^4.0.7",
     "checkout-common": "workspace:*",
     "clsx": "1.2.1",
     "concurrently": "7.5.0",
@@ -58,6 +59,7 @@
     "ts-invariant": "0.10.3",
     "url-join": "4.0.1",
     "urql": "4.0.2",
+    "utf-8-validate": "^6.0.3",
     "yup": "1.0.0-beta.7",
     "zustand": "^4.1.4"
   },

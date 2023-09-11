@@ -13,3 +13,11 @@ export const languagesMessages = defineMessages<Locale>({
     description: "polish",
   },
 });
+
+export const headerMessages = defineMessages({
+  goBackToCart: {
+    defaultMessage: "Go back to cart",
+    id: "PageHeader/messages/goBackToCart",
+    description: "go back to cart label",
+  },
+});
