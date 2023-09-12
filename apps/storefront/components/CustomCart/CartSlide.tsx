@@ -115,7 +115,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
       leaveFrom="translate-x-0"
       leaveTo="translate-x-full"
     >
-      <div className="fixed top-0 right-0 z-10 h-screen w-[100%] md:w-[75%] lg:w-[50%] xl:w-[25%] overflow-none rounded-l-lg bg-white shadow-lg focus:outline-none sm:text-sm">
+      <div className="fixed top-0 right-0 z-10 h-screen w-[100%] md:w-[75%] lg:w-[50%] xl:w-[25%] overflow-none bg-white shadow-lg focus:outline-none sm:text-sm">
         <main className="container w-full overflow-y-auto max-h-[580px] h-[100%]">
           {checkout && checkout.lines.length > 0 ? (
             <React.Fragment>

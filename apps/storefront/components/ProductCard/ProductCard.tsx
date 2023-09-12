@@ -230,6 +230,9 @@ export function ProductCard({ product }: ProductCardProps) {
             : t.formatMessage(messages.addToCart)}
         </button>
       </div>
+      {cartSlide && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
+      )}
 
       {cartSlide && <CartSlide isOpen={cartSlide} setIsOpen={setCartSlide} />}
     </li>
