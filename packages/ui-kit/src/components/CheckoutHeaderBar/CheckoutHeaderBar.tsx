@@ -23,7 +23,7 @@ export const CheckoutHeaderBar: FC<CheckoutHeaderBarProps> = ({
   return (
     <div className={classes}>
       <div>
-        <a href={destinationLink + "/[locale]/cart"}>
+        <a href="javascript:history.back()">
           <div>
             <Logo height="120" width="150" STOREFRONT_NAME={storefrontName} />
           </div>
