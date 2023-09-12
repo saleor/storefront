@@ -22,7 +22,7 @@ export const DiscountInfo = ({ isOnSale, product }: any) => {
   const checkCollection = () => {
     return product?.collections?.map((collection: any) =>
       collection.name === "Nowości" ? (
-        <div className="bg-green-500 px-4 py-2 text-white rounded-md text-md">
+        <div className="bg-green-500 px-4 py-1 text-white text-md">
           <p>Nowość!</p>
         </div>
       ) : null
@@ -32,7 +32,7 @@ export const DiscountInfo = ({ isOnSale, product }: any) => {
   return (
     <div>
       {isOnSale ? (
-        <div className="bg-red-500 text-white rounded-md text-md">
+        <div className="bg-red-500 text-white text-md">
           {salePercentage(price, undiscountedPrice)}
         </div>
       ) : (

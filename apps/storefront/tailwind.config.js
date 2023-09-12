@@ -57,6 +57,7 @@ module.exports = {
   mode: "jit",
   theme: {
     extend: {
+      textColor: ["group-hover"],
       screens: {
         xs: "375px",
       },

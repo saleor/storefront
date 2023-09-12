@@ -7,7 +7,7 @@ import { ErrorDetailsFragment } from "@/saleor/api";
 import { useIntl } from "react-intl";
 import messages from "./messages";
 
-interface CartItemProps {
+export interface CartItemProps {
   thumbnail: string;
   variantId: string;
   productName: string;
@@ -65,7 +65,11 @@ const CartItem: React.FC<CartItemProps> = ({
   console.log(quantityLimitExceededError);
 
   return (
-    <TableRow>
+    <TableRow
+      sx={{
+        display: { xs: "none", sm: "none", md: "table-row" },
+      }}
+    >
       <TableCell align="center">
         <div className="flex flex-row gap-6 items-center">
           <Image src={thumbnail} alt="" width="75" height="75" />
@@ -73,7 +77,7 @@ const CartItem: React.FC<CartItemProps> = ({
             <h4 className="mb-4 font-bold text-2xl tracking-tight max-w-[647px] md:max-w-full">
               {productName}
             </h4>
-            <p className="text-base">{variantName}</p>
+            <p className="text-base text-gray-500">SKU: {variantName}</p>
           </div>
         </div>
       </TableCell>
@@ -121,19 +125,11 @@ const CartItem: React.FC<CartItemProps> = ({
           className="text-md font-medium text-black hover:text-brand"
         >
           <Tooltip title="Usuń z koszyka" arrow>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
+            <svg height="22" viewBox="0 0 32 32" width="22">
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-              />
+                d="M28.496 5.327h-6.236v-1.017c0-1.818-1.479-3.297-3.297-3.297h-5.928c-1.818 0-3.297 1.479-3.297 3.297v1.017h-6.236c-0.462 0-0.832 0.37-0.832 0.832s0.37 0.832 0.832 0.832h1.504v19.546c0 2.452 1.996 4.449 4.449 4.449h13.088c2.452 0 4.449-1.997 4.449-4.449v-19.546h1.504c0.462 0 0.832-0.37 0.832-0.832s-0.37-0.832-0.832-0.832zM11.403 4.311c0-0.9 0.733-1.633 1.633-1.633h5.928c0.9 0 1.633 0.733 1.633 1.633v1.017h-9.194v-1.017zM25.329 26.537c0 1.534-1.251 2.785-2.785 2.785h-13.088c-1.534 0-2.785-1.251-2.785-2.785v-19.546h18.665v19.546h-0.006z M16 26.341c0.462 0 0.832-0.37 0.832-0.832v-14.702c0-0.462-0.37-0.832-0.832-0.832s-0.832 0.37-0.832 0.832v14.696c0 0.462 0.37 0.838 0.832 0.838z M10.571 25.423c0.462 0 0.832-0.37 0.832-0.832v-12.872c0-0.462-0.37-0.832-0.832-0.832s-0.832 0.37-0.832 0.832v12.872c0 0.462 0.376 0.832 0.832 0.832z M21.428 25.423c0.462 0 0.832-0.37 0.832-0.832v-12.872c0-0.462-0.37-0.832-0.832-0.832s-0.832 0.37-0.832 0.832v12.872c0 0.462 0.37 0.832 0.832 0.832z"
+                fill="#323232"
+              ></path>
             </svg>
           </Tooltip>
         </button>

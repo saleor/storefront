@@ -18,7 +18,7 @@ export type Incremental<T> =
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string | number; output: string };
+  ID: { input: string; output: string };
   String: { input: string; output: string };
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
@@ -27139,10 +27139,75 @@ export type ProductCardFragment = {
   }> | null;
   attributes: Array<{
     __typename?: "SelectedAttribute";
-    attribute: { __typename?: "Attribute"; slug?: string | null };
-    values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+    attribute: {
+      __typename?: "Attribute";
+      id: string;
+      name?: string | null;
+      slug?: string | null;
+      type?: AttributeTypeEnum | null;
+      unit?: MeasurementUnitsEnum | null;
+      translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
+    };
+    values: Array<{
+      __typename?: "AttributeValue";
+      id: string;
+      name?: string | null;
+      value?: string | null;
+      translation?: {
+        __typename?: "AttributeValueTranslation";
+        id: string;
+        name: string;
+        richText?: string | null;
+      } | null;
+    }>;
   }>;
   collections?: Array<{ __typename?: "Collection"; name: string }> | null;
+  variants?: Array<{
+    __typename?: "ProductVariant";
+    id: string;
+    name: string;
+    sku?: string | null;
+    quantityAvailable?: number | null;
+    translation?: { __typename?: "ProductVariantTranslation"; id: string; name: string } | null;
+    attributes: Array<{
+      __typename?: "SelectedAttribute";
+      attribute: {
+        __typename?: "Attribute";
+        id: string;
+        name?: string | null;
+        slug?: string | null;
+        type?: AttributeTypeEnum | null;
+        unit?: MeasurementUnitsEnum | null;
+        translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
+      };
+      values: Array<{
+        __typename?: "AttributeValue";
+        id: string;
+        name?: string | null;
+        value?: string | null;
+        translation?: {
+          __typename?: "AttributeValueTranslation";
+          id: string;
+          name: string;
+          richText?: string | null;
+        } | null;
+      }>;
+    }>;
+    media?: Array<{
+      __typename?: "ProductMedia";
+      url: string;
+      alt: string;
+      type: ProductMediaType;
+    }> | null;
+    pricing?: {
+      __typename?: "VariantPricingInfo";
+      onSale?: boolean | null;
+      price?: {
+        __typename?: "TaxedMoney";
+        gross: { __typename?: "Money"; currency: string; amount: number };
+      } | null;
+    } | null;
+  }> | null;
   pricing?: {
     __typename?: "ProductPricingInfo";
     onSale?: boolean | null;
@@ -27202,6 +27267,7 @@ export type ProductDetailsFragment = {
       __typename?: "Attribute";
       id: string;
       name?: string | null;
+      slug?: string | null;
       type?: AttributeTypeEnum | null;
       unit?: MeasurementUnitsEnum | null;
       translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
@@ -27239,6 +27305,7 @@ export type ProductDetailsFragment = {
         __typename?: "Attribute";
         id: string;
         name?: string | null;
+        slug?: string | null;
         type?: AttributeTypeEnum | null;
         unit?: MeasurementUnitsEnum | null;
         translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
@@ -27334,6 +27401,7 @@ export type ProductVariantDetailsFragment = {
       __typename?: "Attribute";
       id: string;
       name?: string | null;
+      slug?: string | null;
       type?: AttributeTypeEnum | null;
       unit?: MeasurementUnitsEnum | null;
       translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
@@ -27373,6 +27441,7 @@ export type SelectedAttributeDetailsFragment = {
     __typename?: "Attribute";
     id: string;
     name?: string | null;
+    slug?: string | null;
     type?: AttributeTypeEnum | null;
     unit?: MeasurementUnitsEnum | null;
     translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
@@ -29525,6 +29594,7 @@ export type ProductBySlugQuery = {
         __typename?: "Attribute";
         id: string;
         name?: string | null;
+        slug?: string | null;
         type?: AttributeTypeEnum | null;
         unit?: MeasurementUnitsEnum | null;
         translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
@@ -29562,6 +29632,7 @@ export type ProductBySlugQuery = {
           __typename?: "Attribute";
           id: string;
           name?: string | null;
+          slug?: string | null;
           type?: AttributeTypeEnum | null;
           unit?: MeasurementUnitsEnum | null;
           translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
@@ -29693,10 +29764,83 @@ export type ProductCollectionQuery = {
         }> | null;
         attributes: Array<{
           __typename?: "SelectedAttribute";
-          attribute: { __typename?: "Attribute"; slug?: string | null };
-          values: Array<{ __typename?: "AttributeValue"; name?: string | null }>;
+          attribute: {
+            __typename?: "Attribute";
+            id: string;
+            name?: string | null;
+            slug?: string | null;
+            type?: AttributeTypeEnum | null;
+            unit?: MeasurementUnitsEnum | null;
+            translation?: { __typename?: "AttributeTranslation"; id: string; name: string } | null;
+          };
+          values: Array<{
+            __typename?: "AttributeValue";
+            id: string;
+            name?: string | null;
+            value?: string | null;
+            translation?: {
+              __typename?: "AttributeValueTranslation";
+              id: string;
+              name: string;
+              richText?: string | null;
+            } | null;
+          }>;
         }>;
         collections?: Array<{ __typename?: "Collection"; name: string }> | null;
+        variants?: Array<{
+          __typename?: "ProductVariant";
+          id: string;
+          name: string;
+          sku?: string | null;
+          quantityAvailable?: number | null;
+          translation?: {
+            __typename?: "ProductVariantTranslation";
+            id: string;
+            name: string;
+          } | null;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            attribute: {
+              __typename?: "Attribute";
+              id: string;
+              name?: string | null;
+              slug?: string | null;
+              type?: AttributeTypeEnum | null;
+              unit?: MeasurementUnitsEnum | null;
+              translation?: {
+                __typename?: "AttributeTranslation";
+                id: string;
+                name: string;
+              } | null;
+            };
+            values: Array<{
+              __typename?: "AttributeValue";
+              id: string;
+              name?: string | null;
+              value?: string | null;
+              translation?: {
+                __typename?: "AttributeValueTranslation";
+                id: string;
+                name: string;
+                richText?: string | null;
+              } | null;
+            }>;
+          }>;
+          media?: Array<{
+            __typename?: "ProductMedia";
+            url: string;
+            alt: string;
+            type: ProductMediaType;
+          }> | null;
+          pricing?: {
+            __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
+            price?: {
+              __typename?: "TaxedMoney";
+              gross: { __typename?: "Money"; currency: string; amount: number };
+            } | null;
+          } | null;
+        }> | null;
         pricing?: {
           __typename?: "ProductPricingInfo";
           onSale?: boolean | null;
@@ -30232,6 +30376,67 @@ export const PageInfoFragmentDoc = gql`
     endCursor
   }
 `;
+export const SelectedAttributeDetailsFragmentDoc = gql`
+  fragment SelectedAttributeDetailsFragment on SelectedAttribute {
+    attribute {
+      id
+      name
+      slug
+      translation(languageCode: $locale) {
+        id
+        name
+      }
+      type
+      unit
+    }
+    values {
+      id
+      name
+      translation(languageCode: $locale) {
+        id
+        name
+        richText
+      }
+      value
+    }
+  }
+`;
+export const ProductMediaFragmentDoc = gql`
+  fragment ProductMediaFragment on ProductMedia {
+    url
+    alt
+    type
+  }
+`;
+export const ProductVariantDetailsFragmentDoc = gql`
+  fragment ProductVariantDetailsFragment on ProductVariant {
+    id
+    name
+    sku
+    translation(languageCode: $locale) {
+      id
+      name
+    }
+    quantityAvailable
+    attributes {
+      ...SelectedAttributeDetailsFragment
+    }
+    media {
+      ...ProductMediaFragment
+    }
+    pricing {
+      onSale
+      price {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+  ${SelectedAttributeDetailsFragmentDoc}
+  ${ProductMediaFragmentDoc}
+  ${PriceFragmentDoc}
+`;
 export const ProductCardFragmentDoc = gql`
   fragment ProductCardFragment on Product {
     id
@@ -30267,15 +30472,13 @@ export const ProductCardFragmentDoc = gql`
       type
     }
     attributes {
-      attribute {
-        slug
-      }
-      values {
-        name
-      }
+      ...SelectedAttributeDetailsFragment
     }
     collections {
       name
+    }
+    variants {
+      ...ProductVariantDetailsFragment
     }
     pricing(address: $address) {
       onSale
@@ -30330,66 +30533,8 @@ export const ProductCardFragmentDoc = gql`
     }
   }
   ${ImageFragmentDoc}
-  ${PriceFragmentDoc}
-`;
-export const SelectedAttributeDetailsFragmentDoc = gql`
-  fragment SelectedAttributeDetailsFragment on SelectedAttribute {
-    attribute {
-      id
-      name
-      translation(languageCode: $locale) {
-        id
-        name
-      }
-      type
-      unit
-    }
-    values {
-      id
-      name
-      translation(languageCode: $locale) {
-        id
-        name
-        richText
-      }
-      value
-    }
-  }
-`;
-export const ProductMediaFragmentDoc = gql`
-  fragment ProductMediaFragment on ProductMedia {
-    url
-    alt
-    type
-  }
-`;
-export const ProductVariantDetailsFragmentDoc = gql`
-  fragment ProductVariantDetailsFragment on ProductVariant {
-    id
-    name
-    sku
-    translation(languageCode: $locale) {
-      id
-      name
-    }
-    quantityAvailable
-    attributes {
-      ...SelectedAttributeDetailsFragment
-    }
-    media {
-      ...ProductMediaFragment
-    }
-    pricing {
-      onSale
-      price {
-        gross {
-          ...PriceFragment
-        }
-      }
-    }
-  }
   ${SelectedAttributeDetailsFragmentDoc}
-  ${ProductMediaFragmentDoc}
+  ${ProductVariantDetailsFragmentDoc}
   ${PriceFragmentDoc}
 `;
 export const ProductDetailsFragmentDoc = gql`

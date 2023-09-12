@@ -15,6 +15,7 @@ import usePaths from "@/lib/paths";
 import EmptyCart from "@/components/CustomCart/EmptyCart";
 import CartSummary from "@/components/CustomCart/CartSummary";
 import CartItem from "@/components/CustomCart/CartItem";
+import CartItemMobile from "@/components/CustomCart/CartItemMobile";
 
 function CartPage() {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -41,6 +42,7 @@ function CartPage() {
   };
 
   const updateLineQuantity = async (variantId: string, newQuantity: number) => {
+    setErrors(null);
     const result = await checkoutLineUpdateMutation({
       variables: {
         token: checkout?.token,
@@ -97,7 +99,11 @@ function CartPage() {
           </h1>
           <TableContainer>
             <Table sx={{ minWidth: 700 }} aria-label="spanning table">
-              <TableHead>
+              <TableHead
+                sx={{
+                  display: { xs: "none", sm: "none", md: "table-header-group" },
+                }}
+              >
                 <TableRow>
                   <TableCell>
                     <p className="text-base text-gray-400 font-light">Produkty</p>
@@ -119,36 +125,69 @@ function CartPage() {
               <TableBody>
                 {checkout?.lines.map((item) => {
                   const thumbnail = item.variant?.product?.thumbnail?.url as string;
+
                   return (
-                    <CartItem
-                      variantId={item.variant.id}
-                      thumbnail={thumbnail}
-                      productName={item.variant.product?.name}
-                      variantName={item.variant?.name}
-                      priceAmount={item?.variant?.pricing?.price?.gross?.amount}
-                      priceCurrency={item?.variant?.pricing?.price?.gross?.currency}
-                      totalPriceAmount={item?.totalPrice?.gross.amount}
-                      totalPriceCurrency={item?.totalPrice?.gross.currency}
-                      quantity={quantities[item.id]}
-                      changeLineState={(value) => changeLineState(item.id, value)}
-                      onQuantityUpdate={async () => {
-                        await updateLineQuantity(item.variant.id, quantities[item.id]);
-                      }}
-                      errors={errors}
-                      loadingLineUpdate={loadingLineUpdate}
-                      setErrors={() => setErrors}
-                      onRemove={async () => {
-                        await removeProductFromCheckout({
-                          variables: {
-                            checkoutToken: checkout?.token,
-                            lineId: item?.id,
-                            locale: query.locale,
-                          },
-                        });
-                      }}
-                    />
+                    <React.Fragment>
+                      <CartItem
+                        variantId={item.variant.id}
+                        thumbnail={thumbnail}
+                        productName={item.variant.product?.name}
+                        variantName={item.variant?.name}
+                        priceAmount={item?.variant?.pricing?.price?.gross?.amount}
+                        priceCurrency={item?.variant?.pricing?.price?.gross?.currency}
+                        totalPriceAmount={item?.totalPrice?.gross.amount}
+                        totalPriceCurrency={item?.totalPrice?.gross.currency}
+                        quantity={quantities[item.id]}
+                        changeLineState={(value) => changeLineState(item.id, value)}
+                        onQuantityUpdate={async () => {
+                          await updateLineQuantity(item.variant.id, quantities[item.id]);
+                        }}
+                        errors={errors}
+                        loadingLineUpdate={loadingLineUpdate}
+                        setErrors={() => setErrors}
+                        onRemove={async () => {
+                          await removeProductFromCheckout({
+                            variables: {
+                              checkoutToken: checkout?.token,
+                              lineId: item?.id,
+                              locale: query.locale,
+                            },
+                          });
+                        }}
+                      />
+                      <div className="md:hidden">
+                        <CartItemMobile
+                          variantId={item.variant.id}
+                          thumbnail={thumbnail}
+                          productName={item.variant.product?.name}
+                          variantName={item.variant?.name}
+                          priceAmount={item?.variant?.pricing?.price?.gross?.amount}
+                          priceCurrency={item?.variant?.pricing?.price?.gross?.currency}
+                          totalPriceAmount={item?.totalPrice?.gross.amount}
+                          totalPriceCurrency={item?.totalPrice?.gross.currency}
+                          quantity={quantities[item.id]}
+                          changeLineState={(value) => changeLineState(item.id, value)}
+                          onQuantityUpdate={async () => {
+                            await updateLineQuantity(item.variant.id, quantities[item.id]);
+                          }}
+                          errors={errors}
+                          loadingLineUpdate={loadingLineUpdate}
+                          setErrors={() => setErrors}
+                          onRemove={async () => {
+                            await removeProductFromCheckout({
+                              variables: {
+                                checkoutToken: checkout?.token,
+                                lineId: item?.id,
+                                locale: query.locale,
+                              },
+                            });
+                          }}
+                        />
+                      </div>
+                    </React.Fragment>
                   );
                 })}
+
                 <CartSummary subtotal={subtotalPriceStr} total={totalPriceStr} />
               </TableBody>
             </Table>
