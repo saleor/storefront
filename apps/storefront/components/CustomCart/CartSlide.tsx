@@ -46,7 +46,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
   };
 
   const updateLineQuantity = async (variantId: string, newQuantity: number) => {
-    setErrors(null);
+    setErrors({});
     const result = await checkoutLineUpdateMutation({
       variables: {
         token: checkout?.token,

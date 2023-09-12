@@ -1,5 +1,5 @@
 import { Text } from "@saleor/ui-kit";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
 
 import { mapEdgesToItems } from "@/lib/maps";
@@ -16,7 +16,6 @@ import { ProductCard } from "../ProductCard";
 import { useRegions } from "../RegionsProvider";
 import { Spinner } from "../Spinner";
 import { messages } from "../translations";
-import { CartSlide } from "../CustomCart/CartSlide";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
@@ -38,7 +37,6 @@ export function ProductCollection({
 }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
-  const [cartSlide, setCartSlide] = useState(false);
 
   const variables: ProductCollectionQueryVariables = {
     filter,

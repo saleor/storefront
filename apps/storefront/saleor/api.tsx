@@ -27129,6 +27129,7 @@ export type ProductCardFragment = {
     __typename?: "Category";
     id: string;
     name: string;
+    slug: string;
     translation?: { __typename?: "CategoryTranslation"; id: string; name?: string | null } | null;
   } | null;
   media?: Array<{
@@ -29750,6 +29751,7 @@ export type ProductCollectionQuery = {
           __typename?: "Category";
           id: string;
           name: string;
+          slug: string;
           translation?: {
             __typename?: "CategoryTranslation";
             id: string;
@@ -30459,12 +30461,7 @@ export const ProductCardFragmentDoc = gql`
       ...ImageFragment
     }
     category {
-      id
-      name
-      translation(languageCode: $locale) {
-        id
-        name
-      }
+      ...CategoryBasicFragment
     }
     media {
       url
@@ -30533,6 +30530,7 @@ export const ProductCardFragmentDoc = gql`
     }
   }
   ${ImageFragmentDoc}
+  ${CategoryBasicFragmentDoc}
   ${SelectedAttributeDetailsFragmentDoc}
   ${ProductVariantDetailsFragmentDoc}
   ${PriceFragmentDoc}

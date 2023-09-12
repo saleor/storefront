@@ -42,7 +42,7 @@ function CartPage() {
   };
 
   const updateLineQuantity = async (variantId: string, newQuantity: number) => {
-    setErrors(null);
+    setErrors({});
     const result = await checkoutLineUpdateMutation({
       variables: {
         token: checkout?.token,

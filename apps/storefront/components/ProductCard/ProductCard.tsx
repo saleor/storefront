@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { usePaths } from "@/lib/paths";
 import {
   CheckoutError,
-  ProductDetailsFragment,
+  ProductCardFragment,
   useCheckoutAddProductLineMutation,
   useCreateCheckoutMutation,
 } from "@/saleor/api";
@@ -24,7 +24,7 @@ import clsx from "clsx";
 import { CartSlide } from "../CustomCart/CartSlide";
 
 export interface ProductCardProps {
-  product: ProductDetailsFragment;
+  product: ProductCardFragment;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
