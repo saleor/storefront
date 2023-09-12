@@ -36,7 +36,7 @@ const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) =>
               </div>
             )}
           </div>
-          <div className="flex justify-center items-center mx-auto text-center flex-col mt-8">
+          <div className="flex justify-center items-center text-center flex-col mt-8 mx-4">
             <p
               className="mt-2 font-regular text-md text-main first-letter:uppercase lowercase w-full md:w-auto"
               data-testid={`productName${product.name}`}

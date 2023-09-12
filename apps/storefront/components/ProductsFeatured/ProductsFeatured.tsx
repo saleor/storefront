@@ -3,6 +3,10 @@ import ProductCarouselItem from "./ProductCarouselItem";
 import { useIntl } from "react-intl";
 import { messages } from "../translations";
 import { ProductDetailsFragment } from "@/saleor/api";
+import { TrashIcon } from "@saleor/ui-kit";
+import { Icon } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/outline";
 
 const ProductsFeatured = ({ products }: any) => {
   const t = useIntl();
@@ -19,12 +23,26 @@ const ProductsFeatured = ({ products }: any) => {
             </p>
           </div>
           <Carousel
-            className="mt-8 lg:mx-16"
+            className="mt-8 lg:mx-96"
             withIndicators
             height={700}
+            nextControlIcon={
+              <ArrowRightIcon className="p-2 h-10 bg-brand border-solid rounded-lg text-white" />
+            }
+            previousControlIcon={
+              <ArrowLeftIcon className="p-2 h-10 bg-brand border-solid rounded-lg text-white" />
+            }
             slideSize="33.333333%"
-            slideGap="md"
+            slideGap="xs"
             loop
+            styles={{
+              control: {
+                "&[data-inactive]": {
+                  opacity: 0,
+                  cursor: "default",
+                },
+              },
+            }}
             align="start"
             breakpoints={[
               { maxWidth: "xs", slideSize: "100%" },
