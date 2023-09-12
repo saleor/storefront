@@ -3,9 +3,6 @@ import ProductCarouselItem from "./ProductCarouselItem";
 import { useIntl } from "react-intl";
 import { messages } from "../translations";
 import { ProductDetailsFragment } from "@/saleor/api";
-import { TrashIcon } from "@saleor/ui-kit";
-import { Icon } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/outline";
 
 const ProductsFeatured = ({ products }: any) => {
