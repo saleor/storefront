@@ -20,7 +20,7 @@ const ProductsFeatured = ({ products }: any) => {
             </p>
           </div>
           <Carousel
-            className="mt-8 lg:mx-96"
+            className="container"
             withIndicators
             height={700}
             nextControlIcon={
@@ -38,6 +38,9 @@ const ProductsFeatured = ({ products }: any) => {
                   opacity: 0,
                   cursor: "default",
                 },
+                marginTop: "-100px",
+                marginRight: "20px",
+                marginLeft: "20px",
               },
             }}
             align="start"
