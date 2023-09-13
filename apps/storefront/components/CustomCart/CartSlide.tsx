@@ -15,6 +15,7 @@ import {
 import usePaths from "@/lib/paths";
 import EmptyCart from "@/components/CustomCart/EmptyCart";
 import CartItemMobile from "./CartItemMobile";
+import debounce from "lodash/debounce";
 
 interface CartSlideProps {
   isOpen: boolean;
@@ -104,6 +105,16 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
     };
   }, [isOpen]);
 
+  const debouncedRemoveProductFromCheckout = debounce(async (checkoutToken, lineId, locale) => {
+    await removeProductFromCheckout({
+      variables: {
+        checkoutToken: checkoutToken,
+        lineId: lineId,
+        locale: locale,
+      },
+    });
+  }, 500);
+
   return (
     <Transition
       show={isOpen}
@@ -176,14 +187,12 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                           errors={errors}
                           loadingLineUpdate={loadingLineUpdate}
                           setErrors={() => setErrors}
-                          onRemove={async () => {
-                            await removeProductFromCheckout({
-                              variables: {
-                                checkoutToken: checkout?.token,
-                                lineId: item?.id,
-                                locale: query.locale,
-                              },
-                            });
+                          onRemove={() => {
+                            void debouncedRemoveProductFromCheckout(
+                              checkout?.token,
+                              item?.id,
+                              query.locale
+                            );
                           }}
                         />
                       );
