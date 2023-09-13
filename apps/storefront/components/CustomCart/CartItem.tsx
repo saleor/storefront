@@ -6,7 +6,6 @@ import clsx from "clsx";
 import { ErrorDetailsFragment } from "@/saleor/api";
 import { useIntl } from "react-intl";
 import messages from "./messages";
-import { useEffect } from "react";
 
 export interface CartItemProps {
   thumbnail: string;
