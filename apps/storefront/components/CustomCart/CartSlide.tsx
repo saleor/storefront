@@ -15,6 +15,7 @@ import {
 import usePaths from "@/lib/paths";
 import EmptyCart from "@/components/CustomCart/EmptyCart";
 import CartItemMobile from "./CartItemMobile";
+import debounce from "lodash/debounce";
 
 interface CartSlideProps {
   isOpen: boolean;
@@ -104,6 +105,16 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
     };
   }, [isOpen]);
 
+  const debouncedRemoveProductFromCheckout = debounce(async (checkoutToken, lineId, locale) => {
+    await removeProductFromCheckout({
+      variables: {
+        checkoutToken: checkoutToken,
+        lineId: lineId,
+        locale: locale,
+      },
+    });
+  }, 500);
+
   return (
     <Transition
       show={isOpen}
@@ -159,6 +170,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                       const thumbnail = item.variant?.product?.thumbnail?.url as string;
                       return (
                         <CartItemMobile
+                          key={item.id}
                           variantId={item.variant.id}
                           thumbnail={thumbnail}
                           productName={item.variant.product?.name}
@@ -175,14 +187,12 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                           errors={errors}
                           loadingLineUpdate={loadingLineUpdate}
                           setErrors={() => setErrors}
-                          onRemove={async () => {
-                            await removeProductFromCheckout({
-                              variables: {
-                                checkoutToken: checkout?.token,
-                                lineId: item?.id,
-                                locale: query.locale,
-                              },
-                            });
+                          onRemove={() => {
+                            void debouncedRemoveProductFromCheckout(
+                              checkout?.token,
+                              item?.id,
+                              query.locale
+                            );
                           }}
                         />
                       );
@@ -210,7 +220,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
           <div className="flex flex-col gap-3 items-center w-full">
             <div className="flex justify-center w-full">
               <Link
-                href={externalCheckoutUrl}
+                href={paths.cart.$url()}
                 className="text-2xl md:text-3xl border-black border-2 bg-transparent hover:border-black hover:bg-black hover:text-white transition
              text-black font-bold py-4 px-8 rounded-full w-full text-center"
               >

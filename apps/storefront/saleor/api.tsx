@@ -26921,6 +26921,7 @@ export type CheckoutDetailsFragment = {
       };
       pricing?: {
         __typename?: "VariantPricingInfo";
+        onSale?: boolean | null;
         price?: {
           __typename?: "TaxedMoney";
           gross: { __typename?: "Money"; currency: string; amount: number };
@@ -26967,6 +26968,7 @@ export type CheckoutLineDetailsFragment = {
     };
     pricing?: {
       __typename?: "VariantPricingInfo";
+      onSale?: boolean | null;
       price?: {
         __typename?: "TaxedMoney";
         gross: { __typename?: "Money"; currency: string; amount: number };
@@ -27608,6 +27610,7 @@ export type CheckoutAddProductLineMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -27744,6 +27747,7 @@ export type CheckoutAddPromoCodeMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -27876,6 +27880,7 @@ export type CheckoutBillingAddressUpdateMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -28104,6 +28109,7 @@ export type CheckoutEmailUpdateMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -28236,6 +28242,7 @@ export type CheckoutLineUpdateMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -28373,6 +28380,7 @@ export type RemoveProductFromCheckoutMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -28505,6 +28513,7 @@ export type CheckoutShippingAddressUpdateMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -28642,6 +28651,7 @@ export type CheckoutShippingMethodUpdateMutation = {
           };
           pricing?: {
             __typename?: "VariantPricingInfo";
+            onSale?: boolean | null;
             price?: {
               __typename?: "TaxedMoney";
               gross: { __typename?: "Money"; currency: string; amount: number };
@@ -29005,6 +29015,7 @@ export type CheckoutByTokenQuery = {
         };
         pricing?: {
           __typename?: "VariantPricingInfo";
+          onSale?: boolean | null;
           price?: {
             __typename?: "TaxedMoney";
             gross: { __typename?: "Money"; currency: string; amount: number };
@@ -30158,6 +30169,7 @@ export const CheckoutLineDetailsFragmentDoc = gql`
         }
       }
       pricing {
+        onSale
         price {
           gross {
             ...PriceFragment

@@ -20,6 +20,7 @@ fragment CheckoutLineDetailsFragment on CheckoutLine {
       }
     }
     pricing {
+      onSale
       price {
         gross {
           ...PriceFragment
