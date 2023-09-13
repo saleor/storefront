@@ -115,11 +115,11 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
       leaveFrom="translate-x-0"
       leaveTo="translate-x-full"
     >
-      <div className="fixed top-0 right-0 z-10 h-screen w-[100%] md:w-[75%] lg:w-[50%] xl:w-[25%] overflow-none bg-white shadow-lg focus:outline-none sm:text-sm">
-        <main className="container w-full overflow-y-auto max-h-[580px] h-[100%]">
+      <div className="fixed top-0 right-0 z-[999] h-screen w-[100%] md:w-[75%] lg:w-[50%] xl:w-[25%] overflow-none bg-white shadow-lg focus:outline-none sm:text-sm">
+        <main className="container w-full overflow-y-auto max-h-[533px] h-[100%]">
           {checkout && checkout.lines.length > 0 ? (
             <React.Fragment>
-              <div className="flex flex-row justify-between items-center sticky top-0 z-100 bg-white border-b border-1 border-gray-300">
+              <div className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white border-b border-1 border-gray-300">
                 <div className="flex flex-row gap-8 items-center my-8">
                   <svg
                     width="24"
@@ -195,32 +195,33 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
             checkout && checkout.lines.length < 1 && <EmptyCart paths={paths} />
           )}
         </main>
-        <div className="flex flex-col gap-6 px-8 justify-start items-start bg-gray-100 py-6 absolute bottom-0 w-[100%]">
-          <div className="flex flex-col gap-6 items-start justify-between">
-            <div className="flex flex-row justify-between items-start">
-              <p className="text-md">Suma częściowa</p>
-              <p className="text-md">{subtotalPriceStr}</p>
+        <div className="flex flex-col gap-6 px-8 bg-gray-100 py-6 absolute bottom-0 w-[100%]">
+          <div className="flex flex-col gap-6 justify-between">
+            <div className="flex flex-row justify-between">
+              <p className="text-lg">Suma częściowa</p>
+              <p className="text-lg">{subtotalPriceStr}</p>
             </div>
-            <div className="flex flex-row justify-between items-start">
-              <p className="text-md">Suma</p>
-              <p className="text-md">{totalPriceStr}</p>
+            <div className="flex flex-row justify-between">
+              <p className="text-lg">Suma</p>
+              <p className="text-lg">{totalPriceStr}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-6 items-start">
-            <div className="flex justify-end">
+          <div className="w-[100%] border-b-2" />
+          <div className="flex flex-col gap-3 items-center w-full">
+            <div className="flex justify-center w-full">
               <Link
                 href={externalCheckoutUrl}
                 className="text-2xl md:text-3xl border-black border-2 bg-transparent hover:border-black hover:bg-black hover:text-white transition
-               text-black font-bold py-4 px-8 rounded-full"
+             text-black font-bold py-4 px-8 rounded-full w-full text-center"
               >
                 Mój koszyk
               </Link>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-center w-full">
               <Link
                 href={externalCheckoutUrl}
                 className="text-2xl md:text-3xl border-brand border-2 bg-brand hover:border-brand hover:bg-white hover:text-brand transition
-               text-white font-bold py-4 px-8 rounded-full"
+             text-white font-bold py-4 px-8 rounded-full w-full text-center"
               >
                 Kontynuuj do kasy
               </Link>

@@ -167,7 +167,7 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
           <p
-            className="block mt-6 font-regular text-[17px] md:text-[18px] lg:text-[18px] xl:text-[20px] text-black uppercase text-center"
+            className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[1px] xl:text-[20px] text-black uppercase text-center"
             data-testid={`productName${product.name}`}
           >
             {product.name}

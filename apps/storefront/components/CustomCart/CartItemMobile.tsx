@@ -30,11 +30,9 @@ const CartItemMobile: React.FC<CartItemProps> = ({
 
   const renderErrorMessage = (message: string) => (
     <div>
-      <p className="text-sm text-red-500 mt-2">{message}</p>
+      <p className="text-sm text-red-500">{message}</p>
     </div>
   );
-
-  console.log(quantityLimitExceededError);
 
   return (
     <>
@@ -57,7 +55,7 @@ const CartItemMobile: React.FC<CartItemProps> = ({
           </div>
         </TableCell>
       </TableRow>
-      <TableRow sx={{ "& td": { border: 0 } }}>
+      <TableRow sx={{ "& td": { border: 0, alignItems: "center" } }}>
         <TableCell
           align="center"
           sx={{
@@ -85,10 +83,12 @@ const CartItemMobile: React.FC<CartItemProps> = ({
             padding: "16px 0",
           }}
         >
-          <p className="text-base text-gray-500">Cena:</p>
-          <div className="flex flex-row gap-1 justify-center">
-            <p className="text-md">{priceAmount}</p>
-            <p className="text-md">{priceCurrency}</p>
+          <div className="flex flex-col gap-1 justify-center">
+            <p className="text-base text-gray-500">Cena:</p>
+            <div className="flex flex-row gap-1 justify-center">
+              <p className="text-md">{priceAmount}</p>
+              <p className="text-md">{priceCurrency}</p>
+            </div>
           </div>
         </TableCell>
         <TableCell
@@ -97,7 +97,8 @@ const CartItemMobile: React.FC<CartItemProps> = ({
             padding: "16px 0",
           }}
         >
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-1">
+            <p className="text-base text-gray-500">Ilość:</p>
             <input
               type="number"
               className={clsx(
@@ -131,7 +132,7 @@ const CartItemMobile: React.FC<CartItemProps> = ({
             width: "100%",
           }}
         >
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1 justify-center">
             <p className="text-base text-gray-500 text-right">Kwota całkowita:</p>
             <div className="flex flex-row gap-1 justify-end">
               <p className="text-md">{totalPriceAmount}</p>
