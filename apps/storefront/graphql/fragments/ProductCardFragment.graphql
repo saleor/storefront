@@ -19,12 +19,7 @@ fragment ProductCardFragment on Product {
     ...ImageFragment
   }
   category {
-    id
-    name
-    translation(languageCode: $locale) {
-      id
-      name
-    }
+    ...CategoryBasicFragment
   }
   media {
     url
@@ -32,15 +27,13 @@ fragment ProductCardFragment on Product {
     type
   }
   attributes {
-    attribute {
-      slug
-    }
-    values {
-      name
-    }
+    ...SelectedAttributeDetailsFragment
   }
   collections {
     name
+  }
+  variants {
+    ...ProductVariantDetailsFragment
   }
   pricing(address: $address) {
     onSale

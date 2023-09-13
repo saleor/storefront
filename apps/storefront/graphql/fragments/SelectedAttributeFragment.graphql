@@ -2,6 +2,7 @@ fragment SelectedAttributeDetailsFragment on SelectedAttribute {
   attribute {
     id
     name
+    slug
     translation(languageCode: $locale) {
       id
       name
