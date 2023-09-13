@@ -16,6 +16,7 @@ import EmptyCart from "@/components/CustomCart/EmptyCart";
 import CartSummary from "@/components/CustomCart/CartSummary";
 import CartItem from "@/components/CustomCart/CartItem";
 import CartItemMobile from "@/components/CustomCart/CartItemMobile";
+import debounce from "lodash/debounce";
 
 function CartPage() {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -64,6 +65,19 @@ function CartPage() {
     }
   };
 
+  const debouncedRemoveProductFromCheckoutMobile = debounce(
+    async (checkoutToken, lineId, locale) => {
+      await removeProductFromCheckout({
+        variables: {
+          checkoutToken: checkoutToken,
+          lineId: lineId,
+          locale: locale,
+        },
+      });
+    },
+    500
+  );
+
   const totalPrice = checkout?.totalPrice.gross.amount || "";
   const totalCurrency = checkout?.totalPrice?.gross?.currency || "";
   const totalPriceStr = `${totalPrice} ${totalCurrency}`;
@@ -97,8 +111,12 @@ function CartPage() {
           <h1 className="mb-4 font-bold text-5xl md:text-6xl xl:text-7xl tracking-tight max-w-[647px] md:max-w-full">
             Mój koszyk
           </h1>
-          <TableContainer>
-            <Table sx={{ minWidth: 700 }} aria-label="spanning table">
+          <TableContainer
+            sx={{
+              overflow: "hidden ",
+            }}
+          >
+            <Table sx={{ minWidth: 700, overflow: "hidden" }} aria-label="spanning table">
               <TableHead
                 sx={{
                   display: { xs: "none", sm: "none", md: "table-header-group" },
@@ -122,13 +140,18 @@ function CartPage() {
                   </TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
+              <TableBody
+                sx={{
+                  overflow: "hidden ",
+                }}
+              >
                 {checkout?.lines.map((item) => {
                   const thumbnail = item.variant?.product?.thumbnail?.url as string;
 
                   return (
                     <React.Fragment>
                       <CartItem
+                        key={item.id}
                         variantId={item.variant.id}
                         thumbnail={thumbnail}
                         productName={item.variant.product?.name}
@@ -145,18 +168,17 @@ function CartPage() {
                         errors={errors}
                         loadingLineUpdate={loadingLineUpdate}
                         setErrors={() => setErrors}
-                        onRemove={async () => {
-                          await removeProductFromCheckout({
-                            variables: {
-                              checkoutToken: checkout?.token,
-                              lineId: item?.id,
-                              locale: query.locale,
-                            },
-                          });
+                        onRemove={() => {
+                          void debouncedRemoveProductFromCheckoutMobile(
+                            checkout?.token,
+                            item?.id,
+                            query.locale
+                          );
                         }}
                       />
                       <div className="md:hidden">
                         <CartItemMobile
+                          key={item.id}
                           variantId={item.variant.id}
                           thumbnail={thumbnail}
                           productName={item.variant.product?.name}
@@ -173,23 +195,20 @@ function CartPage() {
                           errors={errors}
                           loadingLineUpdate={loadingLineUpdate}
                           setErrors={() => setErrors}
-                          onRemove={async () => {
-                            await removeProductFromCheckout({
-                              variables: {
-                                checkoutToken: checkout?.token,
-                                lineId: item?.id,
-                                locale: query.locale,
-                              },
-                            });
+                          onRemove={() => {
+                            void debouncedRemoveProductFromCheckoutMobile(
+                              checkout?.token,
+                              item?.id,
+                              query.locale
+                            );
                           }}
                         />
                       </div>
                     </React.Fragment>
                   );
                 })}
-
-                <CartSummary subtotal={subtotalPriceStr} total={totalPriceStr} />
               </TableBody>
+              <CartSummary subtotal={subtotalPriceStr} total={totalPriceStr} />
             </Table>
           </TableContainer>
           <div className="mt-12 flex justify-end">

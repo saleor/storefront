@@ -159,6 +159,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                       const thumbnail = item.variant?.product?.thumbnail?.url as string;
                       return (
                         <CartItemMobile
+                          key={item.id}
                           variantId={item.variant.id}
                           thumbnail={thumbnail}
                           productName={item.variant.product?.name}
@@ -210,7 +211,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
           <div className="flex flex-col gap-3 items-center w-full">
             <div className="flex justify-center w-full">
               <Link
-                href={externalCheckoutUrl}
+                href={paths.cart.$url()}
                 className="text-2xl md:text-3xl border-black border-2 bg-transparent hover:border-black hover:bg-black hover:text-white transition
              text-black font-bold py-4 px-8 rounded-full w-full text-center"
               >
