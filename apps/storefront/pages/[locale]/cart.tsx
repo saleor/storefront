@@ -99,8 +99,6 @@ function CartPage() {
 
   const externalCheckoutUrl = checkout ? `/checkout/?${checkoutParams.toString()}` : "#";
 
-  console.log(checkout);
-
   return (
     <div>
       <main className="container w-full px-8 mt-18 mb-18 hidden md:block lg:block xl:block">

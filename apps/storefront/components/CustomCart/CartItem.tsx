@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { ErrorDetailsFragment } from "@/saleor/api";
 import { useIntl } from "react-intl";
 import messages from "./messages";
+import { useEffect } from "react";
 
 export interface CartItemProps {
   thumbnail: string;
@@ -21,7 +22,7 @@ export interface CartItemProps {
   onQuantityUpdate: (event: React.SyntheticEvent<HTMLInputElement>) => void;
   loadingLineUpdate: any;
   setErrors: any;
-  quantity: any;
+  quantity: number;
   errors: Record<string, ErrorDetailsFragment[] | null>;
 }
 
@@ -62,8 +63,6 @@ const CartItem: React.FC<CartItemProps> = ({
     </div>
   );
 
-  console.log(quantityLimitExceededError);
-
   return (
     <TableRow
       sx={{
@@ -89,26 +88,29 @@ const CartItem: React.FC<CartItemProps> = ({
       </TableCell>
       <TableCell align="center">
         <div className="flex flex-col items-center justify-center">
-          <input
-            type="number"
-            className={clsx(
-              "h-8 w-10 md:w-16 block border-gray-300 rounded-md shadow-sm text-base",
-              errors && errors[variantId] && "border-red-500"
-            )}
-            value={quantity}
-            onFocus={() => {
-              setErrors(null);
-            }}
-            onChange={(e) => {
-              changeLineState(parseFloat(e.currentTarget.value));
-            }}
-            onBlur={onQuantityUpdate}
-            onKeyPress={onQuantityUpdate}
-            min={1}
-            required
-            disabled={loadingLineUpdate}
-            pattern="[0-9]*"
-          />
+          <div>
+            <div className="flex items-center border border-gray-200">
+              <input
+                type="number"
+                className={clsx(
+                  "h-10 w-32 border text-center",
+                  quantityLimitExceededError ? "border-red-500" : "border-gray-100"
+                )}
+                value={quantity}
+                onFocus={() => {
+                  setErrors({});
+                }}
+                onChange={(e) => {
+                  changeLineState(parseFloat(e.currentTarget.value));
+                }}
+                onBlur={onQuantityUpdate}
+                min={1}
+                required
+                disabled={loadingLineUpdate}
+                pattern="[0-9]*"
+              />
+            </div>
+          </div>
           {quantityLimitExceededError && renderErrorMessage(t.formatMessage(messages.outOfStock))}
         </div>
       </TableCell>

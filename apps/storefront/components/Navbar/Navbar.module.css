@@ -1,5 +1,5 @@
 .navbar {
-  @apply bg-zinc-100 text-main z-50 lg:mx-16;
+  @apply bg-zinc-100 text-main z-50 lg:mx-16 relative;
 }
 
 .inner {
@@ -31,7 +31,7 @@
 }
 
 .dropdown-menu {
-  @apply absolute top-12 left-[50%] translate-x-[-50%] pt-8 bg-white w-full border-b border-main-4 invisible;
+  @apply absolute top-14 left-[50%] translate-x-[-50%] pt-8 bg-white w-full border-b border-main-4 invisible;
   padding-bottom: calc(theme("spacing.12") - theme("borderWidth.DEFAULT"));
 }
 
@@ -40,7 +40,7 @@
 }
 
 .dropdown-main {
-  @apply inline-block text-[1.4rem] leading-[1.65rem] font-bold cursor-pointer hover:text-brand;
+  @apply inline-block text-[1.7rem] leading-[1.65rem] font-bold cursor-pointer hover:text-brand;
 }
 
 .dropdown-ul {
@@ -52,7 +52,7 @@
 }
 
 .dropdown-link {
-  @apply text-[1.1rem]  text-main-2 cursor-pointer hover:text-brand;
+  @apply text-[1.4rem]  text-main-2 cursor-pointer hover:text-brand;
 }
 
 .nav-icon-button {
