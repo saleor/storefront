@@ -20,7 +20,7 @@ const ProductsFeatured = ({ products }: any) => {
             </p>
           </div>
           <Carousel
-            className="container"
+            className="container sm:px-2 md:px-24 lg:pl-80 lg:pr-60"
             withIndicators
             height={700}
             nextControlIcon={
