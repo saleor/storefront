@@ -6,8 +6,8 @@ import { getLinkPath } from "@/lib/menus";
 import { usePaths } from "@/lib/paths";
 import { useFooterMenuQuery } from "@/saleor/api";
 
-import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
-import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
+// import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
+// import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
 import { useRegions } from "../RegionsProvider";
 import styles from "./Footer.module.css";
 import { STOREFRONT_NAME } from "@/lib/const";
@@ -98,14 +98,14 @@ export function Footer({ className, ...rest }: FooterProps) {
           ))}
         </div>
       </div>
-      <div className="flex items-center sm:container">
+      <div className="flex flex-col container md:flex-row lg:flex-row xl:flex-row justify-between items-center flex-wrap gap-6">
         <p className="text-sm text-black flex-grow">
           © Copyright 2022 - {new Date().getFullYear()} {STOREFRONT_NAME}
         </p>
-        <div className="invisible md:visible gap-4 hidden">
+        {/* <div className="invisible md:visible gap-4 hidden">
           <ChannelDropdown horizontalAlignment="right" />
           <LocaleDropdown horizontalAlignment="right" />
-        </div>
+        </div> */}
         <div className="flex items-center gap-6 ">
           <Link href={socialMediaLinks.facebook} target="_blank">
             <FontAwesomeIcon icon={faFacebook} size="2xl" style={{ color: "#000000" }} />{" "}
