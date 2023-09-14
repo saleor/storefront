@@ -20,6 +20,9 @@ RUN rm .env
 ARG SALEOR_API_URL
 ENV SALEOR_API_URL ${SALEOR_API_URL:-http://localhost:8000/graphql/}
 
+ARG ALLOWED_SALEOR_API_REGEX
+ENV ALLOWED_SALEOR_API_REGEX ${ALLOWED_SALEOR_API_REGEX:-'^https:\/\/[a-z0-9\-\.]+\.saleor\.cloud\/graphql\/\\$'}
+
 ARG STOREFRONT_URL
 ENV STOREFRONT_URL ${STOREFRONT_URL:-http://localhost:3000}
 
