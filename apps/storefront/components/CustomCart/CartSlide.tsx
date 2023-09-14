@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { Fragment, FC } from "react";
+import { Fragment, FC, useRef } from "react";
 import React, { useEffect, useState } from "react";
 import { invariant } from "@apollo/client/utilities/globals";
 import Link from "next/link";
@@ -31,6 +31,20 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
   const [checkoutLineUpdateMutation, { loading: loadingLineUpdate }] =
     useCheckoutLineUpdateMutation();
   const { checkout } = useCheckout();
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const checkIfClickedOutside = (e: MouseEvent) => {
+      const targetNode = e.target as Node | null;
+      if (ref.current && !ref.current.contains(targetNode)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("click", checkIfClickedOutside);
+    return () => {
+      document.removeEventListener("click", checkIfClickedOutside);
+    };
+  }, [setIsOpen]);
 
   useEffect(() => {
     if (checkout?.lines) {
@@ -126,9 +140,12 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
       leaveFrom="translate-x-0"
       leaveTo="translate-x-full"
     >
-      <div className="fixed top-0 right-0 z-[999] h-screen w-[100%] md:w-[75%] lg:w-[50%] xl:w-[25%] overflow-none bg-white shadow-lg focus:outline-none sm:text-sm">
-        <main className="container">
-          <div className="flex flex-row justify-between items-center sticky top-0 z-10 bg-white border-b border-1 border-gray-300">
+      <div
+        className="fixed top-0 min-h-[100vh] justify-end right-0 z-[999] h-[100%] w-[100%] md:w-[75%] lg:w-[50%] xl:w-[25%] overflow-none bg-white shadow-lg focus:outline-none sm:text-sm flex overflow-y-auto flex-col"
+        ref={ref}
+      >
+        <main className="flex relative min-h-[355px] h-[100%] right-0 flex-col">
+          <div className="container flex flex-row justify-between items-center pt-[1.1rem] z-10 bg-white border-b border-1 border-gray-300">
             <div className="flex flex-row gap-8 items-center my-8">
               <svg
                 width="24"
@@ -165,10 +182,9 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
             <React.Fragment>
               <TableContainer
                 sx={{
-                  width: "100%",
-                  overflowY: "auto",
-                  maxHeight: "533px",
                   height: "100%",
+                  paddingLeft: "1.6rem",
+                  paddingRight: "1.6rem",
                 }}
               >
                 <Table aria-label="spanning table">
@@ -215,7 +231,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
             <EmptyCart paths={paths} />
           </div>
         ) : (
-          <div className="flex flex-col gap-6 px-8 bg-gray-100 py-6 absolute bottom-0 w-[100%]">
+          <div className="flex flex-col gap-6 px-8 bg-gray-100 py-6 ">
             <div className="flex flex-col gap-6 justify-between">
               <div className="flex flex-row justify-between">
                 <p className="text-lg">Suma częściowa</p>
