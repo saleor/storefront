@@ -261,12 +261,12 @@ function CartPage() {
         <div className="flex flex-col gap-6 px-8 py-6">
           <div className="flex flex-col gap-6 justify-between">
             <div className="flex flex-row justify-between">
-              <p className="text-lg">Suma częściowa</p>
-              <p className="text-lg">{subtotalPriceStr}</p>
+              <p className="text-base md:text-md lg:text-lg xl:text-lg">Suma częściowa</p>
+              <p className="text-base md:text-md lg:text-lg xl:text-lg">{subtotalPriceStr}</p>
             </div>
             <div className="flex flex-row justify-between">
-              <p className="text-lg">Suma</p>
-              <p className="text-lg">{totalPriceStr}</p>
+              <p className="text-base md:text-md lg:text-lg xl:text-lg">Suma</p>
+              <p className="text-base md:text-md lg:text-lg xl:text-lg">{totalPriceStr}</p>
             </div>
           </div>
           <div className="flex flex-col gap-3 items-center w-full">
