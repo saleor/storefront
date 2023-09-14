@@ -60,6 +60,7 @@ module.exports = {
       textColor: ["group-hover"],
       screens: {
         xs: "375px",
+        md: "768px",
       },
       container: {
         center: true,
@@ -105,7 +106,7 @@ module.exports = {
     },
   },
   plugins: [
-    require("@tailwindcss/forms"), // eslint-disable-line
+    require("@tailwindcss/forms"),
     require("@tailwindcss/typography"), // eslint-disable-line
     require("@tailwindcss/aspect-ratio"), // eslint-disable-line
     require("tailwind-scrollbar-hide"), // eslint-disable-line

@@ -99,13 +99,12 @@ const CartItemMobile: React.FC<CartItemProps> = ({
         >
           <div className="flex flex-col items-center justify-center gap-1">
             <p className="text-base text-gray-500 text-right">Ilość:</p>
-
             <div>
               <div className="flex items-center border border-gray-200">
                 <input
                   type="number"
                   className={clsx(
-                    "h-8 w-32 border text-center",
+                    "h-8 w-32 border text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none",
                     quantityLimitExceededError ? "border-red-500" : "border-gray-100"
                   )}
                   value={quantity}
