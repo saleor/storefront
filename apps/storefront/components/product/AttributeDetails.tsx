@@ -23,7 +23,7 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
                 return null;
               }
               return (
-                <div key={value.id} className="prose-2xl px-2">
+                <div key={value.id} className="prose-2xl text-3xl px-2">
                   <div className="flex flex-row gap-3 items-center">
                     <p>{translate(attribute.attribute, "name")}:</p>
                     {attribute.values.map((value) => value.name).join(", ")}

@@ -217,21 +217,26 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
       </main>
       <main className="lg:mx-16 mx-8 gap-[3rem] flex flex-col md:flex-row justify-between bg-white mt-[42px]">
         <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
-          <div className="flex-grow-2 w-full md:w-1/2 lg:w-1/2 xl:w-2/3 md:pb-0 md:pr-8 box-border">
+          <div className="flex-grow-2 w-full md:w-2/3 lg:w-2/3 xl:w-2/3 md:pb-0 md:pr-8 box-border">
             <ProductGallery product={product} selectedVariant={selectedVariant} />
           </div>
-          <div className="flex-grow w-full md:w-1/2 lg:w-1/2 xl:w-1/3 relative mt-8 md:mt-0">
+          <div className="flex-grow w-full md:w-1/3 lg:w-1/2 xl:w-1/3 relative mt-8 md:mt-0">
             <div className="flex flex-col space-y-8">
-              <h1 className="text-5xl font-bold text-gray-800" data-testid="productName">
+              <h1
+                className="text-3xl sm:text-4xl md:text-3xl lg:text-5xl font-bold text-gray-800"
+                data-testid="productName"
+              >
                 {translate(product, "name")}
               </h1>
               <div className="flex flex-row items-center gap-6">
                 {shouldDisplayPrice && (
-                  <h2 className="text-xl font-bold text-gray-800">{formatPrice(price)}</h2>
+                  <h2 className="text-lg sm:text-5xl md:text-3xl lg:text-xl font-bold text-gray-800">
+                    {formatPrice(price)}
+                  </h2>
                 )}
                 {isOnSale && (
                   <div className="flex flex-row gap-6 items-center">
-                    <div className="line-through text-lg text-gray-400">
+                    <div className="line-through text-lg md:text-3xl sm:text-5xl lg:text-xl text-gray-400">
                       {formatPrice(undiscountedPrice)}
                     </div>
 
