@@ -145,8 +145,8 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
         ref={ref}
       >
         <main className="flex relative min-h-[355px] h-[100%] right-0 flex-col">
-          <div className="container flex flex-row justify-between items-center pt-[1.1rem] z-10 bg-white border-b border-1 border-gray-300">
-            <div className="flex flex-row gap-8 items-center my-8">
+          <div className="container flex flex-row justify-between items-center py-[1.2rem] z-10 bg-white border-b border-1 border-gray-300">
+            <div className="flex flex-row gap-8 items-center">
               <svg
                 width="24"
                 height="24"
@@ -161,7 +161,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                   fill="#323232"
                 />
               </svg>
-              <h3 className="font-bold text-5xl md:text-6xl xl:text-4xl tracking-tight md:max-w-full uppercase">
+              <h3 className="font-bold text-2xl md:text-3xl lg:text-4xl xl:text-5xl tracking-tight md:max-w-full uppercase">
                 Koszyk
               </h3>
             </div>
@@ -234,12 +234,12 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
           <div className="flex flex-col gap-6 px-8 bg-gray-100 py-6 ">
             <div className="flex flex-col gap-6 justify-between">
               <div className="flex flex-row justify-between">
-                <p className="text-lg">Suma częściowa</p>
-                <p className="text-lg">{subtotalPriceStr}</p>
+                <p className="text-base md:text-md lg:text-lg xl:text-lg">Suma częściowa</p>
+                <p className="text-base md:text-md lg:text-lg xl:text-lg">{subtotalPriceStr}</p>
               </div>
               <div className="flex flex-row justify-between">
-                <p className="text-lg">Suma</p>
-                <p className="text-lg">{totalPriceStr}</p>
+                <p className="text-base md:text-md lg:text-lg xl:text-lg">Suma</p>
+                <p className="text-base md:text-md lg:text-lg xl:text-lg">{totalPriceStr}</p>
               </div>
             </div>
             <div className="w-[100%] border-b-2" />
