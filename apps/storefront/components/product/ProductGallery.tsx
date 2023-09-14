@@ -10,7 +10,6 @@ import {
   ProductVariantDetailsFragment,
 } from "@/saleor/api";
 import VideoExpand from "./VideoExpand";
-import { Experimental_CssVarsProvider } from "@mui/material";
 
 export interface ProductGalleryProps {
   product: ProductDetailsFragment;
