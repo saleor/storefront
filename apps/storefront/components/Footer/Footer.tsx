@@ -32,6 +32,8 @@ export function Footer({ className, ...rest }: FooterProps) {
 
   const menu = data?.menu?.items || [];
 
+  const imagePath = process.env.NEXT_PUBLIC_IMAGE_SRC_FOOTER || "/saleor.svg";
+
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
       <Box className={styles["footer-inner"]}>
@@ -39,7 +41,7 @@ export function Footer({ className, ...rest }: FooterProps) {
           <Link href={paths.$url()} passHref legacyBehavior>
             <a href="pass" className="hidden sm:inline-block">
               <div className="mt-px group block h-16 w-28 relative grayscale">
-                <Image src="/saleor.svg" alt="Saleor logo" layout="fill" />
+                <Image src={imagePath} alt="Saleor logo" layout="fill" />
               </div>
             </a>
           </Link>
@@ -103,7 +105,7 @@ export function Footer({ className, ...rest }: FooterProps) {
         </div>
         <div className="flex items-center">
           <p className="text-sm text-main-3 flex-grow">
-            © Copyright 2018 - {new Date().getFullYear()} Saleor Commerce
+            © Copyright 2018 - {new Date().getFullYear()} {process.env.NEXT_PUBLIC_COMPANY_NAME}
           </p>
           <div className="invisible md:visible flex gap-4">
             <ChannelDropdown horizontalAlignment="right" />
