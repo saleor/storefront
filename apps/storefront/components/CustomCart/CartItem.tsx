@@ -92,7 +92,7 @@ const CartItem: React.FC<CartItemProps> = ({
               <input
                 type="number"
                 className={clsx(
-                  "h-10 w-32 border text-center",
+                  "h-10 w-32 border text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none",
                   quantityLimitExceededError ? "border-red-500" : "border-gray-100"
                 )}
                 value={quantity}

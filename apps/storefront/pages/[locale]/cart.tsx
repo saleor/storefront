@@ -191,7 +191,7 @@ function CartPage() {
           checkout && checkout.lines.length < 1 && <EmptyCart paths={paths} />
         )}
       </main>
-      <div className="w-full overflow-none focus:outline-none sm:text-sm md:hidden">
+      <div className="w-full overflow-none focus:outline-none sm:text-sm block md:hidden">
         <main className="container w-full">
           {checkout && checkout.lines.length > 0 ? (
             <React.Fragment>
