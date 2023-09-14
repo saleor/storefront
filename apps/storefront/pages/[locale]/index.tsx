@@ -128,7 +128,7 @@ function Home({
                 </p>
               </div>
             </div>
-            <div className="w-full mt-8 md:mt-0 flex flex-row items-center justify-center md:justify-center gap-2 md:gap-2">
+            <div className="w-full mt-8 md:mt-0 flex flex-column md:flex-row lg:flex-row xl:flex-row items-center flex-wrap justify-center md:justify-center gap-4 md:gap-2 lg:gap-2 xl:gap-2">
               <a
                 href="#news"
                 className="bg-primary py-2 px-6 text-white cursor-pointer hover:bg-brand hover:text-white rounded-full font-medium uppercase xs:text-sm transition duration-150 ease-in-out hover:bg-primary-600 focus:bg-primary-600 focus:outline-none focus:ring-0 border-2 border-brand text-[9px]"
