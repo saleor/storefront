@@ -99,8 +99,8 @@ module.exports = {
         full: "500rem",
       },
       boxShadow: {
-        "decorative-center": "0 32px 0 -16px #394052",
-        decorative: "16px 16px 0 #394052",
+        "decorative-center": `0 32px 0 -16px ${colorConfig.brand.DEFAULT}`,
+        decorative: `16px 16px 0 ${colorConfig.brand.DEFAULT}`,
         modal: "0px 4px 20px 0px rgba(0, 0, 0, 0.12)",
       },
     },

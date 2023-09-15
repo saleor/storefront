@@ -143,49 +143,46 @@ export function ProductCard({ product }: ProductCardProps) {
     !selectedVariant || selectedVariant?.quantityAvailable === 0 || loadingAddToCheckout;
 
   return (
-    <li key={product.id} className="w-full bg-gray-100 py-6 px-4 relative">
+    <li
+      key={product.id}
+      className="w-full py-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer"
+    >
       <Link
         href={paths.products._slug(product.slug).$url()}
         prefetch={false}
         passHref
         legacyBehavior
       >
-        <a href="pass">
-          <div className="w-full aspect-1 relative flex justify-center items-center mt-12">
-            {thumbnailUrl ? (
-              <Image
-                src={thumbnailUrl}
-                width={400}
-                height={400}
-                alt=""
-                className="object-contain"
-              />
-            ) : (
-              <div className="grid justify-items-center content-center h-full w-full">
-                <PhotographIcon className="h-10 w-10 content-center" />
-              </div>
-            )}
-          </div>
-          <p
-            className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[1px] xl:text-[20px] text-black uppercase text-center"
-            data-testid={`productName${product.name}`}
-          >
-            {product.name}
-          </p>
-          <div className="flex flex-row gap-3 items-center text-center justify-center">
-            <p
-              className="block mt-4 text font-semibold text-lg text-main uppercase text-center"
-              data-testid={`productName${product.name}`}
-            >
-              {formatPrice(price)}
+        <div>
+          <a className="block">
+            <div className="w-full relative flex justify-center items-center mt-12 h-[400px]">
+              {thumbnailUrl ? (
+                <Image
+                  src={thumbnailUrl}
+                  width={400}
+                  height={400}
+                  alt=""
+                  className="object-contain"
+                />
+              ) : (
+                <div className="grid justify-items-center content-center h-full w-full">
+                  <PhotographIcon className="h-10 w-10 content-center" />
+                </div>
+              )}
+            </div>
+            <p className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[17px] xl:text-[20px] text-black uppercase text-center">
+              {product.name}
             </p>
-            {isOnSale && (
-              <p className="block mt-4 text font-normal text-lg uppercase line-through text-gray-400 text-center">
-                {formatPrice(undiscountedPrice)}
-              </p>
-            )}
-          </div>
-        </a>
+            <div className="flex flex-row gap-3 items-center text-center justify-center">
+              <p className="mt-4 font-semibold text-lg text-main uppercase">{formatPrice(price)}</p>
+              {isOnSale && (
+                <p className="mt-4 font-normal text-lg uppercase line-through text-gray-400">
+                  {formatPrice(undiscountedPrice)}
+                </p>
+              )}
+            </div>
+          </a>
+        </div>
       </Link>
       <div className="absolute bg-red-600 left-4 top-4 text-white rounded-md text-md">
         <DiscountInfo isOnSale={isOnSale} product={product} />
@@ -195,35 +192,28 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={() => handleDeleteFromWishlist(product)}
             type="submit"
-            data-testid="addToWishlistButton"
-            className="text-md flex flex-row gap-3"
+            className="text-md"
           >
-            <Heart width="28" height="28" fill="red" />
+            <Heart className="w-7 h-7 text-red-500" />
           </button>
         ) : (
-          <button
-            onClick={() => handleAddToWishlist(product)}
-            type="submit"
-            data-testid="addToWishlistButton"
-            className="text-md flex flex-row gap-3"
-          >
-            <Heart width="28" height="28" fill="black" />
+          <button onClick={() => handleAddToWishlist(product)} type="submit" className="text-md">
+            <Heart className="w-7 h-7 text-black" />
           </button>
         )}
       </div>
-      <div className="flex justify-center mt-8">
+      <div className="relative z-2 flex justify-center mt-8">
         <button
           onClick={onAddToCart}
           type="submit"
           disabled={isAddToCartButtonDisabled}
           className={clsx(
-            "py-2 text-md px-6 w-max rounded-lg text-white bg-brand border-2 border-brand transition-all ease-in-out duration-300 focus:outline-none",
+            "py-2 text-md px-6 w-max rounded-lg text-white bg-brand border-1 border-brand transition-all ease-in-out duration-300 focus:outline-none",
             {
               "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
-              "hover:bg-white hover:text-brand hover:border-brand": !isAddToCartButtonDisabled,
+              "hover:bg-black hover:text-white hover:border-black": !isAddToCartButtonDisabled,
             }
           )}
-          data-testid="addToCartButton"
         >
           {loadingAddToCheckout
             ? t.formatMessage(messages.adding)

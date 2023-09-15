@@ -90,7 +90,7 @@ function CategoryPage({
     <>
       <CategoryPageSeo category={category} />
       <header className="mb-4 pt-4">
-        <div className="mx-8 lg:mx-16">
+        <div className="mx-8 lg:mx-16 mt-8">
           <PageHero
             title={translate(category, "name")}
             description={translate(category, "description") || ""}
