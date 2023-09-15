@@ -32,7 +32,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
       >
         {galleryMedia?.length > 1 && (
           <div className="hidden sm:grid md:grid-cols-1 grid-cols-1 gap-4 h-full col-span-1">
-            <div className="overflow-scroll grid h-[80vh] no-scrollbar">
+            <div className="overflow-scroll block h-[80vh] no-scrollbar">
               {galleryMedia.map((media: ProductMediaFragment, index: number) => (
                 <div key={media.url} className="relative h-[15vh] w-full mb-2">
                   {media.type === "IMAGE" ? (
