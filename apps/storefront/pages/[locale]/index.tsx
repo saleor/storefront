@@ -270,7 +270,7 @@ function Home({
             </div>
           )}
           <div className="pt-32 lg:mx-16" id="news">
-            <div className="flex flex-col items-center">
+            <div className="container flex flex-col items-center justify-center mx-auto">
               <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                 {t.formatMessage(messages.latestArticles)}
               </h2>
@@ -278,7 +278,7 @@ function Home({
                 {t.formatMessage(messages.latestArticlesText)}
               </p>
             </div>
-            <div className="container w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
+            <div className="container w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 xl:p-0 m-auto">
               {news?.slice(0, 3).map(({ node: newsElem }: any) => {
                 const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
                 const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
