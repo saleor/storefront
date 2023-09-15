@@ -278,7 +278,7 @@ function Home({
                 {t.formatMessage(messages.latestArticlesText)}
               </p>
             </div>
-            <div className="w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 px-8">
+            <div className="container w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10">
               {news?.slice(0, 3).map(({ node: newsElem }: any) => {
                 const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
                 const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${

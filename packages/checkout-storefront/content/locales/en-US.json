@@ -434,6 +434,10 @@
     "developer_comment": "english usa",
     "string": "English (USA)"
   },
+  "PageHeader/messages/goBackToCart": {
+    "developer_comment": "go back to cart label",
+    "string": "Go back to cart"
+  },
   "PageHeader/messages/kd+Ya5": {
     "developer_comment": "polish",
     "string": "Polish"
