@@ -14,7 +14,7 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
     return null;
   }
   return (
-    <div className="grid grid-cols-2">
+    <div className="grid-cols-2 block sm:grid">
       {attributes.map((attribute) => (
         <div key={attribute.attribute.id} className="w-max">
           <div>

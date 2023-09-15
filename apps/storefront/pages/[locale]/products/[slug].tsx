@@ -206,7 +206,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   return (
     <>
       <ProductPageSeo product={product} />
-      <main className="gap-[3rem] px-8 flex flex-col md:flex-row justify-between bg-white mt-[42px]">
+      <main className="gap-[3rem] xl:pl-72 flex flex-col md:flex-row justify-between bg-white mt-[42px] lg:pl-36 md:pl-30 sm:pl-12 pl-12">
         <button
           type="button"
           onClick={() => history.back()}
@@ -215,12 +215,12 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           {t.formatMessage(messages.backButton)}
         </button>
       </main>
-      <main className="lg:mx-16 mx-8 gap-[3rem] flex flex-col md:flex-row justify-between bg-white mt-[42px]">
-        <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px]">
+      <main className="lg:mx-16 mx-8 gap-[3rem] flex flex-col md:flex-row justify-between bg-white">
+        <div className="md:flex-grow md:flex md:gap-x-8 md:mt-0 lg:mt-[24px] container lg:mx-30 xl:mx-40 pt-4 md:pt-4">
           <div className="flex-grow-2 w-full md:w-2/3 lg:w-2/3 xl:w-2/3 md:pb-0 md:pr-8 box-border">
             <ProductGallery product={product} selectedVariant={selectedVariant} />
           </div>
-          <div className="flex-grow w-full md:w-1/3 lg:w-1/2 xl:w-1/3 relative mt-8 md:mt-0">
+          <div className="flex-grow w-full md:w-1/3 lg:w-1/3 xl:w-1/3 relative mt-8 md:mt-0">
             <div className="flex flex-col space-y-8">
               <h1
                 className="text-3xl sm:text-4xl md:text-3xl lg:text-5xl font-bold text-gray-800"
