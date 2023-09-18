@@ -9,7 +9,7 @@ export const ProductInfoGrid = () => {
   const t = useIntl();
   return (
     <div>
-      <div className="w-3/4">
+      <div className="w-3/4 md:min-w-[200px]">
         <Accordion>
           <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
             <div className="flex flex-row gap-3 items-center">
