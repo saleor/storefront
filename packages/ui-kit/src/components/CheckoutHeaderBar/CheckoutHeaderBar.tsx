@@ -1,29 +1,23 @@
-import { FC, HTMLAttributes } from "react";
+import { FC } from "react";
 
-import clsx from "clsx";
 import Logo from "../Logo";
 import { BackIcon } from "..";
 
-export interface CheckoutHeaderBarProps
-  extends HTMLAttributes<{ storefrontName: string; destinationLink: string; backMessage: string }> {
+export interface CheckoutHeaderBarProps {
   storefrontName: string;
-  destinationLink: string;
+  destinationLink: () => void;
   backMessage: string;
 }
 
 export const CheckoutHeaderBar: FC<CheckoutHeaderBarProps> = ({
-  className,
   storefrontName,
   destinationLink,
   backMessage,
-  ...rest
 }) => {
-  const classes = clsx(className);
-
   return (
-    <div className={classes}>
+    <div>
       <div>
-        <a href="javascript:history.back()">
+        <button type="button" onClick={destinationLink} className="cursor-pointer">
           <div>
             <Logo height="120" width="150" STOREFRONT_NAME={storefrontName} />
           </div>
@@ -41,7 +35,7 @@ export const CheckoutHeaderBar: FC<CheckoutHeaderBarProps> = ({
           >
             <BackIcon /> {backMessage}
           </div>
-        </a>
+        </button>
       </div>
     </div>
   );
