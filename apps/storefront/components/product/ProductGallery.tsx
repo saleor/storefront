@@ -30,8 +30,8 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
           scrollSnapType: "both mandatory",
         }}
       >
-        {galleryMedia?.length > 1 && (
-          <div className="hidden sm:grid md:grid-cols-1 grid-cols-1 gap-4 h-full col-span-2">
+        <div className="hidden sm:grid md:grid-cols-1 grid-cols-1 gap-4 h-full col-span-2">
+          {galleryMedia?.length > 1 && (
             <div className="overflow-scroll block h-[80vh] no-scrollbar">
               {galleryMedia.map((media: ProductMediaFragment, index: number) => (
                 <div key={media.url} className="relative h-[15vh] w-full mb-2">
@@ -65,12 +65,12 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {galleryMedia?.length > 0 && (
           <div className="col-span-8 sm:col-span-8">
-            <div className="relative w-full hidden sm:flex" style={{ height: "100%" }}>
+            <div className="relative w-full hidden sm:flex" style={{ height: "80vh" }}>
               {galleryMedia[currentImageIndex].type === "IMAGE" && (
                 <Image
                   className="rounded-lg"
@@ -80,7 +80,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                   // role="button"
                   tabIndex={-2}
                   layout="fill"
-                  objectFit="cover"
+                  objectFit="contain"
                 />
               )}
               {galleryMedia[currentImageIndex].type === "VIDEO" && (
