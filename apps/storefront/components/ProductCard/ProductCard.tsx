@@ -145,7 +145,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <li
       key={product.id}
-      className="w-full py-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer"
+      className="w-full py-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer overflow-hidden flex flex-col justify-between h-[100%]"
     >
       <Link
         href={paths.products._slug(product.slug).$url()}
@@ -187,28 +187,28 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="absolute bg-red-600 left-4 top-4 text-white rounded-md text-md">
         <DiscountInfo isOnSale={isOnSale} product={product} />
       </div>
-      <div className="absolute right-5 top-5">
+      <div className="absolute right-5 top-5 z-[99]">
         {isItemInWishlist(product) ? (
           <button
             onClick={() => handleDeleteFromWishlist(product)}
             type="submit"
             className="text-md"
           >
-            <Heart className="w-7 h-7 text-red-500" />
+            <Heart className="w-7 h-7 fill-red-500" />
           </button>
         ) : (
           <button onClick={() => handleAddToWishlist(product)} type="submit" className="text-md">
-            <Heart className="w-7 h-7 text-black" />
+            <Heart className="w-7 h-7 text-black " />
           </button>
         )}
       </div>
-      <div className="relative z-2 flex justify-center mt-8">
+      <div className="z-2 flex justify-end mt-8">
         <button
           onClick={onAddToCart}
           type="submit"
           disabled={isAddToCartButtonDisabled}
           className={clsx(
-            "py-2 text-md px-6 w-max rounded-lg text-white bg-brand border-1 border-brand transition-all ease-in-out duration-300 focus:outline-none",
+            "py-2 text-md px-6 w-max rounded-lg text-white bg-brand border-1 border-brand transition-all ease-in-out duration-300 focus:outline-none mx-auto",
             {
               "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
               "hover:bg-black hover:text-white hover:border-black": !isAddToCartButtonDisabled,
