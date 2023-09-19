@@ -77,10 +77,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const selectedVariant = product?.variants?.find((v) => v?.id === selectedVariantID) || undefined;
 
   const onAddToCart = async () => {
-    // Clear previous error messages
     setAddToCartError("");
 
-    // Block add to checkout button
     setLoadingAddToCheckout(true);
     const errors: CheckoutError[] = [];
 
@@ -89,7 +87,6 @@ export function ProductCard({ product }: ProductCardProps) {
     }
 
     if (checkout) {
-      // If checkout is already existing, add products
       const { data: addToCartData } = await addProductToCheckout({
         variables: {
           checkoutToken,
