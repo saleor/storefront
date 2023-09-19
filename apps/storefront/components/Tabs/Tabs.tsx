@@ -79,7 +79,7 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
 
   return (
     <>
-      <div className="mb-4 border-gray-200 border-b">
+      <div className="mb-4 border-gray-200 border-b md:mx-10 ">
         <ul
           className="flex flex-wrap -mb-px text-sm font-medium text-center whitespace-nowrap sm:whitespace-normal"
           role="tablist"
@@ -88,13 +88,13 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
             return (
               <li className="mr-2 text-3xl font-bold" role="presentation" key={tab.name}>
                 <button
-                  className={`inline-block p-4 rounded-t-lg transition-colors duration-200 border-b ${
-                    openTab === tab.name ? "border-green-500" : "border-gray-200"
+                  className={`inline-block md:text-lg uppercase p-4 rounded-t-lg transition-colors duration-200 border-b ${
+                    openTab === tab.name ? "border-green-500  text-brand" : "border-gray-200"
                   } relative z-10`}
                   type="button"
                   role="tab"
                   aria-selected={openTab === tab.name}
-                  onClick={() => setOpenTab(tab.name)}
+                  onMouseOver={() => setOpenTab(tab.name)}
                 >
                   {tab.name}
                 </button>
@@ -104,7 +104,7 @@ export const Tabs = ({ product, selectedVariant }: TabsProps) => {
         </ul>
       </div>
 
-      <div className="mt-6 w-full break-words">
+      <div className="mt-6 break-words md:mx-10 ">
         {tabs.map((tab) => (
           <div key={tab.name} className={tab.name === openTab ? "block" : "hidden"}>
             {tab.content}
