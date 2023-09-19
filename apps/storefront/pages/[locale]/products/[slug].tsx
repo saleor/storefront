@@ -340,7 +340,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
         </div>
       </main>
 
-      <div className="container break-words mx-16 lg:mx-16 mt-32">
+      <div className="container break-words xl:mx-16 mt-32">
         <Tabs product={product} selectedVariant={selectedVariant} />
       </div>
     </>
