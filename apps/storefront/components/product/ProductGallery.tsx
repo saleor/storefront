@@ -25,13 +25,13 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
   return (
     <>
       <div
-        className="mt-1 mb-2 w-full overflow-scroll scrollbar-hide grid grid-cols-8 gap-4 xl:gap-8"
+        className="mt-1 mb-2 w-full overflow-scroll scrollbar-hide block sm:grid grid-cols-10 gap-4 xl:gap-8"
         style={{
           scrollSnapType: "both mandatory",
         }}
       >
         {galleryMedia?.length > 1 && (
-          <div className="hidden sm:grid md:grid-cols-1 grid-cols-1 gap-4 h-full col-span-1">
+          <div className="hidden sm:grid md:grid-cols-1 grid-cols-1 gap-4 h-full col-span-2">
             <div className="overflow-scroll block h-[80vh] no-scrollbar">
               {galleryMedia.map((media: ProductMediaFragment, index: number) => (
                 <div key={media.url} className="relative h-[15vh] w-full mb-2">
@@ -69,8 +69,8 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
         )}
 
         {galleryMedia?.length > 0 && (
-          <div className="col-span-8 sm:col-span-7">
-            <div className="relative w-full hidden sm:flex" style={{ height: "80vh" }}>
+          <div className="col-span-8 sm:col-span-8">
+            <div className="relative w-full hidden sm:flex" style={{ height: "100%" }}>
               {galleryMedia[currentImageIndex].type === "IMAGE" && (
                 <Image
                   className="rounded-lg"
