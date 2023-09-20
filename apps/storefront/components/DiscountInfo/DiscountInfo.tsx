@@ -1,9 +1,12 @@
 import React from "react";
+import { useIntl } from "react-intl";
+import messages from "../translations";
 
 export const DiscountInfo = ({ isOnSale, product }: any) => {
   const price = product?.pricing?.priceRange?.start;
 
   const undiscountedPrice = product?.pricing?.priceRangeUndiscounted?.start;
+  const t = useIntl();
 
   const salePercentage = (price: any, undiscountedPrice: any) => {
     let salePercentageNumber = 0;
@@ -22,8 +25,8 @@ export const DiscountInfo = ({ isOnSale, product }: any) => {
   const checkCollection = () => {
     return product?.collections?.map((collection: any) =>
       collection.name === "Nowości" ? (
-        <div className="bg-green-500 px-4 py-1 text-white text-md">
-          <p>Nowość!</p>
+        <div className="bg-green-500 px-4 py-1 text-white text-md max-w-[140px]">
+          <p>{t.formatMessage(messages.newProduct)}</p>
         </div>
       ) : null
     );

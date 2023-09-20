@@ -107,5 +107,6 @@
   "app.search.sortBy": "Sort by",
   "app.search.sortBy.popularity": "Popularity",
   "app.search.sortBy.nameAscending": "Name ascending",
-  "app.search.sortBy.nameDescending": "Name descending"
+  "app.search.sortBy.nameDescending": "Name descending",
+  "app.product.newProduct": "New product!"
 }

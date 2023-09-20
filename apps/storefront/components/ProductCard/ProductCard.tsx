@@ -14,6 +14,7 @@ import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
 import { useRegions } from "../RegionsProvider";
 import { useWishlist } from "context/WishlistContext";
 import Heart from "../Navbar/heart.svg";
+import ShoppingCart from "../Navbar/shoppingCart.svg";
 import { useIntl } from "react-intl";
 import messages from "../translations";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
@@ -142,7 +143,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <li
       key={product.id}
-      className="w-full py-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer overflow-hidden flex flex-col justify-between h-[100%]"
+      className="w-full pb-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer overflow-hidden flex flex-col justify-between h-[100%]"
     >
       <Link
         href={paths.products._slug(product.slug).$url()}
@@ -152,7 +153,7 @@ export function ProductCard({ product }: ProductCardProps) {
       >
         <div>
           <a className="block">
-            <div className="w-full relative flex justify-center items-center mt-12 h-[400px]">
+            <div className="w-full relative flex justify-center items-center mt-3 h-[400px]">
               {thumbnailUrl ? (
                 <Image
                   src={thumbnailUrl}
@@ -185,6 +186,17 @@ export function ProductCard({ product }: ProductCardProps) {
         <DiscountInfo isOnSale={isOnSale} product={product} />
       </div>
       <div className="absolute right-5 top-5 z-[99]">
+        <button
+          onClick={onAddToCart}
+          type="submit"
+          disabled={isAddToCartButtonDisabled}
+          className={clsx("text-md", {
+            "filter brightness-0 invert-[60%] cursor-not-allowed": isAddToCartButtonDisabled,
+            "": !isAddToCartButtonDisabled,
+          })}
+        >
+          <ShoppingCart className="w-7 h-7 text-black mr-4" />
+        </button>
         {isItemInWishlist(product) ? (
           <button
             onClick={() => handleDeleteFromWishlist(product)}
@@ -199,7 +211,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         )}
       </div>
-      <div className="z-2 flex justify-end mt-8">
+      {/* <div className="z-2 flex justify-end mt-8">
         <button
           onClick={onAddToCart}
           type="submit"
@@ -216,7 +228,7 @@ export function ProductCard({ product }: ProductCardProps) {
             ? t.formatMessage(messages.adding)
             : t.formatMessage(messages.addToCart)}
         </button>
-      </div>
+      </div> */}
       {cartSlide && (
         <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
       )}

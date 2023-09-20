@@ -553,6 +553,11 @@ export const messages = defineMessages({
     description: "Label for sort by nameDescending",
     defaultMessage: "Name descending",
   },
+  newProduct: {
+    id: "app.product.newProduct",
+    description: "Label for new product",
+    defaultMessage: "New product!",
+  },
 });
 
 export default messages;
