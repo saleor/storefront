@@ -15,7 +15,7 @@ import { useRegions } from "../RegionsProvider";
 import { useWishlist } from "context/WishlistContext";
 import Heart from "../Navbar/heart.svg";
 import ShoppingCart from "../Navbar/shoppingCart.svg";
-import { useIntl } from "react-intl";
+// import { useIntl } from "react-intl";
 // import messages from "../translations";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { getSelectedVariantID } from "@/lib/product";
