@@ -39,7 +39,7 @@
     "content-type": "1.0.4",
     "crypto-js": "4.1.1",
     "currency.js": "2.0.4",
-    "graphql": "16.6.0",
+    "graphql": "16.8.1",
     "graphql-tag": "2.12.6",
     "jose": "4.10.3",
     "jwks-rsa": "2.1.5",
