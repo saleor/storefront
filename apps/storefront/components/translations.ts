@@ -557,6 +557,7 @@ export const messages = defineMessages({
     id: "app.product.newProduct",
     description: "Label for new product",
     defaultMessage: "New product!",
+  },
   updatedAscending: {
     id: "app.search.sortBy.updatedAscending",
     description: "Label for sort by updated date ascending",
