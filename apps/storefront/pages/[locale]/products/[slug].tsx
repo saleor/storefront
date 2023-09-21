@@ -239,10 +239,9 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
                     <div className="line-through text-lg md:text-3xl sm:text-5xl lg:text-xl text-gray-400">
                       {formatPrice(undiscountedPrice)}
                     </div>
-
-                    <DiscountInfo isOnSale={isOnSale} product={product} />
                   </div>
                 )}
+                <DiscountInfo isOnSale={isOnSale} product={product} />
               </div>
 
               <VariantSelector product={product} selectedVariantID={selectedVariantID} />
