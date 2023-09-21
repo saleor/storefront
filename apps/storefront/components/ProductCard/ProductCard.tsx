@@ -16,6 +16,7 @@ import { useWishlist } from "context/WishlistContext";
 import Heart from "../Navbar/heart.svg";
 import ShoppingCart from "../Navbar/shoppingCart.svg";
 import { useIntl } from "react-intl";
+// import messages from "../translations";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { getSelectedVariantID } from "@/lib/product";
 import { useRouter } from "next/router";
@@ -28,7 +29,7 @@ export interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const t = useIntl();
+  // const t = useIntl();
   const paths = usePaths();
   const router = useRouter();
   const [createCheckout] = useCreateCheckoutMutation();
