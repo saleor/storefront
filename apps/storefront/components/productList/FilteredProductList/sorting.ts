@@ -21,6 +21,18 @@ export const useSortingOptions = (chosenSorting: UrlSorting | null) => {
     const options: SortingOption[] = [
       { label: t.formatMessage(messages.popularity), chosen: false },
       {
+        label: t.formatMessage(messages.priceMinMax),
+        field: "PRICE",
+        direction: "ASC",
+        chosen: false,
+      },
+      {
+        label: t.formatMessage(messages.priceMaxMin),
+        field: "PRICE",
+        direction: "DESC",
+        chosen: false,
+      },
+      {
         label: t.formatMessage(messages.nameAscending),
         field: "NAME",
         direction: "ASC",
@@ -29,6 +41,18 @@ export const useSortingOptions = (chosenSorting: UrlSorting | null) => {
       {
         label: t.formatMessage(messages.nameDescending),
         field: "NAME",
+        direction: "DESC",
+        chosen: false,
+      },
+      {
+        label: t.formatMessage(messages.updatedAscending),
+        field: "DATE",
+        direction: "ASC",
+        chosen: false,
+      },
+      {
+        label: t.formatMessage(messages.updatedDescending),
+        field: "DATE",
         direction: "DESC",
         chosen: false,
       },

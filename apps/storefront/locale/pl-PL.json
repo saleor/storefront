@@ -107,5 +107,9 @@
   "app.search.sortBy": "Sortuj po",
   "app.search.sortBy.popularity": "Popularności",
   "app.search.sortBy.nameAscending": "Nazwie rosnąco",
-  "app.search.sortBy.nameDescending": "Nazwie malejąco"
+  "app.search.sortBy.nameDescending": "Nazwie malejąco",
+  "app.search.sortBy.priceMinMax": "Cena min-max",
+  "app.search.sortBy.priceMaxMin": "Cena max-min",
+  "app.search.sortBy.updatedDescending": "Ostatnio aktualizowane malejąco",
+  "app.search.sortBy.updatedAscending": "Ostatnio aktualizowane rosnąco"
 }
