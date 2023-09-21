@@ -109,4 +109,8 @@
   "app.search.sortBy.nameAscending": "Name ascending",
   "app.search.sortBy.nameDescending": "Name descending",
   "app.product.newProduct": "New product!"
+  "app.search.sortBy.priceMinMax": "Price min-max",
+  "app.search.sortBy.priceMaxMin": "Price max-min",
+  "app.search.sortBy.updatedDescending": "Update date descending",
+  "app.search.sortBy.updatedAscending": "Update date ascending"
 }

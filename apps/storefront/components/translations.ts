@@ -557,6 +557,25 @@ export const messages = defineMessages({
     id: "app.product.newProduct",
     description: "Label for new product",
     defaultMessage: "New product!",
+  updatedAscending: {
+    id: "app.search.sortBy.updatedAscending",
+    description: "Label for sort by updated date ascending",
+    defaultMessage: "Update date ascending",
+  },
+  updatedDescending: {
+    id: "app.search.sortBy.updatedDescending",
+    description: "Label for sort by updated date descending",
+    defaultMessage: "Update date descending",
+  },
+  priceMinMax: {
+    id: "app.search.sortBy.priceMinMax",
+    description: "Label for sort by price min-max",
+    defaultMessage: "Price min-max",
+  },
+  priceMaxMin: {
+    id: "app.search.sortBy.priceMaxMin",
+    description: "Label for sort by price max-min",
+    defaultMessage: "Price max-min",
   },
 });
 
