@@ -17,7 +17,6 @@ gql/
 
 # production
 /build
->>>>>>> e5095900 (a new beginning)
 
 # misc
 .DS_Store

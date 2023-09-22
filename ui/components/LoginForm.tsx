@@ -13,7 +13,7 @@ export function LoginForm() {
   const { signIn } = useSaleorAuthContext();
 
   const [formValues, setFormValues] = useState<FormValues>(DefaultValues)
-  const [errors, setErrors] = useState<string[]>([]); 
+  const [errors, setErrors] = useState<string[]>([]);
 
   const submitHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,7 +27,7 @@ export function LoginForm() {
   }
 
   const changeHandler = (event: FormEvent<HTMLInputElement>) => {
-    const { name, value} = event.currentTarget;
+    const { name, value } = event.currentTarget;
     setFormValues((prev) => ({ ...prev, [name]: value }));
 
     if (errors.length > 0) setErrors([])
@@ -37,7 +37,6 @@ export function LoginForm() {
       <div className="my-10 flex justify-center">
         <Image src={`/saleor.png`} alt="Saleor" width={75} height={75} />
       </div>
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form className="border shadow-md rounded p-8" onSubmit={submitHandler}>
         <div className="mb-2">
           <input

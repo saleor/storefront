@@ -102,7 +102,6 @@ export default async function Page(props: { params: { id: string }, searchParams
 
   return (
     <section className="mx-auto max-w-7xl p-8 grid">
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form className="grid grid-cols-2 gap-4" action={addItem}>
         {firstImage && (
           <Image alt={'image'} src={firstImage?.url} />
@@ -113,7 +112,7 @@ export default async function Page(props: { params: { id: string }, searchParams
               {product?.name}
             </h1>
 
-          <VariantSelector variants={variants} />
+            <VariantSelector variants={variants} />
             <div className="mt-4 space-y-6">
               <div dangerouslySetInnerHTML={{ __html: description }}></div>
             </div>

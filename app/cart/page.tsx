@@ -82,7 +82,6 @@ export default async function Page() {
           <div className="mt-10 grid grid-cols-3">
             <div></div>
 
-            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <button formAction={performCheckout}
               className="w-full border border-transparent rounded bg-slate-600 px-6 py-3 font-medium text-gray-50 hover:bg-slate-500"
             >

@@ -1,9 +1,11 @@
-
+import { loadEnvConfig } from "@next/env";
 import type { CodegenConfig } from '@graphql-codegen/cli';
+
+loadEnvConfig(process.cwd());
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "https://zaiste.saleor.cloud/graphql/",
+  schema: process.env.GRAPHQL_URL,
   documents: "graphql/**/*.graphql",
   generates: {
     "gql/": {

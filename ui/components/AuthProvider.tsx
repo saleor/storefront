@@ -7,11 +7,9 @@ import { apolloClient, endpoint, saleorAuthClient } from "@/lib";
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   useAuthChange({
     saleorApiUrl: endpoint,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSignedOut: () => apolloClient.resetStore(),
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onSignedIn: () => apolloClient.refetchQueries({ include: "all" })
-    
+
   });
 
   return (
