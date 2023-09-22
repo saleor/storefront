@@ -13,16 +13,14 @@ import {
 import { DiscountInfo } from "../DiscountInfo/DiscountInfo";
 import { useRegions } from "../RegionsProvider";
 import { useWishlist } from "context/WishlistContext";
-import Heart from "../Navbar/heart.svg";
-import ShoppingCart from "../Navbar/shoppingCart.svg";
-// import { useIntl } from "react-intl";
-// import messages from "../translations";
 import { useCheckout } from "@/lib/providers/CheckoutProvider";
 import { getSelectedVariantID } from "@/lib/product";
 import { useRouter } from "next/router";
 import { useUser } from "@/lib/useUser";
 import clsx from "clsx";
 import { CartSlide } from "../CustomCart/CartSlide";
+import NavIconButton from "../Navbar/NavIconButton";
+import Tooltip from "@mui/material/Tooltip";
 
 export interface ProductCardProps {
   product: ProductCardFragment;
@@ -185,7 +183,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="absolute bg-red-600 left-4 top-4 text-white rounded-md text-md">
         <DiscountInfo isOnSale={isOnSale} product={product} />
       </div>
-      <div className="absolute right-5 top-5 z-[99]">
+      <div className="absolute right-3 top-5 z-[99] flex flex-col gap-3 items-center">
         <button
           onClick={onAddToCart}
           type="submit"
@@ -195,40 +193,52 @@ export function ProductCard({ product }: ProductCardProps) {
             "": !isAddToCartButtonDisabled,
           })}
         >
-          <ShoppingCart className="w-7 h-7 text-black mr-4" />
+          {isAddToCartButtonDisabled ? (
+            <Tooltip title="Brak produktów" arrow>
+              <span>
+                <NavIconButton isButton={false} icon="bag" aria-hidden="true" />
+              </span>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Dodaj do koszyka" arrow>
+              <span>
+                <NavIconButton isButton={false} icon="bag" aria-hidden="true" />
+              </span>
+            </Tooltip>
+          )}
         </button>
         {isItemInWishlist(product) ? (
-          <button
-            onClick={() => handleDeleteFromWishlist(product)}
-            type="submit"
-            className="text-md"
-          >
-            <Heart className="w-7 h-7 fill-red-500" />
-          </button>
+          <Tooltip title="Usuń z listy zyczeń" arrow>
+            <button
+              onClick={() => handleDeleteFromWishlist(product)}
+              type="submit"
+              className="text-md z-[99]"
+            >
+              <NavIconButton
+                isButton={false}
+                icon="heart"
+                aria-hidden="true"
+                className="w-7 h-7 fill-red-500"
+              />
+            </button>
+          </Tooltip>
         ) : (
-          <button onClick={() => handleAddToWishlist(product)} type="submit" className="text-md">
-            <Heart className="w-7 h-7 text-black " />
-          </button>
+          <Tooltip title="Dodaj do listy zyczeń" arrow>
+            <button
+              onClick={() => handleAddToWishlist(product)}
+              type="submit"
+              className="text-md z-[99]"
+            >
+              <NavIconButton
+                isButton={false}
+                icon="heart"
+                aria-hidden="true"
+                className="w-7 h-7 fill-black"
+              />
+            </button>
+          </Tooltip>
         )}
       </div>
-      {/* <div className="z-2 flex justify-end mt-8">
-        <button
-          onClick={onAddToCart}
-          type="submit"
-          disabled={isAddToCartButtonDisabled}
-          className={clsx(
-            "py-2 text-md px-6 w-max rounded-lg text-white bg-brand border-1 border-brand transition-all ease-in-out duration-300 focus:outline-none mx-auto",
-            {
-              "border-gray-300 bg-gray-300 cursor-not-allowed": isAddToCartButtonDisabled,
-              "hover:bg-black hover:text-white hover:border-black": !isAddToCartButtonDisabled,
-            }
-          )}
-        >
-          {loadingAddToCheckout
-            ? t.formatMessage(messages.adding)
-            : t.formatMessage(messages.addToCart)}
-        </button>
-      </div> */}
       {cartSlide && (
         <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
       )}
