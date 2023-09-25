@@ -4,6 +4,7 @@ query CheckoutFind($token: UUID!) {
     email
     lines {
       id
+      quantity
       totalPrice {
         gross {
           amount
@@ -18,6 +19,9 @@ query CheckoutFind($token: UUID!) {
           thumbnail {
             url
             alt
+          }
+          category {
+            name
           }
         }
         pricing {

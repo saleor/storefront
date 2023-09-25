@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from '@/ui/components/VariantSelector';
 import { CheckIcon } from 'lucide-react';
+import * as Checkout from '@/lib/checkout';
 
 export const metadata = {
   title: 'My Page Title',
@@ -64,12 +65,7 @@ export default async function Page(props: { params: { id: string }, searchParams
     cart = cookies().get('cart')?.value;
 
     if (cart) {
-      const { checkout } = await execute(CheckoutFindDocument,
-        {
-          variables: {
-            token: cart,
-          },
-        })
+      const checkout = await Checkout.find(cart);
 
       if (!checkout) {
         cookies().delete('cart');

@@ -4,7 +4,9 @@ import Link from "next/link";
 
 import type { ProductFragment } from "@/gql/graphql";
 
-export function ProductElement(product: ProductFragment) {
+export function ProductElement(props: { product: ProductFragment }) {
+  const { product } = props;
+
   return (
     <Link href={`/products/${product.id}`} key={product.id}>
       <div>

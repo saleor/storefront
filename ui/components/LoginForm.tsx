@@ -39,6 +39,7 @@ export function LoginForm() {
       </div>
       <form className="border shadow-md rounded p-8" onSubmit={submitHandler}>
         <div className="mb-2">
+          <label className="sr-only" htmlFor="email">Email</label>
           <input
             type="email"
             name="email"
@@ -49,6 +50,7 @@ export function LoginForm() {
           />
         </div>
         <div className="mb-4">
+          <label className="sr-only" htmlFor="password">Password</label>
           <input
             type="password"
             name="password"
