@@ -1,6 +1,6 @@
 import { CheckoutAddLineDocument, CheckoutCreateDocument, ProductElementDocument, ProductListDocument } from '@/gql/graphql';
 import { execute } from "@/lib";
-import { Image } from "@/ui/atoms";
+import { Image } from "@/ui/atoms/Image";
 import edjsHTML from 'editorjs-html';
 import { revalidatePath } from "next/cache";
 import { cookies } from 'next/headers';

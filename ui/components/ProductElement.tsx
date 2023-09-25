@@ -1,5 +1,5 @@
 import { USDollarFormatter } from "@/lib";
-import { Image } from "@/ui/atoms";
+import { Image } from "@/ui/atoms/Image";
 import Link from "next/link";
 
 import type { ProductFragment } from "@/gql/graphql";
