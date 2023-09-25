@@ -1,7 +1,14 @@
+"use client";
+import { CurrentUserDocument, CurrentUserQuery } from "@/gql/graphql";
+import { gql, useQuery } from "@apollo/client";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { StarIcon } from "lucide-react";
 import Link from "next/link";
 
 export function Topbar() {
+  const { signOut } = useSaleorAuthContext();
+  const { data } = useQuery<CurrentUserQuery>(gql(CurrentUserDocument.toString()));
+
   return (
     <div className="bg-slate-800 border-b border-slate-100">
       <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -15,9 +22,15 @@ export function Topbar() {
         </div>
 
         <div className="flex flex-1 items-center justify-end">
-          <Link href="/login" className="text-sm text-white hover:text-slate-300 font-medium">
-            Login
-          </Link>
+          {data?.me ? (
+            <button onClick={() => signOut()} className="text-sm text-white hover:text-slate-300 font-medium">
+              Logout
+            </button>
+          ) : (
+            <Link href="/login" className="text-sm text-white hover:text-slate-300 font-medium">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </div>

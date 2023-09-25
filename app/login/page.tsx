@@ -6,6 +6,7 @@ import { gql, useQuery } from "@apollo/client";
 import { LoginForm } from "@/ui/components/LoginForm";
 import { Loader } from "@/ui/atoms/Loader";
 import { CurrentUserDocument, type CurrentUserQuery } from "@/gql/graphql";
+import { UserCard } from "@/ui/components/UserCard";
 
 export default function LoginPage() {
   const { signOut } = useSaleorAuthContext();
@@ -17,10 +18,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="">
+    <section className="max-w-7xl mx-auto p-8">
       {data?.me ? (
         <>
-          {/* <UserCard {...data.me} /> */}
+          <UserCard email={data.me.email} avatarURL={data.me.avatar?.url || ""} />
           <button onClick={() => signOut()} className="bg-slate-800 text-slate-200 hover:bg-slate-700 rounded py-2 px-4" type="button">
             Log Out
           </button>
@@ -28,6 +29,6 @@ export default function LoginPage() {
       ) : (
         <LoginForm />
       )}
-    </div>
+    </section>
   );
 };

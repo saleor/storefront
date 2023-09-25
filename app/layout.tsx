@@ -17,15 +17,15 @@ export default function RootLayout(props: { children: React.ReactNode, modal: Re
   return (
     <html lang="en">
       <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <Topbar />
-        <Nav />
-        <div className="flex-grow">
-          <AuthProvider>
+        <AuthProvider>
+          <Topbar />
+          <Nav />
+          <div className="flex-grow">
             {props.children}
-          </AuthProvider>
-        </div>
-        <Footer />
-        {props.modal}
+          </div>
+          <Footer />
+          {props.modal}
+        </AuthProvider>
       </body>
     </html>
   )
