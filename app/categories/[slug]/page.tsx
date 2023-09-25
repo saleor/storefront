@@ -4,7 +4,7 @@ import { ProductElement } from '@/ui/components/ProductElement';
 import { notFound } from 'next/navigation';
 
 export const metadata = {
-  title: 'My Page Title',
+  title: 'Category · Saleor Storefront',
 };
 
 export default async function Page({ params }: { params: { slug: string } }) {

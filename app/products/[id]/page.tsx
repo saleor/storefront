@@ -1,4 +1,4 @@
-import { CheckoutAddLineDocument, CheckoutCreateDocument, CheckoutFindDocument, ProductElementDocument } from '@/gql/graphql';
+import { CheckoutAddLineDocument, CheckoutCreateDocument, ProductElementDocument, ProductListDocument } from '@/gql/graphql';
 import { execute } from "@/lib";
 import { Image } from "@/ui/atoms";
 import edjsHTML from 'editorjs-html';
@@ -11,17 +11,15 @@ import { CheckIcon } from 'lucide-react';
 import * as Checkout from '@/lib/checkout';
 
 export const metadata = {
-  title: 'My Page Title',
+  title: 'Product Details · Saleor Storefront',
 };
 
-// export async function generateStaticParams() {
-//   const { products } = await execute({
-//     query: ProductListDocument
-//   })
+export async function generateStaticParams() {
+  const { products } = await execute(ProductListDocument)
 
-//   const paths = products.map(({ id }) => ({ id }));
-//   return paths
-// }
+  const paths = products?.edges.map(({ node: { id } }) => ({ id })) || [];
+  return paths
+}
 
 const parser = edjsHTML();
 
@@ -29,13 +27,12 @@ export default async function Page(props: { params: { id: string }, searchParams
   const { params, searchParams } = props;
   console.log('variant', searchParams.variant)
 
-  const { product } = await execute(ProductElementDocument,
-    {
-      variables: {
-        id: decodeURIComponent(params.id)
-      },
-      revalidate: 1,
-    })
+  const { product } = await execute(ProductElementDocument, {
+    variables: {
+      id: decodeURIComponent(params.id)
+    },
+    revalidate: 1,
+  })
 
   if (!product) {
     notFound();

@@ -19,7 +19,7 @@ export default async function Page() {
       <section className="max-w-7xl mx-auto p-8">
         <div className="mt-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) =>
-            <ProductElement key={product.id} {...product} />
+            <ProductElement key={product.id} product={product} />
           )}
         </div>
       </section>
