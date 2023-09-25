@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const checkoutId = cookies().get('cart')?.value || "";
+  const checkoutId = cookies().get('checkoutId')?.value || "";
 
   const checkout = await Checkout.find(checkoutId);
   const lines = checkout ? checkout.lines : [];

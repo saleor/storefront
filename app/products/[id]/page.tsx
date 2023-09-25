@@ -1,4 +1,4 @@
-import { CheckoutAddLineDocument, CheckoutCreateDocument, ProductElementDocument, ProductListDocument } from '@/gql/graphql';
+import { CheckoutAddLineDocument, ProductElementDocument, ProductListDocument } from '@/gql/graphql';
 import { execute } from "@/lib";
 import { Image } from "@/ui/atoms/Image";
 import edjsHTML from 'editorjs-html';
@@ -47,45 +47,34 @@ export default async function Page(props: { params: { id: string }, searchParams
   async function addItem() {
     'use server';
 
-    let cart = cookies().get('cart')?.value;
+    let checkoutId = cookies().get('checkoutId')?.value;
 
-    if (!cart) {
-      const { checkoutCreate } = await execute(CheckoutCreateDocument)
+    if (!checkoutId) {
+      const { checkoutCreate } = await Checkout.create();
 
-      if (checkoutCreate && checkoutCreate?.checkout?.token) {
-        cookies().set('cart', checkoutCreate.checkout?.token as string);
+      if (checkoutCreate && checkoutCreate?.checkout?.id) {
+        cookies().set('checkoutId', checkoutCreate.checkout?.id);
 
-        cart = checkoutCreate.checkout.token as string
+        checkoutId = checkoutCreate.checkout.id;
       }
     }
 
-    cart = cookies().get('cart')?.value;
+    checkoutId = cookies().get('checkoutId')?.value;
 
-    if (cart) {
-      const checkout = await Checkout.find(cart);
+    if (checkoutId) {
+      const checkout = await Checkout.find(checkoutId);
 
       if (!checkout) {
-        cookies().delete('cart');
+        cookies().delete('checkoutId');
       }
 
-      // const { orderItems: [orderItem] } = await execute({
-      //   query: OrderItemFindDocument,
-      //   variables: {
-      //     orderID: cart,
-      //     productID: params.id
-      //   } 
-      // })
-
-      // const quantity = orderItem?.quantity ? orderItem.quantity + 1 : 1;
-
       // TODO: error handling
-      const r = await execute(CheckoutAddLineDocument, {
+      const _r = await execute(CheckoutAddLineDocument, {
         variables: {
-          token: cart,
+          id: checkoutId,
           productVariantId: decodeURIComponent(selectedVariantID),
         },
       })
-      console.log(cart, params.id, JSON.stringify(r))
 
       revalidatePath("/cart")
     } else {

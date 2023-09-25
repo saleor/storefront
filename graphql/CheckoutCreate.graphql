@@ -1,12 +1,7 @@
 mutation CheckoutCreate {
-  checkoutCreate(
-    input: {
-      channel: "default-channel"
-      lines: []
-    }
-  ) {
+  checkoutCreate(input: { channel: "default-channel", lines: [] }) {
     checkout {
-      token
+      id
     }
     errors {
       field

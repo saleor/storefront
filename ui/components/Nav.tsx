@@ -13,7 +13,7 @@ const NavLinks = [
 ]
 
 export async function Nav() {
-  const checkoutId = cookies().get('cart')?.value || "";
+  const checkoutId = cookies().get('checkoutId')?.value || "";
 
   const checkout = await Checkout.find(checkoutId);
   const lines = checkout ? checkout.lines : [];
