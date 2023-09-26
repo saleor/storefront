@@ -80,11 +80,11 @@
   },
   "overrides": [
     {
-      "files": ["app/**/*.ts?(x)", "*.ts"],
+      "files": ["src/app/**/{page,layout,error,loading,not-found}.tsx", "*.ts"],
       "rules": {
         "import/no-default-export": "off"
       }
     }
   ],
-  "ignorePatterns": ["*.js", "*.jsx"]
+  "ignorePatterns": ["*.js", "*.jsx", "*.cjs"]
 }

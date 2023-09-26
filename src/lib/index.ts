@@ -1,0 +1,69 @@
+import { type TypedDocumentString } from "../gql/graphql";
+import { createSaleorAuthClient } from "@saleor/auth-sdk";
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+
+type GraphQLError = {
+  message: string;
+};
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+type GraphQLRespone<T> = { data: T } | { errors: readonly GraphQLError[] };
+
+export const ProductsPerPage = 4;
+
+export const endpoint = "https://zaiste.saleor.cloud/graphql/";
+
+export async function execute<Result, Variables>(
+  operation: TypedDocumentString<Result, Variables>,
+  options?: {
+    variables?: Variables;
+    headers?: HeadersInit;
+    cache?: RequestCache;
+    revalidate?: number;
+  },
+): Promise<Result> {
+  const { variables, headers, cache, revalidate } = options || {};
+
+  const result = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.HYGRAPH_QUERY_TOKEN}`,
+      ...headers,
+    },
+    body: JSON.stringify({
+      query: operation.toString(),
+      ...(variables && { variables }),
+    }),
+    cache: cache || "default",
+    next: { revalidate },
+  });
+
+  const body = (await result.json()) as GraphQLRespone<Result>;
+
+  if ("errors" in body) {
+    throw body.errors[0];
+  }
+
+  return body.data;
+}
+
+export const USDollarFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+// Saleor Client
+export const saleorAuthClient = createSaleorAuthClient({ saleorApiUrl: endpoint });
+
+// Apollo Client
+const httpLink = createHttpLink({
+  uri: endpoint,
+  fetch: saleorAuthClient.fetchWithAuth,
+});
+
+export const apolloClient = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});

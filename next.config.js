@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const config = {
   images: {
-    domains: ['zaiste.saleor.cloud'],
+    domains: ["zaiste.saleor.cloud"],
   },
   experimental: {
     serverActions: true,
-    mdxRs: true,
-  }
-}
+    typedRoutes: true,
+  },
+};
 
-module.exports = nextConfig
+export default config;
