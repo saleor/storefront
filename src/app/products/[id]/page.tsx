@@ -49,7 +49,7 @@ export default async function Page(props: {
   const description = parser.parse(JSON.parse((product?.description as string) || "{}"));
 
   const variants = product?.variants || [];
-  const selectedVariantID = searchParams.variant || variants[0].id;
+  const selectedVariantID = searchParams.variant || variants[0]?.id;
 
   async function addItem() {
     "use server";
@@ -68,7 +68,7 @@ export default async function Page(props: {
 
     checkoutId = cookies().get("checkoutId")?.value;
 
-    if (checkoutId) {
+    if (checkoutId && selectedVariantID) {
       const checkout = await Checkout.find(checkoutId);
 
       if (!checkout) {
@@ -76,7 +76,7 @@ export default async function Page(props: {
       }
 
       // TODO: error handling
-      const _r = await execute(CheckoutAddLineDocument, {
+      await execute(CheckoutAddLineDocument, {
         variables: {
           id: checkoutId,
           productVariantId: decodeURIComponent(selectedVariantID),

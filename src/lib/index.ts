@@ -1,6 +1,6 @@
-import { type TypedDocumentString } from "../gql/graphql";
 import { createSaleorAuthClient } from "@saleor/auth-sdk";
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { type TypedDocumentString } from "../gql/graphql";
 
 type GraphQLError = {
   message: string;

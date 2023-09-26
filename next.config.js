@@ -5,7 +5,7 @@ const config = {
   },
   experimental: {
     serverActions: true,
-    typedRoutes: true,
+    typedRoutes: false,
   },
 };
 
