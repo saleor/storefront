@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer {
+	.bg-button-primary {
+		color: red;
+	}
+}

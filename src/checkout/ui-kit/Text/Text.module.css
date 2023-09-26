@@ -1,55 +1,55 @@
 .txt-primary {
-  @apply text-text-primary;
+	/* @apply text-text-primary; */
 }
 
 .txt-secondary {
-  @apply text-text-secondary;
+	/* @apply text-text-secondary; */
 }
 
 .txt-tertiary {
-  @apply text-text-tertiary;
+	/* @apply text-text-tertiary; */
 }
 
 .txt-error {
-  @apply text-text-error;
+	/* @apply text-text-error; */
 }
 
 .txt-success {
-  @apply text-text-success;
+	/* @apply text-text-success; */
 }
 
 .txt-xs {
-  @apply text-xs;
+	@apply text-xs;
 }
 
 .txt-sm {
-  @apply text-sm;
+	@apply text-sm;
 }
 
 .txt-md {
-  @apply text-md;
+	@apply text-base;
 }
 
 .txt-base {
-  @apply text-base;
+	@apply text-base;
 }
 
 .txt-lg {
-  @apply text-lg;
+	@apply text-lg;
 }
 
 .txt-xl {
-  @apply text-xl;
+	@apply text-xl;
 }
 
 .txt-bold {
-  @apply font-bold;
+	@apply font-bold;
 }
 
 .txt-semibold {
-  @apply font-semibold;
+	@apply font-semibold;
 }
 
 .txt-regular {
-  @apply font-regular;
+	@apply font-normal;
 }

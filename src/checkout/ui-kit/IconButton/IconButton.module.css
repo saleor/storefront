@@ -1,29 +1,29 @@
 .icon-button {
-  @apply h-10 py-2 inline-flex items-center;
-  padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
-  padding-right: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
+	@apply inline-flex h-10 items-center py-2;
+	padding-left: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
+	padding-right: calc(theme("spacing.3") - theme("borderWidth.DEFAULT"));
 }
 
 .icon-button-reverse {
-  @apply flex-row-reverse;
+	@apply flex-row-reverse;
 }
 
 .icon-button-label {
-  @apply ml-1.5;
+	@apply ml-1.5;
 }
 
 .icon-button-label-reverse {
-  @apply mr-1.5;
+	@apply mr-1.5;
 }
 
 .icon-button-nolabel {
-  @apply px-0 w-10 justify-center;
+	@apply w-10 justify-center px-0;
 }
 
 .bare-icon-button {
-  @apply text-text-primary bg-transparent hover:text-text-secondary;
+	/* @apply text-text-primary bg-transparent hover:text-text-secondary; */
 }
 
 .bare-icon-button:hover > img {
-  @apply opacity-70;
+	@apply opacity-70;
 }
