@@ -1,11 +1,10 @@
-import { ExclamationIcon } from "../../assets/icons";
+import { AlertIcon, SuccessIcon } from "../../assets/icons";
 import { Section } from "./Section";
 import { orderInfoMessages } from "./messages";
 import { Text } from "@/checkout/ui-kit";
 
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 
-import { CheckIcon } from "@/checkout/ui-kit/icons";
 import { useOrder } from "@/checkout/src/hooks/useOrder";
 import { usePaymentStatus } from "@/checkout/src/sections/PaymentSection/utils";
 
@@ -15,7 +14,7 @@ const ErrorMessage = ({ message }: { message: string }) => {
 			<Text color="error" className="mr-1">
 				{message}
 			</Text>
-			<ExclamationIcon />
+			<AlertIcon />
 		</>
 	);
 };
@@ -26,7 +25,7 @@ const SuccessMessage = ({ message }: { message: string }) => {
 			<Text color="success" className="mr-1">
 				{message}
 			</Text>
-			<CheckIcon />
+			<SuccessIcon />
 		</>
 	);
 };

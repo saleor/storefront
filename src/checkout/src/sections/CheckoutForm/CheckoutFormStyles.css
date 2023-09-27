@@ -5,7 +5,7 @@
 		@apply flex flex-col items-end lg:w-1/2;
 	}
 	.checkout-form {
-		@apply border-border-secondary flex w-full flex-col rounded-lg border;
+		/* @apply border-border-secondary flex w-full flex-col rounded-lg border; */
 	}
 
 	.section {

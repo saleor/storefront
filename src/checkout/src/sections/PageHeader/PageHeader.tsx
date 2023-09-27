@@ -1,4 +1,4 @@
-import { SaleorLogo } from "@/checkout/src/assets/images";
+import { SaleorLogo } from "@/checkout/src/assets/images/SaleorLogo";
 import { LanguageSelect } from "@/checkout/src/sections/PageHeader/LanguageSelect";
 
 export const PageHeader = () => {

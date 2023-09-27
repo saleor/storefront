@@ -19,6 +19,7 @@ import { RootViews } from "./views/RootViews";
 import { useLocale } from "./hooks/useLocale";
 import { DEFAULT_LOCALE } from "./lib/regions";
 import { PageNotFound } from "@/checkout/src/views/PageNotFound";
+import "./index.css";
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 	const saleorAuthClient = useMemo(() => createSaleorAuthClient({ saleorApiUrl }), [saleorApiUrl]);

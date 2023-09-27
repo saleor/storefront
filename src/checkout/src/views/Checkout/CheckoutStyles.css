@@ -2,7 +2,7 @@
 
 @layer components {
 	.app {
-		@apply bg-background-primary min-h-screen px-4 lg:px-0;
+		/* @apply bg-background-primary min-h-screen px-4 lg:px-0; */
 	}
 
 	.page-horizontal-spacing {
@@ -10,7 +10,7 @@
 	}
 
 	.page {
-		@apply max-w-220 mx-auto flex min-h-screen  flex-col pb-20 pt-8 md:pt-10;
+		@apply mx-auto flex min-h-screen max-w-[220px]  flex-col pb-20 pt-8 md:pt-10;
 	}
 
 	.page-content {

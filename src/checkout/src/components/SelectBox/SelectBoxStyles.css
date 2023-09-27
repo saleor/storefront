@@ -6,7 +6,7 @@
 	}
 
 	.select-box {
-		@apply border-border-secondary relative mb-2 flex cursor-pointer flex-row items-center justify-start rounded border px-3 py-2;
+		/* @apply border-border-secondary relative mb-2 flex cursor-pointer flex-row items-center justify-start rounded border px-3 py-2; */
 	}
 
 	.select-box label {
@@ -26,7 +26,7 @@
 	}
 
 	div.select-box.disabled:hover {
-		@apply border-border-secondary;
+		/* @apply border-border-secondary; */
 	}
 
 	.address-select-box {

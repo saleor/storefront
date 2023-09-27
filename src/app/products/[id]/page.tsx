@@ -25,7 +25,6 @@ const parser = edjsHTML();
 
 export default async function Page(props: { params: { id: string }; searchParams: { variant: string } }) {
 	const { params, searchParams } = props;
-	console.log("variant", searchParams.variant);
 
 	const { product } = await execute(ProductElementDocument, {
 		variables: {

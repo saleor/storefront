@@ -2,7 +2,7 @@ import { BarLoader } from "react-spinners";
 import React, { useEffect, useState } from "react";
 import { Title } from "@/checkout/src/components";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
-import { SaleorLogo } from "@/checkout/src/assets/images";
+import { SaleorLogo } from "@/checkout/src/assets/images/SaleorLogo";
 import { type Children } from "@/checkout/src/lib/globalTypes";
 import { paymentSectionMessages } from "@/checkout/src/sections/PaymentSection/messages";
 import { createSafeContext } from "@/checkout/src/providers/createSafeContext";

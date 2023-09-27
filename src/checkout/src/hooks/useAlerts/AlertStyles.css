@@ -11,10 +11,10 @@
 	}
 
 	.alert-error {
-		@apply bg-background-error;
+		/* @apply bg-background-error; */
 	}
 
 	.alert-success {
-		@apply bg-background-success;
+		/* @apply bg-background-success; */
 	}
 }

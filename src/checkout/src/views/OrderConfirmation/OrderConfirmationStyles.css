@@ -6,6 +6,6 @@
 	}
 
 	.order-divider {
-		@apply lg:w-18 h-6 w-full lg:h-full;
+		@apply h-6 w-full lg:h-full lg:w-20;
 	}
 }

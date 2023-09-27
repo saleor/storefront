@@ -48,7 +48,6 @@ export const getRawQueryParams = () => queryString.parse(location.search) as unk
 
 export const getQueryParams = (): QueryParams => {
 	const params = getRawQueryParams();
-	console.log({ params });
 
 	const locale = params.locale || defaultParams.locale;
 

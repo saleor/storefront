@@ -2,7 +2,7 @@
 
 @layer components {
 	.skeleton {
-		@apply min-w-8 bg-skeleton mb-2 h-3 rounded;
+		/* @apply bg-skeleton mb-2 h-3 min-w-[250px] rounded; */
 	}
 
 	.skeleton-horiznontal-spacer {
@@ -10,6 +10,6 @@
 	}
 
 	.skeleton-box {
-		@apply border-skeleton rounded border px-6 pb-4 pt-6;
+		/* @apply border-skeleton rounded border px-6 pb-4 pt-6; */
 	}
 }

@@ -1,6 +1,6 @@
 import { type FallbackProps } from "react-error-boundary";
 import { pageNotFoundMessages } from "./messages";
-import { SaleorLogo } from "@/checkout/src/assets/images";
+import { SaleorLogo } from "@/checkout/src/assets/images/SaleorLogo";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { Text } from "@/checkout/ui-kit";
 import { Button } from "@/checkout/src/components/Button";

@@ -61,7 +61,7 @@
 	/* Text element inside the form label container */
 }
 .adyen-checkout__input {
-	@apply border-border-primary rounded border px-3;
+	/* @apply border-border-primary rounded border px-3; */
 }
 
 .adyen-checkout__input--focus,
