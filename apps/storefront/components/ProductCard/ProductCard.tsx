@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import { usePaths } from "@/lib/paths";
 import {
+  AttributeFilterFragment,
   CheckoutError,
   ProductCardFragment,
   useCheckoutAddProductLineMutation,
@@ -38,6 +39,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const { currentChannel, formatPrice, query } = useRegions();
   const [cartSlide, setCartSlide] = useState(false);
   const { user } = useUser();
+  const [sizeAttribute, setSizeAttribute] = useState<any>(null);
+  const [brandAttribute, setBrandAttribute] = useState<any>(null);
 
   const thumbnailUrl = product.media?.find((media) => media.type === "IMAGE")?.url;
 
@@ -56,6 +59,38 @@ export function ProductCard({ product }: ProductCardProps) {
   useEffect(() => {
     setLoading(false);
   }, []);
+
+  const getBrandAttributeFromProduct = (product: ProductCardFragment) => {
+    if (!product || !product.attributes) {
+      return null;
+    }
+    const brandAttribute = product.attributes.find(
+      (attribute) =>
+        attribute.attribute &&
+        attribute.attribute.slug &&
+        attribute.attribute.slug.includes("marka")
+    );
+
+    return brandAttribute ? brandAttribute.values : null;
+  };
+
+  const getSizeAttributeFromProduct = (product: ProductCardFragment) => {
+    if (!product || !product.attributes) {
+      return null;
+    }
+
+    const sizeAttribute = product.attributes.find(
+      (attribute) => attribute.attribute && attribute.attribute.slug === "rozmiar"
+    );
+
+    return sizeAttribute ? sizeAttribute.values : null;
+  };
+  useEffect(() => {
+    const sizeAttr = getSizeAttributeFromProduct(product);
+    setSizeAttribute(sizeAttr);
+    const brandAttr = getBrandAttributeFromProduct(product);
+    setBrandAttribute(brandAttr);
+  }, [product]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -151,7 +186,7 @@ export function ProductCard({ product }: ProductCardProps) {
       >
         <div>
           <a className="block">
-            <div className="w-full relative flex justify-center items-center mt-3 h-[400px]">
+            <div className="w-full relative flex justify-start items-center mt-3 h-[400px]">
               {thumbnailUrl ? (
                 <Image
                   src={thumbnailUrl}
@@ -166,17 +201,35 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
               )}
             </div>
-            <p className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[17px] xl:text-[20px] text-black uppercase text-center">
+            <div className="flex flex-row justify-between items-center">
+              <p className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[17px] xl:text-[20px] text-black">
+                {brandAttribute
+                  ? brandAttribute.map((value: AttributeFilterFragment) => value.name).join(", ")
+                  : "N/A"}
+              </p>
+              <p className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[17px] xl:text-[20px] text-black">
+                {sizeAttribute
+                  ? sizeAttribute.map((value: AttributeFilterFragment) => value.name).join(", ")
+                  : "N/A"}
+              </p>
+            </div>
+            <p className="block mt-6 text-[17px] md:text-[17px] lg:text-[17px] xl:text-[18px] text-black uppercase font-semibold">
               {product.name}
             </p>
-            <div className="flex flex-row gap-3 items-center text-center justify-center">
-              <p className="mt-4 font-semibold text-lg text-main uppercase">{formatPrice(price)}</p>
+            <div className="flex flex-row gap-3 items-center">
+              <p className="mt-4 font-semibold text-lg text-black uppercase">
+                {formatPrice(price)}
+              </p>
               {isOnSale && (
                 <p className="mt-4 font-normal text-lg uppercase line-through text-gray-400">
                   {formatPrice(undiscountedPrice)}
                 </p>
               )}
             </div>
+            {/* TODO: Adding the lowest price from 30 days ago */}
+            {/* <p className="block mt-6 font-regular text-[13px] md:text-[13px] lg:text-[13px] xl:text-[13px] text-black">
+              Najniższa cena w ciągu ostatnich 30 dni: 279,87 zł
+            </p> */}
           </a>
         </div>
       </Link>
