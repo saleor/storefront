@@ -9,37 +9,37 @@ import { useOrder } from "@/checkout/src/hooks/useOrder";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 
 export const OrderConfirmation = () => {
-  const { order } = useOrder();
-  const formatMessage = useFormattedMessages();
+	const { order } = useOrder();
+	const formatMessage = useFormattedMessages();
 
-  return (
-    <div className="page">
-      <header>
-        <PageHeader />
-        <Text size="lg" weight="bold" className="mb-2" data-testid="orderConfrmationTitle">
-          {formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
-        </Text>
-        <Text size="md">
-          {formatMessage(orderInfoMessages.orderConfirmSubtitle, {
-            email: order.userEmail || "",
-          })}
-        </Text>
-      </header>
-      <main className="order-content overflow-hidden">
-        <OrderInfo />
-        <div className="order-divider" />
-        <Suspense fallback={<SummarySkeleton />}>
-          <Summary
-            {...order}
-            // for now there can only be one voucher per order in the api
-            discount={order?.discounts?.find(({ type }) => type === "VOUCHER")?.amount}
-            voucherCode={order?.voucher?.code}
-            totalPrice={order?.total}
-            subtotalPrice={order?.subtotal}
-            editable={false}
-          />
-        </Suspense>
-      </main>
-    </div>
-  );
+	return (
+		<div className="page">
+			<header>
+				<PageHeader />
+				<Text size="lg" weight="bold" className="mb-2" data-testid="orderConfrmationTitle">
+					{formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
+				</Text>
+				<Text size="md">
+					{formatMessage(orderInfoMessages.orderConfirmSubtitle, {
+						email: order.userEmail || "",
+					})}
+				</Text>
+			</header>
+			<main className="order-content overflow-hidden">
+				<OrderInfo />
+				<div className="order-divider" />
+				<Suspense fallback={<SummarySkeleton />}>
+					<Summary
+						{...order}
+						// for now there can only be one voucher per order in the api
+						discount={order?.discounts?.find(({ type }) => type === "VOUCHER")?.amount}
+						voucherCode={order?.voucher?.code}
+						totalPrice={order?.total}
+						subtotalPrice={order?.subtotal}
+						editable={false}
+					/>
+				</Suspense>
+			</main>
+		</div>
+	);
 };

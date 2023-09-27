@@ -1,8 +1,8 @@
 import { type CheckoutUpdateState } from "@/checkout/src/state/updateStateStore/updateStateStore";
 
 export const areAnyRequestsInProgress = ({ updateState, loadingCheckout }: CheckoutUpdateState) =>
-  Object.values(updateState).some((status) => status === "loading") || loadingCheckout;
+	Object.values(updateState).some((status) => status === "loading") || loadingCheckout;
 
 export const hasFinishedApiChangesWithNoError = ({ updateState, ...rest }: CheckoutUpdateState) =>
-  !areAnyRequestsInProgress({ updateState, ...rest }) &&
-  Object.values(updateState).every((status) => status === "success");
+	!areAnyRequestsInProgress({ updateState, ...rest }) &&
+	Object.values(updateState).every((status) => status === "success");

@@ -1,12 +1,12 @@
 import { useCallback } from "react";
-import { useIntl, MessageDescriptor } from "react-intl";
+import { useIntl, type MessageDescriptor } from "react-intl";
 
 export const useFormattedMessages = () => {
-  const Intl = useIntl();
+	const Intl = useIntl();
 
-  return useCallback(
-    (message: MessageDescriptor, values?: Record<string, number | string>) =>
-      Intl.formatMessage(message, values),
-    [Intl]
-  );
+	return useCallback(
+		(message: MessageDescriptor, values?: Record<string, number | string>) =>
+			Intl.formatMessage(message, values),
+		[Intl],
+	);
 };

@@ -4,18 +4,18 @@ import { usePayments } from "@/checkout/src/sections/PaymentSection/usePayments"
 import { useCheckoutUpdateState } from "@/checkout/src/state/updateStateStore";
 
 export const PaymentMethods = () => {
-  const { availablePaymentGateways, fetching } = usePayments();
-  const {
-    changingBillingCountry,
-    updateState: { checkoutDeliveryMethodUpdate },
-  } = useCheckoutUpdateState();
+	const { availablePaymentGateways, fetching } = usePayments();
+	const {
+		changingBillingCountry,
+		updateState: { checkoutDeliveryMethodUpdate },
+	} = useCheckoutUpdateState();
 
-  const { adyen } = availablePaymentGateways;
+	const { adyen } = availablePaymentGateways;
 
-  // delivery methods change total price so we want to wait until the change is done
-  if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading") {
-    return <PaymentSectionSkeleton />;
-  }
+	// delivery methods change total price so we want to wait until the change is done
+	if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading") {
+		return <PaymentSectionSkeleton />;
+	}
 
-  return <div className="mb-3">{adyen ? <AdyenDropIn config={adyen} /> : null}</div>;
+	return <div className="mb-3">{adyen ? <AdyenDropIn config={adyen} /> : null}</div>;
 };

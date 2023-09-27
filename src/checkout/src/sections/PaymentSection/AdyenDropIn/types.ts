@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type CardElementData } from "@adyen/adyen-web/dist/types/components/Card/types";
 import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { type PaymentMethodsResponseObject } from "@adyen/adyen-web/dist/types/core/ProcessResponse/PaymentMethodsResponse/types";
@@ -8,31 +7,25 @@ export const adyenGatewayId = "app.saleor.adyen";
 export type AdyenGatewayId = typeof adyenGatewayId;
 
 // because it's defined to these in the docs but it's a string in the response type
-type AdyenResultCode =
-  | "Authorised"
-  | "Error"
-  | "Pending"
-  | "PresentToShopper"
-  | "Refused"
-  | "Received";
+type AdyenResultCode = "Authorised" | "Error" | "Pending" | "PresentToShopper" | "Refused" | "Received";
 
 export interface AdyenGatewayInitializePayload {
-  paymentMethodsResponse: PaymentMethodsResponseObject;
-  clientKey: string;
-  environment: string;
+	paymentMethodsResponse: PaymentMethodsResponseObject;
+	clientKey: string;
+	environment: string;
 }
 
 export interface AdyenPaymentResponse extends Omit<PaymentResponse, "resultCode"> {
-  resultCode: AdyenResultCode;
-  refusalReason?: string;
+	resultCode: AdyenResultCode;
+	refusalReason?: string;
 }
 
 export interface AdyenTransactionInitializeResponse {
-  paymentResponse: AdyenPaymentResponse;
+	paymentResponse: AdyenPaymentResponse;
 }
 
 export interface AdyenTransactionProcessResponse {
-  paymentDetailsResponse: AdyenPaymentResponse;
+	paymentDetailsResponse: AdyenPaymentResponse;
 }
 
 // -------
@@ -40,16 +33,16 @@ export interface AdyenTransactionProcessResponse {
 export type ApplePayCallback = <T>(value: T) => void;
 
 export type AdyenCheckoutInstanceState = {
-  isValid?: boolean;
-  data: CardElementData & Record<string, any>;
+	isValid?: boolean;
+	data: CardElementData & Record<string, any>;
 };
 
 export type AdyenCheckoutInstanceOnSubmit = (
-  state: AdyenCheckoutInstanceState,
-  component: DropinElement
+	state: AdyenCheckoutInstanceState,
+	component: DropinElement,
 ) => Promise<void> | void;
 
 export type AdyenCheckoutInstanceOnAdditionalDetails = (
-  state: AdyenCheckoutInstanceState,
-  component: DropinElement
+	state: AdyenCheckoutInstanceState,
+	component: DropinElement,
 ) => Promise<void> | void;

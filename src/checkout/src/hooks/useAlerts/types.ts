@@ -3,38 +3,38 @@ import { type ErrorCode } from "@/checkout/src/lib/globalTypes";
 export type AlertType = "error" | "success";
 
 export interface AlertErrorData {
-  scope: CheckoutScope;
-  code: ErrorCode;
-  field: string;
+	scope: CheckoutScope;
+	code: ErrorCode;
+	field: string;
 }
 
 export type CustomError =
-  | Pick<AlertErrorData, "code">
-  | Pick<AlertErrorData, "code" | "field">
-  | { message: string };
+	| Pick<AlertErrorData, "code">
+	| Pick<AlertErrorData, "code" | "field">
+	| { message: string };
 
 export interface Alert {
-  message: string;
-  id: string;
-  type: AlertType;
+	message: string;
+	id: string;
+	type: AlertType;
 }
 
 export type CheckoutScope =
-  | "paymentGatewaysInitialize"
-  | "checkoutFinalize"
-  | "checkoutShippingUpdate"
-  | "checkoutCustomerAttach"
-  | "checkoutBillingUpdate"
-  | "checkoutAddPromoCode"
-  | "checkoutDeliveryMethodUpdate"
-  | "userAddressCreate"
-  | "userAddressUpdate"
-  | "userAddressDelete"
-  | "checkoutPay"
-  | "userRegister"
-  | "requestPasswordReset"
-  | "checkoutLinesUpdate"
-  | "checkoutLinesDelete"
-  | "checkoutEmailUpdate"
-  | "resetPassword"
-  | "signIn";
+	| "paymentGatewaysInitialize"
+	| "checkoutFinalize"
+	| "checkoutShippingUpdate"
+	| "checkoutCustomerAttach"
+	| "checkoutBillingUpdate"
+	| "checkoutAddPromoCode"
+	| "checkoutDeliveryMethodUpdate"
+	| "userAddressCreate"
+	| "userAddressUpdate"
+	| "userAddressDelete"
+	| "checkoutPay"
+	| "userRegister"
+	| "requestPasswordReset"
+	| "checkoutLinesUpdate"
+	| "checkoutLinesDelete"
+	| "checkoutEmailUpdate"
+	| "resetPassword"
+	| "signIn";

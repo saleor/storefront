@@ -4,30 +4,27 @@ import { type Money as MoneyType, getFormattedMoney } from "@/checkout/src/lib/u
 
 import { type AriaLabel, type Classes } from "@/checkout/src/lib/globalTypes";
 
-export interface MoneyProps<TMoney extends MoneyType = MoneyType>
-  extends TextProps,
-    Classes,
-    AriaLabel {
-  money?: TMoney;
-  negative?: boolean;
+export interface MoneyProps<TMoney extends MoneyType = MoneyType> extends TextProps, Classes, AriaLabel {
+	money?: TMoney;
+	negative?: boolean;
 }
 
 export const Money = <TMoney extends MoneyType>({
-  money,
-  className,
-  ariaLabel,
-  negative,
-  ...textProps
+	money,
+	className,
+	ariaLabel,
+	negative,
+	...textProps
 }: MoneyProps<TMoney>) => {
-  const formattedMoney = getFormattedMoney(money, negative);
+	const formattedMoney = getFormattedMoney(money, negative);
 
-  if (!money) {
-    return null;
-  }
+	if (!money) {
+		return null;
+	}
 
-  return (
-    <Text {...textProps} aria-label={ariaLabel} className={clsx("money", className)}>
-      {formattedMoney}
-    </Text>
-  );
+	return (
+		<Text {...textProps} aria-label={ariaLabel} className={clsx("money", className)}>
+			{formattedMoney}
+		</Text>
+	);
 };

@@ -1,41 +1,38 @@
+import React from "react";
+import { contactLabels, contactMessages } from "../Contact/messages";
+import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { Button } from "@/checkout/src/components/Button";
 import { PasswordInput } from "@/checkout/src/components/PasswordInput";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
-import { contactLabels, contactMessages } from "../Contact/messages";
-import React from "react";
-import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { useResetPasswordForm } from "@/checkout/src/sections/ResetPassword/useResetPasswordForm";
 import { FormProvider } from "@/checkout/src/hooks/useForm/FormProvider";
 
 interface ResetPasswordProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
-  onResetPasswordSuccess: () => void;
+	onResetPasswordSuccess: () => void;
 }
 
-export const ResetPassword: React.FC<ResetPasswordProps> = ({
-  onSectionChange,
-  onResetPasswordSuccess,
-}) => {
-  const formatMessage = useFormattedMessages();
-  const form = useResetPasswordForm({ onSuccess: onResetPasswordSuccess });
+export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange, onResetPasswordSuccess }) => {
+	const formatMessage = useFormattedMessages();
+	const form = useResetPasswordForm({ onSuccess: onResetPasswordSuccess });
 
-  return (
-    <SignInFormContainer
-      title={formatMessage(contactMessages.resetPassword)}
-      redirectSubtitle={formatMessage(contactMessages.rememberedYourPassword)}
-      redirectButtonLabel={formatMessage(contactMessages.signIn)}
-      onSectionChange={onSectionChange}
-      subtitle={formatMessage(contactMessages.providePassword)}
-    >
-      <FormProvider form={form}>
-        <PasswordInput name="password" label={formatMessage(contactMessages.password)} />
-        <div className="mt-4 actions">
-          <Button
-            ariaLabel={formatMessage(contactLabels.resetPassword)}
-            label={formatMessage(contactMessages.resetPassword)}
-            type="submit"
-          />
-        </div>
-      </FormProvider>
-    </SignInFormContainer>
-  );
+	return (
+		<SignInFormContainer
+			title={formatMessage(contactMessages.resetPassword)}
+			redirectSubtitle={formatMessage(contactMessages.rememberedYourPassword)}
+			redirectButtonLabel={formatMessage(contactMessages.signIn)}
+			onSectionChange={onSectionChange}
+			subtitle={formatMessage(contactMessages.providePassword)}
+		>
+			<FormProvider form={form}>
+				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />
+				<div className="actions mt-4">
+					<Button
+						ariaLabel={formatMessage(contactLabels.resetPassword)}
+						label={formatMessage(contactMessages.resetPassword)}
+						type="submit"
+					/>
+				</div>
+			</FormProvider>
+		</SignInFormContainer>
+	);
 };

@@ -4,8 +4,8 @@ import { type FC, useCallback, useEffect, useRef } from "react";
 import { useLocale } from "@/checkout/src/hooks/useLocale";
 import { createAdyenCheckoutConfig } from "@/checkout/src/sections/PaymentSection/AdyenDropIn/utils";
 import {
-  type AdyenDropinProps,
-  useAdyenDropin,
+	type AdyenDropinProps,
+	useAdyenDropin,
 } from "@/checkout/src/sections/PaymentSection/AdyenDropIn/useAdyenDropin";
 import "@adyen/adyen-web/dist/adyen.css";
 import { type Locale } from "@/checkout/src/lib/regions";
@@ -15,35 +15,35 @@ type AdyenCheckoutInstance = Awaited<ReturnType<typeof AdyenCheckout>>;
 
 // fake function just to get the type because can't import it :(
 const _hack = (adyenCheckout: AdyenCheckoutInstance) =>
-  adyenCheckout.create("dropin").mount("#dropin-container");
+	adyenCheckout.create("dropin").mount("#dropin-container");
 type DropinElement = ReturnType<typeof _hack>;
 
 export const AdyenDropIn: FC<AdyenDropinProps> = ({ config }) => {
-  const { locale } = useLocale();
-  const { onSubmit, onAdditionalDetails } = useAdyenDropin({ config });
-  const dropinContainerElRef = useRef<HTMLDivElement>(null);
-  const dropinComponentRef = useRef<DropinElement | null>(null);
+	const { locale } = useLocale();
+	const { onSubmit, onAdditionalDetails } = useAdyenDropin({ config });
+	const dropinContainerElRef = useRef<HTMLDivElement>(null);
+	const dropinComponentRef = useRef<DropinElement | null>(null);
 
-  const createAdyenCheckoutInstance = useCallback(
-    async (locale: Locale, container: HTMLDivElement, data: AdyenGatewayInitializePayload) => {
-      const adyenCheckout = await AdyenCheckout(
-        createAdyenCheckoutConfig({ ...data, locale, onSubmit, onAdditionalDetails })
-      );
+	const createAdyenCheckoutInstance = useCallback(
+		async (locale: Locale, container: HTMLDivElement, data: AdyenGatewayInitializePayload) => {
+			const adyenCheckout = await AdyenCheckout(
+				createAdyenCheckoutConfig({ ...data, locale, onSubmit, onAdditionalDetails }),
+			);
 
-      dropinComponentRef.current?.unmount();
+			dropinComponentRef.current?.unmount();
 
-      const dropin = adyenCheckout.create("dropin").mount(container);
+			const dropin = adyenCheckout.create("dropin").mount(container);
 
-      dropinComponentRef.current = dropin;
-    },
-    [onAdditionalDetails, onSubmit]
-  );
+			dropinComponentRef.current = dropin;
+		},
+		[onAdditionalDetails, onSubmit],
+	);
 
-  useEffect(() => {
-    if (dropinContainerElRef.current && !dropinComponentRef.current) {
-      void createAdyenCheckoutInstance(locale, dropinContainerElRef.current, config.data);
-    }
-  }, []);
+	useEffect(() => {
+		if (dropinContainerElRef.current && !dropinComponentRef.current) {
+			void createAdyenCheckoutInstance(locale, dropinContainerElRef.current, config.data);
+		}
+	}, []);
 
-  return <div ref={dropinContainerElRef} />;
+	return <div ref={dropinContainerElRef} />;
 };

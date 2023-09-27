@@ -1,13 +1,13 @@
 import { type Children } from "@/checkout/src/lib/globalTypes";
 
 interface CollapseSectionProps extends Children {
-  collapse: boolean;
+	collapse: boolean;
 }
 
 export const CollapseSection = ({ collapse, children }: CollapseSectionProps) => {
-  if (collapse) {
-    return null;
-  }
+	if (collapse) {
+		return null;
+	}
 
-  return <>{children}</>;
+	return <>{children}</>;
 };

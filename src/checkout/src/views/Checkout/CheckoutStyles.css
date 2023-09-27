@@ -1,23 +1,23 @@
 @tailwind components;
 
 @layer components {
-  .app {
-    @apply min-h-screen bg-background-primary px-4 lg:px-0;
-  }
+	.app {
+		@apply bg-background-primary min-h-screen px-4 lg:px-0;
+	}
 
-  .page-horizontal-spacing {
-    @apply px-4 md:px-12 xl:px-18 2xl:w-350;
-  }
+	.page-horizontal-spacing {
+		@apply xl:px-18 2xl:w-350 px-4 md:px-12;
+	}
 
-  .page {
-    @apply min-h-screen mx-auto flex flex-col  pt-8 md:pt-10 max-w-220 pb-20;
-  }
+	.page {
+		@apply max-w-220 mx-auto flex min-h-screen  flex-col pb-20 pt-8 md:pt-10;
+	}
 
-  .page-content {
-    @apply flex flex-col-reverse lg:items-start lg:flex-row w-full box-border;
-  }
+	.page-content {
+		@apply box-border flex w-full flex-col-reverse lg:flex-row lg:items-start;
+	}
 
-  .page-divider {
-    @apply h-6 w-full lg:h-full lg:w-5;
-  }
+	.page-divider {
+		@apply h-6 w-full lg:h-full lg:w-5;
+	}
 }

@@ -10,57 +10,56 @@ import { getQueryParams } from "@/checkout/src/lib/utils/url";
 import { PAGE_ID } from "@/checkout/src/views/Checkout/consts";
 
 interface PaymentProcessingContextConsumerProps {
-  setIsProcessingPayment: (processing: boolean) => void;
+	setIsProcessingPayment: (processing: boolean) => void;
 }
 
-const [usePaymentProcessingScreen, Provider] =
-  createSafeContext<PaymentProcessingContextConsumerProps>();
+const [usePaymentProcessingScreen, Provider] = createSafeContext<PaymentProcessingContextConsumerProps>();
 
 interface PaymentProcessingScreenProps extends Children {}
 
 export const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = ({ children }) => {
-  const formatMessage = useFormattedMessages();
+	const formatMessage = useFormattedMessages();
 
-  const handleSetStyles = (processing: boolean) => {
-    const el = document.getElementById(PAGE_ID);
+	const handleSetStyles = (processing: boolean) => {
+		const el = document.getElementById(PAGE_ID);
 
-    if (el) {
-      el.style.maxHeight = processing ? "100vh" : "auto";
-      el.style.overflow = processing ? "hidden" : "auto";
-    }
-  };
+		if (el) {
+			el.style.maxHeight = processing ? "100vh" : "auto";
+			el.style.overflow = processing ? "hidden" : "auto";
+		}
+	};
 
-  const getInitialProcessing = () => {
-    const { transaction, processingPayment } = getQueryParams();
+	const getInitialProcessing = () => {
+		const { transaction, processingPayment } = getQueryParams();
 
-    return !!(transaction && processingPayment);
-  };
+		return !!(transaction && processingPayment);
+	};
 
-  const [isProcessingPayment, setIsProcessingPayment] = useState(getInitialProcessing());
+	const [isProcessingPayment, setIsProcessingPayment] = useState(getInitialProcessing());
 
-  const handleSetProcessing = (processing: boolean) => {
-    handleSetStyles(processing);
-    setIsProcessingPayment(processing);
-  };
+	const handleSetProcessing = (processing: boolean) => {
+		handleSetStyles(processing);
+		setIsProcessingPayment(processing);
+	};
 
-  useEffect(() => {
-    handleSetStyles(isProcessingPayment);
-  }, []);
+	useEffect(() => {
+		handleSetStyles(isProcessingPayment);
+	}, []);
 
-  return (
-    <Provider value={{ setIsProcessingPayment: handleSetProcessing }}>
-      {isProcessingPayment && (
-        <div className="m-auto left-0 top-0 w-screen h-screen absolute z-1000 bg-background-primary flex flex-col items-center">
-          <SaleorLogo />
-          <div className="flex flex-col justify-center flex-grow pb-40">
-            <Title>{formatMessage(paymentSectionMessages.processingPayment)}</Title>
-            <BarLoader />
-          </div>
-        </div>
-      )}
-      <>{children}</>
-    </Provider>
-  );
+	return (
+		<Provider value={{ setIsProcessingPayment: handleSetProcessing }}>
+			{isProcessingPayment && (
+				<div className="z-1000 bg-background-primary absolute left-0 top-0 m-auto flex h-screen w-screen flex-col items-center">
+					<SaleorLogo />
+					<div className="flex flex-grow flex-col justify-center pb-40">
+						<Title>{formatMessage(paymentSectionMessages.processingPayment)}</Title>
+						<BarLoader />
+					</div>
+				</div>
+			)}
+			<>{children}</>
+		</Provider>
+	);
 };
 
 export { usePaymentProcessingScreen };

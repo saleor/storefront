@@ -1,36 +1,34 @@
+import { useCallback } from "react";
 import { type FormDataBase, hasErrors, type UseFormReturn } from "@/checkout/src/hooks/useForm";
 import {
-  type CheckoutFormScope,
-  useCheckoutValidationActions,
+	type CheckoutFormScope,
+	useCheckoutValidationActions,
 } from "@/checkout/src/state/checkoutValidationStateStore";
-import { useCallback } from "react";
 
 export const useSetCheckoutFormValidationState = (scope: CheckoutFormScope) => {
-  const { setValidationState } = useCheckoutValidationActions();
+	const { setValidationState } = useCheckoutValidationActions();
 
-  const setCheckoutFormValidationState = useCallback(
-    async <TData extends FormDataBase>({
-      validateForm,
-      setTouched,
-      values,
-    }: Pick<UseFormReturn<TData>, "validateForm" | "setTouched" | "values">) => {
-      const formErrors = validateForm(values);
+	const setCheckoutFormValidationState = useCallback(
+		async <TData extends FormDataBase>({
+			validateForm,
+			setTouched,
+			values,
+		}: Pick<UseFormReturn<TData>, "validateForm" | "setTouched" | "values">) => {
+			const formErrors = validateForm(values);
 
-      if (!hasErrors(formErrors)) {
-        setValidationState(scope, "valid");
-        return;
-      }
+			if (!hasErrors(formErrors)) {
+				setValidationState(scope, "valid");
+				return;
+			}
 
-      await setTouched(
-        Object.keys(formErrors).reduce((result, key) => ({ ...result, [key]: true }), {})
-      );
+			await setTouched(Object.keys(formErrors).reduce((result, key) => ({ ...result, [key]: true }), {}));
 
-      setValidationState(scope, "invalid");
-    },
-    [scope, setValidationState]
-  );
+			setValidationState(scope, "invalid");
+		},
+		[scope, setValidationState],
+	);
 
-  return {
-    setCheckoutFormValidationState,
-  };
+	return {
+		setCheckoutFormValidationState,
+	};
 };

@@ -6,15 +6,15 @@ import { Divider } from "@/checkout/src/components";
 import { AddressSectionSkeleton } from "@/checkout/src/components/AddressSectionSkeleton";
 
 export const CheckoutFormSkeleton = () => (
-  <div className="checkout-form-container">
-    <div className="checkout-form">
-      <ContactSkeleton />
-      <Divider />
-      <AddressSectionSkeleton />
-      <Divider />
-      <DeliveryMethodsSkeleton />
-      <Divider />
-      <PaymentSectionSkeleton />
-    </div>
-  </div>
+	<div className="checkout-form-container">
+		<div className="checkout-form">
+			<ContactSkeleton />
+			<Divider />
+			<AddressSectionSkeleton />
+			<Divider />
+			<DeliveryMethodsSkeleton />
+			<Divider />
+			<PaymentSectionSkeleton />
+		</div>
+	</div>
 );

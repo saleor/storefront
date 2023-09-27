@@ -1,15 +1,15 @@
 query ProductElement($id: ID!) {
-  product(id: $id, channel: "default-channel") {
-    id
-    name
-    description
-    slug
-    variants {
-      id
-      name
-    }
-    thumbnail(size: 1024) {
-      url
-    }
-  }
+	product(id: $id, channel: "default-channel") {
+		id
+		name
+		description
+		slug
+		variants {
+			id
+			name
+		}
+		thumbnail(size: 1024) {
+			url
+		}
+	}
 }

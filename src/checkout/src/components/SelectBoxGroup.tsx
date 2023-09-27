@@ -1,19 +1,19 @@
 import clsx from "clsx";
-import { PropsWithChildren } from "react";
-import { Classes } from "../lib/globalTypes";
+import { type PropsWithChildren } from "react";
+import { type Classes } from "../lib/globalTypes";
 
 interface SelectBoxGroupProps extends Classes {
-  label: string;
+	label: string;
 }
 
 export const SelectBoxGroup: React.FC<PropsWithChildren<SelectBoxGroupProps>> = ({
-  label,
-  children,
-  className,
+	label,
+	children,
+	className,
 }) => {
-  return (
-    <div role="radiogroup" aria-label={label} className={clsx(className)}>
-      {children}
-    </div>
-  );
+	return (
+		<div role="radiogroup" aria-label={label} className={clsx(className)}>
+			{children}
+		</div>
+	);
 };

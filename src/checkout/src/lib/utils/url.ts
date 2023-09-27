@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import queryString from "query-string";
 import { DEFAULT_CHANNEL, DEFAULT_LOCALE, type Locale } from "@/checkout/src/lib/regions";
 import { type CountryCode } from "@/checkout/src/graphql";

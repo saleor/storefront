@@ -10,49 +10,49 @@ import { useOrder } from "@/checkout/src/hooks/useOrder";
 import { usePaymentStatus } from "@/checkout/src/sections/PaymentSection/utils";
 
 const ErrorMessage = ({ message }: { message: string }) => {
-  return (
-    <>
-      <Text color="error" className="mr-1">
-        {message}
-      </Text>
-      <ExclamationIcon />
-    </>
-  );
+	return (
+		<>
+			<Text color="error" className="mr-1">
+				{message}
+			</Text>
+			<ExclamationIcon />
+		</>
+	);
 };
 
 const SuccessMessage = ({ message }: { message: string }) => {
-  return (
-    <>
-      <Text color="success" className="mr-1">
-        {message}
-      </Text>
-      <CheckIcon />
-    </>
-  );
+	return (
+		<>
+			<Text color="success" className="mr-1">
+				{message}
+			</Text>
+			<CheckIcon />
+		</>
+	);
 };
 
 export const PaymentSection = () => {
-  const formatMessage = useFormattedMessages();
-  const { order } = useOrder();
-  const paymentStatus = usePaymentStatus(order);
+	const formatMessage = useFormattedMessages();
+	const { order } = useOrder();
+	const paymentStatus = usePaymentStatus(order);
 
-  return (
-    <Section title={formatMessage(orderInfoMessages.paymentSection)}>
-      <div data-testid="paymentStatus">
-        <div className="flex flex-row items-center">
-          {paymentStatus === "authorized" && (
-            <SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
-          )}
+	return (
+		<Section title={formatMessage(orderInfoMessages.paymentSection)}>
+			<div data-testid="paymentStatus">
+				<div className="flex flex-row items-center">
+					{paymentStatus === "authorized" && (
+						<SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
+					)}
 
-          {paymentStatus === "paidInFull" && (
-            <SuccessMessage message={formatMessage(orderInfoMessages.orderPaid)} />
-          )}
+					{paymentStatus === "paidInFull" && (
+						<SuccessMessage message={formatMessage(orderInfoMessages.orderPaid)} />
+					)}
 
-          {paymentStatus === "overpaid" && (
-            <ErrorMessage message={formatMessage(orderInfoMessages.orderOvercharged)} />
-          )}
-        </div>
-      </div>
-    </Section>
-  );
+					{paymentStatus === "overpaid" && (
+						<ErrorMessage message={formatMessage(orderInfoMessages.orderOvercharged)} />
+					)}
+				</div>
+			</div>
+		</Section>
+	);
 };

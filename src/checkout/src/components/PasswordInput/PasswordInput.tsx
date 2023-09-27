@@ -6,22 +6,20 @@ import { TextInput, type TextInputProps } from "@/checkout/src/components/TextIn
 import { labels } from "@/checkout/src/components/PasswordInput/messages";
 
 export const PasswordInput = <TName extends string>(props: TextInputProps<TName>) => {
-  const formatMessage = useFormattedMessages();
-  const [passwordVisible, setPasswordVisible] = useState(false);
+	const formatMessage = useFormattedMessages();
+	const [passwordVisible, setPasswordVisible] = useState(false);
 
-  return (
-    <div className="relative">
-      <TextInput {...props} type={passwordVisible ? "text" : "password"} />
-      <div className="password-input-icon">
-        <IconButton
-          variant="bare"
-          ariaLabel={formatMessage(labels.passwordVisibility)}
-          onClick={() => setPasswordVisible(!passwordVisible)}
-          icon={
-            passwordVisible ? <EyeIcon /> : <EyeHiddenIcon />
-          }
-        />
-      </div>
-    </div>
-  );
+	return (
+		<div className="relative">
+			<TextInput {...props} type={passwordVisible ? "text" : "password"} />
+			<div className="password-input-icon">
+				<IconButton
+					variant="bare"
+					ariaLabel={formatMessage(labels.passwordVisibility)}
+					onClick={() => setPasswordVisible(!passwordVisible)}
+					icon={passwordVisible ? <EyeIcon /> : <EyeHiddenIcon />}
+				/>
+			</div>
+		</div>
+	);
 };

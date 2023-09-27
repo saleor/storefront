@@ -9,34 +9,34 @@ import { languagesMessages } from "@/checkout/src/sections/PageHeader/messages";
 import { IconButton, Select } from "@/checkout/ui-kit";
 
 export const LanguageSelect: React.FC = ({}) => {
-  const formatMessage = useFormattedMessages();
-  const { locale } = useLocale();
+	const formatMessage = useFormattedMessages();
+	const { locale } = useLocale();
 
-  const handleLanguageChange = (locale: Locale) => {
-    replaceUrl({ query: { locale } });
+	const handleLanguageChange = (locale: Locale) => {
+		replaceUrl({ query: { locale } });
 
-    const navEvent = new PopStateEvent(POPSTATE_EVENT);
-    window.dispatchEvent(navEvent);
-  };
+		const navEvent = new PopStateEvent(POPSTATE_EVENT);
+		window.dispatchEvent(navEvent);
+	};
 
-  return (
-    <div className="language-select-container">
-      <IconButton
-        icon={<LanguageIcon />}
-        label={formatMessage(languagesMessages[locale])}
-        className="pointer-events-none"
-      />
-      <Select
-        classNames={{ container: "language-select" }}
-        value={locale}
-        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-          handleLanguageChange(event.target.value as Locale)
-        }
-        options={locales.map((locale) => ({
-          label: formatMessage(languagesMessages[locale]),
-          value: locale,
-        }))}
-      />
-    </div>
-  );
+	return (
+		<div className="language-select-container">
+			<IconButton
+				icon={<LanguageIcon />}
+				label={formatMessage(languagesMessages[locale])}
+				className="pointer-events-none"
+			/>
+			<Select
+				classNames={{ container: "language-select" }}
+				value={locale}
+				onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+					handleLanguageChange(event.target.value as Locale)
+				}
+				options={locales.map((locale) => ({
+					label: formatMessage(languagesMessages[locale]),
+					value: locale,
+				}))}
+			/>
+		</div>
+	);
 };

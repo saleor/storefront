@@ -18,11 +18,11 @@
 @tailwind utilities;
 
 html {
-  /* Font size set for rem */
-  font-size: 62.5%;
-  @apply antialiased;
+	/* Font size set for rem */
+	font-size: 62.5%;
+	@apply antialiased;
 }
 
 body {
-  @apply overscroll-none;
+	@apply overscroll-none;
 }
