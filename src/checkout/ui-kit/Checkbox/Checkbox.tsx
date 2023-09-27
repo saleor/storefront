@@ -2,9 +2,7 @@ import { type ReactNode, type InputHTMLAttributes, useId } from "react";
 import clsx from "clsx";
 
 import { CheckIcon } from "../icons";
-import { Label } from "../Label/Label";
 import { type ClassNames } from "..";
-import styles from "./Checkbox.module.css";
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
 	label?: string | ReactNode;
@@ -16,10 +14,10 @@ export const Checkbox = ({ label, checked, value, classNames, ...rest }: Checkbo
 	const id = rest?.id || generatedId;
 
 	return (
-		<Label className={clsx(styles.label, classNames?.label)} htmlFor={id}>
+		<label className={clsx(classNames?.label)} htmlFor={id}>
 			<>
-				<div className={clsx(styles.checkbox, classNames?.container)}>
-					<div className={clsx(styles["box"], "select-none")}>
+				<div className={clsx(classNames?.container)}>
+					<div className={clsx("select-none")}>
 						<input
 							{...rest}
 							type="checkbox"
@@ -28,13 +26,13 @@ export const Checkbox = ({ label, checked, value, classNames, ...rest }: Checkbo
 							id={id}
 							className={classNames?.input}
 						/>
-						<div className={clsx(styles["checkbox-input"], classNames?.checkbox)}>
+						<div className={clsx(classNames?.checkbox)}>
 							<CheckIcon />
 						</div>
 					</div>
 					<span className="pointer-events-none">{label && label}</span>
 				</div>
 			</>
-		</Label>
+		</label>
 	);
 };

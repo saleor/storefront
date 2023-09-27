@@ -1,7 +1,0 @@
-@tailwind components;
-
-@layer components {
-	.divider {
-		/* @apply border-border-secondary h-px w-full border-t; */
-	}
-}

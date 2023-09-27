@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { PageHeader } from "@/checkout/src/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout/src/sections/Summary";
 import { OrderInfo } from "@/checkout/src/sections/OrderInfo";
-import { Text } from "@/checkout/ui-kit";
 import { orderInfoMessages } from "@/checkout/src/sections/OrderInfo/messages";
 import { useOrder } from "@/checkout/src/hooks/useOrder";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
@@ -16,14 +15,14 @@ export const OrderConfirmation = () => {
 		<div className="page">
 			<header>
 				<PageHeader />
-				<Text size="lg" weight="bold" className="mb-2" data-testid="orderConfrmationTitle">
+				<p className="mb-2 text-lg font-bold" data-testid="orderConfrmationTitle">
 					{formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
-				</Text>
-				<Text size="md">
+				</p>
+				<p className="text-base">
 					{formatMessage(orderInfoMessages.orderConfirmSubtitle, {
 						email: order.userEmail || "",
 					})}
-				</Text>
+				</p>
 			</header>
 			<main className="order-content overflow-hidden">
 				<OrderInfo />

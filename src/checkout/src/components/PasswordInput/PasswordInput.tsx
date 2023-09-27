@@ -12,7 +12,7 @@ export const PasswordInput = <TName extends string>(props: TextInputProps<TName>
 	return (
 		<div className="relative">
 			<TextInput {...props} type={passwordVisible ? "text" : "password"} />
-			<div className="password-input-icon">
+			<div className="absolute -top-1 right-0 flex h-14 items-center justify-center pr-4">
 				<IconButton
 					variant="bare"
 					ariaLabel={formatMessage(labels.passwordVisibility)}

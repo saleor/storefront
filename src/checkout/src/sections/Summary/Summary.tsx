@@ -7,7 +7,6 @@ import { SummaryMoneyRow } from "./SummaryMoneyRow";
 import { SummaryPromoCodeRow } from "./SummaryPromoCodeRow";
 import { SummaryItemMoneyEditableSection } from "./SummaryItemMoneyEditableSection";
 import { summaryLabels, summaryMessages } from "./messages";
-import { Text } from "@/checkout/ui-kit";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { ChevronDownIcon } from "@/checkout/ui-kit/icons";
 
@@ -55,19 +54,18 @@ export const Summary: FC<SummaryProps> = ({
 	});
 
 	return (
-		<div className="summary">
-			<div className={clsx("summary-title", isOpen && "open")}>
+		<div className="flex h-fit w-full flex-col overflow-hidden rounded-lg border border-slate-400 lg:w-1/2 lg:overflow-visible">
+			<div
+				className={clsx(
+					"z-50 flex flex-row items-baseline justify-between px-6 py-4 lg:pointer-events-none",
+					isOpen && "open",
+				)}
+			>
 				<div className="flex w-full flex-row items-center" onClick={() => setOpen(!isOpen)}>
 					<Title className="mb-0">{formatMessage(summaryMessages.title)}</Title>
 					<ChevronDownIcon />
 				</div>
-				{!isOpen && (
-					<Money
-						ariaLabel={formatMessage(summaryLabels.totalPrice)}
-						weight="bold"
-						money={totalPrice?.gross}
-					/>
-				)}
+				{!isOpen && <Money ariaLabel={formatMessage(summaryLabels.totalPrice)} money={totalPrice?.gross} />}
 			</div>
 			<Transition
 				show={isOpen}
@@ -82,8 +80,8 @@ export const Summary: FC<SummaryProps> = ({
 				<ul
 					style={{ maxHeight: maxSummaryHeight ? `${maxSummaryHeight}px` : "" }}
 					className={clsx(
-						"summary-items",
-						allItemsHeight > maxSummaryHeight ? "border-border-secondary border-b lg:overflow-y-scroll" : "",
+						"overflow-visible px-4 lg:pt-2",
+						allItemsHeight > maxSummaryHeight ? "border-b border-slate-400 lg:overflow-y-scroll" : "",
 					)}
 				>
 					{lines.map((line) => (
@@ -102,7 +100,7 @@ export const Summary: FC<SummaryProps> = ({
 						<Divider />
 					</>
 				)}
-				<div className="summary-recap">
+				<div className="mt-4 flex max-w-full flex-col">
 					<SummaryMoneyRow
 						label={formatMessage(summaryMessages.subtotalPrice)}
 						money={subtotalPrice?.gross}
@@ -137,18 +135,17 @@ export const Summary: FC<SummaryProps> = ({
 						money={shippingPrice?.gross}
 					/>
 					<Divider className="my-4" />
-					<div className="summary-row items-baseline pb-4">
+					<div className="flex flex-row items-center items-baseline justify-between pb-4">
 						<div className="flex flex-row items-baseline">
-							<Text weight="bold">{formatMessage(summaryMessages.totalPrice)}</Text>
-							<Text color="secondary" className="ml-2">
+							<p className="font-bold">{formatMessage(summaryMessages.totalPrice)}</p>
+							<p color="secondary" className="ml-2">
 								{formatMessage(summaryMessages.taxCost, {
 									taxCost: getFormattedMoney(totalPrice?.tax),
 								})}
-							</Text>
+							</p>
 						</div>
 						<Money
 							ariaLabel={formatMessage(summaryLabels.totalPrice)}
-							weight="bold"
 							money={totalPrice?.gross}
 							data-testid="totalOrderPrice"
 						/>

@@ -1,9 +1,8 @@
 import compact from "lodash-es/compact";
 import React, { type PropsWithChildren } from "react";
 import { type AddressFragment } from "@/checkout/src/graphql";
-import { type TextProps, Text } from "@/checkout/ui-kit";
 
-interface AddressProps extends Omit<TextProps, "children"> {
+interface AddressProps {
 	address: AddressFragment;
 }
 
@@ -14,12 +13,12 @@ export const Address: React.FC<PropsWithChildren<AddressProps>> = ({ address, ch
 
 	return (
 		<div className="pointer-events-none flex flex-col">
-			<Text {...textProps} weight="semibold">
+			<p {...textProps} className="font-semibold">
 				{name}
-			</Text>
-			<Text {...textProps}>{phone}</Text>
-			<Text {...textProps}>{compact([streetAddress1, city, postalCode]).join(", ")}</Text>
-			<Text {...textProps}>{compact([countryArea, country.country]).join(", ")}</Text>
+			</p>
+			<p {...textProps}>{phone}</p>
+			<p {...textProps}>{compact([streetAddress1, city, postalCode]).join(", ")}</p>
+			<p {...textProps}>{compact([countryArea, country.country]).join(", ")}</p>
 			{children}
 		</div>
 	);

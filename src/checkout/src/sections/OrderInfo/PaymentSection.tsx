@@ -1,8 +1,6 @@
 import { AlertIcon, SuccessIcon } from "../../assets/icons";
 import { Section } from "./Section";
 import { orderInfoMessages } from "./messages";
-import { Text } from "@/checkout/ui-kit";
-
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 
 import { useOrder } from "@/checkout/src/hooks/useOrder";
@@ -11,9 +9,9 @@ import { usePaymentStatus } from "@/checkout/src/sections/PaymentSection/utils";
 const ErrorMessage = ({ message }: { message: string }) => {
 	return (
 		<>
-			<Text color="error" className="mr-1">
+			<p color="error" className="mr-1">
 				{message}
-			</Text>
+			</p>
 			<AlertIcon />
 		</>
 	);
@@ -22,9 +20,9 @@ const ErrorMessage = ({ message }: { message: string }) => {
 const SuccessMessage = ({ message }: { message: string }) => {
 	return (
 		<>
-			<Text color="success" className="mr-1">
+			<p color="success" className="mr-1">
 				{message}
-			</Text>
+			</p>
 			<SuccessIcon />
 		</>
 	);

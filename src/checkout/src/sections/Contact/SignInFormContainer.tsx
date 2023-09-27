@@ -1,5 +1,4 @@
 import React, { type PropsWithChildren } from "react";
-import { Text } from "@/checkout/ui-kit";
 import { Button } from "@/checkout/src/components/Button";
 import { Title } from "@/checkout/src/components/Title";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
@@ -24,15 +23,15 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
 	const formatMessage = useFormattedMessages();
 
 	return (
-		<div className="section">
+		<div className="px-4 pb-6 pt-5">
 			<div className="mb-2 flex flex-col">
 				<div className="flex flex-row items-baseline justify-between">
 					<Title>{title}</Title>
 					<div className="flex flex-row">
 						{redirectSubtitle && (
-							<Text color="secondary" className="mr-2">
+							<p color="secondary" className="mr-2">
 								{redirectSubtitle}
-							</Text>
+							</p>
 						)}
 						{redirectButtonLabel && (
 							<Button
@@ -45,9 +44,9 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
 					</div>
 				</div>
 				{subtitle && (
-					<Text color="secondary" className="mt-3">
+					<p color="secondary" className="mt-3">
 						{subtitle}
-					</Text>
+					</p>
 				)}
 			</div>
 			{children}

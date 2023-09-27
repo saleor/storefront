@@ -9,6 +9,13 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true
 	},
+	"tailwindCSS.classAttributes": ["className", "clsx"],
 	"css.validate": true,
-	"editor.quickSuggestions": { "strings": true }
+
+	"editor.quickSuggestions": {
+		"strings": true
+	},
+	"files.associations": {
+		"*.css": "tailwindcss"
+	}
 }

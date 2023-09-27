@@ -41,7 +41,7 @@
 	/* Spinning icon */
 }
 .adyen-checkout__button.adyen-checkout__button--pay {
-	/* @apply bg-button-primary hover:bg-button-secondary hover:text-text-secondary active:bg-button-tertiary disabled:border-none disabled:bg-button-quaternary transition-none hover:border hover:border-button-primary hover:border-solid; */
+	@apply bg-slate-500 transition-none hover:border hover:border-solid hover:border-slate-500 hover:bg-slate-400 hover:text-slate-300 active:bg-slate-300 disabled:border-none disabled:bg-slate-200;
 }
 
 .adyen-checkout__button.adyen-checkout__button--pay:hover .adyen-checkout__button__icon {
@@ -61,7 +61,7 @@
 	/* Text element inside the form label container */
 }
 .adyen-checkout__input {
-	/* @apply border-border-primary rounded border px-3; */
+	/* @apply border-slate-600 rounded border px-3; */
 }
 
 .adyen-checkout__input--focus,

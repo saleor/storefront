@@ -1,7 +1,6 @@
 import React from "react";
 import { emptyCartLabels, emptyCartMessages } from "./messages";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
-import { Text } from "@/checkout/ui-kit";
 import { Button, Title } from "@/checkout/src/components";
 
 export const EmptyCartPage = () => {
@@ -12,9 +11,9 @@ export const EmptyCartPage = () => {
 
 	return (
 		<div className="flex w-full flex-row justify-center lg:mt-10">
-			<div className="border-border-secondary section flex flex-col justify-start rounded-lg border">
+			<div className="flex flex-col justify-start rounded-lg border border-slate-400 px-4 pb-6 pt-5">
 				<Title>{formatMessage(emptyCartMessages.emptyCart)}</Title>
-				<Text>{formatMessage(emptyCartMessages.addToCardToContinue)}</Text>
+				<p>{formatMessage(emptyCartMessages.addToCardToContinue)}</p>
 				<Button
 					className="mt-3 md:self-end"
 					ariaLabel={formatMessage(emptyCartLabels.goBackToStore)}

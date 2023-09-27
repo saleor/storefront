@@ -3,7 +3,6 @@ import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { contactLabels, contactMessages } from "../Contact/messages";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
-import { Text } from "@/checkout/ui-kit";
 import { Button } from "@/checkout/src/components/Button";
 import { useUser } from "@/checkout/src/hooks/useUser";
 
@@ -25,9 +24,7 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({ onSectionChange, onS
 	return (
 		<SignInFormContainer title={formatMessage(contactMessages.account)} onSectionChange={onSectionChange}>
 			<div className="flex flex-row justify-between">
-				<Text weight="bold" size="md">
-					{user?.email}
-				</Text>
+				<p className="text-base font-bold">{user?.email}</p>
 				<Button
 					ariaLabel={formatMessage(contactLabels.signOut)}
 					variant="tertiary"

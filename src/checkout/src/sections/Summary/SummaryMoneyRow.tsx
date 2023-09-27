@@ -1,5 +1,4 @@
 import React, { type PropsWithChildren } from "react";
-import { Text } from "@/checkout/ui-kit";
 import { Money, type MoneyProps } from "@/checkout/src/components/Money";
 
 export interface SummaryMoneyRowProps extends MoneyProps {
@@ -12,12 +11,12 @@ export const SummaryMoneyRow: React.FC<PropsWithChildren<SummaryMoneyRowProps>> 
 	...moneyProps
 }) => {
 	return (
-		<div className="summary-row mb-2">
+		<div className="mb-2 flex flex-row items-center justify-between">
 			<div className="flex flex-row items-center">
-				<Text color="secondary">{label}</Text>
+				<p color="secondary">{label}</p>
 				{children}
 			</div>
-			<Money {...moneyProps} color="secondary" />
+			<Money {...moneyProps} />
 		</div>
 	);
 };

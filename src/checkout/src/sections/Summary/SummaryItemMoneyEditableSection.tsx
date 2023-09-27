@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { summaryMessages } from "./messages";
-import { Text } from "@/checkout/ui-kit";
 import { type CheckoutLineFragment } from "@/checkout/src/graphql";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout/src/components/TextInput";
@@ -53,9 +52,7 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 	return (
 		<div className="relative -top-2 flex h-20 flex-col items-end">
 			<div className="flex flex-row items-baseline">
-				<Text size="xs" className="mr-2">
-					{formatMessage(summaryMessages.quantity)}:
-				</Text>
+				<p className="mr-2 text-xs">{formatMessage(summaryMessages.quantity)}:</p>
 				<FormProvider form={form}>
 					<TextInput
 						onBlur={handleQuantityInputBlur}

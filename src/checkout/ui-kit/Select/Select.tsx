@@ -10,7 +10,6 @@ import clsx from "clsx";
 
 import { ChevronDownIcon } from "../icons";
 import { type ClassNames } from "..";
-import styles from "./Select.module.css";
 
 const PLACEHOLDER_KEY = "placeholder";
 
@@ -46,8 +45,13 @@ const SelectComponent = <TData extends string = string>(
 	};
 
 	return (
-		<div className={clsx(styles.container, classNames?.container)}>
-			<select {...rest} onChange={handleChange} ref={ref} className={clsx(styles.select)}>
+		<div className={clsx("relative inline-block w-full min-w-[200px]", classNames?.container)}>
+			<select
+				{...rest}
+				onChange={handleChange}
+				ref={ref}
+				className="h-10 w-full cursor-pointer appearance-none rounded border border-slate-600 px-3 py-2 pr-12 text-base"
+			>
 				{showPlaceholder && (
 					<option disabled value="">
 						{placeholder}
@@ -59,7 +63,7 @@ const SelectComponent = <TData extends string = string>(
 					</option>
 				))}
 			</select>
-			<div className={clsx(styles.icon)}>
+			<div className="pointer-events-none absolute right-2 top-2 border-l border-slate-400 pl-2">
 				<ChevronDownIcon />
 			</div>
 		</div>

@@ -82,7 +82,7 @@ export const SignIn: React.FC<SignInProps> = ({
 					}}
 				/>
 				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />
-				<div className="actions">
+				<div className="flex w-full flex-row items-center justify-end">
 					<Button
 						disabled={isSubmitting}
 						ariaLabel={formatMessage(contactLabels.sendResetLink)}

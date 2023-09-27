@@ -1,6 +1,5 @@
 import { Section } from "./Section";
 import { type OrderFragment, type ShippingFragment } from "@/checkout/src/graphql";
-import { Text } from "@/checkout/ui-kit";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 
 import { deliveryMethodsMessages } from "@/checkout/src/sections/DeliveryMethods/messages";
@@ -27,11 +26,11 @@ export const DeliverySection = ({ deliveryMethod }: { deliveryMethod: OrderFragm
 	return (
 		<Section title={formatMessage(deliveryMethodsMessages.deliveryMethod)}>
 			{!isShipping(deliveryMethod) ? (
-				<Text color="secondary">{formatMessage(deliveryMethodsMessages.shippingMethodNotApplicable)}</Text>
+				<p color="secondary">{formatMessage(deliveryMethodsMessages.shippingMethodNotApplicable)}</p>
 			) : (
 				<>
-					<Text>{deliveryMethod.name}</Text>
-					<Text>{getDeliveryEstimateText()}</Text>
+					<p>{deliveryMethod.name}</p>
+					<p>{getDeliveryEstimateText()}</p>
 				</>
 			)}
 		</Section>

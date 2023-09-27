@@ -5,7 +5,6 @@ import { userAddressLabels, userAddressMessages } from "./messages";
 import { type AddressFragment } from "@/checkout/src/graphql";
 import { SelectBoxGroup } from "@/checkout/src/components/SelectBoxGroup";
 import { useAddressAvailability } from "@/checkout/src/hooks/useAddressAvailability";
-import { Text } from "@/checkout/ui-kit";
 import { Button } from "@/checkout/src/components/Button";
 import { Title } from "@/checkout/src/components/Title";
 import { type UseFormReturn } from "@/checkout/src/hooks/useForm";
@@ -39,9 +38,7 @@ export const AddressList: React.FC<AddressListProps> = ({
 		<FormProvider form={form}>
 			<div className="flex flex-col">
 				<Title>{title}</Title>
-				{addressList.length < 1 && (
-					<Text className="mb-3">{formatMessage(userAddressMessages.noAddresses)}</Text>
-				)}
+				{addressList.length < 1 && <p className="mb-3">{formatMessage(userAddressMessages.noAddresses)}</p>}
 				<Button
 					variant="secondary"
 					ariaLabel={formatMessage(userAddressLabels.addAddress)}

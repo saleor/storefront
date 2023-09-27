@@ -1,5 +1,4 @@
 import { summaryMessages } from "./messages";
-import { Text } from "@/checkout/ui-kit";
 import { type OrderLineFragment } from "@/checkout/src/graphql";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { SummaryItemMoneyInfo } from "@/checkout/src/sections/Summary/SummaryItemMoneyInfo";
@@ -13,7 +12,7 @@ export const SummaryItemMoneySection: React.FC<LineItemQuantitySelectorProps> = 
 
 	return (
 		<div className="flex flex-col items-end">
-			<Text>{`${formatMessage(summaryMessages.quantity)}: ${line.quantity}`}</Text>
+			<p>{`${formatMessage(summaryMessages.quantity)}: ${line.quantity}`}</p>
 			<SummaryItemMoneyInfo {...line} undiscountedUnitPrice={line.undiscountedUnitPrice.gross} />
 		</div>
 	);

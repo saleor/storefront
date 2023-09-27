@@ -29,7 +29,14 @@ export const SelectBox = <TFieldName extends string>({
 	const selected = values[name] === value;
 
 	return (
-		<div className={clsx("select-box", { selected, disabled }, className)}>
+		<div
+			className={clsx(
+				"relative mb-2 flex cursor-pointer flex-row items-center justify-start rounded border border-slate-400 px-3 py-2",
+				"hover:border hover:border-slate-500",
+				{ "border border-slate-500": selected, "pointer-events-none hover:border-slate-400": disabled },
+				className,
+			)}
+		>
 			<input
 				type="radio"
 				{...field}
@@ -38,7 +45,7 @@ export const SelectBox = <TFieldName extends string>({
 				checked={selected}
 				id={identifier}
 			/>
-			<label className="w-full" htmlFor={identifier}>
+			<label className="w-full cursor-pointer" htmlFor={identifier}>
 				{children}
 			</label>
 		</div>

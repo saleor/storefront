@@ -1,5 +1,4 @@
 import { type FC, type ReactNode } from "react";
-import { Text } from "@/checkout/ui-kit";
 
 interface SectionProps {
 	children: ReactNode;
@@ -8,9 +7,9 @@ interface SectionProps {
 
 export const Section: FC<SectionProps> = ({ children, title }) => (
 	<div className="mb-6">
-		<Text weight="bold" color="secondary" className="mb-2">
+		<p color="secondary" className="mb-2 font-bold">
 			{title}
-		</Text>
+		</p>
 		{children}
 	</div>
 );

@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const config = {
 	images: {
-		domains: ["zaiste.saleor.cloud"],
+		remotePatterns: [
+			{
+				hostname: "*",
+			},
+		],
 	},
 	experimental: {
 		serverActions: true,

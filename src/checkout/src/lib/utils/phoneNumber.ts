@@ -7,7 +7,6 @@ import { useCallback } from "react";
 import { type CountryCode } from "@/checkout/src/graphql";
 import { useErrorMessages } from "@/checkout/src/hooks/useErrorMessages";
 
-
 const getPhoneNumberInstance = (phone: string, countryCode: CountryCode | undefined): PhoneNumber | null => {
 	try {
 		const phoneNumber = parsePhoneNumberWithError(phone, countryCode as PhoneNumberLibCountryCode);

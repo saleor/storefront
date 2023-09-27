@@ -12,8 +12,6 @@ type GraphQLRespone<T> = { data: T } | { errors: readonly GraphQLError[] };
 
 export const ProductsPerPage = 4;
 
-export const endpoint = "https://zaiste.saleor.cloud/graphql/";
-
 export async function execute<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
 	options?: {
@@ -25,7 +23,7 @@ export async function execute<Result, Variables>(
 ): Promise<Result> {
 	const { variables, headers, cache, revalidate } = options || {};
 
-	const result = await fetch(endpoint, {
+	const result = await fetch(process.env.SALEOR_API_URL!, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -55,11 +53,11 @@ export const USDollarFormatter = new Intl.NumberFormat("en-US", {
 });
 
 // Saleor Client
-export const saleorAuthClient = createSaleorAuthClient({ saleorApiUrl: endpoint });
+export const saleorAuthClient = createSaleorAuthClient({ saleorApiUrl: process.env.SALEOR_API_URL! });
 
 // Apollo Client
 const httpLink = createHttpLink({
-	uri: endpoint,
+	uri: process.env.SALEOR_API_URL,
 	fetch: saleorAuthClient.fetchWithAuth,
 });
 

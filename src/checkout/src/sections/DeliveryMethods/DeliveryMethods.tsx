@@ -1,7 +1,6 @@
 import React from "react";
 import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { Title } from "@/checkout/src/components/Title";
-import { Text } from "@/checkout/ui-kit";
 import { useCheckout } from "@/checkout/src/hooks/useCheckout";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout/src/components/SelectBox";
@@ -41,10 +40,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 	return (
 		<FormProvider form={form}>
 			<Divider />
-			<div className="section" data-testid="deliveryMethods">
+			<div className="px-4 pb-6 pt-5" data-testid="deliveryMethods">
 				<Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
 				{!authenticated && !shippingAddress && (
-					<Text>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</Text>
+					<p>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</p>
 				)}
 				{authenticated && !shippingAddress && updateState.checkoutShippingUpdate ? (
 					<DeliveryMethodsSkeleton />
@@ -55,12 +54,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 								<SelectBox key={id} name="selectedMethodId" value={id}>
 									<div className="min-h-12 pointer-events-none flex grow flex-col justify-center">
 										<div className="flex flex-row items-center justify-between self-stretch">
-											<Text>{name}</Text>
-											<Text>{getFormattedMoney(price)}</Text>
+											<p>{name}</p>
+											<p>{getFormattedMoney(price)}</p>
 										</div>
-										<Text size="xs" color="secondary">
+										<p className="font-xs" color="secondary">
 											{getSubtitle({ min, max })}
-										</Text>
+										</p>
 									</div>
 								</SelectBox>
 							),

@@ -5,7 +5,6 @@ export * from "./Skeleton";
 export * from "./Button";
 export * from "./Checkbox";
 export * from "./IconButton";
-export * from "./Label";
 export * from "./Money";
 export * from "./SelectBoxGroup";
 export * from "./TextInput";

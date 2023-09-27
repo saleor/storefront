@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 import { summaryLabels, summaryMessages } from "./messages";
-import { type ClassNames, Text } from "@/checkout/ui-kit";
+import { type ClassNames } from "@/checkout/ui-kit";
 import { Money } from "@/checkout/src/components";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { type Money as MoneyType } from "@/checkout/src/graphql";
@@ -45,7 +45,6 @@ export const SummaryItemMoneyInfo: React.FC<SummaryItemMoneyInfoProps> = ({
 						currency: piecePrice?.currency,
 						amount: (piecePrice?.amount || 0) * quantity,
 					}}
-					weight="bold"
 					className={clsx({
 						"!text-text-error": onSale,
 					})}
@@ -53,14 +52,13 @@ export const SummaryItemMoneyInfo: React.FC<SummaryItemMoneyInfoProps> = ({
 			</div>
 
 			{multiplePieces && (
-				<Text
+				<p
 					aria-label={formatMessage(summaryLabels.singlePiecePrice)}
-					size="sm"
 					color="secondary"
-					className="ml-4"
+					className="ml-4 text-sm"
 				>
 					{`${getFormattedMoney(piecePrice)} ${formatMessage(summaryMessages.each)}`}
-				</Text>
+				</p>
 			)}
 		</>
 	);

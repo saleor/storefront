@@ -11,8 +11,8 @@ export const OrderConfirmationSkeleton = () => {
 				<Skeleton />
 				<Skeleton className="w-2/3" />
 			</header>
-			<main className="order-content overflow-hidden">
-				<div className="skeleton-box w-1/2">
+			<main className="mt-8 flex w-full flex-col overflow-hidden lg:flex-row lg:items-start">
+				<div className="w-1/2 rounded border border-slate-200 px-6 pb-4 pt-6">
 					<div className="mb-10">
 						<Skeleton variant="title" />
 						<Skeleton />
@@ -38,7 +38,7 @@ export const OrderConfirmationSkeleton = () => {
 						<Skeleton className="w-2/3" />
 					</div>
 				</div>
-				<div className="order-divider" />
+				<div className="h-6 w-full lg:h-full lg:w-20" />
 				<SummarySkeleton />
 			</main>
 		</div>

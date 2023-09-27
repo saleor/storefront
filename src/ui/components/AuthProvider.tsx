@@ -2,11 +2,11 @@
 
 import { SaleorAuthProvider, useAuthChange } from "@saleor/auth-sdk/react";
 import { ApolloProvider } from "@apollo/client";
-import { apolloClient, endpoint, saleorAuthClient } from "@/lib";
+import { apolloClient, saleorAuthClient } from "@/lib";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	useAuthChange({
-		saleorApiUrl: endpoint,
+		saleorApiUrl: process.env.SALEOR_API_URL!,
 		onSignedOut: () => apolloClient.resetStore(),
 		onSignedIn: () => apolloClient.refetchQueries({ include: "all" }),
 	});

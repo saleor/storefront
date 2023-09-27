@@ -10,7 +10,6 @@ import {
 	type CheckoutScope,
 	type CustomError,
 } from "./types";
-import { Text } from "@/checkout/ui-kit";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { apiErrorMessages as errorMessages } from "@/checkout/src/hooks/useAlerts/messages";
 import { type ErrorCode } from "@/checkout/src/lib/globalTypes";
@@ -69,7 +68,7 @@ function useAlerts(globalScope?: any): any {
 
 	const showAlert = useCallback(
 		({ message, type = "error", ...rest }: Pick<Alert, "message"> & { type?: AlertType; id?: string }) =>
-			toast(<Text>{message}</Text>, { type, ...rest }),
+			toast(<p>{message}</p>, { type, ...rest }),
 		[],
 	);
 

@@ -1,9 +1,6 @@
 import { type FC, type ReactNode, type ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
 
-import { Text } from "../Text/Text";
-import styles from "./Button.module.css";
-
 interface ButtonLabelProps {
 	content: string;
 	className?: string;
@@ -15,9 +12,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const ButtonLabel: FC<ButtonLabelProps> = ({ content, ...rest }) => (
-	<Text as="span" weight="semibold" {...rest}>
+	<span className="font-semibold" {...rest}>
 		{content}
-	</Text>
+	</span>
 );
 
 export const Button: FC<ButtonProps> = ({
@@ -30,11 +27,13 @@ export const Button: FC<ButtonProps> = ({
 	...rest
 }) => {
 	const classes = clsx(
-		styles.button,
+		"inline-flex h-10 items-center justify-center whitespace-nowrap rounded border py-2 active:outline-none",
 		{
-			[styles["button-primary"]]: variant === "primary",
-			[styles["button-secondary"]]: variant === "secondary",
-			[styles["button-tertiary"]]: variant === "tertiary",
+			"bg-slate-400 hover:bg-slate-300 hover:border-slate-600 active:bg-slate-300 disabled:border-none disabled:bg-slate-200":
+				variant === "primary",
+			"border-slate-600 hover:border-slate-700 hover:bg-slate-300 active:bg-slate-300 disabled:border-slate-300 bg-transparent disabled:bg-transparent":
+				variant === "secondary",
+			"h-auto border-none bg-transparent p-0": variant === "tertiary",
 		},
 		className,
 	);

@@ -23,8 +23,8 @@ export const CheckoutForm = () => {
 	const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
 	return (
-		<div className="checkout-form-container">
-			<div className="checkout-form">
+		<div className="flex flex-col items-end lg:w-1/2">
+			<div className="flex w-full flex-col rounded-lg border border-slate-400">
 				<Suspense fallback={<ContactSkeleton />}>
 					<Contact setShowOnlyContact={setShowOnlyContact} />
 				</Suspense>
@@ -33,7 +33,7 @@ export const CheckoutForm = () => {
 						<Suspense fallback={<AddressSectionSkeleton />}>
 							<Divider />
 							<CollapseSection collapse={showOnlyContact}>
-								<div className="section" data-testid="shippingAddressSection">
+								<div className="px-4 pb-6 pt-5" data-testid="shippingAddressSection">
 									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
 								</div>
 							</CollapseSection>

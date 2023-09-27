@@ -20,14 +20,14 @@ export const LanguageSelect: React.FC = ({}) => {
 	};
 
 	return (
-		<div className="language-select-container">
+		<div className="relative flex flex-row justify-end">
 			<IconButton
 				icon={<LanguageIcon />}
 				label={formatMessage(languagesMessages[locale])}
 				className="pointer-events-none"
 			/>
 			<Select
-				classNames={{ container: "language-select" }}
+				classNames={{ container: "!absolute right-0 !min-w-0 opacity-0" }}
 				value={locale}
 				onChange={(event: ChangeEvent<HTMLSelectElement>) =>
 					handleLanguageChange(event.target.value as Locale)

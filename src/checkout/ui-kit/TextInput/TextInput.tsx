@@ -1,11 +1,7 @@
 import clsx from "clsx";
 import { type InputHTMLAttributes } from "react";
 
-import { Label } from "../Label/Label";
-import { Text } from "../Text/Text";
-
 import { type ClassNames } from "..";
-import styles from "./TextInput.module.css";
 
 export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "checked"> {
 	label?: string;
@@ -26,13 +22,13 @@ export const TextInput = ({
 	const hasError = typeof error === "string";
 
 	return (
-		<div className={clsx(styles["text-input-container"], classNames.container)}>
+		<div className={clsx("relative mb-3 w-full", classNames.container)}>
 			<input
 				className={clsx(
-					styles["text-input"],
+					"h-12 w-full appearance-none rounded border border-slate-600 py-3 pb-2 pt-5 text-base transition-colors focus:border-slate-700 focus:outline-none active:border-slate-600 active:outline-none",
 					{
-						[styles["text-input-error"]]: hasError,
-						[styles["text-input-nolabel"]]: !label,
+						"border-red-300": hasError,
+						"h-10 py-[9px]": !label,
 					},
 					classNames.input,
 				)}
@@ -44,19 +40,19 @@ export const TextInput = ({
 				type={type}
 			/>
 			{label && (
-				<Label
-					className={clsx(styles["text-input-label"], {
-						[styles["text-input-filled-label"]]: value || placeholder,
+				<label
+					className={clsx("text-input-label", {
+						"text-input-filled-label": value || placeholder,
 					})}
 				>
 					{label}
 					{required && "*"}
-				</Label>
+				</label>
 			)}
 			{hasError && (
-				<Text size="sm" color="error" className={styles["text-input-error-caption"]}>
+				<p color="error" className="text-sm">
 					{error}
-				</Text>
+				</p>
 			)}
 		</div>
 	);

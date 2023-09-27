@@ -25,7 +25,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange, o
 		>
 			<FormProvider form={form}>
 				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />
-				<div className="actions mt-4">
+				<div className="mt-4 flex w-full flex-row items-center justify-end">
 					<Button
 						ariaLabel={formatMessage(contactLabels.resetPassword)}
 						label={formatMessage(contactMessages.resetPassword)}

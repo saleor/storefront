@@ -2,7 +2,6 @@ import React, { type PropsWithChildren } from "react";
 import { useSummaryLineLineAttributesText, getSummaryLineProps } from "./utils";
 import { summaryLabels } from "./messages";
 import { type CheckoutLineFragment, type OrderLineFragment } from "@/checkout/src/graphql";
-import { Text } from "@/checkout/ui-kit";
 import { PhotoIcon } from "@/checkout/ui-kit/icons";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 
@@ -20,9 +19,9 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
 	const attributesText = useSummaryLineLineAttributesText(line);
 
 	return (
-		<li className="summary-item">
+		<li className="relative mb-6 flex flex-row items-start last-of-type:mb-0">
 			<div className="relative flex flex-row">
-				<div className="summary-item-image z-1 mr-4">
+				<div className="z-1 mr-4 flex h-20 w-20 items-center justify-center">
 					{productImage ? (
 						<img className="object-contain" alt={productImage?.alt || undefined} src={productImage?.url} />
 					) : (
@@ -30,14 +29,14 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
 					)}
 				</div>
 			</div>
-			<div className="summary-row w-full items-start">
+			<div className="flex w-full flex-row items-start items-center justify-between">
 				<div className="flex flex-col">
-					<Text weight="bold" aria-label={formatMessage(summaryLabels.summaryItemName)} className="mb-3">
+					<p aria-label={formatMessage(summaryLabels.summaryItemName)} className="mb-3 font-bold">
 						{productName}
-					</Text>
-					<Text size="xs" aria-label={formatMessage(summaryLabels.variantName)} className="max-w-38">
+					</p>
+					<p aria-label={formatMessage(summaryLabels.variantName)} className="text-xs">
 						{attributesText}
-					</Text>
+					</p>
 				</div>
 				{children}
 			</div>

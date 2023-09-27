@@ -12,7 +12,7 @@ export const PaymentSection: React.FC<Children> = ({ children }) => {
 	return (
 		<>
 			<Divider />
-			<div className="section" data-testid="paymentMethods">
+			<div className="px-4 pb-6 pt-5" data-testid="paymentMethods">
 				<Title>{formatMessage(paymentSectionMessages.paymentMethods)}</Title>
 				<PaymentMethods />
 				{children}

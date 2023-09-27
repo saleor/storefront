@@ -3,7 +3,6 @@ import clsx from "clsx";
 
 import { Button, type ButtonProps, ButtonLabel } from "../Button/Button";
 import { type HorizontalAlignment } from "..";
-import styles from "./IconButton.module.css";
 
 export interface IconButtonProps
 	extends Omit<ButtonProps, "variant" | "label">,
@@ -23,7 +22,11 @@ export const IconButton: FC<IconButtonProps> = ({
 }) => {
 	if (variant === "bare") {
 		return (
-			<button type="button" className={clsx(styles["bare-icon-button"], className)} {...rest}>
+			<button
+				type="button"
+				className={clsx("bg-transparent text-slate-900 hover:text-slate-800", className)}
+				{...rest}
+			>
 				{icon}
 			</button>
 		);
@@ -35,19 +38,16 @@ export const IconButton: FC<IconButtonProps> = ({
 				<>
 					{icon}
 					{typeof label === "string" && (
-						<ButtonLabel
-							className={styles[alignment === "right" ? "icon-button-label-reverse" : "icon-button-label"]}
-							content={label}
-						/>
+						<ButtonLabel className={alignment === "right" ? "mr-1.5" : "ml-1.5"} content={label} />
 					)}
 				</>
 			}
 			variant="secondary"
 			className={clsx(
-				styles["icon-button"],
+				"inline-flex h-10 items-center py-2",
 				{
-					[styles["icon-button-reverse"]]: alignment === "right",
-					[styles["icon-button-nolabel"]]: !label,
+					"flex-row-reverse": alignment === "right",
+					"w-10 justify-center px-0": !label,
 				},
 				className,
 			)}

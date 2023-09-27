@@ -2,7 +2,6 @@ import { type FallbackProps } from "react-error-boundary";
 import { pageNotFoundMessages } from "./messages";
 import { SaleorLogo } from "@/checkout/src/assets/images/SaleorLogo";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
-import { Text } from "@/checkout/ui-kit";
 import { Button } from "@/checkout/src/components/Button";
 import { emptyCartMessages, emptyCartLabels } from "@/checkout/src/views/EmptyCartPage/messages";
 
@@ -19,7 +18,7 @@ export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
 				<SaleorLogo />
 			</div>
 			<div className="mb-22 flex h-full flex-col items-center justify-center">
-				<Text className="max-w-85 mb-6 text-center">{formatMessage(pageNotFoundMessages.subtitle)}</Text>
+				<p className="max-w-85 mb-6 text-center">{formatMessage(pageNotFoundMessages.subtitle)}</p>
 				<Button
 					ariaLabel={formatMessage(emptyCartLabels.goBackToStore)}
 					onClick={goBack}

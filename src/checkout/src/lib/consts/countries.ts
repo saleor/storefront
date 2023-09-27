@@ -253,4 +253,4 @@ export const countries: CountryCode[] = [
 	"AX",
 ];
 
-export const defaultCountry = countries[0] ;
+export const defaultCountry = countries[0];
