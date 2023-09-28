@@ -1,90 +1,87 @@
 {
-  "$schema": "https://json.schemastore.org/eslintrc.json",
-  "plugins": ["@typescript-eslint", "import"],
-  "parserOptions": {
-    "project": "tsconfig.json"
-  },
-  "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "prettier",
-    "next/core-web-vitals"
-  ],
-  "rules": {
-    // sort imports
-    // "import/order": "error",
+	"$schema": "https://json.schemastore.org/eslintrc.json",
+	"plugins": ["@typescript-eslint", "import"],
+	"parserOptions": {
+		"project": "tsconfig.json"
+	},
+	"extends": [
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking",
+		"plugin:import/recommended",
+		"plugin:import/typescript",
+		"prettier",
+		"next/core-web-vitals"
+	],
+	"rules": {
+		// sort imports
+		// "import/order": "error",
 
-    // no let exports
-    "import/no-mutable-exports": "error",
+		// no let exports
+		"import/no-mutable-exports": "error",
 
-    "import/no-cycle": "error",
-    "import/no-default-export": "error",
+		"import/no-cycle": "error",
+		"import/no-default-export": "error",
 
-    // allow {} even though it's unsafe but comes handy
-    "@typescript-eslint/ban-types": [
-      "error",
-      {
-        "types": {
-          "{}": false
-        }
-      }
-    ],
+		// allow {} even though it's unsafe but comes handy
+		"@typescript-eslint/ban-types": [
+			"error",
+			{
+				"types": {
+					"{}": false
+				}
+			}
+		],
 
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      {
-        "prefer": "type-imports",
-        "fixStyle": "inline-type-imports",
-        "disallowTypeAnnotations": false
-      }
-    ],
+		"@typescript-eslint/consistent-type-imports": [
+			"error",
+			{
+				"prefer": "type-imports",
+				"fixStyle": "inline-type-imports",
+				"disallowTypeAnnotations": false
+			}
+		],
 
-    "import/no-duplicates": ["error", { "prefer-inline": true }],
+		"import/no-duplicates": ["error", { "prefer-inline": true }],
 
-    // false negatives
-    "import/namespace": ["off"],
+		// false negatives
+		"import/namespace": ["off"],
 
-    // we allow empty interfaces
-    "no-empty-pattern": "off",
-    "@typescript-eslint/no-empty-interface": "off",
+		// we allow empty interfaces
+		"no-empty-pattern": "off",
+		"@typescript-eslint/no-empty-interface": "off",
 
-    // we allow empty functions
-    "@typescript-eslint/no-empty-function": "off",
+		// we allow empty functions
+		"@typescript-eslint/no-empty-function": "off",
 
-    // we sometimes use async functions that don't await anything
-    "@typescript-eslint/require-await": "off",
+		// we sometimes use async functions that don't await anything
+		"@typescript-eslint/require-await": "off",
 
-    // make sure to `await` inside try…catch
-    "@typescript-eslint/return-await": ["error", "in-try-catch"],
+		// make sure to `await` inside try…catch
+		"@typescript-eslint/return-await": ["error", "in-try-catch"],
 
-    // allow unused vars prefixed with `_`
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
-    ],
+		// allow unused vars prefixed with `_`
+		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
 
-    // numbers and booleans are fine in template strings
-    "@typescript-eslint/restrict-template-expressions": [
-      "error",
-      { "allowNumber": true, "allowBoolean": true }
-    ],
+		// numbers and booleans are fine in template strings
+		"@typescript-eslint/restrict-template-expressions": [
+			"error",
+			{ "allowNumber": true, "allowBoolean": true }
+		],
 
-    "@typescript-eslint/no-misused-promises": [
-      "error",
-      {
-        "checksVoidReturn": false
-      }
-    ]
-  },
-  "overrides": [
-    {
-      "files": ["src/app/**/{page,layout,error,loading,not-found}.tsx", "*.ts"],
-      "rules": {
-        "import/no-default-export": "off"
-      }
-    }
-  ],
-  "ignorePatterns": ["*.js", "*.jsx", "*.cjs"]
+		"@typescript-eslint/no-misused-promises": [
+			"error",
+			{
+				"checksVoidReturn": false
+			}
+		]
+	},
+	"overrides": [
+		{
+			"files": ["src/app/**/{page,layout,error,loading,not-found}.tsx", "*.ts"],
+			"rules": {
+				"import/no-default-export": "off"
+			}
+		}
+	],
+	"ignorePatterns": ["*.js", "*.jsx", "*.cjs"]
 }
