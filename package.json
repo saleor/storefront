@@ -1,11 +1,11 @@
 {
-	"name": "ourstore",
+	"name": "saleor-storefront",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "next dev",
-		"build": "pnpm run i18n && next build",
+		"build": "pnpm run generate && pnpm run i18n && next build",
 		"start": "next start",
 		"lint": "next lint --dir src --fix",
 		"codegen": "graphql-codegen --config .graphqlrc.ts",

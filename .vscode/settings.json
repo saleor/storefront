@@ -7,11 +7,10 @@
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"eslint.run": "onSave",
 	"editor.codeActionsOnSave": {
-		"source.fixAll": true
+		"source.fixAll": "always"
 	},
 	"tailwindCSS.classAttributes": ["className", "clsx"],
 	"css.validate": true,
-
 	"editor.quickSuggestions": {
 		"strings": true
 	},
