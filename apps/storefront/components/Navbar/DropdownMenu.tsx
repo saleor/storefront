@@ -6,13 +6,27 @@ import { MenuItemWithChildrenFragment } from "@/saleor/api";
 import { NavigationAnchor } from "../NavigationAnchor/NavigationAnchor";
 import { useRegions } from "../RegionsProvider";
 import styles from "./Navbar.module.css";
+import usePaths from "@/lib/paths";
 
 interface DropdownProps {
   menuItem: MenuItemWithChildrenFragment;
+  isNews?: boolean;
 }
 
-function Dropdown({ menuItem }: DropdownProps) {
+function Dropdown({ menuItem, isNews }: DropdownProps) {
   const { currentLocale } = useRegions();
+  const paths = usePaths();
+
+  if (isNews) {
+    return (
+      <div className={styles.dropdown}>
+        <Link href={paths.news.$url()} passHref>
+          <li className={styles["dropdown-trigger"]}>{menuItem.name}</li>
+        </Link>
+        {/* rest of the DropdownMenu logic if needed */}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.dropdown}>

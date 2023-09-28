@@ -103,6 +103,9 @@ module.exports = {
         decorative: `16px 16px 0 ${colorConfig.brand.DEFAULT}`,
         modal: "0px 4px 20px 0px rgba(0, 0, 0, 0.12)",
       },
+      zIndex: {
+        1: "1",
+      },
     },
   },
   plugins: [

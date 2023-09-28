@@ -128,6 +128,13 @@ export const pagesPath = {
         hash: url?.hash,
       }),
     },
+    news: {
+      $url: (url?: { hash?: string }) => ({
+        pathname: "/[locale]/" as const,
+        query: { locale },
+        hash: "news",
+      }),
+    },
     $url: (url?: { hash?: string }) => ({
       pathname: "/[locale]" as const,
       query: { locale },

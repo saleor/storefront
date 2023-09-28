@@ -26,11 +26,21 @@ export function Menu() {
   return (
     <nav className={styles.nav}>
       <ol>
-        {visibleCategoryOnMenu.map((item) => (
-          <li key={item?.id}>
-            <DropdownMenu key={item?.id} menuItem={item} />
-          </li>
-        ))}
+        {visibleCategoryOnMenu.map((item) => {
+          if (item.name === "Aktualności" || item.name === "News") {
+            return (
+              <li key={item.id}>
+                <DropdownMenu menuItem={item} isNews />
+              </li>
+            );
+          } else {
+            return (
+              <li key={item?.id}>
+                <DropdownMenu menuItem={item} />
+              </li>
+            );
+          }
+        })}
       </ol>
     </nav>
   );

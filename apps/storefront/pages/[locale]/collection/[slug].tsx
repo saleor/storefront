@@ -54,12 +54,16 @@ export const getStaticProps = async (
     });
 
   let attributes: AttributeFilterFragment[] = mapEdgesToItems(attributesResponse.data.attributes);
+
   attributes = attributes.filter((attribute) => attribute.choices?.edges.length);
 
+  const uniqueAttributes = attributes.filter(
+    (attribute, index, self) => index === self.findIndex((attr) => attr.id === attribute.id)
+  );
   return {
     props: {
       collection: response.data.collection,
-      attributeFiltersData: attributes,
+      attributeFiltersData: uniqueAttributes,
     },
   };
 };
