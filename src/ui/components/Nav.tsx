@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ActiveLink } from "./ActiveLink";
 import { ShoppingBagIcon } from "lucide-react";
+import { ActiveLink } from "./ActiveLink";
 import * as Checkout from "@/lib/checkout";
 
 const NavLinks = [

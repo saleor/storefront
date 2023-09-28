@@ -1,7 +1,7 @@
+import { notFound } from "next/navigation";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { execute } from "@/lib";
 import { ProductElement } from "@/ui/components/ProductElement";
-import { notFound } from "next/navigation";
 
 export const metadata = {
 	title: "Category · Saleor Storefront",

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import Link from "next/link";
 import * as Checkout from "@/lib/checkout";
 import { USDollarFormatter } from "@/lib";
 
@@ -13,14 +13,6 @@ export default async function Page() {
 
 	const checkout = await Checkout.find(checkoutId);
 	const lines = checkout ? checkout.lines : [];
-
-	async function performCheckout() {
-		"use server";
-
-		// TODO
-
-		redirect("/checkout");
-	}
 
 	return (
 		<section className="mx-auto max-w-7xl p-8">
@@ -80,13 +72,12 @@ export default async function Page() {
 					</div>
 					<div className="mt-10 grid grid-cols-3">
 						<div></div>
-
-						<button
-							formAction={performCheckout}
+						<Link
+							href={`/checkout?checkout=${checkoutId}`}
 							className="w-full rounded border border-transparent bg-slate-600 px-6 py-3 font-medium text-gray-50 hover:bg-slate-500"
 						>
 							Checkout
-						</button>
+						</Link>
 					</div>
 				</div>
 			</form>

@@ -1,6 +1,6 @@
+import { Inter } from "next/font/google";
 import { Footer } from "@/ui/components/Footer";
 import { Nav } from "@/ui/components/Nav";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/ui/components/AuthProvider";
 import { Topbar } from "@/ui/components/Topbar";

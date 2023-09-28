@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/eslintrc.json",
-	"plugins": ["@typescript-eslint", "import"],
+	"plugins": ["@typescript-eslint", "import", "formatjs"],
 	"parserOptions": {
 		"project": "tsconfig.json"
 	},
@@ -14,13 +14,15 @@
 	],
 	"rules": {
 		// sort imports
-		// "import/order": "error",
+		"import/order": "error",
 
 		// no let exports
 		"import/no-mutable-exports": "error",
 
 		"import/no-cycle": "error",
 		"import/no-default-export": "error",
+
+		"import/no-unresolved": "off",
 
 		// allow {} even though it's unsafe but comes handy
 		"@typescript-eslint/ban-types": [
@@ -68,6 +70,9 @@
 			{ "allowNumber": true, "allowBoolean": true }
 		],
 
+		// @todo
+		"@typescript-eslint/no-explicit-any": "off",
+
 		"@typescript-eslint/no-misused-promises": [
 			"error",
 			{
@@ -81,7 +86,19 @@
 			"rules": {
 				"import/no-default-export": "off"
 			}
+		},
+		{
+			"files": ["src/checkout/**/*.*"],
+			"rules": {
+				"@next/next/no-img-element": "off",
+				"formatjs/enforce-id": [
+					"error",
+					{
+						"idInterpolationPattern": "[folder]/[name]/[sha512:contenthash:base64:6]"
+					}
+				]
+			}
 		}
 	],
-	"ignorePatterns": ["*.js", "*.jsx", "*.cjs"]
+	"ignorePatterns": ["*.js", "*.jsx", "*.cjs", "src/checkout/src/graphql"]
 }

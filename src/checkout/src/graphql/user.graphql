@@ -1,0 +1,86 @@
+fragment AccountErrorFragment on AccountError {
+	message
+	field
+	code
+}
+
+fragment UserFragment on User {
+	id
+	email
+	addresses {
+		...AddressFragment
+	}
+	defaultBillingAddress {
+		...AddressFragment
+	}
+	defaultShippingAddress {
+		...AddressFragment
+	}
+}
+
+query user {
+	user: me {
+		...UserFragment
+	}
+}
+
+mutation userRegister($input: AccountRegisterInput!) {
+	accountRegister(input: $input) {
+		errors {
+			message
+			field
+			code
+		}
+	}
+}
+
+mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
+	requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
+		errors {
+			message
+			field
+			code
+		}
+	}
+}
+
+mutation userAddressDelete($id: ID!) {
+	accountAddressDelete(id: $id) {
+		user {
+			...UserFragment
+		}
+		errors {
+			...AccountErrorFragment
+		}
+		address {
+			...AddressFragment
+		}
+	}
+}
+mutation userAddressUpdate($id: ID!, $address: AddressInput!) {
+	accountAddressUpdate(id: $id, input: $address) {
+		user {
+			...UserFragment
+		}
+		errors {
+			...AccountErrorFragment
+		}
+		address {
+			...AddressFragment
+		}
+	}
+}
+
+mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
+	accountAddressCreate(type: $type, input: $address) {
+		user {
+			...UserFragment
+		}
+		errors {
+			...AccountErrorFragment
+		}
+		address {
+			...AddressFragment
+		}
+	}
+}

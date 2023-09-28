@@ -1,0 +1,2518 @@
+{
+	"AddressForm/messages/+3/str": [
+		{
+			"type": 0,
+			"value": "Rumania"
+		}
+	],
+	"AddressForm/messages/+35USE": [
+		{
+			"type": 0,
+			"value": "Mónaco"
+		}
+	],
+	"AddressForm/messages/+LTFwE": [
+		{
+			"type": 0,
+			"value": "Zimbabue"
+		}
+	],
+	"AddressForm/messages/+Re6RX": [
+		{
+			"type": 0,
+			"value": "Panamá"
+		}
+	],
+	"AddressForm/messages/+dJgMv": [
+		{
+			"type": 0,
+			"value": "Egipto"
+		}
+	],
+	"AddressForm/messages//QPMOC": [
+		{
+			"type": 0,
+			"value": "Ruanda"
+		}
+	],
+	"AddressForm/messages//i/8+x": [
+		{
+			"type": 0,
+			"value": "Rusia"
+		}
+	],
+	"AddressForm/messages/0981cj": [
+		{
+			"type": 0,
+			"value": "Malí"
+		}
+	],
+	"AddressForm/messages/0OhS/E": [
+		{
+			"type": 0,
+			"value": "Guernsey"
+		}
+	],
+	"AddressForm/messages/0qM4AQ": [
+		{
+			"type": 0,
+			"value": "Isla de Navidad"
+		}
+	],
+	"AddressForm/messages/1BVFqL": [
+		{
+			"type": 0,
+			"value": "República Dominicana"
+		}
+	],
+	"AddressForm/messages/1G/9/v": [
+		{
+			"type": 0,
+			"value": "San Bartolomé"
+		}
+	],
+	"AddressForm/messages/1gMboq": [
+		{
+			"type": 0,
+			"value": "Camboya"
+		}
+	],
+	"AddressForm/messages/24zJ2G": [
+		{
+			"type": 0,
+			"value": "Pitcairn"
+		}
+	],
+	"AddressForm/messages/2Ia9yk": [
+		{
+			"type": 0,
+			"value": "Montenegro"
+		}
+	],
+	"AddressForm/messages/2aZjsy": [
+		{
+			"type": 0,
+			"value": "San Vicente y las Granadinas"
+		}
+	],
+	"AddressForm/messages/2lrvGQ": [
+		{
+			"type": 0,
+			"value": "Guatemala"
+		}
+	],
+	"AddressForm/messages/3+K3eR": [
+		{
+			"type": 0,
+			"value": "República Central Africana"
+		}
+	],
+	"AddressForm/messages/35l+5O": [
+		{
+			"type": 0,
+			"value": "Nigeria"
+		}
+	],
+	"AddressForm/messages/3LyeiO": [
+		{
+			"type": 0,
+			"value": "China"
+		}
+	],
+	"AddressForm/messages/3Mu0o5": [
+		{
+			"type": 0,
+			"value": "México"
+		}
+	],
+	"AddressForm/messages/3RJLTO": [
+		{
+			"type": 0,
+			"value": "Islas Vírgenes (Británicas)"
+		}
+	],
+	"AddressForm/messages/3Yiy2F": [
+		{
+			"type": 0,
+			"value": "Bermudas"
+		}
+	],
+	"AddressForm/messages/3lb6zY": [
+		{
+			"type": 0,
+			"value": "Guyana"
+		}
+	],
+	"AddressForm/messages/3qmq7r": [
+		{
+			"type": 0,
+			"value": "San Martín (parte francesa)"
+		}
+	],
+	"AddressForm/messages/3vhsEZ": [
+		{
+			"type": 0,
+			"value": "Argentina"
+		}
+	],
+	"AddressForm/messages/4KynCH": [
+		{
+			"type": 0,
+			"value": "Islas Åland"
+		}
+	],
+	"AddressForm/messages/5E5/lt": [
+		{
+			"type": 0,
+			"value": "Timor-Leste"
+		}
+	],
+	"AddressForm/messages/5x+w4L": [
+		{
+			"type": 0,
+			"value": "Brunei"
+		}
+	],
+	"AddressForm/messages/6CFBZ2": [
+		{
+			"type": 0,
+			"value": "Togo"
+		}
+	],
+	"AddressForm/messages/7GxtRT": [
+		{
+			"type": 0,
+			"value": "Eslovenia"
+		}
+	],
+	"AddressForm/messages/7lrRGn": [
+		{
+			"type": 0,
+			"value": "Moldavia"
+		}
+	],
+	"AddressForm/messages/8/elLk": [
+		{
+			"type": 0,
+			"value": "Chequia"
+		}
+	],
+	"AddressForm/messages/87OAV1": [
+		{
+			"type": 0,
+			"value": "Angola"
+		}
+	],
+	"AddressForm/messages/8Fcqnm": [
+		{
+			"type": 0,
+			"value": "Unión Europea"
+		}
+	],
+	"AddressForm/messages/8KuAMg": [
+		{
+			"type": 0,
+			"value": "Botsuana"
+		}
+	],
+	"AddressForm/messages/8Wse/t": [
+		{
+			"type": 0,
+			"value": "Samoa"
+		}
+	],
+	"AddressForm/messages/9E5e9n": [
+		{
+			"type": 0,
+			"value": "Bahamas"
+		}
+	],
+	"AddressForm/messages/9txxUj": [
+		{
+			"type": 0,
+			"value": "Croacia"
+		}
+	],
+	"AddressForm/messages/9uWNKf": [
+		{
+			"type": 0,
+			"value": "Bangladesh"
+		}
+	],
+	"AddressForm/messages/A5G1Cb": [
+		{
+			"type": 0,
+			"value": "Mozambique"
+		}
+	],
+	"AddressForm/messages/AKU/rl": [
+		{
+			"type": 0,
+			"value": "Mongolia"
+		}
+	],
+	"AddressForm/messages/AMeNrv": [
+		{
+			"type": 0,
+			"value": "Congo"
+		}
+	],
+	"AddressForm/messages/AWsbha": [
+		{
+			"type": 0,
+			"value": "Canadá"
+		}
+	],
+	"AddressForm/messages/B/27YJ": [
+		{
+			"type": 0,
+			"value": "Polonia"
+		}
+	],
+	"AddressForm/messages/BDg+fo": [
+		{
+			"type": 0,
+			"value": "Islas Caimán"
+		}
+	],
+	"AddressForm/messages/BSH40T": [
+		{
+			"type": 0,
+			"value": "Yibuti"
+		}
+	],
+	"AddressForm/messages/BY/v/V": [
+		{
+			"type": 0,
+			"value": "Singapur"
+		}
+	],
+	"AddressForm/messages/BnhxSK": [
+		{
+			"type": 0,
+			"value": "Polinesia Francesa"
+		}
+	],
+	"AddressForm/messages/BuYzls": [
+		{
+			"type": 0,
+			"value": "Vietnam"
+		}
+	],
+	"AddressForm/messages/C9IT3L": [
+		{
+			"type": 0,
+			"value": "Territorios Franceses del Sur"
+		}
+	],
+	"AddressForm/messages/CThFlC": [
+		{
+			"type": 0,
+			"value": "Bélgica"
+		}
+	],
+	"AddressForm/messages/CXJMbm": [
+		{
+			"type": 0,
+			"value": "Aruba"
+		}
+	],
+	"AddressForm/messages/CeU6Ku": [
+		{
+			"type": 0,
+			"value": "Papúa Nueva Guinea"
+		}
+	],
+	"AddressForm/messages/ChmgQI": [
+		{
+			"type": 0,
+			"value": "Puerto Rico"
+		}
+	],
+	"AddressForm/messages/Cn9SxV": [
+		{
+			"type": 0,
+			"value": "Bahrein"
+		}
+	],
+	"AddressForm/messages/CxrUJZ": [
+		{
+			"type": 0,
+			"value": "Islas Cocos (Keeling)"
+		}
+	],
+	"AddressForm/messages/D69IYs": [
+		{
+			"type": 0,
+			"value": "Kirguistán"
+		}
+	],
+	"AddressForm/messages/DOoSpc": [
+		{
+			"type": 0,
+			"value": "Cabo Verde"
+		}
+	],
+	"AddressForm/messages/DUOOIr": [
+		{
+			"type": 0,
+			"value": "Níger"
+		}
+	],
+	"AddressForm/messages/Dlvlwl": [
+		{
+			"type": 0,
+			"value": "Laos"
+		}
+	],
+	"AddressForm/messages/DmI8N+": [
+		{
+			"type": 0,
+			"value": "Paraguay"
+		}
+	],
+	"AddressForm/messages/DnWk6V": [
+		{
+			"type": 0,
+			"value": "Turkmenistán"
+		}
+	],
+	"AddressForm/messages/E8OaB7": [
+		{
+			"type": 0,
+			"value": "Senegal"
+		}
+	],
+	"AddressForm/messages/E8ZfO1": [
+		{
+			"type": 0,
+			"value": "Guinea Equatorial"
+		}
+	],
+	"AddressForm/messages/EE8FUW": [
+		{
+			"type": 0,
+			"value": "Honduras"
+		}
+	],
+	"AddressForm/messages/EWeTWr": [
+		{
+			"type": 0,
+			"value": "Mauricio"
+		}
+	],
+	"AddressForm/messages/EmA9sW": [
+		{
+			"type": 0,
+			"value": "Islas Feroe"
+		}
+	],
+	"AddressForm/messages/Ev/r0d": [
+		{
+			"type": 0,
+			"value": "Granada"
+		}
+	],
+	"AddressForm/messages/FFcAZ+": [
+		{
+			"type": 0,
+			"value": "Mayotte"
+		}
+	],
+	"AddressForm/messages/FOyXKV": [
+		{
+			"type": 0,
+			"value": "Groenlandia"
+		}
+	],
+	"AddressForm/messages/GlpjNg": [
+		{
+			"type": 0,
+			"value": "San Cristóbal y Nieves"
+		}
+	],
+	"AddressForm/messages/Gv7Nkl": [
+		{
+			"type": 0,
+			"value": "Letonia"
+		}
+	],
+	"AddressForm/messages/H03l8S": [
+		{
+			"type": 0,
+			"value": "Guam"
+		}
+	],
+	"AddressForm/messages/HMzYxx": [
+		{
+			"type": 0,
+			"value": "El Salvador"
+		}
+	],
+	"AddressForm/messages/HX23kM": [
+		{
+			"type": 0,
+			"value": "Alemania"
+		}
+	],
+	"AddressForm/messages/I6YMLq": [
+		{
+			"type": 0,
+			"value": "Irak"
+		}
+	],
+	"AddressForm/messages/I7N5d5": [
+		{
+			"type": 0,
+			"value": "Montserrat"
+		}
+	],
+	"AddressForm/messages/ICWko4": [
+		{
+			"type": 0,
+			"value": "Guadalupe"
+		}
+	],
+	"AddressForm/messages/IL/4HV": [
+		{
+			"type": 0,
+			"value": "Islandia"
+		}
+	],
+	"AddressForm/messages/ITFSvw": [
+		{
+			"type": 0,
+			"value": "Yemen"
+		}
+	],
+	"AddressForm/messages/IaAMRl": [
+		{
+			"type": 0,
+			"value": "Comoras"
+		}
+	],
+	"AddressForm/messages/IojxYs": [
+		{
+			"type": 0,
+			"value": "Chile"
+		}
+	],
+	"AddressForm/messages/IqNqYb": [
+		{
+			"type": 0,
+			"value": "Micronesia (Estados Federados de)"
+		}
+	],
+	"AddressForm/messages/J23dee": [
+		{
+			"type": 0,
+			"value": "Japón"
+		}
+	],
+	"AddressForm/messages/JTn7TI": [
+		{
+			"type": 0,
+			"value": "Uganda"
+		}
+	],
+	"AddressForm/messages/JZGrjz": [
+		{
+			"type": 0,
+			"value": "Australia"
+		}
+	],
+	"AddressForm/messages/Jcr//0": [
+		{
+			"type": 0,
+			"value": "Isla de Norfolk"
+		}
+	],
+	"AddressForm/messages/Jn/c3X": [
+		{
+			"type": 0,
+			"value": "Sudáfrica"
+		}
+	],
+	"AddressForm/messages/JwzwDf": [
+		{
+			"type": 0,
+			"value": "Serbia"
+		}
+	],
+	"AddressForm/messages/KONzNF": [
+		{
+			"type": 0,
+			"value": "Jordania"
+		}
+	],
+	"AddressForm/messages/Kzfc+V": [
+		{
+			"type": 0,
+			"value": "Surinam"
+		}
+	],
+	"AddressForm/messages/LH4nev": [
+		{
+			"type": 0,
+			"value": "Ucrania"
+		}
+	],
+	"AddressForm/messages/LVSZhV": [
+		{
+			"type": 0,
+			"value": "Costa Rica"
+		}
+	],
+	"AddressForm/messages/LfEV9c": [
+		{
+			"type": 0,
+			"value": "Bolivia"
+		}
+	],
+	"AddressForm/messages/Lz6TZd": [
+		{
+			"type": 0,
+			"value": "Islas Malvinas"
+		}
+	],
+	"AddressForm/messages/MJ3p0z": [
+		{
+			"type": 0,
+			"value": "Maldivas"
+		}
+	],
+	"AddressForm/messages/Msh2z5": [
+		{
+			"type": 0,
+			"value": "Irán"
+		}
+	],
+	"AddressForm/messages/N1JKvx": [
+		{
+			"type": 0,
+			"value": "Malasia"
+		}
+	],
+	"AddressForm/messages/N1Q+6G": [
+		{
+			"type": 0,
+			"value": "Cuba"
+		}
+	],
+	"AddressForm/messages/NdXWB5": [
+		{
+			"type": 0,
+			"value": "Wallis y Futuna"
+		}
+	],
+	"AddressForm/messages/Nt5rKh": [
+		{
+			"type": 0,
+			"value": "Andorra"
+		}
+	],
+	"AddressForm/messages/Nvbipr": [
+		{
+			"type": 0,
+			"value": "Georgia"
+		}
+	],
+	"AddressForm/messages/O2de3e": [
+		{
+			"type": 0,
+			"value": "España"
+		}
+	],
+	"AddressForm/messages/O3mm9/": [
+		{
+			"type": 0,
+			"value": "Islas Marshall"
+		}
+	],
+	"AddressForm/messages/OQ+Olf": [
+		{
+			"type": 0,
+			"value": "Santa Elena, Ascensión y Tristán da Cunha"
+		}
+	],
+	"AddressForm/messages/OSzrGw": [
+		{
+			"type": 0,
+			"value": "Curazao"
+		}
+	],
+	"AddressForm/messages/PXdiHI": [
+		{
+			"type": 0,
+			"value": "Trinidad y Tobago"
+		}
+	],
+	"AddressForm/messages/QFKhj9": [
+		{
+			"type": 0,
+			"value": "Islas Cook"
+		}
+	],
+	"AddressForm/messages/QOTB1q": [
+		{
+			"type": 0,
+			"value": "Luxemburgo"
+		}
+	],
+	"AddressForm/messages/QpbfVe": [
+		{
+			"type": 0,
+			"value": "Samoa Americana"
+		}
+	],
+	"AddressForm/messages/QrZxS5": [
+		{
+			"type": 0,
+			"value": "Albania"
+		}
+	],
+	"AddressForm/messages/R3SQiE": [
+		{
+			"type": 0,
+			"value": "Chad"
+		}
+	],
+	"AddressForm/messages/R3YX6x": [
+		{
+			"type": 0,
+			"value": "Islas Turcas y Caicos"
+		}
+	],
+	"AddressForm/messages/RIE26p": [
+		{
+			"type": 0,
+			"value": "Perú"
+		}
+	],
+	"AddressForm/messages/Rec3oK": [
+		{
+			"type": 0,
+			"value": "Israel"
+		}
+	],
+	"AddressForm/messages/S17KaW": [
+		{
+			"type": 0,
+			"value": "Tokelau"
+		}
+	],
+	"AddressForm/messages/S8InDN": [
+		{
+			"type": 0,
+			"value": "Colombia"
+		}
+	],
+	"AddressForm/messages/SGi7gS": [
+		{
+			"type": 0,
+			"value": "Países Bajos"
+		}
+	],
+	"AddressForm/messages/SH5Jnu": [
+		{
+			"type": 0,
+			"value": "Corea del Sur"
+		}
+	],
+	"AddressForm/messages/Sgfz6i": [
+		{
+			"type": 0,
+			"value": "Antigua y Barbuda"
+		}
+	],
+	"AddressForm/messages/ShtpIG": [
+		{
+			"type": 0,
+			"value": "Nueva Caledonia"
+		}
+	],
+	"AddressForm/messages/SiD5zn": [
+		{
+			"type": 0,
+			"value": "Svalbard y Jan Mayen"
+		}
+	],
+	"AddressForm/messages/TJWI4F": [
+		{
+			"type": 0,
+			"value": "Ecuador"
+		}
+	],
+	"AddressForm/messages/TTBXCb": [
+		{
+			"type": 0,
+			"value": "Myanmar"
+		}
+	],
+	"AddressForm/messages/TYzswE": [
+		{
+			"type": 0,
+			"value": "Costa de Marfil"
+		}
+	],
+	"AddressForm/messages/TaJXxW": [
+		{
+			"type": 0,
+			"value": "Palau"
+		}
+	],
+	"AddressForm/messages/Tz8NeM": [
+		{
+			"type": 0,
+			"value": "Jamaica"
+		}
+	],
+	"AddressForm/messages/Uw1fwi": [
+		{
+			"type": 0,
+			"value": "Santa Sede"
+		}
+	],
+	"AddressForm/messages/UwnYL4": [
+		{
+			"type": 0,
+			"value": "Lituania"
+		}
+	],
+	"AddressForm/messages/V+VLpH": [
+		{
+			"type": 0,
+			"value": "Eritrea"
+		}
+	],
+	"AddressForm/messages/VA5Ius": [
+		{
+			"type": 0,
+			"value": "Corea del Norte"
+		}
+	],
+	"AddressForm/messages/VVk1wF": [
+		{
+			"type": 0,
+			"value": "Nauru"
+		}
+	],
+	"AddressForm/messages/VpVsVE": [
+		{
+			"type": 0,
+			"value": "Isla Heard e Islas McDonald"
+		}
+	],
+	"AddressForm/messages/Vty5er": [
+		{
+			"type": 0,
+			"value": "Dominica"
+		}
+	],
+	"AddressForm/messages/Vwjf0I": [
+		{
+			"type": 0,
+			"value": "Kazajstán"
+		}
+	],
+	"AddressForm/messages/WH/GNk": [
+		{
+			"type": 0,
+			"value": "Tuvalu"
+		}
+	],
+	"AddressForm/messages/WHUUaK": [
+		{
+			"type": 0,
+			"value": "Reunión"
+		}
+	],
+	"AddressForm/messages/WW/g37": [
+		{
+			"type": 0,
+			"value": "Hong Kong"
+		}
+	],
+	"AddressForm/messages/WXy06l": [
+		{
+			"type": 0,
+			"value": "Bielorrusia"
+		}
+	],
+	"AddressForm/messages/XVI43y": [
+		{
+			"type": 0,
+			"value": "Líbano"
+		}
+	],
+	"AddressForm/messages/XdlbBW": [
+		{
+			"type": 0,
+			"value": "Georgia del Sur y las Islas Sandwich del Sur"
+		}
+	],
+	"AddressForm/messages/YOjgGK": [
+		{
+			"type": 0,
+			"value": "Marruecos"
+		}
+	],
+	"AddressForm/messages/YW2Rgu": [
+		{
+			"type": 0,
+			"value": "Seychelles"
+		}
+	],
+	"AddressForm/messages/ZgL3J3": [
+		{
+			"type": 0,
+			"value": "Noruega"
+		}
+	],
+	"AddressForm/messages/Zx6/Wd": [
+		{
+			"type": 0,
+			"value": "India"
+		}
+	],
+	"AddressForm/messages/a/HhAT": [
+		{
+			"type": 0,
+			"value": "Malawi"
+		}
+	],
+	"AddressForm/messages/a0Q5EY": [
+		{
+			"type": 0,
+			"value": "Barbados"
+		}
+	],
+	"AddressForm/messages/a5hpgt": [
+		{
+			"type": 0,
+			"value": "Eslovaquia"
+		}
+	],
+	"AddressForm/messages/aFeJk2": [
+		{
+			"type": 0,
+			"value": "Haití"
+		}
+	],
+	"AddressForm/messages/aFf8xn": [
+		{
+			"type": 0,
+			"value": "Argelia"
+		}
+	],
+	"AddressForm/messages/aREuhs": [
+		{
+			"type": 0,
+			"value": "Fiji"
+		}
+	],
+	"AddressForm/messages/aSLBUy": [
+		{
+			"type": 0,
+			"value": "Tailandia"
+		}
+	],
+	"AddressForm/messages/b3rvTZ": [
+		{
+			"type": 0,
+			"value": "Guinea"
+		}
+	],
+	"AddressForm/messages/bC+63M": [
+		{
+			"type": 0,
+			"value": "Bután"
+		}
+	],
+	"AddressForm/messages/bDMNqd": [
+		{
+			"type": 0,
+			"value": "Nueva Zelanda"
+		}
+	],
+	"AddressForm/messages/bNXMjj": [
+		{
+			"type": 0,
+			"value": "Malta"
+		}
+	],
+	"AddressForm/messages/bbEGxs": [
+		{
+			"type": 0,
+			"value": "Congo (República Democrática del)"
+		}
+	],
+	"AddressForm/messages/bgCInd": [
+		{
+			"type": 0,
+			"value": "Brasil"
+		}
+	],
+	"AddressForm/messages/bx18RE": [
+		{
+			"type": 0,
+			"value": "Sint Maarten (parte holandesa)"
+		}
+	],
+	"AddressForm/messages/cEUj16": [
+		{
+			"type": 0,
+			"value": "Nicaragua"
+		}
+	],
+	"AddressForm/messages/cfKJbG": [
+		{
+			"type": 0,
+			"value": "Burkina Faso"
+		}
+	],
+	"AddressForm/messages/chgM/b": [
+		{
+			"type": 0,
+			"value": "Venezuela"
+		}
+	],
+	"AddressForm/messages/d9f9F7": [
+		{
+			"type": 0,
+			"value": "Siria"
+		}
+	],
+	"AddressForm/messages/dDPcLg": [
+		{
+			"type": 0,
+			"value": "Santo Tomé y Príncipe"
+		}
+	],
+	"AddressForm/messages/dHwCKw": [
+		{
+			"type": 0,
+			"value": "Portugal"
+		}
+	],
+	"AddressForm/messages/dhTIfP": [
+		{
+			"type": 0,
+			"value": "Antártida"
+		}
+	],
+	"AddressForm/messages/e4oQUX": [
+		{
+			"type": 0,
+			"value": "Túnez"
+		}
+	],
+	"AddressForm/messages/ehL1qR": [
+		{
+			"type": 0,
+			"value": "Qatar"
+		}
+	],
+	"AddressForm/messages/ejmNM1": [
+		{
+			"type": 0,
+			"value": "San Pedro y Miquelón"
+		}
+	],
+	"AddressForm/messages/f//ZhL": [
+		{
+			"type": 0,
+			"value": "Territorio Británico del Océano Índico"
+		}
+	],
+	"AddressForm/messages/f7hDXo": [
+		{
+			"type": 0,
+			"value": "Belice"
+		}
+	],
+	"AddressForm/messages/fN0/YF": [
+		{
+			"type": 0,
+			"value": "Gabón"
+		}
+	],
+	"AddressForm/messages/gABGvv": [
+		{
+			"type": 0,
+			"value": "Reino Unido"
+		}
+	],
+	"AddressForm/messages/gSfZWs": [
+		{
+			"type": 0,
+			"value": "Isla de Man"
+		}
+	],
+	"AddressForm/messages/gcO54p": [
+		{
+			"type": 0,
+			"value": "Libia"
+		}
+	],
+	"AddressForm/messages/gkNUOW": [
+		{
+			"type": 0,
+			"value": "Arabia Saudita"
+		}
+	],
+	"AddressForm/messages/gmp08N": [
+		{
+			"type": 0,
+			"value": "Tonga"
+		}
+	],
+	"AddressForm/messages/h3kviB": [
+		{
+			"type": 0,
+			"value": "Gibraltar"
+		}
+	],
+	"AddressForm/messages/hEqPVT": [
+		{
+			"type": 0,
+			"value": "Benín"
+		}
+	],
+	"AddressForm/messages/hF+SJn": [
+		{
+			"type": 0,
+			"value": "Sahara Occidental"
+		}
+	],
+	"AddressForm/messages/hINdUv": [
+		{
+			"type": 0,
+			"value": "Jersey"
+		}
+	],
+	"AddressForm/messages/hQKX9A": [
+		{
+			"type": 0,
+			"value": "Taiwán"
+		}
+	],
+	"AddressForm/messages/hR6Dsj": [
+		{
+			"type": 0,
+			"value": "Macao"
+		}
+	],
+	"AddressForm/messages/hyjjwk": [
+		{
+			"type": 0,
+			"value": "Martinica"
+		}
+	],
+	"AddressForm/messages/i4LHfV": [
+		{
+			"type": 0,
+			"value": "Somalia"
+		}
+	],
+	"AddressForm/messages/iCux5z": [
+		{
+			"type": 0,
+			"value": "Ghana"
+		}
+	],
+	"AddressForm/messages/iSL4lW": [
+		{
+			"type": 0,
+			"value": "Nepal"
+		}
+	],
+	"AddressForm/messages/ifvs0d": [
+		{
+			"type": 0,
+			"value": "Guinea-Bissau"
+		}
+	],
+	"AddressForm/messages/iswnHN": [
+		{
+			"type": 0,
+			"value": "Estados Unidos Islas periféricas menores"
+		}
+	],
+	"AddressForm/messages/jD5+pT": [
+		{
+			"type": 0,
+			"value": "Francai"
+		}
+	],
+	"AddressForm/messages/jzUm6I": [
+		{
+			"type": 0,
+			"value": "Eswatini"
+		}
+	],
+	"AddressForm/messages/l1KbE7": [
+		{
+			"type": 0,
+			"value": "Guayana Francesa"
+		}
+	],
+	"AddressForm/messages/lJsAwX": [
+		{
+			"type": 0,
+			"value": "Finlandia"
+		}
+	],
+	"AddressForm/messages/lfa27y": [
+		{
+			"type": 0,
+			"value": "Grecia"
+		}
+	],
+	"AddressForm/messages/mbQguu": [
+		{
+			"type": 0,
+			"value": "Estonia"
+		}
+	],
+	"AddressForm/messages/mfEieV": [
+		{
+			"type": 0,
+			"value": "Dinamarca"
+		}
+	],
+	"AddressForm/messages/nI5eDJ": [
+		{
+			"type": 0,
+			"value": "Etiopía"
+		}
+	],
+	"AddressForm/messages/nKinNt": [
+		{
+			"type": 0,
+			"value": "Macedonia del Norte"
+		}
+	],
+	"AddressForm/messages/nRLW35": [
+		{
+			"type": 0,
+			"value": "Namibia"
+		}
+	],
+	"AddressForm/messages/nY7lQ3": [
+		{
+			"type": 0,
+			"value": "Sudán del Sur"
+		}
+	],
+	"AddressForm/messages/nnh9Bk": [
+		{
+			"type": 0,
+			"value": "Bulgaria"
+		}
+	],
+	"AddressForm/messages/np1zL8": [
+		{
+			"type": 0,
+			"value": "Azerbaiyan"
+		}
+	],
+	"AddressForm/messages/ntGFyq": [
+		{
+			"type": 0,
+			"value": "Austria"
+		}
+	],
+	"AddressForm/messages/o/1QQo": [
+		{
+			"type": 0,
+			"value": "Islas Salomón"
+		}
+	],
+	"AddressForm/messages/oA/ktV": [
+		{
+			"type": 0,
+			"value": "Madagascar"
+		}
+	],
+	"AddressForm/messages/pgPJJ/": [
+		{
+			"type": 0,
+			"value": "Suecia"
+		}
+	],
+	"AddressForm/messages/pgVv/N": [
+		{
+			"type": 0,
+			"value": "Islas Vírgenes (EE.UU.)"
+		}
+	],
+	"AddressForm/messages/q4CJGn": [
+		{
+			"type": 0,
+			"value": "Niue"
+		}
+	],
+	"AddressForm/messages/qJhQH+": [
+		{
+			"type": 0,
+			"value": "Kenia"
+		}
+	],
+	"AddressForm/messages/qOzgfA": [
+		{
+			"type": 0,
+			"value": "Armenia"
+		}
+	],
+	"AddressForm/messages/qTX4+E": [
+		{
+			"type": 0,
+			"value": "Santa Lucía"
+		}
+	],
+	"AddressForm/messages/qYb5Jk": [
+		{
+			"type": 0,
+			"value": "Emiratos Árabes Unidos"
+		}
+	],
+	"AddressForm/messages/qeafX4": [
+		{
+			"type": 0,
+			"value": "Isla Bouvet"
+		}
+	],
+	"AddressForm/messages/qormkg": [
+		{
+			"type": 0,
+			"value": "Uruguay"
+		}
+	],
+	"AddressForm/messages/qtwUHg": [
+		{
+			"type": 0,
+			"value": "Sierra Leona"
+		}
+	],
+	"AddressForm/messages/sJb+g5": [
+		{
+			"type": 0,
+			"value": "Uzbekistaá"
+		}
+	],
+	"AddressForm/messages/skQIxY": [
+		{
+			"type": 0,
+			"value": "Estados Unidos de América"
+		}
+	],
+	"AddressForm/messages/t+/kLN": [
+		{
+			"type": 0,
+			"value": "Italia"
+		}
+	],
+	"AddressForm/messages/tIboLQ": [
+		{
+			"type": 0,
+			"value": "Pakistán"
+		}
+	],
+	"AddressForm/messages/tK6E11": [
+		{
+			"type": 0,
+			"value": "Vanuatu"
+		}
+	],
+	"AddressForm/messages/tP/Oze": [
+		{
+			"type": 0,
+			"value": "Islas Marianas del Norte"
+		}
+	],
+	"AddressForm/messages/tYEJBL": [
+		{
+			"type": 0,
+			"value": "Lesoto"
+		}
+	],
+	"AddressForm/messages/ti2ZL4": [
+		{
+			"type": 0,
+			"value": "Tayikistán"
+		}
+	],
+	"AddressForm/messages/tpJaze": [
+		{
+			"type": 0,
+			"value": "Sri Lanka"
+		}
+	],
+	"AddressForm/messages/tzgM0t": [
+		{
+			"type": 0,
+			"value": "Mauritania"
+		}
+	],
+	"AddressForm/messages/u+YfYt": [
+		{
+			"type": 0,
+			"value": "Sudán"
+		}
+	],
+	"AddressForm/messages/u61Uce": [
+		{
+			"type": 0,
+			"value": "Turquía"
+		}
+	],
+	"AddressForm/messages/u91qY4": [
+		{
+			"type": 0,
+			"value": "Camerún"
+		}
+	],
+	"AddressForm/messages/uE53ck": [
+		{
+			"type": 0,
+			"value": "San Marino"
+		}
+	],
+	"AddressForm/messages/uKkCu3": [
+		{
+			"type": 0,
+			"value": "Irlanda"
+		}
+	],
+	"AddressForm/messages/ugRA1N": [
+		{
+			"type": 0,
+			"value": "Palestina, Estado de"
+		}
+	],
+	"AddressForm/messages/uz7aXC": [
+		{
+			"type": 0,
+			"value": "Liechtenstein"
+		}
+	],
+	"AddressForm/messages/v5+WFh": [
+		{
+			"type": 0,
+			"value": "Suiza"
+		}
+	],
+	"AddressForm/messages/v7V3TJ": [
+		{
+			"type": 0,
+			"value": "Filipinas"
+		}
+	],
+	"AddressForm/messages/vB4cu8": [
+		{
+			"type": 0,
+			"value": "Kiribati"
+		}
+	],
+	"AddressForm/messages/vVqZDn": [
+		{
+			"type": 0,
+			"value": "Omán"
+		}
+	],
+	"AddressForm/messages/vhPQFk": [
+		{
+			"type": 0,
+			"value": "Liberia"
+		}
+	],
+	"AddressForm/messages/wQRvOc": [
+		{
+			"type": 0,
+			"value": "Indonesia"
+		}
+	],
+	"AddressForm/messages/wb7BE+": [
+		{
+			"type": 0,
+			"value": "Gambia"
+		}
+	],
+	"AddressForm/messages/xQTOMT": [
+		{
+			"type": 0,
+			"value": "Zambia"
+		}
+	],
+	"AddressForm/messages/yEktUH": [
+		{
+			"type": 0,
+			"value": "Chipre"
+		}
+	],
+	"AddressForm/messages/yIymyU": [
+		{
+			"type": 0,
+			"value": "Kuwait"
+		}
+	],
+	"AddressForm/messages/ye07k9": [
+		{
+			"type": 0,
+			"value": "Bosnia y Herzegovina"
+		}
+	],
+	"AddressForm/messages/ykbN9o": [
+		{
+			"type": 0,
+			"value": "Hungría"
+		}
+	],
+	"AddressForm/messages/z7tOzp": [
+		{
+			"type": 0,
+			"value": "Tanzania"
+		}
+	],
+	"AddressForm/messages/zKLtUg": [
+		{
+			"type": 0,
+			"value": "Anguila"
+		}
+	],
+	"AddressForm/messages/zV566+": [
+		{
+			"type": 0,
+			"value": "Afganistán"
+		}
+	],
+	"AddressForm/messages/zVAmwy": [
+		{
+			"type": 0,
+			"value": "Burundi"
+		}
+	],
+	"AddressForm/messages/zyu9ti": [
+		{
+			"type": 0,
+			"value": "Bonaire, San Eustaquio y Saba"
+		}
+	],
+	"AddressSelectBox/messages//II2Kl": [
+		{
+			"type": 0,
+			"value": "editar dirección"
+		}
+	],
+	"AddressSelectBox/messages/X3KwgL": [
+		{
+			"type": 0,
+			"value": "No se puede enviar a esta dirección"
+		}
+	],
+	"AddressSelectBox/messages/rHpDYH": [
+		{
+			"type": 0,
+			"value": "editar"
+		}
+	],
+	"BillingAddressSection/messages/OLzmaE": [
+		{
+			"type": 0,
+			"value": "Dirección de facturación"
+		}
+	],
+	"BillingAddressSection/messages/qFJDT2": [
+		{
+			"type": 0,
+			"value": "Utilizar el envío como facturación"
+		}
+	],
+	"CheckoutForm/messages/+qM8r0": [
+		{
+			"type": 0,
+			"value": "Hay ciertos campos en el formulario de facturación que faltan o no son válidos"
+		}
+	],
+	"CheckoutForm/messages/UDs7fN": [
+		{
+			"type": 0,
+			"value": "pagar"
+		}
+	],
+	"CheckoutForm/messages/guvzy3": [
+		{
+			"type": 0,
+			"value": "Hay ciertos campos en el formulario de dirección de envío que faltan o no son válidos"
+		}
+	],
+	"CheckoutForm/messages/jLJToZ": [
+		{
+			"type": 0,
+			"value": "Pagar"
+		}
+	],
+	"Contact/messages//BXzqC": [
+		{
+			"type": 0,
+			"value": "¿Nuevo cliente?"
+		}
+	],
+	"Contact/messages//Iazj+": [
+		{
+			"type": 0,
+			"value": "¿Reenviar?"
+		}
+	],
+	"Contact/messages/5hAp9w": [
+		{
+			"type": 0,
+			"value": "¿Ya tienes una cuenta?"
+		}
+	],
+	"Contact/messages/Cu74z+": [
+		{
+			"type": 0,
+			"value": "Restablecer contraseña"
+		}
+	],
+	"Contact/messages/E8oPzo": [
+		{
+			"type": 0,
+			"value": "Cuenta"
+		}
+	],
+	"Contact/messages/HvSpKk": [
+		{
+			"type": 0,
+			"value": "Enviar enlace de restablecimiento de contraseña"
+		}
+	],
+	"Contact/messages/IbOUpe": [
+		{
+			"type": 0,
+			"value": "Contraseña"
+		}
+	],
+	"Contact/messages/JX+fPs": [
+		{
+			"type": 0,
+			"value": "Pago de invitados"
+		}
+	],
+	"Contact/messages/Ng/PvP": [
+		{
+			"type": 0,
+			"value": "Se ha enviado un enlace mágico a "
+		},
+		{
+			"type": 1,
+			"value": "email"
+		}
+	],
+	"Contact/messages/bHaSzm": [
+		{
+			"type": 0,
+			"value": "Confirmación de la contraseña"
+		}
+	],
+	"Contact/messages/dE8fQO": [
+		{
+			"type": 0,
+			"value": "cambiar sección"
+		}
+	],
+	"Contact/messages/ljwlqe": [
+		{
+			"type": 0,
+			"value": "Iniciar sesión"
+		}
+	],
+	"Contact/messages/reCzHf": [
+		{
+			"type": 0,
+			"value": "Cerrar sesión"
+		}
+	],
+	"Contact/messages/sXWoD4": [
+		{
+			"type": 0,
+			"value": "¿Has recordado tu contraseña?"
+		}
+	],
+	"Contact/messages/tCwlQg": [
+		{
+			"type": 0,
+			"value": "Correo electrónico"
+		}
+	],
+	"Contact/messages/uEp7uy": [
+		{
+			"type": 0,
+			"value": "¿Olvidaste tu contraseña?"
+		}
+	],
+	"Contact/messages/v8Xp5+": [
+		{
+			"type": 0,
+			"value": "Quiero crear una cuenta"
+		}
+	],
+	"Contact/messages/vPJeeQ": [
+		{
+			"type": 0,
+			"value": "Datos de contacto"
+		}
+	],
+	"Contact/messages/xRJQ5g": [
+		{
+			"type": 0,
+			"value": "Proporcione una nueva contraseña para su cuenta"
+		}
+	],
+	"DeliveryMethods/messages/927KCY": [
+		{
+			"type": 0,
+			"value": "Rellene la dirección de envío para ver los métodos de envío disponibles"
+		}
+	],
+	"DeliveryMethods/messages/DGFTo/": [
+		{
+			"type": 1,
+			"value": "min"
+		},
+		{
+			"type": 0,
+			"value": "-"
+		},
+		{
+			"type": 1,
+			"value": "max"
+		},
+		{
+			"type": 0,
+			"value": " días laborables"
+		}
+	],
+	"DeliveryMethods/messages/IPzOnb": [
+		{
+			"type": 0,
+			"value": "métodos de envío"
+		}
+	],
+	"DeliveryMethods/messages/TitWRN": [
+		{
+			"type": 0,
+			"value": "No se aplica"
+		}
+	],
+	"DeliveryMethods/messages/U/hMpC": [
+		{
+			"type": 0,
+			"value": "Métodos de entrega"
+		}
+	],
+	"DeliveryMethods/messages/ZHOxoA": [
+		{
+			"type": 0,
+			"value": "Método de entrega"
+		}
+	],
+	"DummyPayment/messages/2uijFy": [
+		{
+			"type": 0,
+			"value": "Deuda restante ("
+		},
+		{
+			"type": 1,
+			"value": "currency"
+		},
+		{
+			"type": 0,
+			"value": ")"
+		}
+	],
+	"DummyPayment/messages/9FUEKB": [
+		{
+			"type": 0,
+			"value": "Pago de prueba"
+		}
+	],
+	"DummyPayment/messages/Cm6A9z": [
+		{
+			"type": 0,
+			"value": "Cargando..."
+		}
+	],
+	"DummyPayment/messages/Hm9+RE": [
+		{
+			"type": 0,
+			"value": "Algo salió mal"
+		}
+	],
+	"DummyPayment/messages/S0J+0M": [
+		{
+			"type": 0,
+			"value": "Pago de prueba"
+		}
+	],
+	"DummyPayment/messages/eJ2qAk": [
+		{
+			"type": 0,
+			"value": "Precio total"
+		}
+	],
+	"DummyPayment/messages/qCpYR4": [
+		{
+			"type": 0,
+			"value": "Ya se ha pagado"
+		}
+	],
+	"EmptyCartPage/messages/CLKTRp": [
+		{
+			"type": 0,
+			"value": "Volver a la tienda"
+		}
+	],
+	"EmptyCartPage/messages/CMDZDI": [
+		{
+			"type": 0,
+			"value": "Añade algo a la cesta para continuar"
+		}
+	],
+	"EmptyCartPage/messages/qfic6J": [
+		{
+			"type": 0,
+			"value": "Tu cesta está vacía"
+		}
+	],
+	"ManualSaveAddressForm/messages/BfROpq": [
+		{
+			"type": 0,
+			"value": "Guardar dirección"
+		}
+	],
+	"ManualSaveAddressForm/messages/NeZoqm": [
+		{
+			"type": 0,
+			"value": "Eliminar dirección"
+		}
+	],
+	"ManualSaveAddressForm/messages/a4P38R": [
+		{
+			"type": 0,
+			"value": "Cancelar edición"
+		}
+	],
+	"ManualSaveAddressForm/messages/js69XA": [
+		{
+			"type": 0,
+			"value": "Cancelar"
+		}
+	],
+	"ManualSaveAddressForm/messages/khhC7s": [
+		{
+			"type": 0,
+			"value": "Guardar dirección"
+		}
+	],
+	"OrderInfo/messages/4IPxGY": [
+		{
+			"type": 0,
+			"value": "El pedido no ha sido pagado. Si usted ordenó un pago - comprobar para la confirmación."
+		}
+	],
+	"OrderInfo/messages/9VWqRC": [
+		{
+			"type": 0,
+			"value": "Pago"
+		}
+	],
+	"OrderInfo/messages/H+et6P": [
+		{
+			"type": 0,
+			"value": "Pagar el pedido"
+		}
+	],
+	"OrderInfo/messages/MY0OAh": [
+		{
+			"type": 0,
+			"value": "Su pago está siendo procesado."
+		}
+	],
+	"OrderInfo/messages/VjsJkY": [
+		{
+			"type": 0,
+			"value": "Pedido #"
+		},
+		{
+			"type": 1,
+			"value": "number"
+		},
+		{
+			"type": 0,
+			"value": " confirmado"
+		}
+	],
+	"OrderInfo/messages/fdFTXC": [
+		{
+			"type": 0,
+			"value": "pago del pedido"
+		}
+	],
+	"OrderInfo/messages/nkRLWD": [
+		{
+			"type": 0,
+			"value": "No hemos podido obtener información sobre su pago. Si ha ordenado un pago - compruebe la confirmación y póngase en contacto con la tienda."
+		}
+	],
+	"OrderInfo/messages/ty5n+J": [
+		{
+			"type": 0,
+			"value": "Gracias por hacer su pedido. Lo hemos recibido y nos pondremos en contacto con usted en cuanto se envíe su paquete. Se ha enviado un correo electrónico de confirmación a "
+		},
+		{
+			"type": 1,
+			"value": "email"
+		},
+		{
+			"type": 0,
+			"value": "."
+		}
+	],
+	"OrderInfo/messages/vcXZR6": [
+		{
+			"type": 0,
+			"value": "Hemos recibido su pago"
+		}
+	],
+	"PageHeader/messages/eXrxj4": [
+		{
+			"type": 0,
+			"value": "Inglés (EEUU)"
+		}
+	],
+	"PageHeader/messages/kd+Ya5": [
+		{
+			"type": 0,
+			"value": "Polaco"
+		}
+	],
+	"PageNotFound/messages/Q7DOPP": [
+		{
+			"type": 0,
+			"value": "No hemos podido obtener información sobre tu pago. Vuelve a la tienda e inténtalo de nuevo."
+		}
+	],
+	"PasswordInput/messages/fClTvW": [
+		{
+			"type": 0,
+			"value": "cambiar la visibilidad de la contraseña"
+		}
+	],
+	"PaymentSection/messages/8YE5b7": [
+		{
+			"type": 0,
+			"value": "Proveedores de pago"
+		}
+	],
+	"PaymentSection/messages/FK5Bg/": [
+		{
+			"type": 0,
+			"value": "proveedores de pago"
+		}
+	],
+	"PaymentSection/messages/bFYz7Q": [
+		{
+			"type": 0,
+			"value": "Entrega"
+		}
+	],
+	"PaymentSection/messages/im88Fe": [
+		{
+			"type": 0,
+			"value": "Tarjeta de crédito"
+		}
+	],
+	"PaymentSection/messages/jdRifS": [
+		{
+			"type": 0,
+			"value": "PayPal"
+		}
+	],
+	"PaymentSection/messages/p7Zg+S": [
+		{
+			"type": 0,
+			"value": "Apple Pay"
+		}
+	],
+	"PaymentSection/messages/xXCQ+K": [
+		{
+			"type": 0,
+			"value": "De prueba"
+		}
+	],
+	"RootViews/messages/Cm6A9z": [
+		{
+			"type": 0,
+			"value": "Cargando..."
+		}
+	],
+	"ShippingAddressSection/messages/BUg4yp": [
+		{
+			"type": 0,
+			"value": "Dirección de envío"
+		}
+	],
+	"Summary/messages/+3aZyi": [
+		{
+			"type": 0,
+			"value": "Costo de envío"
+		}
+	],
+	"Summary/messages/0e730y": [
+		{
+			"type": 0,
+			"value": "precio de la pieza única"
+		}
+	],
+	"Summary/messages/5J0ywS": [
+		{
+			"type": 0,
+			"value": "cantidad"
+		}
+	],
+	"Summary/messages/62kM+I": [
+		{
+			"type": 0,
+			"value": "Resumen"
+		}
+	],
+	"Summary/messages/8yNMpu": [
+		{
+			"type": 0,
+			"value": "eliminar código promocional"
+		}
+	],
+	"Summary/messages/9hELnS": [
+		{
+			"type": 0,
+			"value": "precio subtotal"
+		}
+	],
+	"Summary/messages/CDMWR5": [
+		{
+			"type": 0,
+			"value": "Tarjeta de regalo"
+		}
+	],
+	"Summary/messages/DrvEK3": [
+		{
+			"type": 0,
+			"value": "precio total"
+		}
+	],
+	"Summary/messages/I+Nu5r": [
+		{
+			"type": 0,
+			"value": "Gastos de envío"
+		}
+	],
+	"Summary/messages/LXBBAY": [
+		{
+			"type": 0,
+			"value": "Tarjeta de regalo: "
+		},
+		{
+			"type": 1,
+			"value": "giftCardCode"
+		}
+	],
+	"Summary/messages/LmzMmY": [
+		{
+			"type": 0,
+			"value": "cada uno"
+		}
+	],
+	"Summary/messages/MgTWsL": [
+		{
+			"type": 0,
+			"value": "Vale: "
+		},
+		{
+			"type": 1,
+			"value": "voucherCode"
+		}
+	],
+	"Summary/messages/U9SMA8": [
+		{
+			"type": 0,
+			"value": "Añadir tarjeta de regalo o código de descuento"
+		}
+	],
+	"Summary/messages/ZAp08H": [
+		{
+			"type": 0,
+			"value": "resumen nombre del artículo"
+		}
+	],
+	"Summary/messages/eUwD3W": [
+		{
+			"type": 0,
+			"value": "incluye "
+		},
+		{
+			"type": 1,
+			"value": "taxCost"
+		},
+		{
+			"type": 0,
+			"value": " impuestos"
+		}
+	],
+	"Summary/messages/fDpo5E": [
+		{
+			"type": 0,
+			"value": "Precio total"
+		}
+	],
+	"Summary/messages/gfKEVQ": [
+		{
+			"type": 0,
+			"value": "Aplicar"
+		}
+	],
+	"Summary/messages/r/8W3/": [
+		{
+			"type": 0,
+			"value": "precio sin descuento"
+		}
+	],
+	"Summary/messages/sUYq4a": [
+		{
+			"type": 0,
+			"value": "Aplicar"
+		}
+	],
+	"Summary/messages/svpQPb": [
+		{
+			"type": 0,
+			"value": "vale"
+		}
+	],
+	"Summary/messages/xUvWaP": [
+		{
+			"type": 0,
+			"value": "Subtotal"
+		}
+	],
+	"Summary/messages/ydrYcS": [
+		{
+			"type": 0,
+			"value": "nombre de la variante"
+		}
+	],
+	"UserAddressSection/messages/E6w89b": [
+		{
+			"type": 0,
+			"value": "añadir dirección"
+		}
+	],
+	"UserAddressSection/messages/OMv17k": [
+		{
+			"type": 0,
+			"value": "direcciones del usuario de facturación"
+		}
+	],
+	"UserAddressSection/messages/YpnLAd": [
+		{
+			"type": 0,
+			"value": "direcciones del usuario de envío"
+		}
+	],
+	"UserAddressSection/messages/lhYBSH": [
+		{
+			"type": 0,
+			"value": "Actualmente no tiene ninguna dirección guardada."
+		}
+	],
+	"UserAddressSection/messages/xPCC/5": [
+		{
+			"type": 0,
+			"value": "Añadir dirección"
+		}
+	],
+	"lib/commonMessages/03Jmny": [
+		{
+			"type": 0,
+			"value": "Procesando..."
+		}
+	],
+	"lib/commonMessages/9NmWSQ": [
+		{
+			"type": 0,
+			"value": "ícono de comprobación"
+		}
+	],
+	"lib/commonMessages/sklVAb": [
+		{
+			"type": 0,
+			"value": "eliminar ícono"
+		}
+	],
+	"useAddressFormUtils/messages/0KU6nT": [
+		{
+			"type": 0,
+			"value": "Código postal"
+		}
+	],
+	"useAddressFormUtils/messages/7bJ7Hd": [
+		{
+			"type": 0,
+			"value": "Zona de la ciudad"
+		}
+	],
+	"useAddressFormUtils/messages/Jbz2k6": [
+		{
+			"type": 0,
+			"value": "Nombre"
+		}
+	],
+	"useAddressFormUtils/messages/K/a8rS": [
+		{
+			"type": 0,
+			"value": "Apellido"
+		}
+	],
+	"useAddressFormUtils/messages/KyH9NK": [
+		{
+			"type": 0,
+			"value": "País"
+		}
+	],
+	"useAddressFormUtils/messages/OxxX1m": [
+		{
+			"type": 0,
+			"value": "Ciudad postal"
+		}
+	],
+	"useAddressFormUtils/messages/QXvSmh": [
+		{
+			"type": 0,
+			"value": "Compañía"
+		}
+	],
+	"useAddressFormUtils/messages/X/8oa4": [
+		{
+			"type": 0,
+			"value": "Distrito"
+		}
+	],
+	"useAddressFormUtils/messages/X51P1g": [
+		{
+			"type": 0,
+			"value": "Ciudad"
+		}
+	],
+	"useAddressFormUtils/messages/XI2F1P": [
+		{
+			"type": 0,
+			"value": "Provincia"
+		}
+	],
+	"useAddressFormUtils/messages/Y6dLvp": [
+		{
+			"type": 0,
+			"value": "Calle"
+		}
+	],
+	"useAddressFormUtils/messages/Zdvjjr": [
+		{
+			"type": 0,
+			"value": "Estado"
+		}
+	],
+	"useAddressFormUtils/messages/dxC3yk": [
+		{
+			"type": 0,
+			"value": "Zona del país"
+		}
+	],
+	"useAddressFormUtils/messages/ljLaVr": [
+		{
+			"type": 0,
+			"value": "Número telefónico"
+		}
+	],
+	"useAddressFormUtils/messages/mbEUWh": [
+		{
+			"type": 0,
+			"value": "Calle (continúa)"
+		}
+	],
+	"useAddressFormUtils/messages/tGSbvd": [
+		{
+			"type": 0,
+			"value": "Código postal"
+		}
+	],
+	"useAlerts/messages/2leXNc": [
+		{
+			"type": 0,
+			"value": "Se ha proporcionado un código postal no válido para la dirección de envío"
+		}
+	],
+	"useAlerts/messages/7/Bo7+": [
+		{
+			"type": 0,
+			"value": "Por favor, rellene el correo electrónico antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/7yexjS": [
+		{
+			"type": 0,
+			"value": "Lo sentimos, algo ha ido mal. Por favor, inténtelo de nuevo en un momento."
+		}
+	],
+	"useAlerts/messages/8fk/m5": [
+		{
+			"type": 0,
+			"value": "Se proporcionó un código postal inválido para la dirección de facturación"
+		}
+	],
+	"useAlerts/messages/ESuR0A": [
+		{
+			"type": 0,
+			"value": "La cuenta con el correo electrónico proporcionado está inactiva"
+		}
+	],
+	"useAlerts/messages/Em5uvP": [
+		{
+			"type": 0,
+			"value": "Por favor, introduzca una dirección de envío válida antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/EwTHLm": [
+		{
+			"type": 0,
+			"value": "El token de restablecimiento de contraseña proporcionado ha caducado o no es válido"
+		}
+	],
+	"useAlerts/messages/FggIw/": [
+		{
+			"type": 0,
+			"value": "No se ha encontrado el usuario con el correo electrónico proporcionado"
+		}
+	],
+	"useAlerts/messages/JBUgUT": [
+		{
+			"type": 0,
+			"value": "Por favor, seleccione la zona del país para la dirección de facturación"
+		}
+	],
+	"useAlerts/messages/KXWHsh": [
+		{
+			"type": 0,
+			"value": "No se ha podido actualizar la línea - se ha superado el límite de compra para este artículo"
+		}
+	],
+	"useAlerts/messages/LrYpGU": [
+		{
+			"type": 0,
+			"value": "No se ha encontrado la cuenta con el correo electrónico proporcionado"
+		}
+	],
+	"useAlerts/messages/Vx4W5S": [
+		{
+			"type": 0,
+			"value": "No se puede crear una cuenta con una dirección de correo electrónico ya utilizada"
+		}
+	],
+	"useAlerts/messages/Xd2N1c": [
+		{
+			"type": 0,
+			"value": "La contraseña proporcionada es demasiado corta"
+		}
+	],
+	"useAlerts/messages/a77ZZO": [
+		{
+			"type": 0,
+			"value": "El correo electrónico no puede estar vacío"
+		}
+	],
+	"useAlerts/messages/b1SQCj": [
+		{
+			"type": 0,
+			"value": "Por favor, seleccione un método de pago antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/cRtX18": [
+		{
+			"type": 0,
+			"value": "Por favor, proporcione una dirección de correo electrónico válida antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/dCkgOw": [
+		{
+			"type": 0,
+			"value": "Por favor, establezca la contraseña del usuario antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/dKzVev": [
+		{
+			"type": 0,
+			"value": "La dirección de correo electrónico proporcionada no es válida"
+		}
+	],
+	"useAlerts/messages/glpqLA": [
+		{
+			"type": 0,
+			"value": "No se ha podido finalizar la compra, inténtelo de nuevo"
+		}
+	],
+	"useAlerts/messages/iTl+Qz": [
+		{
+			"type": 0,
+			"value": "La cuenta no ha sido confirmada"
+		}
+	],
+	"useAlerts/messages/k0+Kez": [
+		{
+			"type": 0,
+			"value": "Por favor, elija el método de entrega antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/kiBZQ6": [
+		{
+			"type": 0,
+			"value": "Por favor, proporcione una dirección de facturación válida antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/mJ81Pa": [
+		{
+			"type": 0,
+			"value": "La contraseña proporcionada es demasiado corta"
+		}
+	],
+	"useAlerts/messages/nX71XF": [
+		{
+			"type": 0,
+			"value": "Las credenciales proporcionadas para iniciar sesión no son válidas"
+		}
+	],
+	"useAlerts/messages/ow9nan": [
+		{
+			"type": 0,
+			"value": "Por favor, proporcione una dirección de envío válida antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/oyFho2": [
+		{
+			"type": 0,
+			"value": "No se ha podido actualizar la línea - no hay suficientes existencias en el almacén"
+		}
+	],
+	"useAlerts/messages/rVGqj8": [
+		{
+			"type": 0,
+			"value": "Por favor, proporcione un correo electrónico válido antes de finalizar la compra"
+		}
+	],
+	"useAlerts/messages/uc7gzX": [
+		{
+			"type": 0,
+			"value": "El código postal proporcionado en el formulario de dirección no es válido"
+		}
+	],
+	"useAlerts/messages/vn9b/m": [
+		{
+			"type": 0,
+			"value": "Por favor, seleccione la zona del país para la dirección de envío"
+		}
+	],
+	"useAlerts/messages/wLQO7F": [
+		{
+			"type": 0,
+			"value": "El código postal proporcionado en el formulario de dirección no es válido"
+		}
+	],
+	"useAlerts/messages/wQ7eb8": [
+		{
+			"type": 0,
+			"value": "La cuenta de usuario con el correo electrónico proporcionado está inactiva"
+		}
+	],
+	"useAlerts/messages/yGh+vi": [
+		{
+			"type": 0,
+			"value": "El código de promoción proporcionado no es válido"
+		}
+	],
+	"useErrorMessages/messages/+WMTds": [
+		{
+			"type": 0,
+			"value": "La cantidad elegida es superior al límite permitido."
+		}
+	],
+	"useErrorMessages/messages/GmjKcs": [
+		{
+			"type": 0,
+			"value": "Campo obligatorio"
+		}
+	],
+	"useErrorMessages/messages/GrUSxl": [
+		{
+			"type": 0,
+			"value": "El valor debe ser único"
+		}
+	],
+	"useErrorMessages/messages/OOj8Aa": [
+		{
+			"type": 0,
+			"value": "No hay suficientes existencias del artículo elegido."
+		}
+	],
+	"useErrorMessages/messages/RcmVPj": [
+		{
+			"type": 0,
+			"value": "Faltan campos en el formulario de dirección:"
+		}
+	],
+	"useErrorMessages/messages/W/xrYy": [
+		{
+			"type": 0,
+			"value": "La contraseña proporcionada es demasiado corta. La longitud mínima es de 8 caracteres."
+		}
+	],
+	"useErrorMessages/messages/YaHFRg": [
+		{
+			"type": 0,
+			"value": "Las credenciales proporcionadas en el inicio de sesión no son válidas.."
+		}
+	],
+	"useErrorMessages/messages/ZnQ753": [
+		{
+			"type": 0,
+			"value": "La contraseña proporcionada no es válida.."
+		}
+	],
+	"useErrorMessages/messages/ebt/9V": [
+		{
+			"type": 0,
+			"value": "Valor no válido."
+		}
+	],
+	"useErrorMessages/messages/v+nLdX": [
+		{
+			"type": 0,
+			"value": "La contraseña proporcionada es demasiado común. Utilice algo más sofisticado."
+		}
+	],
+	"useErrorMessages/messages/wVsmCj": [
+		{
+			"type": 0,
+			"value": "La contraseña proporcionada es demasiado similar a su contraseña anterior."
+		}
+	]
+}

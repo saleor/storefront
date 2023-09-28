@@ -1,9 +1,9 @@
 "use client";
-import { CurrentUserDocument, type CurrentUserQuery } from "@/gql/graphql";
 import { gql, useQuery } from "@apollo/client";
 import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { StarIcon } from "lucide-react";
 import Link from "next/link";
+import { CurrentUserDocument, type CurrentUserQuery } from "@/gql/graphql";
 
 export function Topbar() {
 	const { signOut } = useSaleorAuthContext();
