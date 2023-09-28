@@ -8,7 +8,7 @@
 		"build": "pnpm run generate && pnpm run i18n && next build",
 		"start": "next start",
 		"lint": "next lint --dir src --fix",
-		"codegen": "graphql-codegen --config .graphqlrc.ts",
+		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"prepare": "husky install",
 		"i18n:extract": "formatjs extract 'src/checkout/src/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file src/checkout/content/locales/en-US.json",
 		"i18n:compile": "formatjs compile-folder --ast --format transifex src/checkout/content/locales src/checkout/content/compiled-locales",
