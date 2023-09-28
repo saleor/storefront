@@ -71,5 +71,9 @@
 		"tailwindcss": "3.3.3",
 		"typescript": "5.2.2",
 		"wonka": "6.3.4"
+	},
+	"engines": {
+		"pnpm": ">=8.8.0",
+		"node": "^20.0.0"
 	}
 }

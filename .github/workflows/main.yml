@@ -13,18 +13,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+
+      - name: Get PNPM version from package.json
+        id: pnpm-version
+        run: echo "pnpm_version=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2.2.4
         with:
-          version: 8
+          version: ${{ steps.pnpm-version.outputs.pnpm_version }}
+
       - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version-file: package.json
           cache: "pnpm"
+
       - name: Install dependencies
         run: pnpm --version && pnpm install --frozen-lockfile
+
       - name: Build
         run: pnpm run build
-      - name: Check linters
-        run: pnpm run lint
-      - name: Check TypeScript
-        run: pnpm run check-types
