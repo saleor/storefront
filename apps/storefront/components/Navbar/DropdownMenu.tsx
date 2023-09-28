@@ -23,7 +23,6 @@ function Dropdown({ menuItem, isNews }: DropdownProps) {
         <Link href={paths.news.$url()} passHref>
           <li className={styles["dropdown-trigger"]}>{menuItem.name}</li>
         </Link>
-        {/* rest of the DropdownMenu logic if needed */}
       </div>
     );
   }
