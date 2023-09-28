@@ -8,6 +8,8 @@ concurrency:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    env:
+      SALEOR_API_URL: ${{ vars.SALEOR_API_URL }}
 
     steps:
       - uses: actions/checkout@v3
