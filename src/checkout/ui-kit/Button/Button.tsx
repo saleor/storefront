@@ -27,7 +27,7 @@ export const Button: FC<ButtonProps> = ({
 	...rest
 }) => {
 	const classes = clsx(
-		"inline-flex h-10 items-center justify-center whitespace-nowrap rounded border py-2 active:outline-none",
+		"inline-flex h-10 items-center justify-center whitespace-nowrap rounded border active:outline-none",
 		{
 			"bg-slate-400 hover:bg-slate-300 hover:border-slate-600 active:bg-slate-300 disabled:border-none disabled:bg-slate-200":
 				variant === "primary",

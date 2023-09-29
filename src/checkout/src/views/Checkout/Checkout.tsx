@@ -28,7 +28,7 @@ export const Checkout = () => {
 		<ErrorBoundary FallbackComponent={PageNotFound}>
 			<div className="page" id={PAGE_ID}>
 				<PageHeader />
-				<div className="page-content">
+				<div className="grid grid-cols-1 gap-x-16 lg:grid-cols-2">
 					{isEmptyCart ? (
 						<EmptyCartPage />
 					) : (
@@ -36,7 +36,6 @@ export const Checkout = () => {
 							<Suspense fallback={<CheckoutFormSkeleton />}>
 								<CheckoutForm />
 							</Suspense>
-							<div className="page-divider" />
 							<Suspense fallback={<SummarySkeleton />}>
 								<Summary {...checkout} />
 							</Suspense>

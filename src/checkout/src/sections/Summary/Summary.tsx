@@ -54,7 +54,7 @@ export const Summary: FC<SummaryProps> = ({
 	});
 
 	return (
-		<div className="flex h-fit w-full flex-col overflow-hidden rounded-lg border border-slate-400 lg:w-1/2 lg:overflow-visible">
+		<div className="flex h-fit w-full flex-col overflow-hidden rounded border border-slate-400 lg:overflow-visible">
 			<div
 				className={clsx(
 					"z-50 flex flex-row items-baseline justify-between px-6 py-4 lg:pointer-events-none",

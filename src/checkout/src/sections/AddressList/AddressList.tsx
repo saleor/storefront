@@ -44,7 +44,7 @@ export const AddressList: React.FC<AddressListProps> = ({
 					ariaLabel={formatMessage(userAddressLabels.addAddress)}
 					onClick={onAddAddressClick}
 					label={formatMessage(userAddressMessages.addAddress)}
-					className="mb-4 w-full"
+					className="w-full"
 				/>
 				<SelectBoxGroup label={formatMessage(userAddressLabels.userAddresses)}>
 					{addressList.map(({ id, ...rest }: AddressFragment) => {
