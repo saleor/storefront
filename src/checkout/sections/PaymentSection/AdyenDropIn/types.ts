@@ -1,6 +1,6 @@
 import { type CardElementData } from "@adyen/adyen-web/dist/types/components/Card/types";
 import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
-import { type PaymentMethodsResponseObject } from "@adyen/adyen-web/dist/types/core/ProcessResponse/PaymentMethodsResponse/types";
+import { type PaymentMethodsResponse } from "@adyen/adyen-web/dist/types/core/ProcessResponse/PaymentMethodsResponse/types";
 import { type PaymentResponse } from "@adyen/adyen-web/dist/types/components/types";
 
 export const adyenGatewayId = "app.saleor.adyen";
@@ -10,7 +10,7 @@ export type AdyenGatewayId = typeof adyenGatewayId;
 type AdyenResultCode = "Authorised" | "Error" | "Pending" | "PresentToShopper" | "Refused" | "Received";
 
 export interface AdyenGatewayInitializePayload {
-	paymentMethodsResponse: PaymentMethodsResponseObject;
+	paymentMethodsResponse: PaymentMethodsResponse;
 	clientKey: string;
 	environment: string;
 }
