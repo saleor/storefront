@@ -5,7 +5,7 @@ loadEnvConfig(process.cwd());
 
 const config: CodegenConfig = {
 	overwrite: true,
-	schema: process.env.SALEOR_API_URL,
+	schema: process.env.NEXT_PUBLIC_SALEOR_API_URL,
 	documents: "src/graphql/**/*.graphql",
 	generates: {
 		"src/gql/": {
