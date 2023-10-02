@@ -12,7 +12,7 @@ import {
 	getEmptyAddressFormData,
 	isMatchingAddressFormData,
 } from "@/checkout/src/components/AddressForm/utils";
-import { type BlurHandler, type ChangeHandler, useFormContext } from "@/checkout/src/hooks/useForm";
+import { type ChangeHandler, useFormContext, type BlurHandler } from "@/checkout/src/hooks/useForm";
 import { useAddressFormUtils } from "@/checkout/src/components/AddressForm/useAddressFormUtils";
 import { usePhoneNumberValidator } from "@/checkout/src/lib/utils/phoneNumber";
 
@@ -79,7 +79,7 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 				<Title className="flex-1">{title}</Title>
 				<CountrySelect only={availableCountries} />
 			</div>
-			<div className="mt-2">
+			<div className="mt-2 grid grid-cols-1 gap-4">
 				{orderedAddressFields.map((field) => {
 					const isRequired = isRequiredField(field);
 					const label = getFieldLabel(field);
@@ -89,7 +89,6 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 						name: field,
 						label: label,
 						autoComplete: autocompleteTags[field],
-						optional: isRequired ? undefined : true,
 						validate: customValidators[field],
 						...fieldProps,
 					};
@@ -99,7 +98,6 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 							<Select
 								{...commonProps}
 								key={field}
-								classNames={{ container: "mb-4" }}
 								placeholder={getFieldLabel("countryArea")}
 								options={
 									countryAreaChoices?.map(({ verbose, raw }) => ({
@@ -111,7 +109,9 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 						);
 					}
 
-					return <TextInput {...commonProps} key={field} type={typeTags[field] || "text"} />;
+					return (
+						<TextInput required={isRequired} {...commonProps} key={field} type={typeTags[field] || "text"} />
+					);
 				})}
 				{children}
 			</div>

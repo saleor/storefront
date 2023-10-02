@@ -30,24 +30,30 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 			onSectionChange={onSectionChange}
 		>
 			<FormProvider form={form}>
-				<TextInput
-					name="email"
-					label={formatMessage(contactMessages.email)}
-					onChange={(event) => {
-						handleChange(event);
-						onEmailChange(event.target.value);
-					}}
-				/>
-				<Checkbox
-					name="createAccount"
-					label={formatMessage(contactMessages.wantToCreateAccount)}
-					data-testid={"createAccountCheckbox"}
-				/>
-				{createAccount && (
-					<div className="mt-2">
-						<PasswordInput name="password" label={formatMessage(contactMessages.passwordWithRequirements)} />
-					</div>
-				)}
+				<div className="grid grid-cols-1 gap-4">
+					<TextInput
+						required
+						name="email"
+						label={formatMessage(contactMessages.email)}
+						onChange={(event) => {
+							handleChange(event);
+							onEmailChange(event.currentTarget.value);
+						}}
+					/>
+					<Checkbox
+						name="createAccount"
+						label={formatMessage(contactMessages.wantToCreateAccount)}
+						data-testid={"createAccountCheckbox"}
+					/>
+					{createAccount && (
+						<div className="mt-2">
+							<PasswordInput
+								name="password"
+								label={formatMessage(contactMessages.passwordWithRequirements)}
+							/>
+						</div>
+					)}
+				</div>
 			</FormProvider>
 		</SignInFormContainer>
 	);

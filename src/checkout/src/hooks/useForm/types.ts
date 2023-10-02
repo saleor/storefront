@@ -1,6 +1,6 @@
 import { type FormikConfig, type FormikErrors, type FormikHelpers, type useFormik } from "formik";
 import { type DebouncedFunc } from "lodash-es";
-import { type FocusEvent } from "react";
+import { type FocusEventHandler } from "react";
 import { type FormSubmitFn } from "@/checkout/src/hooks/useFormSubmit";
 
 export type FormDataBase = Record<string, any>;
@@ -44,5 +44,4 @@ export type FormHelpers<TData extends FormDataBase> = Omit<
 	Pick<UseFormReturn<TData>, "validateForm" | "setTouched">;
 
 export type ChangeHandler<TElement = any> = (e: React.ChangeEvent<TElement>) => void;
-
-export type BlurHandler = (event: FocusEvent<HTMLInputElement>) => void;
+export type BlurHandler = FocusEventHandler<HTMLSelectElement | HTMLInputElement>;

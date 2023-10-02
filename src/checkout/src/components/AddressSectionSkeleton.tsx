@@ -3,7 +3,7 @@ import { AddressSkeleton } from "./AddressSkeleton";
 import { Skeleton } from "@/checkout/src/components";
 
 export const AddressSectionSkeleton = () => (
-	<div className="px-4 pb-6 pt-5">
+	<div className="py-6">
 		<Skeleton variant="title" className="w-1/3" />
 		<AddressSkeleton />
 		<Skeleton className="mt-4 w-3/4" />

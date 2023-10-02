@@ -1,7 +1,5 @@
 import { useMemo } from "react";
-import { summaryMessages } from "./messages";
 import { type CheckoutLineFragment } from "@/checkout/src/graphql";
-import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout/src/components/TextInput";
 
 import { Skeleton } from "@/checkout/src/components";
@@ -14,7 +12,6 @@ interface SummaryItemMoneyEditableSectionProps {
 }
 
 export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableSectionProps> = ({ line }) => {
-	const formatMessage = useFormattedMessages();
 	const { form, onLineDelete } = useSummaryItemForm({ line });
 
 	const {
@@ -50,16 +47,10 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 	};
 
 	return (
-		<div className="relative -top-2 flex h-20 flex-col items-end">
+		<div className="relative flex h-24 flex-col items-end">
 			<div className="flex flex-row items-baseline">
-				<p className="mr-2 text-xs">{formatMessage(summaryMessages.quantity)}:</p>
 				<FormProvider form={form}>
-					<TextInput
-						onBlur={handleQuantityInputBlur}
-						name="quantity"
-						classNames={{ container: "!w-13 !mb-0", input: "text-center !h-8" }}
-						label=""
-					/>
+					<TextInput required onBlur={handleQuantityInputBlur} name="quantity" label="Quantity" />
 				</FormProvider>
 			</div>
 			{isSubmitting ? (
@@ -68,7 +59,7 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 					<Skeleton className="w-2/3" />
 				</div>
 			) : (
-				<SummaryItemMoneyInfo {...line} classNames={{ container: "mt-1" }} />
+				<SummaryItemMoneyInfo {...line} />
 			)}
 		</div>
 	);

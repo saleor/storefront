@@ -1,7 +1,6 @@
 import React from "react";
 import clsx from "clsx";
 import { summaryLabels, summaryMessages } from "./messages";
-import { type ClassNames } from "@/checkout/ui-kit";
 import { Money } from "@/checkout/src/components";
 import { useFormattedMessages } from "@/checkout/src/hooks/useFormattedMessages";
 import { type Money as MoneyType } from "@/checkout/src/graphql";
@@ -9,7 +8,6 @@ import { getFormattedMoney } from "@/checkout/src/lib/utils/money";
 import { type GrossMoney } from "@/checkout/src/lib/globalTypes";
 
 interface SummaryItemMoneyInfoProps {
-	classNames?: ClassNames<"container">;
 	unitPrice: GrossMoney;
 	undiscountedUnitPrice: MoneyType;
 	quantity: number;
@@ -19,7 +17,6 @@ export const SummaryItemMoneyInfo: React.FC<SummaryItemMoneyInfoProps> = ({
 	unitPrice,
 	quantity,
 	undiscountedUnitPrice,
-	classNames = {},
 }) => {
 	const formatMessage = useFormattedMessages();
 	const multiplePieces = quantity > 1;
@@ -28,7 +25,7 @@ export const SummaryItemMoneyInfo: React.FC<SummaryItemMoneyInfoProps> = ({
 
 	return (
 		<>
-			<div className={clsx("flex flex-row", classNames.container)}>
+			<div className="flex flex-row">
 				{onSale && (
 					<Money
 						ariaLabel={formatMessage(summaryLabels.undiscountedPrice)}

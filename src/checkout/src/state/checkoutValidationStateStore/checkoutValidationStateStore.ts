@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 
 export type CheckoutFormScope = "shippingAddress" | "billingAddress" | "guestUser";
 type CheckoutFormValidationStatus = "valid" | "invalid" | "validating";

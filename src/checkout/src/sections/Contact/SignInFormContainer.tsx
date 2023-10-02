@@ -23,7 +23,7 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
 	const formatMessage = useFormattedMessages();
 
 	return (
-		<div className="p-4">
+		<div className="py-4">
 			<div className="mb-2 flex flex-col">
 				<div className="flex flex-row items-baseline justify-between">
 					<Title>{title}</Title>

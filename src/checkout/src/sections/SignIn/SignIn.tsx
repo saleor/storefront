@@ -74,11 +74,12 @@ export const SignIn: React.FC<SignInProps> = ({
 		>
 			<FormProvider form={form}>
 				<TextInput
+					required
 					name="email"
 					label={formatMessage(contactMessages.email)}
 					onChange={(event) => {
 						handleChange(event);
-						onEmailChange(event.target.value);
+						onEmailChange(event.currentTarget.value);
 					}}
 				/>
 				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />

@@ -10,7 +10,7 @@ export const SummarySkeleton = () => (
 			<Skeleton className="block h-8 w-5/12 sm:hidden" />
 		</div>
 		<div className="hidden sm:block">
-			<div className="static mb-8 flex h-20 flex-row items-start items-center justify-between">
+			<div className="static mb-8 flex h-24 flex-row  items-center justify-between">
 				<div className="flex flex-col flex-wrap self-stretch">
 					<Skeleton className="h-18 w-18 mr-4" />
 					<Skeleton className="w-22 mb-4" />
@@ -22,7 +22,7 @@ export const SummarySkeleton = () => (
 					<Skeleton className="w-18 mb-4" />
 				</div>
 			</div>
-			<div className="static mb-4 flex h-20 flex-row items-start items-center justify-between">
+			<div className="static mb-4 flex h-24 flex-row  items-center justify-between">
 				<div className="flex flex-col flex-wrap self-stretch">
 					<Skeleton className="h-18 w-18 mr-4" />
 					<Skeleton className="w-22 mb-4" />

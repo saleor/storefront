@@ -17,5 +17,5 @@ export const PaymentMethods = () => {
 		return <PaymentSectionSkeleton />;
 	}
 
-	return <div className="mb-3">{adyen ? <AdyenDropIn config={adyen} /> : null}</div>;
+	return <div className="mb-8">{adyen ? <AdyenDropIn config={adyen} /> : null}</div>;
 };

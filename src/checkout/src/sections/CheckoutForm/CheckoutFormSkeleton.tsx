@@ -7,7 +7,7 @@ import { AddressSectionSkeleton } from "@/checkout/src/components/AddressSection
 
 export const CheckoutFormSkeleton = () => (
 	<div className="flex flex-col items-end">
-		<div className="flex w-full flex-col rounded border border-slate-400">
+		<div className="flex w-full flex-col rounded ">
 			<ContactSkeleton />
 			<Divider />
 			<AddressSectionSkeleton />

@@ -12,7 +12,7 @@ export function AddButton() {
 			disabled={pending}
 			className={clsx(
 				pending && "cursor-not-allowed",
-				"w-full max-w-md items-center rounded-md bg-slate-700 px-6 py-3 text-base font-medium leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-slate-600",
+				"h-12 w-full max-w-md items-center rounded-md bg-slate-700 px-6 py-3 text-base font-medium leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-slate-600",
 			)}
 		>
 			{pending ? (

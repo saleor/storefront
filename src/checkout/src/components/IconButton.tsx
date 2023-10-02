@@ -1,11 +1,19 @@
-import { type AriaLabel } from "@/checkout/src/lib/globalTypes";
-import {
-	IconButton as UiKitIconButton,
-	type IconButtonProps as UiKitIconButtonProps,
-} from "@/checkout/ui-kit";
+import { type ButtonHTMLAttributes, type ReactNode } from "react";
 
-export type IconButtonProps = AriaLabel & UiKitIconButtonProps;
+export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+	icon: ReactNode;
+	ariaLabel?: string;
+}
 
-export const IconButton: React.FC<IconButtonProps> = ({ ariaLabel, ...rest }) => (
-	<UiKitIconButton type="button" aria-label={ariaLabel} {...rest} />
-);
+export const IconButton = ({ icon, ariaLabel, ...rest }: IconButtonProps) => {
+	return (
+		<button
+			aria-label={ariaLabel}
+			type="button"
+			className="mt-1 block w-full appearance-none rounded-md transition-colors focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 active:shadow-sm active:outline-none active:ring active:ring-indigo-200 active:ring-opacity-75"
+			{...rest}
+		>
+			{icon}
+		</button>
+	);
+};

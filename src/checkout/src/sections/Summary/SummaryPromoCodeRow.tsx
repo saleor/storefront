@@ -41,10 +41,8 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 		<SummaryMoneyRow {...rest}>
 			{editable && (
 				<IconButton
-					color="secondary"
 					onClick={onDelete}
 					ariaLabel={formatMessage(summaryLabels.removeDiscount)}
-					variant="bare"
 					icon={<RemoveIcon />}
 				/>
 			)}

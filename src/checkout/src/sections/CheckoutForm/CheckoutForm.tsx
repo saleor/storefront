@@ -24,7 +24,7 @@ export const CheckoutForm = () => {
 
 	return (
 		<div className="flex flex-col items-end">
-			<div className="flex w-full flex-col rounded border border-slate-400">
+			<div className="flex w-full flex-col rounded">
 				<Suspense fallback={<ContactSkeleton />}>
 					<Contact setShowOnlyContact={setShowOnlyContact} />
 				</Suspense>
@@ -33,7 +33,7 @@ export const CheckoutForm = () => {
 						<Suspense fallback={<AddressSectionSkeleton />}>
 							<Divider />
 							<CollapseSection collapse={showOnlyContact}>
-								<div className="p-4" data-testid="shippingAddressSection">
+								<div className="py-4" data-testid="shippingAddressSection">
 									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
 								</div>
 							</CollapseSection>

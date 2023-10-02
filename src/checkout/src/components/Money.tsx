@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { type Money as MoneyType, getFormattedMoney } from "@/checkout/src/lib/utils/money";
 
 import { type AriaLabel, type Classes } from "@/checkout/src/lib/globalTypes";
@@ -22,7 +21,7 @@ export const Money = <TMoney extends MoneyType>({
 	}
 
 	return (
-		<p {...textProps} aria-label={ariaLabel} className={clsx("sm:hidden", className)}>
+		<p {...textProps} aria-label={ariaLabel} className={className}>
 			{formattedMoney}
 		</p>
 	);

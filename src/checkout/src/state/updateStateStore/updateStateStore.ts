@@ -1,5 +1,5 @@
-import create from "zustand";
-import shallow from "zustand/shallow";
+import { create } from "zustand";
+import { shallow } from "zustand/shallow";
 import { useMemo } from "react";
 import { memoize, omit } from "lodash-es";
 import { type CheckoutScope } from "@/checkout/src/hooks/useAlerts";

@@ -41,8 +41,8 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
 
 	return (
 		<FormProvider form={form}>
-			<div className={clsx("relative mb-4 mt-4 px-4", className)}>
-				<TextInput optional name="promoCode" label={formatMessage(summaryMessages.addDiscount)} />
+			<div className={clsx("relative my-4", className)}>
+				<TextInput required={false} name="promoCode" label={formatMessage(summaryMessages.addDiscount)} />
 				{showApplyButton && (
 					<Button
 						className="absolute right-7 top-7"

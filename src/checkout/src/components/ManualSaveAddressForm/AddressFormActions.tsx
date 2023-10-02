@@ -24,7 +24,6 @@ export const AddressFormActions: React.FC<AddressFormActionsProps> = ({
 		<div className="flex flex-row justify-end">
 			{onDelete && (
 				<IconButton
-					className="mr-2"
 					ariaLabel={formatMessage(manualSaveAddressFormLabels.delete)}
 					onClick={onDelete}
 					icon={<TrashIcon />}

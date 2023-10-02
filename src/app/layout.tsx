@@ -19,7 +19,7 @@ export default function RootLayout(props: { children: React.ReactNode; modal: Re
 				<AuthProvider>
 					<Topbar />
 					<Nav />
-					<div className="flex-grow">{props.children}</div>
+					<div className="min-h-[calc(100vh-106px)] flex-grow">{props.children}</div>
 					<Footer />
 					{props.modal}
 				</AuthProvider>
