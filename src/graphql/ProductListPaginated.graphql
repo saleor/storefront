@@ -1,0 +1,14 @@
+query ProductListPaginated($first: Int = 4) {
+	products(first: $first, channel: "default-channel", after: "") {
+		totalCount
+		edges {
+			node {
+				...Product
+			}
+			cursor
+		}
+		pageInfo {
+			endCursor
+		}
+	}
+}

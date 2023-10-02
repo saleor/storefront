@@ -1,0 +1,12 @@
+query ProductListByCategory($slug: String!) {
+	category(slug: $slug) {
+		name
+		products(first: 100, channel: "default-channel") {
+			edges {
+				node {
+					...Product
+				}
+			}
+		}
+	}
+}

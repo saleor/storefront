@@ -6,7 +6,7 @@ BLUE='\033[0;34m'
 GRAY='\033[1;30m'
 NC='\033[0m'
 
-PATHS_LOCALES="packages/checkout-storefront/content/locales apps/saleor-app-checkout/content/locales"
+PATHS_LOCALES="src/checkout/content/locales"
 echo $PATHS_LOCALES
 
 # pnpm run lint

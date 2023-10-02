@@ -1,0 +1,110 @@
+fragment Money on Money {
+	currency
+	amount
+}
+
+fragment OrderLineFragment on OrderLine {
+	id
+	quantity
+	variant {
+		name
+		attributes(variantSelection: ALL) {
+			values {
+				name
+				dateTime
+				boolean
+				translation(languageCode: $languageCode) {
+					name
+				}
+			}
+		}
+	}
+	totalPrice {
+		gross {
+			...Money
+		}
+	}
+	undiscountedUnitPrice {
+		gross {
+			...Money
+		}
+	}
+	unitPrice {
+		gross {
+			...Money
+		}
+	}
+	productName
+	variantName
+	thumbnail {
+		alt
+		url
+	}
+}
+
+fragment ShippingFragment on ShippingMethod {
+	name
+	minimumDeliveryDays
+	maximumDeliveryDays
+}
+
+fragment OrderFragment on Order {
+	id
+	number
+	userEmail
+	isPaid
+	discounts {
+		type
+		name
+		amount {
+			...Money
+		}
+	}
+	chargeStatus
+	authorizeStatus
+	shippingAddress {
+		...AddressFragment
+	}
+	billingAddress {
+		...AddressFragment
+	}
+	deliveryMethod {
+		...ShippingFragment
+	}
+	total {
+		gross {
+			...Money
+		}
+		tax {
+			...Money
+		}
+	}
+	voucher {
+		code
+	}
+	shippingPrice {
+		gross {
+			...Money
+		}
+	}
+	subtotal {
+		gross {
+			...Money
+		}
+	}
+	lines {
+		...OrderLineFragment
+	}
+	totalBalance {
+		...Money
+	}
+	totalCaptured {
+		...Money
+	}
+}
+
+query order($id: ID!, $languageCode: LanguageCodeEnum!) {
+	order(id: $id) {
+		...OrderFragment
+	}
+}

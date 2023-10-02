@@ -1,14 +1,20 @@
 {
-  // make sure the settings below is not present in either user and
-  // workspace settings so adding ids to messages on save works
-  // "eslint.codeActionsOnSave.rules": [],
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "eslint.run": "onSave",
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true
-  },
-  "css.validate": true,
-  "editor.quickSuggestions": { "strings": true }
+	// make sure the settings below is not present in either user and
+	// workspace settings so adding ids to messages on save works
+	// "eslint.codeActionsOnSave.rules": [],
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"eslint.run": "onSave",
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "always"
+	},
+	"tailwindCSS.classAttributes": ["className", "clsx"],
+	"css.validate": true,
+	"editor.quickSuggestions": {
+		"strings": true
+	},
+	"files.associations": {
+		"*.css": "tailwindcss"
+	}
 }

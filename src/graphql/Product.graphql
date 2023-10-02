@@ -1,0 +1,20 @@
+fragment Product on Product {
+	id
+	name
+	thumbnail {
+		url
+	}
+	category {
+		id
+		name
+	}
+	pricing {
+		priceRange {
+			start {
+				gross {
+					amount
+				}
+			}
+		}
+	}
+}

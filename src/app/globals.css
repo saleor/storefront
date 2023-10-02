@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.checkout-bg {
+	background: linear-gradient(
+		90deg,
+		theme(colors.white) 0%,
+		theme(colors.white) 50%,
+		theme(colors.slate.100/75) 50%,
+		theme(colors.slate.100/75) 100%
+	);
+	background: linear-gradient(
+		90deg,
+		theme(colors.white) 0%,
+		theme(colors.white) 50%,
+		theme(colors.slate.300) calc(50%),
+		theme(colors.slate.300) calc(50% + 1px),
+		theme(colors.slate.50) calc(50% + 1px),
+		theme(colors.slate.50) 100%
+	);
+}

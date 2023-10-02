@@ -1,0 +1,9 @@
+query ProductList {
+	products(first: 12, channel: "default-channel") {
+		edges {
+			node {
+				...Product
+			}
+		}
+	}
+}

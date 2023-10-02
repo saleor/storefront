@@ -1,0 +1,11 @@
+mutation CheckoutCreate {
+	checkoutCreate(input: { channel: "default-channel", lines: [] }) {
+		checkout {
+			id
+		}
+		errors {
+			field
+			code
+		}
+	}
+}
