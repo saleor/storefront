@@ -56,21 +56,10 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 		<IntlProvider defaultLocale={DEFAULT_LOCALE} locale={locale} messages={messages}>
 			<SaleorAuthProvider client={saleorAuthClient}>
 				<UrqlProvider value={urqlClient}>
-					<div className="app">
-						<div
-							className="fixed left-0 top-0 -z-10 hidden h-full w-1/2 bg-white lg:block"
-							aria-hidden="true"
-						/>
-						<div
-							className="fixed right-0 top-0 -z-10 hidden h-full w-1/2 bg-slate-100 lg:block"
-							aria-hidden="true"
-						/>
-
-						<ToastContainer {...alertsContainerProps} />
-						<ErrorBoundary FallbackComponent={PageNotFound}>
-							<RootViews />
-						</ErrorBoundary>
-					</div>
+					<ToastContainer {...alertsContainerProps} />
+					<ErrorBoundary FallbackComponent={PageNotFound}>
+						<RootViews />
+					</ErrorBoundary>
 				</UrqlProvider>
 			</SaleorAuthProvider>
 		</IntlProvider>
