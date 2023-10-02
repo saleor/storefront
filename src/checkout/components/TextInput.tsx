@@ -1,7 +1,6 @@
 import { type AllHTMLAttributes } from "react";
 import clsx from "clsx";
-import { Field } from "formik";
-import { useField } from "@/checkout/hooks/useForm/useField";
+import { Field, type FieldProps } from "formik";
 
 export interface TextInputProps<TName extends string> extends AllHTMLAttributes<HTMLInputElement> {
 	name: TName;
@@ -13,30 +12,31 @@ export const TextInput = <TName extends string>(props: TextInputProps<TName>) =>
 );
 
 export const TextInputComponent = <TName extends string>({
-	name,
+	field,
+	form: { touched, errors },
 	label,
 	required,
 	...props
-}: TextInputProps<TName>) => {
-	const { error, handleBlur, ...fieldProps } = useField(name);
+}: TextInputProps<TName> & FieldProps) => {
+	const error = touched[field.name] ? (errors[field.name] as string) : undefined;
 
 	return (
 		<div>
 			<label className="block">
-				<span className="text-slate-700">
+				<span className="text-xs text-slate-700">
 					{label}
 					{required && "*"}
 				</span>
 				<input
-					className={clsx(
-						"mt-1 block w-full appearance-none rounded-md border-slate-300 shadow-sm transition-colors focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 active:border-indigo-200 active:outline-none",
-						{ "border-red-300": error },
-					)}
-					onBlur={handleBlur}
 					required={required}
 					spellCheck={false}
-					{...fieldProps}
+					{...field}
 					{...props}
+					className={clsx(
+						"mt-0.5 block w-full appearance-none rounded-md border-slate-300 shadow-sm transition-colors focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 active:border-indigo-200 active:outline-none",
+						{ "border-red-300": error },
+						props.className,
+					)}
 				/>
 			</label>
 			{error && <p className="text-sm text-red-500">{error}</p>}

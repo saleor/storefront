@@ -30,7 +30,7 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 			onSectionChange={onSectionChange}
 		>
 			<FormProvider form={form}>
-				<div className="grid grid-cols-1 gap-4">
+				<div className="grid grid-cols-1 gap-2">
 					<TextInput
 						required
 						name="email"

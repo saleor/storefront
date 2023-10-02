@@ -16,6 +16,7 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 
 	const {
 		handleBlur,
+		handleChange,
 		setFieldValue,
 		handleSubmit,
 		isSubmitting,
@@ -50,7 +51,13 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 		<div className="relative flex h-24 flex-col items-end">
 			<div className="flex flex-row items-baseline">
 				<FormProvider form={form}>
-					<TextInput required onBlur={handleQuantityInputBlur} name="quantity" label="Quantity" />
+					<TextInput
+						required
+						onChange={handleChange}
+						onBlur={handleQuantityInputBlur}
+						name="quantity"
+						label="Quantity"
+					/>
 				</FormProvider>
 			</div>
 			{isSubmitting ? (

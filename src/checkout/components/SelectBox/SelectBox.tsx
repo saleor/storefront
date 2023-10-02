@@ -19,17 +19,13 @@ export const SelectBox = <TFieldName extends string>({
 	disabled = false,
 	name,
 	value,
-	id,
 }: SelectBoxProps<TFieldName>) => {
-	// normally we pass value which is sufficient as an id but in case of doubled forms
-	// such as shipping addresses and billing addresses etc. we need to pass a unique id
-	const identifier = id || value;
 	const { values, handleChange } = useFormContext<Record<TFieldName, string>>();
 	const [field] = useField(name);
 	const selected = values[name] === value;
 
 	return (
-		<div
+		<label
 			className={clsx(
 				"relative mb-2 flex cursor-pointer flex-row items-center justify-start rounded border border-slate-400 px-3 py-2",
 				"hover:border hover:border-slate-500",
@@ -43,11 +39,9 @@ export const SelectBox = <TFieldName extends string>({
 				onChange={handleChange}
 				value={value}
 				checked={selected}
-				id={identifier}
+				className="rounded-full border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:ring-offset-0"
 			/>
-			<label className="w-full cursor-pointer" htmlFor={identifier}>
-				{children}
-			</label>
-		</div>
+			<span className="ml-2 block w-full">{children}</span>
+		</label>
 	);
 };

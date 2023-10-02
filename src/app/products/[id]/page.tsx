@@ -83,7 +83,7 @@ export default async function Page(props: { params: { id: string }; searchParams
 
 	return (
 		<section className="mx-auto grid max-w-7xl p-8">
-			<form className="grid grid-cols-2 gap-4" action={addItem}>
+			<form className="grid grid-cols-2 gap-2" action={addItem}>
 				{firstImage && <Image alt={"image"} src={firstImage?.url} />}
 				<div className="flex flex-col justify-between px-6">
 					<div>

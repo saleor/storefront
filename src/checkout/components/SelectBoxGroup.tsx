@@ -12,7 +12,7 @@ export const SelectBoxGroup: React.FC<PropsWithChildren<SelectBoxGroupProps>> = 
 	className,
 }) => {
 	return (
-		<div role="radiogroup" aria-label={label} className={clsx(className)}>
+		<div role="radiogroup" aria-label={label} className={clsx(className, "grid gap-x-2 md:grid-cols-2")}>
 			{children}
 		</div>
 	);
