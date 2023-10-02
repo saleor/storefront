@@ -42,7 +42,6 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 					name="createAccount"
 					label={formatMessage(contactMessages.wantToCreateAccount)}
 					data-testid={"createAccountCheckbox"}
-					classNames={{ container: "!mb-0" }}
 				/>
 				{createAccount && (
 					<div className="mt-2">

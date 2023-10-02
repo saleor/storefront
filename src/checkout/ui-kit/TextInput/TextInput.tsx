@@ -49,11 +49,7 @@ export const TextInput = ({
 					{required && "*"}
 				</label>
 			)}
-			{hasError && (
-				<p color="error" className="text-sm">
-					{error}
-				</p>
-			)}
+			{hasError && <p className="text-sm text-red-500">{error}</p>}
 		</div>
 	);
 };

@@ -9,9 +9,7 @@ import { usePaymentStatus } from "@/checkout/src/sections/PaymentSection/utils";
 const ErrorMessage = ({ message }: { message: string }) => {
 	return (
 		<>
-			<p color="error" className="mr-1">
-				{message}
-			</p>
+			<p className="mr-1 text-red-500">{message}</p>
 			<AlertIcon />
 		</>
 	);

@@ -64,7 +64,6 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
 			{isShippingRequired && (
 				<FormProvider form={billingSameAsShippingForm}>
 					<Checkbox
-						classNames={{ container: "!mb-0" }}
 						name="billingSameAsShipping"
 						label={formatMessage(billingMessages.useShippingAsBilling)}
 						data-testid={"useShippingAsBillingCheckbox"}
