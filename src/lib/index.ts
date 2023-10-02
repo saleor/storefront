@@ -34,7 +34,7 @@ export async function execute<Result, Variables>(
 			query: operation.toString(),
 			...(variables && { variables }),
 		}),
-		cache: cache || "default",
+		cache: cache,
 		next: { revalidate },
 	});
 

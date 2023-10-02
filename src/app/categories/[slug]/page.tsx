@@ -10,7 +10,6 @@ export const metadata = {
 export default async function Page({ params }: { params: { slug: string } }) {
 	const { category } = await execute(ProductListByCategoryDocument, {
 		variables: { slug: params.slug },
-		cache: "default",
 	});
 
 	if (!category) {

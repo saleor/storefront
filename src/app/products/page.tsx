@@ -20,7 +20,6 @@ export default async function Page({ searchParams }: Props) {
 		variables: {
 			first: ProductsPerPage,
 		},
-		cache: "default",
 	});
 
 	return (

@@ -25,7 +25,7 @@ export const Select = <TName extends string, TData extends string>({
 	label,
 	...rest
 }: SelectProps<TName, TData>) => {
-	const { error, ...fieldProps } = useField(name);
+	const { error, handleBlur, ...fieldProps } = useField(name);
 
 	const [showPlaceholder, setShowPlaceholder] = useState(!!placeholder);
 
@@ -46,6 +46,7 @@ export const Select = <TName extends string, TData extends string>({
 				<select
 					{...fieldProps}
 					{...rest}
+					onBlur={handleBlur}
 					onChange={handleChange}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
 				>
