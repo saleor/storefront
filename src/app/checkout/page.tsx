@@ -1,8 +1,12 @@
 import { invariant } from "ts-invariant";
 import { RootWrapper } from "./pageWrapper";
 
-export default function CheckoutPage() {
+export default function CheckoutPage({ searchParams }: { searchParams: { checkout?: string } }) {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+
+	if (!searchParams.checkout) {
+		return null;
+	}
 
 	return (
 		<div className="checkout-bg min-h-[calc(100vh-106px)]">

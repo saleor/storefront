@@ -41,6 +41,13 @@ export function Footer() {
 					</div>
 					<div className="mt-16 md:mt-16 xl:mt-0">
 						<h3 className="text-sm font-medium text-gray-900">Check it out</h3>
+						<ul className="mt-4 space-y-4">
+							<li className="text-sm">
+								<a href="https://discord.gg/H52JTZAtSH" className="text-gray-500 hover:text-gray-600">
+									Discord
+								</a>
+							</li>
+						</ul>
 					</div>
 				</div>
 

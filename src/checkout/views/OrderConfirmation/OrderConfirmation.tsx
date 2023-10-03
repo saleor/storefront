@@ -12,33 +12,32 @@ export const OrderConfirmation = () => {
 	const formatMessage = useFormattedMessages();
 
 	return (
-		<div className="page">
-			<header>
-				<PageHeader />
-				<p className="mb-2 text-lg font-bold" data-testid="orderConfrmationTitle">
-					{formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
-				</p>
-				<p className="text-base">
-					{formatMessage(orderInfoMessages.orderConfirmSubtitle, {
-						email: order.userEmail || "",
-					})}
-				</p>
-			</header>
-			<main className="order-content overflow-hidden">
+		<main className="grid grid-cols-1 gap-x-16 lg:grid-cols-2">
+			<div>
+				<header>
+					<PageHeader />
+					<p className="mb-2 text-lg font-bold" data-testid="orderConfrmationTitle">
+						{formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
+					</p>
+					<p className="text-base">
+						{formatMessage(orderInfoMessages.orderConfirmSubtitle, {
+							email: order.userEmail || "",
+						})}
+					</p>
+				</header>
 				<OrderInfo />
-				<div className="order-divider" />
-				<Suspense fallback={<SummarySkeleton />}>
-					<Summary
-						{...order}
-						// for now there can only be one voucher per order in the api
-						discount={order?.discounts?.find(({ type }) => type === "VOUCHER")?.amount}
-						voucherCode={order?.voucher?.code}
-						totalPrice={order?.total}
-						subtotalPrice={order?.subtotal}
-						editable={false}
-					/>
-				</Suspense>
-			</main>
-		</div>
+			</div>
+			<Suspense fallback={<SummarySkeleton />}>
+				<Summary
+					{...order}
+					// for now there can only be one voucher per order in the api
+					discount={order?.discounts?.find(({ type }) => type === "VOUCHER")?.amount}
+					voucherCode={order?.voucher?.code}
+					totalPrice={order?.total}
+					subtotalPrice={order?.subtotal}
+					editable={false}
+				/>
+			</Suspense>
+		</main>
 	);
 };
