@@ -1,10 +1,17 @@
 import { notFound } from "next/navigation";
+import { type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
-import { execute } from "@/lib";
+import { execute } from "@/lib/graphql";
 import { ProductElement } from "@/ui/components/ProductElement";
 
-export const metadata = {
-	title: "Category · Saleor Storefront",
+export const generateMetadata = async ({ params }: { params: { slug: string } }): Promise<Metadata> => {
+	const { category } = await execute(ProductListByCategoryDocument, {
+		variables: { slug: params.slug },
+	});
+
+	return {
+		title: `${category?.name || "Category"} · Saleor Storefront example`,
+	};
 };
 
 export default async function Page({ params }: { params: { slug: string } }) {

@@ -16,7 +16,7 @@ export const OrderInfo = () => {
 	} = useOrder();
 
 	return (
-		<section className="rounded-lg border border-slate-400 px-4 pt-5">
+		<section className="mt-8">
 			<PaymentSection />
 			<DeliverySection deliveryMethod={deliveryMethod} />
 			<Section title={formatMessage(contactMessages.contact)}>

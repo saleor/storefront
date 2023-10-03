@@ -3,32 +3,57 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { CheckIcon } from "lucide-react";
+import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { Image } from "@/ui/atoms/Image";
-import { execute } from "@/lib";
+import { execute, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductElementDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
-export const metadata = {
-	title: "Product Details · Saleor Storefront",
-};
+export async function generateMetadata({
+	params,
+	searchParams,
+}: {
+	params: { slug: string };
+	searchParams: { variant?: string };
+}): Promise<Metadata> {
+	const { product } = await execute(ProductElementDocument, {
+		variables: {
+			slug: decodeURIComponent(params.slug),
+		},
+	});
+
+	if (!product) {
+		notFound();
+	}
+
+	const productName = product.seoTitle || product.name;
+	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
+
+	const title = variantName ? `${productName} - ${variantName}` : productName;
+
+	return {
+		title: `${title} · Saleor Storefront example`,
+		description: product.seoDescription,
+	};
+}
 
 export async function generateStaticParams() {
 	const { products } = await execute(ProductListDocument);
 
-	const paths = products?.edges.map(({ node: { id } }) => ({ id })) || [];
+	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 	return paths;
 }
 
 const parser = edjsHTML();
 
-export default async function Page(props: { params: { id: string }; searchParams: { variant: string } }) {
+export default async function Page(props: { params: { slug: string }; searchParams: { variant?: string } }) {
 	const { params, searchParams } = props;
 
 	const { product } = await execute(ProductElementDocument, {
 		variables: {
-			id: decodeURIComponent(params.id),
+			slug: decodeURIComponent(params.slug),
 		},
 		revalidate: 1,
 	});
@@ -37,11 +62,12 @@ export default async function Page(props: { params: { id: string }; searchParams
 		notFound();
 	}
 
-	const firstImage = product?.thumbnail;
+	const firstImage = product.thumbnail;
 	const description = parser.parse(JSON.parse((product?.description as string) || "{}"));
 
-	const variants = product?.variants || [];
-	const selectedVariantID = searchParams.variant || variants[0]?.id;
+	const variants = product.variants;
+	const selectedVariantID = searchParams.variant;
+	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
 
 	async function addItem() {
 		"use server";
@@ -88,8 +114,16 @@ export default async function Page(props: { params: { id: string }; searchParams
 				<div className="flex flex-col justify-between px-6">
 					<div>
 						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900">{product?.name}</h1>
+						<p className="text-sm font-medium text-gray-900">
+							{selectedVariant?.pricing?.price?.gross
+								? formatMoney(
+										selectedVariant.pricing.price.gross.amount,
+										selectedVariant.pricing.price.gross.currency,
+								  )
+								: "select variant to see the price"}
+						</p>
 
-						<VariantSelector variants={variants} />
+						{variants && <VariantSelector variants={variants} />}
 						<div className="mt-4 space-y-6">
 							<div dangerouslySetInnerHTML={{ __html: description }}></div>
 						</div>
@@ -100,7 +134,7 @@ export default async function Page(props: { params: { id: string }; searchParams
 					</div>
 
 					<div className="mt-8">
-						<AddButton />
+						<AddButton disabled={!selectedVariantID} />
 					</div>
 				</div>
 			</form>

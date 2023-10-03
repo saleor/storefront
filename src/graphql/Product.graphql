@@ -1,6 +1,7 @@
 fragment Product on Product {
 	id
 	name
+	slug
 	thumbnail {
 		url
 	}
@@ -13,6 +14,13 @@ fragment Product on Product {
 			start {
 				gross {
 					amount
+					currency
+				}
+			}
+			stop {
+				gross {
+					amount
+					currency
 				}
 			}
 		}

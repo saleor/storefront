@@ -2,10 +2,10 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import * as Checkout from "@/lib/checkout";
-import { USDollarFormatter } from "@/lib";
+import { formatMoney } from "@/lib/graphql";
 
 export const metadata = {
-	title: "Shopping Cart · Saleor Storefront",
+	title: "Shopping Cart · Saleor Storefront example",
 };
 
 export default async function Page() {
@@ -44,7 +44,7 @@ export default async function Page() {
 											</div>
 
 											<p className="p-4 text-right font-semibold text-gray-900">
-												{USDollarFormatter.format(item.totalPrice.gross.amount || 0)}
+												{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency)}
 											</p>
 										</div>
 
@@ -66,7 +66,8 @@ export default async function Page() {
 								<p className="mt-1 text-sm text-gray-500">Shipping will be calculated in the next step</p>
 							</div>
 							<div className="font-medium text-gray-900">
-								{USDollarFormatter.format(checkout?.totalPrice.gross.amount || 0)}
+								{checkout &&
+									formatMoney(checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency)}
 							</div>
 						</div>
 					</div>

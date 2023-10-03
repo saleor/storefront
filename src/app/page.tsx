@@ -1,9 +1,9 @@
 import { ProductListDocument } from "@/gql/graphql";
-import { execute } from "@/lib";
+import { execute } from "@/lib/graphql";
 import { ProductElement } from "@/ui/components/ProductElement";
 
 export const metadata = {
-	title: "Storefront by Saleor",
+	title: "Saleor Storefront example",
 };
 
 export default async function Page() {
