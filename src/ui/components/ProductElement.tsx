@@ -8,7 +8,7 @@ export function ProductElement(props: { product: ProductFragment }) {
 	const { product } = props;
 
 	return (
-		<Link href={`/products/${product.id}`} key={product.id}>
+		<Link href={`/products/${product.slug}`} key={product.id}>
 			<div>
 				<Image src={product?.thumbnail?.url || ""} alt="image" width={200} height={200} />
 				<div className="mt-2 flex justify-between">

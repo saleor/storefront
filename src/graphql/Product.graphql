@@ -1,6 +1,7 @@
 fragment Product on Product {
 	id
 	name
+	slug
 	thumbnail {
 		url
 	}

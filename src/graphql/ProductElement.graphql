@@ -1,9 +1,11 @@
-query ProductElement($id: ID!) {
-	product(id: $id, channel: "default-channel") {
+query ProductElement($slug: String!) {
+	product(slug: $slug, channel: "default-channel") {
 		id
 		name
 		description
 		slug
+		seoTitle
+		seoDescription
 		variants {
 			id
 			name

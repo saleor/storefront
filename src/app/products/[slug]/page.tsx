@@ -17,18 +17,18 @@ export const metadata = {
 export async function generateStaticParams() {
 	const { products } = await execute(ProductListDocument);
 
-	const paths = products?.edges.map(({ node: { id } }) => ({ id })) || [];
+	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 	return paths;
 }
 
 const parser = edjsHTML();
 
-export default async function Page(props: { params: { id: string }; searchParams: { variant?: string } }) {
+export default async function Page(props: { params: { slug: string }; searchParams: { variant?: string } }) {
 	const { params, searchParams } = props;
 
 	const { product } = await execute(ProductElementDocument, {
 		variables: {
-			id: decodeURIComponent(params.id),
+			slug: decodeURIComponent(params.slug),
 		},
 		revalidate: 1,
 	});
