@@ -96,6 +96,13 @@ export const pagesPath = {
         hash: url?.hash,
       }),
     },
+    payment_captured: {
+      $url: (url?: { hash?: string }) => ({
+        pathname: "/[locale]/payment-captured" as const,
+        query: { locale },
+        hash: url?.hash,
+      }),
+    },
     cart: {
       $url: (url?: { hash?: string }) => ({
         pathname: "/[locale]/cart" as const,
