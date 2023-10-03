@@ -1,5 +1,5 @@
 import { ProductListDocument } from "@/gql/graphql";
-import { execute } from "@/lib";
+import { execute } from "@/lib/graphql";
 import { ProductElement } from "@/ui/components/ProductElement";
 
 export const metadata = {

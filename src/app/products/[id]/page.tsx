@@ -6,7 +6,7 @@ import { CheckIcon } from "lucide-react";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { Image } from "@/ui/atoms/Image";
-import { execute } from "@/lib";
+import { execute, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductElementDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 
 const parser = edjsHTML();
 
-export default async function Page(props: { params: { id: string }; searchParams: { variant: string } }) {
+export default async function Page(props: { params: { id: string }; searchParams: { variant?: string } }) {
 	const { params, searchParams } = props;
 
 	const { product } = await execute(ProductElementDocument, {
@@ -37,11 +37,12 @@ export default async function Page(props: { params: { id: string }; searchParams
 		notFound();
 	}
 
-	const firstImage = product?.thumbnail;
+	const firstImage = product.thumbnail;
 	const description = parser.parse(JSON.parse((product?.description as string) || "{}"));
 
-	const variants = product?.variants || [];
-	const selectedVariantID = searchParams.variant || variants[0]?.id;
+	const variants = product.variants;
+	const selectedVariantID = searchParams.variant;
+	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
 
 	async function addItem() {
 		"use server";
@@ -88,8 +89,16 @@ export default async function Page(props: { params: { id: string }; searchParams
 				<div className="flex flex-col justify-between px-6">
 					<div>
 						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900">{product?.name}</h1>
+						<p className="text-sm font-medium text-gray-900">
+							{selectedVariant?.pricing?.price?.gross
+								? formatMoney(
+										selectedVariant.pricing.price.gross.amount,
+										selectedVariant.pricing.price.gross.currency,
+								  )
+								: "select variant to see the price"}
+						</p>
 
-						<VariantSelector variants={variants} />
+						{variants && <VariantSelector variants={variants} />}
 						<div className="mt-4 space-y-6">
 							<div dangerouslySetInnerHTML={{ __html: description }}></div>
 						</div>
@@ -100,7 +109,7 @@ export default async function Page(props: { params: { id: string }; searchParams
 					</div>
 
 					<div className="mt-8">
-						<AddButton />
+						<AddButton disabled={!selectedVariantID} />
 					</div>
 				</div>
 			</form>

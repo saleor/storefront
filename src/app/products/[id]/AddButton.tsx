@@ -1,19 +1,15 @@
 "use client";
 
-import { clsx } from "clsx";
 import { experimental_useFormStatus as useFormStatus } from "react-dom";
 
-export function AddButton() {
+export function AddButton({ disabled }: { disabled?: boolean }) {
 	const { pending } = useFormStatus();
 
 	return (
 		<button
 			type="submit"
-			disabled={pending}
-			className={clsx(
-				pending && "cursor-not-allowed",
-				"h-12 w-full max-w-md items-center rounded-md bg-slate-700 px-6 py-3 text-base font-medium leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-slate-600",
-			)}
+			disabled={disabled || pending}
+			className="h-12 w-full max-w-md items-center rounded-md bg-slate-700 px-6 py-3 text-base font-medium leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-slate-700"
 		>
 			{pending ? (
 				<div className="inline-flex items-center">

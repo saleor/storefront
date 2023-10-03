@@ -1,5 +1,5 @@
 import { ProductListPaginatedDocument } from "@/gql/graphql";
-import { ProductsPerPage, execute } from "@/lib";
+import { ProductsPerPage, execute } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductElement } from "@/ui/components/ProductElement";
 

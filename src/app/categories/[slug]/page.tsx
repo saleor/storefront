@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
-import { execute } from "@/lib";
+import { execute } from "@/lib/graphql";
 import { ProductElement } from "@/ui/components/ProductElement";
 
 export const metadata = {

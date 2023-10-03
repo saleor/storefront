@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { USDollarFormatter } from "@/lib";
 import { Image } from "@/ui/atoms/Image";
 
 import type { ProductFragment } from "@/gql/graphql";
+import { formatMoneyRange } from "@/lib/graphql";
 
 export function ProductElement(props: { product: ProductFragment }) {
 	const { product } = props;
@@ -17,7 +17,10 @@ export function ProductElement(props: { product: ProductFragment }) {
 						<p className="text-sm text-gray-500">{product?.category?.name}</p>
 					</div>
 					<p className="text-sm font-medium text-gray-900">
-						{USDollarFormatter.format(product?.pricing?.priceRange?.start?.gross.amount || 0)}
+						{formatMoneyRange({
+							start: product?.pricing?.priceRange?.start?.gross,
+							stop: product?.pricing?.priceRange?.stop?.gross,
+						})}
 					</p>
 				</div>
 			</div>

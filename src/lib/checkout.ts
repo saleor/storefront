@@ -1,5 +1,5 @@
 import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
-import { execute } from "@/lib";
+import { execute } from "@/lib/graphql";
 
 export async function find(checkoutId: string) {
 	const { checkout } = checkoutId

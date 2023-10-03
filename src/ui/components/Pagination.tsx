@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { ProductsPerPage } from "@/lib";
+import { ProductsPerPage } from "@/lib/graphql";
 
 export async function Pagination({ page: currentPage, total }: { page: number; total: number }) {
 	const pages = Math.ceil(total / ProductsPerPage);

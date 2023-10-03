@@ -13,6 +13,13 @@ fragment Product on Product {
 			start {
 				gross {
 					amount
+					currency
+				}
+			}
+			stop {
+				gross {
+					amount
+					currency
 				}
 			}
 		}
