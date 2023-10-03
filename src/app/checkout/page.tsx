@@ -1,6 +1,10 @@
 import { invariant } from "ts-invariant";
 import { RootWrapper } from "./pageWrapper";
 
+export const metadata = {
+	title: "Shopping Cart · Saleor Storefront example",
+};
+
 export default function CheckoutPage({ searchParams }: { searchParams: { checkout?: string } }) {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 

@@ -5,7 +5,7 @@ import * as Checkout from "@/lib/checkout";
 import { formatMoney } from "@/lib/graphql";
 
 export const metadata = {
-	title: "Shopping Cart · Saleor Storefront",
+	title: "Shopping Cart · Saleor Storefront example",
 };
 
 export default async function Page() {

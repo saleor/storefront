@@ -5,7 +5,7 @@ import { Pagination } from "@/ui/components/Pagination";
 import { ProductElement } from "@/ui/components/ProductElement";
 
 export const metadata = {
-	title: "Product List · Saleor Storefront",
+	title: "Product List · Saleor Storefront example",
 };
 
 type Props = {

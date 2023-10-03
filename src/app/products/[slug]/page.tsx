@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { CheckIcon } from "lucide-react";
+import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { Image } from "@/ui/atoms/Image";
@@ -10,9 +11,33 @@ import { execute, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductElementDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
-export const metadata = {
-	title: "Product Details · Saleor Storefront",
-};
+export async function generateMetadata({
+	params,
+	searchParams,
+}: {
+	params: { slug: string };
+	searchParams: { variant?: string };
+}): Promise<Metadata> {
+	const { product } = await execute(ProductElementDocument, {
+		variables: {
+			slug: decodeURIComponent(params.slug),
+		},
+	});
+
+	if (!product) {
+		notFound();
+	}
+
+	const productName = product.seoTitle || product.name;
+	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
+
+	const title = variantName ? `${productName} - ${variantName}` : productName;
+
+	return {
+		title: `${title} · Saleor Storefront example`,
+		description: product.seoDescription,
+	};
+}
 
 export async function generateStaticParams() {
 	const { products } = await execute(ProductListDocument);
