@@ -1,8 +1,5 @@
-import Link from "next/link";
 import React, { ReactElement } from "react";
 
-import { NotFoundSeo } from "@/components/seo/NotFoundSeo";
-import { usePaths } from "@/lib/paths";
 import Image from "next/legacy/image";
 import { env } from "process";
 
@@ -15,9 +12,7 @@ const brands = {
   clothes4U: "CLOTHES4U",
 };
 
-function Custom404() {
-  const paths = usePaths();
-
+function Custom500() {
   let hueTransform = "";
 
   switch (env.NEXT_PUBLIC_STOREFRONT_NAME) {
@@ -33,26 +28,17 @@ function Custom404() {
 
   return (
     <>
-      <NotFoundSeo />
       <div className="min-h-screen flex items-center justify-center">
         <div className="inline columns-2 sm:flex md:flex items-center container">
           <div className="md:w-1/2 mx-2">
             <header className="mb-4 font-bold text-5xl md:text-7xl">
-              <div className="text-brand mb-4">Oops!</div>
-              <div className="">Ta strona nie istnieje lub została przeniesiona</div>
+              <span className="text-brand mb-4">Oops!</span>
+              <h1 className="">Cóż, to nieoczekiwane...</h1>
             </header>
-            <div className="text-3xl md:text-4xl my-2">
-              Być może błędnie wpisałeś adres strony lub ona nie istnieje.
-            </div>
-            <div className="my-12">
-              <Link
-                href={paths.$url()}
-                className="text-2xl md:text-3xl border-brand border-2 bg-brand hover:border-brand hover:bg-white hover:text-brand transition
-               text-white font-bold py-4 px-8 rounded-full"
-              >
-                Wróć na stronę główną
-              </Link>
-            </div>
+            <p className="text-3xl md:text-4xl my-2">Kod błędu: 500</p>
+            <p className="text-3xl md:text-4xl my-2">
+              Wystąpił błąd i pracujemy nad jego usunięciem! Będziemy działać wkrótce.
+            </p>
           </div>
           <div className="relative md:w-1/2">
             <div>
@@ -69,8 +55,8 @@ function Custom404() {
   );
 }
 
-Custom404.getLayout = function getLayout(page: ReactElement) {
+Custom500.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-export default Custom404;
+export default Custom500;
