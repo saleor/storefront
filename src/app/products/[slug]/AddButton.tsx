@@ -4,12 +4,14 @@ import { experimental_useFormStatus as useFormStatus } from "react-dom";
 
 export function AddButton({ disabled }: { disabled?: boolean }) {
 	const { pending } = useFormStatus();
+	const isButtonDisabled = disabled || pending;
 
 	return (
 		<button
 			type="submit"
-			disabled={disabled || pending}
-			className="h-12 w-full max-w-md items-center rounded-md bg-slate-700 px-6 py-3 text-base font-medium leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-slate-700"
+			aria-disabled={isButtonDisabled}
+			onClick={(e) => isButtonDisabled && e.preventDefault()}
+			className="h-12 w-full max-w-md items-center rounded-md bg-slate-700 px-6 py-3 text-base font-medium leading-6 text-white shadow transition duration-150 ease-in-out hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-slate-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-slate-700"
 		>
 			{pending ? (
 				<div className="inline-flex items-center">
