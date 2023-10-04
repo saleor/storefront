@@ -33,8 +33,8 @@ The project utilizes all the best practices for e-commerce, like SSR, ISR, and i
 💳 **integrated payments**:
 Reduce the purchase friction by taking advantage of integrations with modern payment providers such as Adyen, Mollie or Stripe.
 
-🛠️ **easily customizable**:
-TailwindCSS can be easily extended and tweaked, or completely replaced with your favorite CSS solution.
+🛠️ **Customizable CSS**:
+TailwindCSS can be extended or replaced with your favorite CSS solution.
 
 👌 **works out-of-the-box**:
 Pre-configured tools built with DX in mind.
