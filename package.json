@@ -7,6 +7,7 @@
 		"dev": "next dev",
 		"build": "pnpm run generate && pnpm run i18n && next build",
 		"start": "next start",
+		"postinstall": "pnpm run generate",
 		"lint": "next lint --dir src --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"prepare": "husky install",
