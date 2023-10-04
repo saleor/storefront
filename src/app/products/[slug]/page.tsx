@@ -109,9 +109,9 @@ export default async function Page(props: { params: { slug: string }; searchPara
 
 	return (
 		<section className="mx-auto grid max-w-7xl p-8">
-			<form className="grid grid-cols-2 gap-2" action={addItem}>
+			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
 				{firstImage && <Image alt={"image"} src={firstImage?.url} />}
-				<div className="flex flex-col justify-between px-6">
+				<div className="flex flex-col justify-between pt-6 sm:px-6 sm:pt-0">
 					<div>
 						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900">{product?.name}</h1>
 						<p className="text-sm font-medium text-gray-900">
