@@ -51,7 +51,7 @@ export function Footer() {
 					</div>
 				</div>
 
-				<div className="flex justify-between border-t border-gray-200 py-10">
+				<div className="flex flex-col justify-between border-t border-gray-200 py-10 sm:flex-row">
 					<p className="text-sm text-gray-500">Copyright &copy; 2023 Your Store, Inc.</p>
 					<p className="text-sm text-gray-500">Created by Saleor, Inc</p>
 				</div>
