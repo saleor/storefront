@@ -57,7 +57,7 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 									searchParams.get("variant") === variant.id
 										? "border-transparent bg-slate-600 text-white hover:bg-slate-500"
 										: "border-slate-200 bg-white text-slate-900 hover:bg-slate-100",
-									"relative flex items-center justify-center overflow-hidden text-ellipsis rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
+									"flex items-center justify-center overflow-hidden text-ellipsis rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
 								)}
 							>
 								<input
