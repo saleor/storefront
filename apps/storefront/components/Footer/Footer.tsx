@@ -50,7 +50,10 @@ export function Footer({ className, ...rest }: FooterProps) {
 
       return (
         <li key={subItem.id}>
-          <NavLink item={subItem} className={styles["menu-link"]} />
+          <NavLink
+            item={subItem}
+            className={`${styles["menu-link"]} text-lg cursor-pointer hover:text-brand transition-all duration-300`}
+          />
         </li>
       );
     });
@@ -99,7 +102,7 @@ export function Footer({ className, ...rest }: FooterProps) {
         </div>
       </div>
       <div className="flex flex-col container md:flex-row lg:flex-row xl:flex-row justify-between items-center flex-wrap gap-6">
-        <p className="text-sm text-black flex-grow">
+        <p className="text-md text-black flex-grow">
           © Copyright 2022 - {new Date().getFullYear()} {STOREFRONT_NAME}
         </p>
         {/* <div className="invisible md:visible gap-4 hidden">

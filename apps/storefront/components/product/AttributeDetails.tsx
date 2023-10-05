@@ -39,10 +39,10 @@ export function AttributeDetails({ product, selectedVariant }: AttributeDetailsP
           return null;
         }
         return (
-          <div key={variant?.id} className="prose-2xl px-2">
+          <div key={variant?.id} className="prose-2xl text-3xl px-2">
             <div className="flex flex-row gap-3 items-center">
               <p>SKU: </p>
-              {variant?.sku}
+              <p>{variant?.sku}</p>
             </div>
           </div>
         );

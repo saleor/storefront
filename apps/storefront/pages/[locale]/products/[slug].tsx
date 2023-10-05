@@ -269,20 +269,20 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
                     onClick={() => handleDeleteFromWishlist(product)}
                     type="submit"
                     data-testid="addToWishlistButton"
-                    className="text-sm flex flex-row gap-3"
+                    className="flex flex-row gap-3 items-center"
                   >
                     <Heart width="22" height="22" />
-                    Delete from wishlist
+                    <p className="text-lg">{t.formatMessage(messages.deleteFromWishlist)}</p>
                   </button>
                 ) : (
                   <button
                     onClick={() => handleAddToWishlist(product)}
                     type="submit"
                     data-testid="addToWishlistButton"
-                    className="text-sm flex flex-row gap-3"
+                    className="flex flex-row gap-3 items-center"
                   >
                     <Heart width="22" height="22" />
-                    {t.formatMessage(messages.addToWishlist)}
+                    <p className="text-lg">{t.formatMessage(messages.addToWishlist)}</p>
                   </button>
                 )}
               </div>
@@ -294,7 +294,10 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
               )}
 
               {selectedVariant?.quantityAvailable === 0 && (
-                <p className="mt-6 text-base text-red-500" data-testid="soldOut">
+                <p
+                  className="mt-6 text-md text-white bg-red-500 text-center py-3 px-8 rounded-full w-max"
+                  data-testid="soldOut"
+                >
                   {t.formatMessage(messages.soldOut)}
                 </p>
               )}

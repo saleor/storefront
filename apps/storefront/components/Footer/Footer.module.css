@@ -1,5 +1,5 @@
 .footer {
-  @apply mt-16 bg-slate-100 sm:pb-6;
+  @apply mt-16 bg-[#f6f6f6] sm:pb-6;
 }
 
 @screen sm {
@@ -17,9 +17,9 @@
 }
 
 .menu-heading {
-  @apply block text-md font-bold mb-4 cursor-pointer hover:underline;
+  @apply block text-lg font-bold mb-4 cursor-pointer;
 }
 
 .menu-link {
-  @apply text-base cursor-pointer hover:underline;
+  @apply text-lg cursor-pointer hover:text-brand transition-all duration-300;
 }

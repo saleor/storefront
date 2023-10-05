@@ -122,6 +122,11 @@ export const messages = defineMessages({
     description: "Button to add product to user's wishlist",
     defaultMessage: "Add to wishlist,",
   },
+  deleteFromWishlist: {
+    id: "app.product.deleteFromWishlist",
+    description: "Button to add product to user's wishlist",
+    defaultMessage: "Delete from wishlist,",
+  },
   productInStock: {
     id: "app.product.productInStock",
     description: "Informs whether product is in stock or not",

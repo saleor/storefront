@@ -55,6 +55,7 @@
   "app.product.soldOut": "Wyprzedano!",
   "app.product.variantNotChosen": "Wybierz wariant",
   "app.product.addToWishlist": "Dodaj do listy życzeń",
+  "app.product.deleteFromWishlist": "Usuń z listy życzeń",
   "app.product.productInStock": "Na magazynie",
   "app.product.paymentOptions": "Sposoby płatności",
   "app.product.shippingOptions": "Sposoby dostawy",

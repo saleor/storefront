@@ -40,7 +40,10 @@ export function ProductCollection({
   const [loadingMore, setLoadingMore] = useState(false);
 
   const variables: ProductCollectionQueryVariables = {
-    filter,
+    filter: {
+      ...filter,
+      stockAvailability: "IN_STOCK",
+    },
     first: perPage,
     ...query,
     ...(sortBy?.field &&

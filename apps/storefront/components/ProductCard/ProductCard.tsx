@@ -247,13 +247,41 @@ export function ProductCard({ product }: ProductCardProps) {
           })}
         >
           {isAddToCartButtonDisabled ? (
-            <Tooltip title="Brak produktów" arrow>
+            <Tooltip
+              arrow
+              title={
+                <h1
+                  style={{
+                    color: "#fff",
+                    fontSize: "16px",
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: "normal",
+                  }}
+                >
+                  Brak produktów
+                </h1>
+              }
+            >
               <span>
                 <NavIconButton isButton={false} icon="bag" aria-hidden="true" />
               </span>
             </Tooltip>
           ) : (
-            <Tooltip title="Dodaj do koszyka" arrow>
+            <Tooltip
+              arrow
+              title={
+                <h1
+                  style={{
+                    color: "#fff",
+                    fontSize: "16px",
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: "normal",
+                  }}
+                >
+                  Dodaj do koszyka
+                </h1>
+              }
+            >
               <span>
                 <NavIconButton isButton={false} icon="bag" aria-hidden="true" />
               </span>
@@ -261,11 +289,25 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </button>
         {isItemInWishlist(product) ? (
-          <Tooltip title="Usuń z listy zyczeń" arrow>
+          <Tooltip
+            title={
+              <h1
+                style={{
+                  color: "#fff",
+                  fontSize: "16px",
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: "normal",
+                }}
+              >
+                Usuń z listy zyczeń
+              </h1>
+            }
+            arrow
+          >
             <button
               onClick={() => handleDeleteFromWishlist(product)}
               type="submit"
-              className="text-md z-[1]"
+              className="z-[1]"
             >
               <NavIconButton
                 isButton={false}
@@ -276,7 +318,21 @@ export function ProductCard({ product }: ProductCardProps) {
             </button>
           </Tooltip>
         ) : (
-          <Tooltip title="Dodaj do listy zyczeń" arrow>
+          <Tooltip
+            arrow
+            title={
+              <h1
+                style={{
+                  color: "#fff",
+                  fontSize: "16px",
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: "normal",
+                }}
+              >
+                Dodaj do listy zyczeń
+              </h1>
+            }
+          >
             <button
               onClick={() => handleAddToWishlist(product)}
               type="submit"
