@@ -15,8 +15,10 @@ export default async function Page() {
 
 	return (
 		<div>
+			<h1 className="sr-only">Saleor Storefront example</h1>
 			{/* <CollectionList /> */}
 			<section className="mx-auto max-w-7xl p-8">
+				<h2 className="sr-only">Product list</h2>
 				<div className="mt-4 grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 					{products.map((product) => (
 						<ProductElement key={product.id} product={product} />
