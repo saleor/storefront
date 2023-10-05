@@ -85,12 +85,12 @@ export const SignIn: React.FC<SignInProps> = ({
 				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />
 				<div className="flex w-full flex-row items-center justify-end">
 					<Button
-						disabled={isSubmitting}
+						ariaDisabled={isSubmitting}
 						ariaLabel={formatMessage(contactLabels.sendResetLink)}
 						variant="tertiary"
 						label={formatMessage(passwordResetSent ? contactMessages.resend : contactMessages.forgotPassword)}
 						className="ml-1 mr-4"
-						onClick={onPasswordResetRequest}
+						onClick={(e) => (isSubmitting ? e.preventDefault() : onPasswordResetRequest)}
 					/>
 					<Button
 						type="submit"

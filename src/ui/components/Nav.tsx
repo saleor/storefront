@@ -21,10 +21,10 @@ export async function Nav() {
 	return (
 		<div className="sticky top-0 z-20 border-b bg-slate-100/75 backdrop-blur-md">
 			<div className="mx-auto max-w-7xl px-2 lg:px-8">
-				<div className="flex h-16 justify-between">
-					<div className="flex px-2 lg:px-0">
+				<div className="flex h-16 justify-between gap-8">
+					<div className="flex overflow-x-auto whitespace-nowrap px-2 lg:px-0">
 						<div className="flex flex-shrink-0 items-center"></div>
-						<div className="hidden lg:flex lg:space-x-8">
+						<div className="flex space-x-8">
 							{NavLinks.map((link) => (
 								<ActiveLink key={link.href} href={link.href}>
 									{link.label}
@@ -32,7 +32,7 @@ export async function Nav() {
 							))}
 						</div>
 					</div>
-					<div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
+					<div className="flex flex-1 items-center justify-end px-2 lg:ml-6 lg:justify-end">
 						<div className="">
 							<Link href="/cart" className="group -m-2 flex items-center p-2">
 								<ShoppingBagIcon className="h-6 w-6 flex-shrink-0 " aria-hidden="true" />
@@ -41,7 +41,6 @@ export async function Nav() {
 							</Link>
 						</div>
 					</div>
-					<div className="lg:ml-4 lg:flex lg:items-center"></div>
 				</div>
 			</div>
 		</div>

@@ -71,11 +71,10 @@ export default async function Page() {
 							</div>
 						</div>
 					</div>
-					<div className="mt-10 grid grid-cols-3">
-						<div></div>
+					<div className="mt-10 grid sm:grid-cols-3">
 						<Link
 							href={`/checkout?checkout=${checkoutId}`}
-							className="w-full rounded border border-transparent bg-slate-600 px-6 py-3 text-center font-medium text-gray-50 hover:bg-slate-500"
+							className="w-full rounded border border-transparent bg-slate-600 px-6 py-3 text-center font-medium text-gray-50 hover:bg-slate-500 sm:col-start-2"
 						>
 							Checkout
 						</Link>
