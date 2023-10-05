@@ -16,7 +16,7 @@ export interface PageHeroProps {
 export function PageHero({ title, description, pills = [] }: PageHeroProps) {
   return (
     <Box>
-      <div className="sm:ml-20 sm:text-left">
+      <div className="sm:text-left">
         <h1 className="text-5xl font-bold mb-4 px-2" data-testid={`titleOf${title}`}>
           {title}
         </h1>

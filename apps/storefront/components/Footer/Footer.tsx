@@ -61,17 +61,17 @@ export function Footer({ className, ...rest }: FooterProps) {
 
   return (
     <footer className={clsx(styles.footer, className)} {...rest}>
-      <div className="flex sm:mb-8 sm:container pt-12 px-8">
+      <div className="flex sm:mb-8 container pt-12 gap-24 justify-between">
         <Link href={paths.$url()} passHref legacyBehavior>
           <a href="pass" className="hidden sm:inline-block">
             <div className="mt-px group block h-16 w-28 relative">
-              <Logo height="120" width="150" />
+              <Logo height="150" width="230" />
             </div>
           </a>
         </Link>
-        <div className="grid grid-cols-2 gap-[2rem] w-full sm:w-auto sm:flex sm:flex-wrap sm:justify-end sm:ml-auto">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 ml-auto gap-16 md:gap-6 xl:gap-24">
           {menu.map((item) => (
-            <div className="sm:ml-14" key={item?.id}>
+            <div key={item?.id}>
               {item?.url ? (
                 <a
                   href={item.url}
