@@ -3,11 +3,11 @@ import NextImage from "next/image";
 type Props = {
 	src: string;
 	alt: string;
-	width?: number;
-	height?: number;
+	width: number;
+	height: number;
 };
 
-export const Image = ({ src, alt, width = 256, height = 256 }: Props) => {
+export const Image = ({ src, alt, width, height }: Props) => {
 	return (
 		<div className="overflow-hidden rounded-md border bg-slate-50 hover:border-slate-500">
 			<NextImage

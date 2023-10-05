@@ -26,8 +26,8 @@ export default async function Page() {
 								<div className="flex-shrink-0 rounded-md border bg-slate-50">
 									{item.variant?.product?.thumbnail?.url && (
 										<Image
-											src={item.variant?.product?.thumbnail?.url}
-											alt="image"
+											src={item.variant.product.thumbnail.url}
+											alt={item.variant.product.thumbnail.alt ?? ""}
 											width={200}
 											height={200}
 											className="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32"
