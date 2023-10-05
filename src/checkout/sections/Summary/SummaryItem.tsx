@@ -1,5 +1,4 @@
 import { type ReactNode } from "react";
-import Image from "next/image";
 import { useSummaryLineLineAttributesText, getSummaryLineProps } from "./utils";
 import { summaryLabels } from "./messages";
 import { type CheckoutLineFragment, type OrderLineFragment } from "@/checkout/graphql";
@@ -25,7 +24,7 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 			<div className="relative flex flex-row">
 				<div className="z-1 mr-4 flex h-24 w-20 items-center justify-start">
 					{productImage ? (
-						<Image className="object-contain" alt={productImage.alt ?? ""} src={productImage.url} />
+						<img className="object-contain" alt={productImage.alt ?? ""} src={productImage.url} />
 					) : (
 						<PhotoIcon />
 					)}
