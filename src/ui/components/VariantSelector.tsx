@@ -2,6 +2,7 @@
 
 import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect } from "react";
 
 export const createPathname = (pathname: string, params: URLSearchParams) => {
 	const paramsString = params.toString();
@@ -17,21 +18,26 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	function selectVariant(variantID: string, replace = false) {
-		const params = new URLSearchParams(searchParams);
-		params.set("variant", variantID);
+	const selectVariant = useCallback(
+		(variantID: string, replace = false) => {
+			const params = new URLSearchParams(searchParams);
+			params.set("variant", variantID);
 
-		const variantPathname = createPathname(pathname, params);
-		if (replace) {
-			router.replace(variantPathname, { scroll: false });
-		} else {
-			router.push(variantPathname, { scroll: false });
+			const variantPathname = createPathname(pathname, params);
+			if (replace) {
+				router.replace(variantPathname, { scroll: false });
+			} else {
+				router.push(variantPathname, { scroll: false });
+			}
+		},
+		[pathname, router, searchParams],
+	);
+
+	useEffect(() => {
+		if (variants.length === 1) {
+			selectVariant(variants[0].id, true);
 		}
-	}
-
-	if (variants.length === 1) {
-		selectVariant(variants[0].id, true);
-	}
+	}, [selectVariant, variants]);
 
 	return (
 		<div className="my-4">

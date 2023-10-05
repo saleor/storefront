@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren } from "react";
+import { type ReactNode } from "react";
 import { useSummaryLineLineAttributesText, getSummaryLineProps } from "./utils";
 import { summaryLabels } from "./messages";
 import { type CheckoutLineFragment, type OrderLineFragment } from "@/checkout/graphql";
@@ -7,11 +7,12 @@ import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 export type SummaryLine = CheckoutLineFragment | OrderLineFragment;
 
-interface LineItemProps {
+interface SummaryItemProps {
 	line: SummaryLine;
+	children: ReactNode;
 }
 
-export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, children }) => {
+export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 	const { productName, productImage } = getSummaryLineProps(line);
 
 	const formatMessage = useFormattedMessages();
@@ -23,7 +24,7 @@ export const SummaryItem: React.FC<PropsWithChildren<LineItemProps>> = ({ line, 
 			<div className="relative flex flex-row">
 				<div className="z-1 mr-4 flex h-24 w-20 items-center justify-start">
 					{productImage ? (
-						<img className="object-contain" alt={productImage?.alt || undefined} src={productImage?.url} />
+						<img className="object-contain" alt={productImage.alt ?? ""} src={productImage.url} />
 					) : (
 						<PhotoIcon />
 					)}

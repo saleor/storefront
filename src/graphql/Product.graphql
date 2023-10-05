@@ -2,8 +2,9 @@ fragment Product on Product {
 	id
 	name
 	slug
-	thumbnail {
+	thumbnail(size: 1024, format: AVIF) {
 		url
+		alt
 	}
 	category {
 		id

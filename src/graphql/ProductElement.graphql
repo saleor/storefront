@@ -18,8 +18,9 @@ query ProductElement($slug: String!) {
 				}
 			}
 		}
-		thumbnail(size: 1024) {
+		thumbnail(size: 1024, format: AVIF) {
 			url
+			alt
 		}
 	}
 }
