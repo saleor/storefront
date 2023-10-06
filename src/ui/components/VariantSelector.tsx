@@ -40,8 +40,8 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 	}, [selectVariant, variants]);
 
 	return (
-		<div className="my-4">
-			<div className="sr-only">Variants</div>
+		<fieldset className="my-4" role="radiogroup">
+			<legend className="sr-only">Variants</legend>
 			<div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
 				{variants.length > 1 &&
 					variants.map((variant) => {
@@ -56,14 +56,16 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 									searchParams.get("variant") === variant.id
 										? "border-transparent bg-slate-600 text-white hover:bg-slate-500"
 										: "border-slate-200 bg-white text-slate-900 hover:bg-slate-100",
-									"block overflow-hidden text-ellipsis rounded border p-3 text-sm font-semibold",
+									"flex items-center justify-center overflow-hidden text-ellipsis rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
 								)}
+								role="radio"
+								aria-checked={searchParams.get("variant") === variant.id}
 							>
 								{variant.name}
 							</button>
 						);
 					})}
 			</div>
-		</div>
+		</fieldset>
 	);
 }

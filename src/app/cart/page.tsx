@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import Image from "next/image";
-import Link from "next/link";
+import { CheckoutLink } from "./CheckoutLink";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney } from "@/lib/graphql";
 
@@ -62,7 +62,7 @@ export default async function Page() {
 					<div className="rounded border bg-slate-50 px-4 py-2">
 						<div className="flex items-center justify-between py-2">
 							<div>
-								<div className="font-semibold text-gray-900">Your Total</div>
+								<p className="font-semibold text-gray-900">Your Total</p>
 								<p className="mt-1 text-sm text-gray-500">Shipping will be calculated in the next step</p>
 							</div>
 							<div className="font-medium text-gray-900">
@@ -72,12 +72,7 @@ export default async function Page() {
 						</div>
 					</div>
 					<div className="mt-10 grid sm:grid-cols-3">
-						<Link
-							href={`/checkout?checkout=${checkoutId}`}
-							className="w-full rounded border border-transparent bg-slate-600 px-6 py-3 text-center font-medium text-gray-50 hover:bg-slate-500 sm:col-start-2"
-						>
-							Checkout
-						</Link>
+						<CheckoutLink checkoutId={checkoutId} disabled={lines.length < 1} />
 					</div>
 				</div>
 			</form>
