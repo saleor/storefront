@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 				</div>
 			</div>
 			<section className="sm:py-18 mx-auto max-w-2xl px-8 py-12 sm:px-6 lg:max-w-7xl">
-				<h2 className="sr-only">Product in category {category.name}</h2>
+				<h2 className="sr-only">Products in category {category.name}</h2>
 				<div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 					{products?.edges.map(({ node: product }) => <ProductElement key={product.id} product={product} />)}
 				</div>
