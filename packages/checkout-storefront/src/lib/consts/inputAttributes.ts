@@ -12,6 +12,7 @@ export const autocompleteTags: Record<AddressField, string> = {
   postalCode: "postal-code",
   cityArea: "",
   countryArea: "address-level1",
+  vatId: "nip",
 };
 
 export const typeTags: Partial<Record<AddressField, string>> = {

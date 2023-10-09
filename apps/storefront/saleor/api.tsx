@@ -295,6 +295,7 @@ export type Address = Node &
     privateMetafields?: Maybe<Scalars["Metadata"]["output"]>;
     streetAddress1: Scalars["String"]["output"];
     streetAddress2: Scalars["String"]["output"];
+    vatId?: Maybe<Scalars["String"]["output"]>;
   };
 
 /** Represents user address data. */
@@ -408,6 +409,8 @@ export type AddressInput = {
   streetAddress1?: InputMaybe<Scalars["String"]["input"]>;
   /** Address. */
   streetAddress2?: InputMaybe<Scalars["String"]["input"]>;
+  /** VAT ID */
+  vatId?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /**
@@ -33535,6 +33538,7 @@ export type AddressKeySpecifier = (
   | "privateMetafields"
   | "streetAddress1"
   | "streetAddress2"
+  | "vatId"
   | AddressKeySpecifier
 )[];
 export type AddressFieldPolicy = {
@@ -33558,6 +33562,7 @@ export type AddressFieldPolicy = {
   privateMetafields?: FieldPolicy<any> | FieldReadFunction<any>;
   streetAddress1?: FieldPolicy<any> | FieldReadFunction<any>;
   streetAddress2?: FieldPolicy<any> | FieldReadFunction<any>;
+  vatId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AddressCreateKeySpecifier = (
   | "accountErrors"

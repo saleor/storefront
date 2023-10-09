@@ -287,6 +287,7 @@ export type Address = Node &
     privateMetafields?: Maybe<Scalars["Metadata"]>;
     streetAddress1: Scalars["String"];
     streetAddress2: Scalars["String"];
+    vatId?: Maybe<Scalars["String"]>;
   };
 
 /** Represents user address data. */
@@ -400,6 +401,8 @@ export type AddressInput = {
   streetAddress1?: InputMaybe<Scalars["String"]>;
   /** Address. */
   streetAddress2?: InputMaybe<Scalars["String"]>;
+  /** VAT ID */
+  vatId?: InputMaybe<Scalars["String"]>;
 };
 
 /**
@@ -26954,6 +26957,7 @@ export type AddressFragment = {
   city: string;
   countryArea: string;
   phone?: string | null;
+  vatId?: string | null;
   country: { __typename?: "CountryDisplay"; code: string };
 };
 
@@ -27006,6 +27010,7 @@ export type OrderFragment = {
     city: string;
     countryArea: string;
     phone?: string | null;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; code: string };
   } | null;
   shippingAddress?: {
@@ -27019,6 +27024,7 @@ export type OrderFragment = {
     city: string;
     countryArea: string;
     phone?: string | null;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; code: string };
   } | null;
   total: {
@@ -27092,6 +27098,7 @@ export type OrderCreateMutation = {
         city: string;
         countryArea: string;
         phone?: string | null;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string };
       } | null;
       shippingAddress?: {
@@ -27105,6 +27112,7 @@ export type OrderCreateMutation = {
         city: string;
         countryArea: string;
         phone?: string | null;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string };
       } | null;
       total: {
@@ -27187,6 +27195,7 @@ export type OrderDetailsQuery = {
       city: string;
       countryArea: string;
       phone?: string | null;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string };
     } | null;
     shippingAddress?: {
@@ -27200,6 +27209,7 @@ export type OrderDetailsQuery = {
       city: string;
       countryArea: string;
       phone?: string | null;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string };
     } | null;
     total: {
@@ -27626,6 +27636,7 @@ export const AddressFragmentDoc = gql`
     }
     countryArea
     phone
+    vatId
   }
 `;
 export const MoneyFragmentDoc = gql`

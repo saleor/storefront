@@ -287,6 +287,7 @@ export type Address = Node &
     privateMetafields?: Maybe<Scalars["Metadata"]>;
     streetAddress1: Scalars["String"];
     streetAddress2: Scalars["String"];
+    vatId?: Maybe<Scalars["String"]>;
   };
 
 /** Represents user address data. */
@@ -400,6 +401,8 @@ export type AddressInput = {
   streetAddress1?: InputMaybe<Scalars["String"]>;
   /** Address. */
   streetAddress2?: InputMaybe<Scalars["String"]>;
+  /** VAT ID */
+  vatId?: InputMaybe<Scalars["String"]>;
 };
 
 /**
@@ -26786,6 +26789,7 @@ export type CheckoutFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   billingAddress?: {
@@ -26801,6 +26805,7 @@ export type CheckoutFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   user?: { __typename?: "User"; id: string; email: string } | null;
@@ -26956,6 +26961,7 @@ export type AddressFragment = {
   countryArea: string;
   firstName: string;
   lastName: string;
+  vatId?: string | null;
   country: { __typename?: "CountryDisplay"; country: string; code: string };
 };
 
@@ -26998,6 +27004,7 @@ export type CheckoutQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     billingAddress?: {
@@ -27013,6 +27020,7 @@ export type CheckoutQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     user?: { __typename?: "User"; id: string; email: string } | null;
@@ -27163,6 +27171,7 @@ export type CheckoutLinesUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -27178,6 +27187,7 @@ export type CheckoutLinesUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -27317,6 +27327,7 @@ export type CheckoutLineDeleteMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -27332,6 +27343,7 @@ export type CheckoutLineDeleteMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -27471,6 +27483,7 @@ export type CheckoutEmailUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -27486,6 +27499,7 @@ export type CheckoutEmailUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -27624,6 +27638,7 @@ export type CheckoutCustomerAttachMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -27639,6 +27654,7 @@ export type CheckoutCustomerAttachMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -27779,6 +27795,7 @@ export type CheckoutShippingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -27794,6 +27811,7 @@ export type CheckoutShippingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -27934,6 +27952,7 @@ export type CheckoutBillingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -27949,6 +27968,7 @@ export type CheckoutBillingAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -28088,6 +28108,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -28103,6 +28124,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -28264,6 +28286,7 @@ export type CheckoutAddPromoCodeMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -28279,6 +28302,7 @@ export type CheckoutAddPromoCodeMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -28419,6 +28443,7 @@ export type CheckoutRemovePromoCodeMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       billingAddress?: {
@@ -28434,6 +28459,7 @@ export type CheckoutRemovePromoCodeMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       user?: { __typename?: "User"; id: string; email: string } | null;
@@ -28703,6 +28729,148 @@ export type UpdateShippingLockerIdMutation = {
   } | null;
 };
 
+export type UpdateCheckoutMetadataMutationVariables = Exact<{
+  checkoutId: Scalars["ID"];
+  isInvoice: Scalars["String"];
+}>;
+
+export type UpdateCheckoutMetadataMutation = {
+  __typename?: "Mutation";
+  updateMetadata?: {
+    __typename?: "UpdateMetadata";
+    item?:
+      | {
+          __typename?: "Address";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "App";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Attribute";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Category";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Checkout";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "CheckoutLine";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Collection";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "DigitalContent";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Fulfillment";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "GiftCard";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Invoice";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Menu";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "MenuItem";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Order";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "OrderLine";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Page";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "PageType";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Payment";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Product";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ProductMedia";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ProductType";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ProductVariant";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Sale";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ShippingMethod";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ShippingMethodType";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ShippingZone";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "TaxClass";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "TaxConfiguration";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "TransactionItem";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "User";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Voucher";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "Warehouse";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | null;
+  } | null;
+};
+
 export type MoneyFragment = { __typename?: "Money"; currency: string; amount: number };
 
 export type OrderLineFragment = {
@@ -28774,6 +28942,7 @@ export type OrderFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   billingAddress?: {
@@ -28789,6 +28958,7 @@ export type OrderFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   deliveryMethod?:
@@ -28886,6 +29056,7 @@ export type OrderQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     billingAddress?: {
@@ -28901,6 +29072,7 @@ export type OrderQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     deliveryMethod?:
@@ -29078,6 +29250,7 @@ export type UserFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   }>;
   defaultBillingAddress?: {
@@ -29093,6 +29266,7 @@ export type UserFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
   defaultShippingAddress?: {
@@ -29108,6 +29282,7 @@ export type UserFragment = {
     countryArea: string;
     firstName: string;
     lastName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; country: string; code: string };
   } | null;
 };
@@ -29133,6 +29308,7 @@ export type UserQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     }>;
     defaultBillingAddress?: {
@@ -29148,6 +29324,7 @@ export type UserQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
     defaultShippingAddress?: {
@@ -29163,6 +29340,7 @@ export type UserQuery = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
   } | null;
@@ -29229,6 +29407,7 @@ export type UserAddressDeleteMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       }>;
       defaultBillingAddress?: {
@@ -29244,6 +29423,7 @@ export type UserAddressDeleteMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       defaultShippingAddress?: {
@@ -29259,6 +29439,7 @@ export type UserAddressDeleteMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
     } | null;
@@ -29281,6 +29462,7 @@ export type UserAddressDeleteMutation = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
   } | null;
@@ -29312,6 +29494,7 @@ export type UserAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       }>;
       defaultBillingAddress?: {
@@ -29327,6 +29510,7 @@ export type UserAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       defaultShippingAddress?: {
@@ -29342,6 +29526,7 @@ export type UserAddressUpdateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
     } | null;
@@ -29364,6 +29549,7 @@ export type UserAddressUpdateMutation = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
   } | null;
@@ -29395,6 +29581,7 @@ export type UserAddressCreateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       }>;
       defaultBillingAddress?: {
@@ -29410,6 +29597,7 @@ export type UserAddressCreateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
       defaultShippingAddress?: {
@@ -29425,6 +29613,7 @@ export type UserAddressCreateMutation = {
         countryArea: string;
         firstName: string;
         lastName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; country: string; code: string };
       } | null;
     } | null;
@@ -29447,6 +29636,7 @@ export type UserAddressCreateMutation = {
       countryArea: string;
       firstName: string;
       lastName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; country: string; code: string };
     } | null;
   } | null;
@@ -29506,6 +29696,7 @@ export const AddressFragmentDoc = gql`
     }
     firstName
     lastName
+    vatId
   }
 `;
 export const PaymentGatewayFragmentDoc = gql`
@@ -30122,6 +30313,24 @@ export const UpdateShippingLockerIdDocument = gql`
 export function useUpdateShippingLockerIdMutation() {
   return Urql.useMutation<UpdateShippingLockerIdMutation, UpdateShippingLockerIdMutationVariables>(
     UpdateShippingLockerIdDocument
+  );
+}
+export const UpdateCheckoutMetadataDocument = gql`
+  mutation updateCheckoutMetadata($checkoutId: ID!, $isInvoice: String!) {
+    updateMetadata(id: $checkoutId, input: [{ key: "invoice", value: $isInvoice }]) {
+      item {
+        metadata {
+          key
+          value
+        }
+      }
+    }
+  }
+`;
+
+export function useUpdateCheckoutMetadataMutation() {
+  return Urql.useMutation<UpdateCheckoutMetadataMutation, UpdateCheckoutMetadataMutationVariables>(
+    UpdateCheckoutMetadataDocument
   );
 }
 export const OrderDocument = gql`

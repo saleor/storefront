@@ -67,6 +67,10 @@
     "developer_comment": "street address continue",
     "string": "Street address (continue)"
   },
+  "AddressForm/messages/t6fHTm": {
+    "developer_comment": "vat id",
+    "string": "NIP"
+  },
   "AddressForm/messages/tGSbvd": {
     "developer_comment": "zip code",
     "string": "Zip code"
@@ -366,6 +370,10 @@
   "EmptyCartPage/messages/qfic6J": {
     "developer_comment": "cart is empty",
     "string": "Your cart is empty"
+  },
+  "InvoiceRequestSection/messages/M3Ymzl": {
+    "developer_comment": "invoice",
+    "string": "Faktura"
   },
   "ManualSaveAddressForm/messages/BfROpq": {
     "developer_comment": "save address",

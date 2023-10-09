@@ -27,6 +27,7 @@ export const getEmptyAddressFormData = (): AddressFormData => ({
   countryArea: "",
   postalCode: "",
   phone: "",
+  vatId: "",
   countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
 });
 
@@ -161,6 +162,7 @@ export const addressFieldsOrder: AddressField[] = [
   "cityArea",
   "countryArea",
   "phone",
+  "vatId",
 ];
 
 // api doesn't order the fields but we want to
@@ -185,5 +187,5 @@ export const getFilteredAddressFields = (addressFields: ApiAddressField[]): Addr
     (addressField: ApiAddressField) => addressField !== "name"
   ) as AddressField[];
 
-  return uniq([...filteredAddressFields, "firstName", "lastName", "phone"]);
+  return uniq([...filteredAddressFields, "firstName", "lastName", "phone", "vatId"]);
 };

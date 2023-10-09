@@ -11,6 +11,7 @@ fragment Address on Address {
   }
   countryArea
   phone
+  vatId
 }
 
 fragment Money on Money {

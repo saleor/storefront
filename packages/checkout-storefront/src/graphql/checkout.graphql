@@ -180,6 +180,7 @@ fragment AddressFragment on Address {
   }
   firstName
   lastName
+  vatId
 }
 
 query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
@@ -367,19 +368,27 @@ mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInpu
   }
 }
 
-  mutation UpdateShippingLockerId($checkoutId: ID!, $lockerId: String!) {
-    updateMetadata(
-      id: $checkoutId
-      input: [{ key: "locker_id", value: $lockerId }]
-    ) {
-      item {
-        metadata {
-          key
-          value
-          __typename
-        }
+mutation UpdateShippingLockerId($checkoutId: ID!, $lockerId: String!) {
+  updateMetadata(id: $checkoutId, input: [{ key: "locker_id", value: $lockerId }]) {
+    item {
+      metadata {
+        key
+        value
         __typename
       }
       __typename
     }
+    __typename
   }
+}
+
+mutation updateCheckoutMetadata($checkoutId: ID!, $isInvoice: String!) {
+  updateMetadata(id: $checkoutId, input: [{ key: "invoice", value: $isInvoice }]) {
+    item {
+      metadata {
+        key
+        value
+      }
+    }
+  }
+}

@@ -96,4 +96,9 @@ export const addressFieldMessages = defineMessages<AddressFieldLabel>({
     id: "AddressForm/messages/ljLaVr",
     description: "phone number",
   },
+  vatId: {
+    defaultMessage: "NIP",
+    id: "AddressForm/messages/t6fHTm",
+    description: "vat id",
+  },
 });
