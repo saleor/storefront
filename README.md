@@ -61,6 +61,9 @@ Set up your local storefront development environment by running the `storefront 
 saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
 ```
 
+> [!NOTE]
+> The minimum required version of Saleor CLI is `1.36.0`.
+
 ## Payments
 
 Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To enable it, you need to install the app in your Saleor Cloud instance. To do so, go to the Saleor Dashboard and click on the "Apps" tab. Then, click on the "Install" button next to the Adyen app. After the installation is complete, you must click on the app and configure it.
