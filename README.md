@@ -1,4 +1,4 @@
-![Nextjs Storefront](https://user-images.githubusercontent.com/44495184/185616229-5eadcddb-9170-404f-be57-91c66ffe3bae.png)
+![Nextjs Storefront](./storefront.png)
 
 <div align="center">
   <h1>Next.js Storefront</h1>
