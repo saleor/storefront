@@ -26739,6 +26739,8 @@ export type AddressDetailsFragment = {
   postalCode: string;
   isDefaultBillingAddress?: boolean | null;
   isDefaultShippingAddress?: boolean | null;
+  companyName: string;
+  vatId?: string | null;
   country: { __typename?: "CountryDisplay"; code: string; country: string };
 };
 
@@ -26851,6 +26853,8 @@ export type CheckoutDetailsFragment = {
     postalCode: string;
     isDefaultBillingAddress?: boolean | null;
     isDefaultShippingAddress?: boolean | null;
+    companyName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; code: string; country: string };
   } | null;
   shippingAddress?: {
@@ -26864,6 +26868,8 @@ export type CheckoutDetailsFragment = {
     postalCode: string;
     isDefaultBillingAddress?: boolean | null;
     isDefaultShippingAddress?: boolean | null;
+    companyName: string;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; code: string; country: string };
   } | null;
   shippingMethod?: {
@@ -27487,6 +27493,8 @@ export type AddressDeleteMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       }>;
     } | null;
@@ -27540,6 +27548,8 @@ export type CheckoutAddProductLineMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -27553,6 +27563,8 @@ export type CheckoutAddProductLineMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -27677,6 +27689,8 @@ export type CheckoutAddPromoCodeMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -27690,6 +27704,8 @@ export type CheckoutAddPromoCodeMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -27810,6 +27826,8 @@ export type CheckoutBillingAddressUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -27823,6 +27841,8 @@ export type CheckoutBillingAddressUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -27947,6 +27967,8 @@ export type CheckoutCompleteMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -27960,6 +27982,8 @@ export type CheckoutCompleteMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
     } | null;
@@ -28039,6 +28063,8 @@ export type CheckoutEmailUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -28052,6 +28078,8 @@ export type CheckoutEmailUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -28172,6 +28200,8 @@ export type CheckoutLineUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -28185,6 +28215,8 @@ export type CheckoutLineUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -28310,6 +28342,8 @@ export type RemoveProductFromCheckoutMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -28323,6 +28357,8 @@ export type RemoveProductFromCheckoutMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -28443,6 +28479,8 @@ export type CheckoutShippingAddressUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -28456,6 +28494,8 @@ export type CheckoutShippingAddressUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -28581,6 +28621,8 @@ export type CheckoutShippingMethodUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingAddress?: {
@@ -28594,6 +28636,8 @@ export type CheckoutShippingMethodUpdateMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       } | null;
       shippingMethod?: {
@@ -28713,6 +28757,8 @@ export type SetAddressDefaultMutation = {
         postalCode: string;
         isDefaultBillingAddress?: boolean | null;
         isDefaultShippingAddress?: boolean | null;
+        companyName: string;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string; country: string };
       }>;
     } | null;
@@ -28945,6 +28991,8 @@ export type CheckoutByTokenQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     } | null;
     shippingAddress?: {
@@ -28958,6 +29006,8 @@ export type CheckoutByTokenQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     } | null;
     shippingMethod?: {
@@ -29420,6 +29470,8 @@ export type OrderDetailsByTokenQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     } | null;
     billingAddress?: {
@@ -29433,6 +29485,8 @@ export type OrderDetailsByTokenQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     } | null;
     subtotal: {
@@ -29976,6 +30030,8 @@ export type UserQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     }>;
     defaultBillingAddress?: {
@@ -29989,6 +30045,8 @@ export type UserQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     } | null;
     defaultShippingAddress?: {
@@ -30002,6 +30060,8 @@ export type UserQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     } | null;
   } | null;
@@ -30024,6 +30084,8 @@ export type CurrentUserAddressesQuery = {
       postalCode: string;
       isDefaultBillingAddress?: boolean | null;
       isDefaultShippingAddress?: boolean | null;
+      companyName: string;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string; country: string };
     }>;
   } | null;
@@ -30125,6 +30187,8 @@ export const AddressDetailsFragmentDoc = gql`
       code
       country
     }
+    companyName
+    vatId
   }
 `;
 export const PriceFragmentDoc = gql`

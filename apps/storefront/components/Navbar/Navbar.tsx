@@ -68,15 +68,6 @@ export function Navbar() {
             className="ml-2 lg:hidden "
             onClick={() => setBurgerOpen(true)}
           />
-          {!authenticated ? (
-            <Link href={paths.account.login.$url()} passHref legacyBehavior>
-              <a href="pass" data-testid="userIcon" className="xs:hidden">
-                <NavIconButton isButton={false} icon="user" aria-hidden="true" />
-              </a>
-            </Link>
-          ) : (
-            <UserMenu />
-          )}
           <div className="flex-1 h-full hidden xs:flex">
             <Menu />
           </div>

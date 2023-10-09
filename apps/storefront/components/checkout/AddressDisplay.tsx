@@ -11,6 +11,8 @@ export function AddressDisplay({ address }: AddressDisplayProps) {
         <p>
           {address?.firstName} {address?.lastName}
         </p>
+        <p>{address?.vatId}</p>
+        <p>{address?.companyName}</p>
         <p>{address?.streetAddress1}</p>
         <p>
           {address?.postalCode} {address?.city}, {address?.country.country}

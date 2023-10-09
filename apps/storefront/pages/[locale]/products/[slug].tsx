@@ -43,6 +43,7 @@ import {
 import { STOREFRONT_NAME } from "@/lib/const";
 import { useWishlist } from "context/WishlistContext";
 import Heart from "../../../components/Navbar/heart.svg";
+import { CartSlide } from "@/components/CustomCart/CartSlide";
 
 export type OptionalQuery = {
   variant?: string;
@@ -94,6 +95,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const [addProductToCheckout] = useCheckoutAddProductLineMutation();
   const [loadingAddToCheckout, setLoadingAddToCheckout] = useState(false);
   const [addToCartError, setAddToCartError] = useState("");
+  const [cartSlide, setCartSlide] = useState(false);
 
   const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
 
@@ -130,10 +132,8 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
   const selectedVariant = product?.variants?.find((v) => v?.id === selectedVariantID) || undefined;
 
   const onAddToCart = async () => {
-    // Clear previous error messages
     setAddToCartError("");
 
-    // Block add to checkout button
     setLoadingAddToCheckout(true);
     const errors: CheckoutError[] = [];
 
@@ -142,7 +142,6 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
     }
 
     if (checkout) {
-      // If checkout is already existing, add products
       const { data: addToCartData } = await addProductToCheckout({
         variables: {
           checkoutToken,
@@ -183,6 +182,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
 
     if (errors.length === 0) {
       // Product successfully added
+      setCartSlide(true);
       return;
     }
 
@@ -341,6 +341,12 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
           </div>
         </div>
       </main>
+
+      {cartSlide && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
+      )}
+
+      {cartSlide && <CartSlide isOpen={cartSlide} setIsOpen={setCartSlide} />}
 
       <div className="container break-words xl:mx-16 mt-32">
         <Tabs product={product} selectedVariant={selectedVariant} />
