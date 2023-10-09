@@ -117,7 +117,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 							width={1024}
 							height={1024}
 							src={firstImage.url}
-							contain="object-contain"
+							fit="object-contain"
 						/>
 					</div>
 				)}

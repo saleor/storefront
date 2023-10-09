@@ -16,7 +16,7 @@ export function ProductElement(props: { product: ProductFragment }) {
 						alt={product.thumbnail.alt ?? ""}
 						width={512}
 						height={512}
-						contain="object-contain"
+						fit="object-contain"
 					/>
 				)}
 				<div className="mt-2 flex justify-between">
