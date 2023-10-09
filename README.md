@@ -43,7 +43,7 @@
 ## Quickstart
 
 > [!IMPORTANT]
-> Supercharge your development with Saleor CLI and a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
+> Use a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
 
 To download and install Saleor CLI, run the following command:
 
