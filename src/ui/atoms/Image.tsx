@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import NextImage from "next/image";
 
 type Props = {
@@ -5,9 +6,11 @@ type Props = {
 	alt: string;
 	width: number;
 	height: number;
+	square?: boolean;
+	contain?: "object-contain" | "object-cover";
 };
 
-export const Image = ({ src, alt, width, height }: Props) => {
+export const Image = ({ src, alt, width, height, square = true, contain = "object-cover" }: Props) => {
 	return (
 		<div className="overflow-hidden rounded-md border bg-slate-50 hover:border-slate-500">
 			<NextImage
@@ -15,7 +18,11 @@ export const Image = ({ src, alt, width, height }: Props) => {
 				height={height}
 				alt={alt}
 				src={src}
-				className="h-full w-full object-cover object-center p-4 transition-transform hover:scale-110"
+				className={clsx(
+					"h-full w-full object-center p-4 transition-transform hover:scale-110",
+					square && "aspect-square",
+					contain,
+				)}
 			/>
 		</div>
 	);

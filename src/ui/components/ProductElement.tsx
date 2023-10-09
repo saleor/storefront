@@ -11,7 +11,13 @@ export function ProductElement(props: { product: ProductFragment }) {
 		<Link href={`/products/${product.slug}`} key={product.id}>
 			<div>
 				{product?.thumbnail?.url && (
-					<Image src={product.thumbnail.url} alt={product.thumbnail.alt ?? ""} width={512} height={512} />
+					<Image
+						src={product.thumbnail.url}
+						alt={product.thumbnail.alt ?? ""}
+						width={512}
+						height={512}
+						contain="object-contain"
+					/>
 				)}
 				<div className="mt-2 flex justify-between">
 					<div>
