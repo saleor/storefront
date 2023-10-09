@@ -39,7 +39,7 @@
 
 🛠️ **Customizable CSS**: TailwindCSS can be extended or replaced with your favorite CSS solution.
 
-👌 **Top-notch tooling**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
+👌 **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
 
 ## Quickstart
 
