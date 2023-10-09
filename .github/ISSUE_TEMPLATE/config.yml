@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Saleor Discussions
-    url: https://github.com/saleor/react-storefront/discussions
+    url: https://github.com/saleor/storefront/discussions
     about: Ask questions and suggest features here.
