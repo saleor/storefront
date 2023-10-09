@@ -32,6 +32,8 @@
 
 🔥 **App Router**: Storefront utilizes React Server Components, Data Cache, and async components.
 
+🟦 **TypeScript**: Built with typesafety in mind and with TypeScript strict mode enabled.
+
 🦄 **GraphQL best practices**: Reduced boilerplate and bundle size thanks to GraphQL Codegen and `TypedDocumentString`.
 
 💳 **Payment Apps integration**: The checkout process is integrated with Saleor Payment Apps – just a few clicks away from using Adyen (Stripe coming soon).
@@ -43,12 +45,12 @@
 ## Quickstart
 
 > [!IMPORTANT]
-> Use a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
+> The fastest way to get started with Saleor is using a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
 
-To download and install Saleor CLI, run the following command:
+Install the latest version of the Saleor CLI by running the following command:
 
 ```bash
-npm i -g @saleor/cli
+npm i -g @saleor/cli@latest
 ```
 
 [Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli).
@@ -58,6 +60,9 @@ Set up your local storefront development environment by running the `storefront 
 ```bash
 saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
 ```
+
+> [!NOTE]
+> The minimum required version of Saleor CLI is `1.36.0`.
 
 ## Payments
 
