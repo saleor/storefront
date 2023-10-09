@@ -2,8 +2,7 @@
 
 <div align="center">
   <h1>Next.js Storefront</h1>
-  
-  <p><b>Next.js Storefront</b>: Your open-source frontend starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
+  Starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
 </div>
 
 <div align="center">
@@ -31,11 +30,11 @@
 
 🏎️ **Next.js 13**: Using the latest version of Next.js with file-based routing, React 18, Fast Refresh, Image Optimization and more.
 
-🔥 **App Router**: Written from scratch using App Router, the Storefront utilizes React Server Components, Data Cache and async components.
+🔥 **App Router**: Storefront utilizes React Server Components, Data Cache, and async components.
 
-🦄 **GraphQL best practices**: Reduced boilerplate and bundle size thanks to taking advantage of the GraphQL Codegen and `TypedDocumentString`.
+🦄 **GraphQL best practices**: Reduced boilerplate and bundle size thanks to GraphQL Codegen and `TypedDocumentString`.
 
-💳 **Payment Apps integration**: The checkout process is integrated with Saleor Payment Apps – just a few clicks away from using Adyen (Stripe is work in progress).
+💳 **Payment Apps integration**: The checkout process is integrated with Saleor Payment Apps – just a few clicks away from using Adyen (Stripe coming soon).
 
 🛠️ **Customizable CSS**: TailwindCSS can be extended or replaced with your favorite CSS solution.
 
@@ -44,7 +43,7 @@
 ## Quickstart
 
 > [!IMPORTANT]
-> Supercharge your development with Saleor CLI and free developer account at [Saleor Cloud](https://cloud.saleor.io/).
+> Supercharge your development with Saleor CLI and a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
 
 To download and install Saleor CLI, run the following command:
 
@@ -54,7 +53,7 @@ npm i -g @saleor/cli
 
 [Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli).
 
-Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a fresh clone, install dependencies and connect to the provided Saleor instance.
+Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a fresh clone, install dependencies, and connect to the provided Saleor instance.
 
 ```bash
 saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
@@ -68,7 +67,7 @@ Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https:
 > To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
 
 > [!NOTE]
-> Saleor Stripe App integration is work in progress.
+> Saleor Stripe App integration is a work in progress.
 
 ## Development
 
@@ -78,7 +77,7 @@ Clone and repo and copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Edit `.env.local` and set `NEXT_PUBLIC_SALEOR_API_URL` to your Saleor GraphQL endpoint URL, e.g. `https://example.saleor.cloud/graphql/`.
+Edit `.env.local` and set `NEXT_PUBLIC_SALEOR_API_URL` to your Saleor GraphQL endpoint URL, e.g., `https://example.saleor.cloud/graphql/`.
 
 Then, [install `pnpm`](https://pnpm.io/installation) and run the following command to install all dependencies in the repo:
 
@@ -86,7 +85,7 @@ Then, [install `pnpm`](https://pnpm.io/installation) and run the following comma
 pnpm i
 ```
 
-To start the development server, run:
+To start the development server, run the following:
 
 ```bash
 pnpm dev
