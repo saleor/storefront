@@ -118,10 +118,10 @@ export default async function Page(props: { params: { slug: string }; searchPara
 				{firstImage && (
 					<ProductImageWrapper alt={firstImage.alt ?? ""} width={1024} height={1024} src={firstImage.url} />
 				)}
-				<div className="flex flex-col justify-between pt-6 sm:px-6 sm:pt-0">
+				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
 					<div>
-						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900">{product?.name}</h1>
-						<p className="text-sm font-medium text-gray-900">
+						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900 mb-4">{product?.name}</h1>
+						<p className="text-sm font-medium text-gray-900 mb-8">
 							{selectedVariant?.pricing?.price?.gross
 								? formatMoney(
 										selectedVariant.pricing.price.gross.amount,
@@ -131,7 +131,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						</p>
 
 						{variants && <VariantSelector variants={variants} />}
-						<div className="mt-4 space-y-6">
+						<div className="mt-4 space-y-6 mt-8">
 							<div dangerouslySetInnerHTML={{ __html: description }}></div>
 						</div>
 						<div className="mt-6 flex items-center">
