@@ -17,7 +17,7 @@ export async function Nav() {
 
 	const checkout = await Checkout.find(checkoutId);
 
-	const lineCount: number = checkout ? checkout.lines.reduce((result, line)=> result + line.quantity, 0) : 0;
+	const lineCount: number = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 
 	return (
 		<div className="sticky top-0 z-20 border-b bg-gray-100/75 backdrop-blur-md">
