@@ -42,7 +42,7 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 	return (
 		<fieldset className="my-4" role="radiogroup">
 			<legend className="sr-only">Variants</legend>
-			<div className="grid grid-cols-2 gap-3 sm:grid-cols-7">
+			<div className="flex flex-wrap gap-3">
 				{variants.length > 1 &&
 					variants.map((variant) => {
 						return (
@@ -56,7 +56,7 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 									searchParams.get("variant") === variant.id
 										? "border-transparent bg-gray-900 text-white hover:bg-gray-800"
 										: "border-gray-200 bg-white text-gray-900 hover:bg-gray-100",
-									"flex items-center justify-center overflow-hidden text-ellipsis rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
+									"flex min-w-[8ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
 								)}
 								role="radio"
 								aria-checked={searchParams.get("variant") === variant.id}
