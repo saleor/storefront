@@ -16,10 +16,11 @@ export async function Nav() {
 	const checkoutId = cookies().get("checkoutId")?.value || "";
 
 	const checkout = await Checkout.find(checkoutId);
-	const lines = checkout ? checkout.lines : [];
+
+	const lineCount: number = checkout ? checkout.lines.reduce((result, line)=> result + line.quantity, 0) : 0;
 
 	return (
-		<div className="sticky top-0 z-20 border-b bg-gray-100/75 backdrop-blur-md">
+		<div className="sticky top-0 z-20 border-b bg-slate-100/75 backdrop-blur-md">
 			<div className="mx-auto max-w-7xl px-2 lg:px-8">
 				<div className="flex h-16 justify-between gap-8">
 					<div className="flex overflow-x-auto whitespace-nowrap px-2 lg:px-0">
@@ -29,14 +30,14 @@ export async function Nav() {
 								<ActiveLink key={link.href} href={link.href}>
 									{link.label}
 								</ActiveLink>
-							))}
+								))}
 						</div>
 					</div>
 					<div className="flex flex-1 items-center justify-end px-2 lg:ml-6 lg:justify-end">
 						<div className="">
 							<Link href="/cart" className="group -m-2 flex items-center p-2">
 								<ShoppingBagIcon className="h-6 w-6 flex-shrink-0 " aria-hidden="true" />
-								<span className="ml-2 text-sm font-medium ">{lines.length}</span>
+								<span className="ml-2 text-sm font-medium ">{lineCount || ""}</span>
 								<span className="sr-only">items in cart, view bag</span>
 							</Link>
 						</div>
@@ -44,5 +45,5 @@ export async function Nav() {
 				</div>
 			</div>
 		</div>
-	);
+		);
 }
