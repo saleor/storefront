@@ -120,8 +120,10 @@ export default async function Page(props: { params: { slug: string }; searchPara
 				)}
 				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
 					<div>
-						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900 mb-4">{product?.name}</h1>
-						<p className="text-sm font-medium text-gray-900 mb-8">
+						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-slate-900">
+							{product?.name}
+						</h1>
+						<p className="mb-8 text-sm font-medium text-gray-900">
 							{selectedVariant?.pricing?.price?.gross
 								? formatMoney(
 										selectedVariant.pricing.price.gross.amount,
@@ -131,9 +133,11 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						</p>
 
 						{variants && <VariantSelector variants={variants} />}
-						{description && <div className="mt-4 space-y-6 mt-8">
-							<div dangerouslySetInnerHTML={{ __html: description }}></div>
-						</div>}
+						{description && (
+							<div className="mt-4 mt-8 space-y-6">
+								<div dangerouslySetInnerHTML={{ __html: description }}></div>
+							</div>
+						)}
 						<div className="mt-6 flex items-center">
 							<CheckIcon className="h-5 w-5 flex-shrink-0 text-blue-500" aria-hidden="true" />
 							<p className="ml-1 text-sm font-semibold text-slate-500">In stock</p>
