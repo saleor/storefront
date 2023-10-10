@@ -12,14 +12,14 @@ jobs:
       NEXT_PUBLIC_SALEOR_API_URL: ${{ vars.NEXT_PUBLIC_SALEOR_API_URL }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get PNPM version from package.json
         id: pnpm-version
         run: echo "pnpm_version=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
 
       - name: Install PNPM
-        uses: pnpm/action-setup@v2.2.4
+        uses: pnpm/action-setup@v2
         with:
           version: ${{ steps.pnpm-version.outputs.pnpm_version }}
 

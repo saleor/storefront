@@ -6,7 +6,7 @@ import { CheckIcon } from "lucide-react";
 import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
-import { Image } from "@/ui/atoms/Image";
+import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { execute, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductElementDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
@@ -35,7 +35,12 @@ export async function generateMetadata({
 
 	return {
 		title: `${title} · Saleor Storefront example`,
-		description: product.seoDescription,
+		description: product.seoDescription || title,
+		alternates: {
+			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
+				? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
+				: undefined,
+		},
 	};
 }
 
@@ -110,11 +115,15 @@ export default async function Page(props: { params: { slug: string }; searchPara
 	return (
 		<section className="mx-auto grid max-w-7xl p-8">
 			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
-				{firstImage && <Image alt={firstImage.alt ?? ""} width={1024} height={1024} src={firstImage.url} />}
-				<div className="flex flex-col justify-between pt-6 sm:px-6 sm:pt-0">
+				{firstImage && (
+					<ProductImageWrapper alt={firstImage.alt ?? ""} width={1024} height={1024} src={firstImage.url} />
+				)}
+				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
 					<div>
-						<h1 className="flex-auto text-3xl font-bold tracking-tight text-slate-900">{product?.name}</h1>
-						<p className="text-sm font-medium text-gray-900">
+						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-slate-900">
+							{product?.name}
+						</h1>
+						<p className="mb-8 text-sm font-medium text-gray-900">
 							{selectedVariant?.pricing?.price?.gross
 								? formatMoney(
 										selectedVariant.pricing.price.gross.amount,
@@ -124,7 +133,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						</p>
 
 						{variants && <VariantSelector variants={variants} />}
-						<div className="mt-4 space-y-6">
+						<div className="mt-4 mt-8 space-y-6">
 							<div dangerouslySetInnerHTML={{ __html: description }}></div>
 						</div>
 						<div className="mt-6 flex items-center">

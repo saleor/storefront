@@ -16,7 +16,7 @@
   <span> • </span>
   <a href="https://discord.gg/H52JTZAtSH">💬 Discord</a>
   <span> • </span>
-  <a href="https://storefront-git-canary-saleorcommerce.vercel.app/">▶️ Demo</a>
+  <a href="https://storefront-saleor-example.vercel.app/">▶️ Demo</a>
 </div>
 
 <br/>
