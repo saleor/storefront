@@ -31,7 +31,7 @@ export default async function Page({ searchParams }: Props) {
 
 	return (
 		<div>
-			<div className="border-b bg-slate-100/50">
+			<div className="border-b bg-gray-100/50">
 				<div className="mx-auto max-w-7xl p-8">
 					<h1 className="text-xl font-semibold">All products</h1>
 				</div>
