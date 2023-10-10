@@ -68,7 +68,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 	}
 
 	const firstImage = product.thumbnail;
-	const description = parser.parse(JSON.parse((product?.description as string) || "{}"));
+	const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
 
 	const variants = product.variants;
 	const selectedVariantID = searchParams.variant;
@@ -131,9 +131,9 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						</p>
 
 						{variants && <VariantSelector variants={variants} />}
-						<div className="mt-4 space-y-6 mt-8">
+						{description && <div className="mt-4 space-y-6 mt-8">
 							<div dangerouslySetInnerHTML={{ __html: description }}></div>
-						</div>
+						</div>}
 						<div className="mt-6 flex items-center">
 							<CheckIcon className="h-5 w-5 flex-shrink-0 text-blue-500" aria-hidden="true" />
 							<p className="ml-1 text-sm font-semibold text-slate-500">In stock</p>
