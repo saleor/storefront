@@ -98,6 +98,10 @@
 					}
 				]
 			}
+		},
+		{
+			"files": ["__tests__/**/*.{ts,tsx}"],
+			"extends": ["plugin:playwright/recommended"]
 		}
 	],
 	"ignorePatterns": ["*.js", "*.jsx", "*.cjs", "src/checkout/src/graphql"]

@@ -29,6 +29,13 @@
 			"@ui/*": ["./src/components/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", "*.ts"],
+	"include": [
+		"next-env.d.ts",
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		".next/types/**/*.ts",
+		"*.ts",
+		"__tests__/**/*"
+	],
 	"exclude": ["node_modules"]
 }
