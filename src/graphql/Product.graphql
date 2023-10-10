@@ -2,7 +2,7 @@ fragment Product on Product {
 	id
 	name
 	slug
-	thumbnail(size: 1024, format: AVIF) {
+	thumbnail(size: 1024, format: WEBP) {
 		url
 		alt
 	}
