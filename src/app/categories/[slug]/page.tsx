@@ -28,7 +28,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
 	return (
 		<div>
-			<div className="border-b bg-slate-100/50">
+			<div className="border-b bg-gray-100/50">
 				<div className="mx-auto max-w-7xl p-8">
 					<h1 className="text-xl font-semibold">{name}</h1>
 				</div>

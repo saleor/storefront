@@ -23,7 +23,7 @@ export default async function Page() {
 					<ul role="list" className="divide-y divide-gray-200 border-b border-t border-gray-200">
 						{lines.map((item) => (
 							<li key={item.id} className="flex py-4">
-								<div className="flex-shrink-0 rounded-md border bg-slate-50">
+								<div className="flex-shrink-0 rounded-md border bg-gray-50">
 									{item.variant?.product?.thumbnail?.url && (
 										<Image
 											src={item.variant.product.thumbnail.url}
@@ -59,7 +59,7 @@ export default async function Page() {
 				</div>
 
 				<div className="mt-12">
-					<div className="rounded border bg-slate-50 px-4 py-2">
+					<div className="rounded border bg-gray-50 px-4 py-2">
 						<div className="flex items-center justify-between py-2">
 							<div>
 								<p className="font-semibold text-gray-900">Your Total</p>

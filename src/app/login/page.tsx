@@ -24,7 +24,7 @@ export default function LoginPage() {
 					<UserCard email={data.me.email} avatarURL={data.me.avatar?.url || ""} />
 					<button
 						onClick={() => signOut()}
-						className="rounded bg-slate-800 px-4 py-2 text-slate-200 hover:bg-slate-700"
+						className="rounded bg-gray-800 px-4 py-2 text-gray-200 hover:bg-gray-700"
 						type="button"
 					>
 						Log Out
