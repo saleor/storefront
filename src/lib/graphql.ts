@@ -11,7 +11,7 @@ type GraphQLErrorResponse = {
 
 type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
 
-export const ProductsPerPage = 4;
+export const ProductsPerPage = 12;
 
 export async function execute<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
