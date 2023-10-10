@@ -27,9 +27,9 @@ export const SelectBox = <TFieldName extends string>({
 	return (
 		<label
 			className={clsx(
-				"relative mb-2 flex cursor-pointer flex-row items-center justify-start rounded border border-slate-400 px-3 py-2",
-				"hover:border hover:border-slate-500",
-				{ "border border-slate-500": selected, "pointer-events-none hover:border-slate-400": disabled },
+				"relative mb-2 flex cursor-pointer flex-row items-center justify-start rounded border border-gray-400 px-3 py-2",
+				"hover:border hover:border-gray-500",
+				{ "border border-gray-500": selected, "pointer-events-none hover:border-gray-400": disabled },
 				className,
 			)}
 		>

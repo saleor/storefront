@@ -13,7 +13,8 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_SALEOR_API_URL: ${{ vars.NEXT_PUBLIC_SALEOR_API_URL }}
+      # @TODO replace this with proper e2e environment
+      NEXT_PUBLIC_SALEOR_API_URL: https://zaiste.saleor.cloud/graphql/
 
     steps:
       - uses: actions/checkout@v4

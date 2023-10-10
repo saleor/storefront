@@ -22,9 +22,9 @@ export const Button: FC<ButtonProps> = ({
 	const classes = clsx(
 		"inline-flex h-10 items-center justify-center whitespace-nowrap rounded border active:outline-none",
 		{
-			"bg-slate-400 hover:bg-slate-300 hover:border-slate-600 active:bg-slate-300 disabled:border-none disabled:bg-slate-200 aria-disabled:border-none aria-disabled:bg-slate-200":
+			"bg-gray-400 hover:bg-gray-300 hover:border-gray-600 active:bg-gray-300 disabled:border-none disabled:bg-gray-200 aria-disabled:border-none aria-disabled:bg-gray-200":
 				variant === "primary",
-			"border-slate-600 hover:border-slate-700 hover:bg-slate-300 active:bg-slate-300 disabled:border-slate-300 aria-disabled:border-slate-300 bg-transparent disabled:bg-transparent aria-disabled:bg-transparent":
+			"border-gray-600 hover:border-gray-700 hover:bg-gray-300 active:bg-gray-300 disabled:border-gray-300 aria-disabled:border-gray-300 bg-transparent disabled:bg-transparent aria-disabled:bg-transparent":
 				variant === "secondary",
 			"h-auto border-none bg-transparent p-0": variant === "tertiary",
 		},

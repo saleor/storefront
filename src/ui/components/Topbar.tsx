@@ -10,10 +10,10 @@ export function Topbar() {
 	const { data } = useQuery<CurrentUserQuery>(gql(CurrentUserDocument.toString()));
 
 	return (
-		<div className="border-b border-slate-100 bg-slate-800">
+		<div className="border-b border-gray-100 bg-gray-800">
 			<div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 				<div></div>
-				<div className="flex items-center text-center text-sm font-medium text-slate-50 hover:text-slate-300">
+				<div className="flex items-center text-center text-sm font-medium text-gray-50 hover:text-gray-300">
 					<StarIcon className="mr-2 h-4 text-yellow-300" />
 					<Link href="https://github.com/saleor/storefront" target="_blank">
 						Star our Storefront Example on GitHub
@@ -22,11 +22,11 @@ export function Topbar() {
 
 				<div className="flex flex-1 items-center justify-end">
 					{data?.me ? (
-						<button onClick={() => signOut()} className="text-sm font-medium text-white hover:text-slate-300">
+						<button onClick={() => signOut()} className="text-sm font-medium text-white hover:text-gray-300">
 							Logout
 						</button>
 					) : (
-						<Link href="/login" className="text-sm font-medium text-white hover:text-slate-300">
+						<Link href="/login" className="text-sm font-medium text-white hover:text-gray-300">
 							Login
 						</Link>
 					)}

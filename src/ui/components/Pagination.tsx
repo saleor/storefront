@@ -10,7 +10,7 @@ export async function Pagination({
 	};
 }) {
 	return (
-		<nav className="flex items-center justify-center gap-x-4 border-slate-200 px-4">
+		<nav className="flex items-center justify-center gap-x-4 border-gray-200 px-4">
 			<Link
 				href={pageInfo.hasNextPage ? `/products?cursor=${pageInfo.endCursor}` : "#"}
 				className={clsx("px-4 py-2 text-sm font-medium ", {
