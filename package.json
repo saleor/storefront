@@ -13,7 +13,8 @@
 		"prepare": "husky install",
 		"i18n:extract": "formatjs extract 'src/checkout/src/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file src/checkout/content/locales/en-US.json",
 		"i18n:compile": "formatjs compile-folder --ast --format transifex src/checkout/content/locales src/checkout/content/compiled-locales",
-		"i18n": "pnpm run i18n:extract && pnpm run i18n:compile"
+		"i18n": "pnpm run i18n:extract && pnpm run i18n:compile",
+		"test": "playwright test"
 	},
 	"dependencies": {
 		"@adyen/adyen-web": "5.51.0",
@@ -49,6 +50,7 @@
 		"@graphql-typed-document-node/core": "3.2.0",
 		"@next/env": "13.5.4",
 		"@parcel/watcher": "2.3.0",
+		"@playwright/test": "1.38.1",
 		"@tailwindcss/forms": "0.5.6",
 		"@tailwindcss/typography": "0.5.10",
 		"@types/lodash-es": "4.17.9",
@@ -64,6 +66,7 @@
 		"eslint-config-prettier": "9.0.0",
 		"eslint-plugin-formatjs": "4.10.5",
 		"eslint-plugin-import": "2.28.1",
+		"eslint-plugin-playwright": "0.16.0",
 		"graphql-tag": "2.12.6",
 		"husky": "8.0.3",
 		"lint-staged": "14.0.1",
