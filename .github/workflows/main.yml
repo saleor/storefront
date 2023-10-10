@@ -1,5 +1,9 @@
 name: Build, TypeScripts, tests
-on: [pull_request]
+on:
+  push:
+    branches: [canary]
+  pull_request:
+    branches: [canary]
 
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
@@ -31,5 +35,18 @@ jobs:
       - name: Install dependencies
         run: pnpm --version && pnpm install --frozen-lockfile
 
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
       - name: Build
         run: pnpm run build
+
+      - name: Run Playwright tests
+        run: pnpm exec playwright test
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
