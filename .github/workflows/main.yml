@@ -35,8 +35,33 @@ jobs:
       - name: Install dependencies
         run: pnpm --version && pnpm install --frozen-lockfile
 
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "playwright_version=$(pnpm playwright --version | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Playwright Cache
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
+
+      - run: pnpm exec playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - run: pnpm exec playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+
+      - uses: actions/cache@v3
+        name: Next.js cache
+        with:
+          path: |
+            ${{ github.workspace }}/.next/cache
+          key: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Build
         run: pnpm run build
