@@ -44,7 +44,7 @@ export function Footer() {
 
 				<div className="flex flex-col justify-between border-t border-gray-200 py-10 sm:flex-row">
 					<p className="text-sm text-gray-500">Copyright &copy; 2023 Your Store, Inc.</p>
-					<p className="text-sm text-gray-500">Created by Saleor, Inc</p>
+					<p className="text-sm text-gray-500">Powered by Saleor</p>
 				</div>
 			</div>
 		</footer>
