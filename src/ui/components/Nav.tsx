@@ -16,7 +16,8 @@ export async function Nav() {
 	const checkoutId = cookies().get("checkoutId")?.value || "";
 
 	const checkout = await Checkout.find(checkoutId);
-	const lines = checkout ? checkout.lines : [];
+
+	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 
 	return (
 		<div className="sticky top-0 z-20 border-b bg-gray-100/75 backdrop-blur-md">
@@ -36,7 +37,7 @@ export async function Nav() {
 						<div className="">
 							<Link href="/cart" className="group -m-2 flex items-center p-2">
 								<ShoppingBagIcon className="h-6 w-6 flex-shrink-0 " aria-hidden="true" />
-								<span className="ml-2 text-sm font-medium ">{lines.length}</span>
+								<span className="ml-2 text-sm font-medium ">{lineCount || ""}</span>
 								<span className="sr-only">items in cart, view bag</span>
 							</Link>
 						</div>
