@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { type ReactNode } from "react";
 import { AuthProvider } from "@/ui/components/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -9,14 +10,11 @@ export const metadata = {
 	description: "Starter pack for building performant e-commerce experiences with Saleor.",
 };
 
-export default function RootLayout(props: { children: React.ReactNode; modal: React.ReactNode }) {
+export default function RootLayout(props: { children: ReactNode }) {
 	return (
 		<html lang="en">
 			<body className={`${inter.className} flex min-h-screen flex-col`}>
-				<AuthProvider>
-					<div className="min-h-[calc(100vh-106px)] flex-grow">{props.children}</div>
-					{props.modal}
-				</AuthProvider>
+				<AuthProvider>{props.children}</AuthProvider>
 			</body>
 		</html>
 	);
