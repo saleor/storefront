@@ -28,24 +28,22 @@
 
 ## Features
 
-🏎️ **Next.js 13**: Using the latest version of Next.js with file-based routing, React 18, Fast Refresh, Image Optimization and more.
+🏎️ **Next.js 13**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
 
-🔥 **App Router**: Storefront utilizes React Server Components, Data Cache, and async components.
+🔥 **App Router**: Uses React Server Components, Data Cache, and async components.
 
-🟦 **TypeScript**: Built with typesafety in mind and with TypeScript strict mode enabled.
+🟦 **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
 
-🦄 **GraphQL best practices**: Reduced boilerplate and bundle size thanks to GraphQL Codegen and `TypedDocumentString`.
+🦄 **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
 
-💳 **Payment Apps integration**: The checkout process is integrated with Saleor Payment Apps – just a few clicks away from using Adyen (Stripe coming soon).
-
-🛠️ **Customizable CSS**: TailwindCSS can be extended or replaced with your favorite CSS solution.
+🛠️ **Customizable CSS**: TailwindCSS can be extended or replaced with an alternative CSS solution.
 
 👌 **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
 
 ## Quickstart
 
 > [!IMPORTANT]
-> The fastest way to get started with Saleor is using a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
+> To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
 
 Install the latest version of the Saleor CLI by running the following command:
 
@@ -55,7 +53,7 @@ npm i -g @saleor/cli@latest
 
 [Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli).
 
-Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a fresh clone, install dependencies, and connect to the provided Saleor instance.
+Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a clone, install dependencies, and connect with the provided Saleor instance.
 
 ```bash
 saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
@@ -66,7 +64,7 @@ saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
 
 ## Payments
 
-Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To enable it, you need to install the app in your Saleor Cloud instance. To do so, go to the Saleor Dashboard and click on the "Apps" tab. Then, click on the "Install" button next to the Adyen app. After the installation is complete, you must click on the app and configure it.
+Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To install and configure the payment app go to the "Apps" section in the Saleor Dashboard (App Store is only available in Saleor Cloud).
 
 > [!WARNING]
 > To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
