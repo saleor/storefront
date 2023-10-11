@@ -1,4 +1,4 @@
-![Nextjs Storefront](./storefront.png)
+![Nextjs Storefront](./screenshot.png)
 
 <div align="center">
   <h1>Next.js Storefront</h1>
