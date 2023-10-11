@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { execute } from "@/lib/graphql";
-import { ProductElement } from "@/ui/components/ProductElement";
+import { ProductsList } from "@/ui/components/ProductsList";
 
 export const generateMetadata = async ({ params }: { params: { slug: string } }): Promise<Metadata> => {
 	const { category } = await execute(ProductListByCategoryDocument, {
@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 		variables: { slug: params.slug },
 	});
 
-	if (!category) {
+	if (!category || !category.products) {
 		notFound();
 	}
 
@@ -35,11 +35,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 			</div>
 			<section className="sm:py-18 mx-auto max-w-2xl px-8 py-12 sm:px-6 lg:max-w-7xl">
 				<h2 className="sr-only">Products in category {category.name}</h2>
-				<div className="mt-4 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-					{products?.edges.map(({ node: product }, index) => (
-						<ProductElement key={product.id} product={product} loading={index < 4 ? "eager" : "lazy"} />
-					))}
-				</div>
+				<ProductsList products={products.edges.map((e) => e.node)} />
 			</section>
 		</div>
 	);

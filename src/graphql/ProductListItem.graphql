@@ -1,15 +1,7 @@
-fragment Product on Product {
+fragment ProductListItem on Product {
 	id
 	name
 	slug
-	thumbnail(size: 1024, format: WEBP) {
-		url
-		alt
-	}
-	category {
-		id
-		name
-	}
 	pricing {
 		priceRange {
 			start {
@@ -25,5 +17,13 @@ fragment Product on Product {
 				}
 			}
 		}
+	}
+	category {
+		id
+		name
+	}
+	thumbnail(size: 1024, format: WEBP) {
+		url
+		alt
 	}
 }

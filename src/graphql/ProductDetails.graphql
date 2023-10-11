@@ -1,11 +1,19 @@
-query ProductElement($slug: String!) {
+query ProductDetails($slug: String!) {
 	product(slug: $slug, channel: "default-channel") {
 		id
 		name
-		description
 		slug
+		description
 		seoTitle
 		seoDescription
+		thumbnail(size: 1024, format: WEBP) {
+			url
+			alt
+		}
+		category {
+			id
+			name
+		}
 		variants {
 			id
 			name
@@ -17,10 +25,6 @@ query ProductElement($slug: String!) {
 					}
 				}
 			}
-		}
-		thumbnail(size: 1024, format: WEBP) {
-			url
-			alt
 		}
 	}
 }

@@ -8,7 +8,7 @@ import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { execute, formatMoney } from "@/lib/graphql";
-import { CheckoutAddLineDocument, ProductElementDocument, ProductListDocument } from "@/gql/graphql";
+import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
 export async function generateMetadata({
@@ -18,7 +18,7 @@ export async function generateMetadata({
 	params: { slug: string };
 	searchParams: { variant?: string };
 }): Promise<Metadata> {
-	const { product } = await execute(ProductElementDocument, {
+	const { product } = await execute(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
 		},
@@ -56,7 +56,7 @@ const parser = edjsHTML();
 export default async function Page(props: { params: { slug: string }; searchParams: { variant?: string } }) {
 	const { params, searchParams } = props;
 
-	const { product } = await execute(ProductElementDocument, {
+	const { product } = await execute(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
 		},

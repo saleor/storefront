@@ -3,7 +3,7 @@ query ProductListPaginated($first: Int!, $after: String) {
 		totalCount
 		edges {
 			node {
-				...Product
+				...ProductListItem
 			}
 			cursor
 		}
