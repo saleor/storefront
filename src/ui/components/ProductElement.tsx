@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
-
 import type { ProductFragment } from "@/gql/graphql";
 import { formatMoneyRange } from "@/lib/graphql";
 
@@ -8,8 +7,8 @@ export function ProductElement(props: { product: ProductFragment } & { loading: 
 	const { product, loading } = props;
 
 	return (
-		<Link href={`/products/${product.slug}`} key={product.id}>
-			<div>
+		<li>
+			<Link href={`/products/${product.slug}`} key={product.id}>
 				{product?.thumbnail?.url && (
 					<ProductImageWrapper
 						loading={loading}
@@ -31,7 +30,7 @@ export function ProductElement(props: { product: ProductFragment } & { loading: 
 						})}
 					</p>
 				</div>
-			</div>
-		</Link>
+			</Link>
+		</li>
 	);
 }

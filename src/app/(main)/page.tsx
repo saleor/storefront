@@ -1,6 +1,6 @@
 import { ProductListDocument } from "@/gql/graphql";
 import { execute } from "@/lib/graphql";
-import { ProductElement } from "@/ui/components/ProductElement";
+import { ProductList } from "@/ui/components/ProductList";
 
 export const metadata = {
 	title: "Saleor Storefront example",
@@ -20,10 +20,8 @@ export default async function Page() {
 			{/* <CollectionList /> */}
 			<section className="mx-auto max-w-7xl p-8">
 				<h2 className="sr-only">Product list</h2>
-				<div className="mt-4 grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-					{products.map((product, index) => (
-						<ProductElement key={product.id} product={product} loading={index < 4 ? "eager" : "lazy"} />
-					))}
+				<div className="mt-4">
+					<ProductList products={products} />
 				</div>
 			</section>
 		</div>
