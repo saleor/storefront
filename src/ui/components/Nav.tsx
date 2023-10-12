@@ -37,8 +37,12 @@ export async function Nav() {
 						<div className="">
 							<Link href="/cart" className="group -m-2 flex items-center p-2">
 								<ShoppingBagIcon className="h-6 w-6 flex-shrink-0 " aria-hidden="true" />
-								<span className="ml-2 text-sm font-medium ">{lineCount || ""}</span>
-								<span className="sr-only">items in cart, view bag</span>
+								{lineCount && (
+									<>
+										<span className="ml-2 text-sm font-medium ">{lineCount}</span>
+										<span className="sr-only">items in cart, view bag</span>
+									</>
+								)}
 							</Link>
 						</div>
 					</div>

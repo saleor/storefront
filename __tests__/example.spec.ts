@@ -1,18 +1,28 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-test("has title", async ({ page }) => {
-	await page.goto("https://playwright.dev/");
+test("test", async ({ page }) => {
+	await page.goto("/");
+	await page.getByTestId("ProductElement").first().click();
+	await page.getByRole("button", { name: "Add to cart" }).click();
 
-	// Expect a title "to contain" a substring.
-	await expect(page).toHaveTitle(/Playwright/);
-});
+	await page.getByRole("link", { name: "1 items in cart, view bag" }).click();
+	await page.getByRole("link", { name: "Checkout" }).click();
 
-test("get started link", async ({ page }) => {
-	await page.goto("https://playwright.dev/");
+	await page.getByLabel("First name*").fill("Jan");
+	await page.getByLabel("Last name*").fill("Kowalski");
+	await page.getByLabel("Street address*").fill("3111 Broadway");
+	await page.getByLabel("City*").fill("New York");
+	await page.getByLabel("Zip code*").fill("10027");
+	await page.getByLabel("Phone number").fill("+48123456789");
 
-	// Click the get started link.
-	await page.getByRole("link", { name: "Get started" }).click();
+	await page
+		.frameLocator('iframe[title="Iframe for card number"]')
+		.getByLabel("Card number")
+		.fill("4111 1111 4555 1142");
+	await page.frameLocator('iframe[title="Iframe for expiry date"]').getByLabel("Expiry date").fill("03/30");
+	await page.frameLocator('iframe[title="Iframe for security code"]').getByLabel("Security code").fill("333");
+	await page.getByLabel("Name on card").fill("Jan Kowalski");
+	await page.getByRole("button", { name: "Pay" }).click();
 
-	// Expects page to have a heading with the name of Installation.
-	await expect(page.getByRole("heading", { name: "Installation" })).toBeVisible();
+	expect(true).toBe(true);
 });

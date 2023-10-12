@@ -7,7 +7,7 @@ query ProductListByCategory($slug: String!) {
 		products(first: 100, channel: "default-channel") {
 			edges {
 				node {
-					...Product
+					...ProductListItem
 				}
 			}
 		}
