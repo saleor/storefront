@@ -65,11 +65,20 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: Build
-        run: pnpm run build
+      # - name: Build
+      #   run: pnpm run build
+
+      - name: Wait for Vercel Preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+        id: waitForVercel
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 120
 
       - name: Run Playwright tests
         run: pnpm exec playwright test
+        env:
+          BASE_URL: ${{ steps.waitForVercel.outputs.url }}
 
       - uses: actions/upload-artifact@v3
         if: always()
