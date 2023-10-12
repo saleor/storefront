@@ -18,14 +18,14 @@ export default async function Page() {
 
 	return (
 		<section className="mx-auto max-w-7xl p-8">
-			<h1 className="mt-8 text-3xl font-bold text-gray-900">Your Shopping Cart</h1>
+			<h1 className="mt-8 text-3xl font-bold text-neutral-900">Your Shopping Cart</h1>
 
 			<form className="mt-12">
 				<div>
-					<ul role="list" className="divide-y divide-gray-200 border-b border-t border-gray-200">
+					<ul role="list" className="divide-y divide-neutral-200 border-b border-t border-neutral-200">
 						{lines.map((item) => (
 							<li key={item.id} className="flex py-4">
-								<div className="aspect-square h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border bg-gray-50 sm:h-32 sm:w-32">
+								<div className="aspect-square h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 sm:h-32 sm:w-32">
 									{item.variant?.product?.thumbnail?.url && (
 										<Image
 											src={item.variant.product.thumbnail.url}
@@ -41,15 +41,15 @@ export default async function Page() {
 									<div className="flex justify-between justify-items-start gap-4">
 										<div className="">
 											<Link href={`/products/${item.variant.product.slug}?variant=${item.variant.id}`}>
-												<h3 className="font-medium text-gray-700">{item.variant?.product?.name}</h3>
+												<h3 className="font-medium text-neutral-700">{item.variant?.product?.name}</h3>
 											</Link>
-											<p className="mt-1 text-sm text-gray-500">{item.variant?.product?.category?.name}</p>
+											<p className="mt-1 text-sm text-neutral-500">{item.variant?.product?.category?.name}</p>
 											{Boolean(item.variant.name) && (
-												<p className="mt-1 text-sm text-gray-500">Variant: {item.variant.name}</p>
+												<p className="mt-1 text-sm text-neutral-500">Variant: {item.variant.name}</p>
 											)}
 										</div>
 
-										<p className="text-right font-semibold text-gray-900">
+										<p className="text-right font-semibold text-neutral-900">
 											{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency)}
 										</p>
 									</div>
@@ -65,13 +65,13 @@ export default async function Page() {
 				</div>
 
 				<div className="mt-12">
-					<div className="rounded border bg-gray-50 px-4 py-2">
+					<div className="rounded border bg-neutral-50 px-4 py-2">
 						<div className="flex items-center justify-between py-2">
 							<div>
-								<p className="font-semibold text-gray-900">Your Total</p>
-								<p className="mt-1 text-sm text-gray-500">Shipping will be calculated in the next step</p>
+								<p className="font-semibold text-neutral-900">Your Total</p>
+								<p className="mt-1 text-sm text-neutral-500">Shipping will be calculated in the next step</p>
 							</div>
-							<div className="font-medium text-gray-900">
+							<div className="font-medium text-neutral-900">
 								{checkout &&
 									formatMoney(checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency)}
 							</div>

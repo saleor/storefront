@@ -23,7 +23,7 @@ export const TextInputComponent = <TName extends string>({
 	return (
 		<div>
 			<label className="block">
-				<span className="text-xs text-gray-700">
+				<span className="text-xs text-neutral-700">
 					{label}
 					{required && "*"}
 				</span>
@@ -33,7 +33,7 @@ export const TextInputComponent = <TName extends string>({
 					{...field}
 					{...props}
 					className={clsx(
-						"mt-0.5 block w-full appearance-none rounded-md border-gray-300 shadow-sm transition-colors focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 active:border-indigo-200 active:outline-none",
+						"mt-0.5 block w-full appearance-none rounded-md border-neutral-300 shadow-sm transition-colors focus:border-indigo-300 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 active:border-indigo-200 active:outline-none",
 						{ "border-red-300": error },
 						props.className,
 					)}

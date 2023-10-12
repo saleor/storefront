@@ -22,7 +22,7 @@ export const LanguageSelect = () => {
 			<select
 				value={locale}
 				onChange={(event) => handleLanguageChange(event.currentTarget.value as Locale)}
-				className="h-10 w-full cursor-pointer appearance-none rounded border border-gray-600 px-3 py-2 pr-12 text-base"
+				className="h-10 w-full cursor-pointer appearance-none rounded border border-neutral-600 px-3 py-2 pr-12 text-base"
 			>
 				{locales.map((locale) => (
 					<option value={locale} key={locale}>
