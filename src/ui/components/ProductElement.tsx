@@ -4,9 +4,11 @@ import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import type { ProductListItemFragment } from "@/gql/graphql";
 import { formatMoneyRange } from "@/lib/graphql";
 
-export function ProductElement(props: { product: ProductListItemFragment } & { loading: "eager" | "lazy" }) {
-	const { product, loading } = props;
-
+export function ProductElement({
+	product,
+	loading,
+	priority,
+}: { product: ProductListItemFragment } & { loading: "eager" | "lazy"; priority?: boolean }) {
 	return (
 		<li data-testid="ProductElement">
 			<Link href={`/products/${product.slug}`} key={product.id}>
@@ -18,6 +20,7 @@ export function ProductElement(props: { product: ProductListItemFragment } & { l
 							alt={product.thumbnail.alt ?? ""}
 							width={512}
 							height={512}
+							priority={priority}
 						/>
 					)}
 					<div className="mt-2 flex justify-between">
