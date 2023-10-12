@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { execute } from "@/lib/graphql";
+import { executeGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument } from "@/gql/graphql";
 
 type deleteLineFromCheckoutArgs = {
@@ -10,11 +10,12 @@ type deleteLineFromCheckoutArgs = {
 };
 
 export const deleteLineFromCheckout = async ({ lineId, checkoutId }: deleteLineFromCheckoutArgs) => {
-	await execute(CheckoutDeleteLinesDocument, {
+	await executeGraphQL(CheckoutDeleteLinesDocument, {
 		variables: {
 			checkoutId,
 			lineIds: [lineId],
 		},
+		cache: "no-cache",
 	});
 
 	revalidatePath("/cart");

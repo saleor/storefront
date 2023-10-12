@@ -40,7 +40,7 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 	}, [selectVariant, variants]);
 
 	return (
-		<fieldset className="my-4" role="radiogroup">
+		<fieldset className="my-4" role="radiogroup" data-testid="VariantSelector">
 			<legend className="sr-only">Variants</legend>
 			<div className="flex flex-wrap gap-3">
 				{variants.length > 1 &&

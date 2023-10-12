@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
-import { execute } from "@/lib/graphql";
+import { executeGraphQL } from "@/lib/graphql";
 import { ProductsList } from "@/ui/components/ProductsList";
 
 export const generateMetadata = async ({ params }: { params: { slug: string } }): Promise<Metadata> => {
-	const { category } = await execute(ProductListByCategoryDocument, {
+	const { category } = await executeGraphQL(ProductListByCategoryDocument, {
 		variables: { slug: params.slug },
+		revalidate: 60,
 	});
 
 	return {
@@ -16,8 +17,9 @@ export const generateMetadata = async ({ params }: { params: { slug: string } })
 };
 
 export default async function Page({ params }: { params: { slug: string } }) {
-	const { category } = await execute(ProductListByCategoryDocument, {
+	const { category } = await executeGraphQL(ProductListByCategoryDocument, {
 		variables: { slug: params.slug },
+		revalidate: 60,
 	});
 
 	if (!category || !category.products) {

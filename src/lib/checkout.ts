@@ -1,9 +1,9 @@
 import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
-import { execute } from "@/lib/graphql";
+import { executeGraphQL } from "@/lib/graphql";
 
 export async function find(checkoutId: string) {
 	const { checkout } = checkoutId
-		? await execute(CheckoutFindDocument, {
+		? await executeGraphQL(CheckoutFindDocument, {
 				variables: {
 					id: checkoutId,
 				},
@@ -14,4 +14,4 @@ export async function find(checkoutId: string) {
 	return checkout;
 }
 
-export const create = () => execute(CheckoutCreateDocument);
+export const create = () => executeGraphQL(CheckoutCreateDocument, { cache: "no-cache" });

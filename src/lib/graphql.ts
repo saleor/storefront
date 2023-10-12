@@ -13,14 +13,13 @@ type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
 
 export const ProductsPerPage = 12;
 
-export async function execute<Result, Variables>(
+export async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
 	options: {
-		variables?: Variables;
 		headers?: HeadersInit;
 		cache?: RequestCache;
 		revalidate?: number;
-	} = {},
+	} & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables }),
 ): Promise<Result> {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	const { variables, headers, cache, revalidate } = options;
@@ -29,7 +28,6 @@ export async function execute<Result, Variables>(
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${process.env.HYGRAPH_QUERY_TOKEN}`,
 			...headers,
 		},
 		body: JSON.stringify({
