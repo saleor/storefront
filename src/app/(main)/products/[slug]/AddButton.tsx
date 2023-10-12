@@ -2,10 +2,9 @@
 
 import { experimental_useFormStatus as useFormStatus } from "react-dom";
 
-export function AddButton({}: { disabled?: boolean }) {
+export function AddButton({ disabled }: { disabled?: boolean }) {
 	const { pending } = useFormStatus();
-	// const isButtonDisabled = disabled || pending;
-	const isButtonDisabled = false;
+	const isButtonDisabled = disabled || pending;
 
 	return (
 		<button

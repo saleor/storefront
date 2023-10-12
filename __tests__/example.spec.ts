@@ -3,17 +3,25 @@ import { expect, test } from "@playwright/test";
 test("test", async ({ page }) => {
 	await page.goto("/");
 	await page.getByTestId("ProductElement").first().click();
+	await page.getByTestId("VariantSelector").getByRole("radio").first().click();
 	await page.getByRole("button", { name: "Add to cart" }).click();
 
 	await page.getByRole("link", { name: "1 items in cart, view bag" }).click();
+	await page.waitForSelector("text=Your Total");
 	await page.getByRole("link", { name: "Checkout" }).click();
 
-	await page.getByLabel("First name*").fill("Jan");
-	await page.getByLabel("Last name*").fill("Kowalski");
-	await page.getByLabel("Street address*").fill("3111 Broadway");
-	await page.getByLabel("City*").fill("New York");
-	await page.getByLabel("Zip code*").fill("10027");
-	await page.getByLabel("Phone number").fill("+48123456789");
+	await page.getByLabel("Email*").pressSequentially("zaiste@saleor.cloud", { delay: 100 });
+	await page.getByLabel("First name*").pressSequentially("Jan", { delay: 100 });
+	await page.getByLabel("Last name*").pressSequentially("Kowalski", { delay: 100 });
+	await page.getByLabel("Street address*").pressSequentially("3111 Broadway", { delay: 100 });
+	await page.getByLabel("City*").pressSequentially("New York", { delay: 100 });
+	await page.getByLabel("Zip code*").pressSequentially("10027", { delay: 100 });
+	await page.getByLabel("State").selectOption({ label: "New York" });
+	await page.getByLabel("Phone number").pressSequentially("+48586836486", { delay: 100 });
+	await page.getByLabel("Phone number").blur();
+
+	await page.getByText("Please fill in shipping address to see available shipping methods").isHidden();
+	await page.getByText("UPS", { exact: false }).isVisible();
 
 	await page
 		.frameLocator('iframe[title="Iframe for card number"]')

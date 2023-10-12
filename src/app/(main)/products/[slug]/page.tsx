@@ -136,7 +136,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 
 						{variants && <VariantSelector variants={variants} />}
 						{description && (
-							<div className="mt-4 mt-8 space-y-6">
+							<div className="mt-8 space-y-6">
 								<div dangerouslySetInnerHTML={{ __html: description }}></div>
 							</div>
 						)}

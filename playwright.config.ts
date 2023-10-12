@@ -58,6 +58,8 @@ export default defineConfig({
 		// },
 	],
 
+	timeout: 120 * 1000,
+
 	webServer: {
 		command: "pnpm run start",
 		url: baseURL,
