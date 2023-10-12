@@ -11,7 +11,7 @@ export function AddButton({ disabled }: { disabled?: boolean }) {
 			type="submit"
 			aria-disabled={isButtonDisabled}
 			onClick={(e) => isButtonDisabled && e.preventDefault()}
-			className="h-12 items-center rounded-md bg-gray-900 px-6 py-3 text-base font-medium leading-6 text-white shadow hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-gray-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-gray-700"
+			className="h-12 items-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
 		>
 			{pending ? (
 				<div className="inline-flex items-center">

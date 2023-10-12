@@ -8,7 +8,7 @@ type UserCardProps = {
 export const UserCard = (user: UserCardProps) => {
 	const { email, avatarURL } = user;
 	return (
-		<div className="rounded-xl bg-white p-4 dark:bg-gray-800 md:flex">
+		<div className="rounded-xl bg-white p-4 dark:bg-neutral-800 md:flex">
 			<Image
 				className="h-24 w-24 rounded-full md:rounded-none "
 				src={avatarURL}

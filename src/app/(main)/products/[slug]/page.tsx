@@ -122,10 +122,10 @@ export default async function Page(props: { params: { slug: string }; searchPara
 				)}
 				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
 					<div>
-						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-gray-900">
+						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-neutral-900">
 							{product?.name}
 						</h1>
-						<p className="mb-8 text-sm font-medium text-gray-900">
+						<p className="mb-8 text-sm font-medium text-neutral-900">
 							{selectedVariant?.pricing?.price?.gross
 								? formatMoney(
 										selectedVariant.pricing.price.gross.amount,
@@ -142,7 +142,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						)}
 						<div className="mt-6 flex items-center">
 							<CheckIcon className="h-5 w-5 flex-shrink-0 text-blue-500" aria-hidden="true" />
-							<p className="ml-1 text-sm font-semibold text-gray-500">In stock</p>
+							<p className="ml-1 text-sm font-semibold text-neutral-500">In stock</p>
 						</div>
 					</div>
 

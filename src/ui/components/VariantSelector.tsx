@@ -54,8 +54,8 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 								}}
 								className={clsx(
 									searchParams.get("variant") === variant.id
-										? "border-transparent bg-gray-900 text-white hover:bg-gray-800"
-										: "border-gray-200 bg-white text-gray-900 hover:bg-gray-100",
+										? "border-transparent bg-neutral-900 text-white hover:bg-neutral-800"
+										: "border-neutral-200 bg-white text-neutral-900 hover:bg-neutral-100",
 									"flex min-w-[8ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
 								)}
 								role="radio"
