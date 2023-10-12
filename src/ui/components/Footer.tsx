@@ -12,7 +12,7 @@ const footer = {
 };
 export function Footer() {
 	return (
-		<footer className="border-t border-neutral-300 bg-neutral-50">
+		<footer className="border-neutral-300 bg-neutral-50">
 			<div className="mx-auto max-w-7xl px-4 lg:px-8">
 				<div className="grid grid-cols-3 gap-8 py-16">
 					<h2 className="sr-only">Quick links</h2>
