@@ -7,7 +7,7 @@ import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
-import { execute, formatMoney } from "@/lib/graphql";
+import { executeGraphQL, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
@@ -18,10 +18,11 @@ export async function generateMetadata({
 	params: { slug: string };
 	searchParams: { variant?: string };
 }): Promise<Metadata> {
-	const { product } = await execute(ProductDetailsDocument, {
+	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
 		},
+		revalidate: 60,
 	});
 
 	if (!product) {
@@ -45,7 +46,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-	const { products } = await execute(ProductListDocument);
+	const { products } = await executeGraphQL(ProductListDocument, { revalidate: 60 });
 
 	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 	return paths;
@@ -56,11 +57,11 @@ const parser = edjsHTML();
 export default async function Page(props: { params: { slug: string }; searchParams: { variant?: string } }) {
 	const { params, searchParams } = props;
 
-	const { product } = await execute(ProductDetailsDocument, {
+	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
 		},
-		revalidate: 1,
+		revalidate: 60,
 	});
 
 	if (!product) {
@@ -99,11 +100,12 @@ export default async function Page(props: { params: { slug: string }; searchPara
 			}
 
 			// TODO: error handling
-			await execute(CheckoutAddLineDocument, {
+			await executeGraphQL(CheckoutAddLineDocument, {
 				variables: {
 					id: checkoutId,
 					productVariantId: decodeURIComponent(selectedVariantID),
 				},
+				cache: "no-cache",
 			});
 
 			revalidatePath("/cart");
@@ -134,7 +136,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 
 						{variants && <VariantSelector variants={variants} />}
 						{description && (
-							<div className="mt-4 mt-8 space-y-6">
+							<div className="mt-8 space-y-6">
 								<div dangerouslySetInnerHTML={{ __html: description }}></div>
 							</div>
 						)}

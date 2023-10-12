@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
-import { ProductsPerPage, execute } from "@/lib/graphql";
+import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductsList } from "@/ui/components/ProductsList";
 
@@ -18,11 +18,12 @@ type Props = {
 export default async function Page({ searchParams }: Props) {
 	const { cursor } = searchParams;
 
-	const { products } = await execute(ProductListPaginatedDocument, {
+	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
 		variables: {
 			first: ProductsPerPage,
 			after: cursor,
 		},
+		revalidate: 60,
 	});
 
 	if (!products) {
