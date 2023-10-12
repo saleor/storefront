@@ -46,7 +46,7 @@ export function LoginForm() {
 						type="email"
 						name="email"
 						placeholder="Email"
-						className="w-full rounded border bg-gray-50 px-4 py-2"
+						className="w-full rounded border bg-neutral-50 px-4 py-2"
 						value={formValues.email}
 						onChange={changeHandler}
 					/>
@@ -59,13 +59,16 @@ export function LoginForm() {
 						type="password"
 						name="password"
 						placeholder="Password"
-						className="w-full rounded border bg-gray-50 px-4 py-2"
+						className="w-full rounded border bg-neutral-50 px-4 py-2"
 						value={formValues.password}
 						onChange={changeHandler}
 					/>
 				</div>
 
-				<button className="rounded bg-gray-800 px-4 py-2 text-gray-200 hover:bg-gray-700" type="submit">
+				<button
+					className="rounded bg-neutral-800 px-4 py-2 text-neutral-200 hover:bg-neutral-700"
+					type="submit"
+				>
 					Log In
 				</button>
 			</form>

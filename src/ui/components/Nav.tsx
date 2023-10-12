@@ -20,9 +20,14 @@ export async function Nav() {
 	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 
 	return (
-		<div className="sticky top-0 z-20 border-b bg-gray-100/75 backdrop-blur-md">
+		<div className="sticky top-0 z-20 border-b bg-neutral-100/50 backdrop-blur-md">
 			<div className="mx-auto max-w-7xl px-2 lg:px-8">
 				<div className="flex h-16 justify-between gap-8">
+					<div className="flex items-center font-bold">
+						<Link aria-label="homepage" href={"/"}>
+							ACME
+						</Link>
+					</div>
 					<div className="flex overflow-x-auto whitespace-nowrap px-2 lg:px-0">
 						<div className="flex flex-shrink-0 items-center"></div>
 						<div className="flex space-x-8">

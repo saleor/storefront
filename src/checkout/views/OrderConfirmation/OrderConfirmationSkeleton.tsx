@@ -12,7 +12,7 @@ export const OrderConfirmationSkeleton = () => {
 				<Skeleton className="w-2/3" />
 			</header>
 			<main className="mt-8 flex w-full flex-col overflow-hidden lg:flex-row lg:items-start">
-				<div className="w-1/2 rounded border border-gray-200 px-6 pb-4 pt-6">
+				<div className="w-1/2 rounded border border-neutral-200 px-6 pb-4 pt-6">
 					<div className="mb-10">
 						<Skeleton variant="title" />
 						<Skeleton />

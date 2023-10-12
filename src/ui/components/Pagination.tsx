@@ -10,12 +10,12 @@ export async function Pagination({
 	};
 }) {
 	return (
-		<nav className="flex items-center justify-center gap-x-4 border-gray-200 px-4">
+		<nav className="flex items-center justify-center gap-x-4 border-neutral-200 px-4">
 			<Link
 				href={pageInfo.hasNextPage ? `/products?cursor=${pageInfo.endCursor}` : "#"}
 				className={clsx("px-4 py-2 text-sm font-medium ", {
-					"rounded bg-gray-900 text-gray-50 hover:bg-gray-800": pageInfo.hasNextPage,
-					"cursor-not-allowed rounded border text-gray-400": !pageInfo.hasNextPage,
+					"rounded bg-neutral-900 text-neutral-50 hover:bg-neutral-800": pageInfo.hasNextPage,
+					"cursor-not-allowed rounded border text-neutral-400": !pageInfo.hasNextPage,
 				})}
 				aria-disabled={!pageInfo.hasNextPage}
 			>
