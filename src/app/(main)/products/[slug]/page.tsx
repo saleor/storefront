@@ -133,7 +133,9 @@ export default async function Page(props: { params: { slug: string }; searchPara
 										selectedVariant.pricing.price.gross.amount,
 										selectedVariant.pricing.price.gross.currency,
 								  )
-								: "select variant to see the price"}
+								: isAvailable
+								? "select variant to see the price"
+								: ""}
 						</p>
 
 						{variants && <VariantSelector variants={variants} />}
