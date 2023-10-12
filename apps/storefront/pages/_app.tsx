@@ -16,6 +16,7 @@ import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@saleor/
 import { useAuthenticatedApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { WishlistProvider } from "context/WishlistContext";
 import { useRouter } from "next/router";
+import { UnderConstruction } from "@/components/UnderConstruction/UnderConstruction";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -98,22 +99,30 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     onSignedIn: () => refetch(),
   });
 
-  return (
-    <SaleorAuthProvider {...useSaleorAuthClientProps}>
-      <ApolloProvider client={apolloClient}>
-        <CheckoutProvider>
-          <RegionsProvider>
-            <WishlistProvider>
-              <BaseSeo />
-              <NextNProgress color="#fff" options={{ showSpinner: false }} />
-              {DEMO_MODE && <DemoBanner />}
-              {getLayout(<Component {...pageProps} />)}
-            </WishlistProvider>
-          </RegionsProvider>
-        </CheckoutProvider>
-      </ApolloProvider>
-    </SaleorAuthProvider>
-  );
+  if (
+    process.env.NEXT_PUBLIC_SHOP_UNDER_CONSTRUCTION === "true" &&
+    (process.env.NEXT_PUBLIC_STOREFRONT_NAME === "FASHION4YOU" ||
+      process.env.NEXT_PUBLIC_STOREFRONT_NAME === "CLOTHES4U")
+  ) {
+    return <UnderConstruction />;
+  } else {
+    return (
+      <SaleorAuthProvider {...useSaleorAuthClientProps}>
+        <ApolloProvider client={apolloClient}>
+          <CheckoutProvider>
+            <RegionsProvider>
+              <WishlistProvider>
+                <BaseSeo />
+                <NextNProgress color="#fff" options={{ showSpinner: false }} />
+                {DEMO_MODE && <DemoBanner />}
+                {getLayout(<Component {...pageProps} />)}
+              </WishlistProvider>
+            </RegionsProvider>
+          </CheckoutProvider>
+        </ApolloProvider>
+      </SaleorAuthProvider>
+    );
+  }
 }
 
 export default MyApp;

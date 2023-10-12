@@ -6,7 +6,7 @@ const facebookLinks: { [key: string]: string } = {
 };
 
 const instagramLinks: { [key: string]: string } = {
-  FASHION4YOU: "https://www.instagram.com/fashion4youpl/",
+  FASHION4YOU: "https://www.instagram.com/fashion4you.com.pl/",
   CLOTHES4U: "https://www.instagram.com/clothes4you.pl/",
 };
 

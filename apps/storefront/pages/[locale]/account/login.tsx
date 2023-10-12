@@ -8,6 +8,7 @@ import { messages } from "@/components/translations";
 import { DEMO_MODE } from "@/lib/const";
 import { usePaths } from "@/lib/paths";
 import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import Logo from "@/components/Navbar/Logo";
 
 export type OptionalQuery = {
   next?: string;
@@ -59,69 +60,74 @@ function LoginPage() {
   });
 
   return (
-    <div className="min-h-screen bg-no-repeat bg-cover bg-center bg-gradient-to-r from-blue-100 to-loginBg">
-      <div className="flex justify-end">
-        <div className="bg-white min-h-screen w-1/2 flex justify-center items-center">
-          <div>
-            <form method="post" onSubmit={handleLogin}>
-              <div>
-                <span className="text-sm text-gray-900">
-                  {t.formatMessage(messages.loginWelcomeMessage)}
-                </span>
-                <h1 className="text-2xl font-bold">{t.formatMessage(messages.loginHeader)}</h1>
-              </div>
-
-              <div className="my-3">
-                <label htmlFor="email" className="block text-md mb-2">
-                  {t.formatMessage(messages.loginEmailFieldLabel)}
-                </label>
-                <input
-                  className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
-                  type="email"
-                  id="email"
-                  spellCheck={false}
-                  {...registerForm("email", {
-                    required: true,
-                  })}
-                />
-              </div>
-              <div className="mt-5">
-                <label htmlFor="password" className="block text-md mb-2">
-                  {t.formatMessage(messages.loginPasswordFieldLabel)}
-                </label>
-                <input
-                  className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
-                  type="password"
-                  id="password"
-                  spellCheck={false}
-                  {...registerForm("password", {
-                    required: true,
-                  })}
-                />
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-blue-700 hover:underline cursor-pointer pt-2">
-                  {t.formatMessage(messages.loginRemindPasswordButtonLabel)}
-                </span>
-              </div>
-              <div className="">
-                <button
-                  type="submit"
-                  className="mt-4 mb-3 w-full bg-brand hover:bg-brand-hover text-white py-2 rounded-md transition duration-100"
-                >
-                  {t.formatMessage(messages.logIn)}
-                </button>
-                {!!errorsForm.email && (
-                  <p className="text-sm text-red-500 pt-2">{errorsForm.email?.message}</p>
-                )}
-              </div>
-            </form>
-            <p className="mt-8">
-              <Link href={paths.account.register.$url()}>
-                {t.formatMessage(messages.createAccount)}
-              </Link>
-            </p>
+    <div className="min-h-screen to-loginBg px-8 md:px-0 lg:px-0 xl:px-0">
+      <div className="bg-white min-h-screen flex justify-center items-center">
+        <div>
+          <div className="pb-8">
+            <Link href={paths.$url()} passHref legacyBehavior>
+              <a href="pass">
+                <Logo height="94" width="100%" />
+              </a>
+            </Link>
           </div>
+          <form method="post" onSubmit={handleLogin}>
+            <div className="flex gap-3 flex-col">
+              <span className="text-md text-brand">
+                {t.formatMessage(messages.loginWelcomeMessage)}
+              </span>
+              <h1 className="text-5xl font-bold">{t.formatMessage(messages.loginHeader)}</h1>
+            </div>
+
+            <div className="my-6 mt-12">
+              <label htmlFor="email" className="block text-md mb-2">
+                {t.formatMessage(messages.loginEmailFieldLabel)}
+              </label>
+              <input
+                className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
+                type="email"
+                id="email"
+                spellCheck={false}
+                {...registerForm("email", {
+                  required: true,
+                })}
+              />
+            </div>
+            <div className="mt-5">
+              <label htmlFor="password" className="block text-md mb-2">
+                {t.formatMessage(messages.loginPasswordFieldLabel)}
+              </label>
+              <input
+                className="px-4 w-full border-2 py-2 rounded-md text-sm outline-none"
+                type="password"
+                id="password"
+                spellCheck={false}
+                {...registerForm("password", {
+                  required: true,
+                })}
+              />
+            </div>
+            <div className="flex justify-between mt-6 my-3">
+              <span className="text-sm text-blue-700 hover:underline cursor-pointer pt-2">
+                {t.formatMessage(messages.loginRemindPasswordButtonLabel)}
+              </span>
+            </div>
+            <div className="">
+              <button
+                type="submit"
+                className="mt-4 mb-3 w-full bg-brand hover:bg-brand-hover text-white py-2 rounded-md transition duration-100"
+              >
+                {t.formatMessage(messages.logIn)}
+              </button>
+              {!!errorsForm.email && (
+                <p className="text-sm text-red-500 pt-2">{errorsForm.email?.message}</p>
+              )}
+            </div>
+          </form>
+          <p className="mt-6">
+            <Link href={paths.account.register.$url()} className="text-md hover:underline">
+              {t.formatMessage(messages.createAccount)}
+            </Link>
+          </p>
         </div>
       </div>
     </div>

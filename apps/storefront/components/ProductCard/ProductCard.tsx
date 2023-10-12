@@ -186,7 +186,7 @@ export function ProductCard({ product }: ProductCardProps) {
       >
         <div>
           <a className="block">
-            <div className="w-full relative flex justify-start items-center mt-3 h-[400px]">
+            <div className="w-full relative flex justify-start items-center mt-16 h-[300px]">
               {thumbnailUrl ? (
                 <Image
                   src={thumbnailUrl}
@@ -202,26 +202,26 @@ export function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
             <div className="flex flex-row justify-between items-center">
-              <p className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[17px] xl:text-[20px] text-black">
+              <p className="block mt-6 font-regular text-[18px] text-black">
                 {brandAttribute
                   ? brandAttribute.map((value: AttributeFilterFragment) => value.name).join(", ")
-                  : "N/A"}
+                  : "-"}
               </p>
-              <p className="block mt-6 font-regular text-[17px] md:text-[17px] lg:text-[17px] xl:text-[20px] text-black">
+              <p className="block mt-6 font-regular text-[17px] text-black">
                 {sizeAttribute
                   ? sizeAttribute.map((value: AttributeFilterFragment) => value.name).join(", ")
-                  : "N/A"}
+                  : "-"}
               </p>
             </div>
-            <p className="block mt-6 text-[17px] md:text-[17px] lg:text-[17px] xl:text-[18px] text-black uppercase font-semibold">
+            <p className="block mt-6 text-[16px] text-black uppercase font-semibold">
               {product.name}
             </p>
             <div className="flex flex-row gap-3 items-center">
-              <p className="mt-4 font-semibold text-lg text-black uppercase">
+              <p className="mt-4 font-semibold text-[19px] text-black uppercase">
                 {formatPrice(price)}
               </p>
               {isOnSale && (
-                <p className="mt-4 font-normal text-lg uppercase line-through text-gray-400">
+                <p className="mt-4 font-normal text-[19px] uppercase line-through text-gray-400">
                   {formatPrice(undiscountedPrice)}
                 </p>
               )}

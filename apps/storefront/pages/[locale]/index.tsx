@@ -94,7 +94,7 @@ function Home({
         src={ImageSrc}
         alt={slug}
         loading="lazy"
-        className="object-cover w-full h-auto brightness-75"
+        className="object-cover w-full h-auto brightness-75 rounded-2xl"
       />
     );
   };
@@ -144,7 +144,7 @@ function Home({
             </div>
           </div>
           {hasCategories && (
-            <section className="mt-64 lg:mx-16">
+            <section className="mt-32 lg:mx-16">
               <div className="flex flex-col items-center py-6 container">
                 <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.categories)}
@@ -161,12 +161,12 @@ function Home({
                         key={category.id}
                         className="relative text-center flex flex-col items-center justify-center mt-0 gap-x-1.5 gap-y-1.5"
                       >
-                        <div className="home-page__categories__text-image w-full">
+                        <div className="w-full">
                           {renderCategoryImage(category.slug as string)}
                           <div className="absolute top-1/2 left-1/2 flex items-center transform -translate-x-1/2 -translate-y-1/2">
                             <Link
                               href={paths.category._slug(category?.slug as string).$url()}
-                              className="whitespace-nowrap text-cente bg-none px-10 text-4xl text-white  border-2 rounded-lg inline-block sm:text-3xl sm:px-6 lg:text-4xl lg:px-8 transition duration-500 hover:scale-125"
+                              className="whitespace-nowrap text-center bg-none px-10 text-4xl text-white  border-2 rounded-lg inline-block sm:text-3xl sm:px-6 lg:text-4xl lg:px-8 transition duration-500 hover:scale-125"
                               style={{
                                 lineHeight: "5rem",
                               }}
@@ -243,7 +243,7 @@ function Home({
                         >
                           <div className="relative bg-cover bg-center w-full flex flex-wrap items-center">
                             <div
-                              className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-lg bg-auto bg-center xs:bg-cover xs:bg-left"
+                              className="max-h-full w-600px max-w-full align-middle transition-all duration-500 ease-in-out bg-no-repeat px-40 py-80 lg:w-full hover:brightness-[45%] w-full h-80 object-cover rounded-2xl bg-auto bg-center xs:bg-cover xs:bg-left"
                               style={
                                 collection.backgroundImage
                                   ? {
@@ -268,7 +268,7 @@ function Home({
               </div>
             </div>
           )}
-          <div className="pt-64 lg:mx-16" id="news">
+          <div className="pt-48 lg:mx-16" id="news">
             <div className="container flex flex-col items-center justify-center mx-auto">
               <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                 {t.formatMessage(messages.latestArticles)}
@@ -299,7 +299,7 @@ function Home({
                     <Image
                       src={correctedUrl}
                       alt=""
-                      className="w-full h-80 object-cover rounded-lg"
+                      className="w-full h-80 object-cover rounded-2xl"
                       width={500}
                       height={500}
                       loading="lazy"

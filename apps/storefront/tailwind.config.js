@@ -57,6 +57,9 @@ module.exports = {
   mode: "jit",
   theme: {
     extend: {
+      backgroundImage: {
+        "under-construction-pattern": "url('../images/underConstruction/first-bg.png')",
+      },
       textColor: ["group-hover"],
       screens: {
         xs: "375px",
