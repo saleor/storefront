@@ -54,7 +54,7 @@ export default async function Page() {
 										</p>
 									</div>
 
-									<div className="flex justify-between">
+									<div className="mt-1 flex justify-between">
 										<div className="text-sm font-bold">Qty: {item.quantity}</div>
 										<DeleteLineButton checkoutId={checkoutId} lineId={item.id} />
 									</div>
