@@ -48,10 +48,10 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
 
-      - run: pnpm exec playwright install --with-deps
+      - run: pnpm exec playwright install chromium --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - run: pnpm exec playwright install-deps
+      - run: pnpm exec playwright install-deps chromium
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
       - uses: actions/cache@v3
