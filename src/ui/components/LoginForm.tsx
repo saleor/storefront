@@ -1,5 +1,4 @@
 import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
-import Image from "next/image";
 import { type FormEvent, useState } from "react";
 
 type FormValues = {
@@ -33,10 +32,7 @@ export function LoginForm() {
 		if (errors.length > 0) setErrors([]);
 	};
 	return (
-		<div className="mx-auto w-full max-w-lg">
-			<div className="my-10 flex justify-center">
-				<Image src={`/saleor.png`} alt="Saleor" width={75} height={75} />
-			</div>
+		<div className="mx-auto mt-16 w-full max-w-lg">
 			<form className="rounded border p-8 shadow-md" onSubmit={submitHandler}>
 				<div className="mb-2">
 					<label className="sr-only" htmlFor="email">
