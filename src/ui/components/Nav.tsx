@@ -5,7 +5,6 @@ import { ActiveLink } from "./ActiveLink";
 import * as Checkout from "@/lib/checkout";
 
 const NavLinks = [
-	{ href: "/", label: "Home" },
 	{ href: "/products", label: "All" },
 	{ href: "/categories/t-shirts", label: "T-shirts" },
 	{ href: "/categories/hoodies", label: "Hoodies" },
