@@ -58,7 +58,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        "under-construction-pattern": "url('../images/underConstruction/first-bg.png')",
+        "under-construction-pattern": "url('../images/underConstruction/first-bg.webp')",
       },
       textColor: ["group-hover"],
       screens: {
