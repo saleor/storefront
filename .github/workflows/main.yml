@@ -48,27 +48,23 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
 
-      - run: pnpm exec playwright install --with-deps
+      - run: pnpm exec playwright install chromium --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - run: pnpm exec playwright install-deps
+      - run: pnpm exec playwright install-deps chromium
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
-      - uses: actions/cache@v3
-        name: Next.js cache
+      - name: Wait for Vercel Preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+        id: waitForVercel
         with:
-          path: |
-            ${{ github.workspace }}/.next/cache
-          key: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      - name: Build
-        run: pnpm run build
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 120
 
       - name: Run Playwright tests
         run: pnpm exec playwright test
+        env:
+          BASE_URL: ${{ steps.waitForVercel.outputs.url }}
 
       - uses: actions/upload-artifact@v3
         if: always()

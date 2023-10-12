@@ -42,7 +42,7 @@ export const Select = <TName extends string, TData extends string>({
 	return (
 		<div>
 			<label className="block">
-				<span className="text-gray-700">{label}</span>
+				<span className="text-xs text-gray-700">{label}</span>
 				<select
 					{...fieldProps}
 					{...rest}

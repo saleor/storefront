@@ -1,5 +1,5 @@
 import { ProductListDocument } from "@/gql/graphql";
-import { execute } from "@/lib/graphql";
+import { executeGraphQL } from "@/lib/graphql";
 import { ProductsList } from "@/ui/components/ProductsList";
 
 export const metadata = {
@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-	const data = await execute(ProductListDocument);
+	const data = await executeGraphQL(ProductListDocument, { revalidate: 60 });
 
 	if (!data.products) throw Error("No products found");
 

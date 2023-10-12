@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@adyen/adyen-web':
-        specifier: 5.51.0
-        version: registry.npmjs.org/@adyen/adyen-web@5.51.0
+        specifier: 5.52.0
+        version: registry.npmjs.org/@adyen/adyen-web@5.52.0
       '@adyen/api-library':
         specifier: 14.3.0
         version: registry.npmjs.org/@adyen/api-library@14.3.0
@@ -42,8 +42,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       lucide-react:
-        specifier: 0.284.0
-        version: registry.npmjs.org/lucide-react@0.284.0(react@18.2.0)
+        specifier: 0.286.0
+        version: registry.npmjs.org/lucide-react@0.286.0(react@18.2.0)
       next:
         specifier: 13.5.4
         version: registry.npmjs.org/next@13.5.4(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
@@ -106,8 +106,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       '@playwright/test':
-        specifier: 1.38.1
-        version: registry.npmjs.org/@playwright/test@1.38.1
+        specifier: 1.39.0
+        version: registry.npmjs.org/@playwright/test@1.39.0
       '@tailwindcss/forms':
         specifier: 0.5.6
         version: 0.5.6(tailwindcss@3.3.3)
@@ -2636,7 +2636,7 @@ packages:
   /@types/ws@8.5.5:
     resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
     dependencies:
-      '@types/node': registry.npmjs.org/@types/node@20.8.2
+      '@types/node': registry.npmjs.org/@types/node@20.8.4
     dev: true
 
   /@typescript-eslint/types@5.62.0:
@@ -6061,13 +6061,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  registry.npmjs.org/@adyen/adyen-web@5.51.0:
-    resolution: {integrity: sha512-jH3Us9k57AhdOrwBL444EQdQ+xTgg4BTD/9/RSOmldw9EM1LzX1+6AKkX/7QioJoYO6L7gI5DUu5iq915ju0IA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@adyen/adyen-web/-/adyen-web-5.51.0.tgz}
+  registry.npmjs.org/@adyen/adyen-web@5.52.0:
+    resolution: {integrity: sha512-x83JgvR28BQ18EIR003uATZ5U4SIFKkgP+28I/RToImpsrtkjWDJP3GHVKKGk2DA+5GGnvPwmNJzCLqV2skCvw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@adyen/adyen-web/-/adyen-web-5.52.0.tgz}
     name: '@adyen/adyen-web'
-    version: 5.51.0
+    version: 5.52.0
     dependencies:
-      '@babel/runtime': registry.npmjs.org/@babel/runtime@7.23.1
-      '@babel/runtime-corejs3': registry.npmjs.org/@babel/runtime-corejs3@7.23.1
+      '@babel/runtime': registry.npmjs.org/@babel/runtime@7.23.2
+      '@babel/runtime-corejs3': registry.npmjs.org/@babel/runtime-corejs3@7.23.2
       '@types/applepayjs': registry.npmjs.org/@types/applepayjs@3.0.4
       '@types/googlepay': registry.npmjs.org/@types/googlepay@0.7.2
       classnames: registry.npmjs.org/classnames@2.3.2
@@ -6127,10 +6127,10 @@ packages:
       zen-observable-ts: registry.npmjs.org/zen-observable-ts@1.2.5
     dev: false
 
-  registry.npmjs.org/@babel/runtime-corejs3@7.23.1:
-    resolution: {integrity: sha512-OKKfytwoc0tr7cDHwQm0RLVR3y+hDGFz3EPuvLNU/0fOeXJeKNIHj7ffNVFnncWt3sC58uyUCRSzf8nBQbyF6A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@babel/runtime-corejs3/-/runtime-corejs3-7.23.1.tgz}
+  registry.npmjs.org/@babel/runtime-corejs3@7.23.2:
+    resolution: {integrity: sha512-54cIh74Z1rp4oIjsHjqN+WM4fMyCBYe+LpZ9jWm51CZ1fbH3SkAzQD/3XLoNkjbJ7YEmjobLXyvQrFypRHOrXw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@babel/runtime-corejs3/-/runtime-corejs3-7.23.2.tgz}
     name: '@babel/runtime-corejs3'
-    version: 7.23.1
+    version: 7.23.2
     engines: {node: '>=6.9.0'}
     dependencies:
       core-js-pure: registry.npmjs.org/core-js-pure@3.33.0
@@ -6144,6 +6144,15 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: registry.npmjs.org/regenerator-runtime@0.14.0
+
+  registry.npmjs.org/@babel/runtime@7.23.2:
+    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@babel/runtime/-/runtime-7.23.2.tgz}
+    name: '@babel/runtime'
+    version: 7.23.2
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: registry.npmjs.org/regenerator-runtime@0.14.0
+    dev: false
 
   registry.npmjs.org/@eslint-community/eslint-utils@4.4.0(eslint@8.51.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz}
@@ -6512,14 +6521,14 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@playwright/test@1.38.1:
-    resolution: {integrity: sha512-NqRp8XMwj3AK+zKLbZShl0r/9wKgzqI/527bkptKXomtuo+dOjU9NdMASQ8DNC9z9zLOMbG53T4eihYr3XR+BQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@playwright/test/-/test-1.38.1.tgz}
+  registry.npmjs.org/@playwright/test@1.39.0:
+    resolution: {integrity: sha512-3u1iFqgzl7zr004bGPYiN/5EZpRUSFddQBra8Rqll5N0/vfpqlP9I9EXqAoGacuAbX6c9Ulg/Cjqglp5VkK6UQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@playwright/test/-/test-1.39.0.tgz}
     name: '@playwright/test'
-    version: 1.38.1
+    version: 1.39.0
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright: registry.npmjs.org/playwright@1.38.1
+      playwright: registry.npmjs.org/playwright@1.39.0
     dev: true
 
   registry.npmjs.org/@rushstack/eslint-patch@1.5.1:
@@ -6595,6 +6604,14 @@ packages:
     resolution: {integrity: sha512-Vvycsc9FQdwhxE3y3DzeIxuEJbWGDsnrxvMADzTDF/lcdR9/K+AQIeAghTQsHtotg/q0j3WEOYS/jQgSdWue3w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/node/-/node-20.8.2.tgz}
     name: '@types/node'
     version: 20.8.2
+    dev: true
+
+  registry.npmjs.org/@types/node@20.8.4:
+    resolution: {integrity: sha512-ZVPnqU58giiCjSxjVUESDtdPk4QR5WQhhINbc9UBrKLU68MX5BF6kbQzTrkwbolyr0X8ChBpXfavr5mZFKZQ5A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/node/-/node-20.8.4.tgz}
+    name: '@types/node'
+    version: 20.8.4
+    dependencies:
+      undici-types: registry.npmjs.org/undici-types@5.25.3
     dev: true
 
   registry.npmjs.org/@types/prop-types@15.7.8:
@@ -8513,11 +8530,11 @@ packages:
       yallist: registry.npmjs.org/yallist@4.0.0
     dev: true
 
-  registry.npmjs.org/lucide-react@0.284.0(react@18.2.0):
-    resolution: {integrity: sha512-dVSMHYAya/TeY3+vsk+VQJEKNQN2AhIo0+Dp09B2qpzvcBuu93H98YZykFcjIAfmanFiDd8nqfXFR38L757cyQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/lucide-react/-/lucide-react-0.284.0.tgz}
-    id: registry.npmjs.org/lucide-react/0.284.0
+  registry.npmjs.org/lucide-react@0.286.0(react@18.2.0):
+    resolution: {integrity: sha512-0+AOFa/uiXlXJJTqcKto1gqbU9XflYgYZbS9DN2ytSIhSBQaF5xfRKAq/k0okBInpgu5P6i7dhCcgbHV4OMkHQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/lucide-react/-/lucide-react-0.286.0.tgz}
+    id: registry.npmjs.org/lucide-react/0.286.0
     name: lucide-react
-    version: 0.284.0
+    version: 0.286.0
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
@@ -8810,22 +8827,22 @@ packages:
     engines: {node: '>=8.6'}
     dev: true
 
-  registry.npmjs.org/playwright-core@1.38.1:
-    resolution: {integrity: sha512-tQqNFUKa3OfMf4b2jQ7aGLB8o9bS3bOY0yMEtldtC2+spf8QXG9zvXLTXUeRsoNuxEYMgLYR+NXfAa1rjKRcrg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/playwright-core/-/playwright-core-1.38.1.tgz}
+  registry.npmjs.org/playwright-core@1.39.0:
+    resolution: {integrity: sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/playwright-core/-/playwright-core-1.39.0.tgz}
     name: playwright-core
-    version: 1.38.1
+    version: 1.39.0
     engines: {node: '>=16'}
     hasBin: true
     dev: true
 
-  registry.npmjs.org/playwright@1.38.1:
-    resolution: {integrity: sha512-oRMSJmZrOu1FP5iu3UrCx8JEFRIMxLDM0c/3o4bpzU5Tz97BypefWf7TuTNPWeCe279TPal5RtPPZ+9lW/Qkow==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/playwright/-/playwright-1.38.1.tgz}
+  registry.npmjs.org/playwright@1.39.0:
+    resolution: {integrity: sha512-naE5QT11uC/Oiq0BwZ50gDmy8c8WLPRTEWuSSFVG2egBka/1qMoSqYQcROMT9zLwJ86oPofcTH2jBY/5wWOgIw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/playwright/-/playwright-1.39.0.tgz}
     name: playwright
-    version: 1.38.1
+    version: 1.39.0
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright-core: registry.npmjs.org/playwright-core@1.38.1
+      playwright-core: registry.npmjs.org/playwright-core@1.39.0
     optionalDependencies:
       fsevents: registry.npmjs.org/fsevents@2.3.2
     dev: true
@@ -9472,6 +9489,12 @@ packages:
       has-bigints: registry.npmjs.org/has-bigints@1.0.2
       has-symbols: registry.npmjs.org/has-symbols@1.0.3
       which-boxed-primitive: registry.npmjs.org/which-boxed-primitive@1.0.2
+    dev: true
+
+  registry.npmjs.org/undici-types@5.25.3:
+    resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/undici-types/-/undici-types-5.25.3.tgz}
+    name: undici-types
+    version: 5.25.3
     dev: true
 
   registry.npmjs.org/uri-js@4.4.1:

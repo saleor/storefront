@@ -18,5 +18,7 @@ export const CountrySelect: React.FC<CountrySelectProps> = ({ only = [] }) => {
 		label: getCountryName(countryCode),
 	}));
 
-	return <Select name="countryCode" options={countryOptions} autoComplete="countryCode" />;
+	return (
+		<Select aria-label="Country" name="countryCode" options={countryOptions} autoComplete="countryCode" />
+	);
 };
