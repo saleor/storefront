@@ -3,8 +3,10 @@ import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import type { ProductFragment } from "@/gql/graphql";
 import { formatMoneyRange } from "@/lib/graphql";
 
-export function ProductElement(props: { product: ProductFragment } & { loading: "eager" | "lazy" }) {
-	const { product, loading } = props;
+export function ProductElement(
+	props: { product: ProductFragment } & { loading: "eager" | "lazy"; sizes?: string },
+) {
+	const { product, loading, sizes } = props;
 
 	return (
 		<li>
@@ -16,6 +18,7 @@ export function ProductElement(props: { product: ProductFragment } & { loading: 
 						alt={product.thumbnail.alt ?? ""}
 						width={512}
 						height={512}
+						sizes={sizes}
 					/>
 				)}
 				<div className="mt-2 flex justify-between">
