@@ -10,14 +10,14 @@ test("test", async ({ page }) => {
 	await page.waitForSelector("text=Your Total");
 	await page.getByRole("link", { name: "Checkout" }).click();
 
-	await page.getByLabel("Email*").pressSequentially("zaiste@saleor.cloud", { delay: 100 });
-	await page.getByLabel("First name*").pressSequentially("Jan", { delay: 100 });
-	await page.getByLabel("Last name*").pressSequentially("Kowalski", { delay: 100 });
-	await page.getByLabel("Street address*").pressSequentially("3111 Broadway", { delay: 100 });
-	await page.getByLabel("City*").pressSequentially("New York", { delay: 100 });
-	await page.getByLabel("Zip code*").pressSequentially("10027", { delay: 100 });
+	await page.getByLabel("Email*").fill("zaiste@saleor.cloud");
+	await page.getByLabel("First name*").fill("Jan");
+	await page.getByLabel("Last name*").fill("Kowalski");
+	await page.getByLabel("Street address*").fill("3111 Broadway");
+	await page.getByLabel("City*").fill("New York");
+	await page.getByLabel("Zip code*").fill("10027");
 	await page.getByLabel("State").selectOption({ label: "New York" });
-	await page.getByLabel("Phone number").pressSequentially("+48586836486", { delay: 100 });
+	await page.getByLabel("Phone number").fill("+48586836486");
 	await page.getByLabel("Phone number").blur();
 
 	await page.getByText("Please fill in shipping address to see available shipping methods").isHidden();

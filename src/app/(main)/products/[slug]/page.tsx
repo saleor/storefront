@@ -7,7 +7,7 @@ import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
-import { executeGraphQL as executeGraphQL, formatMoney } from "@/lib/graphql";
+import { executeGraphQL, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 

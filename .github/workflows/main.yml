@@ -54,20 +54,6 @@ jobs:
       - run: pnpm exec playwright install-deps chromium
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
-      # This takes ~45s – building from scratch seems to be faster
-      # - uses: actions/cache@v3
-      #   name: Next.js cache
-      #   with:
-      #     path: |
-      #       ${{ github.workspace }}/.next/cache
-      #     key: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      # - name: Build
-      #   run: pnpm run build
-
       - name: Wait for Vercel Preview
         uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
         id: waitForVercel
