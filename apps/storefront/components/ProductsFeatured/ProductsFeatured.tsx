@@ -8,10 +8,10 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/outline";
 const ProductsFeatured = ({ products }: any) => {
   const t = useIntl();
   return (
-    <>
+    <div className="pt-16">
       {products?.length ? (
         <>
-          <div className="mt-64 text-center lg:mx-16">
+          <div className="text-center lg:mx-16">
             <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
               {t.formatMessage(messages.featuredProducts)}
             </h2>
@@ -58,7 +58,7 @@ const ProductsFeatured = ({ products }: any) => {
           </Carousel>
         </>
       ) : null}
-    </>
+    </div>
   );
 };
 

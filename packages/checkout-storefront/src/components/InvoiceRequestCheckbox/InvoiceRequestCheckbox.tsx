@@ -26,9 +26,9 @@ export const InvoiceRequestCheckbox = ({ onInvoiceChange }: InvoiceRequestCheckb
 
   return (
     <Checkbox
-      name="createAccount"
+      name="vatID"
       label="Czy chcesz otrzymać fakturę VAT?"
-      data-testid={"createAccountCheckbox"}
+      data-testid={"vatIdCheckbox"}
       classNames={{ container: "!mb-0" }}
       checked={isInvoice}
       onChange={() => handleInvoiceChange(!isInvoice)}

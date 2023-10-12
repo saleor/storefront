@@ -17,9 +17,9 @@
 }
 
 .menu-heading {
-  @apply block text-lg font-bold mb-4 cursor-pointer;
+  @apply block text-[24px] font-bold mb-4 cursor-pointer;
 }
 
 .menu-link {
-  @apply text-[20px] cursor-pointer hover:text-brand transition-all duration-300;
+  @apply text-[18px] cursor-pointer hover:text-brand transition-all duration-300;
 }

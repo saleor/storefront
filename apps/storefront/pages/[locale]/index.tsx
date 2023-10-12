@@ -94,7 +94,7 @@ function Home({
         src={ImageSrc}
         alt={slug}
         loading="lazy"
-        className="object-cover w-full h-auto brightness-50"
+        className="object-cover w-full h-auto brightness-75"
       />
     );
   };
@@ -143,7 +143,6 @@ function Home({
               </a>
             </div>
           </div>
-          <AdvantagesBlock />
           {hasCategories && (
             <section className="mt-64 lg:mx-16">
               <div className="flex flex-col items-center py-6 container">
@@ -269,7 +268,7 @@ function Home({
               </div>
             </div>
           )}
-          <div className="pt-32 lg:mx-16" id="news">
+          <div className="pt-64 lg:mx-16" id="news">
             <div className="container flex flex-col items-center justify-center mx-auto">
               <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                 {t.formatMessage(messages.latestArticles)}
@@ -317,6 +316,7 @@ function Home({
               })}
             </div>
           </div>
+          <AdvantagesBlock />
         </main>
       </div>
     </>

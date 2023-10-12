@@ -6,6 +6,7 @@ import { useCheckoutComplete } from "@/checkout-storefront/hooks/useCheckoutComp
 import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useIntl } from "react-intl";
 import { paymentSectionMessages } from "./messages";
+import { GDPRSection } from "../GDPRSection/GDPRSection";
 
 export interface IPaymentGatewayConfig {
   field: string;
@@ -15,11 +16,16 @@ export const PAYU_GATEWAY = "salingo.payments.payu";
 
 export function PayuSection({ checkout }: any) {
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [GDPR, setGDPR] = useState<boolean>(false);
   const [, checkoutPaymentCreate] = useCheckoutPaymentCreateMutation();
   const { onCheckoutComplete } = useCheckoutComplete();
   const { saleorApiUrl } = getQueryParams();
   const { channel } = getQueryParams();
   const t = useIntl();
+
+  const handleGDPRChange = (checked: boolean) => {
+    setGDPR(checked);
+  };
 
   const generatePayuUrl = async (paymentId: string) => {
     const payuUrlQuery = `
@@ -55,6 +61,12 @@ export function PayuSection({ checkout }: any) {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    if (!GDPR) {
+      console.log("Musisz zaakceptować regulamin sklepu przed kontynuacją płatności!");
+      return;
+    }
+
     setIsPaymentProcessing(true);
 
     try {
@@ -95,7 +107,11 @@ export function PayuSection({ checkout }: any) {
   return (
     <div className="py-2">
       <form method="post" onSubmit={handleSubmit}>
-        <CompleteCheckoutButton isProcessing={isPaymentProcessing} isDisabled={isPaymentProcessing}>
+        <GDPRSection checked={GDPR} onChange={() => handleGDPRChange(!GDPR)} />
+        <CompleteCheckoutButton
+          isProcessing={isPaymentProcessing}
+          isDisabled={isPaymentProcessing || !GDPR}
+        >
           {t.formatMessage(paymentSectionMessages.payWithPayu)}
         </CompleteCheckoutButton>
       </form>

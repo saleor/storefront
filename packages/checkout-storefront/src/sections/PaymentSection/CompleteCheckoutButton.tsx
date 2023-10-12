@@ -15,15 +15,33 @@ export function CompleteCheckoutButton({
   onClick,
 }: CompleteCheckoutButtonProps) {
   const t = useIntl();
+
+  const getButtonStyles = () => {
+    if (isProcessing) {
+      return { backgroundColor: "#03C988", color: "#fff" };
+    }
+    if (isDisabled) {
+      return { backgroundColor: "lightgray", color: "#fff" };
+    }
+    return { backgroundColor: "green", color: "#fff" }; // Or any other color you prefer when enabled
+  };
+
+  const getButtonClassNames = () => {
+    if (isProcessing) {
+      return "w-full mt-6 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white flex items-center justify-center gap-4";
+    }
+    return "w-full mb-4 border border-transparent rounded-md shadow-sm py-2 px-4 text-lg font-medium text-white hover:bg-green-600 flex items-center justify-center transition";
+  };
   return (
-    <>
+    <button
+      onClick={onClick}
+      disabled={isDisabled}
+      type={isProcessing ? "button" : "submit"}
+      className={getButtonClassNames()}
+      style={getButtonStyles()}
+    >
       {isProcessing ? (
-        <button
-          type="button"
-          disabled
-          className="w-full mt-6 border border-transparent rounded-md shadow-sm py-2 px-4 text-base font-medium text-white flex items-center justify-center gap-4"
-          style={{ backgroundColor: "#03C988", color: "#fff" }}
-        >
+        <>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="animate-spin h-5 w-5"
@@ -45,19 +63,11 @@ export function CompleteCheckoutButton({
             />
           </svg>
           {t.formatMessage(paymentSectionMessages.processingPayment)}
-        </button>
+        </>
       ) : (
-        <button
-          onClick={onClick}
-          disabled={isDisabled}
-          type="submit"
-          className="w-full mb-4 border border-transparent rounded-md shadow-sm py-2 px-4 text-lg font-medium text-white hover:bg-green-600 flex items-center justify-center transition"
-          style={{ backgroundColor: "#03C988", color: "#fff" }}
-        >
-          {children}
-        </button>
+        children
       )}
-    </>
+    </button>
   );
 }
 

@@ -102,7 +102,7 @@ export function Footer({ className, ...rest }: FooterProps) {
         </div>
       </div>
       <div className="flex flex-col container md:flex-row lg:flex-row xl:flex-row justify-between items-center flex-wrap gap-6">
-        <p className="text-md text-black flex-grow">
+        <p className="text-[16px] text-black flex-grow">
           © Copyright 2022 - {new Date().getFullYear()} {STOREFRONT_NAME}
         </p>
         {/* <div className="invisible md:visible gap-4 hidden">
