@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "next dev",
-		"build": "pnpm run generate && pnpm run i18n && next build",
+		"build": "pnpm run i18n && next build",
 		"start": "next start",
 		"predev": "pnpm run generate",
 		"prebuild": "pnpm run generate",
