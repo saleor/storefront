@@ -25,14 +25,37 @@ export async function Nav() {
 						<div className="flex flex-shrink-0 items-center"></div>
 						<div className="flex gap-4 lg:gap-8">
 							<ActiveLink href="/products">All</ActiveLink>
-							{navLinks.menu?.items
-								?.map((item) => item.category)
-								.filter(Boolean)
-								.map((category) => (
-									<ActiveLink key={category.id} href={`/categories/${category.slug}`}>
-										{category.name}
-									</ActiveLink>
-								))}
+							{navLinks.menu?.items?.map((item) => {
+								if (item.category) {
+									return (
+										<ActiveLink key={item.id} href={`/categories/${item.category.slug}`}>
+											{item.category.name}
+										</ActiveLink>
+									);
+								}
+								if (item.collection) {
+									return (
+										<ActiveLink key={item.id} href={`/collections/${item.collection.slug}`}>
+											{item.collection.name}
+										</ActiveLink>
+									);
+								}
+								if (item.page) {
+									return (
+										<ActiveLink key={item.id} href={`/pages/${item.page.slug}`}>
+											{item.page.title}
+										</ActiveLink>
+									);
+								}
+								if (item.url) {
+									return (
+										<Link key={item.id} href={item.url}>
+											{item.name}
+										</Link>
+									);
+								}
+								return null;
+							})}
 						</div>
 					</div>
 					<div className="ml-auto flex items-center justify-center whitespace-nowrap">

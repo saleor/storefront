@@ -150,7 +150,9 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						)}
 						{description && (
 							<div className="mt-8 space-y-6">
-								<div dangerouslySetInnerHTML={{ __html: description }}></div>
+								{description.map((content) => (
+									<div key={content} dangerouslySetInnerHTML={{ __html: content }} />
+								))}
 							</div>
 						)}
 						<AvailabilityMessage isAvailable={isAvailable} />
