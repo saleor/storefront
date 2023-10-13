@@ -98,3 +98,11 @@ The app is now running at `http://localhost:3000`.
 
 > [!NOTE]
 > Saleor Storefront is a Next.js app. In case you are not familiar with Next.js, we recommend you to read the [Next.js documentation](https://nextjs.org/docs) (make sure you've selected "Using App Router" in the sidebar).
+
+#### GraphQL queries and mutations:
+
+After altering or creating new GraphQL queries in `gql` folder, you need to run the following command to generate types and javascript queries:
+
+```bash
+pnpm run generate
+```
