@@ -99,6 +99,6 @@ The app is now running at `http://localhost:3000`.
 > [!NOTE]
 > Saleor Storefront is a Next.js app. In case you are not familiar with Next.js, we recommend you to read the [Next.js documentation](https://nextjs.org/docs) (make sure you've selected "Using App Router" in the sidebar).
 
-### Preview content changes instantly
+### Preview content changes instantly (Draft Mode)
 
-Visit `http://{your-host}/api/preview` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about preview mode.](https://nextjs.org/docs/pages/building-your-application/configuring/preview-mode)
+Visit `http://{your-host}/api/draft` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about the Draft Mode in Next.js docs.](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)
