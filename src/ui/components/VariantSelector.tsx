@@ -28,6 +28,7 @@ export function VariantSelector({
 							<Link
 								key={variant.id}
 								prefetch={true}
+								scroll={false}
 								href={isDisabled ? "#" : getHrefForVariant(product, variant)}
 								className={clsx(
 									isCurrentVariant
