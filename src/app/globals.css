@@ -12,10 +12,10 @@ body {
 			90deg,
 			theme(colors.white) 0%,
 			theme(colors.white) 50%,
-			theme(colors.gray.300) calc(50%),
-			theme(colors.gray.300) calc(50% + 1px),
-			theme(colors.gray.50) calc(50% + 1px),
-			theme(colors.gray.50) 100%
+			theme(colors.neutral.200) calc(50%),
+			theme(colors.neutral.200) calc(50% + 1px),
+			theme(colors.neutral.50) calc(50% + 1px),
+			theme(colors.neutral.50) 100%
 		);
 	}
 }
