@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+	overflow-x: hidden;
+}
+
 @media (min-width: theme(screens.lg)) {
 	.checkout-bg {
 		background: linear-gradient(
