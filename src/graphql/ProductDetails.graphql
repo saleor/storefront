@@ -17,5 +17,21 @@ query ProductDetails($slug: String!) {
 		variants {
 			...VariantDetails
 		}
+		pricing {
+			priceRange {
+				start {
+					gross {
+						amount
+						currency
+					}
+				}
+				stop {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+		}
 	}
 }
