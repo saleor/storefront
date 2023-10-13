@@ -17,7 +17,7 @@ module.exports = withBundleAnalyzer({
     domains: [
       apiURL.hostname,
       ...allowedImageDomains,
-      "saleor-sandbox-media.s3.eu-central-1.amazonaws.com",
+      "saleor-sandbox-media.s3.eu-central-1.amazonaws.com, salingo-prod-media.s3.amazonaws.com",
     ],
     formats: ["image/avif", "image/webp"],
   },
