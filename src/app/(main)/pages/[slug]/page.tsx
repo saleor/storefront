@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import edjsHTML from "editorjs-html";
+import xss from "xss";
 import { PageGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 
@@ -38,7 +39,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 			{contentHtml && (
 				<div className="prose">
 					{contentHtml.map((content) => (
-						<div key={content} dangerouslySetInnerHTML={{ __html: content }} />
+						<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 					))}
 				</div>
 			)}

@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
+import xss from "xss";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
@@ -151,7 +152,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						{description && (
 							<div className="mt-8 space-y-6">
 								{description.map((content) => (
-									<div key={content} dangerouslySetInnerHTML={{ __html: content }} />
+									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 								))}
 							</div>
 						)}
