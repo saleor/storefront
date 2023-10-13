@@ -137,3 +137,7 @@ After altering or creating new GraphQL queries in `gql` folder, you need to run 
 ```bash
 pnpm run generate
 ```
+
+### Preview content changes instantly (Draft Mode)
+
+Visit `http://{your-host}/api/draft` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about the Draft Mode in Next.js docs.](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)
