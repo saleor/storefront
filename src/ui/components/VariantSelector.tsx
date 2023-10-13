@@ -1,45 +1,20 @@
-"use client";
-
 import { clsx } from "clsx";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { type ProductListItemFragment, type VariantDetailsFragment } from "@/gql/graphql";
 
-export const createPathname = (pathname: string, params: URLSearchParams) => {
-	const paramsString = params.toString();
-	const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
-
-	return `${pathname}${queryString}`;
-};
-
-export function VariantSelector(props: {
-	variants: { id: string; name: string; quantityAvailable?: number | null }[];
+export function VariantSelector({
+	variants,
+	product,
+	selectedVariant,
+}: {
+	variants: readonly VariantDetailsFragment[];
+	product: ProductListItemFragment;
+	selectedVariant?: VariantDetailsFragment;
 }) {
-	const { variants } = props;
-
-	const router = useRouter();
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-
-	const selectVariant = useCallback(
-		(variantID: string, replace = false) => {
-			const params = new URLSearchParams(searchParams);
-			params.set("variant", variantID);
-
-			const variantPathname = createPathname(pathname, params);
-			if (replace) {
-				router.replace(variantPathname, { scroll: false });
-			} else {
-				router.push(variantPathname, { scroll: false });
-			}
-		},
-		[pathname, router, searchParams],
-	);
-
-	useEffect(() => {
-		if (variants.length === 1 && variants[0].quantityAvailable) {
-			selectVariant(variants[0].id, true);
-		}
-	}, [selectVariant, variants]);
+	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
+		redirect(getHrefForVariant(product, variants[0]));
+	}
 
 	return (
 		<fieldset className="my-4" role="radiogroup" data-testid="VariantSelector">
@@ -47,30 +22,35 @@ export function VariantSelector(props: {
 			<div className="flex flex-wrap gap-3">
 				{variants.length > 1 &&
 					variants.map((variant) => {
+						const isDisabled = !variant.quantityAvailable;
+						const isCurrentVariant = selectedVariant?.id === variant.id;
 						return (
-							<button
+							<Link
 								key={variant.id}
-								type="button"
-								onClick={() => {
-									if (variant.quantityAvailable) {
-										selectVariant(variant.id);
-									}
-								}}
+								href={isDisabled ? "#" : getHrefForVariant(product, variant)}
 								className={clsx(
-									searchParams.get("variant") === variant.id
+									isCurrentVariant
 										? "border-transparent bg-neutral-900 text-white hover:bg-neutral-800"
 										: "border-neutral-200 bg-white text-neutral-900 hover:bg-neutral-100",
 									"relative flex min-w-[8ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2 aria-disabled:cursor-not-allowed aria-disabled:bg-neutral-100 aria-disabled:opacity-50",
+									isDisabled && "pointer-events-none",
 								)}
 								role="radio"
-								aria-checked={searchParams.get("variant") === variant.id}
-								aria-disabled={!variant.quantityAvailable}
+								tabIndex={isDisabled ? -1 : undefined}
+								aria-checked={isCurrentVariant}
+								aria-disabled={isDisabled}
 							>
 								{variant.name}
-							</button>
+							</Link>
 						);
 					})}
 			</div>
 		</fieldset>
 	);
+}
+
+function getHrefForVariant(product: ProductListItemFragment, variant: VariantDetailsFragment): string {
+	const pathname = `/products/${encodeURIComponent(product.slug)}`;
+	const query = new URLSearchParams({ variant: variant.id });
+	return `${pathname}?${query.toString()}`;
 }

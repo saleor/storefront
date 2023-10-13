@@ -1,0 +1,13 @@
+fragment VariantDetails on ProductVariant {
+	id
+	name
+	quantityAvailable
+	pricing {
+		price {
+			gross {
+				currency
+				amount
+			}
+		}
+	}
+}
