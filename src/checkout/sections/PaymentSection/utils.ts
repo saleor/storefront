@@ -61,7 +61,7 @@ export const getFilteredPaymentGateways = (
 		// app is missing in our codebase but is an app and not a plugin
 		// hence we'd like to have it handled by default
 		if (!shouldBeIncluded && !isAPlugin) {
-			console.warn(`Unhandled payment gateway - name: ${name}, id: ${id}`);
+			console.warn(`Unhandled payment gateway - name: ${name}, id: ${id as string}`);
 			return false;
 		}
 
