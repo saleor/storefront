@@ -42,10 +42,18 @@
 
 👌 **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
 
+**Global:**
+
+- Channel switcher and Geo detection (coming soon)
+- Dynamic menu (coming soon)
+- Hamburger menu (coming soon)
+- SEO data
+
 **Checkout:**
 
 - Single page checkout (including login)
-- Payment integrations (Adyen, Stripe)
+- Adyen integration
+- Stripe integration
 - Customer address book
 - Vouchers and Gift Cards
 
@@ -58,16 +66,9 @@
 
 **My account:**
 
-- Order history
+- Order history (coming soon)
 - Order completion
 - Order details
-
-**Global:**
-
-- Channel switcher and Geo detection (coming soon)
-- Dynamic menu (coming soon)
-- Hamburger menu (coming soon)
-- SEO data
 
 ## Quickstart
 
