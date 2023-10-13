@@ -11,6 +11,9 @@ import { executeGraphQL, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
+const shouldUseHttps =
+	process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
+
 export async function generateMetadata({
 	params,
 	searchParams,
@@ -84,7 +87,11 @@ export default async function Page(props: { params: { slug: string }; searchPara
 			const { checkoutCreate } = await Checkout.create();
 
 			if (checkoutCreate && checkoutCreate?.checkout?.id) {
-				cookies().set("checkoutId", checkoutCreate.checkout?.id);
+				cookies().set("checkoutId", checkoutCreate.checkout?.id, {
+					secure: shouldUseHttps,
+					sameSite: "lax",
+					httpOnly: true,
+				});
 
 				checkoutId = checkoutCreate.checkout.id;
 			}
