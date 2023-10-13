@@ -1,8 +1,4 @@
 const footer = {
-	home: [
-		{ name: "Home", href: "/" },
-		{ name: "Login", href: "/login" },
-	],
 	categories: [
 		{ name: "All", href: "#" },
 		{ name: "T-shirts", href: "#" },
@@ -10,6 +6,7 @@ const footer = {
 		{ name: "Accessories", href: "#" },
 	],
 };
+
 export function Footer() {
 	return (
 		<footer className="border-neutral-300 bg-neutral-50">
