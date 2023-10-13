@@ -104,5 +104,5 @@ The app is now running at `http://localhost:3000`.
 After altering or creating new GraphQL queries in `gql` folder, you need to run the following command to generate types and javascript queries:
 
 ```bash
-pnpm run codegen
+pnpm run generate
 ```
