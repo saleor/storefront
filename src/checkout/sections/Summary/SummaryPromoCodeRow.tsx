@@ -6,8 +6,6 @@ import { RemoveIcon } from "@/checkout/ui-kit/icons";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useCheckoutRemovePromoCodeMutation } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { localeToLanguageCode } from "@/checkout/lib/utils/locale";
-import { useLocale } from "@/checkout/hooks/useLocale";
 import { isOrderConfirmationPage } from "@/checkout/lib/utils/url";
 
 interface SummaryPromoCodeRowProps extends SummaryMoneyRowProps {
@@ -24,14 +22,13 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 }) => {
 	const { checkout } = useCheckout({ pause: isOrderConfirmationPage() });
 	const formatMessage = useFormattedMessages();
-	const { locale } = useLocale();
 	const [, checkoutRemovePromoCode] = useCheckoutRemovePromoCodeMutation();
 
 	const onDelete = () => {
 		const variables = promoCode ? { promoCode: promoCode } : { promoCodeId: promoCodeId as string };
 
 		void checkoutRemovePromoCode({
-			languageCode: localeToLanguageCode(locale),
+			languageCode: "EN_US",
 			checkoutId: checkout.id,
 			...variables,
 		});
