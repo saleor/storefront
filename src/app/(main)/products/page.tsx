@@ -32,7 +32,7 @@ export default async function Page({ searchParams }: Props) {
 
 	return (
 		<div>
-			<section className="mx-auto max-w-7xl p-8">
+			<section className="mx-auto max-w-7xl p-8 pb-16">
 				<h2 className="sr-only">Product list</h2>
 				<ProductsList products={products.edges.map((e) => e.node)} />
 				<Pagination pageInfo={products.pageInfo} />

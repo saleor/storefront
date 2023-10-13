@@ -20,7 +20,7 @@ export async function Nav() {
 	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 
 	return (
-		<div className="sticky top-0 z-20 border-b bg-neutral-100/50 backdrop-blur-md">
+		<div className="sticky top-0 z-20 bg-neutral-100/50 backdrop-blur-md">
 			<div className="mx-auto max-w-7xl px-2 sm:px-8">
 				<div className="flex h-16 justify-between gap-4 md:gap-8">
 					<div className="flex items-center font-bold">

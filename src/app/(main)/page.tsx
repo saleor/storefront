@@ -16,8 +16,7 @@ export default async function Page() {
 
 	return (
 		<div>
-			<h1 className="sr-only">Saleor Storefront example</h1>
-			<section className="mx-auto max-w-7xl p-8">
+			<section className="mx-auto max-w-7xl p-8 pb-16">
 				<h2 className="sr-only">Product list</h2>
 				<ProductsList products={products} />
 			</section>
