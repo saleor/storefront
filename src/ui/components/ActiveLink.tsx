@@ -4,22 +4,13 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function ActiveLink({
-	key,
-	href,
-	children,
-}: {
-	key: string;
-	href: string;
-	children: JSX.Element | string;
-}) {
+export function ActiveLink({ href, children }: { href: string; children: JSX.Element | string }) {
 	const pathname = usePathname();
 
 	const isActive = pathname === href;
 
 	return (
 		<Link
-			key={key}
 			href={href}
 			className={clsx(
 				isActive ? "border-neutral-900 text-neutral-900" : "border-transparent text-neutral-500",
