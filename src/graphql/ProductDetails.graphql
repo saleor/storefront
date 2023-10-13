@@ -17,6 +17,7 @@ query ProductDetails($slug: String!) {
 		variants {
 			id
 			name
+			quantityAvailable
 			pricing {
 				price {
 					gross {

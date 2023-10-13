@@ -2,7 +2,6 @@ import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { CheckIcon } from "lucide-react";
 import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
@@ -10,6 +9,7 @@ import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { executeGraphQL, formatMoney } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
+import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 
 export async function generateMetadata({
 	params,
@@ -114,6 +114,8 @@ export default async function Page(props: { params: { slug: string }; searchPara
 		}
 	}
 
+	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
+
 	return (
 		<section className="mx-auto grid max-w-7xl p-8">
 			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
@@ -131,7 +133,9 @@ export default async function Page(props: { params: { slug: string }; searchPara
 										selectedVariant.pricing.price.gross.amount,
 										selectedVariant.pricing.price.gross.currency,
 								  )
-								: "select variant to see the price"}
+								: isAvailable
+								? "select variant to see the price"
+								: ""}
 						</p>
 
 						{variants && <VariantSelector variants={variants} />}
@@ -140,10 +144,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 								<div dangerouslySetInnerHTML={{ __html: description }}></div>
 							</div>
 						)}
-						<div className="mt-6 flex items-center">
-							<CheckIcon className="h-5 w-5 flex-shrink-0 text-blue-500" aria-hidden="true" />
-							<p className="ml-1 text-sm font-semibold text-neutral-500">In stock</p>
-						</div>
+						<AvailabilityMessage isAvailable={isAvailable} />
 					</div>
 
 					<div className="mt-8">
