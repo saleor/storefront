@@ -11,7 +11,9 @@ export const createPathname = (pathname: string, params: URLSearchParams) => {
 	return `${pathname}${queryString}`;
 };
 
-export function VariantSelector(props: { variants: { id: string; name: string }[] }) {
+export function VariantSelector(props: {
+	variants: { id: string; name: string; quantityAvailable?: number | null }[];
+}) {
 	const { variants } = props;
 
 	const router = useRouter();
@@ -34,7 +36,7 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 	);
 
 	useEffect(() => {
-		if (variants.length === 1) {
+		if (variants.length === 1 && variants[0].quantityAvailable) {
 			selectVariant(variants[0].id, true);
 		}
 	}, [selectVariant, variants]);
@@ -50,16 +52,19 @@ export function VariantSelector(props: { variants: { id: string; name: string }[
 								key={variant.id}
 								type="button"
 								onClick={() => {
-									selectVariant(variant.id);
+									if (variant.quantityAvailable) {
+										selectVariant(variant.id);
+									}
 								}}
 								className={clsx(
 									searchParams.get("variant") === variant.id
 										? "border-transparent bg-neutral-900 text-white hover:bg-neutral-800"
 										: "border-neutral-200 bg-white text-neutral-900 hover:bg-neutral-100",
-									"flex min-w-[8ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2",
+									"relative flex min-w-[8ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2 aria-disabled:cursor-not-allowed aria-disabled:bg-neutral-100 aria-disabled:opacity-50",
 								)}
 								role="radio"
 								aria-checked={searchParams.get("variant") === variant.id}
+								aria-disabled={!variant.quantityAvailable}
 							>
 								{variant.name}
 							</button>
