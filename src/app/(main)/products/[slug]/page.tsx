@@ -6,7 +6,7 @@ import { type Metadata } from "next";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
-import { executeGraphQL, formatMoney } from "@/lib/graphql";
+import { executeGraphQL, formatMoney, formatMoneyRange } from "@/lib/graphql";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
@@ -123,6 +123,15 @@ export default async function Page(props: { params: { slug: string }; searchPara
 
 	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
 
+	const price = selectedVariant?.pricing?.price?.gross
+		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
+		: isAvailable
+		? formatMoneyRange({
+				start: product?.pricing?.priceRange?.start?.gross,
+				stop: product?.pricing?.priceRange?.stop?.gross,
+		  })
+		: "";
+
 	return (
 		<section className="mx-auto grid max-w-7xl p-8">
 			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
@@ -134,16 +143,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-neutral-900">
 							{product?.name}
 						</h1>
-						<p className="mb-8 text-sm font-medium text-neutral-900">
-							{selectedVariant?.pricing?.price?.gross
-								? formatMoney(
-										selectedVariant.pricing.price.gross.amount,
-										selectedVariant.pricing.price.gross.currency,
-								  )
-								: isAvailable
-								? "select variant to see the price"
-								: ""}
-						</p>
+						<p className="mb-8 text-sm font-medium text-neutral-900">{price}</p>
 
 						{variants && (
 							<VariantSelector selectedVariant={selectedVariant} variants={variants} product={product} />

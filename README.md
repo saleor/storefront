@@ -28,6 +28,8 @@
 
 ## Features
 
+**Codebase:**
+
 🏎️ **Next.js 13**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
 
 🔥 **App Router**: Uses React Server Components, Data Cache, and async components.
@@ -39,6 +41,35 @@
 🛠️ **Customizable CSS**: TailwindCSS can be extended or replaced with an alternative CSS solution.
 
 👌 **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
+
+**Global:**
+
+- Channel switcher and Geo detection (coming soon)
+- Dynamic menu (coming soon)
+- Hamburger menu (coming soon)
+- SEO data
+
+**Checkout:**
+
+- Single page checkout (including login)
+- Portable to other frameworks (doesn't use Next.js components)
+- Adyen integration
+- Stripe integration
+- Customer address book
+- Vouchers and Gift Cards
+
+**Product catalog:**
+
+- Categories
+- Variant selection
+- Product attributes
+- Image optimization
+
+**My account:**
+
+- Order history (coming soon)
+- Order completion
+- Order details
 
 ## Quickstart
 
@@ -98,6 +129,14 @@ The app is now running at `http://localhost:3000`.
 
 > [!NOTE]
 > Saleor Storefront is a Next.js app. In case you are not familiar with Next.js, we recommend you to read the [Next.js documentation](https://nextjs.org/docs) (make sure you've selected "Using App Router" in the sidebar).
+
+#### GraphQL queries and mutations:
+
+After altering or creating new GraphQL queries in `gql` folder, you need to run the following command to generate types and javascript queries:
+
+```bash
+pnpm run generate
+```
 
 ### Preview content changes instantly (Draft Mode)
 
