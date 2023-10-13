@@ -287,6 +287,7 @@ export type Address = Node &
     privateMetafields?: Maybe<Scalars["Metadata"]>;
     streetAddress1: Scalars["String"];
     streetAddress2: Scalars["String"];
+    vatId?: Maybe<Scalars["String"]>;
   };
 
 /** Represents user address data. */
@@ -400,6 +401,8 @@ export type AddressInput = {
   streetAddress1?: InputMaybe<Scalars["String"]>;
   /** Address. */
   streetAddress2?: InputMaybe<Scalars["String"]>;
+  /** VAT ID */
+  vatId?: InputMaybe<Scalars["String"]>;
 };
 
 /**
@@ -5047,6 +5050,15 @@ export type DeactivateAllUserTokens = {
   errors: Array<AccountError>;
 };
 
+/** Delete object's private metadata. */
+export type DeleteMegapackPrivateMetadata = {
+  __typename?: "DeleteMegapackPrivateMetadata";
+  errors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  metadataErrors: Array<MetadataError>;
+};
+
 /** Delete metadata of an object. To use it, you need to have access to the modified object. */
 export type DeleteMetadata = {
   __typename?: "DeleteMetadata";
@@ -5310,6 +5322,11 @@ export type DiscountValueTypeEnum = "FIXED" | "PERCENTAGE";
 
 /** An enumeration. */
 export type DistanceUnitsEnum = "CM" | "FT" | "INCH" | "KM" | "M" | "YD";
+
+export type DocumentInput = {
+  /** Document of warehouse positions */
+  document?: InputMaybe<Scalars["String"]>;
+};
 
 /** Represents shop's domain. */
 export type Domain = {
@@ -5824,6 +5841,80 @@ export type ExportScope =
   | "FILTER"
   /** Export products with given ids. */
   | "IDS";
+
+/**
+ * Creates a correction invoice.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtInvoiceCorrectionRequest = {
+  __typename?: "ExtInvoiceCorrectionRequest";
+  errors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  invoiceErrors: Array<InvoiceError>;
+  /** Order related to an invoice. */
+  order?: Maybe<Order>;
+};
+
+/**
+ * Export products to csv file.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtMigloCsv = {
+  __typename?: "ExtMigloCsv";
+  errors: Array<InvoiceError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  exportErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+export type ExtReceiptInput = {
+  metadata?: InputMaybe<Scalars["GenericScalar"]>;
+  /** External receipt number */
+  receiptNumber?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * Creates a ready to send invoice.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtReceiptRequest = {
+  __typename?: "ExtReceiptRequest";
+  errors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  invoiceErrors: Array<InvoiceError>;
+  payload?: Maybe<Scalars["GenericScalar"]>;
+};
+
+/**
+ * Updates externally created receipt info.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtReceiptUpdate = {
+  __typename?: "ExtReceiptUpdate";
+  errors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  invoiceErrors: Array<InvoiceError>;
+};
+
+/**
+ * Export products to csv file.
+ *
+ * Requires one of the following permissions: MANAGE_ORDERS.
+ */
+export type ExtTallyCsv = {
+  __typename?: "ExtTallyCsv";
+  errors: Array<InvoiceError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  exportErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
 
 export type ExternalAuthentication = {
   __typename?: "ExternalAuthentication";
@@ -7354,6 +7445,26 @@ export type Job = {
 
 /** An enumeration. */
 export type JobStatusEnum = "DELETED" | "FAILED" | "PENDING" | "SUCCESS";
+
+/**
+ * Generates a shipping label.
+ *
+ * Requires one of the following permissions: MANAGE_SHIPPING.
+ */
+export type LabelCreate = {
+  __typename?: "LabelCreate";
+  errors: Array<ShippingError>;
+  /** B64 label representation */
+  label?: Maybe<Scalars["String"]>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  shippingErrors: Array<ShippingError>;
+};
+
+export type LabelCreateInput = {
+  /** Order ID */
+  order: Scalars["String"];
+  packageId: Scalars["Int"];
+};
 
 /** An enumeration. */
 export type LanguageCodeEnum =
@@ -9415,6 +9526,8 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_USERS.
    */
   customerUpdate?: Maybe<CustomerUpdate>;
+  /** Delete object's private metadata. */
+  deleteMegapackPrivateMetadata?: Maybe<DeleteMegapackPrivateMetadata>;
   /** Delete metadata of an object. To use it, you need to have access to the modified object. */
   deleteMetadata?: Maybe<DeleteMetadata>;
   /** Delete object's private metadata. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
@@ -9506,6 +9619,36 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportProducts?: Maybe<ExportProducts>;
+  /**
+   * Creates a correction invoice.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extInvoiceCorrectionRequest?: Maybe<ExtInvoiceCorrectionRequest>;
+  /**
+   * Export products to csv file.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extMigloCsv?: Maybe<ExtMigloCsv>;
+  /**
+   * Creates a ready to send invoice.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extReceiptRequest?: Maybe<ExtReceiptRequest>;
+  /**
+   * Updates externally created receipt info.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extReceiptUpdate?: Maybe<ExtReceiptUpdate>;
+  /**
+   * Export products to csv file.
+   *
+   * Requires one of the following permissions: MANAGE_ORDERS.
+   */
+  extTallyCsv?: Maybe<ExtTallyCsv>;
   /** Prepare external authentication URL for user by custom plugin. */
   externalAuthenticationUrl?: Maybe<ExternalAuthenticationUrl>;
   /** Logout user by custom plugin. */
@@ -9650,6 +9793,12 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_ORDERS.
    */
   invoiceUpdate?: Maybe<InvoiceUpdate>;
+  /**
+   * Generates a shipping label.
+   *
+   * Requires one of the following permissions: MANAGE_SHIPPING.
+   */
+  labelCreate?: Maybe<LabelCreate>;
   /**
    * Deletes menus.
    *
@@ -9892,6 +10041,12 @@ export type Mutation = {
    */
   orderVoid?: Maybe<OrderVoid>;
   /**
+   * Creates a new package.
+   *
+   * Requires one of the following permissions: MANAGE_SHIPPING.
+   */
+  packageCreate?: Maybe<PackageCreate>;
+  /**
    * Assign attributes to a given page type.
    *
    * Requires one of the following permissions: MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
@@ -10056,6 +10211,12 @@ export type Mutation = {
    */
   productAttributeUnassign?: Maybe<ProductAttributeUnassign>;
   /**
+   * Remove Warehouse Locations
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productBulkClearWarehouseLocation?: Maybe<ProductBulkClearWarehouseLocation>;
+  /**
    * Creates products.
    *
    * Added in Saleor 3.13.
@@ -10071,6 +10232,12 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   productBulkDelete?: Maybe<ProductBulkDelete>;
+  /**
+   * Publish products.
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productBulkPublish?: Maybe<ProductBulkPublish>;
   /**
    * Manage product's availability in channels.
    *
@@ -10113,6 +10280,12 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   productMediaReorder?: Maybe<ProductMediaReorder>;
+  /**
+   * Retrieves a product media from backup.
+   *
+   * Requires one of the following permissions: MANAGE_PRODUCTS.
+   */
+  productMediaRetrieveFromBackup?: Maybe<ProductMediaRetrieveFromBackup>;
   /**
    * Updates a product media.
    *
@@ -10608,6 +10781,8 @@ export type Mutation = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   unassignWarehouseShippingZone?: Maybe<WarehouseShippingZoneUnassign>;
+  /** Updates private metadata of a megapack product. */
+  updateMegapackPrivateMetadata?: Maybe<UpdateMegapackPrivateMetadata>;
   /** Updates metadata of an object. To use it, you need to have access to the modified object. */
   updateMetadata?: Maybe<UpdateMetadata>;
   /** Updates private metadata of an object. To use it, you need to be an authenticated staff user or an app and have access to the modified object. */
@@ -10731,9 +10906,69 @@ export type Mutation = {
   /**
    * Updates a webhook subscription.
    *
-   * Requires one of the following permissions: MANAGE_APPS.
+   * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
    */
   webhookUpdate?: Maybe<WebhookUpdate>;
+  /**
+   * Creates a new WMS deliverer.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDelivererCreate?: Maybe<WmsDelivererCreate>;
+  /**
+   * Updates a new WMS deliverer.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDelivererDelete?: Maybe<WmsDelivererDelete>;
+  /**
+   * Updates a new WMS deliverer.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDelivererUpdate?: Maybe<WmsDelivererUpdate>;
+  /**
+   * Creates a new wms doc position.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocPositionCreate?: Maybe<WmsDocPositionCreate>;
+  /**
+   * Deletes a wms document position.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocPositionDelete?: Maybe<WmsDocPositionDelete>;
+  /**
+   * Updates an existing wms doc position.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocPositionUpdate?: Maybe<WmsDocPositionUpdate>;
+  /**
+   * Deletes wms documents.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentBulkDelete?: Maybe<WmsDocumentBulkDelete>;
+  /**
+   * Creates a new WMS document.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentCreate?: Maybe<WmsDocumentCreate>;
+  /**
+   * Deletes a wms document.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentDelete?: Maybe<WmsDocumentDelete>;
+  /**
+   * Updates an existing Wms document.
+   *
+   * Requires one of the following permissions: MANAGE_WMS.
+   */
+  wmsDocumentUpdate?: Maybe<WmsDocumentUpdate>;
 };
 
 export type MutationAccountAddressCreateArgs = {
@@ -11159,6 +11394,11 @@ export type MutationCustomerUpdateArgs = {
   input: CustomerInput;
 };
 
+export type MutationDeleteMegapackPrivateMetadataArgs = {
+  id: Scalars["ID"];
+  keys: Array<Scalars["String"]>;
+};
+
 export type MutationDeleteMetadataArgs = {
   id: Scalars["ID"];
   keys: Array<Scalars["String"]>;
@@ -11228,6 +11468,29 @@ export type MutationExportGiftCardsArgs = {
 
 export type MutationExportProductsArgs = {
   input: ExportProductsInput;
+};
+
+export type MutationExtInvoiceCorrectionRequestArgs = {
+  orderId: Scalars["ID"];
+};
+
+export type MutationExtMigloCsvArgs = {
+  month: Scalars["String"];
+  year: Scalars["String"];
+};
+
+export type MutationExtReceiptRequestArgs = {
+  orderId: Scalars["ID"];
+};
+
+export type MutationExtReceiptUpdateArgs = {
+  id: Scalars["ID"];
+  input: ExtReceiptInput;
+};
+
+export type MutationExtTallyCsvArgs = {
+  month: Scalars["String"];
+  year: Scalars["String"];
 };
 
 export type MutationExternalAuthenticationUrlArgs = {
@@ -11340,6 +11603,10 @@ export type MutationInvoiceSendNotificationArgs = {
 export type MutationInvoiceUpdateArgs = {
   id: Scalars["ID"];
   input: UpdateInvoiceInput;
+};
+
+export type MutationLabelCreateArgs = {
+  input: LabelCreateInput;
 };
 
 export type MutationMenuBulkDeleteArgs = {
@@ -11523,6 +11790,10 @@ export type MutationOrderVoidArgs = {
   id: Scalars["ID"];
 };
 
+export type MutationPackageCreateArgs = {
+  input: PackageCreateInput;
+};
+
 export type MutationPageAttributeAssignArgs = {
   attributeIds: Array<Scalars["ID"]>;
   pageTypeId: Scalars["ID"];
@@ -11658,6 +11929,10 @@ export type MutationProductAttributeUnassignArgs = {
   productTypeId: Scalars["ID"];
 };
 
+export type MutationProductBulkClearWarehouseLocationArgs = {
+  skus: Array<InputMaybe<Scalars["String"]>>;
+};
+
 export type MutationProductBulkCreateArgs = {
   errorPolicy?: InputMaybe<ErrorPolicyEnum>;
   products: Array<ProductBulkCreateInput>;
@@ -11665,6 +11940,19 @@ export type MutationProductBulkCreateArgs = {
 
 export type MutationProductBulkDeleteArgs = {
   ids: Array<Scalars["ID"]>;
+};
+
+export type MutationProductBulkPublishArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+  endingAtDate?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<ProductFilterInput>;
+  ids: Array<InputMaybe<Scalars["ID"]>>;
+  isPublished: Scalars["Boolean"];
+  mode: Scalars["String"];
+  offerType: Scalars["String"];
+  publishHour?: InputMaybe<Scalars["String"]>;
+  startingAt?: InputMaybe<Scalars["String"]>;
+  startingAtDate?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationProductChannelListingUpdateArgs = {
@@ -11696,6 +11984,10 @@ export type MutationProductMediaDeleteArgs = {
 export type MutationProductMediaReorderArgs = {
   mediaIds: Array<Scalars["ID"]>;
   productId: Scalars["ID"];
+};
+
+export type MutationProductMediaRetrieveFromBackupArgs = {
+  id: Scalars["ID"];
 };
 
 export type MutationProductMediaUpdateArgs = {
@@ -12084,6 +12376,11 @@ export type MutationUnassignWarehouseShippingZoneArgs = {
   shippingZoneIds: Array<Scalars["ID"]>;
 };
 
+export type MutationUpdateMegapackPrivateMetadataArgs = {
+  id: Scalars["ID"];
+  input: Array<MetadataInput>;
+};
+
 export type MutationUpdateMetadataArgs = {
   id: Scalars["ID"];
   input: Array<MetadataInput>;
@@ -12177,6 +12474,49 @@ export type MutationWebhookTriggerArgs = {
 export type MutationWebhookUpdateArgs = {
   id: Scalars["ID"];
   input: WebhookUpdateInput;
+};
+
+export type MutationWmsDelivererCreateArgs = {
+  input: WmsDelivererInput;
+};
+
+export type MutationWmsDelivererDeleteArgs = {
+  id: Scalars["ID"];
+};
+
+export type MutationWmsDelivererUpdateArgs = {
+  id: Scalars["ID"];
+  input: WmsDelivererInput;
+};
+
+export type MutationWmsDocPositionCreateArgs = {
+  input: WmsDocPositionInput;
+};
+
+export type MutationWmsDocPositionDeleteArgs = {
+  id: Scalars["ID"];
+};
+
+export type MutationWmsDocPositionUpdateArgs = {
+  id: Scalars["ID"];
+  input: WmsDocPositionInput;
+};
+
+export type MutationWmsDocumentBulkDeleteArgs = {
+  ids: Array<InputMaybe<Scalars["ID"]>>;
+};
+
+export type MutationWmsDocumentCreateArgs = {
+  input: WmsDocumentInput;
+};
+
+export type MutationWmsDocumentDeleteArgs = {
+  id: Scalars["ID"];
+};
+
+export type MutationWmsDocumentUpdateArgs = {
+  id: Scalars["ID"];
+  input: WmsDocumentInput;
 };
 
 export type NameTranslationInput = {
@@ -13983,6 +14323,39 @@ export type OrderVoid = {
   orderErrors: Array<OrderError>;
 };
 
+/**
+ * Creates a new package.
+ *
+ * Requires one of the following permissions: MANAGE_SHIPPING.
+ */
+export type PackageCreate = {
+  __typename?: "PackageCreate";
+  errors: Array<ShippingError>;
+  /** Package ID */
+  packageId?: Maybe<Scalars["String"]>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  shippingErrors: Array<ShippingError>;
+};
+
+export type PackageCreateInput = {
+  /** Order fullfilment ID */
+  fulfillment: Scalars["String"];
+  /** Order ID */
+  order: Scalars["String"];
+  packageData: Array<InputMaybe<PackageInput>>;
+};
+
+export type PackageInput = {
+  /** Width */
+  sizeX?: InputMaybe<Scalars["Int"]>;
+  /** Length */
+  sizeY?: InputMaybe<Scalars["Int"]>;
+  /** Height */
+  sizeZ?: InputMaybe<Scalars["Int"]>;
+  /** Weight */
+  weight: Scalars["Float"];
+};
+
 /** A static page that can be manually added by a shop operator through the dashboard. */
 export type Page = Node &
   ObjectWithMetadata & {
@@ -15287,6 +15660,12 @@ export type PaymentSource = {
   paymentMethodId?: Maybe<Scalars["String"]>;
 };
 
+/** data to generate redirect url for payment */
+export type PaymentUrl = {
+  __typename?: "PaymentUrl";
+  paymentUrl?: Maybe<Scalars["String"]>;
+};
+
 /**
  * Voids the authorized payment.
  *
@@ -15353,7 +15732,8 @@ export type PermissionEnum =
   | "MANAGE_STAFF"
   | "MANAGE_TAXES"
   | "MANAGE_TRANSLATIONS"
-  | "MANAGE_USERS";
+  | "MANAGE_USERS"
+  | "MANAGE_WMS";
 
 /**
  * Create new permission group. Apps are not allowed to perform this mutation.
@@ -15956,6 +16336,22 @@ export type ProductAttributeUnassign = {
 };
 
 /**
+ * Remove Warehouse Locations
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductBulkClearWarehouseLocation = {
+  __typename?: "ProductBulkClearWarehouseLocation";
+  /** Returns how many objects were affected. */
+  count: Scalars["Int"];
+  errors: Array<ProductError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  productErrors: Array<ProductError>;
+  /** List of products with location deleted */
+  productVariants: Array<ProductVariant>;
+};
+
+/**
  * Creates products.
  *
  * Added in Saleor 3.13.
@@ -16069,6 +16465,20 @@ export type ProductBulkCreateInput = {
  */
 export type ProductBulkDelete = {
   __typename?: "ProductBulkDelete";
+  /** Returns how many objects were affected. */
+  count: Scalars["Int"];
+  errors: Array<ProductError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  productErrors: Array<ProductError>;
+};
+
+/**
+ * Publish products.
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductBulkPublish = {
+  __typename?: "ProductBulkPublish";
   /** Returns how many objects were affected. */
   count: Scalars["Int"];
   errors: Array<ProductError>;
@@ -16768,6 +17178,20 @@ export type ProductMediaReorder = {
   productErrors: Array<ProductError>;
 };
 
+/**
+ * Retrieves a product media from backup.
+ *
+ * Requires one of the following permissions: MANAGE_PRODUCTS.
+ */
+export type ProductMediaRetrieveFromBackup = {
+  __typename?: "ProductMediaRetrieveFromBackup";
+  errors: Array<ProductError>;
+  media?: Maybe<ProductMedia>;
+  product?: Maybe<Product>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  productErrors: Array<ProductError>;
+};
+
 /** An enumeration. */
 export type ProductMediaType = "IMAGE" | "VIDEO";
 
@@ -16807,6 +17231,11 @@ export type ProductMediaUpdated = Event & {
   recipient?: Maybe<App>;
   /** Saleor version that triggered the event. */
   version?: Maybe<Scalars["String"]>;
+};
+
+export type ProductMetadataFilterInput = {
+  metadata?: InputMaybe<MetadataInput>;
+  privateMetadata?: InputMaybe<MetadataInput>;
 };
 
 /**
@@ -17268,6 +17697,11 @@ export type ProductTypeInput = {
 
 /** An enumeration. */
 export type ProductTypeKindEnum = "GIFT_CARD" | "NORMAL";
+
+export type ProductTypeMetadataFilterInput = {
+  metadata?: InputMaybe<MetadataInput>;
+  privateMetadata?: InputMaybe<MetadataInput>;
+};
 
 /**
  * Reorder the attributes of a product type.
@@ -18449,6 +18883,8 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportFiles?: Maybe<ExportFileCountableConnection>;
+  /** Generates an url to redirect to payment gateway and complete payment */
+  generatePaymentUrl?: Maybe<PaymentUrl>;
   /**
    * Look up a gift card by ID.
    *
@@ -18573,14 +19009,22 @@ export type Query = {
   product?: Maybe<Product>;
   /** Look up a product type by ID. */
   productType?: Maybe<ProductType>;
+  productTypeWithMetadata?: Maybe<ProductType>;
   /** List of the shop's product types. */
   productTypes?: Maybe<ProductTypeCountableConnection>;
+  /** List of the shop's product types. */
+  productTypesWithMetadata?: Maybe<ProductTypeCountableConnection>;
   /** Look up a product variant by ID or SKU. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
   productVariant?: Maybe<ProductVariant>;
   /** List of product variants. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
   productVariants?: Maybe<ProductVariantCountableConnection>;
+  /** Look for a mega pack SKU number */
+  productVariantsSkus?: Maybe<ProductVariantCountableConnection>;
+  productWithMetadata?: Maybe<Product>;
   /** List of the shop's products. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS. */
   products?: Maybe<ProductCountableConnection>;
+  /** List of the shop's products. */
+  productsWithMetadata?: Maybe<ProductCountableConnection>;
   /**
    * List of top selling products.
    *
@@ -18613,6 +19057,8 @@ export type Query = {
   shippingZones?: Maybe<ShippingZoneCountableConnection>;
   /** Return information about the shop. */
   shop: Shop;
+  /** Look for a mega pack SKU number */
+  sitemapSlugs?: Maybe<SitemapSlugs>;
   /**
    * List of the shop's staff users.
    *
@@ -18705,6 +19151,7 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_STAFF, MANAGE_USERS, MANAGE_ORDERS.
    */
   user?: Maybe<User>;
+  userWithMetadata?: Maybe<User>;
   /**
    * Look up a voucher by ID.
    *
@@ -18723,6 +19170,8 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING.
    */
   warehouse?: Maybe<Warehouse>;
+  /** B64 encoded Warehouse pdf files */
+  warehouseListsGenerate?: Maybe<WarehousePdfFiles>;
   /**
    * List of warehouses.
    *
@@ -18740,6 +19189,19 @@ export type Query = {
   webhookEvents?: Maybe<Array<WebhookEvent>>;
   /** Retrieve a sample payload for a given webhook event based on real data. It can be useful for some integrations where sample payload is required. */
   webhookSamplePayload?: Maybe<Scalars["JSONString"]>;
+  /** Look up a wms deliverer by id. */
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** List of wms deliverers */
+  wmsDeliverers?: Maybe<WmsDelivererCountableConnection>;
+  /** Look up a wms document position by id */
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** List of wms document positions */
+  wmsDocPositions?: Maybe<WmsDocPositionCountableConnection>;
+  /** Look up a wms document by id or number. */
+  wmsDocument?: Maybe<WmsDocument>;
+  wmsDocumentPdf?: Maybe<Scalars["String"]>;
+  /** List of wms documents */
+  wmsDocuments?: Maybe<WmsDocumentCountableConnection>;
 };
 
 export type Query_EntitiesArgs = {
@@ -18898,6 +19360,11 @@ export type QueryExportFilesArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
   sortBy?: InputMaybe<ExportFileSortingInput>;
+};
+
+export type QueryGeneratePaymentUrlArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+  paymentId: Scalars["ID"];
 };
 
 export type QueryGiftCardArgs = {
@@ -19060,6 +19527,13 @@ export type QueryProductTypeArgs = {
   id: Scalars["ID"];
 };
 
+export type QueryProductTypeWithMetadataArgs = {
+  metadataKey?: InputMaybe<Scalars["String"]>;
+  metadataValue?: InputMaybe<Scalars["String"]>;
+  privateMetadataKey?: InputMaybe<Scalars["String"]>;
+  privateMetadataValue?: InputMaybe<Scalars["String"]>;
+};
+
 export type QueryProductTypesArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
@@ -19067,6 +19541,14 @@ export type QueryProductTypesArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
   sortBy?: InputMaybe<ProductTypeSortingInput>;
+};
+
+export type QueryProductTypesWithMetadataArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<ProductTypeMetadataFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
 };
 
 export type QueryProductVariantArgs = {
@@ -19087,6 +19569,21 @@ export type QueryProductVariantsArgs = {
   sortBy?: InputMaybe<ProductVariantSortingInput>;
 };
 
+export type QueryProductVariantsSkusArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  sku?: InputMaybe<Scalars["String"]>;
+};
+
+export type QueryProductWithMetadataArgs = {
+  metadataKey?: InputMaybe<Scalars["String"]>;
+  metadataValue?: InputMaybe<Scalars["String"]>;
+  privateMetadataKey?: InputMaybe<Scalars["String"]>;
+  privateMetadataValue?: InputMaybe<Scalars["String"]>;
+};
+
 export type QueryProductsArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
@@ -19095,6 +19592,14 @@ export type QueryProductsArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
   sortBy?: InputMaybe<ProductOrder>;
+};
+
+export type QueryProductsWithMetadataArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<ProductMetadataFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
 };
 
 export type QueryReportProductSalesArgs = {
@@ -19134,6 +19639,13 @@ export type QueryShippingZonesArgs = {
   filter?: InputMaybe<ShippingZoneFilterInput>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QuerySitemapSlugsArgs = {
+  categoriesAmount?: InputMaybe<Scalars["Int"]>;
+  channel?: InputMaybe<Scalars["String"]>;
+  pagesAmount?: InputMaybe<Scalars["Int"]>;
+  productsAmount?: InputMaybe<Scalars["Int"]>;
 };
 
 export type QueryStaffUsersArgs = {
@@ -19209,6 +19721,13 @@ export type QueryUserArgs = {
   id?: InputMaybe<Scalars["ID"]>;
 };
 
+export type QueryUserWithMetadataArgs = {
+  metadataKey?: InputMaybe<Scalars["String"]>;
+  metadataValue?: InputMaybe<Scalars["String"]>;
+  privateMetadataKey?: InputMaybe<Scalars["String"]>;
+  privateMetadataValue?: InputMaybe<Scalars["String"]>;
+};
+
 export type QueryVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]>;
   id: Scalars["ID"];
@@ -19230,6 +19749,11 @@ export type QueryWarehouseArgs = {
   id?: InputMaybe<Scalars["ID"]>;
 };
 
+export type QueryWarehouseListsGenerateArgs = {
+  filters?: InputMaybe<OrderFilterInput>;
+  orderIds?: InputMaybe<Array<Scalars["ID"]>>;
+};
+
 export type QueryWarehousesArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
@@ -19245,6 +19769,48 @@ export type QueryWebhookArgs = {
 
 export type QueryWebhookSamplePayloadArgs = {
   eventType: WebhookSampleEventTypeEnum;
+};
+
+export type QueryWmsDelivererArgs = {
+  id?: InputMaybe<Scalars["ID"]>;
+};
+
+export type QueryWmsDeliverersArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<WmsDelivererFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryWmsDocPositionArgs = {
+  id?: InputMaybe<Scalars["ID"]>;
+};
+
+export type QueryWmsDocPositionsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<WmsDocPositionFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryWmsDocumentArgs = {
+  id?: InputMaybe<Scalars["ID"]>;
+  number?: InputMaybe<Scalars["String"]>;
+};
+
+export type QueryWmsDocumentPdfArgs = {
+  id: Scalars["ID"];
+};
+
+export type QueryWmsDocumentsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  filter?: InputMaybe<WmsDocumentFilterInput>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  sortBy?: InputMaybe<WmsDocumentSortingInput>;
 };
 
 /** Represents a reduced VAT rate for a particular type of goods. */
@@ -21131,6 +21697,14 @@ export type SiteDomainInput = {
   domain?: InputMaybe<Scalars["String"]>;
   /** Shop site name. */
   name?: InputMaybe<Scalars["String"]>;
+};
+
+/** Lists of slugs for sitemap generation */
+export type SitemapSlugs = {
+  __typename?: "SitemapSlugs";
+  categoriesSlugs?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  pagesSlugs?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  productSlugs?: Maybe<Array<Maybe<Scalars["String"]>>>;
 };
 
 /**
@@ -23306,6 +23880,15 @@ export type UpdateInvoiceInput = {
   url?: InputMaybe<Scalars["String"]>;
 };
 
+/** Updates private metadata of a megapack product. */
+export type UpdateMegapackPrivateMetadata = {
+  __typename?: "UpdateMegapackPrivateMetadata";
+  errors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  metadataErrors: Array<MetadataError>;
+};
+
 /** Updates metadata of an object. To use it, you need to have access to the modified object. */
 export type UpdateMetadata = {
   __typename?: "UpdateMetadata";
@@ -24264,6 +24847,57 @@ export type VoucherUpdatedVoucherArgs = {
   channel?: InputMaybe<Scalars["String"]>;
 };
 
+export type WmsDelivererCountableConnection = {
+  __typename?: "WMSDelivererCountableConnection";
+  edges: Array<WmsDelivererCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]>;
+};
+
+export type WmsDelivererCountableEdge = {
+  __typename?: "WMSDelivererCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"];
+  /** The item at the end of the edge. */
+  node: WmsDeliverer;
+};
+
+export type WmsDocPositionCountableConnection = {
+  __typename?: "WMSDocPositionCountableConnection";
+  edges: Array<WmsDocPositionCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]>;
+};
+
+export type WmsDocPositionCountableEdge = {
+  __typename?: "WMSDocPositionCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"];
+  /** The item at the end of the edge. */
+  node: WmsDocPosition;
+};
+
+export type WmsDocumentCountableConnection = {
+  __typename?: "WMSDocumentCountableConnection";
+  edges: Array<WmsDocumentCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]>;
+};
+
+export type WmsDocumentCountableEdge = {
+  __typename?: "WMSDocumentCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"];
+  /** The item at the end of the edge. */
+  node: WmsDocument;
+};
+
 /** Represents warehouse. */
 export type Warehouse = Node &
   ObjectWithMetadata & {
@@ -24516,6 +25150,13 @@ export type WarehouseMetadataUpdated = Event & {
   version?: Maybe<Scalars["String"]>;
   /** The warehouse the event relates to. */
   warehouse?: Maybe<Warehouse>;
+};
+
+/** Generated pdf warehouse list and wms docments list files encoded in B64 */
+export type WarehousePdfFiles = {
+  __typename?: "WarehousePdfFiles";
+  warehouseList?: Maybe<Scalars["String"]>;
+  wmsList?: Maybe<Scalars["String"]>;
 };
 
 /**
@@ -25711,7 +26352,7 @@ export type WebhookTriggerErrorCode =
 /**
  * Updates a webhook subscription.
  *
- * Requires one of the following permissions: MANAGE_APPS.
+ * Requires one of the following permissions: MANAGE_APPS, AUTHENTICATED_APP.
  */
 export type WebhookUpdate = {
   __typename?: "WebhookUpdate";
@@ -25773,6 +26414,290 @@ export type Weight = {
 
 /** An enumeration. */
 export type WeightUnitsEnum = "G" | "KG" | "LB" | "OZ" | "TONNE";
+
+/** Represents a wms deliverer */
+export type WmsDeliverer = Node & {
+  __typename?: "WmsDeliverer";
+  /** City */
+  city?: Maybe<Scalars["String"]>;
+  /** Company name */
+  companyName?: Maybe<Scalars["String"]>;
+  /** Country */
+  country?: Maybe<CountryCode>;
+  /** Email */
+  email?: Maybe<Scalars["String"]>;
+  /** First name */
+  firstName?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  /** Last name */
+  lastName?: Maybe<Scalars["String"]>;
+  /** Phone */
+  phone?: Maybe<Scalars["String"]>;
+  /** Postal Code */
+  postalCode?: Maybe<Scalars["String"]>;
+  /** Street */
+  street?: Maybe<Scalars["String"]>;
+  /** VAT ID */
+  vatId?: Maybe<Scalars["String"]>;
+};
+
+/**
+ * Creates a new WMS deliverer.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDelivererCreate = {
+  __typename?: "WmsDelivererCreate";
+  errors: Array<WmsDocumentError>;
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Updates a new WMS deliverer.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDelivererDelete = {
+  __typename?: "WmsDelivererDelete";
+  errors: Array<WmsDocumentError>;
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+export type WmsDelivererFilterInput = {
+  search?: InputMaybe<Scalars["String"]>;
+};
+
+export type WmsDelivererInput = {
+  /** City */
+  city?: InputMaybe<Scalars["String"]>;
+  /** Company name */
+  companyName?: InputMaybe<Scalars["String"]>;
+  /** Country */
+  country?: InputMaybe<CountryCode>;
+  /** Email */
+  email?: InputMaybe<Scalars["String"]>;
+  /** First name */
+  firstName?: InputMaybe<Scalars["String"]>;
+  /** Last name */
+  lastName?: InputMaybe<Scalars["String"]>;
+  /** Phone */
+  phone?: InputMaybe<Scalars["String"]>;
+  /** Postal Code */
+  postalCode?: InputMaybe<Scalars["String"]>;
+  /** Street */
+  street?: InputMaybe<Scalars["String"]>;
+  /** VAT ID */
+  vatId?: InputMaybe<Scalars["String"]>;
+};
+
+/**
+ * Updates a new WMS deliverer.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDelivererUpdate = {
+  __typename?: "WmsDelivererUpdate";
+  errors: Array<WmsDocumentError>;
+  wmsDeliverer?: Maybe<WmsDeliverer>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/** Represents a wms document */
+export type WmsDocPosition = Node & {
+  __typename?: "WmsDocPosition";
+  document?: Maybe<WmsDocument>;
+  id: Scalars["ID"];
+  productVariant?: Maybe<ProductVariant>;
+  quantity?: Maybe<Scalars["Int"]>;
+  weight?: Maybe<Scalars["Float"]>;
+};
+
+/**
+ * Creates a new wms doc position.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocPositionCreate = {
+  __typename?: "WmsDocPositionCreate";
+  errors: Array<WmsDocumentError>;
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Deletes a wms document position.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocPositionDelete = {
+  __typename?: "WmsDocPositionDelete";
+  errors: Array<WmsDocumentError>;
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+export type WmsDocPositionFilterInput = {
+  document?: InputMaybe<DocumentInput>;
+};
+
+export type WmsDocPositionInput = {
+  /** wms document */
+  document?: InputMaybe<Scalars["ID"]>;
+  /** Product Variant */
+  productVariant?: InputMaybe<Scalars["ID"]>;
+  /** Quantity */
+  quantity?: InputMaybe<Scalars["Int"]>;
+  /** Weight */
+  weight?: InputMaybe<Scalars["Float"]>;
+};
+
+/**
+ * Updates an existing wms doc position.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocPositionUpdate = {
+  __typename?: "WmsDocPositionUpdate";
+  errors: Array<WmsDocumentError>;
+  wmsDocPosition?: Maybe<WmsDocPosition>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/** Represents a wms document */
+export type WmsDocument = Node & {
+  __typename?: "WmsDocument";
+  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdBy?: Maybe<User>;
+  deliverer?: Maybe<WmsDeliverer>;
+  documentType?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  location?: Maybe<Scalars["String"]>;
+  number?: Maybe<Scalars["String"]>;
+  recipient?: Maybe<User>;
+  status?: Maybe<Scalars["String"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]>;
+  warehouse?: Maybe<Warehouse>;
+  warehouseSecond?: Maybe<Warehouse>;
+};
+
+/**
+ * Deletes wms documents.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentBulkDelete = {
+  __typename?: "WmsDocumentBulkDelete";
+  /** Returns how many objects were affected. */
+  count: Scalars["Int"];
+  errors: Array<WmsDocumentError>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Creates a new WMS document.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentCreate = {
+  __typename?: "WmsDocumentCreate";
+  errors: Array<WmsDocumentError>;
+  wmsDocument?: Maybe<WmsDocument>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/**
+ * Deletes a wms document.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentDelete = {
+  __typename?: "WmsDocumentDelete";
+  errors: Array<WmsDocumentError>;
+  wmsDocument?: Maybe<WmsDocument>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+export type WmsDocumentError = {
+  __typename?: "WmsDocumentError";
+  /** The error code. */
+  code: WmsErrorCode;
+  /** Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field. */
+  field?: Maybe<Scalars["String"]>;
+  /** The error message. */
+  message?: Maybe<Scalars["String"]>;
+};
+
+export type WmsDocumentFilterInput = {
+  createdAt?: InputMaybe<DateRangeInput>;
+  createdBy?: InputMaybe<Scalars["String"]>;
+  deliverers?: InputMaybe<Array<Scalars["ID"]>>;
+  documentType?: InputMaybe<Array<WmsDocumentTypeFilter>>;
+  location?: InputMaybe<Scalars["String"]>;
+  recipients?: InputMaybe<Array<Scalars["ID"]>>;
+  search?: InputMaybe<Scalars["String"]>;
+  status?: InputMaybe<Array<WmsDocumentStatusFilter>>;
+  updatedAt?: InputMaybe<DateRangeInput>;
+  warehouses?: InputMaybe<Array<Scalars["ID"]>>;
+};
+
+export type WmsDocumentInput = {
+  /** CreatedBy ID */
+  createdBy?: InputMaybe<Scalars["ID"]>;
+  /** Deliverer */
+  deliverer?: InputMaybe<Scalars["ID"]>;
+  /** Document Type */
+  documentType?: InputMaybe<Scalars["String"]>;
+  /** Location */
+  location?: InputMaybe<Scalars["String"]>;
+  /** Recipient ID */
+  recipient?: InputMaybe<Scalars["ID"]>;
+  /** Document status */
+  status?: InputMaybe<Scalars["String"]>;
+  /** Warehouse */
+  warehouse?: InputMaybe<Scalars["ID"]>;
+  /** Warehouse */
+  warehouseSecond?: InputMaybe<Scalars["ID"]>;
+};
+
+export type WmsDocumentSortField = "CREATED_AT" | "DOCUMENT_TYPE" | "NAME" | "STATUS" | "WAREHOUSE";
+
+export type WmsDocumentSortingInput = {
+  /** Specifies the direction in which to sort wmsDocuments. */
+  direction: OrderDirection;
+  /** Sort wmsDocuments by the selected field. */
+  field: WmsDocumentSortField;
+};
+
+export type WmsDocumentStatusFilter = "APPROVED" | "DRAFT";
+
+export type WmsDocumentTypeFilter = "FGTN" | "GIN" | "GRN" | "IO" | "IWM";
+
+/**
+ * Updates an existing Wms document.
+ *
+ * Requires one of the following permissions: MANAGE_WMS.
+ */
+export type WmsDocumentUpdate = {
+  __typename?: "WmsDocumentUpdate";
+  errors: Array<WmsDocumentError>;
+  wmsDocument?: Maybe<WmsDocument>;
+  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
+  wmsErrors: Array<WmsDocumentError>;
+};
+
+/** An enumeration. */
+export type WmsErrorCode = "GRAPHQL_ERROR" | "INVALID" | "NOT_FOUND" | "REQUIRED" | "UNIQUE";
 
 /** _Entity union as defined by Federation spec. */
 export type _Entity =
@@ -26032,6 +26957,7 @@ export type AddressFragment = {
   city: string;
   countryArea: string;
   phone?: string | null;
+  vatId?: string | null;
   country: { __typename?: "CountryDisplay"; code: string };
 };
 
@@ -26084,6 +27010,7 @@ export type OrderFragment = {
     city: string;
     countryArea: string;
     phone?: string | null;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; code: string };
   } | null;
   shippingAddress?: {
@@ -26097,6 +27024,7 @@ export type OrderFragment = {
     city: string;
     countryArea: string;
     phone?: string | null;
+    vatId?: string | null;
     country: { __typename?: "CountryDisplay"; code: string };
   } | null;
   total: {
@@ -26170,6 +27098,7 @@ export type OrderCreateMutation = {
         city: string;
         countryArea: string;
         phone?: string | null;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string };
       } | null;
       shippingAddress?: {
@@ -26183,6 +27112,7 @@ export type OrderCreateMutation = {
         city: string;
         countryArea: string;
         phone?: string | null;
+        vatId?: string | null;
         country: { __typename?: "CountryDisplay"; code: string };
       } | null;
       total: {
@@ -26265,6 +27195,7 @@ export type OrderDetailsQuery = {
       city: string;
       countryArea: string;
       phone?: string | null;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string };
     } | null;
     shippingAddress?: {
@@ -26278,6 +27209,7 @@ export type OrderDetailsQuery = {
       city: string;
       countryArea: string;
       phone?: string | null;
+      vatId?: string | null;
       country: { __typename?: "CountryDisplay"; code: string };
     } | null;
     total: {
@@ -26704,6 +27636,7 @@ export const AddressFragmentDoc = gql`
     }
     countryArea
     phone
+    vatId
   }
 `;
 export const MoneyFragmentDoc = gql`

@@ -35,7 +35,7 @@ export function FilterPills({ pills, onRemoveAttribute, onClearFilters }: Filter
           type="button"
           data-testid="clearFilters"
         >
-          Clear all
+          Wyczyść wszystkie
         </button>
       </div>
     </div>

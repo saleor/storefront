@@ -9,11 +9,8 @@ export const LOCALES = [
     name: "American English",
   },
   { slug: "pl-PL", code: "PL_PL" as LanguageCodeEnum, name: "Polski" },
-  { slug: "fr-FR", code: "FR_FR" as LanguageCodeEnum, name: "Français" },
-  { slug: "vi-VN", code: "VI_VN" as LanguageCodeEnum, name: "Việt Nam" },
-  { slug: "ar-AE", code: "AR_AE" as LanguageCodeEnum, name: "العربية" },
 ];
-export const DEFAULT_LOCALE = "en-US";
+export const DEFAULT_LOCALE = "pl-PL";
 
 export const CHANNEL_SLUG_KEY = "channelSlug";
 
@@ -24,11 +21,10 @@ export interface Channel {
 }
 
 export const DEFAULT_CHANNEL: Channel = {
-  slug: "default-channel",
+  slug: process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || "default-channel",
   name: "United States Dollar",
   currencyCode: "USD",
 };
-
 export const CHANNELS: Channel[] = [
   DEFAULT_CHANNEL,
   {
@@ -40,16 +36,6 @@ export const CHANNELS: Channel[] = [
     slug: "channel-fr",
     name: "Euro",
     currencyCode: "EUR",
-  },
-  {
-    slug: "channel-vi",
-    name: "Việt Nam đồng",
-    currencyCode: "VND",
-  },
-  {
-    slug: "channel-ae",
-    name: "درهم",
-    currencyCode: "AED",
   },
 ];
 
@@ -77,7 +63,7 @@ export const localeToEnum = (localeSlug: string): LanguageCodeEnum => {
   if (chosenLocale) {
     return chosenLocale;
   }
-  return LOCALES.find(({ slug }) => slug === DEFAULT_LOCALE)?.code || "EN_US";
+  return LOCALES.find(({ slug }) => slug === DEFAULT_LOCALE)?.code || "PL_PL";
 };
 
 export const contextToRegionQuery = (context: GetStaticPropsContext) => ({

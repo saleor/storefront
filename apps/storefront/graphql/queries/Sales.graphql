@@ -1,0 +1,17 @@
+query SalesQuery($cursor: String, $perPage: Int, $channel: String) {
+  sales(after: $cursor, first: $perPage, channel: $channel) {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        id
+        name
+        products {
+          totalCount
+        }
+      }
+    }
+  }
+}

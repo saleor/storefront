@@ -1,6 +1,6 @@
 export const locales = ["en-US", "pl-PL"] as const;
 
-export const DEFAULT_LOCALE = "en-US";
+export const DEFAULT_LOCALE = "pl-PL";
 
 export const DEFAULT_CHANNEL = "default-channel";
 

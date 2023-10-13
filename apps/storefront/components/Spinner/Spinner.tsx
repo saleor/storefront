@@ -2,8 +2,8 @@ import { RefreshIcon } from "@heroicons/react/outline";
 
 export function Spinner() {
   return (
-    <div className="flex items-center justify-center w-full h-full flex-grow gap-2">
-      <RefreshIcon className="animate-spin w-5 h-5" data-testid="spinner" />
+    <div className="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center">
+      <RefreshIcon className="animate-spin w-8 h-8" data-testid="spinner" />
     </div>
   );
 }

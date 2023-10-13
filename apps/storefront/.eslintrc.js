@@ -8,6 +8,11 @@ module.exports = {
   ignorePatterns: ["saleor/api.tsx", "pnpm-lock.yaml", "graphql.schema.json", "lib/$path.ts"],
 
   rules: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors like no unsafe call
+    "@typescript-eslint/no-unsafe-call": "off",
+    // !! WARN !!
     "import/no-restricted-paths": [
       "error",
       {

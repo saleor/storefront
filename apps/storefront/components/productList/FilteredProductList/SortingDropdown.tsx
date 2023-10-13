@@ -5,7 +5,9 @@ import { Fragment } from "react";
 
 import { OrderDirection, ProductOrderField } from "@/saleor/api";
 
-import { getSortingOptions, UrlSorting } from "./sorting";
+import { useSortingOptions, UrlSorting } from "./sorting";
+import { useIntl } from "react-intl";
+import messages from "@/components/translations";
 
 export interface SortingDropdownProps {
   optionToggle: (field?: ProductOrderField, direction?: OrderDirection) => void;
@@ -13,7 +15,8 @@ export interface SortingDropdownProps {
 }
 
 export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) {
-  const options = getSortingOptions(chosen);
+  const options = useSortingOptions(chosen);
+  const t = useIntl();
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -22,7 +25,7 @@ export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) 
           className="inline-flex w-full justify-left px-2 py-2 text-base font-medium  hover:bg-opacity-30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
           data-testid="sortBy"
         >
-          Sort by
+          {t.formatMessage(messages.sortBy)}
           <ChevronDownIcon className="ml-2 -mr-1 h-5 w-5 " aria-hidden="true" />
         </Menu.Button>
       </div>
@@ -36,7 +39,7 @@ export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) 
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items
-          className="focus:outline-none absolute left-0 w-56 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10"
+          className="focus:outline-none absolute left-0 w-72 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-20"
           data-testid="sortingDropdown"
         >
           {options?.map((option) => (
@@ -47,7 +50,7 @@ export function SortingDropdown({ optionToggle, chosen }: SortingDropdownProps) 
                   onClick={() => optionToggle(option.field, option.direction)}
                   className={clsx(
                     active ? "border-brand text-brand" : "border-transparent text-gray-900",
-                    "group flex w-full items-center px-2 py-2 text-base border-2"
+                    "group flex w-full items-center px-2 py-2 text-base border-2 text-left"
                   )}
                   data-testid={`sortByOption${option.label}`}
                 >

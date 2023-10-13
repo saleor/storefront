@@ -10,6 +10,7 @@ const queryParamsMap = {
   redirectUrl: "redirectUrl",
   checkout: "checkoutId",
   order: "orderId",
+  channel: "channel",
   token: "passwordResetToken",
   email: "passwordResetEmail",
   saleorApiUrl: "saleorApiUrl",

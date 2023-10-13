@@ -21,8 +21,26 @@ fragment ProductDetailsFragment on Product {
     ...ProductVariantDetailsFragment
   }
   pricing {
+    onSale
     priceRange {
       start {
+        gross {
+          ...PriceFragment
+        }
+      }
+      stop {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    priceRangeUndiscounted {
+      start {
+        gross {
+          ...PriceFragment
+        }
+      }
+      stop {
         gross {
           ...PriceFragment
         }
@@ -37,5 +55,22 @@ fragment ProductDetailsFragment on Product {
   }
   category {
     name
+  }
+  productType {
+    id
+    name
+    slug
+  }
+  collections {
+    name
+  }
+  productType {
+    id
+    name
+    slug
+    metadata {
+      key
+      value
+    }
   }
 }

@@ -5,6 +5,7 @@ import { useMainMenuQuery } from "@/saleor/api";
 import { useRegions } from "../RegionsProvider";
 import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
+import { STOREFRONT_NAME } from "@/lib/const";
 
 export function Menu() {
   const { query } = useRegions();
@@ -19,14 +20,27 @@ export function Menu() {
 
   const menuItems = data?.menu?.items || [];
 
+  const visibleCategoryOnMenu =
+    STOREFRONT_NAME === "FASHION4YOU" ? menuItems.slice(0, -2) : menuItems.slice(0, -1);
+
   return (
     <nav className={styles.nav}>
       <ol>
-        {menuItems.map((item) => (
-          <li key={item?.id}>
-            <DropdownMenu key={item?.id} menuItem={item} />
-          </li>
-        ))}
+        {visibleCategoryOnMenu.map((item) => {
+          if (item.name === "Aktualności" || item.name === "News") {
+            return (
+              <li key={item.id}>
+                <DropdownMenu menuItem={item} isNews />
+              </li>
+            );
+          } else {
+            return (
+              <li key={item?.id}>
+                <DropdownMenu menuItem={item} />
+              </li>
+            );
+          }
+        })}
       </ol>
     </nav>
   );

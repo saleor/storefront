@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Children, Classes } from "@/checkout-storefront/lib/globalTypes";
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useState } from "react";
 import { useFormContext } from "@/checkout-storefront/hooks/useForm";
 import { useField } from "formik";
 
@@ -11,6 +11,7 @@ export interface SelectBoxProps<TFieldName extends string>
   disabled?: boolean;
   name: TFieldName;
   value: string;
+  onRadioChange: (value: string) => void;
 }
 
 export const SelectBox = <TFieldName extends string>({
@@ -20,6 +21,7 @@ export const SelectBox = <TFieldName extends string>({
   name,
   value,
   id,
+  onRadioChange,
 }: SelectBoxProps<TFieldName>) => {
   // normally we pass value which is sufficient as an id but in case of doubled forms
   // such as shipping addresses and billing addresses etc. we need to pass a unique id
@@ -28,12 +30,18 @@ export const SelectBox = <TFieldName extends string>({
   const [field] = useField(name);
   const selected = values[name] === value;
 
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selected) {
+      onRadioChange(value);
+    }
+    handleChange(event);
+  };
   return (
     <div className={clsx("select-box", { selected, disabled }, className)}>
       <input
         type="radio"
         {...field}
-        onChange={handleChange}
+        onChange={handleRadioChange}
         value={value}
         checked={selected}
         id={identifier}

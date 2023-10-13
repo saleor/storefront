@@ -3,3 +3,5 @@ export function HomeRedirection() {
 }
 
 export default HomeRedirection;
+
+///not developed due to hiding of locale in ruls

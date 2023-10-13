@@ -19,7 +19,7 @@ export interface LocaleDropdownProps {
 
 export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
   const router = useRouter();
-  const { currentLocale, currentChannel } = useRegions();
+  const { currentLocale } = useRegions();
 
   const localeOptions: DropdownOption[] = LOCALES.map((loc) => ({
     label: loc.name,
@@ -37,7 +37,6 @@ export function LocaleDropdown({ horizontalAlignment }: LocaleDropdownProps) {
       pathname: router.pathname,
       query: {
         ...router.query,
-        channel: currentChannel.slug,
         locale: localeSlug,
       },
     });

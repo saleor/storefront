@@ -19,6 +19,7 @@ export type AddressField =
   | "companyName"
   | "streetAddress1"
   | "streetAddress2"
-  | "phone";
+  | "phone"
+  | "vatId";
 
 export type ApiAddressField = AddressField | "name";

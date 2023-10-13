@@ -6,6 +6,7 @@ query ProductCollection(
   $sortBy: ProductOrder
   $channel: String!
   $locale: LanguageCodeEnum!
+  $address: AddressInput
 ) {
   products(
     first: $first

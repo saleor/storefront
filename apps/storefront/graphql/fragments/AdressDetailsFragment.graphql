@@ -12,4 +12,6 @@ fragment AddressDetailsFragment on Address {
     code
     country
   }
+  companyName
+  vatId
 }

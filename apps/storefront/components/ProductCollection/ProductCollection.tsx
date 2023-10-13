@@ -1,5 +1,5 @@
 import { Text } from "@saleor/ui-kit";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 
 import { mapEdgesToItems } from "@/lib/maps";
@@ -37,9 +37,13 @@ export function ProductCollection({
 }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const variables: ProductCollectionQueryVariables = {
-    filter,
+    filter: {
+      ...filter,
+      stockAvailability: "IN_STOCK",
+    },
     first: perPage,
     ...query,
     ...(sortBy?.field &&
@@ -62,11 +66,14 @@ export function ProductCollection({
   }, [setCounter, data?.products?.totalCount]);
 
   const onLoadMore = () => {
-    return fetchMore({
-      variables: {
-        after: data?.products?.pageInfo.endCursor,
-      },
-    });
+    if (data?.products?.pageInfo.hasNextPage) {
+      setLoadingMore(true);
+      return fetchMore({
+        variables: {
+          after: data?.products?.pageInfo.endCursor,
+        },
+      }).finally(() => setLoadingMore(false));
+    }
   };
 
   if (loading) return <Spinner />;
@@ -80,23 +87,28 @@ export function ProductCollection({
       </Text>
     );
   }
+
   return (
     <div>
       <ul
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12"
+        className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8"
         data-testid="productsList"
       >
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </ul>
-      {allowMore && (
-        <Pagination
-          onLoadMore={onLoadMore}
-          pageInfo={data?.products?.pageInfo}
-          itemsCount={data?.products?.edges.length}
-          totalCount={data?.products?.totalCount || undefined}
-        />
+      {loadingMore ? (
+        <Spinner />
+      ) : (
+        allowMore && (
+          <Pagination
+            onLoadMore={onLoadMore}
+            pageInfo={data?.products?.pageInfo}
+            itemsCount={data?.products?.edges.length}
+            totalCount={data?.products?.totalCount || undefined}
+          />
+        )
       )}
     </div>
   );

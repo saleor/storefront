@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 @layer components {
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+}
+
+@layer components {
   .btn-blue {
     @apply py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
   }
@@ -29,6 +41,37 @@
   visibility: visible;
 }
 
+@layer utilities {
+  @variants responsive {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+  }
+}
+
 html {
   font-size: 62.5%;
+}
+
+h1 {
+  font-weight: bold;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+.fashion4YouHueTransform {
+  filter: invert(79%) sepia(8%) saturate(3131%) hue-rotate(58deg) brightness(84%) contrast(102%);
+}
+
+.clothes4UHueTransform {
+  filter: invert(37%) sepia(21%) saturate(645%) hue-rotate(48deg) brightness(90%) contrast(88%);
 }

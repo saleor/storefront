@@ -3,6 +3,7 @@ import { CheckoutFragment } from "@/checkout-storefront/graphql";
 export const checkout: CheckoutFragment = {
   authorizeStatus: "NONE",
   chargeStatus: "NONE",
+  token: "test",
   id: "Q2hlY2tvdXQ6OTJmOGRkMWItNGY5OC00Y2Y0LWI0MzgtNDE2MjIwYmRlYjMw",
   email: null,
   discount: {

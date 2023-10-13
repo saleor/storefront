@@ -1,0 +1,24 @@
+query CategoriesQuery($cursor: String, $perPage: Int) {
+  categories(after: $cursor, first: $perPage) {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        id
+        name
+        slug
+        ancestors(first: $perPage) {
+          edges {
+            node {
+              id
+              name
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+}

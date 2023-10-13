@@ -1261,7 +1261,7 @@
     "developer_comment": "edit address",
     "string": "edytuj"
   },
-  "BillingAddressSection/messages/OLzmaE": {
+  "UserBillingAddressSection/messages/OLzmaE": {
     "developer_comment": "billing address",
     "string": "Adres rozliczeniowy"
   },
@@ -1502,6 +1502,10 @@
     "developer_comment": "minion",
     "string": "Minion"
   },
+  "PageHeader/messages/goBackToCart": {
+    "developer_comment": "label for go back to cart button",
+    "string": "Wróć do koszyka"
+  },
   "PageNotFound/messages/Q7DOPP": {
     "developer_comment": "couldn't find info about your checkout",
     "string": "Nie mogliśmy pobrać informacji o Twojej sesji. Wróć do sklepu i spróbuj ponownie."
@@ -1513,6 +1517,18 @@
   "PaymentSection/messages/8YE5b7": {
     "developer_comment": "payment providers",
     "string": "Metoda płatności"
+  },
+  "PaymentSection/messages/yz03kH": {
+    "developer_comment": "payment providers",
+    "string": "Metoda płatności"
+  },
+  "PaymentSection/messages/GnBIrm": {
+    "developer_comment": "Pay with payu",
+    "string": "Zapłać z PayU"
+  },
+  "PaymentSection/messages/luwPkv": {
+    "developer_comment": "Processing",
+    "string": "Przetwarzanie..."
   },
   "PaymentSection/messages/FK5Bg/": {
     "developer_comment": "payment providers accessibility label",
@@ -1542,7 +1558,7 @@
     "developer_comment": "loading",
     "string": "Ładowanie..."
   },
-  "ShippingAddressSection/messages/BUg4yp": {
+  "UserShippingAddressSection/messages/BUg4yp": {
     "developer_comment": "shipping address",
     "string": "Adres dostawy"
   },
@@ -1555,6 +1571,10 @@
     "string": "cena za jedną sztukę"
   },
   "Summary/messages/5J0ywS": {
+    "developer_comment": "quantity",
+    "string": "ilość"
+  },
+  "Summary/messages/p8ps7O": {
     "developer_comment": "quantity",
     "string": "ilość"
   },
@@ -1654,6 +1674,10 @@
     "developer_comment": "add address",
     "string": "Dodaj adres"
   },
+  "UserBillingAddressSection/messages/OIgRhk": {
+    "developer_comment": "use shipping address as billing address",
+    "string": "Uzyj tego samego adresu co w dostawie"
+  },
   "lib/commonMessages/03Jmny": {
     "developer_comment": "processing",
     "string": "Przetwarzanie..."
@@ -1666,73 +1690,77 @@
     "developer_comment": "remove icon",
     "string": "usuń ikonę"
   },
-  "useAddressFormUtils/messages/0KU6nT": {
+  "AddressForm/messages/0KU6nT": {
     "developer_comment": "postal code",
     "string": "Kod pocztowy"
   },
-  "useAddressFormUtils/messages/7bJ7Hd": {
+  "AddressForm/messages/7bJ7Hd": {
     "developer_comment": "city area",
     "string": "Miasto"
   },
-  "useAddressFormUtils/messages/Jbz2k6": {
+  "AddressForm/messages/Jbz2k6": {
     "developer_comment": "first name",
     "string": "Imię"
   },
-  "useAddressFormUtils/messages/K/a8rS": {
+  "AddressForm/messages/K/a8rS": {
     "developer_comment": "last name",
     "string": "Nazwisko"
   },
-  "useAddressFormUtils/messages/KyH9NK": {
+  "AddressForm/messages/KyH9NK": {
     "developer_comment": "country",
     "string": "Kraj"
   },
-  "useAddressFormUtils/messages/OxxX1m": {
+  "AddressForm/messages/OxxX1m": {
     "developer_comment": "post town",
     "string": "Kod pocztowy"
   },
-  "useAddressFormUtils/messages/QXvSmh": {
+  "AddressForm/messages/QXvSmh": {
     "developer_comment": "company",
     "string": "Nazwa firmy"
   },
-  "useAddressFormUtils/messages/X/8oa4": {
+  "AddressForm/messages/X/8oa4": {
     "developer_comment": "district",
     "string": "Dzielnica"
   },
-  "useAddressFormUtils/messages/X51P1g": {
+  "AddressForm/messages/X51P1g": {
     "developer_comment": "city",
     "string": "Miasto"
   },
-  "useAddressFormUtils/messages/XI2F1P": {
+  "AddressForm/messages/XI2F1P": {
     "developer_comment": "province",
     "string": "Województwo"
   },
-  "useAddressFormUtils/messages/Y6dLvp": {
+  "AddressForm/messages/Y6dLvp": {
     "developer_comment": "street address",
     "string": "Ulica"
   },
-  "useAddressFormUtils/messages/Zdvjjr": {
+  "AddressForm/messages/Zdvjjr": {
     "developer_comment": "state",
     "string": "Stan"
   },
-  "useAddressFormUtils/messages/dxC3yk": {
+  "AddressForm/messages/dxC3yk": {
     "developer_comment": "country area",
     "string": "Strefa kraju"
   },
-  "useAddressFormUtils/messages/ljLaVr": {
+  "AddressForm/messages/ljLaVr": {
     "developer_comment": "phone number",
     "string": "Numer telefonu"
   },
-  "useAddressFormUtils/messages/mbEUWh": {
+  "AddressForm/messages/mbEUWh": {
     "developer_comment": "street address continue",
     "string": "Adres (ciąg dalszy)"
   },
-  "useAddressFormUtils/messages/tGSbvd": {
+  "AddressForm/messages/tGSbvd": {
     "developer_comment": "zip code",
     "string": "Kod pocztowy"
   },
   "useAlerts/messages/2leXNc": {
     "developer_comment": "checkout shipping update - postal code invalid error",
     "string": "W adresie wysyłki podano nieprawidłowy kod pocztowy"
+  },
+  "useAlerts/messages/jxRMRZ": {
+    "developer_comment": "checkout shipping update - phone number invalid error",
+    "string": "W adresie wysyłki podano nieprawidłowy numer telefonu"
   },
   "useAlerts/messages/7/Bo7+": {
     "developer_comment": "checkout pay - email not set error",

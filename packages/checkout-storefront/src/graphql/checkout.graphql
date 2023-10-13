@@ -105,6 +105,7 @@ fragment CheckoutFragment on Checkout {
   lines {
     ...CheckoutLineFragment
   }
+  token
 }
 
 fragment CheckoutLineFragment on CheckoutLine {
@@ -179,6 +180,7 @@ fragment AddressFragment on Address {
   }
   firstName
   lastName
+  vatId
 }
 
 query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
@@ -346,6 +348,47 @@ mutation checkoutComplete($checkoutId: ID!) {
     }
     order {
       id
+    }
+  }
+}
+
+mutation checkoutPaymentCreate($checkoutToken: UUID!, $paymentInput: PaymentInput!) {
+  checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
+    payment {
+      id
+      total {
+        currency
+        amount
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation UpdateShippingLockerId($checkoutId: ID!, $lockerId: String!) {
+  updateMetadata(id: $checkoutId, input: [{ key: "locker_id", value: $lockerId }]) {
+    item {
+      metadata {
+        key
+        value
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation updateCheckoutMetadata($checkoutId: ID!, $isInvoice: String!) {
+  updateMetadata(id: $checkoutId, input: [{ key: "invoice", value: $isInvoice }]) {
+    item {
+      metadata {
+        key
+        value
+      }
     }
   }
 }

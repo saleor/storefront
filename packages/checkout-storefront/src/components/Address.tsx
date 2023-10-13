@@ -14,7 +14,8 @@ export const Address: React.FC<PropsWithChildren<AddressProps>> = ({
 }) => {
   const name = `${address.firstName} ${address.lastName}`;
 
-  const { phone, city, countryArea, postalCode, streetAddress1, country } = address;
+  const { phone, city, countryArea, postalCode, streetAddress1, country, vatId, companyName } =
+    address;
 
   return (
     <div className="flex flex-col pointer-events-none">
@@ -22,6 +23,8 @@ export const Address: React.FC<PropsWithChildren<AddressProps>> = ({
         {name}
       </Text>
       <Text {...textProps}>{phone}</Text>
+      <Text {...textProps}>{vatId}</Text>
+      <Text {...textProps}>{companyName}</Text>
       <Text {...textProps}>{compact([streetAddress1, city, postalCode]).join(", ")}</Text>
       <Text {...textProps}>{compact([countryArea, country.country]).join(", ")}</Text>
       {children}

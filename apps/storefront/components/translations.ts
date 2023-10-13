@@ -117,6 +117,46 @@ export const messages = defineMessages({
     description: "Warning message when variant is sold out.",
     defaultMessage: "Sold out!",
   },
+  addToWishlist: {
+    id: "app.product.addToWishlist",
+    description: "Button to add product to user's wishlist",
+    defaultMessage: "Add to wishlist,",
+  },
+  deleteFromWishlist: {
+    id: "app.product.deleteFromWishlist",
+    description: "Button to add product to user's wishlist",
+    defaultMessage: "Delete from wishlist,",
+  },
+  productInStock: {
+    id: "app.product.productInStock",
+    description: "Informs whether product is in stock or not",
+    defaultMessage: "In stock",
+  },
+  paymentOptions: {
+    id: "app.product.paymentOptions",
+    description: "Lists possible payment options",
+    defaultMessage: "Payment options",
+  },
+  shippingOptions: {
+    id: "app.product.shippingOptions",
+    description: "Lists possible shipping option",
+    defaultMessage: "Shipping options",
+  },
+  cashOnDelivery: {
+    id: "app.product.shipping.cashOnDelivery",
+    description: "cash on delivery label",
+    defaultMessage: "Cash on delivery",
+  },
+  inpostParcelLocker: {
+    id: "app.product.shipping.inpostParcelLocker",
+    description: "inpost label",
+    defaultMessage: "Inpost Parcel Locker 24/7",
+  },
+  courier: {
+    id: "app.product.shipping.courier",
+    description: "courier label",
+    defaultMessage: "Courier",
+  },
   attributes: {
     id: "app.product.attributes",
     description: "Attributes table header.",
@@ -298,6 +338,11 @@ export const messages = defineMessages({
     description: "Save button label.",
     defaultMessage: "Save",
   },
+  backButton: {
+    id: "app.ui.backButton",
+    description: "back button label.",
+    defaultMessage: "Back",
+  },
   paginationProductCounter: {
     id: "app.ui.productCounter",
     description: "Message with number of displayed products.",
@@ -367,6 +412,176 @@ export const messages = defineMessages({
     id: "app.preferences.addressbook.setDefaultBilling",
     description: "Set billing default button label",
     defaultMessage: "Set as billing default",
+  },
+  categories: {
+    id: "app.pages.channel.locale.index.categories",
+    description: "Message displayed on homepage for categories section",
+    defaultMessage: "Looking for specific products? Our categories will make your task easier!",
+  },
+  categoriesText: {
+    id: "app.pages.channel.locale.index.categoriesText",
+    description: "Message displayed on homepage for categories section",
+    defaultMessage:
+      "Not sure where to look for your favorite products? Use our clear categories and easily find what you're looking for.",
+  },
+  latestArticles: {
+    id: "app.pages.channel.locale.index.latestArticles",
+    description: "Message displayed on homepage for latest articles section",
+    defaultMessage: "New articles and latest news",
+  },
+  latestArticlesText: {
+    id: "app.pages.channel.locale.index.latestArticlesText",
+    description: "Message displayed on homepage for latest articles section",
+    defaultMessage: "Explore the world of fashion and style with our latest content and updates",
+  },
+  collections: {
+    id: "app.pages.channel.locale.index.collections",
+    description: "Message displayed on homepage for collections section",
+    defaultMessage: "Explore the world of fashion and style with our latest content and updates",
+  },
+  collectionsText: {
+    id: "app.pages.channel.locale.index.collectionsText",
+    description: "Message displayed on homepage for collections section",
+    defaultMessage:
+      "Check out our bestsellers and follow the trends! Our latest trends are sure to inspire you and help you find your unique style.",
+  },
+  shop: {
+    id: "app.pages.channel.locale.index.shop",
+    description: "Shop name",
+    defaultMessage: "Shop",
+  },
+  news: {
+    id: "app.pages.channel.locale.index.news",
+    description: "News name",
+    defaultMessage: "News",
+  },
+  sales: {
+    id: "app.pages.channel.locale.index.sales",
+    description: "Sales name",
+    defaultMessage: "Current sales",
+  },
+  advantages: {
+    id: "app.components.advantagesblock.advantagesblock.advantages",
+    description: "Advantages heading",
+    defaultMessage: "We provide the best customer service",
+  },
+  advantagesText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesText",
+    description: "Advantages text",
+    defaultMessage:
+      "Our experienced specialists are always ready to answer your questions, solve your problems and help you with your purchases.",
+  },
+  advantagesShippingHeading: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesShippingHeading",
+    description: "Advantages shipping heading",
+    defaultMessage: "Fast delivery",
+  },
+  advantagesShippingText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesShippingText",
+    description: "Advantages shipping text",
+    defaultMessage: "We offer fast and efficient shipping",
+  },
+  advantagesPaymentsHeading: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesPaymentsHeading",
+    description: "Advantages Payments heading",
+    defaultMessage: "Secure payments",
+  },
+  advantagesPaymentsText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesPaymentsText",
+    description: "Advantages Payments text",
+    defaultMessage: "We accept payments with the popular PayU",
+  },
+  advantagesReturnsHeading: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesReturnsHeading",
+    description: "Advantages Returns heading",
+    defaultMessage: "Returns",
+  },
+  advantagesReturnsText: {
+    id: "app.components.advantagesblock.advantagesblock.advantagesReturnsText",
+    description: "Advantages Returns text",
+    defaultMessage: "You have 14 days to change your mind",
+  },
+  shopDescription: {
+    id: "app.pages.channel.locale.index.shopDescription",
+    description: "Shop description text",
+    defaultMessage:
+      "Online store for cheap used clothing for women, men and children. We carry used and outlet clothing in our online lumberyard. Hundreds of brands and lots of unique style.",
+  },
+  marketingFirstText: {
+    id: "app.components.infobanner.infobanner.marketingFirstText",
+    description: "Infobanner text",
+    defaultMessage: "USE OUR CODE",
+  },
+  marketingSecondText: {
+    id: "app.components.infobanner.infobanner.marketingSecondText",
+    description: "Infobanner text",
+    defaultMessage: "TO GET FREE DELIVERY FOR ORDERS OVER 200ZL",
+  },
+  featuredProducts: {
+    id: "app.pages.channel.locale.index.featuredProducts",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage: "Here are our recommended products!",
+  },
+  featuredProductsText: {
+    id: "app.pages.channel.locale.index.featuredProductsText",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage:
+      "Don't have time to browse through hundreds of products? Are you looking for the best suggestions that will save you time and money? Our recommended products are a guarantee of success!",
+  },
+  processingPayment: {
+    id: "app.components.checkout.completeCheckoutButton.processingPayment",
+    description: "Message displayed on homepage for featured products section",
+    defaultMessage: "Processing...",
+  },
+  searchedProducts: {
+    id: "app.search.searchedProducts",
+    description: "Products found in search or category",
+    defaultMessage: "items",
+  },
+  sortBy: {
+    id: "app.search.sortBy",
+    description: "Label for sort by option",
+    defaultMessage: "Sort by",
+  },
+  popularity: {
+    id: "app.search.sortBy.popularity",
+    description: "Label for sort by popularity",
+    defaultMessage: "Popularity",
+  },
+  nameAscending: {
+    id: "app.search.sortBy.nameAscending",
+    description: "Label for sort by nameAscending",
+    defaultMessage: "Name ascending",
+  },
+  nameDescending: {
+    id: "app.search.sortBy.nameDescending",
+    description: "Label for sort by nameDescending",
+    defaultMessage: "Name descending",
+  },
+  newProduct: {
+    id: "app.product.newProduct",
+    description: "Label for new product",
+    defaultMessage: "New product!",
+  },
+  updatedAscending: {
+    id: "app.search.sortBy.updatedAscending",
+    description: "Label for sort by updated date ascending",
+    defaultMessage: "Update date ascending",
+  },
+  updatedDescending: {
+    id: "app.search.sortBy.updatedDescending",
+    description: "Label for sort by updated date descending",
+    defaultMessage: "Update date descending",
+  },
+  priceMinMax: {
+    id: "app.search.sortBy.priceMinMax",
+    description: "Label for sort by price min-max",
+    defaultMessage: "Price min-max",
+  },
+  priceMaxMin: {
+    id: "app.search.sortBy.priceMaxMin",
+    description: "Label for sort by price max-min",
+    defaultMessage: "Price max-min",
   },
 });
 

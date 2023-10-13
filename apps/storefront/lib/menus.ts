@@ -1,8 +1,8 @@
 import { pagesPath } from "@/lib/$path";
 import { MenuItemFragment } from "@/saleor/api";
 
-export const getLinkPath = (item: MenuItemFragment, channel: string, locale: string) => {
-  const paths = pagesPath._channel(channel)._locale(locale);
+export const getLinkPath = (item: MenuItemFragment, locale: string) => {
+  const paths = pagesPath._locale(locale);
 
   if (item.category) {
     return paths.category._slug(item.category?.slug).$url();

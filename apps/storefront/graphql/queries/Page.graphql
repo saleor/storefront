@@ -12,5 +12,24 @@ query Page($slug: String!, $locale: LanguageCodeEnum!) {
     slug
     created
     content
+    attributes {
+      attribute {
+        slug
+        id
+        name
+        inputType
+      }
+      values {
+        id
+        name
+        slug
+        value
+        reference
+        file {
+          url
+          contentType
+        }
+      }
+    }
   }
 }

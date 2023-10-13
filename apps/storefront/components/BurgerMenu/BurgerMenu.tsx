@@ -16,6 +16,7 @@ import { messages } from "../translations";
 import styles from "./BurgerMenu.module.css";
 import { CollapseMenu } from "./CollapseMenu";
 import { useUser } from "@/lib/useUser";
+import { STOREFRONT_NAME } from "@/lib/const";
 
 export interface BurgerMenuProps {
   open?: boolean;
@@ -46,7 +47,10 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
 
   const onLogout = useLogout();
 
-  const menu = data?.menu?.items || [];
+  const menuItems = data?.menu?.items || [];
+
+  const visibleCategoryOnMenu =
+    STOREFRONT_NAME === "FASHION4YOU" ? menuItems.slice(0, -2) : menuItems.slice(0, -1);
 
   return (
     <div
@@ -59,7 +63,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
         <div className="flex justify-end w-full mb-5">
           <NavIconButton icon="close" onClick={onCloseClick} />
         </div>
-        {menu.map((item) => (
+        {visibleCategoryOnMenu.map((item) => (
           <CollapseMenu menuItem={item} key={item.id} />
         ))}
         <div className="mt-auto pt-4">

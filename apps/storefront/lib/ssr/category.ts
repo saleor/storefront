@@ -11,8 +11,8 @@ import { CHANNELS, LOCALES, Path } from "../regions";
 import { serverApolloClient } from "./common";
 
 export interface CategoryPathArguments extends ParsedUrlQuery {
-  channel: string;
-  locale: string;
+  channel?: string;
+  locale?: string;
   slug: string;
 }
 
@@ -38,6 +38,7 @@ export const categoryPaths = async () => {
     if (!edges) {
       break;
     }
+
     const responseSlugs: string[] = edges.map((edge) => edge.node.slug);
     for (const channel of CHANNELS) {
       const channelSlug = channel.slug;

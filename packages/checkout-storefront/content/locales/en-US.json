@@ -67,6 +67,10 @@
     "developer_comment": "street address continue",
     "string": "Street address (continue)"
   },
+  "AddressForm/messages/t6fHTm": {
+    "developer_comment": "vat id",
+    "string": "NIP"
+  },
   "AddressForm/messages/tGSbvd": {
     "developer_comment": "zip code",
     "string": "Zip code"
@@ -367,6 +371,10 @@
     "developer_comment": "cart is empty",
     "string": "Your cart is empty"
   },
+  "InvoiceRequestSection/messages/M3Ymzl": {
+    "developer_comment": "invoice",
+    "string": "Faktura"
+  },
   "ManualSaveAddressForm/messages/BfROpq": {
     "developer_comment": "save address",
     "string": "Save address"
@@ -434,6 +442,10 @@
     "developer_comment": "english usa",
     "string": "English (USA)"
   },
+  "PageHeader/messages/goBackToCart": {
+    "developer_comment": "go back to cart label",
+    "string": "Go back to cart"
+  },
   "PageHeader/messages/kd+Ya5": {
     "developer_comment": "polish",
     "string": "Polish"
@@ -450,9 +462,13 @@
     "developer_comment": "payment providers accessibility label",
     "string": "payment providers"
   },
-  "PaymentSection/messages/qEunhG": {
-    "developer_comment": "Almost done",
-    "string": "Almost done..."
+  "PaymentSection/messages/GnBIrm": {
+    "developer_comment": "Pay with payu",
+    "string": "Pay with PayU"
+  },
+  "PaymentSection/messages/luwPkv": {
+    "developer_comment": "Processing",
+    "string": "Processing..."
   },
   "PaymentSection/messages/yz03kH": {
     "developer_comment": "payment methods",

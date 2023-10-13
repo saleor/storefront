@@ -53,5 +53,11 @@
       "@urql/exchange-auth>@urql/core": "3.2.2",
       "@urql/exchange-multipart-fetch>@urql/core": "3.2.2"
     }
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.11.0",
+    "@emotion/serialize": "^1.1.2",
+    "canvas": "^2.11.2",
+    "react-svg": "^16.1.18"
   }
 }

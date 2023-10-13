@@ -2,6 +2,15 @@ fragment ProductCardFragment on Product {
   id
   slug
   name
+  productType {
+    id
+    name
+    slug
+    metadata {
+      key
+      value
+    }
+  }
   translation(languageCode: $locale) {
     id
     name
@@ -10,12 +19,7 @@ fragment ProductCardFragment on Product {
     ...ImageFragment
   }
   category {
-    id
-    name
-    translation(languageCode: $locale) {
-      id
-      name
-    }
+    ...CategoryBasicFragment
   }
   media {
     url
@@ -23,11 +27,63 @@ fragment ProductCardFragment on Product {
     type
   }
   attributes {
-    attribute {
-      slug
+    ...SelectedAttributeDetailsFragment
+  }
+  collections {
+    name
+  }
+  variants {
+    ...ProductVariantDetailsFragment
+  }
+  pricing(address: $address) {
+    onSale
+    discount {
+      gross {
+        amount
+        currency
+      }
     }
-    values {
-      name
+    priceRange {
+      start {
+        gross {
+          amount
+          currency
+        }
+        net {
+          amount
+          currency
+        }
+      }
+      stop {
+        gross {
+          amount
+          currency
+        }
+        net {
+          amount
+          currency
+        }
+      }
+    }
+    priceRangeUndiscounted {
+      start {
+        currency
+        gross {
+          ...PriceFragment
+        }
+        net {
+          ...PriceFragment
+        }
+      }
+      stop {
+        currency
+        gross {
+          ...PriceFragment
+        }
+        net {
+          ...PriceFragment
+        }
+      }
     }
   }
 }

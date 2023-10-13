@@ -1,0 +1,1 @@
+export { AdvantagesBlock } from "./AdvantagesBlock";

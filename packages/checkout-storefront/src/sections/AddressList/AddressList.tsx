@@ -62,6 +62,7 @@ export const AddressList: React.FC<AddressListProps> = ({
                 address={{ ...rest }}
                 onEdit={() => onEditChange(id)}
                 unavailable={!isAvailable(rest)}
+                onRadioChange={(value) => console.log(value)}
               />
             );
           })}
