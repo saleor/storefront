@@ -155,7 +155,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 					</div>
 
 					<div className="mt-8">
-						<AddButton disabled={!selectedVariantID} />
+						<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
 					</div>
 				</div>
 			</form>
