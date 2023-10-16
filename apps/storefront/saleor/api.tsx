@@ -5885,20 +5885,6 @@ export type ExtReceiptInput = {
 };
 
 /**
- * Creates a ready to send invoice.
- *
- * Requires one of the following permissions: MANAGE_ORDERS.
- */
-export type ExtReceiptRequest = {
-  __typename?: "ExtReceiptRequest";
-  errors: Array<InvoiceError>;
-  invoice?: Maybe<Invoice>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
-  invoiceErrors: Array<InvoiceError>;
-  payload?: Maybe<Scalars["GenericScalar"]["output"]>;
-};
-
-/**
  * Updates externally created receipt info.
  *
  * Requires one of the following permissions: MANAGE_ORDERS.
@@ -9640,12 +9626,6 @@ export type Mutation = {
    */
   extMigloCsv?: Maybe<ExtMigloCsv>;
   /**
-   * Creates a ready to send invoice.
-   *
-   * Requires one of the following permissions: MANAGE_ORDERS.
-   */
-  extReceiptRequest?: Maybe<ExtReceiptRequest>;
-  /**
    * Updates externally created receipt info.
    *
    * Requires one of the following permissions: MANAGE_ORDERS.
@@ -11485,10 +11465,6 @@ export type MutationExtInvoiceCorrectionRequestArgs = {
 export type MutationExtMigloCsvArgs = {
   month: Scalars["String"]["input"];
   year: Scalars["String"]["input"];
-};
-
-export type MutationExtReceiptRequestArgs = {
-  orderId: Scalars["ID"]["input"];
 };
 
 export type MutationExtReceiptUpdateArgs = {
@@ -29400,7 +29376,9 @@ export type NewsQuery = {
   } | null;
 };
 
-export type NewsIdQueryVariables = Exact<{ [key: string]: never }>;
+export type NewsIdQueryVariables = Exact<{
+  perPage?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
 
 export type NewsIdQuery = {
   __typename?: "Query";
@@ -32578,7 +32556,7 @@ export const NewsQueryDocument = gql`
   query NewsQuery($id: ID!, $channelSlug: String) {
     pages(
       sortBy: { field: CREATION_DATE, direction: DESC }
-      first: 50
+      first: 100
       filter: { pageTypes: [$id], metadata: { key: "channel", value: $channelSlug } }
     ) {
       edges {
@@ -32634,8 +32612,8 @@ export type NewsQueryHookResult = ReturnType<typeof useNewsQuery>;
 export type NewsQueryLazyQueryHookResult = ReturnType<typeof useNewsQueryLazyQuery>;
 export type NewsQueryQueryResult = Apollo.QueryResult<NewsQuery, NewsQueryVariables>;
 export const NewsIdQueryDocument = gql`
-  query NewsIdQuery {
-    pageTypes(first: 5, filter: { search: "news" }) {
+  query NewsIdQuery($perPage: Int) {
+    pageTypes(first: $perPage, filter: { search: "news" }) {
       edges {
         node {
           id
@@ -32658,6 +32636,7 @@ export const NewsIdQueryDocument = gql`
  * @example
  * const { data, loading, error } = useNewsIdQuery({
  *   variables: {
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */
@@ -36480,19 +36459,6 @@ export type ExtMigloCsvFieldPolicy = {
   exportErrors?: FieldPolicy<any> | FieldReadFunction<any>;
   invoice?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ExtReceiptRequestKeySpecifier = (
-  | "errors"
-  | "invoice"
-  | "invoiceErrors"
-  | "payload"
-  | ExtReceiptRequestKeySpecifier
-)[];
-export type ExtReceiptRequestFieldPolicy = {
-  errors?: FieldPolicy<any> | FieldReadFunction<any>;
-  invoice?: FieldPolicy<any> | FieldReadFunction<any>;
-  invoiceErrors?: FieldPolicy<any> | FieldReadFunction<any>;
-  payload?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ExtReceiptUpdateKeySpecifier = (
   | "errors"
   | "invoice"
@@ -37944,7 +37910,6 @@ export type MutationKeySpecifier = (
   | "exportProducts"
   | "extInvoiceCorrectionRequest"
   | "extMigloCsv"
-  | "extReceiptRequest"
   | "extReceiptUpdate"
   | "extTallyCsv"
   | "externalAuthenticationUrl"
@@ -38266,7 +38231,6 @@ export type MutationFieldPolicy = {
   exportProducts?: FieldPolicy<any> | FieldReadFunction<any>;
   extInvoiceCorrectionRequest?: FieldPolicy<any> | FieldReadFunction<any>;
   extMigloCsv?: FieldPolicy<any> | FieldReadFunction<any>;
-  extReceiptRequest?: FieldPolicy<any> | FieldReadFunction<any>;
   extReceiptUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   extTallyCsv?: FieldPolicy<any> | FieldReadFunction<any>;
   externalAuthenticationUrl?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -46127,13 +46091,6 @@ export type StrictTypedTypePolicies = {
   ExtMigloCsv?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | ExtMigloCsvKeySpecifier | (() => undefined | ExtMigloCsvKeySpecifier);
     fields?: ExtMigloCsvFieldPolicy;
-  };
-  ExtReceiptRequest?: Omit<TypePolicy, "fields" | "keyFields"> & {
-    keyFields?:
-      | false
-      | ExtReceiptRequestKeySpecifier
-      | (() => undefined | ExtReceiptRequestKeySpecifier);
-    fields?: ExtReceiptRequestFieldPolicy;
   };
   ExtReceiptUpdate?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

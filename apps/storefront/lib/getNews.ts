@@ -18,6 +18,7 @@ export const getNewsIdData = async () => {
       NewsIdQueryVariables
     >({
       query: NewsIdQueryDocument,
+      variables: { perPage: 7 },
     });
 
     return newsIdResult;

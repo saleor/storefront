@@ -1,7 +1,7 @@
 query NewsQuery($id: ID!, $channelSlug: String) {
   pages(
     sortBy: { field: CREATION_DATE, direction: DESC }
-    first: 50
+    first: 100
     filter: { pageTypes: [$id], metadata: { key: "channel", value: $channelSlug } }
   ) {
     edges {
@@ -25,8 +25,8 @@ query NewsQuery($id: ID!, $channelSlug: String) {
   }
 }
 
-query NewsIdQuery {
-  pageTypes(first: 5, filter: { search: "news" }) {
+query NewsIdQuery($perPage: Int) {
+  pageTypes(first: $perPage, filter: { search: "news" }) {
     edges {
       node {
         id
