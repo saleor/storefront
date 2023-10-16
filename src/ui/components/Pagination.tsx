@@ -16,6 +16,7 @@ export async function Pagination({
 				className={clsx("px-4 py-2 text-sm font-medium ", {
 					"rounded bg-neutral-900 text-neutral-50 hover:bg-neutral-800": pageInfo.hasNextPage,
 					"cursor-not-allowed rounded border text-neutral-400": !pageInfo.hasNextPage,
+					"pointer-events-none": !pageInfo.hasNextPage,
 				})}
 				aria-disabled={!pageInfo.hasNextPage}
 			>
