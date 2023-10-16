@@ -7,6 +7,10 @@ import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
 import { STOREFRONT_NAME } from "@/lib/const";
 
+export type MenuItem = {
+  name: string;
+};
+
 export function Menu() {
   const { query } = useRegions();
 
@@ -20,8 +24,16 @@ export function Menu() {
 
   const menuItems = data?.menu?.items || [];
 
+  const maxMenuItems = 5;
+  const slicedMenuItems = menuItems.slice(0, maxMenuItems);
+
+  const isExcludedCategory = (item: MenuItem): boolean =>
+    item.name === "Mix" || item.name === "Hurt" || item.name === "Detal";
+
   const visibleCategoryOnMenu =
-    STOREFRONT_NAME === "FASHION4YOU" ? menuItems.slice(0, -2) : menuItems.slice(0, -1);
+    STOREFRONT_NAME === "FASHION4YOU"
+      ? menuItems.filter((item) => !isExcludedCategory(item))
+      : slicedMenuItems;
 
   return (
     <nav className={styles.nav}>

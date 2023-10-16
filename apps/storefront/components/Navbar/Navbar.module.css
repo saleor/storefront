@@ -27,7 +27,7 @@
 }
 
 .dropdown-trigger {
-  @apply flex items-center text-center text-3xl font-medium hover:text-brand h-full px-4;
+  @apply flex items-center text-center text-3xl font-medium hover:text-brand h-full px-4 whitespace-nowrap;
 }
 
 .dropdown-menu {

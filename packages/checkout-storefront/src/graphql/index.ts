@@ -5877,20 +5877,6 @@ export type ExtReceiptInput = {
 };
 
 /**
- * Creates a ready to send invoice.
- *
- * Requires one of the following permissions: MANAGE_ORDERS.
- */
-export type ExtReceiptRequest = {
-  __typename?: "ExtReceiptRequest";
-  errors: Array<InvoiceError>;
-  invoice?: Maybe<Invoice>;
-  /** @deprecated This field will be removed in Saleor 4.0. Use `errors` field instead. */
-  invoiceErrors: Array<InvoiceError>;
-  payload?: Maybe<Scalars["GenericScalar"]>;
-};
-
-/**
  * Updates externally created receipt info.
  *
  * Requires one of the following permissions: MANAGE_ORDERS.
@@ -9632,12 +9618,6 @@ export type Mutation = {
    */
   extMigloCsv?: Maybe<ExtMigloCsv>;
   /**
-   * Creates a ready to send invoice.
-   *
-   * Requires one of the following permissions: MANAGE_ORDERS.
-   */
-  extReceiptRequest?: Maybe<ExtReceiptRequest>;
-  /**
    * Updates externally created receipt info.
    *
    * Requires one of the following permissions: MANAGE_ORDERS.
@@ -11477,10 +11457,6 @@ export type MutationExtInvoiceCorrectionRequestArgs = {
 export type MutationExtMigloCsvArgs = {
   month: Scalars["String"];
   year: Scalars["String"];
-};
-
-export type MutationExtReceiptRequestArgs = {
-  orderId: Scalars["ID"];
 };
 
 export type MutationExtReceiptUpdateArgs = {

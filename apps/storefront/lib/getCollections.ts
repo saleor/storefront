@@ -15,7 +15,7 @@ export const getCollectionsData = async () => {
       CollectionsQueryVariables
     >({
       query: CollectionsQueryDocument,
-      variables: { perPage: 5, channel: CHANNEL_SLUG },
+      variables: { perPage: 7, channel: CHANNEL_SLUG },
     });
 
     return collectionsResult;

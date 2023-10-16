@@ -10,8 +10,8 @@ import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
-import DefaultHeroWomanImg from "../../images/homepage/hero-img.webp";
-import DefaultHeroImgC4U from "../../images/homepage/hero-img-default-c4u.webp";
+import DefaultHeroWomanImg from "../../images/homepage/f4u_hero_banner.webp";
+import DefaultHeroImgC4U from "../../images/homepage/c4u_hero_banner.webp";
 import WomanCategory from "../../images/homepage/woman-category.webp";
 import ManCategory from "../../images/homepage/man-category.webp";
 import KidCategory from "../../images/homepage/kid-category.webp";
@@ -277,8 +277,8 @@ function Home({
                 {t.formatMessage(messages.latestArticlesText)}
               </p>
             </div>
-            <div className="container w-full flex flex-col items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 xl:p-0 m-auto">
-              {news?.slice(0, 3).map(({ node: newsElem }: any) => {
+            <div className="container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 xl:p-0 m-auto">
+              {news?.map(({ node: newsElem }: any) => {
                 const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
                 const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
                   url[url.length - 1]
