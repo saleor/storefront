@@ -10,8 +10,8 @@ import { AWS_MEDIA_BUCKET, STOREFRONT_NAME } from "@/lib/const";
 import messages from "@/components/translations";
 import { useIntl } from "react-intl";
 
-import DefaultHeroWomanImg from "../../images/homepage/hero-img.webp";
-import DefaultHeroImgC4U from "../../images/homepage/hero-img-default-c4u.webp";
+import DefaultHeroWomanImg from "../../images/homepage/f4u_hero_banner.webp";
+import DefaultHeroImgC4U from "../../images/homepage/c4u_hero_banner.webp";
 import WomanCategory from "../../images/homepage/woman-category.webp";
 import ManCategory from "../../images/homepage/man-category.webp";
 import KidCategory from "../../images/homepage/kid-category.webp";
