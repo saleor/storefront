@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { NavLink } from "./NavLink";
 import { AccountLink } from "./AccountLink";
 import { CartNavItem } from "./CartNavItem";
+import { Logo } from "./Logo";
 import { executeGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
 
@@ -17,9 +18,7 @@ export async function Header() {
 			<div className="mx-auto max-w-7xl px-2 sm:px-8">
 				<div className="flex h-16 justify-between gap-4 md:gap-8">
 					<div className="flex items-center font-bold">
-						<Link aria-label="homepage" href="/">
-							ACME
-						</Link>
+						<Logo>ACME</Logo>
 					</div>
 					<nav className="flex w-full gap-4" aria-label="Main navigation">
 						<ul className="flex gap-4 overflow-x-auto whitespace-nowrap lg:gap-8 lg:px-0">
