@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
-import { ProductsList } from "@/ui/components/ProductsList";
+import { ProductList } from "@/ui/components/ProductList";
 
 export const metadata = {
 	title: "Product List · Saleor Storefront example",
@@ -34,7 +34,7 @@ export default async function Page({ searchParams }: Props) {
 		<div>
 			<section className="mx-auto max-w-7xl p-8 pb-16">
 				<h2 className="sr-only">Product list</h2>
-				<ProductsList products={products.edges.map((e) => e.node)} />
+				<ProductList products={products.edges.map((e) => e.node)} />
 				<Pagination pageInfo={products.pageInfo} />
 			</section>
 		</div>
