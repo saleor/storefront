@@ -6,14 +6,14 @@ import { CartNavItem } from "./CartNavItem";
 import { executeGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
 
-export async function Nav() {
+export async function Header() {
 	const navLinks = await executeGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "navbar" },
 		revalidate: 60 * 60 * 24,
 	});
 
 	return (
-		<div className="sticky top-0 z-20 bg-neutral-100/50 backdrop-blur-md">
+		<header className="sticky top-0 z-20 bg-neutral-100/50 backdrop-blur-md">
 			<div className="mx-auto max-w-7xl px-2 sm:px-8">
 				<div className="flex h-16 justify-between gap-4 md:gap-8">
 					<div className="flex items-center font-bold">
@@ -22,7 +22,6 @@ export async function Nav() {
 						</Link>
 					</div>
 					<div className="flex overflow-x-auto overflow-y-hidden whitespace-nowrap lg:px-0">
-						<div className="flex flex-shrink-0 items-center"></div>
 						<div className="flex gap-4 lg:gap-8">
 							<ActiveLink href="/products">All</ActiveLink>
 							{navLinks.menu?.items?.map((item) => {
@@ -68,6 +67,6 @@ export async function Nav() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</header>
 	);
 }
