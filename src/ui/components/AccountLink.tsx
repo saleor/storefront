@@ -5,6 +5,7 @@ import { UserIcon } from "@/checkout/ui-kit/icons/User";
 export function AccountLink() {
 	return (
 		<Link href="/login" className="h-6 w-6 flex-shrink-0">
+			<span className="sr-only">Log in</span>
 			<UserIcon />
 		</Link>
 	);
