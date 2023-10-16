@@ -99,8 +99,6 @@ function Home({
     );
   };
 
-  console.log(news);
-
   return (
     <>
       <BaseSeo />
