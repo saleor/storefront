@@ -1,20 +1,11 @@
-"use client";
-import { gql, useQuery } from "@apollo/client";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import React from "react";
 import Link from "next/link";
-import { CurrentUserDocument, type CurrentUserQuery } from "@/gql/graphql";
+import { UserIcon } from "@/checkout/ui-kit/icons/User";
 
 export function AccountLink() {
-	const { signOut } = useSaleorAuthContext();
-	const { data } = useQuery<CurrentUserQuery>(gql(CurrentUserDocument.toString()));
-
-	return data?.me ? (
-		<button onClick={() => signOut()} className="text-sm font-medium ">
-			Log out
-		</button>
-	) : (
-		<Link href="/login" className="text-sm font-medium ">
-			Log in
+	return (
+		<Link href="/login" className="h-6 w-6 flex-shrink-0">
+			<UserIcon />
 		</Link>
 	);
 }
