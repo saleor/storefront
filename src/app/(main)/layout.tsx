@@ -11,7 +11,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 	return (
 		<>
 			<Nav />
-			<div className="min-h-[calc(100vh-106px)] flex-grow">{props.children}</div>
+			<main className="min-h-[calc(100vh-106px)] flex-grow">{props.children}</main>
 			<Footer />
 		</>
 	);
