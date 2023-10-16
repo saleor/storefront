@@ -45,8 +45,8 @@
 **Global:**
 
 - Channel switcher and Geo detection (coming soon)
-- Dynamic menu (coming soon)
-- Hamburger menu (coming soon)
+- Dynamic menu
+- Hamburger menu
 - SEO data
 
 **Checkout:**
