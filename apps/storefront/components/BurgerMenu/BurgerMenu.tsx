@@ -17,6 +17,7 @@ import styles from "./BurgerMenu.module.css";
 import { CollapseMenu } from "./CollapseMenu";
 import { useUser } from "@/lib/useUser";
 import { STOREFRONT_NAME } from "@/lib/const";
+import { MenuItem } from "../Navbar/Menu";
 
 export interface BurgerMenuProps {
   open?: boolean;
@@ -49,8 +50,16 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
 
   const menuItems = data?.menu?.items || [];
 
+  const maxMenuItems = 5;
+  const slicedMenuItems = menuItems.slice(0, maxMenuItems);
+
+  const isExcludedCategory = (item: MenuItem): boolean =>
+    item.name === "Mix" || item.name === "Hurt" || item.name === "Detal";
+
   const visibleCategoryOnMenu =
-    STOREFRONT_NAME === "FASHION4YOU" ? menuItems.slice(0, -2) : menuItems.slice(0, -1);
+    STOREFRONT_NAME === "FASHION4YOU"
+      ? menuItems.filter((item) => !isExcludedCategory(item))
+      : slicedMenuItems;
 
   return (
     <div
