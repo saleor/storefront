@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const companyName = "ACME";
+
 export const Logo = () => {
 	const pathname = usePathname();
-	const companyName = "ACME";
 
 	if (pathname === "/") {
 		return (
