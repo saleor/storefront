@@ -12,7 +12,7 @@ export const CartNavItem = async () => {
 
 	return (
 		<Link href="/cart" className="relative flex items-center">
-			<ShoppingBagIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+			<ShoppingBagIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
 			{lineCount > 0 ? (
 				<div
 					className={clsx(

@@ -2,27 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode } from "react";
 
-type Props = {
-	children: ReactNode;
-};
-
-export const Logo = ({ children }: Props) => {
+export const Logo = () => {
 	const pathname = usePathname();
+	const companyName = "ACME";
 
 	if (pathname === "/") {
 		return (
-			<h1>
+			<h1 className="flex items-center font-bold">
 				<Link aria-label="homepage" href="#">
-					{children}
+					{companyName}
 				</Link>
 			</h1>
 		);
 	}
 	return (
-		<Link aria-label="homepage" href="/">
-			{children}
-		</Link>
+		<div className="flex items-center font-bold">
+			<Link aria-label="homepage" href="/">
+				{companyName}
+			</Link>
+		</div>
 	);
 };

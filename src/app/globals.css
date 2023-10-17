@@ -6,6 +6,10 @@ body {
 	overflow-x: hidden;
 }
 
+.scrollbar-gutter-stable {
+	scrollbar-gutter: stable;
+}
+
 @media (min-width: theme(screens.lg)) {
 	.checkout-bg {
 		background: linear-gradient(
