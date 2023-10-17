@@ -6,7 +6,7 @@ type Args = {
 };
 
 export const useMobileMenu = ({ breakpoint }: Args) => {
-	const [isOpen, setIsOpen] = useState(true);
+	const [isOpen, setIsOpen] = useState(false);
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
