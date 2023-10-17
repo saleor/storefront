@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NavLink } from "../../NavLink";
+import { NavLink } from "./NavLink";
 import { executeGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
 
