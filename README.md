@@ -1,3 +1,6 @@
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL,NEXT_PUBLIC_STOREFRONT_URL&project-name=my-saleor-storefront&repository-name=my-saleor-storefront)
+[![Storefront Demo](https://img.shields.io/badge/VIEW%20DEMO-DFDFDF?style=for-the-badge)](https://storefront.saleor.io)
+
 ![Nextjs Storefront](./screenshot.png)
 
 <div align="center">
@@ -6,17 +9,17 @@
 </div>
 
 <div align="center">
-  <a href="https://saleor.io/">🏠 Website</a>
+  <a href="https://saleor.io/">Website</a>
   <span> • </span>
-  <a href="https://docs.saleor.io/docs/3.x">📚 Docs</a>
+  <a href="https://docs.saleor.io/docs/3.x">Docs</a>
   <span> • </span>
-  <a href="https://github.com/orgs/saleor/projects/45/views/2">🎯 Roadmap</a>
+  <a href="https://github.com/orgs/saleor/projects/45/views/2">Roadmap</a>
   <span> • </span>
-  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
+  <a href="https://twitter.com/getsaleor">Twitter</a>
   <span> • </span>
-  <a href="https://discord.gg/H52JTZAtSH">💬 Discord</a>
+  <a href="https://discord.gg/H52JTZAtSH">Discord</a>
   <span> • </span>
-  <a href="https://storefront-saleor-example.vercel.app/">▶️ Demo</a>
+  <a href="https://storefront-saleor-example.vercel.app/">Demo</a>
 </div>
 
 <br/>
@@ -30,19 +33,12 @@
 
 ## Features
 
-**Codebase:**
-
-🏎️ **Next.js 13**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
-
-🔥 **App Router**: Uses React Server Components, Data Cache, and async components.
-
-🟦 **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
-
-🦄 **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
-
-🛠️ **Customizable CSS**: TailwindCSS can be extended or replaced with an alternative CSS solution.
-
-👌 **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
+- **Next.js 13**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
+- **App Router**: Uses React Server Components, Data Cache, and async components.
+- **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
+- **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
+- **Customizable CSS**: TailwindCSS can be extended or replaced with an alternative CSS solution.
+- **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
 
 **Global:**
 
