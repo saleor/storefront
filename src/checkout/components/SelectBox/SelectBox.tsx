@@ -39,7 +39,7 @@ export const SelectBox = <TFieldName extends string>({
 				onChange={handleChange}
 				value={value}
 				checked={selected}
-				className="rounded-full border-neutral-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:ring-offset-0"
+				className="rounded-full border-neutral-300 text-neutral-600 shadow-sm focus:border-neutral-300 focus:ring focus:ring-neutral-200 focus:ring-opacity-50 focus:ring-offset-0"
 			/>
 			<span className="ml-2 block w-full">{children}</span>
 		</label>

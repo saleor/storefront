@@ -48,7 +48,7 @@ export const Select = <TName extends string, TData extends string>({
 					{...rest}
 					onBlur={handleBlur}
 					onChange={handleChange}
-					className="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+					className="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-neutral-300 focus:ring focus:ring-neutral-200 focus:ring-opacity-50"
 				>
 					{showPlaceholder && (
 						<option disabled value="">
