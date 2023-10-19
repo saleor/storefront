@@ -2,8 +2,6 @@ import { Section } from "./Section";
 import { type OrderFragment, type ShippingFragment } from "@/checkout/graphql";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
-import { deliveryMethodsMessages } from "@/checkout/sections/DeliveryMethods/messages";
-
 const isShipping = (deliveryMethod: OrderFragment["deliveryMethod"]): deliveryMethod is ShippingFragment =>
 	deliveryMethod?.__typename === "ShippingMethod";
 
@@ -17,16 +15,13 @@ export const DeliverySection = ({ deliveryMethod }: { deliveryMethod: OrderFragm
 			return undefined;
 		}
 
-		return formatMessage(deliveryMethodsMessages.businessDays, {
-			min: min.toString(),
-			max: max.toString(),
-		});
+		return formatMessage(`${min}-${max} business days`);
 	};
 
 	return (
-		<Section title={formatMessage(deliveryMethodsMessages.deliveryMethod)}>
+		<Section title="Delivery method">
 			{!isShipping(deliveryMethod) ? (
-				<p color="secondary">{formatMessage(deliveryMethodsMessages.shippingMethodNotApplicable)}</p>
+				<p color="secondary">Not applicable</p>
 			) : (
 				<>
 					<p>{deliveryMethod.name}</p>

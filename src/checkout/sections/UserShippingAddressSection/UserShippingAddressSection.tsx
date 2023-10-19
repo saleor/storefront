@@ -2,7 +2,6 @@ import React, { Suspense } from "react";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getById } from "@/checkout/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
-import { shippingMessages } from "@/checkout/sections/UserShippingAddressSection/messages";
 import { UserAddressSectionContainer } from "@/checkout/sections/UserAddressSectionContainer";
 import { useUserShippingAddressForm } from "@/checkout/sections/UserShippingAddressSection/useUserShippingAddressForm";
 import { AddressCreateForm } from "@/checkout/sections/AddressCreateForm";
@@ -50,7 +49,7 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
 						{displayAddressEdit && (
 							<AddressEditForm
 								availableCountries={availableShippingCountries}
-								title={formatMessage(shippingMessages.shippingAddress)}
+								title="Shipping address"
 								onClose={() => setDisplayAddressEdit()}
 								address={form.values.addressList.find(getById(editedAddressId)) as AddressFragment}
 								onUpdate={onAddressUpdateSuccess}
@@ -62,7 +61,7 @@ export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProp
 							<AddressList
 								onEditChange={setDisplayAddressEdit}
 								onAddAddressClick={() => setDisplayAddressCreate(true)}
-								title={formatMessage(shippingMessages.shippingAddress)}
+								title="Shipping address"
 								checkAddressAvailability={true}
 								form={form}
 							/>

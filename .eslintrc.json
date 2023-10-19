@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/eslintrc.json",
-	"plugins": ["@typescript-eslint", "import", "formatjs"],
+	"plugins": ["@typescript-eslint", "import"],
 	"parserOptions": {
 		"project": "tsconfig.json"
 	},
@@ -85,18 +85,6 @@
 			"files": ["src/app/**/{page,layout,error,loading,not-found}.tsx", "*.ts"],
 			"rules": {
 				"import/no-default-export": "off"
-			}
-		},
-		{
-			"files": ["src/checkout/**/*.*"],
-			"rules": {
-				"@next/next/no-img-element": "off",
-				"formatjs/enforce-id": [
-					"error",
-					{
-						"idInterpolationPattern": "[folder]/[name]/[sha512:contenthash:base64:6]"
-					}
-				]
 			}
 		},
 		{

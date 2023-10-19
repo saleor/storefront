@@ -1,5 +1,5 @@
 import React from "react";
-import { emptyCartLabels, emptyCartMessages } from "./messages";
+import { emptyCartMessages } from "./messages";
 import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { Button, Title } from "@/checkout/components";
 
@@ -12,14 +12,14 @@ export const EmptyCartPage = () => {
 	return (
 		<div className="flex w-full flex-row justify-center lg:mt-10">
 			<div className="flex flex-col justify-start rounded-lg border border-neutral-400 py-6">
-				<Title>{formatMessage(emptyCartMessages.emptyCart)}</Title>
-				<p>{formatMessage(emptyCartMessages.addToCardToContinue)}</p>
+				<Title>Your cart is empty</Title>
+				<p>Add anything to the cart to continue</p>
 				<Button
 					className="mt-3 md:self-end"
-					ariaLabel={formatMessage(emptyCartLabels.goBackToStore)}
+					ariaLabel="Go back to store"
 					onClick={goBack}
 					variant="secondary"
-					label={formatMessage(emptyCartMessages.goBackToStore)}
+					label="Go back to store"
 				/>
 			</div>
 		</div>

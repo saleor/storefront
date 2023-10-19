@@ -10,16 +10,15 @@ import {
 } from "urql";
 
 import { ToastContainer } from "react-toastify";
-import { SaleorAuthProvider, useAuthChange } from "@saleor/auth-sdk/react";
-import { useMemo, useState } from "react";
-import { createSaleorAuthClient } from "@saleor/auth-sdk";
+import { useAuthChange, useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { useState } from "react";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { RootViews } from "./views/RootViews";
 import { PageNotFound } from "@/checkout/views/PageNotFound";
 import "./index.css";
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
-	const saleorAuthClient = useMemo(() => createSaleorAuthClient({ saleorApiUrl }), [saleorApiUrl]);
+	const saleorAuthClient = useSaleorAuthContext();
 
 	const makeUrqlClient = () =>
 		createClient({
@@ -38,13 +37,11 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 	});
 
 	return (
-		<SaleorAuthProvider client={saleorAuthClient}>
-			<UrqlProvider value={urqlClient}>
-				<ToastContainer {...alertsContainerProps} />
-				<ErrorBoundary FallbackComponent={PageNotFound}>
-					<RootViews />
-				</ErrorBoundary>
-			</UrqlProvider>
-		</SaleorAuthProvider>
+		<UrqlProvider value={urqlClient}>
+			<ToastContainer {...alertsContainerProps} />
+			<ErrorBoundary FallbackComponent={PageNotFound}>
+				<RootViews />
+			</ErrorBoundary>
+		</UrqlProvider>
 	);
 };

@@ -38,15 +38,15 @@ export const AddressList: React.FC<AddressListProps> = ({
 		<FormProvider form={form}>
 			<div className="flex flex-col">
 				<Title>{title}</Title>
-				{addressList.length < 1 && <p className="mb-3">{formatMessage(userAddressMessages.noAddresses)}</p>}
+				{addressList.length < 1 && <p className="mb-3">You currently have no saved addresses.</p>}
 				<Button
 					variant="secondary"
-					ariaLabel={formatMessage(userAddressLabels.addAddress)}
+					ariaLabel="add address"
 					onClick={onAddAddressClick}
-					label={formatMessage(userAddressMessages.addAddress)}
+					label="Add address"
 					className="w-full"
 				/>
-				<SelectBoxGroup label={formatMessage(userAddressLabels.userAddresses)}>
+				<SelectBoxGroup label="user addresses">
 					{addressList.map(({ id, ...rest }: AddressFragment) => {
 						const identifier = `${camelCase(title)}-${id}}`;
 

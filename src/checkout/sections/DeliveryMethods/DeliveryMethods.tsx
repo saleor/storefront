@@ -27,10 +27,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 			return undefined;
 		}
 
-		return formatMessage(deliveryMethodsMessages.businessDays, {
-			min: min.toString(),
-			max: max.toString(),
-		});
+		return formatMessage(`${min}-${max} business days`);
 	};
 
 	if (!checkout?.isShippingRequired || collapsed) {
@@ -41,14 +38,14 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 		<FormProvider form={form}>
 			<Divider />
 			<div className="py-6" data-testid="deliveryMethods">
-				<Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
+				<Title className="mb-2">Delivery methods</Title>
 				{!authenticated && !shippingAddress && (
-					<p>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</p>
+					<p>Please fill in shipping address to see available shipping methods</p>
 				)}
 				{authenticated && !shippingAddress && updateState.checkoutShippingUpdate ? (
 					<DeliveryMethodsSkeleton />
 				) : (
-					<SelectBoxGroup label={formatMessage(deliveryMethodsLabels.deliveryMethods)}>
+					<SelectBoxGroup label="delivery methods">
 						{shippingMethods?.map(
 							({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
 								<SelectBox key={id} name="selectedMethodId" value={id}>

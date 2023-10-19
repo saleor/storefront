@@ -79,10 +79,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
 	return (
 		<FormProvider form={{ ...form, handleChange: onChange }}>
-			<AddressForm
-				title={formatMessage(addressEditMessages.editAddress)}
-				availableCountries={availableCountries}
-			>
+			<AddressForm title="Edit address" availableCountries={availableCountries}>
 				<AddressFormActions
 					onSubmit={handleSubmit}
 					loading={updating || deleting}

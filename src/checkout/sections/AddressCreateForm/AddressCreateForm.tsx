@@ -56,10 +56,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
 
 	return (
 		<FormProvider form={{ ...form, handleChange: onChange }}>
-			<AddressForm
-				title={formatMessage(addressCreateMessages.addressCreate)}
-				availableCountries={availableCountries}
-			>
+			<AddressForm title="Create address" availableCountries={availableCountries}>
 				<AddressFormActions onSubmit={handleSubmit} loading={isSubmitting} onCancel={onClose} />
 			</AddressForm>
 		</FormProvider>

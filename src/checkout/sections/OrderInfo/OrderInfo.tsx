@@ -2,15 +2,9 @@ import { DeliverySection } from "./DeliverySection";
 import { PaymentSection } from "./PaymentSection";
 import { Section } from "./Section";
 import { Address } from "@/checkout/components/Address";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useOrder } from "@/checkout/hooks/useOrder";
-import { contactMessages } from "@/checkout/sections/Contact/messages";
-import { billingMessages } from "@/checkout/sections/UserBillingAddressSection/messages";
-import { shippingMessages } from "@/checkout/sections/UserShippingAddressSection/messages";
 
 export const OrderInfo = () => {
-	const formatMessage = useFormattedMessages();
-
 	const {
 		order: { deliveryMethod, shippingAddress, billingAddress, userEmail },
 	} = useOrder();
@@ -19,16 +13,16 @@ export const OrderInfo = () => {
 		<section className="mt-8">
 			<PaymentSection />
 			<DeliverySection deliveryMethod={deliveryMethod} />
-			<Section title={formatMessage(contactMessages.contact)}>
+			<Section title="Contact details">
 				<p>{userEmail}</p>
 			</Section>
 			{shippingAddress && (
-				<Section title={formatMessage(shippingMessages.shippingAddress)}>
+				<Section title="Shipping address">
 					<Address address={shippingAddress} />
 				</Section>
 			)}
 			{billingAddress && (
-				<Section title={formatMessage(billingMessages.billingAddress)}>
+				<Section title="Billing address">
 					<Address address={billingAddress} />
 				</Section>
 			)}
