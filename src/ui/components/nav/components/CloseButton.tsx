@@ -13,6 +13,7 @@ export const CloseButton = (props: Props) => {
 				"top-0 ml-auto flex h-8 w-8 flex-col items-center justify-center gap-1.5 self-end self-center md:hidden",
 			)}
 			aria-controls={props["aria-controls"]}
+			aria-expanded={true}
 			aria-label="Close menu"
 			onClick={props.onClick}
 		>
