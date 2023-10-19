@@ -15,8 +15,8 @@ export async function Footer() {
 					{footerLinks.menu?.items?.map((item) => {
 						return (
 							<div key={item.id}>
-								<h3 className="text-sm font-medium text-neutral-900">{item.name}</h3>
-								<ul className="mt-4 space-y-4">
+								<h3 className="text-sm font-semibold text-neutral-900">{item.name}</h3>
+								<ul className="mt-4 space-y-4 [&>li]:text-neutral-500">
 									{item.children?.map((child) => {
 										if (child.category) {
 											return (
