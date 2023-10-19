@@ -12,7 +12,7 @@ export const PasswordInput = <TName extends string>(props: TextInputProps<TName>
 	return (
 		<div className="relative">
 			<TextInput required {...props} type={passwordVisible ? "text" : "password"} />
-			<div className="absolute bottom-[2px] right-7 flex h-10 items-center justify-center pr-4">
+			<div className="absolute right-7 top-6 flex h-10 items-center justify-center pr-4">
 				<IconButton
 					ariaLabel={formatMessage(labels.passwordVisibility)}
 					onClick={() => setPasswordVisible(!passwordVisible)}
