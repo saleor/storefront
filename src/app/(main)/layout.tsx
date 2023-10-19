@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { Footer } from "@/ui/components/Footer";
-import { Nav } from "@/ui/components/Nav";
+import { Header } from "@/ui/components/Header";
 
 export const metadata = {
 	title: "Saleor Storefront example",
@@ -10,8 +10,8 @@ export const metadata = {
 export default function RootLayout(props: { children: ReactNode }) {
 	return (
 		<>
-			<Nav />
-			<div className="min-h-[calc(100vh-106px)] flex-grow">{props.children}</div>
+			<Header />
+			<main className="min-h-[calc(100vh-106px)] flex-grow">{props.children}</main>
 			<Footer />
 		</>
 	);
