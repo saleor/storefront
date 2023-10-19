@@ -19,7 +19,6 @@ export default async function Page() {
 	return (
 		<section className="mx-auto max-w-7xl p-8">
 			<h1 className="mt-8 text-3xl font-bold text-neutral-900">Your Shopping Cart</h1>
-
 			<form className="mt-12">
 				<div>
 					<ul role="list" className="divide-y divide-neutral-200 border-b border-t border-neutral-200">
@@ -36,7 +35,6 @@ export default async function Page() {
 										/>
 									)}
 								</div>
-
 								<div className="relative flex flex-1 flex-col justify-between p-4 py-2">
 									<div className="flex justify-between justify-items-start gap-4">
 										<div className="">
@@ -44,16 +42,14 @@ export default async function Page() {
 												<h3 className="font-medium text-neutral-700">{item.variant?.product?.name}</h3>
 											</Link>
 											<p className="mt-1 text-sm text-neutral-500">{item.variant?.product?.category?.name}</p>
-											{Boolean(item.variant.name) && (
+											{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
 												<p className="mt-1 text-sm text-neutral-500">Variant: {item.variant.name}</p>
 											)}
 										</div>
-
 										<p className="text-right font-semibold text-neutral-900">
 											{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency)}
 										</p>
 									</div>
-
 									<div className="flex justify-between">
 										<div className="text-sm font-bold">Qty: {item.quantity}</div>
 										<DeleteLineButton checkoutId={checkoutId} lineId={item.id} />
@@ -63,7 +59,6 @@ export default async function Page() {
 						))}
 					</ul>
 				</div>
-
 				<div className="mt-12">
 					<div className="rounded border bg-neutral-50 px-4 py-2">
 						<div className="flex items-center justify-between py-2">
