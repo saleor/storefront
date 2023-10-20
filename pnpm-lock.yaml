@@ -24,8 +24,8 @@ importers:
         specifier: 1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
       '@saleor/auth-sdk':
-        specifier: 0.13.0-1
-        version: registry.npmjs.org/@saleor/auth-sdk@0.13.0-1(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
+        specifier: 0.13.0
+        version: registry.npmjs.org/@saleor/auth-sdk@0.13.0(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
       clsx:
         specifier: 2.0.0
         version: 2.0.0
@@ -7384,11 +7384,11 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/@saleor/auth-sdk@0.13.0-1(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5):
-    resolution: {integrity: sha512-r1AgK99D3KKUSd51jc/iK+n+9TNkv1CYOngmWXvNTbBlc/jhqNtO+qzkmS3VbQMbn6mY5baotxEN26JHKQ3Hzw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@saleor/auth-sdk/-/auth-sdk-0.13.0-1.tgz}
-    id: registry.npmjs.org/@saleor/auth-sdk/0.13.0-1
+  registry.npmjs.org/@saleor/auth-sdk@0.13.0(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5):
+    resolution: {integrity: sha512-QbloBpaJN2qr5rrliAC7hbT5+HMAjE50KSoTmjIvbR4VIcLluynUQAw4CaEYjk3Lhk41bmxxS/tNYLM9t896Dw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@saleor/auth-sdk/-/auth-sdk-0.13.0.tgz}
+    id: registry.npmjs.org/@saleor/auth-sdk/0.13.0
     name: '@saleor/auth-sdk'
-    version: 0.13.0-1
+    version: 0.13.0
     peerDependencies:
       '@apollo/client': ^3.7.15
       next: ^13.4.4
