@@ -21,8 +21,8 @@ dependencies:
     specifier: 1.7.17
     version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
   '@saleor/auth-sdk':
-    specifier: 0.13.0
-    version: 0.13.0(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
+    specifier: 0.13.1
+    version: 0.13.1(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
   clsx:
     specifier: 2.0.0
     version: 2.0.0
@@ -1822,8 +1822,8 @@ packages:
     resolution: {integrity: sha512-6i/8UoL0P5y4leBIGzvkZdS85RDMG9y1ihZzmTZQ5LdHUYmZ7pKFoj8X0236s3lusPs1Fa5HTQUpwI+UfTcmeA==}
     dev: true
 
-  /@saleor/auth-sdk@0.13.0(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5):
-    resolution: {integrity: sha512-QbloBpaJN2qr5rrliAC7hbT5+HMAjE50KSoTmjIvbR4VIcLluynUQAw4CaEYjk3Lhk41bmxxS/tNYLM9t896Dw==}
+  /@saleor/auth-sdk@0.13.1(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5):
+    resolution: {integrity: sha512-f/8FjfqB2qNHb/9qyq3dJpq37r12zF5fyUy63p9oZyZo2dB0bwkeK9CiNWpvKaA0OginxMMarjF/BSkAJ0NUxQ==}
     peerDependencies:
       '@apollo/client': ^3.7.15
       next: ^13.4.4
@@ -1843,6 +1843,7 @@ packages:
         optional: true
     dependencies:
       '@apollo/client': 3.8.5(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       cookie: 0.5.0
       graphql: 16.8.1
       next: 13.5.5(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)

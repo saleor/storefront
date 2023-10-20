@@ -19,7 +19,7 @@
 		"@adyen/api-library": "14.3.0",
 		"@apollo/client": "3.8.5",
 		"@headlessui/react": "1.7.17",
-		"@saleor/auth-sdk": "0.13.0",
+		"@saleor/auth-sdk": "0.13.1",
 		"clsx": "2.0.0",
 		"editorjs-html": "3.4.3",
 		"formik": "2.4.5",
