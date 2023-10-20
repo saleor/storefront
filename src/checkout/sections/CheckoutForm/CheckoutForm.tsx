@@ -31,8 +31,8 @@ export const CheckoutForm = () => {
 				<>
 					{checkout?.isShippingRequired && (
 						<Suspense fallback={<AddressSectionSkeleton />}>
-							<Divider />
 							<CollapseSection collapse={showOnlyContact}>
+								<Divider />
 								<div className="py-4" data-testid="shippingAddressSection">
 									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
 								</div>
