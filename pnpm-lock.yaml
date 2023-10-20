@@ -24,8 +24,8 @@ importers:
         specifier: 1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
       '@saleor/auth-sdk':
-        specifier: file:/Users/typeofweb/htdocs/saleor/auth-sdk/dist/saleor-auth-sdk-0.12.0.tgz
-        version: file:../auth-sdk/dist/saleor-auth-sdk-0.12.0.tgz(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
+        specifier: 0.13.0-0
+        version: registry.npmjs.org/@saleor/auth-sdk@0.13.0-0(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
       clsx:
         specifier: 2.0.0
         version: 2.0.0
@@ -7153,38 +7153,6 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  file:../auth-sdk/dist/saleor-auth-sdk-0.12.0.tgz(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5):
-    resolution: {integrity: sha512-EVjl7vgMWrk8bxvoB0Gpr6WncbKAYyZ7dq4XhW+/8ZfnCOQj0AuZJpmZyR9eeJZA4YWH03hYbh2drrCy3CAd6Q==, tarball: file:../auth-sdk/dist/saleor-auth-sdk-0.12.0.tgz}
-    id: file:../auth-sdk/dist/saleor-auth-sdk-0.12.0.tgz
-    name: '@saleor/auth-sdk'
-    version: 0.12.0
-    peerDependencies:
-      '@apollo/client': ^3.7.15
-      next: ^13.4.4
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      urql: ^4.0.3
-    peerDependenciesMeta:
-      '@apollo/client':
-        optional: true
-      next:
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      urql:
-        optional: true
-    dependencies:
-      '@apollo/client': 3.8.5(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
-      cookie: registry.npmjs.org/cookie@0.5.0
-      graphql: registry.npmjs.org/graphql@16.8.1
-      next: 13.5.5(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      urql: 4.0.5(graphql@16.8.1)(react@18.2.0)
-    dev: false
-
   registry.npmjs.org/@next/swc-darwin-arm64@13.5.5:
     resolution: {integrity: sha512-FvTdcJdTA7H1FGY8dKPPbf/O0oDC041/znHZwXA7liiGUhgw5hOQ+9z8tWvuz0M5a/SDjY/IRPBAb5FIFogYww==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-13.5.5.tgz}
     name: '@next/swc-darwin-arm64'
@@ -7415,6 +7383,38 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  registry.npmjs.org/@saleor/auth-sdk@0.13.0-0(@apollo/client@3.8.5)(next@13.5.5)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5):
+    resolution: {integrity: sha512-sABRHWZT13fXVJdTkezqT0osiK0KH7+zj4MyfEpwTAIzYUb6dWZz2p76QO+zfchhG3fu0s1ypNWKo+HE53S3DA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@saleor/auth-sdk/-/auth-sdk-0.13.0-0.tgz}
+    id: registry.npmjs.org/@saleor/auth-sdk/0.13.0-0
+    name: '@saleor/auth-sdk'
+    version: 0.13.0-0
+    peerDependencies:
+      '@apollo/client': ^3.7.15
+      next: ^13.4.4
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      urql: ^4.0.3
+    peerDependenciesMeta:
+      '@apollo/client':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      urql:
+        optional: true
+    dependencies:
+      '@apollo/client': 3.8.5(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+      cookie: registry.npmjs.org/cookie@0.5.0
+      graphql: registry.npmjs.org/graphql@16.8.1
+      next: 13.5.5(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      urql: 4.0.5(graphql@16.8.1)(react@18.2.0)
+    dev: false
 
   registry.npmjs.org/@types/node@14.0.9:
     resolution: {integrity: sha512-0sCTiXKXELOBxvZLN4krQ0FPOAA7ij+6WwvD0k/PHd9/KAkr4dXel5J9fh6F4x1FwAQILqAWkmpeuS6mjf1iKA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/node/-/node-14.0.9.tgz}
