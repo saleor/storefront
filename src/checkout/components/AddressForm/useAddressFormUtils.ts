@@ -5,7 +5,6 @@ import {
 	useAddressValidationRulesQuery,
 	type ValidationRulesFragment,
 } from "@/checkout/graphql";
-import { warnAboutMissingTranslation } from "@/checkout/hooks/useFormattedMessages/utils";
 import { type OptionalAddress, type AddressField } from "@/checkout/components/AddressForm/types";
 import { defaultCountry } from "@/checkout/lib/consts/countries";
 import { getOrderedAddressFields, getRequiredAddressFields } from "@/checkout/components/AddressForm/utils";
@@ -87,7 +86,7 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 				localizedAddressFieldMessages[camelCase(localizedField) as LocalizedAddressFieldLabel];
 			return translatedLabel;
 		} catch (e) {
-			warnAboutMissingTranslation(localizedField);
+			console.warn(`Missing translation: ${localizedField}`);
 			return addressFieldMessages[camelCase(field) as AddressFieldLabel];
 		}
 	}, []);

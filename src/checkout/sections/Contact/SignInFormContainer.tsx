@@ -1,8 +1,6 @@
 import React, { type PropsWithChildren } from "react";
 import { Button } from "@/checkout/components/Button";
 import { Title } from "@/checkout/components/Title";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
-import { contactLabels } from "@/checkout/sections/Contact/messages";
 
 export interface SignInFormContainerProps {
 	title: string;
@@ -20,8 +18,6 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
 	onSectionChange,
 	children,
 }) => {
-	const formatMessage = useFormattedMessages();
-
 	return (
 		<div className="py-4">
 			<div className="mb-2 flex flex-col">

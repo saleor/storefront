@@ -1,11 +1,7 @@
 import React from "react";
-import { emptyCartMessages } from "./messages";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { Button, Title } from "@/checkout/components";
 
 export const EmptyCartPage = () => {
-	const formatMessage = useFormattedMessages();
-
 	// eslint-disable-next-line no-restricted-globals
 	const goBack = () => history.back();
 

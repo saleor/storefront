@@ -1,8 +1,6 @@
 import React from "react";
-import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { Title } from "@/checkout/components/Title";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { SelectBox } from "@/checkout/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout/components/SelectBoxGroup";
 import { getFormattedMoney } from "@/checkout/lib/utils/money";
@@ -15,7 +13,6 @@ import { DeliveryMethodsSkeleton } from "@/checkout/sections/DeliveryMethods/Del
 import { useUser } from "@/checkout/hooks/useUser";
 
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
-	const formatMessage = useFormattedMessages();
 	const { checkout } = useCheckout();
 	const { authenticated } = useUser();
 	const { shippingMethods, shippingAddress } = checkout;
@@ -27,7 +24,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 			return undefined;
 		}
 
-		return formatMessage(`${min}-${max} business days`);
+		return `${min}-${max} business days`;
 	};
 
 	if (!checkout?.isShippingRequired || collapsed) {

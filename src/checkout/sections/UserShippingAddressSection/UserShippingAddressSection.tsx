@@ -1,5 +1,4 @@
 import React, { Suspense } from "react";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getById } from "@/checkout/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
 import { UserAddressSectionContainer } from "@/checkout/sections/UserAddressSectionContainer";
@@ -14,7 +13,6 @@ import { useAvailableShippingCountries } from "@/checkout/hooks/useAvailableShip
 interface UserShippingAddressSectionProps {}
 
 export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProps> = ({}) => {
-	const formatMessage = useFormattedMessages();
 	const { availableShippingCountries } = useAvailableShippingCountries();
 	const {
 		form,

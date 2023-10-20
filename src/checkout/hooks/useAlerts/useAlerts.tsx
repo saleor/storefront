@@ -2,7 +2,6 @@
 import { toast } from "react-toastify";
 import { camelCase } from "lodash-es";
 import { useCallback } from "react";
-import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import {
 	type Alert,
 	type AlertType,
@@ -10,11 +9,10 @@ import {
 	type CheckoutScope,
 	type CustomError,
 } from "./types";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
-import { apiErrorMessages as errorMessages } from "@/checkout/hooks/useAlerts/messages";
 import { type ErrorCode } from "@/checkout/lib/globalTypes";
 import { type ApiErrors } from "@/checkout/hooks/useGetParsedErrors/types";
 import { useGetParsedErrors } from "@/checkout/hooks/useGetParsedErrors";
+import { apiErrorMessages } from "@/checkout/sections/PaymentSection/AdyenDropIn/errorMessages";
 
 function useAlerts(scope: CheckoutScope): {
 	showErrors: (errors: ApiErrors<any>) => void;
@@ -29,7 +27,6 @@ function useAlerts(): {
 };
 
 function useAlerts(globalScope?: any): any {
-	const formatMessage = useFormattedMessages();
 	const { getParsedApiErrors } = useGetParsedErrors<any>();
 
 	const getMessageKey = ({ scope, field, code }: AlertErrorData, { error } = { error: false }) => {
@@ -37,21 +34,21 @@ function useAlerts(globalScope?: any): any {
 		return camelCase(error ? `${keyBase}-error` : keyBase);
 	};
 
-	const getErrorMessage = useCallback(
-		({ code, field, scope }: AlertErrorData): string => {
-			const messageKey = getMessageKey({ code, field, scope }, { error: true }) as keyof typeof errorMessages;
+	const getErrorMessage = useCallback(({ code, field, scope }: AlertErrorData): string => {
+		const messageKey = getMessageKey(
+			{ code, field, scope },
+			{ error: true },
+		) as keyof typeof apiErrorMessages;
 
-			try {
-				const fullMessage = formatMessage(errorMessages[messageKey]);
+		try {
+			const fullMessage = apiErrorMessages[messageKey];
 
-				return fullMessage;
-			} catch (e) {
-				warnAboutMissingTranslation(messageKey);
-				return formatMessage(errorMessages.somethingWentWrong);
-			}
-		},
-		[formatMessage],
-	);
+			return fullMessage;
+		} catch (e) {
+			console.warn(`Missing translation: ${messageKey}`);
+			return apiErrorMessages.somethingWentWrong;
+		}
+	}, []);
 
 	const getParsedAlert = useCallback(
 		(data: AlertErrorData, type: AlertType): Alert => {
@@ -96,11 +93,11 @@ function useAlerts(globalScope?: any): any {
 				} else if (field && code) {
 					showDefaultAlert({ scope, field, code: code as ErrorCode });
 				} else {
-					showAlert({ message: formatMessage(errorMessages.somethingWentWrong) });
+					showAlert({ message: apiErrorMessages.somethingWentWrong });
 				}
 			});
 		},
-		[formatMessage, globalScope, showAlert, showDefaultAlert],
+		[globalScope, showAlert, showDefaultAlert],
 	);
 
 	const showSuccess = useCallback(

@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
-import { warnAboutMissingTranslation } from "../useFormattedMessages/utils";
 import { type ErrorCode } from "@/checkout/lib/globalTypes";
 
-export const errorMessages: Record<ErrorCode, string> = {
+export const errorMessages = {
 	invalid: "Invalid value",
 	required: "Required field",
 	unique: "Value must be unique",
@@ -16,7 +15,7 @@ export const errorMessages: Record<ErrorCode, string> = {
 	insufficientStock: "Not enough of chosen item in stock.",
 	invalidCredentials: "Invalid credentials provided at login.",
 	missingFields: "Missing fields in address form: ",
-};
+} satisfies Record<ErrorCode, string>;
 
 export type ErrorMessages = Record<ErrorCode, string>;
 
@@ -25,13 +24,12 @@ export const useErrorMessages = <TKey extends string = ErrorCode>(customMessages
 
 	const getMessageByErrorCode = useCallback(
 		(errorCode: string) => {
-			try {
-				const formattedMessage = messagesToUse[errorCode as keyof typeof messagesToUse];
-				return formattedMessage;
-			} catch (e) {
-				warnAboutMissingTranslation(errorCode);
+			const formattedMessage = messagesToUse[errorCode as keyof typeof messagesToUse];
+			if (!formattedMessage) {
+				console.warn(`Missing trnalsation: ${errorCode}`);
 				return "";
 			}
+			return formattedMessage;
 		},
 		[messagesToUse],
 	);

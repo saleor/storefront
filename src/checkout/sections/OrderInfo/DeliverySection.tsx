@@ -1,13 +1,10 @@
 import { Section } from "./Section";
 import { type OrderFragment, type ShippingFragment } from "@/checkout/graphql";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 const isShipping = (deliveryMethod: OrderFragment["deliveryMethod"]): deliveryMethod is ShippingFragment =>
 	deliveryMethod?.__typename === "ShippingMethod";
 
 export const DeliverySection = ({ deliveryMethod }: { deliveryMethod: OrderFragment["deliveryMethod"] }) => {
-	const formatMessage = useFormattedMessages();
-
 	const getDeliveryEstimateText = () => {
 		const { minimumDeliveryDays: min, maximumDeliveryDays: max } = deliveryMethod as ShippingFragment;
 
@@ -15,7 +12,7 @@ export const DeliverySection = ({ deliveryMethod }: { deliveryMethod: OrderFragm
 			return undefined;
 		}
 
-		return formatMessage(`${min}-${max} business days`);
+		return `${min}-${max} business days`;
 	};
 
 	return (

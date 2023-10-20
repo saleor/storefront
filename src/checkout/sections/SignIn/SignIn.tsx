@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@/checkout/components/Button";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout/components/TextInput";
 import { useSignInForm } from "@/checkout/sections/SignIn/useSignInForm";
 import { usePasswordResetRequest } from "@/checkout/sections/SignIn/usePasswordResetRequest";
@@ -30,7 +29,6 @@ export const SignIn: React.FC<SignInProps> = ({
 		checkout: { email: checkoutEmail },
 	} = useCheckout();
 	const { errorMessages } = useErrorMessages();
-	const formatMessage = useFormattedMessages();
 
 	const form = useSignInForm({
 		onSuccess: onSignInSuccess,
