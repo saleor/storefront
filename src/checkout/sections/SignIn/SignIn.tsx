@@ -78,8 +78,8 @@ export const SignIn: React.FC<SignInProps> = ({
 						onEmailChange(event.currentTarget.value);
 					}}
 				/>
-				<PasswordInput name="password" label="Password" />
-				<div className="flex w-full flex-row items-center justify-end">
+				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />
+				<div className="flex w-full flex-row items-center justify-end py-4">
 					<Button
 						ariaDisabled={isSubmitting}
 						ariaLabel="send password reset link"
