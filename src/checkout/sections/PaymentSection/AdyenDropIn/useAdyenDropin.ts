@@ -35,8 +35,10 @@ import {
 } from "@/checkout/state/updateStateStore";
 import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
-import { adyenErrorMessages } from "@/checkout/sections/PaymentSection/AdyenDropIn/errorMessages";
-import { apiErrorMessages } from "@/checkout/hooks/useAlerts/messages";
+import {
+	adyenErrorMessages,
+	apiErrorMessages,
+} from "@/checkout/sections/PaymentSection/AdyenDropIn/errorMessages";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { useUser } from "@/checkout/hooks/useUser";
 import { getUrlForTransactionInitialize } from "@/checkout/sections/PaymentSection/utils";

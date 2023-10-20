@@ -13,8 +13,6 @@ import { type ChangeHandler, hasErrors, useForm } from "@/checkout/hooks/useForm
 import { getCurrentHref } from "@/checkout/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout/sections/GuestUser/useCheckoutEmailUpdate";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
-import { passwordMessages } from "@/checkout/sections/SignIn/messages";
 import { useUser } from "@/checkout/hooks/useUser";
 import { isValidEmail } from "@/checkout/lib/utils/common";
 
@@ -35,7 +33,6 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 	const shouldUserRegister = useUserRegisterState();
 	const { setShouldRegisterUser, setSubmitInProgress } = useCheckoutUpdateStateActions();
 	const { errorMessages } = useErrorMessages();
-	const formatMessage = useFormattedMessages();
 	const { setCheckoutUpdateState: setRegisterState } = useCheckoutUpdateStateChange("userRegister");
 	const [, userRegister] = useUserRegisterMutation();
 	const [userRegisterDisabled, setUserRegistrationDisabled] = useState(false);
@@ -45,9 +42,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 		createAccount: bool(),
 		email: string().email(errorMessages.invalid).required(errorMessages.required),
 		password: string().when(["createAccount"], ([createAccount], field) =>
-			createAccount
-				? field.min(8, formatMessage(passwordMessages.passwordAtLeastCharacters)).required()
-				: field,
+			createAccount ? field.min(8, "Password must be at least 8 characters").required() : field,
 		),
 	}) as Schema<GuestUserFormData>;
 

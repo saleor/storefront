@@ -1,7 +1,5 @@
 import { AlertIcon, SuccessIcon } from "../../assets/icons";
 import { Section } from "./Section";
-import { orderInfoMessages } from "./messages";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 import { useOrder } from "@/checkout/hooks/useOrder";
 import { usePaymentStatus } from "@/checkout/sections/PaymentSection/utils";
@@ -27,24 +25,21 @@ const SuccessMessage = ({ message }: { message: string }) => {
 };
 
 export const PaymentSection = () => {
-	const formatMessage = useFormattedMessages();
 	const { order } = useOrder();
 	const paymentStatus = usePaymentStatus(order);
 
 	return (
-		<Section title={formatMessage(orderInfoMessages.paymentSection)}>
+		<Section title="Payment">
 			<div data-testid="paymentStatus">
 				<div className="flex flex-row items-center">
 					{paymentStatus === "authorized" && (
-						<SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
+						<SuccessMessage message="We've received your payment authorization" />
 					)}
 
-					{paymentStatus === "paidInFull" && (
-						<SuccessMessage message={formatMessage(orderInfoMessages.orderPaid)} />
-					)}
+					{paymentStatus === "paidInFull" && <SuccessMessage message="We've received your payment" />}
 
 					{paymentStatus === "overpaid" && (
-						<ErrorMessage message={formatMessage(orderInfoMessages.orderOvercharged)} />
+						<ErrorMessage message="Your order has been paid more than owed. This may be an error during payment. Contact your shop staff for help." />
 					)}
 				</div>
 			</div>

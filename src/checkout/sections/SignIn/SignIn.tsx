@@ -1,12 +1,9 @@
 import React from "react";
 import { Button } from "@/checkout/components/Button";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { TextInput } from "@/checkout/components/TextInput";
-import { commonMessages } from "@/checkout/lib/commonMessages";
 import { useSignInForm } from "@/checkout/sections/SignIn/useSignInForm";
 import { usePasswordResetRequest } from "@/checkout/sections/SignIn/usePasswordResetRequest";
-import { contactLabels, contactMessages } from "@/checkout/sections/Contact/messages";
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import {
 	SignInFormContainer,
@@ -32,7 +29,6 @@ export const SignIn: React.FC<SignInProps> = ({
 		checkout: { email: checkoutEmail },
 	} = useCheckout();
 	const { errorMessages } = useErrorMessages();
-	const formatMessage = useFormattedMessages();
 
 	const form = useSignInForm({
 		onSuccess: onSignInSuccess,
@@ -67,36 +63,36 @@ export const SignIn: React.FC<SignInProps> = ({
 
 	return (
 		<SignInFormContainer
-			title={formatMessage(contactMessages.signIn)}
-			redirectSubtitle={formatMessage(contactMessages.newCustomer)}
-			redirectButtonLabel={formatMessage(contactMessages.guestCheckout)}
+			title="Sign in"
+			redirectSubtitle="New customer?"
+			redirectButtonLabel="Guest checkout"
 			onSectionChange={onSectionChange}
 		>
 			<FormProvider form={form}>
 				<TextInput
 					required
 					name="email"
-					label={formatMessage(contactMessages.email)}
+					label="Email"
 					onChange={(event) => {
 						handleChange(event);
 						onEmailChange(event.currentTarget.value);
 					}}
 				/>
-				<PasswordInput name="password" label={formatMessage(contactMessages.password)} />
+				<PasswordInput name="password" label="Password" />
 				<div className="flex w-full flex-row items-center justify-end">
 					<Button
 						ariaDisabled={isSubmitting}
-						ariaLabel={formatMessage(contactLabels.sendResetLink)}
+						ariaLabel="send password reset link"
 						variant="tertiary"
-						label={formatMessage(passwordResetSent ? contactMessages.resend : contactMessages.forgotPassword)}
+						label={passwordResetSent ? "Resend?" : "Forgot password?"}
 						className="ml-1 mr-4"
 						onClick={(e) => (isSubmitting ? e.preventDefault() : onPasswordResetRequest)}
 					/>
 					<Button
 						type="submit"
 						disabled={isSubmitting}
-						ariaLabel={formatMessage(contactLabels.signIn)}
-						label={formatMessage(isSubmitting ? commonMessages.processing : contactMessages.signIn)}
+						ariaLabel={"Sign in"}
+						label={isSubmitting ? "Processing…" : "Sign in"}
 					/>
 				</div>
 			</FormProvider>

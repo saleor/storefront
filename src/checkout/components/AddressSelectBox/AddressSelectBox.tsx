@@ -1,6 +1,4 @@
 import React from "react";
-import { addressSelectBoxLabels, addressSelectBoxMessages } from "./messages";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { SelectBox, type SelectBoxProps } from "@/checkout/components/SelectBox";
 import { Button } from "@/checkout/components/Button";
 import { Address } from "@/checkout/components/Address";
@@ -21,15 +19,11 @@ export const AddressSelectBox = <TFieldName extends string>({
 	unavailable,
 	...rest
 }: AddressSelectBoxProps<TFieldName>) => {
-	const formatMessage = useFormattedMessages();
-
 	return (
 		<SelectBox {...rest} disabled={unavailable}>
 			<div className="flex w-full flex-row justify-between">
 				<Address address={address as AddressFragment}>
-					{unavailable && (
-						<p className="font-xs my-1">{formatMessage(addressSelectBoxMessages.cantShipToAddress)}</p>
-					)}
+					{unavailable && <p className="font-xs my-1">Can&apos;t ship to this address</p>}
 				</Address>
 				<div>
 					<Button
@@ -38,9 +32,9 @@ export const AddressSelectBox = <TFieldName extends string>({
 							event.stopPropagation();
 							onEdit();
 						}}
-						ariaLabel={formatMessage(addressSelectBoxMessages.editAddress)}
+						ariaLabel="edit"
 						className="pointer-events-auto absolute right-4"
-						label={formatMessage(addressSelectBoxLabels.editAddress)}
+						label="edit"
 					/>
 				</div>
 			</div>

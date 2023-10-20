@@ -3,13 +3,10 @@ import { Suspense } from "react";
 import { PageHeader } from "@/checkout/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout/sections/Summary";
 import { OrderInfo } from "@/checkout/sections/OrderInfo";
-import { orderInfoMessages } from "@/checkout/sections/OrderInfo/messages";
 import { useOrder } from "@/checkout/hooks/useOrder";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 export const OrderConfirmation = () => {
 	const { order } = useOrder();
-	const formatMessage = useFormattedMessages();
 
 	return (
 		<main className="grid grid-cols-1 gap-x-16 lg:grid-cols-2">
@@ -17,12 +14,11 @@ export const OrderConfirmation = () => {
 				<header>
 					<PageHeader />
 					<p className="mb-2 text-lg font-bold" data-testid="orderConfrmationTitle">
-						{formatMessage(orderInfoMessages.orderConfirmTitle, { number: order.number })}
+						Order #{order.number} confirmed
 					</p>
 					<p className="text-base">
-						{formatMessage(orderInfoMessages.orderConfirmSubtitle, {
-							email: order.userEmail || "",
-						})}
+						Thank you for placing your order. We&apos;ve received it and we will contact you as soon as your
+						package is shipped. A confirmation email has been sent to {order.userEmail}.
 					</p>
 				</header>
 				<OrderInfo />

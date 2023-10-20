@@ -1,11 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { type CountryCode, usePaymentGatewaysInitializeMutation } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useLocale } from "@/checkout/hooks/useLocale";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
-import { type UrlChangeHandlerArgs, useUrlChange } from "@/checkout/hooks/useUrlChange";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
-import { type Locale } from "@/checkout/lib/regions";
 import { type ParsedPaymentGateways } from "@/checkout/sections/PaymentSection/types";
 import {
 	getFilteredPaymentGateways,
@@ -13,7 +10,6 @@ import {
 } from "@/checkout/sections/PaymentSection/utils";
 
 export const usePaymentGatewaysInitialize = () => {
-	const { locale } = useLocale();
 	const {
 		checkout: { billingAddress },
 	} = useCheckout();
@@ -24,7 +20,6 @@ export const usePaymentGatewaysInitialize = () => {
 	const billingCountry = billingAddress?.country.code as MightNotExist<CountryCode>;
 
 	const [gatewayConfigs, setGatewayConfigs] = useState<ParsedPaymentGateways>({});
-	const previousLocale = useRef<Locale>(locale);
 	const previousBillingCountry = useRef(billingCountry);
 
 	const [{ fetching }, paymentGatewaysInitialize] = usePaymentGatewaysInitializeMutation();
@@ -63,21 +58,6 @@ export const usePaymentGatewaysInitialize = () => {
 	useEffect(() => {
 		void onSubmit();
 	}, []);
-
-	const handleLocaleChange = useCallback(
-		({ queryParams: { locale: locale } }: UrlChangeHandlerArgs) => {
-			const hasLocaleChanged = locale !== previousLocale.current;
-
-			if (hasLocaleChanged) {
-				previousLocale.current = locale;
-
-				void onSubmit();
-			}
-		},
-		[onSubmit],
-	);
-
-	useUrlChange(handleLocaleChange);
 
 	useEffect(() => {
 		if (billingCountry !== previousBillingCountry.current) {

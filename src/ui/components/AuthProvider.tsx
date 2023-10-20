@@ -4,6 +4,7 @@ import { SaleorAuthProvider, useAuthChange } from "@saleor/auth-sdk/react";
 import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from "@apollo/client";
 import { invariant } from "ts-invariant";
 import { createSaleorAuthClient } from "@saleor/auth-sdk";
+import { type ReactNode } from "react";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
@@ -20,7 +21,7 @@ export const apolloClient = new ApolloClient({
 	cache: new InMemoryCache(),
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
 	invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	useAuthChange({
 		saleorApiUrl,

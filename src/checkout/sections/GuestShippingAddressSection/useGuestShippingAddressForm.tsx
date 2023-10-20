@@ -1,6 +1,5 @@
 import { omit } from "lodash-es";
 import { useMemo } from "react";
-import { useAddressFormUrlChange } from "@/checkout/components/AddressForm/useAddressFormUrlChange";
 import { useCheckoutShippingAddressUpdateMutation } from "@/checkout/graphql";
 import { useFormSubmit } from "@/checkout/hooks/useFormSubmit";
 import {
@@ -51,8 +50,6 @@ export const useGuestShippingAddressForm = () => {
 		initialValues: getAddressFormDataFromAddress(shippingAddress),
 		scope: "checkoutShippingUpdate",
 	});
-
-	useAddressFormUrlChange(form);
 
 	useCheckoutFormValidationTrigger({
 		form,

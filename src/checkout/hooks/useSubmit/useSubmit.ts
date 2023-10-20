@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { type CombinedError } from "urql";
 import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useLocale } from "@/checkout/hooks/useLocale";
 import {
 	type CheckoutUpdateStateScope,
 	useCheckoutUpdateStateChange,
@@ -19,7 +18,6 @@ import {
 	type SimpleSubmitFn,
 } from "@/checkout/hooks/useSubmit/types";
 import { type ApiErrors } from "@/checkout/hooks/useGetParsedErrors/types";
-import { localeToLanguageCode } from "@/checkout/lib/utils/locale";
 import { extractMutationData, extractMutationErrors } from "@/checkout/hooks/useSubmit/utils";
 
 interface CallbackProps<TData> {
@@ -76,7 +74,6 @@ export const useSubmit = <
 	);
 	const { showErrors } = useAlerts();
 	const { checkout } = useCheckout();
-	const { locale } = useLocale();
 
 	const handleSubmit = useCallback(
 		async (formData: TData = {} as TData, formHelpers?: any) => {
@@ -97,7 +94,7 @@ export const useSubmit = <
 			setCheckoutUpdateState("loading");
 
 			const commonData: CommonVars = {
-				languageCode: localeToLanguageCode(locale),
+				languageCode: "EN_US",
 				channel: checkout.channel.slug,
 				checkoutId: checkout.id,
 			};
@@ -140,7 +137,6 @@ export const useSubmit = <
 			onStart,
 			shouldAbort,
 			setCheckoutUpdateState,
-			locale,
 			checkout.channel.slug,
 			checkout.id,
 			onSubmit,

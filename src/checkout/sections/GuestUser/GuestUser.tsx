@@ -1,6 +1,4 @@
 import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
-import { contactMessages } from "../Contact/messages";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
 import { Checkbox } from "@/checkout/components/Checkbox";
 import { TextInput } from "@/checkout/components/TextInput";
@@ -17,16 +15,15 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 	onEmailChange,
 	email: initialEmail,
 }) => {
-	const formatMessage = useFormattedMessages();
 	const form = useGuestUserForm({ initialEmail });
 	const { handleChange } = form;
 	const { createAccount } = form.values;
 
 	return (
 		<SignInFormContainer
-			title={formatMessage(contactMessages.contact)}
-			redirectSubtitle={formatMessage(contactMessages.haveAccount)}
-			redirectButtonLabel={formatMessage(contactMessages.signIn)}
+			title="Contact details"
+			redirectSubtitle="Already have an account?"
+			redirectButtonLabel="Sign in"
 			onSectionChange={onSectionChange}
 		>
 			<FormProvider form={form}>
@@ -34,7 +31,7 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 					<TextInput
 						required
 						name="email"
-						label={formatMessage(contactMessages.email)}
+						label="Email"
 						onChange={(event) => {
 							handleChange(event);
 							onEmailChange(event.currentTarget.value);
@@ -42,15 +39,12 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 					/>
 					<Checkbox
 						name="createAccount"
-						label={formatMessage(contactMessages.wantToCreateAccount)}
+						label="I want to create account"
 						data-testid={"createAccountCheckbox"}
 					/>
 					{createAccount && (
 						<div className="mt-2">
-							<PasswordInput
-								name="password"
-								label={formatMessage(contactMessages.passwordWithRequirements)}
-							/>
+							<PasswordInput name="password" label="Password (minimum 8 characters)" />
 						</div>
 					)}
 				</div>
