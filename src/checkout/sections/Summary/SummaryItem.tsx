@@ -1,9 +1,7 @@
 import { type ReactNode } from "react";
 import { useSummaryLineLineAttributesText, getSummaryLineProps } from "./utils";
-import { summaryLabels } from "./messages";
 import { type CheckoutLineFragment, type OrderLineFragment } from "@/checkout/graphql";
 import { PhotoIcon } from "@/checkout/ui-kit/icons";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 
 export type SummaryLine = CheckoutLineFragment | OrderLineFragment;
 
@@ -14,8 +12,6 @@ interface SummaryItemProps {
 
 export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 	const { productName, productImage } = getSummaryLineProps(line);
-
-	const formatMessage = useFormattedMessages();
 
 	const attributesText = useSummaryLineLineAttributesText(line);
 
@@ -32,10 +28,10 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 			</div>
 			<div className="flex w-full flex-row items-center justify-between">
 				<div className="flex flex-col">
-					<p aria-label={formatMessage(summaryLabels.summaryItemName)} className="mb-3 font-bold">
+					<p aria-label="summary item name" className="mb-3 font-bold">
 						{productName}
 					</p>
-					<p aria-label={formatMessage(summaryLabels.variantName)} className="text-xs">
+					<p aria-label="variant name" className="text-xs">
 						{attributesText}
 					</p>
 				</div>

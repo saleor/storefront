@@ -1,9 +1,7 @@
 import React from "react";
 import { SummaryMoneyRow, type SummaryMoneyRowProps } from "./SummaryMoneyRow";
-import { summaryLabels } from "./messages";
 import { IconButton } from "@/checkout/components/IconButton";
 import { RemoveIcon } from "@/checkout/ui-kit/icons";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { useCheckoutRemovePromoCodeMutation } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { isOrderConfirmationPage } from "@/checkout/lib/utils/url";
@@ -21,7 +19,6 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 	...rest
 }) => {
 	const { checkout } = useCheckout({ pause: isOrderConfirmationPage() });
-	const formatMessage = useFormattedMessages();
 	const [, checkoutRemovePromoCode] = useCheckoutRemovePromoCodeMutation();
 
 	const onDelete = () => {
@@ -36,13 +33,7 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 
 	return (
 		<SummaryMoneyRow {...rest}>
-			{editable && (
-				<IconButton
-					onClick={onDelete}
-					ariaLabel={formatMessage(summaryLabels.removeDiscount)}
-					icon={<RemoveIcon />}
-				/>
-			)}
+			{editable && <IconButton onClick={onDelete} ariaLabel="remove promo code" icon={<RemoveIcon />} />}
 		</SummaryMoneyRow>
 	);
 };
