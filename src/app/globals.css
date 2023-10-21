@@ -6,8 +6,12 @@ body {
 	overflow-x: hidden;
 }
 
+summary::-webkit-details-marker {
+	display: none;
+}
+
 @media (min-width: theme(screens.lg)) {
-	.checkout-bg {
+	html:has(.checkout-bg) {
 		background: linear-gradient(
 			90deg,
 			theme(colors.white) 0%,

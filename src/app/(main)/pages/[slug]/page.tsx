@@ -37,7 +37,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 		<div className="mx-auto max-w-7xl p-8 pb-16">
 			<h1 className="text-3xl font-semibold">{title}</h1>
 			{contentHtml && (
-				<div className="prose">
+				<div className="prose prose-xl prose-neutral">
 					{contentHtml.map((content) => (
 						<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 					))}

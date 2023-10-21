@@ -42,7 +42,7 @@ export const PromoCodeAdd: FC<Classes> = ({ className }) => {
 				<TextInput required={false} name="promoCode" label="Add gift card or discount code" />
 				{showApplyButton && (
 					<Button
-						className="absolute right-7 top-7"
+						className="absolute right-4 top-[34px]"
 						variant="tertiary"
 						ariaLabel="apply"
 						label="Apply"

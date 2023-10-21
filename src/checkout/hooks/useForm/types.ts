@@ -19,7 +19,7 @@ export type UseFormReturn<TData extends FormDataBase> = Omit<
 		field: TFieldName,
 		value: TData[TFieldName],
 	) => void;
-	validateForm: (values: TData) => FormErrors<TData>;
+	validateForm: (values: TData) => FormErrors<TData> | Promise<FormErrors<TData>>;
 	setValues: (values: Partial<TData>) => void;
 };
 

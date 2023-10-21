@@ -49,7 +49,7 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 
 	return (
 		<div className="relative flex h-24 flex-col items-end">
-			<div className="flex flex-row items-baseline">
+			<div className="w-min">
 				<FormProvider form={form}>
 					<TextInput
 						required
@@ -57,6 +57,7 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 						onBlur={handleQuantityInputBlur}
 						name="quantity"
 						label="Quantity"
+						className="text-center"
 					/>
 				</FormProvider>
 			</div>
