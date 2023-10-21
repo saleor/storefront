@@ -5,16 +5,13 @@
 	"type": "module",
 	"scripts": {
 		"dev": "next dev",
-		"build": "pnpm run i18n && next build",
+		"build": "next build",
 		"start": "next start",
 		"predev": "pnpm run generate",
 		"prebuild": "pnpm run generate",
 		"lint": "next lint --dir src --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"prepare": "husky install",
-		"i18n:extract": "formatjs extract 'src/checkout/src/**/*.{js,jsx,ts,tsx}' --format transifex --id-interpolation-pattern '[folder]/[name]/[sha512:contenthash:base64:6]' --out-file src/checkout/content/locales/en-US.json",
-		"i18n:compile": "formatjs compile-folder --ast --format transifex src/checkout/content/locales src/checkout/content/compiled-locales",
-		"i18n": "pnpm run i18n:extract && pnpm run i18n:compile",
 		"test": "playwright test"
 	},
 	"dependencies": {
@@ -22,7 +19,7 @@
 		"@adyen/api-library": "14.3.0",
 		"@apollo/client": "3.8.5",
 		"@headlessui/react": "1.7.17",
-		"@saleor/auth-sdk": "0.12.0",
+		"@saleor/auth-sdk": "0.13.1",
 		"clsx": "2.0.0",
 		"editorjs-html": "3.4.3",
 		"formik": "2.4.5",
@@ -34,7 +31,6 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-error-boundary": "4.0.11",
-		"react-intl": "6.5.0",
 		"react-spinners": "0.13.8",
 		"react-test-renderer": "18.2.0",
 		"react-toastify": "9.1.3",
@@ -46,7 +42,6 @@
 		"zustand": "4.4.3"
 	},
 	"devDependencies": {
-		"@formatjs/cli": "6.2.1",
 		"@graphql-codegen/cli": "5.0.0",
 		"@graphql-codegen/client-preset": "4.1.0",
 		"@graphql-typed-document-node/core": "3.2.0",
@@ -66,7 +61,6 @@
 		"eslint": "8.51.0",
 		"eslint-config-next": "13.5.5",
 		"eslint-config-prettier": "9.0.0",
-		"eslint-plugin-formatjs": "4.11.0",
 		"eslint-plugin-import": "2.28.1",
 		"eslint-plugin-playwright": "0.17.0",
 		"graphql-tag": "2.12.6",

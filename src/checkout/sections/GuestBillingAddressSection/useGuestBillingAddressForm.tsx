@@ -1,6 +1,5 @@
 import { omit } from "lodash-es";
 import { useMemo } from "react";
-import { useAddressFormUrlChange } from "@/checkout/components/AddressForm/useAddressFormUrlChange";
 import {
 	getAddressFormDataFromAddress,
 	getAddressInputData,
@@ -72,8 +71,6 @@ export const useGuestBillingAddressForm = ({ skipValidation }: GuestBillingAddre
 		validationSchema,
 		scope: "checkoutBillingUpdate",
 	});
-
-	useAddressFormUrlChange(form);
 
 	useCheckoutFormValidationTrigger({
 		form,

@@ -5,21 +5,36 @@ import {
 	useAddressValidationRulesQuery,
 	type ValidationRulesFragment,
 } from "@/checkout/graphql";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
-import { warnAboutMissingTranslation } from "@/checkout/hooks/useFormattedMessages/utils";
 import { type OptionalAddress, type AddressField } from "@/checkout/components/AddressForm/types";
 import { defaultCountry } from "@/checkout/lib/consts/countries";
-import {
-	type AddressFieldLabel,
-	addressFieldMessages,
-	type LocalizedAddressFieldLabel,
-	localizedAddressFieldMessages,
-} from "@/checkout/components/AddressForm/messages";
 import { getOrderedAddressFields, getRequiredAddressFields } from "@/checkout/components/AddressForm/utils";
 
-export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
-	const formatMessage = useFormattedMessages();
+export type AddressFieldLabel = Exclude<AddressField, "countryCode"> | "country";
+export const addressFieldMessages: Record<AddressFieldLabel, string> = {
+	city: "City",
+	firstName: "First name",
+	countryArea: "Country area",
+	lastName: "Last name",
+	country: "Country",
+	cityArea: "City area",
+	postalCode: "Postal code",
+	companyName: "Company",
+	streetAddress1: "Street address",
+	streetAddress2: "Street address (continue)",
+	phone: "Phone number",
+};
 
+export type LocalizedAddressFieldLabel = "province" | "district" | "state" | "zip" | "postal" | "postTown";
+export const localizedAddressFieldMessages: Record<LocalizedAddressFieldLabel, string> = {
+	province: "Province",
+	district: "District",
+	state: "State",
+	zip: "Zip code",
+	postal: "Postal code",
+	postTown: "Post town",
+};
+
+export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
 	const [{ data }] = useAddressValidationRulesQuery({
 		variables: { countryCode },
 	});
@@ -65,20 +80,16 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 		[getMissingFieldsFromAddress],
 	);
 
-	const getLocalizedFieldLabel = useCallback(
-		(field: AddressField, localizedField?: string) => {
-			try {
-				const translatedLabel = formatMessage(
-					localizedAddressFieldMessages[camelCase(localizedField) as LocalizedAddressFieldLabel],
-				);
-				return translatedLabel;
-			} catch (e) {
-				warnAboutMissingTranslation(localizedField);
-				return formatMessage(addressFieldMessages[camelCase(field) as AddressFieldLabel]);
-			}
-		},
-		[formatMessage],
-	);
+	const getLocalizedFieldLabel = useCallback((field: AddressField, localizedField?: string) => {
+		try {
+			const translatedLabel =
+				localizedAddressFieldMessages[camelCase(localizedField) as LocalizedAddressFieldLabel];
+			return translatedLabel;
+		} catch (e) {
+			console.warn(`Missing translation: ${localizedField}`);
+			return addressFieldMessages[camelCase(field) as AddressFieldLabel];
+		}
+	}, []);
 
 	const getFieldLabel = useCallback(
 		(field: AddressField) => {
@@ -93,9 +104,9 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 				);
 			}
 
-			return formatMessage(addressFieldMessages[field as AddressFieldLabel]);
+			return addressFieldMessages[field as AddressFieldLabel];
 		},
-		[formatMessage, getLocalizedFieldLabel, localizedFields],
+		[getLocalizedFieldLabel, localizedFields],
 	);
 
 	const orderedAddressFields = getOrderedAddressFields(validationRules?.allowedFields as AddressField[]);

@@ -1,8 +1,6 @@
 import React from "react";
 import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
-import { contactLabels, contactMessages } from "../Contact/messages";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { Button } from "@/checkout/components/Button";
 import { useUser } from "@/checkout/hooks/useUser";
 
@@ -11,7 +9,6 @@ interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionCha
 }
 
 export const SignedInUser: React.FC<SignedInUserProps> = ({ onSectionChange, onSignOutSuccess }) => {
-	const formatMessage = useFormattedMessages();
 	const { signOut } = useSaleorAuthContext();
 
 	const { user } = useUser();
@@ -22,15 +19,10 @@ export const SignedInUser: React.FC<SignedInUserProps> = ({ onSectionChange, onS
 	};
 
 	return (
-		<SignInFormContainer title={formatMessage(contactMessages.account)} onSectionChange={onSectionChange}>
+		<SignInFormContainer title="Account" onSectionChange={onSectionChange}>
 			<div className="flex flex-row justify-between">
 				<p className="text-base font-bold">{user?.email}</p>
-				<Button
-					ariaLabel={formatMessage(contactLabels.signOut)}
-					variant="tertiary"
-					onClick={handleLogout}
-					label={formatMessage(contactMessages.signOut)}
-				/>
+				<Button ariaLabel="Sign out" variant="tertiary" onClick={handleLogout} label="Sign out" />
 			</div>
 		</SignInFormContainer>
 	);

@@ -9,12 +9,10 @@ import {
 	useUserAddressUpdateMutation,
 } from "@/checkout/graphql";
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getAddressFormDataFromAddress, getAddressInputData } from "@/checkout/components/AddressForm/utils";
 import { type ChangeHandler, useForm } from "@/checkout/hooks/useForm";
 import { useFormSubmit } from "@/checkout/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout/components/ManualSaveAddressForm";
-import { addressEditMessages } from "@/checkout/sections/AddressEditForm/messages";
 import { useAddressFormSchema } from "@/checkout/components/AddressForm/useAddressFormSchema";
 import { useSubmit } from "@/checkout/hooks/useSubmit/useSubmit";
 
@@ -32,7 +30,6 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 	address,
 	availableCountries,
 }) => {
-	const formatMessage = useFormattedMessages();
 	const [{ fetching: updating }, userAddressUpdate] = useUserAddressUpdateMutation();
 	const [{ fetching: deleting }, userAddressDelete] = useUserAddressDeleteMutation();
 	const { setCountryCode, validationSchema } = useAddressFormSchema();
@@ -79,10 +76,7 @@ export const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
 	return (
 		<FormProvider form={{ ...form, handleChange: onChange }}>
-			<AddressForm
-				title={formatMessage(addressEditMessages.editAddress)}
-				availableCountries={availableCountries}
-			>
+			<AddressForm title="Edit address" availableCountries={availableCountries}>
 				<AddressFormActions
 					onSubmit={handleSubmit}
 					loading={updating || deleting}

@@ -1,5 +1,4 @@
 import compact from "lodash-es/compact";
-import { useIntl } from "react-intl";
 import { type CheckoutLineFragment, type OrderLineFragment } from "@/checkout/graphql";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 
@@ -25,8 +24,6 @@ export const getSummaryLineProps = (line: OrderLineFragment | CheckoutLineFragme
 		  };
 
 export const useSummaryLineLineAttributesText = (line: CheckoutLineFragment | OrderLineFragment): string => {
-	const intl = useIntl();
-
 	const parsedValues =
 		line.variant?.attributes?.reduce<Array<MightNotExist<string>>>(
 			(result, { values }) => [
@@ -37,7 +34,7 @@ export const useSummaryLineLineAttributesText = (line: CheckoutLineFragment | Or
 					}
 
 					if (dateTime) {
-						return intl.formatDate(dateTime, { dateStyle: "medium" });
+						return new Intl.DateTimeFormat("EN-US", { dateStyle: "medium" }).format(new Date(dateTime));
 					}
 
 					return name;

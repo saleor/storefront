@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import { useCheckoutFormValidationTrigger } from "@/checkout/hooks/useCheckoutFormValidationTrigger";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getById } from "@/checkout/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
 import { UserAddressSectionContainer } from "@/checkout/sections/UserAddressSectionContainer";
@@ -12,7 +11,6 @@ import { Checkbox } from "@/checkout/components";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import { useBillingSameAsShippingForm } from "@/checkout/sections/GuestBillingAddressSection/useBillingSameAsShippingForm";
-import { billingMessages } from "@/checkout/sections/UserBillingAddressSection/messages";
 import { type OptionalAddress } from "@/checkout/components/AddressForm/types";
 import { getByMatchingAddress } from "@/checkout/components/AddressForm/utils";
 import { type AddressFragment } from "@/checkout/graphql";
@@ -20,7 +18,6 @@ import { type AddressFragment } from "@/checkout/graphql";
 interface UserBillingAddressSectionProps {}
 
 export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps> = ({}) => {
-	const formatMessage = useFormattedMessages();
 	const {
 		checkout: { isShippingRequired },
 	} = useCheckout();
@@ -65,7 +62,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
 				<FormProvider form={billingSameAsShippingForm}>
 					<Checkbox
 						name="billingSameAsShipping"
-						label={formatMessage(billingMessages.useShippingAsBilling)}
+						label="Use shipping address as billing address"
 						data-testid={"useShippingAsBillingCheckbox"}
 					/>
 				</FormProvider>
@@ -90,7 +87,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
 
 							{displayAddressEdit && (
 								<AddressEditForm
-									title={formatMessage(billingMessages.billingAddress)}
+									title="Billing address"
 									onClose={() => setDisplayAddressEdit()}
 									address={form.values.addressList.find(getById(editedAddressId)) as AddressFragment}
 									onUpdate={onAddressUpdateSuccess}
@@ -102,7 +99,7 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
 								<AddressList
 									onEditChange={setDisplayAddressEdit}
 									onAddAddressClick={() => setDisplayAddressCreate(true)}
-									title={formatMessage(billingMessages.billingAddress)}
+									title="Billing address"
 									form={form}
 								/>
 							)}

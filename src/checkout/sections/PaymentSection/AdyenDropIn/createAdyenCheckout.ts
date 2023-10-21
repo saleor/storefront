@@ -9,7 +9,6 @@ import { PaymentResponse as AdyenApiPaymentResponse } from "@adyen/api-library/l
 import { type CreateCheckoutSessionResponse } from "@adyen/api-library/lib/src/typings/checkout/createCheckoutSessionResponse";
 import { type AdyenPaymentResponse } from "./types";
 import { replaceUrl } from "@/checkout/lib/utils/url";
-import { type Locale } from "@/checkout/lib/regions";
 
 export type AdyenDropInCreateSessionResponse = {
 	session: CreateCheckoutSessionResponse;
@@ -45,15 +44,13 @@ export function createAdyenCheckoutInstance(
 	{
 		onSubmit,
 		onAdditionalDetails,
-		locale,
 	}: {
 		onSubmit: AdyenCheckoutInstanceOnSubmit;
 		onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails;
-		locale: Locale;
 	},
 ) {
 	return AdyenCheckout({
-		locale,
+		locale: "en-US",
 		environment: "test",
 		clientKey: adyenSessionResponse.clientKey,
 		session: {

@@ -1,12 +1,11 @@
 import queryString from "query-string";
-import { DEFAULT_CHANNEL, DEFAULT_LOCALE, type Locale } from "@/checkout/lib/regions";
+import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 import { type CountryCode } from "@/checkout/graphql";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 
 export type ParamBasicValue = MightNotExist<string>;
 
 const queryParamsMap = {
-	locale: "locale",
 	redirectUrl: "redirectUrl",
 	checkout: "checkoutId",
 	order: "orderId",
@@ -28,7 +27,6 @@ type QueryParam = (typeof queryParamsMap)[UnmappedQueryParam];
 
 interface CustomTypedQueryParams {
 	countryCode: CountryCode;
-	locale: Locale;
 	channel: string;
 	saleorApiUrl: string;
 }
@@ -38,7 +36,6 @@ type RawQueryParams = Record<UnmappedQueryParam, ParamBasicValue> & CustomTypedQ
 export type QueryParams = Record<QueryParam, ParamBasicValue> & CustomTypedQueryParams;
 
 const defaultParams: Partial<RawQueryParams> = {
-	locale: DEFAULT_LOCALE,
 	channel: DEFAULT_CHANNEL,
 };
 
@@ -49,13 +46,7 @@ export const getRawQueryParams = () => queryString.parse(location.search) as unk
 export const getQueryParams = (): QueryParams => {
 	const params = getRawQueryParams();
 
-	const locale = params.locale || defaultParams.locale;
-
-	if (locale !== params.locale) {
-		replaceUrl({ query: { locale: DEFAULT_LOCALE } });
-	}
-
-	return Object.entries({ ...params, locale }).reduce((result, entry) => {
+	return Object.entries(params).reduce((result, entry) => {
 		const [paramName, paramValue] = entry as [UnmappedQueryParam, ParamBasicValue];
 		const mappedParamName = queryParamsMap[paramName];
 		const mappedParamValue = paramValue || defaultParams[paramName];

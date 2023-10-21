@@ -5,8 +5,7 @@ import {
 	type AddressFormData,
 	type ApiAddressField,
 } from "../../components/AddressForm/types";
-import { createGetCountryNames, getParsedLocaleData } from "@/checkout/lib/utils/locale";
-import { getQueryParams } from "@/checkout/lib/utils/url";
+import { getCountryName } from "@/checkout/lib/utils/locale";
 import {
 	type AddressFragment,
 	type AddressInput,
@@ -27,12 +26,10 @@ export const getEmptyAddressFormData = (): AddressFormData => ({
 	countryArea: "",
 	postalCode: "",
 	phone: "",
-	countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
+	countryCode: "US",
 });
 
 export const getEmptyAddress = (): AddressFragment => {
-	const getCountryName = createGetCountryNames();
-
 	const { countryCode, ...emptyAddressRest } = getEmptyAddressFormData();
 
 	return {
@@ -82,7 +79,7 @@ export const getAddressFormDataFromAddress = (address: OptionalAddress): Address
 	if (!address) {
 		return {
 			...getEmptyAddressFormData(),
-			countryCode: getParsedLocaleData(getQueryParams().locale).countryCode,
+			countryCode: "US",
 		};
 	}
 

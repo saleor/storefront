@@ -1,18 +1,15 @@
 import { useEffect, useMemo } from "react";
 
 import { type Checkout, useCheckoutQuery } from "@/checkout/graphql";
-import { localeToLanguageCode } from "@/checkout/lib/utils/locale";
-import { useLocale } from "@/checkout/hooks/useLocale";
 import { extractCheckoutIdFromUrl } from "@/checkout/lib/utils/url";
 import { useCheckoutUpdateStateActions } from "@/checkout/state/updateStateStore";
 
 export const useCheckout = ({ pause = false } = {}) => {
 	const id = useMemo(() => extractCheckoutIdFromUrl(), []);
-	const { locale } = useLocale();
 	const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
 	const [{ data, fetching: loading, stale }, refetch] = useCheckoutQuery({
-		variables: { id, languageCode: localeToLanguageCode(locale) },
+		variables: { id, languageCode: "EN_US" },
 		pause: pause,
 	});
 

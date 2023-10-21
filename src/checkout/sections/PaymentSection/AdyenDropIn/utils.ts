@@ -1,5 +1,4 @@
 import { type CoreOptions } from "@adyen/adyen-web/dist/types/core/types";
-import { type Locale } from "@/checkout/lib/regions";
 import {
 	type AdyenCheckoutInstanceOnAdditionalDetails,
 	type AdyenCheckoutInstanceOnSubmit,
@@ -8,7 +7,6 @@ import {
 } from "@/checkout/sections/PaymentSection/AdyenDropIn/types";
 
 interface CreateAdyenCheckoutConfigProps extends AdyenGatewayInitializePayload {
-	locale: Locale;
 	onSubmit: AdyenCheckoutInstanceOnSubmit;
 	onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails;
 }
@@ -19,16 +17,15 @@ export const createAdyenCheckoutConfig = ({
 	environment,
 	onSubmit,
 	onAdditionalDetails,
-	locale,
 }: CreateAdyenCheckoutConfigProps): CoreOptions => ({
 	paymentMethodsResponse,
 	environment,
 	clientKey,
 	onSubmit,
 	onAdditionalDetails,
-	locale,
+	locale: "en-US",
 	analytics: {
-		enabled: false,
+		enabled: true,
 	},
 	// Any payment method specific configuration. Find the configuration specific to each payment method: https://docs.adyen.com/payment-methods
 	// For example, this is 3D Secure configuration for cards:

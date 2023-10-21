@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react";
 import { type AddressFormData } from "@/checkout/components/AddressForm/types";
-import { useFormattedMessages } from "@/checkout/hooks/useFormattedMessages";
 import { getEmptyAddressFormData, getAddressInputData } from "@/checkout/components/AddressForm/utils";
 import { type ChangeHandler, useForm } from "@/checkout/hooks/useForm";
 import { useFormSubmit } from "@/checkout/hooks/useFormSubmit";
 import { AddressFormActions } from "@/checkout/components/ManualSaveAddressForm";
-import { addressCreateMessages } from "@/checkout/sections/AddressCreateForm/messages";
 import { useAddressFormSchema } from "@/checkout/components/AddressForm/useAddressFormSchema";
 import { AddressForm, type AddressFormProps } from "@/checkout/components/AddressForm";
 import { type AddressFragment, type CountryCode, useUserAddressCreateMutation } from "@/checkout/graphql";
@@ -22,7 +20,6 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
 	onClose,
 	availableCountries,
 }) => {
-	const formatMessage = useFormattedMessages();
 	const [, userAddressCreate] = useUserAddressCreateMutation();
 	const { setCountryCode, validationSchema } = useAddressFormSchema();
 
@@ -56,10 +53,7 @@ export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
 
 	return (
 		<FormProvider form={{ ...form, handleChange: onChange }}>
-			<AddressForm
-				title={formatMessage(addressCreateMessages.addressCreate)}
-				availableCountries={availableCountries}
-			>
+			<AddressForm title="Create address" availableCountries={availableCountries}>
 				<AddressFormActions onSubmit={handleSubmit} loading={isSubmitting} onCancel={onClose} />
 			</AddressForm>
 		</FormProvider>
