@@ -6006,6 +6006,101 @@ export type ExternalRefresh = {
   user?: Maybe<User>;
 };
 
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSale = Node &
+  ObjectWithMetadata & {
+    __typename?: "ExternalSale";
+    id: Scalars["ID"]["output"];
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<MetadataItem>;
+    /**
+     * A single key from public metadata.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafield?: Maybe<Scalars["String"]["output"]>;
+    /**
+     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafields?: Maybe<Scalars["Metadata"]["output"]>;
+    name: Scalars["String"]["output"];
+    /** List of private metadata items. Requires staff permissions to access. */
+    privateMetadata: Array<MetadataItem>;
+    /**
+     * A single key from private metadata. Requires staff permissions to access.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafield?: Maybe<Scalars["String"]["output"]>;
+    /**
+     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafields?: Maybe<Scalars["Metadata"]["output"]>;
+    /** List of products this sale applies to. */
+    products?: Maybe<ProductCountableConnection>;
+  };
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSaleMetafieldArgs = {
+  key: Scalars["String"]["input"];
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSaleMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSalePrivateMetafieldArgs = {
+  key: Scalars["String"]["input"];
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSalePrivateMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSaleProductsArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+export type ExternalSaleCountableConnection = {
+  __typename?: "ExternalSaleCountableConnection";
+  edges: Array<ExternalSaleCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]["output"]>;
+};
+
+export type ExternalSaleCountableEdge = {
+  __typename?: "ExternalSaleCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"]["output"];
+  /** The item at the end of the edge. */
+  node: ExternalSale;
+};
+
 /** Verify external authentication data by plugin. */
 export type ExternalVerify = {
   __typename?: "ExternalVerify";
@@ -18867,6 +18962,10 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportFiles?: Maybe<ExportFileCountableConnection>;
+  /** Look up a sale by ID. */
+  externalSale?: Maybe<ExternalSale>;
+  /** List of the shop's sales. */
+  externalSales?: Maybe<ExternalSaleCountableConnection>;
   /** Generates an url to redirect to payment gateway and complete payment */
   generatePaymentUrl?: Maybe<PaymentUrl>;
   /**
@@ -19344,6 +19443,20 @@ export type QueryExportFilesArgs = {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   sortBy?: InputMaybe<ExportFileSortingInput>;
+};
+
+export type QueryExternalSaleArgs = {
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+  id: Scalars["ID"]["input"];
+};
+
+export type QueryExternalSalesArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  query?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type QueryGeneratePaymentUrlArgs = {
@@ -29960,24 +30073,425 @@ export type ProductPathsQuery = {
 };
 
 export type SalesQueryVariables = Exact<{
-  cursor?: InputMaybe<Scalars["String"]["input"]>;
-  perPage?: InputMaybe<Scalars["Int"]["input"]>;
-  channel?: InputMaybe<Scalars["String"]["input"]>;
+  channel: Scalars["String"]["input"];
 }>;
 
 export type SalesQuery = {
   __typename?: "Query";
-  sales?: {
-    __typename?: "SaleCountableConnection";
-    pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+  externalSales?: {
+    __typename?: "ExternalSaleCountableConnection";
     edges: Array<{
-      __typename?: "SaleCountableEdge";
+      __typename?: "ExternalSaleCountableEdge";
       node: {
-        __typename?: "Sale";
+        __typename?: "ExternalSale";
         id: string;
         name: string;
-        products?: { __typename?: "ProductCountableConnection"; totalCount?: number | null } | null;
+        products?: {
+          __typename?: "ProductCountableConnection";
+          totalCount?: number | null;
+          edges: Array<{
+            __typename?: "ProductCountableEdge";
+            node: { __typename?: "Product"; id: string; name: string };
+          }>;
+        } | null;
       };
+    }>;
+  } | null;
+};
+
+export type SaleByIdQueryVariables = Exact<{
+  id: Scalars["ID"]["input"];
+  locale: LanguageCodeEnum;
+  channel: Scalars["String"]["input"];
+  address?: InputMaybe<AddressInput>;
+}>;
+
+export type SaleByIdQuery = {
+  __typename?: "Query";
+  externalSale?: {
+    __typename?: "ExternalSale";
+    id: string;
+    name: string;
+    products?: {
+      __typename?: "ProductCountableConnection";
+      totalCount?: number | null;
+      pageInfo: {
+        __typename?: "PageInfo";
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+        startCursor?: string | null;
+        endCursor?: string | null;
+      };
+      edges: Array<{
+        __typename?: "ProductCountableEdge";
+        cursor: string;
+        node: {
+          __typename?: "Product";
+          id: string;
+          slug: string;
+          name: string;
+          productType: {
+            __typename?: "ProductType";
+            id: string;
+            name: string;
+            slug: string;
+            metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          };
+          translation?: {
+            __typename?: "ProductTranslation";
+            id: string;
+            name?: string | null;
+          } | null;
+          thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
+          category?: {
+            __typename?: "Category";
+            id: string;
+            name: string;
+            slug: string;
+            translation?: {
+              __typename?: "CategoryTranslation";
+              id: string;
+              name?: string | null;
+            } | null;
+          } | null;
+          media?: Array<{
+            __typename?: "ProductMedia";
+            url: string;
+            alt: string;
+            type: ProductMediaType;
+          }> | null;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            attribute: {
+              __typename?: "Attribute";
+              id: string;
+              name?: string | null;
+              slug?: string | null;
+              type?: AttributeTypeEnum | null;
+              unit?: MeasurementUnitsEnum | null;
+              translation?: {
+                __typename?: "AttributeTranslation";
+                id: string;
+                name: string;
+              } | null;
+            };
+            values: Array<{
+              __typename?: "AttributeValue";
+              id: string;
+              name?: string | null;
+              value?: string | null;
+              translation?: {
+                __typename?: "AttributeValueTranslation";
+                id: string;
+                name: string;
+                richText?: string | null;
+              } | null;
+            }>;
+          }>;
+          collections?: Array<{ __typename?: "Collection"; name: string }> | null;
+          variants?: Array<{
+            __typename?: "ProductVariant";
+            id: string;
+            name: string;
+            sku?: string | null;
+            quantityAvailable?: number | null;
+            translation?: {
+              __typename?: "ProductVariantTranslation";
+              id: string;
+              name: string;
+            } | null;
+            attributes: Array<{
+              __typename?: "SelectedAttribute";
+              attribute: {
+                __typename?: "Attribute";
+                id: string;
+                name?: string | null;
+                slug?: string | null;
+                type?: AttributeTypeEnum | null;
+                unit?: MeasurementUnitsEnum | null;
+                translation?: {
+                  __typename?: "AttributeTranslation";
+                  id: string;
+                  name: string;
+                } | null;
+              };
+              values: Array<{
+                __typename?: "AttributeValue";
+                id: string;
+                name?: string | null;
+                value?: string | null;
+                translation?: {
+                  __typename?: "AttributeValueTranslation";
+                  id: string;
+                  name: string;
+                  richText?: string | null;
+                } | null;
+              }>;
+            }>;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              url: string;
+              alt: string;
+              type: ProductMediaType;
+            }> | null;
+            pricing?: {
+              __typename?: "VariantPricingInfo";
+              onSale?: boolean | null;
+              price?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; currency: string; amount: number };
+              } | null;
+            } | null;
+          }> | null;
+          pricing?: {
+            __typename?: "ProductPricingInfo";
+            onSale?: boolean | null;
+            discount?: {
+              __typename?: "TaxedMoney";
+              gross: { __typename?: "Money"; amount: number; currency: string };
+            } | null;
+            priceRange?: {
+              __typename?: "TaxedMoneyRange";
+              start?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+              stop?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+            } | null;
+            priceRangeUndiscounted?: {
+              __typename?: "TaxedMoneyRange";
+              start?: {
+                __typename?: "TaxedMoney";
+                currency: string;
+                gross: { __typename?: "Money"; currency: string; amount: number };
+                net: { __typename?: "Money"; currency: string; amount: number };
+              } | null;
+              stop?: {
+                __typename?: "TaxedMoney";
+                currency: string;
+                gross: { __typename?: "Money"; currency: string; amount: number };
+                net: { __typename?: "Money"; currency: string; amount: number };
+              } | null;
+            } | null;
+          } | null;
+        };
+      }>;
+    } | null;
+  } | null;
+};
+
+export type ProductCollectionSaleQueryVariables = Exact<{
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  channel: Scalars["String"]["input"];
+  locale: LanguageCodeEnum;
+  address?: InputMaybe<AddressInput>;
+  id: Scalars["ID"]["input"];
+}>;
+
+export type ProductCollectionSaleQuery = {
+  __typename?: "Query";
+  externalSale?: {
+    __typename?: "ExternalSale";
+    id: string;
+    name: string;
+    products?: {
+      __typename?: "ProductCountableConnection";
+      totalCount?: number | null;
+      edges: Array<{
+        __typename?: "ProductCountableEdge";
+        cursor: string;
+        node: {
+          __typename?: "Product";
+          id: string;
+          slug: string;
+          name: string;
+          productType: {
+            __typename?: "ProductType";
+            id: string;
+            name: string;
+            slug: string;
+            metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+          };
+          translation?: {
+            __typename?: "ProductTranslation";
+            id: string;
+            name?: string | null;
+          } | null;
+          thumbnail?: { __typename?: "Image"; url: string; alt?: string | null } | null;
+          category?: {
+            __typename?: "Category";
+            id: string;
+            name: string;
+            slug: string;
+            translation?: {
+              __typename?: "CategoryTranslation";
+              id: string;
+              name?: string | null;
+            } | null;
+          } | null;
+          media?: Array<{
+            __typename?: "ProductMedia";
+            url: string;
+            alt: string;
+            type: ProductMediaType;
+          }> | null;
+          attributes: Array<{
+            __typename?: "SelectedAttribute";
+            attribute: {
+              __typename?: "Attribute";
+              id: string;
+              name?: string | null;
+              slug?: string | null;
+              type?: AttributeTypeEnum | null;
+              unit?: MeasurementUnitsEnum | null;
+              translation?: {
+                __typename?: "AttributeTranslation";
+                id: string;
+                name: string;
+              } | null;
+            };
+            values: Array<{
+              __typename?: "AttributeValue";
+              id: string;
+              name?: string | null;
+              value?: string | null;
+              translation?: {
+                __typename?: "AttributeValueTranslation";
+                id: string;
+                name: string;
+                richText?: string | null;
+              } | null;
+            }>;
+          }>;
+          collections?: Array<{ __typename?: "Collection"; name: string }> | null;
+          variants?: Array<{
+            __typename?: "ProductVariant";
+            id: string;
+            name: string;
+            sku?: string | null;
+            quantityAvailable?: number | null;
+            translation?: {
+              __typename?: "ProductVariantTranslation";
+              id: string;
+              name: string;
+            } | null;
+            attributes: Array<{
+              __typename?: "SelectedAttribute";
+              attribute: {
+                __typename?: "Attribute";
+                id: string;
+                name?: string | null;
+                slug?: string | null;
+                type?: AttributeTypeEnum | null;
+                unit?: MeasurementUnitsEnum | null;
+                translation?: {
+                  __typename?: "AttributeTranslation";
+                  id: string;
+                  name: string;
+                } | null;
+              };
+              values: Array<{
+                __typename?: "AttributeValue";
+                id: string;
+                name?: string | null;
+                value?: string | null;
+                translation?: {
+                  __typename?: "AttributeValueTranslation";
+                  id: string;
+                  name: string;
+                  richText?: string | null;
+                } | null;
+              }>;
+            }>;
+            media?: Array<{
+              __typename?: "ProductMedia";
+              url: string;
+              alt: string;
+              type: ProductMediaType;
+            }> | null;
+            pricing?: {
+              __typename?: "VariantPricingInfo";
+              onSale?: boolean | null;
+              price?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; currency: string; amount: number };
+              } | null;
+            } | null;
+          }> | null;
+          pricing?: {
+            __typename?: "ProductPricingInfo";
+            onSale?: boolean | null;
+            discount?: {
+              __typename?: "TaxedMoney";
+              gross: { __typename?: "Money"; amount: number; currency: string };
+            } | null;
+            priceRange?: {
+              __typename?: "TaxedMoneyRange";
+              start?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+              stop?: {
+                __typename?: "TaxedMoney";
+                gross: { __typename?: "Money"; amount: number; currency: string };
+                net: { __typename?: "Money"; amount: number; currency: string };
+              } | null;
+            } | null;
+            priceRangeUndiscounted?: {
+              __typename?: "TaxedMoneyRange";
+              start?: {
+                __typename?: "TaxedMoney";
+                currency: string;
+                gross: { __typename?: "Money"; currency: string; amount: number };
+                net: { __typename?: "Money"; currency: string; amount: number };
+              } | null;
+              stop?: {
+                __typename?: "TaxedMoney";
+                currency: string;
+                gross: { __typename?: "Money"; currency: string; amount: number };
+                net: { __typename?: "Money"; currency: string; amount: number };
+              } | null;
+            } | null;
+          } | null;
+        };
+      }>;
+      pageInfo: {
+        __typename?: "PageInfo";
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+        startCursor?: string | null;
+        endCursor?: string | null;
+      };
+    } | null;
+  } | null;
+};
+
+export type SalePathsQueryVariables = Exact<{
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  channel: Scalars["String"]["input"];
+}>;
+
+export type SalePathsQuery = {
+  __typename?: "Query";
+  externalSales?: {
+    __typename?: "ExternalSaleCountableConnection";
+    pageInfo: {
+      __typename?: "PageInfo";
+      hasNextPage: boolean;
+      startCursor?: string | null;
+      endCursor?: string | null;
+    };
+    edges: Array<{
+      __typename?: "ExternalSaleCountableEdge";
+      node: { __typename?: "ExternalSale"; id: string; name: string };
     }>;
   } | null;
 };
@@ -33247,18 +33761,20 @@ export type ProductPathsQueryResult = Apollo.QueryResult<
   ProductPathsQueryVariables
 >;
 export const SalesQueryDocument = gql`
-  query SalesQuery($cursor: String, $perPage: Int, $channel: String) {
-    sales(after: $cursor, first: $perPage, channel: $channel) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
+  query SalesQuery($channel: String!) {
+    externalSales(first: 30, channel: $channel) {
       edges {
         node {
           id
           name
-          products {
+          products(first: 100) {
             totalCount
+            edges {
+              node {
+                id
+                name
+              }
+            }
           }
         }
       }
@@ -33278,14 +33794,12 @@ export const SalesQueryDocument = gql`
  * @example
  * const { data, loading, error } = useSalesQuery({
  *   variables: {
- *      cursor: // value for 'cursor'
- *      perPage: // value for 'perPage'
  *      channel: // value for 'channel'
  *   },
  * });
  */
 export function useSalesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SalesQuery, SalesQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SalesQuery, SalesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SalesQuery, SalesQueryVariables>(SalesQueryDocument, options);
@@ -33299,6 +33813,201 @@ export function useSalesQueryLazyQuery(
 export type SalesQueryHookResult = ReturnType<typeof useSalesQuery>;
 export type SalesQueryLazyQueryHookResult = ReturnType<typeof useSalesQueryLazyQuery>;
 export type SalesQueryQueryResult = Apollo.QueryResult<SalesQuery, SalesQueryVariables>;
+export const SaleByIdDocument = gql`
+  query SaleById($id: ID!, $locale: LanguageCodeEnum!, $channel: String!, $address: AddressInput) {
+    externalSale(id: $id, channel: $channel) {
+      id
+      name
+      products(first: 100) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        totalCount
+        edges {
+          cursor
+          node {
+            ...ProductCardFragment
+          }
+        }
+      }
+    }
+  }
+  ${ProductCardFragmentDoc}
+`;
+
+/**
+ * __useSaleByIdQuery__
+ *
+ * To run a query within a React component, call `useSaleByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSaleByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSaleByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      locale: // value for 'locale'
+ *      channel: // value for 'channel'
+ *      address: // value for 'address'
+ *   },
+ * });
+ */
+export function useSaleByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SaleByIdQuery, SaleByIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SaleByIdQuery, SaleByIdQueryVariables>(SaleByIdDocument, options);
+}
+export function useSaleByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SaleByIdQuery, SaleByIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SaleByIdQuery, SaleByIdQueryVariables>(SaleByIdDocument, options);
+}
+export type SaleByIdQueryHookResult = ReturnType<typeof useSaleByIdQuery>;
+export type SaleByIdLazyQueryHookResult = ReturnType<typeof useSaleByIdLazyQuery>;
+export type SaleByIdQueryResult = Apollo.QueryResult<SaleByIdQuery, SaleByIdQueryVariables>;
+export const ProductCollectionSaleDocument = gql`
+  query ProductCollectionSale(
+    $before: String
+    $after: String
+    $first: Int = 100
+    $channel: String!
+    $locale: LanguageCodeEnum!
+    $address: AddressInput
+    $id: ID!
+  ) {
+    externalSale(id: $id, channel: $channel) {
+      id
+      name
+      products(first: $first, after: $after, before: $before) {
+        totalCount
+        edges {
+          cursor
+          node {
+            ...ProductCardFragment
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+  ${ProductCardFragmentDoc}
+`;
+
+/**
+ * __useProductCollectionSaleQuery__
+ *
+ * To run a query within a React component, call `useProductCollectionSaleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductCollectionSaleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductCollectionSaleQuery({
+ *   variables: {
+ *      before: // value for 'before'
+ *      after: // value for 'after'
+ *      first: // value for 'first'
+ *      channel: // value for 'channel'
+ *      locale: // value for 'locale'
+ *      address: // value for 'address'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProductCollectionSaleQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ProductCollectionSaleQuery,
+    ProductCollectionSaleQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ProductCollectionSaleQuery, ProductCollectionSaleQueryVariables>(
+    ProductCollectionSaleDocument,
+    options
+  );
+}
+export function useProductCollectionSaleLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ProductCollectionSaleQuery,
+    ProductCollectionSaleQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ProductCollectionSaleQuery, ProductCollectionSaleQueryVariables>(
+    ProductCollectionSaleDocument,
+    options
+  );
+}
+export type ProductCollectionSaleQueryHookResult = ReturnType<typeof useProductCollectionSaleQuery>;
+export type ProductCollectionSaleLazyQueryHookResult = ReturnType<
+  typeof useProductCollectionSaleLazyQuery
+>;
+export type ProductCollectionSaleQueryResult = Apollo.QueryResult<
+  ProductCollectionSaleQuery,
+  ProductCollectionSaleQueryVariables
+>;
+export const SalePathsDocument = gql`
+  query SalePaths($after: String, $channel: String!) {
+    externalSales(first: 20, channel: $channel, after: $after) {
+      pageInfo {
+        ...PageInfoFragment
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useSalePathsQuery__
+ *
+ * To run a query within a React component, call `useSalePathsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSalePathsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSalePathsQuery({
+ *   variables: {
+ *      after: // value for 'after'
+ *      channel: // value for 'channel'
+ *   },
+ * });
+ */
+export function useSalePathsQuery(
+  baseOptions: Apollo.QueryHookOptions<SalePathsQuery, SalePathsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SalePathsQuery, SalePathsQueryVariables>(SalePathsDocument, options);
+}
+export function useSalePathsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SalePathsQuery, SalePathsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SalePathsQuery, SalePathsQueryVariables>(SalePathsDocument, options);
+}
+export type SalePathsQueryHookResult = ReturnType<typeof useSalePathsQuery>;
+export type SalePathsLazyQueryHookResult = ReturnType<typeof useSalePathsLazyQuery>;
+export type SalePathsQueryResult = Apollo.QueryResult<SalePathsQuery, SalePathsQueryVariables>;
 export const ShopInformationQueryDocument = gql`
   query ShopInformationQuery {
     shop {
@@ -36563,6 +37272,49 @@ export type ExternalRefreshFieldPolicy = {
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   token?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExternalSaleKeySpecifier = (
+  | "id"
+  | "metadata"
+  | "metafield"
+  | "metafields"
+  | "name"
+  | "privateMetadata"
+  | "privateMetafield"
+  | "privateMetafields"
+  | "products"
+  | ExternalSaleKeySpecifier
+)[];
+export type ExternalSaleFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  metadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  metafield?: FieldPolicy<any> | FieldReadFunction<any>;
+  metafields?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  privateMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  privateMetafield?: FieldPolicy<any> | FieldReadFunction<any>;
+  privateMetafields?: FieldPolicy<any> | FieldReadFunction<any>;
+  products?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExternalSaleCountableConnectionKeySpecifier = (
+  | "edges"
+  | "pageInfo"
+  | "totalCount"
+  | ExternalSaleCountableConnectionKeySpecifier
+)[];
+export type ExternalSaleCountableConnectionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ExternalSaleCountableEdgeKeySpecifier = (
+  | "cursor"
+  | "node"
+  | ExternalSaleCountableEdgeKeySpecifier
+)[];
+export type ExternalSaleCountableEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ExternalVerifyKeySpecifier = (
   | "accountErrors"
@@ -41538,6 +42290,8 @@ export type QueryKeySpecifier = (
   | "draftOrders"
   | "exportFile"
   | "exportFiles"
+  | "externalSale"
+  | "externalSales"
   | "generatePaymentUrl"
   | "giftCard"
   | "giftCardCurrencies"
@@ -41642,6 +42396,8 @@ export type QueryFieldPolicy = {
   draftOrders?: FieldPolicy<any> | FieldReadFunction<any>;
   exportFile?: FieldPolicy<any> | FieldReadFunction<any>;
   exportFiles?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalSale?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalSales?: FieldPolicy<any> | FieldReadFunction<any>;
   generatePaymentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   giftCard?: FieldPolicy<any> | FieldReadFunction<any>;
   giftCardCurrencies?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -46148,6 +46904,24 @@ export type StrictTypedTypePolicies = {
       | ExternalRefreshKeySpecifier
       | (() => undefined | ExternalRefreshKeySpecifier);
     fields?: ExternalRefreshFieldPolicy;
+  };
+  ExternalSale?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?: false | ExternalSaleKeySpecifier | (() => undefined | ExternalSaleKeySpecifier);
+    fields?: ExternalSaleFieldPolicy;
+  };
+  ExternalSaleCountableConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ExternalSaleCountableConnectionKeySpecifier
+      | (() => undefined | ExternalSaleCountableConnectionKeySpecifier);
+    fields?: ExternalSaleCountableConnectionFieldPolicy;
+  };
+  ExternalSaleCountableEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | ExternalSaleCountableEdgeKeySpecifier
+      | (() => undefined | ExternalSaleCountableEdgeKeySpecifier);
+    fields?: ExternalSaleCountableEdgeFieldPolicy;
   };
   ExternalVerify?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?: false | ExternalVerifyKeySpecifier | (() => undefined | ExternalVerifyKeySpecifier);

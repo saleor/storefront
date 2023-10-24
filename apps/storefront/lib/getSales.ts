@@ -1,6 +1,7 @@
 import { SalesQuery, SalesQueryDocument, SalesQueryVariables } from "@/saleor/api";
 import { ApolloError, ApolloQueryResult } from "@apollo/client";
 import { serverApolloClient } from "./ssr/common";
+import { CHANNEL_SLUG } from "./const";
 
 export class NetworkError extends Error {
   constructor(message?: string) {
@@ -9,7 +10,6 @@ export class NetworkError extends Error {
   }
 }
 
-// TODO: You need one of the following permissions: MANAGE_DISCOUNTS
 export const getSales = async () => {
   try {
     const salesResult: ApolloQueryResult<SalesQuery> = await serverApolloClient.query<
@@ -17,6 +17,9 @@ export const getSales = async () => {
       SalesQueryVariables
     >({
       query: SalesQueryDocument,
+      variables: {
+        channel: CHANNEL_SLUG,
+      },
     });
 
     return salesResult;

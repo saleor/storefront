@@ -58,7 +58,7 @@ export const getStaticProps = async () => {
     props: {
       featuredProducts: featuredProductsData,
       news: newsData?.data?.pages?.edges || null,
-      sales: salesData?.data || null,
+      sales: salesData?.data?.externalSales?.edges || null,
       categories: categoriesData?.data?.categories || null,
       collections: collectionsData?.data.collections || null,
     },
@@ -71,6 +71,7 @@ function Home({
   news,
   categories,
   collections,
+  sales,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
   const t = useIntl();
@@ -139,7 +140,7 @@ function Home({
                 href="#sales"
                 className="bg-brand py-2 px-6 cursor-pointer hover:bg-brand hover:bg-opacity-60 hover:text-white text-white rounded-full font-medium uppercase xs:text-sm transition duration-150 ease-in-out hover:bg-primary-600 border-2 border-brand focus:bg-primary-600 focus:outline-none focus:ring-0 text-[9px]"
               >
-                {t.formatMessage(messages.sales)}
+                {t.formatMessage(messages.salesButton)}
               </a>
             </div>
           </div>
@@ -183,40 +184,44 @@ function Home({
             </section>
           )}
           <ProductsFeatured products={featuredProducts?.products} />
-          {/* {sales && (
-            <div id="sales" className="home-page__sale">
-              <div className="container home-page__sale-wrapper">
-                <h2 className="home-page__sale-wrapper-title">
-                  Zakupy w dobrej cenie - sprawdź nasze <span>promocje</span> już teraz!
+          {sales && (
+            <div id="sales" className="mt-32 lg:mx-16">
+              <div className="flex flex-col items-center py-6 container">
+                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                  {t.formatMessage(messages.sales)}
                 </h2>
-                <p className="home-page__sale-wrapper-subtitle">
-                  Znudziły Ci się standardowe zakupy? Szukasz czegoś wyjątkowego, co jednocześnie
-                  pozwoli Ci oszczędzić pieniądze? Nasza oferta promocyjna jest idealnym
-                  rozwiązaniem!
+                <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                  {t.formatMessage(messages.salesText)}
                 </p>
               </div>
-              <div className="home-page__sale-content container">
+              <div className="container sm:grid sm:grid-cols-1 sm:gap-6 md:grid md:grid-cols-2 md:gap-6 md:items-center md:justify-center md:flex-wrap xl:flex xl:flex-row xl:gap-12 xl:items-center xl:justify-center xl:flex-wrap">
                 {sales?.map(({ node: sale }) => {
-                  if (sale?.products?.totalCount > 0) {
+                  const totalCount = sale?.products?.totalCount;
+
+                  if (totalCount !== undefined && totalCount !== null && totalCount > 0) {
                     return (
-                      <a key={sale.id} className="home-page__sale-content-item">
-                        {sale.name?.match(/\d/) ? (
-                          <h2 className="sale-with-percent">
-                            <h3>-{sale.name}%</h3>
-                          </h2>
+                      <Link
+                        href={paths.sale._id(sale?.id).$url()}
+                        key={sale.id}
+                        className="font-medium text-center flex sm:w-full xl:w-1/4 text-white p-4 transition-all duration-300 ease-in-out border-3 border-primary flex-col bg-brand gap-6 items-center justify-center rounded-lg flex-none border-2 border-brand hover:text-brand hover:border-2 hover:bg-transparent hover:border-brand"
+                      >
+                        {sale.name.match(/\d/) ? (
+                          <span className="flex flex-col items-center justify-center">
+                            <h3 className="text-[24px]">-{sale.name}%</h3>
+                          </span>
                         ) : (
-                          <span className="sale-without-percent">
-                            <h3>{sale.name}</h3>
+                          <span className="flex flex-col items-center justify-center">
+                            <h3 className="text-[24px]">{sale.name}</h3>
                           </span>
                         )}
-                      </a>
+                      </Link>
                     );
                   }
-                  return null; // Dodajemy tę linię, aby uniknąć ostrzeżenia o braku elementu, gdy nie ma promocji
+                  return null;
                 })}
               </div>
             </div>
-          )} */}
+          )}
           {hasCollections && (
             <div className="mt-32 lg:mx-16">
               <div className="container px-0">

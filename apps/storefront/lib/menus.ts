@@ -7,6 +7,10 @@ export const getLinkPath = (item: MenuItemFragment, locale: string) => {
   if (item.category) {
     return paths.category._slug(item.category?.slug).$url();
   }
+  // TODO: Expand MenuItemFragment for sales
+  // if (item.sale) {
+  //   return paths.sale._id(item.sale?.id).$url();
+  // }
   if (item.collection) {
     return paths.collection._slug(item.collection?.slug).$url();
   }
