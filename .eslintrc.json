@@ -88,6 +88,22 @@
 			}
 		},
 		{
+			"files": ["src/checkout/**/*.{ts,tsx}"],
+			"rules": {
+				"no-restricted-imports": [
+					"error",
+					{
+						"patterns": [
+							{
+								"group": ["next/*", "@next/*", "next"],
+								"message": "Usage of Next.js-specific imports inside src/checkout is forbidden. Checkout is a standalone component and should not depend on Next.js."
+							}
+						]
+					}
+				]
+			}
+		},
+		{
 			"files": ["__tests__/**/*.{ts,tsx}"],
 			"extends": ["plugin:playwright/recommended"]
 		}
