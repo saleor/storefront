@@ -1,16 +1,96 @@
-query SalesQuery($cursor: String, $perPage: Int, $channel: String) {
-  sales(after: $cursor, first: $perPage, channel: $channel) {
+query SalesQuery($channel: String!) {
+  externalSales(first: 30, channel: $channel) {
+    edges {
+      node {
+        id
+        name
+        products(first: 100) {
+          totalCount
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query SaleById($id: ID!, $locale: LanguageCodeEnum!, $channel: String!, $address: AddressInput) {
+  externalSale(id: $id, channel: $channel) {
+    id
+    name
+    products(first: 100) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+      edges {
+        cursor
+        node {
+          ...ProductCardFragment
+        }
+      }
+    }
+  }
+}
+
+query ProductCollectionSale(
+  $before: String
+  $after: String
+  $first: Int = 100
+  $channel: String!
+  $locale: LanguageCodeEnum!
+  $address: AddressInput
+  $id: ID!
+) {
+  externalSale(id: $id, channel: $channel) {
+    id
+    name
+    products(first: $first, after: $after, before: $before) {
+      totalCount
+      edges {
+        cursor
+        node {
+          ...ProductCardFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+}
+
+query SalePaths($after: String, $channel: String!) {
+  externalSales(first: 20, channel: $channel, after: $after) {
     pageInfo {
-      endCursor
-      hasNextPage
+      ...PageInfoFragment
     }
     edges {
       node {
         id
         name
-        products {
-          totalCount
-        }
+        # TODO: Add slug on the backend
+        #slug
+        # TODO: Add ancestors on the backend for sales
+        # ancestors(first: 1) {
+        #   edges {
+        #     node {
+        #       id
+        #       name
+        #       slug
+        #     }
+        #   }
+        # }
       }
     }
   }
