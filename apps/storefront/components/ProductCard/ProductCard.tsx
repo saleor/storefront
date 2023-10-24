@@ -236,7 +236,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="absolute bg-red-600 left-4 top-4 text-white rounded-md text-md">
         <DiscountInfo isOnSale={isOnSale} product={product} />
       </div>
-      <div className="absolute right-3 top-5 z-[1] flex flex-col gap-3 items-center">
+      <div className="absolute right-3 top-5 flex flex-col gap-3 items-center">
         <button
           onClick={onAddToCart}
           type="submit"
@@ -304,11 +304,7 @@ export function ProductCard({ product }: ProductCardProps) {
             }
             arrow
           >
-            <button
-              onClick={() => handleDeleteFromWishlist(product)}
-              type="submit"
-              className="z-[1]"
-            >
+            <button onClick={() => handleDeleteFromWishlist(product)} type="submit">
               <NavIconButton
                 isButton={false}
                 icon="heart"
@@ -333,11 +329,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </h1>
             }
           >
-            <button
-              onClick={() => handleAddToWishlist(product)}
-              type="submit"
-              className="text-md z-[1]"
-            >
+            <button onClick={() => handleAddToWishlist(product)} type="submit" className="text-md">
               <NavIconButton
                 isButton={false}
                 icon="heart"

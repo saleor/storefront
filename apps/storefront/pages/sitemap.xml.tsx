@@ -14,6 +14,7 @@ type SitemapSlugs = {
     pagesSlugs?: string[];
     categoriesSlugs?: string[];
     productSlugs?: string[];
+    salesIds?: string[];
   };
 };
 const client = new ApolloClient({
@@ -25,6 +26,7 @@ function generateSiteMap(data: SitemapSlugs) {
   let base = "";
   let pages = "";
   let categories = "";
+  const sales = "";
   let products = "";
   let closer = "";
 
@@ -58,6 +60,18 @@ function generateSiteMap(data: SitemapSlugs) {
       })
       .join("")}`;
   }
+
+  if (data.sitemapSlugs.salesIds) {
+    categories = `${data.sitemapSlugs.salesIds
+      .map((id: string) => {
+        return `
+      <url>
+        <loc>${`${HOST}/pl-PL/sale/${id}/`}</loc>
+      </url>`;
+      })
+      .join("")}`;
+  }
+
   if (data.sitemapSlugs.productSlugs) {
     products = `${data.sitemapSlugs.productSlugs
       .map((slug: string) => {
@@ -70,7 +84,7 @@ function generateSiteMap(data: SitemapSlugs) {
   }
 
   closer = `</urlset>`;
-  const sitemap = base + pages + categories + products + closer;
+  const sitemap = base + pages + categories + products + closer + sales;
   return sitemap;
 }
 
@@ -88,6 +102,8 @@ export async function getServerSideProps({ res }: { res: ServerResponse }) {
               ){
               productSlugs
               categoriesSlugs
+              # TODO: Add sales to sitemapSlugs query
+              salesIds
               pagesSlugs
           }}
         `,

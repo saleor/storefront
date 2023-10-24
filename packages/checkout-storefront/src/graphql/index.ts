@@ -5998,6 +5998,101 @@ export type ExternalRefresh = {
   user?: Maybe<User>;
 };
 
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSale = Node &
+  ObjectWithMetadata & {
+    __typename?: "ExternalSale";
+    id: Scalars["ID"];
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<MetadataItem>;
+    /**
+     * A single key from public metadata.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafield?: Maybe<Scalars["String"]>;
+    /**
+     * Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    metafields?: Maybe<Scalars["Metadata"]>;
+    name: Scalars["String"];
+    /** List of private metadata items. Requires staff permissions to access. */
+    privateMetadata: Array<MetadataItem>;
+    /**
+     * A single key from private metadata. Requires staff permissions to access.
+     *
+     * Tip: Use GraphQL aliases to fetch multiple keys.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafield?: Maybe<Scalars["String"]>;
+    /**
+     * Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+     *
+     * Added in Saleor 3.3.
+     *
+     * Note: this API is currently in Feature Preview and can be subject to changes at later point.
+     */
+    privateMetafields?: Maybe<Scalars["Metadata"]>;
+    /** List of products this sale applies to. */
+    products?: Maybe<ProductCountableConnection>;
+  };
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSaleMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSaleMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSalePrivateMetafieldArgs = {
+  key: Scalars["String"];
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSalePrivateMetafieldsArgs = {
+  keys?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type ExternalSaleProductsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type ExternalSaleCountableConnection = {
+  __typename?: "ExternalSaleCountableConnection";
+  edges: Array<ExternalSaleCountableEdge>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars["Int"]>;
+};
+
+export type ExternalSaleCountableEdge = {
+  __typename?: "ExternalSaleCountableEdge";
+  /** A cursor for use in pagination. */
+  cursor: Scalars["String"];
+  /** The item at the end of the edge. */
+  node: ExternalSale;
+};
+
 /** Verify external authentication data by plugin. */
 export type ExternalVerify = {
   __typename?: "ExternalVerify";
@@ -18859,6 +18954,10 @@ export type Query = {
    * Requires one of the following permissions: MANAGE_PRODUCTS.
    */
   exportFiles?: Maybe<ExportFileCountableConnection>;
+  /** Look up a sale by ID. */
+  externalSale?: Maybe<ExternalSale>;
+  /** List of the shop's sales. */
+  externalSales?: Maybe<ExternalSaleCountableConnection>;
   /** Generates an url to redirect to payment gateway and complete payment */
   generatePaymentUrl?: Maybe<PaymentUrl>;
   /**
@@ -19336,6 +19435,20 @@ export type QueryExportFilesArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
   sortBy?: InputMaybe<ExportFileSortingInput>;
+};
+
+export type QueryExternalSaleArgs = {
+  channel?: InputMaybe<Scalars["String"]>;
+  id: Scalars["ID"];
+};
+
+export type QueryExternalSalesArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  channel?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  query?: InputMaybe<Scalars["String"]>;
 };
 
 export type QueryGeneratePaymentUrlArgs = {
@@ -28606,6 +28719,10 @@ export type UpdateShippingLockerIdMutation = {
           metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
         }
       | {
+          __typename: "ExternalSale";
+          metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
           __typename: "Fulfillment";
           metadata: Array<{ __typename: "MetadataItem"; key: string; value: string }>;
         }
@@ -28745,6 +28862,10 @@ export type UpdateCheckoutMetadataMutation = {
         }
       | {
           __typename?: "DigitalContent";
+          metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
+        }
+      | {
+          __typename?: "ExternalSale";
           metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
         }
       | {

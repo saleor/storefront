@@ -424,6 +424,22 @@ export const messages = defineMessages({
     defaultMessage:
       "Not sure where to look for your favorite products? Use our clear categories and easily find what you're looking for.",
   },
+  salesButton: {
+    id: "app.pages.channel.locale.index.salesButton",
+    description: "Current sales",
+    defaultMessage: "sales button hero",
+  },
+  sales: {
+    id: "app.pages.channel.locale.index.sales",
+    description: "Message displayed on homepage for sales section",
+    defaultMessage: "Shopping at a good price - check out our promotions now!",
+  },
+  salesText: {
+    id: "app.pages.channel.locale.index.salesText",
+    description: "Message displayed on homepage for sales section",
+    defaultMessage:
+      "Jesteś znudzony standardowymi zakupami? Szukasz czegoś wyjątkowego, co jednocześnie pozwoli Ci zaoszczędzić pieniądze? Nasza oferta promocyjna to idealne rozwiązanie!",
+  },
   latestArticles: {
     id: "app.pages.channel.locale.index.latestArticles",
     description: "Message displayed on homepage for latest articles section",
@@ -454,11 +470,6 @@ export const messages = defineMessages({
     id: "app.pages.channel.locale.index.news",
     description: "News name",
     defaultMessage: "News",
-  },
-  sales: {
-    id: "app.pages.channel.locale.index.sales",
-    description: "Sales name",
-    defaultMessage: "Current sales",
   },
   advantages: {
     id: "app.components.advantagesblock.advantagesblock.advantages",

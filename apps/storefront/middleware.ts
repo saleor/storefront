@@ -19,6 +19,7 @@ export function LocaleRedirectionMiddleware({
       "collection",
       "wishlist",
       "cart",
+      "sale",
       "search",
       "account",
       // "checkout" has been removed to exclude it from redirection

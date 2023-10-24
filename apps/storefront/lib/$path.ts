@@ -69,6 +69,15 @@ export const pagesPath = {
         }),
       }),
     },
+    sale: {
+      _id: (id: string | number) => ({
+        $url: (url?: { hash?: string }) => ({
+          pathname: "/[locale]/sale/[id]" as const,
+          query: { locale, id },
+          hash: url?.hash,
+        }),
+      }),
+    },
     checkout: {
       $url: (url?: { hash?: string }) => ({
         pathname: "/[locale]/checkout" as const,
