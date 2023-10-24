@@ -14,21 +14,21 @@ import { useRegions } from "../RegionsProvider";
 export interface ProductCollectionSaleProps {
   allowMore?: boolean;
   perPage?: number;
+  sale: any;
 }
 
 export function ProductCollectionSale({
   allowMore = true,
   perPage = 4,
+  sale,
 }: ProductCollectionSaleProps) {
   const t = useIntl();
   const { query } = useRegions();
   const [loadingMore, setLoadingMore] = useState(false);
-  const endCursor = "";
 
   const variables: ProductCollectionSaleQueryVariables = {
     first: perPage,
-    after: endCursor,
-    id: "RXh0ZXJuYWxTYWxlOjE4",
+    id: sale.id,
     ...query,
   };
 
@@ -44,7 +44,6 @@ export function ProductCollectionSale({
           after: data?.externalSale?.products?.pageInfo.endCursor,
         },
       }).finally(() => {
-        console.log("Updated data: ", data);
         setLoadingMore(false);
       });
     }

@@ -19,28 +19,19 @@ export const getStaticProps = async (
   }
 
   const saleId = context.params.id.toString();
-  try {
-    const response = await serverApolloClient.query<SaleByIdQuery, SaleByIdQueryVariables>({
-      query: SaleByIdDocument,
-      variables: {
-        id: saleId,
-        ...contextToRegionQuery(context),
-      },
-    });
+  const response = await serverApolloClient.query<SaleByIdQuery, SaleByIdQueryVariables>({
+    query: SaleByIdDocument,
+    variables: {
+      id: saleId,
+      ...contextToRegionQuery(context),
+    },
+  });
 
-    return {
-      props: {
-        sale: response?.data.externalSale,
-      },
-    };
-  } catch (error) {
-    console.error("GraphQL error:", error);
-    return {
-      props: {
-        error: "An error occurred while fetching data",
-      },
-    };
-  }
+  return {
+    props: {
+      sale: response?.data.externalSale,
+    },
+  };
 };
 
 function SalePage({ sale }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -51,7 +42,7 @@ function SalePage({ sale }: InferGetStaticPropsType<typeof getStaticProps>) {
     <>
       <header className="mb-4 pt-4"></header>
       <div className="container px-8 mt-4">
-        <ProductCollectionSale perPage={12} />
+        <ProductCollectionSale perPage={12} sale={sale} />
       </div>
     </>
   );
