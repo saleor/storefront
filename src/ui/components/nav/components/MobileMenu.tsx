@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const MobileMenu = ({ children }: Props) => {
-	const { closeMenu, openMenu, isOpen } = useMobileMenu({ breakpoint: 768 });
+	const { closeMenu, openMenu, isOpen } = useMobileMenu();
 
 	return (
 		<>

@@ -18,9 +18,11 @@ export const Nav = () => {
 					<CartNavItem />
 				</Suspense>
 			</div>
-			<MobileMenu>
-				<NavLinks />
-			</MobileMenu>
+			<Suspense>
+				<MobileMenu>
+					<NavLinks />
+				</MobileMenu>
+			</Suspense>
 		</nav>
 	);
 };

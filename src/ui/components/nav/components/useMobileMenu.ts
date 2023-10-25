@@ -1,38 +1,29 @@
-import { useMemo, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-type Args = {
-	breakpoint: number;
-};
-
-export const useMobileMenu = ({ breakpoint }: Args) => {
+export const useMobileMenu = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const pathname = usePathname();
-	const searchParams = useSearchParams();
-
-	useEffect(() => {
-		const handleResize = () => {
-			if (window.innerWidth > breakpoint) {
-				setIsOpen(false);
-			}
-		};
-		window.addEventListener("resize", handleResize);
-		return () => window.removeEventListener("resize", handleResize);
-	}, [breakpoint, isOpen]);
+	useSearchParams();
 
 	useEffect(() => {
 		setIsOpen(false);
-	}, [pathname, searchParams]);
+	}, [pathname]);
+
+	useEffect(() => {
+		const handleResize = (ev: MediaQueryListEvent) => {
+			if (ev.matches) {
+				setIsOpen(false);
+			}
+		};
+
+		const matchMedia = window.matchMedia(`(min-width: 768px)`);
+		matchMedia.addEventListener("change", handleResize, { passive: true });
+		return () => matchMedia.removeEventListener("change", handleResize);
+	}, []);
 
 	const closeMenu = useCallback(() => setIsOpen(false), []);
 	const openMenu = useCallback(() => setIsOpen(true), []);
 
-	return useMemo(
-		() => ({
-			isOpen,
-			closeMenu,
-			openMenu,
-		}),
-		[closeMenu, isOpen, openMenu],
-	);
+	return { isOpen, closeMenu, openMenu };
 };
