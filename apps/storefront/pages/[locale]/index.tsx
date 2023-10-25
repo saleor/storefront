@@ -184,7 +184,7 @@ function Home({
             </section>
           )}
           <ProductsFeatured products={featuredProducts?.products} />
-          {sales && (
+          {sales && sales.length > 0 && (
             <div id="sales" className="mt-32 lg:mx-16">
               <div className="flex flex-col items-center py-6 container">
                 <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
@@ -273,54 +273,59 @@ function Home({
               </div>
             </div>
           )}
-          <div className="pt-48 lg:mx-16" id="news">
-            <div className="container flex flex-col items-center justify-center mx-auto">
-              <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
-                {t.formatMessage(messages.latestArticles)}
-              </h2>
-              <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
-                {t.formatMessage(messages.latestArticlesText)}
-              </p>
-            </div>
-            <div className="container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 xl:p-0 m-auto">
-              {news?.map(({ node: newsElem }: any) => {
-                const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
-                const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
-                  url[url.length - 1]
-                }`;
+          {news && news.length > 0 && (
+            <div className="pt-48 lg:mx-16" id="news">
+              <div className="container flex flex-col items-center justify-center mx-auto">
+                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                  {t.formatMessage(messages.latestArticles)}
+                </h2>
+                <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                  {t.formatMessage(messages.latestArticlesText)}
+                </p>
+              </div>
+              <div className="container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-start justify-center gap-10 mb-16 md:flex-row md:items-start md:justify-center md:gap-10 xl:p-0 m-auto">
+                {news?.map(({ node: newsElem }: any) => {
+                  const url = (newsElem?.attributes[0]?.values[0]?.file?.url as string).split("/");
+                  const correctedUrl = `${AWS_MEDIA_BUCKET}/${url[url.length - 2]}/${
+                    url[url.length - 1]
+                  }`;
 
-                let contentStringify = "";
-                if (newsElem?.content) {
-                  try {
-                    const parsedContent = JSON.parse(newsElem.content as string);
-                    contentStringify = parsedContent.blocks[0]?.data?.text ?? "";
-                  } catch (error) {
-                    console.error("Error parsing content:", error);
+                  let contentStringify = "";
+                  if (newsElem?.content) {
+                    try {
+                      const parsedContent = JSON.parse(newsElem.content as string);
+                      contentStringify = parsedContent.blocks[0]?.data?.text ?? "";
+                    } catch (error) {
+                      console.error("Error parsing content:", error);
+                    }
                   }
-                }
 
-                return (
-                  <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
-                    <Image
-                      src={correctedUrl}
-                      alt=""
-                      className="w-full h-80 object-cover rounded-2xl"
-                      width={500}
-                      height={500}
-                      loading="lazy"
-                    />
-                    <Link
-                      href={paths.page._slug(newsElem?.slug as string).$url()}
-                      className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
-                    >
-                      {newsElem?.title}
-                    </Link>
-                    <p className="text-base text-gray-700 break-words">{contentStringify} [...]</p>
-                  </div>
-                );
-              })}
+                  return (
+                    <div key={newsElem?.id} className="flex flex-col gap-6 w-full">
+                      <Image
+                        src={correctedUrl}
+                        alt=""
+                        className="w-full h-80 object-cover rounded-2xl"
+                        width={500}
+                        height={500}
+                        loading="lazy"
+                      />
+                      <Link
+                        href={paths.page._slug(newsElem?.slug as string).$url()}
+                        className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
+                      >
+                        {newsElem?.title}
+                      </Link>
+                      <p className="text-base text-gray-700 break-words">
+                        {contentStringify} [...]
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
+
           <AdvantagesBlock />
         </main>
       </div>
