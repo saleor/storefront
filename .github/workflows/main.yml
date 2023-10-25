@@ -58,7 +58,7 @@ jobs:
         id: waitForVercel
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 120
+          max_timeout: 240
           check_interval: 5
 
       - name: Run Playwright tests
