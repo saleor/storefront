@@ -29,7 +29,14 @@ const ProductCarouselItem: React.FC<ProductCarouselItemProps> = ({ product }) =>
         <a href="pass">
           <div className="relative">
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} width={222} height={222} alt="" className="m-auto" />
+              <Image
+                src={thumbnailUrl}
+                width={222}
+                height={222}
+                alt=""
+                className="m-auto"
+                unoptimized={true}
+              />
             ) : (
               <div className="grid justify-items-center content-center h-full w-full">
                 <PhotographIcon className="h-10 w-10 content-center" />
