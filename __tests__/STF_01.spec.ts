@@ -7,7 +7,7 @@ import {
 	selectRandomAvailableVariant,
 } from "./utils";
 
-test("STF_01", async ({ page }) => {
+test("STF_01: Add items to the basket", async ({ page }) => {
 	await page.goto("/");
 
 	const product = await clickOnRandomProductElement({ page });

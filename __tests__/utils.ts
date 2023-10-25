@@ -27,12 +27,16 @@ export async function getCurrentProductPrice({ page }: { page: Page }) {
 }
 
 export async function selectRandomAvailableVariant({ page }: { page: Page }) {
-	const variant = page.getByTestId("VariantSelector").getByRole("radio", { disabled: false });
-	const count = await variant.count();
-	// some products only have a single variant
-	if (count > 0) {
-		await variant.nth(Math.floor(Math.random() * count)).click();
-	}
+	// some products only have a single variant so this block can throw and it's expected
+	try {
+		await page.getByTestId("VariantSelector").waitFor({ timeout: 1000 });
+		const variant = page.getByTestId("VariantSelector").getByRole("radio", { disabled: false });
+		const count = await variant.count();
+		if (count > 0) {
+			await variant.nth(Math.floor(Math.random() * count)).click();
+		}
+	} catch {}
+
 	await page.waitForURL(/\?variant=.+/);
 }
 

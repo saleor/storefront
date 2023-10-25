@@ -17,11 +17,11 @@ export function VariantSelector({
 	}
 
 	return (
-		<fieldset className="my-4" role="radiogroup" data-testid="VariantSelector">
-			<legend className="sr-only">Variants</legend>
-			<div className="flex flex-wrap gap-3">
-				{variants.length > 1 &&
-					variants.map((variant) => {
+		variants.length > 1 && (
+			<fieldset className="my-4" role="radiogroup" data-testid="VariantSelector">
+				<legend className="sr-only">Variants</legend>
+				<div className="flex flex-wrap gap-3">
+					{variants.map((variant) => {
 						const isDisabled = !variant.quantityAvailable;
 						const isCurrentVariant = selectedVariant?.id === variant.id;
 						return (
@@ -46,8 +46,9 @@ export function VariantSelector({
 							</Link>
 						);
 					})}
-			</div>
-		</fieldset>
+				</div>
+			</fieldset>
+		)
 	);
 }
 
