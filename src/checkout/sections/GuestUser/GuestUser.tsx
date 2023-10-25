@@ -44,7 +44,7 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 					/>
 					{createAccount && (
 						<div className="mt-2">
-							<PasswordInput name="password" label="Password (minimum 8 characters)" />
+							<PasswordInput name="password" label="Password (minimum 8 characters)" required />
 						</div>
 					)}
 				</div>
