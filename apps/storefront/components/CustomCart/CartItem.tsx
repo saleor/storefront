@@ -70,7 +70,7 @@ const CartItem: React.FC<CartItemProps> = ({
     >
       <TableCell align="center">
         <div className="flex flex-row gap-6 items-center">
-          <Image src={thumbnail} alt="" width="75" height="75" />
+          <Image src={thumbnail} alt="" width="75" height="75" unoptimized={true} />
           <div className="flex flex-col items-start">
             <h4 className="mb-4 font-bold text-2xl tracking-tight max-w-[647px] md:max-w-full">
               {productName}
