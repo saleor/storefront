@@ -49,6 +49,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                       tabIndex={index - 2}
                       layout="fill"
                       objectFit="cover"
+                      unoptimized={true}
                     />
                   ) : getVideoThumbnail(media.url) ? (
                     <Image
@@ -60,6 +61,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                       tabIndex={index - 2}
                       layout="fill"
                       objectFit="cover"
+                      unoptimized={true}
                     />
                   ) : null}
                 </div>
@@ -81,6 +83,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                   tabIndex={-2}
                   layout="fill"
                   objectFit="contain"
+                  unoptimized={true}
                 />
               )}
               {galleryMedia[currentImageIndex].type === "VIDEO" && (
@@ -103,6 +106,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                       layout="fill"
                       objectFit="cover"
                       className="rounded-lg"
+                      unoptimized={true}
                     />
                   )}
                   <div className="transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 absolute w-full h-full flex justify-center items-center bg-transparent">
@@ -136,6 +140,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                           tabIndex={index - 2}
                           layout="fill"
                           objectFit="cover"
+                          unoptimized={true}
                         />
                       ) : getVideoThumbnail(media.url) ? (
                         <Image
@@ -147,6 +152,7 @@ export function ProductGallery({ product, selectedVariant }: ProductGalleryProps
                           tabIndex={index - 2}
                           layout="fill"
                           objectFit="cover"
+                          unoptimized={true}
                         />
                       ) : null}
                     </div>
