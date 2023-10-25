@@ -23,6 +23,12 @@ dependencies:
   '@saleor/auth-sdk':
     specifier: 0.13.1
     version: 0.13.1(@apollo/client@3.8.5)(next@13.5.6)(react-dom@18.2.0)(react@18.2.0)(urql@4.0.5)
+  '@stripe/react-stripe-js':
+    specifier: 2.3.1
+    version: 2.3.1(@stripe/stripe-js@2.1.10)(react-dom@18.2.0)(react@18.2.0)
+  '@stripe/stripe-js':
+    specifier: 2.1.10
+    version: 2.1.10
   clsx:
     specifier: 2.0.0
     version: 2.0.0
@@ -1855,6 +1861,23 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       urql: 4.0.5(graphql@16.8.1)(react@18.2.0)
+    dev: false
+
+  /@stripe/react-stripe-js@2.3.1(@stripe/stripe-js@2.1.10)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-vXiwcG2ZjAF4AezjP7DJ8jiwxfCWCen/X2rBhyXaKrfQ7+pwmXhsoUlKRa0eLWioY1oelOQOafauNUiwTwFHgQ==}
+    peerDependencies:
+      '@stripe/stripe-js': ^1.44.1 || ^2.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@stripe/stripe-js': 2.1.10
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@stripe/stripe-js@2.1.10:
+    resolution: {integrity: sha512-h79zhwvxAJVAvtVjtMoz++DtwI7GdcEItmTC0P2gciZoFUeAO6XX9DL+UXm9uADiEaUvTKqrExYwtBTlMYAaPA==}
     dev: false
 
   /@swc/helpers@0.5.2:

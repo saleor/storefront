@@ -4,10 +4,7 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { type ParsedPaymentGateways } from "@/checkout/sections/PaymentSection/types";
-import {
-	getFilteredPaymentGateways,
-	getParsedPaymentGatewayConfigs,
-} from "@/checkout/sections/PaymentSection/utils";
+import { getFilteredPaymentGateways } from "@/checkout/sections/PaymentSection/utils";
 
 export const usePaymentGatewaysInitialize = () => {
 	const {
@@ -19,7 +16,7 @@ export const usePaymentGatewaysInitialize = () => {
 
 	const billingCountry = billingAddress?.country.code as MightNotExist<CountryCode>;
 
-	const [gatewayConfigs, setGatewayConfigs] = useState<ParsedPaymentGateways>({});
+	const [gatewayConfigs, setGatewayConfigs] = useState<ParsedPaymentGateways>([]);
 	const previousBillingCountry = useRef(billingCountry);
 
 	const [{ fetching }, paymentGatewaysInitialize] = usePaymentGatewaysInitializeMutation();
@@ -39,9 +36,9 @@ export const usePaymentGatewaysInitialize = () => {
 					})),
 				}),
 				onSuccess: ({ data }) => {
-					const parsedConfigs = getParsedPaymentGatewayConfigs(data.gatewayConfigs);
+					const parsedConfigs = (data.gatewayConfigs || []) as ParsedPaymentGateways;
 
-					if (!Object.keys(parsedConfigs).length) {
+					if (!parsedConfigs.length) {
 						throw new Error("No available payment gateways");
 					}
 

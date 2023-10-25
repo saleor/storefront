@@ -70,7 +70,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 		getQueryParams().transaction,
 	);
 	const [, transactionInitialize] = useTransactionInitializeMutation();
-	const [, transactionProccess] = useTransactionProcessMutation();
+	const [, transactionProcess] = useTransactionProcessMutation();
 	const { onCheckoutComplete } = useCheckoutComplete();
 
 	const [adyenCheckoutSubmitParams, setAdyenCheckoutSubmitParams] = useState<{
@@ -171,10 +171,10 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 		),
 	);
 
-	const onTransactionProccess = useSubmit<TransactionProcessMutationVariables, typeof transactionProccess>(
+	const onTransactionProccess = useSubmit<TransactionProcessMutationVariables, typeof transactionProcess>(
 		useMemo(
 			() => ({
-				onSubmit: transactionProccess,
+				onSubmit: transactionProcess,
 				onError: () => {
 					// will tell the processing screen to disappear
 					setIsProcessingPayment(false);
@@ -213,7 +213,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 				handlePaymentResult,
 				setIsProcessingPayment,
 				showCustomErrors,
-				transactionProccess,
+				transactionProcess,
 			],
 		),
 	);
