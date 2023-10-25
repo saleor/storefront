@@ -13,8 +13,7 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     env:
-      # @TODO replace this with proper e2e environment
-      NEXT_PUBLIC_SALEOR_API_URL: https://zaiste.saleor.cloud/graphql/
+      NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
 
     steps:
       - uses: actions/checkout@v4
@@ -59,7 +58,8 @@ jobs:
         id: waitForVercel
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 120
+          max_timeout: 240
+          check_interval: 5
 
       - name: Run Playwright tests
         run: pnpm exec playwright test
