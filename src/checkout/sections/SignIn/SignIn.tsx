@@ -79,7 +79,7 @@ export const SignIn: React.FC<SignInProps> = ({
 					}}
 				/>
 				<PasswordInput name="password" label="Password" />
-				<div className="flex w-full flex-row items-center justify-end">
+				<div className="flex w-full flex-row items-center justify-end py-4">
 					<Button
 						ariaDisabled={isSubmitting}
 						ariaLabel="send password reset link"
