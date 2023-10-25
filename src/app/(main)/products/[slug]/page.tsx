@@ -147,7 +147,9 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-neutral-900">
 							{product?.name}
 						</h1>
-						<p className="mb-8 text-sm font-medium text-neutral-900">{price}</p>
+						<p className="mb-8 text-sm font-medium text-neutral-900" data-testid="ProductElement_Price">
+							{price}
+						</p>
 
 						{variants && (
 							<VariantSelector selectedVariant={selectedVariant} variants={variants} product={product} />

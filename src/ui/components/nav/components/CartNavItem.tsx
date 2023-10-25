@@ -11,7 +11,7 @@ export const CartNavItem = async () => {
 	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 
 	return (
-		<Link href="/cart" className="relative flex items-center">
+		<Link href="/cart" className="relative flex items-center" data-testid="CartNavItem">
 			<ShoppingBagIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
 			{lineCount > 0 ? (
 				<div
@@ -20,11 +20,10 @@ export const CartNavItem = async () => {
 						lineCount > 9 ? "w-[3ch]" : "w-[2ch]",
 					)}
 				>
-					{lineCount}
-					<span className="sr-only">items in cart, view bag</span>
+					{lineCount} <span className="sr-only">item{lineCount > 1 ? "s" : ""} in cart, view bag</span>
 				</div>
 			) : (
-				<span className="sr-only">cart</span>
+				<span className="sr-only">0 items in cart</span>
 			)}
 		</Link>
 	);
