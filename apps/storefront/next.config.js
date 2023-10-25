@@ -14,11 +14,7 @@ module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: [
-      apiURL.hostname,
-      ...allowedImageDomains,
-      "saleor-sandbox-media.s3.eu-central-1.amazonaws.com, salingo-prod-media.s3.amazonaws.com",
-    ],
+    domains: [apiURL.hostname, ...allowedImageDomains],
     formats: ["image/avif", "image/webp"],
   },
   trailingSlash: true,
