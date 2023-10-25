@@ -194,6 +194,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   height={400}
                   alt=""
                   className="object-contain"
+                  unoptimized={true}
                 />
               ) : (
                 <div className="grid justify-items-center content-center h-full w-full">
