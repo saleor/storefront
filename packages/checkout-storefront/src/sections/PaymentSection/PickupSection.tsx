@@ -48,7 +48,6 @@ export function PickupSection({ checkout }: any) {
           gateway: PICKUP_GATEWAY,
           amount: checkout.totalPrice?.gross.amount,
           token: checkout.token,
-          returnUrl: "http://localhost:3000",
         },
       });
 
