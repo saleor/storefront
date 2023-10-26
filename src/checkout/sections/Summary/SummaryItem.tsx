@@ -16,7 +16,7 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 	const attributesText = useSummaryLineLineAttributesText(line);
 
 	return (
-		<li className="relative mb-6 flex flex-row items-start last-of-type:mb-0">
+		<li className="relative mb-6 flex flex-row items-start justify-between last-of-type:mb-0">
 			<div className="relative flex flex-row">
 				<div className="z-1 mr-4 flex h-24 w-20 items-center justify-start">
 					{productImage ? (
@@ -26,8 +26,8 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 					)}
 				</div>
 			</div>
-			<div className="flex w-full flex-row items-center justify-between">
-				<div className="flex flex-col">
+			<div className="flex w-full items-center justify-between gap-2 md:flex-row">
+				<div className="flex w-full grow flex-col">
 					<p aria-label="summary item name" className="mb-3 font-bold">
 						{productName}
 					</p>
