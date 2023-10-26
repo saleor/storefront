@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type AllHTMLAttributes, useId } from "react";
+import { useState, type AllHTMLAttributes } from "react";
 import clsx from "clsx";
 import { Field, type FieldProps } from "formik";
 import { EyeHiddenIcon, EyeIcon } from "@/checkout/ui-kit/icons";
@@ -24,12 +24,11 @@ export const PasswordInputComponent = <TName extends string>({
 }: PasswordInputProps<TName> & FieldProps) => {
 	const error = touched[field.name] ? (errors[field.name] as string) : undefined;
 	const [passwordVisible, setPasswordVisible] = useState(false);
-	const inputId = useId();
 
 	return (
 		<div className="mt-1 space-y-0.5 first:mt-0">
 			<div className="flex flex-col">
-				<label className="text-xs text-neutral-700" htmlFor={inputId}>
+				<label className="text-xs text-neutral-700">
 					{label}
 					{required && "*"}
 				</label>
@@ -45,9 +44,6 @@ export const PasswordInputComponent = <TName extends string>({
 							{ "border-red-300": error },
 							props.className,
 						)}
-						id={inputId}
-						aria-invalid={Boolean(error)}
-						aria-errormessage={`${inputId}-erorr-message`}
 					/>
 					<div className="mt-0.5 flex items-center justify-center">
 						<IconButton
@@ -59,11 +55,7 @@ export const PasswordInputComponent = <TName extends string>({
 					</div>
 				</div>
 			</div>
-			{error && (
-				<p className="text-sm text-red-500" id={`${inputId}-erorr-message`}>
-					{error}
-				</p>
-			)}
+			{error && <p className="text-sm text-red-500">{error}</p>}
 		</div>
 	);
 };
