@@ -8,7 +8,6 @@ const config = {
 		],
 	},
 	experimental: {
-		serverActions: true,
 		typedRoutes: false,
 	},
 };
