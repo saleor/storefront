@@ -3,6 +3,7 @@
 import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { camelCase } from "lodash-es";
+import { apiErrorMessages } from "../errorMessages";
 import {
 	type TransactionInitializeMutationVariables,
 	type TransactionProcessMutationVariables,
@@ -35,10 +36,7 @@ import {
 } from "@/checkout/state/updateStateStore";
 import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
-import {
-	adyenErrorMessages,
-	apiErrorMessages,
-} from "@/checkout/sections/PaymentSection/AdyenDropIn/errorMessages";
+import { adyenErrorMessages } from "@/checkout/sections/PaymentSection/AdyenDropIn/errorMessages";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { useUser } from "@/checkout/hooks/useUser";
 import { getUrlForTransactionInitialize } from "@/checkout/sections/PaymentSection/utils";
@@ -310,7 +308,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 			id: transaction,
 			data: { details: { redirectResult: decodedRedirectData } },
 		});
-	}, []);
+	}, [onTransactionProccess]);
 
 	return { onSubmit: onSubmitInitialize, onAdditionalDetails };
 };

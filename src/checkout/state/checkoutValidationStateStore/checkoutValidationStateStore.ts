@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { createWithEqualityFn } from "zustand/traditional";
 
 import { shallow } from "zustand/shallow";
 
@@ -18,35 +18,35 @@ interface UseCheckoutValidationStateStore extends CheckoutValidationState {
 	};
 }
 
-const useCheckoutValidationStateStore = create<UseCheckoutValidationStateStore>((set) => ({
-	validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
-	actions: {
-		validateAllForms: (signedIn: boolean) =>
-			set((state) => {
-				const keysToValidate = Object.keys(state.validationState).filter(
-					(val) => !signedIn || val !== "guestUser",
-				) as CheckoutFormScope[];
+const useCheckoutValidationStateStore = createWithEqualityFn<UseCheckoutValidationStateStore>(
+	(set) => ({
+		validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
+		actions: {
+			validateAllForms: (signedIn: boolean) =>
+				set((state) => {
+					const keysToValidate = Object.keys(state.validationState).filter(
+						(val) => !signedIn || val !== "guestUser",
+					) as CheckoutFormScope[];
 
-				return {
-					validationState: keysToValidate.reduce(
-						(result, key) => ({ ...result, [key]: "validating" }),
-						{} as ValidationState,
-					),
-				};
-			}),
-		setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
-			set((state) => ({
-				validationState: { ...state.validationState, [scope]: status },
-			})),
-	},
-}));
+					return {
+						validationState: keysToValidate.reduce(
+							(result, key) => ({ ...result, [key]: "validating" }),
+							{} as ValidationState,
+						),
+					};
+				}),
+			setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
+				set((state) => ({
+					validationState: { ...state.validationState, [scope]: status },
+				})),
+		},
+	}),
+	shallow,
+);
 
 export const useCheckoutValidationActions = () => useCheckoutValidationStateStore((state) => state.actions);
 
 export const useCheckoutValidationState = (): CheckoutValidationState =>
-	useCheckoutValidationStateStore(
-		({ validationState }) => ({
-			validationState,
-		}),
-		shallow,
-	);
+	useCheckoutValidationStateStore(({ validationState }) => ({
+		validationState,
+	}));
