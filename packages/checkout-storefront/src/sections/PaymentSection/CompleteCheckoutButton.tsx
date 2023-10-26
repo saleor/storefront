@@ -23,7 +23,7 @@ export function CompleteCheckoutButton({
     if (isDisabled) {
       return { backgroundColor: "lightgray", color: "#fff" };
     }
-    return { backgroundColor: "green", color: "#fff" }; // Or any other color you prefer when enabled
+    return { backgroundColor: "green", color: "#fff" };
   };
 
   const getButtonClassNames = () => {

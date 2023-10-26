@@ -18,7 +18,10 @@ import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/
 import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql";
 
-export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
+export const DeliveryMethods: React.FC<CommonSectionProps> = ({
+  collapsed,
+  onCourierSelection,
+}) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { authenticated } = useUser();
@@ -28,6 +31,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
   const [selectedRadio, setSelectedRadio] = useState<string>("");
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
+  const [, setSelectedCourier] = useState("");
+
+  const shippingMethodName = shippingMethods?.map((shippingMethod) => shippingMethod.name);
+  const desiredCourier = "Kurier pobranie, GLS";
 
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -46,6 +53,10 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 
   const handleRadioChange = (value: string) => {
     setSelectedRadio(value);
+    setSelectedCourier(value);
+    if (onCourierSelection) {
+      onCourierSelection(value);
+    }
   };
 
   const handleInpostDataChange = async (data: InpostEventData | null) => {
@@ -78,8 +89,8 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
               ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
                 <SelectBox
                   key={id}
-                  name="selectedMethodId"
-                  value={id}
+                  name="selectedMethodName"
+                  value={name}
                   onRadioChange={handleRadioChange}
                 >
                   <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
@@ -96,7 +107,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
             )}
           </SelectBoxGroup>
         )}
-        {selectedRadio === "U2hpcHBpbmdNZXRob2Q6NjQ=" && (
+        {selectedRadio === "Inpost paczkomaty" && (
           <React.Fragment>
             {selectedInpostData?.name != null && (
               <React.Fragment>
