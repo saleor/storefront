@@ -46,6 +46,8 @@ export const PasswordInputComponent = <TName extends string>({
 							props.className,
 						)}
 						id={inputId}
+						aria-invalid={Boolean(error)}
+						aria-errormessage={`${inputId}-erorr-message`}
 					/>
 					<div className="mt-0.5 flex items-center justify-center">
 						<IconButton
@@ -57,7 +59,11 @@ export const PasswordInputComponent = <TName extends string>({
 					</div>
 				</div>
 			</div>
-			{error && <p className="text-sm text-red-500">{error}</p>}
+			{error && (
+				<p className="text-sm text-red-500" id={`${inputId}-erorr-message`}>
+					{error}
+				</p>
+			)}
 		</div>
 	);
 };

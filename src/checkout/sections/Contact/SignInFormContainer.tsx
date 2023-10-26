@@ -31,7 +31,7 @@ export const SignInFormContainer: React.FC<PropsWithChildren<SignInFormContainer
 						)}
 						{redirectButtonLabel && (
 							<Button
-								ariaLabel="change section"
+								ariaLabel={redirectButtonLabel}
 								onClick={onSectionChange}
 								variant="tertiary"
 								label={redirectButtonLabel}

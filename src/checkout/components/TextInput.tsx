@@ -19,6 +19,7 @@ export const TextInputComponent = <TName extends string>({
 	...props
 }: TextInputProps<TName> & FieldProps) => {
 	const error = touched[field.name] ? (errors[field.name] as string) : undefined;
+	const errorMessageID = `${field.name}-error-message`;
 
 	return (
 		<div className="mt-1 space-y-0.5 first:mt-0">
@@ -37,9 +38,15 @@ export const TextInputComponent = <TName extends string>({
 						{ "border-red-300": error },
 						props.className,
 					)}
+					aria-invalid={Boolean(error)}
+					aria-errormessage={errorMessageID}
 				/>
 			</label>
-			{error && <p className="text-sm text-red-500">{error}</p>}
+			{error && (
+				<p className="text-sm text-red-500" id={errorMessageID}>
+					{error}
+				</p>
+			)}
 		</div>
 	);
 };

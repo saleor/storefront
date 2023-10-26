@@ -39,9 +39,11 @@ export const Select = <TName extends string, TData extends string>({
 		fieldProps.onChange(event);
 	};
 
+	const errorMessageID = `${name}-error-message`;
+
 	return (
-		<div>
-			<label className="block">
+		<div className="mt-1 space-y-0.5 first:mt-0">
+			<label className="flex flex-col">
 				<span className="text-xs text-neutral-700">{label}</span>
 				<select
 					{...fieldProps}
@@ -49,6 +51,8 @@ export const Select = <TName extends string, TData extends string>({
 					onBlur={handleBlur}
 					onChange={handleChange}
 					className="mt-1 block w-full rounded-md border-neutral-300 shadow-sm focus:border-neutral-300 focus:ring focus:ring-neutral-200 focus:ring-opacity-50"
+					aria-invalid={Boolean(error)}
+					aria-errormessage={errorMessageID}
 				>
 					{showPlaceholder && (
 						<option disabled value="">
@@ -62,7 +66,11 @@ export const Select = <TName extends string, TData extends string>({
 					))}
 				</select>
 			</label>
-			{error && <p className="text-sm text-red-500">{error}</p>}
+			{error && (
+				<p className="text-sm text-red-500" id={errorMessageID}>
+					{error}
+				</p>
+			)}
 		</div>
 	);
 };
