@@ -18,7 +18,7 @@
 		"@adyen/adyen-web": "5.53.2",
 		"@adyen/api-library": "14.3.0",
 		"@headlessui/react": "1.7.17",
-		"@saleor/auth-sdk": "0.13.1",
+		"@saleor/auth-sdk": "0.14.0",
 		"clsx": "2.0.0",
 		"editorjs-html": "3.4.3",
 		"formik": "2.4.5",
