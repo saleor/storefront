@@ -40,7 +40,7 @@ export const Select = <TName extends string, TData extends string>({
 	};
 
 	return (
-		<div className="mt-1 space-y-0.5 first:mt-0">
+		<div className="space-y-0.5">
 			<label className="flex flex-col">
 				<span className="text-xs text-neutral-700">{label}</span>
 				<select

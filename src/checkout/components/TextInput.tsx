@@ -21,7 +21,7 @@ export const TextInputComponent = <TName extends string>({
 	const error = touched[field.name] ? (errors[field.name] as string) : undefined;
 
 	return (
-		<div className="mt-1 space-y-0.5 first:mt-0">
+		<div className="space-y-0.5">
 			<label className="flex flex-col">
 				<span className="text-xs text-neutral-700">
 					{label}
