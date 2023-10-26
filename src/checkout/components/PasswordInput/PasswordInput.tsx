@@ -27,7 +27,7 @@ export const PasswordInputComponent = <TName extends string>({
 	const inputId = useId();
 
 	return (
-		<div>
+		<div className="mt-1 space-y-0.5 first:mt-0">
 			<div className="flex flex-col">
 				<label className="text-xs text-neutral-700" htmlFor={inputId}>
 					{label}
