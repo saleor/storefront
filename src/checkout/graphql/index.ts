@@ -1,5 +1,4 @@
 // THIS FILE IS GENERATED WITH `pnpm generate`
-import "graphql/language/ast";
 import gql from "graphql-tag";
 import * as Urql from "urql";
 export type Maybe<T> = T | null;

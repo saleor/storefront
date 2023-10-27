@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
+import { gql, useQuery } from "urql";
 import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
-import { gql, useQuery } from "@apollo/client";
 import { LoginForm } from "@/ui/components/LoginForm";
 import { Loader } from "@/ui/atoms/Loader";
 import { CurrentUserDocument, type CurrentUserQuery } from "@/gql/graphql";
@@ -11,9 +10,11 @@ import { UserCard } from "@/ui/components/UserCard";
 export default function LoginPage() {
 	const { signOut } = useSaleorAuthContext();
 
-	const { data, loading } = useQuery<CurrentUserQuery>(gql(CurrentUserDocument.toString()));
+	const [{ data, fetching }] = useQuery<CurrentUserQuery>({
+		query: gql(CurrentUserDocument.toString()),
+	});
 
-	if (loading) {
+	if (fetching) {
 		return <Loader />;
 	}
 
