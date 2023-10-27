@@ -45,7 +45,7 @@ const CartItemMobile: React.FC<CartItemProps> = ({
           }}
         >
           <div className="flex flex-row gap-3 items-center">
-            <Image src={thumbnail} alt="" width="75" height="75" />
+            <Image src={thumbnail} alt="" width="75" height="75" unoptimized={true} />
             <div className="flex flex-col items-start gap-2">
               <h4 className="text-left font-bold text-2xl tracking-tight max-w-[647px] md:max-w-full">
                 {productName}
