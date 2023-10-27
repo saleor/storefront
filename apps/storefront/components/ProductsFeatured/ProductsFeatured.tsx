@@ -15,7 +15,7 @@ const ProductsFeatured = ({ products }: any) => {
             <h2 className="text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
               {t.formatMessage(messages.featuredProducts)}
             </h2>
-            <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+            <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed">
               {t.formatMessage(messages.featuredProductsText)}
             </p>
           </div>
