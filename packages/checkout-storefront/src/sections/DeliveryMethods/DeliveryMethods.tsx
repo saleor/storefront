@@ -43,8 +43,8 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     return null;
   }
 
-  const handleRadioChange = (value: string) => {
-    setSelectedRadio(value);
+  const handleRadioChange = (value: string, name: string) => {
+    setSelectedRadio(name);
   };
 
   const handleInpostDataChange = async (data: InpostEventData | null) => {
@@ -77,9 +77,9 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
               ({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
                 <SelectBox
                   key={id}
-                  name="selectedMethodName"
-                  value={name}
-                  onRadioChange={handleRadioChange}
+                  name="selectedMethodId"
+                  value={id}
+                  onRadioChange={(value: string) => handleRadioChange(value, name)}
                 >
                   <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
                     <div className="flex flex-row justify-between self-stretch items-center">
