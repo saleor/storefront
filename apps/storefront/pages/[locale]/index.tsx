@@ -150,7 +150,7 @@ function Home({
                 <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.categories)}
                 </h2>
-                <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                   {t.formatMessage(messages.categoriesText)}
                 </p>
               </div>
@@ -187,14 +187,14 @@ function Home({
           {sales && sales.length > 0 && (
             <div id="sales" className="mt-32 lg:mx-16">
               <div className="flex flex-col items-center py-6 container">
-                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.sales)}
                 </h2>
-                <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                   {t.formatMessage(messages.salesText)}
                 </p>
               </div>
-              <div className="container sm:grid sm:grid-cols-1 sm:gap-6 md:grid md:grid-cols-2 md:gap-6 md:items-center md:justify-center md:flex-wrap xl:flex xl:flex-row xl:gap-12 xl:items-center xl:justify-center xl:flex-wrap">
+              <div className="container grid gap-6 sm:grid sm:grid-cols-1 sm:gap-12 md:grid md:grid-cols-2 md:gap-6 md:items-center md:justify-center md:flex-wrap xl:flex xl:flex-row xl:gap-12 xl:items-center xl:justify-center xl:flex-wrap">
                 {sales?.map(({ node: sale }) => {
                   const totalCount = sale?.products?.totalCount;
 
@@ -207,11 +207,15 @@ function Home({
                       >
                         {sale.name.match(/\d/) ? (
                           <span className="flex flex-col items-center justify-center">
-                            <h3 className="text-[24px]">-{sale.name}%</h3>
+                            <h3 className="text-[18px] md:text-[24px] lg:text-[24px] xl:text-[24px]">
+                              -{sale.name}%
+                            </h3>
                           </span>
                         ) : (
                           <span className="flex flex-col items-center justify-center">
-                            <h3 className="text-[24px]">{sale.name}</h3>
+                            <h3 className="text-[18px] md:text-[24px] lg:text-[24px] xl:text-[24px]">
+                              {sale.name}
+                            </h3>
                           </span>
                         )}
                       </Link>
@@ -226,10 +230,10 @@ function Home({
             <div className="mt-32 lg:mx-16">
               <div className="container px-0">
                 <div className="flex flex-col items-center my-auto pb-4">
-                  <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                  <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                     {t.formatMessage(messages.collections)}
                   </h2>
-                  <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                  <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                     {t.formatMessage(messages.collectionsText)}
                   </p>
                 </div>
@@ -261,7 +265,7 @@ function Home({
                                     }
                               }
                             />
-                            <h3 className="text-xl bg-white py-8 font-semibold mr-auto left-0 leading-10 break-words absolute bottom-14 pl-8 pr-8 capitalize">
+                            <h3 className="text-lg lg:text-xl xl:text-xl bg-white py-8 font-semibold mr-auto left-0 leading-10 break-words absolute bottom-14 pl-8 pr-8 capitalize">
                               {collection.name}
                             </h3>
                           </div>
@@ -276,10 +280,10 @@ function Home({
           {news && news.length > 0 && (
             <div className="pt-48 lg:mx-16" id="news">
               <div className="container flex flex-col items-center justify-center mx-auto">
-                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.latestArticles)}
                 </h2>
-                <p className="text-md sm:text-md md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                   {t.formatMessage(messages.latestArticlesText)}
                 </p>
               </div>
@@ -312,7 +316,7 @@ function Home({
                       />
                       <Link
                         href={paths.page._slug(newsElem?.slug as string).$url()}
-                        className="text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
+                        className="text-md md:text-lg lg:text-lg xl:text-lg font-bold break-words w-full max-w-full transition-colors duration-400 ease-in-out hover:text-primary"
                       >
                         {newsElem?.title}
                       </Link>
