@@ -44,8 +44,6 @@ export interface ValidationError<TFormData> {
 
 export interface CommonSectionProps {
   collapsed: boolean;
-  onCourierSelection?: (courierName: string) => void;
-  selectedCourier?: string;
 }
 
 export type MightNotExist<TData> = TData | null | undefined;

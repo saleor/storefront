@@ -1,7 +1,7 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
@@ -23,20 +23,8 @@ export const CheckoutForm = () => {
   const { user } = useUser();
   const { checkout } = useCheckout();
   const { passwordResetToken } = getQueryParams();
-  const [selectedCourier, setSelectedCourier] = useState("");
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
-  const [, setPaymentSectionVisible] = useState(true);
-
-  const handleCourierSelection = (courierName: string) => {
-    setSelectedCourier(courierName);
-
-    if (courierName === "Kurier pobranie, GLS") {
-      setPaymentSectionVisible(false);
-    } else {
-      setPaymentSectionVisible(true);
-    }
-  };
 
   return (
     <div className="checkout-form-container">
@@ -57,15 +45,11 @@ export const CheckoutForm = () => {
           )}
           <InvoiceRequestSection collapsed={showOnlyContact} />
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
-            <DeliveryMethods
-              collapsed={showOnlyContact}
-              selectedCourier={selectedCourier}
-              onCourierSelection={handleCourierSelection}
-            />
+            <DeliveryMethods collapsed={showOnlyContact} />
           </Suspense>
           <Suspense fallback={<PaymentSectionSkeleton />}>
             <CollapseSection collapse={showOnlyContact}>
-              <PaymentSection selectedCourier={selectedCourier}>
+              <PaymentSection>
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>
             </CollapseSection>

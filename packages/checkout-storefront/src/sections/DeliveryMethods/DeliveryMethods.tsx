@@ -18,10 +18,7 @@ import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/
 import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql";
 
-export const DeliveryMethods: React.FC<CommonSectionProps> = ({
-  collapsed,
-  onCourierSelection,
-}) => {
+export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { authenticated } = useUser();
@@ -31,11 +28,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({
   const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
   const [selectedRadio, setSelectedRadio] = useState<string>("");
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
-  const [, setSelectedCourier] = useState("");
-
-  const shippingMethodName = shippingMethods?.map((shippingMethod) => shippingMethod.name);
-  const desiredCourier = "Kurier pobranie, GLS";
-
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
       return undefined;
@@ -53,10 +45,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({
 
   const handleRadioChange = (value: string) => {
     setSelectedRadio(value);
-    setSelectedCourier(value);
-    if (onCourierSelection) {
-      onCourierSelection(value);
-    }
   };
 
   const handleInpostDataChange = async (data: InpostEventData | null) => {
