@@ -12,10 +12,10 @@ const ProductsFeatured = ({ products }: any) => {
       {products?.length ? (
         <>
           <div className="text-center lg:mx-16">
-            <h2 className="text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl">
+            <h2 className="text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
               {t.formatMessage(messages.featuredProducts)}
             </h2>
-            <p className="max-w-[778px] text-center mx-auto mt-4 text-md sm:text-md md:text-md lg:text-md text-main-1 mb-12 sm:mb-16 md:mb-24 leading-relaxed">
+            <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
               {t.formatMessage(messages.featuredProductsText)}
             </p>
           </div>

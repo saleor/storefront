@@ -147,10 +147,10 @@ function Home({
           {hasCategories && (
             <section className="mt-32 lg:mx-16">
               <div className="flex flex-col items-center py-6 container">
-                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-5xl sm:text-5xl md:text-5xl lg:text-6xl leading-tight">
+                <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.categories)}
                 </h2>
-                <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                   {t.formatMessage(messages.categoriesText)}
                 </p>
               </div>
@@ -190,7 +190,7 @@ function Home({
                 <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.sales)}
                 </h2>
-                <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                   {t.formatMessage(messages.salesText)}
                 </p>
               </div>
@@ -233,7 +233,7 @@ function Home({
                   <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                     {t.formatMessage(messages.collections)}
                   </h2>
-                  <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                  <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                     {t.formatMessage(messages.collectionsText)}
                   </p>
                 </div>
@@ -283,7 +283,7 @@ function Home({
                 <h2 className="max-w-[893px] text-center mb-4 font-semibold text-4xl md:text-5xl lg:text-6xl leading-tight">
                   {t.formatMessage(messages.latestArticles)}
                 </h2>
-                <p className="text-sm md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
+                <p className="text-base md:text-md lg:text-md text-gray-700 text-center mb-12 sm:mb-16 md:mb-24 leading-relaxed max-w-[568px]">
                   {t.formatMessage(messages.latestArticlesText)}
                 </p>
               </div>
