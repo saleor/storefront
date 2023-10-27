@@ -33,7 +33,7 @@
 
 ## Features
 
-- **Next.js 13**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
+- **Next.js 14**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
 - **App Router**: Uses React Server Components, Data Cache, and async components.
 - **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
 - **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
