@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "next dev --turbo",
-		"build": "next build --experimental-turbo",
+		"build": "next build",
 		"start": "next start",
 		"predev": "pnpm run generate",
 		"prebuild": "pnpm run generate",
