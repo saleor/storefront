@@ -8,8 +8,8 @@ const baseURL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 export default defineConfig({
 	testDir: "./__tests__",
-	fullyParallel: !process.env.CI,
-	workers: process.env.CI ? 1 : undefined,
+	fullyParallel: true,
+	workers: process.env.CI ? 3 : undefined,
 	forbidOnly: !!process.env.CI,
 	retries: 0,
 	reporter: process.env.CI ? [["html"], ["github"], ["list"]] : [["html"], ["list"]],
@@ -17,6 +17,8 @@ export default defineConfig({
 	use: {
 		baseURL,
 		trace: "on-first-retry",
+		screenshot: process.env.CI ? "only-on-failure" : "off",
+		video: process.env.CI ? "retain-on-failure" : "off",
 	},
 
 	projects: [
