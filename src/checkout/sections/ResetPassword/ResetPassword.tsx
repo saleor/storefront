@@ -21,7 +21,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onSectionChange, o
 			subtitle="Provide a new password for your account"
 		>
 			<FormProvider form={form}>
-				<PasswordInput name="password" label="Password" />
+				<PasswordInput name="password" label="Password" required />
 				<div className="mt-4 flex w-full flex-row items-center justify-end">
 					<Button ariaLabel="Reset password" label="Reset password" type="submit" />
 				</div>

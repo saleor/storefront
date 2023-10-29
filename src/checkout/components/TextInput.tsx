@@ -21,8 +21,8 @@ export const TextInputComponent = <TName extends string>({
 	const error = touched[field.name] ? (errors[field.name] as string) : undefined;
 
 	return (
-		<div>
-			<label className="block">
+		<div className="space-y-0.5">
+			<label className="flex flex-col">
 				<span className="text-xs text-neutral-700">
 					{label}
 					{required && "*"}
@@ -33,7 +33,7 @@ export const TextInputComponent = <TName extends string>({
 					{...field}
 					{...props}
 					className={clsx(
-						"mt-0.5 block w-full appearance-none rounded-md border-neutral-300 shadow-sm transition-colors focus:border-neutral-300 focus:outline-none focus:ring focus:ring-neutral-200 focus:ring-opacity-50 active:border-neutral-200 active:outline-none",
+						"mt-0.5 w-full appearance-none rounded-md border-neutral-300 shadow-sm transition-colors focus:border-neutral-300 focus:outline-none focus:ring focus:ring-neutral-200 focus:ring-opacity-50 active:border-neutral-200 active:outline-none",
 						{ "border-red-300": error },
 						props.className,
 					)}

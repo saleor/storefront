@@ -17,7 +17,11 @@ export const AddressFormActions: React.FC<AddressFormActionsProps> = ({
 }) => {
 	return (
 		<div className="flex flex-row justify-end">
-			{onDelete && <IconButton ariaLabel="Delete address" onClick={onDelete} icon={<TrashIcon />} />}
+			{onDelete && (
+				<div className="mt-1">
+					<IconButton ariaLabel="Delete address" onClick={onDelete} icon={<TrashIcon />} />
+				</div>
+			)}
 
 			<Button
 				className="mr-2"

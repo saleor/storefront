@@ -26,8 +26,8 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 					)}
 				</div>
 			</div>
-			<div className="flex w-full flex-row items-center justify-between">
-				<div className="flex flex-col">
+			<div className="flex w-full items-center justify-between gap-2">
+				<div className="flex w-full grow flex-col">
 					<p aria-label="summary item name" className="mb-3 font-bold">
 						{productName}
 					</p>
