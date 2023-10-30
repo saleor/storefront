@@ -18,6 +18,8 @@
 		"@adyen/adyen-web": "5.53.2",
 		"@adyen/api-library": "14.3.0",
 		"@headlessui/react": "1.7.17",
+		"@stripe/react-stripe-js": "2.3.1",
+		"@stripe/stripe-js": "2.1.10",
 		"@saleor/auth-sdk": "0.14.0",
 		"clsx": "2.0.0",
 		"editorjs-html": "3.4.3",

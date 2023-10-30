@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type CombinedError } from "urql";
+import { compact } from "lodash-es";
 import { type FormDataBase } from "@/checkout/hooks/useForm";
 import { type ApiErrors } from "@/checkout/hooks/useGetParsedErrors";
 import {
@@ -75,7 +76,7 @@ export const extractMutationErrors = <
 
 	const customErrors = extractCustomErrors?.(result) || [];
 
-	const allErrors = [...apiErrors, ...graphqlErrors, ...customErrors];
+	const allErrors = compact([...apiErrors, ...graphqlErrors, ...customErrors]);
 
 	return { hasErrors: allErrors.length > 0, apiErrors, graphqlErrors, customErrors };
 };

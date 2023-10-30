@@ -5,10 +5,14 @@ export const metadata = {
 	title: "Shopping Cart · Saleor Storefront example",
 };
 
-export default function CheckoutPage({ searchParams }: { searchParams: { checkout?: string } }) {
+export default function CheckoutPage({
+	searchParams,
+}: {
+	searchParams: { checkout?: string; order?: string };
+}) {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
-	if (!searchParams.checkout) {
+	if (!searchParams.checkout && !searchParams.order) {
 		return null;
 	}
 

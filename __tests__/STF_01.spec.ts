@@ -21,8 +21,9 @@ test("STF_01: Add items to the basket", async ({ page }) => {
 
 	await openCart({ page });
 
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toHaveCount(1);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toContainText(product.name);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toContainText(`Qty: 1`);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toContainText(price.toFixed(2));
+	const productInCart = page.getByTestId("CartProductList").getByRole("listitem");
+	await expect(productInCart).toHaveCount(1);
+	await expect(productInCart).toContainText(product.name);
+	await expect(productInCart).toContainText(`Qty: 1`);
+	await expect(productInCart).toContainText(price.toFixed(2));
 });

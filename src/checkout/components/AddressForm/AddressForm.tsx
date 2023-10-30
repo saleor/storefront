@@ -32,10 +32,15 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 	const isValidPhoneNumber = usePhoneNumberValidator(values.countryCode);
 	const previousValues = useRef(values);
 
-	const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices, allowedFields } =
-		useAddressFormUtils(values.countryCode);
+	const {
+		orderedAddressFields,
+		getFieldLabel,
+		isRequiredField,
+		countryAreaChoices,
+		allowedFields = [],
+	} = useAddressFormUtils(values.countryCode);
 
-	const allowedFieldsRef = useRef(allowedFields || []);
+	const allowedFieldsRef = useRef(allowedFields);
 
 	const customValidators: Partial<Record<AddressField, FieldValidator>> = {
 		phone: isValidPhoneNumber,

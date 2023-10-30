@@ -23,7 +23,7 @@ export const useAddressFormSchema = (initialCountryCode?: CountryCode) => {
 
 	const validationSchema = useMemo(
 		() =>
-			allowedFields.reduce(
+			allowedFields?.reduce(
 				(schema, field) => schema.concat(object().shape({ [field]: getFieldValidator(field) })),
 				object().shape({}),
 			),
