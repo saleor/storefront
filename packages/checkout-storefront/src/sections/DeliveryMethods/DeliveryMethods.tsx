@@ -53,8 +53,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     shippingMethods?.find((method) => method.id === form.values.selectedMethodId)?.name ===
     "Inpost paczkomaty";
 
-  console.log(isInpostSelected);
-
   const handleInpostDataChange = async (data: InpostEventData | null) => {
     setSelectedInpostData(data);
 
