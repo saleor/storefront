@@ -31,7 +31,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     id: "",
   });
 
-  const selectedId = selectedRadio.id;
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -98,7 +97,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
                       {getSubtitle({ min, max })}
                     </Text>
                   </div>
-                  {selectedId === id ? <div>Selected</div> : null}
                 </SelectBox>
               )
             )}
