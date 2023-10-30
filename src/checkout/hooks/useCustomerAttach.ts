@@ -5,17 +5,18 @@ import { useUser } from "@/checkout/hooks/useUser";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 export const useCustomerAttach = () => {
-	const { checkout, loading, refetch } = useCheckout();
+	const { checkout, fetching: fetchingCheckout, refetch } = useCheckout();
 	const { authenticated } = useUser();
 
-	const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
+	const [{ fetching: fetchingCustomerAttach }, customerAttach] = useCheckoutCustomerAttachMutation();
 
 	const onSubmit = useSubmit<{}, typeof customerAttach>(
 		useMemo(
 			() => ({
 				hideAlerts: true,
 				scope: "checkoutCustomerAttach",
-				shouldAbort: () => !!checkout?.user?.id || !authenticated || fetching || loading,
+				shouldAbort: () =>
+					!!checkout?.user?.id || !authenticated || fetchingCustomerAttach || fetchingCheckout,
 				onSubmit: customerAttach,
 				parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
 				onError: ({ errors }) => {
@@ -31,7 +32,7 @@ export const useCustomerAttach = () => {
 					}
 				},
 			}),
-			[authenticated, checkout?.user?.id, customerAttach, fetching, loading, refetch],
+			[authenticated, checkout?.user?.id, customerAttach, fetchingCheckout, fetchingCustomerAttach, refetch],
 		),
 	);
 

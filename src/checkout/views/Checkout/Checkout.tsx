@@ -11,10 +11,10 @@ import { CheckoutSkeleton } from "@/checkout/views/Checkout/CheckoutSkeleton";
 import { PAGE_ID } from "@/checkout/views/Checkout/consts";
 
 export const Checkout = () => {
-	const { checkout, loading } = useCheckout();
+	const { checkout, fetching: fetchingCheckout } = useCheckout();
 	const { loading: isAuthenticating } = useUser();
 
-	const isCheckoutInvalid = !loading && !checkout && !isAuthenticating;
+	const isCheckoutInvalid = !fetchingCheckout && !checkout && !isAuthenticating;
 
 	const isInitiallyAuthenticating = isAuthenticating && !checkout;
 
