@@ -16,7 +16,6 @@ export const InvoiceRequestSection: React.FC<CommonSectionProps> = ({ collapsed 
 
   useEffect(() => {
     if (isInvoice) {
-      // Wywołaj mutację tylko jeśli isInvoice jest true
       void (async () => {
         const invoiceStr = "true";
         await updateCheckoutMetadata({

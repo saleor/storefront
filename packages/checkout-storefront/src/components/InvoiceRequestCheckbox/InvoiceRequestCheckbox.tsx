@@ -1,4 +1,3 @@
-// InvoiceRequestCheckbox.tsx
 import React from "react";
 import { Checkbox } from "@saleor/ui-kit";
 
