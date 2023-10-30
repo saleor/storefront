@@ -5,8 +5,8 @@ import clsx from "clsx";
 import * as Checkout from "@/lib/checkout";
 
 export const CartNavItem = async () => {
-	const checkoutId = cookies().get("checkoutId")?.value || "";
-	const checkout = await Checkout.find(checkoutId);
+	const checkoutId = cookies().get("checkoutId")?.value;
+	const checkout = checkoutId ? await Checkout.find(checkoutId) : null;
 
 	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 

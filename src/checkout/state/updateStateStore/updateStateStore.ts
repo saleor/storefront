@@ -1,7 +1,7 @@
-import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 import { useMemo } from "react";
 import { memoize, omit } from "lodash-es";
+import { createWithEqualityFn } from "zustand/traditional";
 import { type CheckoutScope } from "@/checkout/hooks/useAlerts";
 
 export type CheckoutUpdateStateStatus = "success" | "loading" | "error";
@@ -26,52 +26,54 @@ export interface CheckoutUpdateStateStore extends CheckoutUpdateState {
 	};
 }
 
-const useCheckoutUpdateStateStore = create<CheckoutUpdateStateStore>((set) => ({
-	shouldRegisterUser: false,
-	submitInProgress: false,
-	loadingCheckout: false,
-	changingBillingCountry: false,
-	updateState: {
-		paymentGatewaysInitialize: "success",
-		checkoutShippingUpdate: "success",
-		checkoutCustomerAttach: "success",
-		checkoutBillingUpdate: "success",
-		checkoutAddPromoCode: "success",
-		checkoutDeliveryMethodUpdate: "success",
-		checkoutLinesUpdate: "success",
-		checkoutEmailUpdate: "success",
-		userRegister: "success",
-		resetPassword: "success",
-		signIn: "success",
-		requestPasswordReset: "success",
-		checkoutLinesDelete: "success",
-		userAddressCreate: "success",
-		userAddressDelete: "success",
-		userAddressUpdate: "success",
-	},
-	actions: {
-		setSubmitInProgress: (submitInProgress: boolean) => set({ submitInProgress }),
-		setShouldRegisterUser: (shouldRegisterUser: boolean) =>
-			set({
-				shouldRegisterUser,
-			}),
-		setLoadingCheckout: (loading: boolean) => set({ loadingCheckout: loading }),
-		setChangingBillingCountry: (changingBillingCountry: boolean) => set({ changingBillingCountry }),
-		setUpdateState: memoize(
-			(scope) => (status) =>
-				set((state) => ({
-					updateState: {
-						...state.updateState,
-						[scope]: status,
-					},
-					// checkout will reload right after, this ensures there
-					// are no rerenders in between where there's no state updating
-					// also we might not need this once we get better caching
-					loadingCheckout: status === "success" || state.loadingCheckout,
-				})),
-		),
-	},
-}));
+const useCheckoutUpdateStateStore = createWithEqualityFn<CheckoutUpdateStateStore>(
+	(set) => ({
+		shouldRegisterUser: false,
+		submitInProgress: false,
+		loadingCheckout: false,
+		changingBillingCountry: false,
+		updateState: {
+			paymentGatewaysInitialize: "success",
+			checkoutShippingUpdate: "success",
+			checkoutCustomerAttach: "success",
+			checkoutBillingUpdate: "success",
+			checkoutAddPromoCode: "success",
+			checkoutDeliveryMethodUpdate: "success",
+			checkoutLinesUpdate: "success",
+			checkoutEmailUpdate: "success",
+			userRegister: "success",
+			resetPassword: "success",
+			signIn: "success",
+			requestPasswordReset: "success",
+			checkoutLinesDelete: "success",
+			userAddressCreate: "success",
+			userAddressDelete: "success",
+			userAddressUpdate: "success",
+		},
+		actions: {
+			setSubmitInProgress: (submitInProgress: boolean) => set({ submitInProgress }),
+			setShouldRegisterUser: (shouldRegisterUser: boolean) =>
+				set({
+					shouldRegisterUser,
+				}),
+			setLoadingCheckout: (loading: boolean) => set({ loadingCheckout: loading }),
+			setChangingBillingCountry: (changingBillingCountry: boolean) => set({ changingBillingCountry }),
+			setUpdateState: memoize(
+				(scope) => (status) =>
+					set((state) => {
+						return {
+							updateState: {
+								...state.updateState,
+								[scope]: status,
+							},
+						};
+					}),
+			),
+		},
+	}),
+	shallow,
+);
+useCheckoutUpdateStateStore.subscribe(console.log);
 
 export const useCheckoutUpdateState = (): CheckoutUpdateState => {
 	const { updateState, loadingCheckout, submitInProgress, changingBillingCountry } =
@@ -82,7 +84,6 @@ export const useCheckoutUpdateState = (): CheckoutUpdateState => {
 				loadingCheckout,
 				submitInProgress,
 			}),
-			shallow,
 		);
 
 	return { updateState, loadingCheckout, submitInProgress, changingBillingCountry };

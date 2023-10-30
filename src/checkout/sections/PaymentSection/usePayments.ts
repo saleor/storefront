@@ -20,7 +20,7 @@ export const usePayments = () => {
 		if (!completingCheckout && paidStatuses.includes(paymentStatus)) {
 			void onCheckoutComplete();
 		}
-	}, []);
+	}, [completingCheckout, onCheckoutComplete, paymentStatus]);
 
 	return { fetching, availablePaymentGateways };
 };
