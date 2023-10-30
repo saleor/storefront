@@ -15,7 +15,7 @@ export default async function Page() {
 
 	const checkout = await Checkout.find(checkoutId);
 
-	if (!checkout) {
+	if (!checkout || checkout.lines.length < 1) {
 		return (
 			<section className="mx-auto max-w-7xl p-8">
 				<h1 className="mt-8 text-3xl font-bold text-neutral-900">Your Shopping Cart is empty</h1>
