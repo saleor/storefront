@@ -28665,7 +28665,7 @@ export type CheckoutCompleteMutation = {
       field?: string | null;
       code: CheckoutErrorCode;
     }>;
-    order?: { __typename?: "Order"; id: string } | null;
+    order?: { __typename?: "Order"; id: string; shippingMethodName?: string | null } | null;
   } | null;
 };
 
@@ -30372,6 +30372,7 @@ export const CheckoutCompleteDocument = gql`
       }
       order {
         id
+        shippingMethodName
       }
     }
   }

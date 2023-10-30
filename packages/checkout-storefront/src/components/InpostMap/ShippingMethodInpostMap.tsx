@@ -36,7 +36,7 @@ export function ShippingMethodInpostMap({
   return (
     <div>
       <link href={widgetUrl + ".css"} rel="stylesheet" />
-      <Script src={widgetUrl + ".js"} defer strategy="lazyOnload" />
+      <Script src={widgetUrl + ".js"} />
       <div
         className="text-container w-full"
         style={{ height: "550px" }}

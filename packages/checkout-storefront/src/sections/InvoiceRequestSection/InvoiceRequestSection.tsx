@@ -10,29 +10,34 @@ import { useUpdateCheckoutMetadataMutation } from "@/checkout-storefront/graphql
 
 export const InvoiceRequestSection: React.FC<CommonSectionProps> = ({ collapsed }) => {
   const [isInvoice, setIsInvoice] = useState<boolean>(false);
+  const [initialUpdateDone, setInitialUpdateDone] = useState<boolean>(false);
+
   const [, updateCheckoutMetadata] = useUpdateCheckoutMetadataMutation();
   const { checkout } = useCheckout();
   const formatMessage = useFormattedMessages();
 
   useEffect(() => {
-    if (isInvoice) {
+    if (!initialUpdateDone) {
       void (async () => {
-        const invoiceStr = "true";
         await updateCheckoutMetadata({
           checkoutId: checkout?.id ?? "",
-          isInvoice: invoiceStr,
+          isInvoice: isInvoice.toString(),
         });
+        setInitialUpdateDone(true);
       })();
-    } else {
+    }
+  }, [initialUpdateDone, checkout, updateCheckoutMetadata, isInvoice]);
+
+  useEffect(() => {
+    if (initialUpdateDone) {
       void (async () => {
-        const invoiceStr = "false";
         await updateCheckoutMetadata({
           checkoutId: checkout?.id ?? "",
-          isInvoice: invoiceStr,
+          isInvoice: isInvoice.toString(),
         });
       })();
     }
-  }, [isInvoice, checkout]);
+  }, [isInvoice, checkout, updateCheckoutMetadata, initialUpdateDone]);
 
   if (!checkout?.isShippingRequired || collapsed) {
     return null;

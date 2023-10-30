@@ -44,6 +44,7 @@ export interface ValidationError<TFormData> {
 
 export interface CommonSectionProps {
   collapsed: boolean;
+  onInpostDataChange?: any;
 }
 
 export type MightNotExist<TData> = TData | null | undefined;

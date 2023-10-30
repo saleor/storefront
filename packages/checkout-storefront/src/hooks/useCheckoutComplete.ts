@@ -22,12 +22,17 @@ export const useCheckoutComplete = () => {
 
           if (order) {
             const newUrl = replaceUrl({ query: { checkout: undefined, order: order.id } });
-            window.location.href = newUrl;
+
+            // Dodaj opóźnienie przed przekierowaniem
+            setTimeout(() => {
+              window.location.href = newUrl;
+            }, 200000); // Odpowiada to opóźnieniu 2 sekund
           }
         },
       }),
       [checkoutComplete, checkoutId]
     )
   );
+
   return { completingCheckout: fetching, onCheckoutComplete };
 };
