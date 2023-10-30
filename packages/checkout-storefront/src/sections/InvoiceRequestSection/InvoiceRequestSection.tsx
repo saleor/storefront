@@ -32,7 +32,6 @@ export const InvoiceRequestSection: React.FC<CommonSectionProps> = ({ collapsed 
         });
       })();
     }
-    console.log(isInvoice, checkout?.metadata);
   }, [isInvoice, checkout]);
 
   if (!checkout?.isShippingRequired || collapsed) {
