@@ -26,7 +26,11 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const form = useDeliveryMethodsForm();
   const { updateState } = useCheckoutUpdateState();
   const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
-  const [selectedRadio, setSelectedRadio] = useState<string>("");
+  const [selectedRadio, setSelectedRadio] = useState<{ name: string; id: string }>({
+    name: "",
+    id: "",
+  });
+
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -44,11 +48,12 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   }
 
   const handleRadioChange = (value: string, name: string) => {
-    setSelectedRadio(name);
+    setSelectedRadio({ name, id: value });
   };
 
   const handleInpostDataChange = async (data: InpostEventData | null) => {
     setSelectedInpostData(data);
+
     if (data?.name) {
       await updateShippingLockerId({
         checkoutId: checkout.id,
@@ -60,6 +65,8 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const resetInpostData = () => {
     setSelectedInpostData(null);
   };
+
+  console.log(selectedRadio);
 
   return (
     <FormProvider form={form}>
@@ -95,7 +102,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
             )}
           </SelectBoxGroup>
         )}
-        {selectedRadio === "Inpost paczkomaty" && (
+        {selectedRadio.name === "Inpost paczkomaty" && (
           <React.Fragment>
             {selectedInpostData?.name != null && (
               <React.Fragment>
