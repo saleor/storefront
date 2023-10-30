@@ -69,31 +69,33 @@ export const SignIn: React.FC<SignInProps> = ({
 			onSectionChange={onSectionChange}
 		>
 			<FormProvider form={form}>
-				<TextInput
-					required
-					name="email"
-					label="Email"
-					onChange={(event) => {
-						handleChange(event);
-						onEmailChange(event.currentTarget.value);
-					}}
-				/>
-				<PasswordInput name="password" label="Password" />
-				<div className="flex w-full flex-row items-center justify-end py-4">
-					<Button
-						ariaDisabled={isSubmitting}
-						ariaLabel="send password reset link"
-						variant="tertiary"
-						label={passwordResetSent ? "Resend?" : "Forgot password?"}
-						className="ml-1 mr-4"
-						onClick={(e) => (isSubmitting ? e.preventDefault() : onPasswordResetRequest)}
+				<div className="grid grid-cols-1 gap-3">
+					<TextInput
+						required
+						name="email"
+						label="Email"
+						onChange={(event) => {
+							handleChange(event);
+							onEmailChange(event.currentTarget.value);
+						}}
 					/>
-					<Button
-						type="submit"
-						disabled={isSubmitting}
-						ariaLabel={"Sign in"}
-						label={isSubmitting ? "Processing…" : "Sign in"}
-					/>
+					<PasswordInput name="password" label="Password" required />
+					<div className="flex w-full flex-row items-center justify-end">
+						<Button
+							ariaDisabled={isSubmitting}
+							ariaLabel="send password reset link"
+							variant="tertiary"
+							label={passwordResetSent ? "Resend?" : "Forgot password?"}
+							className="ml-1 mr-4"
+							onClick={(e) => (isSubmitting ? e.preventDefault() : onPasswordResetRequest)}
+						/>
+						<Button
+							type="submit"
+							disabled={isSubmitting}
+							ariaLabel={"Sign in"}
+							label={isSubmitting ? "Processing…" : "Sign in"}
+						/>
+					</div>
 				</div>
 			</FormProvider>
 		</SignInFormContainer>

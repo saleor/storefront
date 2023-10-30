@@ -27,7 +27,7 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 			onSectionChange={onSectionChange}
 		>
 			<FormProvider form={form}>
-				<div className="grid grid-cols-1 gap-2">
+				<div className="grid grid-cols-1 gap-3">
 					<TextInput
 						required
 						name="email"
@@ -44,7 +44,7 @@ export const GuestUser: React.FC<GuestUserProps> = ({
 					/>
 					{createAccount && (
 						<div className="mt-2">
-							<PasswordInput name="password" label="Password (minimum 8 characters)" />
+							<PasswordInput name="password" label="Password (minimum 8 characters)" required />
 						</div>
 					)}
 				</div>
