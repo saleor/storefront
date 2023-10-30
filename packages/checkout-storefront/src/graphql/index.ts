@@ -26982,6 +26982,7 @@ export type CheckoutFragment = {
       }> | null;
     };
   }>;
+  metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
 };
 
 export type CheckoutLineFragment = {
@@ -27197,6 +27198,7 @@ export type CheckoutQuery = {
         }> | null;
       };
     }>;
+    metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
   } | null;
 };
 
@@ -27364,6 +27366,7 @@ export type CheckoutLinesUpdateMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -27520,6 +27523,7 @@ export type CheckoutLineDeleteMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -27676,6 +27680,7 @@ export type CheckoutEmailUpdateMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -27831,6 +27836,7 @@ export type CheckoutCustomerAttachMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -27988,6 +27994,7 @@ export type CheckoutShippingAddressUpdateMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -28145,6 +28152,7 @@ export type CheckoutBillingAddressUpdateMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -28301,6 +28309,7 @@ export type CheckoutDeliveryMethodUpdateMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -28479,6 +28488,7 @@ export type CheckoutAddPromoCodeMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -28636,6 +28646,7 @@ export type CheckoutRemovePromoCodeMutation = {
           }> | null;
         };
       }>;
+      metadata: Array<{ __typename?: "MetadataItem"; key: string; value: string }>;
     } | null;
   } | null;
 };
@@ -29937,6 +29948,10 @@ export const CheckoutFragmentDoc = gql`
       ...CheckoutLineFragment
     }
     token
+    metadata {
+      key
+      value
+    }
   }
   ${MoneyFragmentDoc}
   ${GiftCardFragmentDoc}
