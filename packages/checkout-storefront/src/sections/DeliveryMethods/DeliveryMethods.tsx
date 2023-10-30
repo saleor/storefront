@@ -66,8 +66,6 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
     setSelectedInpostData(null);
   };
 
-  console.log(selectedRadio);
-
   return (
     <FormProvider form={form}>
       <Divider />
