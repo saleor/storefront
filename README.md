@@ -109,7 +109,7 @@ Clone and repo and copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Edit `.env.local` and set `NEXT_PUBLIC_SALEOR_API_URL` to your Saleor GraphQL endpoint URL, e.g., `https://example.saleor.cloud/graphql/`.
+Edit `.env` and set `NEXT_PUBLIC_SALEOR_API_URL` to your Saleor GraphQL endpoint URL, e.g., `https://example.saleor.cloud/graphql/`.
 
 Then, [install `pnpm`](https://pnpm.io/installation) and run the following command to install all dependencies in the repo:
 
