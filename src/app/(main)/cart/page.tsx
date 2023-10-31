@@ -15,7 +15,7 @@ export default async function Page() {
 
 	const checkout = await Checkout.find(checkoutId);
 
-	if (!checkout) {
+	if (!checkout || checkout.lines.length < 1) {
 		return (
 			<section className="mx-auto max-w-7xl p-8">
 				<h1 className="mt-8 text-3xl font-bold text-neutral-900">Your Shopping Cart is empty</h1>
@@ -80,7 +80,7 @@ export default async function Page() {
 
 				<div className="mt-12">
 					<div className="rounded border bg-neutral-50 px-4 py-2">
-						<div className="flex items-center justify-between py-2">
+						<div className="flex items-center justify-between gap-2 py-2">
 							<div>
 								<p className="font-semibold text-neutral-900">Your Total</p>
 								<p className="mt-1 text-sm text-neutral-500">Shipping will be calculated in the next step</p>
@@ -91,7 +91,11 @@ export default async function Page() {
 						</div>
 					</div>
 					<div className="mt-10 text-center">
-						<CheckoutLink checkoutId={checkoutId} disabled={!checkout.lines.length} className="w-1/3" />
+						<CheckoutLink
+							checkoutId={checkoutId}
+							disabled={!checkout.lines.length}
+							className="w-full sm:w-1/3"
+						/>
 					</div>
 				</div>
 			</form>
