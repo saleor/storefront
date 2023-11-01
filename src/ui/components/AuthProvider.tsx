@@ -21,7 +21,6 @@ export const saleorAuthClient = createSaleorAuthClient({
 });
 
 const makeUrqlClient = () => {
-	console.log(`makeUrqlClient`);
 	return createClient({
 		url: saleorApiUrl,
 		suspense: true,
@@ -32,7 +31,6 @@ const makeUrqlClient = () => {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	console.log("AuthProvider");
 	invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
 	const [urqlClient, setUrqlClient] = useState<Client>(() => makeUrqlClient());
