@@ -6,3 +6,4 @@ export const HOMEPAGE_MENU = process.env.NEXT_PUBLIC_HOMEPAGE_MENU || "";
 export const GEOLOCATION = process.env.NEXT_PUBLIC_GEOLOCATION === "true";
 export const CHANNEL_SLUG = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || "";
 export const AWS_MEDIA_BUCKET = process.env.NEXT_PUBLIC_AWS_MEDIA_BUCKET || "";
+export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID!;

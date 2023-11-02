@@ -10,13 +10,14 @@ import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
 import typePolicies from "@/lib/auth/typePolicies";
-import { API_URI, DEMO_MODE } from "@/lib/const";
+import { API_URI, DEMO_MODE, GA_TRACKING_ID } from "@/lib/const";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
 import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@saleor/auth-sdk/react";
 import { useAuthenticatedApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { WishlistProvider } from "context/WishlistContext";
 import { useRouter } from "next/router";
 import { UnderConstruction } from "@/components/UnderConstruction/UnderConstruction";
+import CookieBanner from "@/components/CookieBanner";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -86,6 +87,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     storage: typeof window !== "undefined" ? window.localStorage : undefined,
   });
 
+  useEffect(() => {
+    const handleRouteChange = (url: URL) => {
+      window.gtag("config", GA_TRACKING_ID, {
+        page_path: url,
+      });
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
+
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
   const { apolloClient, reset, refetch } = useAuthenticatedApolloClient({
@@ -116,6 +129,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                 <NextNProgress color="#fff" options={{ showSpinner: false }} />
                 {DEMO_MODE && <DemoBanner />}
                 {getLayout(<Component {...pageProps} />)}
+                <CookieBanner />
               </WishlistProvider>
             </RegionsProvider>
           </CheckoutProvider>
