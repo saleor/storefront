@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 export default function CookieBanner() {
   const [cookieConsent, setCookieConsent] = useState<boolean>(() => {
     const storedCookieConsent = getLocalStorage("cookie_consent", false);
-    console.log("Stored cookie consent:", storedCookieConsent);
     return typeof storedCookieConsent === "boolean" ? storedCookieConsent : false;
   });
 
@@ -17,7 +16,6 @@ export default function CookieBanner() {
       analytics_storage: newValue,
     });
     setLocalStorage("cookie_consent", cookieConsent);
-    console.log("Cookie consent updated:", cookieConsent);
   }, [cookieConsent]);
 
   const handleConsent = (consent: boolean) => {

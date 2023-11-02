@@ -258,7 +258,6 @@ importers:
       '@tailwindcss/aspect-ratio': 0.4.2
       '@tailwindcss/forms': 0.5.3
       '@tailwindcss/typography': 0.5.7
-      '@types/google.analytics': ^0.0.44
       '@types/gtag.js': ^0.0.17
       '@types/lodash': ^4.14.198
       '@types/node': 16.11.22
@@ -317,7 +316,6 @@ importers:
       '@tailwindcss/aspect-ratio': 0.4.2_tailwindcss@3.2.1
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.1
       '@tailwindcss/typography': 0.5.7_tailwindcss@3.2.1
-      '@types/google.analytics': 0.0.44
       client-only: 0.0.1
       clsx: 1.2.1
       dotenv: 16.0.3
@@ -12384,10 +12382,6 @@ packages:
       '@types/minimatch': 5.1.2
       '@types/node': 20.4.1
     dev: true
-
-  /@types/google.analytics/0.0.44:
-    resolution: {integrity: sha512-GT+UL53/bHl+ije/wbeoKMQuDL4NrriSmADbZaKNfEC3vTk3MOCQZT0F+TWBC3+sKq0CBURD7PNADBBHc1pGng==}
-    dev: false
 
   /@types/googlepay/0.6.4:
     resolution: {integrity: sha512-PTt/UCllzl8z5HmhymPpSj6uENZvVKZvCBYdDVmbBVJnLStitxtWrterAOQZkKGlqVdzxNXYeif5hOAMNMS5mw==}

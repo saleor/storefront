@@ -14,8 +14,6 @@ class MyDocument extends Document<{ lang?: string }> {
 
     const gtag = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
 
-    console.log(gtag);
-
     return (
       <Html lang={this.props.lang}>
         <Head>
