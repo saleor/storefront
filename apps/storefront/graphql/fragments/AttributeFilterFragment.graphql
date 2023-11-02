@@ -8,7 +8,7 @@ fragment AttributeFilterFragment on Attribute {
   }
   slug
   withChoices
-  choices(first: 20) {
+  choices(first: 100) {
     edges {
       node {
         ...AttributeFilterChoiceFragment

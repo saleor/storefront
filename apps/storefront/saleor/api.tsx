@@ -29337,6 +29337,7 @@ export type FilteringAttributesQueryVariables = Exact<{
   filter: AttributeFilterInput;
   channel: Scalars["String"]["input"];
   locale: LanguageCodeEnum;
+  after?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type FilteringAttributesQuery = {
@@ -29370,6 +29371,7 @@ export type FilteringAttributesQuery = {
         } | null;
       };
     }>;
+    pageInfo: { __typename?: "PageInfo"; hasNextPage: boolean; endCursor?: string | null };
   } | null;
 };
 
@@ -30604,7 +30606,7 @@ export const AttributeFilterFragmentDoc = gql`
     }
     slug
     withChoices
-    choices(first: 20) {
+    choices(first: 100) {
       edges {
         node {
           ...AttributeFilterChoiceFragment
@@ -32859,13 +32861,18 @@ export const FilteringAttributesQueryDocument = gql`
     $filter: AttributeFilterInput!
     $channel: String!
     $locale: LanguageCodeEnum!
+    $after: String
   ) {
-    attributes(filter: $filter, first: 100, channel: $channel) {
+    attributes(filter: $filter, first: 100, channel: $channel, after: $after) {
       totalCount
       edges {
         node {
           ...AttributeFilterFragment
         }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
@@ -32887,6 +32894,7 @@ export const FilteringAttributesQueryDocument = gql`
  *      filter: // value for 'filter'
  *      channel: // value for 'channel'
  *      locale: // value for 'locale'
+ *      after: // value for 'after'
  *   },
  * });
  */

@@ -2,13 +2,18 @@ query FilteringAttributesQuery(
   $filter: AttributeFilterInput!
   $channel: String!
   $locale: LanguageCodeEnum!
+  $after: String
 ) {
-  attributes(filter: $filter, first: 100, channel: $channel) {
+  attributes(filter: $filter, first: 100, channel: $channel, after: $after) {
     totalCount
     edges {
       node {
         ...AttributeFilterFragment
       }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }
