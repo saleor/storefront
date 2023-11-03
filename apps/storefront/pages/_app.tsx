@@ -1,10 +1,11 @@
+"uset client";
 import "styles/globals.css";
 
 import { ApolloProvider } from "@apollo/client";
 import { NextPage } from "next";
 import { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
-import React, { ReactElement, ReactNode, useEffect, useRef } from "react";
+import React, { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
@@ -17,7 +18,7 @@ import { useAuthenticatedApolloClient } from "@saleor/auth-sdk/react/apollo";
 import { WishlistProvider } from "context/WishlistContext";
 import { useRouter } from "next/router";
 import { UnderConstruction } from "@/components/UnderConstruction/UnderConstruction";
-import CookieBanner from "@/components/CookieBanner";
+import CookieBanner from "@/components/CookiesBanner/CookieBanner";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -29,6 +30,7 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
+  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -99,6 +101,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     };
   }, [router.events]);
 
+  useEffect(() => {
+    const consent = window.localStorage.getItem("cookie_consent");
+    setShowCookieBanner(consent !== "true");
+  }, []);
+
   const { saleorAuthClient } = useSaleorAuthClientProps;
 
   const { apolloClient, reset, refetch } = useAuthenticatedApolloClient({
@@ -129,7 +136,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                 <NextNProgress color="#fff" options={{ showSpinner: false }} />
                 {DEMO_MODE && <DemoBanner />}
                 {getLayout(<Component {...pageProps} />)}
-                <CookieBanner />
+                {showCookieBanner && <CookieBanner />}
               </WishlistProvider>
             </RegionsProvider>
           </CheckoutProvider>
