@@ -1,4 +1,3 @@
-"uset client";
 import "styles/globals.css";
 
 import { ApolloProvider } from "@apollo/client";

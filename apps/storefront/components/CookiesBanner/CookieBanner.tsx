@@ -31,7 +31,7 @@ export default function CookieBanner() {
           px-3 md:px-4 py-4 justify-between items-center flex-col sm:flex-row gap-4  
           bg-black shadow-lg text-white z-50`}
     >
-      <div className="mx-16 text-left max-w-[640px] text-sm">
+      <div className="mx-4 md:mx-16 lg:mx-16 text-left max-w-[640px] text-sm">
         <Link href={storefrontTerms}>
           Nasz sklep {STOREFRONT_NAME}, używa plików{" "}
           <span className="font-bold text-brand">cookies</span>. Są one używane przez nas i naszych
@@ -40,7 +40,7 @@ export default function CookieBanner() {
         </Link>
       </div>
 
-      <div className="mx-16 flex gap-2">
+      <div className="mx-16 w-max flex-wrap flex flex-column md:flex-row lg:flex-row xl:flex-row gap-2">
         <button
           onClick={() => handleConsent(false)}
           type="button"
