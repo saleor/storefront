@@ -154,6 +154,20 @@ export const pagesPath = {
         hash: "news",
       }),
     },
+    terms_and_conditions_f4u: {
+      $url: (url?: { hash?: string }) => ({
+        pathname: "/[locale]/page/regulamin" as const,
+        query: { locale },
+        hash: url?.hash,
+      }),
+    },
+    terms_and_conditions_c4u: {
+      $url: (url?: { hash?: string }) => ({
+        pathname: "/[locale]/page/regulamin-c4u" as const,
+        query: { locale },
+        hash: url?.hash,
+      }),
+    },
     $url: (url?: { hash?: string }) => ({
       pathname: "/[locale]" as const,
       query: { locale },
