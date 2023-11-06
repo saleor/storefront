@@ -1,21 +1,17 @@
 import React from "react";
 
-import { useMainMenuQuery } from "@/saleor/api";
+import { MenuItemWithChildrenFragment, useMainMenuQuery } from "@/saleor/api";
 
 import { useRegions } from "../RegionsProvider";
 import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
 import { STOREFRONT_NAME } from "@/lib/const";
 
-export type MenuItem = {
-  id: string;
-  name: string;
-};
-
 const MAX_MENU_ITEMS = 5;
 const EXCLUDED_CATEGORIES = ["Mix", "Hurt", "Detal"];
 
-const isExcludedCategory = (item: MenuItem) => EXCLUDED_CATEGORIES.includes(item.name);
+const isExcludedCategory = (item: MenuItemWithChildrenFragment) =>
+  EXCLUDED_CATEGORIES.includes(item.name);
 
 export function Menu() {
   const { query } = useRegions();
