@@ -1,33 +1,11 @@
 import React from "react";
 
-import { MenuItemWithChildrenFragment, useMainMenuQuery } from "@/saleor/api";
-
-import { useRegions } from "../RegionsProvider";
 import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
-import { STOREFRONT_NAME } from "@/lib/const";
-
-const MAX_MENU_ITEMS = 5;
-const EXCLUDED_CATEGORIES = ["Mix", "Hurt", "Detal"];
-
-const isExcludedCategory = (item: MenuItemWithChildrenFragment) =>
-  EXCLUDED_CATEGORIES.includes(item.name);
+import { useVisibleMenuItems } from "@/lib/hooks/useVisibleMenuItems";
 
 export function Menu() {
-  const { query } = useRegions();
-  const { error, data } = useMainMenuQuery({ variables: query });
-
-  if (error) {
-    console.error("Navbar/Menu component error", error.message);
-    return null;
-  }
-
-  const menuItems = data?.menu?.items;
-
-  const visibleMenuItems =
-    STOREFRONT_NAME === "FASHION4YOU"
-      ? menuItems?.filter((item) => !isExcludedCategory(item))
-      : menuItems?.slice(0, MAX_MENU_ITEMS);
+  const { visibleMenuItems } = useVisibleMenuItems();
 
   return (
     <nav className={styles.nav}>
