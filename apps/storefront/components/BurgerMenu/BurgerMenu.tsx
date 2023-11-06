@@ -14,7 +14,7 @@ import { messages } from "../translations";
 import styles from "./BurgerMenu.module.css";
 import { CollapseMenu } from "./CollapseMenu";
 import { useUser } from "@/lib/useUser";
-import { useVisibleMenuItems } from "@/lib/hooks/useVisibleMenuItems";
+import { useMenuItems } from "@/lib/hooks/useMenuItems";
 
 export interface BurgerMenuProps {
   open?: boolean;
@@ -23,7 +23,7 @@ export interface BurgerMenuProps {
 
 export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   const paths = usePaths();
-  const { visibleMenuItems } = useVisibleMenuItems();
+  const { menuItems, error } = useMenuItems();
   const t = useIntl();
 
   const [authenticated, setAuthenticated] = useState(false);
@@ -37,6 +37,10 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
 
   const onLogout = useLogout();
 
+  if (error) {
+    console.error("BurgerMenu component error", error.message);
+  }
+
   return (
     <div
       className={clsx(styles.container, {
@@ -48,7 +52,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
         <div className="flex justify-end w-full mb-5">
           <NavIconButton icon="close" onClick={onCloseClick} />
         </div>
-        {visibleMenuItems?.map((item) => (
+        {menuItems?.map((item) => (
           <CollapseMenu menuItem={item} key={item.id} />
         ))}
         <div className="mt-auto pt-4">

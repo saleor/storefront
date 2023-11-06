@@ -2,15 +2,20 @@ import React from "react";
 
 import DropdownMenu from "./DropdownMenu";
 import styles from "./Navbar.module.css";
-import { useVisibleMenuItems } from "@/lib/hooks/useVisibleMenuItems";
+import { useMenuItems } from "@/lib/hooks/useMenuItems";
 
 export function Menu() {
-  const { visibleMenuItems } = useVisibleMenuItems();
+  const { menuItems, error } = useMenuItems();
+
+  if (error) {
+    console.error("Navbar/Menu component error", error.message);
+    return null;
+  }
 
   return (
     <nav className={styles.nav}>
       <ol>
-        {visibleMenuItems?.map((item) => {
+        {menuItems?.map((item) => {
           const isNewsItem = ["Aktualności", "News"].includes(item.name);
           return (
             <li key={item.id}>
