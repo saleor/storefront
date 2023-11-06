@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 
 import { Layout } from "@/components";
 import { useWishlist } from "context/WishlistContext";
@@ -6,16 +6,6 @@ import { ProductCard } from "@/components/ProductCard";
 
 function WishlistPage() {
   const { wishlist } = useWishlist();
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <main className="container w-full px-8 mt-18 mb-18">
