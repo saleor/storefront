@@ -4,8 +4,7 @@ import { ApolloProvider } from "@apollo/client";
 import { NextPage } from "next";
 import { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
-import React, { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
-
+import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 import { DemoBanner } from "@/components/DemoBanner";
 import { RegionsProvider } from "@/components/RegionsProvider";
 import { BaseSeo } from "@/components/seo/BaseSeo";
@@ -29,7 +28,7 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
-  const [showCookieBanner, setShowCookieBanner] = useState<boolean>(false);
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
 
   const router = useRouter();
 

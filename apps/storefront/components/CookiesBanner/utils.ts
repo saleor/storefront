@@ -1,6 +1,6 @@
 import { Paths } from "./types";
 
-export const updateCookieConsent = (consent: boolean): void => {
+export const updateCookieConsent = (consent: boolean) => {
   const newValue = consent ? "granted" : "denied";
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("consent", "update", {
@@ -15,7 +15,7 @@ export const updateCookieConsent = (consent: boolean): void => {
   }
 };
 
-export const getStorefrontTermsUrl = (paths: Paths, storefrontName: string): string => {
+export const getStorefrontTermsUrl = (paths: Paths, storefrontName: string) => {
   switch (storefrontName) {
     case "FASHION4YOU":
       return paths.terms_and_conditions_f4u?.$url().toString() ?? "";

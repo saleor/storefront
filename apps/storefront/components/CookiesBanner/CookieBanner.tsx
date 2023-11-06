@@ -18,7 +18,7 @@ export default function CookieBanner() {
     }
   }, [cookieConsent]);
 
-  const handleConsent = (consent: boolean): void => {
+  const handleConsentChange = (consent: boolean): void => {
     setCookieConsent(consent);
   };
 
@@ -42,14 +42,14 @@ export default function CookieBanner() {
 
       <div className="mx-16 w-max flex-wrap flex flex-column md:flex-row lg:flex-row xl:flex-row gap-2">
         <button
-          onClick={() => handleConsent(false)}
+          onClick={() => handleConsentChange(false)}
           type="button"
           className="bg-white text-black text-sm py-1 px-3 border-2 border-white hover:bg-transparent hover:text-white transition duration-200 hover:border-2 hover:border-white"
         >
           Odrzuć
         </button>
         <button
-          onClick={() => handleConsent(true)}
+          onClick={() => handleConsentChange(true)}
           type="button"
           className="bg-white text-black text-sm py-1 px-3 border-2 border-white hover:bg-transparent hover:text-white transition duration-200 hover:border-2 hover:border-white"
         >
