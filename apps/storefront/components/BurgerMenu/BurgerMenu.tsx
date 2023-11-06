@@ -6,18 +6,15 @@ import { useIntl } from "react-intl";
 
 import { useLogout } from "@/lib/hooks/useLogout";
 import { usePaths } from "@/lib/paths";
-import { useMainMenuQuery } from "@/saleor/api";
 
 import NavIconButton from "../Navbar/NavIconButton";
 import { ChannelDropdown } from "../regionDropdowns/ChannelDropdown";
 import { LocaleDropdown } from "../regionDropdowns/LocaleDropdown";
-import { useRegions } from "../RegionsProvider";
 import { messages } from "../translations";
 import styles from "./BurgerMenu.module.css";
 import { CollapseMenu } from "./CollapseMenu";
 import { useUser } from "@/lib/useUser";
-import { STOREFRONT_NAME } from "@/lib/const";
-import { MenuItem } from "../Navbar/Menu";
+import { useMenuItems } from "@/lib/hooks/useMenuItems";
 
 export interface BurgerMenuProps {
   open?: boolean;
@@ -26,40 +23,23 @@ export interface BurgerMenuProps {
 
 export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   const paths = usePaths();
-  const { query } = useRegions();
+  const { menuItems, error } = useMenuItems();
   const t = useIntl();
 
   const [authenticated, setAuthenticated] = useState(false);
   const { authenticated: actuallyAuthenticated } = useUser();
   const router = useRouter();
 
-  const { error, data } = useMainMenuQuery({
-    variables: { ...query },
-  });
-
   // Avoid hydration warning by setting authenticated state in useEffect
   useEffect(() => {
     setAuthenticated(actuallyAuthenticated);
   }, [actuallyAuthenticated]);
 
+  const onLogout = useLogout();
+
   if (error) {
     console.error("BurgerMenu component error", error.message);
   }
-
-  const onLogout = useLogout();
-
-  const menuItems = data?.menu?.items || [];
-
-  const maxMenuItems = 5;
-  const slicedMenuItems = menuItems.slice(0, maxMenuItems);
-
-  const isExcludedCategory = (item: MenuItem): boolean =>
-    item.name === "Mix" || item.name === "Hurt" || item.name === "Detal";
-
-  const visibleCategoryOnMenu =
-    STOREFRONT_NAME === "FASHION4YOU"
-      ? menuItems.filter((item) => !isExcludedCategory(item))
-      : slicedMenuItems;
 
   return (
     <div
@@ -72,7 +52,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
         <div className="flex justify-end w-full mb-5">
           <NavIconButton icon="close" onClick={onCloseClick} />
         </div>
-        {visibleCategoryOnMenu.map((item) => (
+        {menuItems?.map((item) => (
           <CollapseMenu menuItem={item} key={item.id} />
         ))}
         <div className="mt-auto pt-4">
