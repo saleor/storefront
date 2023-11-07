@@ -1,129 +1,141 @@
-![Nextjs Storefront](https://user-images.githubusercontent.com/44495184/185616229-5eadcddb-9170-404f-be57-91c66ffe3bae.png)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL&envDescription=Full%20Saleor%20GraphQL%20endpoint%20URL%2C%20eg%3A%20https%3A%2F%2Fstorefront1.saleor.cloud%2Fgraphql%2F&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af)
+[![Storefront Demo](https://img.shields.io/badge/VIEW%20DEMO-DFDFDF?style=for-the-badge)](https://storefront.saleor.io)
+
+![Nextjs Storefront](./screenshot.png)
 
 <div align="center">
   <h1>Next.js Storefront</h1>
+  Starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
 </div>
 
 <div align="center">
-  <p><b>Next.js Storefront</b>: Your open-source frontend starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
-  <p><b>Saleor Checkout</b>: Extensible Next.js checkout application and payment integrations powered by Saleor API.</p>
+  <a href="https://saleor.io/">Website</a>
+  <span> • </span>
+  <a href="https://docs.saleor.io/docs/3.x">Docs</a>
+  <span> • </span>
+  <a href="https://github.com/orgs/saleor/projects/45/views/2">Roadmap</a>
+  <span> • </span>
+  <a href="https://twitter.com/getsaleor">Twitter</a>
+  <span> • </span>
+  <a href="https://discord.gg/H52JTZAtSH">Discord</a>
+  <span> • </span>
+  <a href="https://storefront.saleor.io/">Demo</a>
 </div>
+
+<br/>
 
 <div align="center">
-  <a href="https://saleor.io/">🏠 Website</a>
-  <span> • </span>
-  <a href="https://docs.saleor.io/docs/3.x/">📚 Docs</a>
-  <span> • </span>
-  <a href="https://saleor.io/blog/">📰 Blog</a>
-  <span> • </span>
-  <a href="https://twitter.com/getsaleor">🐦 Twitter</a>
+
+[![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://github.com/orgs/saleor/projects/45/views/2)
+[![Discord Badge](https://dcbadge.vercel.app/api/server/H52JTZAtSH)](https://discord.gg/H52JTZAtSH)
+
 </div>
 
-<div align="center">
-  <a href="https://demo.saleor.io/">▶️ Demo</a>
-   <span> • </span>
-  <a href="https://githubbox.com/saleor/react-storefront">🔎 Explore Code</a>
-</div>
+## Features
 
-## Motivation
+- **Next.js 14**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
+- **App Router**: Uses React Server Components, Data Cache, and async components.
+- **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
+- **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
+- **Customizable CSS**: TailwindCSS can be extended or replaced with an alternative CSS solution.
+- **Tooling included**: Comes with ESLint, Prettier, Husky, Lint Staged, and Codegen preconfigured.
 
-🏎️ **modern & fast**:
-The project utilizes all the best practices for e-commerce, like SSR, ISR, and image optimization.
+**Global:**
 
-💳 **integrated payments**:
-Reduce the purchase friction by taking advantage of integrations with modern payment providers such as Adyen, Mollie or Stripe.
+- Channel switcher and Geo detection (coming soon)
+- Dynamic menu
+- Hamburger menu
+- SEO data
 
-🛠️ **easily customizable**:
-TailwindCSS can be easily extended and tweaked, or completely replaced with your favorite CSS solution.
+**Checkout:**
 
-👌 **works out-of-the-box**:
-Pre-configured tools built with DX in mind.
+- Single page checkout (including login)
+- Portable to other frameworks (doesn't use Next.js components)
+- Adyen integration
+- Stripe integration
+- Customer address book
+- Vouchers and Gift Cards
 
-## Stack
+**Product catalog:**
 
-- Next.js
-- TypeScript
-- GraphQL with Apollo Client
-- Tailwind CSS
-- Turborepo
-- Saleor Checkout
+- Categories
+- Variant selection
+- Product attributes
+- Image optimization
+
+**My account:**
+
+- Order history (coming soon)
+- Order completion
+- Order details
 
 ## Quickstart
 
-Supercharge your development with our CLI tool and free developer account at [Saleor Cloud](https://cloud.saleor.io/). To download and install Saleor CLI, run the following command:
+> [!IMPORTANT]
+> To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
 
-```
-npm i -g @saleor/cli
-```
+Install the latest version of the Saleor CLI by running the following command:
 
-[Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli)
-
-Set up your local storefront development environment by running the storefront create command with --demo attribute. It will create a fresh clone, install dependencies and create a Saleor instance in the Saleor Cloud. The backend will be set to the newly created Cloud instance.
-
-```
-saleor storefront create --demo
+```bash
+npm i -g @saleor/cli@latest
 ```
 
-You can also spawn your local storefront development environment without using the --demo attribute. It will create a fresh clone and install dependencies. The default configuration uses the master staging environment of the Saleor Cloud as a backend.
+[Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli).
 
-```
-saleor storefront create
+Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a clone, install dependencies, and connect with the provided Saleor instance.
+
+```bash
+saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
 ```
 
----
+> [!NOTE]
+> The minimum required version of Saleor CLI is `1.36.0`.
+
+## Payments
+
+Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To install and configure the payment app go to the "Apps" section in the Saleor Dashboard (App Store is only available in Saleor Cloud).
+
+> [!WARNING]
+> To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
+
+> [!NOTE]
+> Saleor Stripe App integration is a work in progress.
 
 ## Development
 
-First install [`pnpm`](https://pnpm.io/) (an alternative to `npm`, focused on performance) globally:
+Clone and repo and copy `.env.example` to `.env`:
 
+```bash
+cp .env.example .env
 ```
-npm install -g pnpm@7.11.0
-```
 
-> **Note**
->
-> `react-storefront` requires version 7.11.0 of pnpm to run properly, using newer versions won't work
+Edit `.env` and set `NEXT_PUBLIC_SALEOR_API_URL` to your Saleor GraphQL endpoint URL, e.g., `https://example.saleor.cloud/graphql/`.
 
-Then install dependencies:
+Then, [install `pnpm`](https://pnpm.io/installation) and run the following command to install all dependencies in the repo:
 
-```
+```bash
 pnpm i
 ```
 
-To start the servers, run:
+To start the development server, run the following:
 
-```
+```bash
 pnpm dev
 ```
 
-[The command will boot up 4 applications running on different ports](./docs/development.md#ports).
+The app is now running at `http://localhost:3000`.
 
-Read more about development in [docs/development.md](./docs/development.md).
+> [!NOTE]
+> Saleor Storefront is a Next.js app. In case you are not familiar with Next.js, we recommend you to read the [Next.js documentation](https://nextjs.org/docs) (make sure you've selected "Using App Router" in the sidebar).
 
-## Payment gateways
+#### GraphQL queries and mutations:
 
-Saleor App Checkout supports three configurable payment gateways:
+After altering or creating new GraphQL queries in `gql` folder, you need to run the following command to generate types and javascript queries:
 
-<a href="https://www.mollie.com/en">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/logos/mollie_light.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./docs/logos/mollie_dark.svg">
-    <img alt="Mollie" src="./docs/logos/mollie_dark.svg">
-  </picture>
-</a>
+```bash
+pnpm run generate
+```
 
-<br>
+### Preview content changes instantly (Draft Mode)
 
-[![Adyen](./docs/logos/adyen.svg)](https://www.adyen.com/)
-
-[![Stripe](./docs/logos/stripe_blurple.svg)](https://stripe.com/)
-
-For further information, please go to [docs/payment/index.md](./docs/payment/index.md).
-
-## Deployment
-
-Read Vercel deployment guide in [docs/vercel.md](./docs/vercel.md)
-
-## FAQ
-
-Read FAQ in [docs/faq.md](./docs/faq.md)
+Visit `http://{your-host}/api/draft` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about the Draft Mode in Next.js docs.](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)

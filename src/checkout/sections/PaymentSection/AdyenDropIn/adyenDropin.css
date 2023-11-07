@@ -1,0 +1,8 @@
+.adyen-checkout__payment-method {
+	@apply bg-transparent;
+}
+
+.adyen-checkout__payment-method--next-selected,
+.adyen-checkout__payment-method:last-child {
+	@apply rounded-md;
+}

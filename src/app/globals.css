@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	overflow-x: hidden;
+}
+
+@media (min-width: theme(screens.lg)) {
+	.checkout-bg {
+		background: linear-gradient(
+			90deg,
+			theme(colors.white) 0%,
+			theme(colors.white) 50%,
+			theme(colors.neutral.200) calc(50%),
+			theme(colors.neutral.200) calc(50% + 1px),
+			theme(colors.neutral.50) calc(50% + 1px),
+			theme(colors.neutral.50) 100%
+		);
+	}
+}

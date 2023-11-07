@@ -1,0 +1,37 @@
+query ProductDetails($slug: String!) {
+	product(slug: $slug, channel: "default-channel") {
+		id
+		name
+		slug
+		description
+		seoTitle
+		seoDescription
+		thumbnail(size: 1024, format: WEBP) {
+			url
+			alt
+		}
+		category {
+			id
+			name
+		}
+		variants {
+			...VariantDetails
+		}
+		pricing {
+			priceRange {
+				start {
+					gross {
+						amount
+						currency
+					}
+				}
+				stop {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+		}
+	}
+}

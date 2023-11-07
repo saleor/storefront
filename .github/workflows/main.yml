@@ -1,5 +1,9 @@
 name: Build, TypeScripts, tests
-on: [pull_request]
+on:
+  push:
+    branches: [canary]
+  pull_request:
+    branches: [canary]
 
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
@@ -9,60 +13,62 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - name: Get PNPM version from package.json
+        id: pnpm-version
+        run: echo "pnpm_version=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
         with:
-          version: 7.11.0 # version used by Vercel
+          version: ${{ steps.pnpm-version.outputs.pnpm_version }}
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version-file: package.json
           cache: "pnpm"
-
-      - name: Turbo Cache
-        id: turbo-cache
-        uses: actions/cache@v2
-        with:
-          path: .turbo
-          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            turbo-${{ github.job }}-${{ github.ref_name }}-
 
       - name: Install dependencies
         run: pnpm --version && pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm run build
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "playwright_version=$(pnpm playwright --version | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
 
-      - name: Validate paths
+      - uses: actions/cache@v3
+        name: Playwright Cache
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
+
+      - run: pnpm exec playwright install chromium --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - run: pnpm exec playwright install-deps chromium
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+
+      - name: Wait for Vercel Preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+        id: waitForVercel
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 240
+          check_interval: 5
+
+      - name: Run Playwright tests
+        run: pnpm exec playwright test
         env:
-          SALEOR_API_URL: https://master.staging.saleor.cloud/graphql/
-        run: |
-          pnpm --filter=storefront paths
-          pnpm prettier --write ./apps/storefront/lib/\$path.ts
-          git diff --exit-code ./apps/storefront/lib/\$path.ts
+          BASE_URL: ${{ steps.waitForVercel.outputs.url }}
 
-      - name: Check linters
-        run: pnpm run lint
-
-      - name: Check TypeScript
-        run: pnpm run check-types
-
-      - name: Run tests
-        env:
-          TEST_MOLLIE_KEY: ${{ secrets.TEST_MOLLIE_KEY }}
-          TEST_MOLLIE_PROFILE_ID: ${{ secrets.TEST_MOLLIE_PROFILE_ID }}
-
-          TEST_STRIPE_SECRET_KEY: ${{ secrets.TEST_STRIPE_SECRET_KEY }}
-          TEST_STRIPE_PUBLISHABLE_KEY: ${{ secrets.TEST_STRIPE_PUBLISHABLE_KEY }}
-          TEST_STRIPE_WEBHOOK_SECRET: ${{ secrets.TEST_STRIPE_WEBHOOK_SECRET }}
-
-          SETTINGS_ENCRYPTION_SECRET: "testng"
-
-          SALEOR_APP_TOKEN: "test"
-        run: pnpm run test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

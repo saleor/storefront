@@ -1,0 +1,11 @@
+mutation CheckoutDeleteLines($checkoutId: ID!, $lineIds: [ID!]!) {
+	checkoutLinesDelete(id: $checkoutId, linesIds: $lineIds) {
+		checkout {
+			id
+		}
+		errors {
+			field
+			code
+		}
+	}
+}
