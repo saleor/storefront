@@ -126,7 +126,13 @@ export default async function Page(props: { params: { slug: string }; searchPara
 		<section className="mx-auto grid max-w-7xl p-8">
 			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
 				{firstImage && (
-					<ProductImageWrapper alt={firstImage.alt ?? ""} width={1024} height={1024} src={firstImage.url} />
+					<ProductImageWrapper
+						priority={true}
+						alt={firstImage.alt ?? ""}
+						width={1024}
+						height={1024}
+						src={firstImage.url}
+					/>
 				)}
 				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
 					<div>

@@ -20,6 +20,7 @@ export function ProductElement({
 							alt={product.thumbnail.alt ?? ""}
 							width={512}
 							height={512}
+							sizes={"512px"}
 							priority={priority}
 						/>
 					)}
