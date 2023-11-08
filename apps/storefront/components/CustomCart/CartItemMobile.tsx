@@ -3,11 +3,29 @@ import Tooltip from "@mui/material/Tooltip";
 import clsx from "clsx";
 import { useIntl } from "react-intl";
 import messages from "./messages";
-import { CartItemProps } from "./CartItem";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import { ErrorDetailsFragment } from "@/saleor/api";
 
-const CartItemMobile: React.FC<CartItemProps> = ({
+interface CartItemMobileProps {
+  thumbnail: string;
+  variantId: string;
+  productName: string;
+  variantName: string;
+  priceCurrency: string | undefined;
+  priceAmount: number | undefined;
+  totalPriceAmount: number;
+  totalPriceCurrency: string;
+  onRemove: () => void;
+  changeLineState: (value: number) => void;
+  onQuantityUpdate: (event: React.SyntheticEvent<HTMLInputElement>) => void;
+  loadingLineUpdate: any;
+  setErrors: any;
+  quantity: number;
+  errors: Record<string, ErrorDetailsFragment[] | null>;
+}
+
+const CartItemMobile = ({
   thumbnail,
   productName,
   variantName,
@@ -23,7 +41,7 @@ const CartItemMobile: React.FC<CartItemProps> = ({
   setErrors,
   quantity,
   errors,
-}) => {
+}: CartItemMobileProps) => {
   const t = useIntl();
   const quantityLimitExceededError =
     errors && errors[variantId]?.find((error) => error.code === "INSUFFICIENT_STOCK");

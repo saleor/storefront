@@ -1,30 +1,24 @@
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
+import { Divider } from "@mantine/core";
 
 interface CartSummaryProps {
   subtotal: string;
   total: string;
 }
 
-const CartSummary: React.FC<CartSummaryProps> = ({ subtotal, total }) => {
+const CartSummary = ({ subtotal, total }: CartSummaryProps) => {
   return (
     <>
-      <TableRow style={{ borderBottom: "none" }}>
-        <TableCell align="right" colSpan={4} style={{ borderBottom: "none" }}>
-          <p className="text-md">Suma częściowa</p>
-        </TableCell>
-        <TableCell align="right" style={{ borderBottom: "none" }}>
-          <p className="text-md">{subtotal}</p>
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell align="right" colSpan={4}>
-          <p className="text-md">Suma</p>
-        </TableCell>
-        <TableCell align="right">
-          <p className="text-md">{total}</p>
-        </TableCell>
-      </TableRow>
+      <div className="flex flex-col gap-4 items-end my-8 px-4">
+        <div className="flex gap-8">
+          <p className="text-sm uppercase">Suma częściowa</p>
+          <p className="text-md font-bold">{subtotal}</p>
+        </div>
+        <div className="flex gap-8">
+          <p className="text-sm uppercase">Suma</p>
+          <p className="text-md font-bold">{total}</p>
+        </div>
+      </div>
+      <Divider />
     </>
   );
 };
