@@ -53,7 +53,8 @@ export function FilteredProductList({
 
   const [sortByQuery, setSortByQuery] = useQueryState("sortBy", {});
 
-  const sortBy = parseQuerySort(sortByQuery);
+  const defaultSortBy: UrlSorting = { field: "DATE", direction: "DESC" };
+  const sortBy = sortByQuery ? parseQuerySort(sortByQuery) : defaultSortBy;
   const setSortBy = (
     value: UrlSorting | undefined | null,
     transitionOptions?: TransitionOptions | undefined
