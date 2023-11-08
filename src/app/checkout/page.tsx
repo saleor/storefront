@@ -17,7 +17,7 @@ export default function CheckoutPage({
 	}
 
 	return (
-		<div className="checkout-bg min-h-[calc(100vh-106px)]">
+		<div className="checkout-bg min-h-[100dvh]">
 			<section className="mx-auto max-w-7xl p-8">
 				<div className="flex items-center font-bold">
 					<a aria-label="homepage" href="/">
