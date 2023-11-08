@@ -77,11 +77,9 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 
 	return (
 		<>
-			<div className="mb-3 flex flex-row items-baseline justify-between">
-				<Title className="flex-1">{title}</Title>
-				<CountrySelect only={availableCountries} />
-			</div>
+			<Title className="mb-4">{title}</Title>
 			<div className="mt-2 grid grid-cols-1 gap-3">
+				<CountrySelect only={availableCountries} />
 				{orderedAddressFields.map((field) => {
 					const isRequired = isRequiredField(field);
 					const label = getFieldLabel(field);
