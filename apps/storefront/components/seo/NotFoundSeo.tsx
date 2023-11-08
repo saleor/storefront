@@ -1,6 +1,7 @@
 import { NextSeo } from "next-seo";
 
 import { STOREFRONT_NAME } from "@/lib/const";
+import { ogImageUrl } from "./utils";
 
 export function NotFoundSeo() {
   const title = `Page Not found - ${STOREFRONT_NAME}`;
@@ -15,11 +16,11 @@ export function NotFoundSeo() {
         description,
         images: [
           {
-            url: "https://og-image.vercel.app/React%20Storefront.png?theme=light&md=1&fontSize=100px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg&images=https%3A%2F%2Fsaleor.io%2Fstatic%2Flogo-ad1b99aa7c6f5acf58a61640af760cfd.svg",
-            alt: "Saleor tutorial hero image",
+            url: ogImageUrl,
+            alt: description,
           },
         ],
-        site_name: "Saleor Tutorial",
+        site_name: title,
       }}
     />
   );
