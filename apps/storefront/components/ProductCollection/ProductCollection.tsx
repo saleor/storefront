@@ -1,5 +1,4 @@
 import { Text } from "@saleor/ui-kit";
-import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 
 import { mapEdgesToItems } from "@/lib/maps";
@@ -16,6 +15,8 @@ import { ProductCard } from "../ProductCard";
 import { useRegions } from "../RegionsProvider";
 import { Spinner } from "../Spinner";
 import { messages } from "../translations";
+import { NetworkStatus } from "@apollo/client";
+import { useEffect } from "react";
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
@@ -25,19 +26,17 @@ export interface ProductCollectionProps {
   };
   allowMore?: boolean;
   perPage?: number;
-  setCounter?: (value: number) => void;
 }
 
 export function ProductCollection({
   filter,
   sortBy,
-  setCounter,
   allowMore = true,
   perPage = 4,
+  setCounter,
 }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
-  const [loadingMore, setLoadingMore] = useState(false);
 
   const variables: ProductCollectionQueryVariables = {
     filter: {
@@ -55,8 +54,9 @@ export function ProductCollection({
       }),
   };
 
-  const { loading, error, data, fetchMore } = useProductCollectionQuery({
+  const { loading, error, data, fetchMore, networkStatus } = useProductCollectionQuery({
     variables,
+    notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
@@ -65,21 +65,27 @@ export function ProductCollection({
     }
   }, [setCounter, data?.products?.totalCount]);
 
-  const onLoadMore = () => {
+  const onLoadMore = async () => {
     if (data?.products?.pageInfo.hasNextPage) {
-      setLoadingMore(true);
-      return fetchMore({
+      await fetchMore({
         variables: {
           after: data?.products?.pageInfo.endCursor,
         },
-      }).finally(() => setLoadingMore(false));
+      });
     }
   };
 
-  if (loading) return <Spinner />;
+  if (loading && networkStatus !== NetworkStatus.fetchMore)
+    return (
+      <div className="w-full flex justify-center">
+        <Spinner />
+      </div>
+    );
+
   if (error) return <p>Error</p>;
 
   const products = mapEdgesToItems(data?.products);
+
   if (products.length === 0) {
     return (
       <Text size="xl" color="secondary" data-testid="noResultsText">
@@ -89,7 +95,7 @@ export function ProductCollection({
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <ul
         className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8"
         data-testid="productsList"
@@ -98,15 +104,17 @@ export function ProductCollection({
           <ProductCard key={product.id} product={product} />
         ))}
       </ul>
-      {loadingMore ? (
-        <Spinner />
+      {networkStatus === NetworkStatus.fetchMore ? (
+        <div className="h-[100px] w-full flex mt-8 py-4 justify-center">
+          <Spinner />
+        </div>
       ) : (
         allowMore && (
           <Pagination
             onLoadMore={onLoadMore}
             pageInfo={data?.products?.pageInfo}
             itemsCount={data?.products?.edges.length}
-            totalCount={data?.products?.totalCount || undefined}
+            totalCount={data?.products?.totalCount}
           />
         )
       )}
