@@ -16,6 +16,11 @@ export const paymentSectionMessages = defineMessages({
     id: "PaymentSection/messages/GnBIrm",
     description: "Pay with payu",
   },
+  payOnDelivery: {
+    defaultMessage: "Pay on delivery",
+    id: "PaymentSection/messages/GnBIrx",
+    description: "Pay on delivery",
+  },
 });
 
 export const paymentSectionLabels = defineMessages({

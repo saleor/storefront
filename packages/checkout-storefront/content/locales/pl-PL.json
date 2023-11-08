@@ -1482,6 +1482,10 @@
     "developer_comment": "paid order message",
     "string": "Otrzymaliśmy Twoją płatność"
   },
+  "OrderInfo/messages/vcXZR7": {
+    "developer_comment": "paid order message",
+    "string": "Otrzymaliśmy Twoje zamówienie. Płatność nastąpi przy odbiorze."
+  },
   "PageHeader/messages/7vp32g": {
     "developer_comment": "dutch",
     "string": "Holenderski"
@@ -1525,6 +1529,10 @@
   "PaymentSection/messages/GnBIrm": {
     "developer_comment": "Pay with payu",
     "string": "Zapłać z PayU"
+  },
+  "PaymentSection/messages/GnBIrx": {
+    "developer_comment": "Pay on delivery",
+    "string": "Zapłać przy odbiorze"
   },
   "PaymentSection/messages/luwPkv": {
     "developer_comment": "Processing",

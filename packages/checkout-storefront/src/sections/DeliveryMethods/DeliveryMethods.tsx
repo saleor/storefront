@@ -7,7 +7,7 @@ import { SelectBox } from "@/checkout-storefront/components/SelectBox";
 import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
 import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
 import { Divider } from "@/checkout-storefront/components/Divider";
-import { CommonSectionProps } from "@/checkout-storefront/lib/globalTypes";
+import { DeliverySectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
 import { useDeliveryMethodsForm } from "@/checkout-storefront/sections/DeliveryMethods/useDeliveryMethodsForm";
 import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
@@ -18,7 +18,10 @@ import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/
 import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql";
 
-export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
+export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
+  collapsed,
+  onIsOnReceiveSelectedChange,
+}) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
   const { authenticated } = useUser();
@@ -27,6 +30,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   const { updateState } = useCheckoutUpdateState();
   const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
   const [, setSelectedRadio] = useState<string>("");
+  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState<boolean>(false);
 
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
@@ -45,6 +49,13 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
   }
 
   const handleRadioChange = (value: string, name: string) => {
+    if (name === "Kurier pobranie, GLS") {
+      setIsOnReceiveSelected(true);
+      onIsOnReceiveSelectedChange(true);
+    } else {
+      setIsOnReceiveSelected(false);
+      onIsOnReceiveSelectedChange(false);
+    }
     setSelectedRadio(name);
     form.setFieldValue("selectedMethodId", value);
   };

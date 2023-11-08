@@ -1231,6 +1231,10 @@
     "developer_comment": "paid order message",
     "string": "Hemos recibido su pago"
   },
+  "OrderInfo/messages/vcXZR7": {
+    "developer_comment": "paid on delivery message",
+    "string": "Hemos recibido tu pedido. El pago se realizará en la entrega."
+  },
   "PageHeader/messages/eXrxj4": {
     "developer_comment": "english usa",
     "string": "Inglés (EEUU)"

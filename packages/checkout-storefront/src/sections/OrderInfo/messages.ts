@@ -17,6 +17,11 @@ export const orderInfoMessages = defineMessages({
     id: "OrderInfo/messages/vcXZR6",
     description: "paid order message",
   },
+  orderPaidOnDelivery: {
+    defaultMessage: "We've received your order. Payment will occur at delivery.",
+    id: "OrderInfo/messages/vcXZR7",
+    description: "paid order message",
+  },
   orderAuthorized: {
     defaultMessage: "We've received your payment authorization",
     id: "OrderInfo/messages/+SXlNJ",
