@@ -40,10 +40,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 					<p>Please fill in shipping address to see available shipping methods</p>
 				)}
 				{authenticated && !shippingAddress && (
-					<p>
-						Please add shipping address in {'"'}Shipping address{'"'} section to see available shipping
-						methods
-					</p>
+					<p>Please add shipping address to see available shipping methods</p>
 				)}
 				{authenticated && !shippingAddress && updateState.checkoutShippingUpdate ? (
 					<DeliveryMethodsSkeleton />
