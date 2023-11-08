@@ -16,6 +16,8 @@ import { useRegions } from "../RegionsProvider";
 import { Spinner } from "../Spinner";
 import { messages } from "../translations";
 import { NetworkStatus } from "@apollo/client";
+import { useEffect } from "react";
+
 
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
@@ -32,6 +34,7 @@ export function ProductCollection({
   sortBy,
   allowMore = true,
   perPage = 4,
+  setCounter,
 }: ProductCollectionProps) {
   const t = useIntl();
   const { query } = useRegions();
@@ -56,6 +59,12 @@ export function ProductCollection({
     variables,
     notifyOnNetworkStatusChange: true,
   });
+
+  useEffect(() => {
+    if (setCounter) {
+      setCounter(data?.products?.totalCount || 0);
+    }
+  }, [setCounter, data?.products?.totalCount]);
 
   const onLoadMore = async () => {
     if (data?.products?.pageInfo.hasNextPage) {
