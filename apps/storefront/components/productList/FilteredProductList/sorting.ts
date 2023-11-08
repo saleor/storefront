@@ -19,7 +19,12 @@ export const useSortingOptions = (chosenSorting: UrlSorting | null) => {
 
   const getSortingOptions = () => {
     const options: SortingOption[] = [
-      { label: t.formatMessage(messages.popularity), chosen: false },
+      {
+        label: t.formatMessage(messages.popularity),
+        field: "RATING",
+        direction: "DESC",
+        chosen: false,
+      },
       {
         label: t.formatMessage(messages.priceMinMax),
         field: "PRICE",
