@@ -57,6 +57,7 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 						onBlur={handleQuantityInputBlur}
 						name="quantity"
 						label="Quantity"
+						className="max-w-[6ch] text-center"
 					/>
 				</FormProvider>
 			</div>
