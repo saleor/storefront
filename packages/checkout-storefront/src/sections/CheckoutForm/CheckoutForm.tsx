@@ -25,6 +25,13 @@ export const CheckoutForm = () => {
   const { passwordResetToken } = getQueryParams();
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
+  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState<boolean>(false);
+
+  const handleIsOnReceiveSelectedChange = (
+    newValue: boolean | ((prevState: boolean) => boolean)
+  ) => {
+    setIsOnReceiveSelected(newValue);
+  };
 
   return (
     <div className="checkout-form-container">
@@ -45,11 +52,14 @@ export const CheckoutForm = () => {
           )}
           <InvoiceRequestSection collapsed={showOnlyContact} />
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
-            <DeliveryMethods collapsed={showOnlyContact} />
+            <DeliveryMethods
+              collapsed={showOnlyContact}
+              onIsOnReceiveSelectedChange={handleIsOnReceiveSelectedChange}
+            />
           </Suspense>
           <Suspense fallback={<PaymentSectionSkeleton />}>
             <CollapseSection collapse={showOnlyContact}>
-              <PaymentSection>
+              <PaymentSection isOnReceiveSelected={isOnReceiveSelected}>
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>
             </CollapseSection>

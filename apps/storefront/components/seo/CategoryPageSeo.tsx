@@ -1,7 +1,7 @@
 import { NextSeo } from "next-seo";
 import { OpenGraphMedia } from "next-seo/lib/types";
 
-import { STOREFRONT_NAME, VERCEL_URL } from "@/lib/const";
+import { STOREFRONT_NAME } from "@/lib/const";
 import { CategoryDetailsFragment } from "@/saleor/api";
 import { ogImageUrl } from "./utils";
 

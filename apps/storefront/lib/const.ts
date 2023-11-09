@@ -7,4 +7,4 @@ export const GEOLOCATION = process.env.NEXT_PUBLIC_GEOLOCATION === "true";
 export const CHANNEL_SLUG = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || "";
 export const AWS_MEDIA_BUCKET = process.env.NEXT_PUBLIC_AWS_MEDIA_BUCKET || "";
 export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID!;
-export const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
+export const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_URL || "";

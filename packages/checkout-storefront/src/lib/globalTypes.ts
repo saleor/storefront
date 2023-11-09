@@ -47,4 +47,19 @@ export interface CommonSectionProps {
   onInpostDataChange?: any;
 }
 
+export interface DeliverySectionProps {
+  collapsed: boolean;
+  onInpostDataChange?: any;
+  onIsOnReceiveSelectedChange: (value: boolean) => void;
+}
+
+export interface PaymentSectionProps {
+  children: ReactNode | ReactNode[];
+  isOnReceiveSelected: boolean;
+}
+
+export interface PaymentMethodProps {
+  isOnReceiveSelected: boolean;
+}
+
 export type MightNotExist<TData> = TData | null | undefined;

@@ -9,6 +9,7 @@ import { orderInfoMessages } from "./messages";
 import { imageAltMessages } from "@/checkout-storefront/lib/commonMessages";
 import { useOrder } from "@/checkout-storefront/hooks/useOrder";
 import { usePaymentStatus } from "@/checkout-storefront/sections/PaymentSection/utils";
+import { ShippingMethod } from "@/checkout-storefront/graphql";
 
 const ErrorMessage = ({ message }: { message: string }) => {
   const formatMessage = useFormattedMessages();
@@ -40,20 +41,34 @@ export const PaymentSection = () => {
   const formatMessage = useFormattedMessages();
   const { order } = useOrder();
   const paymentStatus = usePaymentStatus(order);
-
+  let deliveryMethodName;
+  if (order.deliveryMethod?.__typename === "ShippingMethod") {
+    deliveryMethodName = order.deliveryMethod.name;
+  } else {
+    deliveryMethodName = "";
+  }
+  let cashOnDelivery: boolean;
+  if (deliveryMethodName && deliveryMethodName.includes("pobranie")) {
+    cashOnDelivery = true;
+  } else {
+    cashOnDelivery = false;
+  }
   return (
     <Section title={formatMessage(orderInfoMessages.paymentSection)}>
       <div data-testid="paymentStatus">
         <div className="flex flex-row items-center">
-          {paymentStatus === "authorized" && (
+          {cashOnDelivery && (
+            <SuccessMessage message={formatMessage(orderInfoMessages.orderPaidOnDelivery)} />
+          )}
+          {paymentStatus === "authorized" && !cashOnDelivery && (
             <SuccessMessage message={formatMessage(orderInfoMessages.orderAuthorized)} />
           )}
 
-          {paymentStatus === "paidInFull" && (
+          {paymentStatus === "paidInFull" && !cashOnDelivery && (
             <SuccessMessage message={formatMessage(orderInfoMessages.orderPaid)} />
           )}
 
-          {paymentStatus === "overpaid" && (
+          {paymentStatus === "overpaid" && !cashOnDelivery && (
             <ErrorMessage message={formatMessage(orderInfoMessages.orderOvercharged)} />
           )}
         </div>

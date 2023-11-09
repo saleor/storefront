@@ -1,13 +1,24 @@
 import { RadioGroup } from "@headlessui/react";
 import React, { useState } from "react";
+import { PaymentMethodProps } from "@/checkout-storefront/lib/globalTypes";
 
 import PayuSection, { PAYU_GATEWAY } from "./PayuSection";
+import CodSection, { COD_GATEWAY } from "./CodSection";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
+import { useIntl } from "react-intl";
+import { paymentSectionMessages } from "./messages";
 
-export function PaymentMethods() {
+export const PaymentMethods: React.FC<PaymentMethodProps> = ({ isOnReceiveSelected }) => {
   const { checkout } = useCheckout();
+  const t = useIntl();
   const [chosenGateway, setChosenGateway] = useState("");
-  const existingGateways = [PAYU_GATEWAY];
+  const existingGateways: string[] = [];
+  if (isOnReceiveSelected) {
+    existingGateways.push(COD_GATEWAY);
+  } else {
+    existingGateways.push(PAYU_GATEWAY);
+  }
+
   const availableGateways = checkout.availablePaymentGateways.filter((g) =>
     existingGateways.includes(g.id)
   );
@@ -23,15 +34,19 @@ export function PaymentMethods() {
                 htmlFor={id}
               >
                 <input type="radio" className="form-radio" name="radio" value={id} id={id} />
-                <span className="">{name}</span>
+                {name === "Cod" && (
+                  <span>{t.formatMessage(paymentSectionMessages.payOnDelivery)}</span>
+                )}
+                {name !== "Cod" && <span className="">{name}</span>}
               </label>
             </RadioGroup.Option>
           ))}
         </RadioGroup>
       </div>
       {chosenGateway === PAYU_GATEWAY && <PayuSection checkout={checkout} />}
+      {chosenGateway === COD_GATEWAY && <CodSection checkout={checkout} />}
     </>
   );
-}
+};
 
 export default PaymentMethods;
