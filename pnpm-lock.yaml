@@ -354,6 +354,9 @@ importers:
       '@heroicons/react':
         specifier: 1.0.6
         version: 1.0.6(react@18.2.0)
+      '@hookform/resolvers':
+        specifier: ^3.3.2
+        version: 3.3.2(react-hook-form@7.38.0)
       '@mantine/carousel':
         specifier: ^6.0.16
         version: 6.0.21(@mantine/core@6.0.21)(@mantine/hooks@6.0.21)(embla-carousel-react@7.1.0)(react@18.2.0)
@@ -438,6 +441,9 @@ importers:
       react-hook-form:
         specifier: 7.38.0
         version: 7.38.0(react@18.2.0)
+      react-imask:
+        specifier: ^7.1.3
+        version: 7.1.3(react@18.2.0)
       react-intl:
         specifier: 6.2.1
         version: 6.2.1(react@18.2.0)(typescript@5.0.4)
@@ -453,6 +459,9 @@ importers:
       url-join:
         specifier: 4.0.1
         version: 4.0.1
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
     devDependencies:
       '@emotion/react':
         specifier: ^11.11.1
@@ -5703,6 +5712,14 @@ packages:
       react: '>= 16'
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@hookform/resolvers@3.3.2(react-hook-form@7.38.0):
+    resolution: {integrity: sha512-Tw+GGPnBp+5DOsSg4ek3LCPgkBOuOgS5DsDV7qsWNH9LZc433kgsWICjlsh2J9p04H2K66hsXPPb9qn9ILdUtA==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.38.0(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:
@@ -17717,6 +17734,13 @@ packages:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
 
+  /imask@7.1.3:
+    resolution: {integrity: sha512-jZCqTI5Jgukhl2ff+znBQd8BiHOTlnFYCIgggzHYDdoJsHmSSWr1BaejcYBxsjy4ZIs8Rm0HhbOxQcobcdESRQ==}
+    engines: {npm: '>=4.0.0'}
+    dependencies:
+      '@babel/runtime-corejs3': 7.23.2
+    dev: false
+
   /immediate@3.0.6:
     resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
     dev: false
@@ -23670,6 +23694,17 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
     dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-imask@7.1.3(react@18.2.0):
+    resolution: {integrity: sha512-anCnzdkqpDzNwe7ot76kQSvmnz4Sw7AW/QFjjLh3B87HVNv9e2oHC+1m9hQKSIui2Tqm7w68ooMgDFsCQlDMyg==}
+    engines: {npm: '>=4.0.0'}
+    peerDependencies:
+      react: '>=0.14.0'
+    dependencies:
+      imask: 7.1.3
+      prop-types: 15.8.1
       react: 18.2.0
     dev: false
 
