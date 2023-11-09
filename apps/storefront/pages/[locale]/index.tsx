@@ -103,10 +103,10 @@ function Home({
   return (
     <>
       <BaseSeo />
-      <div className="pb-10">
+      <div>
         <main>
           <div
-            className="bg-black-overlay bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] py-24 px-6 text-center dark:bg-neutral-500 bg-blend-multiply bg-neutral-400 lg:mx-16"
+            className="bg-black-overlay bg-cover bg-center h-[77vh] flex justify-center items-center flex-col p-2 md:max-h-[87vh] py-24  text-center dark:bg-neutral-500 bg-blend-multiply bg-neutral-400"
             style={
               featuredProducts?.backgroundImage
                 ? {
