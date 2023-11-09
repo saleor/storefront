@@ -438,6 +438,10 @@
     "developer_comment": "paid order message",
     "string": "We've received your payment"
   },
+  "OrderInfo/messages/vcXZR7": {
+    "developer_comment": "paid order message",
+    "string": "We've received your order. Payment will occur at delivery."
+  },
   "PageHeader/messages/eXrxj4": {
     "developer_comment": "english usa",
     "string": "English (USA)"
@@ -465,6 +469,10 @@
   "PaymentSection/messages/GnBIrm": {
     "developer_comment": "Pay with payu",
     "string": "Pay with PayU"
+  },
+  "PaymentSection/messages/GnBIrx": {
+    "developer_comment": "Pay on delivery",
+    "string": "Pay on delivery"
   },
   "PaymentSection/messages/luwPkv": {
     "developer_comment": "Processing",

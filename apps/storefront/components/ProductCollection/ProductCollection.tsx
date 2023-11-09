@@ -18,7 +18,6 @@ import { messages } from "../translations";
 import { NetworkStatus } from "@apollo/client";
 import { useEffect } from "react";
 
-
 export interface ProductCollectionProps {
   filter?: ProductFilterInput;
   sortBy?: {
@@ -27,6 +26,7 @@ export interface ProductCollectionProps {
   };
   allowMore?: boolean;
   perPage?: number;
+  setCounter?: (count: number) => void;
 }
 
 export function ProductCollection({

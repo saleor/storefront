@@ -155,6 +155,7 @@ export const setupPollyMiddleware = (server: PollyServer) => {
         credentials: "same-origin",
         referrer: "",
         integrity: "",
+        priority: "normal",
         keepalive: false,
         passthrough: () => ({
           passthrough: false,
@@ -165,7 +166,7 @@ export const setupPollyMiddleware = (server: PollyServer) => {
           statusText: "",
           delay: 0,
         }),
-      } as MockedRequest;
+      } as unknown as MockedRequest;
 
       const isHandledByMsw = handlers.some((handler) => handler.test(fakeReq));
 
