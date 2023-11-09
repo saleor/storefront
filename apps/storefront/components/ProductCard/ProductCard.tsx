@@ -176,7 +176,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <li
       key={product.id}
-      className="w-full pb-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer overflow-hidden flex flex-col justify-between h-[100%]"
+      className="w-full pb-6 px-4 relative bg-gray-100 hover:bg-[#D4FFC8] cursor-pointer overflow-hidden flex flex-col justify-between h-auto"
     >
       <Link
         href={paths.products._slug(product.slug).$url()}
