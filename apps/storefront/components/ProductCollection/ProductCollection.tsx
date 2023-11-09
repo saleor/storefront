@@ -26,7 +26,7 @@ export interface ProductCollectionProps {
   };
   allowMore?: boolean;
   perPage?: number;
-  setCounter?: (count: number) => void;
+  setCounter?: (counter: number) => void;
 }
 
 export function ProductCollection({
