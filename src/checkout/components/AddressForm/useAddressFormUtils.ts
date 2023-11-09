@@ -24,7 +24,14 @@ export const addressFieldMessages: Record<AddressFieldLabel, string> = {
 	phone: "Phone number",
 };
 
-export type LocalizedAddressFieldLabel = "province" | "district" | "state" | "zip" | "postal" | "postTown";
+export type LocalizedAddressFieldLabel =
+	| "province"
+	| "district"
+	| "state"
+	| "zip"
+	| "postal"
+	| "postTown"
+	| "prefecture";
 export const localizedAddressFieldMessages: Record<LocalizedAddressFieldLabel, string> = {
 	province: "Province",
 	district: "District",
@@ -32,6 +39,7 @@ export const localizedAddressFieldMessages: Record<LocalizedAddressFieldLabel, s
 	zip: "Zip code",
 	postal: "Postal code",
 	postTown: "Post town",
+	prefecture: "Prefecture",
 };
 
 export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {

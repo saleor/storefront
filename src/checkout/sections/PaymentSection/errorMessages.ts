@@ -7,6 +7,7 @@ export const apiErrorMessages = {
 	checkoutFinalizePasswordRequiredError: "Please set user password before finalizing checkout",
 	checkoutEmailUpdateEmailInvalidError: "Provided email is invalid",
 	checkoutAddPromoCodePromoCodeInvalidError: "Invalid promo code provided",
+	checkoutAddPromoCodePromoCodeVoucherNotApplicableError: "Provided promo code not applicable to this order",
 	userAddressUpdatePostalCodeInvalidError: "Invalid postal code provided to address form",
 	userAddressCreatePostalCodeInvalidError: "Invalid postal code provided to address form",
 	userRegisterPasswordPasswordTooShortError: "Provided password is too short",
