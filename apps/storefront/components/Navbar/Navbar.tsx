@@ -21,7 +21,7 @@ export function Navbar() {
   const paths = usePaths();
   const router = useRouter();
 
-  const [isBurgerOpen, setBurgerOpen] = useState(false);
+  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const { authenticated: actuallyAuthenticated } = useUser();
   const { checkout } = useCheckout();
@@ -37,13 +37,15 @@ export function Navbar() {
   invariant(saleorApiUrl, "Missing NEXT_PUBLIC_API_URI");
 
   useEffect(() => {
-    // Close side menu after changing the page
-    router.events.on("routeChangeStart", () => {
-      if (isBurgerOpen) {
-        setBurgerOpen(false);
+    const handleSizeChange = (e: UIEvent) => {
+      if (e.target instanceof HTMLElement) {
+        console.log(e.target.getBoundingClientRect().width);
+        setIsBurgerOpen(false);
       }
-    });
-  });
+    };
+
+    window.addEventListener("resize", handleSizeChange);
+  }, []);
 
   const counter =
     checkout?.lines?.reduce(
@@ -66,7 +68,7 @@ export function Navbar() {
           <NavIconButton
             icon="menu"
             className="ml-2 lg:hidden "
-            onClick={() => setBurgerOpen(true)}
+            onClick={() => setIsBurgerOpen(true)}
           />
           <div className="flex-1 h-full hidden xs:flex">
             <Menu />
@@ -82,7 +84,7 @@ export function Navbar() {
             ) : (
               <UserMenu />
             )}
-            <Link href={paths.cart.$url()} className="ml-2 " data-testid="cartIcon">
+            <Link href={paths.cart.$url()} className="ml-2" data-testid="cartIcon">
               <NavIconButton isButton={false} icon="bag" aria-hidden="true" counter={counter} />
             </Link>
             <Link href={paths.wishlist.$url()} className="ml-2 " data-testid="wishlistIcon">
@@ -101,7 +103,7 @@ export function Navbar() {
           </div>
         </div>
       </div>
-      <BurgerMenu open={isBurgerOpen} onCloseClick={() => setBurgerOpen(false)} />
+      <BurgerMenu open={isBurgerOpen} onCloseClick={() => setIsBurgerOpen(false)} />
     </>
   );
 }

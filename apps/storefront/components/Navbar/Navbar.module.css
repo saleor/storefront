@@ -1,5 +1,5 @@
 .navbar {
-  @apply bg-zinc-100 text-main z-1 lg:mx-16 relative;
+  @apply bg-zinc-100 text-main z-1  relative;
 }
 
 .inner {
