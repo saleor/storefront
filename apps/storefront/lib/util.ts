@@ -6,6 +6,7 @@ export const formatAsMoney = (amount = 0, currency = "USD", locale = DEFAULT_LOC
   new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
+    currencyDisplay: "code",
   }).format(amount);
 
 // Returns true for non nullable values

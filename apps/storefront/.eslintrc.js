@@ -12,6 +12,7 @@ module.exports = {
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors like no unsafe call
     "@typescript-eslint/no-unsafe-call": "off",
+    "require-form-method/require-form-method": "off",
     // !! WARN !!
     "import/no-restricted-paths": [
       "error",

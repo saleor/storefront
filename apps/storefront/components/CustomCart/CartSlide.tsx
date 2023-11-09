@@ -1,6 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { Fragment, FC, useRef } from "react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, Fragment, FC, useRef } from "react";
 import { invariant } from "@apollo/client/utilities/globals";
 import Link from "next/link";
 import { Table, TableBody, TableContainer } from "@mui/material";
@@ -179,7 +178,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
             </button>
           </div>
           {checkout && checkout.lines.length > 0 ? (
-            <React.Fragment>
+            <>
               <TableContainer
                 sx={{
                   height: "100%",
@@ -203,7 +202,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                           totalPriceAmount={item?.totalPrice?.gross.amount}
                           totalPriceCurrency={item?.totalPrice?.gross.currency}
                           quantity={quantities[item.id]}
-                          changeLineState={(value) => changeLineState(item.id, value)}
+                          changeLineState={(value: number) => changeLineState(item.id, value)}
                           onQuantityUpdate={async () => {
                             await updateLineQuantity(item.variant.id, quantities[item.id]);
                           }}
@@ -256,7 +255,7 @@ export const CartSlide: FC<CartSlideProps> = ({ isOpen = false, setIsOpen }) => 
                   </div>
                 </div>
               </div>
-            </React.Fragment>
+            </>
           ) : (
             <div className="container flex items-start justify-start mt-12">
               <EmptyCart paths={paths} />
