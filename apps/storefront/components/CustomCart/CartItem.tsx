@@ -74,9 +74,7 @@ export function CartItem({ line }: CartItemProps) {
             </div>
             <div className="flex flex-col gap-2 items-center">
               <p className="text-xs text-gray-500 uppercase">Kwota całkowita</p>
-              <p className="text-base font-bold">
-                {formatPrice(line?.variant?.pricing?.price?.gross)}
-              </p>
+              <p className="text-base font-bold">{formatPrice(line?.totalPrice.gross)}</p>
             </div>
           </div>
         </CardContent>

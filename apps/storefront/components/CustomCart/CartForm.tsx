@@ -68,7 +68,7 @@ export function CartForm({ quantity, variantId }: CartFromProps) {
                   "focus:border-green-500": !error,
                 }
               )}
-              mask="#0000"
+              mask="#0"
               definitions={{
                 "#": /[1-9]/,
               }}
