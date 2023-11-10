@@ -5,13 +5,9 @@ import Image from "next/image";
 import { CurrentUserOrderListDocument, type CurrentUserOrderListQuery } from "@/gql/graphql";
 
 export default function OrderPage() {
-	const [{ data, fetching }] = useQuery<CurrentUserOrderListQuery>({
+	const [{ data }] = useQuery<CurrentUserOrderListQuery>({
 		query: CurrentUserOrderListDocument.toString(),
 	});
-
-	if (fetching) {
-		return <div>Loading...</div>;
-	}
 
 	if (!data || !data.me) {
 		redirect("/login");
@@ -60,7 +56,7 @@ export default function OrderPage() {
 											</div>
 											<div>
 												<dt className="font-medium text-slate-900">Total amount</dt>
-												<dd className="mt-1 font-medium text-slate-900">{0}</dd>
+												<dd className="mt-1 font-medium text-slate-900">{order.total?.gross.amount}</dd>
 											</div>
 										</dl>
 									</div>
@@ -88,7 +84,7 @@ export default function OrderPage() {
 																	</div>
 																	<div className="ml-4 flex-1 text-sm">
 																		<div className="flex justify-between font-medium text-neutral-800 ">
-																			<h2>{product.name}</h2>
+																			<div>{product.name}</div>
 																		</div>
 																	</div>
 																</div>

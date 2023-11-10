@@ -14,6 +14,12 @@ query CurrentUserOrderList {
 					id
 					number
 					created
+					total {
+						gross {
+							amount
+							currency
+						}
+					}
 					lines {
 						variant {
 							id
