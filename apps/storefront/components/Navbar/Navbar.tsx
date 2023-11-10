@@ -37,15 +37,13 @@ export function Navbar() {
   invariant(saleorApiUrl, "Missing NEXT_PUBLIC_API_URI");
 
   useEffect(() => {
-    const handleSizeChange = (e: UIEvent) => {
-      if (e.target instanceof HTMLElement) {
-        console.log(e.target.getBoundingClientRect().width);
+    // Close side menu after changing the page
+    router.events.on("routeChangeStart", () => {
+      if (isBurgerOpen) {
         setIsBurgerOpen(false);
       }
-    };
-
-    window.addEventListener("resize", handleSizeChange);
-  }, []);
+    });
+  });
 
   const counter =
     checkout?.lines?.reduce(
@@ -84,7 +82,7 @@ export function Navbar() {
             ) : (
               <UserMenu />
             )}
-            <Link href={paths.cart.$url()} className="ml-2" data-testid="cartIcon">
+            <Link href={paths.cart.$url()} className="ml-2 " data-testid="cartIcon">
               <NavIconButton isButton={false} icon="bag" aria-hidden="true" counter={counter} />
             </Link>
             <Link href={paths.wishlist.$url()} className="ml-2 " data-testid="wishlistIcon">
@@ -103,7 +101,7 @@ export function Navbar() {
           </div>
         </div>
       </div>
-      <BurgerMenu open={isBurgerOpen} onCloseClick={() => setIsBurgerOpen(false)} />
+      {isBurgerOpen && <BurgerMenu onCloseClick={() => setIsBurgerOpen(false)} />}
     </>
   );
 }

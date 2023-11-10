@@ -1,9 +1,5 @@
 .container {
-  @apply fixed top-0 right-0 w-full h-full z-50 flex justify-end opacity-0 invisible ease-in-out duration-150;
-}
-
-.container--open {
-  @apply opacity-100 visible;
+  @apply fixed top-0 right-0 w-full h-full z-50 flex justify-end ease-in-out duration-150;
 }
 
 .backdrop {

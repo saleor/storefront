@@ -96,7 +96,7 @@ function CartPage() {
           <div className="mt-12 flex justify-end">
             <Link
               href={externalCheckoutUrl}
-              className="text-2xl md:text-3xl border-brand border-2 bg-brand hover:border-brand hover:bg-white hover:text-brand transition
+              className="w-full md:w-max text-center text-2xl md:text-3xl border-brand border-2 bg-brand hover:border-brand hover:bg-white hover:text-brand transition
                text-white font-bold py-4 px-8 rounded-full"
             >
               Kontynuuj do kasy
