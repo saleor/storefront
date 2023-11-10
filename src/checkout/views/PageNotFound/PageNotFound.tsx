@@ -9,16 +9,12 @@ export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
 	const goBack = () => history.back();
 
 	return (
-		<div className="flex h-screen w-full flex-col items-center justify-center pt-12">
-			<div className="flex w-full justify-center">
+		<div className="mx-auto flex max-w-screen-sm flex-col items-center gap-y-4 bg-neutral-50 px-8 py-16 text-center">
+			<div className="mb-4 flex w-28 flex-col">
 				<SaleorLogo />
 			</div>
-			<div className="mb-22 flex h-full flex-col items-center justify-center">
-				<p className="max-w-85 mb-6 text-center">
-					We couldn&apos;t fetch information about your checkout. Go back to the store and try again.
-				</p>
-				<Button ariaLabel="Go back to store" onClick={goBack} variant="secondary" label="Go back to store" />
-			</div>
+			<p>We couldn&apos;t fetch information about your checkout. Go back to the store and try again.</p>
+			<Button ariaLabel="Go back to store" onClick={goBack} variant="secondary" label="Go back to store" />
 		</div>
 	);
 };
