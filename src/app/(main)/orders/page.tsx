@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { useQuery } from "urql";
 import Image from "next/image";
 import { CurrentUserOrderListDocument, type CurrentUserOrderListQuery } from "@/gql/graphql";
+import { formatMoney } from "@/lib/graphql";
 
 export default function OrderPage() {
 	const [{ data }] = useQuery<CurrentUserOrderListQuery>({
@@ -56,7 +57,9 @@ export default function OrderPage() {
 											</div>
 											<div>
 												<dt className="font-medium text-slate-900">Total amount</dt>
-												<dd className="mt-1 font-medium text-slate-900">{order.total?.gross.amount}</dd>
+												<dd className="mt-1 font-medium text-slate-900">
+													{order.total && formatMoney(order.total.gross.amount, order.total.gross.currency)}
+												</dd>
 											</div>
 										</dl>
 									</div>
@@ -74,7 +77,7 @@ export default function OrderPage() {
 																	<div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded border">
 																		{product.thumbnail?.url && (
 																			<Image
-																				src={product.thumbnail?.url}
+																				src={product.thumbnail.url}
 																				alt="image"
 																				width={200}
 																				height={200}
@@ -83,9 +86,9 @@ export default function OrderPage() {
 																		)}
 																	</div>
 																	<div className="ml-4 flex-1 text-sm">
-																		<div className="flex justify-between font-medium text-neutral-800 ">
-																			<div>{product.name}</div>
-																		</div>
+																		<p className="flex justify-between font-medium text-neutral-800">
+																			{product.name}
+																		</p>
 																	</div>
 																</div>
 															</li>
