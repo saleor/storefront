@@ -25,7 +25,7 @@ export default function OrderPage() {
 
 	return (
 		<div className="mx-auto max-w-7xl p-8">
-			<h1 className="text-2xl font-bold tracking-tight text-slate-900">{user.firstName}&rsquo;s Orders</h1>
+			<h1 className="text-2xl font-bold tracking-tight text-neutral-900">{user.firstName}&rsquo;s Orders</h1>
 
 			{orders.length === 0 ? (
 				<div className="mt-8">
@@ -46,18 +46,18 @@ export default function OrderPage() {
 									<div className="items-center gap-6 border-b border-gray-200 bg-neutral-100/20 p-4">
 										<dl className="col-span-3 grid flex-1 grid-cols-3 gap-6 text-sm">
 											<div>
-												<dt className="font-medium text-slate-900">Order number</dt>
-												<dd className="mt-1 text-slate-500">{order.number}</dd>
+												<dt className="font-medium text-neutral-900">Order number</dt>
+												<dd className="mt-1 text-neutral-500">{order.number}</dd>
 											</div>
 											<div className="hidden sm:block">
-												<dt className="font-medium text-slate-900">Date placed</dt>
-												<dd className="mt-1 text-slate-500">
+												<dt className="font-medium text-neutral-900">Date placed</dt>
+												<dd className="mt-1 text-neutral-500">
 													<time dateTime={order.created}>{order.created}</time>
 												</dd>
 											</div>
 											<div>
-												<dt className="font-medium text-slate-900">Total amount</dt>
-												<dd className="mt-1 font-medium text-slate-900">
+												<dt className="font-medium text-neutral-900">Total amount</dt>
+												<dd className="mt-1 font-medium text-neutral-900">
 													{order.total && formatMoney(order.total.gross.amount, order.total.gross.currency)}
 												</dd>
 											</div>
