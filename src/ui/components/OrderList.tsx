@@ -5,8 +5,7 @@ import { CurrentUserOrderListDocument, type CurrentUserOrderListQuery } from "@/
 import { formatMoney } from "@/lib/graphql";
 import { formatDate } from "@/lib/date";
 
-// eslint-disable-next-line import/no-default-export
-export default function OrderList() {
+export function OrderList() {
 	const [{ data, fetching }] = useQuery<CurrentUserOrderListQuery>({
 		query: CurrentUserOrderListDocument.toString(),
 	});
