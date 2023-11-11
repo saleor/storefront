@@ -1,6 +1,7 @@
 "use client";
 import { useQuery } from "urql";
 import Image from "next/image";
+import { format } from "date-fns";
 import { CurrentUserOrderListDocument, type CurrentUserOrderListQuery } from "@/gql/graphql";
 import { formatMoney } from "@/lib/graphql";
 
@@ -57,7 +58,9 @@ export default function OrderList() {
 												<div className="hidden sm:block">
 													<dt className="font-medium text-neutral-900">Date placed</dt>
 													<dd className="mt-1 text-neutral-500">
-														<time dateTime={order.created}>{order.created}</time>
+														<time dateTime={order.created}>
+															{format(new Date(order.created), "yyyy-MM-dd HH:mm")}
+														</time>
 													</dd>
 												</div>
 												<div>
