@@ -25,7 +25,9 @@ export function OrderList() {
 
 	return (
 		<div className="mx-auto max-w-7xl p-8">
-			<h1 className="text-2xl font-bold tracking-tight text-neutral-900">{user.firstName}&rsquo;s Orders</h1>
+			<h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+				{user.firstName ? user.firstName : user.email}&rsquo;s orders
+			</h1>
 
 			{orders.length === 0 ? (
 				<div className="mt-8">

@@ -17,14 +17,23 @@ export function AccountLink() {
 	if (isLoggedIn) {
 		return (
 			<Link href="/orders" className="h-8 w-8 flex-shrink-0">
-				<Image
-					className="h-8 w-8 rounded-full border"
-					aria-hidden="true"
-					src={data.me?.avatar?.url || ""}
-					width={24}
-					height={24}
-					alt=""
-				/>
+				{data.me?.avatar ? (
+					<Image
+						className="h-8 w-8 rounded-full border"
+						aria-hidden="true"
+						src={data.me?.avatar.url}
+						width={24}
+						height={24}
+						alt=""
+					/>
+				) : (
+					<span
+						className="flex h-8 w-8 items-center justify-center rounded-full border bg-white text-center text-xs font-bold uppercase"
+						aria-hidden="true"
+					>
+						{data.me?.email.slice(0, 2)}
+					</span>
+				)}
 				<span className="sr-only">Orders</span>
 			</Link>
 		);
