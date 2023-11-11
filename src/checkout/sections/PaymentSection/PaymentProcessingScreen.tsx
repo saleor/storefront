@@ -53,7 +53,7 @@ export const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = (
 					</div>
 				</div>
 			)}
-			<>{children}</>
+			{children}
 		</Provider>
 	);
 };

@@ -42,8 +42,8 @@ export const Summary: FC<SummaryProps> = ({
 	return (
 		<div
 			className={clsx(
-				"z-0 flex h-fit w-full flex-col overflow-hidden rounded lg:overflow-visible",
-				"before:bottom-0 before:left-auto before:right-0 before:top-0 before:z-[-1] before:w-1/2 before:border-l before:border-neutral-200 before:bg-neutral-50 before:content-[''] before:lg:fixed",
+				"z-0 flex h-fit w-full flex-col",
+				"before:fixed before:bottom-0 before:left-1/2 before:top-0 before:-z-10 before:w-1/2 before:border-l before:border-neutral-200 before:bg-neutral-50 before:content-none before:lg:content-['']",
 			)}
 		>
 			<details open className="group">
