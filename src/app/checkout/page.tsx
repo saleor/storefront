@@ -17,8 +17,8 @@ export default function CheckoutPage({
 	}
 
 	return (
-		<div className="checkout-bg min-h-[100dvh]">
-			<section className="mx-auto max-w-7xl p-8">
+		<div className="min-h-[100dvh] bg-white">
+			<section className="mx-auto flex min-h-[100dvh] max-w-7xl flex-col p-8">
 				<div className="flex items-center font-bold">
 					<a aria-label="homepage" href="/">
 						ACME
@@ -26,7 +26,7 @@ export default function CheckoutPage({
 				</div>
 				<h1 className="mt-8 text-3xl font-bold text-neutral-900">Checkout</h1>
 
-				<section className="mb-12 mt-6">
+				<section className="mb-12 mt-6 flex-1">
 					<RootWrapper saleorApiUrl={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
 				</section>
 			</section>

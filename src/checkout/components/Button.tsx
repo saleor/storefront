@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	label: ReactNode;
-	variant?: "primary" | "secondary" | "tertiary" | "";
+	variant?: "primary" | "secondary" | "tertiary";
 	ariaLabel?: string;
 	ariaDisabled?: boolean;
 }
