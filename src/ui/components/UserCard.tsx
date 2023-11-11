@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export const UserCard = ({ user }: { user: { email: string; avatarURL?: string } }) => {
 	return (
-		<div className="rounded-xl bg-white p-4 dark:bg-neutral-800 md:flex">
+		<div className="rounded border bg-neutral-100/20 p-4 dark:bg-neutral-800 md:flex">
 			{user.avatarURL && (
 				<Image
 					className="h-24 w-24 rounded-full md:rounded-none "

@@ -1,0 +1,52 @@
+query CurrentUserOrderList {
+	me {
+		id
+		email
+		firstName
+		lastName
+		avatar {
+			url
+			alt
+		}
+		orders(first: 10) {
+			edges {
+				node {
+					id
+					number
+					created
+					total {
+						gross {
+							amount
+							currency
+						}
+					}
+					lines {
+						variant {
+							id
+							name
+							product {
+								id
+								name
+								description
+								slug
+								thumbnail {
+									url
+									alt
+								}
+							}
+							pricing {
+								price {
+									gross {
+										amount
+										currency
+									}
+								}
+							}
+						}
+						quantity
+					}
+				}
+			}
+		}
+	}
+}
