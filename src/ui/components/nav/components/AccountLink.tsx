@@ -11,7 +11,7 @@ export function AccountLink() {
 		query: CurrentUserDocument.toString(),
 	});
 
-	if (data && data.me) {
+	if (data?.me) {
 		return <UserMenu user={data.me} />;
 	} else {
 		return (
