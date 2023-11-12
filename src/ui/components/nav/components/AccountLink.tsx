@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { UserIcon } from "lucide-react";
 import { useQuery } from "urql";
+import { UserMenu } from "./UserMenu";
 import { CurrentUserDocument, type CurrentUserQuery } from "@/gql/graphql";
 
 export function AccountLink() {
@@ -12,31 +11,8 @@ export function AccountLink() {
 		query: CurrentUserDocument.toString(),
 	});
 
-	const isLoggedIn = data && data.me;
-
-	if (isLoggedIn) {
-		return (
-			<Link href="/orders" className="h-8 w-8 flex-shrink-0">
-				{data.me?.avatar ? (
-					<Image
-						className="h-8 w-8 rounded-full border"
-						aria-hidden="true"
-						src={data.me?.avatar.url}
-						width={24}
-						height={24}
-						alt=""
-					/>
-				) : (
-					<span
-						className="flex h-8 w-8 items-center justify-center rounded-full border bg-white text-center text-xs font-bold uppercase"
-						aria-hidden="true"
-					>
-						{data.me?.email.slice(0, 2)}
-					</span>
-				)}
-				<span className="sr-only">Orders</span>
-			</Link>
-		);
+	if (data && data.me) {
+		return <UserMenu user={data.me} />;
 	} else {
 		return (
 			<Link href="/login" className="h-6 w-6 flex-shrink-0">
