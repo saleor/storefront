@@ -1,5 +1,3 @@
-import { Divider } from "@mantine/core";
-
 interface CartSummaryProps {
   subtotal: string;
   total: string;
@@ -7,19 +5,16 @@ interface CartSummaryProps {
 
 const CartSummary = ({ subtotal, total }: CartSummaryProps) => {
   return (
-    <>
-      <div className="flex flex-col gap-4 items-end my-8 px-4">
-        <div className="flex gap-8">
-          <p className="text-sm uppercase">Suma częściowa</p>
-          <p className="text-md font-bold">{subtotal}</p>
-        </div>
-        <div className="flex gap-8">
-          <p className="text-sm uppercase">Suma</p>
-          <p className="text-md font-bold">{total}</p>
-        </div>
+    <div className="flex flex-col gap-4 items-end my-8 px-4">
+      <div className="flex gap-8">
+        <p className="text-sm uppercase">Suma częściowa</p>
+        <p className="text-md font-bold">{subtotal}</p>
       </div>
-      <Divider />
-    </>
+      <div className="flex gap-8">
+        <p className="text-sm uppercase">Suma</p>
+        <p className="text-md font-bold">{total}</p>
+      </div>
+    </div>
   );
 };
 

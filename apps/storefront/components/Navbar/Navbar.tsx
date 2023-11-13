@@ -21,7 +21,7 @@ export function Navbar() {
   const paths = usePaths();
   const router = useRouter();
 
-  const [isBurgerOpen, setBurgerOpen] = useState(false);
+  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const { authenticated: actuallyAuthenticated } = useUser();
   const { checkout } = useCheckout();
@@ -40,7 +40,7 @@ export function Navbar() {
     // Close side menu after changing the page
     router.events.on("routeChangeStart", () => {
       if (isBurgerOpen) {
-        setBurgerOpen(false);
+        setIsBurgerOpen(false);
       }
     });
   });
@@ -66,7 +66,7 @@ export function Navbar() {
           <NavIconButton
             icon="menu"
             className="ml-2 lg:hidden "
-            onClick={() => setBurgerOpen(true)}
+            onClick={() => setIsBurgerOpen(true)}
           />
           <div className="flex-1 h-full hidden xs:flex">
             <Menu />
@@ -101,7 +101,7 @@ export function Navbar() {
           </div>
         </div>
       </div>
-      <BurgerMenu open={isBurgerOpen} onCloseClick={() => setBurgerOpen(false)} />
+      {isBurgerOpen && <BurgerMenu onCloseClick={() => setIsBurgerOpen(false)} />}
     </>
   );
 }

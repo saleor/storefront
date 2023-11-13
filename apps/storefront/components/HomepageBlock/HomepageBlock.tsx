@@ -21,7 +21,7 @@ export function HomepageBlock({ menuItem }: HomepageBlockProps) {
   const filter: ProductFilterInput = {};
   if (menuItem.page?.id) {
     const content = translate(menuItem.page, "content");
-    return <div className="pb-10">{content && <RichText jsonStringData={content} />}</div>;
+    return <div>{content && <RichText jsonStringData={content} />}</div>;
   }
   let link: UrlObject = {};
   if (menuItem.category?.id) {

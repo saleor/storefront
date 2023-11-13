@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,11 +16,10 @@ import { useUser } from "@/lib/useUser";
 import { useMenuItems } from "@/lib/hooks/useMenuItems";
 
 export interface BurgerMenuProps {
-  open?: boolean;
   onCloseClick?: () => void;
 }
 
-export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
+export function BurgerMenu({ onCloseClick }: BurgerMenuProps) {
   const paths = usePaths();
   const { menuItems, error } = useMenuItems();
   const t = useIntl();
@@ -29,6 +27,17 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   const [authenticated, setAuthenticated] = useState(false);
   const { authenticated: actuallyAuthenticated } = useUser();
   const router = useRouter();
+
+  useEffect(() => {
+    const handleSizeChange = ({ target }: UIEvent) => {
+      if (target instanceof Window && target.outerWidth > 1023) {
+        onCloseClick?.();
+      }
+    };
+    window.addEventListener("resize", handleSizeChange);
+
+    return () => window.removeEventListener("resize", handleSizeChange);
+  }, [onCloseClick]);
 
   // Avoid hydration warning by setting authenticated state in useEffect
   useEffect(() => {
@@ -42,11 +51,7 @@ export function BurgerMenu({ open, onCloseClick }: BurgerMenuProps) {
   }
 
   return (
-    <div
-      className={clsx(styles.container, {
-        [styles["container--open"]]: open,
-      })}
-    >
+    <div className={styles.container}>
       <div className={styles.backdrop} aria-hidden="true" onClick={onCloseClick} />
       <div className={styles.body}>
         <div className="flex justify-end w-full mb-5">
