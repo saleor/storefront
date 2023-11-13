@@ -2,6 +2,7 @@ import { type FormEventHandler, useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { type StripePaymentElementOptions } from "@stripe/stripe-js";
 import { getUrlForTransactionInitialize } from "../utils";
+import { usePaymentProcessingScreen } from "../PaymentProcessingScreen";
 import {
 	useCheckoutValidationActions,
 	useCheckoutValidationState,
@@ -18,6 +19,8 @@ import { useEvent } from "@/checkout/hooks/useEvent";
 import { useUser } from "@/checkout/hooks/useUser";
 import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
+import { getQueryParams } from "@/checkout/lib/utils/url";
 
 const paymentElementOptions: StripePaymentElementOptions = {
 	layout: "tabs",
@@ -42,6 +45,9 @@ export function CheckoutForm() {
 	const { validateAllForms } = useCheckoutValidationActions();
 	const { validationState } = useCheckoutValidationState();
 
+	const { setIsProcessingPayment } = usePaymentProcessingScreen();
+	const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
+
 	// handler for when user presses submit
 	const onSubmitInitialize: FormEventHandler<HTMLFormElement> = useEvent(async (e) => {
 		e.preventDefault();
@@ -51,6 +57,19 @@ export function CheckoutForm() {
 		setShouldRegisterUser(true);
 		setSubmitInProgress(true);
 	});
+
+	// handle when page is opened from previously redirected payment
+	useEffect(() => {
+		const { paymentIntent, paymentIntentClientSecret, processingPayment } = getQueryParams();
+
+		if (!paymentIntent || !paymentIntentClientSecret || !processingPayment) {
+			return;
+		}
+
+		if (!completingCheckout) {
+			void onCheckoutComplete();
+		}
+	}, [completingCheckout, onCheckoutComplete]);
 
 	// when submission is initialized, awaits for all the other requests to finish,
 	// forms to validate, then either does transaction initialize or process
@@ -101,23 +120,31 @@ export function CheckoutForm() {
 					},
 				},
 			})
-			.then(({ error }) => {
+			.then(async ({ error }) => {
 				console.error(error);
-				// This point will only be reached if there is an immediate error when
-				// confirming the payment. Otherwise, your customer will be redirected to
-				// your `return_url`. For some payment methods like iDEAL, your customer will
-				// be redirected to an intermediate site first to authorize the payment, then
-				// redirected to the `return_url`.
-				if (error.type === "card_error" || error.type === "validation_error") {
-					showCustomErrors([{ message: error.message ?? "Something went wrong" }]);
-				} else {
-					showCustomErrors([{ message: "An unexpected error occurred." }]);
+				setIsLoading(false);
+
+				if (error) {
+					setIsProcessingPayment(false);
+					// This point will only be reached if there is an immediate error when
+					// confirming the payment. Otherwise, your customer will be redirected to
+					// your `return_url`. For some payment methods like iDEAL, your customer will
+					// be redirected to an intermediate site first to authorize the payment, then
+					// redirected to the `return_url`.
+					if (error.type === "card_error" || error.type === "validation_error") {
+						showCustomErrors([{ message: error.message ?? "Something went wrong" }]);
+					} else {
+						showCustomErrors([{ message: "An unexpected error occurred." }]);
+					}
+					return;
 				}
 
-				setIsLoading(false);
+				return onCheckoutComplete();
 			})
 			.catch((err) => {
 				console.error(err);
+				setIsLoading(false);
+				setIsProcessingPayment(false);
 			});
 
 		// @todo
@@ -144,6 +171,8 @@ export function CheckoutForm() {
 		checkoutUpdateState.submitInProgress,
 		elements,
 		finishedApiChangesWithNoError,
+		onCheckoutComplete,
+		setIsProcessingPayment,
 		setSubmitInProgress,
 		showCustomErrors,
 		stripe,

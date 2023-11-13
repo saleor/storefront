@@ -37,11 +37,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	useAuthChange({
 		saleorApiUrl,
 		onSignedOut: () => {
-			console.log("onSignedOut");
 			setUrqlClient(makeUrqlClient());
 		},
 		onSignedIn: () => {
-			console.log("onSignedIn");
 			setUrqlClient(makeUrqlClient());
 		},
 	});
