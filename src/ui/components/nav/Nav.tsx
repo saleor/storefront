@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AccountLink } from "./components/AccountLink";
+import { UserMenu } from "./components/UserMenu/UserMenu";
 import { CartNavItem } from "./components/CartNavItem";
 import { NavLinks } from "./components/NavLinks";
 import { MobileMenu } from "./components/MobileMenu";
@@ -12,7 +12,7 @@ export const Nav = () => {
 			</ul>
 			<div className="ml-auto flex items-center justify-center whitespace-nowrap">
 				<Suspense fallback={<div className="w-6" />}>
-					<AccountLink />
+					<UserMenu />
 				</Suspense>
 			</div>
 			<div className="flex items-center">

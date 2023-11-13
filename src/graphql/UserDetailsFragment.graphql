@@ -1,0 +1,10 @@
+fragment UserDetails on User {
+	id
+	email
+	firstName
+	lastName
+	avatar {
+		url
+		alt
+	}
+}

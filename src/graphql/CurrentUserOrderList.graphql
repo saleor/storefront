@@ -1,13 +1,6 @@
 query CurrentUserOrderList {
 	me {
-		id
-		email
-		firstName
-		lastName
-		avatar {
-			url
-			alt
-		}
+		...UserDetails
 		orders(first: 10) {
 			edges {
 				node {
