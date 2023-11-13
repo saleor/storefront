@@ -69,6 +69,7 @@ export function UserMenu() {
 							<Menu.Item>
 								{({ active }) => (
 									<button
+										type="button"
 										onClick={() => signOut()}
 										className={clsx(
 											active && "bg-neutral-100",
