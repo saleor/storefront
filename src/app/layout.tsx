@@ -17,8 +17,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: { children: ReactNode }) {
 	return (
-		<html lang="en">
-			<body className={`${inter.className} flex min-h-screen flex-col`}>
+		<html lang="en" className="min-h-[100dvh]">
+			<body className={`${inter.className} min-h-[100dvh]`}>
 				<AuthProvider>{props.children}</AuthProvider>
 				<DraftModeNotification />
 			</body>

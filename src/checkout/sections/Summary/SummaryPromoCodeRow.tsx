@@ -33,7 +33,11 @@ export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
 
 	return (
 		<SummaryMoneyRow {...rest}>
-			{editable && <IconButton onClick={onDelete} ariaLabel="remove promo code" icon={<RemoveIcon />} />}
+			{editable && (
+				<div>
+					<IconButton onClick={onDelete} ariaLabel="remove promo code" icon={<RemoveIcon aria-hidden />} />
+				</div>
+			)}
 		</SummaryMoneyRow>
 	);
 };

@@ -32,10 +32,15 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 	const isValidPhoneNumber = usePhoneNumberValidator(values.countryCode);
 	const previousValues = useRef(values);
 
-	const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices, allowedFields } =
-		useAddressFormUtils(values.countryCode);
+	const {
+		orderedAddressFields,
+		getFieldLabel,
+		isRequiredField,
+		countryAreaChoices,
+		allowedFields = [],
+	} = useAddressFormUtils(values.countryCode);
 
-	const allowedFieldsRef = useRef(allowedFields || []);
+	const allowedFieldsRef = useRef(allowedFields);
 
 	const customValidators: Partial<Record<AddressField, FieldValidator>> = {
 		phone: isValidPhoneNumber,
@@ -72,11 +77,9 @@ export const AddressForm: FC<PropsWithChildren<AddressFormProps>> = ({
 
 	return (
 		<>
-			<div className="mb-3 flex flex-row items-baseline justify-between">
-				<Title className="flex-1">{title}</Title>
+			<Title className="mb-4">{title}</Title>
+			<div className="mt-2 grid grid-cols-1 gap-3">
 				<CountrySelect only={availableCountries} />
-			</div>
-			<div className="mt-2 grid grid-cols-1 gap-2">
 				{orderedAddressFields.map((field) => {
 					const isRequired = isRequiredField(field);
 					const label = getFieldLabel(field);

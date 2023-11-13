@@ -1,6 +1,13 @@
 export function SaleorLogo() {
 	return (
-		<svg width="697" height="240" viewBox="0 0 697 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<svg
+			width="697"
+			height="240"
+			viewBox="0 0 697 240"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			className="h-auto w-full"
+		>
 			<mask
 				id="mask0_1015_2366"
 				style={{ maskType: "alpha" }}

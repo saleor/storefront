@@ -24,8 +24,9 @@ test("STF_03: Check if price are calculating correctly", async ({ page }) => {
 	await openCart({ page });
 
 	const totalPrice = (price * 2).toFixed(2);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toHaveCount(1);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toContainText(product.name);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toContainText(`Qty: 2`);
-	await expect(page.getByTestId("CartProductList").getByRole("listitem")).toContainText(totalPrice);
+	const productInCart = page.getByTestId("CartProductList").getByRole("listitem");
+	await expect(productInCart).toHaveCount(1);
+	await expect(productInCart).toContainText(product.name);
+	await expect(productInCart).toContainText(`Qty: 2`);
+	await expect(productInCart).toContainText(totalPrice);
 });

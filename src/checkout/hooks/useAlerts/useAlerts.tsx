@@ -12,7 +12,7 @@ import {
 import { type ErrorCode } from "@/checkout/lib/globalTypes";
 import { type ApiErrors } from "@/checkout/hooks/useGetParsedErrors/types";
 import { useGetParsedErrors } from "@/checkout/hooks/useGetParsedErrors";
-import { apiErrorMessages } from "@/checkout/sections/PaymentSection/AdyenDropIn/errorMessages";
+import { apiErrorMessages } from "@/checkout/sections/PaymentSection/errorMessages";
 
 function useAlerts(scope: CheckoutScope): {
 	showErrors: (errors: ApiErrors<any>) => void;

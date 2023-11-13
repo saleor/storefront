@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
+import invariant from "ts-invariant";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
@@ -88,44 +89,29 @@ export default async function Page(props: { params: { slug: string }; searchPara
 	async function addItem() {
 		"use server";
 
-		let checkoutId = cookies().get("checkoutId")?.value;
+		const checkout = await Checkout.findOrCreate(cookies().get("checkoutId")?.value);
+		invariant(checkout, "This should never happen");
 
-		if (!checkoutId) {
-			const { checkoutCreate } = await Checkout.create();
+		cookies().set("checkoutId", checkout.id, {
+			secure: shouldUseHttps,
+			sameSite: "lax",
+			httpOnly: true,
+		});
 
-			if (checkoutCreate && checkoutCreate?.checkout?.id) {
-				cookies().set("checkoutId", checkoutCreate.checkout?.id, {
-					secure: shouldUseHttps,
-					sameSite: "lax",
-					httpOnly: true,
-				});
-
-				checkoutId = checkoutCreate.checkout.id;
-			}
+		if (!selectedVariantID) {
+			return;
 		}
 
-		checkoutId = cookies().get("checkoutId")?.value;
+		// TODO: error handling
+		await executeGraphQL(CheckoutAddLineDocument, {
+			variables: {
+				id: checkout.id,
+				productVariantId: decodeURIComponent(selectedVariantID),
+			},
+			cache: "no-cache",
+		});
 
-		if (checkoutId && selectedVariantID) {
-			const checkout = await Checkout.find(checkoutId);
-
-			if (!checkout) {
-				cookies().delete("checkoutId");
-			}
-
-			// TODO: error handling
-			await executeGraphQL(CheckoutAddLineDocument, {
-				variables: {
-					id: checkoutId,
-					productVariantId: decodeURIComponent(selectedVariantID),
-				},
-				cache: "no-cache",
-			});
-
-			revalidatePath("/cart");
-		} else {
-			throw new Error("Cart not found");
-		}
+		revalidatePath("/cart");
 	}
 
 	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
@@ -143,7 +129,13 @@ export default async function Page(props: { params: { slug: string }; searchPara
 		<section className="mx-auto grid max-w-7xl p-8">
 			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
 				{firstImage && (
-					<ProductImageWrapper alt={firstImage.alt ?? ""} width={1024} height={1024} src={firstImage.url} />
+					<ProductImageWrapper
+						priority={true}
+						alt={firstImage.alt ?? ""}
+						width={1024}
+						height={1024}
+						src={firstImage.url}
+					/>
 				)}
 				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
 					<div>

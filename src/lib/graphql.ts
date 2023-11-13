@@ -38,6 +38,17 @@ export async function executeGraphQL<Result, Variables>(
 		next: { revalidate },
 	});
 
+	if (!response.ok) {
+		const body = await (async () => {
+			try {
+				return await response.text();
+			} catch {
+				return "";
+			}
+		})();
+		throw new HTTPError(response, body);
+	}
+
 	const body = (await response.json()) as GraphQLRespone<Result>;
 
 	if ("errors" in body) {
@@ -50,6 +61,14 @@ export async function executeGraphQL<Result, Variables>(
 export class GraphQLError extends Error {
 	constructor(public errorResponse: GraphQLErrorResponse) {
 		const message = errorResponse.errors.map((error) => error.message).join("\n");
+		super(message);
+		this.name = this.constructor.name;
+		Object.setPrototypeOf(this, new.target.prototype);
+	}
+}
+export class HTTPError extends Error {
+	constructor(response: Response, body: string) {
+		const message = `HTTP error ${response.status}: ${response.statusText}\n${body}`;
 		super(message);
 		this.name = this.constructor.name;
 		Object.setPrototypeOf(this, new.target.prototype);

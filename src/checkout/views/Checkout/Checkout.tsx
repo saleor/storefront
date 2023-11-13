@@ -11,10 +11,10 @@ import { CheckoutSkeleton } from "@/checkout/views/Checkout/CheckoutSkeleton";
 import { PAGE_ID } from "@/checkout/views/Checkout/consts";
 
 export const Checkout = () => {
-	const { checkout, loading } = useCheckout();
+	const { checkout, fetching: fetchingCheckout } = useCheckout();
 	const { loading: isAuthenticating } = useUser();
 
-	const isCheckoutInvalid = !loading && !checkout && !isAuthenticating;
+	const isCheckoutInvalid = !fetchingCheckout && !checkout && !isAuthenticating;
 
 	const isInitiallyAuthenticating = isAuthenticating && !checkout;
 
@@ -28,20 +28,18 @@ export const Checkout = () => {
 		<ErrorBoundary FallbackComponent={PageNotFound}>
 			<div className="page" id={PAGE_ID}>
 				<PageHeader />
-				<div className="grid min-h-screen grid-cols-1 gap-x-16 lg:grid-cols-2">
-					{isEmptyCart ? (
-						<EmptyCartPage />
-					) : (
-						<>
-							<Suspense fallback={<CheckoutFormSkeleton />}>
-								<CheckoutForm />
-							</Suspense>
-							<Suspense fallback={<SummarySkeleton />}>
-								<Summary {...checkout} />
-							</Suspense>
-						</>
-					)}
-				</div>
+				{isEmptyCart ? (
+					<EmptyCartPage />
+				) : (
+					<div className="grid min-h-screen grid-cols-1 gap-x-16 lg:grid-cols-2">
+						<Suspense fallback={<CheckoutFormSkeleton />}>
+							<CheckoutForm />
+						</Suspense>
+						<Suspense fallback={<SummarySkeleton />}>
+							<Summary {...checkout} />
+						</Suspense>
+					</div>
+				)}
 			</div>
 		</ErrorBoundary>
 	);

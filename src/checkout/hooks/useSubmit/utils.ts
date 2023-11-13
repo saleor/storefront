@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type CombinedError } from "urql";
+import { compact } from "lodash-es";
 import { type FormDataBase } from "@/checkout/hooks/useForm";
 import { type ApiErrors } from "@/checkout/hooks/useGetParsedErrors";
 import {
@@ -64,18 +65,20 @@ export const extractMutationErrors = <
 	result: MutationData<TMutationFn>,
 	extractCustomErrors?: (result: MutationData<TMutationFn>) => MightNotExist<any[]>,
 ): ExtractedMutationErrors<TData, TErrorCodes> => {
+	const data = result?.data as
+		| null
+		| undefined
+		| Record<string, null | undefined | { errors: ApiErrors<TData, TErrorCodes> }>;
 	const graphqlErrors = result?.error ? [result.error] : [];
 
-	const apiErrors = result?.data
-		? Object.values(result.data as Record<string, { errors: ApiErrors<TData, TErrorCodes> }>).reduce(
-				(result, { errors }) => [...result, ...errors],
-				[] as ApiErrors<TData, TErrorCodes>,
-		  )
-		: [];
+	const apiErrors = Object.values(data ?? {}).reduce<ApiErrors<TData, TErrorCodes>>(
+		(result, value) => [...result, ...(value?.errors ?? [])],
+		[],
+	);
 
 	const customErrors = extractCustomErrors?.(result) || [];
 
-	const allErrors = [...apiErrors, ...graphqlErrors, ...customErrors];
+	const allErrors = compact([...apiErrors, ...graphqlErrors, ...customErrors]);
 
 	return { hasErrors: allErrors.length > 0, apiErrors, graphqlErrors, customErrors };
 };
