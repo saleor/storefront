@@ -2,7 +2,7 @@ import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type Metadata } from "next";
+import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
 import invariant from "ts-invariant";
 import { AddButton } from "./AddButton";
@@ -16,13 +16,16 @@ import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 const shouldUseHttps =
 	process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
 
-export async function generateMetadata({
-	params,
-	searchParams,
-}: {
-	params: { slug: string };
-	searchParams: { variant?: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+	{
+		params,
+		searchParams,
+	}: {
+		params: { slug: string };
+		searchParams: { variant?: string };
+	},
+	parent: ResolvingMetadata,
+): Promise<Metadata> {
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -37,11 +40,11 @@ export async function generateMetadata({
 	const productName = product.seoTitle || product.name;
 	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
 
-	const title = variantName ? `${productName} - ${variantName}` : productName;
+	const productNameAndVariant = variantName ? `${productName} - ${variantName}` : productName;
 
 	return {
-		title: `${title} · Saleor Storefront example`,
-		description: product.seoDescription || title,
+		title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
+		description: product.seoDescription || productNameAndVariant,
 		alternates: {
 			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
 				? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
