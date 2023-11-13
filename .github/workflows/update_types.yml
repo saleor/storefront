@@ -10,31 +10,32 @@ jobs:
     name: Check Saleor release and update types
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Get latest release info
         id: release
         run: |
           echo "Fetching latest release info..."
           latest_release=$(curl -s https://api.github.com/repos/saleor/saleor/releases/latest)
           echo "tag=$(echo $latest_release | jq -r '.tag_name')" >> "$GITHUB_OUTPUT"
+          echo "schema_url=$(echo $latest_release | jq -r '.assets[] | select(.name == "schema.graphql") | .url')" >> "$GITHUB_OUTPUT"
           echo "has_schema=$(echo $latest_release | jq -e '.assets[] | select(.name == "schema.graphql") | length > 0')" >> "$GITHUB_OUTPUT"
 
       - name: Download schema.graphql
         run: |
           if [[ "${{ steps.release.outputs.has_schema }}" == "true" ]]; then
             echo "schema.graphql is attached to the ${{ steps.release.outputs.tag }} release, updating..."
+
+            curl --output schema.graphql \
+              --url ${{ steps.release.outputs.schema_url }} \
+              --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+              --header "Accept: application/octet-stream" \
+              --location
           else
             echo "schema.graphql is not attached to the ${{ steps.release.outputs.tag }} release, exiting..."
             exit 1
           fi
 
-      - uses: robinraju/release-downloader@v1.8
-        with:
-          repository: "saleor/saleor"
-          latest: true
-          fileName: "schema.graphql"
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Get PNPM version from package.json
         id: pnpm-version
