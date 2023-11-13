@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
 import invariant from "ts-invariant";
+import { type WithContext, type Product } from "schema-dts";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
@@ -134,7 +135,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 		  })
 		: "";
 
-	const productJsonLd = {
+	const productJsonLd: WithContext<Product> = {
 		"@context": "https://schema.org",
 		"@type": "Product",
 		image: product.thumbnail?.url,
@@ -153,6 +154,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 			  }
 			: {
 					name: product.name,
+
 					description: product.seoDescription || product.name,
 					offers: {
 						"@type": "AggregateOffer",
