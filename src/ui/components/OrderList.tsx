@@ -1,11 +1,13 @@
 "use client";
 import { useQuery } from "urql";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { CurrentUserOrderListDocument, type CurrentUserOrderListQuery } from "@/gql/graphql";
 import { formatMoney } from "@/lib/graphql";
 import { formatDate } from "@/lib/date";
 
 export function OrderList() {
+	const router = useRouter();
 	const [{ data, fetching }] = useQuery<CurrentUserOrderListQuery>({
 		query: CurrentUserOrderListDocument.toString(),
 	});
@@ -18,6 +20,7 @@ export function OrderList() {
 	const email = user?.email;
 
 	if (!email) {
+		router.push("/");
 		return <div>User does not have email</div>;
 	}
 
