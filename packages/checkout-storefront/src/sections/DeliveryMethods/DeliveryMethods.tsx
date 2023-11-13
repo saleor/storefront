@@ -21,6 +21,7 @@ import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql
 export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   collapsed,
   onIsOnReceiveSelectedChange,
+  setSelectedLockerId,
 }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
@@ -30,7 +31,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   const { updateState } = useCheckoutUpdateState();
   const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
   const [, setSelectedRadio] = useState<string>("");
-  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState<boolean>(false);
+  const [, setIsOnReceiveSelected] = useState<boolean>(false);
 
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
@@ -66,6 +67,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
   const handleInpostDataChange = async (data: InpostEventData | null) => {
     setSelectedInpostData(data);
+    setSelectedLockerId(data?.name ?? null);
 
     if (data?.name) {
       await updateShippingLockerId({
@@ -77,6 +79,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
   const resetInpostData = () => {
     setSelectedInpostData(null);
+    setSelectedLockerId(null);
   };
 
   return (

@@ -7,6 +7,7 @@ import { getQueryParams } from "@/checkout-storefront/lib/utils/url";
 import { useIntl } from "react-intl";
 import { paymentSectionMessages } from "./messages";
 import { GDPRSection } from "../GDPRSection/GDPRSection";
+import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
 
 export interface IPaymentGatewayConfig {
   field: string;
@@ -14,13 +15,14 @@ export interface IPaymentGatewayConfig {
 }
 export const PAYU_GATEWAY = "salingo.payments.payu";
 
-export function PayuSection({ checkout }: any) {
+export function PayuSection({ checkout, isLockerIdSelected }: any) {
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [GDPR, setGDPR] = useState<boolean>(false);
   const [, checkoutPaymentCreate] = useCheckoutPaymentCreateMutation();
   const { onCheckoutComplete } = useCheckoutComplete();
   const { saleorApiUrl } = getQueryParams();
   const { channel } = getQueryParams();
+  const { showCustomErrors } = useAlerts();
   const t = useIntl();
 
   const handleGDPRChange = (checked: boolean) => {
@@ -61,6 +63,17 @@ export function PayuSection({ checkout }: any) {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    if (!isLockerIdSelected) {
+      showCustomErrors([
+        {
+          field: "lockerId",
+          code: "required",
+          message: "Proszę wybrać paczkomat przed kontynuacją płatności",
+        },
+      ]);
+      return;
+    }
 
     if (!GDPR) {
       console.log("Musisz zaakceptować regulamin sklepu przed kontynuacją płatności!");

@@ -27,6 +27,11 @@ export const CheckoutForm = () => {
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
   const [isOnReceiveSelected, setIsOnReceiveSelected] = useState<boolean>(false);
 
+  const [isInpostSelected, setIsInpostSelected] = useState(false);
+  const [selectedLockerId, setSelectedLockerId] = useState<string | null>(null);
+
+  console.log(selectedLockerId);
+
   const handleIsOnReceiveSelectedChange = (
     newValue: boolean | ((prevState: boolean) => boolean)
   ) => {
@@ -54,12 +59,18 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods
               collapsed={showOnlyContact}
+              setIsInpostSelected={setIsInpostSelected}
+              setSelectedLockerId={setSelectedLockerId}
               onIsOnReceiveSelectedChange={handleIsOnReceiveSelectedChange}
             />
           </Suspense>
           <Suspense fallback={<PaymentSectionSkeleton />}>
             <CollapseSection collapse={showOnlyContact}>
-              <PaymentSection isOnReceiveSelected={isOnReceiveSelected}>
+              <PaymentSection
+                isOnReceiveSelected={isOnReceiveSelected}
+                isInpostSelected={isInpostSelected}
+                selectedLockerId={selectedLockerId}
+              >
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>
             </CollapseSection>
