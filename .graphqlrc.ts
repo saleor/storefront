@@ -3,7 +3,11 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 loadEnvConfig(process.cwd());
 
-const schemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+let schemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+
+if (process.env.GITHUB_ACTION === "generate-schema-from-file") {
+	schemaUrl = "schema.graphql";
+}
 
 if (!schemaUrl) {
 	console.error(
