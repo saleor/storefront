@@ -8,7 +8,6 @@ import { Summary, SummarySkeleton } from "@/checkout/sections/Summary";
 import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout/sections/CheckoutForm";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { CheckoutSkeleton } from "@/checkout/views/Checkout/CheckoutSkeleton";
-import { PAGE_ID } from "@/checkout/views/Checkout/consts";
 
 export const Checkout = () => {
 	const { checkout, fetching: fetchingCheckout } = useCheckout();
@@ -26,7 +25,7 @@ export const Checkout = () => {
 		<CheckoutSkeleton />
 	) : (
 		<ErrorBoundary FallbackComponent={PageNotFound}>
-			<div className="page" id={PAGE_ID}>
+			<div className="page">
 				<PageHeader />
 				{isEmptyCart ? (
 					<EmptyCartPage />

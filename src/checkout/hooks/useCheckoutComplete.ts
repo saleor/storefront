@@ -21,7 +21,12 @@ export const useCheckoutComplete = () => {
 					const order = data.order;
 
 					if (order) {
-						const newUrl = replaceUrl({ query: { checkout: undefined, order: order.id } });
+						const newUrl = replaceUrl({
+							query: {
+								order: order.id,
+							},
+							replaceWholeQuery: true,
+						});
 						window.location.href = newUrl;
 					}
 				},
