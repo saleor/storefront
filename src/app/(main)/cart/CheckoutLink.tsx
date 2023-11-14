@@ -9,6 +9,7 @@ type Props = {
 export const CheckoutLink = ({ disabled, checkoutId, className = "" }: Props) => {
 	return (
 		<a
+			data-testid="CheckoutLink"
 			aria-disabled={disabled}
 			onClick={(e) => disabled && e.preventDefault()}
 			href={`/checkout?checkout=${checkoutId}`}

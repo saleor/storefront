@@ -4,7 +4,14 @@ export async function clickOnRandomProductElement({ page }: { page: Page }) {
 	const productLinks = page.getByTestId("ProductElement");
 	await productLinks.first().waitFor();
 	const count = await productLinks.count();
-	const randomProductLink = productLinks.nth(Math.floor(Math.random() * count));
+	const nth = Math.floor(Math.random() * count);
+	return clickOnNthProductElement({ page, nth });
+}
+
+export async function clickOnNthProductElement({ page, nth }: { page: Page; nth: number }) {
+	const productLinks = page.getByTestId("ProductElement");
+	await productLinks.first().waitFor();
+	const randomProductLink = productLinks.nth(nth);
 
 	const name = await randomProductLink.getByRole("heading").textContent();
 	const priceRange = await randomProductLink.getByTestId("ProductElement_PriceRange").textContent();
@@ -43,7 +50,9 @@ export async function selectRandomAvailableVariant({ page }: { page: Page }) {
 export async function addCurrentProductToCart({ page }: { page: Page }) {
 	expect(page.url()).toContain("/products/");
 	expect(page.url()).toContain("?variant=");
-	await page.getByRole("button", { name: "Add to cart" }).click();
+	const checkoutButton = page.getByRole("button", { name: "Add to cart" });
+	await checkoutButton.click();
+	await checkoutButton.isEnabled();
 }
 
 export async function openCart({ page }: { page: Page }) {

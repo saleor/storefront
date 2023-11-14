@@ -51,7 +51,7 @@ export const Summary: FC<SummaryProps> = ({
 					<Title>Summary</Title>
 					<ChevronDownIcon className="mb-2 group-open:rotate-180" />
 				</summary>
-				<ul className="pb-4 pt-2">
+				<ul className="pb-4 pt-2" data-testid="SummaryProductList">
 					{lines.map((line) => (
 						<SummaryItem line={line} key={line?.id}>
 							{editable ? (
