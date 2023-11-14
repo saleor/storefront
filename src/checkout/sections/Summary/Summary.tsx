@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import clsx from "clsx";
 import { SummaryItem, type SummaryLine } from "./SummaryItem";
 import { PromoCodeAdd } from "./PromoCodeAdd";
 import { SummaryMoneyRow } from "./SummaryMoneyRow";
@@ -39,13 +40,18 @@ export const Summary: FC<SummaryProps> = ({
 	discount,
 }) => {
 	return (
-		<div className="flex h-fit w-full flex-col overflow-hidden rounded lg:overflow-visible">
+		<div
+			className={clsx(
+				"z-0 flex h-fit w-full flex-col",
+				"before:fixed before:bottom-0 before:left-1/2 before:top-0 before:-z-10 before:w-1/2 before:border-l before:border-neutral-200 before:bg-neutral-50 before:content-none before:lg:content-['']",
+			)}
+		>
 			<details open className="group">
 				<summary className="-mb-2 flex cursor-pointer flex-row items-center pt-4">
 					<Title>Summary</Title>
 					<ChevronDownIcon className="mb-2 group-open:rotate-180" />
 				</summary>
-				<ul className="pb-4 pt-2">
+				<ul className="pb-4 pt-2" data-testid="SummaryProductList">
 					{lines.map((line) => (
 						<SummaryItem line={line} key={line?.id}>
 							{editable ? (

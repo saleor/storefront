@@ -65,14 +65,16 @@ export const extractMutationErrors = <
 	result: MutationData<TMutationFn>,
 	extractCustomErrors?: (result: MutationData<TMutationFn>) => MightNotExist<any[]>,
 ): ExtractedMutationErrors<TData, TErrorCodes> => {
+	const data = result?.data as
+		| null
+		| undefined
+		| Record<string, null | undefined | { errors: ApiErrors<TData, TErrorCodes> }>;
 	const graphqlErrors = result?.error ? [result.error] : [];
 
-	const apiErrors = result?.data
-		? Object.values(result.data as Record<string, { errors: ApiErrors<TData, TErrorCodes> }>).reduce(
-				(result, { errors }) => [...result, ...errors],
-				[] as ApiErrors<TData, TErrorCodes>,
-		  )
-		: [];
+	const apiErrors = Object.values(data ?? {}).reduce<ApiErrors<TData, TErrorCodes>>(
+		(result, value) => [...result, ...(value?.errors ?? [])],
+		[],
+	);
 
 	const customErrors = extractCustomErrors?.(result) || [];
 

@@ -2,9 +2,10 @@ import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type Metadata } from "next";
+import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
 import invariant from "ts-invariant";
+import { type WithContext, type Product } from "schema-dts";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
@@ -16,13 +17,16 @@ import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 const shouldUseHttps =
 	process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
 
-export async function generateMetadata({
-	params,
-	searchParams,
-}: {
-	params: { slug: string };
-	searchParams: { variant?: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+	{
+		params,
+		searchParams,
+	}: {
+		params: { slug: string };
+		searchParams: { variant?: string };
+	},
+	parent: ResolvingMetadata,
+): Promise<Metadata> {
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -36,17 +40,26 @@ export async function generateMetadata({
 
 	const productName = product.seoTitle || product.name;
 	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
-
-	const title = variantName ? `${productName} - ${variantName}` : productName;
+	const productNameAndVariant = variantName ? `${productName} - ${variantName}` : productName;
 
 	return {
-		title: `${title} · Saleor Storefront example`,
-		description: product.seoDescription || title,
+		title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
+		description: product.seoDescription || productNameAndVariant,
 		alternates: {
 			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
 				? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
 				: undefined,
 		},
+		openGraph: product.thumbnail
+			? {
+					images: [
+						{
+							url: product.thumbnail.url,
+							alt: product.name,
+						},
+					],
+			  }
+			: null,
 	};
 }
 
@@ -122,8 +135,47 @@ export default async function Page(props: { params: { slug: string }; searchPara
 		  })
 		: "";
 
+	const productJsonLd: WithContext<Product> = {
+		"@context": "https://schema.org",
+		"@type": "Product",
+		image: product.thumbnail?.url,
+		...(selectedVariant
+			? {
+					name: `${product.name} - ${selectedVariant.name}`,
+					description: product.seoDescription || `${product.name} - ${selectedVariant.name}`,
+					offers: {
+						"@type": "Offer",
+						availability: selectedVariant.quantityAvailable
+							? "https://schema.org/InStock"
+							: "https://schema.org/OutOfStock",
+						priceCurrency: selectedVariant.pricing?.price?.gross.currency,
+						price: selectedVariant.pricing?.price?.gross.amount,
+					},
+			  }
+			: {
+					name: product.name,
+
+					description: product.seoDescription || product.name,
+					offers: {
+						"@type": "AggregateOffer",
+						availability: product.variants?.some((variant) => variant.quantityAvailable)
+							? "https://schema.org/InStock"
+							: "https://schema.org/OutOfStock",
+						priceCurrency: product.pricing?.priceRange?.start?.gross.currency,
+						lowPrice: product.pricing?.priceRange?.start?.gross.amount,
+						highPrice: product.pricing?.priceRange?.stop?.gross.amount,
+					},
+			  }),
+	};
+
 	return (
 		<section className="mx-auto grid max-w-7xl p-8">
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(productJsonLd),
+				}}
+			/>
 			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
 				{firstImage && (
 					<ProductImageWrapper

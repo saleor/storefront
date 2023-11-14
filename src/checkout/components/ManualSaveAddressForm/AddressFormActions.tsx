@@ -16,22 +16,21 @@ export const AddressFormActions: React.FC<AddressFormActionsProps> = ({
 	loading,
 }) => {
 	return (
-		<div className="flex flex-row justify-end">
+		<div className="flex flex-row justify-end gap-2">
 			{onDelete && (
-				<div className="mt-1">
-					<IconButton ariaLabel="Delete address" onClick={onDelete} icon={<TrashIcon />} />
+				<div className="flex">
+					<IconButton ariaLabel="Delete address" onClick={onDelete} icon={<TrashIcon aria-hidden />} />
 				</div>
 			)}
 
-			<Button
-				className="mr-2"
-				ariaLabel="Cancel editing"
-				variant="secondary"
-				onClick={onCancel}
-				label="Cancel"
-			/>
+			<Button ariaLabel="Cancel editing" variant="secondary" onClick={onCancel} label="Cancel" />
 			{loading ? (
-				<Button disabled ariaLabel="Save address" onClick={onSubmit} label="Processing…" />
+				<Button
+					ariaDisabled
+					ariaLabel="Save address"
+					onClick={(e) => e.preventDefault()}
+					label="Processing…"
+				/>
 			) : (
 				<Button ariaLabel="Save address" onClick={onSubmit} label="Save address" />
 			)}

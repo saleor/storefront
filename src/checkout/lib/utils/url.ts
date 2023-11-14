@@ -19,6 +19,9 @@ const queryParamsMap = {
 	redirectResult: "redirectResult",
 	resultCode: "resultCode",
 	type: "type",
+	// stripe
+	payment_intent: "paymentIntent",
+	payment_intent_client_secret: "paymentIntentClientSecret",
 } as const;
 
 type UnmappedQueryParam = keyof typeof queryParamsMap;
@@ -71,21 +74,21 @@ export const clearQueryParams = (...keys: QueryParam[]) => {
 };
 
 export const getUrl = ({
-	url = window.location.toString(),
 	query,
 	replaceWholeQuery = false,
 }: {
-	url?: string;
 	query?: Record<string, any>;
 	replaceWholeQuery?: boolean;
 }) => {
+	const baseUrl = replaceWholeQuery
+		? window.location.toString().replace(window.location.search, "")
+		: window.location.toString();
 	const newQuery = replaceWholeQuery ? query : { ...getRawQueryParams(), ...query };
-	const newUrl = queryString.stringifyUrl({ url, query: newQuery });
+	const newUrl = queryString.stringifyUrl({ url: baseUrl, query: newQuery });
 	return { newUrl, newQuery };
 };
 
 export const replaceUrl = ({
-	url = window.location.toString(),
 	query,
 	replaceWholeQuery = false,
 }: {
@@ -93,7 +96,7 @@ export const replaceUrl = ({
 	query?: Record<string, any>;
 	replaceWholeQuery?: boolean;
 }) => {
-	const { newUrl, newQuery } = getUrl({ url, query, replaceWholeQuery });
+	const { newUrl, newQuery } = getUrl({ query, replaceWholeQuery });
 
 	window.history.pushState(
 		{

@@ -73,7 +73,7 @@ const useCheckoutUpdateStateStore = createWithEqualityFn<CheckoutUpdateStateStor
 	}),
 	shallow,
 );
-useCheckoutUpdateStateStore.subscribe(console.log);
+// useCheckoutUpdateStateStore.subscribe(console.log);
 
 export const useCheckoutUpdateState = (): CheckoutUpdateState => {
 	const { updateState, loadingCheckout, submitInProgress, changingBillingCountry } =
