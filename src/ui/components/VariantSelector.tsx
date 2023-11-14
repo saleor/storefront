@@ -2,6 +2,7 @@ import { clsx } from "clsx";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { type ProductListItemFragment, type VariantDetailsFragment } from "@/gql/graphql";
+import { getHrefForVariant } from "@/utils/getHrefForVariant";
 
 export function VariantSelector({
 	variants,
@@ -13,7 +14,7 @@ export function VariantSelector({
 	selectedVariant?: VariantDetailsFragment;
 }) {
 	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
-		redirect(getHrefForVariant(product, variants[0]));
+		redirect(getHrefForVariant(product.slug, variants[0].id));
 	}
 
 	return (
@@ -29,7 +30,7 @@ export function VariantSelector({
 								key={variant.id}
 								prefetch={true}
 								scroll={false}
-								href={isDisabled ? "#" : getHrefForVariant(product, variant)}
+								href={isDisabled ? "#" : getHrefForVariant(product.slug, variant.id)}
 								className={clsx(
 									isCurrentVariant
 										? "border-transparent bg-neutral-900 text-white hover:bg-neutral-800"
@@ -50,10 +51,4 @@ export function VariantSelector({
 			</fieldset>
 		)
 	);
-}
-
-function getHrefForVariant(product: ProductListItemFragment, variant: VariantDetailsFragment): string {
-	const pathname = `/products/${encodeURIComponent(product.slug)}`;
-	const query = new URLSearchParams({ variant: variant.id });
-	return `${pathname}?${query.toString()}`;
 }

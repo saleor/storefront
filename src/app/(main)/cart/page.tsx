@@ -5,6 +5,7 @@ import { CheckoutLink } from "./CheckoutLink";
 import { DeleteLineButton } from "./DeleteLineButton";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney } from "@/lib/graphql";
+import { getHrefForVariant } from "@/utils/getHrefForVariant";
 
 export const metadata = {
 	title: "Shopping Cart · Saleor Storefront example",
@@ -57,7 +58,7 @@ export default async function Page() {
 							<div className="relative flex flex-1 flex-col justify-between p-4 py-2">
 								<div className="flex justify-between justify-items-start gap-4">
 									<div className="">
-										<Link href={`/products/${item.variant.product.slug}?variant=${item.variant.id}`}>
+										<Link href={getHrefForVariant(item.variant.product.slug, item.variant.id)}>
 											<h2 className="font-medium text-neutral-700">{item.variant?.product?.name}</h2>
 										</Link>
 										<p className="mt-1 text-sm text-neutral-500">{item.variant?.product?.category?.name}</p>
