@@ -30,7 +30,7 @@ export const PasswordInputComponent = <TName extends string>({
 			<div className="flex flex-col">
 				<label className="text-xs text-neutral-700">
 					{label}
-					{required && "*"}
+					{required && <span aria-hidden="true">*</span>}
 				</label>
 				<div className="relative mt-1 flex items-stretch shadow-sm">
 					<input

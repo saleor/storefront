@@ -16,10 +16,5 @@ export const CountrySelect: React.FC<CountrySelectProps> = ({ only = [] }) => {
 		label: getCountryName(countryCode),
 	}));
 
-	return (
-		<label className="flex flex-col">
-			<span className="text-xs text-neutral-700">Country</span>
-			<Select name="countryCode" options={countryOptions} autoComplete="countryCode" />
-		</label>
-	);
+	return <Select name="countryCode" label="Country" options={countryOptions} autoComplete="countryCode" />;
 };

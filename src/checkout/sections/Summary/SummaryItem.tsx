@@ -16,7 +16,7 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 	const attributesText = useSummaryLineLineAttributesText(line);
 
 	return (
-		<li className="relative mb-6 flex flex-row items-start last-of-type:mb-0">
+		<li className="relative mb-6 flex flex-row items-start last-of-type:mb-0" data-testid="SummaryItem">
 			<div className="relative flex flex-row">
 				<div className="z-1 mr-4 flex h-24 w-20 items-center justify-start">
 					{productImage ? (

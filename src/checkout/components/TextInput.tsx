@@ -25,7 +25,7 @@ export const TextInputComponent = <TName extends string>({
 			<label className="flex flex-col">
 				<span className="text-xs text-neutral-700">
 					{label}
-					{required && "*"}
+					{required && <span aria-hidden="true">*</span>}
 				</span>
 				<input
 					required={required}
