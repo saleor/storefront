@@ -42,10 +42,10 @@ export const Order = ({ order }: Props) => {
 			</div>
 
 			{order.lines.length > 0 && (
-				<table className="mt-6 w-full table-fixed divide-y text-sm text-neutral-500">
+				<table className="mt-6 w-full divide-y text-sm text-neutral-500">
 					<thead>
-						<tr className="[&>th:last-child]:text-end max-md:[&>th:not(:first-child):not(:last-child)]:hidden [&>th:not(:last-child)]:pr-6 [&>th]:py-4 [&>th]:font-normal">
-							<th>Product</th>
+						<tr className="[&>th:last-child]:text-end max-md:[&>th:not(:first-child):not(:last-child)]:hidden [&>th:not(:last-child)]:pr-6 md:[&>th:not(:last-child)]:pr-6 [&>th]:py-4 [&>th]:font-normal">
+							<th className="md:w-2/5">Product</th>
 							<th>Variant</th>
 							<th>Category</th>
 							<th>Price</th>
@@ -58,31 +58,44 @@ export const Order = ({ order }: Props) => {
 
 								return (
 									<tr
-										className="[&>td:last-child]:text-end max-md:[&>td:not(:first-child):not(:last-child)]:hidden [&>td:not(:last-child)]:pr-6 [&>td]:py-6"
+										className="[&>td:last-child]:text-end max-md:[&>td:not(:first-child):not(:last-child)]:hidden [&>td:not(:last-child)]:pr-6 md:[&>td:not(:last-child)]:pr-6 [&>td]:py-6"
 										key={product.id}
 									>
-										<td className="flex flex-row items-center gap-3 md:gap-6">
-											<div className="aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:h-24 md:w-24">
+										<td>
+											<div className="flex flex-row items-start md:items-center">
 												{product.thumbnail && (
-													<Image
-														src={product.thumbnail.url}
-														alt={product.thumbnail.alt ?? ""}
-														width={200}
-														height={200}
-														className="h-full w-full object-contain object-center"
-													/>
+													<div className="mr-3 aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:mr-6 md:h-24 md:w-24">
+														<Image
+															src={product.thumbnail.url}
+															alt={product.thumbnail.alt ?? ""}
+															width={200}
+															height={200}
+															className="h-full w-full object-contain object-center"
+														/>
+													</div>
 												)}
+												<div>
+													<Link
+														href={
+															item.variant?.id
+																? getHrefForVariant(product.slug, item.variant.id)
+																: `/products/${product.slug}`
+														}
+														className="font-medium text-neutral-700"
+													>
+														{product.name}
+													</Link>
+													<div className="mt-1 md:hidden">
+														<p>{product.category?.name}</p>
+														<p>
+															Variant:
+															{item.variant.name !== item.variant?.id && Boolean(item.variant.name)
+																? item.variant.name
+																: "-"}
+														</p>
+													</div>
+												</div>
 											</div>
-											<Link
-												href={
-													item.variant?.id
-														? getHrefForVariant(product.slug, item.variant.id)
-														: `/products/${product.slug}`
-												}
-												className="font-medium text-neutral-700"
-											>
-												{product.name}
-											</Link>
 										</td>
 										<td>
 											{item.variant.name !== item.variant?.id && Boolean(item.variant.name)
