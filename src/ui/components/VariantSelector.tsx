@@ -14,7 +14,7 @@ export function VariantSelector({
 	selectedVariant?: VariantDetailsFragment;
 }) {
 	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
-		redirect(getHrefForVariant(product.slug, variants[0].id));
+		redirect(getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id }));
 	}
 
 	return (
@@ -30,7 +30,9 @@ export function VariantSelector({
 								key={variant.id}
 								prefetch={true}
 								scroll={false}
-								href={isDisabled ? "#" : getHrefForVariant(product.slug, variant.id)}
+								href={
+									isDisabled ? "#" : getHrefForVariant({ productSlug: product.slug, variantId: variant.id })
+								}
 								className={clsx(
 									isCurrentVariant
 										? "border-transparent bg-neutral-900 text-white hover:bg-neutral-800"

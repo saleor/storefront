@@ -80,7 +80,10 @@ export const OrderListItem = ({ order }: Props) => {
 															<Link
 																href={
 																	item.variant?.id
-																		? getHrefForVariant(product.slug, item.variant.id)
+																		? getHrefForVariant({
+																				productSlug: product.slug,
+																				variantId: item.variant.id,
+																		  })
 																		: `/products/${product.slug}`
 																}
 																className="font-medium text-neutral-900"

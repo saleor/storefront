@@ -58,7 +58,12 @@ export default async function Page() {
 							<div className="relative flex flex-1 flex-col justify-between p-4 py-2">
 								<div className="flex justify-between justify-items-start gap-4">
 									<div>
-										<Link href={getHrefForVariant(item.variant.product.slug, item.variant.id)}>
+										<Link
+											href={getHrefForVariant({
+												productSlug: item.variant.product.slug,
+												variantId: item.variant.id,
+											})}
+										>
 											<h2 className="font-medium text-neutral-700">{item.variant?.product?.name}</h2>
 										</Link>
 										<p className="mt-1 text-sm text-neutral-500">{item.variant?.product?.category?.name}</p>
