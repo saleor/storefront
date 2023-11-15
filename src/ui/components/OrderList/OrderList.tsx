@@ -2,7 +2,7 @@
 
 import { useQuery } from "urql";
 import { useRouter } from "next/navigation";
-import { Order } from "./Order";
+import { OrderListItem } from "./components/OrderListItem";
 import { CurrentUserOrderListDocument, type CurrentUserOrderListQuery } from "@/gql/graphql";
 
 export function OrderList() {
@@ -38,13 +38,9 @@ export function OrderList() {
 					</div>
 				</div>
 			) : (
-				<ul className="mt-8 space-y-12">
+				<ul className="mt-8 space-y-6">
 					{orders.map(({ node: order }) => {
-						return (
-							<li key={order.id}>
-								<Order order={order} key={order.id} />
-							</li>
-						);
+						return <OrderListItem order={order} key={order.id} />;
 					})}
 				</ul>
 			)}
