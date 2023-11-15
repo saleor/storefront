@@ -56,82 +56,84 @@ export const OrderListItem = ({ order }: Props) => {
 							</thead>
 							<tbody className="md:divide-y">
 								{order.lines.map((item) => {
-									if (item.variant) {
-										const product = item.variant?.product;
+									if (!item.variant) {
+										return null;
+									}
 
-										return (
-											<tr
-												className="[&>td:last-child]:text-end max-md:[&>td:not(:first-child):not(:last-child)]:hidden [&>td:not(:last-child)]:pr-6 md:[&>td:not(:last-child)]:pr-6 [&>td]:py-6"
-												key={product.id}
-											>
-												<td>
-													<div className="flex flex-row items-center">
-														{product.thumbnail && (
-															<div className="mr-3 aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:mr-6 md:h-24 md:w-24">
-																<Image
-																	src={product.thumbnail.url}
-																	alt={product.thumbnail.alt ?? ""}
-																	width={200}
-																	height={200}
-																	className="h-full w-full object-contain object-center"
-																/>
-															</div>
-														)}
-														<div>
-															<Link
-																href={
-																	item.variant?.id
-																		? getHrefForVariant({
-																				productSlug: product.slug,
-																				variantId: item.variant.id,
-																		  })
-																		: `/products/${product.slug}`
-																}
-																className="font-medium text-neutral-900"
-															>
-																{product.name}
-															</Link>
-															{item.variant.name !== item.variant?.id && Boolean(item.variant.name) && (
-																<p className="mt-1">
-																	Variant:{" "}
-																	{item.variant.name !== item.variant?.id && Boolean(item.variant.name)
-																		? item.variant.name
-																		: "-"}
-																</p>
-															)}
+									const product = item.variant.product;
+
+									return (
+										<tr
+											className="[&>td:last-child]:text-end max-md:[&>td:not(:first-child):not(:last-child)]:hidden [&>td:not(:last-child)]:pr-6 md:[&>td:not(:last-child)]:pr-6 [&>td]:py-6"
+											key={product.id}
+										>
+											<td>
+												<div className="flex flex-row items-center">
+													{product.thumbnail && (
+														<div className="mr-3 aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:mr-6 md:h-24 md:w-24">
+															<Image
+																src={product.thumbnail.url}
+																alt={product.thumbnail.alt ?? ""}
+																width={200}
+																height={200}
+																className="h-full w-full object-contain object-center"
+															/>
 														</div>
+													)}
+													<div>
+														<Link
+															href={
+																item.variant?.id
+																	? getHrefForVariant({
+																			productSlug: product.slug,
+																			variantId: item.variant.id,
+																	  })
+																	: `/products/${product.slug}`
+															}
+															className="font-medium text-neutral-900"
+														>
+															{product.name}
+														</Link>
+														{item.variant.name !== item.variant?.id && Boolean(item.variant.name) && (
+															<p className="mt-1">
+																Variant:{" "}
+																{item.variant.name !== item.variant?.id && Boolean(item.variant.name)
+																	? item.variant.name
+																	: "-"}
+															</p>
+														)}
 													</div>
-												</td>
-												<td className="max-md:hidden">
-													{item.quantity} x{" "}
+												</div>
+											</td>
+											<td className="max-md:hidden">
+												{item.quantity} x{" "}
+												{item.variant.pricing?.price &&
+													formatMoney(
+														item.variant.pricing.price.gross.amount,
+														item.variant.pricing.price.gross.currency,
+													)}
+											</td>
+											<td>
+												<div className="flex flex-col gap-1 text-neutral-900">
 													{item.variant.pricing?.price &&
 														formatMoney(
-															item.variant.pricing.price.gross.amount,
+															item.variant.pricing.price.gross.amount * item.quantity,
 															item.variant.pricing.price.gross.currency,
 														)}
-												</td>
-												<td>
-													<div className="flex flex-col gap-1 text-neutral-900">
-														{item.variant.pricing?.price &&
-															formatMoney(
-																item.variant.pricing.price.gross.amount * item.quantity,
-																item.variant.pricing.price.gross.currency,
-															)}
-														{item.quantity > 1 && (
-															<span className="text-xs md:hidden">
-																{item.quantity} x{" "}
-																{item.variant.pricing?.price &&
-																	formatMoney(
-																		item.variant.pricing.price.gross.amount,
-																		item.variant.pricing.price.gross.currency,
-																	)}
-															</span>
-														)}
-													</div>
-												</td>
-											</tr>
-										);
-									}
+													{item.quantity > 1 && (
+														<span className="text-xs md:hidden">
+															{item.quantity} x{" "}
+															{item.variant.pricing?.price &&
+																formatMoney(
+																	item.variant.pricing.price.gross.amount,
+																	item.variant.pricing.price.gross.currency,
+																)}
+														</span>
+													)}
+												</div>
+											</td>
+										</tr>
+									);
 								})}
 							</tbody>
 						</table>
