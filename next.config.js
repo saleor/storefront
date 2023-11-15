@@ -9,6 +9,7 @@ const config = {
 	},
 	experimental: {
 		typedRoutes: false,
+		ppr: true,
 	},
 };
 
