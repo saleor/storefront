@@ -63,11 +63,8 @@ export const OrderListItem = ({ order }: Props) => {
 									const product = item.variant.product;
 
 									return (
-										<tr
-											className="[&>td:last-child]:text-end max-md:[&>td:not(:first-child):not(:last-child)]:hidden [&>td:not(:last-child)]:pr-6 md:[&>td:not(:last-child)]:pr-6 [&>td]:py-6"
-											key={product.id}
-										>
-											<td>
+										<tr key={product.id}>
+											<td className="py-6 pr-6">
 												<div className="flex flex-row items-center">
 													{product.thumbnail && (
 														<div className="mr-3 aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:mr-6 md:h-24 md:w-24">
@@ -96,7 +93,7 @@ export const OrderListItem = ({ order }: Props) => {
 													</div>
 												</div>
 											</td>
-											<td className="max-md:hidden">
+											<td className="py-6 pr-6 max-md:hidden">
 												{item.quantity} ×{" "}
 												{item.variant.pricing?.price &&
 													formatMoney(
@@ -104,7 +101,7 @@ export const OrderListItem = ({ order }: Props) => {
 														item.variant.pricing.price.gross.currency,
 													)}
 											</td>
-											<td>
+											<td className="py-6 text-end">
 												<div className="flex flex-col gap-1 text-neutral-900">
 													{item.variant.pricing?.price &&
 														formatMoney(
