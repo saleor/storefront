@@ -56,9 +56,7 @@ export const OrderListItem = ({ order }: Props) => {
 							</thead>
 							<tbody className="md:divide-y">
 								{order.lines.map((item) => {
-									if (!item.variant) {
-										return null;
-									}
+									if (item.variant) {
 										const product = item.variant?.product;
 
 										return (
