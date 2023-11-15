@@ -7,13 +7,6 @@ type Props = {
 
 export const PaymentStatus = async ({ status }: Props) => {
 	switch (status) {
-		case PaymentChargeStatusEnum.Cancelled:
-			return (
-				<p className="flex items-center gap-1 text-red-400">
-					<XCircle className="h-4 w-4" aria-hidden />
-					canceled
-				</p>
-			);
 		case PaymentChargeStatusEnum.NotCharged:
 			return (
 				<p className="flex items-center gap-1 text-red-400">

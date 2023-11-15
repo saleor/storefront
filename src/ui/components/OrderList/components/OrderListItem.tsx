@@ -83,7 +83,7 @@ export const OrderListItem = ({ order }: Props) => {
 													<div>
 														<Link
 															href={
-																item.variant?.id
+																item.variant.id
 																	? getHrefForVariant({
 																			productSlug: product.slug,
 																			variantId: item.variant.id,
@@ -94,19 +94,14 @@ export const OrderListItem = ({ order }: Props) => {
 														>
 															{product.name}
 														</Link>
-														{item.variant.name !== item.variant?.id && Boolean(item.variant.name) && (
-															<p className="mt-1">
-																Variant:{" "}
-																{item.variant.name !== item.variant?.id && Boolean(item.variant.name)
-																	? item.variant.name
-																	: "-"}
-															</p>
+														{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
+															<p className="mt-1">Variant: {item.variant.name}</p>
 														)}
 													</div>
 												</div>
 											</td>
 											<td className="max-md:hidden">
-												{item.quantity} x{" "}
+												{item.quantity} ×{" "}
 												{item.variant.pricing?.price &&
 													formatMoney(
 														item.variant.pricing.price.gross.amount,
@@ -122,7 +117,7 @@ export const OrderListItem = ({ order }: Props) => {
 														)}
 													{item.quantity > 1 && (
 														<span className="text-xs md:hidden">
-															{item.quantity} x{" "}
+															{item.quantity} ×{" "}
 															{item.variant.pricing?.price &&
 																formatMoney(
 																	item.variant.pricing.price.gross.amount,
