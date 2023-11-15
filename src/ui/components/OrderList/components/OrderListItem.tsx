@@ -32,14 +32,15 @@ export const OrderListItem = ({ order }: Props) => {
 						</dd>
 					</div>
 				</dl>
-				<div className="flex flex-col md:col-span-1 md:flex-row md:items-center lg:col-span-2">
+				{/* TODO: Reveal after implementing the order details page. */}
+				{/* <div className="flex flex-col md:col-span-1 md:flex-row md:items-center lg:col-span-2">
 					<Link
 						href="#"
 						className="flex items-center justify-center rounded border border-neutral-200 bg-white px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 md:ml-auto"
 					>
 						View Order
 					</Link>
-				</div>
+				</div> */}
 			</div>
 
 			{order.lines.length > 0 && (
