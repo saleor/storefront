@@ -1,0 +1,41 @@
+fragment OrderDetails on Order {
+	id
+	number
+	created
+	total {
+		gross {
+			amount
+			currency
+		}
+	}
+	lines {
+		variant {
+			id
+			name
+			product {
+				id
+				name
+				description
+				slug
+				thumbnail {
+					url
+					alt
+				}
+				category {
+					id
+					name
+				}
+			}
+			pricing {
+				price {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+		}
+		quantity
+	}
+	paymentStatus
+}
