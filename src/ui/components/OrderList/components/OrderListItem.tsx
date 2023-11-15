@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PaymentStatus } from "./PaymentStatus";
+import { PaymentStatus } from "../../PaymentStatus";
 import { formatDate } from "@/lib/date";
 import { formatMoney } from "@/lib/graphql";
 import { getHrefForVariant } from "@/utils/getHrefForVariant";
