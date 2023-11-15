@@ -82,14 +82,10 @@ export const OrderListItem = ({ order }: Props) => {
 													)}
 													<div>
 														<Link
-															href={
-																item.variant.id
-																	? getHrefForVariant({
-																			productSlug: product.slug,
-																			variantId: item.variant.id,
-																	  })
-																	: `/products/${product.slug}`
-															}
+															href={getHrefForVariant({
+																productSlug: product.slug,
+																variantId: item.variant.id,
+															})}
 															className="font-medium text-neutral-900"
 														>
 															{product.name}
