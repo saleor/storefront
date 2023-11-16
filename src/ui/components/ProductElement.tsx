@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 
 import type { ProductListItemFragment } from "@/gql/graphql";
-import { formatMoneyRange } from "@/lib/graphql";
+import { formatMoneyRange } from "@/lib/utils";
 
 export function ProductElement({
 	product,
