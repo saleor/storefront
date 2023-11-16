@@ -1,4 +1,5 @@
 import { invariant } from "ts-invariant";
+import { Suspense } from "react";
 import { RootWrapper } from "./pageWrapper";
 
 export const metadata = {
@@ -27,7 +28,9 @@ export default function CheckoutPage({
 				<h1 className="mt-8 text-3xl font-bold text-neutral-900">Checkout</h1>
 
 				<section className="mb-12 mt-6 flex-1">
-					<RootWrapper saleorApiUrl={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
+					<Suspense>
+						<RootWrapper saleorApiUrl={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
+					</Suspense>
 				</section>
 			</section>
 		</div>
