@@ -3,6 +3,7 @@ import { UserMenu } from "./components/UserMenu/UserMenu";
 import { CartNavItem } from "./components/CartNavItem";
 import { NavLinks } from "./components/NavLinks";
 import { MobileMenu } from "./components/MobileMenu";
+import { SearchBar } from "./components/SearchBar";
 
 export const Nav = () => {
 	return (
@@ -10,7 +11,10 @@ export const Nav = () => {
 			<ul className="hidden gap-4 overflow-x-auto whitespace-nowrap md:flex lg:gap-8 lg:px-0">
 				<NavLinks />
 			</ul>
-			<div className="ml-auto flex items-center justify-center whitespace-nowrap">
+			<div className="ml-auto flex items-center justify-center gap-4 whitespace-nowrap lg:gap-8">
+				<div className="invisible lg:visible">
+					<SearchBar />
+				</div>
 				<Suspense fallback={<div className="w-6" />}>
 					<UserMenu />
 				</Suspense>
@@ -22,6 +26,7 @@ export const Nav = () => {
 			</div>
 			<Suspense>
 				<MobileMenu>
+					<SearchBar />
 					<NavLinks />
 				</MobileMenu>
 			</Suspense>
