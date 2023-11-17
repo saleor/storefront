@@ -54,6 +54,7 @@ export interface DeliverySectionProps {
   onIsOnReceiveSelectedChange: (value: boolean) => void;
   setSelectedLockerId: Dispatch<SetStateAction<string | null>>;
   setIsInpostSelected: Dispatch<SetStateAction<boolean>>;
+  setSelectedShippingMethod: Dispatch<SetStateAction<string | null>>;
 }
 
 export interface PaymentSectionProps {

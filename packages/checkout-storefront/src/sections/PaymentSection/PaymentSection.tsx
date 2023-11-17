@@ -6,11 +6,14 @@ import React from "react";
 import { PaymentSectionProps } from "@/checkout-storefront/lib/globalTypes";
 import { paymentSectionMessages } from "./messages";
 
-export const PaymentSection: React.FC<PaymentSectionProps> = ({
+export const PaymentSection: React.FC<
+  PaymentSectionProps & { selectedShippingMethod: string | null }
+> = ({
   children,
   isOnReceiveSelected,
   isInpostSelected,
   selectedLockerId,
+  selectedShippingMethod,
 }) => {
   const formatMessage = useFormattedMessages();
 
@@ -23,6 +26,7 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({
           isOnReceiveSelected={isOnReceiveSelected}
           isInpostSelected={isInpostSelected}
           isLockerIdSelected={!!selectedLockerId}
+          selectedShippingMethod={selectedShippingMethod}
         />
         {children}
       </div>

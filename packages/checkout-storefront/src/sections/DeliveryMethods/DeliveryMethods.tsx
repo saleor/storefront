@@ -22,6 +22,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   collapsed,
   onIsOnReceiveSelectedChange,
   setSelectedLockerId,
+  setSelectedShippingMethod,
 }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
@@ -59,6 +60,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     }
     setSelectedRadio(name);
     form.setFieldValue("selectedMethodId", value);
+    setSelectedShippingMethod(name);
   };
 
   const isInpostSelected =

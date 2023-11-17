@@ -17,18 +17,19 @@ export const InvoiceRequestSection: React.FC<CommonSectionProps> = ({ collapsed 
   const formatMessage = useFormattedMessages();
 
   useEffect(() => {
-    if (!initialUpdateDone) {
-      void (async () => {
-        await updateCheckoutMetadata({
-          checkoutId: checkout?.id ?? "",
-          isInvoice: isInvoice.toString(),
-        });
-        setInitialUpdateDone(true);
-      })();
-    }
-  }, [initialUpdateDone, checkout, updateCheckoutMetadata, isInvoice]);
+    // Ten useEffect zostanie uruchomiony tylko raz, przy montowaniu komponentu.
+    void (async () => {
+      await updateCheckoutMetadata({
+        checkoutId: checkout?.id ?? "",
+        isInvoice: isInvoice.toString(),
+      });
+      setInitialUpdateDone(true);
+    })();
+  }, []);
 
   useEffect(() => {
+    // Ten useEffect aktualizuje metadane tylko wtedy, gdy `isInvoice` się zmienia
+    // i początkowa aktualizacja została wykonana.
     if (initialUpdateDone) {
       void (async () => {
         await updateCheckoutMetadata({
@@ -37,7 +38,7 @@ export const InvoiceRequestSection: React.FC<CommonSectionProps> = ({ collapsed 
         });
       })();
     }
-  }, [isInvoice, checkout, updateCheckoutMetadata, initialUpdateDone]);
+  }, [isInvoice]);
 
   if (!checkout?.isShippingRequired || collapsed) {
     return null;

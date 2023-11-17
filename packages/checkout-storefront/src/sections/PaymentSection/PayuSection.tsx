@@ -15,7 +15,7 @@ export interface IPaymentGatewayConfig {
 }
 export const PAYU_GATEWAY = "salingo.payments.payu";
 
-export function PayuSection({ checkout, isLockerIdSelected }: any) {
+export function PayuSection({ checkout, isLockerIdSelected, selectedShippingMethod }: any) {
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [GDPR, setGDPR] = useState<boolean>(false);
   const [, checkoutPaymentCreate] = useCheckoutPaymentCreateMutation();
@@ -64,7 +64,7 @@ export function PayuSection({ checkout, isLockerIdSelected }: any) {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (!isLockerIdSelected) {
+    if (!isLockerIdSelected && selectedShippingMethod === "Inpost paczkomaty") {
       showCustomErrors([
         {
           field: "lockerId",
