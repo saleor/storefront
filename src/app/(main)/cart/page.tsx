@@ -4,8 +4,7 @@ import Link from "next/link";
 import { CheckoutLink } from "./CheckoutLink";
 import { DeleteLineButton } from "./DeleteLineButton";
 import * as Checkout from "@/lib/checkout";
-import { formatMoney } from "@/lib/graphql";
-import { getHrefForVariant } from "@/utils/getHrefForVariant";
+import { formatMoney, getHrefForVariant } from "@/lib/utils";
 
 export const metadata = {
 	title: "Shopping Cart · Saleor Storefront example",

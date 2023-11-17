@@ -1,9 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PaymentStatus } from "../../PaymentStatus";
-import { formatDate } from "@/lib/date";
-import { formatMoney } from "@/lib/graphql";
-import { getHrefForVariant } from "@/utils/getHrefForVariant";
+import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 
 type Props = {

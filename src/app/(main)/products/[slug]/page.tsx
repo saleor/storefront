@@ -4,12 +4,13 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
-import invariant from "ts-invariant";
+import { invariant } from "ts-invariant";
 import { type WithContext, type Product } from "schema-dts";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
-import { executeGraphQL, formatMoney, formatMoneyRange } from "@/lib/graphql";
+import { executeGraphQL } from "@/lib/graphql";
+import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
@@ -129,11 +130,11 @@ export default async function Page(props: { params: { slug: string }; searchPara
 	const price = selectedVariant?.pricing?.price?.gross
 		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
 		: isAvailable
-		? formatMoneyRange({
-				start: product?.pricing?.priceRange?.start?.gross,
-				stop: product?.pricing?.priceRange?.stop?.gross,
-		  })
-		: "";
+		  ? formatMoneyRange({
+					start: product?.pricing?.priceRange?.start?.gross,
+					stop: product?.pricing?.priceRange?.stop?.gross,
+		    })
+		  : "";
 
 	const productJsonLd: WithContext<Product> = {
 		"@context": "https://schema.org",

@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { type ProductListItemFragment, type VariantDetailsFragment } from "@/gql/graphql";
-import { getHrefForVariant } from "@/utils/getHrefForVariant";
+import { getHrefForVariant } from "@/lib/utils";
 
 export function VariantSelector({
 	variants,
