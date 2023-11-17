@@ -31,8 +31,6 @@ export const CheckoutForm = () => {
   const [selectedLockerId, setSelectedLockerId] = useState<string | null>(null);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState<string | null>(null);
 
-  console.log(selectedLockerId, selectedShippingMethod, isInpostSelected);
-
   const handleIsOnReceiveSelectedChange = (
     newValue: boolean | ((prevState: boolean) => boolean)
   ) => {
