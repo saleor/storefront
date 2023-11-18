@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { OrderDirection, ProductOrderField, SearchProductsDocument } from "@/gql/graphql";
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
@@ -7,11 +8,15 @@ export const metadata = {
 	title: "Search products · Saleor Storefront example",
 	description: "Search products in Saleor Storefront example",
 };
+
 type Props = {
-	searchParams?: { [key: string]: string | string[] | undefined };
+	searchParams?: Record<string, string>;
 };
-export default async function Page({ searchParams }: { searchParams?: Props }) {
-	const { cursor, query: searchValue } = searchParams as { [key: string]: string };
+
+export default async function Page({ searchParams }: Props) {
+	if (!searchParams || !("query" in searchParams)) notFound();
+
+	const { cursor, query: searchValue } = searchParams;
 	const { products } = await executeGraphQL(SearchProductsDocument, {
 		variables: {
 			first: ProductsPerPage,
@@ -30,7 +35,13 @@ export default async function Page({ searchParams }: { searchParams?: Props }) {
 					<div>
 						<h1 className="pb-8 text-xl font-semibold">Search results</h1>
 						<ProductList products={products.edges.map((e) => e.node)} />
-						<Pagination pageInfo={products.pageInfo} />
+						<Pagination
+							pageInfo={{
+								...products.pageInfo,
+								baseUrl: "/search",
+								searchParams: new URLSearchParams(searchParams),
+							}}
+						/>
 					</div>
 				) : (
 					<h1 className="mx-auto pb-8 text-center text-xl font-semibold">Nothing found :(</h1>
