@@ -16,7 +16,9 @@ type Props = {
 export default async function Page({ searchParams }: Props) {
 	const urlSearchParams = new URLSearchParams(searchParams);
 
-	if (!urlSearchParams.has("query")) notFound();
+	if (!urlSearchParams.has("query")) {
+		notFound();
+	}
 
 	const searchValue = urlSearchParams.get("query") || "";
 	const cursor = urlSearchParams.get("cursor");
