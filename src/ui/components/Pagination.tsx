@@ -5,7 +5,7 @@ export async function Pagination({
 	pageInfo,
 }: {
 	pageInfo: {
-		baseUrl: string;
+		basePathname: string;
 		hasNextPage: boolean;
 		endCursor?: string | null;
 		urlSearchParams?: URLSearchParams;
@@ -18,7 +18,7 @@ export async function Pagination({
 	return (
 		<nav className="flex items-center justify-center gap-x-4 border-neutral-200 px-4 pt-12">
 			<Link
-				href={pageInfo.hasNextPage ? `${pageInfo.baseUrl}?${pageInfo.urlSearchParams?.toString()}` : "#"}
+				href={pageInfo.hasNextPage ? `${pageInfo.basePathname}?${pageInfo.urlSearchParams?.toString()}` : "#"}
 				className={clsx("px-4 py-2 text-sm font-medium ", {
 					"rounded bg-neutral-900 text-neutral-50 hover:bg-neutral-800": pageInfo.hasNextPage,
 					"cursor-not-allowed rounded border text-neutral-400": !pageInfo.hasNextPage,
