@@ -14,9 +14,13 @@ type Props = {
 };
 
 export default async function Page({ searchParams }: Props) {
-	if (!searchParams || !("query" in searchParams)) notFound();
+	const urlSearchParams = new URLSearchParams(searchParams);
 
-	const { cursor, query: searchValue } = searchParams;
+	if (!urlSearchParams.has("query")) notFound();
+
+	const searchValue = urlSearchParams.get("query") || "";
+	const cursor = urlSearchParams.get("cursor");
+
 	const { products } = await executeGraphQL(SearchProductsDocument, {
 		variables: {
 			first: ProductsPerPage,
@@ -33,13 +37,13 @@ export default async function Page({ searchParams }: Props) {
 			<section className="mx-auto max-w-7xl p-8 pb-16">
 				{products && products.totalCount && products.totalCount > 0 ? (
 					<div>
-						<h1 className="pb-8 text-xl font-semibold">Search results</h1>
+						<h1 className="pb-8 text-xl font-semibold">Search results for &quot;{searchValue}&quot;:</h1>
 						<ProductList products={products.edges.map((e) => e.node)} />
 						<Pagination
 							pageInfo={{
 								...products.pageInfo,
 								baseUrl: "/search",
-								searchParams: new URLSearchParams(searchParams),
+								urlSearchParams,
 							}}
 						/>
 					</div>

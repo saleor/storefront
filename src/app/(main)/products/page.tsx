@@ -39,7 +39,7 @@ export default async function Page({ searchParams }: Props) {
 					pageInfo={{
 						...products.pageInfo,
 						baseUrl: "/products",
-						searchParams: new URLSearchParams(searchParams),
+						urlSearchParams: new URLSearchParams(searchParams),
 					}}
 				/>
 			</section>

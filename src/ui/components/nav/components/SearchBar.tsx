@@ -6,7 +6,7 @@ export const SearchBar = () => {
 		"use server";
 		const search = formData.get("search") as string;
 		if (search && search.trim().length > 0) {
-			redirect(`/search?query=${search}`);
+			redirect(`/search?query=${encodeURIComponent(search)}`);
 		}
 	}
 
