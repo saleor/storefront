@@ -72,7 +72,7 @@ export function UserMenu() {
 		);
 	} else {
 		return (
-			<Link href="/login" className="h-6 w-6 flex-shrink-0">
+			<Link href="/login" className="mx-1 h-6 w-6 flex-shrink-0">
 				<UserIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
 				<span className="sr-only">Log in</span>
 			</Link>

@@ -15,7 +15,7 @@ export const Nav = () => {
 				<div className="hidden lg:flex">
 					<SearchBar />
 				</div>
-				<Suspense fallback={<div className="w-6" />}>
+				<Suspense fallback={<div className="w-8" />}>
 					<UserMenu />
 				</Suspense>
 			</div>
