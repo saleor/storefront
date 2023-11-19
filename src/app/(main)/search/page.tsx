@@ -21,7 +21,7 @@ export default async function Page({ searchParams }: Props) {
 		notFound();
 	}
 
-	if (typeof searchValue !== "string" && Array.isArray(searchValue)) {
+	if (Array.isArray(searchValue)) {
 		const firstValidSearchValue = searchValue.find((v) => v.length > 0);
 		if (!firstValidSearchValue) {
 			notFound();
