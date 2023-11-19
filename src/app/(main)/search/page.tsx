@@ -22,7 +22,11 @@ export default async function Page({ searchParams }: Props) {
 	}
 
 	if (typeof searchValue !== "string" && Array.isArray(searchValue)) {
-		redirect(`/search?${new URLSearchParams({ query: searchValue[0] }).toString()}`);
+		const firstValidSearchValue = searchValue.find((v) => v.length > 0);
+		if (!firstValidSearchValue) {
+			notFound();
+		}
+		redirect(`/search?${new URLSearchParams({ query: firstValidSearchValue }).toString()}`);
 	}
 
 	const { products } = await executeGraphQL(SearchProductsDocument, {
