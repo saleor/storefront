@@ -8,13 +8,9 @@ export async function Pagination({
 		basePathname: string;
 		hasNextPage: boolean;
 		endCursor?: string | null;
-		urlSearchParams?: URLSearchParams;
+		readonly urlSearchParams?: URLSearchParams;
 	};
 }) {
-	if (pageInfo.endCursor) {
-		pageInfo.urlSearchParams?.set("cursor", pageInfo.endCursor);
-	}
-
 	return (
 		<nav className="flex items-center justify-center gap-x-4 border-neutral-200 px-4 pt-12">
 			<Link

@@ -3,6 +3,7 @@ import { ProductListPaginatedDocument } from "@/gql/graphql";
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
+import { parseCursor } from "@/lib/utils";
 
 export const metadata = {
 	title: "Products · Saleor Storefront example",
@@ -11,12 +12,12 @@ export const metadata = {
 
 type Props = {
 	searchParams: {
-		cursor: string;
+		cursor: string | string[] | undefined;
 	};
 };
 
 export default async function Page({ searchParams }: Props) {
-	const { cursor } = searchParams;
+	const cursor = parseCursor(searchParams.cursor);
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
 		variables: {
@@ -30,6 +31,10 @@ export default async function Page({ searchParams }: Props) {
 		notFound();
 	}
 
+	const newSearchParams = new URLSearchParams({
+		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
+	});
+
 	return (
 		<div>
 			<section className="mx-auto max-w-7xl p-8 pb-16">
@@ -39,7 +44,7 @@ export default async function Page({ searchParams }: Props) {
 					pageInfo={{
 						...products.pageInfo,
 						basePathname: "/products",
-						urlSearchParams: new URLSearchParams(searchParams),
+						urlSearchParams: newSearchParams,
 					}}
 				/>
 			</section>
