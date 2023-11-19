@@ -51,7 +51,7 @@ export default async function Page({ searchParams }: Props) {
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
-			{products && products.totalCount && products.totalCount > 0 ? (
+			{products.totalCount && products.totalCount > 0 ? (
 				<div>
 					<h1 className="pb-8 text-xl font-semibold">Search results for &quot;{searchValue}&quot;:</h1>
 					<ProductList products={products.edges.map((e) => e.node)} />
