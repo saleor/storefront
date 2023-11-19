@@ -1,9 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { OrderDirection, ProductOrderField, SearchProductsDocument } from "@/gql/graphql";
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
-import { parseCursor } from "@/lib/utils";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
@@ -15,11 +14,15 @@ type Props = {
 };
 
 export default async function Page({ searchParams }: Props) {
-	const cursor = parseCursor(searchParams.cursor);
-	const searchValue = parseQuery(searchParams.query);
+	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	const searchValue = searchParams.query;
 
 	if (!searchValue) {
 		notFound();
+	}
+
+	if (typeof searchValue !== "string" && Array.isArray(searchValue)) {
+		redirect(`/search?${new URLSearchParams({ query: searchValue[0] }).toString()}`);
 	}
 
 	const { products } = await executeGraphQL(SearchProductsDocument, {
@@ -38,6 +41,7 @@ export default async function Page({ searchParams }: Props) {
 	}
 
 	const newSearchParams = new URLSearchParams({
+		query: searchValue,
 		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
 	});
 
@@ -60,11 +64,4 @@ export default async function Page({ searchParams }: Props) {
 			)}
 		</section>
 	);
-}
-
-function parseQuery(query: string | string[] | undefined) {
-	if (!query || typeof query !== "string") {
-		return null;
-	}
-	return query;
 }

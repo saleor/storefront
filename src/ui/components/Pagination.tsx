@@ -7,7 +7,6 @@ export async function Pagination({
 	pageInfo: {
 		basePathname: string;
 		hasNextPage: boolean;
-		endCursor?: string | null;
 		readonly urlSearchParams?: URLSearchParams;
 	};
 }) {

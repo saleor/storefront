@@ -3,7 +3,6 @@ import { ProductListPaginatedDocument } from "@/gql/graphql";
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
-import { parseCursor } from "@/lib/utils";
 
 export const metadata = {
 	title: "Products · Saleor Storefront example",
@@ -17,7 +16,7 @@ type Props = {
 };
 
 export default async function Page({ searchParams }: Props) {
-	const cursor = parseCursor(searchParams.cursor);
+	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
 		variables: {

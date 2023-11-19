@@ -41,10 +41,3 @@ export function getHrefForVariant({
 	const query = new URLSearchParams({ variant: variantId });
 	return `${pathname}?${query.toString()}`;
 }
-
-export const parseCursor = (cursor: string | string[] | undefined) => {
-	if (typeof cursor !== "string") {
-		return null;
-	}
-	return cursor;
-};
