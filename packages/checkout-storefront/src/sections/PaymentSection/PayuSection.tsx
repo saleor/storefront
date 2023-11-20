@@ -8,6 +8,7 @@ import { useIntl } from "react-intl";
 import { paymentSectionMessages } from "./messages";
 import { GDPRSection } from "../GDPRSection/GDPRSection";
 import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql";
 
 export interface IPaymentGatewayConfig {
   field: string;
@@ -15,7 +16,7 @@ export interface IPaymentGatewayConfig {
 }
 export const PAYU_GATEWAY = "salingo.payments.payu";
 
-export function PayuSection({ checkout, isLockerIdSelected, selectedShippingMethod }: any) {
+export function PayuSection({ checkout, isLockerIdSelected, isOnInpostSelected }: any) {
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [GDPR, setGDPR] = useState<boolean>(false);
   const [, checkoutPaymentCreate] = useCheckoutPaymentCreateMutation();
@@ -24,6 +25,7 @@ export function PayuSection({ checkout, isLockerIdSelected, selectedShippingMeth
   const { channel } = getQueryParams();
   const { showCustomErrors } = useAlerts();
   const t = useIntl();
+  const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
 
   const handleGDPRChange = (checked: boolean) => {
     setGDPR(checked);
@@ -64,7 +66,7 @@ export function PayuSection({ checkout, isLockerIdSelected, selectedShippingMeth
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (!isLockerIdSelected && selectedShippingMethod === "Inpost paczkomaty") {
+    if (isOnInpostSelected && !isLockerIdSelected) {
       showCustomErrors([
         {
           field: "lockerId",
@@ -73,6 +75,13 @@ export function PayuSection({ checkout, isLockerIdSelected, selectedShippingMeth
         },
       ]);
       return;
+    }
+
+    if (isOnInpostSelected && isLockerIdSelected) {
+      await updateShippingLockerId({
+        checkoutId: checkout.id,
+        lockerId: isLockerIdSelected,
+      });
     }
 
     if (!GDPR) {

@@ -55,7 +55,7 @@ export function CodSection({ checkout }: any) {
       }
 
       if (paymentId) {
-        onCheckoutComplete();
+        await onCheckoutComplete();
       } else {
         throw new Error("Failed to create payment");
       }

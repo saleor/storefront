@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
 import { TaxedMoney } from "@/checkout-storefront/graphql";
 import { InpostEventData } from "../components/InpostMap/ShippingMethodInpostMap";
 
@@ -52,22 +52,21 @@ export interface DeliverySectionProps {
   collapsed: boolean;
   onInpostDataChange?: OnInpostDataChangeType;
   onIsOnReceiveSelectedChange: (value: boolean) => void;
-  setSelectedLockerId: Dispatch<SetStateAction<string | null>>;
-  setIsInpostSelected: Dispatch<SetStateAction<boolean>>;
-  setSelectedShippingMethod: any;
+  onIsOnInpostSelectedChange: (value: boolean) => void;
+  setSelectedLockerId: (lockerId: string | null) => void;
 }
 
 export interface PaymentSectionProps {
   children: ReactNode | ReactNode[];
   isOnReceiveSelected: boolean;
-  isInpostSelected: boolean;
-  selectedLockerId: string | null;
+  isOnInpostSelected: boolean;
+  isLockerIdSelected: string | null;
 }
 
 export interface PaymentMethodProps {
   isOnReceiveSelected: boolean;
-  isLockerIdSelected: boolean;
-  isInpostSelected: boolean;
+  isLockerIdSelected: string | null;
+  isOnInpostSelected: boolean;
 }
 
 export type MightNotExist<TData> = TData | null | undefined;

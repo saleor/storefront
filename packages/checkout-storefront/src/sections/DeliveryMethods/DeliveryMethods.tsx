@@ -16,13 +16,12 @@ import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/Delivery
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
-import { useUpdateShippingLockerIdMutation } from "@/checkout-storefront/graphql";
 
 export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   collapsed,
   onIsOnReceiveSelectedChange,
   setSelectedLockerId,
-  setSelectedShippingMethod,
+  onIsOnInpostSelectedChange,
 }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
@@ -30,9 +29,9 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   const { shippingMethods, shippingAddress } = checkout;
   const form = useDeliveryMethodsForm();
   const { updateState } = useCheckoutUpdateState();
-  const [, updateShippingLockerId] = useUpdateShippingLockerIdMutation();
   const [, setSelectedRadio] = useState<string>("");
   const [, setIsOnReceiveSelected] = useState<boolean>(false);
+  const [, setIsOnInpostSelected] = useState<boolean>(false);
 
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
@@ -50,7 +49,21 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     return null;
   }
 
-  const handleRadioChange = (value: string, name: string) => {
+  const isInpostSelected =
+    shippingMethods?.find((method) => method.id === form.values.selectedMethodId)?.name ===
+    "Inpost paczkomaty";
+
+  const resetInpostData = () => {
+    setSelectedInpostData(null);
+    setSelectedLockerId(null);
+  };
+
+  const handleRadioChange = async (value: string, name: string) => {
+    const isInpostPaczkomaty = name === "Inpost paczkomaty";
+
+    setIsOnInpostSelected(isInpostPaczkomaty);
+    onIsOnInpostSelectedChange(isInpostPaczkomaty);
+
     if (name === "Kurier pobranie, GLS") {
       setIsOnReceiveSelected(true);
       onIsOnReceiveSelectedChange(true);
@@ -58,30 +71,18 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
       setIsOnReceiveSelected(false);
       onIsOnReceiveSelectedChange(false);
     }
-    setSelectedRadio(name);
-    form.setFieldValue("selectedMethodId", value);
-    setSelectedShippingMethod(name);
-  };
 
-  const isInpostSelected =
-    shippingMethods?.find((method) => method.id === form.values.selectedMethodId)?.name ===
-    "Inpost paczkomaty";
+    if (!isInpostPaczkomaty && selectedInpostData?.name) {
+      resetInpostData();
+    }
+
+    setSelectedRadio(value);
+    form.setFieldValue("selectedMethodId", value);
+  };
 
   const handleInpostDataChange = async (data: InpostEventData | null) => {
     setSelectedInpostData(data);
     setSelectedLockerId(data?.name ?? null);
-
-    if (data?.name) {
-      await updateShippingLockerId({
-        checkoutId: checkout.id,
-        lockerId: data?.name,
-      });
-    }
-  };
-
-  const resetInpostData = () => {
-    setSelectedInpostData(null);
-    setSelectedLockerId(null);
   };
 
   return (

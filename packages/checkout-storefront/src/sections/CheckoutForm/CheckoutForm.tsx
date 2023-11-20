@@ -1,7 +1,7 @@
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { Contact } from "@/checkout-storefront/sections/Contact";
 import { DeliveryMethods } from "@/checkout-storefront/sections/DeliveryMethods";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ContactSkeleton } from "@/checkout-storefront/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { AddressSectionSkeleton } from "@/checkout-storefront/components/AddressSectionSkeleton";
@@ -25,17 +25,29 @@ export const CheckoutForm = () => {
   const { passwordResetToken } = getQueryParams();
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
-  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState<boolean>(false);
 
-  const [isInpostSelected, setIsInpostSelected] = useState(false);
-  const [selectedLockerId, setSelectedLockerId] = useState<string | null>(null);
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState<string | null>(null);
+  // Kurier pobranie
+  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState(false);
+  const [isOnInpostSelected, setIsOnInpostSelected] = useState(true);
 
+  const [lockerIdSelected, setLockerIdSelected] = useState<string | null>(null);
+
+  const handleIsOnInpostSelectedChange = (
+    newValue: boolean | ((prevState: boolean) => boolean)
+  ) => {
+    setIsOnInpostSelected(newValue);
+  };
+
+  // Kurier pobranie
   const handleIsOnReceiveSelectedChange = (
     newValue: boolean | ((prevState: boolean) => boolean)
   ) => {
     setIsOnReceiveSelected(newValue);
   };
+
+  console.group();
+  console.log("lockerIdSelected", lockerIdSelected);
+  console.log("isOnInpostSelected", isOnInpostSelected);
 
   return (
     <div className="checkout-form-container">
@@ -58,19 +70,17 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods
               collapsed={showOnlyContact}
-              setIsInpostSelected={setIsInpostSelected}
-              setSelectedLockerId={setSelectedLockerId}
+              setSelectedLockerId={setLockerIdSelected}
               onIsOnReceiveSelectedChange={handleIsOnReceiveSelectedChange}
-              setSelectedShippingMethod={setSelectedShippingMethod}
+              onIsOnInpostSelectedChange={handleIsOnInpostSelectedChange}
             />
           </Suspense>
           <Suspense fallback={<PaymentSectionSkeleton />}>
             <CollapseSection collapse={showOnlyContact}>
               <PaymentSection
                 isOnReceiveSelected={isOnReceiveSelected}
-                isInpostSelected={isInpostSelected}
-                selectedLockerId={selectedLockerId}
-                selectedShippingMethod={selectedShippingMethod}
+                isOnInpostSelected={isOnInpostSelected}
+                isLockerIdSelected={lockerIdSelected}
               >
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>
