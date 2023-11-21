@@ -1,28 +1,36 @@
-import { Title } from "@/checkout-storefront/components/Title";
-import { Text } from "@saleor/ui-kit";
-import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import React, { useState } from "react";
+
+import {
+  SelectBox,
+  SelectBoxGroup,
+  Divider,
+  Title,
+  Spinner,
+} from "@/checkout-storefront/components";
+
+import { useUser } from "@/checkout-storefront/hooks/useUser";
+import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useFormattedMessages } from "@/checkout-storefront/hooks/useFormattedMessages";
-import { SelectBox } from "@/checkout-storefront/components/SelectBox";
-import { SelectBoxGroup } from "@/checkout-storefront/components/SelectBoxGroup";
-import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
-import { Divider } from "@/checkout-storefront/components/Divider";
-import { DeliverySectionProps } from "@/checkout-storefront/lib/globalTypes";
-import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
-import { useDeliveryMethodsForm } from "@/checkout-storefront/sections/DeliveryMethods/useDeliveryMethodsForm";
 import { FormProvider } from "@/checkout-storefront/hooks/useForm/FormProvider";
 import { useCheckoutUpdateState } from "@/checkout-storefront/state/updateStateStore";
-import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/DeliveryMethods/DeliveryMethodsSkeleton";
-import { useUser } from "@/checkout-storefront/hooks/useUser";
-import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
-import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
-import Spinner from "@/checkout-storefront/components/Spinner";
+import { useDeliveryMethodsForm } from "@/checkout-storefront/sections/DeliveryMethods/useDeliveryMethodsForm";
+import { getFormattedMoney } from "@/checkout-storefront/lib/utils/money";
+import { DeliverySectionProps } from "@/checkout-storefront/lib/globalTypes";
+import ShippingMethodInpostMap, {
+  InpostEventData,
+} from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
+
+import { deliveryMethodsLabels, deliveryMethodsMessages } from "./messages";
+import { DeliveryMethodsSkeleton } from "./DeliveryMethodsSkeleton";
+import { Text } from "@saleor/ui-kit/";
+
+const INPOST_SHIPPING_NAME = "Inpost paczkomaty";
 
 export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   collapsed,
-  onIsOnReceiveSelectedChange,
-  setSelectedLockerId,
-  onIsOnInpostSelectedChange,
+  onReceiveSelectedChange,
+  onLockerIdChange,
+  onInpostSelectionChange,
 }) => {
   const formatMessage = useFormattedMessages();
   const { checkout } = useCheckout();
@@ -60,26 +68,26 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
   const resetInpostData = () => {
     setSelectedInpostData(null);
-    setSelectedLockerId(null);
+    onLockerIdChange(null);
   };
 
   const handleRadioChange = (value: string, name: string) => {
-    const isInpostPaczkomaty = name === "Inpost paczkomaty";
+    const isInpostShipping = name === INPOST_SHIPPING_NAME;
 
-    setIsOnInpostSelected(isInpostPaczkomaty);
-    onIsOnInpostSelectedChange(isInpostPaczkomaty);
+    setIsOnInpostSelected(isInpostShipping);
+    onInpostSelectionChange(isInpostShipping);
 
-    setShouldDisplayInpostMap(isInpostPaczkomaty);
+    setShouldDisplayInpostMap(isInpostShipping);
 
     if (name === "Kurier pobranie, GLS") {
       setIsOnReceiveSelected(true);
-      onIsOnReceiveSelectedChange(true);
+      onReceiveSelectedChange(true);
     } else {
       setIsOnReceiveSelected(false);
-      onIsOnReceiveSelectedChange(false);
+      onReceiveSelectedChange(false);
     }
 
-    if (!isInpostPaczkomaty && selectedInpostData?.name) {
+    if (!isInpostShipping && selectedInpostData?.name) {
       resetInpostData();
     }
 
@@ -89,7 +97,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
   const handleInpostDataChange = (data: InpostEventData | null) => {
     setSelectedInpostData(data);
-    setSelectedLockerId(data?.name ?? null);
+    onLockerIdChange(data?.name ?? null);
   };
 
   return (

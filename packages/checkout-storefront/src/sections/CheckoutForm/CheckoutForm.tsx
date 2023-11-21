@@ -26,23 +26,18 @@ export const CheckoutForm = () => {
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
-  // Kurier pobranie
-  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState(false);
-  const [isOnInpostSelected, setIsOnInpostSelected] = useState(true);
+  const [isReceiveSelected, setIsReceiveSelected] = useState(false);
+
+  const [isInpostSelected, setIsInpostSelected] = useState(true);
 
   const [lockerIdSelected, setLockerIdSelected] = useState<string | null>(null);
 
-  const handleIsOnInpostSelectedChange = (
-    newValue: boolean | ((prevState: boolean) => boolean)
-  ) => {
-    setIsOnInpostSelected(newValue);
+  const handleInpostSelectionChange = (newValue: boolean) => {
+    setIsInpostSelected(newValue);
   };
 
-  // Kurier pobranie
-  const handleIsOnReceiveSelectedChange = (
-    newValue: boolean | ((prevState: boolean) => boolean)
-  ) => {
-    setIsOnReceiveSelected(newValue);
+  const handleReceiveOptionChange = (newValue: boolean) => {
+    setIsReceiveSelected(newValue);
   };
 
   return (
@@ -66,17 +61,17 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods
               collapsed={showOnlyContact}
-              setSelectedLockerId={setLockerIdSelected}
-              onIsOnReceiveSelectedChange={handleIsOnReceiveSelectedChange}
-              onIsOnInpostSelectedChange={handleIsOnInpostSelectedChange}
+              onLockerIdChange={setLockerIdSelected}
+              onReceiveSelectedChange={handleReceiveOptionChange}
+              onInpostSelectionChange={handleInpostSelectionChange}
             />
           </Suspense>
           <Suspense fallback={<PaymentSectionSkeleton />}>
             <CollapseSection collapse={showOnlyContact}>
               <PaymentSection
-                isOnReceiveSelected={isOnReceiveSelected}
-                isOnInpostSelected={isOnInpostSelected}
-                isLockerIdSelected={lockerIdSelected}
+                isReceiveSelected={isReceiveSelected}
+                isInpostSelected={isInpostSelected}
+                lockerIdSelected={lockerIdSelected}
               >
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>

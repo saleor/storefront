@@ -51,22 +51,22 @@ export interface CommonSectionProps {
 export interface DeliverySectionProps {
   collapsed: boolean;
   onInpostDataChange?: OnInpostDataChangeType;
-  onIsOnReceiveSelectedChange: (value: boolean) => void;
-  onIsOnInpostSelectedChange: (value: boolean) => void;
-  setSelectedLockerId: (lockerId: string | null) => void;
+  onReceiveSelectedChange: (value: boolean) => void;
+  onInpostSelectionChange: (value: boolean) => void;
+  onLockerIdChange: (lockerId: string | null) => void;
 }
 
 export interface PaymentSectionProps {
   children: ReactNode | ReactNode[];
-  isOnReceiveSelected: boolean;
-  isOnInpostSelected: boolean;
-  isLockerIdSelected: string | null;
+  isReceiveSelected: boolean;
+  isInpostSelected: boolean;
+  lockerIdSelected: string | null;
 }
 
 export interface PaymentMethodProps {
-  isOnReceiveSelected: boolean;
-  isLockerIdSelected: string | null;
-  isOnInpostSelected: boolean;
+  isReceiveSelected: boolean;
+  lockerIdSelected: string | null;
+  isInpostSelected: boolean;
 }
 
 export type MightNotExist<TData> = TData | null | undefined;

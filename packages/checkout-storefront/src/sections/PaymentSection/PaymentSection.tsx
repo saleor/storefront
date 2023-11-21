@@ -8,9 +8,9 @@ import { paymentSectionMessages } from "./messages";
 
 export const PaymentSection: React.FC<PaymentSectionProps> = ({
   children,
-  isOnReceiveSelected,
-  isOnInpostSelected,
-  isLockerIdSelected,
+  isReceiveSelected,
+  isInpostSelected,
+  lockerIdSelected,
 }) => {
   const formatMessage = useFormattedMessages();
 
@@ -20,9 +20,9 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({
       <div className="section" data-testid="paymentMethods">
         <Title>{formatMessage(paymentSectionMessages.paymentMethods)}</Title>
         <PaymentMethods
-          isLockerIdSelected={isLockerIdSelected}
-          isOnReceiveSelected={isOnReceiveSelected}
-          isOnInpostSelected={isOnInpostSelected}
+          lockerIdSelected={lockerIdSelected}
+          isReceiveSelected={isReceiveSelected}
+          isInpostSelected={isInpostSelected}
         />
         {children}
       </div>
