@@ -32,7 +32,6 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   const [, setSelectedRadio] = useState<string>("");
   const [, setIsOnReceiveSelected] = useState<boolean>(false);
   const [, setIsOnInpostSelected] = useState<boolean>(false);
-
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -45,13 +44,18 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     });
   };
 
+  const isCheckoutDeliveryMethodUpdateLoading =
+    updateState.checkoutDeliveryMethodUpdate === "loading";
+
+  const isInpostSelected =
+    checkout.deliveryMethod?.id ===
+    shippingMethods.find((shippingMethod) => shippingMethod.name === "Inpost paczkomaty")?.id;
+
+  const [shouldDisplayInpostMap, setShouldDisplayInpostMap] = useState(isInpostSelected);
+
   if (!checkout?.isShippingRequired || collapsed) {
     return null;
   }
-
-  const isInpostSelected =
-    shippingMethods?.find((method) => method.id === form.values.selectedMethodId)?.name ===
-    "Inpost paczkomaty";
 
   const resetInpostData = () => {
     setSelectedInpostData(null);
@@ -63,6 +67,8 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
     setIsOnInpostSelected(isInpostPaczkomaty);
     onIsOnInpostSelectedChange(isInpostPaczkomaty);
+
+    setShouldDisplayInpostMap(isInpostPaczkomaty);
 
     if (name === "Kurier pobranie, GLS") {
       setIsOnReceiveSelected(true);
@@ -103,6 +109,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
                   key={id}
                   name="selectedMethodId"
                   value={id}
+                  disabled={isCheckoutDeliveryMethodUpdateLoading}
                   onRadioChange={(value: string) => handleRadioChange(value, name)}
                 >
                   <div className="min-h-12 grow flex flex-col justify-center pointer-events-none">
@@ -134,9 +141,11 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
                 </button>
               </React.Fragment>
             )}
-            {selectedInpostData?.name == null && (
-              <ShippingMethodInpostMap onInpostDataChange={handleInpostDataChange} />
-            )}
+            {shouldDisplayInpostMap &&
+              shippingAddress &&
+              !isCheckoutDeliveryMethodUpdateLoading && (
+                <ShippingMethodInpostMap onInpostDataChange={handleInpostDataChange} />
+              )}
           </React.Fragment>
         )}
       </div>
