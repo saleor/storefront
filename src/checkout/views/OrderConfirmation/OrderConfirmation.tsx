@@ -1,6 +1,4 @@
 import { Suspense } from "react";
-
-import { PageHeader } from "@/checkout/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout/sections/Summary";
 import { OrderInfo } from "@/checkout/sections/OrderInfo";
 import { useOrder } from "@/checkout/hooks/useOrder";
@@ -12,7 +10,6 @@ export const OrderConfirmation = () => {
 		<main className="grid grid-cols-1 gap-x-16 lg:grid-cols-2">
 			<div>
 				<header>
-					<PageHeader />
 					<p className="mb-2 text-lg font-bold" data-testid="orderConfrmationTitle">
 						Order #{order.number} confirmed
 					</p>

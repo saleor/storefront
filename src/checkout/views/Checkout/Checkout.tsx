@@ -3,7 +3,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import { EmptyCartPage } from "../EmptyCartPage";
 import { PageNotFound } from "../PageNotFound";
 import { useUser } from "../../hooks/useUser";
-import { PageHeader } from "@/checkout/sections/PageHeader";
 import { Summary, SummarySkeleton } from "@/checkout/sections/Summary";
 import { CheckoutForm, CheckoutFormSkeleton } from "@/checkout/sections/CheckoutForm";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
@@ -26,7 +25,6 @@ export const Checkout = () => {
 	) : (
 		<ErrorBoundary FallbackComponent={PageNotFound}>
 			<div className="page">
-				<PageHeader />
 				{isEmptyCart ? (
 					<EmptyCartPage />
 				) : (
