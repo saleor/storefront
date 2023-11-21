@@ -57,7 +57,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     checkout.deliveryMethod?.id ===
     shippingMethods.find((shippingMethod) => shippingMethod.name === INPOST_SHIPPING_NAME)?.id;
 
-  const [shouldDisplayInpostMap, setShouldDisplayInpostMap] = useState(false);
+  const [shouldDisplayInpostMap, setShouldDisplayInpostMap] = useState(true);
 
   if (!checkout?.isShippingRequired || collapsed) {
     return null;
