@@ -38,9 +38,6 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   const { shippingMethods, shippingAddress } = checkout;
   const form = useDeliveryMethodsForm();
   const { updateState } = useCheckoutUpdateState();
-  const [, setSelectedRadio] = useState<string>("");
-  const [, setIsOnReceiveSelected] = useState<boolean>(false);
-  const [, setIsOnInpostSelected] = useState<boolean>(false);
   const [selectedInpostData, setSelectedInpostData] = useState<InpostEventData | null>(null);
   const getSubtitle = ({ min, max }: { min?: number | null; max?: number | null }) => {
     if (!min || !max) {
@@ -74,16 +71,12 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   const handleRadioChange = (value: string, name: string) => {
     const isInpostShipping = name === INPOST_SHIPPING_NAME;
 
-    setIsOnInpostSelected(isInpostShipping);
     onInpostSelectionChange(isInpostShipping);
-
     setShouldDisplayInpostMap(isInpostShipping);
 
     if (name === "Kurier pobranie, GLS") {
-      setIsOnReceiveSelected(true);
       onReceiveSelectedChange(true);
     } else {
-      setIsOnReceiveSelected(false);
       onReceiveSelectedChange(false);
     }
 
@@ -91,7 +84,6 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
       resetInpostData();
     }
 
-    setSelectedRadio(value);
     form.setFieldValue("selectedMethodId", value);
   };
 
@@ -104,7 +96,11 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     <FormProvider form={form}>
       <Divider />
       <div className="section" data-testid="deliveryMethods">
-        <Title className="mb-2">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
+        <div className="flex justify-between items-center mb-2">
+          <Title className="mb-0">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
+
+          {isCheckoutDeliveryMethodUpdateLoading && <Spinner />}
+        </div>
         {!authenticated && !shippingAddress && (
           <Text>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</Text>
         )}
@@ -135,12 +131,6 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
             )}
           </SelectBoxGroup>
         )}
-        {isCheckoutDeliveryMethodUpdateLoading && (
-          <div className="h-[50px] w-full flex mt-8 py-4 justify-center">
-            <Spinner />
-          </div>
-        )}
-
         {isInpostSelected && (
           <React.Fragment>
             {selectedInpostData?.name != null && (
