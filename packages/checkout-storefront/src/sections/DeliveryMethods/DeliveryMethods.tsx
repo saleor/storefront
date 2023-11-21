@@ -16,6 +16,7 @@ import { DeliveryMethodsSkeleton } from "@/checkout-storefront/sections/Delivery
 import { useUser } from "@/checkout-storefront/hooks/useUser";
 import ShippingMethodInpostMap from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
 import { InpostEventData } from "@/checkout-storefront/components/InpostMap/ShippingMethodInpostMap";
+import Spinner from "@/checkout-storefront/components/Spinner";
 
 export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
   collapsed,
@@ -62,7 +63,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     setSelectedLockerId(null);
   };
 
-  const handleRadioChange = async (value: string, name: string) => {
+  const handleRadioChange = (value: string, name: string) => {
     const isInpostPaczkomaty = name === "Inpost paczkomaty";
 
     setIsOnInpostSelected(isInpostPaczkomaty);
@@ -86,7 +87,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
     form.setFieldValue("selectedMethodId", value);
   };
 
-  const handleInpostDataChange = async (data: InpostEventData | null) => {
+  const handleInpostDataChange = (data: InpostEventData | null) => {
     setSelectedInpostData(data);
     setSelectedLockerId(data?.name ?? null);
   };
@@ -126,6 +127,12 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
             )}
           </SelectBoxGroup>
         )}
+        {isCheckoutDeliveryMethodUpdateLoading && (
+          <div className="h-[50px] w-full flex mt-8 py-4 justify-center">
+            <Spinner />
+          </div>
+        )}
+
         {isInpostSelected && (
           <React.Fragment>
             {selectedInpostData?.name != null && (
@@ -143,6 +150,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
             )}
             {shouldDisplayInpostMap &&
               shippingAddress &&
+              selectedInpostData?.name == null &&
               !isCheckoutDeliveryMethodUpdateLoading && (
                 <ShippingMethodInpostMap onInpostDataChange={handleInpostDataChange} />
               )}

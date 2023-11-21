@@ -45,10 +45,6 @@ export const CheckoutForm = () => {
     setIsOnReceiveSelected(newValue);
   };
 
-  console.group();
-  console.log("lockerIdSelected", lockerIdSelected);
-  console.log("isOnInpostSelected", isOnInpostSelected);
-
   return (
     <div className="checkout-form-container">
       <div className="checkout-form">
