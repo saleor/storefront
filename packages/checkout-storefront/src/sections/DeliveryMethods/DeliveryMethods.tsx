@@ -55,9 +55,9 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
   const isInpostSelected =
     checkout.deliveryMethod?.id ===
-    shippingMethods.find((shippingMethod) => shippingMethod.name === "Inpost paczkomaty")?.id;
+    shippingMethods.find((shippingMethod) => shippingMethod.name === INPOST_SHIPPING_NAME)?.id;
 
-  const [shouldDisplayInpostMap, setShouldDisplayInpostMap] = useState(isInpostSelected);
+  const [shouldDisplayInpostMap, setShouldDisplayInpostMap] = useState(false);
 
   if (!checkout?.isShippingRequired || collapsed) {
     return null;
@@ -133,7 +133,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
         )}
         {isInpostSelected && (
           <React.Fragment>
-            {selectedInpostData?.name != null && (
+            {selectedInpostData?.name && (
               <React.Fragment>
                 <p style={{ padding: "1.2rem" }}>Wybrany Paczkomat: {selectedInpostData?.name}</p>
                 <button
@@ -148,7 +148,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
             )}
             {shouldDisplayInpostMap &&
               shippingAddress &&
-              selectedInpostData?.name == null &&
+              !selectedInpostData?.name &&
               !isCheckoutDeliveryMethodUpdateLoading && (
                 <ShippingMethodInpostMap onInpostDataChange={handleInpostDataChange} />
               )}

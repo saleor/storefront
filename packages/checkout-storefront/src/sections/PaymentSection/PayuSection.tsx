@@ -18,11 +18,11 @@ export const PAYU_GATEWAY = "salingo.payments.payu";
 
 interface PayuSectionProps {
   checkout: CheckoutFragment;
-  lockerIdSelected: string | null;
+  selectedLockerId: string | null;
   isInpostSelected: boolean;
 }
 
-export function PayuSection({ checkout, lockerIdSelected, isInpostSelected }: PayuSectionProps) {
+export function PayuSection({ checkout, selectedLockerId, isInpostSelected }: PayuSectionProps) {
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [GDPR, setGDPR] = useState<boolean>(false);
   const [, checkoutPaymentCreate] = useCheckoutPaymentCreateMutation();
@@ -72,7 +72,7 @@ export function PayuSection({ checkout, lockerIdSelected, isInpostSelected }: Pa
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (isInpostSelected && !lockerIdSelected) {
+    if (isInpostSelected && !selectedLockerId) {
       showCustomErrors([
         {
           field: "lockerId",
@@ -83,10 +83,10 @@ export function PayuSection({ checkout, lockerIdSelected, isInpostSelected }: Pa
       return;
     }
 
-    if (isInpostSelected && lockerIdSelected) {
+    if (isInpostSelected && selectedLockerId) {
       await updateShippingLockerId({
         checkoutId: checkout.id,
-        lockerId: lockerIdSelected,
+        lockerId: selectedLockerId,
       });
     }
 

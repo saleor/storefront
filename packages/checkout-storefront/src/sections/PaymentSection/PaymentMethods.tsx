@@ -11,7 +11,7 @@ import { paymentSectionMessages } from "./messages";
 export const PaymentMethods: React.FC<PaymentMethodProps> = ({
   isReceiveSelected,
   isInpostSelected,
-  lockerIdSelected,
+  selectedLockerId,
 }) => {
   const { checkout } = useCheckout();
   const t = useIntl();
@@ -50,7 +50,7 @@ export const PaymentMethods: React.FC<PaymentMethodProps> = ({
       {chosenGateway === PAYU_GATEWAY && (
         <PayuSection
           checkout={checkout}
-          lockerIdSelected={lockerIdSelected}
+          selectedLockerId={selectedLockerId}
           isInpostSelected={isInpostSelected}
         />
       )}

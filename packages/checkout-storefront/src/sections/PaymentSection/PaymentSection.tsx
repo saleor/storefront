@@ -10,7 +10,7 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({
   children,
   isReceiveSelected,
   isInpostSelected,
-  lockerIdSelected,
+  selectedLockerId,
 }) => {
   const formatMessage = useFormattedMessages();
 
@@ -20,7 +20,7 @@ export const PaymentSection: React.FC<PaymentSectionProps> = ({
       <div className="section" data-testid="paymentMethods">
         <Title>{formatMessage(paymentSectionMessages.paymentMethods)}</Title>
         <PaymentMethods
-          lockerIdSelected={lockerIdSelected}
+          selectedLockerId={selectedLockerId}
           isReceiveSelected={isReceiveSelected}
           isInpostSelected={isInpostSelected}
         />

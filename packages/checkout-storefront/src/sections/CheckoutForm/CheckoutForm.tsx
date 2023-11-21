@@ -30,7 +30,7 @@ export const CheckoutForm = () => {
 
   const [isInpostSelected, setIsInpostSelected] = useState(true);
 
-  const [lockerIdSelected, setLockerIdSelected] = useState<string | null>(null);
+  const [selectedLockerId, setSelectedLockerId] = useState<string | null>(null);
 
   const handleInpostSelectionChange = (newValue: boolean) => {
     setIsInpostSelected(newValue);
@@ -61,7 +61,7 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods
               collapsed={showOnlyContact}
-              onLockerIdChange={setLockerIdSelected}
+              onLockerIdChange={setSelectedLockerId}
               onReceiveSelectedChange={handleReceiveOptionChange}
               onInpostSelectionChange={handleInpostSelectionChange}
             />
@@ -71,7 +71,7 @@ export const CheckoutForm = () => {
               <PaymentSection
                 isReceiveSelected={isReceiveSelected}
                 isInpostSelected={isInpostSelected}
-                lockerIdSelected={lockerIdSelected}
+                selectedLockerId={selectedLockerId}
               >
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>

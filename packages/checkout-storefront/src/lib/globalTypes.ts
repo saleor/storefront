@@ -60,12 +60,12 @@ export interface PaymentSectionProps {
   children: ReactNode | ReactNode[];
   isReceiveSelected: boolean;
   isInpostSelected: boolean;
-  lockerIdSelected: string | null;
+  selectedLockerId: string | null;
 }
 
 export interface PaymentMethodProps {
   isReceiveSelected: boolean;
-  lockerIdSelected: string | null;
+  selectedLockerId: string | null;
   isInpostSelected: boolean;
 }
 
