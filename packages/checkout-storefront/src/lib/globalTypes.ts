@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
 import { TaxedMoney } from "@/checkout-storefront/graphql";
 import { InpostEventData } from "../components/InpostMap/ShippingMethodInpostMap";
 
@@ -51,22 +51,21 @@ export interface CommonSectionProps {
 export interface DeliverySectionProps {
   collapsed: boolean;
   onInpostDataChange?: OnInpostDataChangeType;
-  onIsOnReceiveSelectedChange: (value: boolean) => void;
-  setSelectedLockerId: Dispatch<SetStateAction<string | null>>;
-  setIsInpostSelected: Dispatch<SetStateAction<boolean>>;
-  setSelectedShippingMethod: any;
+  onReceiveSelectedChange: (value: boolean) => void;
+  onInpostSelectionChange: (value: boolean) => void;
+  onLockerIdChange: (lockerId: string | null) => void;
 }
 
 export interface PaymentSectionProps {
   children: ReactNode | ReactNode[];
-  isOnReceiveSelected: boolean;
+  isReceiveSelected: boolean;
   isInpostSelected: boolean;
   selectedLockerId: string | null;
 }
 
 export interface PaymentMethodProps {
-  isOnReceiveSelected: boolean;
-  isLockerIdSelected: boolean;
+  isReceiveSelected: boolean;
+  selectedLockerId: string | null;
   isInpostSelected: boolean;
 }
 

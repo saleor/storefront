@@ -25,16 +25,19 @@ export const CheckoutForm = () => {
   const { passwordResetToken } = getQueryParams();
 
   const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
-  const [isOnReceiveSelected, setIsOnReceiveSelected] = useState<boolean>(false);
 
-  const [isInpostSelected, setIsInpostSelected] = useState(false);
+  const [isReceiveSelected, setIsReceiveSelected] = useState(false);
+
+  const [isInpostSelected, setIsInpostSelected] = useState(true);
+
   const [selectedLockerId, setSelectedLockerId] = useState<string | null>(null);
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState<string | null>(null);
 
-  const handleIsOnReceiveSelectedChange = (
-    newValue: boolean | ((prevState: boolean) => boolean)
-  ) => {
-    setIsOnReceiveSelected(newValue);
+  const handleInpostSelectionChange = (newValue: boolean) => {
+    setIsInpostSelected(newValue);
+  };
+
+  const handleReceiveOptionChange = (newValue: boolean) => {
+    setIsReceiveSelected(newValue);
   };
 
   return (
@@ -58,19 +61,17 @@ export const CheckoutForm = () => {
           <Suspense fallback={<DeliveryMethodsSkeleton />}>
             <DeliveryMethods
               collapsed={showOnlyContact}
-              setIsInpostSelected={setIsInpostSelected}
-              setSelectedLockerId={setSelectedLockerId}
-              onIsOnReceiveSelectedChange={handleIsOnReceiveSelectedChange}
-              setSelectedShippingMethod={setSelectedShippingMethod}
+              onLockerIdChange={setSelectedLockerId}
+              onReceiveSelectedChange={handleReceiveOptionChange}
+              onInpostSelectionChange={handleInpostSelectionChange}
             />
           </Suspense>
           <Suspense fallback={<PaymentSectionSkeleton />}>
             <CollapseSection collapse={showOnlyContact}>
               <PaymentSection
-                isOnReceiveSelected={isOnReceiveSelected}
+                isReceiveSelected={isReceiveSelected}
                 isInpostSelected={isInpostSelected}
                 selectedLockerId={selectedLockerId}
-                selectedShippingMethod={selectedShippingMethod}
               >
                 {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
               </PaymentSection>

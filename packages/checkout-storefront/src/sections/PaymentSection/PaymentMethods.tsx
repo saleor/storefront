@@ -8,14 +8,16 @@ import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
 import { useIntl } from "react-intl";
 import { paymentSectionMessages } from "./messages";
 
-export const PaymentMethods: React.FC<
-  PaymentMethodProps & { selectedShippingMethod: string | null }
-> = ({ isOnReceiveSelected, isLockerIdSelected, selectedShippingMethod }) => {
+export const PaymentMethods: React.FC<PaymentMethodProps> = ({
+  isReceiveSelected,
+  isInpostSelected,
+  selectedLockerId,
+}) => {
   const { checkout } = useCheckout();
   const t = useIntl();
   const [chosenGateway, setChosenGateway] = useState("");
   const existingGateways: string[] = [];
-  if (isOnReceiveSelected) {
+  if (isReceiveSelected) {
     existingGateways.push(COD_GATEWAY);
   } else {
     existingGateways.push(PAYU_GATEWAY);
@@ -48,8 +50,8 @@ export const PaymentMethods: React.FC<
       {chosenGateway === PAYU_GATEWAY && (
         <PayuSection
           checkout={checkout}
-          isLockerIdSelected={isLockerIdSelected}
-          selectedShippingMethod={selectedShippingMethod}
+          selectedLockerId={selectedLockerId}
+          isInpostSelected={isInpostSelected}
         />
       )}
       {chosenGateway === COD_GATEWAY && <CodSection checkout={checkout} />}
