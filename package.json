@@ -21,6 +21,7 @@
 		"@saleor/auth-sdk": "1.0.1",
 		"@stripe/react-stripe-js": "2.3.2",
 		"@stripe/stripe-js": "2.1.11",
+		"@tailwindcss/container-queries": "0.1.1",
 		"clsx": "2.0.0",
 		"editorjs-html": "3.4.3",
 		"formik": "2.4.5",
