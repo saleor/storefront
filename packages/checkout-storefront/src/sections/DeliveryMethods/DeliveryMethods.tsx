@@ -52,6 +52,7 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
 
   const isCheckoutDeliveryMethodUpdateLoading =
     updateState.checkoutDeliveryMethodUpdate === "loading";
+  const isCheckoutShippingUpdateLoading = updateState.checkoutShippingUpdate === "loading";
 
   const isInpostSelected =
     checkout.deliveryMethod?.id ===
@@ -99,7 +100,9 @@ export const DeliveryMethods: React.FC<DeliverySectionProps> = ({
         <div className="flex justify-between items-center mb-2">
           <Title className="mb-0">{formatMessage(deliveryMethodsMessages.deliveryMethods)}</Title>
 
-          {isCheckoutDeliveryMethodUpdateLoading && <Spinner />}
+          {(isCheckoutDeliveryMethodUpdateLoading || isCheckoutShippingUpdateLoading) && (
+            <Spinner />
+          )}
         </div>
         {!authenticated && !shippingAddress && (
           <Text>{formatMessage(deliveryMethodsMessages.noShippingAddressMessage)}</Text>

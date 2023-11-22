@@ -1363,8 +1363,7 @@
   },
   "DeliveryMethods/messages/927KCY": {
     "developer_comment": "no shipping address message",
-    "string": "Please fill in shipping address to see available shipping methods",
-    "@TODO": "Please translate this"
+    "string": "Wpisz adres dostawy, aby zobaczyć dostępne metody wysyłki"
   },
   "DeliveryMethods/messages/DGFTo/": {
     "developer_comment": "business days",

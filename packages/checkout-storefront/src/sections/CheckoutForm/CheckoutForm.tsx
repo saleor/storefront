@@ -46,38 +46,37 @@ export const CheckoutForm = () => {
         <Suspense fallback={<ContactSkeleton />}>
           <Contact setShowOnlyContact={setShowOnlyContact} />
         </Suspense>
-        <>
-          {checkout?.isShippingRequired && (
-            <Suspense fallback={<AddressSectionSkeleton />}>
-              <Divider />
-              <CollapseSection collapse={showOnlyContact}>
-                <div className="section" data-testid="shippingAddressSection">
-                  {user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
-                </div>
-              </CollapseSection>
-            </Suspense>
-          )}
-          <InvoiceRequestSection collapsed={showOnlyContact} />
-          <Suspense fallback={<DeliveryMethodsSkeleton />}>
-            <DeliveryMethods
-              collapsed={showOnlyContact}
-              onLockerIdChange={setSelectedLockerId}
-              onReceiveSelectedChange={handleReceiveOptionChange}
-              onInpostSelectionChange={handleInpostSelectionChange}
-            />
-          </Suspense>
-          <Suspense fallback={<PaymentSectionSkeleton />}>
+        {checkout?.isShippingRequired && (
+          <Suspense fallback={<AddressSectionSkeleton />}>
+            <Divider />
             <CollapseSection collapse={showOnlyContact}>
-              <PaymentSection
-                isReceiveSelected={isReceiveSelected}
-                isInpostSelected={isInpostSelected}
-                selectedLockerId={selectedLockerId}
-              >
-                {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-              </PaymentSection>
+              <div className="section" data-testid="shippingAddressSection">
+                {user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
+              </div>
             </CollapseSection>
           </Suspense>
-        </>
+        )}
+        <InvoiceRequestSection collapsed={showOnlyContact} />
+
+        <Suspense fallback={<DeliveryMethodsSkeleton />}>
+          <DeliveryMethods
+            collapsed={showOnlyContact}
+            onLockerIdChange={setSelectedLockerId}
+            onReceiveSelectedChange={handleReceiveOptionChange}
+            onInpostSelectionChange={handleInpostSelectionChange}
+          />
+        </Suspense>
+        <Suspense fallback={<PaymentSectionSkeleton />}>
+          <CollapseSection collapse={showOnlyContact}>
+            <PaymentSection
+              isReceiveSelected={isReceiveSelected}
+              isInpostSelected={isInpostSelected}
+              selectedLockerId={selectedLockerId}
+            >
+              {user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+            </PaymentSection>
+          </CollapseSection>
+        </Suspense>
       </div>
     </div>
   );

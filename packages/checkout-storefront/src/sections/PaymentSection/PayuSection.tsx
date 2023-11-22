@@ -72,6 +72,16 @@ export function PayuSection({ checkout, selectedLockerId, isInpostSelected }: Pa
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
+    if (!checkout.email) {
+      return showCustomErrors([
+        {
+          field: "email",
+          code: "required",
+          message: "Proszę wprowadzić adres email.",
+        },
+      ]);
+    }
+
     if (isInpostSelected && !selectedLockerId) {
       showCustomErrors([
         {
