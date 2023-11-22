@@ -7,7 +7,7 @@ export const PaymentSection = () => {
 	return (
 		<>
 			<Divider />
-			<div className="py-6" data-testid="paymentMethods">
+			<div className="py-4" data-testid="paymentMethods">
 				<Title>Payment methods</Title>
 				<PaymentMethods />
 			</div>

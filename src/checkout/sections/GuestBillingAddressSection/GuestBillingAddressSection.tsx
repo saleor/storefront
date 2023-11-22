@@ -37,15 +37,17 @@ export const GuestBillingAddressSection = () => {
 				</div>
 			)}
 			{!billingSameAsShipping && (
-				<FormProvider form={form}>
-					<AddressForm
-						title="Billing address"
-						fieldProps={{
-							onChange: handleChange,
-							onBlur: handleBlur,
-						}}
-					/>
-				</FormProvider>
+				<div className="mb-4">
+					<FormProvider form={form}>
+						<AddressForm
+							title="Billing address"
+							fieldProps={{
+								onChange: handleChange,
+								onBlur: handleBlur,
+							}}
+						/>
+					</FormProvider>
+				</div>
 			)}
 		</Suspense>
 	);

@@ -34,7 +34,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 	return (
 		<FormProvider form={form}>
 			<Divider />
-			<div className="py-6" data-testid="deliveryMethods">
+			<div className="py-4" data-testid="deliveryMethods">
 				<Title className="mb-2">Delivery methods</Title>
 				{!authenticated && !shippingAddress && (
 					<p>Please fill in shipping address to see available shipping methods</p>
