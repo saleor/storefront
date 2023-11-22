@@ -12,10 +12,10 @@ export const Nav = () => {
 				<NavLinks />
 			</ul>
 			<div className="ml-auto flex items-center justify-center gap-4 whitespace-nowrap lg:gap-8">
-				<div className="invisible lg:visible">
+				<div className="hidden lg:flex">
 					<SearchBar />
 				</div>
-				<Suspense fallback={<div className="w-6" />}>
+				<Suspense fallback={<div className="w-8" />}>
 					<UserMenu />
 				</Suspense>
 			</div>

@@ -19,7 +19,7 @@ export function UserMenu() {
 
 	if (data?.me) {
 		return (
-			<Menu as="div" className="relative ml-3">
+			<Menu as="div" className="relative">
 				<Menu.Button className="relative flex rounded-full bg-neutral-200 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-neutral-800">
 					<span className="sr-only">Open user menu</span>
 					<UserAvatar user={data.me} />
@@ -72,7 +72,7 @@ export function UserMenu() {
 		);
 	} else {
 		return (
-			<Link href="/login" className="h-6 w-6 flex-shrink-0">
+			<Link href="/login" className="mx-1 h-6 w-6 flex-shrink-0">
 				<UserIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
 				<span className="sr-only">Log in</span>
 			</Link>

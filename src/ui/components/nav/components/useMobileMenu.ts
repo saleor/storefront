@@ -4,11 +4,11 @@ import { usePathname, useSearchParams } from "next/navigation";
 export const useMobileMenu = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const pathname = usePathname();
-	useSearchParams();
+	const searchParams = useSearchParams();
 
 	useEffect(() => {
 		setIsOpen(false);
-	}, [pathname]);
+	}, [pathname, searchParams]);
 
 	useEffect(() => {
 		const handleResize = (ev: MediaQueryListEvent) => {
