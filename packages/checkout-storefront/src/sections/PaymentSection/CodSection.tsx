@@ -6,6 +6,8 @@ import { useCheckoutComplete } from "@/checkout-storefront/hooks/useCheckoutComp
 import { useIntl } from "react-intl";
 import { paymentSectionMessages } from "./messages";
 import { GDPRSection } from "../GDPRSection/GDPRSection";
+import { useAlerts } from "@/checkout-storefront/hooks/useAlerts";
+import { Checkout } from "@/checkout-storefront/graphql";
 
 export interface IPaymentGatewayConfig {
   field: string;
@@ -13,11 +15,13 @@ export interface IPaymentGatewayConfig {
 }
 export const COD_GATEWAY = "salingo.payments.cod";
 
-export function CodSection({ checkout }: any) {
+export function CodSection({ checkout }: { checkout: Checkout }) {
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [GDPR, setGDPR] = useState<boolean>(false);
   const [, checkoutPaymentCreate] = useCheckoutPaymentCreateMutation();
   const { onCheckoutComplete } = useCheckoutComplete();
+  const { showCustomErrors } = useAlerts();
+
   const t = useIntl();
 
   const handleGDPRChange = (checked: boolean) => {
@@ -26,6 +30,16 @@ export function CodSection({ checkout }: any) {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    if (!checkout.email) {
+      return showCustomErrors([
+        {
+          field: "email",
+          code: "required",
+          message: "Proszę wprowadzić adres email.",
+        },
+      ]);
+    }
 
     if (!GDPR) {
       console.log("Musisz zaakceptować regulamin sklepu przed kontynuacją płatności!");
