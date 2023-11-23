@@ -19,16 +19,10 @@ jobs:
           echo "schema_url=$(echo $latest_release | jq -r '.assets[] | select(.name == "schema.graphql") | .url')" >> "$GITHUB_OUTPUT"
           echo "has_schema=$(echo $latest_release | jq -e '.assets[] | select(.name == "schema.graphql") | length > 0')" >> "$GITHUB_OUTPUT"
 
-      - name: Download schema.graphql
+      - name: Check for schema.graphql in the latest Saleor release
         run: |
           if [[ "${{ steps.release.outputs.has_schema }}" == "true" ]]; then
             echo "schema.graphql is attached to the ${{ steps.release.outputs.tag }} release, updating..."
-
-            curl --output schema.graphql \
-              --url ${{ steps.release.outputs.schema_url }} \
-              --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-              --header "Accept: application/octet-stream" \
-              --location
           else
             echo "schema.graphql is not attached to the ${{ steps.release.outputs.tag }} release, exiting..."
             exit 1
@@ -36,6 +30,14 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Download schema.graphql
+        run: |
+          curl --output schema.graphql \
+            --url ${{ steps.release.outputs.schema_url }} \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header "Accept: application/octet-stream" \
+            --location
 
       - name: Get PNPM version from package.json
         id: pnpm-version
