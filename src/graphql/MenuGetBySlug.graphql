@@ -1,25 +1,3 @@
-fragment MenuItem on MenuItem {
-	id
-	name
-	level
-	category {
-		id
-		slug
-		name
-	}
-	collection {
-		id
-		name
-		slug
-	}
-	page {
-		id
-		title
-		slug
-	}
-	url
-}
-
 query MenuGetBySlug($slug: String!) {
 	menu(slug: $slug, channel: "default-channel") {
 		items {
