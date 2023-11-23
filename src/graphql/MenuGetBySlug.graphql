@@ -1,5 +1,5 @@
-query MenuGetBySlug($slug: String!) {
-	menu(slug: $slug, channel: "default-channel") {
+query MenuGetBySlug($slug: String!, $channel: String!) {
+	menu(slug: $slug, channel: $channel) {
 		items {
 			...MenuItem
 			children {

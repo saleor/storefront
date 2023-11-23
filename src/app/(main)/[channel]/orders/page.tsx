@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 const OrderList = dynamic(
-	() => import("../../../ui/components/OrderList/OrderList").then((m) => m.OrderList),
+	() => import("../../../../ui/components/OrderList/OrderList").then((m) => m.OrderList),
 	{
 		ssr: false,
 	},

@@ -2,10 +2,11 @@ import Link from "next/link";
 import { NavLink } from "./NavLink";
 import { executeGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
+import { defaultChannel } from "@/lib/constants";
 
 export const NavLinks = async () => {
 	const navLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "navbar" },
+		variables: { slug: "navbar", channel: defaultChannel },
 		revalidate: 60 * 60 * 24,
 	});
 

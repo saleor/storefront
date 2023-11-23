@@ -1,3 +1,4 @@
+import { defaultChannel } from "./constants";
 import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 
@@ -26,4 +27,5 @@ export async function findOrCreate(checkoutId?: string) {
 	return checkout || (await create()).checkoutCreate?.checkout;
 }
 
-export const create = () => executeGraphQL(CheckoutCreateDocument, { cache: "no-cache" });
+export const create = () =>
+	executeGraphQL(CheckoutCreateDocument, { cache: "no-cache", variables: { channel: defaultChannel } });
