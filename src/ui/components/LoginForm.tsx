@@ -55,6 +55,8 @@ export function LoginForm() {
 						type="password"
 						name="password"
 						placeholder="Password"
+						autoCapitalize="off"
+						autoComplete="off"
 						className="w-full rounded border bg-neutral-50 px-4 py-2"
 						value={formValues.password}
 						onChange={changeHandler}
