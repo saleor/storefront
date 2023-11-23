@@ -3,14 +3,13 @@ import { type ResolvingMetadata, type Metadata } from "next";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
-import { defaultChannel } from "@/lib/constants";
 
 export const generateMetadata = async (
-	{ params }: { params: { slug: string } },
+	{ params }: { params: { slug: string; channel: string } },
 	parent: ResolvingMetadata,
 ): Promise<Metadata> => {
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-		variables: { slug: params.slug, channel: defaultChannel },
+		variables: { slug: params.slug, channel: params.channel },
 		revalidate: 60,
 	});
 
@@ -21,9 +20,9 @@ export const generateMetadata = async (
 	};
 };
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({ params }: { params: { slug: string; channel: string } }) {
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-		variables: { slug: params.slug, channel: defaultChannel },
+		variables: { slug: params.slug, channel: params.channel },
 		revalidate: 60,
 	});
 

@@ -7,13 +7,19 @@ export const metadata = {
 	description: "Starter pack for building performant e-commerce experiences with Saleor.",
 };
 
-export default function RootLayout(props: { children: ReactNode }) {
+export default function RootLayout({
+	children,
+	params: { channel },
+}: {
+	children: ReactNode;
+	params: { channel: string };
+}) {
 	return (
 		<>
-			<Header />
+			<Header channel={channel} />
 			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
-				<main className="flex-1">{props.children}</main>
-				<Footer />
+				<main className="flex-1">{children}</main>
+				<Footer channel={channel} />
 			</div>
 		</>
 	);

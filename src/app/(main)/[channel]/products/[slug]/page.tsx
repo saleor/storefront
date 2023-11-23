@@ -24,7 +24,7 @@ export async function generateMetadata(
 		params,
 		searchParams,
 	}: {
-		params: { slug: string };
+		params: { slug: string; channel: string };
 		searchParams: { variant?: string };
 	},
 	parent: ResolvingMetadata,
@@ -32,7 +32,7 @@ export async function generateMetadata(
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
-			channel: defaultChannel,
+			channel: params.channel,
 		},
 		revalidate: 60,
 	});
@@ -78,13 +78,16 @@ export async function generateStaticParams() {
 
 const parser = edjsHTML();
 
-export default async function Page(props: { params: { slug: string }; searchParams: { variant?: string } }) {
+export default async function Page(props: {
+	params: { slug: string; channel: string };
+	searchParams: { variant?: string };
+}) {
 	const { params, searchParams } = props;
 
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
-			channel: defaultChannel,
+			channel: params.channel,
 		},
 		revalidate: 60,
 	});

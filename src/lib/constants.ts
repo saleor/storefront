@@ -1,2 +1,2 @@
 export const defaultChannel = "default-channel";
-export const channels = [defaultChannel];
+export const channels = [defaultChannel, "channel-pln"];

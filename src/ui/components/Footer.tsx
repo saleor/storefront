@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-import { defaultChannel } from "@/lib/constants";
 
-export async function Footer() {
+export async function Footer({ channel }: { channel: string }) {
 	const footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "footer", channel: defaultChannel },
+		variables: { slug: "footer", channel },
 		revalidate: 60 * 60 * 24,
 	});
 	const currentYear = new Date().getFullYear();

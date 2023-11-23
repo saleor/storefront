@@ -3,7 +3,6 @@ import { OrderDirection, ProductOrderField, SearchProductsDocument } from "@/gql
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
-import { defaultChannel } from "@/lib/constants";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
@@ -12,9 +11,12 @@ export const metadata = {
 
 type Props = {
 	searchParams: Record<"query" | "cursor", string | string[] | undefined>;
+	params: {
+		channel: string;
+	};
 };
 
-export default async function Page({ searchParams }: Props) {
+export default async function Page({ searchParams, params: { channel } }: Props) {
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 	const searchValue = searchParams.query;
 
@@ -37,7 +39,7 @@ export default async function Page({ searchParams }: Props) {
 			after: cursor,
 			sortBy: ProductOrderField.Rating,
 			sortDirection: OrderDirection.Asc,
-			channel: defaultChannel,
+			channel,
 		},
 		revalidate: 60,
 	});
@@ -60,7 +62,7 @@ export default async function Page({ searchParams }: Props) {
 					<Pagination
 						pageInfo={{
 							...products.pageInfo,
-							basePathname: "/search",
+							basePathname: `/search`,
 							urlSearchParams: newSearchParams,
 						}}
 					/>
