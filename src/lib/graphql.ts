@@ -1,5 +1,17 @@
 import { invariant } from "ts-invariant";
+import { createSaleorAuthClient } from "@saleor/auth-sdk";
+import { getNextServerCookiesStorage } from "@saleor/auth-sdk/next/server";
 import { type TypedDocumentString } from "../gql/graphql";
+
+const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+
+const nextServerCookiesStorage = getNextServerCookiesStorage();
+export const saleorAuthClient = createSaleorAuthClient({
+	saleorApiUrl,
+	refreshTokenStorage: nextServerCookiesStorage,
+	accessTokenStorage: nextServerCookiesStorage,
+});
 
 invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
@@ -24,7 +36,7 @@ export async function executeGraphQL<Result, Variables>(
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	const { variables, headers, cache, revalidate } = options;
 
-	const response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, {
+	const response = await saleorAuthClient.fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
