@@ -1,5 +1,7 @@
-name: Build, TypeScripts, tests
-on: deployment_status
+name: Build, TypeScript, tests
+on:
+  issue_comment:
+    types: [created, edited]
 
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
@@ -7,7 +9,7 @@ concurrency:
 
 jobs:
   build_and_test:
-    if: ${{ github.event.deployment_status.state == 'success' }}
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body , '✅ Ready') }}
 
     runs-on: ubuntu-latest
     env:
