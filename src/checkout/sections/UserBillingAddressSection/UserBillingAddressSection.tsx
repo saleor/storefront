@@ -59,53 +59,57 @@ export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps>
 	return (
 		<Suspense fallback={<AddressSectionSkeleton />}>
 			{isShippingRequired && (
-				<FormProvider form={billingSameAsShippingForm}>
-					<Checkbox
-						name="billingSameAsShipping"
-						label="Use shipping address as billing address"
-						data-testid={"useShippingAsBillingCheckbox"}
-					/>
-				</FormProvider>
+				<div className="mb-4">
+					<FormProvider form={billingSameAsShippingForm}>
+						<Checkbox
+							name="billingSameAsShipping"
+							label="Use shipping address as billing address"
+							data-testid={"useShippingAsBillingCheckbox"}
+						/>
+					</FormProvider>
+				</div>
 			)}
 			{!billingSameAsShipping && (
-				<UserAddressSectionContainer>
-					{({
-						displayAddressCreate,
-						displayAddressEdit,
-						displayAddressList,
-						setDisplayAddressCreate,
-						setDisplayAddressEdit,
-						editedAddressId,
-					}) => (
-						<>
-							{displayAddressCreate && (
-								<AddressCreateForm
-									onClose={() => setDisplayAddressCreate(false)}
-									onSuccess={onAddressCreateSuccess}
-								/>
-							)}
+				<div className="pb-2">
+					<UserAddressSectionContainer>
+						{({
+							displayAddressCreate,
+							displayAddressEdit,
+							displayAddressList,
+							setDisplayAddressCreate,
+							setDisplayAddressEdit,
+							editedAddressId,
+						}) => (
+							<>
+								{displayAddressCreate && (
+									<AddressCreateForm
+										onClose={() => setDisplayAddressCreate(false)}
+										onSuccess={onAddressCreateSuccess}
+									/>
+								)}
 
-							{displayAddressEdit && (
-								<AddressEditForm
-									title="Billing address"
-									onClose={() => setDisplayAddressEdit()}
-									address={form.values.addressList.find(getById(editedAddressId)) as AddressFragment}
-									onUpdate={onAddressUpdateSuccess}
-									onDelete={onAddressDeleteSuccess}
-								/>
-							)}
+								{displayAddressEdit && (
+									<AddressEditForm
+										title="Billing address"
+										onClose={() => setDisplayAddressEdit()}
+										address={form.values.addressList.find(getById(editedAddressId)) as AddressFragment}
+										onUpdate={onAddressUpdateSuccess}
+										onDelete={onAddressDeleteSuccess}
+									/>
+								)}
 
-							{displayAddressList && (
-								<AddressList
-									onEditChange={setDisplayAddressEdit}
-									onAddAddressClick={() => setDisplayAddressCreate(true)}
-									title="Billing address"
-									form={form}
-								/>
-							)}
-						</>
-					)}
-				</UserAddressSectionContainer>
+								{displayAddressList && (
+									<AddressList
+										onEditChange={setDisplayAddressEdit}
+										onAddAddressClick={() => setDisplayAddressCreate(true)}
+										title="Billing address"
+										form={form}
+									/>
+								)}
+							</>
+						)}
+					</UserAddressSectionContainer>
+				</div>
 			)}
 		</Suspense>
 	);

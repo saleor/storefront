@@ -48,23 +48,21 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 	};
 
 	return (
-		<div className="relative flex h-24 flex-col items-end">
-			<div className="flex flex-row items-baseline">
-				<FormProvider form={form}>
-					<TextInput
-						required
-						onChange={handleChange}
-						onBlur={handleQuantityInputBlur}
-						name="quantity"
-						label="Quantity"
-						className="max-w-[6ch] text-center"
-					/>
-				</FormProvider>
-			</div>
+		<div className="flex flex-col items-end gap-2">
+			<FormProvider form={form}>
+				<TextInput
+					required
+					onChange={handleChange}
+					onBlur={handleQuantityInputBlur}
+					name="quantity"
+					label="Quantity"
+					className="max-w-[6ch] text-center"
+				/>
+			</FormProvider>
 			{isSubmitting ? (
-				<div className="mt-3 flex w-full flex-col items-end">
-					<Skeleton className="w-full" />
-					<Skeleton className="w-2/3" />
+				<div className="flex max-w-[6ch] flex-col">
+					<Skeleton />
+					<Skeleton />
 				</div>
 			) : (
 				<SummaryItemMoneyInfo {...line} />

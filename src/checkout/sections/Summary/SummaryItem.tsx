@@ -16,26 +16,26 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 	const attributesText = useSummaryLineLineAttributesText(line);
 
 	return (
-		<li className="relative mb-6 flex flex-row items-start last-of-type:mb-0" data-testid="SummaryItem">
-			<div className="relative flex flex-row">
-				<div className="z-1 mr-4 flex h-24 w-20 items-center justify-start">
-					{productImage ? (
-						<img className="object-contain" alt={productImage.alt ?? ""} src={productImage.url} />
-					) : (
-						<PhotoIcon />
-					)}
-				</div>
+		<li key={line.id} className="flex border-b py-4 last:border-none" data-testid="SummaryItem">
+			<div className="aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded border bg-neutral-50 md:h-24 md:w-24 md:bg-white">
+				{productImage ? (
+					<img
+						src={productImage.url}
+						alt={productImage.alt ?? ""}
+						className="h-full w-full object-contain object-center"
+					/>
+				) : (
+					<PhotoIcon />
+				)}
 			</div>
-			<div className="flex w-full items-center justify-between gap-2">
-				<div className="flex w-full grow flex-col">
-					<p aria-label="summary item name" className="mb-3 font-bold">
-						{productName}
-					</p>
-					<p aria-label="variant name" className="text-xs">
-						{attributesText}
-					</p>
+			<div className="relative flex flex-1 flex-col justify-between pl-4">
+				<div className="flex justify-between justify-items-start gap-4">
+					<div className="flex flex-col gap-y-1">
+						<p className="font-bold">{productName}</p>
+						<p className="text-xs text-neutral-500">{attributesText}</p>
+					</div>
+					{children}
 				</div>
-				{children}
 			</div>
 		</li>
 	);
