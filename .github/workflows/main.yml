@@ -1,7 +1,7 @@
 name: Build, TypeScript, tests
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened, synchronize]
   issue_comment:
     types: [created, edited]
 
