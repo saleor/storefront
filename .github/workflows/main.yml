@@ -1,5 +1,7 @@
-name: Build, TypeScripts, tests
-on: deployment_status
+name: Build, TypeScript, tests
+on:
+  issue_comment:
+    types: [created, edited]
 
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.ref }}
@@ -7,13 +9,20 @@ concurrency:
 
 jobs:
   build_and_test:
-    if: ${{ github.event.deployment_status.state == 'success' }}
+    if: ${{ github.event.issue.pull_request }}
 
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
 
     steps:
+      - name: Check for Vercel comment
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+          exit 0
+
       - uses: actions/checkout@v4
 
       - name: Get PNPM version from package.json
