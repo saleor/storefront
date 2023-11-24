@@ -9,20 +9,13 @@ concurrency:
 
 jobs:
   build_and_test:
-    if: ${{ github.event.issue.pull_request }}
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body , '✅ Ready') }}
 
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
 
     steps:
-      - name: Check for Vercel comment
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
-          exit 0
-
       - uses: actions/checkout@v4
 
       - name: Get PNPM version from package.json
