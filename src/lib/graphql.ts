@@ -1,19 +1,6 @@
 import { invariant } from "ts-invariant";
-import { createSaleorAuthClient } from "@saleor/auth-sdk";
-import { getNextServerCookiesStorage } from "@saleor/auth-sdk/next/server";
 import { type TypedDocumentString } from "../gql/graphql";
-
-const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
-invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
-
-const nextServerCookiesStorage = getNextServerCookiesStorage();
-export const saleorAuthClient = createSaleorAuthClient({
-	saleorApiUrl,
-	refreshTokenStorage: nextServerCookiesStorage,
-	accessTokenStorage: nextServerCookiesStorage,
-});
-
-invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+import { saleorAuthClient } from "@/app/config";
 
 type GraphQLErrorResponse = {
 	errors: readonly {
@@ -23,20 +10,19 @@ type GraphQLErrorResponse = {
 
 type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
 
-export const ProductsPerPage = 12;
-
 export async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
 	options: {
 		headers?: HeadersInit;
 		cache?: RequestCache;
 		revalidate?: number;
+		withAuth?: boolean;
 	} & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables }),
 ): Promise<Result> {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
-	const { variables, headers, cache, revalidate } = options;
+	const { variables, headers, cache, revalidate, withAuth = true } = options;
 
-	const response = await saleorAuthClient.fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, {
+	const input = {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -48,7 +34,11 @@ export async function executeGraphQL<Result, Variables>(
 		}),
 		cache: cache,
 		next: { revalidate },
-	});
+	};
+
+	const response = withAuth
+		? await saleorAuthClient.fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input)
+		: await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
 
 	if (!response.ok) {
 		const body = await (async () => {
@@ -70,7 +60,7 @@ export async function executeGraphQL<Result, Variables>(
 	return body.data;
 }
 
-export class GraphQLError extends Error {
+class GraphQLError extends Error {
 	constructor(public errorResponse: GraphQLErrorResponse) {
 		const message = errorResponse.errors.map((error) => error.message).join("\n");
 		super(message);
@@ -78,7 +68,7 @@ export class GraphQLError extends Error {
 		Object.setPrototypeOf(this, new.target.prototype);
 	}
 }
-export class HTTPError extends Error {
+class HTTPError extends Error {
 	constructor(response: Response, body: string) {
 		const message = `HTTP error ${response.status}: ${response.statusText}\n${body}`;
 		super(message);

@@ -1,4 +1,4 @@
-import { saleorAuthClient } from "@/lib/graphql";
+import { saleorAuthClient } from "@/app/config";
 
 export async function LoginForm() {
 	return (
