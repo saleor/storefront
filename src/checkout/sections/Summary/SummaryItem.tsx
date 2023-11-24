@@ -16,7 +16,7 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 	const attributesText = useSummaryLineLineAttributesText(line);
 
 	return (
-		<li key={line.id} className="flex border-b py-4 last:border-none">
+		<li key={line.id} className="flex border-b py-4 last:border-none" data-testid="SummaryItem">
 			<div className="aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded border bg-neutral-50 md:h-24 md:w-24 md:bg-white">
 				{productImage ? (
 					<img
