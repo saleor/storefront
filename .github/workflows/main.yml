@@ -1,13 +1,17 @@
-name: Build, TypeScripts, tests
-on: deployment_status
+name: Build, TypeScript, tests
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  issue_comment:
+    types: [created, edited]
 
 concurrency:
-  group: tests-${{ github.event.pull_request.number || github.ref }}
+  group: tests-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   build_and_test:
-    if: ${{ github.event.deployment_status.state == 'success' }}
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body , '✅ Ready') }}
 
     runs-on: ubuntu-latest
     env:
@@ -51,18 +55,15 @@ jobs:
       - run: pnpm exec playwright install-deps chromium
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
-      - name: Wait for Vercel Preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-        id: waitForVercel
+      - uses: aaimio/vercel-preview-url-action@v2.2.0
+        id: vercel_preview_url
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 240
-          check_interval: 5
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Playwright tests
         run: pnpm exec playwright test
         env:
-          BASE_URL: ${{ steps.waitForVercel.outputs.url }}
+          BASE_URL: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}
 
       - uses: actions/upload-artifact@v3
         if: always()
