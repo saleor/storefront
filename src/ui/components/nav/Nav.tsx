@@ -13,7 +13,7 @@ export const Nav = ({ channel }: { channel: string }) => {
 			</ul>
 			<div className="ml-auto flex items-center justify-center gap-4 whitespace-nowrap lg:gap-8">
 				<div className="hidden lg:flex">
-					<SearchBar />
+					<SearchBar channel={channel} />
 				</div>
 				<Suspense fallback={<div className="w-8" />}>
 					<UserMenuContainer />
@@ -26,7 +26,7 @@ export const Nav = ({ channel }: { channel: string }) => {
 			</div>
 			<Suspense>
 				<MobileMenu>
-					<SearchBar />
+					<SearchBar channel={channel} />
 					<NavLinks channel={channel} />
 				</MobileMenu>
 			</Suspense>
