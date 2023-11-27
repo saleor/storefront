@@ -64,10 +64,14 @@ export async function generateMetadata(
 	};
 }
 
+// TODO: re-enable when the bug in Next.js is fixed
+// https://github.com/vercel/next.js/issues/50658
+
 export async function generateStaticParams() {
 	const { products } = await executeGraphQL(ProductListDocument, {
 		revalidate: 60,
 		variables: { first: 20 },
+		withAuth: false,
 	});
 
 	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];

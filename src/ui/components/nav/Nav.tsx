@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { UserMenu } from "./components/UserMenu/UserMenu";
+import { UserMenuContainer } from "./components/UserMenu/UserMenuContainer";
 import { CartNavItem } from "./components/CartNavItem";
 import { NavLinks } from "./components/NavLinks";
 import { MobileMenu } from "./components/MobileMenu";
@@ -16,7 +16,7 @@ export const Nav = () => {
 					<SearchBar />
 				</div>
 				<Suspense fallback={<div className="w-8" />}>
-					<UserMenu />
+					<UserMenuContainer />
 				</Suspense>
 			</div>
 			<div className="flex items-center">

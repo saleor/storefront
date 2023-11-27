@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PaymentStatus } from "../../PaymentStatus";
 import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
 import { type OrderDetailsFragment } from "@/gql/graphql";
+import { PaymentStatus } from "@/ui/components/PaymentStatus";
 
 type Props = {
 	order: OrderDetailsFragment;

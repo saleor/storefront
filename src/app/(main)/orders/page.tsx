@@ -1,14 +1,38 @@
-"use client";
+import { CurrentUserOrderListDocument } from "@/gql/graphql";
+import { executeGraphQL } from "@/lib/graphql";
+import { LoginForm } from "@/ui/components/LoginForm";
+import { OrderListItem } from "@/ui/components/OrderListItem";
 
-import dynamic from "next/dynamic";
+export default async function OrderPage() {
+	const { me: user } = await executeGraphQL(CurrentUserOrderListDocument, {
+		cache: "no-cache",
+	});
 
-const OrderList = dynamic(
-	() => import("../../../ui/components/OrderList/OrderList").then((m) => m.OrderList),
-	{
-		ssr: false,
-	},
-);
+	if (!user) {
+		return <LoginForm />;
+	}
 
-export default function OrderPage() {
-	return <OrderList />;
+	const orders = user.orders?.edges || [];
+
+	return (
+		<div className="mx-auto max-w-7xl p-8">
+			<h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+				{user.firstName ? user.firstName : user.email}&rsquo;s orders
+			</h1>
+
+			{orders.length === 0 ? (
+				<div className="mt-8">
+					<div className="rounded border border-neutral-100 bg-white p-4">
+						<div className="flex items-center">No orders found</div>
+					</div>
+				</div>
+			) : (
+				<ul className="mt-8 space-y-6">
+					{orders.map(({ node: order }) => {
+						return <OrderListItem order={order} key={order.id} />;
+					})}
+				</ul>
+			)}
+		</div>
+	);
 }
