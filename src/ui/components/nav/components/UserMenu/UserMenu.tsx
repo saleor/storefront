@@ -3,11 +3,11 @@
 import { Fragment } from "react";
 import clsx from "clsx";
 import { Menu, Transition } from "@headlessui/react";
-import Link from "next/link";
 import { UserInfo } from "./components/UserInfo";
 import { UserAvatar } from "./components/UserAvatar";
 import { type UserDetailsFragment } from "@/gql/graphql";
 import { logout } from "@/app/actions";
+import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
 type Props = {
 	user: UserDetailsFragment;
@@ -34,7 +34,7 @@ export function UserMenu({ user }: Props) {
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
 							{({ active }) => (
-								<Link
+								<LinkWithChannel
 									href="/orders"
 									className={clsx(
 										active && "bg-neutral-100",
@@ -42,7 +42,7 @@ export function UserMenu({ user }: Props) {
 									)}
 								>
 									My orders
-								</Link>
+								</LinkWithChannel>
 							)}
 						</Menu.Item>
 					</div>

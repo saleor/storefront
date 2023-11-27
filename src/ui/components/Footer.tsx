@@ -1,11 +1,10 @@
-import Link from "next/link";
+import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 
-export async function Footer() {
+export async function Footer({ channel }: { channel: string }) {
 	const footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "footer", channel: DEFAULT_CHANNEL },
+		variables: { slug: "footer", channel },
 		revalidate: 60 * 60 * 24,
 	});
 	const currentYear = new Date().getFullYear();
@@ -23,28 +22,34 @@ export async function Footer() {
 										if (child.category) {
 											return (
 												<li key={child.id} className="text-sm">
-													<Link href={`/categories/${child.category.slug}`}>{child.category.name}</Link>
+													<LinkWithChannel href={`/categories/${child.category.slug}`}>
+														{child.category.name}
+													</LinkWithChannel>
 												</li>
 											);
 										}
 										if (child.collection) {
 											return (
 												<li key={child.id} className="text-sm">
-													<Link href={`/collections/${child.collection.slug}`}>{child.collection.name}</Link>
+													<LinkWithChannel href={`/collections/${child.collection.slug}`}>
+														{child.collection.name}
+													</LinkWithChannel>
 												</li>
 											);
 										}
 										if (child.page) {
 											return (
 												<li key={child.id} className="text-sm">
-													<Link href={`/pages/${child.page.slug}`}>{child.page.title}</Link>
+													<LinkWithChannel href={`/pages/${child.page.slug}`}>
+														{child.page.title}
+													</LinkWithChannel>
 												</li>
 											);
 										}
 										if (child.url) {
 											return (
 												<li key={child.id} className="text-sm">
-													<Link href={child.url}>{child.name}</Link>
+													<LinkWithChannel href={child.url}>{child.name}</LinkWithChannel>
 												</li>
 											);
 										}

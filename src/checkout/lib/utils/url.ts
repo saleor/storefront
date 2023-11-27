@@ -1,5 +1,4 @@
 import queryString from "query-string";
-import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 import { type CountryCode } from "@/checkout/graphql";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 
@@ -38,10 +37,6 @@ type RawQueryParams = Record<UnmappedQueryParam, ParamBasicValue> & CustomTypedQ
 
 export type QueryParams = Record<QueryParam, ParamBasicValue> & CustomTypedQueryParams;
 
-const defaultParams: Partial<RawQueryParams> = {
-	channel: DEFAULT_CHANNEL,
-};
-
 // this is intentional, we know what we'll get from the query but
 // queryString has no way to type this in such a specific way
 export const getRawQueryParams = () => queryString.parse(location.search) as unknown as RawQueryParams;
@@ -52,7 +47,7 @@ export const getQueryParams = (): QueryParams => {
 	return Object.entries(params).reduce((result, entry) => {
 		const [paramName, paramValue] = entry as [UnmappedQueryParam, ParamBasicValue];
 		const mappedParamName = queryParamsMap[paramName];
-		const mappedParamValue = paramValue || defaultParams[paramName];
+		const mappedParamValue = paramValue;
 
 		return {
 			...result,

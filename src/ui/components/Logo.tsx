@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LinkWithChannel } from "../atoms/LinkWithChannel";
 
 const companyName = "ACME";
 
@@ -17,9 +17,9 @@ export const Logo = () => {
 	}
 	return (
 		<div className="flex items-center font-bold">
-			<Link aria-label="homepage" href="/">
+			<LinkWithChannel aria-label="homepage" href="/">
 				{companyName}
-			</Link>
+			</LinkWithChannel>
 		</div>
 	);
 };

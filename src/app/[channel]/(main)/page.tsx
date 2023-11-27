@@ -1,4 +1,3 @@
-import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
@@ -9,11 +8,11 @@ export const metadata = {
 		"Storefront Next.js Example for building performant e-commerce experiences with Saleor - the composable, headless commerce platform for global brands.",
 };
 
-export default async function Page() {
+export default async function Page({ params }: { params: { channel: string } }) {
 	const data = await executeGraphQL(ProductListByCollectionDocument, {
 		variables: {
 			slug: "featured-products",
-			channel: DEFAULT_CHANNEL,
+			channel: params.channel,
 		},
 		revalidate: 60,
 	});

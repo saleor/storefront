@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { type ProductListItemFragment, type VariantDetailsFragment } from "@/gql/graphql";
 import { getHrefForVariant } from "@/lib/utils";
 
@@ -8,13 +8,15 @@ export function VariantSelector({
 	variants,
 	product,
 	selectedVariant,
+	channel,
 }: {
 	variants: readonly VariantDetailsFragment[];
 	product: ProductListItemFragment;
 	selectedVariant?: VariantDetailsFragment;
+	channel: string;
 }) {
 	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
-		redirect(getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id }));
+		redirect("/" + channel + getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id }));
 	}
 
 	return (
@@ -26,7 +28,7 @@ export function VariantSelector({
 						const isDisabled = !variant.quantityAvailable;
 						const isCurrentVariant = selectedVariant?.id === variant.id;
 						return (
-							<Link
+							<LinkWithChannel
 								key={variant.id}
 								prefetch={true}
 								scroll={false}
@@ -46,7 +48,7 @@ export function VariantSelector({
 								aria-disabled={isDisabled}
 							>
 								{variant.name}
-							</Link>
+							</LinkWithChannel>
 						);
 					})}
 				</div>
