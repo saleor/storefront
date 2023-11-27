@@ -3,6 +3,7 @@ import { OrderDirection, ProductOrderField, SearchProductsDocument } from "@/gql
 import { ProductsPerPage, executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
+import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
@@ -36,6 +37,7 @@ export default async function Page({ searchParams }: Props) {
 			after: cursor,
 			sortBy: ProductOrderField.Rating,
 			sortDirection: OrderDirection.Asc,
+			channel: DEFAULT_CHANNEL,
 		},
 		revalidate: 60,
 	});
