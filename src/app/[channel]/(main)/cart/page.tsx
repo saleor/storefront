@@ -1,17 +1,16 @@
-import { cookies } from "next/headers";
 import Image from "next/image";
-import Link from "next/link";
 import { CheckoutLink } from "./CheckoutLink";
 import { DeleteLineButton } from "./DeleteLineButton";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney, getHrefForVariant } from "@/lib/utils";
+import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
 export const metadata = {
 	title: "Shopping Cart · Saleor Storefront example",
 };
 
-export default async function Page() {
-	const checkoutId = cookies().get("checkoutId")?.value || "";
+export default async function Page({ params }: { params: { channel: string } }) {
+	const checkoutId = Checkout.getIdFromCookies(params.channel);
 
 	const checkout = await Checkout.find(checkoutId);
 
@@ -22,12 +21,12 @@ export default async function Page() {
 				<p className="my-12 text-sm text-neutral-500">
 					Looks like you haven’t added any items to the cart yet.
 				</p>
-				<Link
+				<LinkWithChannel
 					href="/products"
 					className="inline-block max-w-full rounded border border-transparent bg-neutral-900 px-6 py-3 text-center font-medium text-neutral-50 hover:bg-neutral-800 aria-disabled:cursor-not-allowed aria-disabled:bg-neutral-500 sm:px-16"
 				>
 					Explore products
-				</Link>
+				</LinkWithChannel>
 			</section>
 		);
 	}
@@ -57,14 +56,14 @@ export default async function Page() {
 							<div className="relative flex flex-1 flex-col justify-between p-4 py-2">
 								<div className="flex justify-between justify-items-start gap-4">
 									<div>
-										<Link
+										<LinkWithChannel
 											href={getHrefForVariant({
 												productSlug: item.variant.product.slug,
 												variantId: item.variant.id,
 											})}
 										>
 											<h2 className="font-medium text-neutral-700">{item.variant?.product?.name}</h2>
-										</Link>
+										</LinkWithChannel>
 										<p className="mt-1 text-sm text-neutral-500">{item.variant?.product?.category?.name}</p>
 										{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
 											<p className="mt-1 text-sm text-neutral-500">Variant: {item.variant.name}</p>

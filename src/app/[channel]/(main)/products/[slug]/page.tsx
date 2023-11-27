@@ -1,6 +1,5 @@
 import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
@@ -14,17 +13,13 @@ import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
-import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
-
-const shouldUseHttps =
-	process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
 
 export async function generateMetadata(
 	{
 		params,
 		searchParams,
 	}: {
-		params: { slug: string };
+		params: { slug: string; channel: string };
 		searchParams: { variant?: string };
 	},
 	parent: ResolvingMetadata,
@@ -32,7 +27,7 @@ export async function generateMetadata(
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
-			channel: DEFAULT_CHANNEL,
+			channel: params.channel,
 		},
 		revalidate: 60,
 	});
@@ -66,13 +61,10 @@ export async function generateMetadata(
 	};
 }
 
-// TODO: re-enable when the bug in Next.js is fixed
-// https://github.com/vercel/next.js/issues/50658
-
-export async function generateStaticParams() {
+export async function generateStaticParams({ params }: { params: { channel: string } }) {
 	const { products } = await executeGraphQL(ProductListDocument, {
 		revalidate: 60,
-		variables: { first: 20, channel: DEFAULT_CHANNEL },
+		variables: { first: 20, channel: params.channel },
 		withAuth: false,
 	});
 
@@ -82,13 +74,17 @@ export async function generateStaticParams() {
 
 const parser = edjsHTML();
 
-export default async function Page(props: { params: { slug: string }; searchParams: { variant?: string } }) {
-	const { params, searchParams } = props;
-
+export default async function Page({
+	params,
+	searchParams,
+}: {
+	params: { slug: string; channel: string };
+	searchParams: { variant?: string };
+}) {
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
-			channel: DEFAULT_CHANNEL,
+			channel: params.channel,
 		},
 		revalidate: 60,
 	});
@@ -107,14 +103,13 @@ export default async function Page(props: { params: { slug: string }; searchPara
 	async function addItem() {
 		"use server";
 
-		const checkout = await Checkout.findOrCreate(cookies().get("checkoutId")?.value);
+		const checkout = await Checkout.findOrCreate({
+			checkoutId: Checkout.getIdFromCookies(params.channel),
+			channel: params.channel,
+		});
 		invariant(checkout, "This should never happen");
 
-		cookies().set("checkoutId", checkout.id, {
-			secure: shouldUseHttps,
-			sameSite: "lax",
-			httpOnly: true,
-		});
+		Checkout.saveIdToCookie(params.channel, checkout.id);
 
 		if (!selectedVariantID) {
 			return;
@@ -204,7 +199,12 @@ export default async function Page(props: { params: { slug: string }; searchPara
 						</p>
 
 						{variants && (
-							<VariantSelector selectedVariant={selectedVariant} variants={variants} product={product} />
+							<VariantSelector
+								selectedVariant={selectedVariant}
+								variants={variants}
+								product={product}
+								channel={params.channel}
+							/>
 						)}
 						{description && (
 							<div className="mt-8 space-y-6">
