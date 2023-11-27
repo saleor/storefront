@@ -49,7 +49,6 @@ export function UserMenu({ user }: Props) {
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
 							{({ active }) => (
-
 								<form action={logout}>
 									<button
 										type="submit"
@@ -66,6 +65,6 @@ export function UserMenu({ user }: Props) {
 					</div>
 				</Menu.Items>
 			</Transition>
-		</Menu >
+		</Menu>
 	);
 }

@@ -1,3 +1,4 @@
+import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
@@ -12,6 +13,7 @@ export default async function Page() {
 	const data = await executeGraphQL(ProductListByCollectionDocument, {
 		variables: {
 			slug: "featured-products",
+			channel: DEFAULT_CHANNEL,
 		},
 		revalidate: 60,
 	});

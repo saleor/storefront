@@ -1,5 +1,5 @@
-query ProductListByCollection($slug: String!) {
-	collection(slug: $slug, channel: "default-channel") {
+query ProductListByCollection($slug: String!, $channel: String!) {
+	collection(slug: $slug, channel: $channel) {
 		name
 		description
 		seoDescription

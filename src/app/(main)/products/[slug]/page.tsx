@@ -14,6 +14,7 @@ import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
+import { DEFAULT_CHANNEL } from "@/checkout/lib/regions";
 
 const shouldUseHttps =
 	process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
@@ -31,6 +32,7 @@ export async function generateMetadata(
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
+			channel: DEFAULT_CHANNEL,
 		},
 		revalidate: 60,
 	});
@@ -70,7 +72,7 @@ export async function generateMetadata(
 export async function generateStaticParams() {
 	const { products } = await executeGraphQL(ProductListDocument, {
 		revalidate: 60,
-		variables: { first: 20 },
+		variables: { first: 20, channel: DEFAULT_CHANNEL },
 		withAuth: false,
 	});
 
@@ -86,6 +88,7 @@ export default async function Page(props: { params: { slug: string }; searchPara
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
+			channel: DEFAULT_CHANNEL,
 		},
 		revalidate: 60,
 	});

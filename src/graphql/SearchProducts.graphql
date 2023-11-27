@@ -4,11 +4,12 @@ query SearchProducts(
 	$sortDirection: OrderDirection!
 	$first: Int!
 	$after: String
+	$channel: String!
 ) {
 	products(
 		first: $first
 		after: $after
-		channel: "default-channel"
+		channel: $channel
 		sortBy: { field: $sortBy, direction: $sortDirection }
 		filter: { search: $search }
 	) {
