@@ -1,39 +1,28 @@
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
-import { type FormEvent, useState } from "react";
+import { saleorAuthClient } from "@/app/config";
 
-type FormValues = {
-	email: string;
-	password: string;
-};
-
-const DefaultValues: FormValues = { email: "", password: "" };
-
-export function LoginForm() {
-	const { signIn } = useSaleorAuthContext();
-
-	const [formValues, setFormValues] = useState<FormValues>(DefaultValues);
-	const [errors, setErrors] = useState<string[]>([]);
-
-	const submitHandler = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		const { data } = await signIn(formValues);
-
-		if (data.tokenCreate.errors.length > 0) {
-			setErrors(data.tokenCreate.errors.map((error) => error.message));
-			setFormValues(DefaultValues);
-		}
-	};
-
-	const changeHandler = (event: FormEvent<HTMLInputElement>) => {
-		const { name, value } = event.currentTarget;
-		setFormValues((prev) => ({ ...prev, [name]: value }));
-
-		if (errors.length > 0) setErrors([]);
-	};
+export async function LoginForm() {
 	return (
 		<div className="mx-auto mt-16 w-full max-w-lg">
-			<form className="rounded border p-8 shadow-md" onSubmit={submitHandler}>
+			<form
+				className="rounded border p-8 shadow-md"
+				action={async (formData) => {
+					"use server";
+
+					const email = formData.get("email")?.toString();
+					const password = formData.get("password")?.toString();
+
+					if (!email || !password) {
+						throw new Error("Email and password are required");
+					}
+
+					const { data } = await saleorAuthClient.signIn({ email, password }, { cache: "no-store" });
+
+					if (data.tokenCreate.errors.length > 0) {
+						// setErrors(data.tokenCreate.errors.map((error) => error.message));
+						// setFormValues(DefaultValues);
+					}
+				}}
+			>
 				<div className="mb-2">
 					<label className="sr-only" htmlFor="email">
 						Email
@@ -43,8 +32,6 @@ export function LoginForm() {
 						name="email"
 						placeholder="Email"
 						className="w-full rounded border bg-neutral-50 px-4 py-2"
-						value={formValues.email}
-						onChange={changeHandler}
 					/>
 				</div>
 				<div className="mb-4">
@@ -58,8 +45,6 @@ export function LoginForm() {
 						autoCapitalize="off"
 						autoComplete="off"
 						className="w-full rounded border bg-neutral-50 px-4 py-2"
-						value={formValues.password}
-						onChange={changeHandler}
 					/>
 				</div>
 
@@ -70,13 +55,7 @@ export function LoginForm() {
 					Log In
 				</button>
 			</form>
-			<div>
-				{errors.map((error) => (
-					<p key={error} className="text-red-500">
-						{error}
-					</p>
-				))}
-			</div>
+			<div></div>
 		</div>
 	);
 }
