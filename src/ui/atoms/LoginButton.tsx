@@ -6,7 +6,7 @@ export const LoginButton = () => {
 	const { pending } = useFormStatus();
 	return (
 		<button
-			className="mt-2 self-start rounded bg-neutral-800 px-4 py-2 text-neutral-200 hover:bg-neutral-700 aria-disabled:opacity-80"
+			className="mt-2 rounded bg-neutral-800 px-4 py-2 text-neutral-200 hover:bg-neutral-700 aria-disabled:opacity-80"
 			type="submit"
 			aria-disabled={pending}
 		>

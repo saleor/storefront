@@ -1,4 +1,4 @@
-import { LoginButton } from "./components/LoginButton";
+import { LoginButton } from "@ui/atoms/LoginButton";
 import { saleorAuthClient } from "@/app/config";
 
 export async function LoginForm() {
