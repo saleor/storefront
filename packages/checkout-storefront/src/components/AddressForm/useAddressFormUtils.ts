@@ -114,7 +114,13 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
     hasAllRequiredFields,
     getMissingFieldsFromAddress,
     ...validationRules,
-    requiredFields: [...validationRules.requiredFields, ...ADDITIONAL_VALIDATED_FIELDS],
-    allowedFields: [...validationRules.allowedFields, ...ADDITIONAL_VALIDATED_FIELDS],
+    requiredFields: [
+      ...validationRules.requiredFields,
+      ...ADDITIONAL_VALIDATED_FIELDS,
+    ] as AddressField[],
+    allowedFields: [
+      ...validationRules.allowedFields,
+      ...ADDITIONAL_VALIDATED_FIELDS,
+    ] as AddressField[],
   };
 };
