@@ -178,6 +178,7 @@ export const getRequiredAddressFields = (requiredFields: AddressField[] = []): A
   ...requiredFields,
   "firstName",
   "lastName",
+  "phone",
 ];
 
 // api doesn't approve of "name" so we replace it with "firstName"

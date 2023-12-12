@@ -1,4 +1,3 @@
-import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import { useAddressFormUtils } from "@/checkout-storefront/components/AddressForm/useAddressFormUtils";
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
@@ -11,7 +10,7 @@ export const useAddressFormSchema = (initialCountryCode?: CountryCode) => {
   const { allowedFields, requiredFields } = useAddressFormUtils(countryCode);
 
   const getFieldValidator = useCallback(
-    (field: AddressField) => {
+    (field: string) => {
       if (field === "countryCode") {
         return mixed<CountryCode>().required(errorMessages.required);
       }
