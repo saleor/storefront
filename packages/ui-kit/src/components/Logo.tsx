@@ -1,7 +1,13 @@
-const Logo = ({ height, width, STOREFRONT_NAME }: any) => {
+import { SVGAttributes } from "react";
+
+interface LogoProps extends Pick<SVGAttributes<SVGSVGElement>, "width" | "height"> {
+  STOREFRONT_CHANNEL: string;
+}
+
+const Logo = ({ height, width, STOREFRONT_CHANNEL }: LogoProps) => {
   return (
     <>
-      {STOREFRONT_NAME === "FASHION4YOU" ? (
+      {STOREFRONT_CHANNEL === "fashion4you" ? (
         <svg
           width={width}
           height={height}
@@ -31,7 +37,7 @@ const Logo = ({ height, width, STOREFRONT_NAME }: any) => {
           />
         </svg>
       ) : (
-        STOREFRONT_NAME === "CLOTHES4U" && (
+        STOREFRONT_CHANNEL === "clothes4you" && (
           <svg
             width={width}
             height={height}
