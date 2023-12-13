@@ -23,7 +23,7 @@ export const CheckoutHeaderBar: FC<CheckoutHeaderBarProps> = ({
         justifyContent: "space-between",
       }}
     >
-      <Logo height="60" width="120" STOREFRONT_CHANNEL={storefrontChannel} />
+      <Logo height="60" width="120" storefrontChannel={storefrontChannel} />
       <button
         type="button"
         onClick={destinationLink}

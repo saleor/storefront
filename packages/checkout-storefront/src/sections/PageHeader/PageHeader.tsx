@@ -1,5 +1,3 @@
-"use client";
-
 import { LanguageSelect } from "@/checkout-storefront/sections/PageHeader/LanguageSelect";
 import { CheckoutHeaderBar } from "@saleor/ui-kit";
 import { headerMessages } from "../../sections/PageHeader/messages";
