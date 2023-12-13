@@ -1,9 +1,9 @@
-import { AddressField } from "@/checkout-storefront/components/AddressForm/types";
 import { useAddressFormUtils } from "@/checkout-storefront/components/AddressForm/useAddressFormUtils";
 import { CountryCode } from "@/checkout-storefront/graphql";
 import { useErrorMessages } from "@/checkout-storefront/hooks/useErrorMessages";
 import { useCallback, useMemo, useState } from "react";
 import { mixed, object, string } from "yup";
+import { AddressField } from "./types";
 
 export const useAddressFormSchema = (initialCountryCode?: CountryCode) => {
   const { errorMessages } = useErrorMessages();

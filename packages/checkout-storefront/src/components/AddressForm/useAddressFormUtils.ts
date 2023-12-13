@@ -20,6 +20,8 @@ import {
   getRequiredAddressFields,
 } from "@/checkout-storefront/components/AddressForm/utils";
 
+const ADDITIONAL_VALIDATED_FIELDS = ["phone"];
+
 export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
   const formatMessage = useFormattedMessages();
 
@@ -112,6 +114,13 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
     hasAllRequiredFields,
     getMissingFieldsFromAddress,
     ...validationRules,
-    allowedFields: validationRules?.allowedFields as AddressField[],
+    requiredFields: [
+      ...validationRules.requiredFields,
+      ...ADDITIONAL_VALIDATED_FIELDS,
+    ] as AddressField[],
+    allowedFields: [
+      ...validationRules.allowedFields,
+      ...ADDITIONAL_VALIDATED_FIELDS,
+    ] as AddressField[],
   };
 };
