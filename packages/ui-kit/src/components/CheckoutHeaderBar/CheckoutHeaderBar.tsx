@@ -4,39 +4,44 @@ import Logo from "../Logo";
 import { BackIcon } from "..";
 
 export interface CheckoutHeaderBarProps {
-  storefrontName: string;
+  storefrontChannel: string;
   destinationLink: () => void;
   backMessage: string;
 }
 
 export const CheckoutHeaderBar: FC<CheckoutHeaderBarProps> = ({
-  storefrontName,
+  storefrontChannel,
   destinationLink,
   backMessage,
 }) => {
   return (
-    <div>
-      <div>
-        <button type="button" onClick={destinationLink} className="cursor-pointer">
-          <div>
-            <Logo height="120" width="150" STOREFRONT_NAME={storefrontName} />
-          </div>
-          <div
-            style={{
-              padding: "5px",
-              border: "1px",
-              borderStyle: "solid",
-              borderRadius: "20px",
-              textAlign: "center",
-              borderColor: "rgb(185,193,207)",
-              display: "flex",
-              lineHeight: "2em",
-            }}
-          >
-            <BackIcon /> {backMessage}
-          </div>
-        </button>
-      </div>
+    <div
+      style={{
+        display: "flex",
+        gap: "32px",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Logo height="60" width="120" storefrontChannel={storefrontChannel} />
+      <button
+        type="button"
+        onClick={destinationLink}
+        className="cursor-pointer"
+        style={{
+          border: "1px",
+          borderStyle: "solid",
+          borderRadius: "20px",
+          borderColor: "rgb(185,193,207)",
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "8px",
+          padding: "6px 14px",
+          alignItems: "center",
+        }}
+      >
+        <BackIcon /> {backMessage}
+      </button>
     </div>
   );
 };
