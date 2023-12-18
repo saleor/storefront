@@ -4,7 +4,7 @@
 ![Nextjs Storefront](./screenshot.png)
 
 <div align="center">
-  <h1>Next.js Storefront</h1>
+  <h1>Saleor Next.js Storefront</h1>
   Starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
 </div>
 
@@ -73,6 +73,7 @@
 
 > [!IMPORTANT]
 > To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
+> You can also [run Saleor locally](https://docs.saleor.io/docs/3.x/setup/docker-compose).
 
 Install the latest version of the Saleor CLI by running the following command:
 
@@ -103,7 +104,7 @@ Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https:
 
 ## Development
 
-Clone and repo and copy `.env.example` to `.env`:
+Copy environment variables from `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
