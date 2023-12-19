@@ -49,7 +49,7 @@ export const Summary: FC<SummaryProps> = ({
   const [isOpen, setOpen] = useState(true);
 
   const { maxSummaryHeight, allItemsHeight } = useSummaryHeightCalc({
-    linesCount: lines.length,
+    linesCount: lines?.length,
     onBreakpointChange: (breakpoint: "lg" | "md") => {
       setOpen(breakpoint === "lg");
     },
@@ -89,7 +89,7 @@ export const Summary: FC<SummaryProps> = ({
               : ""
           )}
         >
-          {lines.map((line) => (
+          {lines?.map((line) => (
             <SummaryItem line={line} key={line?.id}>
               {editable ? (
                 <SummaryItemMoneyEditableSection line={line as CheckoutLineFragment} />
