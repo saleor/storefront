@@ -28243,6 +28243,7 @@ export type TransactionInitializeMutationVariables = Exact<{
 	action?: InputMaybe<TransactionFlowStrategyEnum>;
 	paymentGateway: PaymentGatewayToInitialize;
 	amount?: InputMaybe<Scalars["PositiveDecimal"]>;
+	idempotencyKey?: InputMaybe<Scalars["String"]>;
 }>;
 
 export type TransactionInitializeMutation = {
@@ -29352,12 +29353,14 @@ export const TransactionInitializeDocument = gql`
 		$action: TransactionFlowStrategyEnum
 		$paymentGateway: PaymentGatewayToInitialize!
 		$amount: PositiveDecimal
+		$idempotencyKey: String
 	) {
 		transactionInitialize(
 			id: $checkoutId
 			action: $action
 			paymentGateway: $paymentGateway
 			amount: $amount
+			idempotencyKey: $idempotencyKey
 		) {
 			transaction {
 				id

@@ -41,6 +41,7 @@ import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { useUser } from "@/checkout/hooks/useUser";
 import { getUrlForTransactionInitialize } from "@/checkout/sections/PaymentSection/utils";
 import { usePaymentProcessingScreen } from "@/checkout/sections/PaymentSection/PaymentProcessingScreen";
+import { useIdempotency } from "@/checkout/hooks/useIdempotency";
 
 export interface AdyenDropinProps {
 	config: ParsedAdyenGateway;
@@ -63,6 +64,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 	const { submitInProgress } = useCheckoutUpdateState();
 	const { setSubmitInProgress, setShouldRegisterUser } = useCheckoutUpdateStateActions();
 	const { setIsProcessingPayment } = usePaymentProcessingScreen();
+	const { idempotencyKey, clearIdempotencyKey } = useIdempotency();
 
 	const [currentTransactionId, setCurrentTransactionId] = useState<ParamBasicValue>(
 		getQueryParams().transaction,
@@ -102,6 +104,8 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 			if (action) {
 				adyenCheckoutSubmitParams?.component.handleAction(action);
 			}
+
+			clearIdempotencyKey();
 
 			switch (resultCode) {
 				case "Authorised":
@@ -195,6 +199,8 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 						data: { paymentDetailsResponse },
 					} = data;
 
+					clearIdempotencyKey();
+
 					// we don't do these at onFinished since redirect will happen first
 					clearQueryParams("transaction");
 					setCurrentTransactionId(null);
@@ -212,6 +218,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 				setIsProcessingPayment,
 				showCustomErrors,
 				transactionProcess,
+				clearIdempotencyKey,
 			],
 		),
 	);
@@ -258,6 +265,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 
 		void onTransactionInitialize({
 			checkoutId,
+			idempotencyKey,
 			amount: totalPrice.gross.amount,
 			paymentGateway: {
 				id,
@@ -280,6 +288,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 		validationState,
 		id,
 		setSubmitInProgress,
+		idempotencyKey,
 	]);
 
 	const onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails = useEvent(async (state, component) => {

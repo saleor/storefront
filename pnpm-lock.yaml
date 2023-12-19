@@ -12,8 +12,8 @@ dependencies:
     specifier: 5.53.3
     version: 5.53.3
   '@adyen/api-library':
-    specifier: 15.0.0-beta
-    version: 15.0.0-beta
+    specifier: 14.4.0
+    version: 14.4.0
   '@headlessui/react':
     specifier: 1.7.17
     version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -83,6 +83,9 @@ dependencies:
   urql:
     specifier: 4.0.6
     version: 4.0.6(graphql@16.8.1)(react@18.2.0)
+  uuid:
+    specifier: 9.0.1
+    version: 9.0.1
   xss:
     specifier: 1.0.14
     version: 1.0.14
@@ -218,8 +221,8 @@ packages:
       preact: 10.13.2
     dev: false
 
-  /@adyen/api-library@15.0.0-beta:
-    resolution: {integrity: sha512-FVP5n20sFRD6nmpeUtFlP4J9ZiLU+nBGtx4Mk1VMz3ixQh9N+GxWnsg7wBlGSzTvAbQ7sjnHnBtV1fuTQOryqw==}
+  /@adyen/api-library@14.4.0:
+    resolution: {integrity: sha512-HHX9tJQxJud0ZWRgh2qGejqQMASR/Gk/u/y9M3cx4a/cFqMWBh+nWHkvTRYuGHrTf65uLzfNLT2dA/tHD/MENA==}
     engines: {node: '>=18'}
     dependencies:
       https-proxy-agent: 5.0.1
@@ -6272,6 +6275,11 @@ packages:
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+    dev: false
 
   /value-or-promise@1.0.12:
     resolution: {integrity: sha512-Z6Uz+TYwEqE7ZN50gwn+1LCVo9ZVrpxRPOhOLnncYkY1ZzOYtrX8Fwf/rFktZ8R5mJms6EZf5TqNOMeZmnPq9Q==}

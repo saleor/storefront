@@ -22,8 +22,15 @@ mutation transactionInitialize(
 	$action: TransactionFlowStrategyEnum
 	$paymentGateway: PaymentGatewayToInitialize!
 	$amount: PositiveDecimal
+	$idempotencyKey: String
 ) {
-	transactionInitialize(id: $checkoutId, action: $action, paymentGateway: $paymentGateway, amount: $amount) {
+	transactionInitialize(
+		id: $checkoutId
+		action: $action
+		paymentGateway: $paymentGateway
+		amount: $amount
+		idempotencyKey: $idempotencyKey
+	) {
 		transaction {
 			id
 			actions
