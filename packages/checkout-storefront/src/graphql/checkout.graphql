@@ -184,7 +184,6 @@ fragment AddressFragment on Address {
   }
   firstName
   lastName
-  vatId
 }
 
 query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
