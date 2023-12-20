@@ -138,6 +138,9 @@ export const Summary: FC<SummaryProps> = ({
             ariaLabel={formatMessage(summaryLabels.shippingCost)}
             money={shippingPrice?.gross}
           />
+          <Text className="ml-4" size="sm">
+            Zamówienia realizowane w ciągu 2 - 3 dni roboczych.
+          </Text>
           <Divider className="my-4" />
           <div className="summary-row pb-4 items-baseline">
             <div className="flex flex-row items-baseline">
