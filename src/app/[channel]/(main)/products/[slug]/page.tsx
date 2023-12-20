@@ -179,22 +179,24 @@ export default async function Page({
 					__html: JSON.stringify(productJsonLd),
 				}}
 			/>
-			<form className="grid gap-2 sm:grid-cols-2" action={addItem}>
-				{firstImage && (
-					<ProductImageWrapper
-						priority={true}
-						alt={firstImage.alt ?? ""}
-						width={1024}
-						height={1024}
-						src={firstImage.url}
-					/>
-				)}
-				<div className="flex flex-col pt-6 sm:px-6 sm:pt-0">
+			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
+				<div className="md:col-span-1 lg:col-span-5">
+					{firstImage && (
+						<ProductImageWrapper
+							priority={true}
+							alt={firstImage.alt ?? ""}
+							width={1024}
+							height={1024}
+							src={firstImage.url}
+						/>
+					)}
+				</div>
+				<div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
 					<div>
-						<h1 className="mb-4 flex-auto text-3xl font-bold tracking-tight text-neutral-900">
+						<h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
 							{product?.name}
 						</h1>
-						<p className="mb-8 text-sm font-medium text-neutral-900" data-testid="ProductElement_Price">
+						<p className="mb-8 text-sm " data-testid="ProductElement_Price">
 							{price}
 						</p>
 
@@ -206,18 +208,17 @@ export default async function Page({
 								channel={params.channel}
 							/>
 						)}
+						<AvailabilityMessage isAvailable={isAvailable} />
+						<div className="mt-8">
+							<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
+						</div>
 						{description && (
-							<div className="mt-8 space-y-6">
+							<div className="mt-8 space-y-6 text-sm text-neutral-500">
 								{description.map((content) => (
 									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 								))}
 							</div>
 						)}
-						<AvailabilityMessage isAvailable={isAvailable} />
-					</div>
-
-					<div className="mt-8">
-						<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
 					</div>
 				</div>
 			</form>
