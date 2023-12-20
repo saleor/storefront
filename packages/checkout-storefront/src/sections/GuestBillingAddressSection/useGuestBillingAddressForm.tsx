@@ -41,10 +41,13 @@ export const useGuestBillingAddressForm = ({ skipValidation }: GuestBillingAddre
             setChangingBillingCountry(true);
           }
         },
-        parse: ({ languageCode, checkoutId, ...rest }) => ({
+        parse: ({ languageCode, checkoutId, vatId, ...rest }) => ({
           languageCode,
           checkoutId,
-          billingAddress: getAddressInputData(omit(rest, ["channel"])),
+          billingAddress: {
+            ...getAddressInputData(omit(rest, ["channel"])),
+            metadata: [{ key: "vat_id", value: vatId || "" }],
+          },
           validationRules: getAddressValidationRulesVariables({ autoSave: true }),
         }),
         onSuccess: ({ data, formHelpers }) => {

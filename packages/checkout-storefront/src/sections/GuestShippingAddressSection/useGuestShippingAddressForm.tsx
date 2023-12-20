@@ -29,10 +29,13 @@ export const useGuestShippingAddressForm = () => {
       () => ({
         scope: "checkoutShippingUpdate",
         onSubmit: checkoutShippingAddressUpdate,
-        parse: ({ languageCode, checkoutId, ...rest }) => ({
+        parse: ({ languageCode, checkoutId, vatId, ...rest }) => ({
           languageCode,
           checkoutId,
-          shippingAddress: getAddressInputData(omit(rest, "channel")),
+          shippingAddress: {
+            ...getAddressInputData(omit(rest, "channel")),
+            metadata: [{ key: "vat_id", value: vatId || "" }],
+          },
           validationRules: getAddressValidationRulesVariables({ autoSave: true }),
         }),
         onSuccess: ({ data, formHelpers }) => {
