@@ -18,8 +18,8 @@ export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
 
 	return (
-		<html lang="en" className="min-h-[100dvh]">
-			<body className={`${inter.className} min-h-[100dvh]`}>
+		<html lang="en" className="min-h-dvh">
+			<body className={`${inter.className} min-h-dvh`}>
 				{children}
 				<DraftModeNotification />
 			</body>

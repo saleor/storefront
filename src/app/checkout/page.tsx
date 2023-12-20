@@ -17,8 +17,8 @@ export default function CheckoutPage({
 	}
 
 	return (
-		<div className="min-h-[100dvh] bg-white">
-			<section className="mx-auto flex min-h-[100dvh] max-w-7xl flex-col p-8">
+		<div className="min-h-dvh bg-white">
+			<section className="mx-auto flex min-h-dvh max-w-7xl flex-col p-8">
 				<div className="flex items-center font-bold">
 					<a aria-label="homepage" href="/">
 						ACME
