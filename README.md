@@ -86,7 +86,7 @@ npm i -g @saleor/cli@latest
 Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a clone, install dependencies, and connect with the provided Saleor instance.
 
 ```bash
-saleor storefront create --url https://{your_cloud_instance}.saleor.cloud
+saleor storefront create --url https://{your_cloud_instance}.saleor.cloud/graphql/
 ```
 
 > [!NOTE]
