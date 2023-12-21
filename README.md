@@ -71,38 +71,33 @@
 
 ## Quickstart
 
-> [!IMPORTANT]
-> To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/).
-> You can also [run Saleor locally](https://docs.saleor.io/docs/3.x/setup/docker-compose).
+### 1. Create Saleor backend instance
+To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/?utm_source=storefront&utm_medium=github).
 
-Install the latest version of the Saleor CLI by running the following command:
+Alternatively you can [run Saleor locally using docker](https://docs.saleor.io/docs/3.x/setup/docker-compose?utm_source=storefront&utm_medium=github).
+
+### 2. Clone storefront
+
+#### [Option 1] Using Comand line tools
+
+Install or update to the latest version of the [Saleor CLI](https://docs.saleor.io/docs/3.x/cli) by running the following command:
 
 ```bash
 npm i -g @saleor/cli@latest
 ```
 
-[Learn more about Saleor CLI](https://docs.saleor.io/docs/3.x/cli).
-
-Set up your local storefront development environment by running the `storefront create` command with `--url` parameter. It will create a clone, install dependencies, and connect with the provided Saleor instance.
+Clone storefront, install dependencies, and connect with the provided Saleor instance hostname
 
 ```bash
-saleor storefront create --url https://{your_cloud_instance}.saleor.cloud/graphql/
+saleor storefront create --url https://{SALEOR_HOSTNAME}/graphql/
 ```
 
-> [!NOTE]
-> The minimum required version of Saleor CLI is `1.36.0`.
+#### [Option 2] Manual install
 
-## Payments
-
-Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To install and configure the payment app go to the "Apps" section in the Saleor Dashboard (App Store is only available in Saleor Cloud).
-
-> [!WARNING]
-> To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
-
-> [!NOTE]
-> Saleor Stripe App integration is a work in progress.
-
-## Development
+Clone repository:
+```bash
+git clone https://github.com/saleor/storefront.git
+```
 
 Copy environment variables from `.env.example` to `.env`:
 
@@ -117,6 +112,19 @@ Then, [install `pnpm`](https://pnpm.io/installation) and run the following comma
 ```bash
 pnpm i
 ```
+
+
+## Payments
+
+Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To install and configure the payment app go to the "Apps" section in the Saleor Dashboard (App Store is only available in Saleor Cloud).
+
+> [!WARNING]
+> To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
+
+> [!NOTE]
+> Saleor Stripe App integration is a work in progress.
+
+## Development
 
 To start the development server, run the following:
 
