@@ -96,7 +96,7 @@ saleor storefront create --url https://{SALEOR_HOSTNAME}/graphql/
 
 Clone repository:
 ```bash
-git clone git@github.com:saleor/storefront.git
+git clone https://github.com/saleor/storefront.git
 ```
 
 Copy environment variables from `.env.example` to `.env`:
