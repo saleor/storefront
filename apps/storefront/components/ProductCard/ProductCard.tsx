@@ -120,7 +120,7 @@ export function ProductCard({ product }: ProductCardProps) {
       return;
     }
 
-    if (checkout) {
+    if (checkout?.lines.length) {
       const { data: addToCartData } = await addProductToCheckout({
         variables: {
           checkoutToken,

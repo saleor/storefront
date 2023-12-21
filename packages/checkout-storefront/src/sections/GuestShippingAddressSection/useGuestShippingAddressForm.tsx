@@ -51,7 +51,10 @@ export const useGuestShippingAddressForm = () => {
 
   const form = useAutoSaveAddressForm({
     onSubmit,
-    initialValues: getAddressFormDataFromAddress(shippingAddress),
+    initialValues: {
+      ...getAddressFormDataFromAddress(shippingAddress),
+      vatId: shippingAddress?.metadata.find((md) => md.key === "vat_id")?.value,
+    },
     scope: "checkoutShippingUpdate",
   });
 

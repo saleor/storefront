@@ -71,7 +71,10 @@ export const useGuestBillingAddressForm = ({ skipValidation }: GuestBillingAddre
 
   const form = useAutoSaveAddressForm({
     onSubmit,
-    initialValues: getAddressFormDataFromAddress(billingAddress),
+    initialValues: {
+      ...getAddressFormDataFromAddress(billingAddress),
+      vatId: billingAddress?.metadata.find((md) => md.key === "vat_id")?.value,
+    },
     validationSchema,
     scope: "checkoutBillingUpdate",
   });

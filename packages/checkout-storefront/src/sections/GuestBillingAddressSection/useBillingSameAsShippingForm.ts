@@ -55,7 +55,15 @@ export const useBillingSameAsShippingForm = (
     parse: ({ languageCode, checkoutId }) => ({
       languageCode,
       checkoutId,
-      billingAddress: getAddressInputDataFromAddress(formBillingAddress),
+      billingAddress: {
+        ...getAddressInputDataFromAddress(formBillingAddress),
+        metadata: [
+          {
+            key: "vat_id",
+            value: formBillingAddress?.metadata.find((md) => md.key === "vat_id")?.value || "",
+          },
+        ],
+      },
       validationRules: getAddressValidationRulesVariables({ autoSave }),
     }),
     onSuccess: ({ data }) => {

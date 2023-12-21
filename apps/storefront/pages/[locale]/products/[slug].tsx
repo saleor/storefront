@@ -141,7 +141,7 @@ function ProductPage({ product }: InferGetStaticPropsType<typeof getStaticProps>
       return;
     }
 
-    if (checkout) {
+    if (checkout?.lines.length) {
       const { data: addToCartData } = await addProductToCheckout({
         variables: {
           checkoutToken,
