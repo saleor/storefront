@@ -38,6 +38,7 @@ export const getEmptyAddress = (): AddressFragment => {
 
   return {
     ...emptyAddressRest,
+    metadata: [],
     id: "",
     country: {
       code: countryCode,

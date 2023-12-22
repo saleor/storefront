@@ -77,9 +77,7 @@ export default function App(props: AppProps) {
                   height: "1.7rem",
                   marginTop: "-1.7rem",
                 }}
-              >
-                <small>{version}</small>
-              </footer>
+              />
             </ThemeProvider>
           </IntlProvider>
         </PrivateSettingsProvider>
