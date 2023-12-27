@@ -1,11 +1,11 @@
 import { useAddressFormUrlChange } from "@/checkout-storefront/components/AddressForm/useAddressFormUrlChange";
-import { getAddressFormDataFromAddress } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutBillingAddressUpdateMutation } from "@/checkout-storefront/graphql";
 import { useFormSubmit } from "@/checkout-storefront/hooks/useFormSubmit";
 import { omit } from "lodash-es";
 import {
   getAddressInputData,
   getAddressValidationRulesVariables,
+  getAddressFormDataFromAddress,
 } from "@/checkout-storefront/components/AddressForm/utils";
 import { useCheckoutFormValidationTrigger } from "@/checkout-storefront/hooks/useCheckoutFormValidationTrigger";
 import { useCheckout } from "@/checkout-storefront/hooks/useCheckout";
