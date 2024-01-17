@@ -1,14 +1,12 @@
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
+import { Product } from "@/entities/Product";
 
-import type { ProductListItemFragment } from "@/gql/graphql";
-import { formatMoneyRange } from "@/lib/utils";
-
-export function ProductElement({
+export function ProductCard({
 	product,
 	loading,
 	priority,
-}: { product: ProductListItemFragment } & { loading: "eager" | "lazy"; priority?: boolean }) {
+}: { product: Product } & { loading: "eager" | "lazy"; priority?: boolean }) {
 	return (
 		<li data-testid="ProductElement">
 			<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
@@ -32,10 +30,10 @@ export function ProductElement({
 							</p>
 						</div>
 						<p className="mt-1 text-sm font-medium text-neutral-900" data-testid="ProductElement_PriceRange">
-							{formatMoneyRange({
-								start: product?.pricing?.priceRange?.start?.gross,
-								stop: product?.pricing?.priceRange?.stop?.gross,
-							})}
+							{/*{formatMoneyRange({*/}
+							{/*	start: product?.pricing?.from,*/}
+							{/*	stop: product?.pricing?.to,*/}
+							{/*})}*/}
 						</p>
 					</div>
 				</div>

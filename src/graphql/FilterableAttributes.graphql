@@ -1,0 +1,26 @@
+query FilterableAttributes($attributeFilterInput: AttributeFilterInput, $attributeValueFilterInput: AttributeValueFilterInput) {
+    attributes(first: 100, filter: $attributeFilterInput) {
+        edges {
+            node {
+                name
+                slug
+                id
+                choices(
+                    first: 10
+                    filter: $attributeValueFilterInput
+                    sortBy: {direction: ASC, field: NAME}
+                ) {
+                    edges {
+                        node {
+                            name
+                            slug
+                            value
+                        }
+                        cursor
+                    }
+                    totalCount
+                }
+            }
+        }
+    }
+}
