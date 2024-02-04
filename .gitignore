@@ -41,3 +41,8 @@ next-env.d.ts
 /playwright/.cache/
 
 .idea/
+.turbo/
+packages
+
+
+.idea/
