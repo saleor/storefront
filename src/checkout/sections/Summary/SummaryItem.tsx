@@ -23,6 +23,9 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 					<ProductImageWrapper
 						src={productImage.url}
 						alt={productImage.alt ?? ""}
+						width={512}
+						height={512}
+						sizes={"512px"}
 						className="h-full w-full object-contain object-center"
 					/>
 				) : (
