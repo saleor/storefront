@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function EmptyPage() {
-	redirect("/default-channel/home");
+	redirect("/default-channel/pages/home");
 }

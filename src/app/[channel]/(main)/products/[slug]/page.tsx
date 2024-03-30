@@ -68,8 +68,7 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 		withAuth: false,
 	});
 
-	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
-	return paths;
+	return products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 }
 
 const parser = edjsHTML();

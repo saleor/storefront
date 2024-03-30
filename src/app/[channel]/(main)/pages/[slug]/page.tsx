@@ -5,8 +5,6 @@ import xss from "xss";
 import { PageGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 
-const parser = edjsHTML();
-
 export const generateMetadata = async ({ params }: { params: { slug: string } }): Promise<Metadata> => {
 	const { page } = await executeGraphQL(PageGetBySlugDocument, {
 		variables: { slug: params.slug },
@@ -29,6 +27,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
 		notFound();
 	}
 
+	// const pageType = page?.pageType.slug
+	const parser = edjsHTML();
+
 	const { title, content } = page;
 
 	const contentHtml = content ? parser.parse(JSON.parse(content)) : null;
@@ -37,7 +38,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 		<div className="mx-auto max-w-7xl p-8 pb-16">
 			<h1 className="text-3xl font-semibold">{title}</h1>
 			{contentHtml && (
-				<div className="prose">
+				<div className="prose text-neutral-200">
 					{contentHtml.map((content) => (
 						<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 					))}
