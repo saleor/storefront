@@ -17,7 +17,9 @@ export default async function Page({ params }: { params: { channel: string } }) 
 		revalidate: 60,
 	});
 
-	if (!data.collection?.products) throw Error("No products found");
+	if (!data.collection?.products) {
+		return null;
+	}
 
 	const products = data.collection?.products.edges.map(({ node: product }) => product);
 
