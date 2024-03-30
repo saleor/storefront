@@ -16,8 +16,8 @@ export const Logo = () => {
 		);
 	}
 	return (
-		<div className="flex items-center font-bold">
-			<LinkWithChannel aria-label="homepage" href="/home">
+		<div className="flex items-center font-bold text-neutral-200">
+			<LinkWithChannel aria-label="homepage" href="/pages/home">
 				{companyName}
 			</LinkWithChannel>
 		</div>

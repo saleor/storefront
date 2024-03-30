@@ -11,7 +11,7 @@ export const CartNavItem = async ({ channel }: { channel: string }) => {
 
 	return (
 		<LinkWithChannel href="/cart" className="relative flex items-center" data-testid="CartNavItem">
-			<ShoppingBagIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
+			<ShoppingBagIcon color="white" className="h-6 w-6 shrink-0" aria-hidden="true" />
 			{lineCount > 0 ? (
 				<div
 					className={clsx(
