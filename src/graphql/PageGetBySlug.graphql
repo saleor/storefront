@@ -6,5 +6,8 @@ query PageGetBySlug($slug: String!) {
 		seoTitle
 		seoDescription
 		content
+		pageType {
+			slug
+		}
 	}
 }

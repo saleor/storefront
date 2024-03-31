@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 
-const companyName = "ACME";
+const companyName = "CK";
 
 export const Logo = () => {
 	const pathname = usePathname();
@@ -16,8 +16,8 @@ export const Logo = () => {
 		);
 	}
 	return (
-		<div className="flex items-center font-bold">
-			<LinkWithChannel aria-label="homepage" href="/">
+		<div className="flex items-center font-bold text-neutral-200">
+			<LinkWithChannel aria-label="homepage" href="/pages/home">
 				{companyName}
 			</LinkWithChannel>
 		</div>
