@@ -11,6 +11,7 @@ primary_region = "cdg"
 [env]
   NEXT_PUBLIC_SALEOR_API_URL = 'https://saleor.fly.dev/graphql/'
   NEXT_PUBLIC_STOREFRONT_URL = 'https://react-storefront.fly.dev'
+  SITE_BACKGROUND = 'https://saleor-minio-nginx.fly.dev/saleor/pages/brown-satin-background-4k_ad56d38e.jpg?AWSAccessKeyId=saleoradmin&Signature=5KPKlQfu6wA1pk1X7nBRiJIz3Uw%3D&Expires=1711891582'
 
 [http_service]
   internal_port = 3000
