@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import { Footer } from "@/ui/components/Footer";
 import { Header } from "@/ui/components/Header";
 
@@ -13,7 +13,7 @@ export default function RootLayout(props: { children: ReactNode; params: { chann
 		<>
 			<Header channel={props.params.channel} />
 			<div className="relative flex min-h-[calc(100dvh-64px)] flex-col">
-				<Image
+				<NextImage
 					fill={true}
 					className="absolute h-full w-full opacity-80"
 					src={process.env.SITE_BACKGROUND!}
