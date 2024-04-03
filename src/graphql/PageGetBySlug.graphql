@@ -1,4 +1,4 @@
-query PageGetBySlug($slug: String!) {
+query PageGetBySlug($slug: String!, $size: Int!) {
 	page(slug: $slug) {
 		id
 		slug
@@ -8,6 +8,10 @@ query PageGetBySlug($slug: String!) {
 		content
 		pageType {
 			slug
+		}
+		media {
+			id
+			url(size: $size)
 		}
 	}
 }
