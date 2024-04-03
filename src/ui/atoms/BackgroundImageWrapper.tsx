@@ -11,7 +11,7 @@ export async function BackgroundImageWrapper(props: ImageProps) {
 
 	let imgSrc: string;
 	if (!page || !page.media) {
-		imgSrc = process.env.SITE_BACKGROUND;
+		imgSrc = process.env.SITE_BACKGROUND ? process.env.SITE_BACKGROUND : "";
 	} else {
 		imgSrc = page.media[0].url;
 	}
