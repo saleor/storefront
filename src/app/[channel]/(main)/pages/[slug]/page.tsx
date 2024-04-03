@@ -5,9 +5,11 @@ import xss from "xss";
 import { PageGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 
+type BlockType = { id: string; data: { file: { url: string } }; type: string };
+
 export const generateMetadata = async ({ params }: { params: { slug: string } }): Promise<Metadata> => {
 	const { page } = await executeGraphQL(PageGetBySlugDocument, {
-		variables: { slug: params.slug },
+		variables: { slug: params.slug, size: 0 },
 		revalidate: 60,
 	});
 
@@ -19,16 +21,31 @@ export const generateMetadata = async ({ params }: { params: { slug: string } })
 
 export default async function Page({ params }: { params: { slug: string } }) {
 	const { page } = await executeGraphQL(PageGetBySlugDocument, {
-		variables: { slug: params.slug },
+		variables: { slug: params.slug, size: 0 },
 		revalidate: 60,
 	});
-
 	if (!page) {
 		notFound();
 	}
 
+	function imageParser(block: BlockType) {
+		const imgSrc = page?.media?.find((media: { url: string }): boolean => {
+			const blockFilename = block.data.file.url.substring(
+				block.data.file.url.lastIndexOf("/") + 1,
+				block.data.file.url.indexOf("?"),
+			);
+			const mediaFilename = media.url.substring(media.url.lastIndexOf("/") + 1, media.url.indexOf("?"));
+			return blockFilename === mediaFilename;
+		});
+		if (imgSrc) {
+			return `<img src=${imgSrc.url} alt="" />`;
+		} else {
+			return `<img src="" alt="" />`;
+		}
+	}
+
 	// const pageType = page?.pageType.slug
-	const parser = edjsHTML();
+	const parser = edjsHTML({ image: imageParser });
 
 	const { title, content } = page;
 
