@@ -28,14 +28,37 @@ export default async function Page({ params }: { params: { slug: string } }) {
 		notFound();
 	}
 
+	const { title, content } = page;
+	const pageContent: unknown = content ? JSON.parse(content) : [];
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-expect-error
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+	const pageMedia = pageContent.blocks.filter((block: { type: string }) => {
+		return block.type === "image";
+	});
+
 	function imageParser(block: BlockType) {
+		// todo: need to review this
 		const imgSrc = page?.media?.find((media: { url: string }): boolean => {
-			const blockFilename = block.data.file.url.substring(
-				block.data.file.url.lastIndexOf("/") + 1,
-				block.data.file.url.indexOf("?"),
+			const blockUrl = block.data.file.url;
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+			const imgIndex = pageMedia
+				.map((media: { data: { file: { url: any } } }) => {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+					return media.data.file.url;
+				})
+				.indexOf(blockUrl);
+
+			const blockFilename = blockUrl.substring(
+				blockUrl.lastIndexOf("/") + 1,
+				blockUrl.includes("?") ? blockUrl.indexOf("?") : blockUrl.length,
 			);
-			const mediaFilename = media.url.substring(media.url.lastIndexOf("/") + 1, media.url.indexOf("?"));
-			return blockFilename === mediaFilename;
+			const mediaFilename = media.url.substring(
+				media.url.lastIndexOf("/") + 1,
+				media.url.includes("?") ? media.url.indexOf("?") : media.url.length,
+			);
+			return blockFilename === mediaFilename && (page?.slug === "home" ? imgIndex > 0 : true);
 		});
 		if (imgSrc) {
 			return `<img src=${imgSrc.url} alt="" />`;
@@ -43,11 +66,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
 			return `<img src="" alt="" />`;
 		}
 	}
-
 	// const pageType = page?.pageType.slug
 	const parser = edjsHTML({ image: imageParser });
-
-	const { title, content } = page;
 
 	const contentHtml = content ? parser.parse(JSON.parse(content)) : null;
 
@@ -55,7 +75,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 		<div className="mx-auto max-w-7xl p-8 pb-16">
 			<h1 className="text-3xl font-semibold">{title}</h1>
 			{contentHtml && (
-				<div className="prose text-neutral-200">
+				<div className="prose prose-invert text-neutral-200">
 					{contentHtml.map((content) => (
 						<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 					))}
