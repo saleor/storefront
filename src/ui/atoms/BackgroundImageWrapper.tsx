@@ -10,10 +10,10 @@ export async function BackgroundImageWrapper(props: ImageProps) {
 	});
 
 	let imgSrc: string;
-	if (!page || !page.media) {
+	if (!page || !page.media || page?.media.length == 0) {
 		imgSrc = process.env.SITE_BACKGROUND ? process.env.SITE_BACKGROUND : "";
 	} else {
-		imgSrc = page.media[0].url;
+		imgSrc = page?.media[0].url;
 	}
 
 	return (
