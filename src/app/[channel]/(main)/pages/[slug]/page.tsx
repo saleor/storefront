@@ -29,25 +29,26 @@ export default async function Page({ params }: { params: { slug: string } }) {
 	}
 
 	const { title, content } = page;
-	const pageContent: unknown = content ? JSON.parse(content) : [];
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-expect-error
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-	const pageMedia = pageContent.blocks.filter((block: { type: string }) => {
-		return block.type === "image";
-	});
+	const pageContent: unknown = content ? JSON.parse(content) : {};
 
 	function imageParser(block: BlockType) {
 		// todo: need to review this
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-expect-error
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+		const pageMedia = pageContent?.blocks.filter((block: { type: string }) => {
+			return block.type === "image";
+		});
 		const imgSrc = page?.media?.find((media: { url: string }): boolean => {
 			const blockUrl = block.data.file.url;
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
 			const imgIndex = pageMedia
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				.map((media: { data: { file: { url: any } } }) => {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 					return media.data.file.url;
 				})
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				.indexOf(blockUrl);
 
 			const blockFilename = blockUrl.substring(
