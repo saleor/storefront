@@ -29,28 +29,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
 	}
 
 	const { title, content } = page;
-	const pageContent: unknown = content ? JSON.parse(content) : {};
 
 	function imageParser(block: BlockType) {
 		// todo: need to review this
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-expect-error
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-		const pageMedia = pageContent?.blocks.filter((block: { type: string }) => {
-			return block.type === "image";
-		});
 		const imgSrc = page?.media?.find((media: { url: string }): boolean => {
 			const blockUrl = block.data.file.url;
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
-			const imgIndex = pageMedia
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				.map((media: { data: { file: { url: any } } }) => {
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-					return media.data.file.url;
-				})
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				.indexOf(blockUrl);
-
 			const blockFilename = blockUrl.substring(
 				blockUrl.lastIndexOf("/") + 1,
 				blockUrl.includes("?") ? blockUrl.indexOf("?") : blockUrl.length,
@@ -59,12 +42,12 @@ export default async function Page({ params }: { params: { slug: string } }) {
 				media.url.lastIndexOf("/") + 1,
 				media.url.includes("?") ? media.url.indexOf("?") : media.url.length,
 			);
-			return blockFilename === mediaFilename && (page?.slug === "home" ? imgIndex > 0 : true);
+			return blockFilename === mediaFilename;
 		});
 		if (imgSrc) {
 			return `<img src=${imgSrc.url} alt="" />`;
 		} else {
-			return `<img src="" alt="" />`;
+			return ``;
 		}
 	}
 	// const pageType = page?.pageType.slug
