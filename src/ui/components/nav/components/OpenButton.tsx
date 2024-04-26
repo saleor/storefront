@@ -17,7 +17,7 @@ export const OpenButton = (props: Props) => {
 			aria-label="Open menu"
 			onClick={props.onClick}
 		>
-			<MenuIcon className="h-6 w-6 shrink-0" aria-hidden />
+			<MenuIcon color="white" className="h-6 w-6 shrink-0" aria-hidden />
 		</button>
 	);
 };
