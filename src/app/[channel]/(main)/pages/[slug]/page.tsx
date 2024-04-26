@@ -45,7 +45,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 			return blockFilename === mediaFilename;
 		});
 		if (imgSrc) {
-			return `<img src=${imgSrc.url} alt="" />`;
+			return `<img id=${imgSrc.id} src=${imgSrc.url} alt="" />`;
 		} else {
 			return ``;
 		}
