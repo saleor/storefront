@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--url: url("/CK_LP_IMAGES_101.png");
+}
+
 body {
 	overflow-x: hidden;
+}
+
+.backgroundImage {
+	background-image: var(--url);
+	background-position: top;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
 }
