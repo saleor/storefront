@@ -2,7 +2,6 @@
 
 import { Fragment, type ReactNode } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Logo } from "../../Logo";
 import { useMobileMenu } from "./useMobileMenu";
 import { OpenButton } from "./OpenButton";
 import { CloseButton } from "./CloseButton";
@@ -19,9 +18,9 @@ export const MobileMenu = ({ children }: Props) => {
 			<OpenButton onClick={openMenu} aria-controls="mobile-menu" />
 			<Transition show={isOpen}>
 				<Dialog onClose={closeMenu}>
-					<Dialog.Panel className="fixed inset-0 z-20 flex h-dvh w-screen flex-col overflow-y-scroll">
+					<Dialog.Panel className="fixed inset-0 z-20 flex h-dvh w-screen flex-col overflow-y-scroll backdrop-blur-md">
 						<Transition.Child
-							className="sticky top-0 z-10 flex h-16 shrink-0 bg-neutral-100/50 px-3 backdrop-blur-md sm:px-8"
+							className="sticky top-0 z-10 flex h-16 shrink-0 bg-neutral-100/50 px-3 sm:px-8"
 							enter="motion-safe:transition-all motion-safe:duration-150"
 							enterFrom="bg-transparent"
 							enterTo="bg-neutral-100"
@@ -29,7 +28,6 @@ export const MobileMenu = ({ children }: Props) => {
 							leaveFrom="bg-neutral-100"
 							leaveTo="bg-transparent"
 						>
-							<Logo />
 							<CloseButton onClick={closeMenu} aria-controls="mobile-menu" />
 						</Transition.Child>
 						<Transition.Child
