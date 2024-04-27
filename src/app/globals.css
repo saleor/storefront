@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-	--url: url("/CK_LP_IMAGES_101.png");
+	--url: url("/LP-NEW-26-04.png");
 }
 
 body {
@@ -15,4 +15,20 @@ body {
 	background-position: top;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeIn {
+	animation: fadeIn 0.5s ease-out forwards;
 }
