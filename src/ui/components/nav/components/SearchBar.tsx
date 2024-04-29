@@ -11,30 +11,22 @@ export const SearchBar = ({ channel }: { channel: string }) => {
 	}
 
 	return (
-		<form
-			action={onSubmit}
-			className="group relative my-2 flex w-full items-center justify-items-center text-sm lg:w-80"
-		>
-			<label className="w-full">
-				<span className="sr-only">search for products</span>
-				<input
-					type="text"
-					name="search"
-					placeholder="Search for products..."
-					autoComplete="on"
-					required
-					className="h-10 w-full rounded-md border border-neutral-100 bg-transparent bg-white px-4 py-2 pr-10 text-sm text-black placeholder:text-neutral-500 focus:border-neutral-400 focus:ring-neutral-400"
-				/>
+		<form action={onSubmit}>
+			<input
+				id="search"
+				type="text"
+				name="search"
+				placeholder="Search for products..."
+				autoComplete="on"
+				required
+				className="absolute left-auto right-12 z-10 h-full w-0 rounded-lg border-0 bg-neutral-200 p-0 text-neutral-200 placeholder-gray-600 transition-width duration-300 focus:w-96 focus:border focus:border-neutral-200 focus:pl-4 focus:pt-0 focus:ring-neutral-100"
+			/>
+			<label
+				htmlFor="search"
+				className="absolute m-0 inline-block h-12 w-full cursor-pointer select-none stroke-neutral-200 p-0 text-center text-xl leading-10 hover:stroke-neutral-400"
+			>
+				<SearchIcon aria-hidden className="pointer-events-none inline-block stroke-inherit" />
 			</label>
-			<div className="absolute inset-y-0 right-0">
-				<button
-					type="submit"
-					className="inline-flex aspect-square w-10 items-center justify-center text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 group-invalid:pointer-events-none group-invalid:opacity-80"
-				>
-					<span className="sr-only">search</span>
-					<SearchIcon aria-hidden className="h-5 w-5" />
-				</button>
-			</div>
 		</form>
 	);
 };
