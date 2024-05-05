@@ -24,8 +24,7 @@ export const Nav = ({ channel }: { channel: string }) => {
 			</div>
 			<Suspense>
 				<MobileMenu>
-					<SearchBar channel={channel} />
-					<NavLinks channel={channel} />
+					<NavLinks channel={channel} mobile={true} />
 				</MobileMenu>
 			</Suspense>
 		</nav>

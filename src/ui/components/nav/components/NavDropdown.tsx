@@ -5,23 +5,25 @@ import { type MenuItemFragment } from "@/gql/graphql";
 
 export function NavDropdown({
 	itemName,
+	mobile = false,
 	itemChildren,
 }: {
 	itemName: string;
+	mobile?: boolean;
 	itemChildren: MenuItemFragment[];
 }) {
 	const toggleDropdown = () =>
-		document.getElementById(`dropdownMenuBottom-${itemName}`)?.classList.toggle("hidden");
+		document.getElementById(`dropdownMenuBottom-${itemName}-${mobile}`)?.classList.toggle("hidden");
 
 	return (
-		<div className="inline-flex items-center" onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
+		<div className="inline-flex items-center" onClick={toggleDropdown}>
 			<li className="relative inline-block border-b-2 border-transparent pt-2 text-left text-sm font-medium text-neutral-200">
 				<button className="inline-flex border-transparent text-neutral-200 hover:text-neutral-400 focus:outline-none">
 					{itemName} <ChevronDown className="pb-1" />
 				</button>
 				<div
-					id={`dropdownMenuBottom-${itemName}`}
-					className="animate-fadeIn absolute left-0 mt-2 hidden w-56 origin-top-left bg-blue-950 shadow-lg ring-1 ring-black ring-opacity-5"
+					id={`dropdownMenuBottom-${itemName}-${mobile}`}
+					className="animate-fadeIn absolute left-0 z-10 mt-2 hidden w-56 origin-top-left bg-blue-950 shadow-lg ring-1 ring-black ring-opacity-5"
 				>
 					{itemChildren.map((child) => {
 						if (child.category) {
