@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-	--url: url("/LP-NEW-26-04.png");
+	--url: url("/SITE_BG.png");
 }
 
 body {
 	overflow-x: hidden;
 }
 
-.backgroundImage {
+.background-image {
 	background-image: var(--url);
 	background-position: top;
 	background-repeat: no-repeat;
