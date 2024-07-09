@@ -18,4 +18,4 @@ jobs:
           NEXT_PUBLIC_SALEOR_API_URL: https://sandiara-market.saleor.cloud/graphql/
           NEXT_PUBLIC_STOREFRONT_URL: https://sandiara-market.vercel.app
       - name: Deploy to Vercel
-        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }} -y
