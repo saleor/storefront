@@ -7,11 +7,11 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"predev": "pnpm run generate",
-		"prebuild": "pnpm run generate",
+		"predev": "npm run generate",
+		"prebuild": "npm run generate",
 		"lint": "next lint --dir src --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
-		"prepare": "husky install",
+		"prepare": "npx husky install",
 		"test": "playwright test"
 	},
 	"dependencies": {
@@ -80,9 +80,9 @@
 	"resolutions": {
 		"graphql": "16.8.1"
 	},
-	"packageManager": "pnpm@8.9.0",
+	"packageManager": "npm@10.2.4",
 	"engines": {
-		"pnpm": ">=8.9.0",
+		"npm": ">=10.2.4",
 		"node": ">=18"
 	}
 }

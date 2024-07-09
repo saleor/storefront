@@ -1,0 +1,21 @@
+name: Deploy to Vercel
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+      - name: Build project
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SALEOR_API_URL: https://sandiara-market.saleor.cloud/graphql/
+          NEXT_PUBLIC_STOREFRONT_URL: https://sandiara-market.vercel.app
+      - name: Deploy to Vercel
+        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
