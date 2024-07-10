@@ -56,7 +56,7 @@ export async function generateMetadata(
 							alt: product.name,
 						},
 					],
-			  }
+				}
 			: null,
 	};
 }
@@ -132,11 +132,11 @@ export default async function Page({
 	const price = selectedVariant?.pricing?.price?.gross
 		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
 		: isAvailable
-		  ? formatMoneyRange({
+			? formatMoneyRange({
 					start: product?.pricing?.priceRange?.start?.gross,
 					stop: product?.pricing?.priceRange?.stop?.gross,
-		    })
-		  : "";
+				})
+			: "";
 
 	const productJsonLd: WithContext<Product> = {
 		"@context": "https://schema.org",
@@ -154,7 +154,7 @@ export default async function Page({
 						priceCurrency: selectedVariant.pricing?.price?.gross.currency,
 						price: selectedVariant.pricing?.price?.gross.amount,
 					},
-			  }
+				}
 			: {
 					name: product.name,
 
@@ -168,19 +168,19 @@ export default async function Page({
 						lowPrice: product.pricing?.priceRange?.start?.gross.amount,
 						highPrice: product.pricing?.priceRange?.stop?.gross.amount,
 					},
-			  }),
+				}),
 	};
 
 	return (
-		<section className="mx-auto grid max-w-7xl p-8">
+		<section className="mx-auto grid max-w-7xl rounded-lg bg-white p-8 shadow-lg">
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(productJsonLd),
 				}}
 			/>
-			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
-				<div className="md:col-span-1 lg:col-span-5">
+			<form className="grid gap-8 lg:grid-cols-2" action={addItem}>
+				<div className="aspect-w-1 aspect-h-1 relative overflow-hidden rounded-lg bg-gray-200">
 					{firstImage && (
 						<ProductImageWrapper
 							priority={true}
@@ -188,38 +188,36 @@ export default async function Page({
 							width={1024}
 							height={1024}
 							src={firstImage.url}
+							className="object-cover"
 						/>
 					)}
 				</div>
-				<div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
+				<div className="flex flex-col space-y-6">
 					<div>
-						<h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
-							{product?.name}
-						</h1>
-						<p className="mb-8 text-sm " data-testid="ProductElement_Price">
-							{price}
-						</p>
-
-						{variants && (
-							<VariantSelector
-								selectedVariant={selectedVariant}
-								variants={variants}
-								product={product}
-								channel={params.channel}
-							/>
-						)}
-						<AvailabilityMessage isAvailable={isAvailable} />
-						<div className="mt-8">
-							<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
-						</div>
-						{description && (
-							<div className="mt-8 space-y-6 text-sm text-neutral-500">
-								{description.map((content) => (
-									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
-								))}
-							</div>
-						)}
+						<h1 className="text-3xl font-semibold text-gray-900">{product?.name}</h1>
+						<p className="mt-2 text-xl text-gray-700">{price}</p>
 					</div>
+
+					{variants && (
+						<VariantSelector
+							selectedVariant={selectedVariant}
+							variants={variants}
+							product={product}
+							channel={params.channel}
+						/>
+					)}
+					<AvailabilityMessage isAvailable={isAvailable} />
+
+					<div className="mt-4">
+						<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
+					</div>
+					{description && (
+						<div className="mt-4 space-y-4 text-gray-600">
+							{description.map((content, index) => (
+								<div key={index} dangerouslySetInnerHTML={{ __html: xss(content) }} />
+							))}
+						</div>
+					)}
 				</div>
 			</form>
 		</section>

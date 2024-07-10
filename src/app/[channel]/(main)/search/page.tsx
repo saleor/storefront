@@ -10,14 +10,25 @@ export const metadata = {
 	description: "Search products in Saleor Storefront example",
 };
 
-export default async function Page({
-	searchParams,
-	params,
-}: {
-	searchParams: Record<"query" | "cursor", string | string[] | undefined>;
+type PageProps = {
 	params: { channel: string };
-}) {
-	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	searchParams: { after?: string; before?: string; query?: string | string[] };
+};
+
+interface SearchProductsVariables {
+	first: number;
+	after?: string;
+	last?: number;
+	before?: string;
+	channel: string;
+	search: string;
+	sortBy: ProductOrderField;
+	sortDirection: OrderDirection;
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+	const cursorAfter = typeof searchParams.after === "string" ? searchParams.after : null;
+	const cursorBefore = typeof searchParams.before === "string" ? searchParams.before : null;
 	const searchValue = searchParams.query;
 
 	if (!searchValue) {
@@ -32,15 +43,24 @@ export default async function Page({
 		redirect(`/search?${new URLSearchParams({ query: firstValidSearchValue }).toString()}`);
 	}
 
+	const variables: SearchProductsVariables = {
+		channel: params.channel,
+		search: searchValue ,
+		sortBy: ProductOrderField.Rating,
+		sortDirection: OrderDirection.Asc,
+		first: ProductsPerPage,
+	};
+
+	if (cursorAfter) {
+		variables.after = cursorAfter;
+	} else if (cursorBefore) {
+		variables.first = 0;
+		variables.last = ProductsPerPage;
+		variables.before = cursorBefore;
+	}
+
 	const { products } = await executeGraphQL(SearchProductsDocument, {
-		variables: {
-			first: ProductsPerPage,
-			search: searchValue,
-			after: cursor,
-			sortBy: ProductOrderField.Rating,
-			sortDirection: OrderDirection.Asc,
-			channel: params.channel,
-		},
+		variables,
 		revalidate: 60,
 	});
 
@@ -49,8 +69,9 @@ export default async function Page({
 	}
 
 	const newSearchParams = new URLSearchParams({
-		query: searchValue,
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
+		query: searchValue ,
+		...(products.pageInfo.endCursor && { after: products.pageInfo.endCursor }),
+		...(products.pageInfo.startCursor && { before: products.pageInfo.startCursor }),
 	});
 
 	return (
@@ -61,8 +82,11 @@ export default async function Page({
 					<ProductList products={products.edges.map((e) => e.node)} />
 					<Pagination
 						pageInfo={{
-							...products.pageInfo,
 							basePathname: `/search`,
+							hasNextPage: products.pageInfo.hasNextPage,
+							hasPreviousPage: products.pageInfo.hasPreviousPage,
+							endCursor: products.pageInfo.endCursor || undefined,
+							startCursor: products.pageInfo.startCursor || undefined,
 							urlSearchParams: newSearchParams,
 						}}
 					/>

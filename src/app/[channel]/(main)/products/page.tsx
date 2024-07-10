@@ -10,23 +10,39 @@ export const metadata = {
 	description: "All products in Saleor Storefront example",
 };
 
-export default async function Page({
-	params,
-	searchParams,
-}: {
+type PageProps = {
 	params: { channel: string };
-	searchParams: {
-		cursor: string | string[] | undefined;
+	searchParams: { after?: string; before?: string };
+};
+
+interface ProductsVariables {
+	first?: number;
+	after?: string;
+	last?: number;
+	before?: string;
+	channel: string;
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+	const cursorAfter = typeof searchParams.after === "string" ? searchParams.after : null;
+	const cursorBefore = typeof searchParams.before === "string" ? searchParams.before : null;
+
+	const variables: ProductsVariables = {
+		channel: params.channel,
 	};
-}) {
-	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+
+	if (cursorAfter) {
+		variables.first = ProductsPerPage;
+		variables.after = cursorAfter;
+	} else if (cursorBefore) {
+		variables.last = ProductsPerPage;
+		variables.before = cursorBefore;
+	} else {
+		variables.first = ProductsPerPage;
+	}
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
-		variables: {
-			first: ProductsPerPage,
-			after: cursor,
-			channel: params.channel,
-		},
+		variables,
 		revalidate: 60,
 	});
 
@@ -34,9 +50,9 @@ export default async function Page({
 		notFound();
 	}
 
-	const newSearchParams = new URLSearchParams({
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-	});
+	const newSearchParams = new URLSearchParams();
+	if (products.pageInfo.endCursor) newSearchParams.set("after", products.pageInfo.endCursor);
+	if (products.pageInfo.startCursor) newSearchParams.set("before", products.pageInfo.startCursor);
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
@@ -44,8 +60,11 @@ export default async function Page({
 			<ProductList products={products.edges.map((e) => e.node)} />
 			<Pagination
 				pageInfo={{
-					...products.pageInfo,
 					basePathname: `/products`,
+					hasNextPage: products.pageInfo.hasNextPage,
+					hasPreviousPage: products.pageInfo.hasPreviousPage,
+					endCursor: products.pageInfo.endCursor || undefined,
+					startCursor: products.pageInfo.startCursor || undefined,
 					urlSearchParams: newSearchParams,
 				}}
 			/>
