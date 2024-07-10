@@ -23,6 +23,8 @@ query SearchProducts(
 		pageInfo {
 			endCursor
 			hasNextPage
+			startCursor
+			hasPreviousPage
 		}
 	}
 }

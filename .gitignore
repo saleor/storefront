@@ -2,6 +2,7 @@
 gql/
 
 .env
+.vscode/settings.json
 
 # dependencies
 /node_modules

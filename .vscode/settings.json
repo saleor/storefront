@@ -16,5 +16,8 @@
 	},
 	"files.associations": {
 		"*.css": "tailwindcss"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
 	}
 }
