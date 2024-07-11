@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import SubmitButton from "./SubmitButton";
+import { SubmitButton } from "./SubmitButton";
 import { registerUser } from "@/app/actions";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
