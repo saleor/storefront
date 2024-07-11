@@ -1,0 +1,20 @@
+name: Déclenchement de la synchronisation
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sur le code
+      uses: actions/checkout@v2
+    - name: Déclenchement de la synchonisation au niveau du repo connecté à netlify
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        curl -X POST \
+        -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        https://api.github.com/repos/zlorgoncho1/sandiara-market/actions/workflows/sync.yml/dispatches \
+        -d "{\"ref\":\"main\"}"
