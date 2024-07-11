@@ -11,10 +11,10 @@ jobs:
       uses: actions/checkout@v2
     - name: Déclenchement de la synchonisation au niveau du repo connecté à netlify
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PAT: ${{ secrets.PAT }}
       run: |
         curl -X POST \
         -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: token $GITHUB_TOKEN" \
+        -H "Authorization: token $PAT" \
         https://api.github.com/repos/zlorgoncho1/sandiara-market/actions/workflows/sync.yml/dispatches \
         -d "{\"ref\":\"main\"}"
