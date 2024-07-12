@@ -1,4 +1,6 @@
 import { getServerAuthClient } from "@/app/config";
+import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import { SubmitButton } from "@/ui/components/SubmitButton";
 
 export async function LoginForm() {
 	return (
@@ -20,6 +22,9 @@ export async function LoginForm() {
 					if (data.tokenCreate.errors.length > 0) {
 						// setErrors(data.tokenCreate.errors.map((error) => error.message));
 						// setFormValues(DefaultValues);
+						data.tokenCreate.errors.map((error) => {
+							throw new Error(error.message);
+						});
 					}
 				}}
 			>
@@ -48,12 +53,12 @@ export async function LoginForm() {
 					/>
 				</div>
 
-				<button
-					className="rounded bg-neutral-800 px-4 py-2 text-neutral-200 hover:bg-neutral-700"
-					type="submit"
-				>
-					Log In
-				</button>
+				<SubmitButton label="Se Connecter" />
+				<div className="text-right">
+					<LinkWithChannel href="/register" className="h-6 w-6 flex-shrink-0">
+						<p>Don&#39;t have an account? Create one</p>
+					</LinkWithChannel>
+				</div>
 			</form>
 			<div></div>
 		</div>
