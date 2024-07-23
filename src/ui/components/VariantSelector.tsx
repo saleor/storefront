@@ -1,19 +1,22 @@
 import { clsx } from "clsx";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { type ProductListItemFragment, type VariantDetailsFragment } from "@/gql/graphql";
+import { getHrefForVariant } from "@/lib/utils";
 
 export function VariantSelector({
 	variants,
 	product,
 	selectedVariant,
+	channel,
 }: {
 	variants: readonly VariantDetailsFragment[];
 	product: ProductListItemFragment;
 	selectedVariant?: VariantDetailsFragment;
+	channel: string;
 }) {
 	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
-		redirect(getHrefForVariant(product, variants[0]));
+		redirect("/" + channel + getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id }));
 	}
 
 	return (
@@ -25,16 +28,18 @@ export function VariantSelector({
 						const isDisabled = !variant.quantityAvailable;
 						const isCurrentVariant = selectedVariant?.id === variant.id;
 						return (
-							<Link
+							<LinkWithChannel
 								key={variant.id}
 								prefetch={true}
 								scroll={false}
-								href={isDisabled ? "#" : getHrefForVariant(product, variant)}
+								href={
+									isDisabled ? "#" : getHrefForVariant({ productSlug: product.slug, variantId: variant.id })
+								}
 								className={clsx(
 									isCurrentVariant
 										? "border-transparent bg-neutral-900 text-white hover:bg-neutral-800"
 										: "border-neutral-200 bg-white text-neutral-900 hover:bg-neutral-100",
-									"relative flex min-w-[8ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2 aria-disabled:cursor-not-allowed aria-disabled:bg-neutral-100 aria-disabled:opacity-50",
+									"relative flex min-w-[5ch] items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap rounded border p-3 text-center text-sm font-semibold focus-within:outline focus-within:outline-2 aria-disabled:cursor-not-allowed aria-disabled:bg-neutral-100 aria-disabled:text-neutral-800 aria-disabled:opacity-50",
 									isDisabled && "pointer-events-none",
 								)}
 								role="radio"
@@ -43,17 +48,11 @@ export function VariantSelector({
 								aria-disabled={isDisabled}
 							>
 								{variant.name}
-							</Link>
+							</LinkWithChannel>
 						);
 					})}
 				</div>
 			</fieldset>
 		)
 	);
-}
-
-function getHrefForVariant(product: ProductListItemFragment, variant: VariantDetailsFragment): string {
-	const pathname = `/products/${encodeURIComponent(product.slug)}`;
-	const query = new URLSearchParams({ variant: variant.id });
-	return `${pathname}?${query.toString()}`;
 }

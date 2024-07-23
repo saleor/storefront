@@ -34,7 +34,7 @@ export const SummarySkeleton = () => (
 				</div>
 			</div>
 			<Skeleton className="mb-4 h-6" />
-			<Divider className="bg-skeleton" />
+			<Divider className="bg-neutral-100" />
 			<div className="flex flex-col">
 				<div className="mt-6 flex flex-row items-center justify-between">
 					<Skeleton className="w-22" />
@@ -48,7 +48,7 @@ export const SummarySkeleton = () => (
 					<Skeleton className="w-19" />
 					<Skeleton className="w-10" />
 				</div>
-				<Divider className="bg-skeleton" />
+				<Divider className="bg-neutral-100" />
 				<div className="my-6 flex flex-row items-center justify-between">
 					<Skeleton className="w-14" />
 					<Skeleton className="w-12" />

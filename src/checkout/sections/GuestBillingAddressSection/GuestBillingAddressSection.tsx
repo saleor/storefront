@@ -26,24 +26,28 @@ export const GuestBillingAddressSection = () => {
 	return (
 		<Suspense fallback={<AddressSectionSkeleton />}>
 			{isShippingRequired && (
-				<FormProvider form={billingSameAsShippingForm}>
-					<Checkbox
-						name="billingSameAsShipping"
-						label="Use shipping address as billing address"
-						data-testid="useShippingAsBillingCheckbox"
-					/>
-				</FormProvider>
+				<div className="mb-4">
+					<FormProvider form={billingSameAsShippingForm}>
+						<Checkbox
+							name="billingSameAsShipping"
+							label="Use shipping address as billing address"
+							data-testid="useShippingAsBillingCheckbox"
+						/>
+					</FormProvider>
+				</div>
 			)}
 			{!billingSameAsShipping && (
-				<FormProvider form={form}>
-					<AddressForm
-						title="Billing address"
-						fieldProps={{
-							onChange: handleChange,
-							onBlur: handleBlur,
-						}}
-					/>
-				</FormProvider>
+				<div className="mb-4">
+					<FormProvider form={form}>
+						<AddressForm
+							title="Billing address"
+							fieldProps={{
+								onChange: handleChange,
+								onBlur: handleBlur,
+							}}
+						/>
+					</FormProvider>
+				</div>
 			)}
 		</Suspense>
 	);

@@ -36,6 +36,7 @@ export const CheckoutForm = () => {
 								<div className="py-4" data-testid="shippingAddressSection">
 									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
 								</div>
+								{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
 							</CollapseSection>
 						</Suspense>
 					)}
@@ -44,9 +45,7 @@ export const CheckoutForm = () => {
 					</Suspense>
 					<Suspense fallback={<PaymentSectionSkeleton />}>
 						<CollapseSection collapse={showOnlyContact}>
-							<PaymentSection>
-								{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-							</PaymentSection>
+							<PaymentSection />
 						</CollapseSection>
 					</Suspense>
 				</>

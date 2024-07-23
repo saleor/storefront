@@ -8,8 +8,8 @@ export function DiscountIcon() {
 			<path
 				d="M2.5 3H10.5L21.5 14L13.5 22L2.5 11V3Z"
 				stroke="#394052"
-				stroke-linecap="round"
-				stroke-linejoin="round"
+				strokeLinecap="round"
+				strokeLinejoin="round"
 			/>
 		</svg>
 	);

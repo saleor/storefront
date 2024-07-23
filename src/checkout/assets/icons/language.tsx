@@ -7,14 +7,14 @@ export function LanguageIcon() {
 					stroke="#394052"
 					stroke-opacity="0.8"
 					strokeWidth="1.5"
-					stroke-linejoin="bevel"
+					strokeLinejoin="bevel"
 				/>
 				<path
 					d="M13.3513 20.9189L14.7928 17.1351M22 20.9189L20.5585 17.1351M14.7928 17.1351L17.6756 9.56755L20.5585 17.1351M14.7928 17.1351H20.5585"
 					stroke="#394052"
 					stroke-opacity="0.8"
 					strokeWidth="1.5"
-					stroke-linejoin="bevel"
+					strokeLinejoin="bevel"
 				/>
 			</g>
 			<defs>

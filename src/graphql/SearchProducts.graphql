@@ -1,0 +1,28 @@
+query SearchProducts(
+	$search: String!
+	$sortBy: ProductOrderField!
+	$sortDirection: OrderDirection!
+	$first: Int!
+	$after: String
+	$channel: String!
+) {
+	products(
+		first: $first
+		after: $after
+		channel: $channel
+		sortBy: { field: $sortBy, direction: $sortDirection }
+		filter: { search: $search }
+	) {
+		totalCount
+		edges {
+			node {
+				...ProductListItem
+			}
+			cursor
+		}
+		pageInfo {
+			endCursor
+			hasNextPage
+		}
+	}
+}

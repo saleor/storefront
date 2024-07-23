@@ -12,7 +12,7 @@ export const ProductList = ({ products }: { products: readonly ProductListItemFr
 				<ProductElement
 					key={product.id}
 					product={product}
-					priority={index === 0}
+					priority={index < 2}
 					loading={index < 3 ? "eager" : "lazy"}
 				/>
 			))}
