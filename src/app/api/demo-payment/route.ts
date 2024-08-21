@@ -33,21 +33,21 @@ export async function GET() {
 				name: "Transaction initialize",
 				asyncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
 				query: removeWhiteSpace(`
-				subscription {
-					event {
-						... on TransactionInitializeSession {
-							__typename
-							data
-							action {
-								amount
-								currency
-								actionType
+					subscription {
+						event {
+							... on TransactionInitializeSession {
+								__typename
+								data
+								action {
+									amount
+									currency
+									actionType
+								}
+								issuedAt
+								merchantReference
+								idempotencyKey
 							}
-							issuedAt
-							merchantReference
-							idempotencyKey
 						}
-					}
 				}`),
 				targetUrl: `${url}/api/demo-payment/transaction-initialize`,
 				isActive: true,
@@ -55,22 +55,16 @@ export async function GET() {
 			{
 				name: "Gateway initialize",
 				asyncEvents: ["PAYMENT_GATEWAY_INITIALIZE_SESSION"],
-				query: removeWhiteSpace(`subscription {
-									event {
-										... on TransactionInitializeSession {
-											__typename
-											data
-											action {
-												amount
-												currency
-												actionType
-											}
-											issuedAt
-											merchantReference
-											idempotencyKey
-										}
-									}
-								}`),
+				query: removeWhiteSpace(`
+				subscription {
+					event {
+						... on PaymentGatewayInitializeSession {
+							__typename
+							amount
+							data
+						}
+					}
+				}`),
 				targetUrl: `${url}/api/demo-payment/gateway-initialize`,
 				isActive: true,
 			},
