@@ -3,10 +3,11 @@ const removeWhiteSpace = (str: string): string => {
 };
 
 const url = `https://${process.env.VERCEL_BRANCH_URL}`;
+export const DEMO_PAYMENT_GATEWAY = `storefront.demo-payment`;
 
 export async function GET() {
 	return Response.json({
-		id: "storefront.demo-payment",
+		id: DEMO_PAYMENT_GATEWAY,
 		version: "1.0.0",
 		requiredSaleorVersion: "^3.20",
 		name: "Demo Payment App",

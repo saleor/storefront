@@ -4,6 +4,7 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { type ParsedPaymentGateways } from "@/checkout/sections/PaymentSection/types";
+import { DEMO_PAYMENT_GATEWAY } from "@/app/api/demo-payment/route";
 
 export const usePaymentGatewaysInitialize = () => {
 	const {
@@ -30,7 +31,7 @@ export const usePaymentGatewaysInitialize = () => {
 				parse: () => ({
 					checkoutId,
 					paymentGateways: availablePaymentGateways
-						.filter((x) => x.id === process.env.NEXT_PUBLIC_PAYMENT_GATEWAY)
+						.filter((x) => x.id === DEMO_PAYMENT_GATEWAY)
 						.map(({ config, id }) => ({
 							id,
 							data: config,
