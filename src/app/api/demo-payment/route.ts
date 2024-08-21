@@ -17,7 +17,7 @@ export async function GET() {
 
 		appUrl: `${url}`,
 		configurationUrl: `${url}`,
-		tokenTargetUrl: `${url}`,
+		tokenTargetUrl: `${url}/api/demo-payment`,
 
 		dataPrivacy: "",
 		dataPrivacyUrl: `${url}`,
