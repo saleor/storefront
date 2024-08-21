@@ -4,7 +4,7 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { type ParsedPaymentGateways } from "@/checkout/sections/PaymentSection/types";
-import { DEMO_PAYMENT_GATEWAY } from "@/app/api/demo-payment/route";
+import { DEMO_PAYMENT_GATEWAY } from "@/checkout/sections/PaymentSection/Demo/PaymentOptions";
 
 export const usePaymentGatewaysInitialize = () => {
 	const {

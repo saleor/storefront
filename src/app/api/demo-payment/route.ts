@@ -1,9 +1,10 @@
+import { DEMO_PAYMENT_GATEWAY } from "@/checkout/sections/PaymentSection/Demo/PaymentOptions";
+
 const removeWhiteSpace = (str: string): string => {
 	return str.replaceAll(/[\t\n]+/g, " ");
 };
 
 const url = `https://${process.env.VERCEL_BRANCH_URL}`;
-export const DEMO_PAYMENT_GATEWAY = `storefront.demo-payment`;
 
 export async function GET() {
 	return Response.json({
