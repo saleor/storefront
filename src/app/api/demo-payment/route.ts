@@ -24,7 +24,7 @@ export async function GET() {
 		supportUrl: `${url}`,
 		brand: {
 			logo: {
-				default: `${url}`,
+				default: `${url}/github-mark.svg`,
 			},
 		},
 		webhooks: [
