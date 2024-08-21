@@ -7,8 +7,7 @@ import { useCheckoutCompleteMutation, useTransactionInitializeMutation } from "@
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { replaceUrl } from "@/checkout/lib/utils/url";
 import { Button } from "@/checkout/components";
-
-export const DEMO_PAYMENT_GATEWAY = `storefront.demo-payment`;
+import { DEMO_PAYMENT_GATEWAY } from "@/checkout/sections/PaymentSection/Demo/metadata";
 
 export const DemoPayment = () => {
 	const { checkout } = useCheckout();

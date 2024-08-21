@@ -1,4 +1,4 @@
-import { DEMO_PAYMENT_GATEWAY } from "@/checkout/sections/PaymentSection/Demo/PaymentOptions";
+import { DEMO_PAYMENT_GATEWAY } from "@/checkout/sections/PaymentSection/Demo/metadata";
 
 const removeWhiteSpace = (str: string): string => {
 	return str.replaceAll(/[\t\n]+/g, " ");
