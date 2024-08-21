@@ -1,6 +1,7 @@
 const removeWhiteSpace = (str: string): string => {
 	return str.replaceAll(/[\t\n]/g, "");
 };
+const url = `https://${process.env.VERCEL_URL}`;
 
 export async function GET() {
 	return Response.json({
@@ -13,17 +14,17 @@ export async function GET() {
 
 		permissions: ["HANDLE_PAYMENTS"],
 
-		appUrl: `${process.env.VERCEL_URL}`,
-		configurationUrl: `${process.env.VERCEL_URL}`,
-		tokenTargetUrl: `${process.env.VERCEL_URL}`,
+		appUrl: `${url}`,
+		configurationUrl: `${url}`,
+		tokenTargetUrl: `${url}`,
 
 		dataPrivacy: "",
-		dataPrivacyUrl: `${process.env.VERCEL_URL}`,
-		homepageUrl: `${process.env.VERCEL_URL}`,
-		supportUrl: `${process.env.VERCEL_URL}`,
+		dataPrivacyUrl: `${url}`,
+		homepageUrl: `${url}`,
+		supportUrl: `${url}`,
 		brand: {
 			logo: {
-				default: `${process.env.VERCEL_URL}`,
+				default: `${url}`,
 			},
 		},
 		webhooks: [
@@ -47,7 +48,7 @@ export async function GET() {
 						}
 					}
 				}`),
-				targetUrl: `${process.env.VERCEL_URL}/api/demo-payment/transaction-initialize`,
+				targetUrl: `${url}/api/demo-payment/transaction-initialize`,
 				isActive: true,
 			},
 			{
@@ -69,7 +70,7 @@ export async function GET() {
 										}
 									}
 								}`),
-				targetUrl: `${process.env.VERCEL_URL}/api/demo-payment/gateway-initialize`,
+				targetUrl: `${url}/api/demo-payment/gateway-initialize`,
 				isActive: true,
 			},
 		],
