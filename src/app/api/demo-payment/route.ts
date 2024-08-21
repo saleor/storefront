@@ -44,7 +44,7 @@ export async function GET() {
 								idempotencyKey
 							}
 						}
-				}`,
+				}`.replaceAll("\t", ""),
 				targetUrl: `${url}/api/demo-payment/transaction-initialize`,
 				isActive: true,
 			},
@@ -60,7 +60,7 @@ export async function GET() {
 							data
 						}
 					}
-				}`,
+				}`.replaceAll("\t", ""),
 				targetUrl: `${url}/api/demo-payment/gateway-initialize`,
 				isActive: true,
 			},
