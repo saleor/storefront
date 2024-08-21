@@ -23,11 +23,11 @@ export async function GET() {
 		dataPrivacyUrl: `${url}`,
 		homepageUrl: `${url}`,
 		supportUrl: `${url}`,
-		brand: {
-			logo: {
-				default: `${url}/github-mark.svg`,
-			},
-		},
+		// brand: {
+		// 	logo: {
+		// 		default: [APP_ICON_URL],
+		// 	},
+		// },
 		webhooks: [
 			{
 				name: "Transaction initialize",
