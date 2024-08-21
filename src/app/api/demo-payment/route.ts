@@ -1,3 +1,7 @@
+const removeWhiteSpace = (str: string): string => {
+	return str.replaceAll(/[\t\n]+/g, " ");
+};
+
 const url = `https://${process.env.VERCEL_BRANCH_URL}`;
 
 export async function GET() {
@@ -28,7 +32,7 @@ export async function GET() {
 			{
 				name: "Transaction initialize",
 				asyncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
-				query: `
+				query: removeWhiteSpace(`
 					subscription {
 						event {
 							... on TransactionInitializeSession {
@@ -44,14 +48,14 @@ export async function GET() {
 								idempotencyKey
 							}
 						}
-				}`.replaceAll("\t", ""),
+				}`),
 				targetUrl: `${url}/api/demo-payment/transaction-initialize`,
 				isActive: true,
 			},
 			{
 				name: "Gateway initialize",
 				asyncEvents: ["PAYMENT_GATEWAY_INITIALIZE_SESSION"],
-				query: `
+				query: removeWhiteSpace(`
 				subscription {
 					event {
 						... on PaymentGatewayInitializeSession {
@@ -60,7 +64,7 @@ export async function GET() {
 							data
 						}
 					}
-				}`.replaceAll("\t", ""),
+				}`),
 				targetUrl: `${url}/api/demo-payment/gateway-initialize`,
 				isActive: true,
 			},
