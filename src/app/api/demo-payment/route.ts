@@ -74,4 +74,7 @@ export async function GET() {
 
 export async function POST(_: Request) {
 	// During installation this path would be used to save app token that later can be used to authenticate requests. For example to manipulate checkout or orders.
+	return new Response("Success!", {
+		status: 200,
+	});
 }
