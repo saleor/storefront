@@ -31,7 +31,7 @@ export async function GET() {
 		webhooks: [
 			{
 				name: "Transaction initialize",
-				asyncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
+				syncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
 				query: removeWhiteSpace(`
 					subscription {
 						event {
@@ -54,7 +54,7 @@ export async function GET() {
 			},
 			{
 				name: "Gateway initialize",
-				asyncEvents: ["PAYMENT_GATEWAY_INITIALIZE_SESSION"],
+				syncEvents: ["PAYMENT_GATEWAY_INITIALIZE_SESSION"],
 				query: removeWhiteSpace(`
 				subscription {
 					event {
