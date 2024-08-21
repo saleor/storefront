@@ -1,7 +1,8 @@
 const removeWhiteSpace = (str: string): string => {
 	return str.replaceAll(/[\t\n]/g, "");
 };
-const url = `https://${process.env.VERCEL_URL}`;
+
+const url = `https://${process.env.VERCEL_BRANCH_URL}`;
 
 export async function GET() {
 	return Response.json({
