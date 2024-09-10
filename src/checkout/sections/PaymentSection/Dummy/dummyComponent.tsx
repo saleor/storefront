@@ -50,8 +50,8 @@ export const DummyComponent = () => {
 	}
 
 	if (loading || completingCheckout) {
-		return <p>Przetwarzanie płatności...</p>;
+		return <p>Processing...</p>;
 	}
 
-	return <Button label="Zapłać" onClick={pay} />;
+	return <Button label="Pay with Dummy" onClick={pay} />;
 };
