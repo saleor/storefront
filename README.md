@@ -29,6 +29,9 @@
 
 </div>
 
+> [!TIP]
+> Questions or issues? Check our [discord](https://discord.gg/H52JTZAtSH) channel for help.
+
 ## Features
 
 - **Next.js 14**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
@@ -146,3 +149,4 @@ pnpm run generate
 ### Preview content changes instantly (Draft Mode)
 
 Visit `http://{your-host}/api/draft` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about the Draft Mode in Next.js docs.](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)
+
