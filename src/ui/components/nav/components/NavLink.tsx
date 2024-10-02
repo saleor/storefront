@@ -1,12 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import { usePathname } from "next/navigation";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import useSelectedPathname from "@/hooks/useSelectedPathname";
 
 export function NavLink({ href, children }: { href: string; children: JSX.Element | string }) {
-	const pathname = usePathname();
-
+	const pathname = useSelectedPathname();
 	const isActive = pathname === href;
 
 	return (
