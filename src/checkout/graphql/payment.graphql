@@ -17,26 +17,22 @@ mutation paymentGatewaysInitialize($checkoutId: ID!, $paymentGateways: [PaymentG
 	}
 }
 
-mutation transactionInitialize(
-	$checkoutId: ID!
-	$action: TransactionFlowStrategyEnum
-	$paymentGateway: PaymentGatewayToInitialize!
-	$amount: PositiveDecimal
-) {
-	transactionInitialize(id: $checkoutId, action: $action, paymentGateway: $paymentGateway, amount: $amount) {
+mutation TransactionInitialize($checkoutId: ID!, $data: JSON, $paymentGateway: PaymentGatewayToInitialize!) {
+	transactionInitialize(id: $checkoutId, paymentGateway: $paymentGateway, data: $data) {
 		transaction {
 			id
 			actions
 		}
 		transactionEvent {
+			id
 			message
 			type
 		}
 		data
 		errors {
 			field
-			code
 			message
+			code
 		}
 	}
 }
