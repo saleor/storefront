@@ -28,15 +28,13 @@ export const StripeComponent = () => {
 		void (async () => {
 			try {
 				const response = await transactionInitialize({
-					variables: {
-						checkoutId: checkout.id,
+					checkoutId: checkout.id,
+					paymentGateway: {
+						id: stripeGatewayId,
 						data: {
 							automatic_payment_methods: {
 								enabled: true,
 							},
-						},
-						paymentGateway: {
-							id: stripeGatewayId,
 						},
 					},
 				});
