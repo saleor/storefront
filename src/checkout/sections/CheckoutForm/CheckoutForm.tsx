@@ -1,10 +1,8 @@
 import { Suspense, useState } from "react";
-import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { Contact } from "@/checkout/sections/Contact";
 import { DeliveryMethods } from "@/checkout/sections/DeliveryMethods";
 import { ContactSkeleton } from "@/checkout/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout/sections/DeliveryMethods/DeliveryMethodsSkeleton";
-import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
 import { getQueryParams } from "@/checkout/lib/utils/url";
 import { CollapseSection } from "@/checkout/sections/CheckoutForm/CollapseSection";
 import { Divider } from "@/checkout/components";
@@ -17,7 +15,6 @@ import { useUser } from "@/checkout/hooks/useUser";
 
 export const CheckoutForm = () => {
 	const { user } = useUser();
-	const { checkout } = useCheckout();
 	const { passwordResetToken } = getQueryParams();
 
 	const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
@@ -28,27 +25,21 @@ export const CheckoutForm = () => {
 				<Suspense fallback={<ContactSkeleton />}>
 					<Contact setShowOnlyContact={setShowOnlyContact} />
 				</Suspense>
-				<>
-					{checkout?.isShippingRequired && (
-						<Suspense fallback={<AddressSectionSkeleton />}>
-							<CollapseSection collapse={showOnlyContact}>
-								<Divider />
-								<div className="py-4" data-testid="shippingAddressSection">
-									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
-								</div>
-								{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-							</CollapseSection>
-						</Suspense>
-					)}
-					<Suspense fallback={<DeliveryMethodsSkeleton />}>
-						<DeliveryMethods collapsed={showOnlyContact} />
-					</Suspense>
-					<Suspense fallback={<PaymentSectionSkeleton />}>
-						<CollapseSection collapse={showOnlyContact}>
-							<PaymentSection />
-						</CollapseSection>
-					</Suspense>
-				</>
+				<CollapseSection collapse={showOnlyContact}>
+					<Divider />
+					<div className="py-4" data-testid="shippingAddressSection">
+						{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
+					</div>
+					{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+				</CollapseSection>
+				<Suspense fallback={<DeliveryMethodsSkeleton />}>
+					<DeliveryMethods collapsed={showOnlyContact} />
+				</Suspense>
+				<Suspense fallback={<PaymentSectionSkeleton />}>
+					<CollapseSection collapse={showOnlyContact}>
+						<PaymentSection />
+					</CollapseSection>
+				</Suspense>
 			</div>
 		</div>
 	);
