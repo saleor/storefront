@@ -12,12 +12,16 @@ import { UserBillingAddressSection } from "@/checkout/sections/UserBillingAddres
 import { PaymentSection, PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection";
 import { GuestBillingAddressSection } from "@/checkout/sections/GuestBillingAddressSection";
 import { useUser } from "@/checkout/hooks/useUser";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 export const CheckoutForm = () => {
 	const { user } = useUser();
+	const { checkout } = useCheckout();
 	const { passwordResetToken } = getQueryParams();
 
 	const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
+
+	const hasDeliveryMethod = !!checkout.shippingMethod;
 
 	return (
 		<div className="flex flex-col items-end">
@@ -25,6 +29,7 @@ export const CheckoutForm = () => {
 				<Suspense fallback={<ContactSkeleton />}>
 					<Contact setShowOnlyContact={setShowOnlyContact} />
 				</Suspense>
+
 				<CollapseSection collapse={showOnlyContact}>
 					<Divider />
 					<div className="py-4" data-testid="shippingAddressSection">
@@ -32,14 +37,19 @@ export const CheckoutForm = () => {
 					</div>
 					{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
 				</CollapseSection>
+
 				<Suspense fallback={<DeliveryMethodsSkeleton />}>
 					<DeliveryMethods collapsed={showOnlyContact} />
 				</Suspense>
-				<Suspense fallback={<PaymentSectionSkeleton />}>
-					<CollapseSection collapse={showOnlyContact}>
-						<PaymentSection />
-					</CollapseSection>
-				</Suspense>
+
+				{/* Only show payment section if delivery method is selected */}
+				{hasDeliveryMethod && (
+					<Suspense fallback={<PaymentSectionSkeleton />}>
+						<CollapseSection collapse={showOnlyContact}>
+							<PaymentSection />
+						</CollapseSection>
+					</Suspense>
+				)}
 			</div>
 		</div>
 	);
