@@ -21,7 +21,7 @@ export const CheckoutForm = () => {
 
 	const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
-	const hasDeliveryMethod = !!checkout.shippingMethod;
+	const hasDeliveryMethod = !!checkout.deliveryMethod;
 
 	return (
 		<div className="flex flex-col items-end">
