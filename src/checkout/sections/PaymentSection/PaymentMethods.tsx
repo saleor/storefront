@@ -1,32 +1,38 @@
-import { paymentMethodToComponent } from "./supportedPaymentApps";
+import { useMemo } from "react";
+import { StripeComponent } from "./StripeElements/stripeComponent";
 import { PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection/PaymentSectionSkeleton";
-import { usePayments } from "@/checkout/sections/PaymentSection/usePayments";
 import { useCheckoutUpdateState } from "@/checkout/state/updateStateStore";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 export const PaymentMethods = () => {
-	const { availablePaymentGateways, fetching } = usePayments();
+	const { checkout } = useCheckout();
 	const {
 		changingBillingCountry,
 		updateState: { checkoutDeliveryMethodUpdate },
 	} = useCheckoutUpdateState();
 
+	const isReadyForPayment = useMemo(() => {
+		return !!(
+			checkout.billingAddress?.firstName &&
+			checkout.billingAddress?.lastName &&
+			checkout.billingAddress?.streetAddress1 &&
+			checkout.billingAddress?.city &&
+			checkout.billingAddress?.postalCode &&
+			checkout.billingAddress?.country.code &&
+			checkout.email &&
+			checkout.shippingAddress &&
+			checkout.shippingMethod
+		);
+	}, [checkout]);
+
 	// delivery methods change total price so we want to wait until the change is done
-	if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading") {
+	if (changingBillingCountry || checkoutDeliveryMethodUpdate === "loading") {
 		return <PaymentSectionSkeleton />;
 	}
 
 	return (
 		<div className="gap-y-8">
-			{availablePaymentGateways.map((gateway) => {
-				const Component = paymentMethodToComponent[gateway.id];
-				return (
-					<Component
-						key={gateway.id}
-						// @ts-expect-error -- gateway matches the id but TypeScript doesn't know that
-						config={gateway}
-					/>
-				);
-			})}
+			<StripeComponent isReadyForPayment={isReadyForPayment} />
 		</div>
 	);
 };
