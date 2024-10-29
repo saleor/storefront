@@ -1,6 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { apiErrorMessages } from "../errorMessages";
 import { CheckoutForm } from "./stripeElementsForm";
 import { stripeGatewayId } from "./types";
@@ -15,55 +15,58 @@ interface StripeComponentProps {
 
 export const StripeComponent = ({ isReadyForPayment }: StripeComponentProps) => {
 	const { checkout } = useCheckout();
-	const [transactionInitializeResult, transactionInitialize] = useTransactionInitializeMutation();
+	const [, transactionInitialize] = useTransactionInitializeMutation();
 	const { showCustomErrors } = useAlerts();
 	const { errorMessages: commonErrorMessages } = useErrorMessages(apiErrorMessages);
+	const [stripeData, setStripeData] = useState<{
+		paymentIntent: { client_secret: string };
+		publishableKey: string;
+	} | null>(null);
 
-	const stripeData = transactionInitializeResult.data?.transactionInitialize?.data as
-		| undefined
-		| {
-				paymentIntent: {
-					client_secret: string;
-				};
-				publishableKey: string;
-		  };
+	const initializePaymentIntent = async () => {
+		if (!isReadyForPayment) return null;
 
-	useEffect(() => {
-		if (!isReadyForPayment) return;
-
-		void (async () => {
-			try {
-				const response = await transactionInitialize({
-					checkoutId: checkout.id,
-					paymentGateway: {
-						id: stripeGatewayId,
-						data: {
-							automatic_payment_methods: {
-								enabled: true,
-							},
+		try {
+			const response = await transactionInitialize({
+				checkoutId: checkout.id,
+				paymentGateway: {
+					id: stripeGatewayId,
+					data: {
+						automatic_payment_methods: {
+							enabled: true,
 						},
 					},
-				});
+				},
+			});
 
-				if (response.data?.transactionInitialize?.errors?.length) {
-					showCustomErrors(response.data.transactionInitialize.errors as CustomError[]);
-				}
-			} catch (err) {
-				console.error(err);
-				showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
+			if (response.data?.transactionInitialize?.errors?.length) {
+				showCustomErrors(response.data.transactionInitialize.errors as CustomError[]);
+				return null;
 			}
-		})();
-	}, [
-		isReadyForPayment,
-		checkout.id,
-		commonErrorMessages.somethingWentWrong,
-		showCustomErrors,
-		transactionInitialize,
-	]);
+
+			const data = response.data?.transactionInitialize?.data as {
+				paymentIntent: { client_secret: string };
+				publishableKey: string;
+			};
+
+			setStripeData(data);
+			return data;
+		} catch (err) {
+			console.error(err);
+			showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
+			return null;
+		}
+	};
+
+	useEffect(() => {
+		if (isReadyForPayment && !stripeData) {
+			void initializePaymentIntent();
+		}
+	}, [isReadyForPayment]);
 
 	const stripePromise = useMemo(
 		() => stripeData?.publishableKey && loadStripe(stripeData.publishableKey),
-		[stripeData],
+		[stripeData]
 	);
 
 	if (!isReadyForPayment) {
