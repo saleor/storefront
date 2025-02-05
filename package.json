@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
+	"license": "BSD-3-Clause",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
@@ -10,7 +11,7 @@
 		"predev": "pnpm run generate",
 		"prebuild": "pnpm run generate",
 		"lint": "next lint --dir src --fix",
-		"generate": "DOTENV_CONFIG_PATH=.env graphql-codegen -r dotenv/config --config ./src/checkout/codegen.yml && graphql-codegen --config .graphqlrc.ts",
+		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"prepare": "husky install",
 		"test": "playwright test"
 	},
@@ -18,9 +19,7 @@
 		"@adyen/adyen-web": "5.53.3",
 		"@adyen/api-library": "15.0.0-beta",
 		"@headlessui/react": "1.7.18",
-		"@hookform/resolvers": "3.10.0",
 		"@saleor/auth-sdk": "1.0.1",
-		"@saleor/macaw-ui-next": "npm:@saleor/macaw-ui@1.1.15",
 		"@stripe/react-stripe-js": "2.6.2",
 		"@stripe/stripe-js": "2.2.0",
 		"@tailwindcss/container-queries": "0.1.1",
