@@ -12,7 +12,7 @@ export type ParsedAdyenGateway = ParsedPaymentGateway<AdyenGatewayId, AdyenGatew
 export type ParsedStripeGateway = ParsedPaymentGateway<StripeGatewayId, {}>;
 export type ParsedDummyGateway = ParsedPaymentGateway<DummyGatewayId, {}>;
 
-export type ParsedPaymentGateways = ReadonlyArray<ParsedAdyenGateway | ParsedStripeGateway | DummyGatewayId>;
+export type ParsedPaymentGateways = ReadonlyArray<ParsedAdyenGateway | ParsedStripeGateway | ParsedDummyGateway>;
 
 export interface ParsedPaymentGateway<ID extends string, TData extends Record<string, any>>
 	extends Omit<PaymentGatewayConfig, "data" | "id"> {
