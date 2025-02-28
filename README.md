@@ -13,24 +13,24 @@
   <span> • </span>
   <a href="https://docs.saleor.io/docs/3.x">Docs</a>
   <span> • </span>
-  <a href="https://github.com/orgs/saleor/projects/45/views/2">Roadmap</a>
+  <a href="https://saleor.io/roadmap">Roadmap</a>
   <span> • </span>
   <a href="https://twitter.com/getsaleor">Twitter</a>
   <span> • </span>
-  <a href="https://discord.gg/H52JTZAtSH">Discord</a>
+  <a href="https://saleor.io/discord">Discord</a>
 </div>
 
 <br/>
 
 <div align="center">
 
-[![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://github.com/orgs/saleor/projects/45/views/2)
-[![Discord Badge](https://dcbadge.vercel.app/api/server/H52JTZAtSH)](https://discord.gg/H52JTZAtSH)
+[![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://saleor.io/roadmap)
+[![Discord Badge](https://dcbadge.vercel.app/api/server/unUfh24R6d)](https://discord.gg/unUfh24R6d)
 
 </div>
 
 > [!TIP]
-> Questions or issues? Check our [Discord](https://discord.gg/H52JTZAtSH) channel for help.
+> Questions or issues? Check our [Discord](https://saleor.io/discord) channel for help.
 
 ## Features
 
