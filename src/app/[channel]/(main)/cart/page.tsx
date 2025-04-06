@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function Page(props: { params: Promise<{ channel: string }> }) {
 	const params = await props.params;
-	const checkoutId = Checkout.getIdFromCookies(params.channel);
+	const checkoutId = await Checkout.getIdFromCookies(params.channel);
 
 	const checkout = await Checkout.find(checkoutId);
 

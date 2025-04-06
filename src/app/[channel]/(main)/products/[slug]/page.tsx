@@ -102,12 +102,12 @@ export default async function Page(props: {
 		"use server";
 
 		const checkout = await Checkout.findOrCreate({
-			checkoutId: Checkout.getIdFromCookies(params.channel),
+			checkoutId: await Checkout.getIdFromCookies(params.channel),
 			channel: params.channel,
 		});
 		invariant(checkout, "This should never happen");
 
-		Checkout.saveIdToCookie(params.channel, checkout.id);
+		await Checkout.saveIdToCookie(params.channel, checkout.id);
 
 		if (!selectedVariantID) {
 			return;
