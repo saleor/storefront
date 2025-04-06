@@ -1,8 +1,8 @@
-import { draftMode } from "next/headers";
+import { draftMode, type UnsafeUnwrappedDraftMode } from "next/headers";
 import Link from "next/link";
 
 export const DraftModeNotification = () => {
-	if (!draftMode().isEnabled) {
+	if (!(draftMode() as unknown as UnsafeUnwrappedDraftMode).isEnabled) {
 		return null;
 	}
 

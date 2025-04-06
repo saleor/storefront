@@ -9,7 +9,8 @@ export const metadata = {
 	title: "Shopping Cart · Saleor Storefront example",
 };
 
-export default async function Page({ params }: { params: { channel: string } }) {
+export default async function Page(props: { params: Promise<{ channel: string }> }) {
+	const params = await props.params;
 	const checkoutId = Checkout.getIdFromCookies(params.channel);
 
 	const checkout = await Checkout.find(checkoutId);

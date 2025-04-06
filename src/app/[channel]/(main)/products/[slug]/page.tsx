@@ -15,15 +15,14 @@ import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 
 export async function generateMetadata(
-	{
-		params,
-		searchParams,
-	}: {
-		params: { slug: string; channel: string };
-		searchParams: { variant?: string };
+	props: {
+		params: Promise<{ slug: string; channel: string }>;
+		searchParams: Promise<{ variant?: string }>;
 	},
 	parent: ResolvingMetadata,
 ): Promise<Metadata> {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -56,7 +55,7 @@ export async function generateMetadata(
 							alt: product.name,
 						},
 					],
-			  }
+				}
 			: null,
 	};
 }
@@ -74,13 +73,12 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 
 const parser = edjsHTML();
 
-export default async function Page({
-	params,
-	searchParams,
-}: {
-	params: { slug: string; channel: string };
-	searchParams: { variant?: string };
+export default async function Page(props: {
+	params: Promise<{ slug: string; channel: string }>;
+	searchParams: Promise<{ variant?: string }>;
 }) {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -132,11 +130,11 @@ export default async function Page({
 	const price = selectedVariant?.pricing?.price?.gross
 		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
 		: isAvailable
-		  ? formatMoneyRange({
+			? formatMoneyRange({
 					start: product?.pricing?.priceRange?.start?.gross,
 					stop: product?.pricing?.priceRange?.stop?.gross,
-		    })
-		  : "";
+				})
+			: "";
 
 	const productJsonLd: WithContext<Product> = {
 		"@context": "https://schema.org",
@@ -154,7 +152,7 @@ export default async function Page({
 						priceCurrency: selectedVariant.pricing?.price?.gross.currency,
 						price: selectedVariant.pricing?.price?.gross.amount,
 					},
-			  }
+				}
 			: {
 					name: product.name,
 
@@ -168,7 +166,7 @@ export default async function Page({
 						lowPrice: product.pricing?.priceRange?.start?.gross.amount,
 						highPrice: product.pricing?.priceRange?.stop?.gross.amount,
 					},
-			  }),
+				}),
 	};
 
 	return (
