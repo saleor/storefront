@@ -7,8 +7,8 @@ export const ProductsPerPage = 12;
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
-export const getServerAuthClient = () => {
-	const nextServerCookiesStorage = getNextServerCookiesStorageAsync();
+export const getServerAuthClient = async () => {
+	const nextServerCookiesStorage = await getNextServerCookiesStorageAsync();
 	return createSaleorAuthClient({
 		saleorApiUrl,
 		refreshTokenStorage: nextServerCookiesStorage,
