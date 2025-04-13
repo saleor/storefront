@@ -1,0 +1,5 @@
+# Stop any running containers (with the development configuration)
+docker-compose -f docker-compose-dev.yml down
+
+# Start with the development configuration
+docker-compose -f docker-compose-dev.yml up --build

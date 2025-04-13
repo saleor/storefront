@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  saleor-storefront:
+    container_name: saleor-storefront
+    build:
+      dockerfile: Dockerfile.dev
+      args:
+        NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL}
+        NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - saleor_network
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+
+  # Add more containers below (nginx, postgres, etc.)
+
+networks:
+  saleor_network:
+    external: false

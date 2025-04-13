@@ -1,0 +1,22 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies
+RUN apk add --no-cache libc6-compat
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm i
+
+# Set environment variables
+ARG NEXT_PUBLIC_SALEOR_API_URL
+ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
+ARG NEXT_PUBLIC_STOREFRONT_URL
+ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+
+# Run development server
+CMD ["pnpm", "dev"]
