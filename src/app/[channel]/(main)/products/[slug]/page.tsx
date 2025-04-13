@@ -21,8 +21,7 @@ export async function generateMetadata(
 	}: {
 		params: { slug: string; channel: string };
 		searchParams: { variant?: string };
-	},
-	parent: ResolvingMetadata,
+	}
 ): Promise<Metadata> {
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
@@ -135,7 +134,7 @@ export default async function Page({
 		  ? formatMoneyRange({
 					start: product?.pricing?.priceRange?.start?.gross,
 					stop: product?.pricing?.priceRange?.stop?.gross,
-		    })
+			})
 		  : "";
 
 	const productJsonLd: WithContext<Product> = {
