@@ -3,9 +3,9 @@ import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 
 export const metadata = {
-	title: "ACME Storefront, powered by Saleor & Next.js",
+	title: "Reyes Handmade Jewels",
 	description:
-		"Storefront Next.js Example for building performant e-commerce experiences with Saleor - the composable, headless commerce platform for global brands.",
+		"Discover unique, artisanal jewelry crafted with passion and precision by Reyes. Each piece is meticulously handmade, combining traditional techniques with contemporary designs to create timeless accessories that tell a story.",
 };
 
 export default async function Page({ params }: { params: { channel: string } }) {

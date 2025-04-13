@@ -14,7 +14,7 @@ export const generateMetadata = async ({ params }: { params: { slug: string } })
 	});
 
 	return {
-		title: `${page?.seoTitle || page?.title || "Page"} · Saleor Storefront example`,
+		title: `${page?.seoTitle || page?.title || "Page"} · Reyes Handmade Jewels`,
 		description: page?.seoDescription || page?.seoTitle || page?.title,
 	};
 };
