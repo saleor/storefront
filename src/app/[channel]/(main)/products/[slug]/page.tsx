@@ -21,8 +21,8 @@ export async function generateMetadata(
 	},
 	parent: ResolvingMetadata,
 ): Promise<Metadata> {
-	const searchParams = await props.searchParams;
-	const params = await props.params;
+	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
+
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -77,8 +77,7 @@ export default async function Page(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	const searchParams = await props.searchParams;
-	const params = await props.params;
+	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),

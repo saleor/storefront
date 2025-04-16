@@ -14,8 +14,7 @@ export default async function Page(props: {
 	searchParams: Promise<Record<"query" | "cursor", string | string[] | undefined>>;
 	params: Promise<{ channel: string }>;
 }) {
-	const params = await props.params;
-	const searchParams = await props.searchParams;
+	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 	const searchValue = searchParams.query;
 
