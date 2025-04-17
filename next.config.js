@@ -23,6 +23,11 @@ const config = {
 			: process.env.NEXT_OUTPUT === "export"
 				? "export"
 				: undefined,
+	reactStrictMode: true,
+	// Force Next.js to listen on all interfaces (0.0.0.0)
+	webServerConfig: {
+		hostname: "0.0.0.0",
+	},
 };
 
 export default config;
