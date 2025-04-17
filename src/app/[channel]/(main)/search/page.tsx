@@ -10,13 +10,11 @@ export const metadata = {
 	description: "Search products in Saleor Storefront example",
 };
 
-export default async function Page({
-	searchParams,
-	params,
-}: {
-	searchParams: Record<"query" | "cursor", string | string[] | undefined>;
-	params: { channel: string };
+export default async function Page(props: {
+	searchParams: Promise<Record<"query" | "cursor", string | string[] | undefined>>;
+	params: Promise<{ channel: string }>;
 }) {
+	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 	const searchValue = searchParams.query;
 

@@ -34,7 +34,7 @@
 
 ## Features
 
-- **Next.js 14**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
+- **Next.js 15**: File-based routing, React 19, Fast Refresh, Image Optimization and more.
 - **App Router**: Uses React Server Components, Data Cache, and async components.
 - **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
 - **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
@@ -71,6 +71,7 @@
 ## Quickstart
 
 ### 1. Create Saleor backend instance
+
 To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/?utm_source=storefront&utm_medium=github).
 
 Alternatively you can [run Saleor locally using docker](https://docs.saleor.io/docs/3.x/setup/docker-compose?utm_source=storefront&utm_medium=github).
@@ -94,6 +95,7 @@ saleor storefront create --url https://{SALEOR_HOSTNAME}/graphql/
 #### [Option 2] Manual install
 
 Clone repository:
+
 ```bash
 git clone https://github.com/saleor/storefront.git
 ```
@@ -111,7 +113,6 @@ Then, [install `pnpm`](https://pnpm.io/installation) and run the following comma
 ```bash
 pnpm i
 ```
-
 
 ## Payments
 
@@ -144,4 +145,3 @@ pnpm run generate
 ### Preview content changes instantly (Draft Mode)
 
 Visit `http://{your-host}/api/draft` to enable cookies that disable caching to preview catalog and content changes instantly. [Learn more about the Draft Mode in Next.js docs.](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)
-
