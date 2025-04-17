@@ -2,11 +2,40 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "node",
-			"request": "attach",
-			"name": "Attach to application",
-			"skipFiles": ["<node_internals>/**"],
-			"port": 9229
+			"name": "Next.js: Debug",
+			"type": "node-terminal",
+			"request": "launch",
+			"command": "pnpm dev",
+			"serverReadyAction": {
+				"pattern": "started server on .+, url: (https?://.+)",
+				"uriFormat": "%s",
+				"action": "debugWithChrome"
+			},
+			"sourceMaps": true,
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Next.js: dev (via mitmproxy)",
+			"type": "pwa-node", // or "node" if you prefer
+			"request": "launch",
+			"cwd": "${workspaceFolder}", // run in repo root
+			"runtimeExecutable": "pnpm", // what to run
+			"runtimeArgs": ["dev"], // first arg after pnpm
+			"env": {
+				"HTTPS_PROXY": "http://127.0.0.1:8085",
+				"HTTP_PROXY": "http://127.0.0.1:8085",
+				// trust the proxy only for this run (optional; give absolute path on Windows)
+				"NODE_EXTRA_CA_CERTS": "${workspaceFolder}\\certs\\mitmproxy-ca-cert.pem",
+				// tell Node to load our proxy helper before anything else
+				"NODE_OPTIONS": "--require ${workspaceFolder}\\proxyagent.cjs"
+			},
+			"console": "integratedTerminal",
+			"sourceMaps": true,
+			"serverReadyAction": {
+				"pattern": "started server on .+, url: (https?://.+)",
+				"uriFormat": "%s",
+				"action": "debugWithChrome"
+			}
 		}
 	]
 }

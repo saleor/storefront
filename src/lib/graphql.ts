@@ -44,9 +44,37 @@ export async function executeGraphQL<Result, Variables>(
 		};
 	}
 
+	if (process.env.NODE_ENV !== "production") {
+		const BAR = "*".repeat(70);
+		const MAX = Number(process.env.DEBUG_GQL_MAX ?? 200); // bytes
+		const chop = (s: string) =>
+			s.length > MAX ? `${s.slice(0, MAX)} …[+${s.length - MAX} bytes truncated]` : s;
+		const body_as_string = JSON.stringify({
+			query: operation.toString(),
+			...(variables && { variables }),
+		});
+
+		console.debug(`\n${BAR}\n⇢ GraphQL @ ${new Date().toISOString()}\n${BAR}`);
+		console.debug("Headers:", input.headers);
+		console.debug("Body:", chop(body_as_string));
+		console.debug("withAuth:", withAuth);
+	}
+
 	const response = withAuth
 		? await getServerAuthClient().fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input)
 		: await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+
+	if (process.env.NODE_ENV !== "production") {
+		const BAR = "─".repeat(70);
+		const MAX = Number(process.env.DEBUG_GQL_MAX ?? 200);
+		const chop = (s: string) =>
+			s.length > MAX ? `${s.slice(0, MAX)} …[+${s.length - MAX} bytes truncated]` : s;
+
+		const raw = JSON.stringify(await response.clone().json());
+		console.debug("⇠ GraphQL raw response");
+		console.debug(chop(raw));
+		console.debug(`${BAR}\n`);
+	}
 
 	if (!response.ok) {
 		const body = await (async () => {
