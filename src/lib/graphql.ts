@@ -36,6 +36,14 @@ export async function executeGraphQL<Result, Variables>(
 		next: { revalidate },
 	};
 
+	// Add app token for server components if available and not already provided
+	if (typeof window === "undefined" && process.env.SALEOR_APP_TOKEN && !headers?.Authorization) {
+		input.headers = {
+			...input.headers,
+			Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+		};
+	}
+
 	const response = withAuth
 		? await getServerAuthClient().fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input)
 		: await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
