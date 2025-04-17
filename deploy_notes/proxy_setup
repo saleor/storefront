@@ -1,0 +1,1 @@
+docker run --rm -it -p 8085:8080 -p 8086:8081  --name mitmproxy   mitmproxy/mitmproxy mitmweb --web-host 0.0.0.0 --mode regular

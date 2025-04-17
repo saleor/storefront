@@ -1,0 +1,12 @@
+2025-04-17T09:10:41.494138448Z  ⨯ [Error: An error occurred in the Server Components render. The specific message is omitted in production builds to avoid leaking sensitive details. A digest property is included on this error instance which may provide additional details about the nature of the error.] {
+2025-04-17T09:10:41.494243034Z   digest: 'DYNAMIC_SERVER_USAGE'
+2025-04-17T09:10:41.494260452Z }
+2025-04-17T09:10:41.550783062Z  ⨯ [Error: An error occurred in the Server Components render. The specific message is omitted in production builds to avoid leaking sensitive details. A digest property is included on this error instance which may provide additional details about the nature of the error.] {
+2025-04-17T09:10:41.550853622Z   digest: 'DYNAMIC_SERVER_USAGE'
+2025-04-17T09:10:41.550867073Z }
+2025-04-17T09:10:41.573892155Z  ⨯ Error: 'sharp' is required to be installed in standalone mode for the image optimization to function correctly. Read more at: https://nextjs.org/docs/messages/sharp-missing-in-production
+2025-04-17T09:10:41.578311634Z  ⨯ Error: 'sharp' is required to be installed in standalone mode for the image optimization to function correctly. Read more at: https://nextjs.org/docs/messages/sharp-missing-in-production
+2025-04-17T09:10:41.585234063Z  ⨯ [Error: An error occurred in the Server Components render. The specific message is omitted in production builds to avoid leaking sensitive details. A digest property is included on this error instance which may provide additional details about the nature of the error.] {
+2025-04-17T09:10:41.585275816Z   digest: 'DYNAMIC_SERVER_USAGE'
+2025-04-17T09:10:41.585282816Z }
+2025-04-17T09:10:41.601629992Z  ⨯ Error: 'sharp' is required to be installed in standalone mode for the image optimization to function correctly. Read more at: https://nextjs.org/docs/messages/sharp-missing-in-production

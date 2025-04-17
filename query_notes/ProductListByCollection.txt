@@ -1,0 +1,28 @@
+query ProductListByCollection($slug: String!, $channel: String!) {
+  collection(slug: $slug, channel: $channel) {
+    id
+    name
+    products(first:10) {
+      edges {
+        node {
+          id
+          name
+          slug
+          thumbnail { url alt }
+          pricing {
+            priceRange {
+              start { gross { amount currency } }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+{
+  "first":5,
+  "slug": "featured-products",
+  "channel":"default-channel"
+}
+

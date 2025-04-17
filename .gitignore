@@ -42,3 +42,4 @@ next-env.d.ts
 
 .idea/
 .pnpm-store
+token_of_local_client

@@ -1,0 +1,73 @@
+# Jewel Shop Saleor Storefront - Development Setup
+
+This document provides instructions for setting up and running the Jewel Shop Saleor Storefront locally for development.
+
+## Prerequisites
+
+- Node.js v20.x or later
+- PNPM package manager
+
+## Initial Setup
+
+1. **Install Node.js and PNPM**:
+   ```bash
+   # Install Node.js from https://nodejs.org/
+   # Then install pnpm
+   npm install -g pnpm
+
+
+Set Environment Variables: Create a .env.local file in the project root:
+
+$env:NEXT_PUBLIC_SALEOR_API_URL="https://api-dev.reyesjewels.com/graphql/"
+$env:NEXT_PUBLIC_STOREFRONT_URL="http://localhost:3000"
+
+Install Dependencies:
+
+pnpm install
+
+Generate GraphQL Types:
+
+pnpm run generate
+
+
+Running the Development Server
+
+pnpm dev
+
+The storefront will be available at http://localhost:3000
+
+Debugging with VS Code
+
+Open the project in VS Code
+
+Ensure the launch.json file contains:
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: Debug",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      },
+      "sourceMaps": true,
+      "console": "integratedTerminal"
+    }
+  ]
+}
+
+Set breakpoints in your code
+
+Go to Run and Debug in VS Code (Ctrl+Shift+D)
+
+Select "Next.js: Debug" from the dropdown and click the green play button
+
+Navigate to http://localhost:3000 in your browser
+
+The debugger will pause at any breakpoints you've set
+

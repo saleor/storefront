@@ -36,5 +36,8 @@
 		"titleBar.inactiveBackground": "#e8dbcc99",
 		"titleBar.inactiveForeground": "#15202b99"
 	},
-	"peacock.color": "#E8DBCC"
+	"peacock.color": "#E8DBCC",
+	"[typescript]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	}
 }

@@ -1,0 +1,1 @@
+docker logs --since 2m -f coolify-proxy | grep -v "ping"
