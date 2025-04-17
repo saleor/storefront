@@ -37,11 +37,19 @@ export async function executeGraphQL<Result, Variables>(
 	};
 
 	// Add app token for server components if available and not already provided
-	if (typeof window === "undefined" && process.env.SALEOR_APP_TOKEN && !headers?.Authorization) {
-		input.headers = {
-			...input.headers,
-			Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-		};
+	if (typeof window === "undefined" && process.env.SALEOR_APP_TOKEN) {
+		const hasAuthHeader =
+			headers &&
+			Object.entries(headers as Record<string, string>).some(
+				([key]) => key.toLowerCase() === "authorization",
+			);
+
+		if (!hasAuthHeader) {
+			input.headers = {
+				...input.headers,
+				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+			};
+		}
 	}
 
 	if (process.env.NODE_ENV !== "production") {
