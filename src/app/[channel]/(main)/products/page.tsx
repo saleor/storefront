@@ -6,8 +6,8 @@ import { ProductList } from "@/ui/components/ProductList";
 import { ProductsPerPage } from "@/app/config";
 
 export const metadata = {
-	title: "Products · Saleor Storefront example",
-	description: "All products in Saleor Storefront example",
+	title: "Products · Reyes Handmade Jewels",
+	description: "All products in Reyes Handmade Jewels",
 };
 
 export default async function Page({

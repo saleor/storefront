@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { AuthProvider } from "@/ui/components/AuthProvider";
 
 export const metadata = {
-	title: "Saleor Storefront example",
+	title: "Reyes Handmade Jewels",
 	description: "Starter pack for building performant e-commerce experiences with Saleor.",
 };
 

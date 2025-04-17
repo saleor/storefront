@@ -3,7 +3,7 @@ import { Footer } from "@/ui/components/Footer";
 import { Header } from "@/ui/components/Header";
 
 export const metadata = {
-	title: "Saleor Storefront example",
+	title: "Reyes Handmade Jewels",
 	description: "Starter pack for building performant e-commerce experiences with Saleor.",
 };
 
