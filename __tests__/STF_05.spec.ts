@@ -33,11 +33,8 @@ test("STF_05: Checkout as a unlogged user", async ({ page }) => {
 	await page.getByLabel("DHL").blur();
 
 	await page.getByTestId("paymentMethods").waitFor();
-	const stripeIframe = page.getByTestId("paymentMethods").frameLocator("iframe");
-	await stripeIframe.getByLabel("Card number").fill("4242424242424242");
-	await stripeIframe.getByLabel("Expiration").fill("03/30");
-	await stripeIframe.getByLabel("CVC").fill("737");
-	await page.getByRole("button", { name: "Pay now" }).click();
+	// The test assumes dummy payment gateway usage
+	await page.getByRole("button", { name: "Make payment and create order" }).click();
 
 	await page.getByText("Thank you for placing your order.", { exact: false }).waitFor();
 
