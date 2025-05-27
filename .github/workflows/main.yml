@@ -45,10 +45,10 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
 
-      - run: pnpm dlx playwright install chromium --with-deps
+      - run: pnpm exec playwright install chromium --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - run: pnpm dlx playwright install-deps chromium
+      - run: pnpm exec playwright install-deps chromium
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
       - name: Wait for Vercel Preview
