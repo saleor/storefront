@@ -5,9 +5,10 @@ import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 
 export const generateMetadata = async (
-	{ params }: { params: { slug: string; channel: string } },
+	props: { params: Promise<{ slug: string; channel: string }> },
 	parent: ResolvingMetadata,
 ): Promise<Metadata> => {
+	const params = await props.params;
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
 		variables: { slug: params.slug, channel: params.channel },
 		revalidate: 60,
@@ -20,7 +21,8 @@ export const generateMetadata = async (
 	};
 };
 
-export default async function Page({ params }: { params: { slug: string; channel: string } }) {
+export default async function Page(props: { params: Promise<{ slug: string; channel: string }> }) {
+	const params = await props.params;
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
 		variables: { slug: params.slug, channel: params.channel },
 		revalidate: 60,

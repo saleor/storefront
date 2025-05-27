@@ -13,25 +13,28 @@
   <span> • </span>
   <a href="https://docs.saleor.io/docs/3.x">Docs</a>
   <span> • </span>
-  <a href="https://github.com/orgs/saleor/projects/45/views/2">Roadmap</a>
+  <a href="https://saleor.io/roadmap">Roadmap</a>
   <span> • </span>
   <a href="https://twitter.com/getsaleor">Twitter</a>
   <span> • </span>
-  <a href="https://discord.gg/H52JTZAtSH">Discord</a>
+  <a href="https://saleor.io/discord">Discord</a>
 </div>
 
 <br/>
 
 <div align="center">
 
-[![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://github.com/orgs/saleor/projects/45/views/2)
-[![Discord Badge](https://dcbadge.vercel.app/api/server/H52JTZAtSH)](https://discord.gg/H52JTZAtSH)
+[![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://saleor.io/roadmap)
+[![Discord Badge](https://dcbadge.vercel.app/api/server/unUfh24R6d)](https://discord.gg/unUfh24R6d)
 
 </div>
 
+> [!TIP]
+> Questions or issues? Check our [Discord](https://saleor.io/discord) channel for help.
+
 ## Features
 
-- **Next.js 14**: File-based routing, React 18, Fast Refresh, Image Optimization and more.
+- **Next.js 15**: File-based routing, React 19, Fast Refresh, Image Optimization and more.
 - **App Router**: Uses React Server Components, Data Cache, and async components.
 - **TypeScript**: Strongly typed codebase and GraphQL payloads with strict mode.
 - **GraphQL best practices**: Uses GraphQL Codegen and `TypedDocumentString` to reduce boilerplate and bundle size.
@@ -40,7 +43,6 @@
 
 **Global:**
 
-- Channel switcher and Geo detection (coming soon)
 - Dynamic menu
 - Hamburger menu
 - SEO data
@@ -63,13 +65,13 @@
 
 **My account:**
 
-- Order history (coming soon)
 - Order completion
 - Order details
 
 ## Quickstart
 
 ### 1. Create Saleor backend instance
+
 To quickly get started with the backend, use a free developer account at [Saleor Cloud](https://cloud.saleor.io/?utm_source=storefront&utm_medium=github).
 
 Alternatively you can [run Saleor locally using docker](https://docs.saleor.io/docs/3.x/setup/docker-compose?utm_source=storefront&utm_medium=github).
@@ -93,6 +95,7 @@ saleor storefront create --url https://{SALEOR_HOSTNAME}/graphql/
 #### [Option 2] Manual install
 
 Clone repository:
+
 ```bash
 git clone https://github.com/saleor/storefront.git
 ```
@@ -111,16 +114,12 @@ Then, [install `pnpm`](https://pnpm.io/installation) and run the following comma
 pnpm i
 ```
 
-
 ## Payments
 
 Currently, Saleor Storefront supports payments via the [Saleor Adyen App](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen). To install and configure the payment app go to the "Apps" section in the Saleor Dashboard (App Store is only available in Saleor Cloud).
 
 > WARNING:
 > To configure the Adyen App, you must have an account with [Adyen](https://www.adyen.com/).
-
-> NOTE:
-> Saleor Stripe App integration is a work in progress.
 
 ## Development
 

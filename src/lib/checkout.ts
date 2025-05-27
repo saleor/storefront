@@ -2,17 +2,17 @@ import { cookies } from "next/headers";
 import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 
-export function getIdFromCookies(channel: string) {
+export async function getIdFromCookies(channel: string) {
 	const cookieName = `checkoutId-${channel}`;
-	const checkoutId = cookies().get(cookieName)?.value || "";
+	const checkoutId = (await cookies()).get(cookieName)?.value || "";
 	return checkoutId;
 }
 
-export function saveIdToCookie(channel: string, checkoutId: string) {
+export async function saveIdToCookie(channel: string, checkoutId: string) {
 	const shouldUseHttps =
 		process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
 	const cookieName = `checkoutId-${channel}`;
-	cookies().set(cookieName, checkoutId, {
+	(await cookies()).set(cookieName, checkoutId, {
 		sameSite: "lax",
 		secure: shouldUseHttps,
 	});
@@ -26,7 +26,7 @@ export async function find(checkoutId: string) {
 						id: checkoutId,
 					},
 					cache: "no-cache",
-			  })
+				})
 			: { checkout: null };
 
 		return checkout;
