@@ -1,8 +1,8 @@
 import { draftMode } from "next/headers";
 import Link from "next/link";
 
-export const DraftModeNotification = () => {
-	if (!draftMode().isEnabled) {
+export const DraftModeNotification = async () => {
+	if (!(await draftMode()).isEnabled) {
 		return null;
 	}
 

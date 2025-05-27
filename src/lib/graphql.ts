@@ -37,7 +37,7 @@ export async function executeGraphQL<Result, Variables>(
 	};
 
 	const response = withAuth
-		? await getServerAuthClient().fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input)
+		? await (await getServerAuthClient()).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input)
 		: await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
 
 	if (!response.ok) {

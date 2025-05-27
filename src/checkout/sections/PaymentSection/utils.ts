@@ -22,19 +22,7 @@ export const getFilteredPaymentGateways = (
 	}
 
 	// we want to use only payment apps, not plugins
-	return compact(paymentGateways).filter(({ id, name }) => {
-		const shouldBeIncluded = supportedPaymentGateways.includes(id);
-		const isAPlugin = !id.startsWith("app.");
-
-		// app is missing in our codebase but is an app and not a plugin
-		// hence we'd like to have it handled by default
-		if (!shouldBeIncluded && !isAPlugin) {
-			console.warn(`Unhandled payment gateway - name: ${name}, id: ${id}`);
-			return false;
-		}
-
-		return shouldBeIncluded;
-	});
+	return compact(paymentGateways).filter(({ id }) => supportedPaymentGateways.includes(id));
 };
 
 export const getUrlForTransactionInitialize = () => getUrl({ query: { processingPayment: true } });

@@ -45,10 +45,10 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
 
-      - run: pnpm exec playwright install chromium --with-deps
+      - run: pnpm dlx playwright install chromium --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - run: pnpm exec playwright install-deps chromium
+      - run: pnpm dlx playwright install-deps chromium
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
       - name: Wait for Vercel Preview
@@ -60,11 +60,11 @@ jobs:
           check_interval: 5
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: pnpm test
         env:
           BASE_URL: ${{ steps.waitForVercel.outputs.url }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
