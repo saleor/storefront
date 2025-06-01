@@ -1,7 +1,8 @@
 "use server";
 
-import { saleorAuthClient } from "@/app/config";
+import { getServerAuthClient } from "@/app/config";
 
 export async function logout() {
-	saleorAuthClient.signOut();
+	"use server";
+	(await getServerAuthClient()).signOut();
 }
