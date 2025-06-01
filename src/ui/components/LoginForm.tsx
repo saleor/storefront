@@ -1,4 +1,4 @@
-import { LoginButton } from "@ui/atoms/LoginButton";
+import { LoginButton } from "@/ui/atoms/LoginButton";
 import { getServerAuthClient } from "@/app/config";
 
 export async function LoginForm() {

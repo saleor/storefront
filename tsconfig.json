@@ -25,8 +25,7 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./src/*"],
-			"@ui/*": ["./src/ui/*"]
+			"@/*": ["./src/*"]
 		},
 		"types": ["react-dom/canary"]
 	},
