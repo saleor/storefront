@@ -12,6 +12,7 @@ export interface Option<TData extends string = string> {
 interface SelectProps<TName extends string, TData extends string>
 	extends SelectHTMLAttributes<HTMLSelectElement> {
 	name: TName;
+	placeholder?: TName;
 	label?: ReactNode;
 	onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 	options: Option<TData>[];

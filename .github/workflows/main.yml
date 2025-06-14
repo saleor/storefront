@@ -60,11 +60,11 @@ jobs:
           check_interval: 5
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: pnpm test
         env:
           BASE_URL: ${{ steps.waitForVercel.outputs.url }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report

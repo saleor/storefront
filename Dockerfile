@@ -6,8 +6,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat jq
 WORKDIR /app
 
-# Get PNPM version from package.json
-RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 COPY package.json pnpm-lock.yaml ./
 RUN yarn global add pnpm@9.9.0
@@ -32,8 +33,9 @@ ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL:-https://www.opensen
 
 
 # Get PNPM version from package.json
-RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
-RUN yarn global add pnpm@$PNPM_VERSION
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 RUN pnpm build
 
