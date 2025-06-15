@@ -31,7 +31,6 @@ ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL:-https://api.opensen
 ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL:-https://www.opensensor.wiki/}
 
-
 # Get PNPM version from package.json
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -40,8 +39,8 @@ RUN corepack enable
 RUN pnpm build
 
 # Production image, copy all the files and run next
+FROM base AS runner
 WORKDIR /app
-
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -50,21 +49,30 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# COPY --from=builder /app/public ./public
+COPY --from=builder /app/public ./public
 
 # Set the correct permission for prerender cache
-#RUN mkdir .next
+RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-#COPY --chown=nextjs:nodejs /app/.next/standalone ./
-#COPY --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy package.json for runtime dependencies
+COPY --from=builder /app/package.json ./package.json
+
+# Install pnpm in the runner stage
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 USER nextjs
 
+EXPOSE 3010
 
-#CMD ["node", "server.js"]
-#RUN pnpm run build
-CMD PORT=3010 pnpm run start
+ENV PORT 3010
+ENV HOSTNAME "0.0.0.0"
 
+CMD ["node", "server.js"]
