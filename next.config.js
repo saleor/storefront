@@ -19,6 +19,16 @@ const config = {
 			: process.env.NEXT_OUTPUT === "export"
 				? "export"
 				: undefined,
+	// Disable minification and show detailed errors for debugging
+	swcMinify: false,
+	productionBrowserSourceMaps: true,
+	compiler: {
+		removeConsole: false,
+	},
+	// Show detailed errors in production
+	onError: (err, req, res) => {
+		console.error("Next.js Error:", err);
+	},
 };
 
 export default config;
