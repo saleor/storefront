@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
+import { type FormEventHandler, useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { type StripePaymentElementOptions } from "@stripe/stripe-js";
 import { getUrlForTransactionInitialize } from "../utils";
 import { usePaymentProcessingScreen } from "../PaymentProcessingScreen";
-import { useCheckoutValidationActions } from "@/checkout/state/checkoutValidationStateStore";
-import { useCheckoutUpdateStateActions } from "@/checkout/state/updateStateStore";
+import {
+	useCheckoutValidationActions,
+	useCheckoutValidationState,
+	anyFormsValidating,
+	areAllFormsValid,
+} from "@/checkout/state/checkoutValidationStateStore";
+import {
+	useCheckoutUpdateState,
+	useCheckoutUpdateStateActions,
+	areAnyRequestsInProgress,
+	hasFinishedApiChangesWithNoError,
+} from "@/checkout/state/updateStateStore";
 import { useEvent } from "@/checkout/hooks/useEvent";
 import { useUser } from "@/checkout/hooks/useUser";
 import { useAlerts } from "@/checkout/hooks/useAlerts";
@@ -28,58 +38,27 @@ export function CheckoutForm() {
 	const { authenticated } = useUser();
 	const { showCustomErrors } = useAlerts();
 
+	const checkoutUpdateState = useCheckoutUpdateState();
+	const anyRequestsInProgress = areAnyRequestsInProgress(checkoutUpdateState);
+	const finishedApiChangesWithNoError = hasFinishedApiChangesWithNoError(checkoutUpdateState);
 	const { setSubmitInProgress, setShouldRegisterUser } = useCheckoutUpdateStateActions();
 	const { validateAllForms } = useCheckoutValidationActions();
+	const { validationState } = useCheckoutValidationState();
 
 	const { setIsProcessingPayment } = usePaymentProcessingScreen();
 	const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
 
-	const onSubmitInitialize = useEvent(async (e: React.FormEvent<HTMLFormElement>) => {
+	// handler for when user presses submit
+	const onSubmitInitialize: FormEventHandler<HTMLFormElement> = useEvent(async (e) => {
 		e.preventDefault();
-
-		if (!stripe || !elements) {
-			showCustomErrors([{ message: "Stripe.js hasn't loaded yet. Please try again." }]);
-			return;
-		}
 
 		setIsLoading(true);
 		validateAllForms(authenticated);
 		setShouldRegisterUser(true);
 		setSubmitInProgress(true);
-
-		const { error } = await stripe.confirmPayment({
-			elements,
-			confirmParams: {
-				return_url: getUrlForTransactionInitialize().newUrl,
-				payment_method_data: {
-					billing_details: {
-						name: checkout.billingAddress?.firstName + " " + checkout.billingAddress?.lastName,
-						email: checkout.email ?? "",
-						phone: checkout.billingAddress?.phone ?? "",
-						address: {
-							city: checkout.billingAddress?.city ?? "",
-							country: checkout.billingAddress?.country.code ?? "",
-							line1: checkout.billingAddress?.streetAddress1 ?? "",
-							line2: checkout.billingAddress?.streetAddress2 ?? "",
-							postal_code: checkout.billingAddress?.postalCode ?? "",
-							state: checkout.billingAddress?.countryArea ?? "",
-						},
-					},
-				},
-			},
-		});
-
-		if (error) {
-			showCustomErrors([{ message: error.message || "An unexpected error occurred." }]);
-			setIsLoading(false);
-			setSubmitInProgress(false);
-		} else {
-			setIsProcessingPayment(true);
-			void onCheckoutComplete();
-		}
 	});
 
-	// Handle redirect from payment
+	// handle when page is opened from previously redirected payment
 	useEffect(() => {
 		const { paymentIntent, paymentIntentClientSecret, processingPayment } = getQueryParams();
 
@@ -92,13 +71,121 @@ export function CheckoutForm() {
 		}
 	}, [completingCheckout, onCheckoutComplete]);
 
+	// when submission is initialized, awaits for all the other requests to finish,
+	// forms to validate, then either does transaction initialize or process
+	useEffect(() => {
+		const validating = anyFormsValidating(validationState);
+		const allFormsValid = areAllFormsValid(validationState);
+
+		if (!checkoutUpdateState.submitInProgress || validating || anyRequestsInProgress) {
+			return;
+		}
+		if (!stripe || !elements) {
+			// Stripe.js hasn't yet loaded.
+			// Make sure to disable form submission until Stripe.js has loaded.
+			return;
+		}
+
+		// submit was finished - we can mark it as complete
+		setSubmitInProgress(false);
+
+		// there was en error either in some other request or form validation
+		// - stop the submission altogether
+		if (!finishedApiChangesWithNoError || !allFormsValid) {
+			setIsLoading(false);
+			return;
+		}
+
+		setIsLoading(true);
+
+		stripe
+			.confirmPayment({
+				elements,
+				confirmParams: {
+					return_url: getUrlForTransactionInitialize().newUrl,
+					payment_method_data: {
+						billing_details: {
+							name: checkout.billingAddress?.firstName + " " + checkout.billingAddress?.lastName,
+							email: checkout.email ?? "",
+							phone: checkout.billingAddress?.phone ?? "",
+							address: {
+								city: checkout.billingAddress?.city ?? "",
+								country: checkout.billingAddress?.country.code ?? "",
+								line1: checkout.billingAddress?.streetAddress1 ?? "",
+								line2: checkout.billingAddress?.streetAddress2 ?? "",
+								postal_code: checkout.billingAddress?.postalCode ?? "",
+								state: checkout.billingAddress?.countryArea ?? "",
+							},
+						},
+					},
+				},
+			})
+			.then(async ({ error }) => {
+				console.error(error);
+				setIsLoading(false);
+
+				if (error) {
+					setIsProcessingPayment(false);
+					// This point will only be reached if there is an immediate error when
+					// confirming the payment. Otherwise, your customer will be redirected to
+					// your `return_url`. For some payment methods like iDEAL, your customer will
+					// be redirected to an intermediate site first to authorize the payment, then
+					// redirected to the `return_url`.
+					if (error.type === "card_error" || error.type === "validation_error") {
+						showCustomErrors([{ message: error.message ?? "Something went wrong" }]);
+					} else {
+						showCustomErrors([{ message: "An unexpected error occurred." }]);
+					}
+					return;
+				}
+
+				return onCheckoutComplete();
+			})
+			.catch((err) => {
+				console.error(err);
+				setIsLoading(false);
+				setIsProcessingPayment(false);
+			});
+
+		// @todo
+		// there is a previous transaction going on, we want to process instead of initialize
+		// if (currentTransactionId) {
+		// 	void onTransactionProccess({
+		// 		data: adyenCheckoutSubmitParams?.state.data,
+		// 		id: currentTransactionId,
+		// 	});
+		// 	return;
+		// }
+	}, [
+		anyRequestsInProgress,
+		checkout.billingAddress?.city,
+		checkout.billingAddress?.country.code,
+		checkout.billingAddress?.countryArea,
+		checkout.billingAddress?.firstName,
+		checkout.billingAddress?.lastName,
+		checkout.billingAddress?.phone,
+		checkout.billingAddress?.postalCode,
+		checkout.billingAddress?.streetAddress1,
+		checkout.billingAddress?.streetAddress2,
+		checkout.email,
+		checkoutUpdateState.submitInProgress,
+		elements,
+		finishedApiChangesWithNoError,
+		onCheckoutComplete,
+		setIsProcessingPayment,
+		setSubmitInProgress,
+		showCustomErrors,
+		stripe,
+		validationState,
+	]);
+
 	return (
 		<form className="my-8 flex flex-col gap-y-6" onSubmit={onSubmitInitialize}>
 			<PaymentElement className="payment-element" options={paymentElementOptions} />
 			<button
 				className="h-12 items-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
-				disabled={isLoading || !stripe || !elements}
-				type="submit"
+				aria-disabled={isLoading || !stripe || !elements}
+				id="submit"
 			>
 				<span className="button-text">{isLoading ? <Loader /> : "Pay now"}</span>
 			</button>

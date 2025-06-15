@@ -8,7 +8,6 @@ services:
       args:
         NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL}
         NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
-        SALEOR_APP_TOKEN: ${SALEOR_APP_TOKEN}
     restart: always
     ports:
       - 3000:3000

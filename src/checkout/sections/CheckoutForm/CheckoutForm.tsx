@@ -1,8 +1,10 @@
 import { Suspense, useState } from "react";
+import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { Contact } from "@/checkout/sections/Contact";
 import { DeliveryMethods } from "@/checkout/sections/DeliveryMethods";
 import { ContactSkeleton } from "@/checkout/sections/Contact/ContactSkeleton";
 import { DeliveryMethodsSkeleton } from "@/checkout/sections/DeliveryMethods/DeliveryMethodsSkeleton";
+import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
 import { getQueryParams } from "@/checkout/lib/utils/url";
 import { CollapseSection } from "@/checkout/sections/CheckoutForm/CollapseSection";
 import { Divider } from "@/checkout/components";
@@ -12,7 +14,6 @@ import { UserBillingAddressSection } from "@/checkout/sections/UserBillingAddres
 import { PaymentSection, PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection";
 import { GuestBillingAddressSection } from "@/checkout/sections/GuestBillingAddressSection";
 import { useUser } from "@/checkout/hooks/useUser";
-import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 export const CheckoutForm = () => {
 	const { user } = useUser();
@@ -21,35 +22,33 @@ export const CheckoutForm = () => {
 
 	const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
 
-	const hasDeliveryMethod = !!checkout.deliveryMethod;
-
 	return (
 		<div className="flex flex-col items-end">
 			<div className="flex w-full flex-col rounded">
 				<Suspense fallback={<ContactSkeleton />}>
 					<Contact setShowOnlyContact={setShowOnlyContact} />
 				</Suspense>
-
-				<CollapseSection collapse={showOnlyContact}>
-					<Divider />
-					<div className="py-4" data-testid="shippingAddressSection">
-						{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
-					</div>
-					{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-				</CollapseSection>
-
-				<Suspense fallback={<DeliveryMethodsSkeleton />}>
-					<DeliveryMethods collapsed={showOnlyContact} />
-				</Suspense>
-
-				{/* Only show payment section if delivery method is selected */}
-				{hasDeliveryMethod && (
+				<>
+					{checkout?.isShippingRequired && (
+						<Suspense fallback={<AddressSectionSkeleton />}>
+							<CollapseSection collapse={showOnlyContact}>
+								<Divider />
+								<div className="py-4" data-testid="shippingAddressSection">
+									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
+								</div>
+								{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+							</CollapseSection>
+						</Suspense>
+					)}
+					<Suspense fallback={<DeliveryMethodsSkeleton />}>
+						<DeliveryMethods collapsed={showOnlyContact} />
+					</Suspense>
 					<Suspense fallback={<PaymentSectionSkeleton />}>
 						<CollapseSection collapse={showOnlyContact}>
 							<PaymentSection />
 						</CollapseSection>
 					</Suspense>
-				)}
+				</>
 			</div>
 		</div>
 	);
