@@ -4,6 +4,7 @@
 	"private": true,
 	"type": "module",
 	"license": "BSD-3-Clause",
+	"packageManager": "pnpm@9.9.0",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
