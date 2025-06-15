@@ -25,15 +25,15 @@ const config = {
 	compiler: {
 		removeConsole: false,
 	},
-	// Force development-like error reporting in production
-	env: {
-		NODE_ENV: "development",
-	},
-	// Override webpack config to disable minification
+	// Override webpack config to disable minification and show detailed errors
 	webpack: (config, { dev, isServer }) => {
 		if (!dev) {
 			// Disable minification in production
 			config.optimization.minimize = false;
+			// Disable mangling to keep function names readable
+			if (config.optimization.minimizer) {
+				config.optimization.minimizer = [];
+			}
 		}
 		return config;
 	},
