@@ -25,9 +25,17 @@ const config = {
 	compiler: {
 		removeConsole: false,
 	},
-	// Show detailed errors in production
-	onError: (err, req, res) => {
-		console.error("Next.js Error:", err);
+	// Force development-like error reporting in production
+	env: {
+		NODE_ENV: "development",
+	},
+	// Override webpack config to disable minification
+	webpack: (config, { dev, isServer }) => {
+		if (!dev) {
+			// Disable minification in production
+			config.optimization.minimize = false;
+		}
+		return config;
 	},
 };
 
