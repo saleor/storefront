@@ -41,7 +41,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 				<h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to MattsCoinage.com</h1>
 				<p className="text-lg text-gray-600 mb-8">Your Saleor storefront is running successfully!</p>
 				<p className="text-sm text-gray-500">
-					To display products, create a collection called "featured-products" in your Saleor dashboard,
+					To display products, create a collection called &quot;featured-products&quot; in your Saleor dashboard,
 					or browse products directly using the navigation menu.
 				</p>
 			</div>
