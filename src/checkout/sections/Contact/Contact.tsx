@@ -22,6 +22,8 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
 
 	const [passwordResetShown, setPasswordResetShown] = useState(false);
 
+	const passwordResetToken = getQueryParams().passwordResetToken;
+
 	const selectInitialSection = (): Section => {
 		const shouldShowPasswordReset = passwordResetToken && !passwordResetShown;
 
@@ -32,7 +34,6 @@ export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
 		return user ? "signedInUser" : "guestUser";
 	};
 
-	const passwordResetToken = getQueryParams().passwordResetToken;
 	const [currentSection, setCurrentSection] = useState<Section>(selectInitialSection());
 
 	const handleChangeSection = (section: Section) => () => {
