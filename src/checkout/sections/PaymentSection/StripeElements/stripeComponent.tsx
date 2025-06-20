@@ -52,6 +52,17 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 				publishableKey: string;
 		  };
 
+	// Debug the transaction result
+	useEffect(() => {
+		if (transactionInitializeResult.data) {
+			console.log("Stripe: Transaction initialize result:", transactionInitializeResult.data);
+			console.log("Stripe: Parsed stripeData:", stripeData);
+		}
+		if (transactionInitializeResult.error) {
+			console.error("Stripe: Transaction initialize error:", transactionInitializeResult.error);
+		}
+	}, [transactionInitializeResult, stripeData]);
+
 	const stripePromise = useMemo(
 		() => stripePublishableKey && loadStripe(stripePublishableKey),
 		[stripePublishableKey],
@@ -59,8 +70,16 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 
 	useEffect(() => {
 		if (!checkout?.totalPrice?.gross?.amount) {
+			console.log("Stripe: No checkout total price available");
 			return;
 		}
+
+		console.log("Stripe: Initializing transaction with:", {
+			checkoutId: checkout.id,
+			gatewayId: config.id,
+			amount: Math.round(checkout.totalPrice.gross.amount * 100),
+			currency: checkout.totalPrice.gross.currency.toLowerCase(),
+		});
 
 		transactionInitialize({
 			checkoutId: checkout.id,
