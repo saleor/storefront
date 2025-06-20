@@ -93,7 +93,13 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 			paymentGateway: {
 				id: config.id,
 				data: {
-					// Try with empty data object first, let the backend determine amount/currency from checkout
+					paymentIntent: {
+						amount: Math.round(checkout.totalPrice.gross.amount * 100),
+						currency: checkout.totalPrice.gross.currency.toLowerCase(),
+						automatic_payment_methods: {
+							enabled: true,
+						},
+					},
 				},
 			},
 		}).catch((err) => {
