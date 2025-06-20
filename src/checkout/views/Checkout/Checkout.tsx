@@ -9,7 +9,7 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { CheckoutSkeleton } from "@/checkout/views/Checkout/CheckoutSkeleton";
 
 export const Checkout = () => {
-	const { checkout, fetching: fetchingCheckout } = useCheckout();
+	const { checkout, fetching: fetchingCheckout, error } = useCheckout();
 	const { loading: isAuthenticating } = useUser();
 
 	const isCheckoutInvalid = !fetchingCheckout && !checkout && !isAuthenticating;
@@ -18,8 +18,17 @@ export const Checkout = () => {
 
 	const isEmptyCart = checkout && !checkout.lines.length;
 
+	// Add debugging logs
+	console.log("Checkout Debug:", {
+		checkout: !!checkout,
+		fetchingCheckout,
+		isAuthenticating,
+		isCheckoutInvalid,
+		error: error ? (error as Error)?.message : null,
+	});
+
 	return isCheckoutInvalid ? (
-		<PageNotFound />
+		<PageNotFound error={error} />
 	) : isInitiallyAuthenticating ? (
 		<CheckoutSkeleton />
 	) : (
