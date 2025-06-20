@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { paymentMethodToComponent } from "./supportedPaymentApps";
 import { PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection/PaymentSectionSkeleton";
 import { usePayments } from "@/checkout/sections/PaymentSection/usePayments";
@@ -10,6 +11,11 @@ export const PaymentMethods = () => {
 		updateState: { checkoutDeliveryMethodUpdate },
 	} = useCheckoutUpdateState();
 
+	const gatewaysWithDefinedComponent = useMemo(
+		() => availablePaymentGateways.filter((gateway) => gateway.id in paymentMethodToComponent),
+		[availablePaymentGateways],
+	);
+
 	// delivery methods change total price so we want to wait until the change is done
 	if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading") {
 		return <PaymentSectionSkeleton />;
@@ -17,7 +23,7 @@ export const PaymentMethods = () => {
 
 	return (
 		<div className="gap-y-8">
-			{availablePaymentGateways.map((gateway) => {
+			{gatewaysWithDefinedComponent.map((gateway) => {
 				const Component = paymentMethodToComponent[gateway.id];
 				return (
 					<Component
