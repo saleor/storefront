@@ -19,6 +19,20 @@ export const PaymentMethods = () => {
 		<div className="gap-y-8">
 			{availablePaymentGateways.map((gateway) => {
 				const Component = paymentMethodToComponent[gateway.id];
+
+				// Handle unsupported payment gateways gracefully
+				if (!Component) {
+					console.warn(
+						`Payment gateway "${gateway.id}" is not supported. Available gateways:`,
+						Object.keys(paymentMethodToComponent),
+					);
+					return (
+						<div key={gateway.id} className="rounded border border-yellow-300 bg-yellow-50 p-4">
+							<p className="text-yellow-800">Payment method &quot;{gateway.id}&quot; is not yet supported.</p>
+						</div>
+					);
+				}
+
 				return (
 					<Component
 						key={gateway.id}
