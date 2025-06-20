@@ -39,6 +39,7 @@ const config: CodegenConfig = {
 					JSON: "unknown",
 					JSONString: "string",
 					Metadata: "Record<string, string>",
+					Hour: "number",
 					Minute: "number",
 					PositiveDecimal: "number",
 					UUID: "string",
