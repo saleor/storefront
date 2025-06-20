@@ -43,34 +43,16 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 	const stripePublishableKey = config.data?.stripePublishableKey;
 
 	const [transactionInitializeResult, transactionInitialize] = useTransactionInitializeMutation();
+
+	// Parse the response data according to the Stripe app's actual response format
 	const stripeData = transactionInitializeResult.data?.transactionInitialize?.data as
 		| undefined
 		| {
 				paymentIntent: {
-					client_secret: string;
+					stripeClientSecret: string;
+					errors?: Array<{ code: string; message: string }>;
 				};
-				publishableKey: string;
 		  };
-
-	// Debug the transaction result
-	useEffect(() => {
-		if (transactionInitializeResult.data?.transactionInitialize) {
-			console.log("Stripe: Transaction initialize result:", transactionInitializeResult.data);
-			console.log("Stripe: Raw data object:", transactionInitializeResult.data.transactionInitialize.data);
-			console.log("Stripe: Parsed stripeData:", stripeData);
-			console.log(
-				"Stripe: Transaction errors:",
-				transactionInitializeResult.data.transactionInitialize.errors,
-			);
-			console.log(
-				"Stripe: Transaction event:",
-				transactionInitializeResult.data.transactionInitialize.transactionEvent,
-			);
-		}
-		if (transactionInitializeResult.error) {
-			console.error("Stripe: Transaction initialize error:", transactionInitializeResult.error);
-		}
-	}, [transactionInitializeResult, stripeData]);
 
 	const stripePromise = useMemo(
 		() => stripePublishableKey && loadStripe(stripePublishableKey),
@@ -111,6 +93,29 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 		commonErrorMessages.somethingWentWrong,
 	]);
 
+	// Debug the transaction result
+	useEffect(() => {
+		if (transactionInitializeResult.data?.transactionInitialize) {
+			console.log(
+				"Stripe: Transaction initialize result:",
+				transactionInitializeResult.data.transactionInitialize,
+			);
+			console.log("Stripe: Raw data object:", transactionInitializeResult.data.transactionInitialize.data);
+			console.log("Stripe: Parsed stripeData:", stripeData);
+			console.log(
+				"Stripe: Transaction errors:",
+				transactionInitializeResult.data.transactionInitialize.errors,
+			);
+			console.log(
+				"Stripe: Transaction event:",
+				transactionInitializeResult.data.transactionInitialize.transactionEvent,
+			);
+		}
+		if (transactionInitializeResult.error) {
+			console.error("Stripe: Transaction initialize error:", transactionInitializeResult.error);
+		}
+	}, [transactionInitializeResult, stripeData]);
+
 	if (!stripePromise || !stripePublishableKey) {
 		return (
 			<div className="rounded border border-red-300 bg-red-50 p-4">
@@ -121,7 +126,24 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 		);
 	}
 
-	if (!stripeData?.paymentIntent?.client_secret) {
+	// Show errors if the payment intent has errors
+	if (stripeData?.paymentIntent?.errors?.length) {
+		return (
+			<div className="rounded border border-red-300 bg-red-50 p-4">
+				<p className="text-red-800">Payment initialization failed:</p>
+				<ul className="mt-2 list-disc pl-5">
+					{stripeData.paymentIntent.errors.map((error, index) => (
+						<li key={index} className="text-red-700">
+							{error.message}
+						</li>
+					))}
+				</ul>
+			</div>
+		);
+	}
+
+	// Wait for the client secret from the Stripe app
+	if (!stripeData?.paymentIntent?.stripeClientSecret) {
 		return (
 			<div className="flex h-32 animate-pulse items-center justify-center rounded-md bg-gray-200">
 				<span className="text-gray-500">Initializing payment...</span>
@@ -132,7 +154,7 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 	return (
 		<Elements
 			options={{
-				clientSecret: stripeData.paymentIntent.client_secret,
+				clientSecret: stripeData.paymentIntent.stripeClientSecret,
 				appearance: { theme: "stripe" },
 			}}
 			stripe={stripePromise}
