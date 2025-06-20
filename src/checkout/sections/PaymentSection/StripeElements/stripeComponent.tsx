@@ -54,9 +54,16 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 
 	// Debug the transaction result
 	useEffect(() => {
-		if (transactionInitializeResult.data) {
+		if (transactionInitializeResult.data?.transactionInitialize) {
 			console.log("Stripe: Transaction initialize result:", transactionInitializeResult.data);
+			console.log("Stripe: Raw data object:", transactionInitializeResult.data.transactionInitialize.data);
 			console.log("Stripe: Parsed stripeData:", stripeData);
+
+			// Check if there's a client_secret anywhere in the response
+			const rawData = transactionInitializeResult.data.transactionInitialize.data;
+			if (rawData && rawData.paymentIntent) {
+				console.log("Stripe: PaymentIntent object:", rawData.paymentIntent);
+			}
 		}
 		if (transactionInitializeResult.error) {
 			console.error("Stripe: Transaction initialize error:", transactionInitializeResult.error);
@@ -86,9 +93,7 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 			paymentGateway: {
 				id: config.id,
 				data: {
-					// Send the amount and currency for payment intent creation
-					amount: Math.round(checkout.totalPrice.gross.amount * 100), // Convert to cents
-					currency: checkout.totalPrice.gross.currency.toLowerCase(),
+					// Try with empty data object first, let the backend determine amount/currency from checkout
 				},
 			},
 		}).catch((err) => {
