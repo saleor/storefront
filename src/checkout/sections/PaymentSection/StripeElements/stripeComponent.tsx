@@ -77,7 +77,9 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 			paymentGateway: {
 				id: config.id,
 				data: {
-					// Send minimal data - let the Stripe app handle payment intent creation
+					paymentIntent: {
+						paymentMethod: "card",
+					},
 				},
 			},
 		}).catch((err) => {
