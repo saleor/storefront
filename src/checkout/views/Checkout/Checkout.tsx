@@ -31,6 +31,8 @@ export const Checkout = () => {
 		<PageNotFound error={error} />
 	) : isInitiallyAuthenticating ? (
 		<CheckoutSkeleton />
+	) : !checkout ? (
+		<CheckoutSkeleton />
 	) : (
 		<ErrorBoundary FallbackComponent={PageNotFound}>
 			<div className="page">
@@ -42,7 +44,15 @@ export const Checkout = () => {
 							<CheckoutForm />
 						</Suspense>
 						<Suspense fallback={<SummarySkeleton />}>
-							<Summary {...checkout} />
+							<Summary
+								lines={checkout.lines}
+								totalPrice={checkout.totalPrice}
+								subtotalPrice={checkout.subtotalPrice}
+								giftCards={checkout.giftCards}
+								voucherCode={checkout.voucherCode}
+								discount={checkout.discount}
+								shippingPrice={checkout.shippingPrice}
+							/>
 						</Suspense>
 					</div>
 				)}
