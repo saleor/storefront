@@ -4,12 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useMemo, useState } from "react";
 import { type ParsedStripeGateway } from "../types";
-import { apiErrorMessages } from "../errorMessages";
 import { CheckoutForm } from "./stripeElementsForm";
-import { useTransactionInitializeMutation } from "@/checkout/graphql";
-import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useAlerts } from "@/checkout/hooks/useAlerts";
-import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 
 interface StripeComponentProps {
 	config: ParsedStripeGateway;
@@ -35,85 +30,13 @@ export const StripeComponent = ({ config }: StripeComponentProps) => {
 };
 
 const StripeComponentClient = ({ config }: StripeComponentProps) => {
-	const { checkout } = useCheckout();
-	const { showCustomErrors } = useAlerts();
-	const { errorMessages: commonErrorMessages } = useErrorMessages(apiErrorMessages);
-
 	// Get the Stripe publishable key from the config
 	const stripePublishableKey = config.data?.stripePublishableKey;
-
-	const [transactionInitializeResult, transactionInitialize] = useTransactionInitializeMutation();
-	const stripeData = transactionInitializeResult.data?.transactionInitialize?.data as
-		| undefined
-		| {
-				paymentIntent: {
-					client_secret: string;
-				};
-				publishableKey: string;
-		  };
-
-	// Debug the transaction result
-	useEffect(() => {
-		if (transactionInitializeResult.data?.transactionInitialize) {
-			console.log("Stripe: Transaction initialize result:", transactionInitializeResult.data);
-			console.log("Stripe: Raw data object:", transactionInitializeResult.data.transactionInitialize.data);
-			console.log("Stripe: Parsed stripeData:", stripeData);
-
-			// Check if there's a client_secret anywhere in the response
-			const rawData = transactionInitializeResult.data.transactionInitialize.data;
-			if (rawData && rawData.paymentIntent) {
-				console.log("Stripe: PaymentIntent object:", rawData.paymentIntent);
-			}
-		}
-		if (transactionInitializeResult.error) {
-			console.error("Stripe: Transaction initialize error:", transactionInitializeResult.error);
-		}
-	}, [transactionInitializeResult, stripeData]);
 
 	const stripePromise = useMemo(
 		() => stripePublishableKey && loadStripe(stripePublishableKey),
 		[stripePublishableKey],
 	);
-
-	useEffect(() => {
-		if (!checkout?.totalPrice?.gross?.amount) {
-			console.log("Stripe: No checkout total price available");
-			return;
-		}
-
-		console.log("Stripe: Initializing transaction with:", {
-			checkoutId: checkout.id,
-			gatewayId: config.id,
-			amount: Math.round(checkout.totalPrice.gross.amount * 100),
-			currency: checkout.totalPrice.gross.currency.toLowerCase(),
-		});
-
-		transactionInitialize({
-			checkoutId: checkout.id,
-			paymentGateway: {
-				id: config.id,
-				data: {
-					paymentIntent: {
-						amount: Math.round(checkout.totalPrice.gross.amount * 100),
-						currency: checkout.totalPrice.gross.currency.toLowerCase(),
-						automatic_payment_methods: {
-							enabled: true,
-						},
-					},
-				},
-			},
-		}).catch((err) => {
-			console.error("Transaction initialize error:", err);
-			showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
-		});
-	}, [
-		checkout?.id,
-		checkout?.totalPrice,
-		config.id,
-		transactionInitialize,
-		showCustomErrors,
-		commonErrorMessages.somethingWentWrong,
-	]);
 
 	if (!stripePromise || !stripePublishableKey) {
 		return (
@@ -125,18 +48,12 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 		);
 	}
 
-	if (!stripeData?.paymentIntent?.client_secret) {
-		return (
-			<div className="flex h-32 animate-pulse items-center justify-center rounded-md bg-gray-200">
-				<span className="text-gray-500">Initializing payment...</span>
-			</div>
-		);
-	}
-
 	return (
 		<Elements
 			options={{
-				clientSecret: stripeData.paymentIntent.client_secret,
+				mode: "payment",
+				amount: 1000, // This will be updated by the checkout form
+				currency: "usd",
 				appearance: { theme: "stripe" },
 			}}
 			stripe={stripePromise}
