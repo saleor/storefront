@@ -3,15 +3,14 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useMemo, useState } from "react";
-import { apiErrorMessages } from "../errorMessages";
+import { type ParsedStripeGateway } from "../types";
 import { CheckoutForm } from "./stripeElementsForm";
-import { stripeGatewayId } from "./types";
-import { useTransactionInitializeMutation } from "@/checkout/graphql";
-import { useAlerts } from "@/checkout/hooks/useAlerts";
-import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
-import { useCheckout } from "@/checkout/hooks/useCheckout";
 
-export const StripeComponent = () => {
+interface StripeComponentProps {
+	config: ParsedStripeGateway;
+}
+
+export const StripeComponent = ({ config }: StripeComponentProps) => {
 	const [isClient, setIsClient] = useState(false);
 
 	// Ensure this only runs on the client side
@@ -27,54 +26,36 @@ export const StripeComponent = () => {
 		);
 	}
 
-	return <StripeComponentClient />;
+	return <StripeComponentClient config={config} />;
 };
 
-const StripeComponentClient = () => {
-	const { checkout } = useCheckout();
-
-	const [transactionInitializeResult, transactionInitialize] = useTransactionInitializeMutation();
-	const stripeData = transactionInitializeResult.data?.transactionInitialize?.data as
-		| undefined
-		| {
-				paymentIntent: {
-					client_secret: string;
-				};
-				publishableKey: string;
-		  };
-
-	const { showCustomErrors } = useAlerts();
-	const { errorMessages: commonErrorMessages } = useErrorMessages(apiErrorMessages);
-
-	useEffect(() => {
-		transactionInitialize({
-			checkoutId: checkout.id,
-			paymentGateway: {
-				id: stripeGatewayId,
-				data: {
-					automatic_payment_methods: {
-						enabled: true,
-					},
-				},
-			},
-		}).catch((err) => {
-			console.error(err);
-			showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
-		});
-	}, [checkout.id, commonErrorMessages.somethingWentWrong, showCustomErrors, transactionInitialize]);
+const StripeComponentClient = ({ config }: StripeComponentProps) => {
+	// Get the Stripe publishable key from the config
+	const stripePublishableKey = config.data?.stripePublishableKey;
 
 	const stripePromise = useMemo(
-		() => stripeData?.publishableKey && loadStripe(stripeData.publishableKey),
-		[stripeData],
+		() => stripePublishableKey && loadStripe(stripePublishableKey),
+		[stripePublishableKey],
 	);
 
-	if (!stripePromise || !stripeData) {
-		return null;
+	if (!stripePromise || !stripePublishableKey) {
+		return (
+			<div className="rounded border border-red-300 bg-red-50 p-4">
+				<p className="text-red-800">
+					Stripe configuration is missing. Please check your payment gateway setup.
+				</p>
+			</div>
+		);
 	}
 
 	return (
 		<Elements
-			options={{ clientSecret: stripeData.paymentIntent.client_secret, appearance: { theme: "stripe" } }}
+			options={{
+				mode: "payment",
+				amount: 1000, // This will be updated by the checkout form
+				currency: "usd",
+				appearance: { theme: "stripe" },
+			}}
 			stripe={stripePromise}
 		>
 			<CheckoutForm />
