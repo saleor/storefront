@@ -58,12 +58,13 @@ export function CheckoutForm() {
 	const onSubmitInitialize: FormEventHandler<HTMLFormElement> = useEvent(async (e) => {
 		e.preventDefault();
 
-		// Prevent duplicate submissions
-		if (isLoading || confirmPaymentMutation.isPending || completeCheckoutMutation.isPending) {
+		// Only prevent if already loading
+		if (isLoading) {
 			console.log("React Query: Payment already in progress, skipping duplicate attempt");
 			return;
 		}
 
+		console.log("React Query: Starting payment submission");
 		setIsLoading(true);
 		validateAllForms(authenticated);
 		setShouldRegisterUser(true);
