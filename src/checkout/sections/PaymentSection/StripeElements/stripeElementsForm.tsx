@@ -93,7 +93,11 @@ export function CheckoutForm() {
 					onSuccess: (paymentIntent: { status?: string }) => {
 						console.log("React Query: Payment intent status:", paymentIntent?.status);
 
-						if (paymentIntent?.status === "succeeded" || paymentIntent?.status === "processing") {
+						if (
+							paymentIntent?.status === "succeeded" ||
+							paymentIntent?.status === "processing" ||
+							paymentIntent?.status === "requires_capture"
+						) {
 							console.log("React Query: Payment successful, completing checkout");
 							completeCheckoutMutation.mutate();
 						} else {
@@ -181,8 +185,11 @@ export function CheckoutForm() {
 			{
 				onSuccess: (result) => {
 					console.log("React Query: Payment confirmed successfully, completing checkout");
-					// Check if payment succeeded immediately (no redirect required)
-					if (result.paymentIntent?.status === "succeeded") {
+					// Check if payment succeeded or requires capture (both are successful states)
+					if (
+						result.paymentIntent?.status === "succeeded" ||
+						result.paymentIntent?.status === "requires_capture"
+					) {
 						completeCheckoutMutation.mutate();
 					} else {
 						// Payment may require additional authentication or processing
