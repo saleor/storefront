@@ -45,3 +45,4 @@ next-env.d.ts
 
 stripe/
 saleor/
+saleor-marketplace/
