@@ -117,8 +117,8 @@ export const useConfirmPayment = () => {
 			return result;
 		},
 		onSuccess: () => {
-			// Invalidate payment-related queries on success
-			void queryClient.invalidateQueries({ queryKey: ["paymentIntent"] });
+			// Only invalidate checkout queries, not payment intent queries
+			// Payment intent should not be refetched after successful confirmation
 			void queryClient.invalidateQueries({ queryKey: ["checkout"] });
 		},
 		onError: (error: unknown) => {
