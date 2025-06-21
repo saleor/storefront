@@ -30,9 +30,17 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 	// Get order total in cents for comparison
 	const orderTotal = totalPrice?.gross?.amount || 0;
 
-	// Check if user qualifies for free shipping (example: $100+ orders)
-	const qualifiesForFreeShipping = orderTotal >= 10000; // $100.00 in cents
-	const amountNeededForFreeShipping = Math.max(0, 10000 - orderTotal);
+	// Dynamically determine free shipping threshold based on available shipping methods
+	const freeShippingMethods = shippingMethods?.filter((method) => method.price.amount === 0) || [];
+
+	// If there are free shipping methods available, user already qualifies
+	const qualifiesForFreeShipping = freeShippingMethods.length > 0;
+
+	// For the message, we'll use a reasonable threshold (like $20 = 2000 cents) if no free shipping is available
+	const defaultFreeShippingThreshold = 2000; // $20.00 in cents
+	const amountNeededForFreeShipping = qualifiesForFreeShipping
+		? 0
+		: Math.max(0, defaultFreeShippingThreshold - orderTotal);
 
 	const getFreeShippingMessage = () => {
 		if (qualifiesForFreeShipping) {

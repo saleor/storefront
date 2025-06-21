@@ -29,7 +29,11 @@ const paymentElementOptions: StripePaymentElementOptions = {
 	},
 };
 
-export function CheckoutForm() {
+interface CheckoutFormProps {
+	initializePaymentIntent?: () => Promise<string | undefined>;
+}
+
+export function CheckoutForm({ initializePaymentIntent }: CheckoutFormProps = {}) {
 	const [isLoading, setIsLoading] = useState(false);
 	const stripe = useStripe();
 	const elements = useElements();
@@ -125,6 +129,12 @@ export function CheckoutForm() {
 			return;
 		}
 
+		// Prevent duplicate payment attempts
+		if (isLoading || completingCheckout) {
+			console.log("Stripe: Payment already in progress, skipping duplicate attempt");
+			return;
+		}
+
 		// submit was finished - we can mark it as complete
 		setSubmitInProgress(false);
 
@@ -135,32 +145,70 @@ export function CheckoutForm() {
 			return;
 		}
 
+		console.log("Stripe: Starting payment confirmation");
 		setIsLoading(true);
 
-		stripe
-			.confirmPayment({
-				elements,
-				confirmParams: {
-					return_url: getUrlForTransactionInitialize().newUrl,
-					payment_method_data: {
-						billing_details: {
-							name: checkout.billingAddress?.firstName + " " + checkout.billingAddress?.lastName,
-							email: checkout.email ?? "",
-							phone: checkout.billingAddress?.phone ?? "",
-							address: {
-								city: checkout.billingAddress?.city ?? "",
-								country: checkout.billingAddress?.country.code ?? "",
-								line1: checkout.billingAddress?.streetAddress1 ?? "",
-								line2: checkout.billingAddress?.streetAddress2 ?? "",
-								postal_code: checkout.billingAddress?.postalCode ?? "",
-								state: checkout.billingAddress?.countryArea ?? "",
+		// Create billing details object once to avoid re-renders
+		const billingDetails = {
+			name: checkout.billingAddress?.firstName + " " + checkout.billingAddress?.lastName,
+			email: checkout.email ?? "",
+			phone: checkout.billingAddress?.phone ?? "",
+			address: {
+				city: checkout.billingAddress?.city ?? "",
+				country: checkout.billingAddress?.country.code ?? "",
+				line1: checkout.billingAddress?.streetAddress1 ?? "",
+				line2: checkout.billingAddress?.streetAddress2 ?? "",
+				postal_code: checkout.billingAddress?.postalCode ?? "",
+				state: checkout.billingAddress?.countryArea ?? "",
+			},
+		};
+
+		// Handle payment confirmation based on whether we have initializePaymentIntent function
+		const handlePaymentConfirmation = async () => {
+			try {
+				if (initializePaymentIntent) {
+					// Create payment intent only when user clicks pay
+					console.log("Stripe: Creating payment intent on demand");
+					const clientSecret = await initializePaymentIntent();
+
+					if (!clientSecret) {
+						throw new Error("Failed to create payment intent");
+					}
+
+					// Confirm payment with the newly created client secret
+					return await stripe.confirmPayment({
+						clientSecret,
+						elements,
+						confirmParams: {
+							return_url: getUrlForTransactionInitialize().newUrl,
+							payment_method_data: {
+								billing_details: billingDetails,
 							},
 						},
-					},
-				},
-			})
+					});
+				} else {
+					// Use the existing flow for backwards compatibility
+					return await stripe.confirmPayment({
+						elements,
+						confirmParams: {
+							return_url: getUrlForTransactionInitialize().newUrl,
+							payment_method_data: {
+								billing_details: billingDetails,
+							},
+						},
+					});
+				}
+			} catch (err) {
+				console.error("Stripe: Payment confirmation setup failed:", err);
+				throw err;
+			}
+		};
+
+		handlePaymentConfirmation()
 			.then(async ({ error }) => {
-				console.error(error);
+				if (error) {
+					console.error("Stripe: Payment confirmation error:", error);
+				}
 				setIsLoading(false);
 
 				if (error) {
@@ -178,44 +226,31 @@ export function CheckoutForm() {
 					return;
 				}
 
+				console.log("Stripe: Payment confirmed successfully");
 				return onCheckoutComplete();
 			})
 			.catch((err) => {
-				console.error(err);
+				console.error("Stripe: Payment confirmation failed:", err);
 				setIsLoading(false);
 				setIsProcessingPayment(false);
 			});
-
-		// @todo
-		// there is a previous transaction going on, we want to process instead of initialize
-		// if (currentTransactionId) {
-		// 	void onTransactionProccess({
-		// 		data: adyenCheckoutSubmitParams?.state.data,
-		// 		id: currentTransactionId,
-		// 	});
-		// 	return;
-		// }
 	}, [
-		anyRequestsInProgress,
-		checkout.billingAddress?.city,
-		checkout.billingAddress?.country.code,
-		checkout.billingAddress?.countryArea,
-		checkout.billingAddress?.firstName,
-		checkout.billingAddress?.lastName,
-		checkout.billingAddress?.phone,
-		checkout.billingAddress?.postalCode,
-		checkout.billingAddress?.streetAddress1,
-		checkout.billingAddress?.streetAddress2,
-		checkout.email,
+		// Only include essential dependencies to prevent unnecessary re-runs
 		checkoutUpdateState.submitInProgress,
-		elements,
+		anyRequestsInProgress,
 		finishedApiChangesWithNoError,
-		onCheckoutComplete,
-		setIsProcessingPayment,
-		setSubmitInProgress,
-		showCustomErrors,
-		stripe,
 		validationState,
+		stripe,
+		elements,
+		isLoading,
+		completingCheckout,
+		setSubmitInProgress,
+		setIsProcessingPayment,
+		onCheckoutComplete,
+		showCustomErrors,
+		initializePaymentIntent,
+		// Include checkout data as a single dependency to avoid individual property dependencies
+		checkout,
 	]);
 
 	return (

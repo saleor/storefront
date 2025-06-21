@@ -60,13 +60,10 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 		[stripePublishableKey],
 	);
 
-	useEffect(() => {
-		// Prevent multiple initializations
+	// Function to initialize payment intent only when user clicks pay
+	const initializePaymentIntent = async () => {
 		if (hasInitialized || !checkout?.totalPrice?.gross?.amount) {
-			if (!checkout?.totalPrice?.gross?.amount) {
-				console.log("Stripe: No checkout total price available");
-			}
-			return;
+			return stripeData?.paymentIntent?.stripeClientSecret;
 		}
 
 		console.log("Stripe: Initializing transaction with:", {
@@ -78,30 +75,36 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 
 		setHasInitialized(true);
 
-		transactionInitialize({
-			checkoutId: checkout.id,
-			paymentGateway: {
-				id: config.id,
-				data: {
-					paymentIntent: {
-						paymentMethod: "card",
+		try {
+			const result = await transactionInitialize({
+				checkoutId: checkout.id,
+				paymentGateway: {
+					id: config.id,
+					data: {
+						paymentIntent: {
+							paymentMethod: "card",
+						},
 					},
 				},
-			},
-		}).catch((err) => {
+			});
+
+			const resultData = result.data?.transactionInitialize?.data as
+				| undefined
+				| {
+						paymentIntent: {
+							stripeClientSecret: string;
+							errors?: Array<{ code: string; message: string }>;
+						};
+				  };
+
+			return resultData?.paymentIntent?.stripeClientSecret;
+		} catch (err) {
 			console.error("Transaction initialize error:", err);
 			setHasInitialized(false); // Reset on error so user can retry
 			showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
-		});
-	}, [
-		checkout?.id,
-		checkout?.totalPrice?.gross?.amount,
-		config.id,
-		transactionInitialize,
-		showCustomErrors,
-		commonErrorMessages.somethingWentWrong,
-		hasInitialized,
-	]);
+			throw err;
+		}
+	};
 
 	// Debug the transaction result
 	useEffect(() => {
@@ -152,24 +155,19 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 		);
 	}
 
-	// Wait for the client secret from the Stripe app
-	if (!stripeData?.paymentIntent?.stripeClientSecret) {
-		return (
-			<div className="flex h-32 animate-pulse items-center justify-center rounded-md bg-gray-200">
-				<span className="text-gray-500">Initializing payment...</span>
-			</div>
-		);
-	}
-
+	// Render the payment form without requiring a client secret upfront
+	// The payment intent will be created when the user clicks "Pay"
 	return (
 		<Elements
 			options={{
-				clientSecret: stripeData.paymentIntent.stripeClientSecret,
+				mode: "payment",
+				amount: Math.round((checkout?.totalPrice?.gross?.amount || 0) * 100),
+				currency: checkout?.totalPrice?.gross?.currency?.toLowerCase() || "usd",
 				appearance: { theme: "stripe" },
 			}}
 			stripe={stripePromise}
 		>
-			<CheckoutForm />
+			<CheckoutForm initializePaymentIntent={initializePaymentIntent} />
 		</Elements>
 	);
 };
