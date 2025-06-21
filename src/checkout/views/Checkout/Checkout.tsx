@@ -18,26 +18,6 @@ export const Checkout = () => {
 
 	const isEmptyCart = checkout && !checkout.lines.length;
 
-	// Add debugging logs
-	console.log("Checkout Debug:", {
-		checkout: !!checkout,
-		fetchingCheckout,
-		isAuthenticating,
-		isCheckoutInvalid,
-		error: error ? (error as Error)?.message : null,
-	});
-
-	// Add more detailed debugging
-	console.log("Checkout detailed debug:", {
-		checkoutExists: !!checkout,
-		checkoutLines: checkout?.lines,
-		checkoutLinesLength: checkout?.lines?.length,
-		isEmptyCart,
-		totalPrice: checkout?.totalPrice,
-		subtotalPrice: checkout?.subtotalPrice,
-		shippingPrice: checkout?.shippingPrice,
-	});
-
 	return isCheckoutInvalid ? (
 		<PageNotFound error={error} />
 	) : isInitiallyAuthenticating ? (

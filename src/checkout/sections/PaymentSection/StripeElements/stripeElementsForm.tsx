@@ -17,10 +17,13 @@ import {
 } from "@/checkout/state/updateStateStore";
 import { useEvent } from "@/checkout/hooks/useEvent";
 import { useUser } from "@/checkout/hooks/useUser";
-import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 import { getQueryParams } from "@/checkout/lib/utils/url";
+import {
+	useConfirmPayment,
+	useCompleteCheckout,
+	useRetrievePaymentIntent,
+} from "@/checkout/hooks/usePaymentQueries";
 
 const paymentElementOptions: StripePaymentElementOptions = {
 	layout: "tabs",
@@ -36,7 +39,6 @@ export function CheckoutForm() {
 	const { checkout } = useCheckout();
 
 	const { authenticated } = useUser();
-	const { showCustomErrors } = useAlerts();
 
 	const checkoutUpdateState = useCheckoutUpdateState();
 	const anyRequestsInProgress = areAnyRequestsInProgress(checkoutUpdateState);
@@ -46,11 +48,21 @@ export function CheckoutForm() {
 	const { validationState } = useCheckoutValidationState();
 
 	const { setIsProcessingPayment } = usePaymentProcessingScreen();
-	const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
+
+	// React Query mutations
+	const confirmPaymentMutation = useConfirmPayment();
+	const completeCheckoutMutation = useCompleteCheckout();
+	const retrievePaymentIntentMutation = useRetrievePaymentIntent();
 
 	// handler for when user presses submit
 	const onSubmitInitialize: FormEventHandler<HTMLFormElement> = useEvent(async (e) => {
 		e.preventDefault();
+
+		// Prevent duplicate submissions
+		if (isLoading || confirmPaymentMutation.isPending || completeCheckoutMutation.isPending) {
+			console.log("React Query: Payment already in progress, skipping duplicate attempt");
+			return;
+		}
 
 		setIsLoading(true);
 		validateAllForms(authenticated);
@@ -66,39 +78,38 @@ export function CheckoutForm() {
 			return;
 		}
 
-		console.log("Stripe: Handling redirect with payment intent:", paymentIntent);
+		console.log("React Query: Handling redirect with payment intent:", paymentIntent);
 		setIsProcessingPayment(true);
 
-		if (!completingCheckout && stripe) {
-			// Retrieve the payment intent to check its status
-			stripe
-				.retrievePaymentIntent(paymentIntentClientSecret)
-				.then(({ paymentIntent: pi }) => {
-					console.log("Stripe: Payment intent status:", pi?.status);
+		if (!completeCheckoutMutation.isPending && stripe) {
+			// Use React Query mutation to retrieve payment intent
+			retrievePaymentIntentMutation.mutate(
+				{
+					stripe,
+					clientSecret: paymentIntentClientSecret,
+				},
+				{
+					onSuccess: (paymentIntent: { status?: string }) => {
+						console.log("React Query: Payment intent status:", paymentIntent?.status);
 
-					if (pi?.status === "succeeded") {
-						console.log("Stripe: Payment succeeded, completing checkout");
-						void onCheckoutComplete();
-					} else if (pi?.status === "processing") {
-						console.log("Stripe: Payment is processing, completing checkout");
-						void onCheckoutComplete();
-					} else {
-						console.log("Stripe: Payment not successful, status:", pi?.status);
+						if (paymentIntent?.status === "succeeded" || paymentIntent?.status === "processing") {
+							console.log("React Query: Payment successful, completing checkout");
+							completeCheckoutMutation.mutate();
+						} else {
+							console.log("React Query: Payment not successful, status:", paymentIntent?.status);
+							setIsLoading(false);
+							setIsProcessingPayment(false);
+						}
+					},
+					onError: (error) => {
+						console.error("React Query: Error retrieving payment intent:", error);
 						setIsLoading(false);
 						setIsProcessingPayment(false);
-						if (pi?.last_payment_error) {
-							showCustomErrors([{ message: pi.last_payment_error.message ?? "Payment failed" }]);
-						}
-					}
-				})
-				.catch((error) => {
-					console.error("Stripe: Error retrieving payment intent:", error);
-					setIsLoading(false);
-					setIsProcessingPayment(false);
-					showCustomErrors([{ message: "Failed to verify payment status" }]);
-				});
+					},
+				},
+			);
 		}
-	}, [completingCheckout, onCheckoutComplete, stripe, setIsProcessingPayment, showCustomErrors]);
+	}, [completeCheckoutMutation, retrievePaymentIntentMutation, stripe, setIsProcessingPayment]);
 
 	// Cleanup effect to reset processing state on unmount
 	useEffect(() => {
@@ -111,7 +122,7 @@ export function CheckoutForm() {
 	}, [setIsProcessingPayment]);
 
 	// when submission is initialized, awaits for all the other requests to finish,
-	// forms to validate, then either does transaction initialize or process
+	// forms to validate, then process payment with React Query
 	useEffect(() => {
 		const validating = anyFormsValidating(validationState);
 		const allFormsValid = areAllFormsValid(validationState);
@@ -126,8 +137,8 @@ export function CheckoutForm() {
 		}
 
 		// Prevent duplicate payment attempts
-		if (isLoading || completingCheckout) {
-			console.log("Stripe: Payment already in progress, skipping duplicate attempt");
+		if (isLoading || confirmPaymentMutation.isPending || completeCheckoutMutation.isPending) {
+			console.log("React Query: Payment already in progress, skipping duplicate attempt");
 			return;
 		}
 
@@ -141,7 +152,7 @@ export function CheckoutForm() {
 			return;
 		}
 
-		console.log("Stripe: Starting payment confirmation");
+		console.log("React Query: Starting payment confirmation");
 		setIsLoading(true);
 
 		// Create billing details object once to avoid re-renders
@@ -159,45 +170,28 @@ export function CheckoutForm() {
 			},
 		};
 
-		stripe
-			.confirmPayment({
+		// Use React Query mutation to confirm payment
+		confirmPaymentMutation.mutate(
+			{
+				stripe,
 				elements,
-				confirmParams: {
-					return_url: getUrlForTransactionInitialize().newUrl,
-					payment_method_data: {
-						billing_details: billingDetails,
-					},
+				billingDetails,
+				returnUrl: getUrlForTransactionInitialize().newUrl,
+			},
+			{
+				onSuccess: () => {
+					console.log("React Query: Payment confirmed successfully");
+					// Payment confirmation success is handled by the mutation's onSuccess
+					setIsLoading(false);
+					completeCheckoutMutation.mutate();
 				},
-			})
-			.then(async ({ error }) => {
-				if (error) {
-					console.error("Stripe: Payment confirmation error:", error);
-				}
-				setIsLoading(false);
-
-				if (error) {
+				onError: () => {
+					// Error handling is done in the mutation's onError
+					setIsLoading(false);
 					setIsProcessingPayment(false);
-					// This point will only be reached if there is an immediate error when
-					// confirming the payment. Otherwise, your customer will be redirected to
-					// your `return_url`. For some payment methods like iDEAL, your customer will
-					// be redirected to an intermediate site first to authorize the payment, then
-					// redirected to the `return_url`.
-					if (error.type === "card_error" || error.type === "validation_error") {
-						showCustomErrors([{ message: error.message ?? "Something went wrong" }]);
-					} else {
-						showCustomErrors([{ message: "An unexpected error occurred." }]);
-					}
-					return;
-				}
-
-				console.log("Stripe: Payment confirmed successfully");
-				return onCheckoutComplete();
-			})
-			.catch((err) => {
-				console.error("Stripe: Payment confirmation failed:", err);
-				setIsLoading(false);
-				setIsProcessingPayment(false);
-			});
+				},
+			},
+		);
 	}, [
 		// Only include essential dependencies to prevent unnecessary re-runs
 		checkoutUpdateState.submitInProgress,
@@ -207,24 +201,39 @@ export function CheckoutForm() {
 		stripe,
 		elements,
 		isLoading,
-		completingCheckout,
+		confirmPaymentMutation.isPending,
+		completeCheckoutMutation.isPending,
 		setSubmitInProgress,
 		setIsProcessingPayment,
-		onCheckoutComplete,
-		showCustomErrors,
+		confirmPaymentMutation,
+		completeCheckoutMutation,
 		// Include checkout data as a single dependency to avoid individual property dependencies
 		checkout,
 	]);
+
+	const isSubmitDisabled =
+		isLoading ||
+		!stripe ||
+		!elements ||
+		confirmPaymentMutation.isPending ||
+		completeCheckoutMutation.isPending;
 
 	return (
 		<form className="my-8 flex flex-col gap-y-6" onSubmit={onSubmitInitialize}>
 			<PaymentElement className="payment-element" options={paymentElementOptions} />
 			<button
 				className="h-12 items-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
-				aria-disabled={isLoading || !stripe || !elements}
+				aria-disabled={isSubmitDisabled}
+				disabled={isSubmitDisabled}
 				id="submit"
 			>
-				<span className="button-text">{isLoading ? <Loader /> : "Pay now"}</span>
+				<span className="button-text">
+					{isLoading || confirmPaymentMutation.isPending || completeCheckoutMutation.isPending ? (
+						<Loader />
+					) : (
+						"Pay now"
+					)}
+				</span>
 			</button>
 		</form>
 	);
