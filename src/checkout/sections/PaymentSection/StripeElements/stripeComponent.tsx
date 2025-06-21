@@ -43,6 +43,7 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 	const stripePublishableKey = config.data?.stripePublishableKey;
 
 	const [transactionInitializeResult, transactionInitialize] = useTransactionInitializeMutation();
+	const [hasInitialized, setHasInitialized] = useState(false);
 
 	// Parse the response data according to the Stripe app's actual response format
 	const stripeData = transactionInitializeResult.data?.transactionInitialize?.data as
@@ -60,8 +61,11 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 	);
 
 	useEffect(() => {
-		if (!checkout?.totalPrice?.gross?.amount) {
-			console.log("Stripe: No checkout total price available");
+		// Prevent multiple initializations
+		if (hasInitialized || !checkout?.totalPrice?.gross?.amount) {
+			if (!checkout?.totalPrice?.gross?.amount) {
+				console.log("Stripe: No checkout total price available");
+			}
 			return;
 		}
 
@@ -71,6 +75,8 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 			amount: Math.round(checkout.totalPrice.gross.amount * 100),
 			currency: checkout.totalPrice.gross.currency.toLowerCase(),
 		});
+
+		setHasInitialized(true);
 
 		transactionInitialize({
 			checkoutId: checkout.id,
@@ -84,15 +90,17 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 			},
 		}).catch((err) => {
 			console.error("Transaction initialize error:", err);
+			setHasInitialized(false); // Reset on error so user can retry
 			showCustomErrors([{ message: commonErrorMessages.somethingWentWrong }]);
 		});
 	}, [
 		checkout?.id,
-		checkout?.totalPrice,
+		checkout?.totalPrice?.gross?.amount,
 		config.id,
 		transactionInitialize,
 		showCustomErrors,
 		commonErrorMessages.somethingWentWrong,
+		hasInitialized,
 	]);
 
 	// Debug the transaction result

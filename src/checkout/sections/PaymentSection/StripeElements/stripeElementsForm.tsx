@@ -66,10 +66,49 @@ export function CheckoutForm() {
 			return;
 		}
 
-		if (!completingCheckout) {
-			void onCheckoutComplete();
+		console.log("Stripe: Handling redirect with payment intent:", paymentIntent);
+		setIsProcessingPayment(true);
+
+		if (!completingCheckout && stripe) {
+			// Retrieve the payment intent to check its status
+			stripe
+				.retrievePaymentIntent(paymentIntentClientSecret)
+				.then(({ paymentIntent: pi }) => {
+					console.log("Stripe: Payment intent status:", pi?.status);
+
+					if (pi?.status === "succeeded") {
+						console.log("Stripe: Payment succeeded, completing checkout");
+						void onCheckoutComplete();
+					} else if (pi?.status === "processing") {
+						console.log("Stripe: Payment is processing, completing checkout");
+						void onCheckoutComplete();
+					} else {
+						console.log("Stripe: Payment not successful, status:", pi?.status);
+						setIsLoading(false);
+						setIsProcessingPayment(false);
+						if (pi?.last_payment_error) {
+							showCustomErrors([{ message: pi.last_payment_error.message ?? "Payment failed" }]);
+						}
+					}
+				})
+				.catch((error) => {
+					console.error("Stripe: Error retrieving payment intent:", error);
+					setIsLoading(false);
+					setIsProcessingPayment(false);
+					showCustomErrors([{ message: "Failed to verify payment status" }]);
+				});
 		}
-	}, [completingCheckout, onCheckoutComplete]);
+	}, [completingCheckout, onCheckoutComplete, stripe, setIsProcessingPayment, showCustomErrors]);
+
+	// Cleanup effect to reset processing state on unmount
+	useEffect(() => {
+		return () => {
+			const { processingPayment } = getQueryParams();
+			if (processingPayment) {
+				setIsProcessingPayment(false);
+			}
+		};
+	}, [setIsProcessingPayment]);
 
 	// when submission is initialized, awaits for all the other requests to finish,
 	// forms to validate, then either does transaction initialize or process
