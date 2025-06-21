@@ -27,6 +27,13 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
 			return;
 		}
 
+		// If there's a free shipping option available, prefer it
+		const freeShippingMethod = shippingMethods.find((method) => method.price.amount === 0);
+		if (freeShippingMethod) {
+			return freeShippingMethod;
+		}
+
+		// Otherwise, select the cheapest method
 		const cheapestMethod = shippingMethods.reduce(
 			(resultMethod, currentMethod) =>
 				currentMethod.price.amount < resultMethod.price.amount ? currentMethod : resultMethod,

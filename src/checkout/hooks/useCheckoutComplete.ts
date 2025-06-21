@@ -21,14 +21,19 @@ export const useCheckoutComplete = () => {
 					const order = data.order;
 
 					if (order) {
+						console.log("Checkout completed successfully, redirecting to order:", order.id);
 						const newUrl = replaceUrl({
 							query: {
 								order: order.id,
 							},
 							replaceWholeQuery: true,
 						});
-						window.location.href = newUrl;
+						// Use window.location.replace instead of href to prevent back button issues
+						window.location.replace(newUrl);
 					}
+				},
+				onError: (error) => {
+					console.error("Checkout completion failed:", error);
 				},
 			}),
 			[checkoutComplete, checkoutId],

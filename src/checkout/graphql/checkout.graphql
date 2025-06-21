@@ -181,7 +181,7 @@ fragment AddressFragment on Address {
 	lastName
 }
 
-query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
+query checkout($id: ID!, $languageCode: LanguageCodeEnum) {
 	checkout(id: $id) {
 		...CheckoutFragment
 	}
@@ -198,7 +198,7 @@ query channel($slug: String!) {
 mutation checkoutLinesUpdate(
 	$checkoutId: ID!
 	$lines: [CheckoutLineUpdateInput!]!
-	$languageCode: LanguageCodeEnum!
+	$languageCode: LanguageCodeEnum
 ) {
 	checkoutLinesUpdate(id: $checkoutId, lines: $lines) {
 		errors {
@@ -210,7 +210,7 @@ mutation checkoutLinesUpdate(
 	}
 }
 
-mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID, $languageCode: LanguageCodeEnum!) {
+mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID, $languageCode: LanguageCodeEnum) {
 	checkoutLineDelete(id: $checkoutId, lineId: $lineId) {
 		errors {
 			...CheckoutErrorFragment
@@ -221,7 +221,7 @@ mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID, $languageCode: Langua
 	}
 }
 
-mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
+mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: LanguageCodeEnum) {
 	checkoutEmailUpdate(email: $email, id: $checkoutId) {
 		errors {
 			...CheckoutErrorFragment
@@ -232,7 +232,7 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: L
 	}
 }
 
-mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
+mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum) {
 	checkoutCustomerAttach(id: $checkoutId) {
 		errors {
 			...CheckoutErrorFragment
@@ -247,7 +247,7 @@ mutation checkoutShippingAddressUpdate(
 	$checkoutId: ID!
 	$shippingAddress: AddressInput!
 	$validationRules: CheckoutAddressValidationRules
-	$languageCode: LanguageCodeEnum!
+	$languageCode: LanguageCodeEnum
 ) {
 	checkoutShippingAddressUpdate(
 		id: $checkoutId
@@ -267,7 +267,7 @@ mutation checkoutBillingAddressUpdate(
 	$checkoutId: ID!
 	$billingAddress: AddressInput!
 	$validationRules: CheckoutAddressValidationRules
-	$languageCode: LanguageCodeEnum!
+	$languageCode: LanguageCodeEnum
 ) {
 	checkoutBillingAddressUpdate(
 		id: $checkoutId
@@ -286,7 +286,7 @@ mutation checkoutBillingAddressUpdate(
 mutation checkoutDeliveryMethodUpdate(
 	$checkoutId: ID!
 	$deliveryMethodId: ID!
-	$languageCode: LanguageCodeEnum!
+	$languageCode: LanguageCodeEnum
 ) {
 	checkoutDeliveryMethodUpdate(id: $checkoutId, deliveryMethodId: $deliveryMethodId) {
 		errors {
@@ -304,7 +304,7 @@ query addressValidationRules($countryCode: CountryCode!) {
 	}
 }
 
-mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!, $languageCode: LanguageCodeEnum!) {
+mutation checkoutAddPromoCode($checkoutId: ID, $promoCode: String!, $languageCode: LanguageCodeEnum) {
 	checkoutAddPromoCode(checkoutId: $checkoutId, promoCode: $promoCode) {
 		errors {
 			...CheckoutErrorFragment
@@ -319,7 +319,7 @@ mutation checkoutRemovePromoCode(
 	$checkoutId: ID
 	$promoCode: String
 	$promoCodeId: ID
-	$languageCode: LanguageCodeEnum!
+	$languageCode: LanguageCodeEnum
 ) {
 	checkoutRemovePromoCode(checkoutId: $checkoutId, promoCode: $promoCode, promoCodeId: $promoCodeId) {
 		errors {

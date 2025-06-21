@@ -103,7 +103,7 @@ fragment OrderFragment on Order {
 	}
 }
 
-query order($id: ID!, $languageCode: LanguageCodeEnum!) {
+query order($id: ID!, $languageCode: LanguageCodeEnum) {
 	order(id: $id) {
 		...OrderFragment
 	}

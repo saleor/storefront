@@ -39,7 +39,13 @@ export type QueryParams = Record<QueryParam, ParamBasicValue> & CustomTypedQuery
 
 // this is intentional, we know what we'll get from the query but
 // queryString has no way to type this in such a specific way
-export const getRawQueryParams = () => queryString.parse(location.search) as unknown as RawQueryParams;
+export const getRawQueryParams = () => {
+	// Check if we're in a browser environment
+	if (typeof window === "undefined" || typeof location === "undefined") {
+		return {} as RawQueryParams;
+	}
+	return queryString.parse(location.search) as unknown as RawQueryParams;
+};
 
 export const getQueryParams = (): QueryParams => {
 	const params = getRawQueryParams();
@@ -75,6 +81,11 @@ export const getUrl = ({
 	query?: Record<string, any>;
 	replaceWholeQuery?: boolean;
 }) => {
+	// Check if we're in a browser environment
+	if (typeof window === "undefined") {
+		return { newUrl: "", newQuery: query || {} };
+	}
+
 	const baseUrl = replaceWholeQuery
 		? window.location.toString().replace(window.location.search, "")
 		: window.location.toString();
@@ -93,16 +104,19 @@ export const replaceUrl = ({
 }) => {
 	const { newUrl, newQuery } = getUrl({ query, replaceWholeQuery });
 
-	window.history.pushState(
-		{
-			...window.history.state,
-			...newQuery,
-			url: newUrl,
-			as: newUrl,
-		},
-		"",
-		newUrl,
-	);
+	// Check if we're in a browser environment
+	if (typeof window !== "undefined" && window.history) {
+		window.history.pushState(
+			{
+				...window.history.state,
+				...newQuery,
+				url: newUrl,
+				as: newUrl,
+			},
+			"",
+			newUrl,
+		);
+	}
 
 	return newUrl;
 };

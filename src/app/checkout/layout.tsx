@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { AuthProvider } from "@/ui/components/AuthProvider";
+import { ReactQueryProvider } from "@/checkout/providers/ReactQueryProvider";
 
 export const metadata = {
 	title: "Saleor Storefront example",
@@ -9,7 +10,9 @@ export const metadata = {
 export default function RootLayout(props: { children: ReactNode }) {
 	return (
 		<main>
-			<AuthProvider>{props.children}</AuthProvider>
+			<AuthProvider>
+				<ReactQueryProvider>{props.children}</ReactQueryProvider>
+			</AuthProvider>
 		</main>
 	);
 }
