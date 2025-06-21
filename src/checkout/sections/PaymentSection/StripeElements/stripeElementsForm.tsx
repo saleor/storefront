@@ -29,11 +29,7 @@ const paymentElementOptions: StripePaymentElementOptions = {
 	},
 };
 
-interface CheckoutFormProps {
-	initializePaymentIntent?: () => Promise<string | undefined>;
-}
-
-export function CheckoutForm({ initializePaymentIntent }: CheckoutFormProps = {}) {
+export function CheckoutForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const stripe = useStripe();
 	const elements = useElements();
@@ -163,48 +159,16 @@ export function CheckoutForm({ initializePaymentIntent }: CheckoutFormProps = {}
 			},
 		};
 
-		// Handle payment confirmation based on whether we have initializePaymentIntent function
-		const handlePaymentConfirmation = async () => {
-			try {
-				if (initializePaymentIntent) {
-					// Create payment intent only when user clicks pay
-					console.log("Stripe: Creating payment intent on demand");
-					const clientSecret = await initializePaymentIntent();
-
-					if (!clientSecret) {
-						throw new Error("Failed to create payment intent");
-					}
-
-					// Confirm payment with the newly created client secret
-					return await stripe.confirmPayment({
-						clientSecret,
-						elements,
-						confirmParams: {
-							return_url: getUrlForTransactionInitialize().newUrl,
-							payment_method_data: {
-								billing_details: billingDetails,
-							},
-						},
-					});
-				} else {
-					// Use the existing flow for backwards compatibility
-					return await stripe.confirmPayment({
-						elements,
-						confirmParams: {
-							return_url: getUrlForTransactionInitialize().newUrl,
-							payment_method_data: {
-								billing_details: billingDetails,
-							},
-						},
-					});
-				}
-			} catch (err) {
-				console.error("Stripe: Payment confirmation setup failed:", err);
-				throw err;
-			}
-		};
-
-		handlePaymentConfirmation()
+		stripe
+			.confirmPayment({
+				elements,
+				confirmParams: {
+					return_url: getUrlForTransactionInitialize().newUrl,
+					payment_method_data: {
+						billing_details: billingDetails,
+					},
+				},
+			})
 			.then(async ({ error }) => {
 				if (error) {
 					console.error("Stripe: Payment confirmation error:", error);
@@ -248,7 +212,6 @@ export function CheckoutForm({ initializePaymentIntent }: CheckoutFormProps = {}
 		setIsProcessingPayment,
 		onCheckoutComplete,
 		showCustomErrors,
-		initializePaymentIntent,
 		// Include checkout data as a single dependency to avoid individual property dependencies
 		checkout,
 	]);

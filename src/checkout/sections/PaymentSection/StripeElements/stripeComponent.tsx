@@ -155,19 +155,29 @@ const StripeComponentClient = ({ config }: StripeComponentProps) => {
 		);
 	}
 
-	// Render the payment form without requiring a client secret upfront
-	// The payment intent will be created when the user clicks "Pay"
+	// Wait for the client secret from the Stripe app, but only initialize once
+	if (!stripeData?.paymentIntent?.stripeClientSecret) {
+		// Only initialize if we haven't tried yet
+		if (!hasInitialized && checkout?.totalPrice?.gross?.amount) {
+			void initializePaymentIntent();
+		}
+
+		return (
+			<div className="flex h-32 animate-pulse items-center justify-center rounded-md bg-gray-200">
+				<span className="text-gray-500">Initializing payment...</span>
+			</div>
+		);
+	}
+
 	return (
 		<Elements
 			options={{
-				mode: "payment",
-				amount: Math.round((checkout?.totalPrice?.gross?.amount || 0) * 100),
-				currency: checkout?.totalPrice?.gross?.currency?.toLowerCase() || "usd",
+				clientSecret: stripeData.paymentIntent.stripeClientSecret,
 				appearance: { theme: "stripe" },
 			}}
 			stripe={stripePromise}
 		>
-			<CheckoutForm initializePaymentIntent={initializePaymentIntent} />
+			<CheckoutForm />
 		</Elements>
 	);
 };
