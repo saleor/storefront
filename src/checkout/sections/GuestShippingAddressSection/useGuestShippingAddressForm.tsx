@@ -1,5 +1,5 @@
 import { omit } from "lodash-es";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useCheckoutShippingAddressUpdateMutation } from "@/checkout/graphql";
 import { useFormSubmit } from "@/checkout/hooks/useFormSubmit";
 import {
@@ -45,9 +45,22 @@ export const useGuestShippingAddressForm = () => {
 		),
 	);
 
+	// Get initial values with US as default country to pre-load shipping options
+	const getInitialValues = useMemo(() => {
+		if (shippingAddress) {
+			return getAddressFormDataFromAddress(shippingAddress);
+		}
+
+		// Return default address with US country to trigger shipping method loading
+		return {
+			...getAddressFormDataFromAddress(null),
+			countryCode: "US" as const,
+		};
+	}, [shippingAddress]);
+
 	const form = useAutoSaveAddressForm({
 		onSubmit,
-		initialValues: getAddressFormDataFromAddress(shippingAddress),
+		initialValues: getInitialValues,
 		scope: "checkoutShippingUpdate",
 	});
 
@@ -55,6 +68,17 @@ export const useGuestShippingAddressForm = () => {
 		form,
 		scope: "shippingAddress",
 	});
+
+	// Auto-submit with US country when no shipping address exists to pre-load shipping methods
+	useEffect(() => {
+		if (!shippingAddress && form.values.countryCode === "US") {
+			// Only submit if we have the minimum required fields for shipping calculation
+			const hasMinimumFields = form.values.countryCode;
+			if (hasMinimumFields) {
+				form.handleSubmit();
+			}
+		}
+	}, [shippingAddress, form]);
 
 	return form;
 };

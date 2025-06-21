@@ -15,7 +15,7 @@ import { useUser } from "@/checkout/hooks/useUser";
 export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
 	const { checkout } = useCheckout();
 	const { authenticated } = useUser();
-	const { shippingMethods, shippingAddress } = checkout;
+	const { shippingMethods, shippingAddress, totalPrice } = checkout;
 	const form = useDeliveryMethodsForm();
 	const { updateState } = useCheckoutUpdateState();
 
@@ -27,6 +27,25 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 		return `${min}-${max} business days`;
 	};
 
+	// Get order total in cents for comparison
+	const orderTotal = totalPrice?.gross?.amount || 0;
+
+	// Check if user qualifies for free shipping (example: $100+ orders)
+	const qualifiesForFreeShipping = orderTotal >= 10000; // $100.00 in cents
+	const amountNeededForFreeShipping = Math.max(0, 10000 - orderTotal);
+
+	const getFreeShippingMessage = () => {
+		if (qualifiesForFreeShipping) {
+			return "🎉 You qualify for free shipping!";
+		} else {
+			const amountFormatted = getFormattedMoney({
+				amount: amountNeededForFreeShipping,
+				currency: totalPrice?.gross?.currency || "USD",
+			});
+			return `Add ${amountFormatted} more to qualify for free shipping`;
+		}
+	};
+
 	if (!checkout?.isShippingRequired || collapsed) {
 		return null;
 	}
@@ -36,29 +55,54 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 			<Divider />
 			<div className="py-4" data-testid="deliveryMethods">
 				<Title className="mb-2">Delivery methods</Title>
-				{!authenticated && !shippingAddress && (
-					<p>Please fill in shipping address to see available shipping methods</p>
+
+				{/* Show free shipping message */}
+				{totalPrice && (
+					<div
+						className={`mb-3 rounded p-2 text-sm ${
+							qualifiesForFreeShipping
+								? "border border-green-200 bg-green-50 text-green-700"
+								: "border border-blue-200 bg-blue-50 text-blue-700"
+						}`}
+					>
+						{getFreeShippingMessage()}
+					</div>
 				)}
+
+				{!authenticated && !shippingAddress && (
+					<p className="mb-3 text-gray-600">
+						Shipping options will be calculated based on your location. Default shipping rates shown for US
+						addresses.
+					</p>
+				)}
+
 				{authenticated && !shippingAddress && updateState.checkoutShippingUpdate ? (
 					<DeliveryMethodsSkeleton />
-				) : (
+				) : shippingMethods?.length > 0 ? (
 					<SelectBoxGroup label="delivery methods">
-						{shippingMethods?.map(
+						{shippingMethods.map(
 							({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
 								<SelectBox key={id} name="selectedMethodId" value={id}>
-									<div className="min-h-12 pointer-events-none flex grow flex-col justify-center">
+									<div className="pointer-events-none flex min-h-12 grow flex-col justify-center">
 										<div className="flex flex-row items-center justify-between self-stretch">
-											<p>{name}</p>
-											<p>{getFormattedMoney(price)}</p>
+											<p className="font-medium">{name}</p>
+											<p className={`font-semibold ${price.amount === 0 ? "text-green-600" : ""}`}>
+												{price.amount === 0 ? "FREE" : getFormattedMoney(price)}
+											</p>
 										</div>
-										<p className="font-xs" color="secondary">
-											{getSubtitle({ min, max })}
-										</p>
+										<p className="text-xs text-gray-500">{getSubtitle({ min, max })}</p>
 									</div>
 								</SelectBox>
 							),
 						)}
 					</SelectBoxGroup>
+				) : (
+					<div className="text-gray-600">
+						<p>Loading shipping options...</p>
+						<p className="mt-1 text-sm">
+							Rates are calculated based on your order total and shipping location.
+						</p>
+					</div>
 				)}
 			</div>
 		</FormProvider>
