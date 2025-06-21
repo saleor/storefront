@@ -27,6 +27,17 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
 			return;
 		}
 
+		// Get order total for smart shipping selection
+		const orderTotal = checkout.totalPrice?.gross?.amount || 0;
+
+		// If there's a free shipping option and order qualifies, prefer it
+		const freeShippingMethod = shippingMethods.find((method) => method.price.amount === 0);
+		if (freeShippingMethod && orderTotal >= 10000) {
+			// $100+ orders
+			return freeShippingMethod;
+		}
+
+		// Otherwise, select the cheapest method
 		const cheapestMethod = shippingMethods.reduce(
 			(resultMethod, currentMethod) =>
 				currentMethod.price.amount < resultMethod.price.amount ? currentMethod : resultMethod,
@@ -34,7 +45,7 @@ export const useDeliveryMethodsForm = (): UseFormReturn<DeliveryMethodsFormData>
 		);
 
 		return cheapestMethod;
-	}, [shippingMethods]);
+	}, [shippingMethods, checkout.totalPrice]);
 
 	const defaultFormData: DeliveryMethodsFormData = {
 		selectedMethodId: deliveryMethod?.id || getAutoSetMethod()?.id,

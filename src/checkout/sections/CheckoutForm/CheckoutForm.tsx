@@ -15,6 +15,7 @@ import { UserBillingAddressSection } from "@/checkout/sections/UserBillingAddres
 import { PaymentSection, PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection";
 import { GuestBillingAddressSection } from "@/checkout/sections/GuestBillingAddressSection";
 import { useUser } from "@/checkout/hooks/useUser";
+import { usePreloadShippingMethods } from "@/checkout/hooks/usePreloadShippingMethods";
 
 export const CheckoutForm = () => {
 	const { user } = useUser();
@@ -22,6 +23,9 @@ export const CheckoutForm = () => {
 	const { passwordResetToken } = getQueryParams();
 
 	const [showOnlyContact, setShowOnlyContact] = useState(!!passwordResetToken);
+
+	// Pre-load shipping methods with US default to show options earlier
+	usePreloadShippingMethods();
 
 	return (
 		<div className="flex flex-col items-end">
