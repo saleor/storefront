@@ -5,7 +5,6 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 import { apiErrorMessages } from "@/checkout/sections/PaymentSection/errorMessages";
-import { replaceUrl } from "@/checkout/lib/utils/url";
 
 interface PaymentIntentData {
 	paymentIntent: {
@@ -168,14 +167,14 @@ export const useCompleteCheckout = () => {
 			queryClient.removeQueries({ queryKey: ["paymentIntent"] });
 			queryClient.removeQueries({ queryKey: ["checkout"] });
 
-			// Redirect to order confirmation
-			const newUrl = replaceUrl({
-				query: {
-					order: order.id,
-				},
-				replaceWholeQuery: true,
-			});
-			window.location.replace(newUrl);
+			// Redirect to order confirmation - construct URL manually for reliable navigation
+			const baseUrl = window.location.origin + window.location.pathname;
+			const orderConfirmationUrl = `${baseUrl}?order=${order.id}`;
+
+			console.log("React Query: Redirecting to order confirmation:", orderConfirmationUrl);
+
+			// Use window.location.href for immediate navigation
+			window.location.href = orderConfirmationUrl;
 		},
 		onError: (error) => {
 			console.error("React Query: Checkout completion failed", error);
