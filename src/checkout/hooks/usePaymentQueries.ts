@@ -105,6 +105,7 @@ export const useConfirmPayment = () => {
 						billing_details: billingDetails,
 					},
 				},
+				redirect: "if_required", // This is key - only redirect if required
 			});
 
 			if (result.error) {
@@ -112,7 +113,7 @@ export const useConfirmPayment = () => {
 				throw result.error;
 			}
 
-			console.log("React Query: Payment confirmed successfully");
+			console.log("React Query: Payment confirmed successfully", result.paymentIntent?.status);
 			return result;
 		},
 		onSuccess: () => {

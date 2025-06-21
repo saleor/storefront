@@ -137,9 +137,9 @@ export function CheckoutForm() {
 			return;
 		}
 
-		// Prevent duplicate payment attempts
-		if (isLoading || confirmPaymentMutation.isPending || completeCheckoutMutation.isPending) {
-			console.log("React Query: Payment already in progress, skipping duplicate attempt");
+		// Prevent duplicate payment attempts - only check if mutations are actually pending
+		if (confirmPaymentMutation.isPending || completeCheckoutMutation.isPending) {
+			console.log("React Query: Payment mutation in progress, waiting...");
 			return;
 		}
 
@@ -154,20 +154,19 @@ export function CheckoutForm() {
 		}
 
 		console.log("React Query: Starting payment confirmation");
-		setIsLoading(true);
 
 		// Create billing details object once to avoid re-renders
 		const billingDetails = {
-			name: checkout.billingAddress?.firstName + " " + checkout.billingAddress?.lastName,
-			email: checkout.email ?? "",
-			phone: checkout.billingAddress?.phone ?? "",
+			name: (checkout.billingAddress?.firstName || "") + " " + (checkout.billingAddress?.lastName || ""),
+			email: checkout.email || "",
+			phone: checkout.billingAddress?.phone || "",
 			address: {
-				city: checkout.billingAddress?.city ?? "",
-				country: checkout.billingAddress?.country.code ?? "",
-				line1: checkout.billingAddress?.streetAddress1 ?? "",
-				line2: checkout.billingAddress?.streetAddress2 ?? "",
-				postal_code: checkout.billingAddress?.postalCode ?? "",
-				state: checkout.billingAddress?.countryArea ?? "",
+				city: checkout.billingAddress?.city || "",
+				country: checkout.billingAddress?.country.code || "",
+				line1: checkout.billingAddress?.streetAddress1 || "",
+				line2: checkout.billingAddress?.streetAddress2 || "",
+				postal_code: checkout.billingAddress?.postalCode || "",
+				state: checkout.billingAddress?.countryArea || "",
 			},
 		};
 
@@ -180,36 +179,37 @@ export function CheckoutForm() {
 				returnUrl: getUrlForTransactionInitialize().newUrl,
 			},
 			{
-				onSuccess: () => {
-					console.log("React Query: Payment confirmed successfully");
-					// Payment confirmation success is handled by the mutation's onSuccess
-					setIsLoading(false);
-					completeCheckoutMutation.mutate();
+				onSuccess: (result) => {
+					console.log("React Query: Payment confirmed successfully, completing checkout");
+					// Check if payment succeeded immediately (no redirect required)
+					if (result.paymentIntent?.status === "succeeded") {
+						completeCheckoutMutation.mutate();
+					} else {
+						// Payment may require additional authentication or processing
+						console.log(
+							"React Query: Payment requires additional steps, status:",
+							result.paymentIntent?.status,
+						);
+						setIsLoading(false);
+					}
 				},
-				onError: () => {
-					// Error handling is done in the mutation's onError
+				onError: (error) => {
+					console.error("React Query: Payment confirmation failed:", error);
 					setIsLoading(false);
 					setIsProcessingPayment(false);
 				},
 			},
 		);
 	}, [
-		// Only include essential dependencies to prevent unnecessary re-runs
+		// Minimal dependencies to prevent excessive re-runs
 		checkoutUpdateState.submitInProgress,
 		anyRequestsInProgress,
 		finishedApiChangesWithNoError,
 		validationState,
 		stripe,
 		elements,
-		isLoading,
 		confirmPaymentMutation.isPending,
 		completeCheckoutMutation.isPending,
-		setSubmitInProgress,
-		setIsProcessingPayment,
-		confirmPaymentMutation,
-		completeCheckoutMutation,
-		// Include checkout data as a single dependency to avoid individual property dependencies
-		checkout,
 	]);
 
 	const isSubmitDisabled =
