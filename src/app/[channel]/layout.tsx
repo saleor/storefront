@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { executeGraphQL } from "@/lib/graphql";
 import { ChannelsListDocument } from "@/gql/graphql";
+import { DEFAULT_CHANNEL } from "@/lib/utils";
 
 export const generateStaticParams = async () => {
 	// the `channels` query is protected
@@ -20,7 +21,7 @@ export const generateStaticParams = async () => {
 				.map((channel) => ({ channel: channel.slug })) ?? []
 		);
 	} else {
-		return [{ channel: "default-channel" }];
+		return [{ channel: DEFAULT_CHANNEL }];
 	}
 };
 
