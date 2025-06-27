@@ -15,14 +15,6 @@ export const useCheckout = ({ pause = false } = {}) => {
 
 	useEffect(() => setLoadingCheckout(fetching || stale), [fetching, setLoadingCheckout, stale]);
 
-	// Add debugging for GraphQL errors
-	useEffect(() => {
-		if (error) {
-			console.error("Checkout GraphQL Error:", error);
-			console.error("Error details:", JSON.stringify(error, null, 2));
-		}
-	}, [error]);
-
 	return useMemo(
 		() => ({
 			checkout: data?.checkout as Checkout,
