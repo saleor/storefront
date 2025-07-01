@@ -12,9 +12,9 @@
 
 <div align="center">
  Get to know Saleor: <br>
-  <a href="https://saleor.typeform.com/talk-with-us">Talk to a human</a>
+  <a href="https://saleor.typeform.com/talk-with-us?utm_source=github&utm_medium=readme&utm_campaign=repo_storefront">Talk to a human</a>
   <span> | </span>
-  <a href="https://twitter.com/getsaleor](https://auth.saleor.io/realms/saleor-cloud/protocol/openid-connect/registrations)">Talk to API</a>
+  <a href="https://cloud.saleor.io/signup?utm_source=github&utm_medium=readme&utm_campaign=repo_storefront">Talk to API</a>
 </div>
 
 <br>
