@@ -10,22 +10,34 @@ export const metadata = {
 	description: "All products in Saleor Storefront example",
 };
 
+type ProductListPaginatedVars = {
+	channel: string;
+	first?: number;
+	after?: string | null;
+	last?: number;
+	before?: string | null;
+};
+
 export default async function Page(props: {
 	params: Promise<{ channel: string }>;
 	searchParams: Promise<{
-		cursor: string | string[] | undefined;
+		cursor?: string | string[];
+		direction?: string | string[];
 	}>;
 }) {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
+
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	const direction = searchParams.direction === "prev" ? "prev" : "next";
+
+	const variables: ProductListPaginatedVars =
+		direction === "prev"
+			? { last: ProductsPerPage, before: cursor, channel: params.channel }
+			: { first: ProductsPerPage, after: cursor, channel: params.channel };
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
-		variables: {
-			first: ProductsPerPage,
-			after: cursor,
-			channel: params.channel,
-		},
+		variables,
 		revalidate: 60,
 	});
 
@@ -33,8 +45,14 @@ export default async function Page(props: {
 		notFound();
 	}
 
-	const newSearchParams = new URLSearchParams({
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
+	const nextSearchParams = new URLSearchParams({
+		cursor: products.pageInfo.endCursor ?? "",
+		direction: "next",
+	});
+
+	const prevSearchParams = new URLSearchParams({
+		cursor: products.pageInfo.startCursor ?? "",
+		direction: "prev",
 	});
 
 	return (
@@ -43,9 +61,11 @@ export default async function Page(props: {
 			<ProductList products={products.edges.map((e) => e.node)} />
 			<Pagination
 				pageInfo={{
-					...products.pageInfo,
 					basePathname: `/products`,
-					urlSearchParams: newSearchParams,
+					hasNextPage: products.pageInfo.hasNextPage,
+					hasPreviousPage: products.pageInfo.hasPreviousPage,
+					nextSearchParams,
+					prevSearchParams,
 				}}
 			/>
 		</section>
