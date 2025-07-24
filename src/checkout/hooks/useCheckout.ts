@@ -8,7 +8,7 @@ export const useCheckout = ({ pause = false } = {}) => {
 	const id = useMemo(() => extractCheckoutIdFromUrl(), []);
 	const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
-	const [{ data, fetching, stale }, refetch] = useCheckoutQuery({
+	const [{ data, fetching, stale, error }, refetch] = useCheckoutQuery({
 		variables: { id, languageCode: "EN_US" },
 		pause: pause,
 	});
@@ -16,7 +16,12 @@ export const useCheckout = ({ pause = false } = {}) => {
 	useEffect(() => setLoadingCheckout(fetching || stale), [fetching, setLoadingCheckout, stale]);
 
 	return useMemo(
-		() => ({ checkout: data?.checkout as Checkout, fetching: fetching || stale, refetch }),
-		[data?.checkout, fetching, refetch, stale],
+		() => ({
+			checkout: data?.checkout as Checkout,
+			fetching: fetching || stale,
+			refetch,
+			error,
+		}),
+		[data?.checkout, fetching, refetch, stale, error],
 	);
 };

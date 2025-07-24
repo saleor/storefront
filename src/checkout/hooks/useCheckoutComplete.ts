@@ -27,7 +27,8 @@ export const useCheckoutComplete = () => {
 							},
 							replaceWholeQuery: true,
 						});
-						window.location.href = newUrl;
+						// Use window.location.replace instead of href to prevent back button issues
+						window.location.replace(newUrl);
 					}
 				},
 			}),
