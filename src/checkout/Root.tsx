@@ -12,10 +12,13 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useAuthChange, useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { RootViews } from "./views/RootViews";
 import { PageNotFound } from "@/checkout/views/PageNotFound";
 import "./index.css";
+
+const queryClient = new QueryClient();
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 	const saleorAuthClient = useSaleorAuthContext();
@@ -38,10 +41,12 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 
 	return (
 		<UrqlProvider value={urqlClient}>
-			<ToastContainer {...alertsContainerProps} />
-			<ErrorBoundary FallbackComponent={PageNotFound}>
-				<RootViews />
-			</ErrorBoundary>
+			<QueryClientProvider client={queryClient}>
+				<ToastContainer {...alertsContainerProps} />
+				<ErrorBoundary FallbackComponent={PageNotFound}>
+					<RootViews />
+				</ErrorBoundary>
+			</QueryClientProvider>
 		</UrqlProvider>
 	);
 };
