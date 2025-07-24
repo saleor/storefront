@@ -175,7 +175,6 @@ export function CheckoutForm() {
 			},
 			{
 				onSuccess: (result) => {
-					console.log("React Query: Payment confirmed successfully, completing checkout");
 					// Check if payment succeeded or requires capture (both are successful states)
 					if (
 						result.paymentIntent?.status === "succeeded" ||

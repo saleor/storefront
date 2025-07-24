@@ -47,8 +47,6 @@ export const usePaymentIntent = (params: PaymentIntentParams | null) => {
 		queryFn: async (): Promise<PaymentIntentData | null> => {
 			if (!params) return null;
 
-			console.log("React Query: Initializing payment intent", params);
-
 			const result = await transactionInitialize({
 				checkoutId: params.checkoutId,
 				paymentGateway: {
@@ -76,7 +74,6 @@ export const usePaymentIntent = (params: PaymentIntentParams | null) => {
 				throw new Error(data.paymentIntent.errors[0].message);
 			}
 
-			console.log("React Query: Payment intent initialized successfully");
 			return data;
 		},
 		enabled: !!params?.checkoutId && !!params?.gatewayId,
@@ -94,8 +91,6 @@ export const useConfirmPayment = () => {
 	return useMutation({
 		mutationKey: ["confirmPayment"],
 		mutationFn: async ({ stripe, elements, billingDetails, returnUrl }: ConfirmPaymentParams) => {
-			console.log("React Query: Confirming payment with Stripe");
-
 			const result = await stripe.confirmPayment({
 				elements,
 				confirmParams: {
@@ -112,7 +107,6 @@ export const useConfirmPayment = () => {
 				throw result.error;
 			}
 
-			console.log("React Query: Payment confirmed successfully", result.paymentIntent?.status);
 			return result;
 		},
 		onSuccess: () => {
@@ -143,8 +137,6 @@ export const useCompleteCheckout = () => {
 	return useMutation({
 		mutationKey: ["completeCheckout"],
 		mutationFn: async () => {
-			console.log("React Query: Completing checkout", checkout.id);
-
 			const result = await checkoutComplete({
 				checkoutId: checkout.id,
 			});
@@ -159,7 +151,6 @@ export const useCompleteCheckout = () => {
 				throw new Error("No order returned from checkout completion");
 			}
 
-			console.log("React Query: Checkout completed successfully", order.id);
 			return order;
 		},
 		onSuccess: (order) => {
@@ -170,8 +161,6 @@ export const useCompleteCheckout = () => {
 			// Redirect to order confirmation - construct URL manually for reliable navigation
 			const baseUrl = window.location.origin + window.location.pathname;
 			const orderConfirmationUrl = `${baseUrl}?order=${order.id}`;
-
-			console.log("React Query: Redirecting to order confirmation:", orderConfirmationUrl);
 
 			// Use window.location.href for immediate navigation
 			window.location.href = orderConfirmationUrl;
@@ -188,8 +177,6 @@ export const useRetrievePaymentIntent = () => {
 	return useMutation({
 		mutationKey: ["retrievePaymentIntent"],
 		mutationFn: async ({ stripe, clientSecret }: { stripe: Stripe; clientSecret: string }) => {
-			console.log("React Query: Retrieving payment intent", clientSecret);
-
 			const result = await stripe.retrievePaymentIntent(clientSecret);
 
 			if (result.error) {
@@ -197,7 +184,6 @@ export const useRetrievePaymentIntent = () => {
 				throw result.error;
 			}
 
-			console.log("React Query: Payment intent retrieved", result.paymentIntent?.status);
 			return result.paymentIntent;
 		},
 		retry: 1,
