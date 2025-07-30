@@ -3,7 +3,7 @@ import { OrderDirection, ProductOrderField, SearchProductsDocument } from "@/gql
 import { executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
-import { ProductsPerPage } from "@/app/config";
+import { getPaginatedListVariables } from "@/lib/utils";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
@@ -11,11 +11,11 @@ export const metadata = {
 };
 
 export default async function Page(props: {
-	searchParams: Promise<Record<"query" | "cursor", string | string[] | undefined>>;
+	searchParams: Promise<Record<"query" | "cursor" | "direction", string | string[] | undefined>>;
 	params: Promise<{ channel: string }>;
 }) {
 	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+
 	const searchValue = searchParams.query;
 
 	if (!searchValue) {
@@ -30,14 +30,15 @@ export default async function Page(props: {
 		redirect(`/search?${new URLSearchParams({ query: firstValidSearchValue }).toString()}`);
 	}
 
+	const paginationVariables = getPaginatedListVariables({ params: searchParams });
+
 	const { products } = await executeGraphQL(SearchProductsDocument, {
 		variables: {
-			first: ProductsPerPage,
 			search: searchValue,
-			after: cursor,
+			channel: params.channel,
 			sortBy: ProductOrderField.Rating,
 			sortDirection: OrderDirection.Asc,
-			channel: params.channel,
+			...paginationVariables,
 		},
 		revalidate: 60,
 	});
@@ -46,24 +47,13 @@ export default async function Page(props: {
 		notFound();
 	}
 
-	const newSearchParams = new URLSearchParams({
-		query: searchValue,
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-	});
-
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			{products.totalCount && products.totalCount > 0 ? (
 				<div>
 					<h1 className="pb-8 text-xl font-semibold">Search results for &quot;{searchValue}&quot;:</h1>
 					<ProductList products={products.edges.map((e) => e.node)} />
-					<Pagination
-						pageInfo={{
-							...products.pageInfo,
-							basePathname: `/search`,
-							urlSearchParams: newSearchParams,
-						}}
-					/>
+					<Pagination pageInfo={products.pageInfo} />
 				</div>
 			) : (
 				<h1 className="mx-auto pb-8 text-center text-xl font-semibold">Nothing found :(</h1>
