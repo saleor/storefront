@@ -15,7 +15,7 @@ export const generateMetadata = async (
 	});
 
 	return {
-		title: `${category?.name || "Categroy"} | ${category?.seoTitle || (await parent).title?.absolute}`,
+		title: `${category?.name || "Category"} | ${category?.seoTitle || (await parent).title?.absolute}`,
 		description: category?.seoDescription || category?.description || category?.seoTitle || category?.name,
 	};
 };
