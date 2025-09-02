@@ -9,6 +9,7 @@ export function register() {
 			"saleor.environment.domain": saleorEnvironmentSpanAttr,
 		},
 		traceExporter: new OTLPHttpProtoTraceExporter({
+			url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT!,
 			headers: {
 				"x-alb-access-token": process.env.OTEL_ACCESS_TOKEN!,
 			},
