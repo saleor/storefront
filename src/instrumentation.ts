@@ -1,4 +1,4 @@
-import { registerOTel, OTLPHttpProtoTraceExporter } from "@vercel/otel";
+import { registerOTel, OTLPHttpJsonTraceExporter } from "@vercel/otel";
 
 const saleorEnvironmentSpanAttr = new URL(process.env.NEXT_PUBLIC_SALEOR_API_URL!).host;
 
@@ -8,7 +8,7 @@ export function register() {
 		attributes: {
 			"saleor.environment.domain": saleorEnvironmentSpanAttr,
 		},
-		traceExporter: new OTLPHttpProtoTraceExporter({
+		traceExporter: new OTLPHttpJsonTraceExporter({
 			url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT!,
 			headers: {
 				"x-alb-access-token": process.env.OTEL_ACCESS_TOKEN!,
