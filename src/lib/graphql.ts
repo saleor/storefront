@@ -1,4 +1,8 @@
+import { trace } from "@opentelemetry/api";
 import { type TypedDocumentString } from "../gql/graphql";
+
+const saleorEnvironmentSpanAttr = new URL(process.env.NEXT_PUBLIC_SALEOR_API_URL!).host;
+const tracer = trace.getTracer(process.env.OTEL_SERVICE_NAME || "storefront");
 
 // ============================================================================
 // Result Types - Explicit error handling without exceptions
@@ -304,6 +308,11 @@ async function executeGraphQL<Result, Variables>(
 	const operationName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "UnknownOperation";
 	const variablesForLog = variables ? formatVariablesForLog(variables) : undefined;
 
+	const span = tracer.startSpan("Executing GraphQL operation");
+	span.setAttributes({
+		"saleor.environment.domain": saleorEnvironmentSpanAttr,
+	});
+
 	if (process.env.NODE_ENV === "development" && process.env.DEBUG_CACHE) {
 		console.log(
 			`[GraphQL] ${operationName} | cache: ${cache || "default"} | revalidate: ${revalidate || "none"}`,
@@ -341,6 +350,7 @@ async function executeGraphQL<Result, Variables>(
 	if ("errors" in body) {
 		return graphqlError(body.errors.map((e) => e.message));
 	}
+	span.end();
 
 	return success(body.data);
 }
