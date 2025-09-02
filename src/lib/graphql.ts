@@ -1,6 +1,9 @@
+import { trace } from "@opentelemetry/api";
 import { invariant } from "ts-invariant";
 import { type TypedDocumentString } from "../gql/graphql";
 import { getServerAuthClient } from "@/app/config";
+
+const saleorEnvironmentSpanAttr = new URL(process.env.NEXT_PUBLIC_SALEOR_API_URL!).host;
 
 type GraphQLErrorResponse = {
 	errors: readonly {
@@ -9,6 +12,8 @@ type GraphQLErrorResponse = {
 };
 
 type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
+
+const tracer = trace.getTracer(process.env.OTEL_SERVICE_NAME || "storefront");
 
 export async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
@@ -20,6 +25,10 @@ export async function executeGraphQL<Result, Variables>(
 	} & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables }),
 ): Promise<Result> {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+	const span = tracer.startSpan("Executing GraphQL operation");
+	span.setAttributes({
+		"saleor.environment.domain": saleorEnvironmentSpanAttr,
+	});
 	const { variables, headers, cache, revalidate, withAuth = true } = options;
 
 	const input = {
@@ -57,7 +66,7 @@ export async function executeGraphQL<Result, Variables>(
 	if ("errors" in body) {
 		throw new GraphQLError(body);
 	}
-
+	span.end();
 	return body.data;
 }
 
