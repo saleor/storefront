@@ -21,5 +21,6 @@ services:
   # Add more containers below (nginx, postgres, etc.)
 
 networks:
-  saleor_network:
-    external: false
+  strongpack-network:
+    name: strongpack-network
+  #  external: false
