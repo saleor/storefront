@@ -19,7 +19,8 @@ if (!schemaUrl) {
 
 const config: CodegenConfig = {
 	overwrite: true,
-	schema: schemaUrl,
+	// schema: schemaUrl,
+	schema: "./schema.graphql", // مسیر فایل آفلاین
 	documents: "src/graphql/**/*.graphql",
 	generates: {
 		"src/gql/": {
