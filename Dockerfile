@@ -113,20 +113,26 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
-RUN pnpm build
+RUN pnpm run generate && pnpm build
 
 # Stage 2: Production runtime
 FROM node:20-alpine AS runner
-
 WORKDIR /app
-ENV NODE_ENV production
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# فقط خروجی های ضروری را کپی کن
-COPY --from=builder /app/package.json ./
+# NODE_ENV production
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+# فقط فایل‌های لازم
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
 
+# اجرای سرویس
 EXPOSE 3000
 CMD ["pnpm", "start", "-H", "0.0.0.0", "-p", "3000"]
