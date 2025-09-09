@@ -69,16 +69,16 @@
 
 # CMD ["node", "server.js"]
 
-FROM node:20-alpine
+# FROM node:20-alpine
 
-WORKDIR /app
+# WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# RUN corepack enable && corepack prepare pnpm@latest --activate
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
+# COPY package.json pnpm-lock.yaml ./
+# RUN pnpm install --frozen-lockfile --ignore-scripts
 
-COPY . .
+# COPY . .
 
 # RUN printf '%s\n' '#!/bin/sh' 'set -e' \
 #   'TARGET="${SALEOR_API_INTERNAL:-http://saleor-api:8000/graphql/}"' \
@@ -101,7 +101,15 @@ COPY . .
 # CMD ["/wait-and-run.sh"]
 
 
+FROM node:20-alpine AS builder
+WORKDIR /app
 
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
+COPY . .
 RUN pnpm build
 
 # Stage 2: Production runtime
