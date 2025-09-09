@@ -69,7 +69,6 @@
 
 # CMD ["node", "server.js"]
 
-
 FROM node:20-alpine
 
 WORKDIR /app
@@ -98,5 +97,8 @@ RUN printf '%s\n' '#!/bin/sh' 'set -e' \
   && chmod +x /wait-and-run.sh
 
 EXPOSE 3000
+
+CMD ["/wait-and-run.sh"]
+
 
 CMD ["/wait-and-run.sh"]
