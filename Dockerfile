@@ -35,7 +35,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-RUN pnpm build
+# RUN pnpm build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -67,4 +67,5 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 
 
-CMD ["node", "server.js"]
+# CMD ["node", "server.js"]
+CMD ["sh", "-c", "pnpm run generate && pnpm build && pnpm start"]
