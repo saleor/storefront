@@ -80,25 +80,42 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
 
-RUN printf '%s\n' '#!/bin/sh' 'set -e' \
-  'TARGET="${SALEOR_API_INTERNAL:-http://saleor-api:8000/graphql/}"' \
-  'echo "Waiting for Saleor API at $TARGET"' \
-  'n=0' \
-  'until curl -sSf "$TARGET" >/dev/null 2>&1; do' \
-  '  n=$((n+1))' \
-  '  if [ $n -gt 150 ]; then echo "Timeout waiting for Saleor API"; exit 1; fi' \
-  '  echo "Saleor API not ready yet — sleeping 2s..."' \
-  '  sleep 2' \
-  'done' \
-  'echo "Saleor API is up. Running install/build/start."' \
-  'pnpm install --frozen-lockfile' \
-  'pnpm build' \
-  'pnpm start -p 3000' > /wait-and-run.sh \
-  && chmod +x /wait-and-run.sh
+# RUN printf '%s\n' '#!/bin/sh' 'set -e' \
+#   'TARGET="${SALEOR_API_INTERNAL:-http://saleor-api:8000/graphql/}"' \
+#   'echo "Waiting for Saleor API at $TARGET"' \
+#   'n=0' \
+#   'until curl -sSf "$TARGET" >/dev/null 2>&1; do' \
+#   '  n=$((n+1))' \
+#   '  if [ $n -gt 150 ]; then echo "Timeout waiting for Saleor API"; exit 1; fi' \
+#   '  echo "Saleor API not ready yet — sleeping 2s..."' \
+#   '  sleep 2' \
+#   'done' \
+#   'echo "Saleor API is up. Running install/build/start."' \
+#   'pnpm install --frozen-lockfile' \
+#   'pnpm build' \
+#   'pnpm start -p 3000' > /wait-and-run.sh \
+#   && chmod +x /wait-and-run.sh
+
+# EXPOSE 3000
+
+# CMD ["/wait-and-run.sh"]
+
+
+
+RUN pnpm build
+
+# Stage 2: Production runtime
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+ENV NODE_ENV production
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# فقط خروجی های ضروری را کپی کن
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3000
-
-CMD ["/wait-and-run.sh"]
-
-
-CMD ["/wait-and-run.sh"]
+CMD ["pnpm", "start", "-H", "0.0.0.0", "-p", "3000"]
