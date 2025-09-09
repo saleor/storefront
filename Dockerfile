@@ -101,38 +101,31 @@
 # CMD ["/wait-and-run.sh"]
 
 
-FROM node:20-alpine AS builder
+
+
+
+# Stage 1: Builder
+FROM node:20-bullseye AS builder
 WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 ARG NEXT_PUBLIC_SALEOR_API_URL
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
-
+RUN pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm run generate && pnpm build
+RUN pnpm build
 
-# Stage 2: Production runtime
-FROM node:20-alpine AS runner
+# Stage 2: Runner
+FROM node:20-bullseye AS runner
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# NODE_ENV production
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
-ENV HOST=0.0.0.0
-
-# فقط فایل‌های لازم
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
-
-# اجرای سرویس
-EXPOSE 3000
-CMD ["pnpm", "start", "-H", "0.0.0.0", "-p", "3000"]
+CMD ["sh", "-c", "pnpm run generate && pnpm start -H 0.0.0.0 -p 3000"]
