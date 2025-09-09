@@ -1,5 +1,0 @@
-curl -X POST \
-  -H "Content-Type: application/json" \
-  --data '{"query":"{ __schema { types { name } } }"}' \
-  https://saleor.20pack.ir/graphql/ \
-  > schema.graphql
