@@ -109,23 +109,41 @@ FROM node:20-bullseye AS builder
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-ARG NEXT_PUBLIC_SALEOR_API_URL
-ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
-
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
+
 COPY . .
-RUN pnpm build
+
+ARG NODE_ENV=production
+ARG NEXT_PUBLIC_SALEOR_API_URL
+ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
+
+# ARG NEXT_PUBLIC_SALEOR_API_URL
+# RUN if [ ! -f schema/schema.graphql ]; then \
+#       if [ "$NODE_ENV" != "production" ]; then \
+#         npx graphql-codegen introspect-schema $NEXT_PUBLIC_SALEOR_API_URL > schema/schema.graphql; \
+#       else \
+#         echo "schema.graphql missing in production" && exit 1; \
+#       fi \
+#     fi
+
+RUN pnpm run generate
+RUN pnpm run build
 
 # Stage 2: Runner
 FROM node:20-bullseye AS runner
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@latest --activate
+
 ENV NODE_ENV=production
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-lock.yaml ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
-CMD ["sh", "-c", "pnpm run generate && pnpm start -H 0.0.0.0 -p 3000"]
+# COPY --from=builder /app/schema/schema.graphql ./schema/schema.graphql
+
+EXPOSE 3000
+CMD ["pnpm", "start", "-H", "0.0.0.0", "-p", "3000"]
