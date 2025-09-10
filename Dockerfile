@@ -128,7 +128,7 @@ ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
 #       fi \
 #     fi
 
-RUN pnpm run generate
+# RUN pnpm run generate
 RUN pnpm run build
 
 # Stage 2: Runner
