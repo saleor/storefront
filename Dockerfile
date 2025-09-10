@@ -136,7 +136,7 @@ FROM node:20-bullseye AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/pnpm-lock.yaml ./
