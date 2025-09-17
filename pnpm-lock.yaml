@@ -21,8 +21,8 @@ importers:
         specifier: 1.7.18
         version: 1.7.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@saleor/auth-sdk':
-        specifier: 1.0.2
-        version: 1.0.2(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))
+        specifier: 1.0.3
+        version: 1.0.3(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))
       '@stripe/react-stripe-js':
         specifier: 2.6.2
         version: 2.6.2(@stripe/stripe-js@2.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1191,14 +1191,14 @@ packages:
   '@rushstack/eslint-patch@1.10.3':
     resolution: {integrity: sha512-qC/xYId4NMebE6w/V33Fh9gWxLgURiNYgVNObbJl2LZv0GUUItCcCqC5axQSwRaAgaxl2mELq1rMzlswaQ0Zxg==}
 
-  '@saleor/auth-sdk@1.0.2':
-    resolution: {integrity: sha512-Tan5r6cdaYTPLfnqIFYSho3rDt4e9IlaGqTk+ok9ZtEDf1C40Cijnh6bOd7dDfWGRGO+itlVxJcyvMiXswdDng==}
-    engines: {node: '>=18.0.0'}
+  '@saleor/auth-sdk@1.0.3':
+    resolution: {integrity: sha512-Bz2sDQsTF6+BLjwE1OSVM95PLzzPD6nLtLRl+mOgq+Rc3Slkgo29CLRwyZW4vGgm1EG2DaTyxDIGipjKzU1cVA==}
+    engines: {node: '>=22.14.0'}
     peerDependencies:
       next: ^13.4.4 || ^14.0.0 || ^15.0.0
       react: ^18.2.0 || ^19.0.0
       react-dom: '^18.2.0 || ^19.0.0 '
-      urql: ^4.0.3
+      urql: ^4.0.3 || ^5.0.0
     peerDependenciesMeta:
       next:
         optional: true
@@ -1744,9 +1744,9 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
-    engines: {node: '>= 0.6'}
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   core-js-pure@3.37.1:
     resolution: {integrity: sha512-J/r5JTHSmzTxbiYYrzXg9w1VpqrYt+gexenBE9pugeyhwPZTAEJddyiReJWsLO6uNQ8xJZFbod6XC7KKwatCiA==}
@@ -5352,10 +5352,10 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.3': {}
 
-  '@saleor/auth-sdk@1.0.2(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))':
+  '@saleor/auth-sdk@1.0.3(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
-      cookie: 0.6.0
+      cookie: 1.0.2
       graphql: 16.8.1
     optionalDependencies:
       next: 15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -6027,7 +6027,7 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  cookie@0.6.0: {}
+  cookie@1.0.2: {}
 
   core-js-pure@3.37.1: {}
 
