@@ -15,39 +15,41 @@ export const DummyComponent = () => {
 
 	const { checkout } = useCheckout();
 	const [transactionInitializeState, transactionInitialize] = useTransactionInitializeMutation();
-	const {onCheckoutComplete, completingCheckout} = useCheckoutComplete()
+	const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
 	const isInProgress = completingCheckout || transactionInitializeState.fetching;
 
 	const onInitalizeClick = () => {
 		void transactionInitialize({
 			checkoutId: checkout.id,
+			amount: checkout.totalPrice.gross.amount,
 			paymentGateway: {
 				id: dummyGatewayId,
 				data: {
-					"event": {
-						"includePspReference": true,
-						"type": "CHARGE_SUCCESS"
-					}
+					event: {
+						includePspReference: true,
+						type: "CHARGE_SUCCESS",
+					},
 				},
 			},
-		}).catch((err) => {
-			console.error("There was a problem with Dummy Payment Gateway:", err);
-		}).then((_) => {
-			return onCheckoutComplete()
-		}).then((res) => {
-			if(res?.apiErrors){
-				res.apiErrors.forEach((error) => {
-					showCustomErrors([{ message: error.message }]);
-				});
-			}
 		})
+			.catch((err) => {
+				console.error("There was a problem with Dummy Payment Gateway:", err);
+			})
+			.then((_) => {
+				return onCheckoutComplete();
+			})
+			.then((res) => {
+				if (res?.apiErrors) {
+					res.apiErrors.forEach((error) => {
+						showCustomErrors([{ message: error.message }]);
+					});
+				}
+			});
+	};
+
+	if (isInProgress) {
+		return <Button variant="primary" disabled={true} label="Processing payment..." />;
 	}
 
-	if(isInProgress){
-		return <Button variant="primary" disabled={true} label="Processing payment..."/>
-	}
-
-	return (
-		<Button variant="primary" onClick={onInitalizeClick} label="Make payment and create order"/>		
-	);
+	return <Button variant="primary" onClick={onInitalizeClick} label="Make payment and create order" />;
 };

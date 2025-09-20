@@ -18,6 +18,7 @@ export const usePaymentGatewaysInitialize = () => {
 
 	const [gatewayConfigs, setGatewayConfigs] = useState<ParsedPaymentGateways>([]);
 	const previousBillingCountry = useRef(billingCountry);
+	const initializingRef = useRef(false);
 
 	const [{ fetching }, paymentGatewaysInitialize] = usePaymentGatewaysInitializeMutation();
 
@@ -26,8 +27,15 @@ export const usePaymentGatewaysInitialize = () => {
 			() => ({
 				hideAlerts: true,
 				scope: "paymentGatewaysInitialize",
-				shouldAbort: () => !availablePaymentGateways.length,
-				onSubmit: paymentGatewaysInitialize,
+				shouldAbort: () => !availablePaymentGateways.length || initializingRef.current,
+				onSubmit: async (...args) => {
+					initializingRef.current = true;
+					try {
+						return await paymentGatewaysInitialize(...args);
+					} finally {
+						initializingRef.current = false;
+					}
+				},
 				parse: () => ({
 					checkoutId,
 					paymentGateways: getFilteredPaymentGateways(availablePaymentGateways).map(({ config, id }) => ({
@@ -53,18 +61,26 @@ export const usePaymentGatewaysInitialize = () => {
 	);
 
 	useEffect(() => {
-		void onSubmit();
-	}, []);
-
-	useEffect(() => {
-		if (billingCountry !== previousBillingCountry.current) {
-			previousBillingCountry.current = billingCountry;
+		// Only initialize if we don't already have gateway configs, payment gateways are available, and we're not already initializing
+		if (!gatewayConfigs.length && availablePaymentGateways.length > 0 && !initializingRef.current) {
 			void onSubmit();
 		}
-	}, [billingCountry, onSubmit]);
+	}, [availablePaymentGateways.length, onSubmit]);
+
+	useEffect(() => {
+		if (
+			billingCountry !== previousBillingCountry.current &&
+			availablePaymentGateways.length > 0 &&
+			!initializingRef.current
+		) {
+			previousBillingCountry.current = billingCountry;
+			setGatewayConfigs([]);
+			void onSubmit();
+		}
+	}, [billingCountry, onSubmit, availablePaymentGateways.length]);
 
 	return {
-		fetching,
+		fetching: fetching || initializingRef.current,
 		availablePaymentGateways: gatewayConfigs || [],
 	};
 };
