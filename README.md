@@ -36,7 +36,6 @@
 <div align="center">
 
 [![Storefront Roadmap](https://img.shields.io/badge/ROADMAP-EFEFEF?style=for-the-badge)](https://saleor.io/roadmap)
-[![Discord Badge](https://dcbadge.vercel.app/api/server/unUfh24R6d)](https://discord.gg/unUfh24R6d)
 
 </div>
 
