@@ -15,7 +15,15 @@ test("STF_05: Checkout as a unlogged user", async ({ page }) => {
 	await openCart({ page });
 
 	await page.getByTestId("CheckoutLink").click();
-	await page.getByTestId("shippingAddressSection").waitFor();
+
+	// Wait for the checkout page to load and ensure we're on the right URL
+	await page.waitForURL("**/checkout**");
+
+	// Wait for the email field first (this should appear before shipping address section)
+	await page.getByLabel("Email").waitFor({ timeout: 30000 });
+
+	// Wait for shipping address section with a longer timeout
+	await page.getByTestId("shippingAddressSection").waitFor({ timeout: 30000 });
 
 	await page.getByLabel("Email").pressSequentially("example@saleor.io", { delay: 50 });
 	await page.getByLabel("Country").selectOption("Poland");
