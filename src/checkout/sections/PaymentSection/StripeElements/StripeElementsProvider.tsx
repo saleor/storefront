@@ -38,19 +38,13 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 	const { showCustomErrors } = useAlerts();
 	const { errorMessages: _commonErrorMessages } = useErrorMessages(apiErrorMessages);
 
-	console.log("StripeElementsProvider: Render", {
-		hasCheckout: !!checkout,
-		checkoutId: checkout?.id,
-		checkoutFetching,
-		amount: checkout?.totalPrice?.gross?.amount,
-		currency: checkout?.totalPrice?.gross?.currency,
-	});
-
 	const [, paymentGatewaysInitialize] = usePaymentGatewaysInitializeMutation();
 	const [, transactionInitialize] = useTransactionInitializeMutation();
 
 	const [isInitializing, setIsInitializing] = useState(false);
 	const [initializationError, setInitializationError] = useState<string | null>(null);
+	const [initializationStartTime, setInitializationStartTime] = useState<number | null>(null);
+	const [initializationStep, setInitializationStep] = useState<string>("Preparing...");
 	const [session, setSession] = useState(() =>
 		checkout?.id ? StripePaymentManager.getInstance().getSession(checkout.id) : null,
 	);
@@ -132,6 +126,7 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 				let publishableKey = paymentSession.publishableKey;
 				if (!publishableKey) {
 					console.log("StripeElementsProvider: Fetching publishable key");
+					setInitializationStep("Connecting to payment gateway...");
 
 					const gatewayResult = await paymentGatewaysInitialize({
 						checkoutId: checkout.id,
@@ -153,7 +148,7 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 					);
 
 					const stripeCfgData = stripeCfg?.data as Record<string, unknown> | undefined;
-					publishableKey = stripeCfgData?.stripePublishableKey as string | undefined;
+					publishableKey = (stripeCfgData?.stripePublishableKey as string | undefined) || null;
 
 					if (!publishableKey) {
 						throw new Error("No publishable key received from payment gateway");
@@ -168,6 +163,7 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 
 				if (!clientSecret || !paymentSession.initialized) {
 					console.log("StripeElementsProvider: Creating payment intent via transaction initialize");
+					setInitializationStep("Creating secure payment session...");
 
 					const txResult = await transactionInitialize({
 						checkoutId: checkout.id,
@@ -214,12 +210,30 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 					});
 				}
 
+				setInitializationStep("Finalizing payment setup...");
 				const finalSession = paymentManager.getSession(checkout.id);
 				console.log("StripeElementsProvider: Initialization completed", finalSession);
 
 				return finalSession;
 			} catch (error) {
 				console.error("StripeElementsProvider: Initialization failed", error);
+
+				// Enhanced error handling based on error type
+				if (error instanceof Error) {
+					if (error.message.includes("publishable key")) {
+						throw new Error("Payment gateway configuration error. Please contact support.");
+					}
+					if (error.message.includes("client secret")) {
+						throw new Error("Payment session creation failed. Please try again.");
+					}
+					if (error.message.includes("Gateway initialization failed")) {
+						throw new Error("Payment gateway is currently unavailable. Please try again later.");
+					}
+					if (error.message.includes("Transaction initialization failed")) {
+						throw new Error("Payment setup failed. Please refresh the page and try again.");
+					}
+				}
+
 				throw error;
 			}
 		});
@@ -233,6 +247,43 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 		paymentManager,
 	]);
 
+	// Detect corrupted sessions and auto-recover
+	useEffect(() => {
+		if (checkout?.id && session) {
+			const now = Date.now();
+			const sessionAge = now - session.createdAt;
+
+			// If session is older than 45 minutes or has invalid state, clear it
+			if (
+				sessionAge > 45 * 60 * 1000 ||
+				(session.initialized && !session.clientSecret) ||
+				(session.clientSecret && session.amount !== checkoutAmount)
+			) {
+				console.log("StripeElementsProvider: Clearing corrupted/expired session", {
+					sessionAge: Math.floor(sessionAge / 1000),
+					sessionAmount: session.amount,
+					currentAmount: checkoutAmount,
+					hasClientSecret: !!session.clientSecret,
+					initialized: session.initialized,
+				});
+
+				paymentManager.clearSession(checkout.id);
+				setSession(null);
+				setIsInitializing(false);
+				setInitializationError(null);
+			}
+		}
+	}, [checkout?.id, session, checkoutAmount, paymentManager]);
+
+	// Add recovery mechanism for stuck initialization state
+	useEffect(() => {
+		if (isInitializing && session?.initialized && session?.clientSecret) {
+			console.log("StripeElementsProvider: Session is ready but still showing as initializing, fixing state");
+			setIsInitializing(false);
+			setInitializationError(null);
+		}
+	}, [isInitializing, session?.initialized, session?.clientSecret]);
+
 	// Initialize payment session with debouncing
 	useEffect(() => {
 		let isCancelled = false;
@@ -244,12 +295,25 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 
 			setIsInitializing(true);
 			setInitializationError(null);
+			setInitializationStartTime(Date.now());
+			setInitializationStep("Preparing...");
 
 			try {
 				const result = await initializePaymentSession();
 
 				if (!isCancelled && result) {
-					setSession(result);
+					// Only update session if it's actually different to prevent unnecessary re-renders
+					setSession((currentSession) => {
+						if (
+							!currentSession ||
+							currentSession.clientSecret !== result.clientSecret ||
+							currentSession.publishableKey !== result.publishableKey ||
+							currentSession.initialized !== result.initialized
+						) {
+							return result;
+						}
+						return currentSession;
+					});
 				}
 			} catch (error) {
 				console.error("StripeElementsProvider: Initialization error", error);
@@ -262,6 +326,8 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 			} finally {
 				if (!isCancelled) {
 					setIsInitializing(false);
+					setInitializationStartTime(null);
+					setInitializationStep("Preparing...");
 				}
 			}
 		};
@@ -273,7 +339,30 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 			isCancelled = true;
 			clearTimeout(timeoutId);
 		};
-	}, [initializePaymentSession, showCustomErrors, isInitializing]);
+	}, [initializePaymentSession, showCustomErrors]);
+
+	// Timeout for initialization
+	useEffect(() => {
+		if (!initializationStartTime || !isInitializing) {
+			return;
+		}
+
+		const timeoutId = setTimeout(() => {
+			const elapsed = Date.now() - initializationStartTime;
+			if (elapsed > 30000) {
+				// 30 seconds timeout
+				console.error("StripeElementsProvider: Initialization timeout after 30 seconds");
+				setIsInitializing(false);
+				setInitializationStartTime(null);
+				setInitializationStep("Preparing...");
+				setInitializationError(
+					"Payment initialization is taking too long. Please check your connection and try again.",
+				);
+			}
+		}, 30000);
+
+		return () => clearTimeout(timeoutId);
+	}, [initializationStartTime, isInitializing]);
 
 	// Cleanup on unmount or checkout change
 	useEffect(() => {
@@ -295,31 +384,73 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 	// Create Stripe promise only when we have a publishable key
 	const stripePromise = useMemo(() => {
 		if (!session?.publishableKey) {
+			console.log("StripeElementsProvider: No publishable key, skipping Stripe promise creation");
 			return null;
 		}
+		console.log(
+			"StripeElementsProvider: Creating Stripe promise with key",
+			session.publishableKey.substring(0, 20) + "...",
+		);
 		return loadStripe(session.publishableKey);
 	}, [session?.publishableKey]);
 
+	// Memoize loading state condition to prevent unnecessary re-evaluations
+	const shouldShowLoading = useMemo(() => {
+		return (
+			checkoutFetching ||
+			isInitializing ||
+			!session?.initialized ||
+			!session?.clientSecret ||
+			!stripePromise ||
+			!isCheckoutReady
+		);
+	}, [
+		checkoutFetching,
+		isInitializing,
+		session?.initialized,
+		session?.clientSecret,
+		stripePromise,
+		isCheckoutReady,
+	]);
+
+	console.log("StripeElementsProvider: Render", {
+		hasCheckout: !!checkout,
+		checkoutId: checkout?.id,
+		checkoutFetching,
+		amount: checkout?.totalPrice?.gross?.amount,
+		currency: checkout?.totalPrice?.gross?.currency,
+		isInitializing,
+		sessionInitialized: session?.initialized,
+		hasClientSecret: !!session?.clientSecret,
+		hasStripePromise: !!stripePromise,
+		isCheckoutReady,
+		shouldShowLoading,
+	});
+
 	// Show loading state during initialization or checkout fetching
-	if (
-		checkoutFetching ||
-		isInitializing ||
-		!session?.initialized ||
-		!session?.clientSecret ||
-		!stripePromise ||
-		!isCheckoutReady
-	) {
+	if (shouldShowLoading) {
 		const getLoadingMessage = () => {
 			if (checkoutFetching) return "Loading checkout...";
 			if (!isCheckoutReady) {
-				if (!checkout?.billingAddress) return "Waiting for billing address...";
+				if (!checkout?.billingAddress) return "Please complete billing address to continue";
 				if (checkout?.isShippingRequired && !checkout?.shippingAddress)
-					return "Waiting for shipping address...";
+					return "Please complete shipping address to continue";
 				if (checkout?.isShippingRequired && !checkout?.deliveryMethod)
-					return "Waiting for delivery method...";
+					return "Please select a delivery method to continue";
 				return "Finalizing checkout details...";
 			}
-			return "Initializing payment...";
+			if (isInitializing) {
+				const elapsed = initializationStartTime
+					? Math.floor((Date.now() - initializationStartTime) / 1000)
+					: 0;
+				const baseMessage = initializationStep || "Setting up secure payment...";
+				if (elapsed > 10) {
+					return `${baseMessage} (${elapsed}s)`;
+				}
+				return baseMessage;
+			}
+			if (!session?.clientSecret) return "Preparing payment gateway...";
+			return "Loading payment options...";
 		};
 
 		return (
@@ -327,7 +458,47 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 				<div className="text-center">
 					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
 					<p className="text-gray-600">{getLoadingMessage()}</p>
-					{initializationError && <p className="mt-2 text-sm text-red-600">{initializationError}</p>}
+					{initializationError && (
+						<div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3">
+							<p className="text-sm text-red-800">{initializationError}</p>
+							<button
+								className="mt-2 text-sm text-red-600 underline hover:text-red-800"
+								onClick={() => {
+									setInitializationError(null);
+									setIsInitializing(false);
+									setInitializationStartTime(null);
+									setInitializationStep("Preparing...");
+									// Clear session to force reinitialize
+									if (checkout?.id) {
+										paymentManager.clearSession(checkout.id);
+									}
+								}}
+							>
+								Try again
+							</button>
+							{process.env.NODE_ENV === "development" && (
+								<details className="mt-2 text-xs text-gray-500">
+									<summary>Debug Info</summary>
+									<pre className="text-left text-xs">
+										{JSON.stringify(
+											{
+												checkoutId: checkout?.id,
+												amount: checkoutAmount,
+												currency: checkoutCurrency,
+												isCheckoutReady,
+												hasSession: !!session,
+												sessionInitialized: session?.initialized,
+												hasClientSecret: !!session?.clientSecret,
+												paymentManagerDebug: paymentManager.getDebugInfo(),
+											},
+											null,
+											2,
+										)}
+									</pre>
+								</details>
+							)}
+						</div>
+					)}
 				</div>
 			</div>
 		);
@@ -338,12 +509,18 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 		<Elements
 			stripe={stripePromise}
 			options={{
-				clientSecret: session.clientSecret,
+				clientSecret: session?.clientSecret || undefined,
 				appearance: {
 					theme: "stripe",
 				},
 				// Enable automatic payment methods as per Stripe app documentation
 				locale: "auto",
+				layout: {
+					type: "accordion",
+					defaultCollapsed: false,
+					radios: true,
+					spacedAccordionItems: false,
+				},
 			}}
 		>
 			{children}
