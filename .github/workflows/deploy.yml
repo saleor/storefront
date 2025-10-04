@@ -101,8 +101,10 @@ jobs:
             # docker tag ghcr.io/${{ env.REPO_OWNER_LC }}/storefront:${{ github.sha }} storefront:latest
             # docker compose up -d --remove-orphans --force-recreate
 
-            docker pull ghcr.io/${{ env.REPO_OWNER_LC }}/storefront:latest
+            # docker pull ghcr.io/${{ env.REPO_OWNER_LC }}/storefront:latest
             # docker compose up -d --remove-orphans --force-recreate
+
+            docker compose pull storefront
             docker compose up -d --no-deps storefront
 
             echo "Cleaning up old Docker images..."
