@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   packages: write
+  
 
 jobs:
   build-and-push:
@@ -29,13 +30,10 @@ jobs:
       - name: Login to GHCR
         uses: docker/login-action@v2
         with:
-          # registry: ghcr.io
-          # username: ${{ github.actor }}
-          # password: ${{ secrets.GITHUB_TOKEN }}
-
+          registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
-          
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and Push storefront image
         uses: docker/build-push-action@v4
         with:
