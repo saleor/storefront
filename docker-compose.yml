@@ -70,4 +70,4 @@ services:
 networks:
   strongpack-network:
     # name: strongpack-network
-    external: false
+    external: true
