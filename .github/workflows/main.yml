@@ -1,72 +1,72 @@
-name: Build, TypeScripts, tests
-on: deployment_status
+# name: Build, TypeScripts, tests
+# on: deployment_status
 
-concurrency:
-  group: tests-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: tests-${{ github.event.pull_request.number || github.ref }}
+#   cancel-in-progress: true
 
-jobs:
-  build_and_test:
-    if: ${{ github.event.deployment_status.state == 'success' }}
+# jobs:
+#   build_and_test:
+#     if: ${{ github.event.deployment_status.state == 'success' }}
 
-    runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
+#     runs-on: ubuntu-latest
+#     env:
+#       NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
 
-    steps:
-      - uses: actions/checkout@v4
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - name: Get PNPM version from package.json
-        id: pnpm-version
-        run: echo "pnpm_version=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
+#       - name: Get PNPM version from package.json
+#         id: pnpm-version
+#         run: echo "pnpm_version=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
 
-      - name: Install PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ steps.pnpm-version.outputs.pnpm_version }}
+#       - name: Install PNPM
+#         uses: pnpm/action-setup@v2
+#         with:
+#           version: ${{ steps.pnpm-version.outputs.pnpm_version }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: package.json
-          cache: "pnpm"
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version-file: package.json
+#           cache: "pnpm"
 
-      - name: Install dependencies
-        run: pnpm --version && pnpm install --frozen-lockfile
+#       - name: Install dependencies
+#         run: pnpm --version && pnpm install --frozen-lockfile
 
-      - name: Get Playwright version
-        id: playwright-version
-        run: echo "playwright_version=$(pnpm playwright --version | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
+#       - name: Get Playwright version
+#         id: playwright-version
+#         run: echo "playwright_version=$(pnpm playwright --version | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        name: Playwright Cache
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
+#       - uses: actions/cache@v3
+#         name: Playwright Cache
+#         id: playwright-cache
+#         with:
+#           path: |
+#             ~/.cache/ms-playwright
+#           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.playwright_version }}
 
-      - run: pnpm exec playwright install chromium --with-deps
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+#       - run: pnpm exec playwright install chromium --with-deps
+#         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - run: pnpm exec playwright install-deps chromium
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
+#       - run: pnpm exec playwright install-deps chromium
+#         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
-      - name: Wait for Vercel Preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-        id: waitForVercel
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 240
-          check_interval: 5
+#       - name: Wait for Vercel Preview
+#         uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+#         id: waitForVercel
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           max_timeout: 240
+#           check_interval: 5
 
-      - name: Run Playwright tests
-        run: pnpm test
-        env:
-          BASE_URL: ${{ steps.waitForVercel.outputs.url }}
+#       - name: Run Playwright tests
+#         run: pnpm test
+#         env:
+#           BASE_URL: ${{ steps.waitForVercel.outputs.url }}
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+#       - uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+#           retention-days: 30

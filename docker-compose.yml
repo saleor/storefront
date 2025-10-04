@@ -1,26 +1,73 @@
 version: "3"
 
 services:
+  # storefront:
+  #   container_name: storefront
+  #   build:
+  #     dockerfile: Dockerfile
+  #     args:
+  #       NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL}
+  #       NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8030:3000
+  #   environment:
+  #     NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL}
+  #     NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
+  #   networks:
+  #     - strongpack-network
+  #   env_file:
+  #     - ./.env
+  # # Add more containers below (nginx, postgres, etc.)
+
+
+
+  # storefront:
+  #   container_name: storefront
+  #   # image: ghcr.io/strongpack/storefront:latest  
+  #   build:
+  #     # context: ./storefront
+  #     dockerfile: Dockerfile
+  #     args:
+  #       NEXT_PUBLIC_SALEOR_API_URL: "https://saleor.20pack.ir/graphql/"
+  #     # args:
+  #     #   # Use localhost for the build, as the API will be exposed on the host
+  #     #   # NEXT_PUBLIC_SALEOR_API_URL: http://saleor.20pack.ir/graphql/
+  #     #   NEXT_PUBLIC_SALEOR_API_URL: http://saleor-api:8000/graphql/
+  #     #   NEXT_PUBLIC_STOREFRONT_URL: https://20pack.ir:3000
+  #   environment:
+  #     - SALEOR_API_INTERNAL=https://saleor.20pack.ir/graphql/
+  #     - NEXT_PUBLIC_SALEOR_API_URL=https://saleor.20pack.ir/graphql/
+  #     - NEXT_PUBLIC_STOREFRONT_URL=https://20pack.ir:3000
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8030:3000"
+  #   networks:
+  #     - strongpack-network
+  #   env_file:
+  #     - ./.env
+
+  #   # depends_on:
+  #   #   - saleor-api
+
+
+
   storefront:
+    image: ghcr.io/strongpack/storefront:latest
     container_name: storefront
-    build:
-      dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL}
-        NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
-    restart: unless-stopped
     ports:
-      - 8030:3000
-    environment:
-      NEXT_PUBLIC_SALEOR_API_URL: ${NEXT_PUBLIC_SALEOR_API_URL}
-      NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
+      - "8030:3000"
     networks:
       - strongpack-network
     env_file:
       - ./.env
-  # Add more containers below (nginx, postgres, etc.)
+    restart: unless-stopped
+    environment:
+      - SALEOR_API_INTERNAL=https://saleor.20pack.ir/graphql/
+      - NEXT_PUBLIC_SALEOR_API_URL=https://saleor.20pack.ir/graphql/
+      - NEXT_PUBLIC_STOREFRONT_URL=https://20pack.ir:3000
 
 networks:
   strongpack-network:
-    name: strongpack-network
-  #  external: false
+    # name: strongpack-network
+    external: false
