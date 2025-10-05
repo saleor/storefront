@@ -3,6 +3,7 @@ const config = {
 
 
 	images: {
+		unoptimized: true,
 		domains: [
 			'media.20pack.ir', // اضافه به عنوان fallback سریع‌تر
 		],
