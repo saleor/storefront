@@ -3,9 +3,6 @@ const config = {
 	images: {
 		remotePatterns: [
 			{
-				hostname: "*",
-			},
-			{
 				protocol: 'https',
 				hostname: '20pack.ir',
 				port: '',
@@ -13,13 +10,13 @@ const config = {
 			},
 			{
 				protocol: 'https',
-				hostname: 'saleor.20pack.ir', // It's a good idea to add this too
+				hostname: 'saleor.20pack.ir',
 				port: '',
 				pathname: '/**',
 			},
 			{
 				protocol: 'https',
-				hostname: 'media.20pack.ir', // And the media subdomain
+				hostname: 'media.20pack.ir',
 				port: '',
 				pathname: '/**',
 			},
