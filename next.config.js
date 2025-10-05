@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const config = {
+
+
 	images: {
+		domains: [
+			'media.20pack.ir', // اضافه به عنوان fallback سریع‌تر
+		],
+
 		remotePatterns: [
 			{
 				protocol: 'https',
@@ -20,6 +26,8 @@ const config = {
 				port: '',
 				pathname: '/**',
 			},
+
+
 		],
 	},
 	experimental: {
@@ -30,8 +38,8 @@ const config = {
 		process.env.NEXT_OUTPUT === "standalone"
 			? "standalone"
 			: process.env.NEXT_OUTPUT === "export"
-			  ? "export"
-			  : undefined,
+				? "export"
+				: undefined,
 };
 
 export default config;

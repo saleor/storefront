@@ -28,7 +28,7 @@
 			"@/*": ["./src/*"],
 			"@ui/*": ["./src/components/*"]
 		},
-		"types": ["react-dom/canary"]
+		// "types": ["react-dom/canary", "node"]
 	},
 
 	"include": [
