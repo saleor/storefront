@@ -1,4 +1,3 @@
-import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
@@ -13,6 +12,9 @@ import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
+import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
+
+// export const experimental_ppr = true; // Requires Next.js canary - uncomment when upgrading
 
 export async function generateMetadata(
 	props: {
@@ -71,8 +73,6 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 	return paths;
 }
 
-const parser = edjsHTML();
-
 export default async function Page(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
@@ -91,7 +91,7 @@ export default async function Page(props: {
 	}
 
 	const firstImage = product.thumbnail;
-	const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
+	const description = product?.description ? parseEditorJsToHTML(product.description) : null;
 
 	const variants = product.variants;
 	const selectedVariantID = searchParams.variant;
@@ -169,15 +169,15 @@ export default async function Page(props: {
 	};
 
 	return (
-		<section className="mx-auto grid max-w-7xl p-8">
+		<section className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(productJsonLd),
 				}}
 			/>
-			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
-				<div className="md:col-span-1 lg:col-span-5">
+			<form className="grid gap-8 lg:grid-cols-2 lg:gap-16" action={addItem}>
+				<div className="lg:sticky lg:top-24 lg:self-start">
 					{firstImage && (
 						<ProductImageWrapper
 							priority={true}
@@ -188,35 +188,41 @@ export default async function Page(props: {
 						/>
 					)}
 				</div>
-				<div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
+				<div className="flex flex-col space-y-6">
 					<div>
-						<h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
+						<h1 className="mb-3 font-display text-4xl font-light tracking-tight text-white lg:text-5xl">
 							{product?.name}
 						</h1>
-						<p className="mb-8 text-sm " data-testid="ProductElement_Price">
+						<p className="text-2xl font-medium text-accent-100" data-testid="ProductElement_Price">
 							{price}
 						</p>
+					</div>
 
-						{variants && (
-							<VariantSelector
-								selectedVariant={selectedVariant}
-								variants={variants}
-								product={product}
-								channel={params.channel}
-							/>
-						)}
-						<AvailabilityMessage isAvailable={isAvailable} />
-						<div className="mt-8">
-							<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
-						</div>
-						{description && (
-							<div className="mt-8 space-y-6 text-sm text-neutral-500">
+					{variants && (
+						<VariantSelector
+							selectedVariant={selectedVariant}
+							variants={variants}
+							product={product}
+							channel={params.channel}
+						/>
+					)}
+
+					<AvailabilityMessage isAvailable={isAvailable} />
+
+					<div className="pt-2">
+						<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
+					</div>
+
+					{description && (
+						<div className="prose prose-invert max-w-none border-t border-base-800 pt-8">
+							<h2 className="mb-4 font-display text-xl font-light text-white">Product Details</h2>
+							<div className="space-y-4 text-base-300">
 								{description.map((content) => (
 									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
 								))}
 							</div>
-						)}
-					</div>
+						</div>
+					)}
 				</div>
 			</form>
 		</section>

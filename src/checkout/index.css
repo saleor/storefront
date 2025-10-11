@@ -1,1 +1,181 @@
 @import "react-toastify/dist/ReactToastify.css";
+
+/* Checkout Dark Theme Override */
+.page {
+	@apply bg-black text-base-50;
+}
+
+/* Form Fields */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+	@apply border-base-700 bg-base-950 text-white placeholder:text-base-500 !important;
+	@apply focus:border-accent-500 focus:ring-2 focus:ring-accent-500 !important;
+	@apply transition-all duration-200 !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+	--tw-ring-opacity: 0.2 !important;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="tel"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+select:hover,
+textarea:hover {
+	@apply border-base-600 !important;
+}
+
+/* Labels */
+label {
+	@apply font-medium text-base-200 !important;
+}
+
+/* Checkboxes and Radio Buttons */
+input[type="checkbox"],
+input[type="radio"] {
+	@apply border-base-700 bg-base-950 !important;
+	@apply checked:border-accent-500 checked:bg-accent-500 !important;
+	@apply focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black !important;
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+	--tw-ring-opacity: 0.2 !important;
+}
+
+/* Buttons */
+button[type="submit"],
+button[type="button"] {
+	@apply transition-all duration-200 !important;
+}
+
+button[type="submit"]:not(.secondary) {
+	@apply bg-white font-medium text-black !important;
+	@apply hover:bg-accent-200 !important;
+	@apply focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black !important;
+}
+
+button.secondary {
+	@apply border-2 border-accent-200 bg-transparent text-accent-100 !important;
+	@apply hover:border-accent-300 hover:bg-accent-950 !important;
+}
+
+/* Summary Section */
+.summary-section,
+[class*="Summary"] {
+	@apply bg-base-950 text-white !important;
+}
+
+/* Summary Items */
+.summary-item,
+[class*="SummaryItem"] {
+	@apply border-base-800 !important;
+}
+
+/* Money Displays */
+.money,
+[class*="Money"],
+.price {
+	@apply font-medium text-white !important;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	@apply text-white !important;
+}
+
+/* Sections */
+section {
+	@apply bg-black !important;
+}
+
+/* Cards and Panels */
+.card,
+.panel,
+[class*="card"],
+[class*="panel"] {
+	@apply border-base-800 bg-base-950 !important;
+}
+
+/* Errors */
+.error,
+[class*="error"] {
+	@apply text-red-400 !important;
+}
+
+/* Disabled States */
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+	@apply cursor-not-allowed opacity-50 !important;
+}
+
+/* Toast Notifications */
+.Toastify__toast {
+	@apply border border-base-800 bg-base-950 text-white !important;
+}
+
+.Toastify__toast--success {
+	@apply border-green-700 !important;
+}
+
+.Toastify__toast--error {
+	@apply border-red-700 !important;
+}
+
+.Toastify__toast--warning {
+	@apply border-yellow-700 !important;
+}
+
+/* Links */
+a {
+	@apply text-accent-200 hover:text-accent-300 !important;
+	@apply transition-colors duration-200 !important;
+}
+
+/* Dividers */
+hr,
+.divider {
+	@apply border-base-800 !important;
+}
+
+/* Text Colors */
+p,
+span,
+div {
+	@apply text-base-100;
+}
+
+.text-muted,
+.secondary-text {
+	@apply text-base-400 !important;
+}
+
+/* Select Dropdowns */
+select {
+	@apply appearance-none !important;
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+	background-position: right 0.5rem center !important;
+	background-repeat: no-repeat !important;
+	background-size: 1.5em 1.5em !important;
+	padding-right: 2.5rem !important;
+}

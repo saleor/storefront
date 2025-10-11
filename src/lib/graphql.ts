@@ -1,4 +1,5 @@
 import { invariant } from "ts-invariant";
+import { unstable_cache } from "next/cache";
 import { type TypedDocumentString } from "../gql/graphql";
 import { getServerAuthClient } from "@/app/config";
 
@@ -17,48 +18,69 @@ export async function executeGraphQL<Result, Variables>(
 		cache?: RequestCache;
 		revalidate?: number;
 		withAuth?: boolean;
+		tags?: string[];
 	} & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables }),
 ): Promise<Result> {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
-	const { variables, headers, cache, revalidate, withAuth = true } = options;
+	const { variables, headers, cache, revalidate, withAuth = true, tags } = options;
 
-	const input = {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...headers,
-		},
-		body: JSON.stringify({
-			query: operation.toString(),
-			...(variables && { variables }),
-		}),
-		cache: cache,
-		next: { revalidate },
+	// Create a cache key for unstable_cache when revalidate is set and not using auth
+	const shouldUseCache = revalidate !== undefined && cache !== "no-cache" && !withAuth;
+
+	const fetchData = async () => {
+		const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+		invariant(apiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+
+		const input = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				...headers,
+			},
+			body: JSON.stringify({
+				query: operation.toString(),
+				...(variables && { variables }),
+			}),
+			cache: cache,
+			next: { revalidate, tags },
+		};
+
+		const response = withAuth
+			? await (await getServerAuthClient()).fetchWithAuth(apiUrl, input)
+			: await fetch(apiUrl, input);
+
+		if (!response.ok) {
+			const body = await (async () => {
+				try {
+					return await response.text();
+				} catch {
+					return "";
+				}
+			})();
+			console.error(input.body);
+			throw new HTTPError(response, body);
+		}
+
+		const body = (await response.json()) as GraphQLRespone<Result>;
+
+		if ("errors" in body) {
+			throw new GraphQLError(body);
+		}
+
+		return body.data;
 	};
 
-	const response = withAuth
-		? await (await getServerAuthClient()).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input)
-		: await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
-
-	if (!response.ok) {
-		const body = await (async () => {
-			try {
-				return await response.text();
-			} catch {
-				return "";
-			}
-		})();
-		console.error(input.body);
-		throw new HTTPError(response, body);
+	// Use unstable_cache for public, cacheable queries
+	if (shouldUseCache) {
+		const cacheKey = [operation.toString(), JSON.stringify(variables)];
+		const cachedFetch = unstable_cache(fetchData, cacheKey, {
+			revalidate,
+			tags: tags || [],
+		});
+		return cachedFetch();
 	}
 
-	const body = (await response.json()) as GraphQLRespone<Result>;
-
-	if ("errors" in body) {
-		throw new GraphQLError(body);
-	}
-
-	return body.data;
+	return fetchData();
 }
 
 class GraphQLError extends Error {

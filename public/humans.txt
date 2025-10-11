@@ -1,0 +1,17 @@
+/* TEAM */
+Founder & Audio Engineer: Jon Symons
+Developer & Designer: Dimitri Ravot
+Location: Netherlands
+
+/* THANKS */
+Built with Astro
+Powered by Snipcart
+Hosted with love
+
+/* SITE */
+Last update: 2025/05/29
+Language: English
+Doctype: HTML5
+Standards: HTML5, CSS3, ES6+
+Components: Astro, Tailwind CSS
+Software: Various DAWs and audio processing tools

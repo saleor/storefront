@@ -11,16 +11,18 @@ export function AddButton({ disabled }: { disabled?: boolean }) {
 			type="submit"
 			aria-disabled={isButtonDisabled}
 			aria-busy={pending}
+			aria-label={pending ? "Adding to cart" : "Add to cart"}
 			onClick={(e) => isButtonDisabled && e.preventDefault()}
-			className="h-12 items-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
+			className="btn-primary h-14 w-full text-base font-semibold tracking-wide disabled:cursor-not-allowed disabled:opacity-50"
 		>
 			{pending ? (
-				<div className="inline-flex items-center">
+				<span className="inline-flex items-center gap-3">
 					<svg
-						className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+						className="h-5 w-5 animate-spin"
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
+						aria-hidden="true"
 					>
 						<circle
 							className="opacity-25"
@@ -36,10 +38,10 @@ export function AddButton({ disabled }: { disabled?: boolean }) {
 							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 						></path>
 					</svg>
-					<span>Processing...</span>
-				</div>
+					<span>Adding to Cart...</span>
+				</span>
 			) : (
-				<span>Add to cart</span>
+				<span>Add to Cart</span>
 			)}
 		</button>
 	);

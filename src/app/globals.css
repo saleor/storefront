@@ -2,6 +2,496 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-	overflow-x: hidden;
+@layer components {
+	.prose-styles {
+		@apply prose-p:text-base-400 prose-hr:bg-base-500;
+		@apply prose-code:text-white;
+		@apply prose-ol:text-base-400 prose-li:text-base-400;
+		@apply prose-strong:text-white;
+		@apply prose max-w-xl pt-0;
+		@apply prose-pre:rounded-none;
+		@apply prose-headings:font-display prose-headings:font-light prose-headings:text-white prose-strong:text-white;
+	}
+
+	.prose-styles a {
+		color: white;
+	}
+}
+
+:root {
+	/* Typography */
+	font-feature-settings:
+		"liga" 1,
+		"calt" 1,
+		"dlig" 1,
+		"ss07" 1,
+		"ss08" 1,
+		"zero" 1,
+		"tnum" 1,
+		"cv03" 1,
+		"cv04" 1,
+		"cv01" 1,
+		"cv09",
+		"cv02" 1;
+	font-variant-numeric: tabular-nums;
+
+	/* Custom animation variables */
+	--shimmer-duration: 2.5s;
+	--glow-color: oklch(75.6% 0.105 20);
+	--gradient-1: oklch(80.32% 0.085 20);
+	--gradient-2: oklch(54.88% 0.115 20);
+
+	/* Shiki code style variables */
+	--astro-code-foreground: theme(colors.base.500);
+	--astro-code-background: theme(colors.base.950);
+	--astro-code-token-punctuation: theme(colors.base.200);
+	--astro-code-token-parameter: theme(colors.base.300);
+	--astro-code-token-line-number: theme(colors.base.400);
+	--astro-code-token-comment: theme(colors.base.400);
+	--astro-code-token-cdata: theme(colors.base.300);
+	--astro-code-token-constant: theme(colors.base.200);
+	--astro-code-token-function: theme(colors.base.100);
+	--astro-code-token-attr-name: theme(colors.base.200);
+	--astro-code-token-builtin: theme(colors.base.300);
+	--astro-code-token-boolean: theme(colors.base.200);
+	--astro-code-token-class-name: theme(colors.base.300);
+	--astro-code-token-property: theme(colors.base.200);
+	--astro-code-token-selector: theme(colors.base.100);
+	--astro-code-token-string: theme(colors.base.300);
+	--astro-code-token-string-expression: theme(colors.base.200);
+	--astro-code-token-variable: theme(colors.base.100);
+	--astro-code-token-keyword: theme(colors.base.200);
+	--astro-code-token-symbol: theme(colors.base.100);
+	--astro-code-token-number: theme(colors.base.100);
+	--astro-code-token-operator: theme(colors.base.200);
+	--astro-code-token-deleted: theme(colors.base.400);
+	--astro-code-token-changed: theme(colors.base.400);
+	--astro-code-token-important: theme(colors.base.100);
+	--astro-code-token-tag: theme(colors.base.200);
+	--astro-code-token-inserted: theme(colors.base.300);
+	--astro-code-token-namespace: theme(colors.base.200);
+	--astro-code-token-atrule: theme(colors.base.200);
+	--astro-code-token-entity: theme(colors.base.200);
+	--astro-code-token-highlight: theme(colors.base.700);
+	--astro-code-token-alert: theme(colors.base.100);
+	--astro-code-token-emphasis: theme(colors.base.300);
+	--astro-code-token-focus: theme(colors.base.200);
+	--astro-code-token-notice: theme(colors.base.200);
+	--astro-code-token-attr-value: theme(colors.base.300);
+	--astro-code-token-regex: theme(colors.base.300);
+	--astro-code-token-doctype: theme(colors.base.400);
+	--astro-code-token-prolog: theme(colors.base.400);
+	--astro-code-token-bold: inherit;
+	--astro-code-token-italic: italic;
+	--astro-code-token-underline: underline;
+}
+
+@layer base {
+	/* Reset box-sizing for better cross-browser layout predictability */
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	/* Fix for image overflow in flex containers */
+	img,
+	svg,
+	video {
+		max-width: 100%;
+		display: block;
+	}
+
+	a {
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	a:hover {
+		color: theme(colors.accent.700);
+	}
+
+	body {
+		overflow-x: hidden;
+		background-color: theme(colors.black);
+		color: theme(colors.base.50);
+	}
+}
+
+@layer utilities {
+	/* Explicit aspect ratio support for older browsers */
+	.aspect-16\/12 {
+		position: relative;
+		padding-bottom: 75%; /* 12/16 = 0.75 = 75% */
+	}
+
+	@supports (aspect-ratio: 16/12) {
+		.aspect-16\/12 {
+			aspect-ratio: 16/12;
+			padding-bottom: 0;
+		}
+	}
+
+	/* Ensure text doesn't overflow its container */
+	.text-balance {
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		-ms-word-break: break-word;
+		word-break: break-word;
+		text-wrap: balance;
+	}
+
+	/* Improve rendering performance */
+	.hero-section,
+	.social-grid,
+	.product-grid {
+		contain: layout style;
+	}
+
+	/* Optimize third-party widget containers */
+	.social-widget {
+		min-height: 500px;
+	}
+}
+
+/* Fix for Chromium-based browsers with flex and images */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+	.lg\:flex-row > div:first-child {
+		flex-shrink: 0;
+	}
+
+	.lg\:flex-row > div:last-child {
+		flex-shrink: 1;
+		min-width: 0;
+	}
+}
+
+/* Fix for Firefox specific issues */
+@-moz-document url-prefix() {
+	.lg\:flex-row {
+		align-items: flex-start;
+	}
+}
+
+/* Social media consent handling */
+.social-media-blocked .social-widget .embed-wrapper {
+	display: none;
+}
+
+.social-media-blocked .social-widget .social-consent-prompt {
+	display: block;
+}
+
+.social-consent-prompt {
+	display: none;
+}
+
+/* Button Components - Accessible and Modern */
+@layer components {
+	/* Primary Button - High contrast for accessibility */
+	.btn-primary {
+		@apply relative overflow-hidden bg-white px-6 py-3 font-medium tracking-wide text-black;
+		@apply hover:scale-105 hover:bg-accent-200 focus:bg-accent-200 active:scale-95;
+		@apply transition-all duration-200 ease-in-out;
+		@apply focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black;
+		@apply disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100;
+	}
+
+	.btn-primary::before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 0;
+		height: 0;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.3);
+		transform: translate(-50%, -50%);
+		transition:
+			width 0.6s,
+			height 0.6s;
+	}
+
+	.btn-primary:hover::before {
+		width: 300px;
+		height: 300px;
+	}
+
+	/* Secondary Button - Outlined style with good contrast */
+	.btn-secondary {
+		@apply relative border-2 border-accent-200 bg-transparent px-6 py-3 text-accent-100;
+		@apply hover:shadow-accent-900/20 hover:border-accent-300 hover:bg-accent-950 hover:shadow-lg;
+		@apply transition-all duration-200 ease-in-out;
+		@apply focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	/* Ghost Button - Minimal style */
+	.btn-ghost {
+		@apply bg-transparent px-6 py-3 text-base-100;
+		@apply hover:bg-base-900 hover:text-white;
+		@apply transition-all duration-200 ease-in-out;
+		@apply focus:outline-none focus:ring-2 focus:ring-base-500 focus:ring-offset-2 focus:ring-offset-black;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	/* Danger Button - For destructive actions */
+	.btn-danger {
+		@apply bg-red-600 px-6 py-3 font-medium text-white;
+		@apply hover:bg-red-700 focus:bg-red-700;
+		@apply transition-all duration-200 ease-in-out;
+		@apply focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	/* Small button variant */
+	.btn-sm {
+		@apply px-4 py-2 text-sm;
+	}
+
+	/* Large button variant */
+	.btn-lg {
+		@apply px-8 py-4 text-lg;
+	}
+}
+
+/* Card Components */
+@layer components {
+	.card {
+		@apply border border-base-800 bg-base-950 p-6 transition-all duration-200;
+		@apply hover:border-base-700;
+	}
+
+	.card-elevated {
+		@apply border border-base-800 bg-base-950 p-6 transition-all duration-300;
+		@apply hover:border-accent-700 hover:shadow-lg;
+	}
+}
+
+/* Form Elements */
+@layer components {
+	.input {
+		@apply w-full border border-base-700 bg-base-950 px-4 py-3 text-base-100;
+		@apply placeholder:text-base-600;
+		@apply focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500;
+		@apply transition-all duration-200;
+	}
+
+	.label {
+		@apply mb-2 block text-sm font-medium text-base-200;
+	}
+}
+
+/* Badge/Tag Components */
+@layer components {
+	.badge {
+		@apply inline-flex items-center px-3 py-1 text-xs font-medium;
+		@apply border border-accent-700 bg-accent-900 text-accent-100;
+	}
+
+	.badge-success {
+		@apply border border-green-700 bg-green-900 text-green-100;
+	}
+
+	.badge-warning {
+		@apply border border-yellow-700 bg-yellow-900 text-yellow-100;
+	}
+
+	.badge-error {
+		@apply border border-red-700 bg-red-900 text-red-100;
+	}
+}
+
+/* Custom Animations & Effects */
+@keyframes shimmer {
+	0% {
+		background-position: -1000px 0;
+	}
+	100% {
+		background-position: 1000px 0;
+	}
+}
+
+@keyframes glow-pulse {
+	0%,
+	100% {
+		opacity: 1;
+		filter: blur(20px);
+	}
+	50% {
+		opacity: 0.5;
+		filter: blur(30px);
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+@keyframes slide-up-fade {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes scale-in {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes gradient-shift {
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+}
+
+/* Utility Classes */
+@layer utilities {
+	.animate-shimmer {
+		animation: shimmer var(--shimmer-duration) infinite linear;
+		background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+		background-size: 1000px 100%;
+	}
+
+	.animate-glow-pulse {
+		animation: glow-pulse 3s ease-in-out infinite;
+	}
+
+	.animate-float {
+		animation: float 3s ease-in-out infinite;
+	}
+
+	.animate-slide-up-fade {
+		animation: slide-up-fade 0.5s ease-out forwards;
+	}
+
+	.animate-scale-in {
+		animation: scale-in 0.3s ease-out forwards;
+	}
+
+	.animate-gradient {
+		animation: gradient-shift 8s ease infinite;
+		background-size: 200% 200%;
+	}
+
+	/* Smooth scrolling with reduced motion support */
+	@media (prefers-reduced-motion: no-preference) {
+		.smooth-scroll {
+			scroll-behavior: smooth;
+		}
+	}
+
+	/* Glass morphism effect */
+	.glass {
+		background: rgba(18, 18, 18, 0.6);
+		backdrop-filter: blur(12px) saturate(150%);
+		-webkit-backdrop-filter: blur(12px) saturate(150%);
+	}
+
+	.glass-light {
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(8px) saturate(120%);
+		-webkit-backdrop-filter: blur(8px) saturate(120%);
+	}
+
+	/* Gradient text */
+	.gradient-text {
+		background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	/* Glow effect */
+	.glow {
+		box-shadow:
+			0 0 20px rgba(var(--glow-color), 0.3),
+			0 0 40px rgba(var(--glow-color), 0.1);
+	}
+
+	.glow-text {
+		text-shadow: 0 0 20px rgba(var(--glow-color), 0.5);
+	}
+
+	/* Hover lift effect */
+	.hover-lift {
+		transition:
+			transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+			box-shadow 0.3s ease;
+	}
+
+	.hover-lift:hover {
+		transform: translateY(-4px);
+	}
+
+	/* Stagger animation for lists */
+	.stagger-item {
+		opacity: 0;
+		animation: slide-up-fade 0.5s ease-out forwards;
+	}
+
+	.stagger-item:nth-child(1) {
+		animation-delay: 0.05s;
+	}
+	.stagger-item:nth-child(2) {
+		animation-delay: 0.1s;
+	}
+	.stagger-item:nth-child(3) {
+		animation-delay: 0.15s;
+	}
+	.stagger-item:nth-child(4) {
+		animation-delay: 0.2s;
+	}
+	.stagger-item:nth-child(5) {
+		animation-delay: 0.25s;
+	}
+	.stagger-item:nth-child(6) {
+		animation-delay: 0.3s;
+	}
+	.stagger-item:nth-child(7) {
+		animation-delay: 0.35s;
+	}
+	.stagger-item:nth-child(8) {
+		animation-delay: 0.4s;
+	}
+
+	/* Respect reduced motion preferences */
+	@media (prefers-reduced-motion: reduce) {
+		.animate-shimmer,
+		.animate-glow-pulse,
+		.animate-float,
+		.animate-slide-up-fade,
+		.animate-scale-in,
+		.animate-gradient,
+		.stagger-item {
+			animation: none !important;
+			opacity: 1 !important;
+			transform: none !important;
+		}
+
+		.hover-lift:hover {
+			transform: none !important;
+		}
+	}
 }

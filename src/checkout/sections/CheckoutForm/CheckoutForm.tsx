@@ -36,10 +36,14 @@ export const CheckoutForm = () => {
 								<div className="py-4" data-testid="shippingAddressSection">
 									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
 								</div>
-								{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
 							</CollapseSection>
 						</Suspense>
 					)}
+					<Suspense fallback={<AddressSectionSkeleton />}>
+						<CollapseSection collapse={showOnlyContact}>
+							{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+						</CollapseSection>
+					</Suspense>
 					<Suspense fallback={<DeliveryMethodsSkeleton />}>
 						<DeliveryMethods collapsed={showOnlyContact} />
 					</Suspense>

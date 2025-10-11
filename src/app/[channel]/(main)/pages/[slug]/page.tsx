@@ -1,11 +1,9 @@
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import edjsHTML from "editorjs-html";
 import xss from "xss";
 import { PageGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-
-const parser = edjsHTML();
+import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
 
 export const generateMetadata = async (props: { params: Promise<{ slug: string }> }): Promise<Metadata> => {
 	const params = await props.params;
@@ -33,7 +31,7 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
 
 	const { title, content } = page;
 
-	const contentHtml = content ? parser.parse(JSON.parse(content)) : null;
+	const contentHtml = content ? parseEditorJsToHTML(content) : null;
 
 	return (
 		<div className="mx-auto max-w-7xl p-8 pb-16">

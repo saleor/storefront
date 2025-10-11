@@ -16,7 +16,7 @@ type Props = {
 export function UserMenu({ user }: Props) {
 	return (
 		<Menu as="div" className="relative">
-			<Menu.Button className="relative flex rounded-full bg-neutral-200 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-neutral-800">
+			<Menu.Button className="relative flex rounded-full bg-base-800 text-sm focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black">
 				<span className="sr-only">Open user menu</span>
 				<UserAvatar user={user} />
 			</Menu.Button>
@@ -29,7 +29,7 @@ export function UserMenu({ user }: Props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-neutral-200 bg-white py-1 text-start shadow ring-1 ring-neutral-200 ring-opacity-5 focus:outline-none">
+				<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-base-800 border border-base-800 bg-base-950 py-1 text-start shadow-lg focus:outline-none">
 					<UserInfo user={user} />
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
@@ -37,8 +37,8 @@ export function UserMenu({ user }: Props) {
 								<LinkWithChannel
 									href="/orders"
 									className={clsx(
-										active && "bg-neutral-100",
-										"block px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-700",
+										active && "bg-base-900 text-accent-200",
+										"block px-4 py-2 text-sm font-medium text-base-200 transition-colors duration-200 hover:text-accent-200",
 									)}
 								>
 									My orders
@@ -53,8 +53,8 @@ export function UserMenu({ user }: Props) {
 									<button
 										type="submit"
 										className={clsx(
-											active && "bg-neutral-100",
-											"block px-4 py-2 text-start text-sm font-medium text-neutral-500 hover:text-neutral-700",
+											active && "bg-base-900 text-accent-200",
+											"block w-full px-4 py-2 text-start text-sm font-medium text-base-200 transition-colors duration-200 hover:text-accent-200",
 										)}
 									>
 										Log Out

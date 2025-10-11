@@ -145,7 +145,7 @@ export function StripeCheckoutForm() {
 		setPaymentError(null);
 
 		// Trigger validation for all forms
-		validateAllForms(authenticated);
+		validateAllForms(authenticated, checkout?.isShippingRequired ?? true);
 		setShouldRegisterUser(true);
 		setSubmitInProgress(true);
 	});

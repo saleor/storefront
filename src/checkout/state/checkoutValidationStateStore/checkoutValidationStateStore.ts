@@ -13,7 +13,7 @@ export type CheckoutValidationState = {
 
 interface UseCheckoutValidationStateStore extends CheckoutValidationState {
 	actions: {
-		validateAllForms: (signedIn: boolean) => void;
+		validateAllForms: (signedIn: boolean, isShippingRequired?: boolean) => void;
 		setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) => void;
 	};
 }
@@ -22,17 +22,31 @@ const useCheckoutValidationStateStore = createWithEqualityFn<UseCheckoutValidati
 	(set) => ({
 		validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
 		actions: {
-			validateAllForms: (signedIn: boolean) =>
+			validateAllForms: (signedIn: boolean, isShippingRequired: boolean = true) =>
 				set((state) => {
-					const keysToValidate = Object.keys(state.validationState).filter(
-						(val) => !signedIn || val !== "guestUser",
-					) as CheckoutFormScope[];
+					const keysToValidate = Object.keys(state.validationState).filter((val) => {
+						// Skip guest user validation if user is signed in
+						if (signedIn && val === "guestUser") return false;
+						// Skip shipping address validation if shipping is not required
+						if (!isShippingRequired && val === "shippingAddress") return false;
+						return true;
+					}) as CheckoutFormScope[];
+
+					// Start with current state
+					const newValidationState = { ...state.validationState };
+
+					// Set validating for forms that need validation
+					keysToValidate.forEach((key) => {
+						newValidationState[key] = "validating";
+					});
+
+					// Ensure shipping address is valid if not required
+					if (!isShippingRequired) {
+						newValidationState.shippingAddress = "valid";
+					}
 
 					return {
-						validationState: keysToValidate.reduce(
-							(result, key) => ({ ...result, [key]: "validating" }),
-							{} as ValidationState,
-						),
+						validationState: newValidationState,
 					};
 				}),
 			setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>

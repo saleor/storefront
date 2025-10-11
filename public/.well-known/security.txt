@@ -1,0 +1,10 @@
+Contact: mailto:security@sonicdrivestudio.com
+Contact: https://sonicdrivestudio.com/contact
+Expires: 2026-05-29T00:00:00.000Z
+Preferred-Languages: en, nl
+Canonical: https://sonicdrivestudio.com/.well-known/security.txt
+Policy: https://sonicdrivestudio.com/privacy
+
+# We take security seriously but keep things simple
+# Report actual vulnerabilities only - we're a small audio business
+# We'll respond to legitimate security concerns promptly

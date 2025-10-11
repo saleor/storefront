@@ -515,12 +515,6 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 				},
 				// Enable automatic payment methods as per Stripe app documentation
 				locale: "auto",
-				layout: {
-					type: "accordion",
-					defaultCollapsed: false,
-					radios: true,
-					spacedAccordionItems: false,
-				},
 			}}
 		>
 			{children}
