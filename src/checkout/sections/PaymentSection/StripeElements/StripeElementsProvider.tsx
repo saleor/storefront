@@ -76,8 +76,13 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 			}
 		}
 
-		// Must have a stable total (not zero)
-		if (!checkout.totalPrice?.gross?.amount || checkout.totalPrice.gross.amount <= 0) {
+		// Must have a valid total price (allow zero for gift cards and free orders)
+		if (checkout.totalPrice?.gross?.amount === undefined || checkout.totalPrice.gross.amount === null) {
+			return false;
+		}
+
+		// Negative amounts shouldn't exist but double-check
+		if (checkout.totalPrice.gross.amount < 0) {
 			return false;
 		}
 
@@ -86,7 +91,7 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 
 	// Stable reference for initialization function
 	const initializePaymentSession = useCallback(async () => {
-		if (!checkout?.id || checkoutAmount <= 0 || !isCheckoutReady) {
+		if (!checkout?.id || !isCheckoutReady) {
 			console.log("StripeElementsProvider: Skipping initialization - checkout not ready", {
 				checkoutId: checkout?.id,
 				amount: checkoutAmount,
@@ -97,6 +102,13 @@ export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ 
 				hasDeliveryMethod: !!checkout?.deliveryMethod,
 				isShippingRequired: !!checkout?.isShippingRequired,
 			});
+			return null;
+		}
+
+		// For zero-amount orders (fully covered by gift cards), skip Stripe initialization
+		// Payment will be handled differently
+		if (checkoutAmount === 0) {
+			console.log("StripeElementsProvider: Zero-amount order, no payment required");
 			return null;
 		}
 

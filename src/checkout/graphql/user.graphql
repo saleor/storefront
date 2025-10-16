@@ -34,6 +34,19 @@ mutation userRegister($input: AccountRegisterInput!) {
 	}
 }
 
+mutation confirmAccount($email: String!, $token: String!) {
+	confirmAccount(email: $email, token: $token) {
+		errors {
+			message
+			field
+			code
+		}
+		user {
+			...UserFragment
+		}
+	}
+}
+
 mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
 	requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
 		errors {

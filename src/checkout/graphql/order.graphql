@@ -8,6 +8,13 @@ fragment OrderLineFragment on OrderLine {
 	quantity
 	variant {
 		name
+		product {
+			id
+			name
+			productType {
+				isDigital
+			}
+		}
 		attributes(variantSelection: ALL) {
 			values {
 				name

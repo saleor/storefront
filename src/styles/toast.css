@@ -1,0 +1,133 @@
+/* Custom Toast Styling */
+
+:root {
+	--toastify-color-success: #10b981;
+	--toastify-color-info: #3b82f6;
+	--toastify-color-error: #ef4444;
+	--toastify-color-warning: #f59e0b;
+	--toastify-text-color-light: #1f2937;
+	--toastify-toast-width: 380px;
+}
+
+.Toastify__toast-container {
+	z-index: 9999;
+	padding: 0;
+}
+
+.Toastify__toast {
+	border-radius: 0.75rem;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+	padding: 1rem 1.25rem;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	font-size: 0.875rem;
+	line-height: 1.5;
+	min-height: 64px;
+}
+
+.Toastify__toast--success {
+	background-color: #f0fdf4;
+	border: 1px solid #86efac;
+	color: #166534;
+}
+
+.Toastify__toast--info {
+	background-color: #eff6ff;
+	border: 1px solid #93c5fd;
+	color: #1e40af;
+}
+
+.Toastify__toast--error {
+	background-color: #fef2f2;
+	border: 1px solid #fca5a5;
+	color: #991b1b;
+}
+
+.Toastify__toast--warning {
+	background-color: #fffbeb;
+	border: 1px solid #fcd34d;
+	color: #92400e;
+}
+
+.Toastify__toast-body {
+	padding: 0;
+	margin: 0;
+	font-weight: 500;
+}
+
+.Toastify__close-button {
+	color: inherit;
+	opacity: 0.5;
+	transition: opacity 0.2s;
+}
+
+.Toastify__close-button:hover {
+	opacity: 1;
+}
+
+.Toastify__progress-bar {
+	height: 3px;
+}
+
+.Toastify__progress-bar--success {
+	background: linear-gradient(to right, #10b981, #059669);
+}
+
+.Toastify__progress-bar--info {
+	background: linear-gradient(to right, #3b82f6, #2563eb);
+}
+
+.Toastify__progress-bar--error {
+	background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+.Toastify__progress-bar--warning {
+	background: linear-gradient(to right, #f59e0b, #d97706);
+}
+
+/* Animation improvements */
+@keyframes Toastify__slideInRight {
+	from {
+		transform: translate3d(110%, 0, 0);
+		opacity: 0;
+	}
+	to {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+	}
+}
+
+@keyframes Toastify__slideOutRight {
+	from {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+	}
+	to {
+		transform: translate3d(110%, 0, 0);
+		opacity: 0;
+	}
+}
+
+.Toastify__slide-enter--top-right {
+	animation-name: Toastify__slideInRight;
+}
+
+.Toastify__slide-exit--top-right {
+	animation-name: Toastify__slideOutRight;
+}
+
+/* Mobile responsive */
+@media only screen and (max-width: 480px) {
+	:root {
+		--toastify-toast-width: calc(100vw - 2rem);
+	}
+
+	.Toastify__toast-container {
+		padding: 0 1rem;
+		width: 100%;
+	}
+
+	.Toastify__toast {
+		margin-bottom: 0.75rem;
+		border-radius: 0.5rem;
+	}
+}

@@ -29,12 +29,17 @@ export const Checkout = () => {
 					<EmptyCartPage />
 				) : (
 					<div className="grid min-h-screen grid-cols-1 gap-x-16 lg:grid-cols-2">
-						<Suspense fallback={<CheckoutFormSkeleton />}>
-							<CheckoutForm />
-						</Suspense>
-						<Suspense fallback={<SummarySkeleton />}>
-							<Summary {...checkout} />
-						</Suspense>
+						{/* Mobile: Summary first, Desktop: Form first */}
+						<div className="order-2 lg:order-1">
+							<Suspense fallback={<CheckoutFormSkeleton />}>
+								<CheckoutForm />
+							</Suspense>
+						</div>
+						<div className="order-1 lg:order-2">
+							<Suspense fallback={<SummarySkeleton />}>
+								<Summary {...checkout} />
+							</Suspense>
+						</div>
 					</div>
 				)}
 			</div>

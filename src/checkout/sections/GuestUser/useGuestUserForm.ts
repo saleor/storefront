@@ -62,14 +62,19 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 					const errors = validateForm(formData);
 					return hasErrors(errors);
 				},
-				parse: ({ email, password, channel }) => ({
-					input: {
-						email,
-						password,
-						channel,
-						redirectUrl: getCurrentHref(),
-					},
-				}),
+				parse: ({ email, password, channel }) => {
+					// Build the confirmation URL that works regardless of checkout status
+					const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+					const confirmUrl = `${baseUrl}/default-channel/confirm-account`;
+					return {
+						input: {
+							email,
+							password,
+							channel,
+							redirectUrl: confirmUrl,
+						},
+					};
+				},
 				onError: ({ errors }) => {
 					setSubmitInProgress(false);
 					const hasAccountForCurrentEmail = errors.some(({ code }) => code === "UNIQUE");

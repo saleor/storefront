@@ -4,7 +4,7 @@ import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
 import { invariant } from "ts-invariant";
 import { type WithContext, type Product } from "schema-dts";
-import { AddButton } from "./AddButton";
+import { AddToCartForm } from "./AddToCartForm";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { executeGraphQL } from "@/lib/graphql";
@@ -109,11 +109,11 @@ export default async function Page(props: {
 		await Checkout.saveIdToCookie(params.channel, checkout.id);
 
 		if (!selectedVariantID) {
-			return;
+			return { success: false };
 		}
 
 		// TODO: error handling
-		await executeGraphQL(CheckoutAddLineDocument, {
+		const result = await executeGraphQL(CheckoutAddLineDocument, {
 			variables: {
 				id: checkout.id,
 				productVariantId: decodeURIComponent(selectedVariantID),
@@ -122,6 +122,17 @@ export default async function Page(props: {
 		});
 
 		revalidatePath("/cart");
+
+		// Get product name for toast notification
+		const variantName = selectedVariant?.name;
+		const productName = product?.name;
+		const displayName =
+			variantName && variantName !== productName ? `${productName} (${variantName})` : productName || "Product";
+
+		return {
+			success: !result.checkoutLinesAdd?.errors?.length,
+			productName: displayName,
+		};
 	}
 
 	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
@@ -176,7 +187,7 @@ export default async function Page(props: {
 					__html: JSON.stringify(productJsonLd),
 				}}
 			/>
-			<form className="grid gap-8 lg:grid-cols-2 lg:gap-16" action={addItem}>
+			<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 				<div className="lg:sticky lg:top-24 lg:self-start">
 					{firstImage && (
 						<ProductImageWrapper
@@ -209,9 +220,10 @@ export default async function Page(props: {
 
 					<AvailabilityMessage isAvailable={isAvailable} />
 
-					<div className="pt-2">
-						<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
-					</div>
+					<AddToCartForm
+						action={addItem}
+						disabled={!selectedVariantID || !selectedVariant?.quantityAvailable}
+					/>
 
 					{description && (
 						<div className="prose prose-invert max-w-none border-t border-base-800 pt-8">
@@ -224,7 +236,7 @@ export default async function Page(props: {
 						</div>
 					)}
 				</div>
-			</form>
+			</div>
 		</section>
 	);
 }

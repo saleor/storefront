@@ -158,10 +158,10 @@ hr,
 	@apply border-base-800 !important;
 }
 
-/* Text Colors */
-p,
-span,
-div {
+/* Text Colors - Scoped to avoid conflicts */
+.page p:not([class*="text-"]),
+.page span:not([class*="text-"]),
+.page div:not([class*="text-"]):not([class*="bg-"]) {
 	@apply text-base-100;
 }
 

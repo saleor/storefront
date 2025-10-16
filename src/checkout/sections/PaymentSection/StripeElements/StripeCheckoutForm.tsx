@@ -334,27 +334,62 @@ export function StripeCheckoutForm() {
 		validationState,
 	]);
 
-	const isFormDisabled = isLoading || !stripe || !elements || paymentProcessingRef.current;
+	// Determine button state and message
+	const getButtonState = () => {
+		if (isLoading) {
+			return { disabled: true, text: <Loader />, tooltip: null };
+		}
+		if (!stripe || !elements) {
+			return { disabled: true, text: "Loading payment methods...", tooltip: null };
+		}
+		if (paymentProcessingRef.current) {
+			return { disabled: true, text: "Processing...", tooltip: null };
+		}
+		return { disabled: false, text: "Pay now", tooltip: null };
+	};
+
+	const buttonState = getButtonState();
 
 	return (
 		<form className="my-8 flex flex-col gap-y-6" onSubmit={onSubmitInitialize}>
 			<PaymentElement className="payment-element" options={paymentElementOptions} />
 
 			{paymentError && (
-				<div className="rounded-md border border-red-200 bg-red-50 p-3">
-					<p className="text-sm text-red-800">{paymentError}</p>
+				<div className="rounded-md border border-red-200 bg-red-50 p-4">
+					<div className="flex items-start gap-3">
+						<svg
+							className="h-5 w-5 flex-shrink-0 text-red-600"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<div className="flex-1">
+							<h4 className="text-sm font-semibold text-red-900">Payment Error</h4>
+							<p className="mt-1 text-sm text-red-800">{paymentError}</p>
+						</div>
+					</div>
 				</div>
 			)}
 
-			<button
-				type="submit"
-				className="h-12 items-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
-				disabled={isFormDisabled}
-				aria-disabled={isFormDisabled}
-				id="submit"
-			>
-				<span className="button-text">{isLoading ? <Loader /> : "Pay now"}</span>
-			</button>
+			<div className="relative">
+				<button
+					type="submit"
+					className="h-12 w-full items-center justify-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
+					disabled={buttonState.disabled}
+					aria-disabled={buttonState.disabled}
+					title={buttonState.tooltip || undefined}
+					id="submit"
+				>
+					<span className="button-text">{buttonState.text}</span>
+				</button>
+			</div>
 
 			{/* Debug info in development */}
 			{process.env.NODE_ENV === "development" && (

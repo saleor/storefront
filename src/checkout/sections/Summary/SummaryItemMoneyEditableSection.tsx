@@ -1,10 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
+import { toast } from "react-toastify";
 import { type CheckoutLineFragment } from "@/checkout/graphql";
-import { TextInput } from "@/checkout/components/TextInput";
-
 import { Skeleton } from "@/checkout/components";
+import { QuantitySelector } from "@/checkout/components/QuantitySelector";
 import { SummaryItemMoneyInfo } from "@/checkout/sections/Summary/SummaryItemMoneyInfo";
-import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import { useSummaryItemForm } from "@/checkout/sections/Summary/useSummaryItemForm";
 
 interface SummaryItemMoneyEditableSectionProps {
@@ -15,8 +14,6 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 	const { form, onLineDelete } = useSummaryItemForm({ line });
 
 	const {
-		handleBlur,
-		handleChange,
 		setFieldValue,
 		handleSubmit,
 		isSubmitting,
@@ -25,44 +22,80 @@ export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableS
 
 	const quantity = useMemo(() => parseInt(quantityString), [quantityString]);
 
-	const handleQuantityInputBlur = (event: React.FocusEvent<any, Element>) => {
-		handleBlur(event);
+	const handleQuantityChange = useCallback(
+		async (newQuantity: number) => {
+			if (newQuantity === line.quantity) {
+				return;
+			}
 
-		if (quantity === line.quantity) {
-			return;
+			// Update form value
+			setFieldValue("quantity", String(newQuantity));
+
+			// Submit the form
+			try {
+				handleSubmit();
+
+				// Show success toast
+				const productName = line.variant.product.name;
+				const variantName = line.variant.name !== productName ? ` (${line.variant.name})` : "";
+
+				if (newQuantity > line.quantity) {
+					toast.success(`Increased quantity of ${productName}${variantName} to ${newQuantity}`, {
+						position: "top-right",
+					});
+				} else {
+					toast.info(`Updated quantity of ${productName}${variantName} to ${newQuantity}`, {
+						position: "top-right",
+					});
+				}
+			} catch (error) {
+				// Error handling is done in the form hook
+				toast.error("Failed to update quantity. Please try again.", {
+					position: "top-right",
+				});
+
+				// Revert to original quantity
+				setFieldValue("quantity", String(line.quantity));
+			}
+		},
+		[line, setFieldValue, handleSubmit],
+	);
+
+	const handleDelete = useCallback(async () => {
+		try {
+			await onLineDelete();
+
+			// Show success toast
+			const productName = line.variant.product.name;
+			const variantName = line.variant.name !== productName ? ` (${line.variant.name})` : "";
+
+			toast.info(`Removed ${productName}${variantName} from cart`, {
+				position: "top-right",
+			});
+		} catch (error) {
+			toast.error("Failed to remove item. Please try again.", {
+				position: "top-right",
+			});
 		}
-
-		const isQuantityValid = !Number.isNaN(quantity) && quantity >= 0;
-
-		if (quantityString === "" || !isQuantityValid) {
-			void setFieldValue("quantity", String(line.quantity));
-			return;
-		}
-
-		if (quantity === 0) {
-			void onLineDelete();
-			return;
-		}
-
-		void handleSubmit();
-	};
+	}, [onLineDelete, line]);
 
 	return (
-		<div className="flex flex-col items-end gap-2">
-			<FormProvider form={form}>
-				<TextInput
-					required
-					onChange={handleChange}
-					onBlur={handleQuantityInputBlur}
-					name="quantity"
-					label="Quantity"
-					className="max-w-[6ch] text-center"
-				/>
-			</FormProvider>
+		<div className="flex flex-col items-end gap-3">
+			<QuantitySelector
+				value={quantity}
+				onChange={handleQuantityChange}
+				onDelete={handleDelete}
+				disabled={isSubmitting}
+				loading={isSubmitting}
+				min={0}
+				max={999}
+				size="sm"
+				data-testid={`quantity-selector-${line.id}`}
+			/>
 			{isSubmitting ? (
-				<div className="flex max-w-[6ch] flex-col">
-					<Skeleton />
-					<Skeleton />
+				<div className="flex flex-col gap-1">
+					<Skeleton className="h-4 w-16" />
+					<Skeleton className="h-4 w-20" />
 				</div>
 			) : (
 				<SummaryItemMoneyInfo {...line} />

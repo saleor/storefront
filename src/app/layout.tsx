@@ -1,8 +1,11 @@
 import "./globals.css";
 import "../styles/editorjs.css";
+import "react-toastify/dist/ReactToastify.css";
+import "../styles/toast.css";
 import { Suspense, type ReactNode } from "react";
 import { type Metadata } from "next";
 import localFont from "next/font/local";
+import { ToastContainer } from "react-toastify";
 import { ServiceWorkerRegister } from "./sw-register";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 
@@ -134,6 +137,19 @@ export default function RootLayout(props: { children: ReactNode }) {
 					<DraftModeNotification />
 				</Suspense>
 				<ServiceWorkerRegister />
+				<ToastContainer
+					position="top-right"
+					autoClose={3000}
+					hideProgressBar={false}
+					newestOnTop
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="light"
+					style={{ marginTop: "1rem" }}
+				/>
 			</body>
 		</html>
 	);

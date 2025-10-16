@@ -56,10 +56,13 @@ export default async function CheckoutPage(props: {
 					</div>
 				</div>
 
-				<div className="animate-slide-up-fade mt-8">
-					<h1 className="mb-2 font-display text-4xl font-light text-white">Complete Your Order</h1>
-					<p className="text-base-300">Fill in your details below to complete your purchase</p>
-				</div>
+				{/* Only show header for checkout, not for order confirmation */}
+				{!searchParams.order && (
+					<div className="animate-slide-up-fade mt-8">
+						<h1 className="mb-2 font-display text-4xl font-light text-white">Complete Your Order</h1>
+						<p className="text-base-300">Fill in your details below to complete your purchase</p>
+					</div>
+				)}
 
 				<section className="mb-12 mt-8 flex-1">
 					<RootWrapper saleorApiUrl={process.env.NEXT_PUBLIC_SALEOR_API_URL} />

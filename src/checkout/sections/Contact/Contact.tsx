@@ -12,10 +12,10 @@ type Section = "signedInUser" | "guestUser" | "signIn" | "resetPassword";
 const onlyContactShownSections: Section[] = ["signIn", "resetPassword"];
 
 interface ContactProps {
-	setShowOnlyContact: (value: boolean) => void;
+	setShowOnlyContact?: (value: boolean) => void;
 }
 
-export const Contact: FC<ContactProps> = ({ setShowOnlyContact }) => {
+export const Contact: FC<ContactProps> = ({ setShowOnlyContact = () => {} }) => {
 	useCustomerAttach();
 	const { user, authenticated } = useUser();
 	const [email, setEmail] = useState(user?.email || "");

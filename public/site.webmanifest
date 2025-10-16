@@ -1,0 +1,30 @@
+{
+	"name": "Your Store - Premium E-commerce",
+	"short_name": "Your Store",
+	"description": "Discover premium products with fast shipping and exceptional customer service",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#121212",
+	"theme_color": "#121212",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any maskable"
+		}
+	],
+	"categories": ["shopping", "business"],
+	"dir": "ltr",
+	"lang": "en-US",
+	"scope": "/",
+	"prefer_related_applications": false,
+	"related_applications": []
+}

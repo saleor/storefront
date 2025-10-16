@@ -1,8 +1,7 @@
-import Image from "next/image";
 import { CheckoutLink } from "./CheckoutLink";
-import { DeleteLineButton } from "./DeleteLineButton";
+import { CartItemList } from "./CartItemList";
 import * as Checkout from "@/lib/checkout";
-import { formatMoney, getHrefForVariant } from "@/lib/utils";
+import { formatMoney } from "@/lib/utils";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
 export const metadata = {
@@ -66,65 +65,10 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 				</p>
 			</div>
 
-			<form className="mt-12 grid gap-8 lg:grid-cols-3">
+			<div className="mt-12 grid gap-8 lg:grid-cols-3">
 				{/* Cart Items */}
 				<div className="lg:col-span-2">
-					<ul data-testid="CartProductList" role="list" className="space-y-6">
-						{checkout.lines.map((item, index) => (
-							<li
-								key={item.id}
-								className="card hover-lift stagger-item group"
-								style={{ animationDelay: `${index * 0.05}s` }}
-							>
-								<div className="flex gap-6">
-									<div className="relative aspect-square h-28 w-28 flex-shrink-0 overflow-hidden bg-gradient-to-br from-base-900 to-base-950 sm:h-36 sm:w-36">
-										{item.variant?.product?.thumbnail?.url && (
-											<Image
-												src={item.variant.product.thumbnail.url}
-												alt={item.variant.product.thumbnail.alt ?? ""}
-												width={200}
-												height={200}
-												className="h-full w-full object-contain object-center p-2 transition-transform duration-300 group-hover:scale-105"
-											/>
-										)}
-									</div>
-									<div className="relative flex flex-1 flex-col justify-between">
-										<div className="flex justify-between gap-4">
-											<div>
-												<LinkWithChannel
-													href={getHrefForVariant({
-														productSlug: item.variant.product.slug,
-														variantId: item.variant.id,
-													})}
-													className="transition-colors duration-200 group-hover:text-accent-200"
-												>
-													<h2 className="text-lg font-medium text-white">{item.variant?.product?.name}</h2>
-												</LinkWithChannel>
-												<p className="mt-1 text-sm text-base-400">{item.variant?.product?.category?.name}</p>
-												{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
-													<p className="mt-1 text-sm text-base-500">
-														<span className="text-base-600">Variant:</span> {item.variant.name}
-													</p>
-												)}
-											</div>
-											<p className="gradient-text text-right text-lg font-semibold">
-												{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency)}
-											</p>
-										</div>
-										<div className="mt-4 flex items-center justify-between">
-											<div className="flex items-center gap-2">
-												<span className="text-sm text-base-400">Quantity:</span>
-												<span className="rounded border border-base-700 bg-base-900 px-3 py-1 text-sm font-semibold text-white">
-													{item.quantity}
-												</span>
-											</div>
-											<DeleteLineButton checkoutId={checkoutId} lineId={item.id} />
-										</div>
-									</div>
-								</div>
-							</li>
-						))}
-					</ul>
+					<CartItemList items={checkout.lines} checkoutId={checkoutId} />
 				</div>
 
 				{/* Order Summary */}
@@ -157,7 +101,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 						<p className="text-center text-xs text-base-500">Secure checkout powered by Saleor</p>
 					</div>
 				</div>
-			</form>
+			</div>
 		</section>
 	);
 }

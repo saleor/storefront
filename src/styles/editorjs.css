@@ -1,0 +1,285 @@
+/**
+ * Editor.js Content Styles
+ * Comprehensive styling for all Editor.js block types in the storefront
+ */
+
+/* Tables */
+.editorjs-table {
+	@apply w-full border-collapse my-6;
+}
+
+.editorjs-table th,
+.editorjs-table td {
+	@apply border border-base-700 px-4 py-3;
+}
+
+.editorjs-table th {
+	@apply bg-base-800 font-semibold text-left text-base-100;
+}
+
+.editorjs-table td {
+	@apply bg-base-900 text-base-300;
+}
+
+.editorjs-table tr:hover td {
+	@apply bg-base-800;
+}
+
+/* Checklist */
+.editorjs-checklist {
+	@apply list-none pl-0 my-6 space-y-2;
+}
+
+.editorjs-checklist-item {
+	@apply flex items-start gap-3;
+}
+
+.editorjs-checklist-item input[type="checkbox"] {
+	@apply mt-1 w-5 h-5 rounded border-base-700 bg-base-900 text-accent-500 focus:ring-accent-500 cursor-default;
+}
+
+.editorjs-checklist-item.checked span {
+	@apply line-through text-base-500;
+}
+
+.editorjs-checklist-item span {
+	@apply text-base-300 flex-1;
+}
+
+/* Code Blocks */
+.editorjs-code {
+	@apply my-6 p-6 rounded-lg bg-base-950 border border-base-800 overflow-x-auto;
+}
+
+.editorjs-code code {
+	@apply block font-mono text-sm text-base-200 leading-relaxed;
+}
+
+/* Delimiter */
+.editorjs-delimiter {
+	@apply text-center text-3xl text-base-600 my-8 font-light tracking-wider;
+}
+
+/* Warning/Alert Blocks */
+.editorjs-warning {
+	@apply my-6 p-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-500/10;
+}
+
+.editorjs-warning-title {
+	@apply font-semibold text-lg text-yellow-400 mb-2;
+}
+
+.editorjs-warning-message {
+	@apply text-base-300;
+}
+
+/* File Attachments */
+.editorjs-attaches {
+	@apply my-6 p-4 rounded-lg border border-base-800 bg-base-900 hover:bg-base-800 transition-colors;
+}
+
+.editorjs-attaches-link {
+	@apply flex items-center gap-3 text-base-200 hover:text-accent-400 no-underline;
+}
+
+.editorjs-attaches-icon {
+	@apply text-accent-500 flex-shrink-0;
+}
+
+.editorjs-attaches-title {
+	@apply font-medium flex-1;
+}
+
+.editorjs-attaches-size {
+	@apply text-sm text-base-500;
+}
+
+/* Images */
+.editorjs-image {
+	@apply my-8;
+}
+
+.editorjs-image img {
+	@apply w-full h-auto rounded-lg;
+}
+
+.editorjs-image-border img {
+	@apply border-2 border-base-700;
+}
+
+.editorjs-image-background {
+	@apply bg-base-800 p-4 rounded-lg;
+}
+
+.editorjs-image-stretched img {
+	@apply w-full;
+}
+
+.editorjs-image figcaption {
+	@apply text-center text-sm text-base-500 mt-3 italic;
+}
+
+/* Embeds (YouTube, Vimeo, etc.) */
+.editorjs-embed {
+	@apply my-8;
+}
+
+.editorjs-embed-content {
+	@apply w-full aspect-video rounded-lg overflow-hidden bg-base-950;
+}
+
+.editorjs-embed-content iframe,
+.editorjs-embed-content video {
+	@apply w-full h-full;
+}
+
+.editorjs-embed-caption {
+	@apply text-center text-sm text-base-500 mt-3 italic;
+}
+
+/* Quote Blocks - Enhanced */
+.prose blockquote {
+	@apply border-l-4 border-accent-500 pl-6 py-4 my-6 italic text-base-200 bg-base-900/50 rounded-r-lg;
+}
+
+.prose blockquote p {
+	@apply mb-0;
+}
+
+/* Lists - Enhanced */
+.prose ul,
+.prose ol {
+	@apply my-6 space-y-2;
+}
+
+.prose ul li,
+.prose ol li {
+	@apply text-base-300;
+}
+
+.prose ul li::marker {
+	@apply text-accent-500;
+}
+
+.prose ol li::marker {
+	@apply text-accent-500 font-bold;
+}
+
+/* Headings - Enhanced */
+.prose h1 {
+	@apply text-4xl font-display font-light text-white mb-4 mt-8;
+}
+
+.prose h2 {
+	@apply text-3xl font-display font-light text-white mb-3 mt-6;
+}
+
+.prose h3 {
+	@apply text-2xl font-display font-light text-white mb-3 mt-6;
+}
+
+.prose h4 {
+	@apply text-xl font-medium text-white mb-2 mt-4;
+}
+
+.prose h5 {
+	@apply text-lg font-medium text-white mb-2 mt-4;
+}
+
+.prose h6 {
+	@apply text-base font-medium text-base-200 mb-2 mt-4;
+}
+
+/* Paragraphs */
+.prose p {
+	@apply text-base-300 mb-4 leading-relaxed;
+}
+
+/* Links */
+.prose a {
+	@apply text-accent-400 hover:text-accent-300 underline transition-colors;
+}
+
+/* Inline formatting */
+.prose strong {
+	@apply font-bold text-base-100;
+}
+
+.prose em {
+	@apply italic;
+}
+
+.prose s {
+	@apply line-through text-base-500;
+}
+
+.prose mark {
+	@apply bg-yellow-500/30 text-yellow-200 px-1 rounded;
+}
+
+.prose u {
+	@apply underline decoration-accent-500;
+}
+
+.prose code {
+	@apply px-2 py-1 rounded bg-base-900 text-accent-300 font-mono text-sm border border-base-800;
+}
+
+/* Raw HTML blocks */
+.prose .editorjs-raw {
+	@apply my-6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.editorjs-table {
+		@apply text-sm;
+	}
+
+	.editorjs-table th,
+	.editorjs-table td {
+		@apply px-2 py-2;
+	}
+
+	.editorjs-code {
+		@apply p-4 text-xs;
+	}
+
+	.prose h1 {
+		@apply text-3xl;
+	}
+
+	.prose h2 {
+		@apply text-2xl;
+	}
+
+	.prose h3 {
+		@apply text-xl;
+	}
+}
+
+/* Dark mode optimizations (already using dark theme) */
+@media (prefers-color-scheme: dark) {
+	.editorjs-table th {
+		@apply bg-base-900;
+	}
+
+	.editorjs-warning {
+		@apply bg-yellow-900/20;
+	}
+}
+
+/* Print styles */
+@media print {
+	.editorjs-attaches {
+		@apply border-2 border-black;
+	}
+
+	.editorjs-warning {
+		@apply border-black bg-gray-100;
+	}
+
+	.editorjs-code {
+		@apply border-2 border-black;
+	}
+}

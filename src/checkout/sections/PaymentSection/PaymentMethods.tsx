@@ -4,6 +4,7 @@ import { PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection/Payme
 import { usePayments } from "@/checkout/sections/PaymentSection/usePayments";
 import { useCheckoutUpdateState } from "@/checkout/state/updateStateStore";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { ZeroAmountCheckout } from "@/checkout/sections/PaymentSection/ZeroAmountCheckout/ZeroAmountCheckout";
 
 export const PaymentMethods = () => {
 	const { checkout } = useCheckout();
@@ -18,32 +19,15 @@ export const PaymentMethods = () => {
 		[availablePaymentGateways],
 	);
 
-	// Check if checkout is ready for payment processing
-	const isCheckoutReady = useMemo(() => {
-		if (!checkout) return false;
+	// Check if checkout amount is zero (fully covered by gift cards/discounts)
+	const checkoutAmount = checkout?.totalPrice?.gross?.amount;
 
-		// Must have billing address
-		if (!checkout.billingAddress) {
-			return false;
-		}
+	if (checkoutAmount === 0) {
+		return <ZeroAmountCheckout />;
+	}
 
-		// If shipping is required, must have shipping address and delivery method
-		if (checkout.isShippingRequired) {
-			if (!checkout.shippingAddress || !checkout.deliveryMethod) {
-				return false;
-			}
-		}
-
-		// Must have a stable total (not zero)
-		if (!checkout.totalPrice?.gross?.amount || checkout.totalPrice.gross.amount <= 0) {
-			return false;
-		}
-
-		return true;
-	}, [checkout]);
-
-	// Show skeleton while loading or checkout not ready
-	if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading" || !isCheckoutReady) {
+	// Show skeleton while loading
+	if (changingBillingCountry || fetching || checkoutDeliveryMethodUpdate === "loading") {
 		return <PaymentSectionSkeleton />;
 	}
 
