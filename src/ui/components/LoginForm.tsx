@@ -35,17 +35,20 @@ export function LoginForm() {
 
 			if (data?.tokenCreate?.errors && data.tokenCreate.errors.length > 0) {
 				const errorMessages = data.tokenCreate.errors.map((error) => {
+					// Type assertion for error code (Saleor API includes code field)
+					const errorCode = (error as { code?: string }).code;
+
 					// Handle specific error codes
-					if (error.code === "ACCOUNT_NOT_CONFIRMED") {
+					if (errorCode === "ACCOUNT_NOT_CONFIRMED") {
 						return "Your account needs to be confirmed via email. Please check your inbox for a confirmation link.";
 					}
-					if (error.code === "INVALID_CREDENTIALS") {
+					if (errorCode === "INVALID_CREDENTIALS") {
 						return "Invalid email or password. Please try again.";
 					}
-					if (error.code === "INACTIVE") {
+					if (errorCode === "INACTIVE") {
 						return "Your account has been deactivated. Please contact support.";
 					}
-					if (error.code === "LOGIN_ATTEMPT_DELAYED") {
+					if (errorCode === "LOGIN_ATTEMPT_DELAYED") {
 						return "Too many login attempts. Please try again later.";
 					}
 					return error.message || "An error occurred during login";
@@ -70,7 +73,7 @@ export function LoginForm() {
 				<h2 className="mb-6 font-display text-2xl font-light text-white">Sign In</h2>
 
 				{errors.length > 0 && (
-					<div className="mb-4 rounded-md bg-red-50 p-4 border border-red-200">
+					<div className="mb-4 rounded-md border border-red-200 bg-red-50 p-4">
 						{errors.map((error, index) => (
 							<p key={index} className="text-sm text-red-800">
 								{error}

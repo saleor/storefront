@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { Contact } from "@/checkout/sections/Contact";
 import { DeliveryMethods } from "@/checkout/sections/DeliveryMethods";
@@ -34,13 +34,17 @@ export const CheckoutForm = () => {
 	const getShippingSummary = () => {
 		if (!hasShippingAddress) return "";
 		const addr = checkout?.shippingAddress;
-		return `${addr?.streetAddress1}, ${addr?.city}, ${addr?.countryArea || ""} ${addr?.postalCode || ""}`.trim();
+		return `${addr?.streetAddress1}, ${addr?.city}, ${addr?.countryArea || ""} ${
+			addr?.postalCode || ""
+		}`.trim();
 	};
 
 	const getBillingSummary = () => {
 		if (!hasBillingAddress) return "";
 		const addr = checkout?.billingAddress;
-		return `${addr?.streetAddress1}, ${addr?.city}, ${addr?.countryArea || ""} ${addr?.postalCode || ""}`.trim();
+		return `${addr?.streetAddress1}, ${addr?.city}, ${addr?.countryArea || ""} ${
+			addr?.postalCode || ""
+		}`.trim();
 	};
 
 	const getDeliverySummary = () => {
@@ -108,13 +112,7 @@ export const CheckoutForm = () => {
 		});
 
 		return steps;
-	}, [
-		hasEmail,
-		hasShippingAddress,
-		hasBillingAddress,
-		hasDeliveryMethod,
-		isShippingRequired,
-	]);
+	}, [hasEmail, hasShippingAddress, hasBillingAddress, hasDeliveryMethod, isShippingRequired]);
 
 	let stepNumber = 1;
 
@@ -125,92 +123,92 @@ export const CheckoutForm = () => {
 
 			{/* Checkout sections - all expanded by default */}
 			<div className="flex flex-col gap-4">
-			{/* Step 1: Contact */}
-			<SequentialCheckoutSection
-				id="contact"
-				title="Contact Information"
-				stepNumber={stepNumber++}
-				isComplete={hasEmail}
-				isActive={true}
-				isLocked={false}
-				completedSummary={getContactSummary()}
-				data-testid="contactSection"
-			>
-				<Suspense fallback={<ContactSkeleton />}>
-					<Contact />
-				</Suspense>
-			</SequentialCheckoutSection>
-
-			{/* Step 2: Shipping Address (if required) */}
-			{isShippingRequired && (
+				{/* Step 1: Contact */}
 				<SequentialCheckoutSection
-					id="shipping"
-					title="Shipping Address"
+					id="contact"
+					title="Contact Information"
 					stepNumber={stepNumber++}
-					isComplete={hasShippingAddress}
+					isComplete={hasEmail}
 					isActive={true}
-					isLocked={!hasEmail}
-					completedSummary={getShippingSummary()}
-					data-testid="shippingAddressSection"
+					isLocked={false}
+					completedSummary={getContactSummary()}
+					data-testid="contactSection"
+				>
+					<Suspense fallback={<ContactSkeleton />}>
+						<Contact />
+					</Suspense>
+				</SequentialCheckoutSection>
+
+				{/* Step 2: Shipping Address (if required) */}
+				{isShippingRequired && (
+					<SequentialCheckoutSection
+						id="shipping"
+						title="Shipping Address"
+						stepNumber={stepNumber++}
+						isComplete={hasShippingAddress}
+						isActive={true}
+						isLocked={!hasEmail}
+						completedSummary={getShippingSummary()}
+						data-testid="shippingAddressSection"
+					>
+						<Suspense fallback={<AddressSectionSkeleton />}>
+							{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
+						</Suspense>
+					</SequentialCheckoutSection>
+				)}
+
+				{/* Step 3: Delivery Method (if shipping required) */}
+				{isShippingRequired && (
+					<SequentialCheckoutSection
+						id="delivery"
+						title="Delivery Method"
+						stepNumber={stepNumber++}
+						isComplete={hasDeliveryMethod}
+						isActive={true}
+						isLocked={!hasEmail || !hasShippingAddress}
+						completedSummary={getDeliverySummary()}
+						data-testid="deliveryMethodSection"
+					>
+						<Suspense fallback={<DeliveryMethodsSkeleton />}>
+							<DeliveryMethods collapsed={false} />
+						</Suspense>
+					</SequentialCheckoutSection>
+				)}
+
+				{/* Step 4: Billing Address */}
+				<SequentialCheckoutSection
+					id="billing"
+					title="Billing Address"
+					stepNumber={stepNumber++}
+					isComplete={hasBillingAddress}
+					isActive={true}
+					isLocked={!hasEmail || (isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))}
+					completedSummary={getBillingSummary()}
+					data-testid="billingAddressSection"
 				>
 					<Suspense fallback={<AddressSectionSkeleton />}>
-						{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
+						{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
 					</Suspense>
 				</SequentialCheckoutSection>
-			)}
 
-			{/* Step 3: Delivery Method (if shipping required) */}
-			{isShippingRequired && (
+				{/* Step 5: Payment */}
 				<SequentialCheckoutSection
-					id="delivery"
-					title="Delivery Method"
+					id="payment"
+					title="Payment"
 					stepNumber={stepNumber++}
-					isComplete={hasDeliveryMethod}
+					isComplete={false}
 					isActive={true}
-					isLocked={!hasEmail || !hasShippingAddress}
-					completedSummary={getDeliverySummary()}
-					data-testid="deliveryMethodSection"
+					isLocked={
+						!hasEmail ||
+						!hasBillingAddress ||
+						(isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))
+					}
+					data-testid="paymentSection"
 				>
-					<Suspense fallback={<DeliveryMethodsSkeleton />}>
-						<DeliveryMethods collapsed={false} />
+					<Suspense fallback={<PaymentSectionSkeleton />}>
+						<PaymentSection />
 					</Suspense>
 				</SequentialCheckoutSection>
-			)}
-
-			{/* Step 4: Billing Address */}
-			<SequentialCheckoutSection
-				id="billing"
-				title="Billing Address"
-				stepNumber={stepNumber++}
-				isComplete={hasBillingAddress}
-				isActive={true}
-				isLocked={!hasEmail || (isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))}
-				completedSummary={getBillingSummary()}
-				data-testid="billingAddressSection"
-			>
-				<Suspense fallback={<AddressSectionSkeleton />}>
-					{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-				</Suspense>
-			</SequentialCheckoutSection>
-
-			{/* Step 5: Payment */}
-			<SequentialCheckoutSection
-				id="payment"
-				title="Payment"
-				stepNumber={stepNumber++}
-				isComplete={false}
-				isActive={true}
-				isLocked={
-					!hasEmail ||
-					!hasBillingAddress ||
-					(isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))
-				}
-				data-testid="paymentSection"
-			>
-				<Suspense fallback={<PaymentSectionSkeleton />}>
-					<PaymentSection />
-				</Suspense>
-			</SequentialCheckoutSection>
 			</div>
 		</div>
 	);

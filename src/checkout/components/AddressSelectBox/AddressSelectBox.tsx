@@ -1,4 +1,3 @@
-import React from "react";
 import { SelectBox, type SelectBoxProps } from "@/checkout/components/SelectBox";
 import { Button } from "@/checkout/components/Button";
 import { Address } from "@/checkout/components/Address";

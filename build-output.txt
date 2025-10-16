@@ -1,0 +1,122 @@
+
+> saleor-storefront@0.1.0 prebuild C:\Users\G533\WebstormProjects\e-commerce-template\saleor-storefront
+> pnpm run generate
+
+
+> saleor-storefront@0.1.0 generate C:\Users\G533\WebstormProjects\e-commerce-template\saleor-storefront
+> graphql-codegen --config .graphqlrc.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to src/gql/
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[SUCCESS] Generate
+[SUCCESS] Generate to src/gql/
+[SUCCESS] Generate outputs
+
+> saleor-storefront@0.1.0 build C:\Users\G533\WebstormProjects\e-commerce-template\saleor-storefront
+> next build
+
+   ▲ Next.js 16.0.0-canary.8 (Turbopack)
+   - Environments: .env
+   - Experiments (use with caution):
+     ✓ cacheComponents
+     ✓ enablePrerenderSourceMaps (enabled by `experimental.cacheComponents`)
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled successfully in 5.6s
+   Running TypeScript ...
+   Collecting page data ...
+   Generating static pages (0/57) ...
+   Generating static pages (14/57) 
+Error fetching images for prefetch: Error: Route /api/prefetch-images needs to bail out of prerendering at this point because it used nextUrl.searchParams.
+    at C (turbopack:///[project]/src/app/api/prefetch-images/route.ts:14:40)
+  12 | export async function GET(request: NextRequest) {
+  13 | 	try {
+> 14 | 		const searchParams = request.nextUrl.searchParams;
+     | 		                                     ^
+  15 | 		const pathname = searchParams.get("pathname");
+  16 | 		const channel = searchParams.get("channel") || "default-channel";
+  17 | {
+  digest: 'NEXT_PRERENDER_INTERRUPTED'
+}
+Error fetching images for prefetch: Error: Route /api/prefetch-images needs to bail out of prerendering at this point because it used nextUrl.searchParams.
+    at C (turbopack:///[project]/src/app/api/prefetch-images/route.ts:14:40)
+  12 | export async function GET(request: NextRequest) {
+  13 | 	try {
+> 14 | 		const searchParams = request.nextUrl.searchParams;
+     | 		                                     ^
+  15 | 		const pathname = searchParams.get("pathname");
+  16 | 		const channel = searchParams.get("channel") || "default-channel";
+  17 | {
+  digest: 'NEXT_PRERENDER_INTERRUPTED'
+}
+   Generating static pages (28/57) 
+   Generating static pages (42/57) 
+ ✓ Generating static pages (57/57) in 3.6s
+   Finalizing page optimization ...
+
+Route (app)                                  Revalidate  Expire
+┌ ○ /
+├ ○ /_not-found
+├ ◐ /[channel]                                       1m      1y
+├   ├ /[channel]                                     1m      1y
+├   └ /default-channel                               1m      1y
+├ ◐ /[channel]/cart
+├   ├ /[channel]/cart
+├   └ /default-channel/cart
+├ ◐ /[channel]/categories/[slug]
+├   ├ /[channel]/categories/[slug]
+├   └ /default-channel/categories/[slug]
+├ ◐ /[channel]/collections/[slug]
+├   ├ /[channel]/collections/[slug]
+├   └ /default-channel/collections/[slug]
+├ ◐ /[channel]/confirm-account
+├   ├ /[channel]/confirm-account
+├   └ /default-channel/confirm-account
+├ ◐ /[channel]/login
+├   ├ /[channel]/login
+├   └ /default-channel/login
+├ ◐ /[channel]/orders
+├   ├ /[channel]/orders
+├   └ /default-channel/orders
+├ ◐ /[channel]/pages/[slug]
+├   ├ /[channel]/pages/[slug]
+├   └ /default-channel/pages/[slug]
+├ ◐ /[channel]/products
+├   ├ /[channel]/products
+├   └ /default-channel/products
+├ ◐ /[channel]/products/[slug]
+├   ├ /[channel]/products/[slug]
+├   ├ /default-channel/products/[slug]
+├   ├ /default-channel/products/apple-juice
+├   └ [+19 more paths]
+├ ◐ /[channel]/search
+├   ├ /[channel]/search
+├   └ /default-channel/search
+├ ƒ /api/draft
+├ ƒ /api/draft/disable
+├ ƒ /api/prefetch-images
+├ ○ /apple-icon.png
+├ ◐ /checkout
+├ ○ /icon.png
+├ ○ /icon.svg
+├ ○ /opengraph-image.png
+├ ○ /robots.txt
+├ ƒ /sitemap.xml
+└ ○ /twitter-image.png
+
+
+○  (Static)             prerendered as static content
+◐  (Partial Prerender)  prerendered as static HTML with dynamic server-streamed content
+ƒ  (Dynamic)            server-rendered on demand
+

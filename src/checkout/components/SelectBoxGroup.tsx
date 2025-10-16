@@ -1,12 +1,12 @@
 import clsx from "clsx";
-import { type PropsWithChildren } from "react";
+import { type FC, type PropsWithChildren } from "react";
 import { type Classes } from "../lib/globalTypes";
 
 interface SelectBoxGroupProps extends Classes {
 	label: string;
 }
 
-export const SelectBoxGroup: React.FC<PropsWithChildren<SelectBoxGroupProps>> = ({
+export const SelectBoxGroup: FC<PropsWithChildren<SelectBoxGroupProps>> = ({
 	label,
 	children,
 	className,

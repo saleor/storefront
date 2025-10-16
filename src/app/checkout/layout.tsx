@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 import { AuthProvider } from "@/ui/components/AuthProvider";
 
 export const metadata = {
@@ -9,7 +9,15 @@ export const metadata = {
 export default function RootLayout(props: { children: ReactNode }) {
 	return (
 		<main>
-			<AuthProvider>{props.children}</AuthProvider>
+			<Suspense
+				fallback={
+					<div className="flex min-h-screen items-center justify-center">
+						<div className="h-8 w-8 animate-spin rounded-full border-4 border-accent-500 border-t-transparent" />
+					</div>
+				}
+			>
+				<AuthProvider>{props.children}</AuthProvider>
+			</Suspense>
 		</main>
 	);
 }

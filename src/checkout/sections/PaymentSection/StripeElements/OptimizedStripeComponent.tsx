@@ -10,7 +10,7 @@
 
 "use client";
 
-import React from "react";
+import { type FC } from "react";
 import { StripeElementsProvider } from "./StripeElementsProvider";
 import { StripeCheckoutForm } from "./StripeCheckoutForm";
 
@@ -18,7 +18,7 @@ import { StripeCheckoutForm } from "./StripeCheckoutForm";
  * Main Stripe component that provides the complete payment experience
  * with proper lifecycle management and idempotency protection.
  */
-export const OptimizedStripeComponent: React.FC = () => {
+export const OptimizedStripeComponent: FC = () => {
 	return (
 		<StripeElementsProvider>
 			<StripeCheckoutForm />

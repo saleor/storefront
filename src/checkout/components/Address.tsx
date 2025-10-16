@@ -1,12 +1,12 @@
 import compact from "lodash-es/compact";
-import React, { type PropsWithChildren } from "react";
+import { type FC, type PropsWithChildren } from "react";
 import { type AddressFragment } from "@/checkout/graphql";
 
 interface AddressProps {
 	address: AddressFragment;
 }
 
-export const Address: React.FC<PropsWithChildren<AddressProps>> = ({ address, children, ...textProps }) => {
+export const Address: FC<PropsWithChildren<AddressProps>> = ({ address, children, ...textProps }) => {
 	const name = `${address.firstName} ${address.lastName}`;
 
 	const { phone, city, countryArea, postalCode, streetAddress1, country } = address;

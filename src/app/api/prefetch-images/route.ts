@@ -1,8 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductDetailsDocument, ProductListDocument, ProductListByCategoryDocument, ProductListByCollectionDocument } from "@/gql/graphql";
+import {
+	ProductDetailsDocument,
+	ProductListDocument,
+	ProductListByCategoryDocument,
+	ProductListByCollectionDocument,
+} from "@/gql/graphql";
 
-export const runtime = "edge";
+// Note: edge runtime and dynamic exports removed due to incompatibility with cacheComponents
+// This route is automatically dynamic due to searchParams usage
 
 /**
  * API endpoint for prefetching images based on route pathname

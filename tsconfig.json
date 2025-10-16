@@ -13,7 +13,7 @@
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"jsx": "preserve",
+		"jsx": "react-jsx",
 		"incremental": true,
 		"allowUnreachableCode": true,
 		"noUnusedLocals": true,
@@ -30,14 +30,16 @@
 		},
 		"types": ["react-dom/canary"]
 	},
-
 	"include": [
 		"next-env.d.ts",
 		"src/**/*.ts",
 		"src/**/*.tsx",
 		".next/types/**/*.ts",
 		"*.ts",
-		"__tests__/**/*"
+		"__tests__/**/*",
+		".next/dev/types/**/*.ts",
+		".next\\dev/types/**/*.ts",
+		".next\\dev/types/**/*.ts"
 	],
 	"exclude": ["node_modules"]
 }

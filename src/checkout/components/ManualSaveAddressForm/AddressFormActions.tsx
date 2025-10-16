@@ -1,3 +1,4 @@
+import { type FC } from "react";
 import { Button } from "@/checkout/components/Button";
 import { IconButton } from "@/checkout/components/IconButton";
 import { TrashIcon } from "@/checkout/ui-kit/icons";
@@ -9,7 +10,7 @@ interface AddressFormActionsProps {
 	loading: boolean;
 }
 
-export const AddressFormActions: React.FC<AddressFormActionsProps> = ({
+export const AddressFormActions: FC<AddressFormActionsProps> = ({
 	onSubmit,
 	onDelete,
 	onCancel,

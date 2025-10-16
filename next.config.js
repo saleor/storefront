@@ -12,10 +12,10 @@ const config = {
 		minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
 	},
 	experimental: {
-		typedRoutes: false,
 		optimizePackageImports: ["lucide-react", "@headlessui/react"],
-		// ppr: "incremental", // Ready for NextFaster-style performance - requires Next.js canary
+		cacheComponents: true, // ✅ Enabled with Next.js canary for NextFaster-style performance (PPR)
 	},
+	typedRoutes: false,
 	compress: true,
 	poweredByHeader: false,
 	reactStrictMode: true,

@@ -9,11 +9,22 @@ export const Nav = ({ channel }: { channel: string }) => {
 	return (
 		<nav className="flex w-full gap-4 lg:gap-6" aria-label="Main navigation">
 			<ul className="hidden gap-4 overflow-x-auto whitespace-nowrap md:flex lg:gap-8 lg:px-0">
-				<NavLinks channel={channel} />
+				<Suspense
+					fallback={
+						<div className="flex gap-4 lg:gap-8">
+							<div className="h-6 w-20 animate-pulse rounded bg-base-800" />
+							<div className="h-6 w-20 animate-pulse rounded bg-base-800" />
+						</div>
+					}
+				>
+					<NavLinks channel={channel} />
+				</Suspense>
 			</ul>
 			<div className="ml-auto flex items-center justify-center gap-4 whitespace-nowrap lg:gap-8">
 				<div className="hidden lg:flex">
-					<SearchBar channel={channel} />
+					<Suspense fallback={<div className="h-10 w-80 animate-pulse rounded bg-base-800" />}>
+						<SearchBar channel={channel} />
+					</Suspense>
 				</div>
 				<Suspense fallback={<div className="w-8" />}>
 					<UserMenuContainer />
@@ -26,8 +37,19 @@ export const Nav = ({ channel }: { channel: string }) => {
 			</div>
 			<Suspense>
 				<MobileMenu>
-					<SearchBar channel={channel} />
-					<NavLinks channel={channel} />
+					<Suspense fallback={<div className="h-10 w-full animate-pulse rounded bg-base-800" />}>
+						<SearchBar channel={channel} />
+					</Suspense>
+					<Suspense
+						fallback={
+							<div className="space-y-2">
+								<div className="h-6 w-full animate-pulse rounded bg-base-800" />
+								<div className="h-6 w-full animate-pulse rounded bg-base-800" />
+							</div>
+						}
+					>
+						<NavLinks channel={channel} />
+					</Suspense>
 				</MobileMenu>
 			</Suspense>
 		</nav>

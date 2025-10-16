@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Logo } from "./Logo";
 import { Nav } from "./nav/Nav";
 
@@ -6,7 +7,9 @@ export function Header({ channel }: { channel: string }) {
 		<header className="sticky top-0 z-20 border-b border-base-900/50 bg-black/95 backdrop-blur-xl supports-[backdrop-filter]:bg-black/80">
 			<div className="mx-auto max-w-7xl px-6 lg:px-12">
 				<div className="flex h-20 items-center justify-between gap-8">
-					<Logo />
+					<Suspense fallback={<div className="h-6 w-20 animate-pulse rounded bg-base-800" />}>
+						<Logo />
+					</Suspense>
 					<Nav channel={channel} />
 				</div>
 			</div>

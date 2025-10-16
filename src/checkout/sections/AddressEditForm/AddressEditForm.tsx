@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from "react";
+import { type FC } from "react";
 import { type AddressFormData } from "@/checkout/components/AddressForm/types";
 import { AddressForm, type AddressFormProps } from "@/checkout/components/AddressForm";
 import {
@@ -23,7 +23,7 @@ export interface AddressEditFormProps extends Pick<AddressFormProps, "title" | "
 	onClose: () => void;
 }
 
-export const AddressEditForm: React.FC<AddressEditFormProps> = ({
+export const AddressEditForm: FC<AddressEditFormProps> = ({
 	onUpdate,
 	onClose,
 	onDelete,

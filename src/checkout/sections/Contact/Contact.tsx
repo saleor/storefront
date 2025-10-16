@@ -1,4 +1,4 @@
-import React, { type FC, useCallback, useEffect, useState } from "react";
+import { type FC, useCallback, useEffect, useState } from "react";
 import { SignedInUser } from "../SignedInUser/SignedInUser";
 import { ResetPassword } from "../ResetPassword/ResetPassword";
 import { useCustomerAttach } from "@/checkout/hooks/useCustomerAttach";

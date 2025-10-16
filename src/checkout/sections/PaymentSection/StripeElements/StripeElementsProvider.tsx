@@ -10,9 +10,9 @@
 
 "use client";
 
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiErrorMessages } from "../errorMessages";
 import { StripePaymentManager } from "./stripePaymentManager";
 import { stripeGatewayId } from "./types";
@@ -22,7 +22,7 @@ import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 interface StripeElementsProviderProps {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 interface TxInitData {
@@ -33,7 +33,7 @@ interface TxInitData {
 	publishableKey?: string;
 }
 
-export const StripeElementsProvider: React.FC<StripeElementsProviderProps> = ({ children }) => {
+export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ children }) => {
 	const { checkout, fetching: checkoutFetching } = useCheckout();
 	const { showCustomErrors } = useAlerts();
 	const { errorMessages: _commonErrorMessages } = useErrorMessages(apiErrorMessages);

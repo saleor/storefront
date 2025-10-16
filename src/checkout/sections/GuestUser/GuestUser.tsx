@@ -1,3 +1,4 @@
+import { type FC } from "react";
 import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
 import { Checkbox } from "@/checkout/components/Checkbox";
@@ -10,11 +11,7 @@ type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange"> & {
 	email: string;
 };
 
-export const GuestUser: React.FC<GuestUserProps> = ({
-	onSectionChange,
-	onEmailChange,
-	email: initialEmail,
-}) => {
+export const GuestUser: FC<GuestUserProps> = ({ onSectionChange, onEmailChange, email: initialEmail }) => {
 	const form = useGuestUserForm({ initialEmail });
 	const { handleChange } = form;
 	const { createAccount } = form.values;

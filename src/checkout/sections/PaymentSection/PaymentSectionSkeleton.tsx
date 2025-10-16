@@ -1,9 +1,9 @@
-import React from "react";
+import { type FC } from "react";
 import { Skeleton } from "@/checkout/components";
 
 interface PaymentSectionSkeletonProps {}
 
-export const PaymentSectionSkeleton: React.FC<PaymentSectionSkeletonProps> = ({}) => {
+export const PaymentSectionSkeleton: FC<PaymentSectionSkeletonProps> = ({}) => {
 	return (
 		<div className="py-6">
 			<Skeleton variant="title" />

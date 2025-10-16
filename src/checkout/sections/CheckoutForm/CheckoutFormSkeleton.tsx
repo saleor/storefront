@@ -1,4 +1,3 @@
-import React from "react";
 import { ContactSkeleton } from "@/checkout/sections/Contact";
 import { DeliveryMethodsSkeleton } from "@/checkout/sections/DeliveryMethods";
 import { PaymentSectionSkeleton } from "@/checkout/sections/PaymentSection";

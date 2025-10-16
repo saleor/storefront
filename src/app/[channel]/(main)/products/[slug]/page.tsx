@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
+import { Suspense } from "react";
 import xss from "xss";
 import { invariant } from "ts-invariant";
 import { type WithContext, type Product } from "schema-dts";
@@ -13,8 +14,9 @@ import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } 
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
+import { ProductDetailsSkeleton } from "@/ui/atoms/SkeletonLoader";
 
-// export const experimental_ppr = true; // Ready for NextFaster-style performance - requires Next.js canary
+// ✅ PPR enabled globally via experimental.cacheComponents in next.config.js
 
 export async function generateMetadata(
 	props: {
@@ -127,7 +129,9 @@ export default async function Page(props: {
 		const variantName = selectedVariant?.name;
 		const productName = product?.name;
 		const displayName =
-			variantName && variantName !== productName ? `${productName} (${variantName})` : productName || "Product";
+			variantName && variantName !== productName
+				? `${productName} (${variantName})`
+				: productName || "Product";
 
 		return {
 			success: !result.checkoutLinesAdd?.errors?.length,
@@ -188,6 +192,7 @@ export default async function Page(props: {
 				}}
 			/>
 			<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+				{/* Static: Product image - prerendered with PPR */}
 				<div className="lg:sticky lg:top-24 lg:self-start">
 					{firstImage && (
 						<ProductImageWrapper
@@ -199,6 +204,8 @@ export default async function Page(props: {
 						/>
 					)}
 				</div>
+
+				{/* Static: Product title and description - prerendered with PPR */}
 				<div className="flex flex-col space-y-6">
 					<div>
 						<h1 className="mb-3 font-display text-4xl font-light tracking-tight text-white lg:text-5xl">
@@ -209,22 +216,26 @@ export default async function Page(props: {
 						</p>
 					</div>
 
-					{variants && (
-						<VariantSelector
-							selectedVariant={selectedVariant}
-							variants={variants}
-							product={product}
-							channel={params.channel}
+					{/* Dynamic: Interactive elements - streamed with Suspense */}
+					<Suspense fallback={<ProductDetailsSkeleton />}>
+						{variants && (
+							<VariantSelector
+								selectedVariant={selectedVariant}
+								variants={variants}
+								product={product}
+								channel={params.channel}
+							/>
+						)}
+
+						<AvailabilityMessage isAvailable={isAvailable} />
+
+						<AddToCartForm
+							action={addItem}
+							disabled={!selectedVariantID || !selectedVariant?.quantityAvailable}
 						/>
-					)}
+					</Suspense>
 
-					<AvailabilityMessage isAvailable={isAvailable} />
-
-					<AddToCartForm
-						action={addItem}
-						disabled={!selectedVariantID || !selectedVariant?.quantityAvailable}
-					/>
-
+					{/* Static: Product description - prerendered with PPR */}
 					{description && (
 						<div className="prose prose-invert max-w-none border-t border-base-800 pt-8">
 							<h2 className="mb-4 font-display text-xl font-light text-white">Product Details</h2>

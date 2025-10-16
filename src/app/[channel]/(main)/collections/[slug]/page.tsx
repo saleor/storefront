@@ -1,8 +1,12 @@
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
+import { Suspense } from "react";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
+import { ProductListSkeleton } from "@/ui/atoms/SkeletonLoader";
+
+// ✅ PPR enabled globally via experimental.cacheComponents in next.config.js
 
 export const generateMetadata = async (
 	props: { params: Promise<{ slug: string; channel: string }> },
@@ -36,8 +40,13 @@ export default async function Page(props: { params: Promise<{ slug: string; chan
 
 	return (
 		<div className="mx-auto max-w-7xl p-8 pb-16">
+			{/* Static: Collection title - prerendered with PPR */}
 			<h1 className="pb-8 text-xl font-semibold">{name}</h1>
-			<ProductList products={products.edges.map((e) => e.node)} />
+
+			{/* Dynamic: Product list - streamed with Suspense */}
+			<Suspense fallback={<ProductListSkeleton />}>
+				<ProductList products={products.edges.map((e) => e.node)} />
+			</Suspense>
 		</div>
 	);
 }

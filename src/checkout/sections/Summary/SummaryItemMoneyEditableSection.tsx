@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { type FC, useMemo, useCallback } from "react";
 import { toast } from "react-toastify";
 import { type CheckoutLineFragment } from "@/checkout/graphql";
 import { Skeleton } from "@/checkout/components";
@@ -10,7 +10,7 @@ interface SummaryItemMoneyEditableSectionProps {
 	line: CheckoutLineFragment;
 }
 
-export const SummaryItemMoneyEditableSection: React.FC<SummaryItemMoneyEditableSectionProps> = ({ line }) => {
+export const SummaryItemMoneyEditableSection: FC<SummaryItemMoneyEditableSectionProps> = ({ line }) => {
 	const { form, onLineDelete } = useSummaryItemForm({ line });
 
 	const {
