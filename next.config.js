@@ -14,7 +14,7 @@ const config = {
 	experimental: {
 		typedRoutes: false,
 		optimizePackageImports: ["lucide-react", "@headlessui/react"],
-		// ppr: "incremental", // Requires Next.js canary - uncomment when upgrading to canary
+		// ppr: "incremental", // Ready for NextFaster-style performance - requires Next.js canary
 	},
 	compress: true,
 	poweredByHeader: false,

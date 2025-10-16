@@ -33,7 +33,7 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 	isComplete,
 	isActive,
 	isLocked,
-	completedSummary,
+	completedSummary: _completedSummary, // TODO: Display summary when section is complete but collapsed
 	children,
 	"data-testid": dataTestId,
 }) => {

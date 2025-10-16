@@ -14,7 +14,7 @@ import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
 
-// export const experimental_ppr = true; // Requires Next.js canary - uncomment when upgrading
+// export const experimental_ppr = true; // Ready for NextFaster-style performance - requires Next.js canary
 
 export async function generateMetadata(
 	props: {

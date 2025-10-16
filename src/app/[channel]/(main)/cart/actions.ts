@@ -1,19 +1,32 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { executeGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
 
-type deleteLineFromCheckoutArgs = {
-	lineId: string;
-	checkoutId: string;
-};
+// Validation schemas
+const deleteLineSchema = z.object({
+	lineId: z.string().min(1, "Line ID is required"),
+	checkoutId: z.string().min(1, "Checkout ID is required"),
+});
 
-export const deleteLineFromCheckout = async ({ lineId, checkoutId }: deleteLineFromCheckoutArgs) => {
+const updateLineQuantitySchema = z.object({
+	lineId: z.string().min(1, "Line ID is required"),
+	checkoutId: z.string().min(1, "Checkout ID is required"),
+	quantity: z.number().int("Quantity must be an integer").min(0, "Quantity must be non-negative").max(999, "Quantity cannot exceed 999"),
+});
+
+type deleteLineFromCheckoutArgs = z.infer<typeof deleteLineSchema>;
+
+export const deleteLineFromCheckout = async (args: deleteLineFromCheckoutArgs) => {
+	// Validate input
+	const validated = deleteLineSchema.parse(args);
+
 	await executeGraphQL(CheckoutDeleteLinesDocument, {
 		variables: {
-			checkoutId,
-			lineIds: [lineId],
+			checkoutId: validated.checkoutId,
+			lineIds: [validated.lineId],
 		},
 		cache: "no-cache",
 	});
@@ -21,36 +34,26 @@ export const deleteLineFromCheckout = async ({ lineId, checkoutId }: deleteLineF
 	revalidatePath("/cart");
 };
 
-type updateLineQuantityArgs = {
-	lineId: string;
-	checkoutId: string;
-	quantity: number;
-};
+type updateLineQuantityArgs = z.infer<typeof updateLineQuantitySchema>;
 
-export const updateLineQuantity = async ({
-	lineId,
-	checkoutId,
-	quantity,
-}: updateLineQuantityArgs): Promise<{ success: boolean }> => {
+export const updateLineQuantity = async (args: updateLineQuantityArgs): Promise<{ success: boolean }> => {
 	try {
-		// Validate quantity
-		if (quantity < 0 || quantity > 999 || !Number.isInteger(quantity)) {
-			return { success: false };
-		}
+		// Validate input with Zod
+		const validated = updateLineQuantitySchema.parse(args);
 
 		// If quantity is 0, delete the line instead
-		if (quantity === 0) {
-			await deleteLineFromCheckout({ lineId, checkoutId });
+		if (validated.quantity === 0) {
+			await deleteLineFromCheckout({ lineId: validated.lineId, checkoutId: validated.checkoutId });
 			return { success: true };
 		}
 
 		const result = await executeGraphQL(CheckoutLinesUpdateDocument, {
 			variables: {
-				checkoutId,
+				checkoutId: validated.checkoutId,
 				lines: [
 					{
-						lineId,
-						quantity,
+						lineId: validated.lineId,
+						quantity: validated.quantity,
 					},
 				],
 			},

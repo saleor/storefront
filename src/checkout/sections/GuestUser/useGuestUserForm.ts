@@ -10,7 +10,6 @@ import {
 import { useCheckoutFormValidationTrigger } from "@/checkout/hooks/useCheckoutFormValidationTrigger";
 import { useFormSubmit } from "@/checkout/hooks/useFormSubmit";
 import { type ChangeHandler, hasErrors, useForm } from "@/checkout/hooks/useForm";
-import { getCurrentHref } from "@/checkout/lib/utils/locale";
 import { useCheckoutEmailUpdate } from "@/checkout/sections/GuestUser/useCheckoutEmailUpdate";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 import { useUser } from "@/checkout/hooks/useUser";

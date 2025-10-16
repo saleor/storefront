@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader } from "@/ui/atoms/Loader";
-import { saleorAuthClient } from "@/ui/components/AuthProvider";
 
 type ConfirmationState = "loading" | "success" | "error" | "invalid";
 
@@ -52,7 +51,14 @@ export default function ConfirmAccountPage() {
 					}),
 				});
 
-				const { data } = await response.json();
+				const { data } = (await response.json()) as {
+					data?: {
+						confirmAccount?: {
+							errors?: Array<{ message?: string; field?: string; code?: string }>;
+							user?: { id: string; email: string };
+						};
+					};
+				};
 
 				if (data?.confirmAccount?.errors && data.confirmAccount.errors.length > 0) {
 					const error = data.confirmAccount.errors[0];
