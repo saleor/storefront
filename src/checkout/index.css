@@ -56,22 +56,8 @@ input[type="radio"]:focus {
 	--tw-ring-opacity: 0.2 !important;
 }
 
-/* Buttons */
-button[type="submit"],
-button[type="button"] {
-	@apply transition-all duration-200 !important;
-}
-
-button[type="submit"]:not(.secondary) {
-	@apply bg-white font-medium text-black !important;
-	@apply hover:bg-accent-200 !important;
-	@apply focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black !important;
-}
-
-button.secondary {
-	@apply border-2 border-accent-200 bg-transparent text-accent-100 !important;
-	@apply hover:border-accent-300 hover:bg-accent-950 !important;
-}
+/* Buttons - Use consistent button styles from globals.css */
+/* Primary buttons (.btn-primary) and checkout Button component are now unified */
 
 /* Summary Section */
 .summary-section,
@@ -129,22 +115,7 @@ button:disabled {
 	@apply cursor-not-allowed opacity-50 !important;
 }
 
-/* Toast Notifications */
-.Toastify__toast {
-	@apply border border-base-800 bg-base-950 text-white !important;
-}
-
-.Toastify__toast--success {
-	@apply border-green-700 !important;
-}
-
-.Toastify__toast--error {
-	@apply border-red-700 !important;
-}
-
-.Toastify__toast--warning {
-	@apply border-yellow-700 !important;
-}
+/* Toast Notifications - Using global dark theme from toast.css */
 
 /* Links */
 a {

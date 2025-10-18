@@ -11,7 +11,7 @@ export const Checkbox = <TName extends string>({ name, label }: CheckboxProps<TN
 	const [field, { value }] = useField<boolean>(name);
 
 	return (
-		<label className="inline-flex items-center gap-x-2">
+		<label className="inline-flex items-center gap-x-2 text-base-100">
 			<input
 				{...field}
 				value={field.value as unknown as string}
@@ -21,9 +21,9 @@ export const Checkbox = <TName extends string>({ name, label }: CheckboxProps<TN
 					handleChange({ ...event, target: { ...event.target, name, value: !value } });
 				}}
 				type="checkbox"
-				className="rounded border-neutral-300 text-neutral-600 shadow-sm focus:border-neutral-300 focus:ring focus:ring-neutral-200 focus:ring-opacity-50 focus:ring-offset-0"
+				className="rounded border-base-700 bg-base-950 text-accent-500 shadow-sm checked:border-accent-500 checked:bg-accent-500 focus:border-accent-500 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black"
 			/>
-			<span>{label}</span>
+			<span className="text-white">{label}</span>
 		</label>
 	);
 };

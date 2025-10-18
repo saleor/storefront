@@ -42,12 +42,12 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 			className={clsx(
 				"rounded-lg border transition-all duration-200",
 				{
-					// Complete section - success styling
-					"border-green-200 bg-white": isComplete,
-					// Locked section - muted styling with reduced opacity
-					"border-neutral-200 bg-neutral-50 opacity-60": isLocked,
-					// Active unlocked section - normal styling
-					"border-neutral-200 bg-white": !isComplete && !isLocked,
+					// Complete section - success styling with dark theme
+					"border-green-700 bg-base-950": isComplete,
+					// Locked section - muted styling with reduced opacity and dark theme
+					"border-base-700 bg-base-900 opacity-60": isLocked,
+					// Active unlocked section - dark theme
+					"border-base-700 bg-base-950": !isComplete && !isLocked,
 				},
 			)}
 			data-testid={dataTestId}
@@ -61,16 +61,16 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 							<CheckIcon className="h-5 w-5 text-white" strokeWidth={3} />
 						</div>
 					) : isLocked ? (
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-300">
-							<LockIcon className="h-4 w-4 text-neutral-500" />
+						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-base-700">
+							<LockIcon className="h-4 w-4 text-base-400" />
 						</div>
 					) : (
 						<div
 							className={clsx(
 								"flex h-8 w-8 items-center justify-center rounded-full font-semibold",
 								{
-									"bg-blue-600 text-white": isActive,
-									"bg-neutral-200 text-neutral-600": !isActive,
+									"bg-accent-600 text-white": isActive,
+									"bg-base-700 text-base-200": !isActive,
 								},
 							)}
 						>
@@ -83,9 +83,9 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 				<div className="min-w-0 flex-1">
 					<h3
 						className={clsx("text-base font-semibold", {
-							"text-green-900": isComplete,
-							"text-neutral-500": isLocked,
-							"text-neutral-900": !isComplete && !isLocked,
+							"text-green-400": isComplete,
+							"text-base-400": isLocked,
+							"text-white": !isComplete && !isLocked,
 						})}
 					>
 						{title}
@@ -95,7 +95,7 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 
 			{/* Content - always visible for active sections, with pointer-events disabled when locked */}
 			<div
-				className={clsx("border-t border-neutral-200 px-4 pb-4 pt-4", {
+				className={clsx("border-t border-base-800 px-4 pb-4 pt-4", {
 					"pointer-events-none select-none": isLocked,
 				})}
 			>

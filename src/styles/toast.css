@@ -1,51 +1,52 @@
-/* Custom Toast Styling */
+/* Custom Toast Styling - Dark Theme for Black Background */
 
 :root {
 	--toastify-color-success: #10b981;
 	--toastify-color-info: #3b82f6;
 	--toastify-color-error: #ef4444;
 	--toastify-color-warning: #f59e0b;
-	--toastify-text-color-light: #1f2937;
+	--toastify-text-color-dark: #f9fafb;
 	--toastify-toast-width: 380px;
 }
 
 .Toastify__toast-container {
-	z-index: 9999;
+	z-index: 9999 !important;
 	padding: 0;
 }
 
 .Toastify__toast {
 	border-radius: 0.75rem;
-	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
 	padding: 1rem 1.25rem;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 	font-size: 0.875rem;
 	line-height: 1.5;
 	min-height: 64px;
+	backdrop-filter: blur(8px);
 }
 
 .Toastify__toast--success {
-	background-color: #f0fdf4;
-	border: 1px solid #86efac;
-	color: #166534;
+	background-color: rgba(6, 78, 59, 0.95);
+	border: 2px solid #10b981;
+	color: #d1fae5;
 }
 
 .Toastify__toast--info {
-	background-color: #eff6ff;
-	border: 1px solid #93c5fd;
-	color: #1e40af;
+	background-color: rgba(30, 58, 138, 0.95);
+	border: 2px solid #3b82f6;
+	color: #dbeafe;
 }
 
 .Toastify__toast--error {
-	background-color: #fef2f2;
-	border: 1px solid #fca5a5;
-	color: #991b1b;
+	background-color: rgba(127, 29, 29, 0.95);
+	border: 2px solid #ef4444;
+	color: #fee2e2;
 }
 
 .Toastify__toast--warning {
-	background-color: #fffbeb;
-	border: 1px solid #fcd34d;
-	color: #92400e;
+	background-color: rgba(120, 53, 15, 0.95);
+	border: 2px solid #f59e0b;
+	color: #fef3c7;
 }
 
 .Toastify__toast-body {

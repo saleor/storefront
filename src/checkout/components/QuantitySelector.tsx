@@ -165,14 +165,14 @@ export const QuantitySelector = ({
 				onClick={handleDecrement}
 				disabled={disabled || loading || isAtMin}
 				className={clsx(
-					"flex items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1",
+					"flex items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
 					sizeClasses[size].button,
 					{
-						"border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 active:bg-neutral-100":
+						"border-base-700 bg-base-950 text-white hover:bg-base-900 active:bg-base-800":
 							!disabled && !loading && !isAtMin,
-						"border-red-300 bg-white text-red-600 hover:bg-red-50 active:bg-red-100":
+						"border-red-700 bg-red-950 text-red-400 hover:bg-red-900 active:bg-red-800":
 							!disabled && !loading && isAtMin && onDelete,
-						"cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400":
+						"cursor-not-allowed border-base-800 bg-base-900 text-base-600":
 							disabled || loading || (isAtMin && !onDelete),
 					},
 				)}
@@ -197,11 +197,11 @@ export const QuantitySelector = ({
 				onKeyDown={handleKeyDown}
 				disabled={disabled || loading}
 				className={clsx(
-					"rounded-md border border-neutral-300 text-center font-medium transition-all focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200",
+					"rounded-md border border-base-700 bg-base-950 text-center font-medium transition-all focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
 					sizeClasses[size].input,
 					{
-						"bg-white text-neutral-900": !disabled && !loading,
-						"cursor-not-allowed bg-neutral-100 text-neutral-400": disabled || loading,
+						"text-white": !disabled && !loading,
+						"cursor-not-allowed bg-base-900 text-base-600": disabled || loading,
 					},
 				)}
 				aria-label="Quantity"
@@ -215,12 +215,12 @@ export const QuantitySelector = ({
 				onClick={handleIncrement}
 				disabled={disabled || loading || isAtMax}
 				className={clsx(
-					"flex items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1",
+					"flex items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
 					sizeClasses[size].button,
 					{
-						"border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 active:bg-neutral-100":
+						"border-base-700 bg-base-950 text-white hover:bg-base-900 active:bg-base-800":
 							!disabled && !loading && !isAtMax,
-						"cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400":
+						"cursor-not-allowed border-base-800 bg-base-900 text-base-600":
 							disabled || loading || isAtMax,
 					},
 				)}

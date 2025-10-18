@@ -15,38 +15,38 @@ interface CheckoutProgressIndicatorProps {
 
 export const CheckoutProgressIndicator = ({ steps, className }: CheckoutProgressIndicatorProps) => {
 	return (
-		<div className={clsx("rounded-lg border border-neutral-200 bg-white p-4 shadow-sm", className)}>
-			<h3 className="mb-3 text-sm font-semibold text-neutral-900">Checkout Progress</h3>
+		<div className={clsx("rounded-lg border border-base-700 bg-base-950 p-4 shadow-sm", className)}>
+			<h3 className="mb-3 text-sm font-semibold text-white">Checkout Progress</h3>
 			<ul className="space-y-2">
 				{steps.map((step) => (
 					<li key={step.id} className="flex items-start gap-3">
 						<div className="flex-shrink-0 pt-0.5">
 							{step.status === "complete" ? (
-								<div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100">
-									<CheckIcon className="h-3.5 w-3.5 text-green-700" strokeWidth={3} />
+								<div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-600">
+									<CheckIcon className="h-3.5 w-3.5 text-white" strokeWidth={3} />
 								</div>
 							) : step.status === "current" ? (
-								<div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-50">
-									<div className="h-2 w-2 rounded-full bg-blue-500" />
+								<div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-accent-500 bg-accent-950">
+									<div className="h-2 w-2 rounded-full bg-accent-500" />
 								</div>
 							) : (
-								<div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-neutral-300 bg-neutral-50">
-									<div className="h-2 w-2 rounded-full bg-neutral-300" />
+								<div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-base-700 bg-base-900">
+									<div className="h-2 w-2 rounded-full bg-base-700" />
 								</div>
 							)}
 						</div>
 						<div className="flex-1 min-w-0">
 							<p
 								className={clsx("text-sm font-medium", {
-									"text-green-700": step.status === "complete",
-									"text-blue-700": step.status === "current",
-									"text-neutral-500": step.status === "incomplete",
+									"text-green-400": step.status === "complete",
+									"text-accent-300": step.status === "current",
+									"text-base-400": step.status === "incomplete",
 								})}
 							>
 								{step.label}
 							</p>
 							{step.error && (
-								<p className="mt-1 flex items-start gap-1 text-xs text-red-600">
+								<p className="mt-1 flex items-start gap-1 text-xs text-red-400">
 									<AlertCircleIcon className="mt-0.5 h-3 w-3 flex-shrink-0" />
 									<span>{step.error}</span>
 								</p>

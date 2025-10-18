@@ -19,9 +19,8 @@ export function ProductElement({
 								loading={loading}
 								src={product.thumbnail.url}
 								alt={product.thumbnail.alt ?? ""}
-								width={512}
-								height={512}
-								sizes={"512px"}
+								width={384}
+								height={384}
 								priority={priority}
 							/>
 							{/* Shimmer effect on hover */}

@@ -116,8 +116,9 @@ export function CartItem({ item, checkoutId, onQuantityChange, onDelete, index }
 						<Image
 							src={item.variant.product.thumbnail.url}
 							alt={item.variant.product.thumbnail.alt ?? ""}
-							width={200}
-							height={200}
+							width={144}
+							height={144}
+							sizes="(max-width: 640px) 112px, 144px"
 							className="h-full w-full object-contain object-center p-2 transition-transform duration-300 group-hover:scale-105"
 						/>
 					)}

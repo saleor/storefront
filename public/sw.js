@@ -1,5 +1,5 @@
 // Service Worker for Progressive Web App capabilities
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `saleor-storefront-${CACHE_VERSION}`;
 
 // Assets to cache on install
@@ -58,6 +58,17 @@ self.addEventListener('fetch', (event) => {
 
 	// Skip cross-origin requests
 	if (url.origin !== location.origin) {
+		return;
+	}
+
+	// Skip CSS and JS files - Next.js handles these with its own optimizations
+	// Let the browser cache them naturally with the headers from next.config.js
+	if (url.pathname.endsWith('.css') || url.pathname.endsWith('.js')) {
+		return;
+	}
+
+	// Skip _next/static files - Next.js handles these with immutable caching
+	if (url.pathname.startsWith('/_next/static/')) {
 		return;
 	}
 

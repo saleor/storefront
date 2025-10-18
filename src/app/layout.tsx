@@ -106,9 +106,6 @@ export default function RootLayout(props: { children: ReactNode }) {
 				{/* Preconnect to external domains */}
 				<link rel="preconnect" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} crossOrigin="anonymous" />
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
-
-				{/* Preload critical resources */}
-				<link rel="preload" href="/fonts/Geometos.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
 			</head>
 			<body
 				className={`relative min-h-dvh overflow-x-hidden font-sans text-base-50 antialiased ${geometos.className}`}
@@ -147,8 +144,8 @@ export default function RootLayout(props: { children: ReactNode }) {
 					pauseOnFocusLoss
 					draggable
 					pauseOnHover
-					theme="light"
-					style={{ marginTop: "1rem" }}
+					theme="dark"
+					style={{ marginTop: "1rem", zIndex: 9999 }}
 				/>
 			</body>
 		</html>
