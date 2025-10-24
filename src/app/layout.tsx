@@ -8,6 +8,11 @@ import localFont from "next/font/local";
 import { ToastContainer } from "react-toastify";
 import { ServiceWorkerRegister } from "./sw-register";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
+import { StructuredData } from "@/ui/components/StructuredData";
+import { generateOrganizationSchema, generateWebsiteSchema } from "@/lib/seo";
+import { SITE_CONFIG } from "@/lib/constants";
+import { CookieConsent } from "@/components/CookieConsent";
+import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
 
 const geometos = localFont({
 	src: "../../public/fonts/Geometos.ttf",
@@ -20,18 +25,26 @@ const geometos = localFont({
 
 export const metadata: Metadata = {
 	title: {
-		default: "Your Store | Premium E-commerce",
-		template: "%s | Your Store",
+		default: SITE_CONFIG.name,
+		template: `%s | ${SITE_CONFIG.name}`,
 	},
-	description:
-		"Discover premium products with fast shipping and exceptional customer service. Shop our curated collection of high-quality items.",
-	metadataBase: process.env.NEXT_PUBLIC_STOREFRONT_URL
-		? new URL(process.env.NEXT_PUBLIC_STOREFRONT_URL)
-		: undefined,
-	keywords: ["e-commerce", "online shopping", "premium products", "fast shipping"],
-	authors: [{ name: "Your Store" }],
-	creator: "Your Store",
-	publisher: "Your Store",
+	description: SITE_CONFIG.description,
+	metadataBase: new URL(SITE_CONFIG.url),
+	keywords: [
+		"guitar tones",
+		"cab impulse responses",
+		"IR",
+		"amp captures",
+		"neural captures",
+		"guitar plugins",
+		"rock guitar tone",
+		"metal guitar tone",
+		"professional audio",
+		"guitar cab simulation",
+	],
+	authors: [{ name: SITE_CONFIG.name }],
+	creator: SITE_CONFIG.name,
+	publisher: SITE_CONFIG.name,
 	formatDetection: {
 		email: false,
 		address: false,
@@ -39,26 +52,27 @@ export const metadata: Metadata = {
 	},
 	openGraph: {
 		type: "website",
-		locale: "en_US",
-		url: process.env.NEXT_PUBLIC_STOREFRONT_URL,
-		siteName: "Your Store",
-		title: "Your Store | Premium E-commerce",
-		description: "Discover premium products with fast shipping and exceptional customer service.",
+		locale: SITE_CONFIG.locale,
+		url: SITE_CONFIG.url,
+		siteName: SITE_CONFIG.name,
+		title: SITE_CONFIG.name,
+		description: SITE_CONFIG.description,
 		images: [
 			{
-				url: "/og-image.jpg",
+				url: SITE_CONFIG.image,
 				width: 1200,
 				height: 630,
-				alt: "Your Store",
+				alt: SITE_CONFIG.name,
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Your Store | Premium E-commerce",
-		description: "Discover premium products with fast shipping and exceptional customer service.",
-		creator: "@yourstore",
-		images: ["/og-image.jpg"],
+		title: SITE_CONFIG.name,
+		description: SITE_CONFIG.description,
+		creator: SITE_CONFIG.twitter.creator,
+		site: SITE_CONFIG.twitter.site,
+		images: [SITE_CONFIG.image],
 	},
 	robots: {
 		index: true,
@@ -80,7 +94,8 @@ export const metadata: Metadata = {
 	},
 	manifest: "/site.webmanifest",
 	verification: {
-		google: "your-google-verification-code",
+		// Add your verification codes here
+		// google: "your-google-verification-code",
 		// yandex: "your-yandex-verification-code",
 		// bing: "your-bing-verification-code",
 	},
@@ -106,6 +121,9 @@ export default function RootLayout(props: { children: ReactNode }) {
 				{/* Preconnect to external domains */}
 				<link rel="preconnect" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} crossOrigin="anonymous" />
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
+
+				{/* Structured Data for SEO */}
+				<StructuredData data={[generateOrganizationSchema(), generateWebsiteSchema()]} />
 			</head>
 			<body
 				className={`relative min-h-dvh overflow-x-hidden font-sans text-base-50 antialiased ${geometos.className}`}
@@ -129,24 +147,27 @@ export default function RootLayout(props: { children: ReactNode }) {
 				>
 					Skip to main content
 				</a>
-				{children}
-				<Suspense>
-					<DraftModeNotification />
-				</Suspense>
-				<ServiceWorkerRegister />
-				<ToastContainer
-					position="top-right"
-					autoClose={3000}
-					hideProgressBar={false}
-					newestOnTop
-					closeOnClick
-					rtl={false}
-					pauseOnFocusLoss
-					draggable
-					pauseOnHover
-					theme="dark"
-					style={{ marginTop: "1rem", zIndex: 9999 }}
-				/>
+				<CookieConsentProvider>
+					{children}
+					<Suspense>
+						<DraftModeNotification />
+					</Suspense>
+					<ServiceWorkerRegister />
+					<ToastContainer
+						position="top-right"
+						autoClose={3000}
+						hideProgressBar={false}
+						newestOnTop
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="dark"
+						style={{ marginTop: "1rem", zIndex: 9999 }}
+					/>
+					<CookieConsent />
+				</CookieConsentProvider>
 			</body>
 		</html>
 	);

@@ -40,7 +40,7 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 	return (
 		<div
 			className={clsx(
-				"rounded-lg border transition-all duration-200",
+				"overflow-hidden rounded-lg border transition-all duration-200",
 				{
 					// Complete section - success styling with dark theme
 					"border-green-700 bg-base-950": isComplete,
@@ -84,8 +84,7 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 					<h3
 						className={clsx("text-base font-semibold", {
 							"text-green-400": isComplete,
-							"text-base-400": isLocked,
-							"text-white": !isComplete && !isLocked,
+							"text-white": !isComplete || isLocked,
 						})}
 					>
 						{title}

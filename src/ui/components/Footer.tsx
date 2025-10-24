@@ -1,13 +1,13 @@
-import Link from "next/link";
-import Image from "next/image";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { ChannelSelect } from "./ChannelSelect";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
+import { CookiePreferencesButton } from "@/components/CookieConsent";
+import { DEFAULT_CHANNEL } from "@/app/config";
 
-export async function Footer({ channel }: { channel: string }) {
+export async function Footer() {
 	const footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "footer", channel },
+		variables: { slug: "footer", channel: DEFAULT_CHANNEL },
 		revalidate: 60 * 60 * 24,
 	});
 	const channels = process.env.SALEOR_APP_TOKEN
@@ -21,7 +21,7 @@ export async function Footer({ channel }: { channel: string }) {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className="mt-24 border-t border-base-900 bg-base-950">
+		<footer id="footer" className="mt-24 border-t border-base-900 bg-base-950">
 			<div className="mx-auto max-w-7xl px-6 lg:px-12">
 				<div className="grid grid-cols-1 gap-12 py-20 md:grid-cols-3 md:gap-16">
 					{footerLinks.menu?.items?.map((item) => {
@@ -98,27 +98,12 @@ export async function Footer({ channel }: { channel: string }) {
 				)}
 
 				<div className="flex flex-col justify-between gap-6 border-t border-base-900 py-10 sm:flex-row sm:items-center">
-					<p className="text-sm text-base-400">
-						Copyright &copy; {currentYear} Your Store, Inc. All rights reserved.
-					</p>
-					<p className="flex items-center gap-3 text-sm text-base-400">
-						<span>Powered by</span>
-						<Link
-							target="_blank"
-							href="https://saleor.io/"
-							className="font-medium text-base-200 transition-colors duration-200 hover:text-accent-200"
-						>
-							Saleor
-						</Link>
-						<Link
-							href="https://github.com/saleor/saleor"
-							target="_blank"
-							className="opacity-40 transition-opacity duration-200 hover:opacity-100"
-							aria-label="Visit Saleor GitHub repository"
-						>
-							<Image alt="Saleor GitHub" height={20} width={20} src="/github-mark.svg" />
-						</Link>
-					</p>
+					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+						<p className="text-sm text-base-400">
+							Copyright &copy; {currentYear} Sonic Drive Studio. All rights reserved.
+						</p>
+						<CookiePreferencesButton />
+					</div>
 				</div>
 			</div>
 		</footer>

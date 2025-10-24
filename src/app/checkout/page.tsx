@@ -3,7 +3,8 @@ import { invariant } from "ts-invariant";
 import { RootWrapper } from "./pageWrapper";
 
 export const metadata = {
-	title: "Checkout · Saleor Storefront example",
+	title: "Checkout",
+	description: "Complete your purchase securely. Fill in your details to checkout and get instant access to your digital products.",
 };
 
 export default async function CheckoutPage(props: {

@@ -19,9 +19,10 @@ export function ProductElement({
 								loading={loading}
 								src={product.thumbnail.url}
 								alt={product.thumbnail.alt ?? ""}
-								width={384}
-								height={384}
+								width={400}
+								height={400}
 								priority={priority}
+								sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
 							/>
 							{/* Shimmer effect on hover */}
 							<div className="animate-shimmer pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
@@ -33,7 +34,7 @@ export function ProductElement({
 								{product.name}
 							</h3>
 							<p
-								className="mt-1.5 text-sm text-base-400 transition-colors duration-300 group-hover:text-base-300"
+								className="mt-1.5 text-sm text-base-300 transition-colors duration-300 group-hover:text-base-200"
 								data-testid="ProductElement_Category"
 							>
 								{product.category?.name}

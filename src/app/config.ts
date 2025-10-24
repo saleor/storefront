@@ -3,6 +3,7 @@ import { getNextServerCookiesStorageAsync } from "@saleor/auth-sdk/next/server";
 import { invariant } from "ts-invariant";
 
 export const ProductsPerPage = 12;
+export const DEFAULT_CHANNEL = "default-channel";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");

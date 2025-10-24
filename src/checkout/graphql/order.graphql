@@ -108,6 +108,10 @@ fragment OrderFragment on Order {
 	totalCaptured {
 		...Money
 	}
+	metadata {
+		key
+		value
+	}
 }
 
 query order($id: ID!, $languageCode: LanguageCodeEnum!) {

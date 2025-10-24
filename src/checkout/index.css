@@ -6,53 +6,53 @@
 }
 
 /* Form Fields */
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-input[type="number"],
-select,
-textarea {
+.page input[type="text"],
+.page input[type="email"],
+.page input[type="tel"],
+.page input[type="password"],
+.page input[type="number"],
+.page select,
+.page textarea {
 	@apply border-base-700 bg-base-950 text-white placeholder:text-base-500 !important;
 	@apply focus:border-accent-500 focus:ring-2 focus:ring-accent-500 !important;
 	@apply transition-all duration-200 !important;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus,
-select:focus,
-textarea:focus {
+.page input[type="text"]:focus,
+.page input[type="email"]:focus,
+.page input[type="tel"]:focus,
+.page input[type="password"]:focus,
+.page input[type="number"]:focus,
+.page select:focus,
+.page textarea:focus {
 	--tw-ring-opacity: 0.2 !important;
 }
 
-input[type="text"]:hover,
-input[type="email"]:hover,
-input[type="tel"]:hover,
-input[type="password"]:hover,
-input[type="number"]:hover,
-select:hover,
-textarea:hover {
+.page input[type="text"]:hover,
+.page input[type="email"]:hover,
+.page input[type="tel"]:hover,
+.page input[type="password"]:hover,
+.page input[type="number"]:hover,
+.page select:hover,
+.page textarea:hover {
 	@apply border-base-600 !important;
 }
 
 /* Labels */
-label {
+.page label {
 	@apply font-medium text-base-200 !important;
 }
 
 /* Checkboxes and Radio Buttons */
-input[type="checkbox"],
-input[type="radio"] {
+.page input[type="checkbox"],
+.page input[type="radio"] {
 	@apply border-base-700 bg-base-950 !important;
 	@apply checked:border-accent-500 checked:bg-accent-500 !important;
 	@apply focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black !important;
 }
 
-input[type="checkbox"]:focus,
-input[type="radio"]:focus {
+.page input[type="checkbox"]:focus,
+.page input[type="radio"]:focus {
 	--tw-ring-opacity: 0.2 !important;
 }
 
@@ -79,17 +79,17 @@ input[type="radio"]:focus {
 }
 
 /* Headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.page h1,
+.page h2,
+.page h3,
+.page h4,
+.page h5,
+.page h6 {
 	@apply text-white !important;
 }
 
 /* Sections */
-section {
+.page section {
 	@apply bg-black !important;
 }
 
@@ -108,24 +108,24 @@ section {
 }
 
 /* Disabled States */
-input:disabled,
-select:disabled,
-textarea:disabled,
-button:disabled {
+.page input:disabled,
+.page select:disabled,
+.page textarea:disabled,
+.page button:disabled {
 	@apply cursor-not-allowed opacity-50 !important;
 }
 
 /* Toast Notifications - Using global dark theme from toast.css */
 
 /* Links */
-a {
-	@apply text-accent-200 hover:text-accent-300 !important;
-	@apply transition-colors duration-200 !important;
+.page a {
+	@apply text-accent-200 hover:text-accent-300;
+	@apply transition-colors duration-200;
 }
 
 /* Dividers */
-hr,
-.divider {
+.page hr,
+.page .divider {
 	@apply border-base-800 !important;
 }
 
@@ -142,11 +142,38 @@ hr,
 }
 
 /* Select Dropdowns */
-select {
+.page select {
 	@apply appearance-none !important;
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
 	background-position: right 0.5rem center !important;
 	background-repeat: no-repeat !important;
 	background-size: 1.5em 1.5em !important;
 	padding-right: 2.5rem !important;
+}
+
+/* Adyen Payment Form Styling - Dark Theme */
+.adyen-checkout__label,
+.adyen-checkout__label--focused,
+.adyen-checkout__input,
+.adyen-checkout__input--error,
+.adyen-checkout__input--valid,
+.adyen-checkout__dropdown__button,
+.adyen-checkout__dropdown__list {
+	@apply text-white !important;
+	color: white !important;
+}
+
+.adyen-checkout__input,
+.adyen-checkout__dropdown__button {
+	@apply border-base-700 bg-base-950 !important;
+	background-color: rgb(10 10 10) !important;
+	border-color: rgb(64 64 64) !important;
+}
+
+.adyen-checkout__field--error .adyen-checkout__input {
+	@apply border-red-500 !important;
+}
+
+.adyen-checkout__button--pay {
+	@apply bg-white text-black hover:bg-accent-200 !important;
 }

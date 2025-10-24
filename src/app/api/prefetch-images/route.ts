@@ -6,19 +6,20 @@ import {
 	ProductListByCategoryDocument,
 	ProductListByCollectionDocument,
 } from "@/gql/graphql";
-
-// Note: edge runtime and dynamic exports removed due to incompatibility with cacheComponents
-// This route is automatically dynamic due to searchParams usage
+import { DEFAULT_CHANNEL } from "@/app/config";
 
 /**
  * API endpoint for prefetching images based on route pathname
  * Used by enhanced Link component to prefetch images before navigation
+ *
+ * Note: This route is automatically dynamic due to searchParams usage.
+ * The prerender warnings during build can be safely ignored - they indicate
+ * that Next.js correctly detected this route needs dynamic rendering.
  */
 export async function GET(request: NextRequest) {
 	try {
 		const searchParams = request.nextUrl.searchParams;
 		const pathname = searchParams.get("pathname");
-		const channel = searchParams.get("channel") || "default-channel";
 
 		if (!pathname) {
 			return NextResponse.json({ images: [] });
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
 			const slug = decodeURIComponent(productMatch[1]);
 
 			const { product } = await executeGraphQL(ProductDetailsDocument, {
-				variables: { slug, channel },
+				variables: { slug, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
 			});
 
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
 			const slug = decodeURIComponent(categoryMatch[1]);
 
 			const { category } = await executeGraphQL(ProductListByCategoryDocument, {
-				variables: { slug, channel },
+				variables: { slug, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
 			});
 
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
 			const slug = decodeURIComponent(collectionMatch[1]);
 
 			const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-				variables: { slug, channel },
+				variables: { slug, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
 			});
 
@@ -86,7 +87,7 @@ export async function GET(request: NextRequest) {
 		// For product listing pages, prefetch from general product list
 		if (pathname.includes("/products")) {
 			const { products } = await executeGraphQL(ProductListDocument, {
-				variables: { first: 12, channel },
+				variables: { first: 12, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
 			});
 

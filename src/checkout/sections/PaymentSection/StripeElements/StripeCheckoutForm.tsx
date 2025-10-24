@@ -355,10 +355,10 @@ export function StripeCheckoutForm() {
 			<PaymentElement className="payment-element" options={paymentElementOptions} />
 
 			{paymentError && (
-				<div className="rounded-md border border-red-200 bg-red-50 p-4">
+				<div className="rounded-md border border-red-700 bg-red-950 p-4">
 					<div className="flex items-start gap-3">
 						<svg
-							className="h-5 w-5 flex-shrink-0 text-red-600"
+							className="h-5 w-5 flex-shrink-0 text-red-400"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -371,8 +371,8 @@ export function StripeCheckoutForm() {
 							/>
 						</svg>
 						<div className="flex-1">
-							<h4 className="text-sm font-semibold text-red-900">Payment Error</h4>
-							<p className="mt-1 text-sm text-red-800">{paymentError}</p>
+							<h4 className="text-sm font-semibold text-red-200">Payment Error</h4>
+							<p className="mt-1 text-sm text-red-300">{paymentError}</p>
 						</div>
 					</div>
 				</div>

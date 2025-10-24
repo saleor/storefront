@@ -17,10 +17,12 @@ export const usePayments = () => {
 
 	useEffect(() => {
 		// the checkout was already paid earlier, complete
-		if (!completingCheckout && paidStatuses.includes(paymentStatus)) {
+		// BUT: Don't auto-complete if total is 0 (user should review and confirm manually)
+		const checkoutAmount = checkout?.totalPrice?.gross?.amount;
+		if (!completingCheckout && paidStatuses.includes(paymentStatus) && checkoutAmount !== 0) {
 			void onCheckoutComplete();
 		}
-	}, [completingCheckout, onCheckoutComplete, paymentStatus]);
+	}, [completingCheckout, onCheckoutComplete, paymentStatus, checkout?.totalPrice?.gross?.amount]);
 
 	return { fetching, availablePaymentGateways };
 };

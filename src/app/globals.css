@@ -191,7 +191,7 @@
 	/* Primary Button - High contrast for accessibility */
 	.btn-primary {
 		@apply relative overflow-hidden bg-white px-6 py-3 font-medium tracking-wide text-black;
-		@apply hover:scale-105 hover:bg-accent-200 focus:bg-accent-200 active:scale-95;
+		@apply hover:scale-105 hover:bg-accent-200 hover:text-black focus:bg-accent-200 focus:text-black active:scale-95 active:text-black;
 		@apply transition-all duration-200 ease-in-out;
 		@apply focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black;
 		@apply disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100;
@@ -476,6 +476,44 @@
 		animation-delay: 0.4s;
 	}
 
+	/* Mobile menu styles */
+	.overflow-hidden-no-shift {
+		overflow: hidden;
+	}
+
+	/* Reserve scrollbar space to prevent layout shift */
+	html {
+		scrollbar-gutter: stable;
+		width: fit-content;
+		min-width: 100%;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.mobile-nav-link {
+		opacity: 0;
+		transform: translateY(20px);
+		will-change: opacity, transform;
+	}
+
+	.mobile-nav-link.animate-in {
+		animation: fadeInUp 0.3s ease-out forwards;
+		animation-delay: var(--animation-delay, 0s);
+	}
+
+	.menu-backdrop {
+		will-change: opacity;
+	}
+
 	/* Respect reduced motion preferences */
 	@media (prefers-reduced-motion: reduce) {
 		.animate-shimmer,
@@ -484,10 +522,16 @@
 		.animate-slide-up-fade,
 		.animate-scale-in,
 		.animate-gradient,
-		.stagger-item {
+		.stagger-item,
+		.mobile-nav-link {
 			animation: none !important;
 			opacity: 1 !important;
 			transform: none !important;
+		}
+
+		.mobile-nav-link.animate-in {
+			opacity: 1;
+			transform: translateY(0);
 		}
 
 		.hover-lift:hover {

@@ -8,15 +8,13 @@ export function VariantSelector({
 	variants,
 	product,
 	selectedVariant,
-	channel,
 }: {
 	variants: readonly VariantDetailsFragment[];
 	product: ProductListItemFragment;
 	selectedVariant?: VariantDetailsFragment;
-	channel: string;
 }) {
 	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
-		redirect("/" + channel + getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id }));
+		redirect(getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id }));
 	}
 
 	return (

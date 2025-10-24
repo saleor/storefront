@@ -468,13 +468,13 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 		return (
 			<div className="flex items-center justify-center p-8">
 				<div className="text-center">
-					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
-					<p className="text-gray-600">{getLoadingMessage()}</p>
+					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-white"></div>
+					<p className="text-white">{getLoadingMessage()}</p>
 					{initializationError && (
-						<div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3">
-							<p className="text-sm text-red-800">{initializationError}</p>
+						<div className="mt-4 rounded-md border border-red-700 bg-red-950 p-3">
+							<p className="text-sm text-red-200">{initializationError}</p>
 							<button
-								className="mt-2 text-sm text-red-600 underline hover:text-red-800"
+								className="mt-2 text-sm text-red-400 underline hover:text-red-300"
 								onClick={() => {
 									setInitializationError(null);
 									setIsInitializing(false);
@@ -523,7 +523,18 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 			options={{
 				clientSecret: session?.clientSecret || undefined,
 				appearance: {
-					theme: "stripe",
+					theme: "night",
+					variables: {
+						colorText: "#ffffff",
+						colorTextSecondary: "#e5e5e5",
+						colorTextPlaceholder: "#a3a3a3",
+						colorBackground: "#262626",
+						colorPrimary: "#ffffff",
+						colorDanger: "#ef4444",
+						fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+						fontSizeBase: "16px",
+						borderRadius: "6px",
+					},
 				},
 				// Enable automatic payment methods as per Stripe app documentation
 				locale: "auto",

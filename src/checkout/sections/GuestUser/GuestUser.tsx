@@ -5,6 +5,7 @@ import { Checkbox } from "@/checkout/components/Checkbox";
 import { TextInput } from "@/checkout/components/TextInput";
 import { useGuestUserForm } from "@/checkout/sections/GuestUser/useGuestUserForm";
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
+import { useHasCortexProducts } from "@/checkout/hooks/useHasCortexProducts";
 
 type GuestUserProps = Pick<SignInFormContainerProps, "onSectionChange"> & {
 	onEmailChange: (email: string) => void;
@@ -15,6 +16,7 @@ export const GuestUser: FC<GuestUserProps> = ({ onSectionChange, onEmailChange, 
 	const form = useGuestUserForm({ initialEmail });
 	const { handleChange } = form;
 	const { createAccount } = form.values;
+	const hasCortexProducts = useHasCortexProducts();
 
 	return (
 		<SignInFormContainer
@@ -34,6 +36,21 @@ export const GuestUser: FC<GuestUserProps> = ({ onSectionChange, onEmailChange, 
 							onEmailChange(event.currentTarget.value);
 						}}
 					/>
+					{hasCortexProducts && (
+						<>
+							<TextInput
+								required
+								name="cortexCloudUsername"
+								label="Cortex Cloud Username"
+								data-testid="cortexCloudUsernameInput"
+							/>
+							<Checkbox
+								name="cortexFollowConfirmed"
+								label="I confirm that I follow GuitarJonSDS on Cortex Cloud"
+								data-testid="cortexFollowConfirmedCheckbox"
+							/>
+						</>
+					)}
 					<Checkbox
 						name="createAccount"
 						label="I want to create account"

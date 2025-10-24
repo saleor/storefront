@@ -33,5 +33,17 @@ query ProductDetails($slug: String!, $channel: String!) {
 				}
 			}
 		}
+		attributes {
+			attribute {
+				id
+				name
+				slug
+			}
+			values {
+				id
+				name
+				value
+			}
+		}
 	}
 }

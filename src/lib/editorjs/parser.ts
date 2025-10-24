@@ -130,6 +130,24 @@ const customParsers = {
 
 		if (!embed) return "";
 
+		// Check if this is a YouTube embed
+		const youtubeMatch = embed.match(/(?:youtube\.com\/embed\/|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+
+		if (youtubeMatch && youtubeMatch[1]) {
+			// Generate a special marker for YouTube embeds that will be hydrated client-side
+			const videoId = youtubeMatch[1];
+			return `
+				<div
+					class="youtube-embed-placeholder"
+					data-video-id="${videoId}"
+					data-width="${width || '100%'}"
+					data-height="${height || '450px'}"
+					data-caption="${caption || ''}"
+				></div>
+			`;
+		}
+
+		// For non-YouTube embeds, render normally
 		return `
 			<div class="editorjs-embed">
 				<div class="editorjs-embed-content" style="${width ? `width: ${width}px;` : ""} ${height ? `height: ${height}px;` : ""}">

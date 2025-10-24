@@ -3,8 +3,8 @@ import clsx from "clsx";
 import * as Checkout from "@/lib/checkout";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
-export const CartNavItem = async ({ channel }: { channel: string }) => {
-	const checkoutId = await Checkout.getIdFromCookies(channel);
+export const CartNavItem = async () => {
+	const checkoutId = await Checkout.getIdFromCookies();
 	const checkout = checkoutId ? await Checkout.find(checkoutId) : null;
 
 	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
@@ -12,7 +12,7 @@ export const CartNavItem = async ({ channel }: { channel: string }) => {
 	return (
 		<LinkWithChannel
 			href="/cart"
-			className="group relative flex items-center text-base-200 transition-colors duration-200 hover:text-accent-200"
+			className="group relative flex items-center text-white transition-colors duration-300 hover:text-accent-400"
 			data-testid="CartNavItem"
 		>
 			<ShoppingBagIcon

@@ -43,7 +43,7 @@ export const Summary: FC<SummaryProps> = ({
 		<div
 			className={clsx(
 				"z-0 flex h-fit w-full flex-col",
-				"before:fixed before:bottom-0 before:left-1/2 before:top-0 before:-z-10 before:w-1/2 before:border-l before:border-neutral-200 before:bg-neutral-50 before:content-none before:lg:content-['']",
+				"before:fixed before:bottom-0 before:left-1/2 before:top-0 before:-z-10 before:w-1/2 before:border-l before:border-neutral-700 before:bg-transparent before:content-none before:lg:content-['']",
 			)}
 		>
 			<details open className="group">
@@ -96,8 +96,8 @@ export const Summary: FC<SummaryProps> = ({
 				<Divider className="my-4" />
 				<div className="flex flex-row items-baseline justify-between pb-4">
 					<div className="flex flex-row items-baseline">
-						<p className="font-bold">Total price</p>
-						<p color="secondary" className="ml-2">
+						<p className="font-bold text-white">Total price</p>
+						<p className="ml-2 text-sm text-neutral-300">
 							includes {getFormattedMoney(totalPrice?.tax)} tax
 						</p>
 					</div>

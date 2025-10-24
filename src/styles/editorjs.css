@@ -269,6 +269,20 @@
 	}
 }
 
+/* YouTube Embeds */
+.editorjs-youtube {
+	@apply my-8;
+}
+
+.editorjs-youtube-blocked {
+	@apply my-8;
+}
+
+/* YouTube placeholder - hide initially until hydrated */
+.youtube-embed-placeholder {
+	@apply min-h-[450px] bg-base-900 animate-pulse rounded-lg;
+}
+
 /* Print styles */
 @media print {
 	.editorjs-attaches {
@@ -281,5 +295,10 @@
 
 	.editorjs-code {
 		@apply border-2 border-black;
+	}
+
+	.editorjs-youtube,
+	.editorjs-youtube-blocked {
+		@apply hidden;
 	}
 }

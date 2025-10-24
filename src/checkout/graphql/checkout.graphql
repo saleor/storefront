@@ -105,6 +105,10 @@ fragment CheckoutFragment on Checkout {
 	lines {
 		...CheckoutLineFragment
 	}
+	metadata {
+		key
+		value
+	}
 }
 
 fragment CheckoutLineFragment on CheckoutLine {
@@ -338,6 +342,24 @@ mutation checkoutComplete($checkoutId: ID!) {
 		}
 		order {
 			id
+		}
+	}
+}
+
+mutation updateMetadata($id: ID!, $input: [MetadataInput!]!) {
+	updateMetadata(id: $id, input: $input) {
+		errors {
+			field
+			message
+		}
+		item {
+			... on Checkout {
+				id
+				metadata {
+					key
+					value
+				}
+			}
 		}
 	}
 }

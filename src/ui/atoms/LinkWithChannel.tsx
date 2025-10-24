@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { type ComponentProps, useEffect, useRef } from "react";
+import { DEFAULT_CHANNEL } from "@/app/config";
 
 // Cache for prefetched images per pathname
 const imageCache = new Map<string, string[]>();
@@ -10,22 +11,18 @@ const imageCache = new Map<string, string[]>();
  * Enhanced Link component with NextFaster-style image prefetching
  * - Prefetches route on intersection (viewport visibility)
  * - Prefetches images on hover for instant navigation
- * - Integrates with channel-based routing
  */
 export const LinkWithChannel = ({
 	href,
 	prefetch = true,
 	...props
 }: Omit<ComponentProps<typeof Link>, "href"> & { href: string }) => {
-	const { channel } = useParams<{ channel?: string }>();
 	const router = useRouter();
 	const linkRef = useRef<HTMLAnchorElement>(null);
 	const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-	// Build final href with channel
-	const finalHref = href.startsWith("/")
-		? `/${encodeURIComponent(channel ?? "")}${href}`
-		: href;
+	// Use href directly (no channel prefix)
+	const finalHref = href;
 
 	/**
 	 * Prefetch images for a given pathname
@@ -41,7 +38,7 @@ export const LinkWithChannel = ({
 		try {
 			// Fetch images from API
 			const response = await fetch(
-				`/api/prefetch-images?pathname=${encodeURIComponent(pathname)}&channel=${encodeURIComponent(channel ?? "default-channel")}`,
+				`/api/prefetch-images?pathname=${encodeURIComponent(pathname)}&channel=${encodeURIComponent(DEFAULT_CHANNEL)}`,
 			);
 			const data = (await response.json()) as { images: string[] };
 

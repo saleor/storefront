@@ -21,20 +21,27 @@ export const OrderConfirmation = () => {
 		<main className="grid grid-cols-1 gap-x-16 lg:grid-cols-2">
 			<div>
 				<header>
-					<p className="mb-2 text-lg font-bold" data-testid="orderConfrmationTitle">
+					<p className="mb-2 text-lg font-bold text-white" data-testid="orderConfrmationTitle">
 						Order #{order.number} confirmed
 					</p>
-					<p className="text-base">
-						Thank you for placing your order. We&apos;ve received it and we will contact you as soon as your
-						package is shipped. A confirmation email has been sent to {order.userEmail}.
+					<p className="text-base text-neutral-200">
+						Thank you for placing your order!
 					</p>
+                    <br/>
+                    <p>
+                        You will be receiving an email with download links in the next seconds.
+                    </p>
+                    <br/>
+                    <p>
+                        A confirmation email has been sent to {order.userEmail}.
+                    </p>
 				</header>
 
 				{/* Digital Products Notification */}
 				{hasDigitalProducts && (
-					<div className="my-6 rounded-md border border-blue-200 bg-blue-50 p-4">
-						<h3 className="mb-2 font-medium text-blue-900">Digital Products Included</h3>
-						<p className="text-sm text-blue-800">
+					<div className="my-6 rounded-md border border-blue-700 bg-blue-950 p-4">
+						<h3 className="mb-2 font-semibold text-blue-100">Digital Products Included</h3>
+						<p className="text-sm text-blue-200">
 							Your order includes digital products. Download links will be sent to your email address at{" "}
 							{order.userEmail}.
 						</p>
