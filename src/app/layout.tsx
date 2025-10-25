@@ -7,6 +7,7 @@ import { type Metadata } from "next";
 import localFont from "next/font/local";
 import { ToastContainer } from "react-toastify";
 import { ServiceWorkerRegister } from "./sw-register";
+import { ScrollRestoration } from "./scroll-restoration";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 import { StructuredData } from "@/ui/components/StructuredData";
 import { generateOrganizationSchema, generateWebsiteSchema } from "@/lib/seo";
@@ -18,7 +19,6 @@ const geometos = localFont({
 	src: "../../public/fonts/Geometos.ttf",
 	variable: "--font-geometos",
 	display: "swap",
-	preload: true,
 	fallback: ["sans-serif"],
 	adjustFontFallback: "Arial",
 });
@@ -85,13 +85,7 @@ export const metadata: Metadata = {
 			"max-snippet": -1,
 		},
 	},
-	icons: {
-		icon: [
-			{ url: "/favicon.ico", sizes: "any" },
-			{ url: "/icon.svg", type: "image/svg+xml" },
-		],
-		apple: "/apple-touch-icon.png",
-	},
+	// Icons are defined by icon.png and apple-icon.png in the app directory
 	manifest: "/site.webmanifest",
 	verification: {
 		// Add your verification codes here
@@ -116,7 +110,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
 
 	return (
-		<html lang="en" className={`smooth-scroll min-h-dvh bg-black ${geometos.variable}`}>
+		<html lang="en" className={`min-h-dvh bg-black ${geometos.variable}`}>
 			<head>
 				{/* Preconnect to external domains */}
 				<link rel="preconnect" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} crossOrigin="anonymous" />
@@ -151,6 +145,9 @@ export default function RootLayout(props: { children: ReactNode }) {
 					{children}
 					<Suspense>
 						<DraftModeNotification />
+					</Suspense>
+					<Suspense fallback={null}>
+						<ScrollRestoration />
 					</Suspense>
 					<ServiceWorkerRegister />
 					<ToastContainer

@@ -484,8 +484,8 @@
 	/* Reserve scrollbar space to prevent layout shift */
 	html {
 		scrollbar-gutter: stable;
-		width: fit-content;
-		min-width: 100%;
+		max-width: 100%;
+		overflow-x: hidden;
 	}
 
 	@keyframes fadeInUp {

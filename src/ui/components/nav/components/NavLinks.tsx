@@ -14,6 +14,16 @@ export const NavLinks = async ({ isMobile = false }: { isMobile?: boolean }) => 
 
 	return (
 		<>
+			{isMobile && (
+				<>
+					<NavLink href="/" isMobile={isMobile} index={linkIndex++}>
+						Home
+					</NavLink>
+					<NavLink href="/pages/about" isMobile={isMobile} index={linkIndex++}>
+						About
+					</NavLink>
+				</>
+			)}
 			<NavLink href="/products" isMobile={isMobile} index={linkIndex++}>
 				All
 			</NavLink>

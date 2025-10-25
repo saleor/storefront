@@ -24,6 +24,7 @@ export const useMobileMenu = () => {
 
 	const closeMenu = useCallback(() => setIsOpen(false), []);
 	const openMenu = useCallback(() => setIsOpen(true), []);
+	const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
 
-	return { isOpen, closeMenu, openMenu };
+	return { isOpen, closeMenu, openMenu, toggleMenu };
 };

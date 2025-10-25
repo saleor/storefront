@@ -21,7 +21,7 @@ export async function Footer() {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer id="footer" className="mt-24 border-t border-base-900 bg-base-950">
+		<footer id="footer" className="mt-24 border-t border-base-900 bg-base-950 transition-all duration-300">
 			<div className="mx-auto max-w-7xl px-6 lg:px-12">
 				<div className="grid grid-cols-1 gap-12 py-20 md:grid-cols-3 md:gap-16">
 					{footerLinks.menu?.items?.map((item) => {
@@ -101,6 +101,17 @@ export async function Footer() {
 					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
 						<p className="text-sm text-base-400">
 							Copyright &copy; {currentYear} Sonic Drive Studio. All rights reserved.
+						</p>
+						<p className="text-sm text-base-400">
+							🌅 Crafted with care by{" "}
+							<a
+								href="https://www.daybreakdevelopment.eu/"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-accent-300 transition-colors duration-200 hover:text-accent-200"
+							>
+								Daybreak Development
+							</a>
 						</p>
 						<CookiePreferencesButton />
 					</div>

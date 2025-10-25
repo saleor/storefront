@@ -1,12 +1,11 @@
 // Service Worker for Progressive Web App capabilities
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `saleor-storefront-${CACHE_VERSION}`;
 
 // Assets to cache on install
 const STATIC_ASSETS = [
 	'/',
-	'/manifest.json',
-	'/fonts/Geometos.ttf',
+	'/site.webmanifest',
 ];
 
 // Cache strategies

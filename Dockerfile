@@ -1,4 +1,7 @@
-FROM node:20-alpine AS base
+# docker build --build-arg NEXT_PUBLIC_SALEOR_API_URL=https://saleor-api.sonicdrivestudio.com/graphql/ --build-arg NEXT_PUBLIC_STOREFRONT_URL=https://sonicdrivestudio.com -f ./Dockerfile -t mrfakename/sonicdrivestudio-storefront:latest .
+# docker push mrfakename/sonicdrivestudio-storefront:latest
+
+FROM node:25-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -8,7 +11,7 @@ WORKDIR /app
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g pnpm@9.6.0
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm i --frozen-lockfile --prefer-offline
@@ -25,15 +28,15 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 ENV NEXT_OUTPUT=standalone
-ARG NEXT_PUBLIC_SALEOR_API_URL
+ARG NEXT_PUBLIC_SALEOR_API_URL=http://localhost:8000/graphql/
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
-ARG NEXT_PUBLIC_STOREFRONT_URL
+ARG NEXT_PUBLIC_STOREFRONT_URL=http://localhost:3000
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 
 # Get PNPM version from package.json
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g pnpm@9.6.0
 
 RUN pnpm build
 
@@ -45,15 +48,15 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-ARG NEXT_PUBLIC_SALEOR_API_URL
+ARG NEXT_PUBLIC_SALEOR_API_URL=http://localhost:8000/graphql/
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
-ARG NEXT_PUBLIC_STOREFRONT_URL
+ARG NEXT_PUBLIC_STOREFRONT_URL=http://localhost:3000
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# COPY --from=builder /app/public ./public
+COPY --from=builder /app/public ./public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next

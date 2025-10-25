@@ -24,7 +24,7 @@ export function NavLink({
 			<LinkWithChannel
 				href={href}
 				className={clsx(
-					isActive ? "text-white" : "text-white",
+					isActive ? "text-accent-400" : "text-white",
 					"mobile-nav-link block text-right text-4xl font-thin uppercase transition-colors duration-300 hover:text-accent-400 focus-visible:text-accent-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:text-5xl md:text-6xl",
 				)}
 				style={{ "--animation-delay": `${index * 0.1}s` } as React.CSSProperties}
@@ -39,7 +39,7 @@ export function NavLink({
 			<LinkWithChannel
 				href={href}
 				className={clsx(
-					isActive ? "text-white" : "text-base-300",
+					isActive ? "text-accent-400" : "text-base-300",
 					"inline-flex items-center pt-px text-sm font-light tracking-wide transition-colors duration-300 hover:text-accent-400",
 				)}
 			>

@@ -12,7 +12,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 		<>
 			<Header />
 			<div className="flex min-h-[calc(100dvh-5rem)] flex-col">
-				<main id="main-content" className="flex-1" role="main">
+				<main id="main-content" className="flex-1 transition-all duration-300" role="main">
 					{children}
 				</main>
 				<Suspense

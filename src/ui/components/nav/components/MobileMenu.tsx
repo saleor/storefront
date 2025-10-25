@@ -2,26 +2,54 @@
 
 import { type ReactNode, useEffect } from "react";
 import { useMobileMenu } from "./useMobileMenu";
-import { OpenButton } from "./OpenButton";
-import { CloseButton } from "./CloseButton";
+import { AnimatedMenuButton } from "./AnimatedMenuButton";
 
 type Props = {
 	children: ReactNode;
 };
 
 export const MobileMenu = ({ children }: Props) => {
-	const { closeMenu, openMenu, isOpen } = useMobileMenu();
+	const { closeMenu, toggleMenu, isOpen } = useMobileMenu();
 
-	// Prevent body scroll when menu is open and blur main content
+	// Prevent body scroll when menu is open and blur main content, header, and footer
 	useEffect(() => {
 		if (isOpen) {
-			document.body.classList.add("overflow-hidden-no-shift");
+			// Save current scroll position
+			const scrollY = window.scrollY;
 
-			// Blur only main content, not header
+			// Lock scroll by fixing body position
+			document.body.style.position = "fixed";
+			document.body.style.top = `-${scrollY}px`;
+			document.body.style.width = "100%";
+			document.body.style.overflow = "hidden";
+			document.body.style.touchAction = "none";
+
+			// Blur and dim main content
 			const mainContent = document.getElementById("main-content");
 			if (mainContent) {
 				mainContent.style.filter = "blur(8px)";
-				mainContent.style.transition = "filter 300ms ease-in-out";
+				mainContent.style.opacity = "0.3";
+			}
+
+			// Blur and dim specific header elements (logo and social icons), not the menu button
+			const logoContainer = document.querySelector(".logo-container");
+			const socialIcons = document.querySelector(".social-icons-container");
+
+			if (logoContainer instanceof HTMLElement) {
+				logoContainer.style.filter = "blur(8px)";
+				logoContainer.style.opacity = "0.3";
+			}
+
+			if (socialIcons instanceof HTMLElement) {
+				socialIcons.style.filter = "blur(8px)";
+				socialIcons.style.opacity = "0.3";
+			}
+
+			// Blur and dim footer
+			const footer = document.getElementById("footer");
+			if (footer) {
+				footer.style.filter = "blur(8px)";
+				footer.style.opacity = "0.3";
 			}
 
 			// Trigger animations for mobile nav links
@@ -34,12 +62,45 @@ export const MobileMenu = ({ children }: Props) => {
 				});
 			});
 		} else {
-			document.body.classList.remove("overflow-hidden-no-shift");
+			// Restore scroll position
+			const scrollY = document.body.style.top;
+			document.body.style.position = "";
+			document.body.style.top = "";
+			document.body.style.width = "";
+			document.body.style.overflow = "";
+			document.body.style.touchAction = "";
 
-			// Remove blur from main content
+			// Restore the scroll position
+			if (scrollY) {
+				window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+			}
+
+			// Remove blur and opacity from main content
 			const mainContent = document.getElementById("main-content");
 			if (mainContent) {
 				mainContent.style.filter = "";
+				mainContent.style.opacity = "";
+			}
+
+			// Remove blur and opacity from header elements
+			const logoContainer = document.querySelector(".logo-container");
+			const socialIcons = document.querySelector(".social-icons-container");
+
+			if (logoContainer instanceof HTMLElement) {
+				logoContainer.style.filter = "";
+				logoContainer.style.opacity = "";
+			}
+
+			if (socialIcons instanceof HTMLElement) {
+				socialIcons.style.filter = "";
+				socialIcons.style.opacity = "";
+			}
+
+			// Remove blur and opacity from footer
+			const footer = document.getElementById("footer");
+			if (footer) {
+				footer.style.filter = "";
+				footer.style.opacity = "";
 			}
 
 			// Reset animations when closing
@@ -64,12 +125,17 @@ export const MobileMenu = ({ children }: Props) => {
 
 	return (
 		<>
-			<OpenButton onClick={openMenu} aria-controls="mobile-menu" aria-expanded={isOpen} />
+			<AnimatedMenuButton
+				isOpen={isOpen}
+				onClick={toggleMenu}
+				aria-controls="mobile-menu"
+				aria-expanded={isOpen}
+			/>
 
 			{/* Menu backdrop and panel */}
 			<div
 				id="mobile-menu"
-				className={`menu-backdrop fixed inset-0 z-[9999] min-h-screen w-screen bg-black/85 transition-opacity duration-300 ease-in-out ${
+				className={`menu-backdrop fixed inset-0 z-[9999] bg-black/85 transition-opacity duration-300 ease-in-out ${
 					isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
 				}`}
 				role="dialog"
@@ -81,16 +147,11 @@ export const MobileMenu = ({ children }: Props) => {
 					}
 				}}
 			>
-				<div className="relative h-full min-h-screen w-full px-8 py-4">
-					{/* Close Button - positioned at top right */}
-					<div className="flex justify-end">
-						<CloseButton onClick={closeMenu} aria-controls="mobile-menu" />
-					</div>
-
+				<div className="relative h-full min-h-dvh w-full overflow-y-auto px-6 pt-24 pb-8 lg:px-12">
 					{/* Navigation Links */}
 					<nav
 						role="navigation"
-						className="mt-8 flex flex-col text-right"
+						className="flex flex-col text-right"
 						aria-label="Mobile navigation"
 						data-mobile-nav
 					>

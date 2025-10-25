@@ -28,17 +28,17 @@ export function Header() {
 			</div>
 
 			<header className="sticky top-0 z-20 border-b border-base-900/50 bg-black backdrop-blur-xl">
-				<div className="mx-auto max-w-7xl px-6 lg:px-12">
-					<div className="flex h-20 items-center justify-between gap-6">
+				<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+					<div className="flex h-20 items-center justify-between gap-2 sm:gap-4 md:gap-6">
 						{/* Logo */}
-						<div className="logo-container flex min-h-[40px] min-w-[140px] items-center">
+						<div className="logo-container flex min-h-[40px] min-w-0 flex-shrink items-center transition-all duration-300">
 							<Suspense fallback={<div className="h-10 w-24 animate-pulse rounded bg-base-800" />}>
 								<Logo />
 							</Suspense>
 						</div>
 
 						{/* Social Icons */}
-						<nav className="social-icons-container ml-auto flex flex-shrink-0 items-center gap-3 md:gap-4 lg:gap-6" aria-label="Social media links">
+						<nav className="social-icons-container ml-auto flex flex-shrink-0 items-center gap-2 transition-all duration-300 sm:gap-3 md:gap-4 lg:gap-6" aria-label="Social media links">
 							<a
 								href="https://www.youtube.com/c/sonicdrivestudio"
 								target="_blank"
@@ -49,7 +49,7 @@ export function Header() {
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									aria-hidden="true"
-									className="h-6 w-6 shrink-0"
+									className="h-5 w-5 shrink-0 sm:h-6 sm:w-6"
 									viewBox="0 0 50 50"
 								>
 									<title>YouTube</title>
@@ -69,7 +69,7 @@ export function Header() {
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									className="h-6 w-6 shrink-0"
+									className="h-5 w-5 shrink-0 sm:h-6 sm:w-6"
 									viewBox="0 0 50 50"
 									aria-hidden="true"
 								>
@@ -90,7 +90,7 @@ export function Header() {
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									aria-hidden="true"
-									className="h-6 w-6 shrink-0"
+									className="h-5 w-5 shrink-0 sm:h-6 sm:w-6"
 									viewBox="0 0 50 50"
 								>
 									<title>Instagram</title>

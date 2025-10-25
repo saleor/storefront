@@ -23,7 +23,7 @@ export const SearchBar = () => {
 					placeholder="Search for products..."
 					autoComplete="on"
 					required
-					className="input h-10 w-full pr-10 text-sm"
+					className="input h-10 w-full pr-10 text-xl"
 				/>
 			</label>
 			<div className="absolute inset-y-0 right-0">
