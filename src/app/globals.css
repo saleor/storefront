@@ -220,7 +220,7 @@
 	/* Secondary Button - Outlined style with good contrast */
 	.btn-secondary {
 		@apply relative border-2 border-accent-200 bg-transparent px-6 py-3 text-accent-100;
-		@apply hover:shadow-accent-900/20 hover:border-accent-300 hover:bg-accent-950 hover:shadow-lg;
+		@apply hover:border-accent-300 hover:bg-accent-950 hover:shadow-lg;
 		@apply transition-all duration-200 ease-in-out;
 		@apply focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black;
 		@apply disabled:cursor-not-allowed disabled:opacity-50;

@@ -35,6 +35,19 @@ export function UserMenu({ user }: Props) {
 						<Menu.Item>
 							{({ active }) => (
 								<LinkWithChannel
+									href="/account"
+									className={clsx(
+										active && "bg-base-900 text-accent-200",
+										"block px-4 py-2 text-sm font-medium text-base-200 transition-colors duration-200 hover:text-accent-200",
+									)}
+								>
+									My account
+								</LinkWithChannel>
+							)}
+						</Menu.Item>
+						<Menu.Item>
+							{({ active }) => (
+								<LinkWithChannel
 									href="/orders"
 									className={clsx(
 										active && "bg-base-900 text-accent-200",

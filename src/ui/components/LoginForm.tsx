@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { saleorAuthClient } from "@/ui/components/AuthProvider";
+import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
 export function LoginForm() {
 	const router = useRouter();
@@ -113,9 +114,16 @@ export function LoginForm() {
 					/>
 				</div>
 
-				<button className="btn-primary w-full" type="submit" disabled={loading}>
+				<button className="btn-primary mb-4 w-full" type="submit" disabled={loading}>
 					{loading ? "Signing in..." : "Log In"}
 				</button>
+
+				<p className="text-center text-sm text-base-300">
+					Don&apos;t have an account?{" "}
+					<LinkWithChannel href="/register" className="text-accent-200 hover:text-accent-300">
+						Create account
+					</LinkWithChannel>
+				</p>
 			</form>
 		</div>
 	);

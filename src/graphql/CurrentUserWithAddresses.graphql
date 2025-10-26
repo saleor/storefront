@@ -1,0 +1,35 @@
+query CurrentUserWithAddresses {
+	me {
+		...UserDetails
+		addresses {
+			id
+			city
+			phone
+			postalCode
+			companyName
+			cityArea
+			streetAddress1
+			streetAddress2
+			countryArea
+			country {
+				country
+				code
+			}
+			firstName
+			lastName
+		}
+		defaultBillingAddress {
+			id
+		}
+		defaultShippingAddress {
+			id
+		}
+		orders(first: 10) {
+			edges {
+				node {
+					id
+				}
+			}
+		}
+	}
+}
