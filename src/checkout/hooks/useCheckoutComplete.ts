@@ -3,7 +3,7 @@ import { useMutation, gql } from "urql";
 import { useCheckoutCompleteMutation } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
-import { replaceUrl } from "@/checkout/lib/utils/url";
+import { getUrl } from "@/checkout/lib/utils/url";
 import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
 
 const UPDATE_METADATA_MUTATION = gql`
@@ -64,16 +64,29 @@ export const useCheckoutComplete = () => {
 					const order = data.order;
 
 					if (order) {
+						console.warn("[ORDER] Order created successfully", {
+							orderId: order.id,
+						});
+
 						// Clear cortex data after successful checkout
 						clearCortexData();
 
-						const newUrl = replaceUrl({
+						// Build the new URL without updating browser history
+						const { newUrl } = getUrl({
 							query: {
 								order: order.id,
 							},
 							replaceWholeQuery: true,
 						});
+
+						console.warn("[ORDER] Redirecting to order confirmation", {
+							url: newUrl,
+						});
+
+						// Force full page navigation to order confirmation
 						window.location.href = newUrl;
+					} else {
+						console.error("[ORDER] No order returned from checkoutComplete mutation");
 					}
 				},
 			}),

@@ -53,13 +53,13 @@ export function RegisterForm() {
 			});
 
 			if (result.data?.accountRegister?.errors?.length) {
+				// Log errors for debugging
+				console.log("Registration errors:", result.data.accountRegister.errors);
+
 				const errorMessages = result.data.accountRegister.errors.map((error) => {
 					// Handle specific error codes
 					if (error.code === "UNIQUE") {
 						return "An account with this email already exists. Please sign in instead.";
-					}
-					if (error.code === "INVALID") {
-						return "Please enter a valid email address.";
 					}
 					if (error.code === "PASSWORD_TOO_SHORT") {
 						return "Password must be at least 8 characters long.";
@@ -67,6 +67,8 @@ export function RegisterForm() {
 					if (error.code === "PASSWORD_TOO_COMMON") {
 						return "This password is too common. Please choose a more secure password.";
 					}
+					// For all other errors including INVALID, show the backend's actual error message
+					// This helps us understand what the backend is actually complaining about
 					return error.message || "An error occurred during registration";
 				});
 				setErrors(errorMessages);

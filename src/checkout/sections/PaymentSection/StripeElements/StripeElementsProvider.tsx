@@ -299,6 +299,8 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 	// Initialize payment session with debouncing
 	useEffect(() => {
 		let isCancelled = false;
+		const currentCheckoutId = checkout?.id;
+		const currentAmount = checkoutAmount;
 
 		const initializeWithErrorHandling = async () => {
 			if (isInitializing) {
@@ -313,7 +315,8 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 			try {
 				const result = await initializePaymentSession();
 
-				if (!isCancelled && result) {
+				// Validate that checkout hasn't changed during initialization
+				if (!isCancelled && result && currentCheckoutId === checkout?.id && currentAmount === checkoutAmount) {
 					// Only update session if it's actually different to prevent unnecessary re-renders
 					setSession((currentSession) => {
 						if (
@@ -322,21 +325,32 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 							currentSession.publishableKey !== result.publishableKey ||
 							currentSession.initialized !== result.initialized
 						) {
+							console.log("StripeElementsProvider: Updating session with new data", {
+								checkoutId: currentCheckoutId,
+								amount: currentAmount,
+							});
 							return result;
 						}
 						return currentSession;
+					});
+				} else if (!isCancelled && (currentCheckoutId !== checkout?.id || currentAmount !== checkoutAmount)) {
+					console.log("StripeElementsProvider: Discarding stale initialization result", {
+						oldCheckoutId: currentCheckoutId,
+						newCheckoutId: checkout?.id,
+						oldAmount: currentAmount,
+						newAmount: checkoutAmount,
 					});
 				}
 			} catch (error) {
 				console.error("StripeElementsProvider: Initialization error", error);
 
-				if (!isCancelled) {
+				if (!isCancelled && currentCheckoutId === checkout?.id) {
 					const errorMessage = error instanceof Error ? error.message : "Payment initialization failed";
 					setInitializationError(errorMessage);
 					showCustomErrors([{ message: errorMessage }]);
 				}
 			} finally {
-				if (!isCancelled) {
+				if (!isCancelled && currentCheckoutId === checkout?.id) {
 					setIsInitializing(false);
 					setInitializationStartTime(null);
 					setInitializationStep("Preparing...");
@@ -351,7 +365,7 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 			isCancelled = true;
 			clearTimeout(timeoutId);
 		};
-	}, [initializePaymentSession, showCustomErrors]);
+	}, [initializePaymentSession, showCustomErrors, checkout?.id, checkoutAmount]);
 
 	// Timeout for initialization
 	useEffect(() => {

@@ -74,6 +74,25 @@ const config = {
 						key: "Permissions-Policy",
 						value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
 					},
+					// CSP removed - managed by proxy/CDN
+					// {
+					// 	key: "Content-Security-Policy",
+					// 	value: [
+					// 		"default-src 'self'",
+					// 		"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://challenges.cloudflare.com",
+					// 		"style-src 'self' 'unsafe-inline'",
+					// 		"img-src 'self' data: https: blob:",
+					// 		"font-src 'self' data:",
+					// 		"connect-src 'self' https://api.stripe.com https://saleor-api.sonicdrivestudio.com https://*.saleor.cloud wss://*.saleor.cloud",
+					// 		"frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
+					// 		"worker-src 'self' blob:",
+					// 		"object-src 'none'",
+					// 		"base-uri 'self'",
+					// 		"form-action 'self'",
+					// 		"frame-ancestors 'self'",
+					// 		"upgrade-insecure-requests",
+					// 	].join("; "),
+					// },
 				],
 			},
 			// Cache static assets aggressively

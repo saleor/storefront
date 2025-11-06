@@ -156,7 +156,7 @@ export const QuantitySelector = ({
 
 	return (
 		<div
-			className="flex items-center gap-2"
+			className="flex shrink-0 items-center gap-2"
 			data-testid={dataTestId}
 		>
 			{/* Decrement button */}
@@ -165,7 +165,7 @@ export const QuantitySelector = ({
 				onClick={handleDecrement}
 				disabled={disabled || loading || isAtMin}
 				className={clsx(
-					"flex items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
+					"flex shrink-0 items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
 					sizeClasses[size].button,
 					{
 						"border-base-700 bg-base-950 text-white hover:bg-base-900 active:bg-base-800":
@@ -197,7 +197,7 @@ export const QuantitySelector = ({
 				onKeyDown={handleKeyDown}
 				disabled={disabled || loading}
 				className={clsx(
-					"rounded-md border border-base-700 bg-base-950 text-center font-medium transition-all focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
+					"shrink-0 rounded-md border border-base-700 bg-base-950 text-center font-medium transition-all focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
 					sizeClasses[size].input,
 					{
 						"text-white": !disabled && !loading,
@@ -215,7 +215,7 @@ export const QuantitySelector = ({
 				onClick={handleIncrement}
 				disabled={disabled || loading || isAtMax}
 				className={clsx(
-					"flex items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
+					"flex shrink-0 items-center justify-center rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-black",
 					sizeClasses[size].button,
 					{
 						"border-base-700 bg-base-950 text-white hover:bg-base-900 active:bg-base-800":

@@ -10,7 +10,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 
@@ -18,17 +18,54 @@ export const ZeroAmountCheckout = () => {
 	const { checkout } = useCheckout();
 	const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
 	const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const completionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	// Cleanup timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (completionTimeoutRef.current) {
+				clearTimeout(completionTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	const handleCompleteOrder = async () => {
+		setError(null);
+
+		// Set a timeout to prevent infinite waiting
+		completionTimeoutRef.current = setTimeout(() => {
+			setError("Order completion is taking too long. Please check your order history or contact support.");
+			setShowConfirmDialog(false);
+		}, 30000); // 30 second timeout
+
 		try {
 			const result = await onCheckoutComplete();
+
+			// Clear timeout on success
+			if (completionTimeoutRef.current) {
+				clearTimeout(completionTimeoutRef.current);
+				completionTimeoutRef.current = null;
+			}
 
 			if (result?.hasErrors) {
 				throw new Error(`Checkout completion failed: ${JSON.stringify(result.apiErrors)}`);
 			}
+
+			// Success - dialog will be hidden by redirect
 		} catch (error) {
 			console.error("[ZeroAmountCheckout] Checkout failed:", error);
-			alert("Failed to complete checkout. Please try again or contact support.");
+
+			// Clear timeout on error
+			if (completionTimeoutRef.current) {
+				clearTimeout(completionTimeoutRef.current);
+				completionTimeoutRef.current = null;
+			}
+
+			const errorMessage =
+				error instanceof Error ? error.message : "Failed to complete checkout. Please try again.";
+			setError(errorMessage);
+			setShowConfirmDialog(false);
 		}
 	};
 
@@ -57,12 +94,40 @@ export const ZeroAmountCheckout = () => {
 				</div>
 			</div>
 
+			{/* Error Message */}
+			{error && (
+				<div className="rounded-md border border-red-700 bg-red-950 p-4">
+					<div className="flex items-start gap-3">
+						<svg
+							className="h-5 w-5 flex-shrink-0 text-red-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<div className="flex-1">
+							<h4 className="text-sm font-semibold text-red-200">Order Completion Error</h4>
+							<p className="mt-1 text-sm text-red-300">{error}</p>
+						</div>
+					</div>
+				</div>
+			)}
+
 			<button
 				type="button"
 				className="h-12 w-full items-center justify-center rounded-md bg-neutral-900 px-6 py-3 text-base font-medium leading-6 text-white shadow transition-all hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-70 hover:disabled:bg-neutral-700 aria-disabled:cursor-not-allowed aria-disabled:opacity-70 hover:aria-disabled:bg-neutral-700"
 				disabled={completingCheckout}
 				aria-disabled={completingCheckout}
-				onClick={() => setShowConfirmDialog(true)}
+				onClick={() => {
+					setError(null);
+					setShowConfirmDialog(true);
+				}}
 			>
 				<span className="button-text">Review and Complete Order</span>
 			</button>
@@ -71,7 +136,13 @@ export const ZeroAmountCheckout = () => {
 			{showConfirmDialog && (
 				<div
 					className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
-					onClick={() => !completingCheckout && setShowConfirmDialog(false)}
+					onClick={() => {
+						setShowConfirmDialog(false);
+						if (completionTimeoutRef.current) {
+							clearTimeout(completionTimeoutRef.current);
+							completionTimeoutRef.current = null;
+						}
+					}}
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby="confirm-order-title"
@@ -148,8 +219,14 @@ export const ZeroAmountCheckout = () => {
 							<button
 								type="button"
 								className="flex-1 rounded-md border border-neutral-600 bg-neutral-700 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 focus:ring-offset-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-								onClick={() => setShowConfirmDialog(false)}
-								disabled={completingCheckout}
+								onClick={() => {
+									setShowConfirmDialog(false);
+									if (completionTimeoutRef.current) {
+										clearTimeout(completionTimeoutRef.current);
+										completionTimeoutRef.current = null;
+									}
+								}}
+								disabled={false}
 								aria-label="Cancel order"
 							>
 								Cancel

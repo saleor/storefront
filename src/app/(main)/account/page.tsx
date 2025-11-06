@@ -21,7 +21,7 @@ export default async function AccountPage() {
 
 	return (
 		<div className="mx-auto max-w-7xl p-8">
-			<h1 className="mb-8 text-3xl font-bold tracking-tight text-neutral-900">
+			<h1 className="mb-8 text-3xl font-bold tracking-tight text-white">
 				My Account
 			</h1>
 

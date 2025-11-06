@@ -85,31 +85,31 @@ export default async function Page() {
 
 			<div className="mt-8 grid gap-8 lg:grid-cols-3">
 				{/* Cart Items */}
-				<div className="lg:col-span-2">
+				<div className="min-w-0 lg:col-span-2">
 					<CartItemList items={checkout.lines} checkoutId={checkoutId} />
 				</div>
 
 				{/* Order Summary */}
-				<div className="lg:col-span-1">
+				<div className="min-w-0 lg:col-span-1">
 					<div className="card sticky top-24 space-y-6">
-						<h2 className="font-display text-2xl font-light text-white">Order Summary</h2>
+						<h2 className="font-display text-xl font-light text-white sm:text-2xl">Order Summary</h2>
 
 						<div className="space-y-3 border-b border-t border-base-800 py-4">
-							<div className="flex justify-between text-base-300">
-								<span>Subtotal</span>
-								<span className="font-medium">
+							<div className="flex min-w-0 justify-between gap-4 text-base-300">
+								<span className="shrink-0">Subtotal</span>
+								<span className="break-words text-right font-medium">
 									{formatMoney(checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency)}
 								</span>
 							</div>
-							<div className="flex justify-between text-base-300">
-								<span>Shipping</span>
-								<span className="text-sm">Calculated at checkout</span>
+							<div className="flex min-w-0 justify-between gap-4 text-base-300">
+								<span className="shrink-0">Shipping</span>
+								<span className="text-right text-sm">Calculated at checkout</span>
 							</div>
 						</div>
 
-						<div className="flex items-center justify-between pt-2">
-							<span className="font-display text-xl font-light text-white">Total</span>
-							<span className="gradient-text text-2xl font-semibold">
+						<div className="flex min-w-0 items-center justify-between gap-4 pt-2">
+							<span className="font-display text-lg font-light text-white sm:text-xl">Total</span>
+							<span className="gradient-text break-words text-right text-xl font-semibold sm:text-2xl">
 								{formatMoney(checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency)}
 							</span>
 						</div>

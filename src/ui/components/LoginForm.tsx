@@ -97,7 +97,7 @@ export function LoginForm() {
 						disabled={loading}
 					/>
 				</div>
-				<div className="mb-6">
+				<div className="mb-2">
 					<label className="label" htmlFor="password">
 						Password
 					</label>
@@ -112,6 +112,15 @@ export function LoginForm() {
 						required
 						disabled={loading}
 					/>
+				</div>
+
+				<div className="mb-6 text-right">
+					<LinkWithChannel
+						href="/forgot-password"
+						className="text-sm text-accent-200 hover:text-accent-300"
+					>
+						Forgot password?
+					</LinkWithChannel>
 				</div>
 
 				<button className="btn-primary mb-4 w-full" type="submit" disabled={loading}>

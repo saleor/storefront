@@ -57,6 +57,19 @@ mutation requestPasswordReset($email: String!, $channel: String!, $redirectUrl: 
 	}
 }
 
+mutation setPassword($token: String!, $email: String!, $password: String!) {
+	setPassword(token: $token, email: $email, password: $password) {
+		errors {
+			message
+			field
+			code
+		}
+		user {
+			...UserFragment
+		}
+	}
+}
+
 mutation userAddressDelete($id: ID!) {
 	accountAddressDelete(id: $id) {
 		user {

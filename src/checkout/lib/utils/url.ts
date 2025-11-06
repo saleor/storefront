@@ -13,6 +13,7 @@ const queryParamsMap = {
 	saleorApiUrl: "saleorApiUrl",
 	// payment flow
 	transaction: "transaction", // allows us to process started transaction
+	transactionId: "transactionId", // transaction ID from payment provider
 	processingPayment: "processingPayment", // tell the processing screen to show up
 	// adyen
 	redirectResult: "redirectResult",

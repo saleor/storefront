@@ -39,11 +39,11 @@ export default async function Page() {
 			{/* Hero Section */}
 			<section className="relative mx-auto max-w-7xl px-6 pb-16 pt-20 lg:px-12 lg:pb-24 lg:pt-32">
 				<div className="animate-slide-up-fade space-y-6 text-center">
-					<h1 className="font-display text-5xl font-light tracking-tight md:text-6xl lg:text-7xl">
-						<span className="mb-2 block text-white">Sonic Drive Studio is all about the most </span>
-						<span className="gradient-text block">professional guitar tones</span>
+					<h1 className="font-display text-4xl font-light tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+						<span className="mb-2 block break-words text-white">Sonic Drive Studio is all about the most </span>
+						<span className="gradient-text block break-words">professional guitar tones</span>
 					</h1>
-					<p className="mx-auto max-w-2xl text-xl font-light text-base-300 md:text-2xl">
+					<p className="mx-auto max-w-2xl text-lg font-light text-base-300 sm:text-xl md:text-2xl">
 						Curated collection of high-quality IRs and amp captures
 					</p>
 				</div>

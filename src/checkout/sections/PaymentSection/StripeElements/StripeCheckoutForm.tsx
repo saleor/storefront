@@ -51,8 +51,10 @@ export function StripeCheckoutForm() {
 	const elements = useElements();
 	const { checkout } = useCheckout();
 
-	// Prevent duplicate payment processing
+	// Prevent duplicate payment processing and track mounted state
 	const paymentProcessingRef = useRef(false);
+	const isMountedRef = useRef(true);
+	const paymentTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const paymentManager = StripePaymentManager.getInstance();
 
 	const [, transactionProcess] = useTransactionProcessMutation();
@@ -70,52 +72,181 @@ export function StripeCheckoutForm() {
 	const { setIsProcessingPayment } = usePaymentProcessingScreen();
 	const { onCheckoutComplete, completingCheckout } = useCheckoutComplete();
 
-	// Handle redirected payment (when user returns from external payment flow)
+	// Cleanup function to reset all payment states
+	const resetPaymentStates = useCallback(() => {
+		if (!isMountedRef.current) return;
+
+		paymentProcessingRef.current = false;
+		setIsLoading(false);
+		setIsProcessingPayment(false);
+		setSubmitInProgress(false);
+
+		// Clear any pending timeouts
+		if (paymentTimeoutRef.current) {
+			clearTimeout(paymentTimeoutRef.current);
+			paymentTimeoutRef.current = null;
+		}
+	}, [setIsProcessingPayment, setSubmitInProgress]);
+
+	// Cleanup on unmount
+	useEffect(() => {
+		isMountedRef.current = true;
+
+		return () => {
+			isMountedRef.current = false;
+
+			// Clean up any pending timeouts
+			if (paymentTimeoutRef.current) {
+				clearTimeout(paymentTimeoutRef.current);
+			}
+
+			// Reset processing states if component unmounts during payment
+			if (paymentProcessingRef.current) {
+				setIsProcessingPayment(false);
+			}
+		};
+	}, [setIsProcessingPayment]);
+
+	// Handle redirected payment (when user returns from external payment flow like PayPal)
 	useEffect(() => {
 		const handleRedirectedPayment = async () => {
 			const { paymentIntent, paymentIntentClientSecret, processingPayment } = getQueryParams();
 
+			// Check if this is a redirect from payment provider
 			if (!paymentIntent || !paymentIntentClientSecret || !processingPayment) {
 				return;
 			}
 
-			console.log("StripeCheckoutForm: Handling redirected payment", {
+			console.warn("[REDIRECT] Detected redirect from payment provider", {
 				paymentIntent,
 				hasClientSecret: !!paymentIntentClientSecret,
+				processingPayment,
+				hasStripe: !!stripe,
+				isProcessing: paymentProcessingRef.current,
+				completingCheckout,
 			});
 
-			// Process the redirected payment
-			if (!completingCheckout) {
-				setIsProcessingPayment(true);
+			// Wait for Stripe.js to load
+			if (!stripe) {
+				console.warn("[REDIRECT] Waiting for Stripe.js to load before processing redirect...");
+				// Show processing screen while waiting
+				if (!paymentProcessingRef.current) {
+					setIsProcessingPayment(true);
+				}
+				return;
+			}
 
-				try {
-					// First, process the transaction to update Saleor with latest status
-					const session = paymentManager.getSession(checkout.id);
-					if (session?.transactionId) {
-						console.log("StripeCheckoutForm: Processing transaction after redirect");
+			// Prevent duplicate processing
+			if (paymentProcessingRef.current || completingCheckout) {
+				console.warn("[REDIRECT] Already processing, skipping duplicate", {
+					paymentProcessingRef: paymentProcessingRef.current,
+					completingCheckout,
+				});
+				return;
+			}
 
-						const processResult = await transactionProcess({
-							id: session.transactionId,
-							data: null,
-						});
+			console.warn("[REDIRECT] Starting redirect payment processing");
 
-						if (processResult.error || processResult.data?.transactionProcess?.errors?.length) {
-							console.error("StripeCheckoutForm: Transaction process failed", processResult);
-							throw new Error("Failed to process payment status");
-						}
-					}
+			// Mark as processing
+			paymentProcessingRef.current = true;
+			setIsProcessingPayment(true);
 
-					// Complete the checkout
-					await onCheckoutComplete();
-				} catch (error) {
-					console.error("StripeCheckoutForm: Failed to complete redirected payment", error);
-					setIsProcessingPayment(false);
+			// Set timeout for redirect handling
+			paymentTimeoutRef.current = setTimeout(() => {
+				if (isMountedRef.current && paymentProcessingRef.current) {
+					console.error("StripeCheckoutForm: Redirected payment timeout after 30 seconds");
+					resetPaymentStates();
 					showCustomErrors([
 						{
-							message: "Failed to complete payment. Please try again.",
+							message:
+								"Payment verification is taking too long. Please check your order history or contact support.",
 						},
 					]);
 				}
+			}, 30000);
+
+			try {
+				// CRITICAL: Retrieve the payment intent from Stripe to get latest status
+				console.warn("[REDIRECT] Retrieving payment intent status from Stripe");
+				const { paymentIntent: retrievedPaymentIntent, error: retrieveError } =
+					await stripe.retrievePaymentIntent(paymentIntentClientSecret);
+
+				if (retrieveError) {
+					console.error("[REDIRECT] Failed to retrieve payment intent", retrieveError);
+					throw new Error(retrieveError.message || "Failed to retrieve payment status");
+				}
+
+				if (!retrievedPaymentIntent) {
+					throw new Error("Payment intent not found");
+				}
+
+				console.warn("[REDIRECT] Payment intent status:", retrievedPaymentIntent.status);
+
+				// Check if payment was successful
+				if (
+					retrievedPaymentIntent.status !== "succeeded" &&
+					retrievedPaymentIntent.status !== "processing"
+				) {
+					throw new Error(`Payment ${retrievedPaymentIntent.status}. Please try again.`);
+				}
+
+				// Get the transaction ID from session
+				const session = paymentManager.getSession(checkout.id);
+
+				if (!session?.transactionId) {
+					console.error("[REDIRECT] No transaction ID found in session", session);
+					throw new Error("Transaction ID not found. Please contact support.");
+				}
+
+				console.warn("[REDIRECT] Processing transaction after redirect");
+
+				// Process the transaction to update Saleor with payment status
+				const processResult = await transactionProcess({
+					id: session.transactionId,
+					data: null,
+				});
+
+				if (processResult.error || processResult.data?.transactionProcess?.errors?.length) {
+					console.error("[REDIRECT] Transaction process failed", processResult);
+					throw new Error("Failed to process payment status");
+				}
+
+				console.warn("[REDIRECT] Calling onCheckoutComplete to create order");
+
+				// Complete the checkout
+				await onCheckoutComplete();
+
+				console.warn("[REDIRECT] onCheckoutComplete finished, should redirect automatically");
+
+				// Clear timeout on success
+				if (paymentTimeoutRef.current) {
+					clearTimeout(paymentTimeoutRef.current);
+					paymentTimeoutRef.current = null;
+				}
+
+				// Clear session after successful completion
+				paymentManager.clearSession(checkout.id);
+
+				// NOTE: onCheckoutComplete should redirect automatically via window.location.href
+				// If we reach here and are still mounted after 3 seconds, redirect failed
+				setTimeout(() => {
+					if (isMountedRef.current) {
+						console.error(
+							"StripeCheckoutForm: Still mounted after 3 seconds - redirect may have failed. Forcing redirect to home.",
+						);
+						// Force redirect to home page (order confirmation should show there)
+						window.location.href = "/";
+					}
+				}, 3000);
+			} catch (error) {
+				console.error("StripeCheckoutForm: Failed to complete redirected payment", error);
+				resetPaymentStates();
+				showCustomErrors([
+					{
+						message:
+							error instanceof Error ? error.message : "Failed to complete payment. Please try again.",
+					},
+				]);
 			}
 		};
 
@@ -128,6 +259,8 @@ export function StripeCheckoutForm() {
 		transactionProcess,
 		setIsProcessingPayment,
 		showCustomErrors,
+		resetPaymentStates,
+		stripe, // Add stripe as dependency so effect re-runs when Stripe.js loads
 	]);
 
 	// Handle form submission (initiate payment)
@@ -135,11 +268,11 @@ export function StripeCheckoutForm() {
 		e.preventDefault();
 
 		if (paymentProcessingRef.current) {
-			console.log("StripeCheckoutForm: Payment already processing, ignoring submit");
+			console.warn("StripeCheckoutForm: Payment already processing, ignoring submit");
 			return;
 		}
 
-		console.log("StripeCheckoutForm: Starting payment submission");
+		console.warn("StripeCheckoutForm: Starting payment submission");
 
 		setIsLoading(true);
 		setPaymentError(null);
@@ -152,8 +285,26 @@ export function StripeCheckoutForm() {
 
 	// Process payment after validation is complete
 	const processPayment = useCallback(async () => {
+		// Guard against duplicate calls
 		if (paymentProcessingRef.current) {
-			console.log("StripeCheckoutForm: Payment already processing, skipping duplicate call");
+			console.warn("StripeCheckoutForm: Payment already processing, skipping duplicate call");
+			return;
+		}
+
+		// Guard against race conditions - verify no requests are in progress
+		const currentRequestsInProgress = areAnyRequestsInProgress(checkoutUpdateState);
+		if (currentRequestsInProgress) {
+			console.warn("StripeCheckoutForm: Other requests still in progress, aborting payment");
+			setIsLoading(false);
+			return;
+		}
+
+		// Guard against invalid validation state
+		const currentlyValidating = anyFormsValidating(validationState);
+		const currentFormsValid = areAllFormsValid(validationState);
+		if (currentlyValidating || !currentFormsValid) {
+			console.warn("StripeCheckoutForm: Forms invalid or still validating, aborting payment");
+			setIsLoading(false);
 			return;
 		}
 
@@ -166,11 +317,15 @@ export function StripeCheckoutForm() {
 				throw new Error("Stripe not loaded");
 			}
 
-			console.log("StripeCheckoutForm: Confirming payment with Stripe");
+			console.warn("[PAYMENT] Confirming payment with Stripe");
 
 			// Get the current session to include in return URL
 			const session = paymentManager.getSession(checkout.id);
 			const returnUrl = new URL(getUrlForTransactionInitialize().newUrl);
+
+			// CRITICAL: Add processingPayment flag so redirect handler knows to activate
+			// Stripe will automatically add payment_intent and payment_intent_client_secret
+			returnUrl.searchParams.set("processingPayment", "true");
 
 			// Add transaction ID to return URL for processing
 			if (session?.transactionId) {
@@ -179,6 +334,8 @@ export function StripeCheckoutForm() {
 			if (session?.paymentIntentId) {
 				returnUrl.searchParams.set("paymentIntent", session.paymentIntentId);
 			}
+
+			console.warn("[PAYMENT] Return URL for redirect:", returnUrl.toString());
 
 			// Confirm payment with Stripe
 			const result = await stripe.confirmPayment({
@@ -207,9 +364,8 @@ export function StripeCheckoutForm() {
 			});
 
 			if (result.error) {
-				// Payment failed
-				setIsProcessingPayment(false);
-				paymentProcessingRef.current = false;
+				// Payment failed - reset all states
+				resetPaymentStates();
 
 				const errorMessage = result.error.message || "Payment failed";
 				setPaymentError(errorMessage);
@@ -224,17 +380,31 @@ export function StripeCheckoutForm() {
 
 			// Payment successful or requires further action
 			if (result.paymentIntent) {
-				console.log("StripeCheckoutForm: Payment confirmed", {
+				console.warn("[PAYMENT] Payment confirmed", {
 					status: result.paymentIntent.status,
 					id: result.paymentIntent.id,
 				});
 
 				// For successful payments that don't require redirect, process immediately
 				if (result.paymentIntent.status === "succeeded" || result.paymentIntent.status === "processing") {
+					// Set a timeout to prevent infinite waiting
+					paymentTimeoutRef.current = setTimeout(() => {
+						if (isMountedRef.current && paymentProcessingRef.current) {
+							console.error("StripeCheckoutForm: Payment completion timeout after 30 seconds");
+							resetPaymentStates();
+							showCustomErrors([
+								{
+									message:
+										"Payment completion is taking too long. Please check your order history or contact support.",
+								},
+							]);
+						}
+					}, 30000); // 30 second timeout
+
 					try {
 						// Process transaction to update Saleor
 						if (session?.transactionId) {
-							console.log("StripeCheckoutForm: Processing transaction after successful payment");
+							console.warn("[PAYMENT] Processing transaction after successful payment");
 
 							const processResult = await transactionProcess({
 								id: session.transactionId,
@@ -253,11 +423,19 @@ export function StripeCheckoutForm() {
 						// Clear the session after successful completion
 						paymentManager.clearSession(checkout.id);
 
+						// Clear timeout since completion succeeded
+						if (paymentTimeoutRef.current) {
+							clearTimeout(paymentTimeoutRef.current);
+							paymentTimeoutRef.current = null;
+						}
+
+						// Note: We don't reset states here because the page will redirect
+						// If redirect fails, the timeout above will handle cleanup
+
 						return;
 					} catch (error) {
 						console.error("StripeCheckoutForm: Failed to complete payment", error);
-						setIsProcessingPayment(false);
-						paymentProcessingRef.current = false;
+						resetPaymentStates();
 						showCustomErrors([
 							{
 								message: "Payment was successful but checkout completion failed. Please contact support.",
@@ -270,18 +448,15 @@ export function StripeCheckoutForm() {
 
 			// If we reach here, payment might require redirect or further action
 			// Stripe will handle redirects automatically
-			console.log("StripeCheckoutForm: Payment requires further action or redirect");
+			console.warn("[PAYMENT] Payment requires further action or redirect");
 		} catch (err) {
 			console.error("StripeCheckoutForm: Payment processing error:", err);
-			setIsProcessingPayment(false);
-			paymentProcessingRef.current = false;
+			resetPaymentStates();
 
 			const errorMessage =
 				err instanceof Error ? err.message : "An unexpected error occurred during payment processing.";
 			setPaymentError(errorMessage);
 			showCustomErrors([{ message: errorMessage }]);
-		} finally {
-			setIsLoading(false);
 		}
 	}, [
 		stripe,
@@ -294,6 +469,9 @@ export function StripeCheckoutForm() {
 		onCheckoutComplete,
 		setIsProcessingPayment,
 		showCustomErrors,
+		resetPaymentStates,
+		checkoutUpdateState,
+		validationState,
 	]);
 
 	// Handle when submission is ready to process payment
@@ -306,7 +484,7 @@ export function StripeCheckoutForm() {
 		}
 
 		if (!stripe || !elements) {
-			console.log("StripeCheckoutForm: Stripe not ready, waiting...");
+			console.warn("StripeCheckoutForm: Stripe not ready, waiting...");
 			return;
 		}
 
@@ -316,12 +494,12 @@ export function StripeCheckoutForm() {
 		// Check if there were errors in validation or other requests
 		if (!finishedApiChangesWithNoError || !allFormsValid) {
 			setIsLoading(false);
-			console.log("StripeCheckoutForm: Form validation or API errors, stopping submission");
+			console.warn("StripeCheckoutForm: Form validation or API errors, stopping submission");
 			return;
 		}
 
 		// All good - process the payment
-		console.log("StripeCheckoutForm: All validations passed, processing payment");
+		console.warn("[PAYMENT] All validations passed, processing payment");
 		void processPayment();
 	}, [
 		anyRequestsInProgress,

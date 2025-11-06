@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { type CountryCode, usePaymentGatewaysInitializeMutation } from "@/checkout/graphql";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
+import { useEvent } from "@/checkout/hooks/useEvent";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
 import { type ParsedPaymentGateways } from "@/checkout/sections/PaymentSection/types";
 import { getFilteredPaymentGateways } from "@/checkout/sections/PaymentSection/utils";
@@ -60,24 +61,39 @@ export const usePaymentGatewaysInitialize = () => {
 		),
 	);
 
-	useEffect(() => {
-		// Only initialize if we don't already have gateway configs, payment gateways are available, and we're not already initializing
-		if (!gatewayConfigs.length && availablePaymentGateways.length > 0 && !initializingRef.current) {
+	// Stable callback using useEvent to prevent unnecessary effect triggers
+	const initializePaymentGateways = useEvent(() => {
+		if (availablePaymentGateways.length > 0 && !initializingRef.current) {
 			void onSubmit();
 		}
-	}, [availablePaymentGateways.length, onSubmit]);
+	});
 
+	// Effect for initial initialization
+	useEffect(() => {
+		if (!gatewayConfigs.length && availablePaymentGateways.length > 0 && !initializingRef.current) {
+			initializePaymentGateways();
+		}
+	}, [availablePaymentGateways.length, gatewayConfigs.length, initializePaymentGateways]);
+
+	// Effect for billing country changes
 	useEffect(() => {
 		if (
 			billingCountry !== previousBillingCountry.current &&
 			availablePaymentGateways.length > 0 &&
-			!initializingRef.current
+			!initializingRef.current &&
+			gatewayConfigs.length > 0 // Only reinitialize if we already had configs
 		) {
 			previousBillingCountry.current = billingCountry;
 			setGatewayConfigs([]);
-			void onSubmit();
+			// Use setTimeout to debounce rapid country changes
+			const timeoutId = setTimeout(() => {
+				initializePaymentGateways();
+			}, 100);
+			return () => clearTimeout(timeoutId);
 		}
-	}, [billingCountry, onSubmit, availablePaymentGateways.length]);
+		// Update previous billing country even if conditions don't pass
+		previousBillingCountry.current = billingCountry;
+	}, [billingCountry, availablePaymentGateways.length, gatewayConfigs.length, initializePaymentGateways]);
 
 	return {
 		fetching: fetching || initializingRef.current,

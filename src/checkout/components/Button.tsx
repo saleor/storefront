@@ -26,7 +26,7 @@ export const Button: FC<ButtonProps> = ({
 				variant === "primary",
 			"border-2 border-accent-200 bg-transparent text-accent-100 hover:border-accent-300 hover:bg-accent-950 px-4 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 focus:ring-offset-black aria-disabled:cursor-not-allowed aria-disabled:opacity-50":
 				variant === "secondary",
-			"h-auto border-none bg-transparent p-0": variant === "tertiary",
+			"h-auto border-none bg-transparent p-0 text-white hover:text-accent-400": variant === "tertiary",
 		},
 		className,
 	);
