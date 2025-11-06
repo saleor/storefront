@@ -7,11 +7,23 @@ import { PaymentRedirectHandler } from "@/checkout/sections/PaymentSection/Payme
 import { StuckPaymentRecovery } from "@/checkout/sections/PaymentSection/StuckPaymentRecovery";
 
 export const RootViews = () => {
-	const { orderId, processingPayment, paymentIntent, paymentIntentClientSecret } = getQueryParams();
+	const { orderId, processingPayment, paymentIntent, paymentIntentClientSecret, transactionId, checkoutId } = getQueryParams();
+
+	// Log on every render to diagnose flow
+	console.warn("[ROOT_VIEWS] Rendering with params", {
+		orderId,
+		processingPayment,
+		paymentIntent,
+		paymentIntentClientSecret: paymentIntentClientSecret ? "present" : "missing",
+		transactionId,
+		checkoutId,
+	});
 
 	// Show order confirmation when we have an order ID
 	// Don't show checkout form during payment processing or when order is confirmed
 	if (orderId) {
+		console.warn("[ROOT_VIEWS] Rendering OrderConfirmation");
+
 		return (
 			<Suspense fallback={<OrderConfirmationSkeleton />}>
 				<OrderConfirmation />

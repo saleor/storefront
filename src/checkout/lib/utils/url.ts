@@ -22,6 +22,7 @@ const queryParamsMap = {
 	// stripe
 	payment_intent: "paymentIntent",
 	payment_intent_client_secret: "paymentIntentClientSecret",
+	stripe_publishable_key: "stripePublishableKey",
 } as const;
 
 type UnmappedQueryParam = keyof typeof queryParamsMap;

@@ -327,17 +327,23 @@ export function StripeCheckoutForm() {
 			// Stripe will automatically add payment_intent and payment_intent_client_secret
 			returnUrl.searchParams.set("processingPayment", "true");
 
-			// Add transaction ID to return URL for processing
+			// Add transaction ID and publishable key to return URL for processing after redirect
 			if (session?.transactionId) {
 				returnUrl.searchParams.set("transactionId", session.transactionId);
 			}
 			if (session?.paymentIntentId) {
 				returnUrl.searchParams.set("paymentIntent", session.paymentIntentId);
 			}
+			if (session?.publishableKey) {
+				returnUrl.searchParams.set("stripe_publishable_key", session.publishableKey);
+			}
 
 			console.warn("[PAYMENT] Return URL for redirect:", returnUrl.toString());
+			console.warn("[PAYMENT] About to call stripe.confirmPayment");
 
 			// Confirm payment with Stripe
+			// Using redirect: "always" so that Stripe always redirects on success,
+			// and we handle the result via PaymentRedirectHandler after the redirect
 			const result = await stripe.confirmPayment({
 				elements,
 				confirmParams: {
@@ -360,10 +366,12 @@ export function StripeCheckoutForm() {
 						},
 					},
 				},
-				redirect: "if_required", // Only redirect if necessary (e.g., 3D Secure)
+				redirect: "always", // Always redirect so we can handle result consistently via return_url
 			});
 
-			console.warn("[PAYMENT] stripe.confirmPayment completed", {
+			// NOTE: With redirect: "always", this code only runs if there's an error.
+			// On success, Stripe redirects and the page reloads, so this never executes.
+			console.warn("[PAYMENT] stripe.confirmPayment returned (error or unexpected scenario)", {
 				hasError: !!result.error,
 				errorType: result.error?.type,
 				errorMessage: result.error?.message,

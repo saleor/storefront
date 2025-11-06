@@ -28,49 +28,66 @@ export function PaymentRedirectHandler() {
 
 	useEffect(() => {
 		const handleRedirect = async () => {
+			console.warn("[REDIRECT_HANDLER] Component mounted, checking query params");
+
 			// Prevent duplicate processing
 			if (hasProcessed.current) {
-				console.warn("[REDIRECT] Already processed, skipping");
+				console.warn("[REDIRECT_HANDLER] Already processed, skipping");
 				return;
 			}
 
-			const { checkoutId, paymentIntent, paymentIntentClientSecret, processingPayment, transactionId } =
+			const { checkoutId, paymentIntent, paymentIntentClientSecret, processingPayment, transactionId, stripePublishableKey } =
 				getQueryParams();
 
-			if (!checkoutId) {
-				console.error("[REDIRECT] No checkout ID in URL");
-				window.location.href = "/";
-				return;
-			}
-
-			if (!paymentIntent || !paymentIntentClientSecret || !processingPayment) {
-				console.warn("[REDIRECT] Missing required query params", {
-					paymentIntent,
-					hasClientSecret: !!paymentIntentClientSecret,
-					processingPayment,
-				});
-				return;
-			}
-
-			console.warn("[REDIRECT] Detected redirect from payment provider", {
+			console.warn("[REDIRECT_HANDLER] Query params extracted", {
 				checkoutId,
 				paymentIntent,
 				hasClientSecret: !!paymentIntentClientSecret,
 				processingPayment,
 				transactionId,
+				hasPublishableKey: !!stripePublishableKey,
 			});
+
+			if (!checkoutId) {
+				console.error("[REDIRECT_HANDLER] No checkout ID in URL, redirecting to home");
+				window.location.href = "/";
+				return;
+			}
+
+			if (!paymentIntent || !paymentIntentClientSecret || !processingPayment) {
+				console.error("[REDIRECT_HANDLER] Missing required query params, cannot process", {
+					hasPaymentIntent: !!paymentIntent,
+					hasClientSecret: !!paymentIntentClientSecret,
+					hasProcessingPayment: !!processingPayment,
+				});
+				return;
+			}
+
+			console.warn("[REDIRECT_HANDLER] All required params present, starting payment processing");
 
 			hasProcessed.current = true;
 
 			try {
-				// Try to get session from payment manager first
+				// Try to get session from payment manager first, but fall back to URL params
+				// (session is lost on page reload, but URL params persist)
 				let session = paymentManager.getSession(checkoutId);
-				let publishableKey = session?.publishableKey;
+				let publishableKey = session?.publishableKey || stripePublishableKey;
 				let txId = session?.transactionId || transactionId;
 
-				// If no session or missing data, we might need to handle this differently
+				console.warn("[REDIRECT_HANDLER] Session data", {
+					hasSession: !!session,
+					hasPublishableKeyFromSession: !!session?.publishableKey,
+					hasPublishableKeyFromUrl: !!stripePublishableKey,
+					hasTxIdFromSession: !!session?.transactionId,
+					hasTxIdFromUrl: !!transactionId,
+					finalPublishableKey: publishableKey ? "present" : "missing",
+					finalTxId: txId,
+				});
+
+				// If no publishable key even from URL, we can't proceed
 				if (!publishableKey) {
-					console.warn("[REDIRECT] No session found, this might be a webhook-created order");
+					console.error("[REDIRECT_HANDLER] No publishable key available (not in session or URL)");
+					console.warn("[REDIRECT_HANDLER] Redirecting to checkout - webhook may have created order");
 					// In this case, the webhook might have already created the order
 					// Just redirect to check for order
 					window.location.href = `/checkout?checkout=${checkoutId}`;
@@ -81,7 +98,7 @@ export function PaymentRedirectHandler() {
 					throw new Error("No transaction ID found. Please try again.");
 				}
 
-				console.warn("[REDIRECT] Loading Stripe with publishable key");
+				console.warn("[REDIRECT_HANDLER] Loading Stripe with publishable key");
 
 				// Load Stripe.js
 				const stripe = await loadStripe(publishableKey);
@@ -90,7 +107,7 @@ export function PaymentRedirectHandler() {
 					throw new Error("Failed to load Stripe. Please refresh and try again.");
 				}
 
-				console.warn("[REDIRECT] Retrieving payment intent status from Stripe");
+				console.warn("[REDIRECT_HANDLER] Stripe loaded, retrieving payment intent status");
 
 				// Retrieve the payment intent from Stripe to get latest status
 				const { paymentIntent: retrievedPaymentIntent, error: retrieveError } =
