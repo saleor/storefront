@@ -363,6 +363,16 @@ export function StripeCheckoutForm() {
 				redirect: "if_required", // Only redirect if necessary (e.g., 3D Secure)
 			});
 
+			console.warn("[PAYMENT] stripe.confirmPayment completed", {
+				hasError: !!result.error,
+				errorType: result.error?.type,
+				errorMessage: result.error?.message,
+				hasPaymentIntent: !!result.paymentIntent,
+				paymentIntentStatus: result.paymentIntent?.status,
+				paymentIntentId: result.paymentIntent?.id,
+				resultKeys: Object.keys(result),
+			});
+
 			if (result.error) {
 				// Payment failed - reset all states
 				resetPaymentStates();
@@ -387,6 +397,11 @@ export function StripeCheckoutForm() {
 
 				// For successful payments that don't require redirect, process immediately
 				if (result.paymentIntent.status === "succeeded" || result.paymentIntent.status === "processing") {
+					console.warn("[PAYMENT] Payment succeeded, preparing to complete checkout", {
+						status: result.paymentIntent.status,
+						hasSession: !!session,
+						transactionId: session?.transactionId,
+					});
 					// Set a timeout to prevent infinite waiting
 					paymentTimeoutRef.current = setTimeout(() => {
 						if (isMountedRef.current && paymentProcessingRef.current) {
@@ -411,14 +426,30 @@ export function StripeCheckoutForm() {
 								data: null,
 							});
 
+							console.warn("[PAYMENT] Transaction process result", {
+								hasError: !!processResult.error,
+								errorMessage: processResult.error?.message,
+								hasData: !!processResult.data,
+								errors: processResult.data?.transactionProcess?.errors,
+							});
+
 							if (processResult.error || processResult.data?.transactionProcess?.errors?.length) {
 								console.error("StripeCheckoutForm: Transaction process failed", processResult);
 								throw new Error("Failed to process payment status");
 							}
+						} else {
+							console.warn("[PAYMENT] No transaction ID in session, skipping transactionProcess", {
+								hasSession: !!session,
+								sessionKeys: session ? Object.keys(session) : [],
+							});
 						}
+
+						console.warn("[PAYMENT] Calling onCheckoutComplete to create order");
 
 						// Complete checkout
 						await onCheckoutComplete();
+
+						console.warn("[PAYMENT] onCheckoutComplete returned successfully");
 
 						// Clear the session after successful completion
 						paymentManager.clearSession(checkout.id);
@@ -443,12 +474,23 @@ export function StripeCheckoutForm() {
 						]);
 						return;
 					}
+				} else {
+					console.warn("[PAYMENT] Payment intent status not succeeded/processing", {
+						status: result.paymentIntent.status,
+						requiresAction: result.paymentIntent.status === "requires_action",
+					});
 				}
+			} else {
+				console.warn("[PAYMENT] No paymentIntent in result", {
+					hasError: !!result.error,
+					resultKeys: Object.keys(result),
+				});
 			}
 
 			// If we reach here, payment might require redirect or further action
 			// Stripe will handle redirects automatically
-			console.warn("[PAYMENT] Payment requires further action or redirect");
+			console.warn("[PAYMENT] Payment requires further action or redirect - ending processing");
+			resetPaymentStates();
 		} catch (err) {
 			console.error("StripeCheckoutForm: Payment processing error:", err);
 			resetPaymentStates();

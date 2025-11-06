@@ -33,13 +33,20 @@ export const useCheckoutComplete = () => {
 	const onCheckoutComplete = useSubmit<{}, typeof checkoutComplete>(
 		useMemo(
 			() => ({
-				parse: () => ({
-					checkoutId,
-				}),
+				parse: () => {
+					console.warn("[CHECKOUT_COMPLETE] Parsing checkout ID", { checkoutId });
+					return {
+						checkoutId,
+					};
+				},
 				onStart: async () => {
+					console.warn("[CHECKOUT_COMPLETE] Starting checkout completion");
+
+
 					// Update metadata with Cortex data before completing checkout
 					if (cortexData && (cortexData.cortexCloudUsername || cortexData.cortexFollowConfirmed)) {
 						try {
+							console.warn("[CHECKOUT_COMPLETE] Updating cortex metadata");
 							await updateMetadata({
 								id: checkoutId,
 								input: [
@@ -53,14 +60,32 @@ export const useCheckoutComplete = () => {
 									},
 								],
 							});
+							console.warn("[CHECKOUT_COMPLETE] Cortex metadata updated");
 						} catch (error) {
-							console.error("Failed to update cortex metadata:", error);
+							console.error("[CHECKOUT_COMPLETE] Failed to update cortex metadata:", error);
 							// Continue with checkout even if metadata update fails
 						}
+					} else {
+						console.warn("[CHECKOUT_COMPLETE] No cortex data to update");
 					}
 				},
-				onSubmit: checkoutComplete,
+				onSubmit: async (...args) => {
+					console.warn("[CHECKOUT_COMPLETE] Calling checkoutComplete mutation");
+					const result = await checkoutComplete(...args);
+					console.warn("[CHECKOUT_COMPLETE] Mutation result", {
+						hasData: !!result.data,
+						hasError: !!result.error,
+						errors: result.data?.checkoutComplete?.errors,
+						orderId: result.data?.checkoutComplete?.order?.id,
+					});
+					return result;
+				},
 				onSuccess: ({ data }) => {
+					console.warn("[CHECKOUT_COMPLETE] Success handler called", {
+						hasData: !!data,
+						hasOrder: !!data?.order,
+						orderId: data?.order?.id,
+					});
 					const order = data.order;
 
 					if (order) {

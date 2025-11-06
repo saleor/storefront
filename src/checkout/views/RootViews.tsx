@@ -4,6 +4,7 @@ import { OrderConfirmation, OrderConfirmationSkeleton } from "@/checkout/views/O
 import { getQueryParams } from "@/checkout/lib/utils/url";
 import { PaymentProcessingScreen } from "@/checkout/sections/PaymentSection/PaymentProcessingScreen";
 import { PaymentRedirectHandler } from "@/checkout/sections/PaymentSection/PaymentRedirectHandler";
+import { StuckPaymentRecovery } from "@/checkout/sections/PaymentSection/StuckPaymentRecovery";
 
 export const RootViews = () => {
 	const { orderId, processingPayment, paymentIntent, paymentIntentClientSecret } = getQueryParams();
@@ -24,13 +25,11 @@ export const RootViews = () => {
 		return <PaymentRedirectHandler />;
 	}
 
-	// Don't render checkout form if we're processing payment to avoid "Fill your information" flash
-	if (processingPayment) {
-		return (
-			<PaymentProcessingScreen>
-				<CheckoutSkeleton />
-			</PaymentProcessingScreen>
-		);
+	// Handle stuck payment state (processingPayment=true but no payment_intent params)
+	// This can happen if Stripe redirects without adding params, or if payment succeeds without redirect
+	if (processingPayment && (!paymentIntent || !paymentIntentClientSecret)) {
+		console.warn("[ROOT] Detected stuck payment state - processingPayment=true but missing payment_intent params");
+		return <StuckPaymentRecovery />;
 	}
 
 	return (
