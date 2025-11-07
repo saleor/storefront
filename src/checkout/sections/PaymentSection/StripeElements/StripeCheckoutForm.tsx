@@ -456,9 +456,9 @@ export function StripeCheckoutForm() {
 				hasError: !!result.error,
 				errorType: result.error?.type,
 				errorMessage: result.error?.message,
-				hasPaymentIntent: !!result.paymentIntent,
-				paymentIntentStatus: result.paymentIntent?.status,
-				paymentIntentId: result.paymentIntent?.id,
+				hasPaymentIntent: !!(result as any).paymentIntent,
+				paymentIntentStatus: (result as any).paymentIntent?.status,
+				paymentIntentId: (result as any).paymentIntent?.id,
 				resultKeys: Object.keys(result),
 			});
 
@@ -478,16 +478,17 @@ export function StripeCheckoutForm() {
 			}
 
 			// Payment successful or requires further action
-			if (result.paymentIntent) {
+			if ((result as any).paymentIntent) {
+				const paymentIntent = (result as any).paymentIntent;
 				console.warn("[PAYMENT] Payment confirmed", {
-					status: result.paymentIntent.status,
-					id: result.paymentIntent.id,
+					status: paymentIntent.status,
+					id: paymentIntent.id,
 				});
 
 				// For successful payments that don't require redirect, process immediately
-				if (result.paymentIntent.status === "succeeded" || result.paymentIntent.status === "processing") {
+				if (paymentIntent.status === "succeeded" || paymentIntent.status === "processing") {
 					console.warn("[PAYMENT] Payment succeeded, preparing to complete checkout", {
-						status: result.paymentIntent.status,
+						status: paymentIntent.status,
 						hasSession: !!session,
 						transactionId: session?.transactionId,
 					});
@@ -565,8 +566,8 @@ export function StripeCheckoutForm() {
 					}
 				} else {
 					console.warn("[PAYMENT] Payment intent status not succeeded/processing", {
-						status: result.paymentIntent.status,
-						requiresAction: result.paymentIntent.status === "requires_action",
+						status: paymentIntent.status,
+						requiresAction: paymentIntent.status === "requires_action",
 					});
 				}
 			} else {

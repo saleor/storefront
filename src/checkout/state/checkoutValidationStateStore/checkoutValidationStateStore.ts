@@ -23,7 +23,7 @@ const useCheckoutValidationStateStore = createWithEqualityFn<UseCheckoutValidati
 	(set) => ({
 		validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
 		actions: {
-			validateAllForms: (signedIn: boolean, isShippingRequired: boolean = true) =>
+			validateAllForms: (_signedIn: boolean, isShippingRequired: boolean = true) =>
 				set((state) => {
 					const keysToValidate = Object.keys(state.validationState).filter((val) => {
 						// IMPORTANT: Always validate guestUser, even for signed-in users

@@ -26,7 +26,7 @@ import { PaymentProcessingScreen } from "./PaymentProcessingScreen";
  * 4. Otherwise, clear processingPayment flag and return to checkout form
  */
 export function StuckPaymentRecovery() {
-	const { checkout, loading, refetch } = useCheckout();
+	const { checkout, refetch } = useCheckout();
 	const [, checkoutComplete] = useCheckoutCompleteMutation();
 	const hasProcessed = useRef(false);
 	const [recoveryMessage, setRecoveryMessage] = useState("Processing payment...");
@@ -71,6 +71,7 @@ export function StuckPaymentRecovery() {
 
 				// Refetch checkout to get latest status
 				const result = await refetch();
+                // @ts-ignore
 				const latestCheckout = result.data?.checkout;
 
 				if (!latestCheckout) {
@@ -156,7 +157,7 @@ export function StuckPaymentRecovery() {
 		};
 
 		void handleRecovery();
-	}, [checkout, refetch, checkoutComplete, loading]);
+	}, [checkout, refetch, checkoutComplete]);
 
 	return (
 		<PaymentProcessingScreen>
