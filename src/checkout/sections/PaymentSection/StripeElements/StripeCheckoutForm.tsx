@@ -529,6 +529,20 @@ export function StripeCheckoutForm() {
 		const validating = anyFormsValidating(validationState);
 		const allFormsValid = areAllFormsValid(validationState);
 
+		// Always log validation state to diagnose issues
+		if (checkoutUpdateState.submitInProgress) {
+			console.warn("[VALIDATION] Checking readiness:", {
+				submitInProgress: checkoutUpdateState.submitInProgress,
+				validating,
+				allFormsValid,
+				anyRequestsInProgress,
+				hasStripe: !!stripe,
+				hasElements: !!elements,
+				finishedApiChangesWithNoError,
+				validationState, // Log the full validation state
+			});
+		}
+
 		if (!checkoutUpdateState.submitInProgress || validating || anyRequestsInProgress) {
 			return;
 		}
@@ -544,7 +558,11 @@ export function StripeCheckoutForm() {
 		// Check if there were errors in validation or other requests
 		if (!finishedApiChangesWithNoError || !allFormsValid) {
 			setIsLoading(false);
-			console.warn("StripeCheckoutForm: Form validation or API errors, stopping submission");
+			console.warn("StripeCheckoutForm: Form validation or API errors, stopping submission", {
+				finishedApiChangesWithNoError,
+				allFormsValid,
+				validationState,
+			});
 			return;
 		}
 

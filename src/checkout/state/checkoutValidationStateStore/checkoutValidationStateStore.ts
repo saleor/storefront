@@ -25,8 +25,8 @@ const useCheckoutValidationStateStore = createWithEqualityFn<UseCheckoutValidati
 			validateAllForms: (signedIn: boolean, isShippingRequired: boolean = true) =>
 				set((state) => {
 					const keysToValidate = Object.keys(state.validationState).filter((val) => {
-						// Skip guest user validation if user is signed in
-						if (signedIn && val === "guestUser") return false;
+						// IMPORTANT: Always validate guestUser, even for signed-in users
+						// This is needed for Cortex products (SignedInUser has Cortex fields under guestUser scope)
 						// Skip shipping address validation if shipping is not required
 						if (!isShippingRequired && val === "shippingAddress") return false;
 						return true;
