@@ -122,7 +122,6 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 		validationSchema,
 		validateOnChange: true,
 		validateOnBlur: false,
-		initialTouched: { email: true },
 	});
 
 	const {
