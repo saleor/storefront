@@ -20,7 +20,6 @@ import { usePaymentGatewaysInitializeMutation, useTransactionInitializeMutation 
 import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useErrorMessages } from "@/checkout/hooks/useErrorMessages";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
-import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
 
 interface StripeElementsProviderProps {
 	children: ReactNode;
@@ -38,7 +37,6 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 	const { checkout, fetching: checkoutFetching } = useCheckout();
 	const { showCustomErrors } = useAlerts();
 	const { errorMessages: _commonErrorMessages } = useErrorMessages(apiErrorMessages);
-	const { cortexData } = useCortexDataStore();
 
 	const [, paymentGatewaysInitialize] = usePaymentGatewaysInitializeMutation();
 	const [, transactionInitialize] = useTransactionInitializeMutation();
@@ -188,13 +186,6 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 								paymentIntent: {
 									paymentMethod: "card", // Using dynamic payment methods as per documentation
 								},
-								// Include Cortex data for dashboard visibility
-								...(cortexData?.cortexCloudUsername && {
-									cortexCloudUsername: cortexData.cortexCloudUsername,
-								}),
-								...(cortexData?.cortexFollowConfirmed !== undefined && {
-									cortexFollowConfirmed: cortexData.cortexFollowConfirmed,
-								}),
 							},
 						},
 						// Let Saleor generate idempotency key for us, or we could pass our own
@@ -266,7 +257,6 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 		paymentGatewaysInitialize,
 		transactionInitialize,
 		paymentManager,
-		cortexData,
 	]);
 
 	// Detect corrupted sessions and auto-recover

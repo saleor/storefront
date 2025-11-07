@@ -101,11 +101,13 @@ export function StripeCheckoutForm() {
 			}
 
 			// Reset processing states if component unmounts during payment
+			// This ensures state is clean when user navigates away from checkout
 			if (paymentProcessingRef.current) {
 				setIsProcessingPayment(false);
+				setSubmitInProgress(false);
 			}
 		};
-	}, [setIsProcessingPayment]);
+	}, [setIsProcessingPayment, setSubmitInProgress]);
 
 	// Handle redirected payment (when user returns from external payment flow like PayPal)
 	useEffect(() => {
