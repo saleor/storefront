@@ -41,6 +41,7 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 	const [userRegisterDisabled, setUserRegistrationDisabled] = useState(false);
 	const { setCheckoutUpdateState } = useCheckoutUpdateStateChange("checkoutEmailUpdate");
 	const hasCortexProducts = useHasCortexProducts();
+	const { cortexData } = useCortexDataStore();
 
 	const validationSchema = useMemo(() => object({
 		createAccount: bool(),
@@ -70,8 +71,9 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 		email: initialEmail || checkout.email || "",
 		password: "",
 		createAccount: false,
-		cortexCloudUsername: "",
-		cortexFollowConfirmed: false,
+		// Initialize Cortex fields from persisted store to maintain values on page reload
+		cortexCloudUsername: cortexData?.cortexCloudUsername || "",
+		cortexFollowConfirmed: cortexData?.cortexFollowConfirmed || false,
 	};
 
 	const onSubmit = useFormSubmit<GuestUserFormData, typeof userRegister>(
