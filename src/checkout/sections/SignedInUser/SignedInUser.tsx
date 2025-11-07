@@ -1,4 +1,4 @@
-import { type FC, useEffect } from "react";
+import { type FC, useEffect, useMemo } from "react";
 import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { SignInFormContainer, type SignInFormContainerProps } from "../Contact/SignInFormContainer";
 import { Button } from "@/checkout/components/Button";
@@ -7,10 +7,10 @@ import { Checkbox } from "@/checkout/components/Checkbox";
 import { useUser } from "@/checkout/hooks/useUser";
 import { useHasCortexProducts } from "@/checkout/hooks/useHasCortexProducts";
 import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
-import { useForm, FormProvider } from "@/checkout/hooks/useForm";
+import { useForm } from "@/checkout/hooks/useForm";
+import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import { useCheckoutFormValidationTrigger } from "@/checkout/hooks/useCheckoutFormValidationTrigger";
 import { object, string, bool, type Schema } from "yup";
-import { useMemo } from "react";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
 	onSignOutSuccess: () => void;
