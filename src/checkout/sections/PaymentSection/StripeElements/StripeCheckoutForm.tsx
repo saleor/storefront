@@ -66,7 +66,7 @@ export function StripeCheckoutForm() {
 	const anyRequestsInProgress = areAnyRequestsInProgress(checkoutUpdateState);
 	const finishedApiChangesWithNoError = hasFinishedApiChangesWithNoError(checkoutUpdateState);
 	const { setSubmitInProgress, setShouldRegisterUser } = useCheckoutUpdateStateActions();
-	const { validateAllForms } = useCheckoutValidationActions();
+	const { validateAllForms, setValidationState } = useCheckoutValidationActions();
 	const { validationState } = useCheckoutValidationState();
 
 	const { setIsProcessingPayment } = usePaymentProcessingScreen();
@@ -264,6 +264,22 @@ export function StripeCheckoutForm() {
 		resetPaymentStates,
 		stripe, // Add stripe as dependency so effect re-runs when Stripe.js loads
 	]);
+
+	// Validation watchdog: Fix stuck validation for scopes that shouldn't validate
+	// For digital products (no shipping required), shippingAddress validation never completes
+	// because the component is never mounted. This watchdog detects and fixes that.
+	useEffect(() => {
+		const isShippingRequired = checkout?.isShippingRequired ?? true;
+
+		// If shipping is not required and shippingAddress is stuck in "validating",
+		// automatically set it to "valid" to prevent soft-lock
+		if (!isShippingRequired && validationState.shippingAddress === "validating") {
+			console.warn(
+				"[VALIDATION WATCHDOG] Shipping not required but shippingAddress stuck in validating, fixing..."
+			);
+			setValidationState("shippingAddress", "valid");
+		}
+	}, [checkout?.isShippingRequired, validationState.shippingAddress, setValidationState]);
 
 	// Handle form submission (initiate payment)
 	const onSubmitInitialize: FormEventHandler<HTMLFormElement> = useEvent(async (e) => {
