@@ -13,10 +13,12 @@ import { GuestBillingAddressSection } from "@/checkout/sections/GuestBillingAddr
 import { useUser } from "@/checkout/hooks/useUser";
 import { SequentialCheckoutSection } from "@/checkout/components/SequentialCheckoutSection";
 import { CheckoutTimeline, type TimelineStep } from "@/checkout/components/CheckoutTimeline";
+import { useCortexFieldsValid } from "@/checkout/hooks/useCortexFieldsValid";
 
 export const CheckoutForm = () => {
 	const { user } = useUser();
 	const { checkout } = useCheckout();
+	const cortexFieldsValid = useCortexFieldsValid();
 
 	// Determine section completion
 	const hasEmail = !!checkout?.email;
@@ -24,6 +26,9 @@ export const CheckoutForm = () => {
 	const hasBillingAddress = !!checkout?.billingAddress;
 	const hasDeliveryMethod = !!checkout?.deliveryMethod;
 	const isShippingRequired = checkout?.isShippingRequired ?? false;
+
+	// Contact is complete only if email exists AND Cortex fields are valid (if applicable)
+	const contactComplete = hasEmail && cortexFieldsValid;
 
 	// Get summary text for completed sections
 	const getContactSummary = () => {
@@ -57,12 +62,12 @@ export const CheckoutForm = () => {
 		const steps: TimelineStep[] = [];
 		let stepNum = 1;
 
-		// Contact
+		// Contact - must include Cortex fields if applicable
 		steps.push({
 			id: "contact",
 			title: "Contact Information",
 			stepNumber: stepNum++,
-			isComplete: hasEmail,
+			isComplete: contactComplete,
 			isActive: true, // Always expanded
 			isLocked: false,
 		});
@@ -75,7 +80,7 @@ export const CheckoutForm = () => {
 				stepNumber: stepNum++,
 				isComplete: hasShippingAddress,
 				isActive: true, // Always expanded
-				isLocked: !hasEmail,
+				isLocked: !contactComplete,
 			});
 
 			steps.push({
@@ -84,7 +89,7 @@ export const CheckoutForm = () => {
 				stepNumber: stepNum++,
 				isComplete: hasDeliveryMethod,
 				isActive: true, // Always expanded
-				isLocked: !hasEmail || !hasShippingAddress,
+				isLocked: !contactComplete || !hasShippingAddress,
 			});
 		}
 
@@ -95,7 +100,7 @@ export const CheckoutForm = () => {
 			stepNumber: stepNum++,
 			isComplete: hasBillingAddress,
 			isActive: true, // Always expanded
-			isLocked: !hasEmail || (isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod)),
+			isLocked: !contactComplete || (isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod)),
 		});
 
 		// Payment
@@ -106,13 +111,13 @@ export const CheckoutForm = () => {
 			isComplete: false,
 			isActive: true, // Always expanded
 			isLocked:
-				!hasEmail ||
+				!contactComplete ||
 				!hasBillingAddress ||
 				(isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod)),
 		});
 
 		return steps;
-	}, [hasEmail, hasShippingAddress, hasBillingAddress, hasDeliveryMethod, isShippingRequired]);
+	}, [contactComplete, hasShippingAddress, hasBillingAddress, hasDeliveryMethod, isShippingRequired]);
 
 	let stepNumber = 1;
 
@@ -128,7 +133,7 @@ export const CheckoutForm = () => {
 					id="contact"
 					title="Contact Information"
 					stepNumber={stepNumber++}
-					isComplete={hasEmail}
+					isComplete={contactComplete}
 					isActive={true}
 					isLocked={false}
 					completedSummary={getContactSummary()}
@@ -147,7 +152,7 @@ export const CheckoutForm = () => {
 						stepNumber={stepNumber++}
 						isComplete={hasShippingAddress}
 						isActive={true}
-						isLocked={!hasEmail}
+						isLocked={!contactComplete}
 						completedSummary={getShippingSummary()}
 						data-testid="shippingAddressSection"
 					>
@@ -165,7 +170,7 @@ export const CheckoutForm = () => {
 						stepNumber={stepNumber++}
 						isComplete={hasDeliveryMethod}
 						isActive={true}
-						isLocked={!hasEmail || !hasShippingAddress}
+						isLocked={!contactComplete || !hasShippingAddress}
 						completedSummary={getDeliverySummary()}
 						data-testid="deliveryMethodSection"
 					>
@@ -182,7 +187,7 @@ export const CheckoutForm = () => {
 					stepNumber={stepNumber++}
 					isComplete={hasBillingAddress}
 					isActive={true}
-					isLocked={!hasEmail || (isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))}
+					isLocked={!contactComplete || (isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))}
 					completedSummary={getBillingSummary()}
 					data-testid="billingAddressSection"
 				>
@@ -199,7 +204,7 @@ export const CheckoutForm = () => {
 					isComplete={false}
 					isActive={true}
 					isLocked={
-						!hasEmail ||
+						!contactComplete ||
 						!hasBillingAddress ||
 						(isShippingRequired && (!hasShippingAddress || !hasDeliveryMethod))
 					}
