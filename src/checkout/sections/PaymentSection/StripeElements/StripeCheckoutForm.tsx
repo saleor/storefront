@@ -271,15 +271,26 @@ export function StripeCheckoutForm() {
 	useEffect(() => {
 		const isShippingRequired = checkout?.isShippingRequired ?? true;
 
+		console.log("[VALIDATION WATCHDOG] Checking state:", {
+			isShippingRequired,
+			shippingAddressState: validationState.shippingAddress,
+			authenticated,
+			checkoutId: checkout?.id,
+		});
+
 		// If shipping is not required and shippingAddress is stuck in "validating",
 		// automatically set it to "valid" to prevent soft-lock
 		if (!isShippingRequired && validationState.shippingAddress === "validating") {
 			console.warn(
-				"[VALIDATION WATCHDOG] Shipping not required but shippingAddress stuck in validating, fixing..."
+				"[VALIDATION WATCHDOG] Shipping not required but shippingAddress stuck in validating, fixing...",
+				{
+					authenticated,
+					validationState,
+				}
 			);
 			setValidationState("shippingAddress", "valid");
 		}
-	}, [checkout?.isShippingRequired, validationState.shippingAddress, setValidationState]);
+	}, [checkout?.isShippingRequired, validationState.shippingAddress, setValidationState, authenticated, validationState, checkout?.id]);
 
 	// Handle form submission (initiate payment)
 	const onSubmitInitialize: FormEventHandler<HTMLFormElement> = useEvent(async (e) => {

@@ -60,10 +60,6 @@ fragment CheckoutFragment on Checkout {
 	authorizeStatus
 	chargeStatus
 	isShippingRequired
-	user {
-		id
-		email
-	}
 	availablePaymentGateways {
 		...PaymentGatewayFragment
 	}
