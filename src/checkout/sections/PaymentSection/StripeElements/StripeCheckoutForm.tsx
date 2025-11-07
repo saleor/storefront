@@ -11,6 +11,7 @@
 import { type FormEventHandler, useEffect, useState, useRef, useCallback } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { type StripePaymentElementOptions } from "@stripe/stripe-js";
+import { useMutation, gql } from "urql";
 import { usePaymentProcessingScreen } from "../PaymentProcessingScreen";
 import { getUrlForTransactionInitialize } from "../utils";
 import { StripePaymentManager } from "./stripePaymentManager";
@@ -33,6 +34,23 @@ import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 import { getQueryParams } from "@/checkout/lib/utils/url";
+import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
+
+const UPDATE_METADATA_MUTATION = gql`
+	mutation UpdateCheckoutMetadata($id: ID!, $input: [MetadataInput!]!) {
+		updateMetadata(id: $id, input: $input) {
+			errors {
+				field
+				message
+			}
+			item {
+				... on Checkout {
+					id
+				}
+			}
+		}
+	}
+`;
 
 const paymentElementOptions: StripePaymentElementOptions = {
 	layout: "tabs",
@@ -58,6 +76,8 @@ export function StripeCheckoutForm() {
 	const paymentManager = StripePaymentManager.getInstance();
 
 	const [, transactionProcess] = useTransactionProcessMutation();
+	const [, updateMetadata] = useMutation(UPDATE_METADATA_MUTATION);
+	const { cortexData } = useCortexDataStore();
 
 	const { authenticated } = useUser();
 	const { showCustomErrors } = useAlerts();
@@ -305,6 +325,38 @@ export function StripeCheckoutForm() {
 
 		setIsLoading(true);
 		setPaymentError(null);
+
+		// Update checkout metadata with Cortex data BEFORE validation/payment
+		// This ensures the data is on the checkout when it gets converted to an order
+		if (cortexData && (cortexData.cortexCloudUsername || cortexData.cortexFollowConfirmed)) {
+			try {
+				console.warn("[PAYMENT] Updating Cortex metadata on checkout", {
+					cortexCloudUsername: cortexData.cortexCloudUsername,
+					cortexFollowConfirmed: cortexData.cortexFollowConfirmed,
+				});
+
+				await updateMetadata({
+					id: checkout.id,
+					input: [
+						{
+							key: "cortexCloudUsername",
+							value: cortexData.cortexCloudUsername || "",
+						},
+						{
+							key: "cortexFollowConfirmed",
+							value: cortexData.cortexFollowConfirmed ? "true" : "false",
+						},
+					],
+				});
+
+				console.warn("[PAYMENT] Cortex metadata updated successfully on checkout");
+			} catch (error) {
+				console.error("[PAYMENT] Failed to update Cortex metadata, continuing anyway:", error);
+				// Continue with payment even if metadata update fails
+			}
+		} else {
+			console.warn("[PAYMENT] No Cortex data to update");
+		}
 
 		// Trigger validation for all forms
 		validateAllForms(authenticated, checkout?.isShippingRequired ?? true);

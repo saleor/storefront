@@ -47,31 +47,32 @@ export const useCheckoutComplete = () => {
 				onStart: async () => {
 					console.warn("[CHECKOUT_COMPLETE] Starting checkout completion");
 
-
-					// Update metadata with Cortex data before completing checkout
+					// Backup: Update metadata with Cortex data before completing checkout
+					// Note: Metadata is already updated during payment submission, but this serves
+					// as a safety net in case the earlier update failed or was skipped
 					if (cortexData && (cortexData.cortexCloudUsername || cortexData.cortexFollowConfirmed)) {
 						try {
-							console.warn("[CHECKOUT_COMPLETE] Updating cortex metadata");
+							console.warn("[CHECKOUT_COMPLETE] Backup: Updating Cortex metadata (should already be set)");
 							await updateMetadata({
 								id: checkoutId,
 								input: [
 									{
 										key: "cortexCloudUsername",
-										value: cortexData.cortexCloudUsername,
+										value: cortexData.cortexCloudUsername || "",
 									},
 									{
 										key: "cortexFollowConfirmed",
-										value: cortexData.cortexFollowConfirmed.toString(),
+										value: cortexData.cortexFollowConfirmed ? "true" : "false",
 									},
 								],
 							});
-							console.warn("[CHECKOUT_COMPLETE] Cortex metadata updated");
+							console.warn("[CHECKOUT_COMPLETE] Backup: Cortex metadata updated");
 						} catch (error) {
-							console.error("[CHECKOUT_COMPLETE] Failed to update cortex metadata:", error);
+							console.error("[CHECKOUT_COMPLETE] Backup: Failed to update Cortex metadata:", error);
 							// Continue with checkout even if metadata update fails
 						}
 					} else {
-						console.warn("[CHECKOUT_COMPLETE] No cortex data to update");
+						console.warn("[CHECKOUT_COMPLETE] No Cortex data to update");
 					}
 				},
 				onSubmit: async (...args) => {
