@@ -7,9 +7,10 @@ import { Checkbox } from "@/checkout/components/Checkbox";
 import { useUser } from "@/checkout/hooks/useUser";
 import { useHasCortexProducts } from "@/checkout/hooks/useHasCortexProducts";
 import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
-import { useForm } from "@/checkout/hooks/useForm";
+import { useForm, hasErrors } from "@/checkout/hooks/useForm";
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import { useCheckoutFormValidationTrigger } from "@/checkout/hooks/useCheckoutFormValidationTrigger";
+import { useCheckoutValidationActions } from "@/checkout/state/checkoutValidationStateStore";
 import { object, string, bool, type Schema } from "yup";
 
 interface SignedInUserProps extends Pick<SignInFormContainerProps, "onSectionChange"> {
@@ -78,6 +79,23 @@ export const SignedInUser: FC<SignedInUserProps> = ({ onSectionChange, onSignOut
 		form,
 		skip: !hasCortexProducts, // Skip validation if no Cortex products
 	});
+
+	// CRITICAL: Update validation state when form validity changes in real-time
+	// This ensures checkout sections unlock immediately when Cortex fields are filled
+	const { setValidationState } = useCheckoutValidationActions();
+	useEffect(() => {
+		// If no Cortex products, always mark as valid
+		if (!hasCortexProducts) {
+			setValidationState("guestUser", "valid");
+			return;
+		}
+
+		const errors = form.validateForm(form.values);
+		const isValid = !hasErrors(errors);
+
+		// Update validation state based on form validity
+		setValidationState("guestUser", isValid ? "valid" : "invalid");
+	}, [cortexCloudUsername, cortexFollowConfirmed, hasCortexProducts, form, setValidationState]);
 
 	const handleLogout = async () => {
 		signOut();

@@ -7,6 +7,7 @@ import {
 	useCheckoutUpdateStateChange,
 	useUserRegisterState,
 } from "@/checkout/state/updateStateStore";
+import { useCheckoutValidationActions } from "@/checkout/state/checkoutValidationStateStore";
 import { useCheckoutFormValidationTrigger } from "@/checkout/hooks/useCheckoutFormValidationTrigger";
 import { useFormSubmit } from "@/checkout/hooks/useFormSubmit";
 import { type ChangeHandler, hasErrors, useForm } from "@/checkout/hooks/useForm";
@@ -143,6 +144,17 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 		scope: "guestUser",
 		form,
 	});
+
+	// CRITICAL: Update validation state when form validity changes in real-time
+	// This ensures checkout sections unlock immediately when Cortex fields are filled
+	const { setValidationState } = useCheckoutValidationActions();
+	useEffect(() => {
+		const errors = form.validateForm(form.values);
+		const isValid = !hasErrors(errors);
+
+		// Update validation state based on form validity
+		setValidationState("guestUser", isValid ? "valid" : "invalid");
+	}, [cortexCloudUsername, cortexFollowConfirmed, email, createAccount, form, setValidationState]);
 
 	useEffect(() => {
 		setUserRegistrationDisabled(false);
