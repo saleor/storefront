@@ -326,38 +326,6 @@ export function StripeCheckoutForm() {
 		setIsLoading(true);
 		setPaymentError(null);
 
-		// Update checkout metadata with Cortex data BEFORE validation/payment
-		// This ensures the data is on the checkout when it gets converted to an order
-		if (cortexData && (cortexData.cortexCloudUsername || cortexData.cortexFollowConfirmed)) {
-			try {
-				console.warn("[PAYMENT] Updating Cortex metadata on checkout", {
-					cortexCloudUsername: cortexData.cortexCloudUsername,
-					cortexFollowConfirmed: cortexData.cortexFollowConfirmed,
-				});
-
-				await updateMetadata({
-					id: checkout.id,
-					input: [
-						{
-							key: "cortexCloudUsername",
-							value: cortexData.cortexCloudUsername || "",
-						},
-						{
-							key: "cortexFollowConfirmed",
-							value: cortexData.cortexFollowConfirmed ? "true" : "false",
-						},
-					],
-				});
-
-				console.warn("[PAYMENT] Cortex metadata updated successfully on checkout");
-			} catch (error) {
-				console.error("[PAYMENT] Failed to update Cortex metadata, continuing anyway:", error);
-				// Continue with payment even if metadata update fails
-			}
-		} else {
-			console.warn("[PAYMENT] No Cortex data to update");
-		}
-
 		// Trigger validation for all forms
 		validateAllForms(authenticated, checkout?.isShippingRequired ?? true);
 		setShouldRegisterUser(true);
@@ -396,6 +364,38 @@ export function StripeCheckoutForm() {
 		try {
 			if (!stripe || !elements) {
 				throw new Error("Stripe not loaded");
+			}
+
+			// Update checkout metadata with Cortex data before payment processing
+			// This ensures the data is on the checkout when it gets converted to an order
+			if (cortexData && (cortexData.cortexCloudUsername || cortexData.cortexFollowConfirmed)) {
+				try {
+					console.warn("[PAYMENT] Updating Cortex metadata on checkout before payment", {
+						cortexCloudUsername: cortexData.cortexCloudUsername,
+						cortexFollowConfirmed: cortexData.cortexFollowConfirmed,
+					});
+
+					await updateMetadata({
+						id: checkout.id,
+						input: [
+							{
+								key: "cortexCloudUsername",
+								value: cortexData.cortexCloudUsername || "",
+							},
+							{
+								key: "cortexFollowConfirmed",
+								value: cortexData.cortexFollowConfirmed ? "true" : "false",
+							},
+						],
+					});
+
+					console.warn("[PAYMENT] Cortex metadata updated successfully on checkout");
+				} catch (error) {
+					console.error("[PAYMENT] Failed to update Cortex metadata, continuing with payment:", error);
+					// Continue with payment even if metadata update fails
+				}
+			} else {
+				console.warn("[PAYMENT] No Cortex data to update");
 			}
 
 			console.warn("[PAYMENT] Confirming payment with Stripe");
@@ -614,6 +614,8 @@ export function StripeCheckoutForm() {
 		resetPaymentStates,
 		checkoutUpdateState,
 		validationState,
+		updateMetadata,
+		cortexData,
 	]);
 
 	// Handle when submission is ready to process payment
