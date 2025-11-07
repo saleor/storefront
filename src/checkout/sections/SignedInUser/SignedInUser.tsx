@@ -95,7 +95,8 @@ export const SignedInUser: FC<SignedInUserProps> = ({ onSectionChange, onSignOut
 
 		// Update validation state based on form validity
 		setValidationState("guestUser", isValid ? "valid" : "invalid");
-	}, [cortexCloudUsername, cortexFollowConfirmed, hasCortexProducts, form, setValidationState]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cortexCloudUsername, cortexFollowConfirmed, hasCortexProducts]);
 
 	const handleLogout = async () => {
 		signOut();

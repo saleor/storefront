@@ -154,7 +154,8 @@ export const useGuestUserForm = ({ initialEmail }: GuestUserFormProps) => {
 
 		// Update validation state based on form validity
 		setValidationState("guestUser", isValid ? "valid" : "invalid");
-	}, [cortexCloudUsername, cortexFollowConfirmed, email, createAccount, form, setValidationState]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cortexCloudUsername, cortexFollowConfirmed, email, createAccount]);
 
 	useEffect(() => {
 		setUserRegistrationDisabled(false);
