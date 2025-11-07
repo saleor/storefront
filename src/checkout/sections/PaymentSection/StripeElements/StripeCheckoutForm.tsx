@@ -366,34 +366,34 @@ export function StripeCheckoutForm() {
 				throw new Error("Stripe not loaded");
 			}
 
-			// Update checkout metadata with Cortex data before payment processing
-			// This ensures the data is on the checkout when it gets converted to an order
+			// Start metadata update in parallel (fire-and-forget)
+			// Don't await - let it happen in background so Elements stay valid
+			// The backup in checkoutComplete will ensure it's set even if this is slow
 			if (cortexData && (cortexData.cortexCloudUsername || cortexData.cortexFollowConfirmed)) {
-				try {
-					console.warn("[PAYMENT] Updating Cortex metadata on checkout before payment", {
-						cortexCloudUsername: cortexData.cortexCloudUsername,
-						cortexFollowConfirmed: cortexData.cortexFollowConfirmed,
-					});
+				console.warn("[PAYMENT] Starting Cortex metadata update (non-blocking)", {
+					cortexCloudUsername: cortexData.cortexCloudUsername,
+					cortexFollowConfirmed: cortexData.cortexFollowConfirmed,
+				});
 
-					await updateMetadata({
-						id: checkout.id,
-						input: [
-							{
-								key: "cortexCloudUsername",
-								value: cortexData.cortexCloudUsername || "",
-							},
-							{
-								key: "cortexFollowConfirmed",
-								value: cortexData.cortexFollowConfirmed ? "true" : "false",
-							},
-						],
+				updateMetadata({
+					id: checkout.id,
+					input: [
+						{
+							key: "cortexCloudUsername",
+							value: cortexData.cortexCloudUsername || "",
+						},
+						{
+							key: "cortexFollowConfirmed",
+							value: cortexData.cortexFollowConfirmed ? "true" : "false",
+						},
+					],
+				})
+					.then(() => {
+						console.warn("[PAYMENT] Cortex metadata updated successfully (background)");
+					})
+					.catch((error) => {
+						console.error("[PAYMENT] Background metadata update failed (will retry in checkoutComplete):", error);
 					});
-
-					console.warn("[PAYMENT] Cortex metadata updated successfully on checkout");
-				} catch (error) {
-					console.error("[PAYMENT] Failed to update Cortex metadata, continuing with payment:", error);
-					// Continue with payment even if metadata update fails
-				}
 			} else {
 				console.warn("[PAYMENT] No Cortex data to update");
 			}
