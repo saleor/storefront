@@ -6,7 +6,7 @@ import { useSubmit } from "@/checkout/hooks/useSubmit";
 import { getUrl } from "@/checkout/lib/utils/url";
 import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
 import { useCheckoutValidationActions } from "@/checkout/state/checkoutValidationStateStore/checkoutValidationStateStore";
-import { useCheckoutUpdateStateStore } from "@/checkout/state/updateStateStore/updateStateStore";
+import { useCheckoutUpdateStateActions } from "@/checkout/state/updateStateStore/updateStateStore";
 import { StripePaymentManager } from "@/checkout/sections/PaymentSection/StripeElements/stripePaymentManager";
 
 const UPDATE_METADATA_MUTATION = gql`
@@ -33,7 +33,7 @@ export const useCheckoutComplete = () => {
 	const [, updateMetadata] = useMutation(UPDATE_METADATA_MUTATION);
 	const { cortexData, clearCortexData } = useCortexDataStore();
 	const { resetValidationState } = useCheckoutValidationActions();
-	const resetUpdateState = useCheckoutUpdateStateStore((state) => state.actions.resetUpdateState);
+	const { resetUpdateState } = useCheckoutUpdateStateActions();
 
 	const onCheckoutComplete = useSubmit<{}, typeof checkoutComplete>(
 		useMemo(
