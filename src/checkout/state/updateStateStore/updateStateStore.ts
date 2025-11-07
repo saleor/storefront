@@ -23,6 +23,7 @@ export interface CheckoutUpdateStateStore extends CheckoutUpdateState {
 		setShouldRegisterUser: (shouldRegisterUser: boolean) => void;
 		setLoadingCheckout: (loading: boolean) => void;
 		setUpdateState: (scope: CheckoutUpdateStateScope) => (status: CheckoutUpdateStateStatus) => void;
+		resetUpdateState: () => void;
 	};
 }
 
@@ -69,6 +70,31 @@ const useCheckoutUpdateStateStore = createWithEqualityFn<CheckoutUpdateStateStor
 						};
 					}),
 			),
+			resetUpdateState: () =>
+				set(() => ({
+					shouldRegisterUser: false,
+					submitInProgress: false,
+					loadingCheckout: false,
+					changingBillingCountry: false,
+					updateState: {
+						paymentGatewaysInitialize: "success",
+						checkoutShippingUpdate: "success",
+						checkoutCustomerAttach: "success",
+						checkoutBillingUpdate: "success",
+						checkoutAddPromoCode: "success",
+						checkoutDeliveryMethodUpdate: "success",
+						checkoutLinesUpdate: "success",
+						checkoutEmailUpdate: "success",
+						userRegister: "success",
+						resetPassword: "success",
+						signIn: "success",
+						requestPasswordReset: "success",
+						checkoutLinesDelete: "success",
+						userAddressCreate: "success",
+						userAddressDelete: "success",
+						userAddressUpdate: "success",
+					},
+				})),
 		},
 	}),
 	shallow,

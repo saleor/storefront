@@ -5,6 +5,9 @@ import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useSubmit } from "@/checkout/hooks/useSubmit";
 import { getUrl } from "@/checkout/lib/utils/url";
 import { useCortexDataStore } from "@/checkout/state/cortexDataStore";
+import { useCheckoutValidationActions } from "@/checkout/state/checkoutValidationStateStore/checkoutValidationStateStore";
+import { useCheckoutUpdateStateStore } from "@/checkout/state/updateStateStore/updateStateStore";
+import { StripePaymentManager } from "@/checkout/sections/PaymentSection/StripeElements/stripePaymentManager";
 
 const UPDATE_METADATA_MUTATION = gql`
 	mutation UpdateCheckoutMetadata($id: ID!, $input: [MetadataInput!]!) {
@@ -29,6 +32,8 @@ export const useCheckoutComplete = () => {
 	const [{ fetching }, checkoutComplete] = useCheckoutCompleteMutation();
 	const [, updateMetadata] = useMutation(UPDATE_METADATA_MUTATION);
 	const { cortexData, clearCortexData } = useCortexDataStore();
+	const { resetValidationState } = useCheckoutValidationActions();
+	const resetUpdateState = useCheckoutUpdateStateStore((state) => state.actions.resetUpdateState);
 
 	const onCheckoutComplete = useSubmit<{}, typeof checkoutComplete>(
 		useMemo(
@@ -93,8 +98,21 @@ export const useCheckoutComplete = () => {
 							orderId: order.id,
 						});
 
-						// Clear cortex data after successful checkout
+						// Clear all state after successful checkout
+						console.warn("[ORDER] Clearing global state");
+
+						// Clear Cortex data
 						clearCortexData();
+
+						// Reset validation state
+						resetValidationState();
+
+						// Reset update state (including submitInProgress)
+						resetUpdateState();
+
+						// Clear Stripe payment session
+						const paymentManager = StripePaymentManager.getInstance();
+						paymentManager.clearSession(checkoutId);
 
 						// Build the new URL without updating browser history
 						const { newUrl } = getUrl({
@@ -115,7 +133,15 @@ export const useCheckoutComplete = () => {
 					}
 				},
 			}),
-			[checkoutComplete, checkoutId, clearCortexData, cortexData, updateMetadata],
+			[
+				checkoutComplete,
+				checkoutId,
+				clearCortexData,
+				cortexData,
+				updateMetadata,
+				resetValidationState,
+				resetUpdateState,
+			],
 		),
 	);
 	return { completingCheckout: fetching, onCheckoutComplete };

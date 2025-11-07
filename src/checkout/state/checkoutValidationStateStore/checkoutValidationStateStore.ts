@@ -15,6 +15,7 @@ interface UseCheckoutValidationStateStore extends CheckoutValidationState {
 	actions: {
 		validateAllForms: (signedIn: boolean, isShippingRequired?: boolean) => void;
 		setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) => void;
+		resetValidationState: () => void;
 	};
 }
 
@@ -52,6 +53,10 @@ const useCheckoutValidationStateStore = createWithEqualityFn<UseCheckoutValidati
 			setValidationState: (scope: CheckoutFormScope, status: CheckoutFormValidationStatus) =>
 				set((state) => ({
 					validationState: { ...state.validationState, [scope]: status },
+				})),
+			resetValidationState: () =>
+				set(() => ({
+					validationState: { shippingAddress: "valid", guestUser: "valid", billingAddress: "valid" },
 				})),
 		},
 	}),
