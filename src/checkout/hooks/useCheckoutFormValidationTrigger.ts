@@ -53,16 +53,25 @@ export const useCheckoutFormValidationTrigger = <TData extends FormDataBase>({
 		}
 
 		if (validating) {
-			// If still validating after 2 seconds, force validation to complete
+			// If still validating after 1 second, force validation to complete
 			validationTimeoutRef.current = setTimeout(() => {
-				console.warn(`[VALIDATION TIMEOUT] ${scope} stuck in validating state, forcing completion`);
+				console.warn(`[VALIDATION TIMEOUT] ${scope} stuck in validating state for >1s, forcing completion`, {
+					skip,
+					hasForm: !!form,
+					formValues: form?.values,
+				});
 
 				if (skip) {
+					console.warn(`[VALIDATION TIMEOUT] Skipping validation for ${scope}, setting to valid`);
 					setValidationState(scope, "valid");
-				} else {
+				} else if (form) {
+					console.warn(`[VALIDATION TIMEOUT] Re-running validation for ${scope}`);
 					void setCheckoutFormValidationState(form);
+				} else {
+					console.error(`[VALIDATION TIMEOUT] No form available for ${scope}, setting to valid as fallback`);
+					setValidationState(scope, "valid");
 				}
-			}, 2000);
+			}, 1000); // Reduced to 1 second for faster recovery
 		}
 
 		return () => {

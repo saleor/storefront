@@ -94,6 +94,7 @@ export const SignIn: FC<SignInProps> = ({
 							disabled={isSubmitting}
 							ariaLabel={"Sign in"}
 							label={isSubmitting ? "Processing…" : "Sign in"}
+							variant="secondary"
 						/>
 					</div>
 				</div>

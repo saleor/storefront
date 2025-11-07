@@ -507,8 +507,19 @@ export function StripeCheckoutForm() {
 
 			const errorMessage =
 				err instanceof Error ? err.message : "An unexpected error occurred during payment processing.";
-			setPaymentError(errorMessage);
-			showCustomErrors([{ message: errorMessage }]);
+
+			// Don't show unhelpful Stripe internal errors to users
+			const isStripeElementError = errorMessage.toLowerCase().includes("element") &&
+				(errorMessage.toLowerCase().includes("not found") ||
+				 errorMessage.toLowerCase().includes("not mounted") ||
+				 errorMessage.toLowerCase().includes("has not been mounted"));
+
+			if (!isStripeElementError) {
+				setPaymentError(errorMessage);
+				showCustomErrors([{ message: errorMessage }]);
+			} else {
+				console.warn("[PAYMENT] Suppressing unhelpful Stripe element error from user display");
+			}
 		}
 	}, [
 		stripe,
