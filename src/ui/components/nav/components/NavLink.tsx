@@ -1,23 +1,25 @@
 "use client";
 
 import clsx from "clsx";
-import { type ReactElement } from "react";
+import { type ReactElement, useCallback } from "react";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 import useSelectedPathname from "@/hooks/useSelectedPathname";
 
 export function NavLink({ href, children }: { href: string; children: ReactElement | string }) {
 	const pathname = useSelectedPathname();
 	const isActive = pathname === href;
+	const handleClick = useCallback(() => {
+		if (typeof window === "undefined") {
+			return;
+		}
+		if (window.innerWidth < 1200) {
+			window.dispatchEvent(new Event("mobile-nav-close"));
+		}
+	}, []);
 
 	return (
-		<li className="inline-flex">
-			<LinkWithChannel
-				href={href}
-				className={clsx(
-					isActive ? "border-neutral-900 text-neutral-900" : "border-transparent text-neutral-500",
-					"inline-flex items-center border-b-2 pt-px text-sm font-medium hover:text-neutral-700",
-				)}
-			>
+		<li>
+			<LinkWithChannel href={href} className={clsx({ active: isActive })} onClick={handleClick}>
 				{children}
 			</LinkWithChannel>
 		</li>

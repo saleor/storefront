@@ -1,4 +1,3 @@
-import { UserIcon } from "lucide-react";
 import { UserMenu } from "./UserMenu";
 import { CurrentUserDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
@@ -14,8 +13,9 @@ export async function UserMenuContainer() {
 	} else {
 		return (
 			<LinkWithChannel href="/login" className="h-6 w-6 flex-shrink-0">
-				<UserIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
-				<span className="sr-only">Log in</span>
+				<button className="header-action-btn">
+					<i className="bi bi-person" aria-hidden="true" />
+				</button>
 			</LinkWithChannel>
 		);
 	}
