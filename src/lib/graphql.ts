@@ -1,5 +1,7 @@
 import { invariant } from "ts-invariant";
 import { unstable_cache } from "next/cache";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { type TypedDocumentString } from "../gql/graphql";
 import { getServerAuthClient } from "@/app/config";
 
@@ -64,6 +66,24 @@ export async function executeGraphQL<Result, Variables>(
 		const body = (await response.json()) as GraphQLRespone<Result>;
 
 		if ("errors" in body) {
+			// Check for signature expiration errors
+			const hasSignatureExpired = body.errors.some((error) =>
+				error.message?.includes("Signature has expired"),
+			);
+
+			if (hasSignatureExpired) {
+				console.warn("[AUTH] JWT signature expired, clearing cookies and redirecting...");
+
+				// Clear auth cookies server-side
+				const cookieStore = await cookies();
+				cookieStore.delete("saleor-access-token");
+				cookieStore.delete("saleor-refresh-token");
+
+				// Redirect to current path to refresh the page with clean state
+				// This prevents the error page from showing
+				redirect("/");
+			}
+
 			throw new GraphQLError(body);
 		}
 
