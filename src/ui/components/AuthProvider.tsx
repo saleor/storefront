@@ -12,6 +12,7 @@ import {
 	dedupExchange,
 	fetchExchange,
 } from "urql";
+import { authErrorExchange } from "@/lib/urqlAuthErrorExchange";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
@@ -65,7 +66,7 @@ const makeUrqlClient = () => {
 		suspense: true,
 		// requestPolicy: "cache-first",
 		fetch: (input, init) => saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init),
-		exchanges: [dedupExchange, cacheExchange, fetchExchange],
+		exchanges: [dedupExchange, cacheExchange, authErrorExchange, fetchExchange],
 	});
 };
 

@@ -6,8 +6,16 @@ import { ErrorContentWrapper } from "@/checkout/components/ErrorContentWrapper";
 export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
 	console.error(error);
 
-	// eslint-disable-next-line no-restricted-globals
-	const goBack = () => history.back();
+	const goBack = () => {
+		// Clear auth cookies before going back to help recover from stale auth state
+		const authCookies = ["saleor-access-token", "saleor-refresh-token"];
+		authCookies.forEach((cookieName) => {
+			document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+		});
+
+		// eslint-disable-next-line no-restricted-globals
+		history.back();
+	};
 
 	return (
 		<ErrorContentWrapper>
