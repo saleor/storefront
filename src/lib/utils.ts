@@ -41,3 +41,5 @@ export function getHrefForVariant({
 	const query = new URLSearchParams({ variant: variantId });
 	return `${pathname}?${query.toString()}`;
 }
+
+export const DEFAULT_CHANNEL = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL || "default-channel";

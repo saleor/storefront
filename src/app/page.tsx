@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
+import { DEFAULT_CHANNEL } from "@/lib/utils";
 
 export default function EmptyPage() {
-	redirect("/default-channel");
+	redirect(`/${DEFAULT_CHANNEL}`);
 }

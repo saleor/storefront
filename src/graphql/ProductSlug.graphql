@@ -1,0 +1,5 @@
+query ProductSlug($productId: ID!, $channel: String!) {
+	product(id: $productId, channel: $channel) {
+		slug
+	}
+}
