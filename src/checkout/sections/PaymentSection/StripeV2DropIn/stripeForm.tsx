@@ -7,7 +7,7 @@ import { useCheckoutCompleteRedirect } from "./useCheckoutCompleteRedirect";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useEvent } from "@/checkout/hooks/useEvent";
-import { useTransactionInitializeMutation } from "@/checkout/graphql";
+import { useTransactionInitializeMutation, useTransactionProcessMutation } from "@/checkout/graphql";
 import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 
 const paymentElementOptions: StripePaymentElementOptions = {
@@ -25,6 +25,7 @@ export function CheckoutForm() {
 	const { showCustomErrors } = useAlerts();
 	const { onCheckoutComplete } = useCheckoutComplete();
 	const [, transactionInitialize] = useTransactionInitializeMutation();
+	const [, transactionProcess] = useTransactionProcessMutation();
 
 	// When page is opened from previously redirected payment, we need to complete the checkout
 	useCheckoutCompleteRedirect();
@@ -40,14 +41,18 @@ export function CheckoutForm() {
 		setIsLoading(true);
 
 		try {
-			// First submit Stripe form to validate
-			const { error: submitError, selectedPaymentMethod } = await elements.submit();
+			// First submit Stripe form to validate and get the payment method
+			const submitResult = await elements.submit();
 
-			if (submitError) {
-				showCustomErrors([{ message: submitError.message || "Payment validation failed" }]);
+			if (submitResult.error) {
+				showCustomErrors([{ message: submitResult.error.message || "Payment validation failed" }]);
 				setIsLoading(false);
 				return;
 			}
+
+			// Extract selectedPaymentMethod from submit result
+			const selectedPaymentMethod = (submitResult as { selectedPaymentMethod?: string })
+				.selectedPaymentMethod;
 
 			// Initialize transaction with Saleor
 			const initializeResult = await transactionInitialize({
@@ -128,11 +133,30 @@ export function CheckoutForm() {
 					showCustomErrors([{ message: "An unexpected error occurred with your payment" }]);
 				}
 			} else {
+				// Payment succeeded without redirect - sync Saleor with Stripe status
+				const processResult = await transactionProcess({ id: transactionId });
+
+				if (processResult.error || processResult.data?.transactionProcess?.errors?.length) {
+					console.error(
+						"Transaction process failed:",
+						processResult.error || processResult.data?.transactionProcess?.errors,
+					);
+					showCustomErrors([
+						{ message: "Payment was successful but order processing failed. Please contact support." },
+					]);
+					setIsLoading(false);
+					return;
+				}
+
+				// Clear session storage since we're not going through redirect
+				sessionStorage.removeItem("transactionId");
+				sessionStorage.removeItem("clientSecret");
+
 				await onCheckoutComplete();
 			}
 
-			// Note: If successful, Stripe will redirect to the return_url
-			// No need to handle success case explicitly here
+			// Note: If Stripe requires redirect (3DS, etc.), it will redirect to the return_url
+			// The redirect flow is handled by useCheckoutCompleteRedirect
 		} catch (error) {
 			console.error("Payment processing error:", error);
 			showCustomErrors([{ message: "An unexpected error occurred during payment" }]);
