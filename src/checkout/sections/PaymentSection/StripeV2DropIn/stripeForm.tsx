@@ -97,8 +97,7 @@ export function CheckoutForm() {
 				return;
 			}
 
-			// Store transaction info for potential redirect
-			sessionStorage.setItem("clientSecret", clientSecret);
+			// Store non-sensitive identifier only so that we can resume after redirect
 			sessionStorage.setItem("transactionId", transactionId);
 
 			// Confirm the payment with Stripe

@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
+import { useStripe } from "@stripe/react-stripe-js";
 import { useCheckoutComplete } from "@/checkout/hooks/useCheckoutComplete";
 import { useTransactionProcessMutation } from "@/checkout/graphql";
 import { getQueryParams } from "@/checkout/lib/utils/url";
 
 export const useCheckoutCompleteRedirect = () => {
+	const stripe = useStripe();
 	const { completingCheckout, onCheckoutComplete } = useCheckoutComplete();
 	const [{ fetching: processingTransaction }, transactionProcess] = useTransactionProcessMutation();
 	const isProcessingRef = useRef(false);
@@ -13,6 +15,10 @@ export const useCheckoutCompleteRedirect = () => {
 
 		// Check if we're returning from a Stripe redirect
 		if (!paymentIntent || !paymentIntentClientSecret || !processingPayment) {
+			return;
+		}
+
+		if (!stripe) {
 			return;
 		}
 
@@ -48,9 +54,30 @@ export const useCheckoutCompleteRedirect = () => {
 					return;
 				}
 
-				// Clear session storage after successful processing
+				type TransactionProcessData = {
+					paymentIntent?: {
+						stripeClientSecret?: string;
+					};
+				};
+
+				const processData = processResult.data?.transactionProcess?.data as
+					| TransactionProcessData
+					| undefined;
+
+				const serverClientSecret = processData?.paymentIntent?.stripeClientSecret;
+
+				if (serverClientSecret) {
+					const intentResult = await stripe.retrievePaymentIntent(serverClientSecret);
+
+					if (intentResult.error) {
+						console.error("Unable to retrieve PaymentIntent:", intentResult.error);
+					} else {
+						console.info("Retrieved PaymentIntent status:", intentResult.paymentIntent?.status);
+					}
+				}
+
+				// Clear transaction identifier once we finalize
 				sessionStorage.removeItem("transactionId");
-				sessionStorage.removeItem("clientSecret");
 
 				// Now complete the checkout
 				await onCheckoutComplete();
@@ -61,5 +88,5 @@ export const useCheckoutCompleteRedirect = () => {
 		};
 
 		void processAndComplete();
-	}, [completingCheckout, onCheckoutComplete, processingTransaction, transactionProcess]);
+	}, [completingCheckout, onCheckoutComplete, processingTransaction, transactionProcess, stripe]);
 };
