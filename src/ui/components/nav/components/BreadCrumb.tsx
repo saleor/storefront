@@ -27,7 +27,7 @@ export function Breadcrumb({ channel, categoryName, categorySlug, productName }:
 					<li className="flex items-center">
 						{categorySlug ? (
 							<Link
-								href={`/${channel}/category/${categorySlug}`}
+								href={`/${channel}/categories/${categorySlug}`}
 								className="transition-colors duration-200 hover:text-neutral-900 hover:underline"
 							>
 								{categoryName}
