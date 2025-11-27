@@ -21,7 +21,7 @@ jobs:
         run: echo "pnpm_version=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')" >> $GITHUB_OUTPUT
 
       - name: Install PNPM
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@a7e0a38bb04685c52dd0bfac1817dbe73e1d1b00 # v4
         with:
           version: ${{ steps.pnpm-version.outputs.pnpm_version }}
 
