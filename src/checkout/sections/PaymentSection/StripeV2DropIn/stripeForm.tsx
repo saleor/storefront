@@ -100,12 +100,16 @@ export function CheckoutForm() {
 			// Store non-sensitive identifier only so that we can resume after redirect
 			sessionStorage.setItem("transactionId", transactionId);
 
+			const { newUrl: returnUrl } = getUrlForTransactionInitialize({
+				transaction: transactionId,
+			});
+
 			// Confirm the payment with Stripe
 			const { error: confirmError } = await stripe.confirmPayment({
 				elements,
 				clientSecret,
 				confirmParams: {
-					return_url: getUrlForTransactionInitialize().newUrl,
+					return_url: returnUrl,
 					payment_method_data: {
 						billing_details: {
 							name: `${checkout.billingAddress?.firstName} ${checkout.billingAddress?.lastName}`.trim(),

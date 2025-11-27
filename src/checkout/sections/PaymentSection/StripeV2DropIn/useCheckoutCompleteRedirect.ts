@@ -11,7 +11,7 @@ export const useCheckoutCompleteRedirect = () => {
 	const isProcessingRef = useRef(false);
 
 	useEffect(() => {
-		const { paymentIntent, paymentIntentClientSecret, processingPayment } = getQueryParams();
+		const { paymentIntent, paymentIntentClientSecret, processingPayment, transaction } = getQueryParams();
 
 		// Check if we're returning from a Stripe redirect
 		if (!paymentIntent || !paymentIntentClientSecret || !processingPayment) {
@@ -28,9 +28,13 @@ export const useCheckoutCompleteRedirect = () => {
 		}
 
 		const transactionId = sessionStorage.getItem("transactionId");
+		const transactionIdFromQuery = typeof transaction === "string" ? transaction : undefined;
+		const resolvedTransactionId = transactionId ?? transactionIdFromQuery;
 
-		if (!transactionId) {
-			console.error("Missing transactionId in sessionStorage after Stripe redirect");
+		if (!resolvedTransactionId) {
+			console.error("Missing transactionId in sessionStorage and query params after Stripe redirect", {
+				transaction,
+			});
 			return;
 		}
 
@@ -39,7 +43,7 @@ export const useCheckoutCompleteRedirect = () => {
 		const processAndComplete = async () => {
 			try {
 				// First, sync Saleor with Stripe's payment status via transactionProcess
-				const processResult = await transactionProcess({ id: transactionId });
+				const processResult = await transactionProcess({ id: resolvedTransactionId });
 
 				if (processResult.error) {
 					console.error("Transaction process failed:", processResult.error);
