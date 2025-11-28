@@ -13,6 +13,7 @@ query ProductDetails($slug: String!, $channel: String!) {
 		category {
 			id
 			name
+			slug
 		}
 		variants {
 			...VariantDetails
