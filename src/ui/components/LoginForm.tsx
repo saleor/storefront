@@ -30,6 +30,7 @@ export async function LoginForm() {
 						Email
 					</label>
 					<input
+						required
 						type="email"
 						name="email"
 						placeholder="Email"
@@ -41,6 +42,7 @@ export async function LoginForm() {
 						Password
 					</label>
 					<input
+						required
 						type="password"
 						name="password"
 						placeholder="Password"
