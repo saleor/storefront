@@ -2,13 +2,17 @@ query SearchProducts(
 	$search: String!
 	$sortBy: ProductOrderField!
 	$sortDirection: OrderDirection!
-	$first: Int!
+	$first: Int
 	$after: String
+	$last: Int
+	$before: String
 	$channel: String!
 ) {
 	products(
 		first: $first
 		after: $after
+		last: $last
+		before: $before
 		channel: $channel
 		sortBy: { field: $sortBy, direction: $sortDirection }
 		filter: { search: $search }
@@ -21,8 +25,10 @@ query SearchProducts(
 			cursor
 		}
 		pageInfo {
-			endCursor
 			hasNextPage
+			hasPreviousPage
+			endCursor
+			startCursor
 		}
 	}
 }
