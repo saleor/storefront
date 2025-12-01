@@ -8,6 +8,17 @@
   Starter pack for building performant e-commerce experiences with <a href="https://github.com/saleor/saleor">Saleor</a>.
 </div>
 
+<br>
+
+<div align="center">
+ Get to know Saleor: <br>
+  <a href="https://saleor.typeform.com/talk-with-us?utm_source=github&utm_medium=readme&utm_campaign=repo_storefront">Talk to a human</a>
+  <span> | </span>
+  <a href="https://cloud.saleor.io/signup?utm_source=github&utm_medium=readme&utm_campaign=repo_storefront">Talk to the API</a>
+</div>
+
+<br>
+
 <div align="center">
   <a href="https://saleor.io/">Website</a>
   <span> • </span>

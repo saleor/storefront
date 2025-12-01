@@ -1,3 +1,5 @@
+import { ProductsPerPage } from "@/app/config";
+
 export const formatDate = (date: Date | number) => {
 	return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
 };
@@ -41,3 +43,23 @@ export function getHrefForVariant({
 	const query = new URLSearchParams({ variant: variantId });
 	return `${pathname}?${query.toString()}`;
 }
+
+export type PaginatedListVariables = {
+	first?: number;
+	after?: string | null;
+	last?: number;
+	before?: string | null;
+};
+
+export const getPaginatedListVariables = ({
+	params,
+}: {
+	params: { [key: string]: unknown };
+}): PaginatedListVariables => {
+	const cursor = typeof params?.cursor === "string" ? params?.cursor : null;
+	const direction = params?.direction === "prev" ? "prev" : "next";
+
+	return direction === "prev"
+		? { last: ProductsPerPage, before: cursor }
+		: { first: ProductsPerPage, after: cursor };
+};
