@@ -12,14 +12,13 @@
 		"prebuild": "pnpm run generate",
 		"lint": "next lint --dir src --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
-		"prepare": "husky install",
-		"test": "playwright test"
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@adyen/adyen-web": "5.53.3",
 		"@adyen/api-library": "15.0.0-beta",
 		"@headlessui/react": "1.7.18",
-		"@saleor/auth-sdk": "1.0.2",
+		"@saleor/auth-sdk": "1.0.3",
 		"@stripe/react-stripe-js": "2.6.2",
 		"@stripe/stripe-js": "2.2.0",
 		"@tailwindcss/container-queries": "0.1.1",
@@ -51,7 +50,6 @@
 		"@graphql-typed-document-node/core": "3.2.0",
 		"@next/env": "^15.0.0",
 		"@parcel/watcher": "2.3.0",
-		"@playwright/test": "1.50.1",
 		"@tailwindcss/forms": "0.5.7",
 		"@tailwindcss/typography": "0.5.10",
 		"@types/lodash-es": "4.17.12",
@@ -66,7 +64,6 @@
 		"eslint-config-next": "^15.0.0",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-import": "2.29.1",
-		"eslint-plugin-playwright": "2.2.0",
 		"graphql-tag": "2.12.6",
 		"husky": "8.0.3",
 		"lint-staged": "15.1.0",

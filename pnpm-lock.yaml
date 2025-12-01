@@ -21,8 +21,8 @@ importers:
         specifier: 1.7.18
         version: 1.7.18(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@saleor/auth-sdk':
-        specifier: 1.0.2
-        version: 1.0.2(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))
+        specifier: 1.0.3
+        version: 1.0.3(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))
       '@stripe/react-stripe-js':
         specifier: 2.6.2
         version: 2.6.2(@stripe/stripe-js@2.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -111,9 +111,6 @@ importers:
       '@parcel/watcher':
         specifier: 2.3.0
         version: 2.3.0
-      '@playwright/test':
-        specifier: 1.50.1
-        version: 1.50.1
       '@tailwindcss/forms':
         specifier: 0.5.7
         version: 0.5.7(tailwindcss@3.4.0)
@@ -156,9 +153,6 @@ importers:
       eslint-plugin-import:
         specifier: 2.29.1
         version: 2.29.1(@typescript-eslint/parser@6.14.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)
-      eslint-plugin-playwright:
-        specifier: 2.2.0
-        version: 2.2.0(eslint@8.56.0)
       graphql-tag:
         specifier: 2.12.6
         version: 2.12.6(graphql@16.8.1)
@@ -1191,14 +1185,14 @@ packages:
   '@rushstack/eslint-patch@1.10.3':
     resolution: {integrity: sha512-qC/xYId4NMebE6w/V33Fh9gWxLgURiNYgVNObbJl2LZv0GUUItCcCqC5axQSwRaAgaxl2mELq1rMzlswaQ0Zxg==}
 
-  '@saleor/auth-sdk@1.0.2':
-    resolution: {integrity: sha512-Tan5r6cdaYTPLfnqIFYSho3rDt4e9IlaGqTk+ok9ZtEDf1C40Cijnh6bOd7dDfWGRGO+itlVxJcyvMiXswdDng==}
-    engines: {node: '>=18.0.0'}
+  '@saleor/auth-sdk@1.0.3':
+    resolution: {integrity: sha512-Bz2sDQsTF6+BLjwE1OSVM95PLzzPD6nLtLRl+mOgq+Rc3Slkgo29CLRwyZW4vGgm1EG2DaTyxDIGipjKzU1cVA==}
+    engines: {node: '>=22.14.0'}
     peerDependencies:
       next: ^13.4.4 || ^14.0.0 || ^15.0.0
       react: ^18.2.0 || ^19.0.0
       react-dom: '^18.2.0 || ^19.0.0 '
-      urql: ^4.0.3
+      urql: ^4.0.3 || ^5.0.0
     peerDependenciesMeta:
       next:
         optional: true
@@ -1744,9 +1738,9 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
-    engines: {node: '>= 0.6'}
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   core-js-pure@3.37.1:
     resolution: {integrity: sha512-J/r5JTHSmzTxbiYYrzXg9w1VpqrYt+gexenBE9pugeyhwPZTAEJddyiReJWsLO6uNQ8xJZFbod6XC7KKwatCiA==}
@@ -2095,12 +2089,6 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9
 
-  eslint-plugin-playwright@2.2.0:
-    resolution: {integrity: sha512-qSQpAw7RcSzE3zPp8FMGkthaCWovHZ/BsXtpmnGax9vQLIovlh1bsZHEa2+j2lv9DWhnyeLM/qZmp7ffQZfQvg==}
-    engines: {node: '>=16.6.0'}
-    peerDependencies:
-      eslint: '>=8.40.0'
-
   eslint-plugin-react-hooks@5.2.0:
     resolution: {integrity: sha512-+f15FfK64YQwZdJNELETdn5ibXEUQmW1DZL6KXhNnc2heoy/sg9VJJeT7n8TlMWouzWqSWavFkIhHyIbIAEapg==}
     engines: {node: '>=10'}
@@ -2124,6 +2112,7 @@ packages:
   eslint@8.56.0:
     resolution: {integrity: sha512-Go19xM6T9puCOWntie1/P997aXxFsOi37JIHRWI514Hc6ZnaHGKY9xFhrU65RT6CcBEzZoGG1e6Nq+DT04ZtZQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -5345,6 +5334,7 @@ snapshots:
   '@playwright/test@1.50.1':
     dependencies:
       playwright: 1.50.1
+    optional: true
 
   '@repeaterjs/repeater@3.0.6': {}
 
@@ -5352,10 +5342,10 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.3': {}
 
-  '@saleor/auth-sdk@1.0.2(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))':
+  '@saleor/auth-sdk@1.0.3(next@15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(urql@4.0.6(graphql@16.8.1)(react@19.1.0))':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
-      cookie: 0.6.0
+      cookie: 1.0.2
       graphql: 16.8.1
     optionalDependencies:
       next: 15.2.4(@babel/core@7.24.9)(@playwright/test@1.50.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -6027,7 +6017,7 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  cookie@0.6.0: {}
+  cookie@1.0.2: {}
 
   core-js-pure@3.37.1: {}
 
@@ -6515,11 +6505,6 @@ snapshots:
       object.fromentries: 2.0.8
       safe-regex-test: 1.0.3
       string.prototype.includes: 2.0.1
-
-  eslint-plugin-playwright@2.2.0(eslint@8.56.0):
-    dependencies:
-      eslint: 8.56.0
-      globals: 13.24.0
 
   eslint-plugin-react-hooks@5.2.0(eslint@8.56.0):
     dependencies:
@@ -7733,13 +7718,15 @@ snapshots:
 
   pirates@4.0.6: {}
 
-  playwright-core@1.50.1: {}
+  playwright-core@1.50.1:
+    optional: true
 
   playwright@1.50.1:
     dependencies:
       playwright-core: 1.50.1
     optionalDependencies:
       fsevents: 2.3.2
+    optional: true
 
   possible-typed-array-names@1.0.0: {}
 
