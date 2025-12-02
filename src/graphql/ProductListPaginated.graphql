@@ -1,5 +1,5 @@
-query ProductListPaginated($first: Int!, $after: String, $channel: String!) {
-	products(first: $first, after: $after, channel: $channel) {
+query ProductListPaginated($first: Int, $after: String, $last: Int, $before: String, $channel: String!) {
+	products(first: $first, after: $after, last: $last, before: $before, channel: $channel) {
 		totalCount
 		edges {
 			node {
@@ -8,8 +8,10 @@ query ProductListPaginated($first: Int!, $after: String, $channel: String!) {
 			cursor
 		}
 		pageInfo {
-			endCursor
 			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
 		}
 	}
 }
