@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 
 const sortOptions = [
-	{ name: "Relevance", value: "name-asc" },
+	{ name: "A to Z", value: "name-asc" },
 	{ name: "Price: Low to High", value: "price-asc" },
 	{ name: "Price: High to Low", value: "price-desc" },
 ];
