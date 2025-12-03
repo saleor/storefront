@@ -21,17 +21,14 @@ export const SortBy = () => {
 
 	const handleChange = (value: string) => {
 		const newParams = new URLSearchParams(searchParams.toString());
-
 		newParams.set("sort", value);
-
 		newParams.delete("cursor");
 		newParams.delete("direction");
-
 		router.push(`?${newParams.toString()}`);
 	};
 
 	return (
-		<div className="w-auto min-w-[180px]">
+		<div className="w-auto">
 			<Listbox value={currentSortValue} onChange={handleChange}>
 				<div className="relative mt-1">
 					<Listbox.Button className="relative w-full cursor-pointer bg-transparent py-2 pl-3 pr-10 text-left text-sm font-medium text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-300 sm:text-sm">
@@ -46,7 +43,7 @@ export const SortBy = () => {
 						leaveFrom="opacity-100"
 						leaveTo="opacity-0"
 					>
-						<Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+						<Listbox.Options className="absolute right-0 z-10 mt-1 max-h-60 w-max min-w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
 							{sortOptions.map((option) => (
 								<Listbox.Option
 									key={option.value}
