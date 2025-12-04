@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { AddressForm } from "@/checkout/components/AddressForm";
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import { useGuestBillingAddressForm } from "@/checkout/sections/GuestBillingAddressSection/useGuestBillingAddressForm";

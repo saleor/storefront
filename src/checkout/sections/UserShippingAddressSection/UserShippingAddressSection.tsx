@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense, type FC } from "react";
 import { getById } from "@/checkout/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
 import { UserAddressSectionContainer } from "@/checkout/sections/UserAddressSectionContainer";
@@ -12,7 +12,7 @@ import { useAvailableShippingCountries } from "@/checkout/hooks/useAvailableShip
 
 interface UserShippingAddressSectionProps {}
 
-export const UserShippingAddressSection: React.FC<UserShippingAddressSectionProps> = ({}) => {
+export const UserShippingAddressSection: FC<UserShippingAddressSectionProps> = ({}) => {
 	const { availableShippingCountries } = useAvailableShippingCountries();
 	const {
 		form,

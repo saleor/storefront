@@ -1,11 +1,11 @@
-import React, { type PropsWithChildren } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { Money, type MoneyProps } from "@/checkout/components/Money";
 
 export interface SummaryMoneyRowProps extends MoneyProps {
 	label: string;
 }
 
-export const SummaryMoneyRow: React.FC<PropsWithChildren<SummaryMoneyRowProps>> = ({
+export const SummaryMoneyRow: FC<PropsWithChildren<SummaryMoneyRowProps>> = ({
 	label,
 	children,
 	...moneyProps

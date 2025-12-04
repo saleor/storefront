@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense, type FC } from "react";
 import { useCheckoutFormValidationTrigger } from "@/checkout/hooks/useCheckoutFormValidationTrigger";
 import { getById } from "@/checkout/lib/utils/common";
 import { AddressSectionSkeleton } from "@/checkout/components/AddressSectionSkeleton";
@@ -17,7 +17,7 @@ import { type AddressFragment } from "@/checkout/graphql";
 
 interface UserBillingAddressSectionProps {}
 
-export const UserBillingAddressSection: React.FC<UserBillingAddressSectionProps> = ({}) => {
+export const UserBillingAddressSection: FC<UserBillingAddressSectionProps> = ({}) => {
 	const {
 		checkout: { isShippingRequired },
 	} = useCheckout();

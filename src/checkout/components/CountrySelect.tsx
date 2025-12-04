@@ -1,4 +1,4 @@
-import React from "react";
+import type { FC } from "react";
 import { Select } from "@/checkout/components/Select";
 import { type CountryCode } from "@/checkout/graphql";
 import { countries as allCountries } from "@/checkout/lib/consts/countries";
@@ -8,7 +8,7 @@ interface CountrySelectProps {
 	only?: CountryCode[];
 }
 
-export const CountrySelect: React.FC<CountrySelectProps> = ({ only = [] }) => {
+export const CountrySelect: FC<CountrySelectProps> = ({ only = [] }) => {
 	const countriesToMap = only.length ? only : allCountries;
 
 	const countryOptions = countriesToMap.map((countryCode) => ({

@@ -87,7 +87,6 @@ export function CheckoutForm() {
 			// Extract client secret from the transaction data
 			const data = transactionData.data;
 
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			const clientSecret = data?.paymentIntent?.stripeClientSecret as string | undefined;
 			const transactionId = transactionData.transaction?.id;
 

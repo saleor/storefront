@@ -1,4 +1,4 @@
-import React from "react";
+import type { FC } from "react";
 import { camelCase } from "lodash-es";
 import { AddressSelectBox } from "../../components/AddressSelectBox";
 import { type AddressFragment } from "@/checkout/graphql";
@@ -18,7 +18,7 @@ export interface AddressListProps {
 	form: UseFormReturn<AddressListFormData>;
 }
 
-export const AddressList: React.FC<AddressListProps> = ({
+export const AddressList: FC<AddressListProps> = ({
 	onEditChange,
 	checkAddressAvailability = false,
 	title,

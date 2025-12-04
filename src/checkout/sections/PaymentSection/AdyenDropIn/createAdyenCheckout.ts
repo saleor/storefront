@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import AdyenCheckout from "@adyen/adyen-web";
 import { type CardElementData } from "@adyen/adyen-web/dist/types/components/Card/types";
