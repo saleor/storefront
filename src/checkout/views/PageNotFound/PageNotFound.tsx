@@ -6,7 +6,6 @@ import { ErrorContentWrapper } from "@/checkout/components/ErrorContentWrapper";
 export const PageNotFound = ({ error }: Partial<FallbackProps>) => {
 	console.error(error);
 
-	// eslint-disable-next-line no-restricted-globals
 	const goBack = () => history.back();
 
 	return (

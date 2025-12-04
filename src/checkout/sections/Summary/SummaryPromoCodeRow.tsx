@@ -1,4 +1,4 @@
-import React from "react";
+import type { FC } from "react";
 import { SummaryMoneyRow, type SummaryMoneyRowProps } from "./SummaryMoneyRow";
 import { IconButton } from "@/checkout/components/IconButton";
 import { RemoveIcon } from "@/checkout/ui-kit/icons";
@@ -12,7 +12,7 @@ interface SummaryPromoCodeRowProps extends SummaryMoneyRowProps {
 	editable: boolean;
 }
 
-export const SummaryPromoCodeRow: React.FC<SummaryPromoCodeRowProps> = ({
+export const SummaryPromoCodeRow: FC<SummaryPromoCodeRowProps> = ({
 	promoCode,
 	promoCodeId,
 	editable,

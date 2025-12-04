@@ -2,10 +2,18 @@
 
 import path from "path";
 
-const buildEslintCommand = (filenames) =>
-	`next lint --fix --file ${filenames.map((f) => path.relative(process.cwd(), f)).join(" --file ")}`;
+const buildEslintCommand = (filenames) => {
+	const files = filenames
+		.map((filename) => path.relative(process.cwd(), filename))
+		.map((filename) => `"${filename}"`)
+		.join(" ");
 
-export default {
+	return `pnpm eslint --fix ${files}`;
+};
+
+const config = {
 	"*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}": [buildEslintCommand],
 	"*.*": "prettier --write --ignore-unknown",
 };
+
+export default config;

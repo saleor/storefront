@@ -10,7 +10,7 @@
 		"start": "next start",
 		"predev": "pnpm run generate",
 		"prebuild": "pnpm run generate",
-		"lint": "ESLINT_USE_FLAT_CONFIG=false eslint --config .eslintrc.json --fix src",
+		"lint": "eslint",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"prepare": "husky install"
 	},

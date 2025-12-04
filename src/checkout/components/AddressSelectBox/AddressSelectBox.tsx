@@ -1,4 +1,3 @@
-import React from "react";
 import { SelectBox, type SelectBoxProps } from "@/checkout/components/SelectBox";
 import { Button } from "@/checkout/components/Button";
 import { Address } from "@/checkout/components/Address";
@@ -8,7 +7,6 @@ import { EditIcon } from "@/checkout/assets/icons";
 
 interface AddressSelectBoxProps<TFieldName extends string>
 	extends Omit<SelectBoxProps<TFieldName>, "children"> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	address: Partial<Record<AddressField, any>>;
 	onEdit: () => void;
 	unavailable: boolean;

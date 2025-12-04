@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import React from "react";
+import type { FC } from "react";
 import { type Classes } from "@/checkout/lib/globalTypes";
 
-export const Divider: React.FC<Classes> = ({ className }) => {
+export const Divider: FC<Classes> = ({ className }) => {
 	const classes = clsx("border-neutral-200 h-px w-full border-t", className);
 
 	return <div className={classes} />;

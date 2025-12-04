@@ -1,4 +1,3 @@
-import React from "react";
 import { Title } from "@/checkout/components";
 import { LinkAsButton } from "@/checkout/components/LinkAsButton";
 import { ErrorContentWrapper } from "@/checkout/components/ErrorContentWrapper";
