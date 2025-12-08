@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from "react";
+import type { FC } from "react";
 import { type AddressFormData } from "@/checkout/components/AddressForm/types";
 import { getEmptyAddressFormData, getAddressInputData } from "@/checkout/components/AddressForm/utils";
 import { type ChangeHandler, useForm } from "@/checkout/hooks/useForm";
@@ -15,11 +14,7 @@ export interface AddressCreateFormProps extends Pick<AddressFormProps, "availabl
 	onClose: () => void;
 }
 
-export const AddressCreateForm: React.FC<AddressCreateFormProps> = ({
-	onSuccess,
-	onClose,
-	availableCountries,
-}) => {
+export const AddressCreateForm: FC<AddressCreateFormProps> = ({ onSuccess, onClose, availableCountries }) => {
 	const [, userAddressCreate] = useUserAddressCreateMutation();
 	const { setCountryCode, validationSchema } = useAddressFormSchema();
 

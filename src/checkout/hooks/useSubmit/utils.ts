@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type CombinedError } from "urql";
 import { compact } from "lodash-es";
 import { type FormDataBase } from "@/checkout/hooks/useForm";

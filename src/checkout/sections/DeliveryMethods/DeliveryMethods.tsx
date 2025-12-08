@@ -1,4 +1,4 @@
-import React from "react";
+import type { FC } from "react";
 import { Title } from "@/checkout/components/Title";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 import { SelectBox } from "@/checkout/components/SelectBox";
@@ -12,7 +12,7 @@ import { useCheckoutUpdateState } from "@/checkout/state/updateStateStore";
 import { DeliveryMethodsSkeleton } from "@/checkout/sections/DeliveryMethods/DeliveryMethodsSkeleton";
 import { useUser } from "@/checkout/hooks/useUser";
 
-export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => {
+export const DeliveryMethods: FC<CommonSectionProps> = ({ collapsed }) => {
 	const { checkout } = useCheckout();
 	const { authenticated } = useUser();
 	const { shippingMethods, shippingAddress } = checkout;
@@ -46,7 +46,7 @@ export const DeliveryMethods: React.FC<CommonSectionProps> = ({ collapsed }) => 
 						{shippingMethods?.map(
 							({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
 								<SelectBox key={id} name="selectedMethodId" value={id}>
-									<div className="min-h-12 pointer-events-none flex grow flex-col justify-center">
+									<div className="pointer-events-none flex min-h-12 grow flex-col justify-center">
 										<div className="flex flex-row items-center justify-between self-stretch">
 											<p>{name}</p>
 											<p>{getFormattedMoney(price)}</p>
