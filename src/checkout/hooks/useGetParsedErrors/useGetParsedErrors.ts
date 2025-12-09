@@ -15,13 +15,13 @@ export const useGetParsedErrors = <TFormData extends FormDataBase, TErrorCodes e
 	const { getMessageByErrorCode } = useErrorMessages();
 
 	const getParsedApiError = useCallback(
-		({ code, field }: ApiError<TFormData, TErrorCodes>): ParsedApiError<TFormData> => {
+		({ code, field, message }: ApiError<TFormData, TErrorCodes>): ParsedApiError<TFormData> => {
 			const errorCode = camelCase(code) as ErrorCode;
 
 			return {
 				field,
 				code: errorCode,
-				message: getMessageByErrorCode(errorCode as GenericErrorCode),
+				message: message || getMessageByErrorCode(errorCode as GenericErrorCode) || "Something went wrong.",
 			};
 		},
 		[getMessageByErrorCode],
