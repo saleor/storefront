@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useCallback } from "react";
 import { type CombinedError } from "urql";
 import { useAlerts } from "@/checkout/hooks/useAlerts";

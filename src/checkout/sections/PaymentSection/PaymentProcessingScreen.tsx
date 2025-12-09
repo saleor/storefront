@@ -1,5 +1,5 @@
 import { BarLoader } from "react-spinners";
-import React, { type ReactNode, useState, useCallback, useMemo } from "react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { Title } from "@/checkout/components";
 import { createSafeContext } from "@/checkout/providers/createSafeContext";
 import { getQueryParams } from "@/checkout/lib/utils/url";

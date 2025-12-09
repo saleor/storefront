@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { camelCase } from "lodash-es";
@@ -124,7 +122,13 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 					return;
 			}
 		},
-		[adyenCheckoutSubmitParams?.component, getMessageByErrorCode, onCheckoutComplete, showCustomErrors],
+		[
+			adyenCheckoutSubmitParams?.component,
+			getMessageByErrorCode,
+			onCheckoutComplete,
+			setCurrentTransactionId,
+			showCustomErrors,
+		],
 	);
 
 	const onTransactionInitialize = useSubmit<
@@ -209,6 +213,7 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 				adyenCheckoutSubmitParams?.component,
 				commonErrorMessages.somethingWentWrong,
 				handlePaymentResult,
+				setCurrentTransactionId,
 				setIsProcessingPayment,
 				showCustomErrors,
 				transactionProcess,
@@ -299,8 +304,6 @@ export const useAdyenDropin = (props: AdyenDropinProps) => {
 		}
 
 		const decodedRedirectData = decodeURI(redirectResult);
-
-		setCurrentTransactionId(transaction);
 
 		clearQueryParams("redirectResult", "resultCode");
 

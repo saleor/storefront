@@ -1,4 +1,4 @@
-import React from "react";
+import type { FC } from "react";
 import { Button } from "@/checkout/components/Button";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
 import { TextInput } from "@/checkout/components/TextInput";
@@ -19,7 +19,7 @@ interface SignInProps extends Pick<SignInFormContainerProps, "onSectionChange"> 
 	email: string;
 }
 
-export const SignIn: React.FC<SignInProps> = ({
+export const SignIn: FC<SignInProps> = ({
 	onSectionChange,
 	onSignInSuccess,
 	onEmailChange,
