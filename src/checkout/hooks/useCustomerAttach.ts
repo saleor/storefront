@@ -18,6 +18,9 @@ export const useCustomerAttach = () => {
 				shouldAbort: () =>
 					!!checkout?.user?.id || !authenticated || fetchingCustomerAttach || fetchingCheckout,
 				onSubmit: customerAttach,
+				onSuccess: () => {
+					void refetch();
+				},
 				parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
 				onError: ({ errors }) => {
 					if (
