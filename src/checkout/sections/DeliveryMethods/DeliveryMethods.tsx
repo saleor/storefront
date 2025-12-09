@@ -31,35 +31,49 @@ export const DeliveryMethods: FC<CommonSectionProps> = ({ collapsed }) => {
 		return null;
 	}
 
+	// Show skeleton while shipping address is being saved and methods are being fetched
+	if (updateState.checkoutShippingUpdate === "loading") {
+		return (
+			<FormProvider form={form}>
+				<Divider />
+				<DeliveryMethodsSkeleton />
+			</FormProvider>
+		);
+	}
+
+	// Show message when shipping address is required but not filled
+	if (!shippingAddress) {
+		return (
+			<FormProvider form={form}>
+				<Divider />
+				<div className="py-4" data-testid="deliveryMethods">
+					<Title className="mb-2">Delivery methods</Title>
+					<p>Please fill in shipping address to see available shipping methods</p>
+				</div>
+			</FormProvider>
+		);
+	}
+
 	return (
 		<FormProvider form={form}>
 			<Divider />
 			<div className="py-4" data-testid="deliveryMethods">
 				<Title className="mb-2">Delivery methods</Title>
-				{!authenticated && !shippingAddress && (
-					<p>Please fill in shipping address to see available shipping methods</p>
-				)}
-				{authenticated && !shippingAddress && updateState.checkoutShippingUpdate ? (
-					<DeliveryMethodsSkeleton />
-				) : (
-					<SelectBoxGroup label="delivery methods">
-						{shippingMethods?.map(
-							({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
-								<SelectBox key={id} name="selectedMethodId" value={id}>
-									<div className="pointer-events-none flex min-h-12 grow flex-col justify-center">
-										<div className="flex flex-row items-center justify-between self-stretch">
-											<p>{name}</p>
-											<p>{getFormattedMoney(price)}</p>
-										</div>
-										<p className="font-xs" color="secondary">
-											{getSubtitle({ min, max })}
-										</p>
-									</div>
-								</SelectBox>
-							),
-						)}
-					</SelectBoxGroup>
-				)}
+				<SelectBoxGroup label="delivery methods">
+					{shippingMethods?.map(({ id, name, price, minimumDeliveryDays: min, maximumDeliveryDays: max }) => (
+						<SelectBox key={id} name="selectedMethodId" value={id}>
+							<div className="pointer-events-none flex min-h-12 grow flex-col justify-center">
+								<div className="flex flex-row items-center justify-between self-stretch">
+									<p>{name}</p>
+									<p>{getFormattedMoney(price)}</p>
+								</div>
+								<p className="font-xs" color="secondary">
+									{getSubtitle({ min, max })}
+								</p>
+							</div>
+						</SelectBox>
+					))}
+				</SelectBoxGroup>
 			</div>
 		</FormProvider>
 	);
