@@ -10,11 +10,8 @@ import { useDeliveryMethodsForm } from "@/checkout/sections/DeliveryMethods/useD
 import { FormProvider } from "@/checkout/hooks/useForm/FormProvider";
 import { useCheckoutUpdateState } from "@/checkout/state/updateStateStore";
 import { DeliveryMethodsSkeleton } from "@/checkout/sections/DeliveryMethods/DeliveryMethodsSkeleton";
-import { useUser } from "@/checkout/hooks/useUser";
-
 export const DeliveryMethods: FC<CommonSectionProps> = ({ collapsed }) => {
 	const { checkout } = useCheckout();
-	const { authenticated } = useUser();
 	const { shippingMethods, shippingAddress } = checkout;
 	const form = useDeliveryMethodsForm();
 	const { updateState } = useCheckoutUpdateState();
