@@ -18,7 +18,6 @@ if (!schemaUrl) {
 }
 
 const config: CodegenConfig = {
-	concurrency: 1,
 	overwrite: true,
 	schema: schemaUrl,
 	documents: "src/graphql/**/*.graphql",
