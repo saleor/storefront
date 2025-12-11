@@ -26,14 +26,30 @@ export async function GET(request: NextRequest) {
 			withAuth: false,
 		});
 
-		// Filter products client-side by search query
-		const searchLower = query.toLowerCase();
+		// Filter products client-side by search query with fuzzy matching
+		const searchTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+		
 		const filteredProducts = products?.edges
-			.filter((edge) => 
-				edge.node.name.toLowerCase().includes(searchLower) ||
-				edge.node.category?.name?.toLowerCase().includes(searchLower)
-			)
-			.slice(0, 6) || [];
+			.map((edge) => {
+				const name = edge.node.name.toLowerCase();
+				const category = edge.node.category?.name?.toLowerCase() || "";
+				const slug = edge.node.slug.toLowerCase();
+				
+				// Calculate match score
+				let score = 0;
+				for (const term of searchTerms) {
+					if (name.includes(term)) score += 3;
+					if (name.startsWith(term)) score += 2;
+					if (category.includes(term)) score += 2;
+					if (slug.includes(term)) score += 1;
+				}
+				
+				return { edge, score };
+			})
+			.filter(({ score }) => score > 0)
+			.sort((a, b) => b.score - a.score)
+			.slice(0, 6)
+			.map(({ edge }) => edge) || [];
 
 		const suggestions = filteredProducts.map((edge) => ({
 			id: edge.node.id,
