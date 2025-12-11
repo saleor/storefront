@@ -17,6 +17,7 @@ import {
 	ProductDetailsDocument, 
 	ProductListDocument,
 	ProductListByCategoryDocument,
+	PageGetBySlugDocument,
 } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { Share2, Heart, Truck, Shield, RotateCcw } from "lucide-react";
@@ -102,6 +103,25 @@ export default async function ProductPage(props: {
 			.filter((p) => p.id !== product.id)
 			.slice(0, 4);
 	}
+
+	// Fetch shipping and returns pages content from Saleor
+	const [shippingPage, returnsPage] = await Promise.all([
+		executeGraphQL(PageGetBySlugDocument, {
+			variables: { slug: "shipping" },
+			revalidate: 60 * 60 * 24, // Cache for 24 hours
+		}).catch(() => ({ page: null })),
+		executeGraphQL(PageGetBySlugDocument, {
+			variables: { slug: "returns" },
+			revalidate: 60 * 60 * 24,
+		}).catch(() => ({ page: null })),
+	]);
+
+	const shippingReturnsContent = {
+		shippingTitle: shippingPage.page?.title || undefined,
+		shippingContent: shippingPage.page?.content || undefined,
+		returnsTitle: returnsPage.page?.title || undefined,
+		returnsContent: returnsPage.page?.content || undefined,
+	};
 
 	// Prepare images for gallery
 	const galleryImages = product.media?.length 
@@ -282,11 +302,11 @@ export default async function ProductPage(props: {
 						<div className="border-t border-secondary-200 pt-6 space-y-3">
 							<div className="flex items-center gap-3 text-sm text-secondary-600">
 								<Truck className="h-5 w-5 text-primary-600" />
-								<span>Free shipping on orders over $50</span>
+								<span>Free shipping on orders over KES 5,000</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm text-secondary-600">
 								<RotateCcw className="h-5 w-5 text-primary-600" />
-								<span>30-day free returns</span>
+								<span>14-day free returns</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm text-secondary-600">
 								<Shield className="h-5 w-5 text-primary-600" />
@@ -301,6 +321,7 @@ export default async function ProductPage(props: {
 			<ProductTabs 
 				description={product.description}
 				attributes={productAttributes}
+				shippingReturns={shippingReturnsContent}
 			/>
 
 			{/* Related Products */}

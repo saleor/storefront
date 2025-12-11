@@ -12,10 +12,18 @@ export interface ProductAttribute {
 	value: string;
 }
 
+export interface ShippingReturnsContent {
+	shippingTitle?: string;
+	shippingContent?: string;
+	returnsTitle?: string;
+	returnsContent?: string;
+}
+
 export interface ProductTabsProps {
 	description?: string | null;
 	attributes?: ProductAttribute[];
 	additionalInfo?: string;
+	shippingReturns?: ShippingReturnsContent;
 }
 
 type TabId = "description" | "specifications" | "shipping";
@@ -31,10 +39,36 @@ const tabs: Tab[] = [
 	{ id: "shipping", label: "Shipping & Returns" },
 ];
 
-export function ProductTabs({ description, attributes = [], additionalInfo }: ProductTabsProps) {
+interface EditorJSData {
+	blocks?: unknown[];
+}
+
+function parseEditorJSContent(content: string | null | undefined): string[] | null {
+	if (!content) return null;
+	try {
+		const parsed = JSON.parse(content) as EditorJSData;
+		if (parsed && parsed.blocks) {
+			return parser.parse(parsed);
+		}
+		// If it's plain HTML or text, return as-is
+		return [content];
+	} catch {
+		// If JSON parsing fails, treat as plain text/HTML
+		return content ? [content] : null;
+	}
+}
+
+export function ProductTabs({ 
+	description, 
+	attributes = [], 
+	additionalInfo,
+	shippingReturns 
+}: ProductTabsProps) {
 	const [activeTab, setActiveTab] = useState<TabId>("description");
 
-	const parsedDescription = description ? parser.parse(JSON.parse(description)) : null;
+	const parsedDescription = parseEditorJSContent(description);
+	const parsedShippingContent = parseEditorJSContent(shippingReturns?.shippingContent);
+	const parsedReturnsContent = parseEditorJSContent(shippingReturns?.returnsContent);
 
 	// Filter out tabs with no content
 	const availableTabs = tabs.filter((tab) => {
@@ -46,6 +80,10 @@ export function ProductTabs({ description, attributes = [], additionalInfo }: Pr
 	if (availableTabs.length === 0) {
 		return null;
 	}
+
+	// Check if we have dynamic content or should show defaults
+	const hasShippingContent = parsedShippingContent && parsedShippingContent.length > 0;
+	const hasReturnsContent = parsedReturnsContent && parsedReturnsContent.length > 0;
 
 	return (
 		<div className="mt-12 border-t border-secondary-200 pt-8">
@@ -102,24 +140,48 @@ export function ProductTabs({ description, attributes = [], additionalInfo }: Pr
 
 				{activeTab === "shipping" && (
 					<div className="space-y-6 text-sm text-secondary-600">
+						{/* Shipping Information */}
 						<div>
-							<h3 className="font-medium text-secondary-900 mb-2">Shipping Information</h3>
-							<ul className="list-disc list-inside space-y-1">
-								<li>Free standard shipping on orders over $50</li>
-								<li>Standard shipping: 5-7 business days</li>
-								<li>Express shipping: 2-3 business days</li>
-								<li>Next-day delivery available for select areas</li>
-							</ul>
+							<h3 className="font-medium text-secondary-900 mb-2">
+								{shippingReturns?.shippingTitle || "Shipping Information"}
+							</h3>
+							{hasShippingContent ? (
+								<div className="prose prose-sm max-w-none">
+									{parsedShippingContent!.map((content, index) => (
+										<div key={index} dangerouslySetInnerHTML={{ __html: xss(content) }} />
+									))}
+								</div>
+							) : (
+								<ul className="list-disc list-inside space-y-1">
+									<li>Free standard shipping on orders over KES 5,000</li>
+									<li>Standard shipping: 3-5 business days within Nairobi</li>
+									<li>Countrywide delivery: 5-7 business days</li>
+									<li>Same-day delivery available in Nairobi for orders before 12pm</li>
+								</ul>
+							)}
 						</div>
+
+						{/* Returns & Exchanges */}
 						<div>
-							<h3 className="font-medium text-secondary-900 mb-2">Returns & Exchanges</h3>
-							<ul className="list-disc list-inside space-y-1">
-								<li>30-day return policy for unused items</li>
-								<li>Free returns on all orders</li>
-								<li>Items must be in original packaging</li>
-								<li>Refunds processed within 5-7 business days</li>
-							</ul>
+							<h3 className="font-medium text-secondary-900 mb-2">
+								{shippingReturns?.returnsTitle || "Returns & Exchanges"}
+							</h3>
+							{hasReturnsContent ? (
+								<div className="prose prose-sm max-w-none">
+									{parsedReturnsContent!.map((content, index) => (
+										<div key={index} dangerouslySetInnerHTML={{ __html: xss(content) }} />
+									))}
+								</div>
+							) : (
+								<ul className="list-disc list-inside space-y-1">
+									<li>14-day return policy for unused items</li>
+									<li>Items must be in original packaging with tags attached</li>
+									<li>Contact customer service to initiate a return</li>
+									<li>Refunds processed within 7-10 business days</li>
+								</ul>
+							)}
 						</div>
+
 						{additionalInfo && (
 							<div>
 								<h3 className="font-medium text-secondary-900 mb-2">Additional Information</h3>
