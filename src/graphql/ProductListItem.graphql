@@ -26,4 +26,9 @@ fragment ProductListItem on Product {
 		url
 		alt
 	}
+	media {
+		url(size: 512, format: WEBP)
+		alt
+		type
+	}
 }

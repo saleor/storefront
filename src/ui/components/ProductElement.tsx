@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
-import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { WishlistButton } from "./WishlistButton";
-import { Eye } from "lucide-react";
+import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { clsx } from "clsx";
 
 import type { ProductListItemFragment } from "@/gql/graphql";
 import { formatMoneyRange } from "@/lib/utils";
@@ -25,23 +27,85 @@ export function ProductElement({
 	showWishlist = true,
 	showQuickView = false,
 }: ProductElementProps) {
+	// Get all images (filter to only IMAGE type)
+	const images = product.media?.filter((m) => m.type === "IMAGE") || [];
+	const hasMultipleImages = images.length > 1;
+	
+	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+	const [isHovering, setIsHovering] = useState(false);
+	const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+	// Auto-slideshow on hover
+	useEffect(() => {
+		if (isHovering && hasMultipleImages) {
+			intervalRef.current = setInterval(() => {
+				setCurrentImageIndex((prev) => (prev + 1) % images.length);
+			}, 1500); // Change image every 1.5 seconds
+		} else {
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current);
+				intervalRef.current = null;
+			}
+			setCurrentImageIndex(0);
+		}
+
+		return () => {
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current);
+			}
+		};
+	}, [isHovering, hasMultipleImages, images.length]);
+
+	const goToPrevious = useCallback((e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+	}, [images.length]);
+
+	const goToNext = useCallback((e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+	}, [images.length]);
+
+	// Get current image URL
+	const currentImage = images[currentImageIndex]?.url || product.thumbnail?.url;
+	const currentAlt = images[currentImageIndex]?.alt || product.thumbnail?.alt || product.name;
+
 	if (variant === "list") {
 		return (
 			<li data-testid="ProductElement" className="group">
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
 					<div className="flex gap-4 p-4 rounded-lg border border-secondary-200 hover:border-primary-300 hover:shadow-md transition-all bg-white">
-						<div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-md bg-white">
-							{product?.thumbnail?.url && (
-								<ProductImageWrapper
+						<div 
+							className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-md bg-white"
+							onMouseEnter={() => setIsHovering(true)}
+							onMouseLeave={() => setIsHovering(false)}
+						>
+							{currentImage && (
+								<Image
+									src={currentImage}
+									alt={currentAlt || ""}
+									fill
+									className="object-contain p-2 transition-opacity duration-300"
+									sizes="128px"
 									loading={loading}
-									src={product.thumbnail.url}
-									alt={product.thumbnail.alt ?? ""}
-									width={128}
-									height={128}
-									sizes={"128px"}
 									priority={priority}
-									objectFit="contain"
 								/>
+							)}
+							{/* Image dots indicator */}
+							{hasMultipleImages && (
+								<div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+									{images.slice(0, 5).map((_, idx) => (
+										<span
+											key={idx}
+											className={clsx(
+												"w-1 h-1 rounded-full transition-colors",
+												idx === currentImageIndex ? "bg-primary-500" : "bg-secondary-300"
+											)}
+										/>
+									))}
+								</div>
 							)}
 						</div>
 						<div className="flex-1 flex flex-col justify-between">
@@ -74,28 +138,76 @@ export function ProductElement({
 	return (
 		<li data-testid="ProductElement" className="group relative">
 			<div className="relative overflow-hidden rounded-lg bg-white border border-secondary-200 hover:border-primary-300 hover:shadow-lg transition-all">
-				{/* Product Image */}
+				{/* Product Image with Slideshow */}
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
-					<div className="aspect-square overflow-hidden bg-white">
-						{product?.thumbnail?.url && (
-							<ProductImageWrapper
+					<div 
+						className="aspect-square overflow-hidden bg-white relative"
+						onMouseEnter={() => setIsHovering(true)}
+						onMouseLeave={() => setIsHovering(false)}
+					>
+						{currentImage && (
+							<Image
+								src={currentImage}
+								alt={currentAlt || ""}
+								fill
+								className="object-contain p-4 transition-all duration-300 group-hover:scale-105"
+								sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 								loading={loading}
-								src={product.thumbnail.url}
-								alt={product.thumbnail.alt ?? ""}
-								width={512}
-								height={512}
-								sizes={"(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
 								priority={priority}
-								objectFit="contain"
-								className="group-hover:scale-105 transition-transform duration-300"
 							/>
+						)}
+
+						{/* Navigation arrows (show on hover if multiple images) */}
+						{hasMultipleImages && isHovering && (
+							<>
+								<button
+									onClick={goToPrevious}
+									className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-white/90 shadow-md hover:bg-white transition-colors z-10"
+									aria-label="Previous image"
+								>
+									<ChevronLeft className="h-4 w-4 text-secondary-700" />
+								</button>
+								<button
+									onClick={goToNext}
+									className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-white/90 shadow-md hover:bg-white transition-colors z-10"
+									aria-label="Next image"
+								>
+									<ChevronRight className="h-4 w-4 text-secondary-700" />
+								</button>
+							</>
+						)}
+
+						{/* Image dots indicator */}
+						{hasMultipleImages && (
+							<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+								{images.slice(0, 5).map((_, idx) => (
+									<button
+										key={idx}
+										onClick={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+											setCurrentImageIndex(idx);
+										}}
+										className={clsx(
+											"w-2 h-2 rounded-full transition-all",
+											idx === currentImageIndex 
+												? "bg-primary-500 scale-110" 
+												: "bg-secondary-300 hover:bg-secondary-400"
+										)}
+										aria-label={`View image ${idx + 1}`}
+									/>
+								))}
+								{images.length > 5 && (
+									<span className="text-xs text-secondary-500 ml-1">+{images.length - 5}</span>
+								)}
+							</div>
 						)}
 					</div>
 				</LinkWithChannel>
 
 				{/* Quick Actions */}
 				{(showWishlist || showQuickView) && (
-					<div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+					<div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
 						{showWishlist && (
 							<WishlistButton product={product} size="sm" />
 						)}
