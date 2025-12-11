@@ -41,7 +41,7 @@ export default async function HomePage(props: { params: Promise<{ channel: strin
 	return (
 		<div className="flex flex-col">
 			{/* Hero Section */}
-			<HeroSection channel={params.channel} />
+			<HeroSection />
 
 			{/* Trust Badges */}
 			<TrustBadges />
@@ -67,7 +67,7 @@ export default async function HomePage(props: { params: Promise<{ channel: strin
 			)}
 
 			{/* Category Grid */}
-			<CategoryGrid channel={params.channel} />
+			<CategoryGrid />
 
 			{/* New Arrivals */}
 			{newArrivals.length > 0 && (

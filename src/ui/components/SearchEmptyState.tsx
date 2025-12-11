@@ -9,7 +9,6 @@ import type { ProductListItemFragment } from "@/gql/graphql";
 interface SearchEmptyStateProps {
 	query: string;
 	suggestedProducts?: readonly ProductListItemFragment[];
-	channel: string;
 }
 
 const searchTips = [
@@ -19,17 +18,21 @@ const searchTips = [
 	"Browse our categories to find what you're looking for",
 ];
 
-export async function SearchEmptyState({ query, suggestedProducts, channel }: SearchEmptyStateProps) {
-	// Fetch categories for popular searches
-	const { categories } = await executeGraphQL(CategoriesListDocument, {
-		variables: {
-			first: 6,
-			channel,
-		},
-		revalidate: 3600,
-	});
-
-	const categoryList = categories?.edges.map(({ node }) => node) || [];
+export async function SearchEmptyState({ query, suggestedProducts }: SearchEmptyStateProps) {
+	// Fetch categories for browse suggestions
+	let categoryList: Array<{ id: string; name: string; slug: string }> = [];
+	
+	try {
+		const { categories } = await executeGraphQL(CategoriesListDocument, {
+			variables: {
+				first: 6,
+			},
+			revalidate: 3600,
+		});
+		categoryList = categories?.edges.map(({ node }) => node) || [];
+	} catch (error) {
+		console.error("Failed to fetch categories:", error);
+	}
 
 	return (
 		<div className="py-8">

@@ -156,7 +156,6 @@ export default async function SearchPage(props: {
 				<SearchEmptyState 
 					query={query}
 					suggestedProducts={suggestedProducts?.edges.map((e) => e.node)}
-					channel={params.channel}
 				/>
 			)}
 		</section>

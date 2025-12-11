@@ -35,20 +35,27 @@ function getIconForCategory(slug: string) {
 	return defaultIcon;
 }
 
-interface CategoryGridProps {
-	channel: string;
-}
+export async function CategoryGrid() {
+	let categoryList: Array<{
+		id: string;
+		name: string;
+		slug: string;
+		backgroundImage?: { url: string; alt?: string | null } | null;
+		children?: { edges: Array<{ node: { id: string } }> } | null;
+	}> = [];
 
-export async function CategoryGrid({ channel }: CategoryGridProps) {
-	const { categories } = await executeGraphQL(CategoriesListDocument, {
-		variables: {
-			first: 6,
-			channel,
-		},
-		revalidate: 3600, // Cache for 1 hour
-	});
-
-	const categoryList = categories?.edges.map(({ node }) => node) || [];
+	try {
+		const { categories } = await executeGraphQL(CategoriesListDocument, {
+			variables: {
+				first: 6,
+			},
+			revalidate: 3600, // Cache for 1 hour
+		});
+		categoryList = categories?.edges.map(({ node }) => node) || [];
+	} catch (error) {
+		console.error("Failed to fetch categories:", error);
+		return null;
+	}
 
 	if (categoryList.length === 0) {
 		return null;

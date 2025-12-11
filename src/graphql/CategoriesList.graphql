@@ -1,4 +1,4 @@
-query CategoriesList($first: Int = 10, $channel: String!) {
+query CategoriesList($first: Int = 10) {
 	categories(first: $first, level: 0) {
 		edges {
 			node {

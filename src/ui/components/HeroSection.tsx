@@ -1,26 +1,8 @@
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { Button } from "../atoms/Button";
 import { ArrowRight } from "lucide-react";
-import { executeGraphQL } from "@/lib/graphql";
-import { ProductListDocument } from "@/gql/graphql";
 
-interface HeroSectionProps {
-	channel: string;
-}
-
-export async function HeroSection({ channel }: HeroSectionProps) {
-	// Fetch product count for stats
-	const { products } = await executeGraphQL(ProductListDocument, {
-		variables: {
-			first: 1,
-			channel,
-		},
-		revalidate: 3600,
-	});
-
-	// Format product count for display
-	const productCount = products?.edges.length ? "1000+" : "100+";
-
+export function HeroSection() {
 	return (
 		<section className="relative bg-gradient-to-r from-primary-900 to-primary-700 overflow-hidden">
 			{/* Background Pattern */}
@@ -72,7 +54,7 @@ export async function HeroSection({ channel }: HeroSectionProps) {
 					{/* Stats */}
 					<div className="mt-12 grid grid-cols-3 gap-8 border-t border-primary-500/30 pt-8">
 						<div>
-							<p className="text-3xl font-bold text-white">{productCount}</p>
+							<p className="text-3xl font-bold text-white">1000+</p>
 							<p className="text-sm text-primary-200">Products</p>
 						</div>
 						<div>
