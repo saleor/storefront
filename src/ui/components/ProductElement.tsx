@@ -30,7 +30,7 @@ export function ProductElement({
 			<li data-testid="ProductElement" className="group">
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
 					<div className="flex gap-4 p-4 rounded-lg border border-secondary-200 hover:border-primary-300 hover:shadow-md transition-all bg-white">
-						<div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-md">
+						<div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-md bg-white">
 							{product?.thumbnail?.url && (
 								<ProductImageWrapper
 									loading={loading}
@@ -40,6 +40,7 @@ export function ProductElement({
 									height={128}
 									sizes={"128px"}
 									priority={priority}
+									objectFit="contain"
 								/>
 							)}
 						</div>
@@ -75,7 +76,7 @@ export function ProductElement({
 			<div className="relative overflow-hidden rounded-lg bg-white border border-secondary-200 hover:border-primary-300 hover:shadow-lg transition-all">
 				{/* Product Image */}
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
-					<div className="aspect-square overflow-hidden bg-secondary-50">
+					<div className="aspect-square overflow-hidden bg-white">
 						{product?.thumbnail?.url && (
 							<ProductImageWrapper
 								loading={loading}
@@ -85,7 +86,8 @@ export function ProductElement({
 								height={512}
 								sizes={"(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
 								priority={priority}
-								className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+								objectFit="contain"
+								className="group-hover:scale-105 transition-transform duration-300"
 							/>
 						)}
 					</div>
