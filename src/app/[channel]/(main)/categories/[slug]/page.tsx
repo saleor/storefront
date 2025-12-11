@@ -1,10 +1,32 @@
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
+import edjsHTML from "editorjs-html";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 import { Breadcrumb } from "@/ui/components/Breadcrumb";
 import { ProductListHeader } from "@/ui/components/ProductListHeader";
+
+const parser = edjsHTML();
+
+// Helper to parse EditorJS JSON description
+function parseDescription(description: string | null | undefined): string | null {
+	if (!description) return null;
+	
+	try {
+		// Check if it's JSON (EditorJS format)
+		const parsed = JSON.parse(description) as { blocks?: Array<{ data?: { text?: string } }> };
+		if (parsed.blocks) {
+			const html = parser.parse(parsed);
+			// Extract text content from HTML for display
+			return html.join(" ").replace(/<[^>]*>/g, "").trim();
+		}
+		return description;
+	} catch {
+		// Not JSON, return as-is
+		return description;
+	}
+}
 
 export const generateMetadata = async (
 	props: { params: Promise<{ slug: string; channel: string }> },
@@ -16,9 +38,11 @@ export const generateMetadata = async (
 		revalidate: 60,
 	});
 
+	const descriptionText = parseDescription(category?.description);
+
 	return {
 		title: `${category?.name || "Category"} | Luxior Mall`,
-		description: category?.seoDescription || category?.description || `Shop ${category?.name} at Luxior Mall. Find the best products and deals.`,
+		description: category?.seoDescription || descriptionText || `Shop ${category?.name} at Luxior Mall. Find the best products and deals.`,
 	};
 };
 
@@ -41,6 +65,9 @@ export default async function Page(props: {
 	const { name, products, description } = category;
 	const productCount = products.edges.length;
 	const viewParam = searchParams.view === "list" ? "list" : "grid";
+	
+	// Parse the description if it's in EditorJS format
+	const parsedDescription = parseDescription(description);
 
 	return (
 		<section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -56,8 +83,8 @@ export default async function Page(props: {
 			{/* Category Header */}
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold text-secondary-900">{name}</h1>
-				{description && (
-					<p className="mt-2 text-secondary-600 max-w-3xl">{description}</p>
+				{parsedDescription && (
+					<p className="mt-2 text-secondary-600 max-w-3xl">{parsedDescription}</p>
 				)}
 			</div>
 
