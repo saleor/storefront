@@ -1,0 +1,25 @@
+query CategoriesList($first: Int = 10, $channel: String!) {
+	categories(first: $first, level: 0) {
+		edges {
+			node {
+				id
+				name
+				slug
+				description
+				backgroundImage {
+					url
+					alt
+				}
+				children(first: 4) {
+					edges {
+						node {
+							id
+							name
+							slug
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -67,7 +67,7 @@ export default async function HomePage(props: { params: Promise<{ channel: strin
 			)}
 
 			{/* Category Grid */}
-			<CategoryGrid />
+			<CategoryGrid channel={params.channel} />
 
 			{/* New Arrivals */}
 			{newArrivals.length > 0 && (
