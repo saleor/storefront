@@ -41,7 +41,7 @@ export default async function HomePage(props: { params: Promise<{ channel: strin
 	return (
 		<div className="flex flex-col">
 			{/* Hero Section */}
-			<HeroSection />
+			<HeroSection channel={params.channel} />
 
 			{/* Trust Badges */}
 			<TrustBadges />

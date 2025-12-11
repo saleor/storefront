@@ -1,9 +1,9 @@
-"use client";
-
 import { Search, ArrowRight } from "lucide-react";
 import { ProductList } from "./ProductList";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { Button } from "../atoms/Button";
+import { executeGraphQL } from "@/lib/graphql";
+import { CategoriesListDocument } from "@/gql/graphql";
 import type { ProductListItemFragment } from "@/gql/graphql";
 
 interface SearchEmptyStateProps {
@@ -19,16 +19,18 @@ const searchTips = [
 	"Browse our categories to find what you're looking for",
 ];
 
-const popularSearches = [
-	"Shoes",
-	"T-Shirts",
-	"Dresses",
-	"Accessories",
-	"Electronics",
-	"Home Decor",
-];
+export async function SearchEmptyState({ query, suggestedProducts, channel }: SearchEmptyStateProps) {
+	// Fetch categories for popular searches
+	const { categories } = await executeGraphQL(CategoriesListDocument, {
+		variables: {
+			first: 6,
+			channel,
+		},
+		revalidate: 3600,
+	});
 
-export function SearchEmptyState({ query, suggestedProducts }: SearchEmptyStateProps) {
+	const categoryList = categories?.edges.map(({ node }) => node) || [];
+
 	return (
 		<div className="py-8">
 			{/* Empty State Icon and Message */}
@@ -59,23 +61,25 @@ export function SearchEmptyState({ query, suggestedProducts }: SearchEmptyStateP
 				</ul>
 			</div>
 
-			{/* Popular Searches */}
-			<div className="mb-12">
-				<h3 className="text-lg font-semibold text-secondary-900 mb-4">
-					Popular Searches
-				</h3>
-				<div className="flex flex-wrap gap-2">
-					{popularSearches.map((term) => (
-						<LinkWithChannel
-							key={term}
-							href={`/search?query=${encodeURIComponent(term)}`}
-							className="inline-flex items-center px-4 py-2 rounded-full border border-secondary-200 bg-white text-sm text-secondary-700 hover:border-primary-300 hover:text-primary-600 transition-colors"
-						>
-							{term}
-						</LinkWithChannel>
-					))}
+			{/* Browse Categories */}
+			{categoryList.length > 0 && (
+				<div className="mb-12">
+					<h3 className="text-lg font-semibold text-secondary-900 mb-4">
+						Browse Categories
+					</h3>
+					<div className="flex flex-wrap gap-2">
+						{categoryList.map((category) => (
+							<LinkWithChannel
+								key={category.id}
+								href={`/categories/${category.slug}`}
+								className="inline-flex items-center px-4 py-2 rounded-full border border-secondary-200 bg-white text-sm text-secondary-700 hover:border-primary-300 hover:text-primary-600 transition-colors"
+							>
+								{category.name}
+							</LinkWithChannel>
+						))}
+					</div>
 				</div>
-			</div>
+			)}
 
 			{/* Suggested Products */}
 			{suggestedProducts && suggestedProducts.length > 0 && (

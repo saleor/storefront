@@ -1,8 +1,26 @@
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { Button } from "../atoms/Button";
 import { ArrowRight } from "lucide-react";
+import { executeGraphQL } from "@/lib/graphql";
+import { ProductListDocument } from "@/gql/graphql";
 
-export function HeroSection() {
+interface HeroSectionProps {
+	channel: string;
+}
+
+export async function HeroSection({ channel }: HeroSectionProps) {
+	// Fetch product count for stats
+	const { products } = await executeGraphQL(ProductListDocument, {
+		variables: {
+			first: 1,
+			channel,
+		},
+		revalidate: 3600,
+	});
+
+	// Format product count for display
+	const productCount = products?.edges.length ? "1000+" : "100+";
+
 	return (
 		<section className="relative bg-gradient-to-r from-primary-900 to-primary-700 overflow-hidden">
 			{/* Background Pattern */}
@@ -54,16 +72,16 @@ export function HeroSection() {
 					{/* Stats */}
 					<div className="mt-12 grid grid-cols-3 gap-8 border-t border-primary-500/30 pt-8">
 						<div>
-							<p className="text-3xl font-bold text-white">10K+</p>
+							<p className="text-3xl font-bold text-white">{productCount}</p>
 							<p className="text-sm text-primary-200">Products</p>
 						</div>
 						<div>
-							<p className="text-3xl font-bold text-white">50K+</p>
-							<p className="text-sm text-primary-200">Happy Customers</p>
+							<p className="text-3xl font-bold text-white">24/7</p>
+							<p className="text-sm text-primary-200">Support</p>
 						</div>
 						<div>
-							<p className="text-3xl font-bold text-white">99%</p>
-							<p className="text-sm text-primary-200">Satisfaction</p>
+							<p className="text-3xl font-bold text-white">Free</p>
+							<p className="text-sm text-primary-200">Shipping $50+</p>
 						</div>
 					</div>
 				</div>
