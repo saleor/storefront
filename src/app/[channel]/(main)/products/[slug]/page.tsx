@@ -131,7 +131,13 @@ export default async function ProductPage(props: {
 			: [];
 
 	const variants = product.variants;
-	const selectedVariantID = searchParams.variant;
+	
+	// Auto-select variant if only one exists or if none selected
+	let selectedVariantID = searchParams.variant;
+	if (!selectedVariantID && variants?.length === 1) {
+		selectedVariantID = variants[0].id;
+	}
+	
 	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
 
 	async function addItem() {

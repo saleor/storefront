@@ -35,12 +35,7 @@ export function VariantSelector({
 		router.push(href, { scroll: false });
 	};
 
-	// Auto-select single available variant
-	if (!selectedVariant && variants.length === 1 && variants[0]?.quantityAvailable) {
-		const href = "/" + channel + getHrefForVariant({ productSlug: product.slug, variantId: variants[0].id });
-		router.push(href, { scroll: false });
-	}
-
+	// Don't render if only one variant (it's auto-selected in the page)
 	if (variants.length <= 1) {
 		return null;
 	}
