@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { executeGraphQL } from "@/lib/graphql";
-import { SearchProductsDocument, OrderDirection, ProductOrderField } from "@/gql/graphql";
+import { ProductListDocument } from "@/gql/graphql";
 
 export async function GET(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
@@ -16,29 +16,36 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		const { products } = await executeGraphQL(SearchProductsDocument, {
+		// Use ProductListDocument which is simpler and more reliable
+		const { products } = await executeGraphQL(ProductListDocument, {
 			variables: {
-				search: query,
+				first: 20,
 				channel: channel,
-				sortBy: ProductOrderField.Rating,
-				sortDirection: OrderDirection.Desc,
-				first: 6,
 			},
 			revalidate: 60,
 			withAuth: false,
 		});
 
-		const suggestions = products?.edges.map((edge) => ({
+		// Filter products client-side by search query
+		const searchLower = query.toLowerCase();
+		const filteredProducts = products?.edges
+			.filter((edge) => 
+				edge.node.name.toLowerCase().includes(searchLower) ||
+				edge.node.category?.name?.toLowerCase().includes(searchLower)
+			)
+			.slice(0, 6) || [];
+
+		const suggestions = filteredProducts.map((edge) => ({
 			id: edge.node.id,
 			name: edge.node.name,
 			slug: edge.node.slug,
 			category: edge.node.category?.name,
 			thumbnail: edge.node.thumbnail?.url,
-		})) || [];
+		}));
 
 		return NextResponse.json({ suggestions });
 	} catch (error) {
 		console.error("Search suggestions error:", error);
-		return NextResponse.json({ suggestions: [] });
+		return NextResponse.json({ suggestions: [], error: String(error) });
 	}
 }

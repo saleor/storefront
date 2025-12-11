@@ -52,12 +52,19 @@ export function SearchBar({ channel, placeholder = "Search products...", classNa
 
 		setIsLoading(true);
 		try {
-			const response = await fetch(
-				`/api/search/suggestions?query=${encodeURIComponent(searchQuery)}&channel=${encodeURIComponent(channel)}`
-			);
-			if (response.ok) {
-				const data = await response.json() as { suggestions?: SearchSuggestion[] };
-				setSuggestions(data.suggestions || []);
+			const url = `/api/search/suggestions?query=${encodeURIComponent(searchQuery)}&channel=${encodeURIComponent(channel)}`;
+			console.log("Fetching suggestions from:", url);
+			
+			const response = await fetch(url);
+			const data = await response.json() as { suggestions?: SearchSuggestion[]; error?: string };
+			
+			console.log("Search response:", data);
+			
+			if (response.ok && data.suggestions) {
+				setSuggestions(data.suggestions);
+			} else {
+				console.error("Search API error:", data.error);
+				setSuggestions([]);
 			}
 		} catch (error) {
 			console.error("Failed to fetch suggestions:", error);
