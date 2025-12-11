@@ -28,7 +28,15 @@ export function ProductElement({
 	showQuickView = false,
 }: ProductElementProps) {
 	// Get all images (filter to only IMAGE type)
-	const images = product.media?.filter((m) => m.type === "IMAGE") || [];
+	const mediaImages = product.media?.filter((m) => m.type === "IMAGE") || [];
+	
+	// Build images array - use media if available, otherwise fall back to thumbnail
+	const images = mediaImages.length > 0 
+		? mediaImages.map(m => ({ url: m.url, alt: m.alt }))
+		: product.thumbnail 
+			? [{ url: product.thumbnail.url, alt: product.thumbnail.alt }]
+			: [];
+	
 	const hasMultipleImages = images.length > 1;
 	
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -71,6 +79,9 @@ export function ProductElement({
 	// Get current image URL
 	const currentImage = images[currentImageIndex]?.url || product.thumbnail?.url;
 	const currentAlt = images[currentImageIndex]?.alt || product.thumbnail?.alt || product.name;
+	
+	// Debug: log image count (remove in production)
+	// console.log(`Product ${product.name}: ${images.length} images, hasMultiple: ${hasMultipleImages}`);
 
 	if (variant === "list") {
 		return (
