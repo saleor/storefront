@@ -82,8 +82,18 @@ export async function Footer({ channel }: { channel: string }) {
 				)}
 
 				<div className="flex flex-col justify-between border-t border-neutral-200 py-10 sm:flex-row">
-					<p className="text-sm text-neutral-500">Copyright &copy; {currentYear} Your Store, Inc.</p>
-					<p className="flex gap-1 text-sm text-neutral-500">
+					<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+						<p className="text-sm text-neutral-500">Copyright &copy; {currentYear} Luxior Mall, Inc.</p>
+						<div className="flex gap-4 mt-2 sm:mt-0">
+							<span className="text-xs text-neutral-400">•</span>
+							<span className="text-xs text-neutral-500">Free Shipping</span>
+							<span className="text-xs text-neutral-400">•</span>
+							<span className="text-xs text-neutral-500">Easy Returns</span>
+							<span className="text-xs text-neutral-400">•</span>
+							<span className="text-xs text-neutral-500">Secure Payment</span>
+						</div>
+					</div>
+					<p className="flex gap-1 text-sm text-neutral-500 mt-4 sm:mt-0">
 						Powered by{" "}
 						<Link target={"_blank"} href={"https://saleor.io/"}>
 							Saleor

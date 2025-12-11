@@ -1,10 +1,28 @@
-export function Loader() {
+import { clsx } from "clsx";
+
+export interface LoaderProps {
+	size?: "sm" | "md" | "lg";
+	className?: string;
+	text?: string;
+}
+
+export function Loader({ size = "md", className, text }: LoaderProps) {
+	const sizeClasses = {
+		sm: "h-4 w-4",
+		md: "h-8 w-8",
+		lg: "h-12 w-12",
+	};
+	
 	return (
-		<div className="text-center" aria-busy="true" role="status">
-			<div>
+		<div className={clsx("text-center", className)} aria-busy="true" role="status">
+			<div className="inline-flex items-center">
 				<svg
 					aria-hidden="true"
-					className="mr-2 inline h-12 w-12 animate-spin fill-neutral-600 text-neutral-200 dark:text-neutral-600"
+					className={clsx(
+						"animate-spin fill-primary-600 text-secondary-200",
+						sizeClasses[size],
+						text && "mr-2"
+					)}
 					viewBox="0 0 100 101"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +36,8 @@ export function Loader() {
 						fill="currentFill"
 					/>
 				</svg>
-				<span className="sr-only">Loading...</span>
+				{text && <span className="text-sm text-secondary-600">{text}</span>}
+				<span className="sr-only">{text || "Loading..."}</span>
 			</div>
 		</div>
 	);
