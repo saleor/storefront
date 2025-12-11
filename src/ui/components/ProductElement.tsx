@@ -43,26 +43,28 @@ export function ProductElement({
 	const [isHovering, setIsHovering] = useState(false);
 	const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-	// Auto-slideshow on hover
+	// Auto-slideshow continuously for all products with multiple images
 	useEffect(() => {
-		if (isHovering && hasMultipleImages) {
-			intervalRef.current = setInterval(() => {
-				setCurrentImageIndex((prev) => (prev + 1) % images.length);
-			}, 1500); // Change image every 1.5 seconds
-		} else {
-			if (intervalRef.current) {
-				clearInterval(intervalRef.current);
-				intervalRef.current = null;
-			}
-			setCurrentImageIndex(0);
+		if (hasMultipleImages) {
+			// Stagger start time based on product id to avoid all products changing at once
+			const staggerDelay = (product.id.charCodeAt(0) % 10) * 200;
+			
+			const startSlideshow = () => {
+				intervalRef.current = setInterval(() => {
+					setCurrentImageIndex((prev) => (prev + 1) % images.length);
+				}, 3000); // Change image every 3 seconds
+			};
+			
+			const timeoutId = setTimeout(startSlideshow, staggerDelay);
+			
+			return () => {
+				clearTimeout(timeoutId);
+				if (intervalRef.current) {
+					clearInterval(intervalRef.current);
+				}
+			};
 		}
-
-		return () => {
-			if (intervalRef.current) {
-				clearInterval(intervalRef.current);
-			}
-		};
-	}, [isHovering, hasMultipleImages, images.length]);
+	}, [hasMultipleImages, images.length, product.id]);
 
 	const goToPrevious = useCallback((e: React.MouseEvent) => {
 		e.preventDefault();
