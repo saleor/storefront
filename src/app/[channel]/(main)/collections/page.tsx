@@ -1,9 +1,34 @@
 import Image from "next/image";
+import edjsHTML from "editorjs-html";
 import { executeGraphQL } from "@/lib/graphql";
 import { CollectionsListDocument } from "@/gql/graphql";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 import { Breadcrumb } from "@/ui/components/Breadcrumb";
 import { Package } from "lucide-react";
+
+const parser = edjsHTML();
+
+// Helper to parse EditorJS JSON description
+function parseDescription(description: string | null | undefined): string | null {
+	if (!description) return null;
+
+	try {
+		// Check if it's JSON (EditorJS format)
+		const parsed = JSON.parse(description) as { blocks?: Array<{ data?: { text?: string } }> };
+		if (parsed.blocks) {
+			const html = parser.parse(parsed);
+			// Extract text content from HTML for display
+			return html
+				.join(" ")
+				.replace(/<[^>]*>/g, "")
+				.trim();
+		}
+		return description;
+	} catch {
+		// Not JSON, return as-is
+		return description;
+	}
+}
 
 export const metadata = {
 	title: "Collections | Luxior Mall",
@@ -63,7 +88,9 @@ export default async function CollectionsPage(props: { params: Promise<{ channel
 									{collection.name}
 								</h2>
 								{collection.description && (
-									<p className="mt-1 line-clamp-2 text-sm text-secondary-600">{collection.description}</p>
+									<p className="mt-1 line-clamp-2 text-sm text-secondary-600">
+										{parseDescription(collection.description)}
+									</p>
 								)}
 								<p className="mt-2 text-sm text-secondary-500">
 									{collection.products?.totalCount || 0} products
