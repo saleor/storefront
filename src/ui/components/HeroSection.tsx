@@ -39,13 +39,21 @@ export async function HeroSection() {
 					{/* CTAs */}
 					<div className="mt-10 flex flex-wrap gap-4">
 						<LinkWithChannel href={hero.primaryCta.href}>
-							<Button variant="primary" size="lg" className="bg-white text-primary-900 hover:bg-primary-50">
+							<Button
+								variant="primary"
+								size="lg"
+								className="border-2 border-white bg-white text-primary-900 hover:bg-primary-50"
+							>
 								{hero.primaryCta.text}
 								<ArrowRight className="ml-2 h-5 w-5" />
 							</Button>
 						</LinkWithChannel>
 						<LinkWithChannel href={hero.secondaryCta.href}>
-							<Button variant="ghost" size="lg" className="border-white/30 text-white hover:bg-white/10">
+							<Button
+								variant="ghost"
+								size="lg"
+								className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary-900"
+							>
 								{hero.secondaryCta.text}
 							</Button>
 						</LinkWithChannel>

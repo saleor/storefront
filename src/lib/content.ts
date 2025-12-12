@@ -90,7 +90,7 @@ const FALLBACK_HERO: HeroContent = {
 	description:
 		"Explore our curated collection of premium products. From fashion to electronics, find everything you need with free shipping on orders over $50.",
 	primaryCta: { text: "Shop Now", href: "/products" },
-	secondaryCta: { text: "View Collections", href: "/collections/featured-products" },
+	secondaryCta: { text: "View Collections", href: "/collections" },
 	stats: [
 		{ value: "1000+", label: "Products" },
 		{ value: "24/7", label: "Support" },
