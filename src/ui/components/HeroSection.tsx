@@ -40,9 +40,9 @@ export async function HeroSection() {
 					<div className="mt-10 flex flex-wrap gap-4">
 						<LinkWithChannel href={hero.primaryCta.href}>
 							<Button
-								variant="primary"
+								variant="secondary"
 								size="lg"
-								className="border-2 border-white bg-white text-primary-900 hover:bg-primary-50"
+								className="!border-2 !border-primary-600 !bg-primary-600 !text-white hover:!bg-primary-700"
 							>
 								{hero.primaryCta.text}
 								<ArrowRight className="ml-2 h-5 w-5" />
@@ -52,7 +52,7 @@ export async function HeroSection() {
 							<Button
 								variant="ghost"
 								size="lg"
-								className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary-900"
+								className="!border-2 !border-white !bg-transparent !text-white hover:!bg-white hover:!text-primary-900"
 							>
 								{hero.secondaryCta.text}
 							</Button>
