@@ -22,6 +22,7 @@ import {
 import * as Checkout from "@/lib/checkout";
 import { Share2, Heart } from "lucide-react";
 import { ProductPageTrustBadges } from "@/ui/components/ProductPageTrustBadges";
+import { getStorePolicies } from "@/lib/content";
 
 export async function generateMetadata(
 	props: {
@@ -106,7 +107,7 @@ export default async function ProductPage(props: {
 	}
 
 	// Fetch shipping and returns pages content from Saleor
-	const [shippingPage, returnsPage] = await Promise.all([
+	const [shippingPage, returnsPage, storePolicies] = await Promise.all([
 		executeGraphQL(PageGetBySlugDocument, {
 			variables: { slug: "shipping" },
 			revalidate: 60 * 60 * 24, // Cache for 24 hours
@@ -115,6 +116,7 @@ export default async function ProductPage(props: {
 			variables: { slug: "returns" },
 			revalidate: 60 * 60 * 24,
 		}).catch(() => ({ page: null })),
+		getStorePolicies(),
 	]);
 
 	const shippingReturnsContent = {
@@ -122,6 +124,8 @@ export default async function ProductPage(props: {
 		shippingContent: shippingPage.page?.content || undefined,
 		returnsTitle: returnsPage.page?.title || undefined,
 		returnsContent: returnsPage.page?.content || undefined,
+		freeShippingThreshold: storePolicies.freeShippingThreshold,
+		returnPeriodDays: storePolicies.returnPeriodDays,
 	};
 
 	// Prepare images for gallery

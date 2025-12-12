@@ -17,6 +17,8 @@ export interface ShippingReturnsContent {
 	shippingContent?: string;
 	returnsTitle?: string;
 	returnsContent?: string;
+	freeShippingThreshold?: string;
+	returnPeriodDays?: number;
 }
 
 export interface ProductTabsProps {
@@ -58,11 +60,11 @@ function parseEditorJSContent(content: string | null | undefined): string[] | nu
 	}
 }
 
-export function ProductTabs({ 
-	description, 
-	attributes = [], 
+export function ProductTabs({
+	description,
+	attributes = [],
 	additionalInfo,
-	shippingReturns 
+	shippingReturns,
 }: ProductTabsProps) {
 	const [activeTab, setActiveTab] = useState<TabId>("description");
 
@@ -95,10 +97,10 @@ export function ProductTabs({
 							key={tab.id}
 							onClick={() => setActiveTab(tab.id)}
 							className={clsx(
-								"py-4 text-sm font-medium border-b-2 transition-colors",
+								"border-b-2 py-4 text-sm font-medium transition-colors",
 								activeTab === tab.id
 									? "border-primary-600 text-primary-600"
-									: "border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300"
+									: "border-transparent text-secondary-500 hover:border-secondary-300 hover:text-secondary-700",
 							)}
 							aria-selected={activeTab === tab.id}
 							role="tab"
@@ -125,12 +127,8 @@ export function ProductTabs({
 							<tbody className="divide-y divide-secondary-100">
 								{attributes.map((attr, index) => (
 									<tr key={index} className={index % 2 === 0 ? "bg-secondary-50" : "bg-white"}>
-										<td className="py-3 px-4 text-sm font-medium text-secondary-900 w-1/3">
-											{attr.name}
-										</td>
-										<td className="py-3 px-4 text-sm text-secondary-600">
-											{attr.value}
-										</td>
+										<td className="w-1/3 px-4 py-3 text-sm font-medium text-secondary-900">{attr.name}</td>
+										<td className="px-4 py-3 text-sm text-secondary-600">{attr.value}</td>
 									</tr>
 								))}
 							</tbody>
@@ -142,7 +140,7 @@ export function ProductTabs({
 					<div className="space-y-6 text-sm text-secondary-600">
 						{/* Shipping Information */}
 						<div>
-							<h3 className="font-medium text-secondary-900 mb-2">
+							<h3 className="mb-2 font-medium text-secondary-900">
 								{shippingReturns?.shippingTitle || "Shipping Information"}
 							</h3>
 							{hasShippingContent ? (
@@ -152,8 +150,11 @@ export function ProductTabs({
 									))}
 								</div>
 							) : (
-								<ul className="list-disc list-inside space-y-1">
-									<li>Free standard shipping on orders over KES 5,000</li>
+								<ul className="list-inside list-disc space-y-1">
+									<li>
+										Free standard shipping on orders over KES{" "}
+										{shippingReturns?.freeShippingThreshold || "6,000"}
+									</li>
 									<li>Standard shipping: 3-5 business days within Nairobi</li>
 									<li>Countrywide delivery: 5-7 business days</li>
 									<li>Same-day delivery available in Nairobi for orders before 12pm</li>
@@ -163,7 +164,7 @@ export function ProductTabs({
 
 						{/* Returns & Exchanges */}
 						<div>
-							<h3 className="font-medium text-secondary-900 mb-2">
+							<h3 className="mb-2 font-medium text-secondary-900">
 								{shippingReturns?.returnsTitle || "Returns & Exchanges"}
 							</h3>
 							{hasReturnsContent ? (
@@ -173,8 +174,8 @@ export function ProductTabs({
 									))}
 								</div>
 							) : (
-								<ul className="list-disc list-inside space-y-1">
-									<li>14-day return policy for unused items</li>
+								<ul className="list-inside list-disc space-y-1">
+									<li>{shippingReturns?.returnPeriodDays || 30}-day return policy for unused items</li>
 									<li>Items must be in original packaging with tags attached</li>
 									<li>Contact customer service to initiate a return</li>
 									<li>Refunds processed within 7-10 business days</li>
@@ -184,7 +185,7 @@ export function ProductTabs({
 
 						{additionalInfo && (
 							<div>
-								<h3 className="font-medium text-secondary-900 mb-2">Additional Information</h3>
+								<h3 className="mb-2 font-medium text-secondary-900">Additional Information</h3>
 								<p>{additionalInfo}</p>
 							</div>
 						)}
