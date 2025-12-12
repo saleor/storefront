@@ -121,9 +121,10 @@ export default async function ProductPage(props: {
 
 	const shippingReturnsContent = {
 		shippingTitle: shippingPage.page?.title || undefined,
-		shippingContent: shippingPage.page?.content || undefined,
+		// Use page content if available, otherwise use policy content from getStorePolicies
+		shippingContent: shippingPage.page?.content || storePolicies.shippingContent || undefined,
 		returnsTitle: returnsPage.page?.title || undefined,
-		returnsContent: returnsPage.page?.content || undefined,
+		returnsContent: returnsPage.page?.content || storePolicies.returnsContent || undefined,
 		freeShippingThreshold: storePolicies.freeShippingThreshold,
 		returnPeriodDays: storePolicies.returnPeriodDays,
 	};

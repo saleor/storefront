@@ -150,15 +150,10 @@ export function ProductTabs({
 									))}
 								</div>
 							) : (
-								<ul className="list-inside list-disc space-y-1">
-									<li>
-										Free standard shipping on orders over KES{" "}
-										{shippingReturns?.freeShippingThreshold || "6,000"}
-									</li>
-									<li>Standard shipping: 3-5 business days within Nairobi</li>
-									<li>Countrywide delivery: 5-7 business days</li>
-									<li>Same-day delivery available in Nairobi for orders before 12pm</li>
-								</ul>
+								<p>
+									Free shipping on orders over KES {shippingReturns?.freeShippingThreshold || "6,000"}.
+									Contact us for delivery times and options.
+								</p>
 							)}
 						</div>
 
@@ -174,12 +169,10 @@ export function ProductTabs({
 									))}
 								</div>
 							) : (
-								<ul className="list-inside list-disc space-y-1">
-									<li>{shippingReturns?.returnPeriodDays || 30}-day return policy for unused items</li>
-									<li>Items must be in original packaging with tags attached</li>
-									<li>Contact customer service to initiate a return</li>
-									<li>Refunds processed within 7-10 business days</li>
-								</ul>
+								<p>
+									{shippingReturns?.returnPeriodDays || 30}-day return policy. Items must be unused and in
+									original packaging. Contact customer service for details.
+								</p>
 							)}
 						</div>
 
