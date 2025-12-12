@@ -15,7 +15,7 @@ export default async function CollectionsPage(props: { params: Promise<{ channel
 
 	const { collections } = await executeGraphQL(CollectionsListDocument, {
 		variables: { channel: params.channel, first: 20 },
-		revalidate: 60 * 60, // 1 hour
+		revalidate: 60, // 1 minute - shorter cache for faster updates
 	});
 
 	const collectionList = collections?.edges.map((edge) => edge.node) || [];
