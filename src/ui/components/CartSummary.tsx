@@ -32,6 +32,7 @@ export interface CartSummaryProps {
 	onApplyPromoCode?: (code: string) => Promise<boolean>;
 	checkoutHref?: string;
 	isCheckoutDisabled?: boolean;
+	freeShippingThreshold?: string;
 }
 
 export function CartSummary({
@@ -45,6 +46,7 @@ export function CartSummary({
 	onApplyPromoCode,
 	checkoutHref,
 	isCheckoutDisabled = false,
+	freeShippingThreshold = "6000",
 }: CartSummaryProps) {
 	const [promoCode, setPromoCode] = useState("");
 	const [promoError, setPromoError] = useState("");
@@ -52,10 +54,10 @@ export function CartSummary({
 
 	const handleApplyPromoCode = async () => {
 		if (!promoCode.trim() || !onApplyPromoCode) return;
-		
+
 		setIsApplyingPromo(true);
 		setPromoError("");
-		
+
 		try {
 			const success = await onApplyPromoCode(promoCode.trim());
 			if (!success) {
@@ -72,9 +74,7 @@ export function CartSummary({
 
 	return (
 		<div className="rounded-lg border border-secondary-200 bg-secondary-50 p-6">
-			<h2 className="text-lg font-semibold text-secondary-900 mb-4">
-				Order Summary
-			</h2>
+			<h2 className="mb-4 text-lg font-semibold text-secondary-900">Order Summary</h2>
 
 			{/* Summary Lines */}
 			<div className="space-y-3 text-sm">
@@ -91,10 +91,9 @@ export function CartSummary({
 					<div className="flex justify-between">
 						<span className="text-secondary-600">Shipping estimate</span>
 						<span className="font-medium text-secondary-900">
-							{shippingEstimate.amount === 0 
-								? "Free" 
-								: formatMoney(shippingEstimate.amount, shippingEstimate.currency)
-							}
+							{shippingEstimate.amount === 0
+								? "Free"
+								: formatMoney(shippingEstimate.amount, shippingEstimate.currency)}
 						</span>
 					</div>
 				)}
@@ -118,13 +117,11 @@ export function CartSummary({
 				{discount && discount.amount > 0 && (
 					<div className="flex justify-between text-green-600">
 						<span>Discount</span>
-						<span className="font-medium">
-							-{formatMoney(discount.amount, discount.currency)}
-						</span>
+						<span className="font-medium">-{formatMoney(discount.amount, discount.currency)}</span>
 					</div>
 				)}
 
-				<div className="border-t border-secondary-200 pt-3 mt-3">
+				<div className="mt-3 border-t border-secondary-200 pt-3">
 					<div className="flex justify-between">
 						<span className="text-base font-semibold text-secondary-900">Total</span>
 						<span className="text-base font-bold text-secondary-900">
@@ -136,8 +133,8 @@ export function CartSummary({
 
 			{/* Promo Code */}
 			{showPromoCode && onApplyPromoCode && (
-				<div className="mt-6 pt-6 border-t border-secondary-200">
-					<label className="flex items-center gap-2 text-sm font-medium text-secondary-700 mb-2">
+				<div className="mt-6 border-t border-secondary-200 pt-6">
+					<label className="mb-2 flex items-center gap-2 text-sm font-medium text-secondary-700">
 						<Tag className="h-4 w-4" />
 						Promo Code
 					</label>
@@ -170,7 +167,7 @@ export function CartSummary({
 						href={checkoutHref}
 						aria-disabled={isCheckoutDisabled}
 						onClick={(e) => isCheckoutDisabled && e.preventDefault()}
-						className="block w-full rounded-md bg-primary-600 px-6 py-3 text-center text-base font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:bg-secondary-400 transition-colors"
+						className="block w-full rounded-md bg-primary-600 px-6 py-3 text-center text-base font-medium text-white shadow-sm transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 aria-disabled:cursor-not-allowed aria-disabled:bg-secondary-400"
 					>
 						Proceed to Checkout
 					</a>
@@ -178,10 +175,10 @@ export function CartSummary({
 			)}
 
 			{/* Trust Badges */}
-			<div className="mt-6 pt-6 border-t border-secondary-200 space-y-2">
+			<div className="mt-6 space-y-2 border-t border-secondary-200 pt-6">
 				<div className="flex items-center gap-2 text-xs text-secondary-500">
 					<Truck className="h-4 w-4" />
-					<span>Free shipping on orders over $50</span>
+					<span>Free shipping on orders over KES {freeShippingThreshold}</span>
 				</div>
 				<div className="flex items-center gap-2 text-xs text-secondary-500">
 					<ShieldCheck className="h-4 w-4" />

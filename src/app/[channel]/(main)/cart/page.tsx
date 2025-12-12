@@ -8,6 +8,7 @@ import { Breadcrumb } from "@/ui/components/Breadcrumb";
 import { CartSummary } from "@/ui/components/CartSummary";
 import { DeleteLineButton } from "./DeleteLineButton";
 import { QuantitySelector } from "./QuantitySelector";
+import { getStorePolicies } from "@/lib/content";
 
 export const metadata = {
 	title: "Shopping Cart | Luxior Mall",
@@ -16,19 +17,19 @@ export const metadata = {
 
 export default async function CartPage(props: { params: Promise<{ channel: string }> }) {
 	const params = await props.params;
-	const checkoutId = await Checkout.getIdFromCookies(params.channel);
+	const [checkoutId, policies] = await Promise.all([
+		Checkout.getIdFromCookies(params.channel),
+		getStorePolicies(),
+	]);
 	const checkout = await Checkout.find(checkoutId);
 
 	const isEmpty = !checkout || checkout.lines.length < 1;
 	const itemCount = checkout?.lines.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
 	return (
-		<section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 			{/* Breadcrumb */}
-			<Breadcrumb 
-				items={[{ label: "Shopping Cart" }]} 
-				className="mb-6"
-			/>
+			<Breadcrumb items={[{ label: "Shopping Cart" }]} className="mb-6" />
 
 			{/* Page Header */}
 			<div className="mb-8">
@@ -46,7 +47,7 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 				<div className="lg:grid lg:grid-cols-12 lg:gap-8">
 					{/* Cart Items */}
 					<div className="lg:col-span-8">
-						<ul className="divide-y divide-secondary-200 border-t border-b border-secondary-200">
+						<ul className="divide-y divide-secondary-200 border-b border-t border-secondary-200">
 							{checkout.lines.map((item) => (
 								<li key={item.id} className="flex py-6">
 									{/* Product Image */}
@@ -76,21 +77,19 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 														variantId: item.variant.id,
 													})}
 												>
-													<h3 className="text-base font-medium text-secondary-900 hover:text-primary-600 transition-colors">
+													<h3 className="text-base font-medium text-secondary-900 transition-colors hover:text-primary-600">
 														{item.variant.product.name}
 													</h3>
 												</LinkWithChannel>
-												
+
 												{item.variant.product.category && (
 													<p className="mt-1 text-sm text-secondary-500">
 														{item.variant.product.category.name}
 													</p>
 												)}
-												
+
 												{item.variant.name !== item.variant.id && item.variant.name && (
-													<p className="mt-1 text-sm text-secondary-500">
-														{item.variant.name}
-													</p>
+													<p className="mt-1 text-sm text-secondary-500">{item.variant.name}</p>
 												)}
 											</div>
 
@@ -102,11 +101,7 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 
 										{/* Quantity and Remove */}
 										<div className="mt-4 flex items-center justify-between">
-											<QuantitySelector 
-												checkoutId={checkoutId} 
-												lineId={item.id} 
-												quantity={item.quantity} 
-											/>
+											<QuantitySelector checkoutId={checkoutId} lineId={item.id} quantity={item.quantity} />
 											<DeleteLineButton checkoutId={checkoutId} lineId={item.id} />
 										</div>
 									</div>
@@ -116,9 +111,9 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 
 						{/* Continue Shopping */}
 						<div className="mt-6">
-							<LinkWithChannel 
+							<LinkWithChannel
 								href="/products"
-								className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+								className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
 							>
 								<ArrowRight className="h-4 w-4 rotate-180" />
 								Continue Shopping
@@ -127,7 +122,7 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 					</div>
 
 					{/* Order Summary */}
-					<div className="mt-8 lg:mt-0 lg:col-span-4">
+					<div className="mt-8 lg:col-span-4 lg:mt-0">
 						<CartSummary
 							subtotal={checkout.subtotalPrice.gross}
 							total={checkout.totalPrice.gross}
@@ -135,6 +130,7 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 							checkoutHref={`/checkout?checkout=${checkoutId}`}
 							isCheckoutDisabled={checkout.lines.length === 0}
 							showPromoCode={false}
+							freeShippingThreshold={policies.freeShippingThreshold}
 						/>
 					</div>
 				</div>
@@ -145,14 +141,12 @@ export default async function CartPage(props: { params: Promise<{ channel: strin
 
 function EmptyCart() {
 	return (
-		<div className="text-center py-16">
-			<div className="mx-auto w-16 h-16 rounded-full bg-secondary-100 flex items-center justify-center mb-4">
+		<div className="py-16 text-center">
+			<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary-100">
 				<ShoppingBag className="h-8 w-8 text-secondary-400" />
 			</div>
-			<h2 className="text-xl font-semibold text-secondary-900 mb-2">
-				Your cart is empty
-			</h2>
-			<p className="text-secondary-600 mb-8 max-w-md mx-auto">
+			<h2 className="mb-2 text-xl font-semibold text-secondary-900">Your cart is empty</h2>
+			<p className="mx-auto mb-8 max-w-md text-secondary-600">
 				Looks like you haven&apos;t added any items to your cart yet. Start shopping to fill it up!
 			</p>
 			<LinkWithChannel href="/products">

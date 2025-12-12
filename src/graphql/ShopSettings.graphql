@@ -1,0 +1,22 @@
+query ShopSettings {
+	shop {
+		id
+		name
+		description
+		headerText
+		metadata {
+			key
+			value
+		}
+		metafields(
+			keys: [
+				"social_facebook"
+				"social_instagram"
+				"social_twitter"
+				"payment_methods"
+				"whatsapp_number"
+				"whatsapp_message"
+			]
+		)
+	}
+}

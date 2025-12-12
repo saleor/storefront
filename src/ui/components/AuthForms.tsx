@@ -15,17 +15,13 @@ export function AuthForms() {
 	return (
 		<div className="mx-auto max-w-md">
 			{mode === "login" && (
-				<LoginForm 
+				<LoginForm
 					onSwitchToRegister={() => setMode("register")}
 					onSwitchToForgotPassword={() => setMode("forgot-password")}
 				/>
 			)}
-			{mode === "register" && (
-				<RegisterForm onSwitchToLogin={() => setMode("login")} />
-			)}
-			{mode === "forgot-password" && (
-				<ForgotPasswordForm onSwitchToLogin={() => setMode("login")} />
-			)}
+			{mode === "register" && <RegisterForm onSwitchToLogin={() => setMode("login")} />}
+			{mode === "forgot-password" && <ForgotPasswordForm onSwitchToLogin={() => setMode("login")} />}
 		</div>
 	);
 }
@@ -59,7 +55,7 @@ function LoginForm({ onSwitchToRegister, onSwitchToForgotPassword }: LoginFormPr
 				router.refresh();
 				router.push("/orders");
 			} else {
-				const data = await response.json() as { message?: string };
+				const data = (await response.json()) as { message?: string };
 				setError(data.message || "Invalid email or password");
 			}
 		} catch {
@@ -70,14 +66,14 @@ function LoginForm({ onSwitchToRegister, onSwitchToForgotPassword }: LoginFormPr
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm border border-secondary-200 p-8">
-			<div className="text-center mb-8">
+		<div className="rounded-lg border border-secondary-200 bg-white p-8 shadow-sm">
+			<div className="mb-8 text-center">
 				<h1 className="text-2xl font-bold text-secondary-900">Welcome Back</h1>
 				<p className="mt-2 text-secondary-600">Sign in to your account</p>
 			</div>
 
 			{error && (
-				<div className="mb-6 p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">
+				<div className="mb-6 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 					{error}
 				</div>
 			)}
@@ -120,7 +116,10 @@ function LoginForm({ onSwitchToRegister, onSwitchToForgotPassword }: LoginFormPr
 
 				<div className="flex items-center justify-between">
 					<label className="flex items-center gap-2">
-						<input type="checkbox" className="rounded border-secondary-300 text-primary-600 focus:ring-primary-500" />
+						<input
+							type="checkbox"
+							className="rounded border-secondary-300 text-primary-600 focus:ring-primary-500"
+						/>
 						<span className="text-sm text-secondary-600">Remember me</span>
 					</label>
 					<button
@@ -143,7 +142,7 @@ function LoginForm({ onSwitchToRegister, onSwitchToForgotPassword }: LoginFormPr
 					<button
 						type="button"
 						onClick={onSwitchToRegister}
-						className="text-primary-600 hover:text-primary-700 font-medium"
+						className="font-medium text-primary-600 hover:text-primary-700"
 					>
 						Create one
 					</button>
@@ -201,7 +200,7 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 				router.refresh();
 				router.push("/orders");
 			} else {
-				const data = await response.json() as { message?: string };
+				const data = (await response.json()) as { message?: string };
 				setError(data.message || "Registration failed");
 			}
 		} catch {
@@ -227,14 +226,14 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 	const strengthColors = ["bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-lime-500", "bg-green-500"];
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm border border-secondary-200 p-8">
-			<div className="text-center mb-8">
+		<div className="rounded-lg border border-secondary-200 bg-white p-8 shadow-sm">
+			<div className="mb-8 text-center">
 				<h1 className="text-2xl font-bold text-secondary-900">Create Account</h1>
-				<p className="mt-2 text-secondary-600">Join Luxior Mall today</p>
+				<p className="mt-2 text-secondary-600">Join us today</p>
 			</div>
 
 			{error && (
-				<div className="mb-6 p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">
+				<div className="mb-6 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 					{error}
 				</div>
 			)}
@@ -298,13 +297,13 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 					</div>
 					{formData.password && (
 						<div className="mt-2">
-							<div className="flex gap-1 mb-1">
+							<div className="mb-1 flex gap-1">
 								{[...Array(5)].map((_, i) => (
 									<div
 										key={i}
 										className={clsx(
 											"h-1 flex-1 rounded",
-											i < passwordStrength ? strengthColors[passwordStrength - 1] : "bg-secondary-200"
+											i < passwordStrength ? strengthColors[passwordStrength - 1] : "bg-secondary-200",
 										)}
 									/>
 								))}
@@ -339,7 +338,7 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 					<button
 						type="button"
 						onClick={onSwitchToLogin}
-						className="text-primary-600 hover:text-primary-700 font-medium"
+						className="font-medium text-primary-600 hover:text-primary-700"
 					>
 						Sign in
 					</button>
@@ -374,7 +373,7 @@ function ForgotPasswordForm({ onSwitchToLogin }: ForgotPasswordFormProps) {
 			if (response.ok) {
 				setIsSubmitted(true);
 			} else {
-				const data = await response.json() as { message?: string };
+				const data = (await response.json()) as { message?: string };
 				setError(data.message || "Failed to send reset email");
 			}
 		} catch {
@@ -386,18 +385,18 @@ function ForgotPasswordForm({ onSwitchToLogin }: ForgotPasswordFormProps) {
 
 	if (isSubmitted) {
 		return (
-			<div className="bg-white rounded-lg shadow-sm border border-secondary-200 p-8 text-center">
-				<div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+			<div className="rounded-lg border border-secondary-200 bg-white p-8 text-center shadow-sm">
+				<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
 					<Mail className="h-6 w-6 text-green-600" />
 				</div>
-				<h2 className="text-xl font-bold text-secondary-900 mb-2">Check your email</h2>
-				<p className="text-secondary-600 mb-6">
+				<h2 className="mb-2 text-xl font-bold text-secondary-900">Check your email</h2>
+				<p className="mb-6 text-secondary-600">
 					We&apos;ve sent a password reset link to <strong>{email}</strong>
 				</p>
 				<button
 					type="button"
 					onClick={onSwitchToLogin}
-					className="text-primary-600 hover:text-primary-700 font-medium"
+					className="font-medium text-primary-600 hover:text-primary-700"
 				>
 					Back to sign in
 				</button>
@@ -406,16 +405,14 @@ function ForgotPasswordForm({ onSwitchToLogin }: ForgotPasswordFormProps) {
 	}
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm border border-secondary-200 p-8">
-			<div className="text-center mb-8">
+		<div className="rounded-lg border border-secondary-200 bg-white p-8 shadow-sm">
+			<div className="mb-8 text-center">
 				<h1 className="text-2xl font-bold text-secondary-900">Reset Password</h1>
-				<p className="mt-2 text-secondary-600">
-					Enter your email and we&apos;ll send you a reset link
-				</p>
+				<p className="mt-2 text-secondary-600">Enter your email and we&apos;ll send you a reset link</p>
 			</div>
 
 			{error && (
-				<div className="mb-6 p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">
+				<div className="mb-6 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 					{error}
 				</div>
 			)}
@@ -441,7 +438,7 @@ function ForgotPasswordForm({ onSwitchToLogin }: ForgotPasswordFormProps) {
 				<button
 					type="button"
 					onClick={onSwitchToLogin}
-					className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+					className="text-sm font-medium text-primary-600 hover:text-primary-700"
 				>
 					Back to sign in
 				</button>

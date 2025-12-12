@@ -12,15 +12,16 @@ import { Breadcrumb } from "@/ui/components/Breadcrumb";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
-import { 
-	CheckoutAddLineDocument, 
-	ProductDetailsDocument, 
+import {
+	CheckoutAddLineDocument,
+	ProductDetailsDocument,
 	ProductListDocument,
 	ProductListByCategoryDocument,
 	PageGetBySlugDocument,
 } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
-import { Share2, Heart, Truck, Shield, RotateCcw } from "lucide-react";
+import { Share2, Heart } from "lucide-react";
+import { ProductPageTrustBadges } from "@/ui/components/ProductPageTrustBadges";
 
 export async function generateMetadata(
 	props: {
@@ -78,7 +79,7 @@ export default async function ProductPage(props: {
 	searchParams: Promise<{ variant?: string }>;
 }) {
 	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-	
+
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -124,20 +125,20 @@ export default async function ProductPage(props: {
 	};
 
 	// Prepare images for gallery
-	const galleryImages = product.media?.length 
-		? product.media.filter(m => m.type === "IMAGE").map(m => ({ url: m.url, alt: m.alt }))
-		: product.thumbnail 
+	const galleryImages = product.media?.length
+		? product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }))
+		: product.thumbnail
 			? [{ url: product.thumbnail.url, alt: product.thumbnail.alt }]
 			: [];
 
 	const variants = product.variants;
-	
+
 	// Auto-select variant if only one exists or if none selected
 	let selectedVariantID = searchParams.variant;
 	if (!selectedVariantID && variants?.length === 1) {
 		selectedVariantID = variants[0].id;
 	}
-	
+
 	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
 
 	async function addItem() {
@@ -178,10 +179,13 @@ export default async function ProductPage(props: {
 			: "";
 
 	// Prepare attributes for tabs
-	const productAttributes = product.attributes?.map((attr) => ({
-		name: attr.attribute.name || "",
-		value: attr.values.map((v) => v.name).join(", "),
-	})).filter(a => a.name && a.value) || [];
+	const productAttributes =
+		product.attributes
+			?.map((attr) => ({
+				name: attr.attribute.name || "",
+				value: attr.values.map((v) => v.name).join(", "),
+			}))
+			.filter((a) => a.name && a.value) || [];
 
 	// JSON-LD structured data
 	const productJsonLd: WithContext<Product> = {
@@ -217,50 +221,44 @@ export default async function ProductPage(props: {
 	};
 
 	return (
-		<section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
 			/>
 
 			{/* Breadcrumb */}
-			<Breadcrumb 
+			<Breadcrumb
 				items={[
 					{ label: "Products", href: "/products" },
-					...(product.category ? [{ label: product.category.name, href: `/categories/${product.category.slug}` }] : []),
-					{ label: product.name }
-				]} 
+					...(product.category
+						? [{ label: product.category.name, href: `/categories/${product.category.slug}` }]
+						: []),
+					{ label: product.name },
+				]}
 				className="mb-6"
 			/>
 
 			{/* Product Main Section */}
 			<form action={addItem}>
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+				<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
 					{/* Product Gallery */}
 					<div>
-						<ProductGallery 
-							images={galleryImages}
-							productName={product.name}
-							enableZoom={true}
-						/>
+						<ProductGallery images={galleryImages} productName={product.name} enableZoom={true} />
 					</div>
 
 					{/* Product Info */}
 					<div className="flex flex-col">
 						{/* Category */}
 						{product.category && (
-							<p className="text-sm text-primary-600 font-medium mb-2">
-								{product.category.name}
-							</p>
+							<p className="mb-2 text-sm font-medium text-primary-600">{product.category.name}</p>
 						)}
 
 						{/* Title */}
-						<h1 className="text-2xl sm:text-3xl font-bold text-secondary-900 mb-4">
-							{product.name}
-						</h1>
+						<h1 className="mb-4 text-2xl font-bold text-secondary-900 sm:text-3xl">{product.name}</h1>
 
 						{/* Price */}
-						<p className="text-2xl font-bold text-secondary-900 mb-6" data-testid="ProductElement_Price">
+						<p className="mb-6 text-2xl font-bold text-secondary-900" data-testid="ProductElement_Price">
 							{price}
 						</p>
 
@@ -287,17 +285,17 @@ export default async function ProductPage(props: {
 						</div>
 
 						{/* Quick Actions */}
-						<div className="flex gap-4 mb-8">
-							<button 
+						<div className="mb-8 flex gap-4">
+							<button
 								type="button"
-								className="flex items-center gap-2 text-sm text-secondary-600 hover:text-primary-600 transition-colors"
+								className="flex items-center gap-2 text-sm text-secondary-600 transition-colors hover:text-primary-600"
 							>
 								<Heart className="h-5 w-5" />
 								Add to Wishlist
 							</button>
-							<button 
+							<button
 								type="button"
-								className="flex items-center gap-2 text-sm text-secondary-600 hover:text-primary-600 transition-colors"
+								className="flex items-center gap-2 text-sm text-secondary-600 transition-colors hover:text-primary-600"
 							>
 								<Share2 className="h-5 w-5" />
 								Share
@@ -305,26 +303,13 @@ export default async function ProductPage(props: {
 						</div>
 
 						{/* Trust Badges */}
-						<div className="border-t border-secondary-200 pt-6 space-y-3">
-							<div className="flex items-center gap-3 text-sm text-secondary-600">
-								<Truck className="h-5 w-5 text-primary-600" />
-								<span>Free shipping on orders over KES 5,000</span>
-							</div>
-							<div className="flex items-center gap-3 text-sm text-secondary-600">
-								<RotateCcw className="h-5 w-5 text-primary-600" />
-								<span>14-day free returns</span>
-							</div>
-							<div className="flex items-center gap-3 text-sm text-secondary-600">
-								<Shield className="h-5 w-5 text-primary-600" />
-								<span>Secure checkout</span>
-							</div>
-						</div>
+						<ProductPageTrustBadges />
 					</div>
 				</div>
 			</form>
 
 			{/* Product Tabs */}
-			<ProductTabs 
+			<ProductTabs
 				description={product.description}
 				attributes={productAttributes}
 				shippingReturns={shippingReturnsContent}
@@ -332,7 +317,7 @@ export default async function ProductPage(props: {
 
 			{/* Related Products */}
 			{relatedProducts && relatedProducts.length > 0 && (
-				<RelatedProducts 
+				<RelatedProducts
 					products={relatedProducts}
 					title="You May Also Like"
 					categorySlug={product.category?.slug}

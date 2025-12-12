@@ -1,0 +1,34 @@
+query SiteContentBySlug($slug: String!) {
+	page(slug: $slug) {
+		id
+		slug
+		title
+		content
+		metadata {
+			key
+			value
+		}
+		metafields(
+			keys: [
+				"icon"
+				"cta_text"
+				"cta_href"
+				"secondary_cta_text"
+				"secondary_cta_href"
+				"badge_text"
+				"headline"
+				"headline_accent"
+				"stats"
+				"description"
+				"sort_order"
+				"summary"
+				"policy_type"
+				"free_shipping_threshold"
+				"return_period_days"
+			]
+		)
+		pageType {
+			slug
+		}
+	}
+}

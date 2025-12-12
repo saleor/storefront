@@ -1,38 +1,29 @@
-import { Truck, RotateCcw, Shield, CreditCard } from "lucide-react";
+import { Truck, RotateCcw, Shield, CreditCard, LucideIcon } from "lucide-react";
+import { getTrustBadges, type TrustBadgeIcon } from "@/lib/content";
 
-const badges = [
-	{
-		icon: Truck,
-		title: "Free Shipping",
-		description: "On orders over $50",
-	},
-	{
-		icon: RotateCcw,
-		title: "Easy Returns",
-		description: "30-day return policy",
-	},
-	{
-		icon: Shield,
-		title: "Secure Checkout",
-		description: "SSL encrypted payment",
-	},
-	{
-		icon: CreditCard,
-		title: "Flexible Payment",
-		description: "Multiple payment options",
-	},
-];
+const iconMap: Record<TrustBadgeIcon, LucideIcon> = {
+	truck: Truck,
+	rotate: RotateCcw,
+	shield: Shield,
+	"credit-card": CreditCard,
+};
 
-export function TrustBadges() {
+export async function TrustBadges() {
+	const trustBadges = await getTrustBadges();
+
+	if (trustBadges.length === 0) {
+		return null;
+	}
+
 	return (
 		<section className="border-b border-secondary-200 bg-white">
-			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-				<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-					{badges.map((badge) => {
-						const Icon = badge.icon;
+			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+				<div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+					{trustBadges.map((badge) => {
+						const Icon = iconMap[badge.icon];
 						return (
 							<div key={badge.title} className="flex items-center gap-3">
-								<div className="flex-shrink-0 p-2 rounded-full bg-primary-50">
+								<div className="flex-shrink-0 rounded-full bg-primary-50 p-2">
 									<Icon className="h-5 w-5 text-primary-600" />
 								</div>
 								<div>

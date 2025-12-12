@@ -1,0 +1,13 @@
+query TrustBadgesContent {
+	pages(first: 10, where: { metadata: { key: "page_type", value: { eq: "trust-badge" } } }) {
+		edges {
+			node {
+				id
+				slug
+				title
+				content
+				metafields(keys: ["icon", "description", "sort_order"])
+			}
+		}
+	}
+}

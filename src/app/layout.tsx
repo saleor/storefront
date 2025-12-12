@@ -4,6 +4,7 @@ import { Suspense, type ReactNode } from "react";
 import { type Metadata } from "next";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 import { Analytics } from "@/ui/components/Analytics";
+import { WhatsAppButton } from "@/ui/components/WhatsAppButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 		default: "Luxior Mall | Premium Shopping Experience",
 		template: "%s | Luxior Mall",
 	},
-	description: "Discover premium products at Luxior Mall. Shop the latest fashion, electronics, home goods and more with free shipping on orders over $50.",
+	description:
+		"Discover premium products at Luxior Mall. Shop the latest fashion, electronics, home goods and more with free shipping on orders over $50.",
 	metadataBase: process.env.NEXT_PUBLIC_STOREFRONT_URL
 		? new URL(process.env.NEXT_PUBLIC_STOREFRONT_URL)
 		: undefined,
@@ -30,7 +32,8 @@ export const metadata: Metadata = {
 		locale: "en_US",
 		siteName: "Luxior Mall",
 		title: "Luxior Mall | Premium Shopping Experience",
-		description: "Discover premium products at Luxior Mall. Shop the latest fashion, electronics, home goods and more.",
+		description:
+			"Discover premium products at Luxior Mall. Shop the latest fashion, electronics, home goods and more.",
 	},
 	twitter: {
 		card: "summary_large_image",
@@ -61,6 +64,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 					<DraftModeNotification />
 				</Suspense>
 				<Analytics />
+				<WhatsAppButton />
 			</body>
 		</html>
 	);
